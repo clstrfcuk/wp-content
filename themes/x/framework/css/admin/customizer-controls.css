@@ -18,7 +18,7 @@
 // ========================================================================== */
 
 .customize-control {
-  margin-bottom: 21px;
+  margin-bottom: 24px;
 }
 
 
@@ -36,25 +36,8 @@
 }
 
 .customize-control-radio label {
-  line-height: 25px;
-}
-
-.customize-control-image .dropdown {
-  width: 100%;
-}
-
-.customize-control-image .dropdown-content {
-  float: none;
-}
-
-.customize-control-image .dropdown-status {
-  max-width: none;
-}
-
-.customize-control-image .dropdown-arrow:after {
-  position: absolute;
-  top: 50%;
-  margin-top: -12px;
+  padding-bottom: 0;
+  line-height: 20px;
 }
 
 .customize-control-image .actions {
@@ -69,6 +52,7 @@
 
 .wp-color-result {
   top: 0;
+  margin-bottom: 0;
 }
 
 .wp-color-result:focus,
@@ -76,6 +60,10 @@
   outline: 0;
   -webkit-box-shadow: none;
           box-shadow: none;
+}
+
+.wp-color-result.wp-picker-open {
+  margin-bottom: 6px;
 }
 
 

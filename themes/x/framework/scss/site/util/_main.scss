@@ -118,7 +118,8 @@
 //
 
 .visually-hidden,
-.screen-reader-text {
+.screen-reader-text,
+.screen-reader-response {
   overflow: hidden;
   position: absolute;
   width: 1px;

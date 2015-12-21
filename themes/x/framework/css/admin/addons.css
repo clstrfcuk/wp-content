@@ -198,17 +198,11 @@
 */
 
 .x-addons-extension {
-  border: 1px solid #e5e5e5;
+  border: 5px solid #c5c5c5;
   background-color: #fff;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box;
-}
-
-div.x-addons-extension {
-  width: 100%;
-  margin: 0 auto 20px;
 }
 
 li.x-addons-extension {
@@ -311,7 +305,7 @@ div.x-addons-extension .desc {
 // Responsive styles.
 */
 
-@media (max-width: 1080px) {
+@media (max-width: 1200px) {
   li.x-addons-extension {
     width: calc(50% - 10px);
     margin: 0 20px 20px 0;
@@ -345,7 +339,8 @@ div.x-addons-extension .desc {
   div.x-addons-extension {
     float: none;
     width: 100%;
-    margin: 0 0 10px;
+    max-width: 450px;
+    margin: 0 auto 10px;
   }
 
   li.x-addons-extension:nth-child(2n+1),

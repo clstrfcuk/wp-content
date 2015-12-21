@@ -52,7 +52,7 @@ function x_addons_page_extensions() { ?>
 
     <header class="x-addons-header">
       <h2>Extensions</h2>
-      <p>Expand the functionality of X to suit your needs via the plugins available below.</p>
+      <p>Custom and third party plugins you can use for free (over $1,000 in value) with updates!</p>
 
       <?php if ( isset( $addons_cache['error'] ) && $addons_cache['error'] ) : ?>
         <div class="error"><p><?php echo $addons_cache['message']; ?></p></div>
@@ -60,69 +60,32 @@ function x_addons_page_extensions() { ?>
 
     </header>
 
-
-    <?php foreach ( TGM_Plugin_Activation::$instance->plugins as $plugin ) : ?>
-      <?php if ( $plugin['slug'] == 'cornerstone' ) : ?>
-
-        <?php
-
-        if ( x_plugin_exists( $plugin['x_plugin'] ) ) :
-          if ( is_plugin_active( $plugin['x_plugin'] ) ) {
-            $status         = 'active';
-            $status_message = 'Active';
-          } else  {
-            $status         = 'inactive';
-            $status_message = 'Inactive';
-          }
-          $button = '<a class="x-addon-button button" href="' . admin_url( 'plugins.php' ) . '">Manage Plugin</a>';
-        else :
-          if ( $plugin['source'] == NULL ) {
-            $url   = x_addons_get_link_product_validation();
-            $text  = 'Validate Purchase to Install';
-            $class = 'x-addon-button button';
-          } else {
-            $url   = wp_nonce_url( add_query_arg( array( 'page' => TGM_Plugin_Activation::$instance->menu, 'plugin' => $plugin['slug'], 'plugin_name' => $plugin['name'], 'plugin_source' => $plugin['source'], 'tgmpa-install' => 'install-plugin', ), admin_url( TGM_Plugin_Activation::$instance->parent_url_slug ) ), 'tgmpa-install' );
-            $text  = 'Install Plugin';
-            $class = 'x-addon-button button button-primary';
-          }
-          $status         = 'not-installed';
-          $status_message = 'Not Installed';
-          $button         = '<a class="' . $class . '" href="' . $url . '">' . $text . '</a>';
-        endif;
-
-        ?>
-
-        <div class="x-addons-extension <?php echo $status; ?>" id="<?php echo $plugin['slug']; ?>">
-          <div class="top cf">
-            <img src="<?php echo $plugin['x_logo']; ?>" class="img">
-            <div class="info">
-              <h4 class="title"><?php echo $plugin['name']; ?></h4>
-              <span class="status <?php echo $status; ?>"><?php echo $status_message; ?></span>
-              <p class="desc"><?php echo $plugin['x_description']; ?></p>
-              <p class="author"><cite>By <?php echo $plugin['x_author']; ?></cite></p>
-            </div>
-          </div>
-          <div class="bottom cf"><?php echo $button; ?></div>
-        </div>
-
-      <?php endif; ?>
-    <?php endforeach; ?>
-
     <ul class="x-addons-extensions-list cf" id="x-addons-extensions-list">
 
-      <?php foreach ( TGM_Plugin_Activation::$instance->plugins as $plugin ) : ?>
+      <?php
+
+      $plugins = TGM_Plugin_Activation::$instance->plugins;
+
+      foreach ( $plugins as $key => $plugin ) {
+        if ( $plugin['slug'] == 'cornerstone' ) {
+          $cornerstone = $plugin;
+          unset( $plugins[$key] );
+        }
+      }
+
+      array_unshift( $plugins, $cornerstone );
+
+      foreach ( $plugins as $plugin ) :
+
+      ?>
 
         <?php
-
-        if ( $plugin['slug'] == 'cornerstone' ) {
-          continue;
-        }
 
         if ( x_plugin_exists( $plugin['x_plugin'] ) ) :
           if ( is_plugin_active( $plugin['x_plugin'] ) ) {
             $status         = 'active';
             $status_message = 'Active';
-          } else  {
+          } else {
             $status         = 'inactive';
             $status_message = 'Inactive';
           }

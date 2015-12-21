@@ -41,6 +41,11 @@ class X_Update_API {
 
     add_action( 'init', array( $this, 'init' ) );
     add_action( 'upgrader_pre_download', array( $this, 'upgrader_screen_message' ), 10, 3 );
+
+    if ( defined('THEMECO_PRERELEASES') && THEMECO_PRERELEASES ) {
+    	add_filter( 'x_update_product_slug', array( $this, 'enable_pre_release_updates' ) );
+    	add_filter( 'x_update_response_data', array( $this, 'filter_pre_release_data' ) );
+    }
   }
 
 
@@ -61,6 +66,32 @@ class X_Update_API {
 
   }
 
+  public function enable_pre_release_updates( $slug ) {
+  	if ( 'x-the-theme' == $slug || 'cornerstone' == $slug ) {
+  		$slug .= '-edge';
+  	}
+  	return $slug;
+  }
+
+  public function filter_pre_release_data( $data ) {
+
+  	if ( isset( $data['slug'] ) && strpos( $data['slug'], '-edge' ) !== false ) {
+  		$data['slug'] = str_replace('-edge', '', $data['slug']);
+
+  	}
+
+  	if ( isset( $data['products'] ) ) {
+  		foreach ($data['products'] as $key => $value) {
+  			if ( isset( $value['slug'] ) && strpos( $value['slug'], '-edge' ) !== false ) {
+  				$value['slug'] = str_replace( '-edge', '', $value['slug']);
+		  		$data['products'][$value['slug']] = $value;
+		  		unset($data['products'][$key]);
+		  	}
+  		}
+  	}
+
+  	return $data;
+  }
 
   //
   // Request information from the remote update API. The $args input is an
@@ -82,6 +113,16 @@ class X_Update_API {
       'xversion' => X_VERSION
     ) );
 
+    if ( isset( $args['product'] ) )
+    	$args['product'] = apply_filters( 'x_update_product_slug', $args['product'] );
+
+    if ( isset( $args['products'] ) ) {
+    	foreach ($args['products'] as $key => $slug ) {
+    		$args['products'][$key] = apply_filters( 'x_update_product_slug', $slug );
+    	}
+
+    	$args['products'] = base64_encode( serialize( $args['products'] ) );
+    }
 
     $request_url = self::$base_url . trailingslashit( $args['action'] ) . trailingslashit( $args['api-key'] );
 
@@ -98,7 +139,7 @@ class X_Update_API {
       return $connection_error;
     }
 
-    $data = json_decode( $request['body'], true );
+    $data = apply_filters( 'x_update_response_data', json_decode( $request['body'], true ) );
 
     if ( ! isset( $data['code'] ) ) {
       return $connection_error;
@@ -140,7 +181,7 @@ class X_Update_API {
   }
 
   public static function get_products( $slugs ) {
-    return self::remote_request( array( 'products' => base64_encode( serialize( $slugs ) ) ) );
+    return self::remote_request( array( 'products' => $slugs ) );
   }
 
 
