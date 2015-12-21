@@ -1,6 +1,6 @@
 # wp-content
 
-Basically a kickstart package I built for Vagrant.
+Basically a personal kickstart package I built for Vagrant.
 
 It will simply be initiated with the following command:
 
