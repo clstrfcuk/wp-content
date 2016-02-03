@@ -22,7 +22,7 @@ class CS_Settings_Customizer {
 		global $post;
 
     $url = add_query_arg(array(
-      'url' => get_the_permalink()
+      'url' => CS()->common()->getEditURL( get_the_id() )
     ), admin_url( 'customize.php' ) );
 
     $link = '<a href="' . $url . '">' . __( 'Customizer', csl18n() ) . '</a>';

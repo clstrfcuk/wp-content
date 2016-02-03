@@ -33,7 +33,7 @@ function fa_entity( $key ) {
  * @return string      Data attribute string that can be placed inside an element tag
  */
 function fa_data_icon( $key ) {
-  return 'data-x-icon="' . fa_icon( $key ) . '"';
+  return 'data-x-icon="' . fa_unicode( $key ) . '"';
 }
 
 
@@ -169,9 +169,14 @@ function cs_build_shortcode( $name, $attributes, $extra = '', $content = '' ) {
 
   $output = "[{$name}";
 
+  if ( isset( $attributes['class'] ) ) {
+		$attributes['class'] = cs_sanitize_html_classes( $attributes['class'] );
+	}
+
   foreach ($attributes as $attribute => $value) {
-	$clean = cs_clean_shortcode_att( $value );
-    $output .= " {$attribute}=\"{$clean}\"";
+		$clean = cs_clean_shortcode_att( $value );
+		$att = sanitize_key( $attribute );
+    $output .= " {$att}=\"{$clean}\"";
   }
 
   if ($extra != '') {
@@ -205,7 +210,7 @@ function cs_animation_base_class( $animation_string ) {
 
 }
 
-function cs_att( $attribute, $content, $echo = true ) {
+function cs_att( $attribute, $content, $echo = false ) {
 	$att = '';
 	if ( $content ) {
 		$att = $attribute . '="' . esc_attr( $content ) . '" ';
@@ -215,12 +220,12 @@ function cs_att( $attribute, $content, $echo = true ) {
 	return $att;
 }
 
-function cs_atts( $atts, $echo = true ) {
+function cs_atts( $atts, $echo = false ) {
 	$result = '';
 	foreach ( $atts as $att => $content) {
 		$result .= cs_att( $att, $content, false ) . ' ';
 	}
-	if ( $result )
+	if ( $echo )
 		echo $result;
 	return $result;
 }
@@ -262,8 +267,11 @@ function cs_alias_shortcode( $new_tag, $existing_tag, $filter_atts = true ) {
 		return;
 
 	global $wp_filter;
+
 	foreach ( $wp_filter[$tag] as $priority => $filter ) {
-		add_filter( "shortcode_atts_$new_tag", $filter['function'], $priority, $filter['accepted_args'] );
+		foreach ($filter as $tag => $value) {
+			add_filter( "shortcode_atts_$new_tag", $value['function'], $priority, $value['accepted_args'] );
+		}
 	}
 
 }
@@ -316,16 +324,44 @@ function cs_memoize( $key, $callback, $expiration = 0 ) {
  */
 function cs_clean_shortcode_att( $value ) {
 
-	$value = esc_attr( $value );
-
-	$whitelist = array(
-  	'&lt;br&gt;' => '<br>',
-  	'&lt;br/&gt;' => '<br/>',
-  	'&lt;br /&gt;' => '<br />',
-  );
-
-  $value = strtr( $value, $whitelist );
+	$value = wp_kses( $value, wp_kses_allowed_html( 'post' ) );
+	$value = esc_html( $value );
 	$value = str_replace( ']', '&rsqb;', str_replace('[', '&lsqb;', $value ) );
 
 	return $value;
+}
+
+/**
+ * Sanitizes an HTML classname to ensure it only contains valid characters.
+ *
+ * Uses sanitize_html_class but allows spaces for multiple classes.
+ *
+ * @param string $class    The classname to be sanitized
+ * @return string The sanitized value
+ */
+function cs_sanitize_html_classes( $class ) {
+
+	$classes = explode(' ', $class );
+  array_map( 'sanitize_html_class', $classes );
+  $class = implode(' ', $classes );
+
+	return $class;
+}
+
+/**
+ * WordPress wp_localize_script will cast boolean values to a string, making
+ * types difficult to keep up with. This function turns them into recognizable
+ * strings that can be converted back later
+ * @param  array $data Data requiring boolean value preservation.
+ * @return array       Data with string 'true' or 'false' values
+ */
+function cs_booleanize( $data ) {
+
+	foreach ($data as $key => $value) {
+		if ( is_bool( $value ) )
+			$data[$key] = ( $value ) ? 'true' : 'false';
+	}
+
+	return $data;
+
 }

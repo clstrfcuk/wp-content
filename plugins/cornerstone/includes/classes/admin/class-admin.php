@@ -29,6 +29,8 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 		if ( !is_admin() )
 			return;
 
+		Cornerstone_Huebert::init();
+
 		add_action( 'admin_menu',            array( $this, 'optionsPage' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
 		add_filter( 'page_row_actions',      array( $this, 'addRowActions' ), 10, 2 );

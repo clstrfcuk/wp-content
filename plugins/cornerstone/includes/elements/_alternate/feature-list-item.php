@@ -29,7 +29,7 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
     );
 
     $this->addControl(
-      'text',
+      'content',
       'textarea',
       __( 'Content', csl18n() ),
       __( 'Specify the content for your Feature List Item.', csl18n() ),
@@ -187,6 +187,19 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
       __( 'Specify a custom color for your Feature List Item link.', csl18n() ),
       ''
     );
+
+  }
+
+  public function migrate( $element, $version ) {
+
+  	if ( version_compare( $version, '1.0.10', '<' ) ) {
+  		if ( !isset( $element['content'] ) || '' == $element['content'] && isset( $element['text'] ) ) {
+				$element['content'] = $element['text'];
+				unset($element['text']);
+			}
+  	}
+
+		return $element;
 
   }
 

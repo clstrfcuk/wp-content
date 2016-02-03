@@ -10,7 +10,7 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 
 	public function setup() {
 
-		WP_Shortcode_Preserver::init();
+		CS_Shortcode_Preserver::init();
 
 		$this->magic_hooks = new Cornerstone_Magic_Hooks;
 
@@ -32,7 +32,10 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 
 		$filters = array(
 			'register_shortcode' => 'register_shortcode',
-			'shortcode_output_atts' => 'shortcode_output_atts',
+			'shortcode_output_atts' => array(
+				'cb' => 'shortcode_output_atts',
+				'args' => 3
+			),
 			'flags' => 'flags',
 			'defaults' => 'defaults',
 			'controls' => 'controls',
@@ -43,6 +46,7 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 
 		$this->magic_hooks->setup( $actions, $filters );
 
+		$this->load_shortcodes();
 		do_action( 'cornerstone_register_elements' );
 
 		foreach ( $this->elements as $element ) {
@@ -54,6 +58,8 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 		}
 
 		$this->registered = true;
+
+		do_action( 'cornerstone_shortcodes_loaded' );
 
 	}
 
@@ -67,14 +73,20 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 			'ui' => 'ui',
 			'preview' => array(
 				'cb' => 'preview',
-				'args' => 2
+				'args' => 3
 			),
 			'should_have_markup' => array(
 				'cb' => 'should_have_markup',
-				'args' => 3
+				'args' => 4
 			),
-			'update_build_shortcode_atts' => 'update_build_shortcode_atts',
-			'update_build_shortcode_content' => 'update_build_shortcode_content',
+			'update_build_shortcode_atts' => array(
+				'cb' => 'update_build_shortcode_atts',
+				'args' => 2
+			),
+			'update_build_shortcode_content' => array(
+				'cb' => 'update_build_shortcode_content',
+				'args' => 2
+			),
 			'always_close_shortcode' => 'always_close_shortcode'
 		);
 
@@ -93,6 +105,25 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 
 	}
 
+	/**
+	 * Autoload shortcode definitions
+	 */
+	public function load_shortcodes() {
+
+		// Load Shortcodes
+		$path = $this->path( 'includes/shortcodes/' );
+		foreach ( glob("$path*.php") as $filename ) {
+
+			if ( !file_exists( $filename) ) continue;
+
+			$words = explode('-', str_replace('.php', '', basename($filename) ) );
+			if ( strpos($words[0], '_') === 0 ) continue;
+
+			require_once( $filename );
+
+		}
+
+	}
 
 	public function add_elements() {
 
@@ -148,7 +179,6 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 			trigger_error( "Cornerstone_Element_Orchestrator::add | Failed to add element: $name. An element with that name has already been registered.", E_USER_WARNING );
 			return false;
 		}
-
 
 
 		$definition = new $class_name();

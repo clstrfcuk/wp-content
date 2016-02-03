@@ -98,27 +98,31 @@ return array(
 	'inspector-blank-sub'      => __( 'Inspect an element by clicking on it in the preview pane.', $td ),
 	'inspector-duplicate'      => __( 'Duplicate', $td ),
 	'inspector-delete'         => __( 'Delete', $td ),
+	'inspector-really-delete'  => __( 'Really Delete?', $td ),
 	'inspector-delete-confirm' => __( 'Are you sure you wish to delete this element?', $td ),
 	'inspector-erase'          => __( 'Erase', $td ),
+	'inspector-really-erase'   => __( 'Really Erase?', $td ),
 	'inspector-manage-layout'  => __( 'Manage Layout', $td ),
 
 	// Controls
-	'controls-on'        => __( 'On', $td ),
-	'controls-off'       => __( 'Off', $td ),
-	'dimensions-link'    => __( 'Link', $td ),
-	'dimensions-unlink'  => __( 'Unlink', $td ),
-	'tooltip-inspect'    => __( 'Inspect', $td ),
-	'tooltip-copy'       => __( 'Duplicate', $td ),
-	'tooltip-delete'     => __( 'Delete', $td ),
-	'sortable-add'       => __( 'Add', $td ),
-	'sortable-remove'    => __( 'Are you sure you wish to remove this item?', $td ),
-	'sortable-at-floor'  => __( 'The last item can&apos;t be deleted, but would you like to reset it to defaults?', $td ),
-	'sortable-at-cap'    => __( 'This element has reached it&apos;s capacity. You can&apos;t add any more.', $td ),
-	'sortable-default'   => __( 'New Item %s', $td ),
-	'sortable-duplicate' => __( 'Copy of %s', $td ),
-	'sortable-empty'     => __( 'No items!', $td ),
-	'sortable-empty-sub' => __( 'Add some to continue building.', $td ),
-	'expand-control'     => __( 'Expand'),
+	'controls-on'           => __( 'On', $td ),
+	'controls-off'          => __( 'Off', $td ),
+	'dimensions-link'       => __( 'Link', $td ),
+	'dimensions-unlink'     => __( 'Unlink', $td ),
+	'tooltip-inspect'       => __( 'Inspect', $td ),
+	'tooltip-manage-layout' => __( 'Manage Layout', $td ),
+	'tooltip-erase'         => __( 'Erase', $td ),
+	'tooltip-copy'          => __( 'Duplicate', $td ),
+	'tooltip-delete'        => __( 'Delete', $td ),
+	'sortable-add'          => __( 'Add', $td ),
+	'sortable-remove'       => __( 'Are you sure you wish to remove this item?', $td ),
+	'sortable-at-floor'     => __( 'The last item can&apos;t be deleted, but would you like to reset it to defaults?', $td ),
+	'sortable-at-cap'       => __( 'This element has reached it&apos;s capacity. You can&apos;t add any more.', $td ),
+	'sortable-default'      => __( 'New Item %s', $td ),
+	'sortable-duplicate'    => __( 'Copy of %s', $td ),
+	'sortable-empty'        => __( 'No items!', $td ),
+	'sortable-empty-sub'    => __( 'Add some to continue building.', $td ),
+	'expand-control'        => __( 'Expand'),
 
 	// Settings
 	'settings-heading'       => __( 'Settings', $td ),
@@ -154,10 +158,13 @@ return array(
 	'respond-small'       => __( 'Small', $td ),
 
 	//Confirm
-	'confirm-message' => __( 'Are you sure?', $td ),
-	'confirm-yep'     => __( 'Yep', $td ),
-	'confirm-nope'    => __( 'Nope', $td ),
-	'confirm-back'    => __( 'Back', $td ),
+	'confirm-message'                 => __( 'Are you sure?', $td ),
+	'confirm-yep'                     => __( 'Yep', $td ),
+	'confirm-nope'                    => __( 'Nope', $td ),
+	'confirm-back'                    => __( 'Back', $td ),
+
+	'confirm-element-delete'          => __( 'Are you sure you wish to delete this %s?', $td ),
+	'confirm-element-delete-contents' => __( 'Are you sure you wish to delete this %s, along with it&apos;s contents?', $td ),
 
 	//Save Complete
 	'save-error'             => __( 'Unable to save page.', $td ),
@@ -187,10 +194,23 @@ return array(
 	'moment-weekdays'       => __( 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday', $td ),
 	'moment-weekdays-short' => __( 'Sun_Mon_Tue_Wed_Thu_Fri_Sat', $td ),
 	'moment-weekdays-min'   => __( 'Su_Mo_Tu_We_Th_Fr_Sa', $td ),
+	'prev-month'            => __( 'Previous Month', $td ),
+	'next-month'            => __( 'Next Month', $td ),
 
 	// Errors
-	'browser-no-can' => __( "We're sorry! Your web browser does not support this action.", $td ),
-	'no-preview' => __( "%s (Preview Unsupported)", $td ),
-	'preview-failure' => __( "An unidentifiable error is preventing the live preview from loading.", $td )
+	'browser-no-can'            => __( "We're sorry! Your web browser does not support this action.", $td ),
+	'no-preview'                => __( "%s (Preview Unsupported)", $td ),
+	'preview-failure1'          => __( "An unidentifiable error is preventing the live preview from loading. Switching to Skeleton Mode.", $td ),
+	'preview-failure2'          => __( "A suitable content area for the live preview couldn't be identified. Switching to Skeleton Mode.", $td ),
+	'skeleton-locked'           => __( "Skeleton Mode can not be closed because the live preview is unavailable.", $td ),
+	'preview-late'              => __( "Loading the preview took longer than expected. There may be script conflicts on this page.", $td ),
+	'htmlhint-intro'            => __( "We found some invalid HTML in your content.", $td ),
+	'htmlhint-tag-pair'         => __( "You have unclosed HTML tags.", $td ),
+	'htmlhint-spec-char-escape' => __( "If not part of an HTML tag, consider using HTML entities for angle brackets by converting <span class=\"monospace\">&lt;</span> to <span class=\"monospace\">&amp;lt;</span> and <span class=\"monospace\">&gt;</span> to <span class=\"monospace\">&amp;gt;</span>", $td ),
+
+	// Skeleton Mode
+	'skeleton-main-title' => __( "Skeleton Mode", $td ),
+
+
 
 );

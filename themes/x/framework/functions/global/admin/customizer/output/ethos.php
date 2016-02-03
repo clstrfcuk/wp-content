@@ -67,12 +67,8 @@ a:hover {
 
   .woocommerce .price > .amount,
   .woocommerce .price > ins > .amount,
-  .woocommerce-page .price > .amount,
-  .woocommerce-page .price > ins > .amount,
   .woocommerce .star-rating:before,
-  .woocommerce-page .star-rating:before,
-  .woocommerce .star-rating span:before,
-  .woocommerce-page .star-rating span:before {
+  .woocommerce .star-rating span:before {
     color: <?php echo $x_site_link_color; ?>;
   }
 
@@ -95,7 +91,6 @@ a.x-img-thumbnail:hover {
 <?php if ( X_WOOCOMMERCE_IS_ACTIVE ) : ?>
 
   .woocommerce .onsale,
-  .woocommerce-page .onsale,
   .widget_price_filter .ui-slider .ui-slider-range {
     background-color: <?php echo $x_site_link_color; ?>;
   }

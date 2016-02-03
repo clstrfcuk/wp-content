@@ -8,22 +8,18 @@ class Cornerstone_Control_Dimensions extends Cornerstone_Control {
 		if ( !is_array( $item ) || count($item) != 5 )
 			return $this->default_value;
 
-		return array_map( 'esc_html', $item );
+		return array_map( 'sanitize_text_field', $item );
 
 	}
 
 	// Convert stored data into something usable in CSS
-	public function transform( $item ) {
+	public function transform_for_shortcode( $item ) {
 		return self::simplify( $item );
 	}
 
 	public static function simplify( $item ) {
 
-		// Single by linking
-		if ( $item[4] == 'linked' )
-			return $item[0];
-
-		array_pop($item);
+		array_pop( $item ); // remove 'linked'
 
 		// Single value (unlinked, but still equal)
 		if ( count( array_unique( $item ) ) === 1 )

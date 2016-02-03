@@ -23,7 +23,7 @@ class CSE_Undefined {
 				'type' => 'info-box',
 				'ui' => array(
 					'title' => __( 'Where did it go?', csl18n() ),
-					'message' => __( 'The element that calls itself <strong>%%element-name%%</strong> could not be found. It was probably registered by a plugin not currently active on your site. <br/><br/>Not to worry, the settings have been preserved in hope of this element&apos;s return.', csl18n() ),
+					'message' => __( 'The element that calls itself <strong>%%element-type%%</strong> could not be found. It was probably registered by a plugin not currently active on your site. <br/><br/>Not to worry, the settings have been preserved in hope of this element&apos;s return.', csl18n() ),
 				),
 				'options' => array( 'help-text' => false )
 			)

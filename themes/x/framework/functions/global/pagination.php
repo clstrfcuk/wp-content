@@ -111,7 +111,7 @@ if ( ! function_exists( 'pagenavi' ) ) :
       if ( $max_page > 1 || intval( $pagenavi_options['always_show'] ) == 1 ) {
         $pages_text = str_replace( "%CURRENT_PAGE%", number_format_i18n( $paged ) , $pagenavi_options['pages_text'] );
         $pages_text = str_replace( "%TOTAL_PAGES%", number_format_i18n( $max_page ) , $pages_text );
-        echo $before . '<div class="pagination pagination-centered"><ul class="center-list center-text">' . "\n";
+        echo $before . '<div class="x-pagination"><ul class="center-list center-text">' . "\n";
 
         if ( ! empty( $pages_text ) ) {
           echo '<li><span class="pages">' . $pages_text . '</span></li>';

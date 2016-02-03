@@ -80,7 +80,10 @@ class CS_Google_Map extends Cornerstone_Element_Base {
       'color',
       __( 'Map Hue', csl18n() ),
       __( 'Specifying a hexadecimal map hue will give your map a different color palette.', csl18n() ),
-      false
+      false,
+      array(
+        'output_format' => 'hex'
+      )
     );
 
     $this->addControl(

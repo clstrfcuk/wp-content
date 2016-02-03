@@ -691,7 +691,7 @@ function x_customizer_options_register( $wp_customize ) {
       $x['con'][] = array( 'x_h5_letter_spacing', 'slider', __( 'h5 Letter Spacing (em)', '__x__' ), $list_letter_spacing, 'x_customizer_section_typography' );
 
       $x['set'][] = array( 'x_h6_letter_spacing', 'postMessage' );
-      $x['con'][] = array( 'x_h6_letter_spacing', 'slider', __( 'h6 Letter Spacing (em)', '__x__' ), $list_letter_spacing, 'x_customizer_section_typography' ); 
+      $x['con'][] = array( 'x_h6_letter_spacing', 'slider', __( 'h6 Letter Spacing (em)', '__x__' ), $list_letter_spacing, 'x_customizer_section_typography' );
 
       $x['set'][] = array( 'x_headings_uppercase_enable', 'refresh' );
       $x['con'][] = array( 'x_headings_uppercase_enable', 'radio', __( 'Uppercase', '__x__' ), $list_on_off, 'x_customizer_section_typography' );
@@ -1485,8 +1485,14 @@ function x_customizer_options_register( $wp_customize ) {
 
     } elseif ( $control[1] == 'color' ) {
 
+      if ( class_exists( 'Cornerstone_Customize_Control_Huebert' ) ) {
+        $class = 'Cornerstone_Customize_Control_Huebert';
+      } else {
+        $class = 'WP_Customize_Color_Control';
+      }
+
       $wp_customize->add_control(
-        new WP_Customize_Color_Control( $wp_customize, $control[0], array(
+        new $class( $wp_customize, $control[0], array(
           'label'    => $control[2],
           'section'  => $control[3],
           'settings' => $control[0],

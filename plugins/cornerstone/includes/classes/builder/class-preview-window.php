@@ -6,11 +6,14 @@
 class Cornerstone_Preview_Window extends Cornerstone_Plugin_Component {
 
 	public $dependencies = array( 'Enqueue_Extractor' );
+	public $content_cache = '';
 
 	/**
 	 * Setup hooks
 	 */
 	public function setup() {
+
+		do_action( 'cornerstone_before_load_preview' );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ), 999 );
 		add_action( 'template_redirect', array( $this, 'pageLoading' ), 9999999 );
@@ -26,7 +29,8 @@ class Cornerstone_Preview_Window extends Cornerstone_Plugin_Component {
 	 */
 	public function pageLoading() {
 
-		add_filter( 'the_content', array( $this, 'wrapContent' ), -9999999 );
+		add_filter( 'the_content', array( $this, 'wrap_content' ), -9999999 );
+		add_action( 'wp_footer', array( $this, 'process_content' ), -999999 );
 
 		do_action( 'cornerstone_load_preview' );
 
@@ -77,12 +81,20 @@ class Cornerstone_Preview_Window extends Cornerstone_Plugin_Component {
 	}
 
 	/**
-	 * Filter applied to the_content
-	 * We wrap everything in a custom div so we can replace it's contents
-	 * once the javascript boots.
+	 * Replace the page content with a wrapping div that will be re-populated
+	 * with our javascript application.
 	 */
-	public function wrapContent( $content ) {
-		//remove_filter( 'the_content', array( $this, 'wrapContent' ), -9999999 );
-		return '<div id="cornerstone-preview-entry" class="cs-preview-loading">' . $content . '</div>';
+	public function wrap_content( $content ) {
+		$this->content_cache = $content;
+		return '<div id="cornerstone-preview-entry" class="cs-preview-loading"></div>';
+	}
+
+	/**
+	 * Process all the page shortcodes, but don't output anything.
+	 * This allows shortcodes to enqueue scripts to the footer even if they
+	 * were previously removed by the content wrapper.
+	 */
+	public function process_content() {
+		apply_filters( 'the_content', $this->content_cache );
 	}
 }

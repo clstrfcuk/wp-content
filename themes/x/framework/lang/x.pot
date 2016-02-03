@@ -1,14 +1,14 @@
-# Copyright (C) 2015 Themeco
+# Copyright (C) 2016 Themeco
 # This file is distributed under the GNU General Public License v2.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: X 4.1.1\n"
+"Project-Id-Version: X 4.3.1-RC1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/theme/x\n"
-"POT-Creation-Date: 2015-11-25 15:06:07+00:00\n"
+"POT-Creation-Date: 2016-01-19 22:40:54+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
@@ -1033,7 +1033,6 @@ msgstr ""
 #: buddypress/members/single/settings/general.php:24
 #: buddypress/members/single/settings/notifications.php:9
 #: buddypress/members/single/settings/profile.php:41
-#: woocommerce/myaccount/form-change-password.php:33
 msgid "Save"
 msgstr ""
 
@@ -1072,7 +1071,7 @@ msgid "Promote to Admin"
 msgstr ""
 
 #: buddypress/groups/single/admin.php:247
-#: framework/functions/global/stack-data.php:353
+#: framework/functions/global/stack-data.php:354
 msgid "Members"
 msgstr ""
 
@@ -1609,32 +1608,32 @@ msgstr ""
 msgid "There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox\" title=\"%3$s\">View version %4$s details</a> or <a href=\"%5$s\">update now</a>."
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:94
+#: framework/functions/global/admin/addons/class-update-api.php:135
 msgid "Could not establish connection. For assistance, please start by reviewing our article on troubleshooting <a href=\"https://community.theme.co/kb/connection-issues/\">connection issues.</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:171
-#: framework/functions/global/admin/addons/class-update-api.php:175
+#: framework/functions/global/admin/addons/class-update-api.php:212
+#: framework/functions/global/admin/addons/class-update-api.php:216
 msgid "<a href=\"%s\">Validate X to enable automatic updates</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:179
+#: framework/functions/global/admin/addons/class-update-api.php:220
 msgid "X is not validated. <a href=\"%s\">Validate X to enable automatic updates</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:183
+#: framework/functions/global/admin/addons/class-update-api.php:224
 msgid "<a href=\"%s\">Validate X to enable automatic updates</a>."
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:187
+#: framework/functions/global/admin/addons/class-update-api.php:228
 msgid "<a href=\"%s\">Validate X to enable automatic updates (go to \"Addons\" &gt; \"Home\" to learn more.)</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:191
+#: framework/functions/global/admin/addons/class-update-api.php:232
 msgid "X is not validated. <a href=\"%s\">Validate X to enable automatic updates.</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:205
+#: framework/functions/global/admin/addons/class-update-api.php:246
 msgid "Could not retrieve extensions list. For assistance, please start by reviewing our article on troubleshooting <a href=\"https://community.theme.co/kb/connection-issues/\">connection issues.</a>"
 msgstr ""
 
@@ -1674,7 +1673,7 @@ msgstr ""
 msgid "Setting Customizer values..."
 msgstr ""
 
-#: framework/functions/global/admin/addons/demo/class-x-demo-import-processor.php:606
+#: framework/functions/global/admin/addons/demo/class-x-demo-import-processor.php:608
 msgid "Assigning menus..."
 msgstr ""
 
@@ -1742,7 +1741,7 @@ msgstr ""
 msgid "No demos found. Refreshing this page may resolve the issue. If it persists, please review the <a href=\"https://theme.co/community/kb/connection-issues/\">connection issues</a> article in our Knowledge Base."
 msgstr ""
 
-#: framework/functions/global/admin/addons/setup.php:116
+#: framework/functions/global/admin/addons/setup.php:117
 msgid "<a href=\"%s\">Extensions</a>"
 msgstr ""
 
@@ -2218,8 +2217,8 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:2794
 #: framework/functions/global/plugins/visual-composer.php:3486
 #: framework/functions/global/plugins/visual-composer.php:3661
-#: framework/functions/global/plugins/visual-composer.php:5014
-#: framework/functions/global/plugins/visual-composer.php:5040
+#: framework/functions/global/plugins/visual-composer.php:5021
+#: framework/functions/global/plugins/visual-composer.php:5047
 msgid "Social"
 msgstr ""
 
@@ -2544,20 +2543,20 @@ msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:616
 #: framework/functions/global/admin/customizer/register.php:1269
-#: framework/functions/global/plugins/visual-composer.php:4552
-#: framework/functions/global/plugins/visual-composer.php:4713
+#: framework/functions/global/plugins/visual-composer.php:4555
+#: framework/functions/global/plugins/visual-composer.php:4719
 msgid "Background Color"
 msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:619
-#: framework/functions/global/plugins/visual-composer.php:4560
-#: framework/functions/global/plugins/visual-composer.php:4721
+#: framework/functions/global/plugins/visual-composer.php:4563
+#: framework/functions/global/plugins/visual-composer.php:4727
 msgid "Background Pattern"
 msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:622
-#: framework/functions/global/plugins/visual-composer.php:4568
-#: framework/functions/global/plugins/visual-composer.php:4729
+#: framework/functions/global/plugins/visual-composer.php:4571
+#: framework/functions/global/plugins/visual-composer.php:4735
 msgid "Background Image"
 msgstr ""
 
@@ -2835,7 +2834,7 @@ msgid "Bottom Footer"
 msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:939
-#: framework/functions/global/admin/setup.php:83
+#: framework/functions/global/admin/setup.php:84
 msgid "Footer Menu"
 msgstr ""
 
@@ -2909,10 +2908,10 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:4161
 #: framework/functions/global/plugins/visual-composer.php:4256
 #: framework/functions/global/plugins/visual-composer.php:4372
-#: framework/functions/global/plugins/visual-composer.php:4624
-#: framework/functions/global/plugins/visual-composer.php:4785
-#: framework/functions/global/plugins/visual-composer.php:4860
-#: framework/functions/global/plugins/visual-composer.php:4934
+#: framework/functions/global/plugins/visual-composer.php:4627
+#: framework/functions/global/plugins/visual-composer.php:4791
+#: framework/functions/global/plugins/visual-composer.php:4866
+#: framework/functions/global/plugins/visual-composer.php:4941
 msgid "Style"
 msgstr ""
 
@@ -3761,111 +3760,111 @@ msgstr ""
 msgid "Choose an accent color to be used for certain design elements."
 msgstr ""
 
-#: framework/functions/global/admin/setup.php:82
+#: framework/functions/global/admin/setup.php:83
 msgid "Primary Menu"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:137
+#: framework/functions/global/admin/tmg/register.php:105
 #: framework/functions/global/admin/tmg/setup.php:162
 msgid "Install Required Plugins"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:138
+#: framework/functions/global/admin/tmg/register.php:106
 #: framework/functions/global/admin/tmg/setup.php:163
 msgid "Install Plugins"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:139
+#: framework/functions/global/admin/tmg/register.php:107
 #: framework/functions/global/admin/tmg/setup.php:164
 msgid "Installing Plugin: %s"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:140
+#: framework/functions/global/admin/tmg/register.php:108
 msgid "Something went wrong with the plugin API."
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:141
+#: framework/functions/global/admin/tmg/register.php:109
 #: framework/functions/global/admin/tmg/setup.php:166
 msgid "This theme requires the following plugin: %1$s."
 msgid_plural "This theme requires the following plugins: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:142
+#: framework/functions/global/admin/tmg/register.php:110
 #: framework/functions/global/admin/tmg/setup.php:167
 msgid "This theme recommends the following plugin: %1$s."
 msgid_plural "This theme recommends the following plugins: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:143
+#: framework/functions/global/admin/tmg/register.php:111
 #: framework/functions/global/admin/tmg/setup.php:168
 msgid "Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed."
 msgid_plural "Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:144
+#: framework/functions/global/admin/tmg/register.php:112
 #: framework/functions/global/admin/tmg/setup.php:169
 msgid "The following required plugin is currently inactive: %1$s."
 msgid_plural "The following required plugins are currently inactive: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:145
+#: framework/functions/global/admin/tmg/register.php:113
 #: framework/functions/global/admin/tmg/setup.php:170
 msgid "The following recommended plugin is currently inactive: %1$s."
 msgid_plural "The following recommended plugins are currently inactive: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:146
+#: framework/functions/global/admin/tmg/register.php:114
 #: framework/functions/global/admin/tmg/setup.php:171
 msgid "Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated."
 msgid_plural "Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:147
+#: framework/functions/global/admin/tmg/register.php:115
 #: framework/functions/global/admin/tmg/setup.php:172
 msgid "The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s."
 msgid_plural "The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:148
+#: framework/functions/global/admin/tmg/register.php:116
 #: framework/functions/global/admin/tmg/setup.php:173
 msgid "Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated."
 msgid_plural "Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:149
+#: framework/functions/global/admin/tmg/register.php:117
 #: framework/functions/global/admin/tmg/setup.php:174
 msgid "Begin installing plugin"
 msgid_plural "Begin installing plugins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:150
+#: framework/functions/global/admin/tmg/register.php:118
 #: framework/functions/global/admin/tmg/setup.php:175
 msgid "Activate installed plugin"
 msgid_plural "Activate installed plugins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:151
+#: framework/functions/global/admin/tmg/register.php:119
 #: framework/functions/global/admin/tmg/setup.php:176
 msgid "Return to Required Plugins Installer"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:152
+#: framework/functions/global/admin/tmg/register.php:120
 #: framework/functions/global/admin/tmg/setup.php:178
 #: framework/functions/global/admin/tmg/setup.php:1847
 msgid "Plugin activated successfully."
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:153
+#: framework/functions/global/admin/tmg/register.php:121
 msgid "All plugins installed and activated successfully. %s"
 msgstr ""
 
@@ -4183,9 +4182,9 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:2742
 #: framework/functions/global/plugins/visual-composer.php:4235
 #: framework/functions/global/plugins/visual-composer.php:4394
-#: framework/functions/global/plugins/visual-composer.php:4950
-#: framework/functions/global/plugins/visual-composer.php:4966
-#: framework/functions/global/plugins/visual-composer.php:4979
+#: framework/functions/global/plugins/visual-composer.php:4957
+#: framework/functions/global/plugins/visual-composer.php:4973
+#: framework/functions/global/plugins/visual-composer.php:4986
 msgid "Content"
 msgstr ""
 
@@ -4318,7 +4317,7 @@ msgid "Hides Visual Composer options for which X already provides functionality.
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:496
-#: framework/functions/global/plugins/visual-composer.php:5116
+#: framework/functions/global/plugins/visual-composer.php:5123
 msgid "Add Some Using the Button Below!"
 msgstr ""
 
@@ -4331,7 +4330,7 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:635
 #: framework/functions/global/plugins/visual-composer.php:4032
 #: framework/functions/global/plugins/visual-composer.php:4467
-#: framework/functions/global/plugins/visual-composer.php:4641
+#: framework/functions/global/plugins/visual-composer.php:4644
 msgid "Structure"
 msgstr ""
 
@@ -4383,8 +4382,8 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:4145
 #: framework/functions/global/plugins/visual-composer.php:4240
 #: framework/functions/global/plugins/visual-composer.php:4356
-#: framework/functions/global/plugins/visual-composer.php:4842
-#: framework/functions/global/plugins/visual-composer.php:4916
+#: framework/functions/global/plugins/visual-composer.php:4848
+#: framework/functions/global/plugins/visual-composer.php:4923
 msgid "ID"
 msgstr ""
 
@@ -4432,8 +4431,8 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:4146
 #: framework/functions/global/plugins/visual-composer.php:4241
 #: framework/functions/global/plugins/visual-composer.php:4357
-#: framework/functions/global/plugins/visual-composer.php:4843
-#: framework/functions/global/plugins/visual-composer.php:4917
+#: framework/functions/global/plugins/visual-composer.php:4849
+#: framework/functions/global/plugins/visual-composer.php:4924
 msgid "(Optional) Enter a unique ID."
 msgstr ""
 
@@ -4483,10 +4482,10 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:4153
 #: framework/functions/global/plugins/visual-composer.php:4248
 #: framework/functions/global/plugins/visual-composer.php:4364
-#: framework/functions/global/plugins/visual-composer.php:4615
-#: framework/functions/global/plugins/visual-composer.php:4776
-#: framework/functions/global/plugins/visual-composer.php:4851
-#: framework/functions/global/plugins/visual-composer.php:4925
+#: framework/functions/global/plugins/visual-composer.php:4618
+#: framework/functions/global/plugins/visual-composer.php:4782
+#: framework/functions/global/plugins/visual-composer.php:4857
+#: framework/functions/global/plugins/visual-composer.php:4932
 msgid "Class"
 msgstr ""
 
@@ -4536,10 +4535,10 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:4154
 #: framework/functions/global/plugins/visual-composer.php:4249
 #: framework/functions/global/plugins/visual-composer.php:4365
-#: framework/functions/global/plugins/visual-composer.php:4616
-#: framework/functions/global/plugins/visual-composer.php:4777
-#: framework/functions/global/plugins/visual-composer.php:4852
-#: framework/functions/global/plugins/visual-composer.php:4926
+#: framework/functions/global/plugins/visual-composer.php:4619
+#: framework/functions/global/plugins/visual-composer.php:4783
+#: framework/functions/global/plugins/visual-composer.php:4858
+#: framework/functions/global/plugins/visual-composer.php:4933
 msgid "(Optional) Enter a unique class name."
 msgstr ""
 
@@ -4589,10 +4588,10 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:4162
 #: framework/functions/global/plugins/visual-composer.php:4257
 #: framework/functions/global/plugins/visual-composer.php:4373
-#: framework/functions/global/plugins/visual-composer.php:4625
-#: framework/functions/global/plugins/visual-composer.php:4786
-#: framework/functions/global/plugins/visual-composer.php:4861
-#: framework/functions/global/plugins/visual-composer.php:4935
+#: framework/functions/global/plugins/visual-composer.php:4628
+#: framework/functions/global/plugins/visual-composer.php:4792
+#: framework/functions/global/plugins/visual-composer.php:4867
+#: framework/functions/global/plugins/visual-composer.php:4942
 msgid "(Optional) Enter inline CSS."
 msgstr ""
 
@@ -4715,7 +4714,6 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:3783
 #: framework/functions/global/plugins/visual-composer.php:3864
 #: framework/functions/global/plugins/visual-composer.php:4278
-#: woocommerce/single-product/product-attributes.php:26
 msgid "Information"
 msgstr ""
 
@@ -4755,7 +4753,7 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:2911
 #: framework/functions/global/plugins/visual-composer.php:2980
 #: framework/functions/global/plugins/visual-composer.php:3381
-#: framework/functions/global/plugins/visual-composer.php:4994
+#: framework/functions/global/plugins/visual-composer.php:5001
 msgid "Media"
 msgstr ""
 
@@ -4871,7 +4869,6 @@ msgid "Enter in the longitude of your marker."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1100
-#: woocommerce/checkout/form-shipping.php:48
 msgid "Additional Information"
 msgstr ""
 
@@ -5528,14 +5525,14 @@ msgid "Select to remove the featured image."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2863
-#: framework/functions/global/plugins/visual-composer.php:4805
-#: framework/functions/global/plugins/visual-composer.php:4879
+#: framework/functions/global/plugins/visual-composer.php:4811
+#: framework/functions/global/plugins/visual-composer.php:4886
 msgid "Fade Effect"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2864
-#: framework/functions/global/plugins/visual-composer.php:4806
-#: framework/functions/global/plugins/visual-composer.php:4880
+#: framework/functions/global/plugins/visual-composer.php:4812
+#: framework/functions/global/plugins/visual-composer.php:4887
 msgid "Select to activate the fade effect."
 msgstr ""
 
@@ -5617,7 +5614,6 @@ msgid "Enter in the currency symbol you want to use."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3143
-#: woocommerce/cart/cart.php:27
 msgid "Price"
 msgstr ""
 
@@ -6109,226 +6105,226 @@ msgid "Include a block of text in your content"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4463
-#: framework/functions/global/plugins/visual-composer.php:4637
+#: framework/functions/global/plugins/visual-composer.php:4640
 msgid "Content Band"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4468
-#: framework/functions/global/plugins/visual-composer.php:4642
+#: framework/functions/global/plugins/visual-composer.php:4645
 msgid "Place and structure your shortcodes inside of a row"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4491
-#: framework/functions/global/plugins/visual-composer.php:4652
+#: framework/functions/global/plugins/visual-composer.php:4494
+#: framework/functions/global/plugins/visual-composer.php:4658
 msgid "Inner Container"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4492
-#: framework/functions/global/plugins/visual-composer.php:4653
+#: framework/functions/global/plugins/visual-composer.php:4495
+#: framework/functions/global/plugins/visual-composer.php:4659
 msgid "Select to insert a container inside of the content band. Use this instead of the [container] shortcode for greater flexibility and to contain multiple columns."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4502
-#: framework/functions/global/plugins/visual-composer.php:4663
+#: framework/functions/global/plugins/visual-composer.php:4505
+#: framework/functions/global/plugins/visual-composer.php:4669
 msgid "Remove Margin"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4503
-#: framework/functions/global/plugins/visual-composer.php:4664
+#: framework/functions/global/plugins/visual-composer.php:4506
+#: framework/functions/global/plugins/visual-composer.php:4670
 msgid "Select to remove the margin from the content band and stack them on top of each other."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4513
-#: framework/functions/global/plugins/visual-composer.php:4674
+#: framework/functions/global/plugins/visual-composer.php:4516
+#: framework/functions/global/plugins/visual-composer.php:4680
 msgid "Padding Top"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4514
-#: framework/functions/global/plugins/visual-composer.php:4675
+#: framework/functions/global/plugins/visual-composer.php:4517
+#: framework/functions/global/plugins/visual-composer.php:4681
 msgid "Set the top padding of the content band (leave blank to keep default)."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4523
-#: framework/functions/global/plugins/visual-composer.php:4684
+#: framework/functions/global/plugins/visual-composer.php:4526
+#: framework/functions/global/plugins/visual-composer.php:4690
 msgid "Padding Bottom"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4524
-#: framework/functions/global/plugins/visual-composer.php:4685
+#: framework/functions/global/plugins/visual-composer.php:4527
+#: framework/functions/global/plugins/visual-composer.php:4691
 msgid "Set the bottom padding of the content band (leave blank to keep default)."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4533
-#: framework/functions/global/plugins/visual-composer.php:4694
+#: framework/functions/global/plugins/visual-composer.php:4536
+#: framework/functions/global/plugins/visual-composer.php:4700
 msgid "Border"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4534
-#: framework/functions/global/plugins/visual-composer.php:4695
+#: framework/functions/global/plugins/visual-composer.php:4537
+#: framework/functions/global/plugins/visual-composer.php:4701
 msgid "Select whether or not to display a border on your content band."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4553
-#: framework/functions/global/plugins/visual-composer.php:4714
+#: framework/functions/global/plugins/visual-composer.php:4556
+#: framework/functions/global/plugins/visual-composer.php:4720
 msgid "Select the background color of your content band (leave blank for \"transparent\")."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4561
-#: framework/functions/global/plugins/visual-composer.php:4722
+#: framework/functions/global/plugins/visual-composer.php:4564
+#: framework/functions/global/plugins/visual-composer.php:4728
 msgid "Upload a background pattern to your content band."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4569
-#: framework/functions/global/plugins/visual-composer.php:4730
+#: framework/functions/global/plugins/visual-composer.php:4572
+#: framework/functions/global/plugins/visual-composer.php:4736
 msgid "Upload a background image to your content band (this will overwrite your Background Pattern)."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4576
-#: framework/functions/global/plugins/visual-composer.php:4737
+#: framework/functions/global/plugins/visual-composer.php:4579
+#: framework/functions/global/plugins/visual-composer.php:4743
 msgid "Parallax"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4577
-#: framework/functions/global/plugins/visual-composer.php:4738
+#: framework/functions/global/plugins/visual-composer.php:4580
+#: framework/functions/global/plugins/visual-composer.php:4744
 msgid "Select to activate the parallax effect with background patterns and images."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4587
-#: framework/functions/global/plugins/visual-composer.php:4748
+#: framework/functions/global/plugins/visual-composer.php:4590
+#: framework/functions/global/plugins/visual-composer.php:4754
 msgid "Background Video"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4588
-#: framework/functions/global/plugins/visual-composer.php:4749
+#: framework/functions/global/plugins/visual-composer.php:4591
+#: framework/functions/global/plugins/visual-composer.php:4755
 msgid "Include the path to your background video (this will overwrite both your Background Pattern and Background Image)."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4596
-#: framework/functions/global/plugins/visual-composer.php:4757
+#: framework/functions/global/plugins/visual-composer.php:4599
+#: framework/functions/global/plugins/visual-composer.php:4763
 msgid "Background Video Poster"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4597
-#: framework/functions/global/plugins/visual-composer.php:4758
+#: framework/functions/global/plugins/visual-composer.php:4600
+#: framework/functions/global/plugins/visual-composer.php:4764
 msgid "Include a poster image for your background video on mobile devices."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4604
-#: framework/functions/global/plugins/visual-composer.php:4765
+#: framework/functions/global/plugins/visual-composer.php:4607
+#: framework/functions/global/plugins/visual-composer.php:4771
 msgid "Marginless Columns"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4605
-#: framework/functions/global/plugins/visual-composer.php:4766
+#: framework/functions/global/plugins/visual-composer.php:4608
+#: framework/functions/global/plugins/visual-composer.php:4772
 msgid "Select to remove the spacing between columns."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4816
-#: framework/functions/global/plugins/visual-composer.php:4890
+#: framework/functions/global/plugins/visual-composer.php:4822
+#: framework/functions/global/plugins/visual-composer.php:4897
 msgid "Fade Animation"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4817
-#: framework/functions/global/plugins/visual-composer.php:4891
+#: framework/functions/global/plugins/visual-composer.php:4823
+#: framework/functions/global/plugins/visual-composer.php:4898
 msgid "Select the type of fade animation you want to use."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4832
-#: framework/functions/global/plugins/visual-composer.php:4906
+#: framework/functions/global/plugins/visual-composer.php:4838
+#: framework/functions/global/plugins/visual-composer.php:4913
 msgid "Fade Animation Offset"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4833
-#: framework/functions/global/plugins/visual-composer.php:4907
+#: framework/functions/global/plugins/visual-composer.php:4839
+#: framework/functions/global/plugins/visual-composer.php:4914
 msgid "Set how large you want the offset for your fade animation to be."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4947
+#: framework/functions/global/plugins/visual-composer.php:4954
 msgid "Widget Area"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4951
+#: framework/functions/global/plugins/visual-composer.php:4958
 msgid "Place one of your widget areas into your content"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4963
+#: framework/functions/global/plugins/visual-composer.php:4970
 msgid "Raw HTML"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4967
+#: framework/functions/global/plugins/visual-composer.php:4974
 msgid "Output raw HTML code on your page"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4976
+#: framework/functions/global/plugins/visual-composer.php:4983
 msgid "Raw JavaScript"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4980
+#: framework/functions/global/plugins/visual-composer.php:4987
 msgid "Output raw JavaScript code on your page"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4991
+#: framework/functions/global/plugins/visual-composer.php:4998
 msgid "Revolution Slider"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:4995
+#: framework/functions/global/plugins/visual-composer.php:5002
 msgid "Place a Revolution Slider element into your content"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5011
+#: framework/functions/global/plugins/visual-composer.php:5018
 msgid "Contact Form 7"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5015
+#: framework/functions/global/plugins/visual-composer.php:5022
 msgid "Place one of your contact forms into your content"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5036
+#: framework/functions/global/plugins/visual-composer.php:5043
 msgid "Gravity Form"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5041
+#: framework/functions/global/plugins/visual-composer.php:5048
 msgid "Place one of your Gravity Forms into your content"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5046
+#: framework/functions/global/plugins/visual-composer.php:5053
 msgid "Select which form you would like to display."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5053
+#: framework/functions/global/plugins/visual-composer.php:5060
 msgid "Disable Title"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5054
+#: framework/functions/global/plugins/visual-composer.php:5061
 msgid "Select to disable the title of your form."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5063
+#: framework/functions/global/plugins/visual-composer.php:5070
 msgid "Disable Description"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5064
+#: framework/functions/global/plugins/visual-composer.php:5071
 msgid "Select to disable the description of your form."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5073
+#: framework/functions/global/plugins/visual-composer.php:5080
 msgid "Enable AJAX"
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5074
+#: framework/functions/global/plugins/visual-composer.php:5081
 msgid "Select to enable the AJAX functionality of your form."
 msgstr ""
 
-#: framework/functions/global/plugins/visual-composer.php:5134
+#: framework/functions/global/plugins/visual-composer.php:5141
 msgid "The layout you are trying to use on this page does not conform to Visual Composer&#39;s layout guidelines. For more information on this situation and how to avoid this error going forward, please see our <a href=\"http://theme.co/x/member/kb/solutions-to-potential-setup-issues-visual-composer/\" target=\"_blank\">Knowledge Base article</a> in the X Member Area."
 msgstr ""
 
-#: framework/functions/global/plugins/woocommerce.php:309
-#: framework/functions/global/plugins/woocommerce.php:311
+#: framework/functions/global/plugins/woocommerce.php:325
+#: framework/functions/global/plugins/woocommerce.php:327
 msgid "There doesn&lsquo;t seem to be any available shipping methods. Please double check your address, or contact us if you need any help."
 msgstr ""
 
-#: framework/functions/global/plugins/woocommerce.php:381
+#: framework/functions/global/plugins/woocommerce.php:416
 msgid "%d Item"
 msgid_plural "%d Items"
 msgstr[0] ""
@@ -6375,87 +6371,87 @@ msgstr ""
 msgid "Share via Email"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:166
-#: framework/functions/global/stack-data.php:183
+#: framework/functions/global/stack-data.php:167
+#: framework/functions/global/stack-data.php:184
 msgid "The Blog"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:167
+#: framework/functions/global/stack-data.php:168
 msgid "Welcome to our little corner of the Internet. Kick your feet up and stay a while."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:168
+#: framework/functions/global/stack-data.php:169
 msgid "Sort Portfolio"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:171
-#: framework/functions/global/stack-data.php:188
-#: framework/functions/global/stack-data.php:211
-#: framework/functions/global/stack-data.php:234
+#: framework/functions/global/stack-data.php:172
+#: framework/functions/global/stack-data.php:189
+#: framework/functions/global/stack-data.php:212
+#: framework/functions/global/stack-data.php:235
 msgid "The Shop"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:172
+#: framework/functions/global/stack-data.php:173
 msgid "Welcome to our online store. Take some time to browse through our items."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:334
+#: framework/functions/global/stack-data.php:335
 msgid "Skills"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:335
+#: framework/functions/global/stack-data.php:336
 msgid "Launch Project"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:336
+#: framework/functions/global/stack-data.php:337
 msgid "See it Live!"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:337
+#: framework/functions/global/stack-data.php:338
 msgid "Share this Project"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:350
+#: framework/functions/global/stack-data.php:351
 msgid "Activity"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:351
+#: framework/functions/global/stack-data.php:352
 msgid "Groups"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:352
+#: framework/functions/global/stack-data.php:353
 msgid "Sites"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:354
+#: framework/functions/global/stack-data.php:355
 msgid "Create An Account"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:355
+#: framework/functions/global/stack-data.php:356
 msgid "Activate Your Account"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:356
+#: framework/functions/global/stack-data.php:357
 msgid "Meet new people, get involved, and stay connected."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:357
+#: framework/functions/global/stack-data.php:358
 msgid "Find others with similar interests and get plugged in."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:358
+#: framework/functions/global/stack-data.php:359
 msgid "See what others are writing about. Learn something new and exciting today!"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:359
+#: framework/functions/global/stack-data.php:360
 msgid "Meet your new online community. Kick up your feet and stay awhile."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:360
+#: framework/functions/global/stack-data.php:361
 msgid "Just fill in the fields below and we'll get a new account set up for you in no time!"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:361
+#: framework/functions/global/stack-data.php:362
 msgid "You're almost there! Simply enter your activation code below and we'll take care of the rest."
 msgstr ""
 
@@ -6649,181 +6645,56 @@ msgid_plural "%1$s Comments on %2$s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: woocommerce/cart/cart-totals.php:22
-msgid "Subtotal"
+#: woocommerce/cart/cart-empty.php:20
+msgid "Your cart is currently empty."
 msgstr ""
 
-#: woocommerce/cart/cart-totals.php:39
-#: woocommerce/cart/shipping-calculator.php:23
-msgid "Shipping"
-msgstr ""
-
-#: woocommerce/cart/cart-totals.php:70 woocommerce/cart/cart.php:29
-#: woocommerce/order/order-details.php:23
-msgid "Total"
-msgstr ""
-
-#: woocommerce/cart/cart-totals.php:82
-msgid " (taxes estimated for %s)"
-msgstr ""
-
-#: woocommerce/cart/cart-totals.php:85
-msgid "Note: Shipping and taxes are estimated%s and will be updated during checkout based on your billing and shipping information."
-msgstr ""
-
-#: woocommerce/cart/cart.php:26 woocommerce/order/order-details.php:22
-msgid "Product"
-msgstr ""
-
-#: woocommerce/cart/cart.php:28
-msgid "Quantity"
-msgstr ""
-
-#: woocommerce/cart/cart.php:50
-msgid "Remove this item"
-msgstr ""
-
-#: woocommerce/cart/cart.php:77
-msgid "Available on backorder"
-msgstr ""
-
-#: woocommerce/cart/cart.php:123
-msgid "Coupon"
-msgstr ""
-
-#: woocommerce/cart/cart.php:123
-msgid "Coupon code"
-msgstr ""
-
-#: woocommerce/cart/cart.php:123
-msgid "Apply Coupon"
-msgstr ""
-
-#: woocommerce/cart/cart.php:129
-msgid "Update Cart"
+#: woocommerce/cart/cart-empty.php:27
+msgid "Return To Shop"
 msgstr ""
 
 #: woocommerce/cart/cross-sells.php:42
 msgid "You May Be Interested In&hellip;"
 msgstr ""
 
-#: woocommerce/cart/shipping-calculator.php:29
-msgid "Select a country&hellip;"
-msgstr ""
-
-#: woocommerce/cart/shipping-calculator.php:46
-#: woocommerce/cart/shipping-calculator.php:52
-#: woocommerce/cart/shipping-calculator.php:64
-msgid "State / county"
-msgstr ""
-
-#: woocommerce/cart/shipping-calculator.php:53
-msgid "Select a state&hellip;"
-msgstr ""
-
-#: woocommerce/cart/shipping-calculator.php:72
-msgid "City"
-msgstr ""
-
-#: woocommerce/cart/shipping-calculator.php:78
-msgid "Postcode / Zip"
-msgstr ""
-
-#: woocommerce/cart/shipping-calculator.php:82
-msgid "Update Totals"
-msgstr ""
-
-#: woocommerce/checkout/form-billing.php:17
-msgid "Billing &amp; Shipping"
-msgstr ""
-
-#: woocommerce/checkout/form-billing.php:21
-#: woocommerce/myaccount/form-edit-address.php:15
-msgid "Billing Address"
-msgstr ""
-
-#: woocommerce/checkout/form-billing.php:40
-msgid "Create an account?"
-msgstr ""
-
-#: woocommerce/checkout/form-billing.php:51
-msgid "Create an account by entering the information below. If you are a returning customer please login at the top of the page."
-msgstr ""
-
-#: woocommerce/checkout/form-shipping.php:30
-msgid "Ship to a different address?"
-msgstr ""
-
-#: woocommerce/checkout/thankyou.php:17
+#: woocommerce/checkout/_thankyou.php:17
 msgid "Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction."
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:21
+#: woocommerce/checkout/_thankyou.php:21
 msgid "Please attempt your purchase again or go to your account page."
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:23
+#: woocommerce/checkout/_thankyou.php:23
 msgid "Please attempt your purchase again."
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:27
+#: woocommerce/checkout/_thankyou.php:27
 msgid "Pay"
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:29
+#: woocommerce/checkout/_thankyou.php:29
 msgid "My Account"
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:35 woocommerce/checkout/thankyou.php:66
+#: woocommerce/checkout/_thankyou.php:35 woocommerce/checkout/_thankyou.php:66
 msgid "Thank you. Your order has been received."
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:39
+#: woocommerce/checkout/_thankyou.php:39
 msgid "Order:"
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:43
+#: woocommerce/checkout/_thankyou.php:43
 msgid "Date:"
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:47
+#: woocommerce/checkout/_thankyou.php:47
 msgid "Total:"
 msgstr ""
 
-#: woocommerce/checkout/thankyou.php:52
+#: woocommerce/checkout/_thankyou.php:52
 msgid "Payment method:"
-msgstr ""
-
-#: woocommerce/myaccount/form-change-password.php:22
-msgid "New password"
-msgstr ""
-
-#: woocommerce/myaccount/form-change-password.php:27
-msgid "Re-enter new password"
-msgstr ""
-
-#: woocommerce/myaccount/form-edit-address.php:15
-msgid "Shipping Address"
-msgstr ""
-
-#: woocommerce/myaccount/form-edit-address.php:38
-msgid "Save Address"
-msgstr ""
-
-#: woocommerce/order/order-details.php:17
-msgid "Order Details"
-msgstr ""
-
-#: woocommerce/single-product/product-attributes.php:25
-msgid "Attribute"
-msgstr ""
-
-#: woocommerce/single-product/product-attributes.php:34
-msgid "Weight"
-msgstr ""
-
-#: woocommerce/single-product/product-attributes.php:41
-msgid "Dimensions"
 msgstr ""
 
 #: woocommerce/single-product/up-sells.php:43
@@ -6872,10 +6743,6 @@ msgstr ""
 msgid "Submit Review"
 msgstr ""
 
-#: woocommerce/single-product-reviews.php:97
-msgid "Rating"
-msgstr ""
-
 #: woocommerce/single-product-reviews.php:98
 msgid "Rate&hellip;"
 msgstr ""
@@ -6898,10 +6765,6 @@ msgstr ""
 
 #: woocommerce/single-product-reviews.php:103
 msgid "Very Poor"
-msgstr ""
-
-#: woocommerce/single-product-reviews.php:109
-msgid "Your Review"
 msgstr ""
 
 #: woocommerce/single-product-reviews.php:121

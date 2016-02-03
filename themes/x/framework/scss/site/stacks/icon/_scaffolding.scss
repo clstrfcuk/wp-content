@@ -10,7 +10,6 @@
 //   01. Site Wrap
 //   02. Body Reset
 //   03. Grid Container
-//   04. Links
 // =============================================================================
 
 // Site Wrap
@@ -60,14 +59,4 @@ body {
   &.offset-bottom {
     margin-bottom: 50px;
   }
-}
-
-
-
-// Links
-// =============================================================================
-
-a {
-  text-decoration: none;
-  @include transition($linkTransitions);
 }

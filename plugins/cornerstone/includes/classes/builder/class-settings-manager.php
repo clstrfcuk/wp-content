@@ -280,10 +280,6 @@ class Cornerstone_Settings_Manager extends Cornerstone_Plugin_Component {
 
 		$data = wp_parse_args( $data, $section->get_defaults() );
 
-		// Get around id being a reserved keyword. This way we can still use it in render methods for elements
-		if ( isset( $data['custom_id'] ) )
-			$data['id'] = $data['custom_id'];
-
 		// Format data before rendering
 		foreach ($data as $key => $item) {
 

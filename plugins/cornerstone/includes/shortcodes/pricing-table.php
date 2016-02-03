@@ -39,6 +39,7 @@ function x_shortcode_pricing_table( $atts, $content = null ) {
   return $output;
 }
 
+add_shortcode( 'cs_pricing_table', 'x_shortcode_pricing_table' );
 add_shortcode( 'x_pricing_table', 'x_shortcode_pricing_table' );
 
 
@@ -84,4 +85,5 @@ function x_shortcode_pricing_table_column( $atts, $content = null ) {
   return $output;
 }
 
+add_shortcode( 'cs_pricing_table_column', 'x_shortcode_pricing_table_column' );
 add_shortcode( 'x_pricing_table_column', 'x_shortcode_pricing_table_column' );

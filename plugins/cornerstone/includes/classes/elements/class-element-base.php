@@ -12,6 +12,9 @@ abstract class Cornerstone_Element_Base {
 	 */
 	private $data;
 
+	private $defaults;
+	private $control_group;
+
 	protected $loaded = false;
 
 	/**
@@ -29,12 +32,17 @@ abstract class Cornerstone_Element_Base {
 			'empty'       => false,
 			'context'     => 'all',
 			'render'      => true,
+			'htmlhint'    => false,
 			'delegate'    => false,
 			'childType'   => false,
 			'childRender' => true,
 			'can_preview' => true,
-			'active'      => $this->is_active()
+			'active'      => $this->is_active(),
 		) );
+
+		if ( !isset( $this->data['icon'] ) ) {
+			$this->data['icon'] = 'elements/' . $this->data['name'];
+		}
 
 	}
 
@@ -53,22 +61,19 @@ abstract class Cornerstone_Element_Base {
 
 		$this->controls();
 		$this->controlMixins();
+		$this->convergeControlData();
 
 		$this->loaded = true;
-
 	}
 
 	public function get_defaults() {
 		$this->load_controls();
-		$data = $this->_convergeControlData();
-		return $data['defaults'];
+		return $this->defaults;
 	}
 
 	final public function model_data() {
 
 		$this->load_controls();
-
-		$data = $this->_convergeControlData();
 
 		$ui = array( 'title' => $this->data['title'] );
 
@@ -92,12 +97,14 @@ abstract class Cornerstone_Element_Base {
 		  	'childType'   => $this->data['childType'],
 		  	'empty'       => $this->data['empty'],
   			'render'      => $this->data['render'],
+  			'htmlhint'    => $this->data['htmlhint'],
   			'can_preview' => $this->can_preview(),
     		'manageChild' => $this->data['childRender'],
 		  ),
-		 	'base_defaults' => $data['defaults'],
-		 	'defaults'      => $data['defaults'],
-		 	'controls'      => $data['controls']
+		  'icon'          => $this->data['icon'],
+		 	'base_defaults' => $this->defaults,
+		 	'defaults'      => $this->defaults,
+		 	'controls'      => $this->control_group->model_data()
 		 );
 
 	}
@@ -226,13 +233,24 @@ abstract class Cornerstone_Element_Base {
 
 	}
 
-	final public function _convergeControlData() {
+	/**
+	 * Takes the old API data points and separate controls from defaults.
+	 */
+	final public function convergeControlData() {
 
 		$control_objects = array();
 		$defaults = array();
 
 		foreach ($this->data['controls'] as $item ) {
 			$name = $item['name'];
+
+			$condition = null;
+
+			if ( isset($item['options']['condition'] ) ) {
+				$condition = $item['options']['condition'];
+				unset($item['options']['condition']);
+			}
+
 			$config = array(
 				'type' => $item['controlType'],
 				'ui' => array(),
@@ -240,46 +258,36 @@ abstract class Cornerstone_Element_Base {
 				'suggest' => $item['defaultValue']
 			);
 
+			if ( !is_null( $condition ) ) {
+				$config['condition'] = $condition;
+			}
+
 			if ( !is_null( $item['controlTitle'] ) )
 				$config['ui']['title'] = $item['controlTitle'];
 
 			if ( !is_null( $item['controlTooltip'] ) )
 				$config['ui']['tooltip'] = $item['controlTooltip'];
 
-			$control = Cornerstone_Control::factory( $name, $config );
-
-			if ( is_wp_error( $control ) ) {
-				trigger_error( 'Failed to create Cornerstone_Control: ' . $control->get_error_message(), E_USER_WARNING );
-				continue;
-			}
-
-			// Factory can send back an array, but we don't need to add that support for legacy elements
-			if ( is_array( $control ) ) {
-				trigger_error( 'Failed to create Cornerstone_Control: Old element version does not support groups. ' . $name , E_USER_WARNING );
-			} else {
-				$defaults[ $control->name ] = $control->transformSuggestion( $item['defaultValue'] );
-				$control_objects[] = $control;
-			}
+			$control_objects[$name] = $config;
 
 		}
 
-		$control_models = array();
-		foreach ( $control_objects as $control ) {
-			$control_models[] = $control->model_data();
+		$this->control_group = Cornerstone_Control_Group::factory( $control_objects );
+
+		foreach ($this->control_group->controls as $control) {
+			$defaults[ $control->name ] = $control->suggest;
 		}
 
-		$this->control_list = $control_models;
-		$this->control_defaults = $defaults;
-
-		return array( 'controls' => $control_models, 'defaults' => $defaults );
+		$this->defaults = $defaults;
 
 	}
 
-	public function render_transforms( $data ) {
-
-		$this->_convergeControlData();
-
+	public function sanitize( $element ) {
+		$this->load_controls();
+		return $this->control_group->sanitize( $element );
 	}
+
+
 	/**
 	 * Helper function used in render methods.
 	 * This creates a string that can be used to speed up shortcode building.
@@ -293,8 +301,10 @@ abstract class Cornerstone_Element_Base {
 		if ( isset($atts['id']) && $atts['id'] != '' )
 			$extra .= " id=\"{$atts['id']}\"";
 
-		if ( isset($atts['class']) && $atts['class'] != '' )
-			$extra .= " class=\"{$atts['class']}\"";
+		if ( isset($atts['class']) && $atts['class'] != '' ) {
+			$class = cs_sanitize_html_classes( $atts['class'] );
+			$extra .= " class=\"{$class}\"";
+		}
 
 		if ( isset($atts['style']) && $atts['style'] != '' )
 			$extra .= " style=\"{$atts['style']}\"";

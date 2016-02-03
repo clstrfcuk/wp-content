@@ -4484,6 +4484,9 @@ if ( ! function_exists( 'x_visual_composer_update_existing_shortcodes' ) && x_vi
     vc_remove_param( 'vc_row', 'video_bg_parallax' );
     vc_remove_param( 'vc_row', 'parallax' );
     vc_remove_param( 'vc_row', 'parallax_image' );
+    vc_remove_param( 'vc_row', 'gap' );
+    vc_remove_param( 'vc_row', 'equal_height' );
+    vc_remove_param( 'vc_row', 'columns_placement' );
     vc_remove_param( 'vc_row', 'el_id' );
 
     vc_add_param( 'vc_row', array(
@@ -4645,6 +4648,9 @@ if ( ! function_exists( 'x_visual_composer_update_existing_shortcodes' ) && x_vi
     vc_remove_param( 'vc_row_inner', 'font_color' );
     vc_remove_param( 'vc_row_inner', 'el_class' );
     vc_remove_param( 'vc_row_inner', 'css' );
+    vc_remove_param( 'vc_row_inner', 'gap' );
+    vc_remove_param( 'vc_row_inner', 'equal_height' );
+    vc_remove_param( 'vc_row_inner', 'content_placement' );
     vc_remove_param( 'vc_row_inner', 'el_id' );
 
     vc_add_param( 'vc_row_inner', array(
@@ -4870,6 +4876,7 @@ if ( ! function_exists( 'x_visual_composer_update_existing_shortcodes' ) && x_vi
     //
 
     vc_remove_param( 'vc_column_inner', 'width' );
+    vc_remove_param( 'vc_column_inner', 'offset' );
     vc_remove_param( 'vc_column_inner', 'font_color' );
     vc_remove_param( 'vc_column_inner', 'el_class' );
     vc_remove_param( 'vc_column_inner', 'css' );

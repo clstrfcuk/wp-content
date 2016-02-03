@@ -39,38 +39,6 @@ if ( ! function_exists( 'x_register_theme_plugins' ) ) :
         'x_description'      => 'This plugin is required to run X. It provides a front end page editor and all the shortcodes used in X.',
         'x_logo'             => '//theme.co/media/x_extensions/200-200-no-title-cornerstone.png',
         'x_manage_upgrade'   => false
-      ),
-
-      'revslider' => array(
-        'name'               => 'Slider Revolution',
-        'slug'               => 'revslider',
-        'source'             => 'revslider.zip',
-        'required'           => false,
-        'version'            => '5.1.4',
-        'force_activation'   => false,
-        'force_deactivation' => false,
-        'external_url'       => '',
-        'x_plugin'           => 'revslider/revslider.php',
-        'x_author'           => 'ThemePunch',
-        'x_description'      => 'Create responsive sliders with must-see-effects, all while maintaining your search engine optimization.',
-        'x_logo'             => '//theme.co/media/x_extensions/200-200-no-title-slider-revolution.png',
-        'x_manage_upgrade'   => true
-      ),
-
-      'js_composer' => array(
-        'name'               => 'Visual Composer',
-        'slug'               => 'js_composer',
-        'source'             => 'js_composer.zip',
-        'required'           => false,
-        'version'            => '4.8.1',
-        'force_activation'   => false,
-        'force_deactivation' => false,
-        'external_url'       => '',
-        'x_plugin'           => 'js_composer/js_composer.php',
-        'x_author'           => 'WPBakery',
-        'x_description'      => 'We recommend using <a href="//theme.co/cornerstone/" title="Cornerstone" target="_blank">Cornerstone</a> for page building in X as it is built and managed by Themeco; however, Visual Composer is an alternate choice.',
-        'x_logo'             => '//theme.co/media/x_extensions/200-200-no-title-visual-composer.png',
-        'x_manage_upgrade'   => true
       )
 
     );

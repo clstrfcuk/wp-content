@@ -134,6 +134,10 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 		if ( 'mk1' == $definition->version() )
 			return $this->legacy->save_element( $element );
 
+		if ( isset( $element['_csmeta'] ) ) {
+			unset( $element['_csmeta'] );
+		}
+
 		$buffer = '';
 
 		if ( isset( $element['elements'] ) ) {
@@ -158,9 +162,6 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 			return new WP_Error( 'Cornerstone_Save_Handler', 'Element _type not set: ' . maybe_serialize( $element ) );
 
 		$definition = $this->orchestrator->get( $element['_type'] );
-
-		if ( 'mk1' == $definition->version() )
-			return $this->legacy->formatData( $element, true );
 
 		if ( isset( $element['elements'] ) ) {
 			foreach ( $element['elements'] as $index => $child ) {

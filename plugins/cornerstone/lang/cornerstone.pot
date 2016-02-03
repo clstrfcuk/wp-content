@@ -1,46 +1,28 @@
-# Copyright (C) 2015 Cornerstone
+# Copyright (C) 2016 Cornerstone
 # This file is distributed under the same license as the Cornerstone package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Cornerstone 1.0.7-alpha-1\n"
+"Project-Id-Version: Cornerstone 1.1.0-beta1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/cornerstone\n"
-"POT-Creation-Date: 2015-11-25 15:06:06+00:00\n"
+"POT-Creation-Date: 2016-01-19 22:40:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: includes/classes/admin/class-admin.php:148
-#: includes/classes/admin/class-admin.php:168
+#: includes/classes/admin/class-admin.php:131
+#: includes/classes/admin/class-admin.php:151
 #: includes/config/admin/strings-admin.php:8
 #: includes/views/admin/editor-tab.php:14
 msgid "Edit with Cornerstone"
 msgstr ""
 
-#: includes/classes/builder/class-builder.php:83
-#: includes/elements/_alternate/clear.php:8
-#: includes/elements/_alternate/clear.php:21
-msgid "Clear"
-msgstr ""
-
-#: includes/classes/builder/class-builder.php:84
-msgid "Default"
-msgstr ""
-
-#: includes/classes/builder/class-builder.php:85
-msgid "Select Color"
-msgstr ""
-
-#: includes/classes/builder/class-builder.php:86
-msgid "Current Color"
-msgstr ""
-
 #: includes/classes/builder/class-control-mixins.php:54
 #: includes/classes/builder/class-shortcode-generator.php:126
 #: includes/config/controls/mixins.php:12
-#: includes/elements/_alternate/image.php:269
+#: includes/elements/_alternate/image.php:303
 #: includes/elements/_alternate/tabs.php:136
 msgid "ID"
 msgstr ""
@@ -65,7 +47,7 @@ msgstr ""
 #: includes/classes/builder/class-shortcode-generator.php:146
 #: includes/config/controls/mixins.php:38
 #: includes/elements/_alternate/image.php:21
-#: includes/elements/_alternate/image.php:149
+#: includes/elements/_alternate/image.php:183
 msgid "Style"
 msgstr ""
 
@@ -109,7 +91,7 @@ msgstr ""
 #: includes/elements/_alternate/_section.php:27
 #: includes/elements/_alternate/button.php:141
 #: includes/elements/_alternate/image.php:26
-#: includes/elements/_alternate/image.php:68
+#: includes/elements/_alternate/image.php:106
 #: includes/elements/_alternate/self-hosted-audio.php:62
 #: includes/elements/_alternate/self-hosted-video.php:103
 #: includes/elements/_alternate/widget-area.php:21
@@ -164,29 +146,35 @@ msgstr ""
 #: includes/classes/builder/class-control-mixins.php:156
 #: includes/elements/_alternate/button.php:305
 #: includes/elements/_alternate/callout.php:144
-#: includes/elements/_alternate/image.php:191
+#: includes/elements/_alternate/image.php:61
+#: includes/elements/_alternate/image.php:225
 #: includes/elements/_alternate/prompt.php:142
 msgid "Href"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:157
+#: includes/elements/_alternate/image.php:62
 msgid "Enter in the URL you want to link to."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:164
 #: includes/config/controls/mixins.php:195
+#: includes/elements/_alternate/image.php:75
 msgid "Link Title Attribute"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:165
+#: includes/elements/_alternate/image.php:76
 msgid "Enter in the title attribute you want for your link."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:172
+#: includes/elements/_alternate/image.php:88
 msgid "Open Link in New Window"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:173
+#: includes/elements/_alternate/image.php:89
 msgid "Select to open your link in a new window."
 msgstr ""
 
@@ -236,17 +224,17 @@ msgid "Set a text alignment, or deselect to inherit from parent elements."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:213
-#: includes/config/builder/strings-builder.php:145
+#: includes/config/builder/strings-builder.php:149
 #: includes/config/controls/mixins.php:82
 #: includes/elements/_alternate/_column.php:64
+#: includes/elements/_alternate/_pullquote.php:50
 #: includes/elements/_alternate/blockquote.php:50
 #: includes/elements/_alternate/button.php:160
 #: includes/elements/_alternate/callout.php:76
 #: includes/elements/_alternate/feature-box.php:264
 #: includes/elements/_alternate/feature-list.php:96
-#: includes/elements/_alternate/image.php:92
+#: includes/elements/_alternate/image.php:128
 #: includes/elements/_alternate/prompt.php:76
-#: includes/elements/_alternate/pullquote.php:50
 #: includes/elements/_alternate/tabs.php:45
 #: includes/elements/column/controls.php:34
 msgid "Left"
@@ -261,17 +249,17 @@ msgid "Center"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:215
-#: includes/config/builder/strings-builder.php:146
+#: includes/config/builder/strings-builder.php:150
 #: includes/config/controls/mixins.php:84
 #: includes/elements/_alternate/_column.php:62
+#: includes/elements/_alternate/_pullquote.php:51
 #: includes/elements/_alternate/blockquote.php:52
 #: includes/elements/_alternate/button.php:158
 #: includes/elements/_alternate/callout.php:78
 #: includes/elements/_alternate/feature-box.php:266
 #: includes/elements/_alternate/feature-list.php:97
-#: includes/elements/_alternate/image.php:90
+#: includes/elements/_alternate/image.php:126
 #: includes/elements/_alternate/prompt.php:77
-#: includes/elements/_alternate/pullquote.php:51
 #: includes/elements/_alternate/tabs.php:46
 #: includes/elements/column/controls.php:32
 msgid "Right"
@@ -320,24 +308,34 @@ msgstr ""
 msgid "Specify an amount of time before the graphic animation starts in milliseconds."
 msgstr ""
 
+#: includes/classes/builder/class-huebert.php:27
+msgid "Select Color"
+msgstr ""
+
 #: includes/classes/builder/class-legacy-setting-section.php:39
-#: includes/config/builder/strings-builder.php:124
+#: includes/config/builder/strings-builder.php:128
 #: includes/views/admin/options-main.php:8
 msgid "Settings"
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:59
+#: includes/classes/builder/class-shortcode-generator2.php:55
 msgid "Click the button below to check out a live example of this shortcode"
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:68
+#: includes/classes/builder/class-shortcode-generator2.php:60
 msgid "Insert Shortcodes"
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:116
 #: includes/elements/_alternate/_alert.php:79
+#: includes/elements/_alternate/_block-grid-item.php:50
+#: includes/elements/_alternate/_icon-list-item.php:50
+#: includes/elements/_alternate/_pricing-table-column.php:95
+#: includes/elements/_alternate/_pullquote.php:69
+#: includes/elements/_alternate/_text.php:8
 #: includes/elements/_alternate/accordion-item.php:58
-#: includes/elements/_alternate/block-grid-item.php:50
 #: includes/elements/_alternate/blockquote.php:70
 #: includes/elements/_alternate/button.php:23
 #: includes/elements/_alternate/button.php:236
@@ -349,22 +347,22 @@ msgstr ""
 #: includes/elements/_alternate/feature-headline.php:33
 #: includes/elements/_alternate/feature-headline.php:81
 #: includes/elements/_alternate/google-map-marker.php:45
-#: includes/elements/_alternate/icon-list-item.php:50
-#: includes/elements/_alternate/pricing-table-column.php:95
 #: includes/elements/_alternate/promo.php:59
 #: includes/elements/_alternate/protect.php:39
-#: includes/elements/_alternate/pullquote.php:69
 #: includes/elements/_alternate/slide.php:50
 #: includes/elements/_alternate/tabs.php:159
-#: includes/elements/_alternate/text.php:8
+#: includes/elements/text/definition.php:11
 #: includes/views/admin/editor-tab.php:6
 msgid "Text"
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:117
 #: includes/elements/_alternate/_alert.php:80
+#: includes/elements/_alternate/_block-grid-item.php:51
+#: includes/elements/_alternate/_icon-list-item.php:51
+#: includes/elements/_alternate/_pricing-table-column.php:96
+#: includes/elements/_alternate/_pullquote.php:70
 #: includes/elements/_alternate/accordion-item.php:59
-#: includes/elements/_alternate/block-grid-item.php:51
 #: includes/elements/_alternate/blockquote.php:71
 #: includes/elements/_alternate/button.php:24
 #: includes/elements/_alternate/button.php:237
@@ -372,18 +370,15 @@ msgstr ""
 #: includes/elements/_alternate/columnize.php:43
 #: includes/elements/_alternate/custom-headline.php:82
 #: includes/elements/_alternate/feature-headline.php:82
-#: includes/elements/_alternate/icon-list-item.php:51
-#: includes/elements/_alternate/pricing-table-column.php:96
 #: includes/elements/_alternate/promo.php:60
 #: includes/elements/_alternate/protect.php:40
-#: includes/elements/_alternate/pullquote.php:70
 #: includes/elements/_alternate/slide.php:51
 #: includes/elements/_alternate/tabs.php:160
 msgid "Enter your text."
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:127
-#: includes/elements/_alternate/image.php:270
+#: includes/elements/_alternate/image.php:304
 #: includes/elements/_alternate/tabs.php:137
 msgid "(Optional) Enter a unique ID."
 msgstr ""
@@ -396,7 +391,7 @@ msgstr ""
 msgid "(Optional) Enter inline CSS."
 msgstr ""
 
-#: includes/classes/common/class-common.php:32
+#: includes/classes/common/class-common.php:35
 #: includes/config/admin/strings-admin.php:9
 #: includes/views/admin/editor-tab.php:7
 msgid "Cornerstone"
@@ -442,7 +437,7 @@ msgid "Mini"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:97
-#: includes/config/builder/strings-builder.php:154
+#: includes/config/builder/strings-builder.php:158
 #: includes/elements/_alternate/button.php:71
 msgid "Small"
 msgstr ""
@@ -453,13 +448,13 @@ msgid "Regular"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:99
-#: includes/config/builder/strings-builder.php:152
+#: includes/config/builder/strings-builder.php:156
 #: includes/elements/_alternate/button.php:73
 msgid "Large"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:100
-#: includes/config/builder/strings-builder.php:150
+#: includes/config/builder/strings-builder.php:154
 msgid "Extra Large"
 msgstr ""
 
@@ -538,16 +533,16 @@ msgstr ""
 msgid "Button Bottom"
 msgstr ""
 
-#: includes/classes/elements/class-element-base.php:24
-#: includes/classes/elements/class-element-base.php:26
+#: includes/classes/elements/class-element-base.php:27
+#: includes/classes/elements/class-element-base.php:29
 msgid "Generic Element"
 msgstr ""
 
-#: includes/classes/layouts/class-layout-manager.php:109
+#: includes/classes/layouts/class-layout-manager.php:142
 msgid "Untitled"
 msgstr ""
 
-#: includes/classes/layouts/class-layout-manager.php:116
+#: includes/classes/layouts/class-layout-manager.php:149
 msgid "%s (%d)"
 msgstr ""
 
@@ -570,7 +565,6 @@ msgid "This option will grant permission for accessing cornerstone."
 msgstr ""
 
 #: includes/config/admin/info-items.php:17
-#: includes/views/admin/mb-product-validation.php:4
 msgid "API Key"
 msgstr ""
 
@@ -589,13 +583,13 @@ msgstr ""
 
 #: includes/config/admin/strings-admin.php:12
 #: includes/config/builder/strings-builder.php:72
-#: includes/config/builder/strings-builder.php:158
+#: includes/config/builder/strings-builder.php:162
 msgid "Yep"
 msgstr ""
 
 #: includes/config/admin/strings-admin.php:13
 #: includes/config/builder/strings-builder.php:73
-#: includes/config/builder/strings-builder.php:159
+#: includes/config/builder/strings-builder.php:163
 msgid "Nope"
 msgstr ""
 
@@ -802,7 +796,7 @@ msgstr ""
 
 #: includes/config/builder/strings-builder.php:79
 #: includes/config/builder/strings-builder.php:100
-#: includes/config/builder/strings-builder.php:112
+#: includes/config/builder/strings-builder.php:116
 msgid "Delete"
 msgstr ""
 
@@ -863,255 +857,313 @@ msgid "Inspect an element by clicking on it in the preview pane."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:99
-#: includes/config/builder/strings-builder.php:111
+#: includes/config/builder/strings-builder.php:115
 msgid "Duplicate"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:101
-msgid "Are you sure you wish to delete this element?"
+msgid "Really Delete?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:102
-msgid "Erase"
+msgid "Are you sure you wish to delete this element?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:103
+#: includes/config/builder/strings-builder.php:114
+msgid "Erase"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:104
+msgid "Really Erase?"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:105
+#: includes/config/builder/strings-builder.php:113
 msgid "Manage Layout"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:106
+#: includes/config/builder/strings-builder.php:108
 msgid "On"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:107
+#: includes/config/builder/strings-builder.php:109
 msgid "Off"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:108
+#: includes/config/builder/strings-builder.php:110
 #: includes/elements/_alternate/creative-cta.php:131
 #: includes/elements/_alternate/image.php:53
-#: includes/elements/_alternate/image.php:184
+#: includes/elements/_alternate/image.php:218
 msgid "Link"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:109
+#: includes/config/builder/strings-builder.php:111
 msgid "Unlink"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:110
+#: includes/config/builder/strings-builder.php:112
 msgid "Inspect"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:113
+#: includes/config/builder/strings-builder.php:117
 msgid "Add"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:114
+#: includes/config/builder/strings-builder.php:118
 msgid "Are you sure you wish to remove this item?"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:115
+#: includes/config/builder/strings-builder.php:119
 msgid "The last item can&apos;t be deleted, but would you like to reset it to defaults?"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:116
+#: includes/config/builder/strings-builder.php:120
 msgid "This element has reached it&apos;s capacity. You can&apos;t add any more."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:117
+#: includes/config/builder/strings-builder.php:121
 msgid "New Item %s"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:118
+#: includes/config/builder/strings-builder.php:122
 msgid "Copy of %s"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:119
+#: includes/config/builder/strings-builder.php:123
 msgid "No items!"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:120
+#: includes/config/builder/strings-builder.php:124
 msgid "Add some to continue building."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:121
+#: includes/config/builder/strings-builder.php:125
 msgid "Expand"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:125
+#: includes/config/builder/strings-builder.php:129
 msgid "Back to Settings"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:126
+#: includes/config/builder/strings-builder.php:130
 msgid "Please wait while the settings are loaded."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:127
+#: includes/config/builder/strings-builder.php:131
 msgid "Custom CSS"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:128
+#: includes/config/builder/strings-builder.php:132
 msgid "Custom JS"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:129
+#: includes/config/builder/strings-builder.php:133
 msgid "Your user role does not permit editing javascript."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:130
+#: includes/config/builder/strings-builder.php:134
 msgid "Remember to save to see your script applied."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:131
+#: includes/config/builder/strings-builder.php:135
 msgid "You&apos;ve updated a WordPress setting. Please save your page to apply the changes."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:132
+#: includes/config/builder/strings-builder.php:136
 msgid "You&apos;ve updated a theme setting. Please save your page to apply the changes."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:135
+#: includes/config/builder/strings-builder.php:139
 msgid "You have not saved any changes!"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:136
+#: includes/config/builder/strings-builder.php:140
 msgid "Last saved: %s."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:137
+#: includes/config/builder/strings-builder.php:141
 msgid "View Page"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:138
+#: includes/config/builder/strings-builder.php:142
 msgid "Dashboard"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:139
+#: includes/config/builder/strings-builder.php:143
 msgid "Wait! You have unsaved changes."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:142
+#: includes/config/builder/strings-builder.php:146
 msgid "Help Text"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:143
+#: includes/config/builder/strings-builder.php:147
 msgid "Enables tooltips when you hover over control labels and other bits of informational text througout the interface."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:144
+#: includes/config/builder/strings-builder.php:148
 msgid "Editor Position"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:147
+#: includes/config/builder/strings-builder.php:151
 msgid "Move the editor to your preferred side of the window."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:151
+#: includes/config/builder/strings-builder.php:155
 msgid "Fullscreen"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:153
+#: includes/config/builder/strings-builder.php:157
 msgid "Medium"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:157
+#: includes/config/builder/strings-builder.php:161
 msgid "Are you sure?"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:160
+#: includes/config/builder/strings-builder.php:164
 msgid "Back"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:163
-msgid "Unable to save page."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:164
-msgid "Content saved."
-msgstr ""
-
 #: includes/config/builder/strings-builder.php:166
-msgid "Woohoo!"
+msgid "Are you sure you wish to delete this %s?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:167
-msgid "Rock On!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:168
-msgid "Radical!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:169
-msgid "Tubular!"
+msgid "Are you sure you wish to delete this %s, along with it&apos;s contents?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:170
-msgid "Spiffy!"
+msgid "Unable to save page."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:171
-msgid "Yahoo!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:172
-msgid "Yippee!"
+msgid "Content saved."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:173
-msgid "Have Fun!"
+msgid "Woohoo!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:174
-msgid "Neat-O!"
+msgid "Rock On!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:175
-msgid "Bodacious!"
+msgid "Radical!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:176
-msgid "Scintillating!"
+msgid "Tubular!"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:177
+msgid "Spiffy!"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:178
+msgid "Yahoo!"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:179
+msgid "Yippee!"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:180
+msgid "Have Fun!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:181
-msgid "Hey!"
+msgid "Neat-O!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:182
-msgid "Awesome!"
+msgid "Bodacious!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:183
-msgid "Uh oh!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:185
-msgid "January_February_March_April_May_June_July_August_September_October_November_December"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:186
-msgid "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:187
-msgid "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday"
+msgid "Scintillating!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:188
-msgid "Sun_Mon_Tue_Wed_Thu_Fri_Sat"
+msgid "Hey!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:189
-msgid "Su_Mo_Tu_We_Th_Fr_Sa"
+msgid "Awesome!"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:190
+msgid "Uh oh!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:192
-msgid "We're sorry! Your web browser does not support this action."
+msgid "January_February_March_April_May_June_July_August_September_October_November_December"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:193
+msgid "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:194
+msgid "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:195
+msgid "Sun_Mon_Tue_Wed_Thu_Fri_Sat"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:196
+msgid "Su_Mo_Tu_We_Th_Fr_Sa"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:197
+msgid "Previous Month"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:198
+msgid "Next Month"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:201
+msgid "We're sorry! Your web browser does not support this action."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:202
 msgid "%s (Preview Unsupported)"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:203
+msgid "An unidentifiable error is preventing the live preview from loading. Switching to Skeleton Mode."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:204
+msgid "A suitable content area for the live preview couldn't be identified. Switching to Skeleton Mode."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:205
+msgid "Skeleton Mode can not be closed because the live preview is unavailable."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:206
+msgid "Loading the preview took longer than expected. There may be script conflicts on this page."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:207
+msgid "We found some invalid HTML in your content."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:208
+msgid "You have unclosed HTML tags."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:209
+msgid "If not part of an HTML tag, consider using HTML entities for angle brackets by converting <span class=\"monospace\">&lt;</span> to <span class=\"monospace\">&amp;lt;</span> and <span class=\"monospace\">&gt;</span> to <span class=\"monospace\">&amp;gt;</span>"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:212
+msgid "Skeleton Mode"
 msgstr ""
 
 #: includes/config/builder/strings-generator.php:12
@@ -1325,9 +1377,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_alert.php:43
 #: includes/elements/_alternate/_alert.php:92
-#: includes/elements/_alternate/block-grid.php:64
+#: includes/elements/_alternate/_block-grid.php:64
+#: includes/elements/_alternate/_icon-list-item.php:57
 #: includes/elements/_alternate/button.php:33
-#: includes/elements/_alternate/icon-list-item.php:57
 #: includes/elements/alert/controls.php:28
 msgid "Type"
 msgstr ""
@@ -1350,8 +1402,8 @@ msgstr ""
 #: includes/elements/_alternate/_alert.php:51
 #: includes/elements/_alternate/button.php:136
 #: includes/elements/_alternate/button.php:327
-#: includes/elements/_alternate/image.php:63
-#: includes/elements/_alternate/image.php:210
+#: includes/elements/_alternate/image.php:101
+#: includes/elements/_alternate/image.php:244
 #: includes/elements/alert/controls.php:36
 msgid "Info"
 msgstr ""
@@ -1410,6 +1462,136 @@ msgstr ""
 msgid "Select to display the close button."
 msgstr ""
 
+#: includes/elements/_alternate/_block-grid-item.php:8
+#: includes/elements/_alternate/_block-grid-item.php:41
+#: includes/elements/block-grid-item/controls.php:12
+#: includes/elements/block-grid-item/definition.php:11
+msgid "Block Grid Item"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid-item.php:10
+msgid "Block Grid Item description."
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid-item.php:30
+#: includes/elements/_alternate/_block-grid-item.php:44
+#: includes/elements/_alternate/_block-grid.php:58
+#: includes/elements/_alternate/_pricing-table-column.php:30
+#: includes/elements/_alternate/accordion-item.php:30
+#: includes/elements/_alternate/accordion-item.php:52
+#: includes/elements/_alternate/accordion.php:83
+#: includes/elements/_alternate/card.php:81
+#: includes/elements/_alternate/card.php:242
+#: includes/elements/_alternate/code.php:23
+#: includes/elements/_alternate/columnize.php:36
+#: includes/elements/_alternate/feature-box.php:36
+#: includes/elements/_alternate/feature-list-item.php:34
+#: includes/elements/_alternate/feature-list-item.php:38
+#: includes/elements/_alternate/promo.php:24
+#: includes/elements/_alternate/prompt.php:37
+#: includes/elements/_alternate/protect.php:21
+#: includes/elements/_alternate/protect.php:33
+#: includes/elements/_alternate/raw-content.php:25
+#: includes/elements/_alternate/search.php:22
+#: includes/elements/_alternate/slide.php:30
+#: includes/elements/_alternate/tab.php:30
+#: includes/elements/_alternate/tabs.php:60
+#: includes/elements/_alternate/tabs.php:100
+#: includes/elements/_alternate/tabs.php:130
+#: includes/elements/_alternate/tabs.php:153
+#: includes/elements/_alternate/visibility.php:20
+#: includes/elements/block-grid-item/controls.php:18
+#: includes/elements/pricing-table-column/controls.php:18
+msgid "Content"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid-item.php:31
+#: includes/elements/block-grid-item/controls.php:19
+msgid "Include your desired content for your Block Grid Item here."
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid-item.php:32
+#: includes/elements/block-grid-item/controls.php:22
+msgid "Add some content to your block grid item here. The block grid responds a little differently than traditional columns, allowing you to mix and match for cool effects."
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid-item.php:45
+msgid "Include a block grid item in your block grid"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:8
+#: includes/elements/_alternate/_block-grid.php:55
+#: includes/elements/block-grid/definition.php:11
+msgid "Block Grid"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:10
+msgid "Block Grid description."
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:21
+#: includes/elements/block-grid/controls.php:12
+msgid "Block Grid Items"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:22
+#: includes/elements/block-grid/controls.php:13
+msgid "Add a new item to your Block Grid."
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:24
+#: includes/elements/block-grid/controls.php:22
+msgid "Block Grid Item 1"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:25
+#: includes/elements/block-grid/controls.php:23
+msgid "Block Grid Item 2"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:29
+#: includes/elements/block-grid/controls.php:17
+msgid "Block Grid Item %s"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:37
+#: includes/elements/_alternate/_pricing-table.php:51
+#: includes/elements/_alternate/toc.php:49
+#: includes/elements/block-grid/controls.php:31
+msgid "Columns"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:38
+#: includes/elements/block-grid/controls.php:32
+msgid "Select how many columns of items should be displayed on larger screens. These will update responsively based on screen size."
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:42
+#: includes/elements/_alternate/recent-posts.php:48
+#: includes/elements/block-grid/controls.php:36
+msgid "2"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:43
+#: includes/elements/_alternate/recent-posts.php:49
+#: includes/elements/block-grid/controls.php:37
+msgid "3"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:44
+#: includes/elements/_alternate/recent-posts.php:50
+#: includes/elements/block-grid/controls.php:38
+msgid "4"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:59
+msgid "Include a block grid container in your content"
+msgstr ""
+
+#: includes/elements/_alternate/_block-grid.php:65
+msgid "Select how many block grid items you want per row."
+msgstr ""
+
 #: includes/elements/_alternate/_column.php:10
 msgid "Column description."
 msgstr ""
@@ -1451,7 +1633,7 @@ msgstr ""
 #: includes/elements/_alternate/button.php:157
 #: includes/elements/_alternate/feature-box.php:279
 #: includes/elements/_alternate/feature-list.php:110
-#: includes/elements/_alternate/image.php:89
+#: includes/elements/_alternate/image.php:125
 #: includes/elements/_alternate/tabs.php:44
 #: includes/elements/column/controls.php:31
 msgid "Top"
@@ -1459,7 +1641,7 @@ msgstr ""
 
 #: includes/elements/_alternate/_column.php:63
 #: includes/elements/_alternate/button.php:159
-#: includes/elements/_alternate/image.php:91
+#: includes/elements/_alternate/image.php:127
 #: includes/elements/column/controls.php:33
 msgid "Bottom"
 msgstr ""
@@ -1486,6 +1668,388 @@ msgstr ""
 msgid "Determines how long the fade effect will be."
 msgstr ""
 
+#: includes/elements/_alternate/_icon-list-item.php:8
+#: includes/elements/_alternate/_icon-list-item.php:41
+#: includes/elements/icon-list-item/definition.php:11
+msgid "Icon List Item"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list-item.php:10
+msgid "Icon List Item description."
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list-item.php:30
+#: includes/elements/_alternate/button.php:125
+#: includes/elements/_alternate/card.php:141
+#: includes/elements/_alternate/card.php:155
+#: includes/elements/_alternate/creative-cta.php:53
+#: includes/elements/_alternate/creative-cta.php:62
+#: includes/elements/_alternate/feature-box.php:69
+#: includes/elements/_alternate/feature-headline.php:63
+#: includes/elements/_alternate/feature-headline.php:131
+#: includes/elements/_alternate/feature-list-item.php:66
+#: includes/elements/_alternate/feature-list.php:68
+#: includes/elements/_alternate/icon.php:8
+#: includes/elements/_alternate/icon.php:20
+#: includes/elements/icon-list-item/controls.php:18
+#: includes/integrations/x-theme.php:195
+msgid "Icon"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list-item.php:31
+#: includes/elements/icon-list-item/controls.php:19
+msgid "Specify the icon you would like to use as the bullet for your Icon List Item."
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list-item.php:44
+#: includes/elements/_alternate/_icon-list.php:44
+#: includes/elements/_alternate/_pullquote.php:63
+#: includes/elements/_alternate/blockquote.php:64
+#: includes/elements/_alternate/code.php:35
+#: includes/elements/_alternate/custom-headline.php:75
+#: includes/elements/_alternate/feature-headline.php:75
+msgid "Typography"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list-item.php:45
+msgid "Include an icon list item in your icon list"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list-item.php:58
+msgid "Select your icon."
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:8
+#: includes/elements/_alternate/_icon-list.php:41
+#: includes/elements/icon-list/definition.php:11
+msgid "Icon List"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:10
+msgid "Icon List description."
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:21
+msgid "Icon List Items"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:22
+msgid "Add new items to your Icon List."
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:24
+#: includes/elements/icon-list/controls.php:17
+msgid "Icon List Item 1"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:25
+#: includes/elements/icon-list/controls.php:18
+msgid "Icon List Item 2"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:26
+#: includes/elements/icon-list/controls.php:19
+msgid "Icon List Item 3"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:30
+msgid "Icon List Item %s"
+msgstr ""
+
+#: includes/elements/_alternate/_icon-list.php:45
+msgid "Include an icon list in your content"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:8
+#: includes/elements/_alternate/_pricing-table-column.php:86
+#: includes/elements/pricing-table-column/definition.php:11
+msgid "Pricing Table Column"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:10
+msgid "Pricing Table Column description."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:31
+#: includes/elements/pricing-table-column/controls.php:19
+msgid "Specify your pricing column content."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:32
+#: includes/elements/_alternate/_pricing-table.php:24
+#: includes/elements/pricing-table/controls.php:23
+#: includes/elements/pricing-table-column/controls.php:22
+msgid ""
+"[x_icon_list]\n"
+"    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n"
+"    [x_icon_list_item type=\"times\"]Second Feature[/x_icon_list_item]\n"
+"    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n"
+"[/x_icon_list]\n"
+"\n"
+"[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:38
+#: includes/elements/pricing-table-column/controls.php:28
+msgid "Featured Column"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:39
+#: includes/elements/pricing-table-column/controls.php:29
+msgid "Enable to specify this column as your featured item."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:46
+#: includes/elements/pricing-table-column/controls.php:36
+msgid "Featured Subheading"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:47
+#: includes/elements/pricing-table-column/controls.php:37
+msgid "Enter text for your featured column subheading here."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:59
+#: includes/elements/pricing-table-column/controls.php:47
+msgid "Currency"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:60
+#: includes/elements/pricing-table-column/controls.php:48
+msgid "Enter your desired currency symbol here."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:67
+#: includes/elements/_alternate/_pricing-table-column.php:132
+#: includes/elements/pricing-table-column/controls.php:55
+msgid "Price"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:68
+#: includes/elements/pricing-table-column/controls.php:56
+msgid "Enter the price for this column."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:75
+#: includes/elements/_alternate/_pricing-table-column.php:139
+#: includes/elements/pricing-table-column/controls.php:63
+msgid "Interval"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:76
+#: includes/elements/pricing-table-column/controls.php:64
+msgid "Enter the duration for this payment (e.g. \"Weekly,\" \"Per Year,\" et cetera)."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:77
+msgid "Per Month"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:89
+#: includes/elements/_alternate/_pricing-table.php:45
+#: includes/elements/_alternate/button.php:230
+#: includes/elements/_alternate/callout.php:89
+#: includes/elements/_alternate/promo.php:53
+#: includes/elements/_alternate/prompt.php:88
+msgid "Marketing"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:90
+msgid "Include a pricing table column"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:103
+#: includes/elements/_alternate/accordion-item.php:71
+#: includes/elements/_alternate/author.php:23
+#: includes/elements/_alternate/author.php:49
+#: includes/elements/_alternate/button.php:312
+#: includes/elements/_alternate/callout.php:107
+#: includes/elements/_alternate/image.php:231
+#: includes/elements/_alternate/prompt.php:105
+#: includes/elements/_alternate/social-sharing.php:20
+#: includes/elements/_alternate/tabs.php:106
+#: includes/elements/_alternate/toc-item.php:31
+#: includes/elements/_alternate/toc.php:29
+#: includes/settings/general/controls.php:21
+msgid "Title"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:104
+msgid "Include a title for your pricing column."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:110
+msgid "Featured"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:111
+msgid "Select to make this your featured offer."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:118
+msgid "Featured Sub Heading"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:119
+msgid "Include a sub heading for your featured column."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:125
+msgid "Currency Symbol"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:126
+msgid "Enter in the currency symbol you want to use."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:133
+msgid "Enter in the price for this pricing column."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table-column.php:140
+msgid "Enter in the time period that this pricing column is for."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:8
+#: includes/elements/_alternate/_pricing-table.php:42
+#: includes/elements/pricing-table/definition.php:11
+msgid "Pricing Table"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:10
+msgid "Pricing Table description."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:21
+#: includes/elements/pricing-table/controls.php:12
+msgid "Pricing Table Columns"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:22
+#: includes/elements/pricing-table/controls.php:13
+msgid "Add your pricing table columns here."
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:24
+#: includes/elements/pricing-table/controls.php:23
+msgid "Basic"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:25
+#: includes/elements/pricing-table/controls.php:24
+#: includes/elements/pricing-table-column/controls.php:12
+msgid "Standard"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:25
+#: includes/elements/pricing-table/controls.php:24
+msgid ""
+"[x_icon_list]\n"
+"    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n"
+"    [x_icon_list_item type=\"check\"]Second Feature[/x_icon_list_item]\n"
+"    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n"
+"[/x_icon_list]\n"
+"\n"
+"[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:26
+#: includes/elements/pricing-table/controls.php:25
+msgid "Pro"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:26
+#: includes/elements/pricing-table/controls.php:25
+msgid ""
+"[x_icon_list]\n"
+"    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n"
+"    [x_icon_list_item type=\"check\"]Second Feature[/x_icon_list_item]\n"
+"    [x_icon_list_item type=\"check\"]Third Feature[/x_icon_list_item]\n"
+"[/x_icon_list]\n"
+"\n"
+"[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:30
+#: includes/elements/pricing-table/controls.php:17
+msgid "Column %s"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:46
+msgid "Include a pricing table in your content"
+msgstr ""
+
+#: includes/elements/_alternate/_pricing-table.php:52
+msgid "Select how many columns you want for your pricing table."
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:8
+#: includes/elements/_alternate/_pullquote.php:62
+msgid "Pullquote"
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:10
+msgid "Pullquote description."
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:25
+#: includes/elements/_alternate/blockquote.php:25
+msgid "Quote &amp Citation"
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:26
+#: includes/elements/_alternate/blockquote.php:26
+msgid "Enter your quote in the textarea below. If you want to cite your quote, you can place that in the input following the textarea."
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:27
+#: includes/elements/_alternate/blockquote.php:27
+msgid "Input your quotation here. Also, you can cite your quotes if you would like."
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:29
+#: includes/elements/_alternate/blockquote.php:29
+msgid "Quote"
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:38
+#: includes/elements/_alternate/blockquote.php:38
+msgid "Mr. WordPress"
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:44
+#: includes/elements/_alternate/_pullquote.php:82
+#: includes/elements/_alternate/blockquote.php:44
+#: includes/elements/_alternate/blockquote.php:83
+#: includes/elements/_alternate/callout.php:70
+#: includes/elements/_alternate/callout.php:95
+#: includes/elements/_alternate/custom-headline.php:89
+#: includes/elements/_alternate/feature-headline.php:89
+#: includes/elements/_alternate/prompt.php:70
+#: includes/elements/_alternate/prompt.php:94
+#: includes/elements/_alternate/toc.php:37
+msgid "Alignment"
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:45
+#: includes/elements/_alternate/_pullquote.php:83
+msgid "Select the alignment of the pullquote."
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:64
+msgid "Include a pullquote in your content"
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:76
+#: includes/elements/_alternate/blockquote.php:77
+msgid "Cite"
+msgstr ""
+
+#: includes/elements/_alternate/_pullquote.php:77
+#: includes/elements/_alternate/blockquote.php:78
+msgid "Cite the person you are quoting."
+msgstr ""
+
 #: includes/elements/_alternate/_responsive-text.php:8
 #: includes/elements/responsive-text/definition.php:11
 #: includes/settings/_responsive-text.php:8
@@ -1498,48 +2062,47 @@ msgid "Responsive Text description."
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:22
-#: includes/elements/responsive-text/definition.php:39
+#: includes/elements/responsive-text/definition.php:42
 msgid "Responsive Text Item"
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:28
-#: includes/elements/_alternate/lightbox.php:19
-#: includes/elements/responsive-text/definition.php:43
+#: includes/elements/responsive-text/definition.php:46
 msgid "Selector"
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:29
-#: includes/elements/responsive-text/definition.php:44
+#: includes/elements/responsive-text/definition.php:47
 msgid "Enter in the selector for your Responsive Text (e.g. if your class is \"h-responsive\" enter \".h-responsive\")."
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:36
-#: includes/elements/responsive-text/definition.php:52
+#: includes/elements/responsive-text/definition.php:55
 msgid "Compression"
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:37
-#: includes/elements/responsive-text/definition.php:53
+#: includes/elements/responsive-text/definition.php:56
 msgid "Enter the compression for your Responsive Text. Adjust up and down to desired level in small increments (e.g. 0.95, 1.15, et cetera)."
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:44
-#: includes/elements/responsive-text/definition.php:59
+#: includes/elements/responsive-text/definition.php:62
 msgid "Minimum Size"
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:45
-#: includes/elements/responsive-text/definition.php:60
+#: includes/elements/responsive-text/definition.php:63
 msgid "Enter the minimum size of your Responsive Text."
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:52
-#: includes/elements/responsive-text/definition.php:66
+#: includes/elements/responsive-text/definition.php:69
 msgid "Maximum Size"
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:53
-#: includes/elements/responsive-text/definition.php:67
+#: includes/elements/responsive-text/definition.php:70
 msgid "Enter the maximum size of your Responsive Text."
 msgstr ""
 
@@ -1604,7 +2167,7 @@ msgstr ""
 #: includes/elements/_alternate/feature-list.php:69
 #: includes/elements/_alternate/google-map-marker.php:53
 #: includes/elements/_alternate/image.php:8
-#: includes/elements/_alternate/image.php:142
+#: includes/elements/_alternate/image.php:176
 #: includes/elements/section/controls.php:22
 #: includes/settings/_alternate/x-settings.php:280
 msgid "Image"
@@ -1680,6 +2243,10 @@ msgstr ""
 msgid "Specify the margins for your Section utilizing the controls below. For most situations you will likely want no margin. Can accept CSS units like px, ems, and % (default unit is px)."
 msgstr ""
 
+#: includes/elements/_alternate/_text.php:10
+msgid "Text description."
+msgstr ""
+
 #: includes/elements/_alternate/accordion-item.php:8
 #: includes/elements/_alternate/accordion-item.php:49
 msgid "Accordion Item"
@@ -1687,36 +2254,6 @@ msgstr ""
 
 #: includes/elements/_alternate/accordion-item.php:10
 msgid "Accordion Item description."
-msgstr ""
-
-#: includes/elements/_alternate/accordion-item.php:30
-#: includes/elements/_alternate/accordion-item.php:52
-#: includes/elements/_alternate/accordion.php:83
-#: includes/elements/_alternate/block-grid-item.php:30
-#: includes/elements/_alternate/block-grid-item.php:44
-#: includes/elements/_alternate/block-grid.php:58
-#: includes/elements/_alternate/card.php:81
-#: includes/elements/_alternate/card.php:242
-#: includes/elements/_alternate/code.php:23
-#: includes/elements/_alternate/columnize.php:36
-#: includes/elements/_alternate/feature-box.php:36
-#: includes/elements/_alternate/feature-list-item.php:34
-#: includes/elements/_alternate/feature-list-item.php:38
-#: includes/elements/_alternate/pricing-table-column.php:30
-#: includes/elements/_alternate/promo.php:24
-#: includes/elements/_alternate/prompt.php:37
-#: includes/elements/_alternate/protect.php:21
-#: includes/elements/_alternate/protect.php:33
-#: includes/elements/_alternate/raw-content.php:25
-#: includes/elements/_alternate/search.php:22
-#: includes/elements/_alternate/slide.php:30
-#: includes/elements/_alternate/tab.php:30
-#: includes/elements/_alternate/tabs.php:60
-#: includes/elements/_alternate/tabs.php:100
-#: includes/elements/_alternate/tabs.php:130
-#: includes/elements/_alternate/tabs.php:153
-#: includes/elements/_alternate/visibility.php:20
-msgid "Content"
 msgstr ""
 
 #: includes/elements/_alternate/accordion-item.php:31
@@ -1741,23 +2278,6 @@ msgstr ""
 
 #: includes/elements/_alternate/accordion-item.php:66
 msgid "Optionally include an ID given to the parent accordion to only allow one toggle to be open at a time."
-msgstr ""
-
-#: includes/elements/_alternate/accordion-item.php:71
-#: includes/elements/_alternate/author.php:23
-#: includes/elements/_alternate/author.php:49
-#: includes/elements/_alternate/button.php:312
-#: includes/elements/_alternate/callout.php:107
-#: includes/elements/_alternate/image.php:197
-#: includes/elements/_alternate/pricing-table-column.php:103
-#: includes/elements/_alternate/prompt.php:105
-#: includes/elements/_alternate/social-sharing.php:23
-#: includes/elements/_alternate/social-sharing.php:97
-#: includes/elements/_alternate/tabs.php:106
-#: includes/elements/_alternate/toc-item.php:31
-#: includes/elements/_alternate/toc.php:29
-#: includes/settings/general/controls.php:21
-msgid "Title"
 msgstr ""
 
 #: includes/elements/_alternate/accordion-item.php:72
@@ -1848,95 +2368,11 @@ msgstr ""
 
 #: includes/elements/_alternate/author.php:43
 #: includes/elements/_alternate/recent-posts.php:116
-#: includes/elements/_alternate/social-sharing.php:91
 msgid "Social"
 msgstr ""
 
 #: includes/elements/_alternate/author.php:44
 msgid "Include post author information"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid-item.php:8
-#: includes/elements/_alternate/block-grid-item.php:41
-msgid "Block Grid Item"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid-item.php:10
-msgid "Block Grid Item description."
-msgstr ""
-
-#: includes/elements/_alternate/block-grid-item.php:31
-msgid "Include your desired content for your Block Grid Item here."
-msgstr ""
-
-#: includes/elements/_alternate/block-grid-item.php:32
-msgid "Add some content to your block grid item here. The block grid responds a little differently than traditional columns, allowing you to mix and match for cool effects."
-msgstr ""
-
-#: includes/elements/_alternate/block-grid-item.php:45
-msgid "Include a block grid item in your block grid"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:8
-#: includes/elements/_alternate/block-grid.php:55
-msgid "Block Grid"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:10
-msgid "Block Grid description."
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:21
-msgid "Block Grid Items"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:22
-msgid "Add a new item to your Block Grid."
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:24
-msgid "Block Grid Item 1"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:25
-msgid "Block Grid Item 2"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:29
-msgid "Block Grid Item %s"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:37
-#: includes/elements/_alternate/pricing-table.php:51
-#: includes/elements/_alternate/toc.php:49
-msgid "Columns"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:38
-msgid "Select how many columns of items should be displayed on larger screens. These will update responsively based on screen size."
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:42
-#: includes/elements/_alternate/recent-posts.php:48
-msgid "2"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:43
-#: includes/elements/_alternate/recent-posts.php:49
-msgid "3"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:44
-#: includes/elements/_alternate/recent-posts.php:50
-msgid "4"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:59
-msgid "Include a block grid container in your content"
-msgstr ""
-
-#: includes/elements/_alternate/block-grid.php:65
-msgid "Select how many block grid items you want per row."
 msgstr ""
 
 #: includes/elements/_alternate/blockquote.php:8
@@ -1948,72 +2384,13 @@ msgstr ""
 msgid "Block Quote shortcode."
 msgstr ""
 
-#: includes/elements/_alternate/blockquote.php:25
-#: includes/elements/_alternate/pullquote.php:25
-msgid "Quote &amp Citation"
-msgstr ""
-
-#: includes/elements/_alternate/blockquote.php:26
-#: includes/elements/_alternate/pullquote.php:26
-msgid "Enter your quote in the textarea below. If you want to cite your quote, you can place that in the input following the textarea."
-msgstr ""
-
-#: includes/elements/_alternate/blockquote.php:27
-#: includes/elements/_alternate/pullquote.php:27
-msgid "Input your quotation here. Also, you can cite your quotes if you would like."
-msgstr ""
-
-#: includes/elements/_alternate/blockquote.php:29
-#: includes/elements/_alternate/pullquote.php:29
-msgid "Quote"
-msgstr ""
-
-#: includes/elements/_alternate/blockquote.php:38
-#: includes/elements/_alternate/pullquote.php:38
-msgid "Mr. WordPress"
-msgstr ""
-
-#: includes/elements/_alternate/blockquote.php:44
-#: includes/elements/_alternate/blockquote.php:83
-#: includes/elements/_alternate/callout.php:70
-#: includes/elements/_alternate/callout.php:95
-#: includes/elements/_alternate/custom-headline.php:89
-#: includes/elements/_alternate/feature-headline.php:89
-#: includes/elements/_alternate/prompt.php:70
-#: includes/elements/_alternate/prompt.php:94
-#: includes/elements/_alternate/pullquote.php:44
-#: includes/elements/_alternate/pullquote.php:82
-#: includes/elements/_alternate/toc.php:37
-msgid "Alignment"
-msgstr ""
-
 #: includes/elements/_alternate/blockquote.php:45
 #: includes/elements/_alternate/blockquote.php:84
 msgid "Select the alignment of the blockquote."
 msgstr ""
 
-#: includes/elements/_alternate/blockquote.php:64
-#: includes/elements/_alternate/code.php:35
-#: includes/elements/_alternate/custom-headline.php:75
-#: includes/elements/_alternate/feature-headline.php:75
-#: includes/elements/_alternate/icon-list-item.php:44
-#: includes/elements/_alternate/icon-list.php:44
-#: includes/elements/_alternate/pullquote.php:63
-msgid "Typography"
-msgstr ""
-
 #: includes/elements/_alternate/blockquote.php:65
 msgid "Include a blockquote in your content"
-msgstr ""
-
-#: includes/elements/_alternate/blockquote.php:77
-#: includes/elements/_alternate/pullquote.php:76
-msgid "Cite"
-msgstr ""
-
-#: includes/elements/_alternate/blockquote.php:78
-#: includes/elements/_alternate/pullquote.php:77
-msgid "Cite the person you are quoting."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:8
@@ -2121,23 +2498,6 @@ msgstr ""
 msgid "After"
 msgstr ""
 
-#: includes/elements/_alternate/button.php:125
-#: includes/elements/_alternate/card.php:141
-#: includes/elements/_alternate/card.php:155
-#: includes/elements/_alternate/creative-cta.php:53
-#: includes/elements/_alternate/creative-cta.php:62
-#: includes/elements/_alternate/feature-box.php:69
-#: includes/elements/_alternate/feature-headline.php:63
-#: includes/elements/_alternate/feature-headline.php:131
-#: includes/elements/_alternate/feature-list-item.php:66
-#: includes/elements/_alternate/feature-list.php:68
-#: includes/elements/_alternate/icon-list-item.php:30
-#: includes/elements/_alternate/icon.php:8
-#: includes/elements/_alternate/icon.php:20
-#: includes/integrations/x-theme.php:190
-msgid "Icon"
-msgstr ""
-
 #: includes/elements/_alternate/button.php:126
 msgid "Icon to be displayed inside your button."
 msgstr ""
@@ -2148,79 +2508,70 @@ msgid "Select whether or not you want to add a popover or tooltip to your button
 msgstr ""
 
 #: includes/elements/_alternate/button.php:142
-#: includes/elements/_alternate/image.php:69
+#: includes/elements/_alternate/image.php:107
 msgid "Popover"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:143
-#: includes/elements/_alternate/image.php:70
+#: includes/elements/_alternate/image.php:108
 msgid "Tooltip"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:151
 #: includes/elements/_alternate/button.php:339
-#: includes/elements/_alternate/image.php:83
-#: includes/elements/_alternate/image.php:221
+#: includes/elements/_alternate/image.php:119
+#: includes/elements/_alternate/image.php:255
 msgid "Info Placement"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:152
 #: includes/elements/_alternate/button.php:340
-#: includes/elements/_alternate/image.php:84
-#: includes/elements/_alternate/image.php:222
+#: includes/elements/_alternate/image.php:120
+#: includes/elements/_alternate/image.php:256
 msgid "Select where you want your popover or tooltip to appear."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:171
 #: includes/elements/_alternate/button.php:352
-#: includes/elements/_alternate/image.php:106
-#: includes/elements/_alternate/image.php:233
+#: includes/elements/_alternate/image.php:140
+#: includes/elements/_alternate/image.php:267
 msgid "Info Trigger"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:172
 #: includes/elements/_alternate/button.php:353
-#: includes/elements/_alternate/image.php:107
-#: includes/elements/_alternate/image.php:234
+#: includes/elements/_alternate/image.php:141
+#: includes/elements/_alternate/image.php:268
 msgid "Select what actions you want to trigger the popover or tooltip."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:176
-#: includes/elements/_alternate/image.php:111
+#: includes/elements/_alternate/image.php:145
 msgid "Hover"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:177
-#: includes/elements/_alternate/image.php:112
+#: includes/elements/_alternate/image.php:146
 msgid "Click"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:178
-#: includes/elements/_alternate/image.php:113
+#: includes/elements/_alternate/image.php:147
 msgid "Focus"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:189
 #: includes/elements/_alternate/button.php:364
-#: includes/elements/_alternate/image.php:125
-#: includes/elements/_alternate/image.php:244
+#: includes/elements/_alternate/image.php:159
+#: includes/elements/_alternate/image.php:278
 msgid "Info Content"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:190
 #: includes/elements/_alternate/button.php:365
-#: includes/elements/_alternate/image.php:126
-#: includes/elements/_alternate/image.php:245
+#: includes/elements/_alternate/image.php:160
+#: includes/elements/_alternate/image.php:279
 msgid "Extra content for the popover."
-msgstr ""
-
-#: includes/elements/_alternate/button.php:230
-#: includes/elements/_alternate/callout.php:89
-#: includes/elements/_alternate/pricing-table-column.php:89
-#: includes/elements/_alternate/pricing-table.php:45
-#: includes/elements/_alternate/promo.php:53
-#: includes/elements/_alternate/prompt.php:88
-msgid "Marketing"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:231
@@ -2228,7 +2579,7 @@ msgid "Add a clickable button to your content"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:269
-#: includes/elements/_alternate/image.php:161
+#: includes/elements/_alternate/image.php:195
 msgid "Float"
 msgstr ""
 
@@ -2250,7 +2601,7 @@ msgstr ""
 
 #: includes/elements/_alternate/button.php:319
 #: includes/elements/_alternate/callout.php:151
-#: includes/elements/_alternate/image.php:203
+#: includes/elements/_alternate/image.php:237
 #: includes/elements/_alternate/prompt.php:149
 msgid "Target"
 msgstr ""
@@ -2260,7 +2611,7 @@ msgid "Select to open your button link in a new window."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:371
-#: includes/elements/_alternate/image.php:250
+#: includes/elements/_alternate/image.php:284
 msgid "Lightbox Thumbnail"
 msgstr ""
 
@@ -2269,7 +2620,7 @@ msgid "Use this option to select a thumbnail for your lightbox thumbnail navigat
 msgstr ""
 
 #: includes/elements/_alternate/button.php:378
-#: includes/elements/_alternate/image.php:256
+#: includes/elements/_alternate/image.php:290
 msgid "Lightbox Video"
 msgstr ""
 
@@ -2278,12 +2629,12 @@ msgid "Select if you are linking to a video from this button in the lightbox."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:386
-#: includes/elements/_alternate/image.php:263
+#: includes/elements/_alternate/image.php:297
 msgid "Lightbox Caption"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:387
-#: includes/elements/_alternate/image.php:264
+#: includes/elements/_alternate/image.php:298
 msgid "Lightbox caption text."
 msgstr ""
 
@@ -2545,17 +2896,22 @@ msgstr ""
 msgid "Select the background color for button on the back of your Card."
 msgstr ""
 
+#: includes/elements/_alternate/clear.php:8
+#: includes/elements/_alternate/clear.php:22
+msgid "Clear"
+msgstr ""
+
 #: includes/elements/_alternate/clear.php:10
 msgid "Clear description."
 msgstr ""
 
-#: includes/elements/_alternate/clear.php:22
+#: includes/elements/_alternate/clear.php:23
 #: includes/elements/_alternate/gap.php:37
 #: includes/elements/_alternate/line.php:21
 msgid "Structure"
 msgstr ""
 
-#: includes/elements/_alternate/clear.php:23
+#: includes/elements/_alternate/clear.php:24
 msgid "Clear floated elements in your content"
 msgstr ""
 
@@ -2942,8 +3298,8 @@ msgstr ""
 #: includes/elements/_alternate/embedded-audio.php:33
 #: includes/elements/_alternate/embedded-video.php:58
 #: includes/elements/_alternate/google-map-marker.php:67
-#: includes/elements/_alternate/google-map.php:103
-#: includes/elements/_alternate/image.php:143
+#: includes/elements/_alternate/google-map.php:106
+#: includes/elements/_alternate/image.php:177
 #: includes/elements/_alternate/map-embed.php:41
 #: includes/elements/_alternate/self-hosted-audio.php:92
 #: includes/elements/_alternate/self-hosted-video.php:133
@@ -3019,8 +3375,8 @@ msgstr ""
 
 #: includes/elements/_alternate/embedded-video.php:46
 #: includes/elements/_alternate/embedded-video.php:84
-#: includes/elements/_alternate/google-map.php:89
-#: includes/elements/_alternate/google-map.php:153
+#: includes/elements/_alternate/google-map.php:92
+#: includes/elements/_alternate/google-map.php:156
 #: includes/elements/_alternate/map-embed.php:29
 #: includes/elements/_alternate/map-embed.php:54
 #: includes/elements/_alternate/self-hosted-video.php:90
@@ -3410,7 +3766,7 @@ msgstr ""
 #: includes/elements/_alternate/google-map-marker.php:29
 #: includes/elements/_alternate/google-map-marker.php:73
 #: includes/elements/_alternate/google-map.php:33
-#: includes/elements/_alternate/google-map.php:109
+#: includes/elements/_alternate/google-map.php:112
 msgid "Latitude"
 msgstr ""
 
@@ -3421,7 +3777,7 @@ msgstr ""
 #: includes/elements/_alternate/google-map-marker.php:37
 #: includes/elements/_alternate/google-map-marker.php:79
 #: includes/elements/_alternate/google-map.php:41
-#: includes/elements/_alternate/google-map.php:115
+#: includes/elements/_alternate/google-map.php:118
 msgid "Longitude"
 msgstr ""
 
@@ -3466,7 +3822,7 @@ msgid "Utilize a custom marker image instead of the default provided by Google."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:8
-#: includes/elements/_alternate/google-map.php:100
+#: includes/elements/_alternate/google-map.php:103
 msgid "Google Map"
 msgstr ""
 
@@ -3503,7 +3859,7 @@ msgid "Specify a number between 1 and 18 for the zoom level of your map."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:57
-#: includes/elements/_alternate/google-map.php:134
+#: includes/elements/_alternate/google-map.php:137
 msgid "Zoom Control"
 msgstr ""
 
@@ -3512,7 +3868,7 @@ msgid "Enable to display the zoom controls for your map."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:65
-#: includes/elements/_alternate/google-map.php:121
+#: includes/elements/_alternate/google-map.php:124
 msgid "Draggable"
 msgstr ""
 
@@ -3521,7 +3877,7 @@ msgid "Enable to make your map draggable."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:73
-#: includes/elements/_alternate/google-map.php:141
+#: includes/elements/_alternate/google-map.php:144
 msgid "Height"
 msgstr ""
 
@@ -3537,50 +3893,50 @@ msgstr ""
 msgid "Specifying a hexadecimal map hue will give your map a different color palette."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:90
-#: includes/elements/_alternate/google-map.php:154
+#: includes/elements/_alternate/google-map.php:93
+#: includes/elements/_alternate/google-map.php:157
 #: includes/elements/_alternate/map-embed.php:30
 #: includes/elements/_alternate/map-embed.php:55
 msgid "Select to remove the container around the map."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:104
+#: includes/elements/_alternate/google-map.php:107
 msgid "Embed a customizable Google map"
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:110
+#: includes/elements/_alternate/google-map.php:113
 msgid "Enter in the center latitude of your map."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:116
+#: includes/elements/_alternate/google-map.php:119
 msgid "Enter in the center longitude of your map."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:122
+#: includes/elements/_alternate/google-map.php:125
 msgid "Select to allow your users to drag the map view."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:128
+#: includes/elements/_alternate/google-map.php:131
 msgid "Zoom Level"
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:129
+#: includes/elements/_alternate/google-map.php:132
 msgid "Choose the initial zoom level of your map. This value should be between 1 and 18. 1 is fully zoomed out and 18 is right at street level."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:135
+#: includes/elements/_alternate/google-map.php:138
 msgid "Select to activate the zoom control for the map."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:142
+#: includes/elements/_alternate/google-map.php:145
 msgid "Choose an optional height for your map. If no height is selected, a responsive, proportional unit will be used. Any type of unit is acceptable (e.g. 450px, 30em, 40%, et cetera)."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:147
+#: includes/elements/_alternate/google-map.php:150
 msgid "Custom Color"
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:148
+#: includes/elements/_alternate/google-map.php:151
 msgid "Choose an optional custom color for your map."
 msgstr ""
 
@@ -3616,64 +3972,6 @@ msgstr ""
 msgid "Enable AJAX"
 msgstr ""
 
-#: includes/elements/_alternate/icon-list-item.php:8
-#: includes/elements/_alternate/icon-list-item.php:41
-msgid "Icon List Item"
-msgstr ""
-
-#: includes/elements/_alternate/icon-list-item.php:10
-msgid "Icon List Item description."
-msgstr ""
-
-#: includes/elements/_alternate/icon-list-item.php:31
-msgid "Specify the icon you would like to use as the bullet for your Icon List Item."
-msgstr ""
-
-#: includes/elements/_alternate/icon-list-item.php:45
-msgid "Include an icon list item in your icon list"
-msgstr ""
-
-#: includes/elements/_alternate/icon-list-item.php:58
-msgid "Select your icon."
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:8
-#: includes/elements/_alternate/icon-list.php:41
-msgid "Icon List"
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:10
-msgid "Icon List description."
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:21
-msgid "Icon List Items"
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:22
-msgid "Add new items to your Icon List."
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:24
-msgid "Icon List Item 1"
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:25
-msgid "Icon List Item 2"
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:26
-msgid "Icon List Item 3"
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:30
-msgid "Icon List Item %s"
-msgstr ""
-
-#: includes/elements/_alternate/icon-list.php:45
-msgid "Include an icon list in your content"
-msgstr ""
-
 #: includes/elements/_alternate/icon.php:10
 msgid "Icon description."
 msgstr ""
@@ -3687,7 +3985,7 @@ msgid "Image description."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:22
-#: includes/elements/_alternate/image.php:150
+#: includes/elements/_alternate/image.php:184
 msgid "Select the image style."
 msgstr ""
 
@@ -3697,18 +3995,18 @@ msgid "Thumbnail"
 msgstr ""
 
 #: includes/elements/_alternate/image.php:37
-#: includes/elements/_alternate/image.php:172
+#: includes/elements/_alternate/image.php:206
 #: includes/elements/_alternate/self-hosted-audio.php:21
 msgid "Src"
 msgstr ""
 
 #: includes/elements/_alternate/image.php:38
-#: includes/elements/_alternate/image.php:173
+#: includes/elements/_alternate/image.php:207
 msgid "Enter your image."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:45
-#: includes/elements/_alternate/image.php:178
+#: includes/elements/_alternate/image.php:212
 #: includes/elements/_alternate/promo.php:74
 msgid "Alt"
 msgstr ""
@@ -3718,44 +4016,44 @@ msgid "Enter in the alt text for your image"
 msgstr ""
 
 #: includes/elements/_alternate/image.php:54
-#: includes/elements/_alternate/image.php:185
+#: includes/elements/_alternate/image.php:219
 msgid "Select to wrap your image in an anchor tag."
 msgstr ""
 
-#: includes/elements/_alternate/image.php:64
-#: includes/elements/_alternate/image.php:211
+#: includes/elements/_alternate/image.php:102
+#: includes/elements/_alternate/image.php:245
 msgid "Select whether or not you want to add a popover or tooltip to your image."
 msgstr ""
 
-#: includes/elements/_alternate/image.php:144
+#: includes/elements/_alternate/image.php:178
 msgid "Include an image in your content"
 msgstr ""
 
-#: includes/elements/_alternate/image.php:162
+#: includes/elements/_alternate/image.php:196
 msgid "Optionally float the image."
 msgstr ""
 
-#: includes/elements/_alternate/image.php:179
+#: includes/elements/_alternate/image.php:213
 msgid "Enter in the alt text for your image."
 msgstr ""
 
-#: includes/elements/_alternate/image.php:192
+#: includes/elements/_alternate/image.php:226
 msgid "Enter in the URL you want your image to link to. If using this image for a lightbox, enter the URL of your media here (e.g. YouTube embed URL, et cetera). Leave this field blank if you want to link to the image uploaded to the \"Src\" for your lightbox."
 msgstr ""
 
-#: includes/elements/_alternate/image.php:198
+#: includes/elements/_alternate/image.php:232
 msgid "Enter in the title attribute you want for your image (will also double as title for popover or tooltip if you have chosen to display one)."
 msgstr ""
 
-#: includes/elements/_alternate/image.php:204
+#: includes/elements/_alternate/image.php:238
 msgid "Select to open your image link in a new window."
 msgstr ""
 
-#: includes/elements/_alternate/image.php:251
+#: includes/elements/_alternate/image.php:285
 msgid "Use this option to select a different thumbnail for your lightbox thumbnail navigation or to set an image if you are linking out to a video. Will default to the \"Src\" image if nothing is set."
 msgstr ""
 
-#: includes/elements/_alternate/image.php:257
+#: includes/elements/_alternate/image.php:291
 msgid "Select if you are linking to a video from this image in the lightbox."
 msgstr ""
 
@@ -3774,100 +4072,12 @@ msgstr ""
 
 #: includes/elements/_alternate/layerslider.php:45
 #: includes/elements/_alternate/revolution-slider.php:46
-#: includes/elements/_alternate/soliloquy.php:46
+#: includes/elements/_alternate/soliloquy.php:49
 msgid "Select Slider"
 msgstr ""
 
 #: includes/elements/_alternate/layerslider.php:46
 msgid "Choose from LayerSlider elements that have already been created."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:8
-msgid "Lightbox"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:10
-msgid "Lightbox description."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:20
-msgid "Enter in the selector for your images (e.g. if your class is \"my-img\" enter \".my-img\"). Set to \".x-img-link\" to automatically setup a lightbox for all linked [image] shortcodes on your page."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:27
-msgid "Deeplink"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:28
-msgid "Select to activate deeplinking (creates unique link for each image)."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:35
-msgid "Backdrop Opacity"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:36
-msgid "Enter in the opacity for the backdrop (valid inputs are numbers 0 to 1)."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:43
-msgid "Previous Item Scale"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:44
-msgid "Enter in the scale for the previous item (valid inputs are numbers 0 to 1)."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:51
-msgid "Previous Item Opacity"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:52
-msgid "Enter in the opacity for the previous item (valid inputs are numbers 0 to 1)."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:59
-msgid "Next Item Scale"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:60
-msgid "Enter in the scale for the next item (valid inputs are numbers 0 to 1)."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:67
-msgid "Next Item Opacity"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:68
-msgid "Enter in the opacity for the next item (valid inputs are numbers 0 to 1)."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:75
-msgid "Thumbnails"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:76
-msgid "Select to activate thumbnail navigation."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:83
-#: includes/elements/_alternate/recent-posts.php:74
-#: includes/elements/_alternate/recent-posts.php:160
-msgid "Orientation"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:84
-msgid "Select the orientation of your lightbox."
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:89
-#: includes/elements/_alternate/recent-posts.php:79
-msgid "Horizontal"
-msgstr ""
-
-#: includes/elements/_alternate/lightbox.php:90
-#: includes/elements/_alternate/recent-posts.php:80
-msgid "Vertical"
 msgstr ""
 
 #: includes/elements/_alternate/line.php:8
@@ -3913,180 +4123,6 @@ msgstr ""
 
 #: includes/elements/_alternate/map-embed.php:42
 msgid "Embed a map from a third-party provider"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:8
-#: includes/elements/_alternate/pricing-table-column.php:86
-msgid "Pricing Table Column"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:10
-msgid "Pricing Table Column description."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:31
-msgid "Specify your pricing column content."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:32
-#: includes/elements/_alternate/pricing-table.php:24
-msgid ""
-"[x_icon_list]\n"
-"    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n"
-"    [x_icon_list_item type=\"times\"]Second Feature[/x_icon_list_item]\n"
-"    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n"
-"[/x_icon_list]\n"
-"\n"
-"[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:38
-msgid "Featured Column"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:39
-msgid "Enable to specify this column as your featured item."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:46
-msgid "Featured Subheading"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:47
-msgid "Enter text for your featured column subheading here."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:59
-msgid "Currency"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:60
-msgid "Enter your desired currency symbol here."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:67
-#: includes/elements/_alternate/pricing-table-column.php:132
-msgid "Price"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:68
-msgid "Enter the price for this column."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:75
-#: includes/elements/_alternate/pricing-table-column.php:139
-msgid "Interval"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:76
-msgid "Enter the duration for this payment (e.g. \"Weekly,\" \"Per Year,\" et cetera)."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:77
-msgid "Per Month"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:90
-msgid "Include a pricing table column"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:104
-msgid "Include a title for your pricing column."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:110
-msgid "Featured"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:111
-msgid "Select to make this your featured offer."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:118
-msgid "Featured Sub Heading"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:119
-msgid "Include a sub heading for your featured column."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:125
-msgid "Currency Symbol"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:126
-msgid "Enter in the currency symbol you want to use."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:133
-msgid "Enter in the price for this pricing column."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table-column.php:140
-msgid "Enter in the time period that this pricing column is for."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:8
-#: includes/elements/_alternate/pricing-table.php:42
-msgid "Pricing Table"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:10
-msgid "Pricing Table description."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:21
-msgid "Pricing Table Columns"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:22
-msgid "Add your pricing table columns here."
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:24
-msgid "Basic"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:25
-msgid "Standard"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:25
-msgid ""
-"[x_icon_list]\n"
-"    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n"
-"    [x_icon_list_item type=\"check\"]Second Feature[/x_icon_list_item]\n"
-"    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n"
-"[/x_icon_list]\n"
-"\n"
-"[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:26
-msgid "Pro"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:26
-msgid ""
-"[x_icon_list]\n"
-"    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n"
-"    [x_icon_list_item type=\"check\"]Second Feature[/x_icon_list_item]\n"
-"    [x_icon_list_item type=\"check\"]Third Feature[/x_icon_list_item]\n"
-"[/x_icon_list]\n"
-"\n"
-"[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:30
-msgid "Column %s"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:46
-msgid "Include a pricing table in your content"
-msgstr ""
-
-#: includes/elements/_alternate/pricing-table.php:52
-msgid "Select how many columns you want for your pricing table."
 msgstr ""
 
 #: includes/elements/_alternate/promo.php:8
@@ -4204,24 +4240,6 @@ msgstr ""
 msgid "Protect content from non logged in users"
 msgstr ""
 
-#: includes/elements/_alternate/pullquote.php:8
-#: includes/elements/_alternate/pullquote.php:62
-msgid "Pullquote"
-msgstr ""
-
-#: includes/elements/_alternate/pullquote.php:10
-msgid "Pullquote description."
-msgstr ""
-
-#: includes/elements/_alternate/pullquote.php:45
-#: includes/elements/_alternate/pullquote.php:83
-msgid "Select the alignment of the pullquote."
-msgstr ""
-
-#: includes/elements/_alternate/pullquote.php:64
-msgid "Include a pullquote in your content"
-msgstr ""
-
 #: includes/elements/_alternate/raw-content.php:8
 msgid "Raw Content"
 msgstr ""
@@ -4289,8 +4307,21 @@ msgstr ""
 msgid "To filter your posts by category, enter in the slug of your desired category. To filter by multiple categories, enter in your slugs separated by a comma."
 msgstr ""
 
+#: includes/elements/_alternate/recent-posts.php:74
+#: includes/elements/_alternate/recent-posts.php:160
+msgid "Orientation"
+msgstr ""
+
 #: includes/elements/_alternate/recent-posts.php:75
 msgid "Select the orientation or your Recent Posts."
+msgstr ""
+
+#: includes/elements/_alternate/recent-posts.php:79
+msgid "Horizontal"
+msgstr ""
+
+#: includes/elements/_alternate/recent-posts.php:80
+msgid "Vertical"
 msgstr ""
 
 #: includes/elements/_alternate/recent-posts.php:88
@@ -4746,7 +4777,6 @@ msgid "Select to remove the container from your slider."
 msgstr ""
 
 #: includes/elements/_alternate/social-sharing.php:8
-#: includes/elements/_alternate/social-sharing.php:90
 msgid "Social Sharing"
 msgstr ""
 
@@ -4754,88 +4784,90 @@ msgstr ""
 msgid "Social Sharing description."
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:24
-#: includes/elements/_alternate/social-sharing.php:98
+#: includes/elements/_alternate/social-sharing.php:21
 msgid "Enter in a title for your social links."
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:25
-#: includes/shortcodes/share.php:36
+#: includes/elements/_alternate/social-sharing.php:22
+#: includes/shortcodes/share.php:51
 msgid "Share this Post"
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:31
-#: includes/elements/_alternate/social-sharing.php:105
+#: includes/elements/_alternate/social-sharing.php:28
+msgid "Share Title"
+msgstr ""
+
+#: includes/elements/_alternate/social-sharing.php:29
+msgid "Enter in the title that displays when you share the page. The default is the Page title."
+msgstr ""
+
+#: includes/elements/_alternate/social-sharing.php:36
 msgid "Facebook"
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:32
-#: includes/elements/_alternate/social-sharing.php:106
+#: includes/elements/_alternate/social-sharing.php:37
 msgid "Select to activate the Facebook sharing link."
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:39
-#: includes/elements/_alternate/social-sharing.php:113
+#: includes/elements/_alternate/social-sharing.php:44
 msgid "Twitter"
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:40
-#: includes/elements/_alternate/social-sharing.php:114
+#: includes/elements/_alternate/social-sharing.php:45
 msgid "Select to activate the Twitter sharing link."
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:47
-#: includes/elements/_alternate/social-sharing.php:121
+#: includes/elements/_alternate/social-sharing.php:52
 msgid "Google Plus"
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:48
-#: includes/elements/_alternate/social-sharing.php:122
+#: includes/elements/_alternate/social-sharing.php:53
 msgid "Select to activate the Google Plus sharing link."
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:55
-#: includes/elements/_alternate/social-sharing.php:129
+#: includes/elements/_alternate/social-sharing.php:60
 msgid "LinkedIn"
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:56
-#: includes/elements/_alternate/social-sharing.php:130
+#: includes/elements/_alternate/social-sharing.php:61
 msgid "Select to activate the LinkedIn sharing link."
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:63
-#: includes/elements/_alternate/social-sharing.php:137
+#: includes/elements/_alternate/social-sharing.php:68
 msgid "Pinterest"
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:64
-#: includes/elements/_alternate/social-sharing.php:138
+#: includes/elements/_alternate/social-sharing.php:69
 msgid "Select to activate the Pinterest sharing link."
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:71
-#: includes/elements/_alternate/social-sharing.php:145
+#: includes/elements/_alternate/social-sharing.php:76
 msgid "Reddit"
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:72
-#: includes/elements/_alternate/social-sharing.php:146
+#: includes/elements/_alternate/social-sharing.php:77
 msgid "Select to activate the Reddit sharing link."
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:79
-#: includes/elements/_alternate/social-sharing.php:153
+#: includes/elements/_alternate/social-sharing.php:84
 msgid "Email"
 msgstr ""
 
-#: includes/elements/_alternate/social-sharing.php:80
-#: includes/elements/_alternate/social-sharing.php:154
+#: includes/elements/_alternate/social-sharing.php:85
 msgid "Select to activate the email sharing link."
 msgstr ""
 
 #: includes/elements/_alternate/social-sharing.php:92
-msgid "Include social sharing into your content"
+msgid "Email Subject"
+msgstr ""
+
+#: includes/elements/_alternate/social-sharing.php:93
+msgid "Enter the email subject when sharing the link."
+msgstr ""
+
+#: includes/elements/_alternate/social-sharing.php:94
+#: includes/shortcodes/share.php:58
+msgid "Hey, thought you might enjoy this! Check it out when you have a chance:"
 msgstr ""
 
 #: includes/elements/_alternate/soliloquy.php:8
@@ -4846,11 +4878,11 @@ msgstr ""
 msgid "Place an Soliloquy element into your content."
 msgstr ""
 
-#: includes/elements/_alternate/soliloquy.php:37
+#: includes/elements/_alternate/soliloquy.php:40
 msgid "No Sliders Available"
 msgstr ""
 
-#: includes/elements/_alternate/soliloquy.php:47
+#: includes/elements/_alternate/soliloquy.php:50
 msgid "Choose from Soliloquy elements that have already been created."
 msgstr ""
 
@@ -5067,10 +5099,6 @@ msgstr ""
 msgid "Specify the character you would like to use for your cursor."
 msgstr ""
 
-#: includes/elements/_alternate/text.php:10
-msgid "Text description."
-msgstr ""
-
 #: includes/elements/_alternate/toc-item.php:8
 msgid "TOC Item"
 msgstr ""
@@ -5137,16 +5165,20 @@ msgstr ""
 msgid "Widget Area description."
 msgstr ""
 
-#: includes/elements/_alternate/widget-area.php:33
+#: includes/elements/_alternate/widget-area.php:34
 msgid "(No widgets specified.)"
 msgstr ""
 
-#: includes/elements/_alternate/widget-area.php:43
+#: includes/elements/_alternate/widget-area.php:46
 msgid "Registered Sidebar"
 msgstr ""
 
-#: includes/elements/_alternate/widget-area.php:44
+#: includes/elements/_alternate/widget-area.php:47
 msgid "Sidebars with no widgets will appear disabled."
+msgstr ""
+
+#: includes/elements/icon-list-item/controls.php:12
+msgid "New Item"
 msgstr ""
 
 #: includes/elements/row/controls.php:39
@@ -5178,34 +5210,38 @@ msgid "Where did it go?"
 msgstr ""
 
 #: includes/elements/undefined/definition.php:26
-msgid "The element that calls itself <strong>%%element-name%%</strong> could not be found. It was probably registered by a plugin not currently active on your site. <br/><br/>Not to worry, the settings have been preserved in hope of this element&apos;s return."
+msgid "The element that calls itself <strong>%%element-type%%</strong> could not be found. It was probably registered by a plugin not currently active on your site. <br/><br/>Not to worry, the settings have been preserved in hope of this element&apos;s return."
 msgstr ""
 
-#: includes/integrations/x-theme.php:188
+#: includes/integrations/x-shortcodes.php:27
+msgid "<strong>X &ndash; Shortcodes has been deactivated</strong>. Cornerstone will now provide your site with those shortcodes, and many new ones."
+msgstr ""
+
+#: includes/integrations/x-theme.php:193
 msgid "Integrity"
 msgstr ""
 
-#: includes/integrations/x-theme.php:189
+#: includes/integrations/x-theme.php:194
 msgid "Renew"
 msgstr ""
 
-#: includes/integrations/x-theme.php:191
+#: includes/integrations/x-theme.php:196
 msgid "Ethos"
 msgstr ""
 
-#: includes/integrations/x-theme.php:198
+#: includes/integrations/x-theme.php:203
 msgid "You&apos;re using %s. Click the button below to check out a live example of this shortcode when using this Stack."
 msgstr ""
 
-#: includes/integrations/x-theme.php:236 includes/integrations/x-theme.php:271
+#: includes/integrations/x-theme.php:249 includes/integrations/x-theme.php:284
 msgid "Enable Legacy Font Classes"
 msgstr ""
 
-#: includes/integrations/x-theme.php:237
+#: includes/integrations/x-theme.php:250
 msgid "Check to enable legacy font classes."
 msgstr ""
 
-#: includes/integrations/x-theme.php:272
+#: includes/integrations/x-theme.php:285
 msgid "X no longer provides the <strong>.x-icon*</strong> classes. This was done for performance reasons. If you need these classes, you can enable them again with this setting."
 msgstr ""
 
@@ -5451,23 +5487,23 @@ msgstr ""
 msgid "Shortcut for changing the title from within Cornerstone."
 msgstr ""
 
-#: includes/settings/general/controls.php:29
+#: includes/settings/general/controls.php:32
 msgid "Status"
 msgstr ""
 
-#: includes/settings/general/controls.php:39
+#: includes/settings/general/controls.php:43
 msgid "Allow Comments"
 msgstr ""
 
-#: includes/settings/general/controls.php:40
+#: includes/settings/general/controls.php:44
 msgid "Opens or closes comments. Note: The comment form may not be shown if your chosen page template doesn&apost support them."
 msgstr ""
 
-#: includes/settings/general/controls.php:47
+#: includes/settings/general/controls.php:54
 msgid "Parent Page"
 msgstr ""
 
-#: includes/settings/general/controls.php:57
+#: includes/settings/general/controls.php:65
 msgid "Page Template"
 msgstr ""
 
@@ -5547,44 +5583,36 @@ msgstr ""
 msgid "Permalink to: \"%s\""
 msgstr ""
 
-#: includes/shortcodes/share.php:37
+#: includes/shortcodes/share.php:52
 msgid "Share on Facebook"
 msgstr ""
 
-#: includes/shortcodes/share.php:38
+#: includes/shortcodes/share.php:53
 msgid "Share on Twitter"
 msgstr ""
 
-#: includes/shortcodes/share.php:39
+#: includes/shortcodes/share.php:54
 msgid "Share on Google+"
 msgstr ""
 
-#: includes/shortcodes/share.php:40
+#: includes/shortcodes/share.php:55
 msgid "Share on LinkedIn"
 msgstr ""
 
-#: includes/shortcodes/share.php:41
+#: includes/shortcodes/share.php:56
 msgid "Share on Pinterest"
 msgstr ""
 
-#: includes/shortcodes/share.php:42
+#: includes/shortcodes/share.php:57
 msgid "Share on Reddit"
 msgstr ""
 
-#: includes/shortcodes/share.php:43
-msgid "Hey, thought you might enjoy this! Check it out when you have a chance:"
-msgstr ""
-
-#: includes/shortcodes/share.php:43
+#: includes/shortcodes/share.php:59
 msgid "Share via Email"
 msgstr ""
 
 #: includes/views/admin/editor-tab.php:5
 msgid "Visual"
-msgstr ""
-
-#: includes/views/admin/mb-product-validation.php:5
-msgid "Validate your cornerstone by adding your API Key here."
 msgstr ""
 
 #: includes/views/admin/mb-settings.php:6
@@ -5636,6 +5664,192 @@ msgstr ""
 
 #: includes/views/builder/preloader.php:4
 msgid "Powered by Themeco"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:42
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:72
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:80
+msgid "There was an error when reading this WXR file"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:43
+msgid "Details are shown above. The importer will now try again with a different parser..."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:84
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:89
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:279
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:468
+msgid "This does not appear to be a WXR file, missing/invalid WXR version number"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:134
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:143
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:194
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:198
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:207
+msgid "Sorry, there has been an error."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:135
+msgid "The file does not exist, please try again."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:178
+msgid "All done."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:178
+msgid "Have fun!"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:179
+msgid "Remember to update the passwords and roles of imported users."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:199
+msgid "The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:215
+msgid "This WXR file (version %s) may not be supported by this version of the importer. Please consider updating."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:240
+msgid "Failed to import author %s. Their posts will be attributed to the current user."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:266
+msgid "Assign Authors"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:267
+msgid "To make it easier for you to edit and save the imported content, you may want to reassign the author of the imported item to an existing user of this site. For example, you may want to import all the entries as <code>admin</code>s entries."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:269
+msgid "If a new user is created by WordPress, a new password will be randomly generated and the new user&#8217;s role will be set as %s. Manually changing the new user&#8217;s details will be necessary."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:279
+msgid "Import Attachments"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:282
+msgid "Download and import file attachments"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:286
+msgid "Submit"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:299
+msgid "Import author:"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:310
+msgid "or create new user with login name:"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:313
+msgid "as a new user:"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:321
+msgid "assign posts to an existing user:"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:323
+msgid "or assign posts to an existing user:"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:324
+msgid "- Select -"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:374
+msgid "Failed to create new user for %s. Their posts will be attributed to the current user."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:425
+msgid "Failed to import category %s"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:465
+msgid "Failed to import post tag %s"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:511
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:652
+msgid "Failed to import %s %s"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:537
+msgid "Failed to import &#8220;%s&#8221;: Invalid post type %s"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:559
+msgid "%s &#8220;%s&#8221; already exists."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:618
+msgid "Failed to import %s &#8220;%s&#8221;"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:783
+msgid "Menu item skipped due to missing menu slug"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:790
+msgid "Menu item skipped due to invalid menu slug: %s"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:853
+msgid "Fetching attachments is not enabled"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:866
+msgid "Invalid file type"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:910
+msgid "Remote server did not respond"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:916
+msgid "Remote server returned error response %1$d %2$s"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:923
+msgid "Remote file is incorrect size"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:928
+msgid "Zero size file downloaded"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:934
+msgid "Remote file is too large, limit is %s"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1033
+msgid "Import WordPress"
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1040
+msgid "A new version of this importer is available. Please update to version %s to ensure compatibility with newer export files."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1055
+msgid "Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import the posts, pages, comments, custom fields, categories, and tags into this site."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1056
+msgid "Choose a WXR (.xml) file to upload, then click Upload file and import."
+msgstr ""
+
+#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1130
+msgid "Import <strong>posts, pages, comments, custom fields, categories, and tags</strong> from a WordPress export file."
 msgstr ""
 #. Plugin Name of the plugin/theme
 msgid "Cornerstone"

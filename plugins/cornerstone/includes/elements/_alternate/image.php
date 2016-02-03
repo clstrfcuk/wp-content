@@ -55,7 +55,45 @@ class CS_Image extends Cornerstone_Element_Base {
       false
     );
 
-    $this->addSupport( 'link' );
+    $this->addControl(
+      'href',
+      'text',
+      __( 'Href', csl18n() ),
+      __( 'Enter in the URL you want to link to.', csl18n() ),
+      '#',
+      array(
+      	'condition' => array(
+          'link' => true
+        )
+      )
+
+    );
+
+    $this->addControl(
+      'href_title',
+      'text',
+      __( 'Link Title Attribute', csl18n() ),
+      __( 'Enter in the title attribute you want for your link.', csl18n() ),
+      '',
+      array(
+      	'condition' => array(
+          'link' => true
+        )
+      )
+    );
+
+    $this->addControl(
+      'href_target',
+      'toggle',
+      __( 'Open Link in New Window', csl18n() ),
+      __( 'Select to open your link in a new window.', csl18n() ),
+      false,
+      array(
+      	'condition' => array(
+          'link' => true
+        )
+      )
+    );
 
     $this->addControl(
       'info',
@@ -68,9 +106,7 @@ class CS_Image extends Cornerstone_Element_Base {
           array( 'value' => 'none',    'label' => __( 'None', csl18n() ), ),
           array( 'value' => 'popover', 'label' => __( 'Popover', csl18n() ), ),
           array( 'value' => 'tooltip', 'label' => __( 'Tooltip', csl18n() ), )
-        )
-      ),
-      array(
+        ),
         'condition' => array(
           'link' => true
         )
@@ -90,9 +126,7 @@ class CS_Image extends Cornerstone_Element_Base {
           array( 'value' => 'right',  'icon' => fa_entity('arrow-right'), 'tooltip' => __( 'Right', csl18n() ) ),
           array( 'value' => 'bottom', 'icon' => fa_entity('arrow-down'),  'tooltip' => __( 'Bottom', csl18n() ) ),
           array( 'value' => 'left',   'icon' => fa_entity('arrow-left'),  'tooltip' => __( 'Left', csl18n() ) )
-        )
-      ),
-      array(
+        ),
         'condition' => array(
           'link' => true,
           'info' => array( 'popover', 'tooltip' )

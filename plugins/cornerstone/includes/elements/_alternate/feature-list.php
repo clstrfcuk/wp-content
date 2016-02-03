@@ -249,7 +249,6 @@ class CS_Feature_List extends Cornerstone_Element_Base {
       $e_params = array(
         'title'                => $e['title'],
         'title_color'          => $e['title_color'],
-        'text'                 => $e['text'],
         'text_color'           => $e['text_color'],
         'graphic'              => $graphic,
         'graphic_size'         => $graphic_size,
@@ -292,7 +291,7 @@ class CS_Feature_List extends Cornerstone_Element_Base {
         $e_params['connector_animation'] = $connector_animation;
       }
 
-      $contents .= cs_build_shortcode( 'x_feature_box', $e_params, $this->extra( $e ), NULL );
+      $contents .= cs_build_shortcode( 'x_feature_box', $e_params, $this->extra( $e ), $e['content'] );
 
     }
 

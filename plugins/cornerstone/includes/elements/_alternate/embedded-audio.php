@@ -9,7 +9,7 @@ class CS_Embedded_Audio extends Cornerstone_Element_Base {
       'section'     => 'media',
       'description' => __( 'Embedded Audio description.', csl18n() ),
       'supports'    => array( 'id', 'class', 'style' ),
-      'empty'       => array( 'content' => '' )
+      'empty'       => array( 'content' => '' ),
     );
   }
 

@@ -2,10 +2,17 @@
 class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 
 	public $raw_markup = false;
+	public $sandbox_the_content = true;
+	public $dependencies = array( 'Front_End' );
 
 	public function ajax_handler( $data ) {
 
-		WP_Shortcode_Preserver::init();
+		CS_Shortcode_Preserver::init();
+
+		if ( $this->sandbox_the_content )
+			CS_Shortcode_Preserver::sandbox( 'cs_render_the_content' );
+
+		add_filter('cs_preserve_shortcodes_no_wrap', '__return_true' );
 
 		$this->orchestrator = $this->plugin->component( 'Element_Orchestrator' );
 		$this->orchestrator->load_elements();
@@ -60,9 +67,10 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 				return new WP_Error( 'cs_renderer', 'Malformed render job request');
 
 			$markup =  $this->render_element( $job['data'], ( $job['provider'] != 'mk2' ) );
+
 			$scripts = $this->enqueue_extractor->extract();
 
-			$results[$job['jobID']] = array( 'markup' => $markup );
+			$results[$job['jobID']] = array( 'markup' => $markup, 'ts' => $job['ts'] );
 
 			if ( !empty($scripts) )
 				$results[$job['jobID']]['scripts'] = $scripts;
@@ -86,13 +94,16 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 		} else {
 			$definition = $this->orchestrator->get( $element['_type'] );
 			unset( $element['_type'] );
-			$markup = $definition->preview( $element );
+			$markup = $definition->preview( $element, $this->orchestrator );
 		}
 
-		if ( $this->raw_markup )
-			return $markup;
+		$filter = ( $this->sandbox_the_content ) ? 'cs_render_the_content': 'the_content';
+		$markup = ( $this->raw_markup ) ? $markup : apply_filters( $filter, $markup );
 
-		return apply_filters( 'the_content', $markup );
+		if ( !is_string( $markup ) )
+			$markup = '';
+
+		return $markup;
 
 	}
 

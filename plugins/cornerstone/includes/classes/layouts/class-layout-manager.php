@@ -36,6 +36,37 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 
 	}
 
+	public function ajax_template_migration( $data ) {
+
+		$result = $this->data_migration( $data );
+
+		if ( is_wp_error( $result ) )
+			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+
+		// Suppress PHP error output unless debugging
+		if ( CS()->common()->isDebug() )
+			return wp_send_json_success( $result );
+		return @wp_send_json_success( $result );
+
+	}
+
+	public function data_migration( $data ) {
+
+		if ( !isset( $data['elements'] ) )
+			return new WP_Error( 'cornertone', 'Elements missing.' );
+
+		$version = isset( $data['version'] ) ? $data['version'] : 0;
+
+		$data_controller = $this->plugin->loadComponent( 'Data_Controller' );
+		$migrated = $data_controller->migrate( $data['elements'], $version );
+
+		if ( is_wp_error( $migrated ) )
+			return $migrated;
+
+		return array( 'elements' => $migrated );
+
+	}
+
 	public function loadNativeBlocks() {
 
 
@@ -81,8 +112,10 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 			|| !isset($data['slug'])
 			|| !isset($data['type'])
 			|| !isset($data['title'])
-			|| !isset($data['elements']) ) {
+			||
+			 !isset($data['elements']) ) {
 			return new WP_Error( 'cornerstone', 'Template improperly formatted' );
+
 		}
 
 		$data['type'] =  ( $data['type'] == 'page' ) ? 'pages' : 'block';

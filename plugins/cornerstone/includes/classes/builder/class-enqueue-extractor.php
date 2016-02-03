@@ -2,6 +2,7 @@
 
 class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 
+	protected $previous_scripts;
 	protected $script_handles;
 	protected $style_delta;
 	protected $scripts;
@@ -19,9 +20,14 @@ class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 		//global $wp_styles;
 		//$this->styles = $wp_styles->queue;
 
-		$wp_scripts = wp_scripts();
-		$this->script_handles = array_values( $wp_scripts->queue );
-		$this->isolated_handles = array();
+		global $wp_scripts;
+		if ( ! ( $wp_scripts instanceof WP_Scripts ) ) {
+			$wp_scripts = new WP_Scripts();
+		}
+
+		$this->previous_scripts = $wp_scripts;
+		$wp_scripts = new WP_Scripts();
+		$this->script_handles = array();
 
 	}
 
@@ -32,6 +38,7 @@ class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 		return $isolated;
 	}
 
+
 	public function get_scripts() {
 
 		$wp_scripts = wp_scripts();
@@ -41,6 +48,9 @@ class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 		ob_start();
 		$wp_scripts->do_items( $this->script_handles );
 		ob_get_clean();
+
+		global $wp_scripts;
+		$wp_scripts = $this->previous_scripts;
 
 		return $this->scripts;
 

@@ -111,6 +111,19 @@ add_filter( 'woocommerce_show_page_title', 'x_woocommerce_show_page_title' );
 // =============================================================================
 
 //
+// Title.
+//
+
+function x_woocommerce_template_loop_product_title() {
+  echo '<h3><a href="' . get_the_permalink() . '">' . get_the_title() . '</a></h3>';
+}
+
+add_action( 'woocommerce_shop_loop_item_title', 'x_woocommerce_template_loop_product_title', 10 );
+remove_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10 );
+
+
+
+//
 // Get shop link.
 //
 
@@ -210,6 +223,9 @@ add_action( 'woocommerce_after_shop_loop_item_title', 'x_woocommerce_after_shop_
 
 // Product
 // =============================================================================
+
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
+
 
 //
 // Remove sale badge.
@@ -314,6 +330,25 @@ function x_woocommerce_cart_no_shipping_available_html() {
 }
 
 add_filter( 'woocommerce_cart_no_shipping_available_html', 'x_woocommerce_cart_no_shipping_available_html' );
+
+
+//
+// Cart actions.
+//
+
+function x_woocommerce_cart_actions() {
+
+  $output = '';
+
+  if ( wc_coupons_enabled() ) {
+    $output .= '<input type="submit" class="button" name="apply_coupon" value="' . esc_attr( 'Apply Coupon', '__x__' ) . '">';
+  }
+
+  echo $output;
+
+}
+
+add_action( 'woocommerce_cart_actions', 'x_woocommerce_cart_actions' );
 
 
 

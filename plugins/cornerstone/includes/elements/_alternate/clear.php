@@ -9,6 +9,7 @@ class CS_Clear extends Cornerstone_Element_Base {
       'section'     => 'structure',
       'description' => __( 'Clear description.', csl18n() ),
       'supports'    => array( 'id', 'class', 'style' ),
+      'can_preview' => false
     );
   }
 
@@ -35,13 +36,7 @@ class CS_Clear extends Cornerstone_Element_Base {
 
     extract( $atts );
 
-    $shortcode = "[x_clear{$extra}]";
-
-    if ( $builder == 'true' ) {
-      $shortcode = '%%TMPL%%' . do_shortcode( $shortcode ) . '<div class="cs-empty-element"><div class="cs-empty-element-icon"><%= cs.icon("element-' . $this->name() . '") %></div></div>';
-    }
-
-    return $shortcode;
+    return "[x_clear{$extra}]";
 
   }
 

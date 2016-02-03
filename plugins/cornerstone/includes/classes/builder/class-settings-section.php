@@ -160,11 +160,13 @@ class Cornerstone_Settings_Section {
 	}
 
 	final public function save( $data ) {
+
 		$data = $this->controls()->sanitize( $data );
 		if( isset( $data['elements'] ) ) {
 			$data['elements'] = $this->sanitize_elements( $data['elements'] );
 		}
-		return $this->definition->handler( $data );
+
+		return $this->definition->handler( wp_parse_args( $data, $this->available_defaults() ) );
 	}
 
 	public function sanitize_elements( $elements ) {

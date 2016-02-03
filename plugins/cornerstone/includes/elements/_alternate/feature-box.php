@@ -27,7 +27,7 @@ class CS_Feature_Box extends Cornerstone_Element_Base {
     );
 
     $this->addControl(
-      'text',
+      'content',
       'textarea',
       NULL,
       NULL,
@@ -308,6 +308,19 @@ class CS_Feature_Box extends Cornerstone_Element_Base {
 
   }
 
+  public function migrate( $element, $version ) {
+
+  	if ( version_compare( $version, '1.0.10', '<' ) ) {
+  		if ( !isset( $element['content'] ) || '' == $element['content'] && isset( $element['text'] ) ) {
+				$element['content'] = $element['text'];
+				unset($element['text']);
+			}
+  	}
+
+		return $element;
+
+  }
+
   public function xsg() { }
 
   public function render( $atts ) {
@@ -317,7 +330,6 @@ class CS_Feature_Box extends Cornerstone_Element_Base {
     $params = array(
       'title'                 => $title,
       'title_color'           => $title_color,
-      'text'                  => $text,
       'text_color'            => $text_color,
       'graphic'               => $graphic,
       'graphic_size'          => $graphic_size,
@@ -354,7 +366,7 @@ class CS_Feature_Box extends Cornerstone_Element_Base {
       $params['graphic_animation_delay']  = $graphic_animation_delay;
     }
 
-    $shortcode = cs_build_shortcode( 'x_feature_box', $params, $extra, NULL );
+    $shortcode = cs_build_shortcode( 'x_feature_box', $params, $extra, $content );
 
     return $shortcode;
 

@@ -69,14 +69,9 @@ a:hover,
 
   .woocommerce .price > .amount,
   .woocommerce .price > ins > .amount,
-  .woocommerce-page .price > .amount,
-  .woocommerce-page .price > ins > .amount,
   .woocommerce .star-rating:before,
-  .woocommerce-page .star-rating:before,
   .woocommerce .star-rating span:before,
-  .woocommerce-page .star-rating span:before,
-  .woocommerce li.product .entry-header h3 a:hover,
-  .woocommerce-page li.product .entry-header h3 a:hover {
+  .woocommerce li.product .entry-header h3 a:hover {
     color: <?php echo $x_site_link_color; ?>;
   }
 
@@ -101,7 +96,7 @@ a.x-img-thumbnail:hover,
 */
 
 .entry-thumb:before,
-.pagination span.current,
+.x-pagination span.current,
 .flex-direction-nav a,
 .flex-control-nav a:hover,
 .flex-control-nav a.flex-active,
@@ -119,7 +114,6 @@ a.x-img-thumbnail:hover,
 <?php if ( X_WOOCOMMERCE_IS_ACTIVE ) : ?>
 
   .woocommerce .onsale,
-  .woocommerce-page .onsale,
   .widget_price_filter .ui-slider .ui-slider-range {
     background-color: <?php echo $x_site_link_color; ?>;
   }
@@ -365,10 +359,7 @@ textarea {
 
   .woocommerce .price > .from,
   .woocommerce .price > del,
-  .woocommerce p.stars span a:after,
-  .woocommerce-page .price > .from,
-  .woocommerce-page .price > del,
-  .woocommerce-page p.stars span a:after {
+  .woocommerce p.stars span a:after {
     color: <?php echo $x_body_font_color; ?>;
   }
 

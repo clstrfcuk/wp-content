@@ -3,7 +3,7 @@
 // Feature Box
 // =============================================================================
 
-function x_shortcode_feature_box( $atts ) {
+function x_shortcode_feature_box( $atts, $content = '' ) {
   extract( shortcode_atts( array(
     'id'                       => '',
     'class'                    => '',
@@ -39,6 +39,16 @@ function x_shortcode_feature_box( $atts ) {
     'connector_animation'      => ''
   ), $atts, 'x_feature_box' ) );
 
+	//
+	// Allow text attribute to be used instead of content.
+	//
+
+	if ( '' == $content && '' != $text ) {
+		$content = wp_specialchars_decode( $text, ENT_QUOTES );
+	}
+
+	$title = wp_specialchars_decode( $title, ENT_QUOTES );
+
   $id                       = ( $id                       != ''      ) ? 'id="' . esc_attr( $id ) . '"' : '';
   $class                    = ( $class                    != ''      ) ? 'x-feature-box ' . esc_attr( $class ) : 'x-feature-box';
   $style                    = ( $style                    != ''      ) ? $style : '';
@@ -53,9 +63,7 @@ function x_shortcode_feature_box( $atts ) {
   $graphic_animation        = ( $graphic_animation        != ''      ) ? $graphic_animation : 'none';
   $graphic_animation_offset = ( $graphic_animation_offset != ''      ) ? $graphic_animation_offset : '50';
   $graphic_animation_delay  = ( $graphic_animation_delay  != ''      ) ? $graphic_animation_delay : '0';
-  $title                    = ( $title                    != ''      ) ? $title : 'Feature Box Title';
   $title_color              = ( $title_color              != ''      ) ? $title_color : '';
-  $text                     = ( $text                     != ''      ) ? $text : 'This is where the text for your feature box should go. It&apos;s best to keep it short and sweet.';
   $text_color               = ( $text_color               != ''      ) ? $text_color : '';
   $link_text                = ( $link_text                != ''      ) ? $link_text : '';
   $link_color               = ( $link_color               != ''      ) ? ' style="color: ' . $link_color . ';"' : '';
@@ -190,9 +198,9 @@ function x_shortcode_feature_box( $atts ) {
   $text_color  = ( $text_color  != '' ) ? ' style="color: ' . $text_color . ';"' : '';
   $link        = ( $link_text   != '' ) ? ' <a href="' . $href . '" title="' . $href_title . '"' . $href_target . $link_color . '>' . $link_text . '</a>' : '';
 
-  $content = '<div class="x-feature-box-content"' . $side_align_style . '>'
+  $output = '<div class="x-feature-box-content"' . $side_align_style . '>'
              . '<h4 class="x-feature-box-title"' . $title_color . '>' . $title . '</h4>'
-             . '<p class="x-feature-box-text"' . $text_color . '>' . do_shortcode( $text ) . $link . '</p>'
+             . '<p class="x-feature-box-text"' . $text_color . '>' . do_shortcode( $content ) . $link . '</p>'
            . '</div>';
 
 
@@ -216,7 +224,7 @@ function x_shortcode_feature_box( $atts ) {
 
   $data            = cs_generate_data_attributes( 'feature_box', $js_params );
   $element         = ( $child   == 'true'  ) ? 'li' : 'div';
-  $ordered_content = ( $align_h == 'right' ) ? $content . $graphic : $graphic . $content;
+  $ordered_content = ( $align_h == 'right' ) ? $output . $graphic : $graphic . $output;
   $align_h         = ' ' . $align_h . '-text';
   $align_v         = ' ' . $align_v . '-text';
 

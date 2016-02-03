@@ -26,6 +26,7 @@ function x_shortcode_block_grid( $atts, $content = null ) {
 }
 
 add_shortcode( 'x_block_grid', 'x_shortcode_block_grid' );
+add_shortcode( 'cs_block_grid', 'x_shortcode_block_grid' );
 
 
 
@@ -49,3 +50,4 @@ function x_shortcode_block_grid_item( $atts, $content = null ) {
 }
 
 add_shortcode( 'x_block_grid_item', 'x_shortcode_block_grid_item' );
+add_shortcode( 'cs_block_grid_item', 'x_shortcode_block_grid_item' );

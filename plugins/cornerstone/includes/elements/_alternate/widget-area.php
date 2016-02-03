@@ -20,22 +20,25 @@ class CS_Widget_Area extends Cornerstone_Element_Base {
     $choices = array();
     $choices[] = array( 'value' => 'none', 'label' => __( 'None', csl18n() ) );
 
-    $registered_sidebars = wp_get_sidebars_widgets();
+    $sidebar_widgets = wp_get_sidebars_widgets();
+    if ( is_array( $wp_registered_sidebars ) ) {
 
-    foreach ($registered_sidebars as $id => $widgets) {
+	    foreach ($wp_registered_sidebars as $id => $value) {
 
-      if ($id == 'wp_inactive_widgets' || !isset($wp_registered_sidebars[$id])) continue;
+	      $choice = array( 'value' => $id, 'label' => $value['name'] );
 
-      $choice = array( 'value' => $id, 'label' => $wp_registered_sidebars[$id]['name'] );
+	      $widgets = ( isset($sidebar_widgets[$id])) ? count( $sidebar_widgets[$id] ) : 0;
 
-      if ( count( $widgets ) < 1 ) {
-        $format = (is_rtl()) ? ' %s ' . $choice['label'] : $choice['label'] . ' %s ';
-        $choice['label'] = sprintf( $format, __('(No widgets specified.)', csl18n() ) );
-        $choice['disabled'] = true;
-      }
+	      if ( $widgets < 1 ) {
+	        $format = (is_rtl()) ? ' %s ' . $choice['label'] : $choice['label'] . ' %s ';
+	        $choice['label'] = sprintf( $format, __('(No widgets specified.)', csl18n() ) );
+	        $choice['disabled'] = true;
+	      }
 
-      $choices[] = $choice;
-    }
+	      $choices[] = $choice;
+	    }
+
+	  }
 
     $this->addControl(
       'sidebar',

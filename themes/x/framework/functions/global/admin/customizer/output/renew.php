@@ -74,14 +74,9 @@ a:hover,
 
   .woocommerce .price > .amount,
   .woocommerce .price > ins > .amount,
-  .woocommerce-page .price > .amount,
-  .woocommerce-page .price > ins > .amount,
   .woocommerce li.product .entry-header h3 a:hover,
-  .woocommerce-page li.product .entry-header h3 a:hover,
   .woocommerce .star-rating:before,
-  .woocommerce-page .star-rating:before,
-  .woocommerce .star-rating span:before,
-  .woocommerce-page .star-rating span:before {
+  .woocommerce .star-rating span:before {
     color: <?php echo $x_site_link_color; ?>;
   }
 
@@ -99,9 +94,8 @@ li.bypostauthor > article.comment {
 
 <?php if ( X_WOOCOMMERCE_IS_ACTIVE ) : ?>
 
-  .woocommerce div.product .woocommerce-tabs .x-comments-area li.comment.bypostauthor .x-comment-header .star-rating-container,
-  .woocommerce-page div.product .woocommerce-tabs .x-comments-area li.comment.bypostauthor .x-comment-header .star-rating-container {
-    border-color: <?php echo $x_site_link_color; ?>;
+  .woocommerce li.comment.bypostauthor .star-rating-container {
+    border-color: <?php echo $x_site_link_color; ?> !important;
   }
 
 <?php endif; ?>
@@ -118,7 +112,7 @@ li.bypostauthor > article.comment {
 .x-skill-bar .bar,
 .x-pricing-column.featured h2,
 .h-comments-title small,
-.pagination a:hover,
+.x-pagination a:hover,
 .x-entry-share .x-share:hover,
 .entry-thumb,
 .widget_tag_cloud .tagcloud a:hover,
@@ -136,10 +130,8 @@ li.bypostauthor > article.comment {
 <?php if ( X_WOOCOMMERCE_IS_ACTIVE ) : ?>
 
   .woocommerce .onsale,
-  .woocommerce-page .onsale,
   .widget_price_filter .ui-slider .ui-slider-range,
-  .woocommerce div.product .woocommerce-tabs .x-comments-area li.comment.bypostauthor article.comment:before,
-  .woocommerce-page div.product .woocommerce-tabs .x-comments-area li.comment.bypostauthor article.comment:before {
+  .woocommerce #comments li.comment.bypostauthor article.comment:before {
     background-color: <?php echo $x_site_link_color; ?>;
   }
 
@@ -357,9 +349,6 @@ li.bypostauthor > article.comment {
   .woocommerce .price > .from,
   .woocommerce .price > del,
   .woocommerce p.stars span a:after,
-  .woocommerce-page .price > .from,
-  .woocommerce-page .price > del,
-  .woocommerce-page p.stars span a:after,
   .widget_price_filter .price_slider_amount .button,
   .widget_shopping_cart .buttons .button {
     color: <?php echo $x_body_font_color; ?>;
@@ -391,7 +380,7 @@ li.bypostauthor > article.comment {
   border-bottom-color: <?php echo $x_headings_font_color; ?>;
 }
 
-.pagination span.current,
+.x-pagination span.current,
 .x-portfolio-filters-menu,
 .widget_tag_cloud .tagcloud a,
 .h-feature-headline span i,

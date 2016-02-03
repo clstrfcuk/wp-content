@@ -88,7 +88,9 @@ class WP_Clean_Slate {
 		if ($this->options['showAdminBar'] == false) {
 			add_filter( 'show_admin_bar', '__return_false' );
 		} else {
-			_wp_admin_bar_init();
+			if ( !class_exists('WP_Admin_Bar') ) {
+				_wp_admin_bar_init();
+			}
 			add_action('wp_enqueue_scripts_clean', array( $this, 'adminBarEnqueue' ));
 		}
 

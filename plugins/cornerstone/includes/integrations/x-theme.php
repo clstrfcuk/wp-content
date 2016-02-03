@@ -17,7 +17,9 @@ class Cornerstone_Integration_X_Theme {
 	 * Theme integrations are loaded on the after_theme_setup hook
 	 */
 	public function __construct() {
+
 		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'cornerstone_load_preview', array( $this, 'load_preview' ) );
 		add_filter( 'cornerstone_config_common_default-settings', array( $this, 'addDefaultSettings' ) );
 
 		// Don't enqueue native styles
@@ -58,6 +60,8 @@ class Cornerstone_Integration_X_Theme {
 
 		add_action( 'admin_menu', array( $this, 'optionsPage' ) );
 
+		// Remove empty p and br HTML elements
+		add_filter( 'the_content', array( $this, 'cleanShortcodes' ) );
 
 		// Enqueue Legacy font classes
 		$settings = CS()->settings();
@@ -81,8 +85,10 @@ class Cornerstone_Integration_X_Theme {
 		//
 
 		// Mk2
-		cs_alias_shortcode( array( 'alert', 'x_alert' ), 'cs_alert', false );
-		cs_alias_shortcode( array( 'x_text' ), 'cs_text', false );
+		cs_alias_shortcode( array( 'alert', 'x_alert' ), 'cs_alert' );
+		cs_alias_shortcode( array( 'x_text' ), 'cs_text' );
+		cs_alias_shortcode( array( 'icon_list', 'x_icon_list' ), 'cs_icon_list' );
+		cs_alias_shortcode( array( 'icon_list_item', 'x_icon_list_item' ), 'cs_icon_list_item' );
 
 		// Mk1
 		cs_alias_shortcode( 'accordion',            'x_accordion', false );
@@ -108,8 +114,6 @@ class Cornerstone_Integration_X_Theme {
 		cs_alias_shortcode( 'google_map',           'x_google_map', false );
 		cs_alias_shortcode( 'google_map_marker',    'x_google_map_marker', false );
 		cs_alias_shortcode( 'highlight',            'x_highlight', false );
-		cs_alias_shortcode( 'icon_list',            'x_icon_list', false );
-		cs_alias_shortcode( 'icon_list_item',       'x_icon_list_item', false );
 		cs_alias_shortcode( 'icon',                 'x_icon', false );
 		cs_alias_shortcode( 'image',                'x_image', false );
 		cs_alias_shortcode( 'lightbox',             'x_lightbox', false );
@@ -192,7 +196,7 @@ class Cornerstone_Integration_X_Theme {
 	    'ethos'     => __( 'Ethos',  '__x__' )
 	  );
 
-	  $stack = x_get_stack();
+	  $stack = $this->x_get_stack();
 	  $stack_name = ( isset( $list_stacks[ $stack ] ) ) ? $list_stacks[ $stack ] : 'X';
 
 		printf(
@@ -204,9 +208,17 @@ class Cornerstone_Integration_X_Theme {
 	public function shortcodeGeneratorDemoURL( $attributes ) {
 
 	  if ( isset($attributes['demo']) )
-	    $attributes['demo'] = str_replace( 'integrity', x_get_stack(), $attributes['demo'] );
+	    $attributes['demo'] = str_replace( 'integrity', $this->x_get_stack(), $attributes['demo'] );
 
 	  return $attributes;
+	}
+
+	public function x_get_stack() {
+		// Some plugins abort the theme loading process in certain contexts.
+		// This provide a safe fallback for x_get_stack calls
+		if ( function_exists( 'x_get_stack' ) )
+			return x_get_stack();
+		return apply_filters( 'x_option_x_stack', get_option( 'x_stack', 'integrity' ) );
 	}
 
 	public function addDefaultSettings( $settings ) {
@@ -274,6 +286,13 @@ class Cornerstone_Integration_X_Theme {
 		);
 
 		return $info_items;
+	}
+
+	public function load_preview() {
+
+		if ( defined( 'X_VIDEO_LOCK_VERSION' ) )
+			remove_action( 'wp_footer', 'x_video_lock_output' );
+
 	}
 
 }

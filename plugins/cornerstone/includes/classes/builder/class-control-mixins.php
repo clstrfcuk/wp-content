@@ -307,8 +307,18 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
 
     }
 
-    if ( isset( $atts['visibility'] ) && is_array( $atts['visibility'] ) && count( $atts['visibility'] ) > 0 ) {
-      $classes = array_merge( $classes, $atts['visibility'] );
+    if ( isset( $atts['visibility'] ) ) {
+
+    	if ( is_array( $atts['visibility'] ) ) {
+    		$visibilty_classes = $atts['visibility'];
+    	} else {
+    		$visibilty_classes = explode(' ', $atts['visibility'] );
+    	}
+
+    	if ( count( $visibilty_classes ) > 0 ) {
+    		$classes = array_merge( $classes, $visibilty_classes );
+    	}
+
     }
 
     if ( isset( $atts['text_align'] ) && $atts['text_align'] != 'none' ) {

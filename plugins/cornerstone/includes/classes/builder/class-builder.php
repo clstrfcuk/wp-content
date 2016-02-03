@@ -1,7 +1,6 @@
 <?php
 /**
  * This class manages the primary editing interface for Cornerstone
- * It handles
  */
 class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 
@@ -9,7 +8,7 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 	private $templateLoader;
 	private $router;
 	public $mixins;
-	public $dependencies = array( 'Router', 'Control_Mixins', 'Builder_Renderer', 'Data_Controller' );
+	public $dependencies = array( 'Router', 'Control_Mixins', 'Data_Controller', 'Shortcode_Generator2' );
 
 	/**
 	 * Determine whether we are working in the iframe, or primary screen.
@@ -29,7 +28,7 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 	 */
 	public function load() {
 
-		if ( $this->isPreview() || !$this->isEditing() )
+		if ( $this->isPreview() || !$this->isEditing() || defined( 'IFRAME_REQUEST' ) || ( ( isset( $_REQUEST['wp_customize'] ) && 'on' == $_REQUEST['wp_customize'] ) ) )
 			return;
 
 		add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ), 10, 2);
@@ -52,7 +51,6 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 
 		// Additional filters
 		add_filter( 'wp_title', array( $this, 'title' ), 10, 3 );
-
 		add_filter( '_cornerstone_front_end', '__return_false' );
 	}
 
@@ -70,25 +68,13 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 	 */
 	public function dependencyEnqueues() {
 
-		Cornerstone_Code_Editor::enqueue();
+		Cornerstone_Code_Editor::instance()->register();
+		Cornerstone_Huebert::instance()->register();
 
-		wp_register_style( 'wp-color-picker', "/wp-admin/css/color-picker.min.css" );
-		wp_enqueue_style( 'wp-color-picker' );
-
-		wp_register_script( 'iris', admin_url('/js/iris.min.js'), array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ), '1.0.7', 1 );
-		wp_register_script( 'wp-color-picker', admin_url('/js/color-picker' . $this->plugin->common()->jsSuffix() ), array( 'iris' ), false, 1 );
-
-		// We're registering the native WordPress color picker for the front end, so we should use their localization
-		wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', array(
-			'clear' => __( 'Clear' ),
-			'defaultString' => __( 'Default' ),
-			'pick' => __( 'Select Color' ),
-			'current' => __( 'Current Color' ),
-		) );
+		wp_enqueue_script( 'cs-huebert' );
+		wp_enqueue_script( 'cs-code-editor' );
 
 		wp_enqueue_media();
-		wp_enqueue_script( 'wp-color-picker' );
-
 		$this->primeEditor();
 	}
 
@@ -100,7 +86,8 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 		wp_register_style( 'cs-lato', '//fonts.googleapis.com/css?family=Lato%3A300%2C400%2C700&subset=latin%2Clatin-ext' );
 		wp_register_style( 'cs-dashicons', "/wp-includes/css/dashicons.min.css" );
 		wp_enqueue_style( 'cs-styles', $this->plugin->css( 'admin/builder' ), array( 'open-sans', 'cs-lato', 'cs-dashicons' ), $this->plugin->version() );
-
+		wp_enqueue_style( 'cs-huebert-style' );
+		wp_enqueue_style( 'cs-code-editor-style' );
 	}
 
 
@@ -110,8 +97,6 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 	public function enqueueScripts() {
 
 		$this->plugin->component( 'Core_Scripts' )->register_scripts();
-
-		wp_register_script( 'cs-code-editor', $this->plugin->js( 'admin/code-editor' ), array( 'jquery' ), $this->plugin->version(), true );
 
 		// Register
 		wp_register_script(
@@ -126,6 +111,7 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 		wp_localize_script( 'cs-builder', 'csBuilderData', $this->get_config_data() );
 		wp_enqueue_script( 'cs-builder' );
 
+
 	}
 
 	/**
@@ -137,9 +123,9 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 
 		$settings = $this->plugin->settings();
 
-		return wp_parse_args( array(
+		return cs_booleanize( wp_parse_args( array(
 				'strings' => $this->plugin->config( 'builder/strings-builder' ),
-				'isPreview' => ( $this->isPreview() ) ? 'true' : 'false',
+				'isPreview' => $this->isPreview(),
 				'post' => $this->get_post_data(),
 				'dashboardEditUrl' => get_edit_post_link(),
 				'frontEndUrl' => get_the_permalink(),
@@ -149,10 +135,10 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 				'loginURL' => wp_login_url( get_permalink() ),
 				'scrollTopSelector' => apply_filters( 'cornerstone_scrolltop_selector', null ),
 				'savedLast' => get_the_modified_time('U'),
-				'visualEnhancements' => ($settings['visual_enhancements']) ? 'true' : 'false',
+				'visualEnhancements' => (bool) $settings['visual_enhancements'],
 				'keybindings' => $this->plugin->config( 'builder/keybindings' ) // filterable on: cornerstone_config_builder_keybindings
 			), apply_filters( 'cornerstone_config_data', array() )
-		);
+		) );
 
 	}
 

@@ -72,14 +72,14 @@ function x_addons_page_demo_content() {
                     <fieldset>
                       <legend class="screen-reader-text"><span>Import Posts</span></legend>
                       <label for="standard-demo-posts">
-                        <input name="standard-demo-posts" type="checkbox" id="standard-demo-posts" value="1">
+                        <input name="standard-demo-posts" type="checkbox" id="standard-demo-posts" value="yes">
                         <span>Import Posts</span>
                       </label>
                     </fieldset>
                     <fieldset>
                       <legend class="screen-reader-text"><span>Import Portfolio Items</span></legend>
                       <label for="standard-demo-portfolio-items">
-                        <input name="standard-demo-portfolio-items" type="checkbox" id="standard-demo-portfolio-items" value="1">
+                        <input name="standard-demo-portfolio-items" type="checkbox" id="standard-demo-portfolio-items" value="yes">
                         <span>Import Portfolio Items</span>
                       </label>
                     </fieldset>

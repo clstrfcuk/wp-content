@@ -101,6 +101,8 @@ class CS_Blockquote extends Cornerstone_Element_Base {
 
     extract( $atts );
 
+    $cite = cs_clean_shortcode_att( $cite );
+
     $shortcode = "[x_blockquote cite=\"$cite\" type=\"$align\"{$extra}]{$content}[/x_blockquote]";
 
     return $shortcode;

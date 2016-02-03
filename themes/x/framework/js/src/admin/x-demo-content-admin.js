@@ -104,6 +104,8 @@ jQuery( function($) {
       progress.simulateProgress();
       $('#x-addons-demo-content-submit').prop( 'disabled', true );
 
+      //
+
       this.standardProcess( function( response ){
 
         if ( response.success === false )
@@ -211,7 +213,7 @@ jQuery( function($) {
 
   });
 
-  $('form').on('submit', function( e ) {
+  $('form#x-demo-content-form').on('submit', function( e ) {
 
     var data, mode;
     e.preventDefault();
@@ -224,9 +226,11 @@ jQuery( function($) {
     data = { 'demo': $(this).find('select[name="'+ mode +'-demo"]').val() };
 
     if ( mode == 'standard' ) {
-      data.standard_posts           = $(this).find('input[name="posts"]:checked').val() || 'no';
-      data.standard_portfolio_items = $(this).find('input[name="portfolio-items"]:checked').val() || 'no';
+      data.standard_posts           = $(this).find('input[name="standard-demo-posts"]:checked').val() || 'no';
+      data.standard_portfolio_items = $(this).find('input[name="standard-demo-portfolio-items"]:checked').val() || 'no';
     }
+
+console.log(data);
 
     //
     // Confirm, then proceed to initiate AJAX request.

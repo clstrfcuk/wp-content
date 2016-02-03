@@ -11,8 +11,8 @@ class Cornerstone_Control {
 	public $priority;
 
 	protected $default_context = 'all';
-	protected $default_options = array();
 	protected $default_value = '';
+	protected $default_options = array();
 	protected static $control_classes;
 
 	final public static function factory( $name, $config ) {
@@ -91,16 +91,24 @@ class Cornerstone_Control {
 
 		if ( !isset( self::$control_classes ) ) {
 			self::$control_classes = apply_filters( 'cornerstone_control_types', array(
-				'choose' => 'Cornerstone_Control_Choose',
-				'dimensions' => 'Cornerstone_Control_Dimensions',
-				'info' => 'Cornerstone_Control_Info',
-				'sortable' => 'Cornerstone_Control_Sortable',
-				'text'     => 'Cornerstone_Control_Text',
-				'textarea' => 'Cornerstone_Control_Textarea',
+				'choose'       => 'Cornerstone_Control_Choose',
+				'color'        => 'Cornerstone_Control_Color',
+				'date'         => 'Cornerstone_Control_Date',
+				'dimensions'   => 'Cornerstone_Control_Dimensions',
+				'editor'       => 'Cornerstone_Control_Editor',
+				'icon-choose'  => 'Cornerstone_Control_Icon_Choose',
+				'image'        => 'Cornerstone_Control_Image',
+				'info'         => 'Cornerstone_Control_Info',
+				'multi-choose' => 'Cornerstone_Control_Multi_Choose',
+				'number'       => 'Cornerstone_Control_Number',
+				'sortable'     => 'Cornerstone_Control_Sortable',
+				'text'         => 'Cornerstone_Control_Text',
+				'textarea'     => 'Cornerstone_Control_Textarea',
+				'toggle'       => 'Cornerstone_Control_Toggle',
 			) );
 		}
 
-		$class_name = 'Cornerstone_Control';
+		$class_name = 'Cornerstone_Control_Undefined';
 
 		if ( isset(self::$control_classes[$type]) && class_exists( self::$control_classes[$type] ) ) {
 			$class_name = self::$control_classes[$type];
@@ -168,25 +176,67 @@ class Cornerstone_Control {
 		return $suggestion;
 	}
 
-	public function transform( $data ) {
+	public function transform_for_shortcode( $data ) {
 		return $data;
 	}
 
 	public function sanitize( $data ) {
+		return self::default_sanitize( $data );
+	}
+
+	public static function sanitize_html( $data ) {
 
 		if ( current_user_can( 'unfiltered_html' ) )
 			return $data;
 
-		if ( is_string( $item ) )
-			return wp_kses( $item, $this->ksesTags() );
-
-		return self::default_sanitize( $data );
+		return wp_kses( $data, self::ksesTags() );
 
 	}
 
-	public static function fallback_sanitize( $item ) {
-		if ( !is_scalar( $item ) )
+	public static function ksesTags( ) {
+
+		$tags = wp_kses_allowed_html( 'post' );
+
+		$tags['iframe'] = array (
+	    'align'       => true,
+	    'frameborder' => true,
+	    'height'      => true,
+	    'width'       => true,
+	    'sandbox'     => true,
+	    'seamless'    => true,
+	    'scrolling'   => true,
+	    'srcdoc'      => true,
+	    'src'         => true,
+	    'class'       => true,
+	    'id'          => true,
+	    'style'       => true,
+	    'border'      => true,
+	    'list'        => true //YouTube embeds
+		);
+
+		return $tags;
+
+	}
+
+	// Used in cases where a control doesn't specify a sanitization method,
+	// or a definition can not be identified
+	public static function default_sanitize( $item, $key = '' ) {
+
+		if ( is_bool( $item ) )
+			return $item;
+
+		if ( is_array( $item ) ) {
+			$sanitized = array();
+			foreach ($item as $key => $value) {
+				$key = ( is_int( $key ) ) ? $key : sanitize_text_field( $key );
+				$sanitized[$key] = self::default_sanitize( $value, $key );
+			}
+			return $sanitized;
+		}
+
+		if ( !is_scalar( $item ) || is_null( $item ) )
 			return '';
+
 		return sanitize_text_field( (string) $item );
 	}
 

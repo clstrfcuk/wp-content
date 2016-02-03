@@ -20,6 +20,9 @@ return array(
 		'ui' => array(
 			'title'   => __( 'Title', $td ),
 			'tooltip' => __( 'Shortcut for changing the title from within Cornerstone.', $td ),
+		),
+		'options' => array(
+			'notLive' => 'settings-wp-changed'
 		)
 	),
 
@@ -29,6 +32,7 @@ return array(
 			'title' => __( 'Status', csl18n() )
 		),
 		'options' => array(
+			'notLive' => 'settings-wp-changed',
 			'choices' => $definition->post_status_choices()
 		)
 	),
@@ -38,6 +42,9 @@ return array(
 		'ui' => array(
 			'title'   => __( 'Allow Comments', $td ),
 			'tooltip' => __( 'Opens or closes comments. Note: The comment form may not be shown if your chosen page template doesn&apost support them.', $td ),
+		),
+		'options' => array(
+			'notLive' => 'settings-wp-changed'
 		)
 	),
 
@@ -47,6 +54,7 @@ return array(
 			'title' => __( 'Parent Page', $td )
 		),
 		'options' => array(
+			'notLive' => 'settings-wp-changed',
 			'markup' => $definition->post_parent_markup()
 		)
 	),
@@ -57,6 +65,7 @@ return array(
 			'title' => __( 'Page Template', $td )
 		),
 		'options' => array(
+			'notLive' => 'settings-wp-changed',
 			'choices' => $definition->page_template_choices()
 		)
 	)

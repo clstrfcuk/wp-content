@@ -10,8 +10,9 @@
 //   01. Base Styles
 //   02. Generic Controls
 //   03. Slider
-//   04. Subtitles and Descriptions
-//   05. Hidden Elements
+//   04. Huebert
+//   05. Subtitles and Descriptions
+//   06. Hidden Elements
 // ========================================================================== */
 
 /* Base Styles
@@ -106,6 +107,15 @@
 
 .customize-control-slider .x-slider .ui-slider-handle:focus {
   outline: 0;
+}
+
+
+
+/* Huebert
+// ========================================================================== */
+
+.customize-control-huebert label {
+  cursor: default;
 }
 
 

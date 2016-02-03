@@ -1,9 +1,5 @@
 <?php
 
-/**
-// When creating your own elements, you will need to extend this class.
- */
-
 /* class My_Custom_Element extends from Cornerstone_Element */
 
 abstract class Cornerstone_Element {

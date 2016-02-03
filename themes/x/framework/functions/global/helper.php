@@ -173,6 +173,8 @@ function x_get_the_ID() {
     $id = get_option( 'page_for_posts' );
   } elseif ( x_is_shop() ) {
     $id = woocommerce_get_page_id( 'shop' );
+  } elseif ( is_404() ) {
+    $id = NULL;
   } else {
     $id = $post->ID;
   }

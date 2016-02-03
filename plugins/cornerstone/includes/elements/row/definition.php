@@ -13,7 +13,10 @@ class CSE_Row {
 	}
 
 	public function flags() {
-		return array( 'context' => '_layout' );
+		return array(
+			'context' => '_layout',
+			'dynamic_child' => true
+		);
 	}
 
 	public function _layout_defaults() {

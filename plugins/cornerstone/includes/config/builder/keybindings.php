@@ -12,7 +12,7 @@
  */
 
 return array(
-
-  'delete-confirm' => 'keypress:shift',
-
+	'delete-confirm' => 'keydown:shift',
+  'delete-release' => 'keyup:shift',
+	'skeleton-mode'  => 'mod+k',
 );

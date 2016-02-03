@@ -27,7 +27,7 @@ function x_shortcode_creative_cta( $atts ) { // 1
   $class          = ( $class          != '' ) ? 'x-creative-cta ' . esc_attr( $class ) : 'x-creative-cta';
   $style          = ( $style          != '' ) ? ' ' . $style : '';
   $padding        = ( $padding        != '' ) ? $padding : '35px';
-  $text           = ( $text           != '' ) ? $text : 'Place Your<br>Text Here';
+  $text           = ( $text           != '' ) ? wp_specialchars_decode( $text, ENT_QUOTES ) : 'Place Your<br>Text Here';
   $font_size      = ( $font_size      != '' ) ? $font_size : '36px';
   $icon           = ( $icon           != '' ) ? $icon : '';
   $icon_size      = ( $icon_size      != '' ) ? $icon_size : '36px';

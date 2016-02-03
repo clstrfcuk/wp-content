@@ -18,8 +18,8 @@
 // =============================================================================
 
 .rtl {
-  ul,
-  ol {
+  ul:not(.x-nav):not(.x-comments-list):not(.products),
+  ol:not(.x-nav):not(.x-comments-list):not(.products) {
     margin: 0 1.655em 1.313em 0;
   }
 }

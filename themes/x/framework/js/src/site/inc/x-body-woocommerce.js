@@ -15,6 +15,10 @@
 
 jQuery(document).ready(function($) {
 
+  //
+  // Notifications.
+  //
+
   var $notification = $('.x-cart-notification');
 
   if ( $notification.length > 0 ) {
@@ -34,5 +38,34 @@ jQuery(document).ready(function($) {
     });
 
   }
+
+
+  //
+  // Star ratings.
+  //
+
+  var $container = $('p.stars');
+  var $stars     = $container.find('a');
+
+  function starsLeave(e) {
+    if ( $container.hasClass('selected') ) {
+      $container.find('a.active').nextAll('a').removeClass('x-active');
+    } else {
+      $stars.removeClass('x-active');
+    }
+  }
+
+  function starClick(e) {
+    $(this).nextAll('a').removeClass('x-active');
+  }
+
+  function starOver(e) {
+    starsLeave();
+    $(this).addClass('x-active').prevAll('a').addClass('x-active');
+  }
+
+  $container.on('mouseleave', starsLeave);
+  $stars.on('click', starClick);
+  $stars.on('mouseover', starOver);
 
 });

@@ -3705,6 +3705,10 @@ xData.api.map('card', function( params ) {
     $card.toggleClass('flipped');
   });
 
+  $card.on('click', 'a', function(e) {
+  	e.stopPropagation();
+  });
+
   $card.on('mouseenter', function() {
     $card.addClass('flipped');
   });

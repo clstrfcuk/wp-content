@@ -108,6 +108,10 @@ if ( X_BUDDYPRESS_IS_ACTIVE ) {
   require_once( $plgn_path . '/buddypress.php' );
 }
 
+if ( X_CONVERTPLUG_IS_ACTIVE ) {
+  require_once( $plgn_path . '/convertplug.php' );
+}
+
 if ( X_ENVIRA_GALLERY_IS_ACTIVE ) {
   require_once( $plgn_path . '/envira-gallery.php' );
 }

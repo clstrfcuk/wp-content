@@ -16,6 +16,8 @@ class Cornerstone_Core_Scripts extends Cornerstone_Plugin_Component {
 
 	public function register_scripts() {
 
+		Cornerstone_Huebert::init();
+
 		$orchestrator = $this->plugin->component( 'Element_Orchestrator' );
 
 		// Register
@@ -29,15 +31,22 @@ class Cornerstone_Core_Scripts extends Cornerstone_Plugin_Component {
 
 		$definitions = cs_memoize( '_cornerstone_element_definitions', array( $orchestrator, 'getModels' ), 15 );
 
-		wp_localize_script( 'cs-core', 'csCoreData', array(
+		$icon_maps = wp_parse_args( array(
+			'elements' => add_query_arg( array( 'v' => $this->plugin->version() ), $this->plugin->url('assets/svg/dist/elements.svg') ),
+			'interface' => add_query_arg( array( 'v' => $this->plugin->version() ), $this->plugin->url('assets/svg/dist/interface.svg') ),
+		), apply_filters( 'cornerstone_icon_map', array() ) );
+
+		wp_localize_script( 'cs-core', 'csCoreData', cs_booleanize( array(
 			'ajaxUrl' => $this->plugin->component('Router')->get_ajax_url(),
 			'fallbackAjaxUrl' => $this->plugin->component('Router')->get_fallback_ajax_url(),
-			'debug' => ( $this->plugin->common()->isDebug() ) ? 'true' : 'false',
+			'useLegacyAjax' => $this->plugin->component('Router')->use_legacy_ajax(),
+			'debug' => ( $this->plugin->common()->isDebug() ),
 			'elementDefinitions' => $definitions,
-			'isRTL' => is_rtl() ? 'true' : 'false',
+			'isRTL' => is_rtl(),
 			'strings' => array( 'test' => 'test' ),
-			'unfilteredHTML' => current_user_can( 'unfiltered_html' ) ? 'true' : 'false'
-		) );
+			'unfilteredHTML' => current_user_can( 'unfiltered_html' ),
+			'iconMaps' => $icon_maps
+		) ) );
 
 	}
 }

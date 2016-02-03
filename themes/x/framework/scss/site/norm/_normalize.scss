@@ -37,20 +37,26 @@ figure,
 footer,
 header,
 hgroup,
+main,
+menu,
 nav,
-section {
+section,
+summary {
   display: block;
 }
 
 
 //
-// Corrects 'inline-block' display not defined in IE 8/9 & FF3.
+// 1. Correct `inline-block` display not defined in IE 8/9.
+// 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
 //
 
 audio,
 canvas,
+progress,
 video {
-  display: inline-block;
+  display: inline-block; // 1
+  vertical-align: baseline; // 2
 }
 
 
@@ -61,6 +67,7 @@ video {
 
 audio:not([controls]) {
   display: none;
+  height: 0;
 }
 
 
@@ -86,22 +93,19 @@ html {
 // Links
 // =============================================================================
 
-//
-// Focus states.
-//
+a {
+  text-decoration: none;
+  background-color: transparent;
+  @include transition($linkTransitions);
 
-a:focus {
-  @include tab-focus();
-}
+  &:focus {
+    @include tab-focus();
+  }
 
-
-//
-// :hover and :active states.
-//
-
-a:hover,
-a:active {
-  outline: 0;
+  &:hover,
+  &:active {
+    outline: 0 !important;
+  }
 }
 
 

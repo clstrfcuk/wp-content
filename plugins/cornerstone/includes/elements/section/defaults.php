@@ -19,6 +19,7 @@ return array(
 
 	'bg_type'           => 'none',
 	'bg_image'          => '',
+	'bg_color'          => '',
 	'bg_video'          => '',
 	'bg_pattern_toggle' => false,
 	'parallax'          => false,

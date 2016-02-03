@@ -158,17 +158,21 @@ class CS_Settings_General {
 		$update = array();
 
 		if ( isset( $data['post_title'] ) )
-      $update['post_title'] = $data['post_title'];
+    	$update['post_title'] = $data['post_title'];
 
     if ( isset( $data['allow_comments'] ) )
-    	$update['comment_status'] = ( $data['allow_comments'] == 'true' ) ? 'open' : 'closed';
+  		$update['comment_status'] = ( $data['allow_comments'] == 'true' ) ? 'open' : 'closed';
 
-    if ( isset( $data['post_status'] ) && current_user_can( $this->manager->post_type_object->cap->publish_posts ) )
+    if ( current_user_can( $this->manager->post_type_object->cap->publish_posts ) )
     	$update['post_status'] = $data['post_status'];
 
     if ( post_type_supports( $post->post_type, 'page-attributes' ) ) {
 
-      if ( isset( $data['page_template'] ) )
+    	$page_templates = wp_get_theme()->get_page_templates( $post );
+
+    	$update['page_template'] = 'default';
+
+      if ( isset( $data['page_template'] ) && isset( $page_templates[$data['page_template']] ) )
         $update['page_template'] = $data['page_template'];
 
       if ( isset( $data['post_parent'] ) )
@@ -200,7 +204,7 @@ class CS_Settings_General {
     if ( !empty( $update ) ) {
       $update['ID'] = $post->ID;
       $result = wp_update_post( $update, true );
-      //jsond($update);
+
       if ( is_wp_error( $result ) )
       	return $result;
     }

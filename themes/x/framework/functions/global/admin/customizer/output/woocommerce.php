@@ -11,7 +11,8 @@
 // -----------------------------------------------------------------------------
 //   01. Navbar Cart
 //   02. AJAX Add to Cart
-//   03. WooCommerce Widget Images
+//   03. Product Reviews
+//   04. WooCommerce Widget Images
 // =============================================================================
 
 ?>
@@ -117,6 +118,15 @@
     }
 
   <?php endif; ?>
+
+
+
+  /* Product Reviews
+  // ========================================================================== */
+
+  .woocommerce p.stars span a {
+    background-color: <?php echo $x_site_link_color; ?>;
+  }
 
 
 

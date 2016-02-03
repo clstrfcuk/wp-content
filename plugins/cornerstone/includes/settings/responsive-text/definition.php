@@ -33,8 +33,10 @@ class CS_Settings_Responsive_Text {
 		if ( isset( $this->manager->post_meta['_cornerstone_settings'] ) )
 			$settings = maybe_unserialize( $this->manager->post_meta['_cornerstone_settings'][0] );
 
-		if ( 'elements' == $key && isset( $settings['responsive_text'] ) )
-			return $settings['responsive_text'];
+		if ( 'elements' == $key && isset( $settings['responsive_text'] ) ) {
+			$controller = CS()->loadComponent( 'Data_Controller' );
+			return $controller->migrate($settings['responsive_text']);
+		}
 
 		return null;
 

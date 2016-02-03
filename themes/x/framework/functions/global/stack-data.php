@@ -129,12 +129,13 @@ endif;
 // Define Constants
 // =============================================================================
 
-define( 'X_VERSION', '4.3.0' );
+define( 'X_VERSION', '4.3.1' );
 define( 'X_TEMPLATE_PATH', get_template_directory() );
 define( 'X_TEMPLATE_URL', get_template_directory_uri() );
 define( 'X_BBPRESS_IS_ACTIVE', class_exists( 'bbPress' ) );
 define( 'X_BUDDYPRESS_IS_ACTIVE', class_exists( 'BuddyPress' ) );
 define( 'X_CONTACT_FORM_7_IS_ACTIVE', class_exists( 'WPCF7_ContactForm' ) );
+define( 'X_CONVERTPLUG_IS_ACTIVE', class_exists( 'Convert_Plug' ) );
 define( 'X_ENVIRA_GALLERY_IS_ACTIVE', class_exists( 'Envira_Gallery' ) );
 define( 'X_ESSENTIAL_GRID_IS_ACTIVE', class_exists( 'Essential_Grid' ) );
 define( 'X_GRAVITY_FORMS_IS_ACTIVE', class_exists( 'GFForms' ) );
@@ -408,7 +409,7 @@ $customizer_settings_data = array(
   'x_social_whatsapp'                                   => '',
   'x_social_soundcloud'                                 => '',
   'x_social_rss'                                        => '',
-  'x_social_open_graph'                                 => '1',
+  'x_social_open_graph'                                 => '',
   'x_social_fallback_image'                             => '',
   'x_icon_favicon'                                      => '',
   'x_icon_touch'                                        => '',

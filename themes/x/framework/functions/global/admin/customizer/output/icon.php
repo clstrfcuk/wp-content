@@ -53,8 +53,8 @@ h4 a:hover,
 h5 a:hover,
 h6 a:hover,
 #respond .required,
-.pagination a:hover,
-.pagination span.current,
+.x-pagination a:hover,
+.x-pagination span.current,
 .widget_tag_cloud .tagcloud a:hover,
 .widget_product_tag_cloud .tagcloud a:hover,
 .x-scroll-top:hover,
@@ -71,16 +71,10 @@ a:hover {
 
   .woocommerce .price > .amount,
   .woocommerce .price > ins > .amount,
-  .woocommerce-page .price > .amount,
-  .woocommerce-page .price > ins > .amount,
   .woocommerce li.product .entry-header h3 a:hover,
-  .woocommerce-page li.product .entry-header h3 a:hover,
   .woocommerce .star-rating:before,
-  .woocommerce-page .star-rating:before,
   .woocommerce .star-rating span:before,
-  .woocommerce-page .star-rating span:before,
-  .woocommerce .onsale,
-  .woocommerce-page .onsale {
+  .woocommerce .onsale {
     color: <?php echo $x_site_link_color; ?>;
   }
 
@@ -108,8 +102,8 @@ input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="color"]:focus,
 .uneditable-input:focus,
-.pagination a:hover,
-.pagination span.current,
+.x-pagination a:hover,
+.x-pagination span.current,
 .widget_tag_cloud .tagcloud a:hover,
 .widget_product_tag_cloud .tagcloud a:hover,
 .x-scroll-top:hover {
@@ -683,10 +677,7 @@ input[type="color"]:focus,
 
   .woocommerce .price > .from,
   .woocommerce .price > del,
-  .woocommerce p.stars span a:after,
-  .woocommerce-page .price > .from,
-  .woocommerce-page .price > del,
-  .woocommerce-page p.stars span a:after {
+  .woocommerce p.stars span a:after {
     color: <?php echo $x_body_font_color; ?>;
   }
 

@@ -12,22 +12,15 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 	 */
 	public function setup() {
 
-		// Load Shortcodes
-		$this->load();
-
 		// Enqueue Scripts & Styles
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'styles' ) );
 		add_action( 'template_redirect', array( $this,  'postLoaded' ), 9998, 0 );
 
-		// Remove empty p and br HTML elements
-		add_filter( 'the_content', array( $this, 'cleanShortcodes' ) );
-
 		// Add Body Class
 		add_filter( 'body_class', array( $this, 'addBodyClass' ), 10002 );
 
-		do_action( 'cornerstone_shortcodes_loaded' );
 	}
 
 	/**
@@ -60,26 +53,6 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 
 	}
 
-	/**
-	 * Autoload shortcode definitions
-	 */
-	public function load() {
-
-		// Load Shortcodes
-		$path = $this->path( 'includes/shortcodes/' );
-		foreach ( glob("$path*.php") as $filename ) {
-
-			if ( !file_exists( $filename) ) continue;
-
-			$words = explode('-', str_replace('.php', '', basename($filename) ) );
-			if ( strpos($words[0], '_') === 0 ) continue;
-
-			require_once( $filename );
-
-		}
-
-	}
-
 	public function postLoaded() {
 
 		if ( apply_filters( '_cornerstone_front_end', true ) ) {
@@ -91,21 +64,6 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 		$this->postSettings = ( is_array( $postSettings ) ) ? $postSettings : array();
 
 	}
-
-	/**
-	 * Remove empty <p> and <br> from around shortcodes
-	 */
-	public function cleanShortcodes( $content ) {
-
-    $array = array (
-      '<p>['    => '[',
-      ']</p>'   => ']',
-      ']<br />' => ']'
-    );
-
-    return strtr( $content, $array );
-
-  }
 
   /**
 	 * Add Body class from Cornerstone Version number

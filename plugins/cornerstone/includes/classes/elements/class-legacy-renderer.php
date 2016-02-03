@@ -104,6 +104,10 @@ class Cornerstone_Legacy_Renderer {
 
 		$data = wp_parse_args( $data, $element->get_defaults() );
 
+		if ( isset( $data['_csmeta'] ) ) {
+			unset( $data['_csmeta'] );
+		}
+
 		// Recursively apply to child collections
 		if (isset($data['elements']) && count( $data['elements'] ) > 0 ) {
 
@@ -121,13 +125,6 @@ class Cornerstone_Legacy_Renderer {
 			$data['id'] = $data['custom_id'];
 			unset($data['custom_id']);
 		}
-
-		// Get around id being a reserved keyword. This way we can still use it in render methods for elements
-		if ( isset( $data['custom_id'] ) )
-			$data['id'] = $data['custom_id'];
-
-		$data['builder'] = !$saving;
-
 
 		// Format data before rendering
 		foreach ($data as $key => $item) {
@@ -150,9 +147,8 @@ class Cornerstone_Legacy_Renderer {
 			}
 
 			// Secure HTML from unworthy users
-			if ( is_string( $item ) && !current_user_can( 'unfiltered_html' ) ) {
-
-				$data[$key] = wp_kses( $item, $this->ksesTags() );
+			if ( is_string( $item ) ) {
+				$data[$key] = Cornerstone_Control::sanitize_html( $item );
 				continue;
 			}
 

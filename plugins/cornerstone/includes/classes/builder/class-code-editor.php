@@ -10,11 +10,14 @@ class Cornerstone_Code_Editor {
   }
 
   public static function instance() {
+  	if ( !isset( self::$instance ) ) {
+      self::init();
+    }
     return self::$instance;
   }
 
   function __construct() {
-    $this->register();
+    add_action( is_admin() ? 'admin_enqueue_scripts' : 'wp_enqueue_scripts', array( $this, 'register' ) );
   }
 
   public function register() {

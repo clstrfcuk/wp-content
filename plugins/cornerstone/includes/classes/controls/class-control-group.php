@@ -77,18 +77,18 @@ class Cornerstone_Control_Group {
 	}
 
 	public function filter_atts_for_shortcode( $atts ) {
+		return $this->get_transformed_atts( $this->filter_atts_by_context( $atts, 'design', false ) );
+	}
 
-		$keys = $this->filter_atts_by_context( $atts, 'design', false );
-		$controls = $this->get_controls_by_keys( array_keys( $keys ) );
+	public function get_transformed_atts( $atts ) {
+
+		$controls = $this->get_controls_by_keys( array_keys( $atts ) );
 
 		foreach ($atts as $key => $value) {
-			if ( in_array( $key, $this->uncontrolled ) )
-				continue;
 			if ( isset($controls[$key] ) ) {
-				$atts[$key] = $controls[$key]->transform( $value );
+				$atts[$key] = $controls[$key]->transform_for_shortcode( $value );
 				continue;
 			}
-			unset($atts[$key]);
 		}
 
 		return $atts;
@@ -96,9 +96,21 @@ class Cornerstone_Control_Group {
 	}
 
 	public function filter_atts_by_context( $data, $context, $op = true ) {
+
+		// Remember any uncontrolled items
+		$diff = array_diff( array_keys( $data ), $this->get_control_keys() );
+
+		// Filter out known controls based on context
 		$this->filter_keys = $this->get_keys_by_context( $context, $op );
 		$this->filter_op = true;
-		return cs_array_filter_use_keys( $data, array( $this, '_key_filter' ) );
+		$filtered = cs_array_filter_use_keys( $data, array( $this, '_key_filter' ) );
+
+		// Allow uncontrolled items to passthrough.
+		foreach ( $diff as $key ) {
+			$filtered[$key] = $data[$key];
+		}
+
+		return $filtered;
 	}
 
 	public function get_keys_by_context( $context, $op = true ) {
@@ -131,7 +143,7 @@ class Cornerstone_Control_Group {
 
 		foreach ($data as $key => $value) {
 			if ( $key == 'elements' ) continue;
-			$data[$key] = ( isset($controls[$key] ) ) ? $controls[$key]->sanitize( $value ) : Cornerstone_Control::fallback_sanitize( $value );
+			$data[$key] = ( isset($controls[$key] ) ) ? $controls[$key]->sanitize( $value ) : Cornerstone_Control::default_sanitize( $value, $key );
 		}
 
 		return $data;
@@ -149,6 +161,14 @@ class Cornerstone_Control_Group {
 
 		return $data;
 
+	}
+
+	public function get_control_keys() {
+		$keys = array();
+		foreach ( $this->controls as $control ) {
+			$keys[] = $control->key;
+		}
+		return $keys;
 	}
 
 	public function get_controls_by_keys( $key_list = array() ) {

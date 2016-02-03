@@ -13,7 +13,10 @@ class CSE_Responsive_Text {
 	}
 
 	public function flags() {
-		return array( 'context' => '_internal' );
+		return array(
+			'context' => '_internal',
+			'child' => true
+		);
 	}
 
 	public function register_shortcode() {

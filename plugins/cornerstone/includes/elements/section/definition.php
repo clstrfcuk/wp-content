@@ -13,7 +13,13 @@ class CSE_Section {
 	}
 
 	public function flags() {
-		return array( 'context' => '_layout' );
+		return array(
+			'context' => '_layout',
+			'dynamic_child' => true,
+			'elements' => array(
+				'floor' => 1
+			)
+		);
 	}
 
 	public function _layout_defaults() {
@@ -37,7 +43,7 @@ class CSE_Section {
 
 		if ( isset($atts['bg_type'])  ) {
 
-			if ( $atts['bg_type'] == 'image' && isset($atts['bg_pattern_toggle']) && $atts['bg_pattern_toggle'] ) {
+			if ( $atts['bg_type'] == 'image' && isset( $atts['bg_pattern_toggle'] ) && $atts['bg_pattern_toggle'] == 'true' ) {
 				$atts['bg_pattern'] = $atts['bg_image'];
 				unset( $atts['bg_image'] );
 			}
@@ -49,6 +55,10 @@ class CSE_Section {
 			if ( $atts['bg_type'] != 'video' ) {
 				unset( $atts['bg_video'] );
 				unset( $atts['bg_video_poster'] );
+			}
+
+			if ( $atts['bg_type'] == 'none' ) {
+				unset( $atts['bg_color'] );
 			}
 
 			unset( $atts['bg_pattern_toggle'] );

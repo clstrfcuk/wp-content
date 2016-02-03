@@ -40,18 +40,8 @@ module.exports = Cornerstone.Mn.Behavior.extend({
 },{}],2:[function(require,module,exports){
 module.exports = Cornerstone.Mn.Behavior.extend({
 
-  defaults: {
-    message: cs.l18n('confirm-message'),
-    subtext: false,
-    yep: cs.l18n('confirm-yep'),
-    nope: cs.l18n('confirm-nope'),
-    classes: [],
-  },
-
   initialize: function() {
     this.listenTo(this.view, 'confirm:open', this.open );
-    this.listenTo(cs.confirm, 'accept', this.accept );
-    this.listenTo(cs.confirm, 'decline', this.decline );
   },
 
   events: function() {
@@ -62,16 +52,18 @@ module.exports = Cornerstone.Mn.Behavior.extend({
   },
 
   open: function() {
-    cs.confirm.trigger( 'open', _.extend( this.options, { view: this.view } ) );
+    cs.confirm.trigger( 'open', _.extend( this.options, {
+    	allowQuickConfirm: this.view.canQuickConfirm,
+    	accept: _.bind( this.accept, this ),
+    	decline: _.bind( this.decline, this )
+    } ), this.view );
   },
 
-  accept: function( viewID ) {
-    if (viewID != this.view.cid ) return;
+  accept: function() {
     this.view.triggerMethod('confirm:accept');
   },
 
-  decline: function( viewID ) {
-    if (viewID != this.view.cid ) return;
+  decline: function() {
     this.view.triggerMethod('confirm:decline');
   }
 
@@ -84,13 +76,13 @@ var Mousetrap = require('mousetrap')
 require('mousetrap/plugins/global-bind/mousetrap-global-bind');
 Cornerstone.Vendor.Mousetrap = Mousetrap;
 Cornerstone.Vendor.NProgress = require('nprogress');
-Cornerstone.Vendor.moment = require('moment');
+Cornerstone.Vendor.dragula = require('../vendor/dragula');
 require('perfect-scrollbar/jquery')(Backbone.$);
-require('../vendor/html.sortable');
 require('../vendor/pointer-events-polyfill');
 require('../vendor/rgbaster');
 require('../vendor/jquery.growl');
 require('../vendor/jquery.visible');
+Cornerstone.Vendor.HTMLHint = require('../vendor/htmlhint').HTMLHint;
 require('./utility/jquery.shadow-height');
 require('./utility/string-replace-all');
 
@@ -106,7 +98,6 @@ cs.updateRegistry( {
 		'template-loader',
 		'view-loader',
 		'model-loader',
-		'render-queue',
 		'keybindings',
 		'builder'
 	],
@@ -115,22 +106,24 @@ cs.updateRegistry( {
 		'post-handler',
 		'options',
 		'navigator',
+		'element-pane',
 		'template-manager',
 		'layout',
 		'layout-section',
 		'layout-templates',
 		'inspector',
-		'settings'
+		'settings',
+		'skeleton',
+		'element-manager',
 	],
-	preview: [ 'preview' ]
+	preview: [ 'preview', 'render-queue' ]
 } );
-
-// //cs.loadComponents( (cs.config( 'isPreview' )) ? 'preview' : 'editor' );
-},{"../vendor/html.sortable":113,"../vendor/jquery.growl":114,"../vendor/jquery.visible":115,"../vendor/pointer-events-polyfill":116,"../vendor/rgbaster":117,"./components":22,"./utility/jquery.shadow-height":25,"./utility/string-replace-all":28,"moment":118,"mousetrap":119,"mousetrap/plugins/global-bind/mousetrap-global-bind":120,"nprogress":121,"perfect-scrollbar/jquery":122}],5:[function(require,module,exports){
+},{"../vendor/dragula":121,"../vendor/htmlhint":122,"../vendor/jquery.growl":123,"../vendor/jquery.visible":124,"../vendor/pointer-events-polyfill":125,"../vendor/rgbaster":126,"./components":25,"./utility/jquery.shadow-height":29,"./utility/string-replace-all":31,"mousetrap":135,"mousetrap/plugins/global-bind/mousetrap-global-bind":136,"nprogress":137,"perfect-scrollbar/jquery":138}],5:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
 
+		cs.data     = Backbone.Radio.channel( 'cs:data' );
 		cs.extra    = Backbone.Radio.channel( 'cs:extra' );
 		cs.observer = Backbone.Radio.channel( 'cs:observer' );
 	  cs.tooltips = Backbone.Radio.channel( 'cs:tooltips' );
@@ -138,7 +131,27 @@ module.exports = Cornerstone.Component.extend({
 	  cs.confirm  = Backbone.Radio.channel( 'cs:confirm' );
 	  cs.message  = Backbone.Radio.channel( 'cs:message' );
 
-		this.cs.loadComponents( ( this.cs.config( 'isPreview' ) == 'true' ) ? 'preview' : 'editor'  );
+		this.cs.loadComponents( this.cs.config( 'isPreview' ) ? 'preview' : 'editor'  );
+
+		this.browserDetection();
+
+
+		document.onmousemove = function ( e ) {
+      cs.mouse = _.pick( e, 'clientX', 'clientY', 'pageX', 'pageY' );
+    };
+	},
+
+	browserDetection: function() {
+		var b = Cornerstone.Vendor.bowser;
+
+		if ( b.msie ) {
+			Backbone.$('body').addClass( 'cs-browser-msie cs-browser-msie-' + parseInt(b.version) );
+		}
+
+		if ( b.msedge ) {
+			Backbone.$('body').addClass( 'cs-browser-msedge cs-browser-msedge-' + parseInt(b.version) );
+		}
+
 	}
 
 });
@@ -157,6 +170,7 @@ module.exports = Cornerstone.Component.extend({
 		this.listenTo( cs.events, 'editor:init', this.setup );
 		this.listenTo( cs.events, 'preview:iframe:reloaded', this.setup );
 
+		this.common();
 	},
 
 	setup: function() {
@@ -186,6 +200,20 @@ module.exports = Cornerstone.Component.extend({
 
     });
 
+  },
+
+  common: function() {
+
+	this.listenTo( cs.keybind, 'delete-confirm', function(){
+			cs.data.reply('delete:confirm:key', true );
+			cs.events.trigger( 'delete:confirm:key', true );
+	});
+
+	this.listenTo( cs.keybind, 'delete-release', function(){
+		cs.data.reply('delete:confirm:key', false );
+		cs.events.trigger( 'delete:confirm:key', false );
+	});
+
   }
 
 });
@@ -200,15 +228,10 @@ module.exports = Cornerstone.Component.extend({
     this.Behaviors = require('../../behaviors')
     Cornerstone.Mn.Behaviors.behaviorsLookup = _.bind( function() { return this.Behaviors; }, this );
 
-    /**
-     * Use Custom Template Renderer with Marionette
-     */
-    Cornerstone.Mn.Renderer = require('../../utility/renderer');
-
 	},
 
 });
-},{"../../behaviors":3,"../../utility/renderer":26}],8:[function(require,module,exports){
+},{"../../behaviors":3}],8:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -235,11 +258,10 @@ module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
 
-		cs.data = Backbone.Radio.channel( 'cs:data' );
-
 		cs.render = this;
 		this.cache = {};
 		this.jobs = {};
+		this.timing = {};
 
 		var delay = parseInt( cs.config( 'remoteRenderDelay' ), 10 );
 		this.run = _.debounce( _.bind( this.run, this ), delay );
@@ -260,12 +282,6 @@ module.exports = Cornerstone.Component.extend({
 
 		this.trigger( 'add', model );
 
-		if ( model.shadow ) {
-			if ( this.cache[model.shadow] ) this.cache[model.cid] = _.clone( this.cache[model.shadow] );
-			delete model.shadow;
-			return;
-		}
-
 		this.queue( model.cid, model.definition.get('flags')._v, model.toJSON(), function( response ){
 			this.cache[model.cid] = response;
 			model.trigger('remote:render');
@@ -273,6 +289,27 @@ module.exports = Cornerstone.Component.extend({
 
 	},
 
+	preRender: function( type ) {
+
+		var key = 'new:' + type;
+		if ( this.cache[key] ) return;
+
+		var el = cs.elementLibrary.lookup( type );
+
+		var newModel = new Cornerstone.Models.Element( { _type: type } );
+		var data = newModel.toJSON();
+		delete newModel;
+
+		this.queue( key, el.get( 'flags' )._v, data, function( response ){
+			this.cache[key] = response;
+		});
+
+	},
+
+	shadow: function( model, original ) {
+		var cache = this.cache[original];
+		if ( cache ) this.cache[model.cid] = _.clone( cache );
+	},
 
 	getCache: function( model ) {
 		var cache = this.cache[model.cid];
@@ -284,7 +321,9 @@ module.exports = Cornerstone.Component.extend({
 	},
 
 	queue: function( id, provider, data, callback ) {
-		this.jobs[ id ] = { data: data, provider: provider, callback: callback };
+		var timestamp = Date.now();
+		this.timing[id] = timestamp;
+		this.jobs[ id ] = { data: data, provider: provider, ts: timestamp, callback: callback };
 		this.run();
 	},
 
@@ -293,7 +332,7 @@ module.exports = Cornerstone.Component.extend({
 		if (!data) {
 
 			var batch = _.map( this.jobs, function( value, key ) {
-				return { jobID: key, provider: value.provider, data: value.data || {} };
+				return { jobID: key, ts: value.ts, provider: value.provider, data: value.data || {} };
 			});
 
 			data = {
@@ -320,7 +359,10 @@ module.exports = Cornerstone.Component.extend({
 				}, this ).concat( _.map( response.jobs, function( job, jobID) {
 					return _.bind( function( next ) {
 
-						var registeredJob = this.registeredJobs[ jobID ];
+						if ( job.ts < this.timing[jobID] ) {
+							next(); return;
+						}
+
 						if ( job.markup.indexOf('%%TMPL%%') == 0 ) {
 							job.markup = job.markup.replace('%%TMPL%%','');
 							job.markup = _.template(job.markup);
@@ -329,8 +371,11 @@ module.exports = Cornerstone.Component.extend({
 							job.markup = cs.template( 'empty-element' );
 						}
 
-						registeredJob.callback.call( this, job.markup );
-						delete this.registeredJobs[ jobID ];
+						if ( this.registeredJobs[ jobID ] && !this.jobs[ jobID ] ) {
+							this.registeredJobs[ jobID ].callback.call( this, job.markup );
+							delete this.registeredJobs[ jobID ];
+						}
+
 						next();
 					}, this );
 				}, this ) ) ).done( _.bind( function(message){
@@ -369,12 +414,7 @@ module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
 
-		/**
-     * Load Templates & Icons
-     */
-
-    this.cs.Templates = (this.cs.Config.isPreview == "true") ? require('../../../tmp/templates-elements.js') : require('../../../tmp/templates-builder.js');
-    this.cs.Icons = require('../../../tmp/templates-svg.js');
+    this.cs.loadTemplates( (this.cs.Config.isPreview) ? require('../../../tmp/templates-elements.js') : require('../../../tmp/templates-builder.js') );
 
     this.listenTo( cs.events, 'editor:init', this.populateIcons );
 
@@ -394,17 +434,16 @@ module.exports = Cornerstone.Component.extend({
 	}
 
 });
-},{"../../../tmp/templates-builder.js":110,"../../../tmp/templates-elements.js":111,"../../../tmp/templates-svg.js":112}],11:[function(require,module,exports){
+},{"../../../tmp/templates-builder.js":118,"../../../tmp/templates-elements.js":119}],11:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
 		this.listenTo( cs.events, 'editor:init', this.registerControlViews );
+		this.listenTo( cs.events, 'editor:init', this.registerSkeletonViews );
 		this.listenTo( cs.events, 'preview:init', this.registerElementViews );
 	},
 
 	registerElementViews: function() {
-
-    var base = require('../../views/elements/base');
 
     window.Cornerstone.ElementViews = {
       Base: require('../../views/preview/base')
@@ -412,6 +451,15 @@ module.exports = Cornerstone.Component.extend({
 
     _.extend( window.Cornerstone.ElementViews, require('../../views/preview') );
     cs.events.trigger( 'register:element:views' );
+
+	},
+
+	registerSkeletonViews: function() {
+
+
+    window.Cornerstone.SkeletonViews = { Base: require('../../views/skeleton/base') };
+    _.extend( window.Cornerstone.SkeletonViews, require('../../views/skeleton') );
+    cs.events.trigger( 'register:skeleton:views' );
 
 	},
 
@@ -427,8 +475,12 @@ module.exports = Cornerstone.Component.extend({
     return Cornerstone.ElementViews[id] || Cornerstone.ElementViews.Base;
   },
 
+  skeletonLookup: function ( id ) {
+    return Cornerstone.SkeletonViews[id] || Cornerstone.SkeletonViews.Base;
+  },
+
 });
-},{"../../views/controls":43,"../../views/controls/base":30,"../../views/elements/base":70,"../../views/preview":100,"../../views/preview/base":94}],12:[function(require,module,exports){
+},{"../../views/controls":46,"../../views/controls/base":32,"../../views/preview":103,"../../views/preview/base":97,"../../views/skeleton":115,"../../views/skeleton/base":113}],12:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function( options ) {
@@ -445,11 +497,15 @@ module.exports = Cornerstone.Component.extend({
     Backbone.$(window).load(_.bind(this.loadView, this));
     Backbone.$('#preview-frame').load(_.bind(this.loadIFrame, this))
 
+    Backbone.$(window).resize( function(e) {
+    	cs.events.trigger( 'editor:resize', e )
+    } );
+
 		cs.events.trigger( 'editor:init' );
 
 	},
 
-	primed: function() {
+	primed: function( late ) {
 
 		this.clearPreloader();
 
@@ -458,6 +514,8 @@ module.exports = Cornerstone.Component.extend({
 		cs.global.reply( 'editor:ready', true );
 		cs.global.trigger( 'editor:ready' );
 
+		if ( late )
+			cs.message.trigger( 'notice', cs.l18n( 'preview-late') );
 
 	},
 
@@ -476,9 +534,11 @@ module.exports = Cornerstone.Component.extend({
   		return;
   	}
 
+  	console.log( 'Unable to initialize preview. iFrame failed to load.' );
+
   	_.defer(function(){
   		cs.global.trigger( 'preview:primed' );
-  		cs.message.trigger( 'error', cs.l18n( 'preview-failure') );
+  		cs.global.trigger( 'preview:failure', cs.l18n( 'preview-failure1') );
   	});
 
 	},
@@ -498,7 +558,107 @@ module.exports = Cornerstone.Component.extend({
   }
 
 });
-},{"../../utility/custom-media-manager":24,"../../views/main/editor":87}],13:[function(require,module,exports){
+},{"../../utility/custom-media-manager":27,"../../views/main/editor":89}],13:[function(require,module,exports){
+module.exports = Cornerstone.Component.extend({
+
+	initialize: function( ) {
+		cs.elementLibrary.registerContext( 'builder', this.elementFilter );
+	},
+
+	elementFilter: function( child ) {
+
+  	// Hide inactive or out-of-context
+		var flags = child.get('flags');
+		if ( child.get('active') == false || !_.contains( ['builder','all'], flags.context ) || flags.child  )
+			return false;
+
+  	return true;
+  },
+
+});
+},{}],14:[function(require,module,exports){
+module.exports = Cornerstone.Component.extend({
+
+	initialize: function( ) {
+		this.listenTo( cs.global, 'element:delete', this.elDelete );
+		this.listenTo( cs.global, 'element:erase', this.erase );
+		this.listenTo( cs.global, 'element:duplicate', this.duplicate );
+	},
+
+	elDelete: function( model, opts ) {
+
+		var opts = opts || {};
+
+		if ( model.collection && model.collection.parent && model.collection.parent.atFloor() ) {
+
+			if ( opts.noConfirm ) {
+				elReset();
+			} else {
+				cs.confirm.trigger('open', {
+					message: cs.l18n('sortable-at-floor'),
+					accept: elReset,
+					allowQuickConfirm: true,
+				});
+			}
+
+			return;
+		}
+
+		if ( opts.noConfirm ) {
+			elDestroy();
+		} else {
+
+			var message = ( model.elements && model.elements.length > 0 )  ? 'confirm-element-delete-contents' : 'confirm-element-delete';
+
+			cs.confirm.trigger( 'open', {
+				message: cs.l18n( message ).replace( '%s', model.definition.get( 'ui' ).title ),
+				accept: elDestroy,
+				allowQuickConfirm: true
+			});
+		}
+
+		function elDestroy() {
+			_.defer(function(){
+				cs.elements.trigger( 'delete', { model: model } );
+			});
+		}
+
+		function elReset() {
+			_.defer(function(){
+				// This should look more like:
+				// cs.elements.trigger( 'add:item', root, { _type: 'row' } );
+				// ...allowing a title to be derrived here, or any other attributes.
+				cs.elements.trigger( 'add:item', model.get('_type'), model.collection.parent );
+				cs.elements.trigger( 'delete', { model: model } );
+			});
+		}
+	},
+
+	erase: function( model, opts ) {
+		var opts = opts || {};
+		if ( opts.noConfirm ) {
+			elDestroy();
+		} else {
+			cs.confirm.trigger('open', {
+				message: cs.l18n('columns-erase-confirm'),
+				accept: elDestroy,
+				allowQuickConfirm: true,
+			});
+		}
+
+		function elDestroy() {
+			_.defer(function(){
+				cs.elements.trigger( 'erase', { model: model } );
+			});
+		}
+	},
+
+	duplicate: function( model ) {
+		cs.elements.trigger( 'duplicate', model );
+	}
+
+});
+},{}],15:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -506,54 +666,65 @@ module.exports = Cornerstone.Component.extend({
 		this.inspect = {
 			primary: new Cornerstone.InspectionSupervisor(),
 			secondary: new Cornerstone.InspectionSupervisor(),
-			expansion: new Cornerstone.InspectionSupervisor(),
+			expansion: new Cornerstone.InspectionSupervisor()
 		};
 
-		this.clearElement();
-		this.clearChildElement();
+		this.resetInspector( 'primary' );
 
 		this.listenTo( cs.events, 'inspect:element', this.inspectElement );
-		this.listenTo( cs.events, 'inspect:child:element', this.inspectChildElement );
-		this.listenTo( cs.events, 'inspect:clear', this.clearElement );
-		this.listenTo( cs.events, 'inspect:child:clear', this.clearChildElement );
 
 		this.listenTo( cs.events, 'expand:control', this.expansionSource );
 		this.listenTo( cs.events, 'expand:close', this.expansionClose );
 
-		cs.navigate.reply( 'inspector:heading', cs.l18n('inspector-heading') )
+		cs.navigate.reply( 'inspector:heading', cs.l18n( 'inspector-heading' ) );
 
 	},
 
-	inspectElement: function( model ) {
-		this.updateInspector( 'primary', model );
-		cs.global.trigger( 'autoscroll', model.cid );
-	},
+	inspectElement: function( model, navigate, scroll ) {
 
-	inspectChildElement: function( model ) {
-		this.updateInspector( 'secondary', model );
-	},
+		var navigate = _.isUndefined( navigate ) ? true : navigate;
+		var scroll = scroll || true;
 
-	clearElement: function() {
-		this.clearChildElement();
-		this.resetInspector( 'primary' );
-	},
+		var primary = model;
+		var secondary = false;
 
-	clearChildElement: function() {
-		this.resetInspector( 'secondary' );
+		if ( model.definition.get( 'flags' ).child ) {
+
+			var parent = model.collection.getParent();
+
+			primary = ( ! parent.definition ) ? false : parent;
+			secondary = model;
+		}
+
+		if ( primary ) {
+			this.updateInspector( 'primary', primary );
+			if ( navigate ) cs.navigate.trigger( 'inspector:home' );
+			if ( scroll ) cs.global.trigger( 'autoscroll', primary.cid );
+		}
+
+		if ( cs.config( 'debug' ) ) cs.nowInspecting = primary;
+
+		if ( secondary ) {
+			this.updateInspector( 'secondary', secondary );
+			if ( navigate ) cs.navigate.trigger( 'inspector:item' );
+		}
+
 	},
 
 	resetInspector:function( mode ) {
 
-		this.updateInspector( mode, new Cornerstone.Models.Proxyable(), [], [] );
-
-		if ( mode == 'primary' )
+		if ( 'primary' == mode ) {
+			this.resetInspector( 'secondary' );
 			this.setHeading( false );
+		}
+
+		this.updateInspector( mode, new Cornerstone.Models.Proxyable(), [], [] );
 
 	},
 
 	expansionSource: function( source, name ) {
 
-		this.updateInspector( 'expansion', source, _.filter( source.definition.getControls(), function( control ){
+		this.updateInspector( 'expansion', source, _.filter( source.definition.getControls(), function( control ) {
 			return ( name == control.name );
 		} ) );
 
@@ -565,26 +736,33 @@ module.exports = Cornerstone.Component.extend({
 
 	updateInspector: function( level, source, controls, metaControls ) {
 
-		if (!this.inspect[level]) return;
+		if ( ! this.inspect[level] ) return;
 
+		var timer;
+		this.listenToOnce( source, 'imminent:replacement', function( newSource ) {
+			this.listenToOnce( newSource, 'created', function( model ) {
+				this.inspectElement( model, false );
+				clearTimeout( timer );
+			});
+		} );
 
-		this.listenToOnce( source, 'column:change', _.bind( function( newSource ) {
-			this.updateInspector( level, newSource );
-		}, this ) );
+		this.listenToOnce( source, 'destroy', function( newSource ) {
+			timer = setTimeout( _.bind( function() {
+				this.resetInspector( level, null );
+			}, this ), 5 );
+		} );
 
-		if ( !controls )
+		if ( ! controls )
 			controls = source.definition.getControls();
 
-		if ( !metaControls )
+		if ( ! metaControls )
 			metaControls = this.getMetaControls( level, source );
-
 
 		this.inspect[level].source( {
 			name: 'meta',
 			source: source,
 			controls: metaControls
 		} );
-
 
 		this.inspect[level].source( {
 			name: 'element',
@@ -594,23 +772,25 @@ module.exports = Cornerstone.Component.extend({
 
 		this.inspect[level].rebuildControls();
 
-		if ( level == 'primary' && source.definition ) {
-			this.setHeading( source.definition.get('ui').title );
+		if ( 'primary' == level && source.definition ) {
+			this.setHeading( source.definition.get( 'ui' ).title );
 		}
 
 	},
 
-	getMetaControls: function( level, source) {
+	getMetaControls: function( level, source ) {
 
 		var controls = [];
 
-		var ui = source.definition.get('ui');
-		var name = source.definition.get('name');
-		var internal = ( source.definition.get('flags').context == '_internal' );
+		var ui = source.definition.get( 'ui' );
+		var name = source.definition.get( 'name' );
+		var internal = ( '_internal' == source.definition.get( 'flags' ).context );
 
-		if ( level == 'primary' ) {
+		if ( 'primary' == level ) {
 
-			controls.push({ type: 'breadcrumbs' })
+			if ( 'settings' !== cs.navigate.request( 'active:pane' ) ) {
+				controls.push({ type: 'breadcrumbs' });
+			}
 
 			if ( ui.helpText ) {
 				controls.push( {
@@ -622,14 +802,10 @@ module.exports = Cornerstone.Component.extend({
 				} );
 			}
 
-			if ( !internal ) {
+			if ( ! internal ) {
 				var actionType = ( _.contains( [ 'section', 'row', 'column' ], name ) ) ? name : 'element';
 				controls.push( { type: actionType + '-actions' } );
 			}
-
-		}
-
-		if ( level == 'secondary' ) {
 
 		}
 
@@ -638,10 +814,10 @@ module.exports = Cornerstone.Component.extend({
 
 	setHeading: function( heading ) {
 
-		if ( !heading )
-			heading = cs.l18n('inspector-heading')
+		if ( ! heading )
+			heading = cs.l18n( 'inspector-heading' );
 
-		cs.navigate.reply( 'inspector:heading', heading )
+		cs.navigate.reply( 'inspector:heading', heading );
 		cs.navigate.trigger( 'refresh:inspector:heading' );
 
 	},
@@ -659,7 +835,8 @@ module.exports = Cornerstone.Component.extend({
 	}
 
 });
-},{}],14:[function(require,module,exports){
+
+},{}],16:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -667,7 +844,7 @@ module.exports = Cornerstone.Component.extend({
 	},
 
 });
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	nativeSections: [ 'themeco-pages', 'themeco-blocks' ],
@@ -786,7 +963,7 @@ module.exports = Cornerstone.Component.extend({
   }
 
 });
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -834,8 +1011,7 @@ module.exports = Cornerstone.Component.extend({
 		} ] );
 
 		cs.navigate.reply( 'layout:active:row', false );
-		this.listenTo( cs.events, 'inspect:layout:section', this.inspectSection );
-		this.listenTo( cs.events, 'inspect:layout:row', this.inspectRow );
+		this.listenTo( cs.events, 'inspect:layout', this.inspectorDetector );
 
 		this.listenTo( cs.events, 'add:section', function() {
 			cs.elements.trigger( 'add:item', 'section', cs.post.data, cs.l18n('section-numeric') );
@@ -844,7 +1020,7 @@ module.exports = Cornerstone.Component.extend({
 	},
 
 
-	inspectSection: function( section, activeRow ) {
+	inspectSection: function( section, activeRow, after ) {
 
 		if ( !section ) return;
 		if ( !activeRow ) activeRow = section.elements.first();
@@ -867,15 +1043,39 @@ module.exports = Cornerstone.Component.extend({
 
 		this.inspect.secondary.rebuildControls();
 
+		if ( _.isFunction( after ) ) after();
 	},
 
 	inspectRow: function( row ) {
 		if ( !row ) return;
 		this.inspectSection( row.collection.parent, row );
+	},
+
+	inspectorDetector: function( model, options ) {
+
+		var options = options || {};
+		var type = model.get('_type');
+
+		switch ( model.get('_type') ) {
+      case 'section':
+        this.inspectSection( model, null, after );
+        break;
+      case 'row':
+        this.inspectSection( model.collection.parent, model, after );
+        break;
+      case 'column':
+        this.inspectSection( model.collection.parent.collection.parent, model.collection.parent, after );
+        break;
+    }
+
+    function after() {
+    	if ( options.navigate ) cs.navigate.trigger( 'layout:rows' );
+    }
+
 	}
 
 });
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	panes: {
@@ -899,14 +1099,12 @@ module.exports = Cornerstone.Component.extend({
 		});
 
 		this.listenTo(  cs.global, 'auto:focus', _.debounce( function( key ){
-			console.log('FOCUS',key);
 			cs.navigate.reply( 'auto:focus', key );
 			cs.navigate.trigger( 'auto:focus', key );
 		},10, true ) );
 
     this.listenTo(  cs.global, 'inspect', function( model ){
-			cs.events.trigger( 'inspect:element', model );
-			cs.navigate.trigger( 'inspector:home' );
+			cs.events.trigger( 'inspect:element', model, true );
 			cs.confirm.trigger( 'abort' );
     });
 
@@ -941,95 +1139,32 @@ module.exports = Cornerstone.Component.extend({
 	}
 
 });
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
 
 		cs.options = Backbone.Radio.channel( 'cs:options' );
 
-		var editor_position = localStorage['cs_options_editor_position'];
-		var default_position = ( cs.config('isRTL') == 'true' ) ? 'right' : 'left';
+		cs.options.reply( 'help:text', ( localStorage['cs_options_help_text'] == 'false' ) ? false : true );
+		cs.options.reply( 'skeleton:mode', (localStorage['cs_options_skeleton_mode'] == 'true' ) );
+		cs.options.reply( 'adv:controls', true ); // always show
 
-		this.data = new Cornerstone.Models.Proxyable( {
-			show_help_text: (localStorage['cs_options_show_help_text'] == 'true' ),
-			editor_position: (editor_position) ? editor_position : default_position
-		} );
+		this.listenTo( cs.extra, 'toggle', function( item ) {
 
-		_.each( _.keys( this.data.attributes ), _.bind( function( key ) {
+			var toggled = !cs.options.request( item );
 
-			this.on('change:' + key, function( model, value ) {
-				if ( _.isBoolean( value) )
-					value = (value) ? 'true' : 'false';
-				localStorage['cs_options_' + key ] = value;
-			});
+			cs.options.reply( item, toggled );
+			cs.options.trigger( item, toggled );
 
-		}, this.data ) );
+			localStorage.setItem( 'cs_options_' + item.replaceAll(':','_'), (toggled) ? 'true' : 'false' );
 
-		this.listenTo( this.data, 'change:show_help_text', this.updateHelpText );
-		this.listenTo( this.data, 'change:editor_position', this.updateEditorPosition );
-
-		cs.data.reply( 'get:options', this.data );
-		cs.options.reply( 'help:text', this.data.get('show_help_text') );
-		cs.options.reply( 'editor:position', this.data.get('editor_position') );
-
-		// Always show from now on
-		cs.options.reply( 'adv:controls', true );
-
-		this.inspect = new Cornerstone.InspectionSupervisor( {
-			name: 'options',
-			source: this.data,
-			controls: [ {
-				name: 'show_help_text',
-				type: 'toggle',
-				ui: {
-					title: cs.l18n('options-help-text'),
-					message: cs.l18n('options-help-text-sub')
-				},
-				options: { helpText: false }
-			},
-			// {
-			// 	name: 'editor_position',
-			// 	type: 'choose',
-			// 	ui: {
-			// 		title: cs.l18n('options-editor-position'),
-			// 		message: cs.l18n('options-editor-position-sub')
-			// 	},
-			// 	options: {
-			// 		choices: [
-			// 			{ value: 'left', 'tooltip': cs.l18n('options-editor-position-left'), icon: cs.fontIcon( 'arrow-left' ) },
-			// 			{ value: 'right', 'tooltip': cs.l18n('options-editor-position-right'), icon: cs.fontIcon( 'arrow-right' ) },
-			// 		],
-			// 		helpText: false
-			// 	},
-			// }
-			]
-		});
-
-		this.inspect.controls.each(function(model){
-			model.optionExempt = true;
 		});
 
 	},
-
-	updateEditorPosition: function( model, value) {
-		cs.options.reply( 'editor:position', value );
-		cs.options.trigger( 'editor:position', value );
-		cs.options.trigger( 'changed', 'editor_position' );
-	},
-
-	updateHelpText: function( model, value ) {
-		cs.options.reply( 'help:text', value );
-		cs.options.trigger( 'help:text', value );
-		cs.options.trigger( 'changed', 'show_help_text' );
-	},
-
-	getModel: function() {
-		return this.data;
-	}
 
 });
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1086,7 +1221,7 @@ module.exports = Cornerstone.Component.extend({
       	cs.data.trigger( 'save:error', response );
       },
       always: function( response ) {
-      	cs.log(response);
+      	cs.log( 'save', response);
       	cs.data.trigger( 'save:response', response );
       	Cornerstone.Vendor.NProgress.done();
       }
@@ -1105,7 +1240,7 @@ module.exports = Cornerstone.Component.extend({
 	}
 
 });
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1215,7 +1350,69 @@ module.exports = Cornerstone.Component.extend({
 
 
 });
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
+module.exports = Cornerstone.Component.extend({
+
+	initialize: function() {
+
+		cs.data.reply( 'skeleton:preview:height', Backbone.$(window).height() );
+		this.enabled = cs.options.request( 'skeleton:mode' ) || false
+		this.toggle( this.enabled, true );
+
+		this.listenTo( cs.keybind, 'skeleton-mode', function(){
+			cs.extra.trigger( 'toggle', 'skeleton:mode' );
+		} );
+
+		this.listenTo( cs.options, 'skeleton:mode', function( state ){
+			this.toggle( state || undefined );
+		} )
+
+		this.listenTo( cs.global, 'preview:resize', function( dimensions ) {
+			var height = (dimensions.Body.height > 1) ? Math.min( dimensions.Window.height, dimensions.Body.height ) : dimensions.Window.height;
+			cs.data.reply( 'skeleton:preview:height', height );
+			cs.events.trigger( 'resize:skeleton' );
+		});
+
+		this.listenTo( cs.global, 'preview:failure', function( message ) {
+			this.toggle( true );
+			this.locked = true;
+			cs.message.trigger( 'error', message );
+			Backbone.$( 'body' ).addClass( 'cs-recovery-mode' );
+		} );
+
+	},
+
+	toggle: function( state, silent ) {
+
+		if ( this.locked ) {
+			cs.message.trigger( 'warning', cs.l18n( 'skeleton-locked' ) );
+			return;
+		}
+
+		if ( _.isUndefined( state ) )
+			state = !this.enabled;
+
+		this.enabled = state;
+
+		cs.options.reply( 'skeleton:mode', this.enabled );
+
+		if (!silent)
+			cs.events.trigger( 'toggle:skeleton:mode', this.enabled );
+
+		Backbone.$('body').toggleClass('cs-skeleton-active', this.enabled ).toggleClass('cs-skeleton-inactive', !this.enabled );
+
+		// if ( this.enabled ) {
+		// 	cs.events.trigger( 'resize:skeleton' );
+		// } else {
+		// 	Backbone.$('.cs-preview').removeAttr('style');
+		// }
+
+
+
+	}
+
+});
+},{}],24:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1270,12 +1467,24 @@ module.exports = Cornerstone.Component.extend({
     }
 
 
-    _.each( sections, function(section){
-      elements.create( section );
-    }, this );
+    cs.ajax( 'cs_template_migration', { elements: sections } , {
+      success: _.bind( function( response ) {
 
+        _.each( response.elements, function( section ) {
+		      elements.create( section );
+		    }, this );
 
-    cs.message.trigger( 'success', (format == 'page') ? cs.l18n( 'templates-page-updated') : cs.l18n( 'templates-block-inserted') );
+        cs.message.trigger( 'success', (format == 'page') ? cs.l18n( 'templates-page-updated') : cs.l18n( 'templates-block-inserted') );
+
+      }, this ),
+      error: function( response ) {
+        cs.message.trigger( 'error', cs.l18n( 'templates-error-import') );
+      },
+      always: function( response ) {
+      	cs.log( 'template_migration', response);
+      }
+    } );
+
   },
 
 
@@ -1293,6 +1502,8 @@ module.exports = Cornerstone.Component.extend({
       return newSection;
 
     } );
+
+
   },
 
 	save: function( type, title ) {
@@ -1312,7 +1523,7 @@ module.exports = Cornerstone.Component.extend({
         cs.message.trigger( 'error', cs.l18n( 'templates-error-save' ), 10000 );
       },
       always: function( response ) {
-      	cs.log(response);
+      	cs.log( 'save_template', response );
       }
     } );
   },
@@ -1339,7 +1550,7 @@ module.exports = Cornerstone.Component.extend({
         cs.message.trigger( 'error', cs.l18n( 'templates-error-delete' ), 10000 );
       },
       always: function( response ) {
-      	cs.log(response);
+      	cs.log( 'delete_template', response );
       }
     } );
   },
@@ -1368,7 +1579,7 @@ module.exports = Cornerstone.Component.extend({
   }
 
 });
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = {
 
 	// Common
@@ -1382,6 +1593,7 @@ module.exports = {
 
 	// Editor
 	'editor'           : require('./editor/editor'),
+	'element-pane'     : require('./editor/element-library'),
 	'navigator'        : require('./editor/navigator'),
 	'options'          : require('./editor/options'),
 	'layout'           : require('./editor/layout'),
@@ -1391,11 +1603,13 @@ module.exports = {
 	'post-handler'     : require('./editor/post-handler'),
 	'settings'         : require('./editor/settings'),
 	'template-manager' : require('./editor/template-manager'),
+	'skeleton'         : require('./editor/skeleton'),
+	'element-manager'  : require('./editor/element-manager'),
 
 	// Preview
 	'preview' : require('./preview/preview'),
 }
-},{"./common/builder":5,"./common/keybindings":6,"./common/mn-extensions":7,"./common/model-loader":8,"./common/render-queue":9,"./common/template-loader":10,"./common/view-loader":11,"./editor/editor":12,"./editor/inspector":13,"./editor/layout":16,"./editor/layout-section":14,"./editor/layout-templates":15,"./editor/navigator":17,"./editor/options":18,"./editor/post-handler":19,"./editor/settings":20,"./editor/template-manager":21,"./preview/preview":23}],23:[function(require,module,exports){
+},{"./common/builder":5,"./common/keybindings":6,"./common/mn-extensions":7,"./common/model-loader":8,"./common/render-queue":9,"./common/template-loader":10,"./common/view-loader":11,"./editor/editor":12,"./editor/element-library":13,"./editor/element-manager":14,"./editor/inspector":15,"./editor/layout":18,"./editor/layout-section":16,"./editor/layout-templates":17,"./editor/navigator":19,"./editor/options":20,"./editor/post-handler":21,"./editor/settings":22,"./editor/skeleton":23,"./editor/template-manager":24,"./preview/preview":26}],26:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function( options ) {
@@ -1411,11 +1625,6 @@ module.exports = Cornerstone.Component.extend({
 
 		// Hook before preview initializes
     this.listenTo(cs.preview, 'iframe:ready', this.reload );
-
-    cs.observer.reply( 'get:collapse', false );
-    this.listenTo( cs.preview, 'set:collapse', function( state ) {
-			cs.observer.reply( 'get:collapse', state );
-		} );
 
     //window.onbeforeunload = _.bind( this.cleanUp, this );
 
@@ -1433,18 +1642,27 @@ module.exports = Cornerstone.Component.extend({
 
 	reload: function( editor ) {
 
-    cs.global = editor. cs.global;
+    cs.global = editor.cs.global;
+
+    editor.cs.render = cs.render;
+
     this.cs.post = editor.cs.post;
 
     if ( Backbone.$('#cornerstone-preview-entry').length == 0 ) {
-			console.log( 'Unable to initialize preview.' );
+			console.log( 'Unable to initialize preview. #cornerstone-preview-entry missing.' );
+			this.noContentArea = true;
     }
 
     var PreviewView = require('../../views/main/preview.js');
     this.view = new PreviewView( { el: '#cornerstone-preview-entry', model: this.cs.post.data } )
 		this.view.render();
 
+		this.sendWindowDimensions();
 		this.listenToOnce( cs.render, 'primed', this.primed );
+		_.delay( _.bind( function(){
+			this.primed( true );
+			this.sendWindowDimensions();
+		}, this ), 9000 );
     this.listenTo( cs.global, 'settings:ready', this.settingsPingback );
     this.listenTo( cs.global, 'update:custom_css', this.customCSS );
     this.listenTo( cs.global, 'update:responsive_text', this.responsiveText );
@@ -1453,12 +1671,45 @@ module.exports = Cornerstone.Component.extend({
 		} );
     cs.events.trigger( 'preview:iframe:reloaded' );
 
+    cs.observer.reply( 'get:collapse', false );
+    this.listenTo( cs.global, 'set:collapse', function( state ) {
+			cs.observer.reply( 'get:collapse', state );
+		} );
+
+		Backbone.$(window).resize( this.sendWindowDimensions );
+
   },
 
-  primed: function() {
-		if ( cs.global.request( 'editor:ready' ) )
+  sendWindowDimensions: function() {
+  	var $body = Backbone.$('body');
+  	var $window = Backbone.$(window);
+  	cs.global.trigger( 'preview:resize', {
+  		Window: {
+  			width: $window.width(),
+  			height: $window.height(),
+  		},
+  		Body: {
+  			width: $body.width(),
+  			height: $body.height(),
+  		}
+
+  	} );
+  },
+
+  primed: function( late ) {
+
+		if ( this.isPrimed || cs.global.request( 'editor:ready' ) )
 			return;
-		cs.global.trigger( 'preview:primed' );
+
+		this.isPrimed = true;
+		cs.global.trigger( 'preview:primed', late || false );
+
+		if ( this.noContentArea ) {
+			_.defer(function(){
+				cs.global.trigger( 'preview:failure', cs.l18n( 'preview-failure2') );
+			});
+		}
+
 	},
 
   settingsPingback: function(){
@@ -1514,7 +1765,7 @@ module.exports = Cornerstone.Component.extend({
   }
 
 });
-},{"../../views/main/preview.js":91}],24:[function(require,module,exports){
+},{"../../views/main/preview.js":93}],27:[function(require,module,exports){
 var media = wp.media;
 var l10n = media.view.l10n;
 wp.media.view.MediaFrame.Cornerstone = wp.media.view.MediaFrame.Post.extend({
@@ -1837,7 +2088,66 @@ wp.media.view.MediaFrame.Cornerstone = wp.media.view.MediaFrame.Post.extend({
 //   }
 
 // });
-},{}],25:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+var handlers = {
+
+	editorMirror: function( clone, original, type ) {
+
+		if (type != 'mirror') return;
+
+		Backbone.$(original).trigger( 'dragula:mirror', clone );
+
+		_.defer( function(){
+			Backbone.$(original).trigger( 'dragula:start', clone );
+			cs.global.trigger( 'dragging', true );
+		} );
+
+	},
+
+	// previewMirror: function( clone, original, type ) {
+	// 	if (type != 'mirror') return;
+	// 	Backbone.$(original).trigger( 'dragula:mirror', clone );
+	// },
+
+	skeletonEnd: function( el ) {
+		cs.global.trigger( 'dragging', false );
+		cs.events.trigger( 'skeleton:dragging', false );
+	},
+
+	skeletonStart: function( el, source ) {
+		var $el = Backbone.$(el);
+		cs.events.trigger( 'skeleton:dragging', true, $el.attr('data-element-type') );
+		$el.trigger( 'dragula:lift' );
+		Backbone.$(source).trigger( 'dragula:lift:child' );
+	},
+
+	cancel: function( el, container, source ) {
+		Backbone.$(el).trigger( 'dragula:dragend' );
+	},
+
+	drop: function( el, target, source, sibling ) {
+		Backbone.$(el).trigger( 'dragula:drop', [ target, source, sibling ] );
+		Backbone.$(target).trigger( 'dragula:receive', [ el, source, sibling ] );
+	},
+
+	over: function( el, container, source ) {
+		//console.log( this.isContainer(container), el, container, source );
+		Backbone.$(container).trigger( 'dragula:over' );
+		Backbone.$(source).trigger( 'dragula:source:over' );
+	},
+
+	out: function( el, container, source ) {
+		Backbone.$(container).trigger( 'dragula:out' );
+	},
+
+	shadow: function( el, container, source ) {
+		Backbone.$(source).trigger( 'dragula:shadow' );
+	}
+
+}
+
+module.exports = handlers;
+},{}],29:[function(require,module,exports){
 (function($){
 
     var $shadow = $('<div class="shadow-height" style="position:absolute;top:-100%;visibility:hidden;"></div>');
@@ -1854,51 +2164,32 @@ wp.media.view.MediaFrame.Cornerstone = wp.media.view.MediaFrame.Post.extend({
 
     		var height = $copy.outerHeight();
 
+    		if ( height < 1 ) {
+    			$copy.addClass( 'cf' );
+    			height = $copy.outerHeight();
+    		}
+
     		$shadow.detach();
     		$copy.remove();
 
 				return height;
     };
 
+    $.fn.csPointInsideElement = function( x, y ){
+
+		if (this.length < 1) return;
+        var $el = this.length > 1 ? this.eq(0) : this
+
+        var offset = $el.offset();
+
+        var hor = ( x > offset.left && x < offset.left + $el.width() );
+        var vert = ( y > offset.top && y < offset.top + $el.height() );
+
+				return (hor && vert);
+    };
+
 })(jQuery);
-},{}],26:[function(require,module,exports){
-/**
- * Custom Renderer using Cornerstone precompiled templates as a source
- * Includes global template helpers
- */
-module.exports = {
-
-	templateHelpers: require('./template-helpers'),
-
-	render: function( template, data, view ) {
-
-		var data = data || {};
-
-    if ( view && _.isFunction( view.triggerMethod ) )
-    	view.triggerMethod( 'template:data:ready', data );
-
-    if ( template === false ) return;
-
-    if (!template) {
-      throw new Cornerstone.Mn.Error({
-        name: 'TemplateNotFoundError',
-        message: 'Cannot render the template since its false, null or undefined.'
-      });
-    }
-
-    var templateFunc = _.isFunction(template) ? template : cs.template( template );
-
-    if (!templateFunc) {
-      throw new Cornerstone.Mn.Error({
-        name: 'TemplateLookupError',
-        message: 'Template not found in precompiled templates: ' + template
-      });
-    }
-
-    return templateFunc( _.extend( data, this.templateHelpers ) );
-  }
-}
-},{"./template-helpers":29}],27:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports.layoutIsValid = function( layout ) {
 	return _([ '1/1','1/2 + 1/2','2/3 + 1/3','1/3 + 2/3','1/3 + 1/3 + 1/3','3/4 + 1/4','1/4 + 3/4','1/2 + 1/2','1/2 + 1/4 + 1/4','1/4 + 1/2 + 1/4','1/4 + 1/4 + 1/2','1/4 + 1/4 + 1/4 + 1/4','4/5 + 1/5','1/5 + 4/5','3/5 + 2/5','2/5 + 3/5','3/5 + 1/5 + 1/5','1/5 + 3/5 + 1/5','1/5 + 1/5 + 3/5','2/5 + 2/5 + 1/5','2/5 + 1/5 + 2/5','1/5 + 2/5 + 2/5','2/5 + 1/5 + 1/5 + 1/5','1/5 + 2/5 + 1/5 + 1/5','1/5 + 1/5 + 2/5 + 1/5','1/5 + 1/5 + 1/5 + 2/5','1/5 + 1/5 + 1/5 + 1/5 + 1/5','5/6 + 1/6','1/6 + 5/6','2/3 + 1/3','1/3 + 2/3','2/3 + 1/6 + 1/6','1/6 + 2/3 + 1/6','1/6 + 1/6 + 2/3','1/2 + 1/2','1/2 + 1/3 + 1/6','1/2 + 1/6 + 1/3','1/3 + 1/2 + 1/6','1/3 + 1/6 + 1/2','1/6 + 1/2 + 1/3','1/6 + 1/3 + 1/2','1/2 + 1/6 + 1/6 + 1/6','1/6 + 1/2 + 1/6 + 1/6','1/6 + 1/6 + 1/2 + 1/6','1/6 + 1/6 + 1/6 + 1/2','1/3 + 1/3 + 1/3','1/3 + 1/3 + 1/6 + 1/6','1/3 + 1/6 + 1/3 + 1/6','1/3 + 1/6 + 1/6 + 1/3','1/6 + 1/3 + 1/3 + 1/6','1/6 + 1/3 + 1/6 + 1/3','1/6 + 1/6 + 1/3 + 1/3','1/3 + 1/6 + 1/6 + 1/6 + 1/6','1/6 + 1/3 + 1/6 + 1/6 + 1/6','1/6 + 1/6 + 1/3 + 1/6 + 1/6','1/6 + 1/6 + 1/6 + 1/3 + 1/6','1/6 + 1/6 + 1/6 + 1/6 + 1/3','1/6 + 1/6 + 1/6 + 1/6 + 1/6 + 1/6' ])
 				  .contains( layout );
@@ -1913,53 +2204,11 @@ module.exports.reduceFractions = function( replace ) {
   });
   return string;
 }
-},{}],28:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 String.prototype.replaceAll = function (find, replace) {
   return this.replace(new RegExp(find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"), 'g'), replace);
 }
-},{}],29:[function(require,module,exports){
-var TemplateHelpers = {
-	/**
-	 * Wrapper for global l18n
-	 */
-	l18n: function() {
-		return cs.l18n.apply( cs, arguments );
-	},
-
-	/**
-	 * Wrapper for Icon Lookup
-	 */
-	getIcon: function() {
-		return cs.icon.apply( cs, arguments )
-	},
-
-	/**
-	 * Wrapper for HTML entity Font icon
-	 */
-	fontIcon: function() {
-		return cs.fontIcon.apply( cs, arguments )
-	},
-
-	/**
-	 * Access to renderer inside templates
-	 */
-	render: function() {
-		return CS.Mn.Renderer.render.apply( this, arguments  );
-	},
-
-	/**
-	 * Returns message if debug mode is active
-	 */
-	debug: function ( message ) { return ''; }
-}
-
-if ( cs.debug() ) {
-	TemplateHelpers.debug = function ( message ) { return message; }
-}
-
-module.exports = TemplateHelpers;
-
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = CS.Mn.CompositeView.extend({
 	tagName: 'li',
 	template: 'controls/base',
@@ -1988,12 +2237,9 @@ module.exports = CS.Mn.CompositeView.extend({
     this.configureProxy();
     this.listenTo( this.model, 'set:proxy', this.configureProxy );
 
-    this.listenTo( cs.options, 'changed', function( option ){
-    	if ( this.model.get('name') == option ) return;
-    	this.triggerMethod( 'options:changed' );
-    } );
-
     this.on('render', this.baseRender );
+
+    this.listenTo( cs.options, 'help:text', this.render );
 
     /**
      * Ensure a controlTemplate is defined
@@ -2014,6 +2260,15 @@ module.exports = CS.Mn.CompositeView.extend({
     this.proxy = this.model.proxy || null;
     if ( _.isNull( this.proxy ) ) return;
 
+    var key = this.model.get( 'key' );
+    if ( this.proxy.definition && ! this.proxy.has( key ) && ! _.contains(['elements', 'disabled'], key ) ) {
+    	console.warn('Element [' + this.proxy.definition.get('name') + '] missing ['+ key +'] attribute.');
+    	console.log(this.proxy);
+    	//this.proxy = null;
+    	return;
+    }
+
+
     var conditions = this.model.get('condition');
     if ( conditions ) {
     	_.each( _.keys( conditions ) , function( item ) {
@@ -2027,10 +2282,6 @@ module.exports = CS.Mn.CompositeView.extend({
 
   	this.triggerMethod( 'proxy:ready' );
 
-	},
-
-	onOptionsChanged: function() {
-		this.render();
 	},
 
 	toggleVisibility: function() {
@@ -2050,7 +2301,7 @@ module.exports = CS.Mn.CompositeView.extend({
 				if (negate) conditionName = conditionName.replace(':not','');
 
         if ( conditionName.indexOf('parent:') == 0 ) {
-          source = this.proxy.getParent();
+          source = this.proxy.getSourceParent().toProxy();
           conditionName = conditionName.replace('parent:','');
         } else {
           source = this.proxy;
@@ -2154,16 +2405,22 @@ module.exports = CS.Mn.CompositeView.extend({
 
 	baseTextReplacements: {
 		'%%element-name%%': function() {
+			if ( !this.proxy) return '';
 			return this.proxy.definition.get('name');
 		},
+		'%%element-type%%': function() {
+			if ( !this.proxy) return '';
+			return this.proxy.get('_type');
+		},
 		'%%icon%%': function() {
-			return cs.icon( this.model.get('name') );
+			if ( !this.proxy) return '';
+			return cs.icon( this.proxy.definition.get('icon') );
 		},
 		'%%icon-nav-elements-solid%%': function() {
-			return cs.icon( 'nav-elements-solid' );
+			return cs.icon( 'interface/nav-elements-solid' );
 		},
 		'%%icon-nav-settings-solid%%': function() {
-			return cs.icon( 'nav-settings-solid' );
+			return cs.icon( 'interface/nav-settings-solid' );
 		}
 	},
 
@@ -2206,7 +2463,7 @@ module.exports = CS.Mn.CompositeView.extend({
   },
 
 });
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-breadcrumbs cs-control-divider',
@@ -2235,8 +2492,7 @@ module.exports = CS.Mn.ItemView.extend({
   inspect: function( e ) {
     var level = this.buttonLevel( e );
     if ( !level ) return;
-    cs.events.trigger( 'inspect:element', level.model );
-    //cs.navigate.trigger( 'inspector:home' );
+    cs.events.trigger( 'inspect:element', level.model, false );
   },
 
   buttonLevel: function( e ) {
@@ -2276,7 +2532,7 @@ module.exports = CS.Mn.ItemView.extend({
     return {
       items: _.first( this.levels, 4 ),
       count: this.levels.length,
-      rtl: ( cs.config( 'isRTL' ) == 'true' )
+      rtl: cs.config( 'isRTL' )
     }
   },
 
@@ -2285,7 +2541,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 	module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'choose',
 	binding: {
@@ -2339,7 +2595,7 @@ module.exports = CS.Mn.ItemView.extend({
     }
   }
 });
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'div',
 	className: 'cs-control-external cs-control-code-editor',
@@ -2379,53 +2635,25 @@ module.exports = CS.Mn.ItemView.extend({
 	}
 
 });
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
-controlName: 'color',
-	binding: {
-		initialize: function($el, model, options) {
 
-			this.$('.cs-color-input').wpColorPicker({
-				width: 258,
-				change: function( event, ui ) {
-					this.click = true;
-					model.set( options.observe,  ui.color.toString() );
-				},
-				clear: function() {
-					model.set( options.observe, '' );
-				}
-			});
+	controlName: 'color',
+	bindingSelector: 'input[type=text].cs-color-input',
 
-			/**
-			* Handler to set the active state based on the model value
-			*/
-			var setActive = _.bind( function( model, value ) {
+	onAfterBaseRender: function() {
+		var opts = this.model.get( 'options' ) || {};
 
-				if ( this.click ) {
-					this.click = false; return;
-				}
+		var options = {
+			outputFormat: opts.output_format || null
+		};
 
-				$picker = this.$('.cs-color-input');
-				if ( !$picker.hasClass('wp-color-picker') ) {
-					return;
-				}
+		this.$( '.cs-color-input' ).huebert( options );
+	}
 
-				$picker.wpColorPicker( 'color', model.get(options.observe) );
-
-			}, this );
-
-			/**
-			* Set the initial active state, then listen to model changes to change the state later
-			*/
-
-			setActive( model, model.get( options.observe ) );
-
-			this.listenTo(model, 'change:' + options.observe, setActive );
-
-		}
-	},
 });
-},{}],35:[function(require,module,exports){
+
+},{}],37:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-actions cs-control-divider',
@@ -2445,6 +2673,7 @@ module.exports = CS.Mn.ItemView.extend({
       message: cs.l18n('columns-erase-confirm'),
     }
   },
+  canQuickConfirm: true,
 
   initialize: function( options ) {
     this.proxy = this.model.proxy || null;
@@ -2452,8 +2681,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
   layout: function() {
-  	cs.events.trigger( 'inspect:layout:row', this.proxy.getSourceParent() );
-  	cs.navigate.trigger( 'layout:rows' );
+  	cs.events.trigger( 'inspect:layout', this.proxy.getSource(), { navigate: true } );
   },
 
   onConfirmAccept: function() {
@@ -2461,14 +2689,23 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
 });
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = CS.Mn.CollectionView.extend({
 	tagName: 'ul',
 
 	className: 'cs-controls',
 
 	initialize: function() {
-		this.repaint = _.debounce( _.bind( this.render, this ), 4 );
+		this.repaint = _.debounce( _.bind( function(){
+
+			try {
+				this.render()
+			} catch (e) {
+				if ( e.name == 'ViewDestroyedError' ) return;
+				console.log('Cornerstone Render Exception', e );
+			}
+
+		}, this ), 4 );
 		this.listenTo( this.collection, 'add', this.repaint );
 		this.listenTo( this.collection, 'remove', this.repaint );
 		this.listenTo( this.collection, 'reset', this.repaint );
@@ -2501,7 +2738,7 @@ module.exports = CS.Mn.CollectionView.extend({
   }
 
 })
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	template: 'controls/custom-markup',
 	controlName: 'custom-markup',
@@ -2511,7 +2748,138 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 		return { message: message };
 	},
 });
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
+module.exports =  Cornerstone.ControlViews.Base.extend({
+
+	controlName: 'date',
+
+	binding: {
+		initialize: function($el, model, options) {
+
+			var opts = this.model.get( 'options' );
+
+			// Ensure we have at least one available format
+			var available_formats = opts.available_formats;
+			if (!available_formats || !available_formats.length) {
+				var item = opts.default_format || 'Do MMMM YYYY';
+				available_formats = [item];
+			}
+
+			var $input = this.$('.cs-date-input');
+			var $formatSelect = this.$('.cs-date-format select');
+
+			this.picker = new Cornerstone.Vendor.Pikaday( {
+        field: $input[0],
+        bound: false,
+        container: this.$('.cs-date-picker-entry')[0],
+        theme: 'cs-date-picker',
+        isRTL: cs.config('isRTL'),
+        i18n: this.localize(),
+        onSelect: pickerSelect
+	    });
+
+	    if ( opts.choose_format ) this.$('.cs-date-format').removeClass('hide');
+
+	    // Update when a new format is selected
+	    $formatSelect.on('change', formatSelect );
+
+	    function pickerSelect( date ) {
+				var current = unwrapValue( model.get( options.observe ) )
+				var combined = date + opts.delimiter + current.format;
+				model.set( options.observe, combined );
+			}
+
+
+
+	    function formatSelect() {
+				var current = unwrapValue( model.get( options.observe ) )
+				var combined = current.date + opts.delimiter + validateFormat( Backbone.$(this).val() );
+				model.set( options.observe, combined );
+			}
+
+			function unwrapValue( value ) {
+
+				var split, moment, selectedFormat;
+
+				if ( value ) {
+
+					var split = value.split( opts.delimiter );
+
+					if ( split[0] ) {
+						moment = Cornerstone.Vendor.moment( split[0] );
+						moment = ( moment.isValid() ) ? moment : false;
+					}
+
+					if ( split[1] ) {
+						selectedFormat = split[1];
+					}
+
+				}
+
+				if ( !moment ) {
+					moment = Cornerstone.Vendor.moment()
+				}
+
+				return { date: moment.toString(), format: validateFormat( selectedFormat ), moment: moment };
+
+			}
+
+
+			function validateFormat( format ) {
+				if ( _.contains( available_formats, format ) )
+					return format;
+				return opts.default_format || 'Do MMMM YYYY';
+			}
+
+			/**
+			* Handler to set the active state based on the model value
+			*/
+			var setActive = _.bind( function( model, value ) {
+
+				value = unwrapValue( value );
+				var date = Cornerstone.Vendor.moment( value.date, value.format );
+
+				$input.val( value.moment.format( value.format ) );
+
+				this.picker.config( { format: value.format } );
+				this.picker.setMoment( value.moment, true );
+
+				// Generate options for select
+				var html = _.reduce( available_formats, function( memo, item ) {
+					var selected = ( item == value.format) ? ' selected' : '';
+					return memo + '<option value="' + item + '"' + selected +'>' + value.moment.format( item ) + '</option>';
+				}, '');
+
+				$formatSelect.empty();
+				$formatSelect.append(Backbone.$(html));
+
+			}, this );
+
+			/**
+			* Set the initial active state, then listen to model changes to change the state later
+			*/
+			setActive( model, model.get( options.observe ) );
+			this.listenTo(model, 'change:' + options.observe, setActive );
+
+		}
+	},
+
+	localize: function() {
+		return {
+	    previousMonth : cs.l18n('prev-month'),
+	    nextMonth     : cs.l18n('next-month'),
+	    months        : cs.l18n('moment-months').split('_'),
+	    weekdays      : cs.l18n('moment-weekdays').split('_'),
+	    weekdaysShort : cs.l18n('moment-weekdays-short').split('_')
+		}
+	},
+
+	onBeforeDestroy: function() {
+		this.picker.destroy();
+	}
+
+});
+},{}],41:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'dimensions',
 	binding: {
@@ -2527,11 +2895,18 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
       }
 
       this.$('button.save')
+
+      var currentVal = function() {
+      	var val = model.get(options.observe);
+      	if ( val ) return _.clone( val );
+      	return [ '0px', '0px', '0px', '0px', 'unlinked' ];
+      }
+
       /**
        * Update value for link toggle
        */
       this.$('button.cs-link-dimensions').click(function(){
-        var val = _.clone( model.get(options.observe) );
+        var val = currentVal();
         state = ( val[4] == 'linked') ? 'unlinked' : 'linked';
 
         // When linking, make everything the first value for visual feedback
@@ -2559,7 +2934,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     	this.$('[data-edge]').on('change keyup', _.bind( function (e) {
 
         $changed = this.$(e.currentTarget);
-    		var val = _.clone( model.get(options.observe) );
+    		var val = currentVal();
 
         var update = $changed.val().trim();
         if ( update == '' ) update = '0px';
@@ -2614,13 +2989,13 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     	/**
     	 * Set the initial active state, then listen to model changes to change the state later
     	 */
-    	setValues( model, model.get( options.observe ) );
+    	setValues( model, currentVal() );
     	this.listenTo(model, 'change:' + options.observe, setValues );
 
     }
 	}
 });
-},{}],39:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
   controlName: 'editor',
   controlTemplate: 'controls/textarea',
@@ -2727,25 +3102,20 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],40:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-actions cs-control-divider',
   template: 'inspector/element-actions',
   controlName: 'actions',
 	ui: {
-    'confirm': '.action.delete',
     'duplicate' : '.action.duplicate',
+    'delete': '.action.delete'
   },
 
   events: {
-    'click @ui.duplicate': 'duplicate'
-  },
-
-  behaviors: {
-    Confirm: {
-      message: cs.l18n('inspector-delete-confirm'),
-    }
+  	'click @ui.duplicate': 'duplicate',
+  	'click @ui.delete': 'elDelete'
   },
 
   initialize: function( options ) {
@@ -2754,18 +3124,15 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
   duplicate: function() {
-  	cs.elements.trigger( 'duplicate', this.proxy.getSource() );
+  	cs.global.trigger( 'element:duplicate', this.proxy.getSource() );
   },
 
-  onConfirmAccept: function() {
-    cs.elements.trigger( 'delete', { model: this.proxy.getSource(), success: function() {
-      cs.confirm.trigger( 'complete' );
-    	cs.channel.trigger( 'inspect:nothing' );
-    } } );
+  elDelete: function() {
+		cs.global.trigger( 'element:delete', this.proxy.getSource() );
   },
 
 });
-},{}],41:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'icon-choose',
   childViewContainer: 'ul.cs-choose',
@@ -2867,6 +3234,8 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
        * Set the initial active state, then listen to model changes to change the state later
        */
 
+      //setActive( model, model.get( options.observe ), false );
+
       this.on('deferred:render', function(){
         setActive( model, model.get( options.observe ) );
       });
@@ -2879,6 +3248,14 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 
   onRender: function() {
 
+  	this.$('ul.cs-choose').empty();
+
+    var count = 0;
+    _.each( this.filteredIcons, function( words, code ) {
+      if ( count++ > 20) return;
+      this.$('ul.cs-choose').append( cs.template('controls/icon-choose-item')({ code: code, choice: words[0], choices: words.join(' ') }) );
+    }, this );
+
     this.$('.cs-icons-inner').perfectScrollbar({
       scrollYMarginOffset: 10,
       wheelPropagation: true
@@ -2890,10 +3267,11 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   },
 
   deferRender: function() {
+
     this.$('ul.cs-choose').empty();
 
     _.each( this.filteredIcons, function( words, code ) {
-      this.$('ul.cs-choose').append( cs.template('controls/icon-choose-item')({ code: code, choice: words[0] }) );
+      this.$('ul.cs-choose').append( cs.template('controls/icon-choose-item')({ code: code, choice: words[0], choices: words.join(' ') }) );
     }, this );
 
     this.$('.cs-icons-inner').perfectScrollbar('update');
@@ -2901,7 +3279,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],42:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 
 var ImageControl =  Cornerstone.ControlViews.Base.extend({
   controlName: 'image',
@@ -2948,7 +3326,7 @@ var ImageControl =  Cornerstone.ControlViews.Base.extend({
        */
       var setActive = _.bind( function( model, image ) {
 
-        var isEmpty = ( '' == image );
+        var isEmpty = ( !image || '' == image );
 
         this.$('.cs-image').toggleClass( 'empty', isEmpty )
           .css( { backgroundImage: isEmpty ? 'none' : 'url(' + image + ')' } );
@@ -2993,7 +3371,7 @@ var ImageControl =  Cornerstone.ControlViews.Base.extend({
 });
 
 module.exports = ImageControl;
-},{}],43:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = {
 
 	// General Purpose
@@ -3013,6 +3391,7 @@ module.exports = {
 	'multi-choose'            : require('./multi-choose'),
 	'icon-choose'             : require('./icon-choose'),
 	'dimensions'              : require('./dimensions'),
+	'date'                    : require('./date'),
 
 	// Special
 	'info-box'                : require('./info-box'),
@@ -3041,7 +3420,7 @@ module.exports = {
 	'template-save-dialog'    : require('./layout/template-save-dialog'),
 	'template-upload-dialog'  : require('./layout/template-upload-dialog')
 }
-},{"./breadcrumbs":31,"./choose":32,"./code-editor":33,"./color":34,"./column-actions":35,"./custom-markup":37,"./dimensions":38,"./editor":39,"./element-actions":40,"./icon-choose":41,"./image":42,"./info-box":44,"./layout/column-layout":45,"./layout/column-order":47,"./layout/layout-actions":48,"./layout/sortable-rows":49,"./layout/sortable-sections":50,"./layout/template-actions":51,"./layout/template-remove":52,"./layout/template-save-dialog":53,"./layout/template-select":54,"./layout/template-upload-dialog":55,"./multi-choose":56,"./number":57,"./row-actions":58,"./section-actions":59,"./select":60,"./settings-actions":61,"./sortable":64,"./text":65,"./textarea":66,"./title":67,"./toggle":68,"./wpselect":69}],44:[function(require,module,exports){
+},{"./breadcrumbs":33,"./choose":34,"./code-editor":35,"./color":36,"./column-actions":37,"./custom-markup":39,"./date":40,"./dimensions":41,"./editor":42,"./element-actions":43,"./icon-choose":44,"./image":45,"./info-box":47,"./layout/column-layout":48,"./layout/column-order":50,"./layout/layout-actions":51,"./layout/sortable-rows":52,"./layout/sortable-sections":53,"./layout/template-actions":54,"./layout/template-remove":55,"./layout/template-save-dialog":56,"./layout/template-select":57,"./layout/template-upload-dialog":58,"./multi-choose":59,"./number":60,"./row-actions":61,"./section-actions":62,"./select":63,"./settings-actions":64,"./sortable":67,"./text":68,"./textarea":69,"./title":70,"./toggle":71,"./wpselect":72}],47:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	template: 'controls/info-box',
 	controlName: 'info-box',
@@ -3051,7 +3430,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 		this.$el.toggleClass( 'hide', !cs.options.request( 'help:text' ) );
 	}
 });
-},{}],45:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var RowValidator = require('../../../utility/row-validator');
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'column-layout',
@@ -3167,7 +3546,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 	}
 
 });
-},{"../../../utility/row-validator":27}],46:[function(require,module,exports){
+},{"../../../utility/row-validator":30}],49:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
 	template: 'controls/column-order-item',
@@ -3177,8 +3556,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
   events: {
-    'dragstart.h5s': 'updateDragging',
-    'dragend.h5s': 'updatePosition',
+    'dragula:drop': 'updatePosition',
     'mouseover': 'mouseOver',
     'mouseout': 'mouseOut'
   },
@@ -3192,19 +3570,11 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
   className: function() {
-    return 'cs-' + this.model.get('size').replace('/','-');
+    return 'cs-column-order-item cs-' + this.model.get('size').replace('/','-');
   },
 
-  updateDragging: function( e ) {
-    if ( e.originalEvent )
-      this.triggerMethod( 'update:dragging' );
-  },
-
-  updatePosition: function( e ) {
-    if ( e.originalEvent ) {
-      this.triggerMethod( 'update:position' );
-      this.triggerMethod( 'drag:end' );
-    }
+  updatePosition: function( target, source, sibling ) {
+    this.triggerMethod( 'update:position', target, source, sibling );
   },
 
   mouseOver: function( e ) {
@@ -3216,7 +3586,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 })
-},{}],47:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 var Sortable = require('../sortable');
 module.exports = Sortable.extend({
 
@@ -3227,8 +3597,15 @@ module.exports = Sortable.extend({
     template: false,
   }),
 
-  sortableConfig: {
-    items: ':not(.empty)',
+  dragulaConfig: function () {
+  	return {
+  		offset: function( offset, e, item ) {
+  			offset.x = Backbone.$(item).width() / 2; // snap to horizontal center
+  			return offset;
+  		},
+  		direction: 'horizontal',
+		  revertOnSpill: true,
+  	}
   },
 
   getChildView: function() {
@@ -3244,26 +3621,17 @@ module.exports = Sortable.extend({
   	}
 	},
 
-  onChildviewUpdateDragging: function( child ) {
-
-    this.$('ul').removeClass( this.placeholderModClass );
-    this.placeholderModClass = 'cs-' + child.model.get( 'size' ).replace( '/', '-' );
-    this.$('ul').addClass( this.placeholderModClass );
-
-  },
-
-  onChildviewDragEnd: function( child ) {
-    this.$('ul').removeClass( this.placeholderModClass );
-  },
-
   onChildviewClickAction: function( child ) {
   	cs.events.trigger( 'inspect:element', child.model );
-		cs.navigate.trigger( 'inspector:home' );
+  },
+
+  getSortableContainer: function() {
+  	return this.$('ul.cs-column-order')[0];
   },
 
 
 });
-},{"../sortable":64,"./column-order-item":46}],48:[function(require,module,exports){
+},{"../sortable":67,"./column-order-item":49}],51:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-actions cs-control-divider',
@@ -3294,7 +3662,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{}],49:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 var Sortable = require('../sortable');
 module.exports = Sortable.extend({
 
@@ -3314,11 +3682,10 @@ module.exports = Sortable.extend({
 
   onChildviewClickActionAlt: function( child ) {
   	cs.events.trigger( 'inspect:element', child.model );
-    cs.navigate.trigger( 'inspector:home' );
   },
 
   onChildviewClickHandle: function( item ) {
-  	cs.events.trigger( 'inspect:layout:row', item.model );
+  	cs.events.trigger( 'inspect:layout', item.model );
   },
 
   onChildviewRender: function( child ) {
@@ -3343,7 +3710,7 @@ module.exports = Sortable.extend({
   },
 
   inspectFirst: function() {
-  	cs.events.trigger( 'inspect:layout:row', this.collection.first() );
+  	cs.events.trigger( 'inspect:layout', this.collection.first() );
   },
 
   onResetLastItem: function() {
@@ -3351,7 +3718,7 @@ module.exports = Sortable.extend({
   }
 
 });
-},{"../sortable":64}],50:[function(require,module,exports){
+},{"../sortable":67}],53:[function(require,module,exports){
 var Sortable = require('../sortable');
 module.exports = Sortable.extend({
 
@@ -3361,8 +3728,7 @@ module.exports = Sortable.extend({
   confirmMessage: cs.l18n('layout-row-delete-confirm'),
 
   onChildviewClickHandle: function( item ) {
-  	cs.events.trigger( 'inspect:layout:section', item.model );
-  	cs.navigate.trigger( 'layout:rows' );
+  	cs.events.trigger( 'inspect:layout', item.model, { navigate: true } );
   	cs.navigate.trigger( 'auto:focus', 'title' );
   },
 
@@ -3371,7 +3737,7 @@ module.exports = Sortable.extend({
   }
 
 });
-},{"../sortable":64}],51:[function(require,module,exports){
+},{"../sortable":67}],54:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-template-actions cs-control-divider',
@@ -3403,7 +3769,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{}],52:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
   //template: 'layout/sub-templates/template-select',
   controlName: 'template-select',
@@ -3434,7 +3800,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   },
 
 });
-},{}],53:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 
   template: 'layout/sub-templates/save-dialog',
@@ -3488,7 +3854,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	//template: 'layout/sub-templates/template-select',
   controlName: 'template-select',
@@ -3535,7 +3901,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 
 
 });
-},{}],55:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 
   template: 'layout/sub-templates/upload-dialog',
@@ -3614,7 +3980,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],56:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'multi-choose',
   controlTemplate: 'controls/choose',
@@ -3673,92 +4039,44 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     }
   }
 });
-},{}],57:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'number',
 	bindingSelector: 'input[type=number]'
 });
-},{}],58:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
-  className: 'cs-control cs-control-actions cs-control-divider',
-  template: 'inspector/row-actions',
-  controlName: 'actions',
+	className: 'cs-control cs-control-actions cs-control-divider',
+	template: 'inspector/row-actions',
+	controlName: 'actions',
 	ui: {
-    'confirm': '.action.delete',
-    'layout' : '.action.manage-layout',
-  },
+		'layout': '.action.manage-layout',
+		'delete': '.action.delete'
+	},
 
-  events: {
-    'click @ui.layout': 'layout'
-  },
+	events: {
+		'click @ui.delete': 'elDelete',
+		'click @ui.layout': 'layout'
+	},
 
-  behaviors: {
-    Confirm: {
-      message: cs.l18n('layout-row-delete-confirm'),
-    }
-  },
+	initialize: function( options ) {
+		this.proxy = this.model.proxy || null;
+		this.selected = options.selected || undefined;
+	},
 
-  initialize: function( options ) {
-    this.proxy = this.model.proxy || null;
-  	this.selected = options.selected || undefined;
-  },
+	layout: function() {
+		cs.events.trigger( 'inspect:layout', this.proxy.getSource(), { navigate: true } );
+	},
 
-  layout: function() {
-  	cs.events.trigger( 'inspect:layout:row', this.proxy.getSource() );
-  	cs.navigate.trigger( 'layout:rows' );
-  },
-
-  onConfirmAccept: function() {
-    cs.elements.trigger( 'delete', { model: this.proxy.getSource(), success: function() {
-      cs.confirm.trigger( 'complete' );
-      cs.events.trigger( 'inspect:clear' );
-    	cs.navigate.trigger( 'inspector:home' );
-    } } );
-  },
+	elDelete: function() {
+		cs.global.trigger( 'element:delete', this.proxy.getSource() );
+	},
 
 });
-},{}],59:[function(require,module,exports){
-module.exports = CS.Mn.ItemView.extend({
-	tagName: 'li',
-  className: 'cs-control cs-control-actions cs-control-divider',
-  template: 'inspector/row-actions',
-  controlName: 'actions',
-	ui: {
-    'confirm': '.action.delete',
-    'layout' : '.action.manage-layout',
-  },
-
-  events: {
-    'click @ui.layout': 'layout'
-  },
-
-  behaviors: {
-    Confirm: {
-      message: cs.l18n('layout-section-delete-confirm'),
-    }
-  },
-
-  initialize: function( options ) {
-    this.proxy = this.model.proxy || null;
-  	this.selected = options.selected || undefined;
-  },
-
-  layout: function() {
-  	cs.events.trigger( 'inspect:layout:section', this.proxy.getSource() );
-  	cs.navigate.trigger( 'layout:rows' );
-  },
-
-  onConfirmAccept: function() {
-    cs.elements.trigger( 'delete', { model: this.proxy.getSource(), success: function() {
-      cs.confirm.trigger( 'complete' );
-      cs.events.trigger( 'inspect:clear' );
-    	cs.navigate.trigger( 'inspector:home' );
-    } } );
-  },
-
-});
-},{}],60:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
+arguments[4][61][0].apply(exports,arguments)
+},{"dup":61}],63:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'select',
 	bindingSelector: 'select',
@@ -3775,7 +4093,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 		}, this );
 	}
 });
-},{}],61:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-actions cs-control-divider',
@@ -3799,16 +4117,12 @@ module.exports = CS.Mn.ItemView.extend({
     } )
   },
 
-  // duplicate: function() {
-  //   this.proxy.collection.duplicate( this.proxy );
-  // },
-
   triggerCSS: function() {
     cs.navigate.trigger( 'open:code:editor', 'custom_css' );
   },
 
   triggerJS: function() {
-    if ( cs.config('unfilteredHTML') == 'false' ) {
+    if ( !cs.config('unfilteredHTML') ) {
       cs.message.trigger( 'notice', cs.l18n( 'settings-js-denied' ), 8000 );
       return;
     }
@@ -3816,15 +4130,8 @@ module.exports = CS.Mn.ItemView.extend({
     this.jsMessage();
   },
 
-  onConfirmAccept: function() {
-    cs.elements.trigger( 'delete', { model: this.proxy, success: function() {
-      cs.confirm.trigger( 'complete' );
-    	cs.channel.trigger( 'inspect:nothing' );
-    } } );
-  },
-
 });
-},{}],62:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 var SortableItem = require('./sortable-item');
 
 module.exports = SortableItem.extend({
@@ -3846,7 +4153,7 @@ module.exports = SortableItem.extend({
   },
 
 });
-},{"./sortable-item":63}],63:[function(require,module,exports){
+},{"./sortable-item":66}],66:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 
   tagName: 'li',
@@ -3860,7 +4167,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
   events: {
-    'dragend.h5s': 'updatePosition',
+    'dragula:drop': 'updatePosition',
     'mouseover': 'mouseOver',
     'mouseout': 'mouseOut',
   },
@@ -3886,19 +4193,22 @@ module.exports = CS.Mn.ItemView.extend({
       nope:    function(){ return cs.l18n('confirm-back'); }
     }
   },
+  canQuickConfirm: true,
 
-  updatePosition: function( e ) {
-    if (e.originalEvent)
-      this.triggerMethod( 'update:position' );
+  updatePosition: function( target, source, sibling ) {
+    this.triggerMethod( 'update:position', target, source, sibling );
   },
 
   serializeData: function( ) {
+
     var data = _.extend( CS.Mn.ItemView.prototype.serializeData.apply(this,arguments), {
       actions: this.actions
     });
 
     if ( _.isFunction( this.customTitle ) ) {
       data.title = this.customTitle( this );
+    } else {
+    	data.title = this.model.get( this.title_field );
     }
 
     return data;
@@ -3913,7 +4223,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
 });
-},{}],64:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'sortable',
 	childViewContainer: 'ul',
@@ -3925,12 +4235,21 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 
   wideControls: false,
 
-  getChildView: function(){
+  getChildView: function() {
     return ( this.wideControls ) ? require('./sortable-item-wide') : require('./sortable-item');
   },
 
   confirmMessage: cs.l18n('sortable-remove'),
-  sortableConfig: { items: ':not(.empty)' },
+
+  dragulaConfig: function () {
+  	return {
+  		offset: function( offset, e, item ) {
+  			offset.y = Backbone.$(item).height() / 2; // snap to vertical center
+  			return offset;
+  		},
+		  revertOnSpill: true,
+  	}
+  },
 
   buildChildView: function(child, ChildViewClass, childViewOptions) {
 
@@ -3948,6 +4267,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
       view.customTitle = _.bind( this.customChildTitle, this );
     }
 
+    view.title_field = this.title_field;
     view.actions = this.actions;
     view.confirmMessage = this.confirmMessage;
     return view;
@@ -3978,6 +4298,24 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     'click @ui.add': 'addItem',
   },
 
+  initialize: function() {
+
+  	this.drake = Cornerstone.Vendor.dragula( _.result( this,'dragulaConfig') );
+
+		this.drake.on('drag', function( el ) {
+			cs.events.trigger( 'preview:no-pointer', true );
+		});
+
+		this.drake.on('dragend', function( el ) {
+			cs.events.trigger( 'preview:no-pointer', false );
+		});
+
+		this.drake.on('drop', function( el, target, source, sibling ) {
+			Backbone.$(el).trigger( 'dragula:drop', [ target, source, sibling ] );
+		});
+
+  },
+
   controlData: function() {
 
     var data =  { canAdd: this.canAdd };
@@ -3994,10 +4332,15 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     this.addItem();
   },
 
-  onChildviewUpdatePosition: function( child ) {
-    this.triggerMethod( 'item:before:position:updated', child );
-    this.collection.trigger( 'update:position', child.model, child.$el.index() );
-    this.triggerMethod( 'item:position:updated', child );
+  onChildviewUpdatePosition: function( child, target, source, sibling ) {
+
+  	// Wait until Dragula removes the mirror image.
+  	_.defer( _.bind( function(){
+  		this.triggerMethod( 'item:before:position:updated', child );
+    	this.collection.trigger( 'update:position', child.model, child.$el.index() );
+    	this.triggerMethod( 'item:position:updated', child );
+  	}, this ) );
+
   },
 
   filter: function (child, index, collection) {
@@ -4023,6 +4366,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     }
 
     this.floor = ( options.floor || 0 );
+    this.title_field = ( options.title_field || 'title' );
     this.capacity = (options.capacity) ? options.capacity : null;
 
   },
@@ -4038,7 +4382,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 
   // Default handle is to sub-inspect
   onChildviewClickHandle: function( item ) {
-  	cs.events.trigger( 'inspect:child:element', item.model );
+  	cs.events.trigger( 'inspect:element', item.model, false ); // manage navigation from here
     var pane = ( cs.navigate.request('active:pane') == 'settings' ) ? 'settings' : 'inspector';
     cs.navigate.trigger( pane + ':item' );
   },
@@ -4056,8 +4400,13 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   	}
   },
 
+  getSortableContainer: function() {
+  	return this.$('ul.cs-sortable')[0];
+  },
+
 	onRender: function() {
-    this.$('ul').sortable( this.sortableConfig );
+		this.drake.containers = [];
+    this.drake.containers.push( this.getSortableContainer() );
     this.triggerMethod('after:render');
   },
 
@@ -4067,8 +4416,12 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     cs.elements.trigger( 'add:item', options.element, this.proxy, title, options.title_field );
   },
 
+  onDestroy: function() {
+  	this.drake.destroy();
+  }
+
 });
-},{"./sortable-item":63,"./sortable-item-wide":62}],65:[function(require,module,exports){
+},{"./sortable-item":66,"./sortable-item-wide":65}],68:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'text',
 	bindingSelector: 'input[type=text]',
@@ -4081,24 +4434,39 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 			this.$('input[type=text]').attr('placeholder', options.placeholder );
 	}
 });
-},{}],66:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'textarea',
 	bindingSelector: 'textarea',
+	htmlhint: { 'tagname-lowercase': false, 'attr-lowercase': false, 'attr-value-double-quotes': false, 'doctype-first': false, 'tag-pair': true, 'spec-char-escape': true, 'id-unique': false, 'src-not-empty': false, 'attr-no-duplication': false, 'title-require': false },
   onProxyReady: function() {
     var opts = this.model.get('options');
     if (!opts.expandable && opts.expandable !== false) {
       opts.expandable = opts.controlTitle || true;
       this.model.set('options', opts);
     }
+
   },
   onRender: function() {
     var options = this.model.get('options');
     if ( options.placeholder )
       this.$('textarea').attr('placeholder', options.placeholder );
+
+    if ( options.htmlhint ) {
+    	var $textarea = this.$('textarea');
+    	$textarea.on( 'blur', _.bind( function(){
+
+    		var errors = _.map( Cornerstone.Vendor.HTMLHint.verify( $textarea.val(), this.htmlhint ), function( item ) {
+    			return item.rule.id;
+    		});
+    		if ( !_.isEmpty( errors ) ) {
+    			cs.message.trigger( 'error', CS.Mn.Renderer.render( 'utility/htmlhint', { errors: errors } ), 7000 );
+    		}
+    	}, this ) );
+    }
   }
 });
-},{}],67:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'title',
 	divider: true,
@@ -4115,11 +4483,10 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 
 	onInspect: function() {
 		cs.events.trigger( 'inspect:element', this.proxy.getSource() );
-		cs.navigate.trigger( 'inspector:home' );
   }
 
 });
-},{}],68:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'toggle',
   binding: {
@@ -4149,7 +4516,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     }
   }
 })
-},{}],69:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'wpselect',
 	bindingSelector: 'select',
@@ -4163,178 +4530,21 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 		this.$( '.cs-wp-select' ).append( this.$select );
 	}
 });
-},{}],70:[function(require,module,exports){
-var BaseShared = {
-	template: 'loading',
-	className: 'cs-preview-element-wrapper',
-	attributes: {
-		'draggable': 'true'
-	},
-	remoteRender: true,
-	baseEvents: {
-		'dragstart.h5s': 'dragStart',
-		'dragend.h5s': 'dragEnd',
-		'mouseover': 'mouseOver',
-		'mouseout': 'mouseOut',
-  	'click a': 'preventLinkout'
-	},
-	elementEvents: {},
-
-	events: function() {
-
-		this.baseEvents['click'] = 'click';
-
-		if ( _.isUndefined(this.autoFocus) || _.isEmpty(this.autoFocus) ) {
-			return this.baseEvents;
-		}
-
-		var view = this;
-
-		_.each( this.autoFocus, function( field, selector ) {
-			view.baseEvents[ 'click ' + selector ] = function( e ) {
-				e.stopPropagation();
-				view.model.trigger( 'inspect', { autoFocus: field} );
-			};
-		});
-
-		return _.extend( this.baseEvents, this.elementEvents );
-	},
-
-  construct: function( options ) {
-
-    if ( this.remoteRender ) {
-      this.listenTo( this.model, 'remote:render', this.render )
-      this.model.trigger( 'view:init' );
-    }
-
-    this.listenTo( this.model, 'observe:in', this.observeIn );
-    this.listenTo( this.model, 'observe:out', this.observeOut );
-
-    this.on( 'render', _.debounce( _.bind( this.baseRender, this ), 10 ) );
-
-  },
-
-  attachElContent: function(html) {
-
-    if ( this.remoteRender && this.model.markupCache) {
-      this.$el.html( this.model.markupCache );
-    } else {
-      this.$el.html(html);
-    }
-
-    return this;
-
-  },
-
-	baseRender: function() {
-
-  	this.triggerMethod('before:shortcode:init');
-
-    window.xData.base.processElements( null, this.$el );
-
-    cs.preview.trigger( 'responsive:text', this );
-
-    this.triggerMethod('after:element:render');
-
-    if ( this.remoteRender && this.model.markupCache ) {
-      _.defer( _.bind( this.emptyDetection, this ) );
-    }
-
-  },
-
-  click: function( e ) {
-		this.triggerMethod('click:before:inspect', e );
-		e.stopPropagation();
-		this.model.trigger('inspect');
-	},
-
-  preventLinkout: function( e ) {
-  	e.preventDefault();
-  },
-
-  dragStart: function ( e ) {
-
-  	this.setData(e);
-  	_.defer( _.bind( this.triggerMethod, this), 'drag:start', e )
-  },
-
-  dragEnd: function( e ) {
-
-  	cs.preview.trigger( 'dragging', false );
-    if ( e.originalEvent )
-      this.triggerMethod( 'drag:end', e );
-  },
-
-  dragDrop: function( e ) {
-  	cs.preview.trigger( 'dragging', false );
-    if ( e.originalEvent )
-    	this.triggerMethod( 'drag:drop', e );
-  },
-
-  mouseOver: function( e ) {
-  	e.stopPropagation();
-    this.model.trigger('observe:in');
-  },
-
-  mouseOut: function( e ) {
-  	this.model.trigger('observe:out');
-  },
-
-  observeIn: function() {
-    cs.observer.trigger( 'in', this );
-  },
-
-  observeOut: function() {
-    cs.observer.trigger( 'out', this );
-  },
-
-	setData: function ( e ) {
-
-		var dataTransfer = e.originalEvent.dataTransfer;
-    dataTransfer.effectAllowed = 'copy';
-    var data = JSON.stringify({
-			action: 'move',
-    	id: this.model.cid,
-    });
-
-    cs.preview.replyOnce( 'cache:'+ this.model.cid, this.model );
-    dataTransfer.setData( 'cornerstone/element', data );
-	},
-
-  emptyDetection: function() {
-
-    if ( this.$el.outerHeight() < 1 ) {
-      this.$el.html( cs.template('empty-element')({ name: this.model.elType.get('name') }) );
-    }
-
-  }
-
-}
-
-
-module.exports.BaseCore = CS.Mn.CollectionView.extend( _.extend( BaseShared, {
-
-	constructor: function( options ) {
-		CS.Mn.CollectionView.apply(this, arguments);
-		this.construct();
-	},
-
-} ) );
-
-
-module.exports.Base = CS.Mn.CompositeView.extend( _.extend( BaseShared, {
-
-	constructor: function( options ) {
-		CS.Mn.CompositeView.apply(this, arguments);
-		this.construct();
-	},
-
-} ) );
-},{}],71:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 // Confirm
 module.exports = CS.Mn.ItemView.extend({
   className: 'cs-confirm',
   template: 'extra/confirm',
+
+  defaultConfig: {
+    message: cs.l18n('confirm-message'),
+    allowQuickConfirm: false,
+    subtext: false,
+    yep: cs.l18n('confirm-yep'),
+    nope: cs.l18n('confirm-nope'),
+    classes: [],
+    view: null
+  },
 
   events: {
     'click .yep'  : 'acceptDebounce',
@@ -4343,42 +4553,36 @@ module.exports = CS.Mn.ItemView.extend({
 
   initialize: function( options ) {
 
-    var options = options || {};
-    this.data = options.data || {};
+    this.data = _.clone( this.defaultConfig );
 
     // Prevent multiple clicks
     this.acceptDebounce = _.debounce( _.bind( this.accept, this ), 500, true );
     this.declineDebounce = _.debounce( _.bind( this.decline, this ), 500, true );
 
     this.listenTo( cs.confirm, 'abort', this.declineDebounce );
+    this.listenTo( cs.confirm, 'open', this.open );
   },
 
-  onOpen: function( data ) {
-    this.data = data;
+  open: function( data, context ) {
+  	this.context = context || {};
+    this.data = _.extend( _.clone( this.defaultConfig ), data );
+    if ( this.data.allowQuickConfirm && cs.data.request('delete:confirm:key' ) ) {
+    	this.accept();
+    	return;
+    }
     this.render();
     this.$el.addClass('active');
   },
 
   serializeData: function(){
 
-    this.data = _.extend({
-      message:'',
-      subtext:'',
-      classes: [],
-      yep:'',
-      nope:'',
-      view: null
-    }, this.data);
+    var data = _.clone( this.data );
 
-    var view = this.data.view;
-
-    var data = _.omit( this.data, ['view'] );
-
-    if ( _.isFunction( data.message ) ) data.message = data.message.call(view);
-    if ( _.isFunction( data.subtext ) ) data.subtext = data.subtext.call(view);
-    if ( _.isFunction( data.classes ) ) data.classes = data.classes.call(view);
-    if ( _.isFunction( data.yep ) )         data.yep = data.yep.call(view);
-    if ( _.isFunction( data.nope ) )       data.nope = data.nope.call(view);
+    if ( _.isFunction( data.message ) ) data.message = data.message.call(this.context);
+    if ( _.isFunction( data.subtext ) ) data.subtext = data.subtext.call(this.context);
+    if ( _.isFunction( data.classes ) ) data.classes = data.classes.call(this.context);
+    if ( _.isFunction( data.yep ) )         data.yep = data.yep.call(this.context);
+    if ( _.isFunction( data.nope ) )       data.nope = data.nope.call(this.context);
 
     data.classes.unshift( 'cs-confirm-content' );
     data.contentClass = data.classes.join(' ');
@@ -4386,20 +4590,23 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
   accept: function() {
-    cs.confirm.trigger( 'accept', this.data.view.cid );
+  	if ( _.isFunction( this.data.accept ) ) {
+  		this.data.accept()
+  	}
     this.$el.removeClass('active');
   },
 
   decline: function() {
-  	var cid = null;
-  	if ( this.data.view && this.data.view.cid )
-  		cid = this.data.view.cid
-    cs.confirm.trigger( 'decline', cid );
+
+  	if ( _.isFunction( this.data.decline ) ) {
+  		this.data.decline();
+  	}
+
     this.$el.removeClass('active');
   },
 
 });
-},{}],72:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 // Expand
 module.exports = CS.Mn.ItemView.extend({
   tagName: 'button',
@@ -4434,7 +4641,7 @@ module.exports = CS.Mn.ItemView.extend({
 
   }
 });
-},{}],73:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 // Expansion
 var ControlListView = require('../controls/control-collection')
 
@@ -4492,7 +4699,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{"../controls/control-collection":36}],74:[function(require,module,exports){
+},{"../controls/control-collection":38}],76:[function(require,module,exports){
 // Home
 module.exports = CS.Mn.ItemView.extend({
   className: 'cs-home',
@@ -4515,7 +4722,7 @@ module.exports = CS.Mn.ItemView.extend({
     return data;
   }
 });
-},{}],75:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 // Options
 
 module.exports = CS.Mn.CompositeView.extend({
@@ -4529,7 +4736,7 @@ module.exports = CS.Mn.CompositeView.extend({
   }
 
 });
-},{}],76:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 // Respond
 module.exports = CS.Mn.ItemView.extend({
   className: 'cs-respond',
@@ -4540,7 +4747,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
   initialize: function() {
-    cs.extra.reply( 'width', '100%');
+    cs.extra.reply( 'width', 'xl');
     this.listenTo(cs.extra, 'respond:width', this.setRespond );
   },
 
@@ -4560,10 +4767,7 @@ module.exports = CS.Mn.ItemView.extend({
 
   onRender: function() {
 
-    var width = cs.extra.request( 'width' ) || '100%';
-
-    if (width == 'none')
-      width = '100%';
+    var width = cs.extra.request( 'width' );
 
     this.$('button[data-respond="' + width + '"]').addClass('active');
     this.$('.cs-respond-labels [data-respond="' + width + '"]').addClass('active');
@@ -4571,11 +4775,13 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
   setRespond: function( width ) {
-    Backbone.$('.cs-preview').css({ 'max-width' : width });
+  	var $preview = Backbone.$('.cs-preview');
+    $preview.removeClass('cs-respond-xl cs-respond-lg cs-respond-md cs-respond-sm cs-respond-xs');
+    if ( width ) $preview.addClass( 'cs-respond-' + width );
   }
 
 });
-},{}],77:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 // SaveComplete
 module.exports = CS.Mn.ItemView.extend({
   className: 'cs-saved',
@@ -4594,7 +4800,7 @@ module.exports = CS.Mn.ItemView.extend({
 
   onSaveComplete: function() {
 
-    if ( cs.config('visualEnhancements') == 'false' ) {
+    if ( !cs.config('visualEnhancements') ) {
       cs.message.trigger( 'success', cs.l18n( 'save-complete-simple' ), 1250 );
       return;
     }
@@ -4614,13 +4820,13 @@ module.exports = CS.Mn.ItemView.extend({
 
 });
 
-},{}],78:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
   tagName: 'li',
   className: 'cs-control-empty',
   template: 'inspector/blank-state',
 });
-},{}],79:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 // InspectorPane
 var ControlListView = require('../controls/control-collection');
 var ViewBasePane = require('../main/base-pane');
@@ -4662,7 +4868,7 @@ module.exports = ViewBasePane.extend({
   }
 
 });
-},{"../controls/control-collection":36,"../main/base-pane":86,"./empty-controls":78}],80:[function(require,module,exports){
+},{"../controls/control-collection":38,"../main/base-pane":88,"./empty-controls":80}],82:[function(require,module,exports){
 var ControlListView = require('../controls/control-collection')
 var ViewBasePane = require('../main/base-pane');
 module.exports = ViewBasePane.extend({
@@ -4684,7 +4890,7 @@ module.exports = ViewBasePane.extend({
   },
 
 });
-},{"../controls/control-collection":36,"../main/base-pane":86,"./sub-row/layout-sub-rows":81,"./sub-templates/layout-sub-templates":82}],81:[function(require,module,exports){
+},{"../controls/control-collection":38,"../main/base-pane":88,"./sub-row/layout-sub-rows":83,"./sub-templates/layout-sub-templates":84}],83:[function(require,module,exports){
 // RowSubPane
 var ViewControlCollection = require('../../controls/control-collection')
 
@@ -4790,7 +4996,7 @@ module.exports = CS.Mn.LayoutView.extend({
   },
 
 });
-},{"../../controls/control-collection":36}],82:[function(require,module,exports){
+},{"../../controls/control-collection":38}],84:[function(require,module,exports){
 // TemplatesSubPane
 var ViewControlCollection = require('../../controls/control-collection')
 
@@ -4813,7 +5019,7 @@ module.exports = CS.Mn.LayoutView.extend({
   },
 
 });
-},{"../../controls/control-collection":36}],83:[function(require,module,exports){
+},{"../../controls/control-collection":38}],85:[function(require,module,exports){
 var ViewBasePane = require('../main/base-pane')
 module.exports = ViewBasePane.extend({
   name: 'elements',
@@ -4825,44 +5031,88 @@ module.exports = ViewBasePane.extend({
 
   onShowContent: function() {
   	var ViewElementLibrary = require('./library-list');
-    this.Content.show( new ViewElementLibrary( {collection: cs.elementLibrary.all() } ) );
+    this.Content.show( new ViewElementLibrary( {collection: cs.elementLibrary.get('builder') } ) );
   },
 
   search: function() {
+  	var results = cs.elementLibrary.search( 'builder', this.$('#elements-search').val().toLowerCase().trim() );
+    cs.search.reply( 'elements', results );
+    cs.search.trigger( 'elements' );
     this.$('.cs-pane-content-inner').perfectScrollbar('update');
-    cs.search.trigger( 'elements', this.$('#elements-search').val().toLowerCase().trim() );
   },
 
   onShow: function() {
     this.$('#elements-search').focus();
   }
-});
-},{"../main/base-pane":86,"./library-list":85}],84:[function(require,module,exports){
-// ElementLibraryItem
 
+});
+},{"../main/base-pane":88,"./library-list":87}],86:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
-  tagName: "li",
+
+  className: 'cs-element-stub',
+
   template: 'library/element-stub',
-  attributes: { 'draggable': 'true' },
+
+  attributes: function() {
+  	var atts = {}
+
+  	if ( !cs.options.request( 'skeleton:mode' ) && typeof MouseEvent !== 'function' )
+  		atts['draggable'] = 'true';
+
+  	return atts;
+  },
+
+  initialize: function() {
+		this.listenTo( cs.events, 'toggle:skeleton:mode', function(){
+			this.$el.attr(_.extend({}, _.result(this, 'attributes')));
+		} );
+
+		// Cancel element pane drags when skeleton is inactive
+    this.listenTo( cs.global, 'drag:exit', function() {
+    	if (this.clone) {
+    		Backbone.$( this.clone ).hide();
+    		Backbone.$('#preview').one( 'mouseleave', _.bind( function(){
+    			cs.global.trigger( 'drag:resume');
+    		}, this ) );
+    	}
+		});
+
+		this.listenTo( cs.global, 'drag:resume', function() {
+    	if (this.clone)
+    		Backbone.$( this.clone ).show();
+		});
+
+  },
+
   serializeData: function() {
 		return _.extend( CS.Mn.ItemView.prototype.serializeData.apply(this,arguments), {
-			icon: cs.icon( 'element-' + this.model.get( 'name' ) )
+			icon: cs.icon( this.model.get( 'icon' ) ),
 		});
 	},
 
 	events: {
 		'dragstart.h5s': 'setData',
-		'dragend.h5s': 'endDrag'
+		'dragend.h5s': 'endDrag',
+		'dragula:start' : 'dragStart',
 	},
 
 	endDrag: function(e) {
-		 cs.global.trigger( 'dragging', false );
+		cs.global.trigger( 'dragging', false );
+	},
+
+	dragStart: function( e, clone ) {
+		this.clone = clone
+		this.setIncoming();
+	},
+
+	setIncoming: function() {
+		cs.global.trigger( 'incoming:element', this.model.get( 'name' ) );
 	},
 
 	setData: function (e) {
 
-		 cs.global.trigger( 'dragging', true );
-		 cs.global.trigger( 'incoming:element' );
+		cs.global.trigger( 'dragging', true );
+		this.setIncoming();
 
 		var dataTransfer = e.originalEvent.dataTransfer;
     dataTransfer.effectAllowed = 'copy';
@@ -4882,44 +5132,36 @@ module.exports = CS.Mn.ItemView.extend({
 	}
 
 });
-},{}],85:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 module.exports = CS.Mn.CollectionView.extend({
-	tagName: 'ul',
 	className: 'cs-elements',
 	childView: require('./element-stub'),
 	childViewContainer: '.cs-pane-section ul',
 
 	initialize: function( ) {
-		this.query = '';
-		this.listenTo( cs.search, 'elements', this.updateSearch );
+		this.listenTo( cs.search, 'elements', this.render );
+	},
+
+	onBeforeRender: function() {
+		this.searchResults = cs.search.request( 'elements' ) || '';
+	},
+
+	viewComparator: function( a ) {
+		var results = ( _.isArray( this.searchResults ) ) ? this.searchResults : [];
+		return _.indexOf( results, a.get('name') );
 	},
 
 	filter: function ( child, index, collection ) {
 
-		// Hide inactive, out-of-context, or child elements.
-		var flags = child.get('flags');
-		if ( child.get('active') == false || !_.contains( ['builder','all'], flags.context ) || flags.child )
-			return false;
-
 		// Show all when not searching
-		if ( this.query.length < 1 )
-			return true;
+		if ( !this.searchResults || '' == this.searchResults ) return true;
 
 		// Show items that match a search query
-		var title = child.get('ui').title;
-    return ( title.score( this.query ) > .5 );
-  },
+    return _.contains( this.searchResults, child.get('name') )
+  }
 
-	updateSearch: function( query ) {
-		this.query = query;
-		this.render();
-	},
-
-	onRender: function( ) {
-		this.query = '';
-	}
 });
-},{"./element-stub":84}],86:[function(require,module,exports){
+},{"./element-stub":86}],88:[function(require,module,exports){
 // BasePane
 var BasePane = CS.Mn.LayoutView.extend({
 
@@ -4944,7 +5186,7 @@ var BasePane = CS.Mn.LayoutView.extend({
 
   onBaseOpenSub: function( sub ) {
 
-		clearTimeout(this.subTimeout);
+		this.Sub.empty();
 		cs.navigate.trigger( 'subpane:opened', this.name + ':' + sub );
   	this.triggerMethod( 'open:sub' );
   	this.triggerMethod( 'open:sub:' + sub );
@@ -4957,18 +5199,21 @@ var BasePane = CS.Mn.LayoutView.extend({
   },
 
   onBaseCloseSub: function() {
+
   	this.$('.cs-builder-sub').removeClass('active');
-  	this.subTimeout = setTimeout( _.bind( this.closeSub, this ), 3000 );
+
+  	// leave ghost markup until next open
+		if (this.Sub) {
+    	this.Sub.show( new Cornerstone.Mn.ItemView({
+    		template: _.template( this.$('#sub').html() )
+    	}) );
+		}
+
   	this.triggerMethod( 'close:sub' );
   },
 
   back: function() {
   	cs.navigate.trigger( this.name + ':home' );
-  },
-
-  closeSub: function() {
-  	if (this.Sub)
-    	this.Sub.empty();
   },
 
   onBeforeShow: function(){
@@ -4999,12 +5244,13 @@ var BasePane = CS.Mn.LayoutView.extend({
 
 module.exports = BasePane;
 
-},{}],87:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 // Editor
 
 var ViewHeader    = require('./header')
   , ViewFooter    = require('./footer')
-  , ViewExpansion = require('../extra/expansion');
+  , ViewExpansion = require('../extra/expansion')
+  , ViewSkeleton  = require('./skeleton');
 
 module.exports = CS.Mn.LayoutView.extend({
 
@@ -5015,6 +5261,7 @@ module.exports = CS.Mn.LayoutView.extend({
     Pane:   '#pane',
     Footer: '#footer',
     Expansion: '#expand',
+    Skeleton: '#skeleton',
   },
 
   panes: {
@@ -5027,9 +5274,10 @@ module.exports = CS.Mn.LayoutView.extend({
   initialize: function() {
 
     this.listenTo( cs.navigate, 'pane', this.changePane );
-    this.listenTo( cs.confirm, 'open', this.confirmOpen );
     this.listenTo( cs.navigate, 'scrollbar:update', this.scrollbarUpdate );
     this.listenTo( cs.options, 'editor:position', this.setEditorPosition );
+
+
 
     this.listenTo( cs.message, 'notice', this.growlNotice );
     this.listenTo( cs.message, 'success', this.growlSuccess );
@@ -5045,6 +5293,11 @@ module.exports = CS.Mn.LayoutView.extend({
       cs.channel.trigger('update:saved:last');
     }
 
+    this.listenTo( cs.events, 'preview:no-pointer', this.togglePreviewPointerEvents );
+    this.listenTo( cs.events, 'skeleton:dragging', this.toggleDragging );
+
+    this.keybindingToggleClasses();
+
   },
 
   onRender: function() {
@@ -5052,15 +5305,18 @@ module.exports = CS.Mn.LayoutView.extend({
     var prevPane = localStorage['CornerstonePane'];
     localStorage['CornerstonePane'] = false;
 
+    cs.data.reply('scrollbar:width', this.getScrollbarWidth() );
+
     this.changePane( _.has( this.panes, prevPane ) ? prevPane : 'layout' );
     this.Header.show( new ViewHeader() );
     this.Footer.show( new ViewFooter() );
     this.Expansion.show( new ViewExpansion() );
+    this.Skeleton.show( new ViewSkeleton( { model: cs.post.data } ) );
 
     this.Expansion.$el.detach();
     this.$el.after(this.Expansion.$el);
-
-    cs.data.reply('scrollbar:width', this.getScrollbarWidth() );
+    this.Skeleton.$el.detach();
+    this.$el.after(this.Skeleton.$el);
 
     this.setEditorPosition();
   },
@@ -5170,10 +5426,24 @@ module.exports = CS.Mn.LayoutView.extend({
 
   setEditorPosition: function() {
   	Backbone.$('#cornerstone').toggleClass( 'cs-right', cs.options.request( 'editor:position' ) == 'right' );
+  },
+
+  keybindingToggleClasses: function() {
+		this.listenTo( cs.events, 'delete:confirm:key', function( state){
+			Backbone.$('body').toggleClass('cs-delete-confirm', state );
+		});
+  },
+
+  togglePreviewPointerEvents: function( state ) {
+  	Backbone.$('#preview').toggleClass( 'no-pointer' );
+  },
+
+  toggleDragging: function( state ) {
+  	Backbone.$('body').toggleClass( 'cs-hide-cursor', state );
   }
 
 });
-},{"../extra/expansion":73,"../inspector/inspector":79,"../layout/layout":80,"../library/element-library":83,"../settings/settings":109,"./footer":88,"./header":89}],88:[function(require,module,exports){
+},{"../extra/expansion":75,"../inspector/inspector":81,"../layout/layout":82,"../library/element-library":85,"../settings/settings":112,"./footer":90,"./header":91,"./skeleton":94}],90:[function(require,module,exports){
 var ViewExpand  = require('../extra/expand')
   , ViewConfirm = require('../extra/confirm')
   , ViewHome    = require('../extra/home')
@@ -5189,7 +5459,8 @@ module.exports = CS.Mn.ItemView.extend({
   ui: {
     'home': 'button.home',
     'collapse': 'button.collapse',
-    'options': 'button.options',
+    'helptext': 'button.help-text',
+    'skeleton': 'button.skeleton-mode',
     'respond': 'button.respond',
     'save': 'button.save',
   },
@@ -5197,7 +5468,8 @@ module.exports = CS.Mn.ItemView.extend({
   events: {
     'click @ui.home': 'toggleHome',
     'click @ui.collapse': 'toggleCollapse',
-    'click @ui.options': 'toggleOptions',
+    'click @ui.helptext': 'toggleHelpText',
+    'click @ui.skeleton': 'toggleSkeletonMode',
     'click @ui.respond': 'toggleRespond',
     'click @ui.save': 'save',
   },
@@ -5211,7 +5483,6 @@ module.exports = CS.Mn.ItemView.extend({
     this.listenTo(cs.extra, 'flyout:updated', this.toggleMode );
     this.listenTo(cs.data, 'save:success', this.saveComplete );
     this.listenTo(cs.data, 'save:error', this.saveComplete );
-    this.listenTo(cs.confirm, 'open', this.confirmOpen );
     this.listenTo(cs.tooltips, 'kill', this.killTooltip )
 
     Backbone.$('#cornerstone').on('mouseenter mouseleave', '[data-tooltip-message]', _.bind( this.toggleTooltip, this ) );
@@ -5219,13 +5490,12 @@ module.exports = CS.Mn.ItemView.extend({
     this.modules = {
       home: new ViewHome(),
       expand: new ViewExpand(),
-      options: new ViewOptions(),
       respond: new ViewRespond(),
       save: new ViewSaveComplete(),
       confirm: new ViewConfirm(),
     };
 
-    this.panels = _.pick(this.modules, 'home', 'expand', 'options', 'respond', 'save', 'confirm' );
+    this.panels = _.pick(this.modules, 'home', 'expand', 'respond', 'save', 'confirm' );
 
     cs.extra.on( 'collapse', function( state ) {
        cs.global.trigger( 'collapse', ( state == 'on' ) );
@@ -5253,6 +5523,18 @@ module.exports = CS.Mn.ItemView.extend({
       }
     });
 
+    this.listenTo( cs.extra, 'toggle', function( item ) {
+
+    	_.defer(_.bind(function(){
+    		this.$( 'button[data-toggle="'+ item + '"]' ).toggleClass('active', cs.options.request( item ) );
+    	}, this ) );
+
+    });
+
+    this.listenTo( cs.global, 'preview:failure', function( ) {
+			this.$('button.skeleton-mode').prop('disabled',true);
+		} );
+
     // Start save button color temp after rendering
     // this.once('render', function() {
     //   this.colorTempInterval = setInterval( _.bind( this.saveColorTemp, this ), this.colorTempTimer );
@@ -5264,6 +5546,12 @@ module.exports = CS.Mn.ItemView.extend({
     _.each(this.modules,function(item){
       $extra.append(item.render().$el);
     });
+
+    this.$( 'button[data-toggle]' ).each(function(){
+    	var $this = Backbone.$(this);
+    	$this.toggleClass('active', cs.options.request( $this.attr('data-toggle') ) )
+    });
+
   },
 
   toggleTooltip: function(e) {
@@ -5301,8 +5589,12 @@ module.exports = CS.Mn.ItemView.extend({
     cs.extra.trigger( 'flyout', 'collapse' );
   },
 
-  toggleOptions: function( e ) {
-    cs.extra.trigger( 'flyout', 'options' );
+  toggleHelpText: function() {
+    cs.extra.trigger( 'toggle', 'help:text' );
+  },
+
+  toggleSkeletonMode: function() {
+    cs.extra.trigger( 'toggle', 'skeleton:mode' );
   },
 
   toggleRespond: function( e ) {
@@ -5341,24 +5633,20 @@ module.exports = CS.Mn.ItemView.extend({
 
   toggleMode: function( mode, updated, prev ) {
 
-    this.$('nav button').removeClass('active');
+    this.$('nav button.has-flyout').removeClass('active');
     _.each(this.panels,function(item){
       item.$el.removeClass('active');
     });
 
     if ( updated ) {
-      this.$('button.' + mode ).addClass('active');
+      this.$('button.has-flyout.' + mode ).addClass('active');
       this.$('.cs-editor-extra .cs-' + mode ).addClass('active');
     }
 
   },
 
-  confirmOpen: function( data ) {
-    this.panels.confirm.triggerMethod( 'open', data );
-  }
-
 });
-},{"../extra/confirm":71,"../extra/expand":72,"../extra/home":74,"../extra/options":75,"../extra/respond":76,"../extra/save-complete":77}],89:[function(require,module,exports){
+},{"../extra/confirm":73,"../extra/expand":74,"../extra/home":76,"../extra/options":77,"../extra/respond":78,"../extra/save-complete":79}],91:[function(require,module,exports){
 // EditorHeader
 module.exports = CS.Mn.ItemView.extend({
   tagName: 'nav',
@@ -5399,7 +5687,7 @@ module.exports = CS.Mn.ItemView.extend({
     this.$( '.' + pane ).addClass('active').siblings().removeClass('active');
   }
 });
-},{}],90:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	template: 'observer',
 	className: 'cs-observer',
@@ -5411,19 +5699,15 @@ module.exports = CS.Mn.ItemView.extend({
 		this.observing = null;
 		this.tooltipText = 'Element';
 		this.canPreview = true;
+		this.dimensionTarget = null;
 
 		this.listenTo( cs.observer, 'start', this.observeStart );
 		this.listenTo( cs.observer, 'end', this.observeEnd );
 		this.listenTo( cs.preview,  'kill:observer', this.kill );
 		this.listenTo( cs.observer, 'kill', this.kill );
-		this.listenTo( cs.observer, 'drag:indicator', this.dragIndicator );
 
 		this.$wrapper = Backbone.$('#cornerstone-preview-entry');
-		this.$dragIndicator = Backbone.$('<div class="cs-indicator"></div>');
 
-		// this.mouseTracking = { distance: 0, x: -1, y: -1, time: null, speed: 0 };
-		// Backbone.$('body').on('mousemove', _.bind( this.trackMouseDistance, this ) );
-		// setInterval( _.bind( this.trackMouseAcceleration, this ), 50 );
 	},
 
 	setObserver: function( view, immediate ) {
@@ -5436,18 +5720,19 @@ module.exports = CS.Mn.ItemView.extend({
 
 		if ( this.observing ) {
 			var type = view.model.get('_type');
-			var el = cs.elementLibrary.lookup( type );
-			var flags = el.get( 'flags' );
-
-			this.setTooltip( view.model, type, flags );
-			this.canPreview = flags.can_preview;
-
+			var definition = cs.elementLibrary.lookup( type );
+			var flags = definition.get( 'flags' );
+			this.canPreview = flags.can_preview || true;
+			this.dimensionTarget = flags.dimension_target || null;
+			this.setTooltip( view.model, type );
 		}
 
 		(immediate) ? this.renderNow() : this.lazyRender();
 	},
 
-	setTooltip: function( model, type, flags ) {
+	setTooltip: function( model, type ) {
+
+		var text;
 
 		switch ( type ) {
       case 'section':
@@ -5464,7 +5749,7 @@ module.exports = CS.Mn.ItemView.extend({
       	break;
     }
 
-    if ( !flags.can_preview ) {
+    if ( !this.canPreview ) {
     	text = cs.l18n('no-preview').replace('%s', text );
     }
 
@@ -5486,62 +5771,6 @@ module.exports = CS.Mn.ItemView.extend({
 		this.setObserver( null, true );
 	},
 
-	dragIndicator: function( column ) {
-
-
-		if ( column.dropIndex == column.localIndex ) {
-			this.$dragIndicator.hide();
-			return;
-		}
-
-		var offset = column.$el.offset();
-		var top = this.$wrapper.offset().top + this.$dragIndicator.height() / 2;
-
-		var styles = {
-			left: offset.left - this.$wrapper.offset().left,
-			width: column.$el.outerWidth(),
-		};
-
-		if (column.collection.length <= 0 ) {
-			styles.top = offset.top - this.$wrapper.offset().top;
-			styles.height = '250px';
-		} else if (column.dropIndex == 0 ) {
-
-			// Top Line
-			styles.top = offset.top - top;
-			//console.log('TOP', column.dropIndex);
-
-		} else if (column.dropIndex == ( ( _.isNull( column.localIndex ) ) ? column.collection.length : column.collection.length - 1 ) ) {
-
-			// Bottom Line
-			styles.top = ( offset.top + column.$el.outerHeight() ) - top;
-			//console.log('BOTTOM', column.dropIndex);
-
-		} else {
-
-
-			// Middle Line
-			var dropIndex = ( !_.isNull( column.localIndex ) && ( column.localIndex === 0 || column.dropIndex > column.localIndex ) ) ? column.dropIndex + 1 : column.dropIndex;
-			var x = column.$el.children().eq(dropIndex).offset().top;
-			var $y = column.$el.children().eq(dropIndex-1);
-			var y = $y.offset().top + $y.outerHeight();
-			styles.top = ( x - ( x - y ) / 2 ) - top;
-
-			//console.log( 'MIDDLE', column.dropIndex );
-
-		}
-
-		this.$dragIndicator.removeAttr( 'style' ).css( styles );
-		this.$dragIndicator.show();
-
-	},
-
-	renderDragIndicator: function() {
-		this.$dragIndicator.detach();
-		this.$el.after( this.$dragIndicator );
-		this.$dragIndicator.hide();
-	},
-
 	renderNow: function() {
 
 		clearInterval( this.renderInterval );
@@ -5558,20 +5787,27 @@ module.exports = CS.Mn.ItemView.extend({
 
 	renderLoop: function() {
 
-		var offset = this.observing.$el.offset();
-		var newHeight = this.observing.$el.outerHeight();
-		var newWidth = this.observing.$el.outerWidth();
+		var $el = ( this.dimensionTarget ) ? this.observing.$el.find( this.dimensionTarget ) : this.observing.$el;
 
-		if (this.coordinates.width == newWidth && this.coordinates.height == newHeight  )
+		if ( $el.length < 1 )
+			$el = this.observing.$el;
+
+		var offset = $el.offset();
+		var newHeight = $el.outerHeight();
+		var newWidth = $el.outerWidth();
+
+		if ( this.coordinates.width == newWidth && this.coordinates.height == newHeight  )
+			return;
+
+		if ( ! offset )
 			return;
 
 		this.coordinates = {
 			top: offset.top - this.$wrapper.offset().top,
 			left: offset.left - this.$wrapper.offset().left,
 			width: newWidth,
-			height: newHeight,
+			height: newHeight
 		};
-
 
 		this.render();
 		this.$el.css( this.coordinates );
@@ -5585,8 +5821,6 @@ module.exports = CS.Mn.ItemView.extend({
 
 	onRender: function() {
 
-		//this.renderDragIndicator();
-
 		if ( _.isNull( this.observing ) || cs.observer.request( 'get:collapse' ) ) {
 			this.$el.hide();
 			return;
@@ -5594,8 +5828,6 @@ module.exports = CS.Mn.ItemView.extend({
 
 		this.$el.toggleClass('cs-observer-no-preview', !this.canPreview );
 		this.$el.show();
-
-
 
 	},
 
@@ -5605,25 +5837,8 @@ module.exports = CS.Mn.ItemView.extend({
 		} );
 	},
 
-	// trackMouseDistance: function( e ) {
-	// 	var x = e.screenX;
-	// 	var y = e.screenY;
-	// 	if (this.mouseTracking.x > -1) {
- //      this.mouseTracking.distance += Math.max( Math.abs(x-this.mouseTracking.x), Math.abs(y-this.mouseTracking.y) );
- //    }
-	// 	this.mouseTracking.x = x;
- //    this.mouseTracking.y = y;
-	// },
-
-	// trackMouseAcceleration: function() {
-	// 	var time = new Date().getTime();
-	// 	this.mouseTracking.speed = Math.round( this.mouseTracking.distance / (time - this.mouseTracking.time ) * 1000);
-	// 	this.mouseTracking.time = time;
-	// 	this.mouseTracking.distance = 0;
-
-	// }
 });
-},{}],91:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = Cornerstone.Mn.CompositeView.extend({
 
 	template: false,
@@ -5647,18 +5862,186 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
 
 		this.listenTo( this.collection, 'sort', this.render );
 
-		cs.$indicator = Backbone.$('<div class="cs-indicator"></div>');
-
-    cs.preview.on('incoming:element', function() {
-      cs.$indicator.removeAttr('style');
-    });
-
     this.observerView = new (require('./observer.js'))();
 
 		this.listenTo(  cs.global, 'set:collapse', this.toggleCollapse );
 		this.listenTo(  cs.global, 'dragging', this.toggleDragging );
+		this.listenTo(  cs.preview, 'dragging', this.toggleDragging );
 
-		 this.listenTo( cs.preview, 'autoscroll', _.debounce( _.bind( this.autoScroll, this ), 250, true ) );
+		this.listenTo( cs.preview, 'autoscroll', _.debounce( _.bind( this.autoScroll, this ), 250, true ) );
+
+		this.drake = Cornerstone.Vendor.dragula({
+		  isContainer: function (el) {
+		    return !!el.classList && ( el.classList.contains('x-column') || el.classList.contains('cs-indicator-container') );
+		  },
+		  moves: function( el, source, handle, sibling ) {
+		  	return !!el.classList && ( el.classList.contains('cs-preview-element-wrapper') || el.classList.contains('cs-indicator') );
+		  },
+			accepts: function( el, target, source, sibling ) {
+				return !!el.classList && ( el.classList.contains('cs-preview-element-wrapper') || el.classList.contains('cs-indicator') );
+			},
+			offset: function( offset, e, el ) {
+
+				//if (!!el.classList && el.classList.contains('cs-indicator')) {
+					offset.x = 0;
+					offset.y = 0;
+				//}
+
+				return offset;
+			},
+		  copy: false,
+		  revertOnSpill: true,
+		  mirrorContainer: this.el
+		});
+
+		this.drake.on('drag', function( el, source ) {
+
+			if ( !!el.classList && el.classList.contains('cs-indicator')  ) {
+
+				if ( this.incoming ) {
+					var event = new MouseEvent( 'mousedown', {
+						'buttons': 1,
+						'which': 1,
+						'view': window,
+						'bubbles': true,
+						'cancelable': true,
+						'synthetic': true,
+					} );
+
+	    		el.dispatchEvent(event, true);
+				}
+
+				this.incoming = false;
+
+			} else {
+				Backbone.$(el).trigger( 'dragula:lift' );
+				Backbone.$(source).trigger( 'dragula:lift' );
+				cs.global.trigger( 'drag:existing:start' );
+			}
+			cs.preview.trigger( 'dragging', true );
+		});
+
+		// allow mouseup in the editor to cancel our drag interaction
+		this.listenTo( cs.global, 'drag:existing:end', function() {
+			cs.preview.trigger( 'dragging', false );
+		});
+
+		this.drake.on('dragend', function( el ) {
+			cs.preview.trigger( 'dragging', false );
+			Backbone.$(el).trigger( 'dragula:dragend' );
+		});
+
+		this.drake.on('cancel', function( el, container, source ) {
+			Backbone.$(source).trigger( 'dragula:cancel' );
+			Backbone.$(container).trigger( 'dragula:cancel' );
+		});
+
+		this.drake.on('drop', function( el, target, source, sibling ) {
+			Backbone.$(target).trigger( 'dragula:receive', [ el, source, sibling ] );
+		});
+
+		this.drake.on( 'over', function( el, container, source ) {
+			Backbone.$(container).trigger( 'dragula:over' );
+			Backbone.$(source).trigger( 'dragula:source:over' );
+		});
+
+		this.drake.on( 'shadow', function( el, container, source ) {
+			Backbone.$(source).trigger( 'dragula:shadow' );
+		});
+
+		this.drake.on( 'out', function( el, container, source ) {
+			Backbone.$(container).trigger( 'dragula:out' );
+		});
+
+		this.drake.on( 'cloned', _.bind( function( clone, original, type ) {
+			if (type != 'mirror') return;
+			this.$ghost = Backbone.$( clone );
+			this.$ghost.addClass('cs-indicator');
+			Backbone.$(original).trigger( 'dragula:mirror', this.$ghost );
+		}, this ) );
+
+		cs.$indicator = Backbone.$('<div class="cs-indicator"></div>');
+
+		document.addEventListener("dragleave", function( e ) {
+			var $el;
+
+			if ( !!e.target.classList && e.target.classList.contains('x-column') ) {
+				$el = Backbone.$(e.target);
+			} else {
+				$el = Backbone.$(e.target).parent('.x-column');
+			}
+
+      if ( $el.length > 0 && !$el.csPointInsideElement( e.clientX, e.clientY ) ) {
+        cs.$indicator.detach();
+      }
+
+		}, false);
+
+		var stopDragging = _.bind(function() {
+			cs.global.trigger('stop:dragging')
+			cs.preview.trigger( 'dragging', false );
+
+			cs.$ic[0].left = 0;
+		  cs.$ic[0].top = 0;
+
+			document.removeEventListener('mouseup', stopDragging, false);
+		},this)
+
+
+
+
+		this.listenTo( cs.global, 'drag:resume', function( type ) {
+
+			if ( this.$ghost )
+				this.$ghost.hide();
+
+			document.addEventListener('mousemove', eventualResume, false);
+
+		} );
+
+		var eventualResume = _.bind( function( e ) {
+
+			if ( this.$ghost )
+				this.$ghost.show();
+
+    	cs.global.trigger( 'drag:exit' );
+      document.removeEventListener('mousemove', eventualResume, false);
+
+    }, this );
+
+
+		this.listenTo( cs.global, 'incoming:element', function( type ) {
+
+			cs.incoming = {
+				data: { _type: type },
+				options: {},
+				cid: 'new:' + type
+			};
+
+      cs.render.preRender( type );
+
+      cs.$indicator.empty().detach();
+      cs.$indicator.removeAttr('style');
+      cs.$indicator.append( Backbone.$( cs.elementIcon(type) ) );
+
+      document.addEventListener('mousemove', eventualDragStart, false);
+    });
+
+    var eventualDragStart = _.bind( function( e ) {
+
+    	cs.global.trigger( 'drag:exit' );
+    	cs.$indicator.detach();
+    	cs.$ic.append( cs.$indicator );
+    	cs.preview.trigger( 'dragging', true );
+
+      this.drake.incoming = true;
+      this.drake.start(cs.$indicator[0]);
+      document.removeEventListener('mousemove', eventualDragStart, false);
+      document.addEventListener('mouseup', stopDragging, false);
+
+    }, this );
+
+    cs.$ic = Backbone.$('<div class="cs-indicator-container"></div>');
 
 	},
 
@@ -5673,6 +6056,8 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
 	},
 
 	onRender: function() {
+
+		this.$el.append(cs.$ic);
 
 		Backbone.$('html,body').scrollTop( this.scrollTopCache );
 
@@ -5692,7 +6077,14 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
 	},
 
 	toggleDragging: function( state ) {
-		this.$el.toggleClass('cs-dragging', state )
+
+		if (!state) {
+			cs.$indicator.detach();
+			this.drake.cancel();
+		}
+
+		this.$el.toggleClass('gu-unselectable', state );
+		Backbone.$('body').toggleClass( 'cs-hide-cursor', state );
 	},
 
 	autoScroll: function( view ) {
@@ -5707,8 +6099,284 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
 
 	},
 
+	onDestroy: function() {
+		this.drake.destroy();
+	}
+
 });
-},{"./observer.js":90}],92:[function(require,module,exports){
+},{"./observer.js":92}],94:[function(require,module,exports){
+module.exports = CS.Mn.CompositeView.extend({
+
+	className: 'cs-skeleton-content-outer',
+  template: 'main/skeleton',
+  childViewContainer: '.cs-skeleton-items',
+
+  getChildView: function( item ) {
+		return cs.component('view-loader').skeletonLookup( item.get('_type') );
+	},
+
+	events: {
+		'dragula:receive': '_receiveElement'
+	},
+
+
+
+	initialize: function() {
+
+		this.collection = this.model.elements;
+		this.hoverRender = _.debounce( this._hoverRender, 45 );
+		this.hoverTarget = null;
+
+		this.listenTo( this.collection, 'sort', this.render );
+		//this.listenTo( cs.events, 'resize:skeleton', this.windowResize );
+
+		var handlers = require('../../utility/dragula-handlers');
+		this.setupElementDragging( handlers );
+		this.setupRowDragging( handlers );
+		this.setupSectionDragging( handlers );
+
+		this.listenTo(  cs.events, 'skeleton:dragging', this.toggleDragging );
+
+    this.listenTo( cs.global, 'stop:dragging', function() {
+			this.elementDrake.cancel();
+			cs.global.trigger( 'dragging', false );
+		});
+
+    this.listenTo(  cs.events, 'skeleton:hover', this.hover );
+
+    // Send a complimentary cancelation to the preview window
+    // in case the mouse was outside the iframe
+    this.listenTo( cs.global, 'drag:existing:start', function() {
+
+    	var $preview = Backbone.$('#preview');
+    	document.addEventListener( 'mouseup', mouseUp );
+    	function mouseUp() {
+    		document.removeEventListener( 'mouseup', mouseUp );
+    		_.defer( function() {
+    			cs.global.trigger( 'drag:existing:end');
+    		});
+    	}
+		});
+
+	},
+
+	setupElementDragging: function( handlers ) {
+
+		this.elementDrake = Cornerstone.Vendor.dragula({
+		  isContainer: function (el) {
+		    return !!el.classList && ( el.classList.contains('cs-skeleton-container-column') || el.classList.contains('cs-elements') );
+		  },
+		  moves: function( el, source, handle, sibling ) {
+		  	return !!el.classList && ( el.classList.contains('cs-element-stub') && !el.attributes.draggable || ( el.classList.contains('cs-skeleton-item') && !el.classList.contains('is-child') && !el.classList.contains('layout') ) );
+		  },
+			accepts: function( el, target, source, sibling ) {
+				if ( !!target.classList && target.classList.contains('cs-elements') )
+					return false;
+				return !!el.classList && ( el.classList.contains('cs-element-stub') || ( el.classList.contains('cs-skeleton-item') && !el.classList.contains('is-child') && !el.classList.contains('layout') ) );
+			},
+		  copy: function (el, source) {
+			  return !!el.classList && el.classList.contains('cs-element-stub');
+			},
+			offset: function( offset, e, el ) {
+
+				if ( !!el.classList ) {
+					if ( el.classList.contains('cs-element-stub') ) {
+						offset.x = 0;
+						offset.y = 0;
+					}
+					if ( el.classList.contains('cs-skeleton-item') ) {
+						offset.x = 0;
+						offset.y = Backbone.$(el).height() / 2; // snap to vertical center
+					}
+				}
+
+				return offset;
+			},
+			mirrorContainer: Backbone.$('#before')[0],
+		  revertOnSpill: true,
+		});
+
+		var skeleton = this;
+
+		this.elementDrake.on( 'cloned', handlers.editorMirror );
+		this.elementDrake.on( 'dragend', handlers.skeletonEnd );
+		this.elementDrake.on( 'drag', handlers.skeletonStart );
+		this.elementDrake.on( 'cancel', handlers.cancel );
+		this.elementDrake.on( 'remove', handlers.cancel );
+		this.elementDrake.on( 'drop', handlers.drop );
+		this.elementDrake.on( 'over', handlers.over );
+		this.elementDrake.on( 'shadow', handlers.shadow );
+		this.elementDrake.on( 'out', handlers.out );
+
+		this.listenTo( cs.global, 'incoming:element', function( type ) {
+
+			cs.incoming = {
+				data: { _type: type },
+				options: {},
+				cid: 'new:' + type
+			};
+
+    });
+
+	},
+
+	setupSectionDragging: function( handlers ) {
+
+		this.sectionDrake = Cornerstone.Vendor.dragula({
+			isContainer: function (el) {
+				return !!el.classList && ( el.classList.contains('cs-skeleton-items') );
+			},
+			moves: function( el, source, handle, sibling ) {
+				return Backbone.$(handle).is('.cs-skeleton-item.section > .cs-skeleton-handle > .cs-skeleton-title');
+			},
+			accepts: function( el, target, source, sibling ) {
+				return Backbone.$(el).is('.cs-skeleton-item.section');
+			},
+			offset: function( offset, e, el ) {
+
+				if ( !!el.classList && el.classList.contains('cs-skeleton-item')) {
+					offset.y = Backbone.$(el).height() / 2; // snap to vertical center
+				}
+
+				return offset;
+			},
+			mirrorContainer: Backbone.$('#before')[0],
+		});
+
+		this.sectionDrake.on( 'dragend', handlers.skeletonEnd );
+		this.sectionDrake.on( 'drag', handlers.skeletonStart );
+		this.sectionDrake.on( 'cancel', handlers.cancel );
+		this.sectionDrake.on( 'remove', handlers.cancel );
+		this.sectionDrake.on( 'drop', handlers.drop );
+		this.sectionDrake.on( 'over', handlers.over );
+		this.sectionDrake.on( 'out', handlers.out );
+
+	},
+
+	setupRowDragging: function( handlers ) {
+
+		this.rowDrake = Cornerstone.Vendor.dragula({
+			isContainer: function (el) {
+				return !!el.classList && ( el.classList.contains('cs-skeleton-container-section') );
+			},
+			moves: function( el, source, handle, sibling ) {
+				// Ensure a single remaining row won't budge
+				return ( Backbone.$(handle).is('.cs-skeleton-item.row > .cs-skeleton-handle > .cs-skeleton-title') && Backbone.$(el).siblings().length > 0 );
+			},
+			accepts: function( el, target, source, sibling ) {
+				return Backbone.$(el).is('.cs-skeleton-item.row');
+			},
+			offset: function( offset, e, el ) {
+
+				if ( !!el.classList && el.classList.contains('cs-skeleton-item')) {
+					offset.y = Backbone.$(el).height() / 2; // snap to vertical center
+				}
+
+				return offset;
+			},
+			mirrorContainer: Backbone.$('#before')[0],
+		  revertOnSpill: true,
+		});
+
+		this.rowDrake.on( 'dragend', handlers.skeletonEnd );
+		this.rowDrake.on( 'drag', handlers.skeletonStart );
+		this.rowDrake.on( 'cancel', handlers.cancel );
+		this.rowDrake.on( 'remove', handlers.cancel );
+		this.rowDrake.on( 'drop', handlers.drop );
+		this.rowDrake.on( 'over', handlers.over );
+		this.rowDrake.on( 'out', handlers.out );
+
+	},
+
+	onRender: function() {
+		this.$('.cs-skeleton-content-inner').perfectScrollbar({
+      scrollYMarginOffset: 10,
+      wheelPropagation: true
+    });
+    _.defer( _.bind( this.deferRender, this ) );
+	},
+
+	deferRender: function() {
+		this.$('.cs-skeleton-content-inner').perfectScrollbar('update');
+	},
+
+	windowResize: function() {
+		// var height = cs.data.request( 'skeleton:preview:height' ) ;
+		// var windowHeight = Backbone.$(window).height();
+		// console.log( 'previewHeight', height );
+		// var ratio = 2;
+		// var offset = (windowHeight - height) * ratio;
+		// Backbone.$('.cs-preview').css({ 'bottom' : -offset + 'px', 'height': 'auto' });
+	},
+
+	toggleDragging: function( state, type ) {
+
+		this.isDragging = state;
+		this.$el.toggleClass('gu-unselectable', state );
+
+		var type = type || '';
+
+		this.$el.removeClass('dragging-section dragging-row dragging-column dragging-element');
+		this.$el.attr('data-element-type', type );
+
+		if ( state ) {
+			var classType = ( _.contains( ['section', 'row', 'column' ], type ) ) ? type : 'element';
+			this.$el.addClass( 'dragging-' + classType );
+			this.setHover(null);
+		} else {
+			this.elementDrake.cancel();
+			this.rowDrake.cancel();
+			this.sectionDrake.cancel();
+		}
+
+	},
+
+	hover: function( state, view ) {
+
+		if (this.isDragging )
+			return this.setHover( null );
+
+		if ( state ) {
+			if ( !_.isNull( this.hoverTarget ) && this.hoverTarget.cid == view.cid) return;
+	  	this.setHover( view );
+		} else {
+			if ( _.isNull( this.hoverTarget ) || this.hoverTarget.cid != view.cid ) return;
+			this.setHover( null );
+		}
+
+	},
+
+	setHover: function( view ) {
+		this.hoverTarget = view;
+		this.hoverRender();
+	},
+
+	_hoverRender: function( state ) {
+		cs.events.trigger('skeleton:hover:toggle', ( this.hoverTarget && this.hoverTarget.cid ) ? this.hoverTarget.cid : null )
+	},
+
+	_receiveElement: function( e, el, source, sibling ) {
+		e.stopPropagation();
+		_.defer( _.bind( this._placeElement, this ), ( sibling ) ? Backbone.$(sibling).index() - 1 : this.collection.length );
+	},
+
+	_placeElement: function( position ) {
+
+		if ( !cs.incoming ) return;
+
+		var data = ( !_.isFunction( cs.incoming.toJSON ) ) ? cs.incoming.data : cs.incoming.toJSON();
+		var newModel = this.model.elements.create( data, _.clone( cs.incoming.options ), {
+			position: position,
+			replace: cs.incoming,
+			after: function( model ) {
+				cs.incoming = false;
+			}
+		} );
+
+	}
+
+});
+},{"../../utility/dragula-handlers":28}],95:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	toggle: function( e ) {
@@ -5737,7 +6405,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 	},
 
 });
-},{}],93:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	elementEvents: {
@@ -5748,7 +6416,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 		e.preventDefault();
 	}
 });
-},{}],94:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 module.exports = CS.Mn.CompositeView.extend( {
 
 	remoteRender: true,
@@ -5756,10 +6424,7 @@ module.exports = CS.Mn.CompositeView.extend( {
 	childViewContainer: '@ui.root',
 	className: 'cs-preview-element-wrapper',
 	draggable: true,
-
-	attributes: function() {
-		return { 'draggable': _.result( this, 'draggable' ) };
-	},
+	htmlhint: { 'tagname-lowercase': false, 'attr-lowercase': false, 'attr-value-double-quotes': false, 'doctype-first': false, 'tag-pair': true, 'spec-char-escape': false, 'id-unique': false, 'src-not-empty': false, 'attr-no-duplication': false, 'title-require': false },
 
 	events: function() {
 
@@ -5782,8 +6447,9 @@ module.exports = CS.Mn.CompositeView.extend( {
 		if ( draggable || _.isUndefined( draggable ) ) {
 
 			events = _.extend( events, {
-				'dragstart.h5s': '_dragStart',
-				'dragend.h5s': '_dragEnd',
+				'dragula:lift': '_dragLift',
+				'dragula:dragend': '_dragEnd',
+				'dragula:mirror': '_dragMirror'
 			} );
 
 		}
@@ -5802,20 +6468,22 @@ module.exports = CS.Mn.CompositeView.extend( {
 		this._setupChildren();
 
 		this._repaint = _.debounce( _.bind( function() {
-			if ( this.isDestroyed ) return;
-			this.render();
-		}, this ), 5 );
+			try {
+				this.render()
+			} catch (e) {
+				if ( e.name == 'ViewDestroyedError' ) return;
+				console.log('Cornerstone Render Exception', e );
+			}
+		}, this ), 2 );
 
-		this._updateMarkup = _.debounce( _.bind( function() {
-			this.__updateMarkup();
-		}, this ), 5 );
+		this._updateMarkup = _.debounce( _.bind( this.__updateMarkup, this ), 2 );
 
 		if ( this.model.collection )
 			this.modelIndex = this.model.collection.indexOf( this.model );
 
 
 		this._updateMarkup();
-		this.listenTo( this.model, 'change', this._updateMarkup );
+		this.listenTo( this.model, 'change', this._updateMarkupOnChange );
 		this.listenTo( this.model, 'remote:render', this._repaint );
 		this.on( 'render', this._baseRender );
 
@@ -5846,27 +6514,30 @@ module.exports = CS.Mn.CompositeView.extend( {
 
 	_setupChildren: function() {
 
-		if ( this.model.definition.get('flags').manageChild ) {
-			this.listenTo( this.model.elements, 'sort', this._updateManagedChild );
-			this.listenTo( this.model.elements, 'model:change', this._updateManagedChild );
+		if ( this.model.definition.get('flags').dynamic_child ) {
+			this.collection = this.model.elements;
 			return;
 		}
 
-		this.collection = this.model.elements;
-		this.listenTo( this.collection, 'sort', this._updateMarkup );
+		this.listenTo( this.model, 'child:data:updated', this._updateMarkup );
 
 	},
 
-	_updateManagedChild: function() {
-		this.model.trigger( 'update:child:data' );
+	resortView: function() {
+		this._updateMarkup(); // override instead of using default render call
+	},
+
+	_updateMarkupOnChange: function( model ) {
+		if ( _.isEmpty( _.omit( model.changed, ['rank'] ) ) )
+			return;
 		this._updateMarkup();
 	},
 
-	__updateMarkup: function() {
+	__updateMarkup: function( now ) {
 		if ( this.remoteRender ) {
 			cs.render.triggerMethod( 'queue', this.model );
 		} else {
-			this._repaint();
+			return ( now ) ? this.render() : this._repaint();
 		}
 	},
 
@@ -5887,7 +6558,23 @@ module.exports = CS.Mn.CompositeView.extend( {
 
     }
 
-    if ( html ) this.$el.html(html);
+    if ( html ) {
+
+    	if ( this.model.definition.get('flags').htmlhint ) {
+  			if ( !_.isEmpty( Cornerstone.Vendor.HTMLHint.verify( html, this.htmlhint ) ) )
+    			html = Backbone.$('<div>').text(html).html(); // encode html with unclosed tags.
+  		}
+
+			// errors = _.filter( errors, function( error ) {
+			// 	if ( error.message.indexOf('[ <p> ]') !== -1 ) return false;
+			// 	if ( error.message.indexOf('[ </p> ]') !== -1 ) return false;
+			// 	if ( error.raw =="</p>" ) return false;
+			// 		return true;
+			// });
+
+    	this.$el.html(html);
+
+    }
 
     return this;
   },
@@ -5920,10 +6607,32 @@ module.exports = CS.Mn.CompositeView.extend( {
     if ( this.remoteRender ) {
       _.defer( _.bind( function(){
       	if ( this._emptyDetection() ) {
-					this.$el.html( CS.Mn.Renderer.render( 'empty-element', this.serializeData() ) );
+      		this.triggerMethod( 'render:empty' );
       	}
       }, this ), 0 );
     }
+
+  },
+
+  onRenderEmpty: function() {
+  	this._renderEmpty();
+  },
+
+  _renderEmpty: function() {
+  	var $html = Backbone.$( CS.Mn.Renderer.render( 'empty-element', this.serializeData() ) );
+  	this.$el.append( $html );
+  },
+
+  _emptyDetection: function() {
+
+  	if ( _.isFunction( this.emptyDetection ) )
+  		return this.emptyDetection();
+
+  	if ( this.model.definition.get('flags').empty || this.model.definition.get('flags').no_height_check ) {
+  		return false; // detection handled server side, but aborted here.
+  	}
+
+    return ( this.$el.shadowHeight() < 1 );
 
   },
 
@@ -5954,15 +6663,18 @@ module.exports = CS.Mn.CompositeView.extend( {
 		cs.global.trigger( 'inspect', this.model )
   },
 
-	_dragStart: function( e ) {
-		this._setData(e);
-		_.defer( _.bind( this.triggerMethod, this), 'drag:start', e )
-	},
+  _dragLift: function( e ) {
+  	this.$el.addClass('cs-dragging');
+  	cs.incoming = this.model;
+  },
 
-	_dragEnd: function( e ) {
-		cs.preview.trigger( 'dragging', false );
-		if ( e.originalEvent ) this.triggerMethod( 'drag:end', e );
-	},
+  _dragEnd: function( e ) {
+  	this.$el.removeClass('cs-dragging');
+  },
+
+  _dragMirror: function( e, clone ) {
+  	Backbone.$(clone).empty().append( Backbone.$( cs.elementIcon(this.model.get('_type')) ) );
+  },
 
 	_observeStart: function( e ) {
 		e.stopPropagation();
@@ -5973,32 +6685,8 @@ module.exports = CS.Mn.CompositeView.extend( {
   	this.model.trigger('observe:end');
   },
 
-  _emptyDetection: function() {
-
-  	if ( this.model.definition.get('flags').empty ) {
-  		return false; // detection handled server side, but aborted here.
-  	}
-
-    return ( this.$el.shadowHeight() < 1 );
-
-  },
-
-  _setData: function ( e ) {
-
-		var dataTransfer = e.originalEvent.dataTransfer;
-    dataTransfer.effectAllowed = 'copy';
-    var data = JSON.stringify({
-			action: 'move',
-    	id: this.model.cid,
-    });
-
-    cs.preview.replyOnce( 'cache:'+ this.model.cid, this.model );
-    dataTransfer.setData( 'cornerstone/element', data );
-
-	}
-
 } );
-},{}],95:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	onAfterElementRender: function() {
@@ -6007,37 +6695,109 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
     	this.$('.x-card-outer').trigger('cs:setcardheight')
     }, this ) );
 
+    this.$('a').click( function(e) {
+  		e.preventDefault();
+  	});
+
 	}
+
 });
-},{}],96:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 module.exports = Cornerstone.ElementViews.Base.extend({
 
 	remoteRender: false,
 	draggable: false,
 
-	emptyView: CS.Mn.ItemView.extend({
-    className: 'cs-empty-column',
-    template: 'empty-column',
-  }),
-
 	elementEvents: {
 		'click svg.cs-custom-icon': 'clickIcon',
-		'drop.h5s': 'receiveElement',
-		'dragenter.h5s': 'dragEnter',
-		'dragover.h5s': 'dragOver',
+		'dragula:send': 'sendElement',
+		'dragula:receive': 'receiveElement',
+		'dragula:cancel': 'dragCancel',
+		'dragula:over': 'dragOver',
+		'dragula:out': 'dragOut',
+		'dragula:shadow': 'dragShadow',
+		'dragula:lift': 'dragLift',
+		'dragula:source:over': 'dragSourceOver',
+		'drop.h5s': 'receiveNew',
+		'dragenter.h5s': 'dragEnterH',
+		'dragover.h5s': 'dragOverH',
 	},
 
 	initialize: function() {
 
 		this.checkDragOverStart = _.once( this.dragOverStart );
+
 		this.checkDragLeave = _.debounce( this.dragLeave, 50 );
+		this.detachIndicator = _.debounce( this._detachIndicator, 50 );
 		this.throttleSetDragIndicator = _.throttle( _.bind( this.setDragIndicator, this ), 125, { leading: false, trailing: false } );
-		this.localIndex = null;
 		this.dropIndex = 0;
 
-		this.emptyElementView = new this.emptyView();
-		this.emptyElementView.render();
+		this.$empty = Backbone.$( cs.template('empty-column')() );
 
+	},
+
+
+	receiveElement: function( e, el, source, sibling ) {
+
+		cs.observer.trigger( 'kill');
+
+		var isNew = !_.isFunction( cs.incoming.toJSON )
+		var data = ( isNew ) ? cs.incoming.data : cs.incoming.toJSON();
+
+		var shadow = cs.incoming.cid;
+		var newModel = this.model.elements.create( data, _.clone( cs.incoming.options ), {
+			position: ( sibling ) ? Backbone.$(sibling).index() - 1 : this.collection.length,
+			replace: cs.incoming,
+			after: function( model ) {
+				cs.render.shadow( model, shadow );
+			}
+		} );
+
+		if ( isNew )
+			cs.global.trigger( 'inspect', newModel );
+
+		this.emptyClassCheck();
+
+	},
+
+	receiveNew: function ( e ) {
+
+		this.$el.toggleClass( 'cs-receiving', false );
+
+    cs.observer.trigger( 'kill');
+    cs.preview.trigger( 'dragging', false );
+
+    var data = JSON.parse( e.originalEvent.dataTransfer.getData('cornerstone/element') );
+
+		if ( !data ) return;
+
+    if ( data.action == 'create' && data._type ) {
+    	var newModel = this.model.elements.create( { _type: data._type }, {}, this.dropIndex, function( model ) {
+    		cs.render.shadow( model, 'new:' + data._type );
+    	}  );
+    	cs.global.trigger( 'inspect', newModel )
+    }
+
+    this.emptyClassCheck();
+
+	},
+
+	dragOver: function() {
+		this.$el.toggleClass( 'cs-receiving', true );
+	},
+
+	dragOut: function() {
+		this.$el.toggleClass( 'cs-receiving', false );
+	},
+
+	dragCancel: function() {
+		this.$empty.detach();
+		this.$el.removeClass( 'cs-empty' );
+	},
+
+	dragShadow: function() {
+		if ( this.collection.length == 1 && this.$el.children().length <= 1 )
+			this.emptyClassCheck( true );
 	},
 
 	clickIcon: function( e ) {
@@ -6046,7 +6806,6 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 	},
 
 	onRemoveChild: function() {
-  	this.localIndex = null;
   	this.emptyClassCheck();
   },
 
@@ -6054,14 +6813,17 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		child.triggerMethod('added:to:column');
 	},
 
-  onRender: function() {
-  	cs.$indicator.detach();
-  },
+	emptyClassCheck: function( force ) {
 
-	emptyClassCheck: function( on ) {
-		this.emptyElementView.$el.detach();
-		if ( on && this.collection.length <= 1) this.$el.append(this.emptyElementView.$el);
-		this.$el.toggleClass( 'cs-empty', ( this.collection.isEmpty() || ( !!on ) ) );
+		this.$empty.detach();
+		this.$el.removeClass( 'cs-empty' );
+
+		if ( this.collection.isEmpty() || force ) {
+			this.$el.append(this.$empty);
+			this.$el.addClass( 'cs-empty' );
+			this.$('.cs-empty-column').removeAttr('style');
+		}
+
 	},
 
 	dragOverStart: function( ) {
@@ -6069,205 +6831,60 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		cs.observer.trigger( 'in', this, true );
 	},
 
-	dragEnter: function() {
+	dragEnterH: function() {
 		this.checkDragOverStart();
 		this.checkDragLeave();
 	},
 
-	dragOver: function(e) {
+	dragOverH: function(e) {
 
 		this.checkDragOverStart();
 		this.checkDragLeave();
 
-    if (e.originalEvent.preventDefault)
+    if ( e.originalEvent.preventDefault )
       e.originalEvent.preventDefault();
 
-    e.originalEvent.dataTransfer.dropEffect = 'copy';
-
-    if (this.collection.length > 0 ) {
-    	this.throttleSetDragIndicator( e.originalEvent.pageY );
-    }
+  	this.throttleSetDragIndicator( e.originalEvent.pageY );
 
 	},
 
 	dragLeave: function () {
 		this.$el.toggleClass( 'cs-receiving', false );
 		this.checkDragOverStart = _.once( this.dragOverStart );
-		cs.observer.trigger( 'out', this );
-		cs.$indicator.detach();
 	},
-
-	receiveElement: function ( e ) {
-
-		this.emptyClassCheck();
-		cs.observer.trigger('kill:indicator');
-		this.$el.toggleClass( 'cs-receiving', false );
-		this.localIndex = null;
-
-    cs.observer.trigger( 'kill');
-    cs.preview.trigger( 'dragging', false );
-
-		var data = JSON.parse( e.originalEvent.dataTransfer.getData('cornerstone/element') );
-		if ( !data ) return;
-
-    if ( data.action == 'create' && data._type ) {
-    	return this.model.elements.create( { _type: data._type }, {}, this.dropIndex  );
-    }
-
-
-    if ( data.action =='move' && data.id ) {
-
-    	var incoming = cs.preview.request( 'cache:'+ data.id );
-
-    	if ( this.collection.get({ cid: data.id }) ) {
-    		return this.collection.trigger( 'update:position', incoming, this.dropIndex );
-    	}
-
-    	var newModel = this.model.elements.create( incoming.toJSON(), _.clone( incoming.options ), this.dropIndex  );
-    	newModel.shadow = incoming.cid;
-    	incoming.trigger( 'column:change', newModel );
-    	incoming.destroy();
-
-    	this.render();
-
-    }
-
-    this.dropIndex = 0;
-
-	},
-
-	onChildviewDragStart: function( child ) {
-
-  	cs.preview.trigger( 'dragging', true );
-    cs.observer.trigger( 'kill' );
-
-  	this.localIndex = this.collection.indexOf(child.model);
-
-  	if ( _.isNull( this.localIndex ) && this.collection.length != 1 ) {
-  		child.$el.before(cs.$indicator);
-  	}
-
-  	cs.$indicator.css({
-  		height: child.$el.outerHeight()
-  	});
-
-  	child.$el.toggleClass( 'cs-dragging', true );
-  	this.emptyClassCheck( true );
-
-  },
-
-  onChildviewDragEnd: function( child ) {
-
-  	child.$el.toggleClass( 'cs-dragging', false );
-  	cs.observer.trigger('kill:indicator');
-
-  	if (this.localIndex == this.children.length - 1 ) {
-  		this.$el.append(child.$el);
-  	} else {
-  		this.$el.children().eq(this.localIndex).before(child.$el);
-  	}
-
-  	this.emptyClassCheck();
-
-  },
 
 	setDragIndicator: function( y ) {
-		cs.observer.trigger('kill:indicator');
-		this.findDropIndex( y );
-  	this.renderIndicator();
-	},
 
-	findDropIndex: function( y ) {
+		cs.$indicator.detach();
+		if ( this.collection.length <= 0 ) return;
 
-		var model = this.findClosest( y );
-		var index;
-		if ( _.isNull(model) ) {
-			index = this.collection.length;
-		} else {
-			index = this.collection.indexOf( model );
-		}
+		var index = 0;
+		var model = this.collection.find( _.bind( function( model ) {
 
-		if ( this.localIndex && index > this.localIndex || this.localIndex == 0 )
-  		index--;
+			var view = this.children.findByModel( model );
 
-  	this.dropIndex = index;
+			if ( view.$el.shadowHeight < 1 ) return false;
 
-	},
-
-	renderIndicator: function() {
-
-		if ( !_.isNull( this.localIndex ) && this.collection.length == 1 )
-			return;
-
-		if (this.dropIndex == 0 ) {
-			this.$el.prepend(cs.$indicator);
-			return;
-		}
-
-		if (this.dropIndex == ( ( _.isNull( this.localIndex ) ) ? this.collection.length : this.collection.length - 1 ) ) {
-			this.$el.append(cs.$indicator);
-  	} else {
-  		if ( _.isNull( this.localIndex ) || this.localIndex > this.dropIndex ) {
-				this.children.findByModel( this.collection.at( this.dropIndex ) ).$el.before(cs.$indicator);
-			} else {
-				this.children.findByModel( this.collection.at( this.dropIndex + 1 ) ).$el.before(cs.$indicator);
-			}
-
-  	}
-	},
-
-	findClosest: function( y ) {
-
-		var columnBottom = this.$el.offset().top + this.$el.outerHeight();
-		var top = this.$el.offset().top, bottom = 0, closest = null, prev = null, view = null;
-
-		if ( this.collection.length == 1 ) {
-			bottom = columnBottom;
-			if ( y >= top && y <= bottom ) {
-        if (y > ( top + ( bottom - top ) / 2 ) ) {
-        	return null;
-        } else {
-        	return this.collection.first();
-        }
-      }
-		}
-
-    this.collection.each( _.bind( function( model, index ) {
-
-    	view = this.children.findByModel( model );
-    	if (view.$el.hasClass('cs-dragging')) {
-    		return;
+    	if ( y > view.$el.offset().top + ( view.$el.outerHeight() / 2 ) ) {
+    		++index;
+    	} else {
+    		return true;
     	}
 
-  		bottom = view.$el.offset().top + ( view.$el.outerHeight(true) / 2 ) + 45;
+    	return false;
 
-      if ( y >= top && y <= bottom ) {
-        closest = model;
-      }
+		}, this ) );
 
-      top = bottom;
+		this.dropIndex = index;
 
 
-      // We have to check both directions on the last iteration
-      if ( index == this.collection.length - 1 ) {
-      	bottom = columnBottom;
-
-      	if ( y >= top && y <= bottom ) {
-	        closest = null; // out of bounds
-	      }
-      }
-
-    }, this ) );
-
-    return closest;
+		if ( this.collection.length == this.dropIndex ) {
+			this.$el.append( cs.$indicator );
+		} else {
+			this.children.findByModel( model ).$el.before(cs.$indicator);
+		}
 
 	},
-
-
-
-
-
-
 
 
 
@@ -6319,17 +6936,22 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		}
 
 		this.emptyClassCheck();
+
+	},
+
+	onRenderEmpty: function() {
+		return false;
 	}
 
 })
-},{}],97:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	template: _.template('<div></div>'),
 
 	remoteRender: false,
 
-	minHeight: 3,
+	minHeight: 10,
 
 	initialize: function() {
 		this.listenTo( this.model, 'change', this.render );
@@ -6368,6 +6990,10 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 			'height'  : 0
 		});
 
+		if ($gap.outerHeight() < this.minHeight) {
+			$gap.css({'padding' : this.minHeight + 'px 0 0'});
+		}
+
 	},
 
 	onAddedToColumn: function() {
@@ -6393,10 +7019,17 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 	}
 
 });
-},{}],98:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
+
+	// Stop "no container" from being detected as empty too early
+	emptyDetection: function() {
+		return false;
+	},
+
 	onAfterElementRender: function(){
 
+		// Handle height preservation between renders to avoid flicker
 		if( this.model.prevHeight ) {
 			this.$('.cs-empty-element').height(this.model.prevHeight);
 			this.model.prevHeight = false;
@@ -6413,7 +7046,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	}
 });
-},{}],99:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	onAfterElementRender: function() {
@@ -6421,7 +7054,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 	}
 
 });
-},{}],100:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 module.exports = {
 
 	'section' : require('./section'),
@@ -6441,7 +7074,7 @@ module.exports = {
 	// 3rd party
 	'gravity-forms'     : require('./gravity-forms'),
 }
-},{"./accordion":92,"./alert":93,"./card":95,"./column":96,"./gap":97,"./google-map":98,"./gravity-forms":99,"./line":101,"./row":102,"./section":103,"./slider":104,"./tabs":105}],101:[function(require,module,exports){
+},{"./accordion":95,"./alert":96,"./card":98,"./column":99,"./gap":100,"./google-map":101,"./gravity-forms":102,"./line":104,"./row":105,"./section":106,"./slider":107,"./tabs":108}],104:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
   template: _.template('<hr class="x-hr">'),
@@ -6483,7 +7116,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
   },
 
 });
-},{}],102:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 module.exports = Cornerstone.ElementViews.Base.extend({
 
 	remoteRender: false,
@@ -6553,7 +7186,7 @@ module.exports = Cornerstone.ElementViews.Base.extend({
   }
 
 });
-},{}],103:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 module.exports = Cornerstone.ElementViews.Base.extend({
 
 	remoteRender: false,
@@ -6715,13 +7348,13 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 	}
 
 })
-},{}],104:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 	// emptyDetection: function() {
  //    // Prevent empty detection
  //  }
 });
-},{}],105:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	onClickBeforeInspect: function( e ) {
@@ -6732,7 +7365,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 	},
 
 });
-},{}],106:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = CS.Mn.CollectionView.extend({
 	childView: require('./settings-section'),
 	events: {
@@ -6759,7 +7392,7 @@ module.exports = CS.Mn.CollectionView.extend({
 
   }
 });
-},{"./settings-section":108}],107:[function(require,module,exports){
+},{"./settings-section":111}],110:[function(require,module,exports){
 var ControlListView = require('../controls/control-collection');
 var SettingsCollectionView = require('./settings-collection');
 module.exports = CS.Mn.LayoutView.extend({
@@ -6788,7 +7421,7 @@ module.exports = CS.Mn.LayoutView.extend({
   }
 
 });
-},{"../controls/control-collection":36,"./settings-collection":106}],108:[function(require,module,exports){
+},{"../controls/control-collection":38,"./settings-collection":109}],111:[function(require,module,exports){
 module.exports = CS.Mn.CompositeView.extend({
 	template: 'settings/section',
 	className: 'cs-settings-section',
@@ -6812,7 +7445,7 @@ module.exports = CS.Mn.CompositeView.extend({
 
 	}
 });
-},{}],109:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 var ViewBasePane = require('../main/base-pane');
 var SettingsContentView = require('./settings-content');
 var ControlListView = require('../controls/control-collection');
@@ -6845,7 +7478,467 @@ module.exports = ViewBasePane.extend({
   }
 
 });
-},{"../controls/control-collection":36,"../main/base-pane":86,"./settings-content":107}],110:[function(require,module,exports){
+},{"../controls/control-collection":38,"../main/base-pane":88,"./settings-content":110}],113:[function(require,module,exports){
+module.exports = CS.Mn.CompositeView.extend( {
+
+	remoteRender: true,
+	template: 'main/skeleton-item',
+	childViewContainer: '.cs-skeleton-container',
+
+	duplicatable: function() {
+		var flags = this.model.definition.get( 'flags' );
+		return ( flags && !flags.child );
+	},
+	deletable: function() {
+		return _.result( this, 'duplicatable' );
+	},
+	eraseable: false,
+	manageable: false,
+	collapsible: false,
+
+	className: function() {
+		var classes = ['cs-skeleton-item'];
+
+		var type = this.model.get('_type');
+
+		if ( _.contains( ['section', 'row', 'column'], type ) ) {
+			classes.push( 'layout' );
+		} else {
+			classes.push( 'element' );
+		}
+
+		classes.push( type )
+
+		var flags = this.model.definition.get( 'flags' );
+
+		if ( flags && flags.child ) {
+			classes.push( 'is-child' );
+		}
+
+		var skeletonClasses = _.result( this, 'skeletonClasses' );
+
+		if ( _.isArray( skeletonClasses ) )
+			classes = classes.concat( skeletonClasses );
+
+		return classes.join(' ');
+	},
+
+	attributes: function() {
+		return {
+			'data-element-type': this.model.get('_type')
+		}
+	},
+
+	events: function() {
+
+		var events = {
+			'click .cs-skeleton-controls button': 'clickControl'
+		};
+
+		var inspectable = _.result( this, 'inspectable' )
+
+
+		if ( inspectable || _.isUndefined( inspectable ) ) {
+
+			events = _.extend( events, {
+				'click > .cs-skeleton-handle': '_click',
+				'mouseover > .cs-skeleton-handle': '_observeStart',
+				'mouseout > .cs-skeleton-handle': '_observeEnd'
+			} );
+
+		}
+
+		// if ( _.result( this, 'collapsible' ) ) {
+
+		// 	events = _.extend( events, {
+		// 		'click .cs-icon.collapse': 'collapse',
+		// 		// 'mouseover .cs-icon.collapse': 'collapseHover',
+		// 	} );
+
+		// }
+
+		var draggable = _.result( this, 'draggable' )
+		if ( draggable || _.isUndefined( draggable ) ) {
+
+			events = _.extend( events, {
+				'dragula:lift': '_dragLift',
+				'dragula:cancel': '_dragEnd',
+			} );
+
+		}
+
+		var receiver = _.result( this, 'receiver' )
+		if ( receiver || _.isUndefined( receiver ) ) {
+
+			events = _.extend( events, {
+				'dragula:receive': '_receiveElement',
+				'dragula:over': '_dragOver',
+				'dragula:out': '_dragOut',
+			} );
+
+		}
+
+		return _.extend( events, _.result( this, 'elementEvents' ) || {} );
+	},
+
+	getChildView: function( item ) {
+		return cs.component('view-loader').skeletonLookup( item.get('_type') );
+	},
+
+	constructor: function( options ) {
+
+		CS.Mn.CompositeView.apply(this, arguments);
+
+		this._repaint = _.debounce( _.bind( function() {
+			try {
+				this.render()
+			} catch (e) {
+				if ( e.name == 'ViewDestroyedError' ) return;
+				console.log('Cornerstone Render Exception', e );
+			}
+		}, this ), 2 );
+
+		this.collection = this.model.elements;
+		this.listenTo( this.collection, 'sort', this.render );
+		this.listenTo( this.collection, 'remove', this.render );
+
+		this.listenTo( cs.events, 'skeleton:hover:toggle', this.hoverToggle );
+
+		this.listenTo( cs.events, 'skeleton:dragging', function( state ) {
+			if ( state ) return;
+			this.$el.removeClass( 'cs-receiving' );
+		})
+
+		if ( this.model.collection )
+			this.modelIndex = this.model.collection.indexOf( this.model );
+
+	},
+
+	serializeData: function() {
+
+		var text = '';
+		var extra = '';
+		var controls = [];
+		var type = this.model.get('_type');
+
+		switch ( type ) {
+      case 'section':
+        text = cs.l18n('section-format').replace('%s', this.model.get('title') );
+        break;
+      case 'row':
+        text = cs.l18n('row-numeric').replace('%s', this.model.getIndex() + 1 );
+        break;
+      case 'column':
+        text = cs.l18n('column-format').replace('%s', this.model.get('size') );
+        break;
+      default:
+        extra = cs.elementIcon( type );
+      	text = this.model.definition.get('ui').title;
+      	break;
+    }
+
+    if ( _.result( this, 'manageable' ) ) {
+    	controls.push({ action: 'managelayout', icon: 'bars', tooltip: cs.l18n('tooltip-manage-layout') });
+    }
+
+    if ( _.result( this, 'duplicatable' ) ) {
+    	controls.push({ action: 'duplicate', icon: 'copy', tooltip: cs.l18n('tooltip-copy') });
+    }
+
+    if ( _.result( this, 'eraseable' ) ) {
+    	controls.push({ action: 'erase', icon: 'eraser', tooltip: cs.l18n('tooltip-erase') });
+    }
+
+    if ( _.result( this, 'deletable' ) ) {
+    	controls.push({ action: 'delete', icon: 'trash-o', tooltip: cs.l18n('tooltip-delete')
+    	});
+    }
+
+    var userControls = _.clone( _.result( this, 'controls' ) );
+
+    if ( _.result( this, 'collapsible' ) ) {
+    	controls.push({ action: 'collapse', icon: 'caret-down', iconAlt: 'caret-up', persist: true });
+    }
+
+    this.tooltipText = text;
+
+		return _.extend( CS.Mn.CompositeView.prototype.serializeData.apply( this, arguments ), {
+			title: extra + text,
+			controls: controls
+		} );
+	},
+
+  _click: function( e ) {
+		this.triggerMethod('click:before:inspect', e );
+		e.stopPropagation();
+		cs.global.trigger( 'inspect', this.model )
+  },
+
+  _dragLift: function( e ) {
+  	e.stopPropagation();
+  	cs.incoming = this.model;
+  },
+
+  _dragEnd: function( e ) {
+  	cs.incoming = false;
+  },
+
+  _dragOver: function( e ) {
+  	e.stopPropagation();
+		this.$el.toggleClass( 'cs-receiving', true );
+	},
+
+	_dragOut: function( e ) {
+		this.$el.toggleClass( 'cs-receiving', false );
+	},
+
+	_observeStart: function( e ) {
+		e.stopPropagation();
+		this.model.trigger( 'observe:start' );
+		cs.events.trigger( 'skeleton:hover', true, this );
+  },
+
+  _observeEnd: function( e ) {
+  	this.model.trigger('observe:end');
+  	cs.events.trigger( 'skeleton:hover', false, this );
+  },
+
+  _receiveElement: function( e, el, source, sibling ) {
+		e.stopPropagation();
+		this.triggerMethod( 'receive:element', e, el, source, sibling );
+		_.defer( _.bind( this._placeElement, this ), ( sibling ) ? Backbone.$(sibling).index() - 1 : this.collection.length );
+	},
+
+	_placeElement: function( position ) {
+
+		if ( !cs.incoming ) return;
+
+		var data = ( !_.isFunction( cs.incoming.toJSON ) ) ? cs.incoming.data : cs.incoming.toJSON();
+		var newModel = this.model.elements.create( data, _.clone( cs.incoming.options ), {
+			position: position,
+			replace: cs.incoming,
+			after: function( model ) {
+				cs.incoming = false;
+			}
+		} );
+
+	},
+
+	onRender: function() {
+		this.$el.toggleClass( 'collapsed', !!this.model.getMeta( 'skeleton_collapsed' ) );
+	},
+
+	clickControl: function( e ) {
+		e.stopPropagation();
+		var action = this.$(e.currentTarget).data( 'action' );
+		this.triggerMethod('control:' + action );
+	},
+
+	onControlManagelayout: function() {
+		if ( !_.result( this, 'manageable' ) ) return;
+		cs.events.trigger( 'inspect:layout', this.model, { navigate: true } );
+	},
+
+	onControlDuplicate: function() {
+		if ( !_.result( this, 'duplicatable' ) ) return;
+		cs.global.trigger( 'element:duplicate', this.model );
+	},
+
+	onControlDelete: function() {
+		if ( !_.result( this, 'deletable' ) ) return;
+		cs.global.trigger( 'element:delete', this.model );
+	},
+
+	onControlErase: function() {
+		if ( !_.result( this, 'eraseable' ) ) return;
+		cs.global.trigger( 'element:erase', this.model );
+	},
+
+	onControlCollapse: function() {
+		if ( !_.result( this, 'collapsible' ) ) return;
+
+		var newState = !this.model.getMeta( 'skeleton_collapsed' )
+		var $parent = this.$el.toggleClass( 'collapsed', newState );
+		this.model.setMeta( 'skeleton_collapsed', newState );
+
+	},
+
+	collapseHover: function( e ) {
+		e.stopPropagation();
+	},
+
+	hoverToggle: function( cid ) {
+		this.$el.toggleClass( 'hover', cid == this.cid );
+	}
+
+} );
+},{}],114:[function(require,module,exports){
+module.exports = Cornerstone.SkeletonViews.Base.extend({
+
+	receiver: true,
+
+	manageable: true,
+	duplicatable: false,
+	deletable: false,
+	eraseable: true,
+
+	elementEvents: {
+		'dragula:drop': 'updatePosition',
+	},
+
+	skeletonClasses: function() {
+		return [ 'size-' + this.model.get('size').replace('/','-') ];
+	},
+
+	updatePosition: function( target, source, sibling ) {
+    this.triggerMethod( 'update:position', target, source, sibling );
+  },
+
+  _dragLift: function( e ) {
+  	e.stopPropagation();
+  },
+
+});
+},{}],115:[function(require,module,exports){
+module.exports = {
+	'section' : require('./section'),
+	'row'     : require('./row'),
+	'column'  : require('./column'),
+}
+},{"./column":114,"./row":116,"./section":117}],116:[function(require,module,exports){
+module.exports = Cornerstone.SkeletonViews.Base.extend({
+
+	receiver: false,
+
+	manageable: true,
+	collapsible: true,
+
+	childViewContainer: '.cs-skeleton-container-inner',
+
+	elementEvents: {
+		'recieve:element' : '_receiveElement',
+		'dragula:lift:child' : 'liftColumn'
+	},
+
+	filter: function (child, index, collection) {
+    return ( child.get('_active') );
+  },
+
+  initialize: function() {
+  	this.equalize = _.debounce( _.bind( this._equalize, this ), 1 )
+  },
+
+  onRender: function() {
+  	this.setupDrake();
+  	this._equalize();
+  	this.equalize();
+  },
+
+  onChildviewUpdatePosition: function( child, target, source, sibling ) {
+
+  	this.equalize();
+
+  	// Wait until Dragula removes the mirror image.
+  	_.defer( _.bind( function(){
+  		this.triggerMethod( 'item:before:position:updated', child );
+    	this.collection.trigger( 'update:position', child.model, child.$el.index() );
+    	this.triggerMethod( 'item:position:updated', child );
+  	}, this ) );
+
+  },
+
+  setupDrake: function() {
+
+  	if ( this.drake ) {
+  		this.drake.destroy();
+  	}
+
+  	var $container = this.$('.cs-skeleton-container-inner');
+  	var row = this;
+
+  	this.drake = Cornerstone.Vendor.dragula( {
+  		offset: function( offset, e, item ) {
+  			offset.x = Backbone.$(item).width() / 2;
+  			return offset;
+  		},
+  		accepts: function( el, target, source, sibling ) {
+				return Backbone.$(el).is('.cs-skeleton-item.column');
+			},
+  		moves: function (el, source, handle, sibling) {
+  			return Backbone.$(handle).is('.cs-skeleton-item.column > .cs-skeleton-handle > .cs-skeleton-title') && Backbone.$(el).siblings().length > 0;
+		  },
+  		direction: 'horizontal',
+		  revertOnSpill: false,
+		  mirrorContainer: Backbone.$('#before')[0],
+		  containers: [$container[0]]
+  	} );
+
+  	var handlers = require('../../utility/dragula-handlers');
+
+  	this.drake.on('drag', handlers.skeletonStart );
+  	this.drake.on('dragend', handlers.skeletonEnd );
+
+		this.drake.on('drop', handlers.drop );
+
+  },
+
+  onChildviewReceiveElement: function() {
+  	this._equalize();
+  },
+
+  _equalize: function( ) {
+
+  	this.$el.equalize({
+  		equalize: 'outerHeight',
+			children: '.cs-skeleton-container-column',
+			reset: true,
+			offset: this.$('.cs-skeleton-handle' ).outerHeight() - 1
+		});
+
+  },
+
+  _observeStart: function( e ) {
+		e.stopPropagation();
+		this.model.trigger( 'observe:start' );
+		if ( !this.$el.hasClass( 'cs-receiving' ) )
+			cs.events.trigger( 'skeleton:hover', true, this );
+  },
+
+  liftColumn: function() {
+  	this.$el.addClass( 'cs-receiving' );
+  },
+
+  onDestroy: function() {
+  	this.drake.destroy();
+  },
+
+  onChildviewRender: function() {
+  	this._equalize(); // leading and trailing edge
+  	this.equalize();
+  },
+
+  _receiveElement: function( e ) {
+  	e.stopPropagation();
+  }
+
+});
+},{"../../utility/dragula-handlers":28}],117:[function(require,module,exports){
+module.exports = Cornerstone.SkeletonViews.Base.extend({
+	receiver: true,
+	manageable: true,
+	collapsible: true,
+
+	initialize: function() {
+		this.listenTo( this.model, 'change:title', this.updateTitle );
+	},
+
+	updateTitle: function( model, title ) {
+		this.$( '> .cs-skeleton-handle > .cs-skeleton-title' ).html( cs.l18n( 'section-format' ).replace( '%s', title ) );
+	}
+
+});
+
+},{}],118:[function(require,module,exports){
 var templates={};templates['controls/base']=function (obj) {
 obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
@@ -6969,6 +8062,14 @@ __p +=
 
 }
 return __p
+};templates['controls/date']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<input type="text" class=\'cs-date-input\'/>\n<div class="cs-date-container">\n\n	<div class="cs-date-picker-entry"></div>\n\n	<div class="cs-date-format hide">\n		<div class="cs-date-format-label">Select a Format<select tabindex="-1"></select></div>\n\n	</div>\n\n</div>\n';
+
+}
+return __p
 };templates['controls/default']=function (obj) {
 obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
@@ -7018,6 +8119,8 @@ __p += '<li title="' +
 ((__t = ( choice )) == null ? '' : __t) +
 '" data-choice="' +
 ((__t = ( choice )) == null ? '' : __t) +
+'" data-choices="' +
+((__t = ( choices )) == null ? '' : __t) +
 '"><i class="cs-icon" data-cs-icon="&#x' +
 ((__t = ( code )) == null ? '' : __t) +
 '"></i></li>';
@@ -7243,9 +8346,7 @@ __p += '<div class="cs-title ';
  if (options.showInspectButton) { ;
 __p += 'inspectable';
  } ;
-__p += '">\n	<input type="text" class="cs-title-input" value="' +
-((__t = ( title )) == null ? '' : __t) +
-'"></input>\n	';
+__p += '">\n	<input type="text" class="cs-title-input"></input>\n	';
  if (options.showInspectButton) { ;
 __p += '\n	<button class="cs-title-button" title="' +
 ((__t = ( l18n('tooltip-inspect') )) == null ? '' : __t) +
@@ -7367,25 +8468,25 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
  //builder/extra/respond ;
-__p += '\n<div class="cs-respond-buttons">\n  <button class="cs-icon xl" data-respond="100%" data-cs-icon="' +
+__p += '\n<div class="cs-respond-buttons">\n  <button class="cs-icon xl" data-respond="xl" data-cs-icon="' +
 ((__t = ( cs.fontIcon('desktop') )) == null ? '' : __t) +
-'"></button>\n  <button class="cs-icon lg" data-respond="1199px" data-cs-icon="' +
+'"></button>\n  <button class="cs-icon lg" data-respond="lg" data-cs-icon="' +
 ((__t = ( cs.fontIcon('laptop') )) == null ? '' : __t) +
-'"></button>\n  <button class="cs-icon md" data-respond="979px" data-cs-icon="' +
+'"></button>\n  <button class="cs-icon md" data-respond="md" data-cs-icon="' +
 ((__t = ( cs.fontIcon('tablet') )) == null ? '' : __t) +
-'"></button>\n  <button class="cs-icon sm" data-respond="767px" data-cs-icon="' +
+'"></button>\n  <button class="cs-icon sm" data-respond="sm" data-cs-icon="' +
 ((__t = ( cs.fontIcon('tablet') )) == null ? '' : __t) +
-'"></button>\n  <button class="cs-icon xs" data-respond="480px" data-cs-icon="' +
+'"></button>\n  <button class="cs-icon xs" data-respond="xs" data-cs-icon="' +
 ((__t = ( cs.fontIcon('mobile') )) == null ? '' : __t) +
-'"></button>\n</div>\n<div class="cs-respond-labels">\n  <div class="xl" data-respond="100%"><i class="cs-icon" data-cs-icon="' +
+'"></button>\n</div>\n<div class="cs-respond-labels">\n  <div class="xl" data-respond="xl" ><i class="cs-icon" data-cs-icon="' +
 ((__t = ( cs.fontIcon('desktop') )) == null ? '' : __t) +
-'"></i><span class="label">Extra Large</span><span class="size">1200px &amp; Up</span></div>\n  <div class="lg" data-respond="1199px"><i class="cs-icon" data-cs-icon="' +
+'"></i><span class="label">Extra Large</span><span class="size">1200px &amp; Up</span></div>\n  <div class="lg" data-respond="lg" ><i class="cs-icon" data-cs-icon="' +
 ((__t = ( cs.fontIcon('laptop') )) == null ? '' : __t) +
-'"></i><span class="label">Large</span><span class="size">980px &ndash; 1199px</span></div>\n  <div class="md" data-respond="979px"><i class="cs-icon" data-cs-icon="' +
+'"></i><span class="label">Large</span><span class="size">980px &ndash; 1199px</span></div>\n  <div class="md" data-respond="md" ><i class="cs-icon" data-cs-icon="' +
 ((__t = ( cs.fontIcon('tablet') )) == null ? '' : __t) +
-'"></i><span class="label">Medium</span><span class="size">768px &ndash; 979px</span></div>\n  <div class="sm" data-respond="767px"><i class="cs-icon" data-cs-icon="' +
+'"></i><span class="label">Medium</span><span class="size">768px &ndash; 979px</span></div>\n  <div class="sm" data-respond="sm" ><i class="cs-icon" data-cs-icon="' +
 ((__t = ( cs.fontIcon('tablet') )) == null ? '' : __t) +
-'"></i><span class="label">Small</span><span class="size">481px &ndash; 767px</span></div>\n  <div class="xs" data-respond="480px"><i class="cs-icon" data-cs-icon="' +
+'"></i><span class="label">Small</span><span class="size">481px &ndash; 767px</span></div>\n  <div class="xs" data-respond="xs" ><i class="cs-icon" data-cs-icon="' +
 ((__t = ( cs.fontIcon('mobile') )) == null ? '' : __t) +
 '"></i><span class="label">Extra Small</span><span class="size">480px &amp; Smaller</span></div>\n</div>';
 
@@ -7404,18 +8505,6 @@ __p += '\n<p class="message">' +
 
 }
 return __p
-};templates['layout/actions']=function (obj) {
-obj || (obj = {});
-var __t, __p = '';
-with (obj) {
-__p += '<ul class="cs-actions">\n  <li class="action new">\n    <i class="cs-icon" data-cs-icon="&#xf0fe;"></i>\n    <span>' +
-((__t = ( l18n('layout-add-section') )) == null ? '' : __t) +
-'</span>\n  </li>\n  <li class="action templates">\n    <i class="cs-icon" data-cs-icon="&#xf15b;"></i>\n    <span>' +
-((__t = ( l18n('layout-templates') )) == null ? '' : __t) +
-'</span>\n  </li>\n</ul>';
-
-}
-return __p
 };templates['inspector/blank-state']=function (obj) {
 obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
@@ -7424,7 +8513,7 @@ with (obj) {
 
  //builder/inspector/blank-state ;
 __p += '\n' +
-((__t = ( cs.icon('logo-flat-custom') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/logo-flat-inspector') )) == null ? '' : __t) +
 '\n<span class="title">Nothing Selected</span>\n<span>Click on an element in the site preview to begin inspecting it.</span>';
 
 }
@@ -7470,6 +8559,8 @@ __p += '<ul class="cs-actions">\n  <li class="action manage-layout">\n    <i cla
 ((__t = ( fontIcon('eraser') )) == null ? '' : __t) +
 '"></i>\n    <span>' +
 ((__t = ( l18n('inspector-erase') )) == null ? '' : __t) +
+'</span>\n    <span class="quick-confirm">' +
+((__t = ( l18n('inspector-really-erase') )) == null ? '' : __t) +
 '</span>\n  </li>\n</ul>';
 
 }
@@ -7486,6 +8577,8 @@ __p += '<ul class="cs-actions">\n  <li class="action duplicate">\n    <i class="
 ((__t = ( fontIcon('trash-o') )) == null ? '' : __t) +
 '"></i>\n    <span>' +
 ((__t = ( l18n('inspector-delete') )) == null ? '' : __t) +
+'</span>\n    <span class="quick-confirm">' +
+((__t = ( l18n('inspector-really-delete') )) == null ? '' : __t) +
 '</span>\n  </li>\n</ul>';
 
 }
@@ -7502,6 +8595,20 @@ __p += '<ul class="cs-actions">\n  <li class="action manage-layout">\n    <i cla
 ((__t = ( fontIcon('trash-o') )) == null ? '' : __t) +
 '"></i>\n    <span>' +
 ((__t = ( l18n('inspector-delete') )) == null ? '' : __t) +
+'</span>\n    <span class="quick-confirm">' +
+((__t = ( l18n('inspector-really-delete') )) == null ? '' : __t) +
+'</span>\n  </li>\n</ul>';
+
+}
+return __p
+};templates['layout/actions']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<ul class="cs-actions">\n  <li class="action new">\n    <i class="cs-icon" data-cs-icon="&#xf0fe;"></i>\n    <span>' +
+((__t = ( l18n('layout-add-section') )) == null ? '' : __t) +
+'</span>\n  </li>\n  <li class="action templates">\n    <i class="cs-icon" data-cs-icon="&#xf15b;"></i>\n    <span>' +
+((__t = ( l18n('layout-templates') )) == null ? '' : __t) +
 '</span>\n  </li>\n</ul>';
 
 }
@@ -7540,7 +8647,7 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
  //builder/main/editor ;
-__p += '\n<header id="header" class="cs-editor-header"></header>\n<section id="pane"></section>\n<footer id="footer" class="cs-editor-footer"></footer>\n<div id="expand" class="cs-editor-expansion"></div>';
+__p += '\n<header id="header" class="cs-editor-header"></header>\n<section id="pane"></section>\n<div id="skeleton" class="cs-editor-skeleton"></div>\n<footer id="footer" class="cs-editor-footer"></footer>\n<div id="expand" class="cs-editor-expansion"></div>';
 
 }
 return __p
@@ -7561,11 +8668,13 @@ with (obj) {
  //builder/main/footer ;
 __p += '\n<nav>\n  <button class="collapse cs-icon" data-cs-icon="' +
 ((__t = ( fontIcon('play-circle') )) == null ? '' : __t) +
-'"></button>\n  <button class="home cs-icon" data-cs-icon="' +
+'"></button>\n  <button class="home cs-icon has-flyout" data-cs-icon="' +
 ((__t = ( fontIcon('home') )) == null ? '' : __t) +
-'"></button>\n  <button class="options cs-icon" data-cs-icon="' +
-((__t = ( fontIcon('toggle-on') )) == null ? '' : __t) +
-'"></button>\n  <button class="respond cs-icon" data-cs-icon="' +
+'"></button>\n  <button class="help-text cs-icon" data-toggle="help:text" data-cs-icon="' +
+((__t = ( fontIcon('info-circle') )) == null ? '' : __t) +
+'"></button>\n  <button class="skeleton-mode cs-icon" data-toggle="skeleton:mode" data-cs-icon="' +
+((__t = ( fontIcon('object-group') )) == null ? '' : __t) +
+'"></button>\n  <button class="respond cs-icon has-flyout" data-cs-icon="' +
 ((__t = ( fontIcon('mobile') )) == null ? '' : __t) +
 '"></button>\n  <button class="save">' +
 ((__t = ( l18n('footer-button-save') )) == null ? '' : __t) +
@@ -7581,13 +8690,13 @@ with (obj) {
 
  //builder/main/header ;
 __p += '\n<button class="layout">' +
-((__t = ( getIcon('nav-layout-solid') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/nav-layout-solid') )) == null ? '' : __t) +
 '</button>\n<button class="elements">' +
-((__t = ( getIcon('nav-elements-solid') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/nav-elements-solid') )) == null ? '' : __t) +
 '</button>\n<button class="inspector">' +
-((__t = ( getIcon('nav-inspector-solid') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/nav-inspector-solid') )) == null ? '' : __t) +
 '</button>\n<button class="settings">' +
-((__t = ( getIcon('nav-settings-solid') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/nav-settings-solid') )) == null ? '' : __t) +
 '</button>';
 
 }
@@ -7610,6 +8719,53 @@ __p += '\n  <div id="content" class="cs-pane-content-inner" style="right:0px;"><
 '">\n  <button class="cs-builder-sub-back">\n    <i class="cs-icon" data-cs-icon="&#xf053;"></i> <span>' +
 ((__t = ( returnButtonText )) == null ? '' : __t) +
 '</span>\n  </button>\n  <div class="cs-pane-content-outer">\n  	<div id="sub" class="cs-pane-content-inner"></div>\n  </div>\n</div>\n\n\n';
+
+}
+return __p
+};templates['main/skeleton-item']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<div class="cs-skeleton-handle" >\n	<div class="cs-skeleton-title" >' +
+((__t = ( title )) == null ? '' : __t) +
+'</div>\n	<div class="cs-skeleton-controls">\n		';
+ _.each( controls, function( item ) {
+			var buttonClass = item.action + ( ( item.persist ) ? ' persist' : '');
+		;
+__p += '\n			<button class="' +
+((__t = ( buttonClass )) == null ? '' : __t) +
+' cs-icon" data-action="' +
+((__t = ( item.action )) == null ? '' : __t) +
+'" data-cs-icon="' +
+((__t = ( fontIcon( item.icon ) )) == null ? '' : __t) +
+'" ';
+ if ( item.iconAlt ) { ;
+__p += ' data-cs-icon-alt="' +
+((__t = ( fontIcon( item.iconAlt ) )) == null ? '' : __t) +
+'" ';
+ } ;
+__p += '></button>\n		';
+ }); ;
+__p += '\n	</div>\n</div>\n';
+ if ( _type == 'row' ) { ;
+__p += '\n<div class="cs-skeleton-container-outer">\n	<div class="cs-skeleton-container-inner cs-skeleton-container-' +
+((__t = ( _type )) == null ? '' : __t) +
+'"></div>\n</div>\n';
+ } else { ;
+__p += '\n<div class="cs-skeleton-container cs-skeleton-container-' +
+((__t = ( _type )) == null ? '' : __t) +
+'"></div>\n';
+ } ;
+__p += '\n\n\n\n';
+
+}
+return __p
+};templates['main/skeleton']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<div class="cs-skeleton-content-inner">\n	<div class="cs-skeleton-items"></div>\n</div>';
 
 }
 return __p
@@ -7647,6 +8803,23 @@ with (obj) {
 __p += '<h3 class="cs-pane-section-toggle">' +
 ((__t = ( _section_title )) == null ? '' : __t) +
 '</h3>\n<div class="cs-pane-section">\n	<ul class="cs-controls"></ul>\n</div>';
+
+}
+return __p
+};templates['utility/htmlhint']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<p>' +
+((__t = ( l18n('htmlhint-intro') )) == null ? '' : __t) +
+'</p>\n<ul>';
+ _.each( errors, function(item) { ;
+__p += '\n  <li>' +
+((__t = ( l18n('htmlhint-' + item ) )) == null ? '' : __t) +
+'</li>\n';
+ }); ;
+__p += '</ul>';
 
 }
 return __p
@@ -7713,7 +8886,7 @@ __p += '<input id="template-upload" type="file" name="blockUpload"/>\n<button cl
 }
 return __p
 };module.exports=templates;
-},{}],111:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 var templates={};templates['dragging-placeholder']=function (obj) {
 obj || (obj = {});
 var __t, __p = '';
@@ -7724,24 +8897,18 @@ __p += '<div class="cs-dragging-placeholder">\n	<svg class="cs-custom-icon" vers
 return __p
 };templates['empty-column']=function (obj) {
 obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
+var __t, __p = '';
 with (obj) {
-
- // elements/empty-column ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-275,395.9l12-6.4l-11.5-6c-0.3-0.2-0.6-0.2-0.9,0l-11.6,6.1L-275,395.9z"/>\n    <path d="M-274,397.5v12.7l11.4-6.1c0.3-0.2,0.5-0.5,0.5-0.9v-12.1L-274,397.5z"/>\n    <path d="M-276,397.5l-11.9-6.3v12.1c0,0.4,0.2,0.7,0.5,0.9l11.4,6V397.5z"/>\n  </g>\n</svg>';
+__p += '<div class="cs-empty-column">\n	<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n	  <g>\n	    <path d="M-275,395.9l12-6.4l-11.5-6c-0.3-0.2-0.6-0.2-0.9,0l-11.6,6.1L-275,395.9z"/>\n	    <path d="M-274,397.5v12.7l11.4-6.1c0.3-0.2,0.5-0.5,0.5-0.9v-12.1L-274,397.5z"/>\n	    <path d="M-276,397.5l-11.9-6.3v12.1c0,0.4,0.2,0.7,0.5,0.9l11.4,6V397.5z"/>\n	  </g>\n	</svg>\n</div>';
 
 }
 return __p
 };templates['empty-element']=function (obj) {
 obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
+var __t, __p = '';
 with (obj) {
-
- // elements/empty-element ;
-__p += '\n<div class="cs-empty-element">\n  <div class="cs-empty-element-icon">\n    ' +
-((__t = ( cs.icon("element-" + _type ) )) == null ? '' : __t) +
+__p += '<div class="cs-empty-element">\n  <div class="cs-empty-element-icon">\n    ' +
+((__t = ( cs.elementIcon( _type ) )) == null ? '' : __t) +
 '\n  </div>\n</div>';
 
 }
@@ -7754,13 +8921,13 @@ with (obj) {
 
  // elements/empty-rows ;
 __p += '\n' +
-((__t = ( cs.icon('logo-flat-custom') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/logo-flat-muted') )) == null ? '' : __t) +
 '\n<h2>Welcome to Cornerstone</h2>\n<p>Get started by adding sections to the <strong class="cs-empty-rows-layout">' +
-((__t = ( cs.icon('nav-layout-solid') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/nav-layout-solid') )) == null ? '' : __t) +
 'Layout</strong> pane in the sidebar or begin with a template. Click on your sections to add rows and alter column structure, then go to the <strong class="cs-empty-rows-elements">' +
-((__t = ( cs.icon('nav-elements-solid') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/nav-elements-solid') )) == null ? '' : __t) +
 'Elements</strong> pane and begin dragging in your items. Clicking on any element in the preview area takes you to the <strong class="cs-empty-rows-inspector">' +
-((__t = ( cs.icon('nav-inspector-solid') )) == null ? '' : __t) +
+((__t = ( cs.icon('interface/nav-inspector-solid') )) == null ? '' : __t) +
 'Inspector</strong> pane to alter its appearance. Happy building!</p>';
 
 }
@@ -7787,942 +8954,657 @@ __p += '<div class="cs-observer-tooltip top left">' +
 }
 return __p
 };module.exports=templates;
-},{}],112:[function(require,module,exports){
-var templates={};templates['element-accordion']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-accordion ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-264,385h-22c-0.6,0-1,0.4-1,1v5c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-5C-263,385.4-263.4,385-264,385zM-286,391v-5h22v5H-286z M-264,391.5V391l0,0V391.5z"/>\n    <polygon points="-283,387 -284,387 -284,388 -285,388 -285,389 -284,389 -284,390 -283,390 -283,389 -282,389 -282,388 -283,388 	"/>\n    <path d="M-264,393h-22c-0.6,0-1,0.4-1,1v14c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-14C-263,393.4-263.4,393-264,393zM-286,408v-14h22v14H-286z M-264,408.5V408l0,0V408.5z"/>\n    <polygon points="-284.2,397.9 -283.5,397.2 -282.8,397.9 -282.1,397.2 -282.8,396.5 -282.1,395.8 -282.8,395.1 -283.5,395.8 -284.2,395.1 -284.9,395.8 -284.2,396.5 -284.9,397.2 	"/>\n    <path d="M-271.5,388h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-271.2,388-271.5,388z"/>\n    <path d="M-279.5,397h10c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-10c-0.3,0-0.5,0.2-0.5,0.5S-279.8,397-279.5,397z"/>\n    <path d="M-275.5,399h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-275.2,399-275.5,399z"/>\n    <path d="M-271,399.5c0,0.3,0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5C-270.8,399-271,399.2-271,399.5z"/>\n    <path d="M-265.5,401h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-265.2,401-265.5,401z"/>\n    <path d="M-265.5,403h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-265.2,403-265.5,403z"/>\n    <path d="M-268.5,405h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5S-268.2,405-268.5,405z"/>\n    <path d="M-275,406v-5h-10v5.2v0.5v0.3h10V406L-275,406z M-279.5,402h3.5v2c-0.4-0.3-0.8-0.4-1.2-0.5C-277.6,402.6-278.5,402-279.5,402c-0.8,0-1.5,0.4-2,1c-0.1,0-0.1,0-0.2,0c-0.9,0-1.7,0.4-2.2,0.9V402H-279.5z M-279.6,405.8h-4.3c0.2-1,1.1-1.8,2.2-1.8C-280.6,404-279.8,404.7-279.6,405.8z M-280.4,403.3c0.3-0.2,0.6-0.3,0.9-0.3c0.5,0,1,0.3,1.2,0.6c-0.3,0.1-0.7,0.3-0.9,0.6C-279.6,403.8-280,403.5-280.4,403.3z M-278.5,406c0-0.3-0.1-0.6-0.2-0.9c0.3-0.4,0.7-0.6,1.2-0.6c0.8,0,1.5,0.7,1.5,1.5l0,0H-278.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-advanced-carousel']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-advanced-carousel ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <polygon points="-265.1,394.1 -265.9,394.9 -263.7,397 -265.9,399.1 -265.1,399.9 -262.3,397 	"/>\n    <polygon points="-284.9,394.1 -287.7,397 -284.9,399.9 -284.1,399.1 -286.3,397 -284.1,394.9 	"/>\n    <path d="M-275,390c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2S-273.9,390-275,390z M-275,393c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S-274.4,393-275,393z"/>\n    <path d="M-281,390c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2S-279.9,390-281,390z M-281,393c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S-280.4,393-281,393z"/>\n    <path d="M-269,390c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2S-267.9,390-269,390z M-269,393c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S-268.4,393-269,393z"/>\n    <path d="M-280.5,396c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5H-280.5z"/>\n    <path d="M-274.5,396c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5H-274.5z"/>\n    <path d="M-268.5,396c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5H-268.5z"/>\n    <path d="M-279.5,398h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-279.2,398-279.5,398z"/>\n    <path d="M-273.5,398h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-273.2,398-273.5,398z"/>\n    <path d="M-267.5,398h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-267.2,398-267.5,398z"/>\n    <path d="M-279.5,400h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-279.2,400-279.5,400z"/>\n    <path d="M-273.5,400h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-273.2,400-273.5,400z"/>\n    <path d="M-267.5,400h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-267.2,400-267.5,400z"/>\n    <path d="M-279.5,402h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-279.2,402-279.5,402z"/>\n    <path d="M-273.5,402h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-273.2,402-273.5,402z"/>\n    <path d="M-267.5,402h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-267.2,402-267.5,402z"/>\n    <path d="M-273.5,404h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-273.2,404-273.5,404z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-alert']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-alert ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-265,404.3c-0.5-1-0.3-1-1.3-2.2c-0.9-1.1-1.7-2-1.7-9.1c0-3.9-3.1-7-7-7s-7,3.1-7,7c0,7.1-0.8,8-1.6,9.1c-1,1.2-0.8,1.2-1.3,2.2c-0.2,0.4,0.1,0.7,0.4,0.7h6.1c0.2,1.7,1.7,3,3.4,3s3.2-1.3,3.4-3h6.1C-265.2,405-264.9,404.7-265,404.3zM-281,393c0-3.3,2.7-6,6-6s6,2.7,6,6c0,7.5,0.9,8.5,1.9,9.7c0.3,0.4,0.6,0.7,0.9,1.3h-17.5C-282.6,401.6-281,402.9-281,393zM-275,407c-1.2,0-2.2-0.9-2.4-2h4.9C-272.8,406.1-273.8,407-275,407z"/>\n    <circle cx="-277.5" cy="390.5" r="0.5"/>\n    <circle cx="-276.5" cy="389.5" r="0.5"/>\n    <circle cx="-278.5" cy="391.5" r="0.5"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-animations']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-animation ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-274,396.5v-8c0-1.4-1.1-2.5-2.5-2.5h-8c-1.4,0-2.5,1.1-2.5,2.5v8c0,1.4,1.1,2.5,2.5,2.5h8C-275.1,399-274,397.9-274,396.5z M-286,396.5v-8c0-0.8,0.7-1.5,1.5-1.5h8c0.8,0,1.5,0.7,1.5,1.5v8c0,0.8-0.7,1.5-1.5,1.5h-8C-285.3,398-286,397.3-286,396.5z"/>\n    <path d="M-272,398.5v-7c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v7c0,0.8-0.7,1.5-1.5,1.5h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7C-273.1,401-272,399.9-272,398.5z"/>\n    <path d="M-270,400.5v-6c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v6c0,0.8-0.7,1.5-1.5,1.5h-6c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h6C-271.1,403-270,401.9-270,400.5z"/>\n    <path d="M-268,402.5v-5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v5c0,0.8-0.7,1.5-1.5,1.5h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5C-269.1,405-268,403.9-268,402.5z"/>\n    <path d="M-266.5,400c-0.3,0-0.5,0.2-0.5,0.5v4c0,0.8-0.7,1.5-1.5,1.5h-4c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4c1.4,0,2.5-1.1,2.5-2.5v-4C-266,400.2-266.2,400-266.5,400z"/>\n    <path d="M-263.1,394.1l-6.2-6.1h1.3v-1h-2h-1v1v2h1v-1.3l6.1,6.1c0.1,0.1,0.2,0.1,0.4,0.1s0.3,0,0.4-0.1C-263,394.7-263,394.3-263.1,394.1z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-author']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-author ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-266,385h-15.5c-1.9,0-3.5,1.6-3.5,3.5v17c0,1.9,1.6,3.5,3.5,3.5l0,0h15.5c0.6,0,1-0.4,1-1v-22C-265,385.4-265.4,385-266,385z M-268,405.5c0-1.2,0.9-2.2,2-2.4v4.9C-267.1,407.7-268,406.7-268,405.5z M-266,402h-14v-16h14V402zM-284,388.5c0-1.4,1.1-2.5,2.5-2.5h0.5v16h-0.5c-1,0-1.9,0.4-2.5,1.1V388.5z M-284,405.5c0-1.4,1.1-2.5,2.5-2.5h13.6c-0.3,0.3-0.5,0.6-0.7,1h-13.9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13.6c0,0.2-0.1,0.3-0.1,0.5s0,0.3,0,0.5h-13.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13.9c0.2,0.4,0.4,0.7,0.7,1h-13.6C-282.9,408-284,406.9-284,405.5z"/>\n    <path d="M-278.7,397.9c0.2,0.2,0.5,0.1,0.7-0.1c0.6-0.9,1.8-1.9,2.1-1.8c0,0,0.3,0.3,0,1.8c0,0.4,0.1,0.7,0.4,0.9c0.5,0.3,1.1,0.1,1.8-0.1c0.8-0.3,1.8-0.6,2.4-0.1c0.5,0.3,1.4,0.5,2.2,0.5c0.6,0,1.2-0.1,1.6-0.2c0.3-0.1,0.4-0.3,0.4-0.6c0-0.3-0.3-0.4-0.6-0.4c-0.8,0.2-2.4,0.2-2.9-0.1c-1.1-0.8-2.4-0.4-3.3-0.1c-0.3,0.1-0.7,0.2-0.8,0.2l0,0c0.2-1,0.3-2.4-0.6-2.8c-1.3-0.6-3.3,2.1-3.3,2.1C-279,397.4-279,397.7-278.7,397.9z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-block-grid']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-block-grid ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-287,397h10c0.6,0,1-0.4,1-1v-8c0-0.6-0.4-1-1-1h-10c-0.6,0-1,0.4-1,1v8C-288,396.6-287.6,397-287,397zM-277,396v0.5V396L-277,396z M-287,388h10v8h-10V388z"/>\n    <path d="M-281,399h-6c-0.6,0-1,0.4-1,1v5c0,0.6,0.4,1,1,1h6c0.6,0,1-0.4,1-1v-5C-280,399.4-280.4,399-281,399zM-287,405v-5h6v5H-287z M-281,405.5V405l0,0V405.5z"/>\n    <path d="M-272,399h-6c-0.6,0-1,0.4-1,1v5c0,0.6,0.4,1,1,1h6c0.6,0,1-0.4,1-1v-5C-271,399.4-271.4,399-272,399zM-278,405v-5h6v5H-278z M-272,405.5V405l0,0V405.5z"/>\n    <path d="M-263,399h-6c-0.6,0-1,0.4-1,1v5c0,0.6,0.4,1,1,1h6c0.6,0,1-0.4,1-1v-5C-262,399.4-262.4,399-263,399zM-269,405v-5h6v5H-269z M-263,405.5V405l0,0V405.5z"/>\n    <path d="M-263,387h-10c-0.6,0-1,0.4-1,1v8c0,0.6,0.4,1,1,1h10c0.6,0,1-0.4,1-1v-8C-262,387.4-262.4,387-263,387zM-273,396v-8h10v8H-273z M-263,396.5V396l0,0V396.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-blockquote']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-blockquote ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-280.6,394.1c-0.1-0.4,1.1-2.1,2.4-3.3c0.3-0.3,0.4-0.7,0.2-1.1c-0.1-0.5-0.5-0.7-0.9-0.7h-0.2c-5.1,1-8.9,5.5-8.9,10.8c0,3.3,2.7,6,6,6s6-2.7,6-6C-276,397-277.9,394.6-280.6,394.1z M-282,404.8c-2.8,0-5-2.2-5-5c0-4.8,3.4-8.9,8.1-9.8c-0.1,0.1-3,3-2.7,4.3c0.1,0.3,0.3,0.6,0.7,0.6c2.3,0.5,3.8,2.5,3.8,4.9C-277,402.6-279.2,404.8-282,404.8z"/>\n    <path d="M-266.6,394.1c-0.1-0.4,1.1-2.1,2.4-3.3c0.3-0.3,0.4-0.7,0.2-1.1c-0.1-0.5-0.5-0.7-0.9-0.7h-0.2c-5.1,1-8.9,5.5-8.9,10.8c0,3.3,2.7,6,6,6s6-2.7,6-6C-262,397-263.9,394.6-266.6,394.1z M-268,404.8c-2.8,0-5-2.2-5-5c0-4.8,3.4-8.9,8.1-9.8c-0.1,0.1-3,3-2.7,4.3c0.1,0.3,0.3,0.6,0.7,0.6c2.3,0.5,3.8,2.5,3.8,4.9C-263,402.6-265.2,404.8-268,404.8z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-button']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-button ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-265.5,401c1.4,0,2.5-1.1,2.5-2.5v-6c0-1.4-1.1-2.5-2.5-2.5h-19c-1.4,0-2.5,1.1-2.5,2.5v6c0,1.4,1.1,2.5,2.5,2.5H-265.5z M-286,398.5v-6c0-0.8,0.7-1.5,1.5-1.5h19c0.8,0,1.5,0.7,1.5,1.5v6c0,0.8-0.7,1.5-1.5,1.5h-19C-285.3,400-286,399.3-286,398.5z"/>\n    <path d="M-262.2,400.9c-0.2-0.2-0.5-0.2-0.7,0c-0.7,0.7-1.6,1.1-2.6,1.1h-19c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h19c1.2,0,2.4-0.5,3.3-1.4C-262,401.4-262,401.1-262.2,400.9z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-callout']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-callout ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-265.4,389h-19c-1.4,0-2.5,1.1-2.5,2.5v11c0,1.4,1.1,2.5,2.5,2.5h19c1.4,0,2.5-1.1,2.5-2.5v-11C-262.9,390.1-264,389-265.4,389z M-263.9,402.5c0,0.8-0.7,1.5-1.5,1.5h-19c-0.8,0-1.5-0.7-1.5-1.5v-11c0-0.8,0.7-1.5,1.5-1.5h19c0.8,0,1.5,0.7,1.5,1.5V402.5z"/>\n    <path d="M-274,391.5c0-0.3-0.2-0.5-0.5-0.5h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9C-274.2,392-274,391.8-274,391.5z"/>\n    <path d="M-266.5,394h-14c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h14c0.3,0,0.5-0.2,0.5-0.5S-266.2,394-266.5,394z"/>\n  </g>\n  <g>\n    <path d="M-266.5,397h-17c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5h17c0.3,0,0.5,0.2,0.5,0.5S-266.2,397-266.5,397z"/>\n  </g>\n  <g>\n    <path d="M-270.5,399h-13c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5h13c0.3,0,0.5,0.2,0.5,0.5S-270.2,399-270.5,399z"/>\n  </g>\n  <g>\n    <path d="M-277,403h-6c-0.6,0-1-0.4-1-1v-1c0-0.6,0.4-1,1-1h6c0.6,0,1,0.4,1,1v1C-276,402.6-276.4,403-277,403zM-277,402v0.5V402L-277,402z M-283,401v1h6v-1H-283z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-card']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-card ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-276.4,404.4l1.6,1.6h-8.7l0,0c-1.4,0-2.5-1.1-2.5-2.5c0-0.7,0.3-1.5,0.9-1.9c0.2-0.2,0.2-0.5,0.1-0.7c-0.1-0.2-0.5-0.2-0.7-0.1c-0.8,0.7-1.3,1.7-1.3,2.7c0,1.9,1.6,3.5,3.5,3.5l0,0h8.8l-1.6,1.6l0.7,0.7l2.9-2.9l-2.9-2.9L-276.4,404.4z"/>\n    <path d="M-277.5,392.5c0,1.4,1.1,2.5,2.5,2.5s2.5-1.1,2.5-2.5s-1.1-2.5-2.5-2.5S-277.5,391.1-277.5,392.5z M-273.5,392.5c0,0.8-0.7,1.5-1.5,1.5s-1.5-0.7-1.5-1.5s0.7-1.5,1.5-1.5S-273.5,391.7-273.5,392.5z"/>\n    <path d="M-272,388.5c0-0.3-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5C-272.2,389-272,388.8-272,388.5z"/>\n    <path d="M-279,396.5c0,0.3,0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-9C-278.8,396-279,396.2-279,396.5z"/>\n    <path d="M-281,398.5c0,0.3,0.2,0.5,0.5,0.5h11c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-11C-280.8,398-281,398.2-281,398.5z"/>\n    <path d="M-280.5,401h8c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-8c-0.3,0-0.5,0.2-0.5,0.5S-280.8,401-280.5,401z"/>\n    <path d="M-264.3,400.8c-0.2-0.2-0.5-0.1-0.7,0.1c-0.2,0.2-0.1,0.5,0.1,0.7c0.6,0.5,0.9,1.2,0.9,1.9c0,1.4-1.1,2.5-2.5,2.5l0,0h-4c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4l0,0c1.9,0,3.5-1.6,3.5-3.5C-263,402.5-263.5,401.5-264.3,400.8z"/>\n    <path d="M-283,404h4.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-4.5v-16h16v16h-6.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h6.5c0.6,0,1-0.4,1-1v-16c0-0.6-0.4-1-1-1h-16c-0.6,0-1,0.4-1,1v16C-284,403.6-283.6,404-283,404z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-clear']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-clear ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-265,387h-2v-1c0-0.6-0.4-1-1-1h-17c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h2v1c0,0.6,0.4,1,1,1h17c0.6,0,1-0.4,1-1v-3C-264,387.4-264.4,387-265,387z M-285,389v-3h17v1h-14c-0.6,0-1,0.4-1,1v1H-285z M-268,389h-14v-1h14V389zM-268,389v0.5V389L-268,389z M-282,391v-1h14c0.6,0,1-0.4,1-1v-1h2v3H-282z M-265,391.5V391l0,0V391.5z"/>\n    <path d="M-265,398h-20c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h20c0.6,0,1-0.4,1-1v-3C-264,398.4-264.4,398-265,398zM-285,402v-3h20v3H-285z M-265,402.5V402l0,0V402.5z"/>\n    <path d="M-265,404h-20c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h20c0.6,0,1-0.4,1-1v-3C-264,404.4-264.4,404-265,404zM-285,408v-3h20v3H-285z M-265,408.5V408l0,0V408.5z"/>\n    <polygon points="-277.4,393.6 -279.5,395.8 -281.6,393.6 -282.4,394.4 -279.5,397.2 -276.6,394.4   "/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-code']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-code ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-277.8,393h8.3c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-8.3c-0.3,0-0.5,0.2-0.5,0.5S-278.1,393-277.8,393z"/>\n    <path d="M-269.5,398h-12c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h12c0.3,0,0.5-0.2,0.5-0.5S-269.2,398-269.5,398z"/>\n    <path d="M-275,404h-6.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h6.5c0.3,0,0.5-0.2,0.5-0.5S-274.7,404-275,404z"/>\n    <polygon points="-278.6,394.6 -280.8,392.5 -278.6,390.4 -279.4,389.6 -282.2,392.5 -279.4,395.4   "/>\n    <polygon points="-271.4,402.4 -269.2,404.5 -271.4,406.6 -270.6,407.4 -267.8,404.5 -270.6,401.6   "/>\n    <rect x="-273.7" y="400.9" transform="matrix(0.9745 0.2246 -0.2246 0.9745 83.8131 71.6855)" width="1" height="6.7"/>\n    <path d="M-265.3,390l-5.7-5.7c-0.2-0.2-0.5-0.3-0.7-0.3h-11.8c-0.8,0-1.5,0.7-1.5,1.5v23c0,0.8,0.7,1.5,1.5,1.5h17c0.8,0,1.5-0.7,1.5-1.5v-17.8C-265,390.5-265.1,390.2-265.3,390z M-271,385.6l4.4,4.4h-3.9c-0.3,0-0.5-0.2-0.5-0.5V385.6zM-266.5,409h-17c-0.3,0-0.5-0.2-0.5-0.5v-23c0-0.3,0.2-0.5,0.5-0.5h11.5v4.5c0,0.8,0.7,1.5,1.5,1.5h4.5v17.5C-266,408.8-266.2,409-266.5,409z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-columnize']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-columnize ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-276.5,385h-6c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h6c0.3,0,0.5-0.2,0.5-0.5S-276.2,385-276.5,385z"/>\n    <path d="M-273.5,386h9c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-9c-0.3,0-0.5,0.2-0.5,0.5S-273.8,386-273.5,386z"/>\n    <path d="M-276.5,387h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,387-276.5,387z"/>\n    <path d="M-264.5,387h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-264.2,387-264.5,387z"/>\n    <path d="M-276.5,389h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,389-276.5,389z"/>\n    <path d="M-264.5,389h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-264.2,389-264.5,389z"/>\n    <path d="M-276.5,391h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,391-276.5,391z"/>\n    <path d="M-264.5,391h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-264.2,391-264.5,391z"/>\n    <path d="M-276.5,393h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,393-276.5,393z"/>\n    <path d="M-273.5,394h7c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-7c-0.3,0-0.5,0.2-0.5,0.5S-273.8,394-273.5,394z"/>\n    <path d="M-276.5,395h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,395-276.5,395z"/>\n    <path d="M-264.5,395h-6c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h6c0.3,0,0.5-0.2,0.5-0.5S-264.2,395-264.5,395z"/>\n    <path d="M-276.5,397h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,397-276.5,397z"/>\n    <path d="M-264.5,397h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-264.2,397-264.5,397z"/>\n    <path d="M-285.5,400h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5S-285.8,400-285.5,400z"/>\n    <path d="M-264.5,399h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-264.2,399-264.5,399z"/>\n    <path d="M-276.5,401h-6c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h6c0.3,0,0.5-0.2,0.5-0.5S-276.2,401-276.5,401z"/>\n    <path d="M-264.5,401h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-264.2,401-264.5,401z"/>\n    <path d="M-276.5,403h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,403-276.5,403z"/>\n    <path d="M-267.5,403h-6c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h6c0.3,0,0.5-0.2,0.5-0.5S-267.2,403-267.5,403z"/>\n    <path d="M-276.5,405h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,405-276.5,405z"/>\n    <path d="M-276.5,407h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-276.2,407-276.5,407z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-contact-form-7']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-contact-form-7 ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-265.3,390l-5.7-5.7c-0.2-0.2-0.5-0.3-0.7-0.3h-11.8c-0.8,0-1.5,0.7-1.5,1.5v23c0,0.8,0.7,1.5,1.5,1.5h17c0.8,0,1.5-0.7,1.5-1.5v-17.8C-265,390.5-265.1,390.2-265.3,390z M-271,385.6l4.4,4.4h-3.9c-0.3,0-0.5-0.2-0.5-0.5V385.6zM-266.5,409h-17c-0.3,0-0.5-0.2-0.5-0.5v-23c0-0.3,0.2-0.5,0.5-0.5h11.5v4.5c0,0.8,0.7,1.5,1.5,1.5h4.5v17.5C-266,408.8-266.2,409-266.5,409z"/>\n    <path d="M-270,393.6C-270,393.5-270,393.5-270,393.6C-270,393.5-270,393.5-270,393.6c0-0.1,0-0.2,0-0.2v-0.1c0,0,0-0.1-0.1-0.1c0,0,0-0.1-0.1-0.1l0,0c0,0,0,0-0.1,0h-0.1h-0.1c0,0,0,0-0.1,0h-9c-0.3,0-0.5,0.2-0.5,0.5v2c0,0.3,0.2,0.5,0.5,0.5c0.3,0,0.5-0.2,0.5-0.5V394h7.5c-1.6,2.1-5.5,7.9-5.5,12.5c0,0.3,0.2,0.5,0.5,0.5c0.3,0,0.5-0.2,0.5-0.5c0-5.3,5.8-12.6,5.9-12.7c0,0,0,0,0-0.1v-0.1C-270,393.6-270,393.6-270,393.6z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-container']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-container ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-266,397.4l2.1-11.4H-274v-1h1.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h1.5v1h-10.1l1.1,5.1c0.1,0.3,0.3,0.4,0.6,0.4c0.3-0.1,0.4-0.3,0.4-0.6l-0.9-3.9h19.8l-1.8,10h-1.6c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h1.7l3.3,5h-2l-12.4-12.4c-0.9-0.9-2.6-0.9-3.5,0l-4.2,4.2c-1,1-1,2.6,0,3.5l4.8,4.7h-5.8l1-1.7c0.1-0.2,0.1-0.5-0.2-0.7c-0.3-0.2-0.5-0.1-0.7,0.2l-1.5,2.6v6.6h26v-6.7L-266,397.4z M-284.9,397.6c-0.6-0.6-0.6-1.5,0-2.1l4.2-4.2c0.6-0.6,1.5-0.6,2.1,0l11.8,11.7h-12.6L-284.9,397.6z M-287,409v-5h24v5H-287z"/>\n    <path d="M-272.5,406h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5S-272.2,406-272.5,406z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-countdown-timer']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-countdown-timer ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-265,407.3v-2.8c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v2.8l-1.6-1.6l-0.7,0.7l2.9,2.9l2.9-2.9l-0.7-0.7L-265,407.3z"/>\n    <path d="M-284.5,388h-2c-0.8,0-1.5,0.7-1.5,1.5v5c0,0.4,0.2,0.7,0.4,1c-0.2,0.3-0.4,0.6-0.4,1v5c0,0.8,0.7,1.5,1.5,1.5h2c0.8,0,1.5-0.7,1.5-1.5v-5c0-0.4-0.2-0.7-0.4-1c0.2-0.3,0.4-0.6,0.4-1v-5C-283,388.7-283.7,388-284.5,388z M-287,389.5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5v5c0,0.3-0.2,0.5-0.5,0.5h-2c-0.3,0-0.5-0.2-0.5-0.5V389.5z M-284,401.5c0,0.3-0.2,0.5-0.5,0.5h-2c-0.3,0-0.5-0.2-0.5-0.5v-5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5V401.5z"/>\n    <path d="M-278.5,388h-2c-0.8,0-1.5,0.7-1.5,1.5v5c0,0.4,0.2,0.7,0.4,1c-0.2,0.3-0.4,0.6-0.4,1v5c0,0.8,0.7,1.5,1.5,1.5h2c0.8,0,1.5-0.7,1.5-1.5v-5c0-0.4-0.2-0.7-0.4-1c0.2-0.3,0.4-0.6,0.4-1v-5C-277,388.7-277.7,388-278.5,388z M-281,389.5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5v5c0,0.3-0.2,0.5-0.5,0.5h-2c-0.3,0-0.5-0.2-0.5-0.5V389.5z M-278,401.5c0,0.3-0.2,0.5-0.5,0.5h-2c-0.3,0-0.5-0.2-0.5-0.5v-5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5V401.5z"/>\n    <path d="M-268,396.5c0-0.4-0.2-0.7-0.4-1c0.2-0.3,0.4-0.6,0.4-1v-5c0-0.8-0.7-1.5-1.5-1.5h-2c-0.8,0-1.5,0.7-1.5,1.5v5c0,0.4,0.2,0.7,0.4,1c-0.2,0.3-0.4,0.6-0.4,1v5c0,0.8,0.7,1.5,1.5,1.5h2c0.8,0,1.5-0.7,1.5-1.5V396.5z M-272,389.5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5v5c0,0.3-0.2,0.5-0.5,0.5h-2c-0.3,0-0.5-0.2-0.5-0.5V389.5z M-269,401.5c0,0.3-0.2,0.5-0.5,0.5h-2c-0.3,0-0.5-0.2-0.5-0.5v-5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5V401.5z"/>\n    <path d="M-262,389.5c0-0.8-0.7-1.5-1.5-1.5h-2c-0.8,0-1.5,0.7-1.5,1.5v5c0,0.4,0.2,0.7,0.4,1c-0.2,0.3-0.4,0.6-0.4,1v5c0,0.8,0.7,1.5,1.5,1.5h2c0.8,0,1.5-0.7,1.5-1.5v-5c0-0.4-0.2-0.7-0.4-1c0.2-0.3,0.4-0.6,0.4-1V389.5z M-266,389.5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5v5c0,0.3-0.2,0.5-0.5,0.5h-2c-0.3,0-0.5-0.2-0.5-0.5V389.5z M-263,401.5c0,0.3-0.2,0.5-0.5,0.5h-2c-0.3,0-0.5-0.2-0.5-0.5v-5c0-0.3,0.2-0.5,0.5-0.5h2c0.3,0,0.5,0.2,0.5,0.5V401.5z"/>\n    <circle cx="-275" cy="392" r="1"/>\n    <circle cx="-275" cy="398" r="1"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-counter']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-counter ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-263.6,390.6l-2.9-2.9l-2.9,2.9l0.7,0.7l1.7-1.6v3.8c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-3.8l1.6,1.6L-263.6,390.6z"/>\n    <path d="M-282,392c-2.2,0-4,1.8-4,4v6c0,2.2,1.8,4,4,4s4-1.8,4-4v-6C-278,393.8-279.8,392-282,392z M-285,402v-6c0-0.5,0.2-1,0.4-1.5l4.5,9.8c-0.5,0.4-1.2,0.7-1.9,0.7C-283.7,405-285,403.7-285,402z M-279,402c0,0.5-0.2,1-0.4,1.5l-4.5-9.8c0.5-0.4,1.2-0.7,1.9-0.7c1.7,0,3,1.3,3,3V402z"/>\n    <path d="M-273,392c-2.2,0-4,1.8-4,4v6c0,2.2,1.8,4,4,4s4-1.8,4-4v-6C-269,393.8-270.8,392-273,392z M-276,402v-6c0-0.5,0.2-1,0.4-1.5l4.5,9.8c-0.5,0.4-1.2,0.7-1.9,0.7C-274.7,405-276,403.7-276,402z M-270,402c0,0.5-0.2,1-0.4,1.5l-4.5-9.8c0.5-0.4,1.2-0.7,1.9-0.7c1.7,0,3,1.3,3,3V402z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-creative-cta']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-highlight-box ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-279.5,394h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5S-279.8,394-279.5,394z"/>\n    <path d="M-270.5,396h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-270.2,396-270.5,396z"/>\n    <path d="M-270.5,398h-9.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9.5c0.3,0,0.5-0.2,0.5-0.5S-270.2,398-270.5,398z"/>\n    <path d="M-270.5,400h-9.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9.5c0.3,0,0.5-0.2,0.5-0.5S-270.2,400-270.5,400z"/>\n    <path d="M-265.3,405h1.3v-1h-3v3h1v-1.3l2.1,2.1c0.1,0.1,0.2,0.1,0.4,0.1s0.3,0,0.4-0.1c0.2-0.2,0.2-0.5,0-0.7L-265.3,405z"/>\n    <path d="M-264,390v-1h-1.3l2.1-2.1c0.2-0.2,0.2-0.5,0-0.7c-0.2-0.2-0.5-0.2-0.7,0l-2.1,2.1V387h-1v3H-264z"/>\n    <path d="M-286,404v1h1.3l-2.1,2.1c-0.2,0.2-0.2,0.5,0,0.7c0,0.2,0.2,0.2,0.3,0.2s0.3,0,0.4-0.1l2.1-2.2v1.3h1v-3H-286z"/>\n    <path d="M-284,388.3l-2.1-2.2c-0.2-0.1-0.6-0.1-0.8,0c-0.2,0.1-0.1,0.6,0,0.8l2.2,2.1h-1.3v1h3v-3h-1V388.3z"/>\n    <path d="M-269,391h-12c-0.6,0-1,0.4-1,1v10c0,0.6,0.4,1,1,1h12c0.6,0,1-0.4,1-1v-10C-268,391.4-268.4,391-269,391z M-281,402v-10h12v10H-281z M-269,402.5V402l0,0V402.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-custom-headline']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-custom-headline ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-285.5,389h9c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-9c-0.3,0-0.5,0.2-0.5,0.5S-285.8,389-285.5,389z"/>\n    <path d="M-264.5,404h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-264.2,404-264.5,404z"/>\n    <path d="M-270.5,396h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-270.2,396-270.5,396z"/>\n    <circle cx="-274.5" cy="388.5" r="0.5"/>\n    <circle cx="-272.5" cy="388.5" r="0.5"/>\n    <circle cx="-270.5" cy="388.5" r="0.5"/>\n    <circle cx="-268.5" cy="388.5" r="0.5"/>\n    <circle cx="-266.5" cy="388.5" r="0.5"/>\n    <circle cx="-264.5" cy="388.5" r="0.5"/>\n    <circle cx="-285.5" cy="404.5" r="0.5"/>\n    <circle cx="-283.5" cy="404.5" r="0.5"/>\n    <circle cx="-281.5" cy="404.5" r="0.5"/>\n    <circle cx="-279.5" cy="404.5" r="0.5"/>\n    <circle cx="-277.5" cy="404.5" r="0.5"/>\n    <circle cx="-275.5" cy="404.5" r="0.5"/>\n    <circle cx="-268.5" cy="396.5" r="0.5"/>\n    <circle cx="-266.5" cy="396.5" r="0.5"/>\n    <circle cx="-264.5" cy="396.5" r="0.5"/>\n    <circle cx="-285.5" cy="396.5" r="0.5"/>\n    <circle cx="-283.5" cy="396.5" r="0.5"/>\n    <circle cx="-281.5" cy="396.5" r="0.5"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-custom']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-custom ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <path d="M-262.1,403.9C-262.1,403.8-262.1,403.8-262.1,403.9c0.1-0.1,0.1-0.1,0.1-0.2c0,0,0,0,0-0.1v-13.2l0,0c0,0,0,0,0-0.1c0,0,0,0,0-0.1c0,0,0,0,0-0.1l0,0l0,0c0,0,0,0,0-0.1l0,0c0,0,0,0-0.1,0l0,0l-12.2-6.6l0,0h-0.1h-0.1h-0.1h-0.1l0,0l-13,6.6l0,0c0,0,0,0-0.1,0l0,0c0,0,0,0,0,0.1l0,0l0,0l0,0v0.1v0.1l0,0v13.2c0,0,0,0,0,0.1v0.1v0.1c0,0,0,0.1,0.1,0.1c0,0,0.1,0,0.1,0.1c0,0,0,0,0.1,0l12.9,6.6l0,0c0.1,0,0.1,0.1,0.2,0.1l0,0c0.1,0,0.2,0,0.2-0.1l0,0l11.9-6.6l0,0C-262.2,404-262.2,404-262.1,403.9C-262.2,403.9-262.2,403.9-262.1,403.9z M-274.5,384.4l10.9,6l-10.9,6l-11.8-6L-274.5,384.4z M-286.9,391.2l11.9,6.1v12.1l-11.9-6.1V391.2z M-274,397.3l10.9-6.1v12.1l-10.9,6.1V397.3z"/>\n</svg>';
-
-}
-return __p
-};templates['element-default']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-default ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <path d="M-268.3,383.7h-13.3c-3.6,0-6.7,3-6.7,6.7v13.3c0,3.6,3,6.7,6.7,6.7h13.3c3.6,0,6.7-3,6.7-6.7v-13.3C-261.7,386.7-264.7,383.7-268.3,383.7z M-262.9,403.7c0,3-2.4,5.5-5.5,5.5h-13.3c-3,0-5.5-2.4-5.5-5.5v-13.3c0-3,2.4-5.5,5.5-5.5h13.3c3,0,5.5,2.4,5.5,5.5V403.7z M-275,406.7c-5.3,0-9.7-4.4-9.7-9.7s4.4-9.7,9.7-9.7s9.7,4.4,9.7,9.7S-269.7,406.7-275,406.7zM-275,388.5c-4.6,0-8.5,3.8-8.5,8.5s3.8,8.5,8.5,8.5s8.5-3.8,8.5-8.5S-270.4,388.5-275,388.5z"/>\n</svg>';
-
-}
-return __p
-};templates['element-embedded-audio']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-embedded-audio ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-272.5,393c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5c1.4,0,2.5-1.1,2.5-2.5s-1.1-2.5-2.5-2.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5c0.8,0,1.5,0.7,1.5,1.5S-271.7,393-272.5,393z"/>\n    <path d="M-272.5,396c2.5,0,4.5-2,4.5-4.5s-2-4.5-4.5-4.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5c1.9,0,3.5,1.6,3.5,3.5s-1.6,3.5-3.5,3.5c-0.3,0-0.5,0.2-0.5,0.5S-272.8,396-272.5,396z"/>\n    <path d="M-272.5,398c3.6,0,6.5-2.9,6.5-6.5s-2.9-6.5-6.5-6.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5c3,0,5.5,2.5,5.5,5.5s-2.5,5.5-5.5,5.5c-0.3,0-0.5,0.2-0.5,0.5S-272.8,398-272.5,398z"/>\n    <path d="M-283,395h3.3l3,3c0.2,0.2,0.4,0.3,0.7,0.3c0.1,0,0.3,0,0.4-0.1c0.4-0.2,0.6-0.5,0.6-0.9v-11.6c0-0.4-0.2-0.8-0.6-0.9c-0.4-0.2-0.8-0.1-1.1,0.2l-3,3h-3.3c-0.6,0-1,0.4-1,1v5C-284,394.6-283.6,395-283,395z M-276,385.7v11.6l-3-3v-5.6L-276,385.7z M-283,389h3v5h-3V389z"/>\n    <path d="M-278.5,399c-0.3,0-0.5,0.2-0.5,0.5v5.8l-1.6-1.6l-0.7,0.7l2.9,2.9l2.9-2.9l-0.7-0.7l-1.8,1.6v-5.8C-278,399.2-278.2,399-278.5,399z"/>\n    <path d="M-264,400h-12.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h12.5v7h-22v-7h5.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5.5c-0.6,0-1,0.4-1,1v7c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-7C-263,400.4-263.4,400-264,400z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-embedded-video']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-embedded-video ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-280.5,398h11c0.8,0,1.5-0.7,1.5-1.5v-10c0-0.8-0.7-1.5-1.5-1.5h-11c-0.8,0-1.5,0.7-1.5,1.5v10C-282,397.3-281.3,398-280.5,398z M-271,386h1.5c0.3,0,0.5,0.2,0.5,0.5v1.5h-2V386z M-271,389h2v2h-2V389z M-271,392h2v2h-2V392zM-271,395h2v1.5c0,0.3-0.2,0.5-0.5,0.5h-1.5V395z M-278,386h6v5h-6V386z M-278,392h6v5h-6V392z M-281,386.5c0-0.3,0.2-0.5,0.5-0.5h1.5v2h-2V386.5z M-281,389h2v2h-2V389z M-281,392h2v2h-2V392z M-281,395h2v2h-1.5c-0.3,0-0.5-0.2-0.5-0.5V395z"/>\n    <path d="M-278.5,399c-0.3,0-0.5,0.2-0.5,0.5v5.8l-1.6-1.6l-0.7,0.7l2.9,2.9l2.9-2.9l-0.7-0.7l-1.8,1.6v-5.8C-278,399.2-278.2,399-278.5,399z"/>\n    <path d="M-264,400h-12.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h12.5v7h-22v-7h5.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5.5c-0.6,0-1,0.4-1,1v7c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-7C-263,400.4-263.4,400-264,400z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-envira-gallery']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-envira-gallery ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-1388 3226 30 30" style="enable-background:new -1388 3226 30 30;" xml:space="preserve">\n  <g>\n    <path d="M-1371.2,3240.1c-1.9-4.3-3.7-8.8-10.7-10.1c-0.2,0-0.5,0.1-0.5,0.3c-0.1,0.2,0,0.4,0.1,0.6c3.8,3.3,5.1,6,6.2,8.4c1.5,3.1,2.8,5.8,8.9,8.7c0.1,0,0.1,0,0.2,0c0.2,0,0.3-0.1,0.4-0.2c0.1-0.2,0.1-0.5-0.1-0.7C-1369,3245.4-1370.1,3242.8-1371.2,3240.1z M-1375.2,3238.8c-1-2.1-2.2-4.5-5.1-7.4c5,1.5,6.5,5.2,8.1,9.1c0.7,1.7,1.5,3.5,2.6,5C-1373,3243.4-1374,3241.3-1375.2,3238.8z"/>\n    <path d="M-1364.9,3248.6c1.4-5.8,0.8-10.5-1.7-13.9c-3.2-4.2-9.4-6.4-18.9-6.7h-0.8l0.3,0.7c0.5,1.1,0.9,2.7,1.3,4.6c1.6,6.7,3.9,16.7,14.6,16.7c1.4,0,2.9-0.2,4.4-0.5l4.2,4h1.5L-1364.9,3248.6z M-1365.9,3248.6c-1.5,0.3-2.9,0.5-4.2,0.5c-9.9-0.1-12-9.3-13.6-16c-0.3-1.6-0.7-3-1.1-4.1c8.8,0.4,14.5,2.5,17.4,6.3C-1365.1,3238.5-1364.6,3242.9-1365.9,3248.6z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-essential-grid']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-essential-grid ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-1388 3226 30 30" style="enable-background:new -1388 3226 30 30;" xml:space="preserve">\n  <g>\n    <path d="M-1363.5,3228h-19c-1.9,0-3.5,1.6-3.5,3.5v19c0,1.9,1.6,3.5,3.5,3.5h19c1.9,0,3.5-1.6,3.5-3.5v-19C-1360,3229.6-1361.6,3228-1363.5,3228z M-1361,3250.5c0,1.4-1.1,2.5-2.5,2.5h-19c-1.4,0-2.5-1.1-2.5-2.5v-19c0-1.4,1.1-2.5,2.5-2.5h19c1.4,0,2.5,1.1,2.5,2.5V3250.5z"/>\n    <path d="M-1374.6,3233.5h-4.8c-0.6,0-1.1,0.5-1.1,1.1v4.8c0,0.6,0.5,1.1,1.1,1.1h4.8c0.6,0,1.1-0.5,1.1-1.1v-4.8C-1373.5,3234-1374,3233.5-1374.6,3233.5z M-1374.5,3239.4c0,0.1,0,0.1-0.1,0.1h-4.8c-0.1,0-0.1,0-0.1-0.1v-4.8c0-0.1,0-0.1,0.1-0.1h4.8c0.1,0,0.1,0,0.1,0.1C-1374.5,3234.6-1374.5,3239.4-1374.5,3239.4z"/>\n    <path d="M-1366.6,3233.5h-4.8c-0.6,0-1.1,0.5-1.1,1.1v4.8c0,0.6,0.5,1.1,1.1,1.1h4.8c0.6,0,1.1-0.5,1.1-1.1v-4.8C-1365.5,3234-1366,3233.5-1366.6,3233.5z M-1366.5,3239.4C-1366.5,3239.5-1366.5,3239.5-1366.5,3239.4l-4.9,0.1c-0.1,0-0.1,0-0.1-0.1v-4.8c0-0.1,0-0.1,0.1-0.1h4.8c0.1,0,0.1,0,0.1,0.1C-1366.5,3234.6-1366.5,3239.4-1366.5,3239.4z"/>\n    <path d="M-1374.6,3241.5h-4.8c-0.6,0-1.1,0.5-1.1,1.1v4.8c0,0.6,0.5,1.1,1.1,1.1h4.8c0.6,0,1.1-0.5,1.1-1.1v-4.8C-1373.5,3242-1374,3241.5-1374.6,3241.5z M-1374.5,3247.4c0,0.1,0,0.1-0.1,0.1h-4.8c-0.1,0-0.1,0-0.1-0.1v-4.8c0-0.1,0-0.1,0.1-0.1h4.8c0.1,0,0.1,0,0.1,0.1C-1374.5,3242.6-1374.5,3247.4-1374.5,3247.4z"/>\n    <path d="M-1366.6,3241.5h-4.8c-0.6,0-1.1,0.5-1.1,1.1v4.8c0,0.6,0.5,1.1,1.1,1.1h4.8c0.6,0,1.1-0.5,1.1-1.1v-4.8C-1365.5,3242-1366,3241.5-1366.6,3241.5z M-1366.5,3247.4C-1366.5,3247.5-1366.5,3247.5-1366.5,3247.4l-4.9,0.1c-0.1,0-0.1,0-0.1-0.1v-4.8c0-0.1,0-0.1,0.1-0.1h4.8c0.1,0,0.1,0,0.1,0.1C-1366.5,3242.6-1366.5,3247.4-1366.5,3247.4z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-feature-box']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-feature-box ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-275,393.1c2.3,0,4.1-1.8,4.1-4.1s-1.8-4.1-4.1-4.1s-4.1,1.8-4.1,4.1S-277.3,393.1-275,393.1z M-276.5,390.5c0-0.8,0.7-1.5,1.5-1.5s1.5,0.7,1.5,1.5c0,0.6-0.3,1.1-0.8,1.3c-0.2,0.1-0.4,0.1-0.7,0.1s-0.5,0-0.7-0.1C-276.2,391.6-276.5,391.1-276.5,390.5z M-275,386.1c1.6,0,2.9,1.3,2.9,2.9c0,0.5-0.2,1-0.4,1.5c0-1.4-1.1-2.5-2.5-2.5s-2.5,1.1-2.5,2.5c-0.3-0.5-0.4-1-0.4-1.5C-277.9,387.4-276.6,386.1-275,386.1z"/>\n    <path d="M-280.5,396h11c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-11c-0.3,0-0.5,0.2-0.5,0.5S-280.8,396-280.5,396z"/>\n    <path d="M-281.5,400h15c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-15c-0.3,0-0.5,0.2-0.5,0.5S-281.8,400-281.5,400z"/>\n    <path d="M-266.5,401h-17c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h17c0.3,0,0.5-0.2,0.5-0.5S-266.2,401-266.5,401z"/>\n    <path d="M-266.5,403h-17c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h17c0.3,0,0.5-0.2,0.5-0.5S-266.2,403-266.5,403z"/>\n    <path d="M-266.5,405h-17c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h17c0.3,0,0.5-0.2,0.5-0.5S-266.2,405-266.5,405z"/>\n    <path d="M-270.5,407h-13c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13c0.3,0,0.5-0.2,0.5-0.5S-270.2,407-270.5,407z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-feature-headline']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-feature-headline ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-282.5,386c-2.5,0-4.5,2-4.5,4.5s2,4.5,4.5,4.5s4.5-2,4.5-4.5S-280,386-282.5,386z M-282.5,394c-1.9,0-3.5-1.6-3.5-3.5s1.6-3.5,3.5-3.5s3.5,1.6,3.5,3.5S-280.6,394-282.5,394z"/>\n    <path d="M-275.5,391h12c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-0.5v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-0.5c-0.3,0-0.5,0.2-0.5,0.5S-275.8,391-275.5,391z"/>\n    <path d="M-284,392h3v-3h-3V392z M-283,390h1v1h-1V390z"/>\n    <path d="M-282.5,399c-2.5,0-4.5,2-4.5,4.5s2,4.5,4.5,4.5s4.5-2,4.5-4.5S-280,399-282.5,399z M-282.5,407c-1.9,0-3.5-1.6-3.5-3.5s1.6-3.5,3.5-3.5s3.5,1.6,3.5,3.5S-280.6,407-282.5,407z"/>\n    <path d="M-263.5,403h-0.5v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-1v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-0.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h12c0.3,0,0.5-0.2,0.5-0.5S-263.2,403-263.5,403z"/>\n    <path d="M-280.5,404.4L-280.5,404.4c0-0.1,0-0.2-0.1-0.2c0,0,0,0,0-0.1l-1.5-2c0,0,0,0-0.1,0c-0.1,0,0,0,0-0.1l0,0h-0.1h-0.1h-0.1h-0.1h-0.1h-0.1l0,0c0,0,0,0,0,0.1s0,0-0.1,0l-1.5,2c0,0,0,0,0,0.1v0.1v0.1c0,0,0,0,0,0.1l0,0v0.1v0.1c0,0,0,0.1,0.1,0.1c0,0,0,0.1,0.1,0.1l0,0l0,0c0,0.1,0.1,0.1,0.2,0.1l0,0l0,0h3l0,0c0.1,0,0.2,0,0.3-0.1l0,0l0,0c0,0,0,0,0.1-0.1c0,0,0,0,0.1-0.1v-0.1C-280.5,404.6-280.5,404.6-280.5,404.4C-280.5,404.5-280.5,404.5-280.5,404.4C-280.5,404.5-280.5,404.5-280.5,404.4z M-282.5,403.3l0.5,0.7h-1L-282.5,403.3z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-feature-list']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-feature-list ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-284,385c-1.7,0-3,1.3-3,3c0,1.5,1.1,2.8,2.6,3c0.1,0,0.3,0,0.4,0c1.7,0,3-1.3,3-3S-282.3,385-284,385z M-285,389c0-0.6,0.4-1,1-1s1,0.4,1,1s-0.4,1-1,1S-285,389.6-285,389z M-282.1,388.5c-0.2-0.9-1-1.5-1.9-1.5s-1.7,0.6-1.9,1.5c-0.1-0.2-0.1-0.3-0.1-0.5c0-1.1,0.9-2,2-2s2,0.9,2,2C-282,388.2-282,388.3-282.1,388.5z"/>\n    <path d="M-284,394c-1.7,0-3,1.3-3,3c0,1.5,1.1,2.8,2.6,3c0.1,0,0.3,0,0.4,0c1.7,0,3-1.3,3-3S-282.3,394-284,394z M-285,398c0-0.6,0.4-1,1-1s1,0.4,1,1s-0.4,1-1,1S-285,398.6-285,398z M-282.1,397.5c-0.2-0.9-1-1.5-1.9-1.5s-1.7,0.6-1.9,1.5c-0.1-0.2-0.1-0.3-0.1-0.5c0-1.1,0.9-2,2-2s2,0.9,2,2C-282,397.2-282,397.3-282.1,397.5z"/>\n    <path d="M-284,403c-1.7,0-3,1.3-3,3c0,1.5,1.1,2.8,2.6,3c0.1,0,0.3,0,0.4,0c1.7,0,3-1.3,3-3S-282.3,403-284,403z M-285,407c0-0.6,0.4-1,1-1s1,0.4,1,1s-0.4,1-1,1S-285,407.6-285,407z M-282.1,406.5c-0.2-0.9-1-1.5-1.9-1.5s-1.7,0.6-1.9,1.5c-0.1-0.2-0.1-0.3-0.1-0.5c0-1.1,0.9-2,2-2s2,0.9,2,2C-282,406.2-282,406.3-282.1,406.5z"/>\n    <path d="M-278.5,386h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5S-278.8,386-278.5,386z"/>\n    <path d="M-277,388.5c0,0.3,0.2,0.5,0.5,0.5h13c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-13C-276.8,388-277,388.2-277,388.5z"/>\n    <path d="M-278.5,391h12c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-12c-0.3,0-0.5,0.2-0.5,0.5S-278.8,391-278.5,391z"/>\n    <path d="M-278.5,395h4c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-4c-0.3,0-0.5,0.2-0.5,0.5S-278.8,395-278.5,395z"/>\n    <path d="M-263.5,397h-13c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13c0.3,0,0.5-0.2,0.5-0.5S-263.2,397-263.5,397z"/>\n    <path d="M-278.5,400h14c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-14c-0.3,0-0.5,0.2-0.5,0.5S-278.8,400-278.5,400z"/>\n    <path d="M-278.5,404h7c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-7c-0.3,0-0.5,0.2-0.5,0.5S-278.8,404-278.5,404z"/>\n    <path d="M-263.5,406h-13c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13c0.3,0,0.5-0.2,0.5-0.5S-263.2,406-263.5,406z"/>\n    <path d="M-271.5,408h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7c0.3,0,0.5-0.2,0.5-0.5S-271.2,408-271.5,408z"/>\n    <circle cx="-284" cy="392.5" r="0.5"/>\n    <circle cx="-284" cy="401.5" r="0.5"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-gap']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-gap ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-262.5,384c-0.3,0-0.5,0.2-0.5,0.5v4.5h-24v-4.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v5.5h26v-5.5C-262,384.2-262.2,384-262.5,384z"/>\n    <path d="M-288,409.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V408h24v1.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V407h-26V409.5z"/>\n    <polygon points="-284.6,401.6 -285.4,402.4 -282.5,405.2 -279.6,402.4 -280.4,401.6 -282,403.3 -282,393.7 -280.4,395.4 -279.6,394.6 -282.5,391.8 -285.4,394.6 -284.6,395.4 -283,393.7 -283,403.3  "/>\n    <polygon points="-269.6,401.6 -270.4,402.4 -267.5,405.2 -264.6,402.4 -265.4,401.6 -267,403.3 -267,393.7 -265.4,395.4 -264.6,394.6 -267.5,391.8 -270.4,394.6 -269.6,395.4 -268,393.7 -268,403.3  "/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-google-map']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-google-map ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-270.5,390h1c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-1c-0.3,0-0.5,0.2-0.5,0.5S-270.8,390-270.5,390z"/>\n    <path d="M-265,389h-0.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h0.5v14.3l-4.1-4.1l0,0l-0.1-0.1c-0.1,0-0.1,0-0.2,0l0,0h-4c-0.3,0-0.5,0.2-0.5,0.5c0,0.3,0.2,0.5,0.5,0.5h3.4v7l-15-0.1v-7h0.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-0.5c-0.6,0-1,0.4-1,1v7c0,0.3,0.1,0.5,0.3,0.7c0.2,0.2,0.4,0.3,0.7,0.3h15c0.6,0,1-0.4,1-1v-2h4.5c0.1,0,0.1,0,0.2,0c0.1-0.1,0.2-0.1,0.3-0.3c0-0.1,0-0.1,0-0.2V390C-264,389.4-264.4,389-265,389z M-269,405v-3.3l3.3,3.3H-269z"/>\n    <path d="M-279,405.3l0.4-0.4c0.2-0.4,6.6-7.9,6.6-12.9c0-3.9-3.1-7-7-7s-7,3.1-7,7c0,5,6.3,12.5,6.6,12.8L-279,405.3z M-279,386c3.3,0,6,2.7,6,6c0,4-4.6,10-6,11.7c-1.4-1.7-6-7.7-6-11.7C-285,388.7-282.3,386-279,386z"/>\n    <path d="M-275,392c0-2.2-1.8-4-4-4s-4,1.8-4,4s1.8,4,4,4S-275,394.2-275,392z M-282,392c0-1.7,1.3-3,3-3s3,1.3,3,3s-1.3,3-3,3S-282,393.7-282,392z"/>\n    <path d="M-268,387.9v6.6c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-6.6c0.6-0.2,1-0.8,1-1.4c0-0.8-0.7-1.5-1.5-1.5s-1.5,0.7-1.5,1.5C-269,387.2-268.6,387.7-268,387.9z M-267.5,386c0.3,0,0.5,0.2,0.5,0.5s-0.2,0.5-0.5,0.5s-0.5-0.2-0.5-0.5S-267.8,386-267.5,386z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-gravity-forms']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-gravity-forms ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-266.7,390.2l-6.5-3.8c-1.1-0.6-2.4-0.6-3.5,0l-6.6,3.8c-1.1,0.6-1.7,1.8-1.7,3v7.5c0,1.2,0.7,2.4,1.8,3l6.5,3.8c0.5,0.3,1.1,0.5,1.8,0.5c0.7,0,1.2-0.2,1.8-0.5l6.5-3.8c1.1-0.6,1.8-1.8,1.8-3v-7.5C-265,392-265.6,390.8-266.7,390.2zM-266,400.8c0,0.9-0.5,1.7-1.2,2.2l-6.5,3.8c-0.8,0.4-1.7,0.4-2.5,0l-6.5-3.8c-0.8-0.5-1.3-1.3-1.3-2.2v-7.5c0-0.9,0.5-1.7,1.2-2.2l6.5-3.8c0.4-0.2,0.9-0.3,1.3-0.3s0.9,0.1,1.2,0.3l6.5,3.8c0.8,0.4,1.2,1.3,1.2,2.2v7.5H-266z"/>\n    <path d="M-282,398.5v2.5h14v-4h-3v1h-7.9c0.2-1.1,1.2-2,2.4-2h8.5v-3h-8.5C-279.5,393-282,395.5-282,398.5zM-269,395h-7.5c-1.9,0-3.5,1.6-3.5,3.5v0.5h10v-1h1v2h-12v-1.5c0-2.5,2-4.5,4.5-4.5h7.5V395z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-heading']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-heading ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <circle cx="-275" cy="395.5" r="1.5"/>\n    <path d="M-280.5,392h11c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-0.5v-0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v0.5h-0.5c-0.3,0-0.5,0.2-0.5,0.5S-280.8,392-280.5,392z"/>\n    <path d="M-272,395.5c0,0.3,0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5C-271.8,395-272,395.2-272,395.5z"/>\n    <path d="M-283.5,396h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5S-283.8,396-283.5,396z"/>\n    <path d="M-264.5,400h-21c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h21c0.3,0,0.5-0.2,0.5-0.5S-264.2,400-264.5,400z"/>\n    <path d="M-267.5,403h-15c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h15c0.3,0,0.5-0.2,0.5-0.5S-267.2,403-267.5,403z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-icon-list']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-icon-list ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-286,391h4c0.6,0,1-0.4,1-1v-4c0-0.6-0.4-1-1-1h-4c-0.6,0-1,0.4-1,1v4C-287,390.6-286.6,391-286,391zM-282,390h-4v-4h4V390"/>\n    <path d="M-284,400c1.7,0,3-1.3,3-3s-1.3-3-3-3s-3,1.3-3,3S-285.7,400-284,400z M-284,395c1.1,0,2,0.9,2,2s-0.9,2-2,2s-2-0.9-2-2S-285.1,395-284,395z"/>\n    <path d="M-283.1,403.2c-0.4-0.6-1.4-0.6-1.7,0l-2.5,4.3c-0.2,0.3-0.2,0.7,0,1c0.1,0.3,0.4,0.5,0.8,0.5h5c0.4,0,0.7-0.2,0.9-0.5c0.2-0.3,0.2-0.7,0-1L-283.1,403.2z M-286.5,408l2.5-4.3l2.5,4.3H-286.5z"/>\n    <path d="M-277.5,389h14.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-14.5c-0.3,0-0.5,0.2-0.5,0.5S-277.8,389-277.5,389z"/>\n    <path d="M-263,397h-14.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h14.5c0.3,0,0.5-0.2,0.5-0.5S-262.7,397-263,397z"/>\n    <path d="M-263,406h-14.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h14.5c0.3,0,0.5-0.2,0.5-0.5S-262.7,406-263,406z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-icon']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-icon ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-266,397.4l2.1-11.4H-274v-1h1.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h1.5v1h-10.1l1.1,5.1c0.1,0.3,0.3,0.4,0.6,0.4c0.3-0.1,0.4-0.3,0.4-0.6l-0.9-3.9h19.8l-1.8,10h-1.6c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h1.7l3.3,5h-2l-12.4-12.4c-0.9-0.9-2.6-0.9-3.5,0l-4.2,4.2c-1,1-1,2.6,0,3.5l4.8,4.7h-5.8l1-1.7c0.1-0.2,0.1-0.5-0.2-0.7c-0.3-0.2-0.5-0.1-0.7,0.2l-1.5,2.6v6.6h26v-6.7L-266,397.4z M-284.9,397.6c-0.6-0.6-0.6-1.5,0-2.1l4.2-4.2c0.6-0.6,1.5-0.6,2.1,0l11.8,11.7h-12.6L-284.9,397.6z M-287,409v-5h24v5H-287z"/>\n    <path d="M-272.5,406h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5S-272.2,406-272.5,406z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-image']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-image ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-266.5,388h-17c-0.8,0-1.5,0.7-1.5,1.5v15c0,0.8,0.7,1.5,1.5,1.5h17c0.8,0,1.5-0.7,1.5-1.5v-15C-265,388.7-265.7,388-266.5,388z M-266,389.5v2.4c-0.7,0.7-1.6,1.1-2.5,1.1l0,0c-1.9,0-3.5-1.6-3.5-3.5c0-0.2,0-0.3,0.1-0.5h5.4C-266.2,389-266,389.2-266,389.5z M-283.5,389h10.5c0,0.2,0,0.3,0,0.5c0,2.5,2,4.5,4.5,4.5l0,0c0.9,0,1.8-0.3,2.5-0.8v6.1l-2.8-2.8c-0.4-0.4-1-0.4-1.4,0l-2.8,2.8l-4.8-4.8c-0.4-0.4-1-0.4-1.4,0l-4.8,4.8v-9.8C-284,389.2-283.8,389-283.5,389z M-284,404.5v-3.8l5.5-5.5l9.8,9.8h-14.8C-283.8,405-284,404.8-284,404.5z M-266.5,405h-0.8l-5-5l2.8-2.8l3.5,3.5v3.8C-266,404.8-266.2,405-266.5,405z"/>\n    <path d="M-265.5,386h-19c-1.4,0-2.5,1.1-2.5,2.5v17c0,1.4,1.1,2.5,2.5,2.5h19c1.4,0,2.5-1.1,2.5-2.5v-17C-263,387.1-264.1,386-265.5,386z M-264,405.5c0,0.8-0.7,1.5-1.5,1.5h-19c-0.8,0-1.5-0.7-1.5-1.5v-17c0-0.8,0.7-1.5,1.5-1.5h19c0.8,0,1.5,0.7,1.5,1.5V405.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-info-table']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-info-table ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-266,385h-18c-0.6,0-1,0.4-1,1v21c0,0.6,0.4,1,1,1h18c0.6,0,1-0.4,1-1v-21C-265,385.4-265.4,385-266,385z M-284,407v-21h18v21H-284z M-266,407.5V407l0,0V407.5z"/>\n    <path d="M-278,394c0,1.7,1.3,3,3,3s3-1.3,3-3s-1.3-3-3-3S-278,392.3-278,394z M-273,394c0,1.1-0.9,2-2,2s-2-0.9-2-2s0.9-2,2-2S-273,392.9-273,394z"/>\n    <path d="M-278.5,389h7c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-7c-0.3,0-0.5,0.2-0.5,0.5S-278.8,389-278.5,389z"/>\n    <path d="M-268.5,399h-11c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h11c0.3,0,0.5-0.2,0.5-0.5S-268.2,399-268.5,399z"/>\n    <path d="M-268.5,401h-13c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13c0.3,0,0.5-0.2,0.5-0.5S-268.2,401-268.5,401z"/>\n    <path d="M-268.5,403h-13c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13c0.3,0,0.5-0.2,0.5-0.5S-268.2,403-268.5,403z"/>\n    <path d="M-271.5,405h-10c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h10c0.3,0,0.5-0.2,0.5-0.5S-271.2,405-271.5,405z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-interactive-banner']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-interactive-banner ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-265,385h-21v9h21V385z M-266,393h-19v-7h19V393z"/>\n    <path d="M-282.5,391h10c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-10c-0.3,0-0.5,0.2-0.5,0.5S-282.8,391-282.5,391z"/>\n    <path d="M-282.5,403h10c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-10c-0.3,0-0.5,0.2-0.5,0.5S-282.8,403-282.5,403z"/>\n    <path d="M-269,404.5c0-0.3-0.2-0.5-0.5-0.5h-11c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h11C-269.2,405-269,404.8-269,404.5z"/>\n    <path d="M-282.5,407h11c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-11c-0.3,0-0.5,0.2-0.5,0.5S-282.8,407-282.5,407z"/>\n    <polygon points="-281.6,395.6 -282.4,396.4 -279.5,399.2 -276.6,396.4 -277.4,395.6 -279.5,397.8 	"/>\n    <path d="M-263.1,406.1l-2.2-2.1h1.3v-1h-3v3h1v-1.3l2.1,2.1c0.1,0.1,0.2,0.1,0.4,0.1s0.3,0,0.4-0.1C-263,406.7-263,406.3-263.1,406.1z"/>\n    <path d="M-265.5,407c-0.3,0-0.5,0.2-0.5,0.5v0.5h-19v-7h19v0.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V400h-21v9h21v-1.5C-265,407.2-265.2,407-265.5,407z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-layerslider']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-layerslider ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-1388 3226 30 30" style="enable-background:new -1388 3226 30 30;" xml:space="preserve">\n  <g>\n    <path d="M-1373,3243.2l6.9-6.9c0.3-0.3,0.4-0.7,0.4-1.1c0-0.4-0.2-0.8-0.4-1.1l-5.8-5.8c-0.6-0.6-1.6-0.6-2.2,0l-5.8,5.9c-0.3,0.3-0.4,0.7-0.4,1.1c0,0.4,0.2,0.8,0.4,1.1L-1373,3243.2z M-1379.2,3234.9l5.8-5.8c0.1-0.1,0.3-0.1,0.4-0.1s0.3,0.1,0.4,0.2l5.8,5.8c0.1,0.1,0.2,0.2,0.2,0.4c0,0.1-0.1,0.3-0.2,0.4l-6.2,6l-6.2-6.2c-0.1-0.1-0.1-0.2-0.1-0.3C-1379.3,3235.2-1379.3,3235-1379.2,3234.9z"/>\n    <path d="M-1360.4,3239.9l-2.6-2.6c-0.6-0.6-1.5-0.6-2.1,0l-7.9,7.5l-7.6-7.6c-0.4-0.4-0.8-0.5-1.1-0.5c-0.6,0-1.1,0.4-1.3,0.9s-0.1,0.9,0.2,1.3l9.5,9.5c0.2,0.2,0.5,0.2,0.7,0l8.6-8.2l0.8,0.8l-9.8,9.8l-10.7-10.7c-0.7-0.7-1.8-0.5-2.3,0.3c-0.2,0.4-0.2,0.9,0,1.3c0,0,0,0.1,0.1,0.1l11.8,11.8c0.3,0.3,0.7,0.4,1.1,0.4s0.8-0.2,1.1-0.4l11.6-11.6C-1359.8,3241.5-1359.8,3240.5-1360.4,3239.9z M-1361.1,3241.4l-11.5,11.5c-0.2,0.2-0.5,0.2-0.7,0l-11.8-11.7c0-0.1,0-0.2,0-0.3c0.1-0.2,0.5-0.3,0.7-0.1l11,11c0.2,0.2,0.5,0.2,0.7,0l10.5-10.5c0.2-0.2,0.2-0.5,0-0.7l-1.5-1.5c-0.2-0.2-0.5-0.2-0.7,0l-8.6,8.2l-9.1-9.1c0-0.1,0-0.2,0-0.2c0.1-0.2,0.4-0.5,0.8-0.1l8,8c0.2,0.2,0.5,0.2,0.7,0l8.3-7.8c0.2-0.2,0.5-0.2,0.7,0l2.6,2.6C-1360.9,3240.8-1360.9,3241.2-1361.1,3241.4z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-lightbox']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-lightbox ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-275,386c-3.3,0-6,2.7-6,6c0,1.3,0.4,3.1,1.3,4.3c1,1.2,1.7,2.4,1.7,4.2v0.5h5.5h0.5v-0.7c0-1.6,0.5-3.2,1.5-4.5c0.9-1.2,1.5-2.8,1.5-3.8C-269,388.7-271.7,386-275,386z M-271.3,395.2c-1,1.4-1.6,3.1-1.7,4.8h-4c-0.1-1.6-0.7-2.9-1.9-4.4c-0.6-0.7-1.1-2.3-1.1-3.6c0-2.8,2.2-5,5-5s5,2.2,5,5C-270,392.7-270.5,394-271.3,395.2z"/>\n    <path d="M-272.5,402h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5S-272.2,402-272.5,402z"/>\n    <path d="M-272.5,404h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5S-272.2,404-272.5,404z"/>\n    <path d="M-274.5,406h-1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h1c0.3,0,0.5-0.2,0.5-0.5S-274.2,406-274.5,406z"/>\n    <path d="M-273.5,393h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-273.2,393-273.5,393z"/>\n    <path d="M-266.5,389c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h2.5v12h-5.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5.5c0.3,0,0.5-0.1,0.7-0.3c0.2-0.2,0.3-0.4,0.3-0.7v-13H-266.5z"/>\n    <path d="M-280.5,402h-5.5v-12h2.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-3.5v13c0,0.3,0.1,0.5,0.3,0.7c0.2,0.2,0.4,0.3,0.7,0.3h5.5c0.3,0,0.5-0.2,0.5-0.5S-280.2,402-280.5,402z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-line']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-line ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-281.5,387h16c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-16c-0.3,0-0.5,0.2-0.5,0.5S-281.8,387-281.5,387z"/>\n    <path d="M-284.5,389h19c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-19c-0.3,0-0.5,0.2-0.5,0.5S-284.8,389-284.5,389z"/>\n    <path d="M-284.5,391h19c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-19c-0.3,0-0.5,0.2-0.5,0.5S-284.8,391-284.5,391z"/>\n    <path d="M-284.5,393h19c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-19c-0.3,0-0.5,0.2-0.5,0.5S-284.8,393-284.5,393z"/>\n    <path d="M-284.5,395h11c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-11c-0.3,0-0.5,0.2-0.5,0.5S-284.8,395-284.5,395z"/>\n    <path d="M-265.5,402h-16c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h16c0.3,0,0.5-0.2,0.5-0.5S-265.2,402-265.5,402z"/>\n    <path d="M-265.5,404h-19c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h19c0.3,0,0.5-0.2,0.5-0.5S-265.2,404-265.5,404z"/>\n    <path d="M-269.5,406h-15c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h15c0.3,0,0.5-0.2,0.5-0.5S-269.2,406-269.5,406z"/>\n    <circle cx="-286.5" cy="398.5" r="0.5"/>\n    <circle cx="-284.5" cy="398.5" r="0.5"/>\n    <circle cx="-282.5" cy="398.5" r="0.5"/>\n    <circle cx="-280.5" cy="398.5" r="0.5"/>\n    <circle cx="-278.5" cy="398.5" r="0.5"/>\n    <circle cx="-276.5" cy="398.5" r="0.5"/>\n    <circle cx="-274.5" cy="398.5" r="0.5"/>\n    <circle cx="-272.5" cy="398.5" r="0.5"/>\n    <circle cx="-270.5" cy="398.5" r="0.5"/>\n    <circle cx="-268.5" cy="398.5" r="0.5"/>\n    <circle cx="-266.5" cy="398.5" r="0.5"/>\n    <circle cx="-264.5" cy="398.5" r="0.5"/>\n    <circle cx="-262.5" cy="398.5" r="0.5"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-mailchimp']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-mailchimp ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n	<path d="M-264.3,401.9c-0.1-0.3-0.4-0.4-0.6-0.5c-0.1,0-0.1,0-0.2-0.1c0-0.2,0-0.4,0-0.5c0.5-0.4,0.5-1.3,0.5-1.9c0-0.9-1.8-1.9-2.5-2.3c0-2.2-0.2-3.3-0.5-3.9c0-0.4,0-0.9-0.3-1.3c0.8-1,1.6-2.6,1.5-3.9c-0.1-0.6-0.4-1.2-0.8-1.5c-1.6-1.1-4.1-0.2-5.2,0.3c-0.1-0.1-0.1-0.2-0.2-0.2c-0.3-0.4-0.7-0.8-1.1-1.1h-0.1c-1.7-0.6-3.8,0.4-7.5,3.6c-3.8,3.2-4.2,5.9-4.2,6.9c0,0.8,0.3,1.3,0.5,1.7c-0.3,0.5-0.5,1.2-0.5,1.8c0,1.3,0.7,2.4,1.8,3.1c0.5,0.3,1,0.4,1.6,0.4c0.7,2,2.7,6.7,9.1,6.7c0.7,0,1.4,0,2.1-0.2c1.7-0.2,4.2-1.4,6.4-5.8C-264.3,402.7-264.1,402.3-264.3,401.9z M-266,401.7v0.2l0.1,0.1l0,0c-0.7,0.5-1.7,1.3-2.3,1.5c-1.5,0.4-4.1,0.3-4.6-0.4c-0.1-0.1-0.2-0.3,0.2-0.8c0.3-0.4,0.9-0.5,2-0.6c1.2-0.1,2.8-0.2,4.6-1.1l0,0C-266,401-266,401.4-266,401.7z M-265.5,399c0,0.1,0,0.1,0,0.2c-2.1,1.3-3.8,1.4-5.2,1.5c-1.2,0.1-2.2,0.1-2.7,1c-0.6,0.9-0.4,1.6-0.1,2c0.6,0.8,2,1.1,3.3,1.1c0.9,0,1.8-0.1,2.4-0.3c0.4-0.1,1.4-0.7,2.2-1.3c-0.3,0.6-0.6,1.1-1,1.6c-0.5,0.3-2.7,1.7-4.4,1.7c-2,0-3.4-1.1-4.3-3.2c-0.6-1.4,0.7-2.9,1.5-3.4l0.6-0.3l-0.5-0.5c-0.8-0.8-0.9-1.1-1.2-1.5c-0.1-0.1-0.1-0.3-0.2-0.4c-0.4-0.6-0.5-1.3-0.3-1.8c0.2-0.6,0.8-1,1.5-1.2c0.8-0.2,1.2-0.1,1.7,0.1c0.3,0.1,0.7,0.2,1.2,0.2s0.8-0.3,1.1-0.5c0.3-0.3,0.7-0.5,1.6-0.5c0.1,0.2,0.2,0.6,0.2,1.6c-0.1-0.1-0.3-0.1-0.5-0.1c-0.6,0-1,0.4-1,1s0.4,1,1,1c0.2,0,0.3-0.1,0.5-0.2c0,0.1,0,0.1,0,0.2v0.3l0.3,0.1C-266.6,398-265.6,398.8-265.5,399zM-267.8,386.9c0.2,0.2,0.4,0.4,0.4,0.8c0.1,0.9-0.6,2.3-1.2,3.1c-1.3-1.1-2.8-1.7-5.5-1.3c-2.8,0.5-5.9,4.4-7,6.1c-0.2-0.1-0.5-0.1-0.7-0.1c2.6-4.3,4.3-5.4,9.5-8.1C-270.9,386.7-268.9,386.2-267.8,386.9z M-280.7,389.4c3.2-2.8,5.2-3.8,6.5-3.4c0.3,0.2,0.6,0.5,0.9,0.8c0,0,0,0,0,0.1c-5.2,2.6-6.8,3.9-9.7,8.8c-0.1,0-0.3,0.1-0.4,0.1c-0.4,0.2-0.6,0.3-0.9,0.6c-0.1-0.2-0.2-0.5-0.2-0.9C-284.5,394.8-284.2,392.4-280.7,389.4z M-271.1,408c-7,1-9.2-3.3-10.1-5.6c0.4-0.1,0.8-0.3,1.2-0.5l-0.4-0.9c-0.9,0.6-1.9,0.6-2.8,0.2c-0.8-0.5-1.3-1.3-1.3-2.2c0-1,0.6-1.9,1.5-2.3c0.9-0.4,2-0.2,3,0.5c-0.6-0.3-1.3-0.3-1.9,0c-0.7,0.4-1.1,1.1-1.1,1.8s0.4,1.3,0.9,1.7c0.4,0.2,0.7,0.3,1.1,0.3c0.3,0,0.7-0.1,1-0.2l-0.4-0.9c-0.5,0.2-0.9,0.1-1.1,0c-0.3-0.2-0.5-0.6-0.5-0.9c0-0.4,0.2-0.7,0.5-0.9c0.4-0.2,0.8-0.1,1.2,0.1l0.6-0.8c0,0,0,0-0.1,0l0.6-0.7c-0.3-0.3-0.6-0.5-0.9-0.6c1.1-1.7,3.9-5.1,6.2-5.5c2.9-0.5,4,0.3,5.1,1.4c0.2,0.2,0.3,0.4,0.3,0.7c-1.1,0.1-1.6,0.4-2,0.7c-0.2,0.2-0.3,0.3-0.5,0.3c-0.3,0-0.6-0.1-0.9-0.1c-0.5-0.2-1.2-0.3-2.2-0.1s-1.8,0.9-2.1,1.8c-0.2,0.6-0.4,1.6,0.3,2.7c0.1,0.1,0.2,0.3,0.2,0.4c0.2,0.4,0.4,0.7,0.9,1.3c-1.1,0.9-2.1,2.6-1.4,4.3c1.3,3.2,3.5,3.8,5.2,3.8c0.7,0,1.5-0.2,2.3-0.5C-269.6,407.6-270.4,407.9-271.1,408z"/>\n	<circle cx="-272" cy="397" r="1"/>\n	<circle cx="-269.5" cy="398.5" r="0.5"/>\n	<circle cx="-268.5" cy="398.5" r="0.5"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-map-embed']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-map-embed ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-275,385c-3.9,0-7,3.1-7,7c0,5,6.3,12.5,6.6,12.8l0.4,0.4l0.4-0.4c0.2-0.3,6.6-7.8,6.6-12.8C-268,388.1-271.1,385-275,385z M-275,403.7c-1.4-1.7-6-7.7-6-11.7c0-3.3,2.7-6,6-6s6,2.7,6,6C-269,396-273.6,402-275,403.7z"/>\n    <path d="M-275,388c-2.2,0-4,1.8-4,4s1.8,4,4,4s4-1.8,4-4S-272.8,388-275,388z M-275,395c-1.7,0-3-1.3-3-3s1.3-3,3-3s3,1.3,3,3S-273.3,395-275,395z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-modal']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-modal ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-264,386h-22c-0.6,0-1,0.4-1,1v1v18v1c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-20C-263,386.4-263.4,386-264,386z M-286,387h22v1h-22V387z M-286,389h22v16h-22V389z M-286,407v-1h22v1H-286z M-264,407.5V407l0,0V407.5z"/>\n    <polygon points="-265.4,389.6 -267,391.3 -268.6,389.6 -269.4,390.4 -267.7,392 -269.4,393.6 -268.6,394.4 -267,392.7 -265.4,394.4 -264.6,393.6 -266.3,392 -264.6,390.4 	"/>\n    <path d="M-272,391h-6c-0.6,0-1,0.4-1,1v10c0,0.6,0.4,1,1,1h6c0.6,0,1-0.4,1-1v-10C-271,391.4-271.5,391-272,391z M-272,394.8c-0.3,0.1-0.7,0.2-1,0.2c-1.8,0-3.2-1.3-3.5-3h4.5V394.8z M-277.5,392c0.3,2.2,2.1,4,4.5,4c0.3,0,0.7,0,1-0.1v2.4l-0.8-0.8c-0.4-0.4-1-0.4-1.4,0l-1.3,1.3l-2.5-2.5V392H-277.5z M-278,397.7l4.3,4.3h-4.3V397.7z M-272.3,402l-2.5-2.5l1.3-1.3l1.5,1.5v2.3H-272.3z M-272,402.5V402l0,0V402.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-pricing-table']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-pricing-table ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-264,388h-4.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4.5v2h-4.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4.5v15h-4.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4.5c0.6,0,1-0.4,1-1v-18C-263,388.4-263.4,388-264,388z"/>\n    <path d="M-281.5,407h-4.5v-15h4.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-4.5v-2h4.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-4.5c-0.6,0-1,0.4-1,1v18c0,0.6,0.4,1,1,1h4.5c0.3,0,0.5-0.2,0.5-0.5S-281.2,407-281.5,407z"/>\n    <path d="M-270,389.5L-270,389.5V385c0-0.6-0.4-1-1-1h-8c-0.6,0-1,0.4-1,1v4.5l0,0l0,0v5l0,0l0,0V409c0,0.6,0.4,1,1,1h8c0.6,0,1-0.4,1-1v-14.5l0,0l0,0V389.5L-270,389.5z M-279,390h8v4h-8V390z M-271,385v4h-8v-4H-271z M-271,409.5V409h-8v-14h8v14V409.5z"/>\n    <path d="M-272.5,398h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-272.2,398-272.5,398z"/>\n    <path d="M-277.5,387h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5S-277.8,387-277.5,387z"/>\n    <path d="M-272.5,400h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-272.2,400-272.5,400z"/>\n    <path d="M-272.5,402h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-272.2,402-272.5,402z"/>\n    <path d="M-269,397.5c0,0.3,0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-3C-268.8,397-269,397.2-269,397.5z"/>\n    <path d="M-268.5,400h3c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-3c-0.3,0-0.5,0.2-0.5,0.5S-268.8,400-268.5,400z"/>\n    <path d="M-268.5,402h3c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-3c-0.3,0-0.5,0.2-0.5,0.5S-268.8,402-268.5,402z"/>\n    <path d="M-273,405h-4c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h4c0.6,0,1-0.4,1-1v-1C-272,405.4-272.4,405-273,405zM-277,407v-1h4v1H-277z M-273,407.5V407l0,0V407.5z"/>\n    <path d="M-268.5,405c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h2.5c0.6,0,1-0.4,1-1v-1c0-0.6-0.4-1-1-1h-2.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h2.5v1H-268.5z"/>\n    <path d="M-281.5,404c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-2.5c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h2.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-2.5v-1H-281.5z"/>\n    <circle cx="-275" cy="392" r="1"/>\n    <circle cx="-283" cy="394" r="1"/>\n    <circle cx="-267" cy="394" r="1"/>\n    <circle cx="-277.5" cy="398.5" r="0.5"/>\n    <circle cx="-277.5" cy="400.5" r="0.5"/>\n    <circle cx="-277.5" cy="402.5" r="0.5"/>\n    <path d="M-281.5,397h-1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h1c0.3,0,0.5-0.2,0.5-0.5S-281.2,397-281.5,397z"/>\n    <path d="M-281.5,399h-1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h1c0.3,0,0.5-0.2,0.5-0.5S-281.2,399-281.5,399z"/>\n    <path d="M-281.5,401h-1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h1c0.3,0,0.5-0.2,0.5-0.5S-281.2,401-281.5,401z"/>\n    <circle cx="-284.5" cy="397.5" r="0.5"/>\n    <circle cx="-284.5" cy="399.5" r="0.5"/>\n    <circle cx="-284.5" cy="401.5" r="0.5"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-promo']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-promo ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-267.5,385h-15c-0.8,0-1.5,0.7-1.5,1.5v5.3v1.2v14.5c0,0.8,0.7,1.5,1.5,1.5h15c0.8,0,1.5-0.7,1.5-1.5V393v-5v-1.5C-266,385.7-266.7,385-267.5,385z M-267,386.5v2.2c-0.1,0.1-0.2,0.1-0.3,0.1c-0.1,0-0.1,0.1-0.2,0.1s-0.2,0-0.2,0c-0.7,0.1-1.3-0.1-1.7-0.5s-0.6-1.1-0.6-1.7c0-0.1,0-0.2,0-0.2c0-0.1,0-0.2,0.1-0.2c0-0.1,0.1-0.2,0.1-0.3h2.2C-267.2,386-267,386.2-267,386.5z M-283,386.5c0-0.3,0.2-0.5,0.5-0.5h11.7c-0.1,0.3-0.2,0.7-0.2,1c0,1.7,1.3,3,3,3c0.3,0,0.7-0.1,1-0.2v2.2h-2.3l-2.6-2.6c-0.6-0.6-1.5-0.6-2.1,0l-1.2,1.2l-2.7-2.7c-0.6-0.6-1.5-0.6-2.1,0l-3,2.9V386.5zM-279.4,388.6c0.2-0.2,0.5-0.2,0.7,0l3.4,3.4l1.9-1.9c0.2-0.2,0.5-0.2,0.7,0l1.9,1.9h-12L-279.4,388.6z M-267,407.5c0,0.3-0.2,0.5-0.5,0.5h-15c-0.3,0-0.5-0.2-0.5-0.5V393h13.3h1.4h1.3V407.5z"/>\n    <path d="M-269.5,394h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-269.2,394-269.5,394z"/>\n    <path d="M-269.5,396h-11c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h11c0.3,0,0.5-0.2,0.5-0.5S-269.2,396-269.5,396z"/>\n    <path d="M-269.5,398h-11c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h11c0.3,0,0.5-0.2,0.5-0.5S-269.2,398-269.5,398z"/>\n    <path d="M-271.5,401c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5H-271.5z"/>\n    <path d="M-270.5,403h-9c-0.8,0-1.5,0.7-1.5,1.5v1c0,0.8,0.7,1.5,1.5,1.5h9c0.8,0,1.5-0.7,1.5-1.5v-1C-269,403.7-269.7,403-270.5,403z M-270,405.5c0,0.3-0.2,0.5-0.5,0.5h-9c-0.3,0-0.5-0.2-0.5-0.5v-1c0-0.3,0.2-0.5,0.5-0.5h9c0.3,0,0.5,0.2,0.5,0.5V405.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-prompt']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-prompt ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-265.5,390h-19c-1.4,0-2.5,1.1-2.5,2.5v9c0,1.4,1.1,2.5,2.5,2.5h19c1.4,0,2.5-1.1,2.5-2.5v-9C-263,391.1-264.1,390-265.5,390z M-264,401.5c0,0.8-0.7,1.5-1.5,1.5h-19c-0.8,0-1.5-0.7-1.5-1.5v-9c0-0.8,0.7-1.5,1.5-1.5h19c0.8,0,1.5,0.7,1.5,1.5V401.5z"/>\n    <path d="M-283.6,394h3.1c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-3.1c-0.3,0-0.5,0.2-0.5,0.5S-283.9,394-283.6,394z"/>\n    <path d="M-275.5,396h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7c0.3,0,0.5-0.2,0.5-0.5S-275.2,396-275.5,396z"/>\n    <path d="M-275.5,398h-8.1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8.1c0.3,0,0.5-0.2,0.5-0.5S-275.2,398-275.5,398z"/>\n    <path d="M-279.5,400h-4.1c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4.1c0.3,0,0.5-0.2,0.5-0.5S-279.2,400-279.5,400z"/>\n    <path d="M-267,396h-5c-0.6,0-1,0.4-1,1v1c0,0.6,0.4,1,1,1h5c0.6,0,1-0.4,1-1v-1C-266,396.4-266.4,396-267,396zM-272,398v-1h5v1H-272z M-267,398.5V398l0,0V398.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-protect']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-protect ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-269,393.3V390l0,0l0,0c0-3.3-2.7-6-6-6s-6,2.7-6,6v3.3c-1.8,1.6-3,4-3,6.7c0,5,4,9,9,9s9-4,9-9C-266,397.3-267.2,395-269,393.3z M-280,390c0-2.8,2.2-5,5-5s5,2.2,5,5.1v2.4c-1.4-1-3.2-1.5-5-1.5s-3.6,0.6-5,1.5V390z M-275,408c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8S-270.6,408-275,408z"/>\n    <path d="M-275,397c-1.7,0-3,1.3-3,3c0,1.3,0.8,2.4,2,2.8v3.2h2v-3.2c1.2-0.4,2-1.5,2-2.8C-272,398.3-273.3,397-275,397z M-275,402c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S-273.9,402-275,402z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-pullquote']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-pullquote ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-262.5,403h-25c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h25c0.3,0,0.5-0.2,0.5-0.5S-262.2,403-262.5,403z"/>\n    <path d="M-262.5,400h-25c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h25c0.3,0,0.5-0.2,0.5-0.5S-262.2,400-262.5,400z"/>\n    <path d="M-262.5,397h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7c0.3,0,0.5-0.2,0.5-0.5S-262.2,397-262.5,397z"/>\n    <path d="M-262.5,394h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7c0.3,0,0.5-0.2,0.5-0.5S-262.2,394-262.5,394z"/>\n    <path d="M-262.5,391h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7c0.3,0,0.5-0.2,0.5-0.5S-262.2,391-262.5,391z"/>\n    <path d="M-269.5,389h7c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-7c-0.3,0-0.5,0.2-0.5,0.5S-269.8,389-269.5,389z"/>\n    <path d="M-274.5,406h-13c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13c0.3,0,0.5-0.2,0.5-0.5S-274.2,406-274.5,406z"/>\n    <path d="M-284,398.6c2.2,0,4-1.8,4-4c0-1.8-1.2-3.4-2.9-3.9c0.2-0.3,0.9-1.2,1.5-1.8c0.2-0.2,0.3-0.6,0.2-0.9c-0.1-0.3-0.4-0.5-0.8-0.5h-0.2c-3.3,0.7-5.8,3.6-5.8,7.1C-288,396.8-286.2,398.6-284,398.6z M-282.5,388.6c-0.6,0.7-1.5,1.8-1.4,2.5c0.1,0.3,0.3,0.5,0.6,0.5c1.4,0.4,2.3,1.6,2.3,3c0,1.7-1.4,3-3,3s-3-1.4-3-3C-287,391.8-285.1,389.4-282.5,388.6z"/>\n    <path d="M-275,398.6c2.2,0,4-1.8,4-4c0-1.8-1.2-3.4-2.9-3.9c0.2-0.4,0.8-1.2,1.4-1.8c0.2-0.2,0.3-0.6,0.2-0.9c-0.1-0.3-0.4-0.5-0.8-0.5h-0.2c-3.3,0.7-5.7,3.6-5.7,7.1C-279,396.8-277.2,398.6-275,398.6z M-273.6,388.6c-0.6,0.7-1.5,1.8-1.3,2.5c0.1,0.3,0.3,0.5,0.6,0.5c1.4,0.3,2.3,1.5,2.3,2.9c0,1.7-1.4,3-3,3s-3-1.4-3-3C-278,391.8-276.2,389.4-273.6,388.6z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-raw-content']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-raw-content ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <g>\n      <polygon points="-282.6,398.4 -283.4,397.6 -280.2,394.5 -283.4,391.4 -282.6,390.6 -278.8,394.5"/>\n    </g>\n    <g>\n      <path d="M-264,408h-22c-0.6,0-1-0.4-1-1v-20c0-0.6,0.4-1,1-1h22c0.6,0,1,0.4,1,1v20C-263,407.6-263.4,408-264,408zM-264,407v0.5V407z M-286,387v20h22v-20H-286z"/>\n    </g>\n    <g>\n      <rect x="-279" y="397" width="5" height="1"/>\n    </g>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-raw-html']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-raw-html ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <polygon points="-269.4,400.4 -267.2,402.5 -269.4,404.6 -268.6,405.4 -265.8,402.5 -268.6,399.6 	"/>\n    <polygon points="-281.4,399.6 -284.2,402.5 -281.4,405.4 -280.6,404.6 -282.8,402.5 -280.6,400.4 	"/>\n    <rect x="-273" y="398.9" transform="matrix(0.9487 0.3162 -0.3162 0.9487 113.1446 106.7969)" width="1" height="6.3"/>\n    <path d="M-283.5,397c0.3,0,0.5-0.2,0.5-0.5V393h1v3.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-7c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v2.5h-1v-2.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v7C-284,396.8-283.8,397-283.5,397z"/>\n    <path d="M-277.5,389h-2c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h0.5v6.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V390h0.5c0.3,0,0.5-0.2,0.5-0.5S-277.2,389-277.5,389z"/>\n    <path d="M-268.5,397h2c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-1.5v-6.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v7C-269,396.8-268.8,397-268.5,397z"/>\n    <path d="M-264,386h-22c-0.6,0-1,0.4-1,1v20c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-20C-263,386.4-263.4,386-264,386z M-286,407v-20h22v20H-286z M-264,407.5V407l0,0V407.5z"/>\n    <path d="M-272.5,389c-0.4,0-0.7,0.2-1,0.4c-0.3-0.2-0.6-0.4-1-0.4c-0.8,0-1.5,0.7-1.5,1.5v6c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-6c0-0.3,0.2-0.5,0.5-0.5s0.5,0.2,0.5,0.5v6c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-6c0-0.3,0.2-0.5,0.5-0.5s0.5,0.2,0.5,0.5v6c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-6C-271,389.7-271.7,389-272.5,389z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-recent-posts']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-recent-posts ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-274,394.5c0-0.3-0.2-0.5-0.5-0.5h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7C-274.2,395-274,394.8-274,394.5z"/>\n    <path d="M-274.5,389h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7c0.3,0,0.5-0.2,0.5-0.5S-274.2,389-274.5,389z"/>\n    <path d="M-281.5,400h4c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-4c-0.3,0-0.5,0.2-0.5,0.5S-281.8,400-281.5,400z"/>\n    <path d="M-281.5,405h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5S-281.8,405-281.5,405z"/>\n    <path d="M-265.5,407c-0.3,0-0.5,0.2-0.5,0.5v1c0,0.3-0.2,0.5-0.5,0.5h-17c-0.3,0-0.5-0.2-0.5-0.5v-23c0-0.3,0.2-0.5,0.5-0.5h11.5v4.5c0,0.8,0.7,1.5,1.5,1.5h4.5v2.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-2.8c0-0.3-0.1-0.5-0.3-0.7l-5.7-5.7c-0.2-0.2-0.5-0.3-0.7-0.3h-11.8c-0.8,0-1.5,0.7-1.5,1.5v23c0,0.8,0.7,1.5,1.5,1.5h17c0.8,0,1.5-0.7,1.5-1.5v-1C-265,407.2-265.2,407-265.5,407z M-266.6,390h-3.9c-0.3,0-0.5-0.2-0.5-0.5v-3.9L-266.6,390z"/>\n    <path d="M-269.5,394c-3.6,0-6.5,2.9-6.5,6.5s2.9,6.5,6.5,6.5s6.5-2.9,6.5-6.5S-265.9,394-269.5,394z M-269.5,406c-3,0-5.5-2.5-5.5-5.5s2.5-5.5,5.5-5.5s5.5,2.5,5.5,5.5S-266.5,406-269.5,406z"/>\n    <path d="M-266.5,400h-2.5v-3.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v4c0,0.3,0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-266.2,400-266.5,400z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-revolution-slider']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-revolution-slider ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-264,397h-3c-0.5,0-0.9,0.4-1,0.9c-0.5,3.5-3.5,6.1-7,6.1c-1.9,0-3.8-0.8-5.1-2.2l2.1-2.1c0.3-0.3,0.4-0.7,0.2-1.1c-0.2-0.4-0.5-0.6-0.9-0.6h-7.3c-0.6,0-1,0.4-1,1v7.3c0,0.4,0.2,0.8,0.6,0.9c0.4,0.2,0.8,0.1,1.2-0.3l1.6-1.6c2.3,2.4,5.3,3.7,8.6,3.7c6.3,0,11.4-4.7,12-10.9c0-0.3-0.1-0.6-0.3-0.8C-263.5,397.1-263.8,397-264,397z M-275,408c-3,0-5.8-1.2-7.9-3.4c-0.2-0.2-0.4-0.3-0.7-0.3c-0.3,0-0.5,0.1-0.7,0.3l-1.7,1.7V399h7.3l-2.1,2.1c-0.4,0.4-0.4,1,0,1.4c1.5,1.6,3.6,2.5,5.8,2.5c4,0,7.4-3,7.9-7h3C-264.6,403.7-269.3,408-275,408z"/>\n    <path d="M-263.6,387.8c-0.4-0.2-0.8-0.1-1.1,0.2l-1.2,1.2c-2.3-2.7-5.6-4.2-9.1-4.2c-6.3,0-11.4,4.7-12,10.9c0,0.3,0.1,0.6,0.3,0.8c0.2,0.2,0.5,0.3,0.7,0.3h3c0.5,0,0.9-0.4,1-0.9c0.5-3.5,3.5-6.1,7-6.1c2.2,0,4.2,1,5.6,2.7l-1.6,1.6c-0.3,0.3-0.4,0.7-0.2,1.1c0.2,0.4,0.5,0.6,0.9,0.6h6.3c0.6,0,1-0.4,1-1v-6.3C-263,388.3-263.2,387.9-263.6,387.8z M-282.9,396.5V396l0,0V396.5z M-264,395h-6.3l1.6-1.6c0.4-0.4,0.4-0.9,0.1-1.3c-1.6-2-3.9-3.1-6.4-3.1c-4,0-7.4,3-7.9,7h-3c0.5-5.7,5.2-10,10.9-10c3.2,0,6.3,1.4,8.3,3.8c0.2,0.2,0.4,0.3,0.8,0.4c0.3,0,0.5-0.1,0.7-0.3l1.2-1.2V395z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-search']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-search ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-279,387c-3.3,0-6,2.7-6,6s2.7,6,6,6s6-2.7,6-6S-275.7,387-279,387z M-279,398c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S-276.2,398-279,398z"/>\n    <path d="M-264.1,404.1l-5.8-5.8c-0.4-0.4-1-0.4-1.4,0l-0.4,0.4l-0.9-0.9c1-1.3,1.6-3,1.6-4.7c0-4.4-3.6-8-8-8s-8,3.6-8,8s3.6,8,8,8c2.3,0,4.3-1,5.8-2.5l0.9,0.9l-0.4,0.4c-0.4,0.4-0.4,1,0,1.4l5.8,5.8c0.2,0.2,0.4,0.3,0.7,0.3c0.3,0,0.5-0.1,0.7-0.3l1.4-1.4C-263.7,405.1-263.7,404.5-264.1,404.1z M-279,400c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7S-275.1,400-279,400z M-266.2,406.2l-5.8-5.8l1.4-1.4l5.8,5.8L-266.2,406.2z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-self-hosted-audio']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-self-hosted-audio ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-272.5,398c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5c1.4,0,2.5-1.1,2.5-2.5s-1.1-2.5-2.5-2.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5c0.8,0,1.5,0.7,1.5,1.5S-271.7,398-272.5,398z"/>\n    <path d="M-272.5,401c2.5,0,4.5-2,4.5-4.5s-2-4.5-4.5-4.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5c1.9,0,3.5,1.6,3.5,3.5s-1.6,3.5-3.5,3.5c-0.3,0-0.5,0.2-0.5,0.5S-272.8,401-272.5,401z"/>\n    <path d="M-272.5,403c3.6,0,6.5-2.9,6.5-6.5s-2.9-6.5-6.5-6.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5c3,0,5.5,2.5,5.5,5.5s-2.5,5.5-5.5,5.5c-0.3,0-0.5,0.2-0.5,0.5S-272.8,403-272.5,403z"/>\n    <path d="M-283,400h3.3l3,3c0.2,0.2,0.4,0.3,0.7,0.3c0.1,0,0.3,0,0.4-0.1c0.4-0.2,0.6-0.5,0.6-0.9v-11.6c0-0.4-0.2-0.8-0.6-0.9c-0.4-0.2-0.8-0.1-1.1,0.2l-3,3h-3.3c-0.6,0-1,0.4-1,1v5C-284,399.6-283.6,400-283,400z M-279,393.7l3-3v11.6l-3-3V393.7z M-283,394h3v5h-3V394z"/>\n    <path d="M-263.5,398c-0.3,0-0.5,0.2-0.5,0.5v6.5h-22v-6.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v6.5c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-6.5C-263,398.2-263.2,398-263.5,398z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-self-hosted-video']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-self-hosted-video ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-280.5,403h11c0.8,0,1.5-0.7,1.5-1.5v-10c0-0.8-0.7-1.5-1.5-1.5h-2l0,0l0,0h-7l0,0l0,0h-2c-0.8,0-1.5,0.7-1.5,1.5v10C-282,402.3-281.3,403-280.5,403z M-279,399h-2v-2h2V399z M-278,397h6v5h-6V397z M-271,397h2v2h-2V397zM-269,396h-2v-2h2V396z M-272,396h-6v-5h6V396z M-279,396h-2v-2h2V396z M-281,401.5V400h2v2h-1.5C-280.8,402-281,401.8-281,401.5zM-269.5,402h-1.5v-2h2v1.5C-269,401.8-269.2,402-269.5,402z M-269,391.5v1.5h-2v-2h1.5C-269.2,391-269,391.2-269,391.5zM-280.5,391h1.5v2h-2v-1.5C-281,391.2-280.8,391-280.5,391z"/>\n    <path d="M-264.5,398c-0.3,0-0.5,0.2-0.5,0.5v6.5h-20v-6.5c0-0.3-0.2-0.5-0.5-0.5s-0.5,0.2-0.5,0.5v6.5c0,0.6,0.4,1,1,1h20c0.6,0,1-0.4,1-1v-6.5C-264,398.2-264.2,398-264.5,398z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-skill-bar']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-skill-bar ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-263,385h-24c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h24c0.6,0,1-0.4,1-1v-3C-262,385.4-262.4,385-263,385zM-287,389v-3h24v3H-287z M-263,389.5V389l0,0V389.5z"/>\n    <path d="M-263,391h-24c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h24c0.6,0,1-0.4,1-1v-3C-262,391.4-262.4,391-263,391zM-287,395v-3h24v3H-287z M-263,395.5V395l0,0V395.5z"/>\n    <path d="M-263,397h-24c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h24c0.6,0,1-0.4,1-1v-3C-262,397.4-262.4,397-263,397zM-287,401v-3h24v3H-287z M-263,401.5V401l0,0V401.5z"/>\n    <path d="M-263,403h-24c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h24c0.6,0,1-0.4,1-1v-3C-262,403.4-262.4,403-263,403zM-287,407v-3h24v3H-287z M-263,407.5V407l0,0V407.5z"/>\n    <path d="M-267.5,387h-18c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h18c0.3,0,0.5-0.2,0.5-0.5S-267.2,387-267.5,387z"/>\n    <path d="M-278.5,393h-7c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h7c0.3,0,0.5-0.2,0.5-0.5S-278.2,393-278.5,393z"/>\n    <path d="M-272.5,399h-13c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h13c0.3,0,0.5-0.2,0.5-0.5S-272.2,399-272.5,399z"/>\n    <path d="M-265.5,405h-20c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h20c0.3,0,0.5-0.2,0.5-0.5S-265.2,405-265.5,405z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-slider']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-slider ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-266,387h-18c-0.6,0-1,0.4-1,1v10c0,0.6,0.4,1,1,1h18c0.6,0,1-0.4,1-1v-10C-265,387.4-265.4,387-266,387zM-266,388.9c-0.7,0.7-1.6,1.1-2.5,1.1l0,0c-1.4,0-2.6-0.8-3.2-2h5.7V388.9z M-272.7,388c0.6,1.8,2.3,3,4.2,3c0.9,0,1.8-0.3,2.5-0.8v5.1l-2.8-2.8c-0.4-0.4-1-0.4-1.4,0l-2.8,2.8l-4.8-4.8c-0.4-0.4-1-0.4-1.4,0l-4.8,4.8V388H-272.7zM-284,396.7l5.5-5.5l6.8,6.8H-284V396.7z M-270.3,398l-2-2l2.8-2.8l3.5,3.5v1.3H-270.3z M-266,398.5V398l0,0V398.5z"/>\n    <path d="M-265.5,385h-19c-1.4,0-2.5,1.1-2.5,2.5v11c0,1.4,1.1,2.5,2.5,2.5h19c1.4,0,2.5-1.1,2.5-2.5v-11C-263,386.1-264.1,385-265.5,385z M-264,398.5c0,0.8-0.7,1.5-1.5,1.5h-19c-0.8,0-1.5-0.7-1.5-1.5v-11c0-0.8,0.7-1.5,1.5-1.5h19c0.8,0,1.5,0.7,1.5,1.5V398.5z"/>\n    <polygon points="-268.4,403.4 -266.2,405.5 -268.4,407.6 -267.6,408.4 -264.8,405.5 -267.6,402.6     "/>\n    <polygon points="-281.6,403.4 -282.4,402.6 -285.2,405.5 -282.4,408.4 -281.6,407.6 -283.8,405.5     "/>\n    <path d="M-278.5,405h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-278.2,405-278.5,405z"/>\n    <path d="M-273.5,405h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-273.2,405-273.5,405z"/>\n    <path d="M-268,405.5c0-0.3-0.2-0.5-0.5-0.5h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3C-268.2,406-268,405.8-268,405.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-social-sharing']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-social-sharing ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-276,386.7v15.8c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-15.8l2.6,2.6l0.7-0.7l-3.9-3.9l-3.9,3.9l0.7,0.7L-276,386.7z"/>\n    <path d="M-267,392h-4.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4.5v15h-17v-15h4.5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-4.5c-0.3,0-0.5,0.1-0.7,0.3c-0.2,0.2-0.3,0.4-0.3,0.7v15c0,0.5,0.4,1,1,1h17c0.5,0,1-0.4,1-1v-15C-266,392.5-266.5,392-267,392z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-soliloquy']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-soliloquy ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-280.7,398.3c-0.6-1-0.4-2.2,0.4-3l2.3-2.3v-3h-3.5l-3.1,3.1c-2.1,2.1-2.1,5.6,0,7.8l1.6,1.6V399h2.8L-280.7,398.3z M-284,398v2c-1.6-1.8-1.6-4.5,0.1-6.2l2.8-2.8h2.1v1.5l-2,2c-0.9,0.9-1.2,2.3-0.9,3.5H-284z"/>\n    <path d="M-277,391.8l0.7-0.4c1-0.5,2.2-0.4,3,0.4l2.3,2.2h3v-3.5l-3.1-3.1c-1-1-2.4-1.6-3.9-1.6s-2.9,0.6-3.9,1.6l-1.6,1.6h3.5V391.8z M-278,388c0.8-0.8,1.9-1.2,3-1.2c1.2,0,2.3,0.5,3.2,1.3l2.8,2.9v2h-1.5l-2-2c-0.9-0.9-2.3-1.2-3.5-0.9V388H-278z"/>\n    <path d="M-265.4,393.1l-1.6-1.6v3.5h-2.8l0.4,0.7c0.6,1,0.4,2.2-0.4,3l-2.2,2.3v3h3.4l3.1-3.1c1-1,1.6-2.4,1.6-3.9C-263.8,395.5-264.4,394.1-265.4,393.1z M-266.1,400.2l-2.9,2.8h-2v-1.5l2-2c0.9-0.9,1.2-2.3,0.9-3.5h2.1v-2c0.8,0.8,1.2,1.9,1.2,3C-264.8,398.2-265.3,399.3-266.1,400.2z"/>\n    <path d="M-273,402.2l-0.7,0.4c-1,0.5-2.2,0.4-3-0.4l-2.3-2.2h-3v3.5l3.1,3.1c1,1,2.4,1.6,3.9,1.6s2.8-0.6,3.9-1.6l1.6-1.6h-3.5V402.2z M-272,406c-0.8,0.8-1.9,1.2-3,1.2c-1.2,0-2.3-0.5-3.2-1.3l-2.8-2.9v-2h1.5l2,2c0.9,0.9,2.3,1.2,3.5,0.9v2.1H-272z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-table-of-contents']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-table-of-contents ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-280.5,388c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5s1.5-0.7,1.5-1.5S-279.7,388-280.5,388z M-280.5,390c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5s0.5,0.2,0.5,0.5S-280.2,390-280.5,390z"/>\n    <path d="M-280.5,393c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5s1.5-0.7,1.5-1.5S-279.7,393-280.5,393z M-280.5,395c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5s0.5,0.2,0.5,0.5S-280.2,395-280.5,395z"/>\n    <path d="M-268.5,394h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-268.2,394-268.5,394z"/>\n    <path d="M-277.5,390h3c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-3c-0.3,0-0.5,0.2-0.5,0.5S-277.8,390-277.5,390z"/>\n    <path d="M-280.5,398c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5s1.5-0.7,1.5-1.5S-279.7,398-280.5,398z M-280.5,400c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5s0.5,0.2,0.5,0.5S-280.2,400-280.5,400z"/>\n    <path d="M-268.5,399h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-268.2,399-268.5,399z"/>\n    <path d="M-280.5,403c-0.8,0-1.5,0.7-1.5,1.5s0.7,1.5,1.5,1.5s1.5-0.7,1.5-1.5S-279.7,403-280.5,403z M-280.5,405c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5s0.5,0.2,0.5,0.5S-280.2,405-280.5,405z"/>\n    <path d="M-268.5,404h-9c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h9c0.3,0,0.5-0.2,0.5-0.5S-268.2,404-268.5,404z"/>\n    <path d="M-265.3,390l-5.7-5.7c-0.2-0.2-0.5-0.3-0.7-0.3h-11.8c-0.8,0-1.5,0.7-1.5,1.5v23c0,0.8,0.7,1.5,1.5,1.5h17c0.8,0,1.5-0.7,1.5-1.5v-17.8C-265,390.5-265.1,390.2-265.3,390z M-271,385.6l4.4,4.4h-3.9c-0.3,0-0.5-0.2-0.5-0.5V385.6zM-266.5,409h-17c-0.3,0-0.5-0.2-0.5-0.5v-23c0-0.3,0.2-0.5,0.5-0.5h11.5v4.5c0,0.8,0.7,1.5,1.5,1.5h4.5v17.5C-266,408.8-266.2,409-266.5,409z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-tabs']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-tabs ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-279.5,387h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5S-279.2,387-279.5,387z"/>\n    <path d="M-284.5,392h4c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-4c-0.3,0-0.5,0.2-0.5,0.5S-284.8,392-284.5,392z"/>\n    <path d="M-266.5,389h-5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h5c0.3,0,0.5-0.2,0.5-0.5S-266.2,389-266.5,389z"/>\n    <path d="M-266.5,391h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-266.2,391-266.5,391z"/>\n    <path d="M-266.5,393h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-266.2,393-266.5,393z"/>\n    <path d="M-266.5,395h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-266.2,395-266.5,395z"/>\n    <path d="M-266.5,397h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-266.2,397-266.5,397z"/>\n    <path d="M-266.5,399h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-266.2,399-266.5,399z"/>\n    <path d="M-266.5,401h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-266.2,401-266.5,401z"/>\n    <path d="M-266.5,403h-8c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h8c0.3,0,0.5-0.2,0.5-0.5S-266.2,403-266.5,403z"/>\n    <path d="M-268.5,405h-6c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h6c0.3,0,0.5-0.2,0.5-0.5S-268.2,405-268.5,405z"/>\n    <path d="M-264,385h-22c-0.6,0-1,0.4-1,1v3.5v0.5v3.5v0.5v3.5v0.5v3c0,0.6,0.4,1,1,1h8v6c0,0.6,0.4,1,1,1h13c0.6,0,1-0.4,1-1v-22C-263,385.4-263.4,385-264,385z M-279.8,390h1.8v3h-8v-3H-279.8z M-278,394v3h-8v-3H-278z M-286,401v-3h8v3H-286z M-277,408v-18.5c0-0.5,0-0.5-2.8-0.5h-6.2v-3h22v22H-277z M-264,408.5V408l0,0V408.5z"/>\n    <path d="M-284.5,396h5c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-5c-0.3,0-0.5,0.2-0.5,0.5S-284.8,396-284.5,396z"/>\n    <path d="M-281.5,399h-3c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h3c0.3,0,0.5-0.2,0.5-0.5S-281.2,399-281.5,399z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-text-slide']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-text-slide-up-effect ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-270,391.7v1.8c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-1.8l1.6,1.6l0.7-0.7l-2.9-2.9l-2.9,2.9l0.7,0.7L-270,391.7z"/>\n    <path d="M-280,390c-2.2,0-4,1.8-4,4l0,0v10.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V398h6v6.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V394l0,0C-276,391.8-277.8,390-280,390z M-283,397v-3l0,0c0-1.7,1.3-3,3-3s3,1.3,3,3l0,0v3H-283z"/>\n    <path d="M-271,395c-2.2,0-4,1.8-4,4l0,0v2c0,2.2,1.8,4,4,4c1.2,0,2.3-0.5,3-1.4v0.9c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V399l0,0C-267,396.8-268.8,395-271,395z M-271,404c-1.7,0-3-1.3-3-3v-2l0,0c0-1.7,1.3-3,3-3s3,1.3,3,3l0,0v2C-268,402.7-269.3,404-271,404z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-text-type']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-text-type-effect ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-275.5,393h9.8l-1.6,1.6l0.7,0.7l2.9-2.9l-2.9-2.9l-0.7,0.7l1.6,1.6h-9.8c-0.3,0-0.5,0.2-0.5,0.5C-276,392.6-275.8,393-275.5,393z"/>\n    <path d="M-271.5,404h-4c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4c0.3,0,0.5-0.2,0.5-0.5S-271.2,404-271.5,404z"/>\n    <path d="M-264.5,404h-4c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4c0.3,0,0.5-0.2,0.5-0.5S-264.2,404-264.5,404z"/>\n    <path d="M-282,390c-2.2,0-4,1.8-4,4l0,0v10.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V398h6v6.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V394l0,0C-278,391.8-279.8,390-282,390z M-285,397v-3l0,0c0-1.7,1.3-3,3-3s3,1.3,3,3l0,0v3H-285z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-text']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-text ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <path d="M-266.5,387h-16c-0.3,0-0.5,0.2-0.5,0.5v2c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5V388h7v18h-1.5c-0.3,0-0.5,0.2-0.5,0.5s0.2,0.5,0.5,0.5h4c0.3,0,0.5-0.2,0.5-0.5s-0.2-0.5-0.5-0.5h-1.5v-18h7v1.5c0,0.3,0.2,0.5,0.5,0.5s0.5-0.2,0.5-0.5v-2C-266,387.2-266.2,387-266.5,387z"/>\n</svg>';
-
-}
-return __p
-};templates['element-visibility']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-visibility ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-264.2,396.7c-0.2-0.2-4.2-5.3-10.2-5.7c-0.2,0-0.4,0-0.6,0s-0.4,0-0.6,0c-5.9,0.3-10,5.4-10.2,5.7l-0.2,0.3l0.2,0.3c0.2,0.2,4.2,5.3,10.2,5.7c0.2,0,0.4,0,0.6,0s0.4,0,0.6,0c5.9-0.3,10-5.4,10.2-5.7l0.2-0.3L-264.2,396.7zM-270,397c0,2.8-2.2,5-5,5s-5-2.2-5-5s2.2-5,5-5S-270,394.2-270,397z M-284.7,397c0.7-0.8,2.6-2.7,5.2-4c-0.9,1.1-1.5,2.5-1.5,4s0.6,2.9,1.5,4C-282.2,399.7-284.1,397.8-284.7,397z M-270.5,401c0.9-1.1,1.5-2.4,1.5-4c0-1.5-0.6-2.9-1.5-4c2.7,1.2,4.6,3.2,5.2,4C-265.9,397.8-267.8,399.7-270.5,401z"/>\n    <path d="M-275,399c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2S-276.1,399-275,399z M-275,396c0.6,0,1,0.4,1,1s-0.4,1-1,1s-1-0.4-1-1S-275.6,396-275,396z"/>\n    <circle cx="-277.5" cy="394.5" r="0.5"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['element-widget-area']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/element-widget-area ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g><path d="M-268.8,411h-12.5c-2.6,0-4.7-2.1-4.7-4.7v-18.7c0-2.6,2.1-4.7,4.7-4.7h12.5c2.6,0,4.7,2.1,4.7,4.7v18.7C-264.2,408.9-266.2,411-268.8,411z M-281.3,384c-2,0-3.6,1.7-3.6,3.6v18.7c0,2,1.7,3.6,3.6,3.6h12.5c2,0,3.6-1.7,3.6-3.6v-18.7c0-2-1.7-3.6-3.6-3.6H-281.3z"/></g>\n  <g><path d="M-277.2,393.3c-0.2,0-0.4-0.1-0.5-0.3l-2.1-5.2c-0.1-0.3,0-0.5,0.3-0.6c0.3-0.1,0.5,0,0.6,0.3l2.1,5.2c0.1,0.3,0,0.5-0.3,0.6C-277.1,393.3-277.1,393.3-277.2,393.3z"/></g>\n  <g><path d="M-277.2,393.3c-0.1,0-0.2,0-0.2-0.1c-0.2-0.1-0.3-0.4-0.2-0.7l2.1-4.2c0.1-0.2,0.4-0.3,0.7-0.2s0.3,0.4,0.2,0.7l-2.1,4.2C-276.7,393.2-277,393.3-277.2,393.3z"/></g>\n  <g><path d="M-273,393.3c-0.2,0-0.4-0.1-0.4-0.3l-2.1-4.2c-0.1-0.2,0-0.5,0.2-0.7c0.2-0.2,0.5,0,0.7,0.2l2.1,4.2c0.1,0.2,0,0.5-0.2,0.7C-272.8,393.3-272.9,393.3-273,393.3z"/></g>\n  <g><path d="M-273,393.3c-0.1,0-0.1,0-0.2,0c-0.3-0.1-0.4-0.4-0.3-0.6l2.1-5.2c0.1-0.3,0.4-0.4,0.6-0.3c0.2,0.1,0.4,0.4,0.3,0.6l-2.1,5.2C-272.6,393.2-272.8,393.3-273,393.3z"/></g>\n  <g><path d="M-277.2,406.8c-0.2,0-0.4-0.1-0.5-0.3l-2.1-5.2c-0.1-0.3,0-0.5,0.3-0.6c0.3-0.1,0.5,0,0.6,0.3l2.1,5.2c0.1,0.3,0,0.5-0.3,0.6C-277.1,406.8-277.1,406.8-277.2,406.8z"/></g>\n  <g><path d="M-277.2,406.8c-0.1,0-0.2,0-0.2-0.1c-0.2-0.1-0.3-0.4-0.2-0.7l2.1-4.2c0.1-0.2,0.4-0.3,0.7-0.2s0.3,0.4,0.2,0.7l-2.1,4.2C-276.7,406.7-277,406.8-277.2,406.8z"/></g>\n  <g><path d="M-273,406.8c-0.2,0-0.4-0.1-0.4-0.3l-2.1-4.2c-0.1-0.2,0-0.5,0.2-0.7c0.2-0.2,0.5,0,0.7,0.2l2.1,4.2c0.1,0.2,0,0.5-0.2,0.7C-272.8,406.8-272.9,406.8-273,406.8z"/></g>\n  <g><path d="M-273,406.8c-0.1,0-0.1,0-0.2,0c-0.3-0.1-0.4-0.4-0.3-0.6l2.1-5.2c0.1-0.3,0.4-0.4,0.6-0.3c0.2,0.1,0.4,0.4,0.3,0.6l-2.1,5.2C-272.6,406.7-272.8,406.8-273,406.8z"/></g>\n  <g><path d="M-264.7,397.5h-20.8c-0.3,0-0.5-0.2-0.5-0.5s0.2-0.5,0.5-0.5h20.8c0.3,0,0.5,0.2,0.5,0.5S-264.4,397.5-264.7,397.5z"/></g>\n</svg>';
-
-}
-return __p
-};templates['logo-flat-custom']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/logo-flat-custom ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-137 283 336 227" enable-background="new -137 283 336 227" xml:space="preserve">\n  <g>\n    <path class="cs-logo-block-light" d="M86.8,444.8C52.6,464.5,65.3,457.2,31,477c-5.9-3.4-49.9-28.8-55.8-32.2c61.8-35.7,25.9-15,55.8-32.2C49.9,423.5,33.8,414.2,86.8,444.8z"/>\n    <path class="cs-logo-block-regular" d="M86.8,444.8V477c-34.2,19.7-21.5,12.4-55.8,32.2V477C65.2,457.3,52.5,464.6,86.8,444.8z"/>\n    <path class="cs-logo-block-dark" d="M31,477v32.2c-5.9-3.4-49.9-28.8-55.8-32.2v-32.2C-18.9,448.2,25.1,473.6,31,477z"/>\n    <path class="cs-logo-arms-dark" d="M-38.7,436.7L-38.7,436.7v32.2c-54.9-31.7-13.2-7.6-97.6-56.4v-32.1C-135.9,380.7-67.1,420.3-38.7,436.7z"/>\n    <path class="cs-logo-arms-regular" d="M86.8,316v32.2c-74.9,43.3-33.5,19.4-83.7,48.3l-27.9-16.1C73,324,24.8,351.8,86.8,316z"/>\n    <path class="cs-logo-arms-light" d="M31,283.8l-167.3,96.6c0.5,0.3,69.2,40,97.6,56.3l55.8-32.2c-17.7-10.2-8.7-5-41.8-24.1C73,324,24.8,351.8,86.8,316L31,283.8z"/>\n    <path class="cs-logo-arms-light" d="M142.5,348.2c-13.4,7.7-83.9,48.4-97.6,56.3l55.8,32.2c29-16.7,94.9-54.8,97.6-56.4C164.1,360.7,176.8,368,142.5,348.2z"/>\n    <path class="cs-logo-arms-regular" d="M198.3,380.4v32.2c0,0-97.6,56.3-97.6,56.4v-32.2C129.7,420,195.6,382,198.3,380.4z"/>\n    <path class="cs-logo-arms-regular" d="M17,404.5v16.1c-17.8,10.3-8.8,5.1-41.8,24.1v16.4l-13.6,7.9l-0.3-0.2v-32.2l0,0L17,404.5z"/>\n    <path class="cs-logo-arms-dark" d="M100.7,436.8V469l-13.9-8.1l0,0v-16.1C59,428.7,59.4,429,45,420.6v-16.1l0,0L100.7,436.8z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['logo-flat-original']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/logo-flat-original ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-137 283 336 227" enable-background="new -137 283 336 227" xml:space="preserve">\n  <g>\n    <path fill="#26CABC" d="M86.8,444.8C52.6,464.5,65.3,457.2,31,477c-5.9-3.4-49.9-28.8-55.8-32.2c61.8-35.7,25.9-15,55.8-32.2C49.9,423.5,33.8,414.2,86.8,444.8z"/>\n    <path fill="#22B3A6" d="M86.8,444.8V477c-34.2,19.7-21.5,12.4-55.8,32.2V477C65.2,457.3,52.5,464.6,86.8,444.8z"/>\n    <path fill="#1D968D" d="M31,477v32.2c-5.9-3.4-49.9-28.8-55.8-32.2v-32.2C-18.9,448.2,25.1,473.6,31,477z"/>\n    <path fill="#DF5540" d="M-38.7,436.7L-38.7,436.7v32.2c-54.9-31.7-13.2-7.6-97.6-56.4v-32.1C-135.9,380.7-67.1,420.3-38.7,436.7z"/>\n    <path fill="#FA5745" d="M86.8,316v32.2c-74.9,43.3-33.5,19.4-83.7,48.3l-27.9-16.1C73,324,24.8,351.8,86.8,316z"/>\n    <path fill="#FE7864" d="M31,283.8l-167.3,96.6c0.5,0.3,69.2,40,97.6,56.3l55.8-32.2c-17.7-10.2-8.7-5-41.8-24.1C73,324,24.8,351.8,86.8,316L31,283.8z"/>\n    <path fill="#FE7864" d="M142.5,348.2c-13.4,7.7-83.9,48.4-97.6,56.3l55.8,32.2c29-16.7,94.9-54.8,97.6-56.4C164.1,360.7,176.8,368,142.5,348.2z"/>\n    <path fill="#FA5745" d="M198.3,380.4v32.2c0,0-97.6,56.3-97.6,56.4v-32.2C129.7,420,195.6,382,198.3,380.4z"/>\n    <path fill="#FA5745" d="M17,404.5v16.1c-17.8,10.3-8.8,5.1-41.8,24.1v16.4l-13.6,7.9l-0.3-0.2v-32.2l0,0L17,404.5z"/>\n    <path fill="#DF5540" d="M100.7,436.8V469l-13.9-8.1l0,0v-16.1C59,428.7,59.4,429,45,420.6v-16.1l0,0L100.7,436.8z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['nav-elements-solid']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/nav-elements-solid ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-275,395.9l12-6.4l-11.5-6c-0.3-0.2-0.6-0.2-0.9,0l-11.6,6.1L-275,395.9z"/>\n    <path d="M-274,397.5v12.7l11.4-6.1c0.3-0.2,0.5-0.5,0.5-0.9v-12.1L-274,397.5z"/>\n    <path d="M-276,397.5l-11.9-6.3v12.1c0,0.4,0.2,0.7,0.5,0.9l11.4,6V397.5z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['nav-inspector-solid']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/nav-inspector-solid ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-262.5,406.7l-4.9-5.1c-0.4-0.4-1-0.4-1.4,0l-0.5,0.4l-0.5-0.5c1.7-1.9,2.7-4.3,2.7-7.1c0.1-5.7-4.6-10.4-10.4-10.4s-10.5,4.7-10.5,10.5s4.7,10.5,10.5,10.5c2.7,0,5.2-1,7.1-2.7l0.5,0.5l-0.2,0.2c-0.4,0.4-0.4,1,0,1.4l4.9,5.1c0.2,0.2,0.4,0.3,0.7,0.3s0.5-0.1,0.7-0.3l1.4-1.4c0.2-0.2,0.3-0.4,0.3-0.7C-262.2,407.1-262.3,406.8-262.5,406.7z M-277.5,403c-4.7,0-8.5-3.8-8.5-8.5s3.8-8.5,8.5-8.5s8.5,3.8,8.5,8.5S-272.8,403-277.5,403z"/>\n    <path d="M-277.5,387.8c-3.7,0-6.7,2.9-6.7,6.7c0,3.6,3,6.7,6.7,6.7s6.7-3,6.7-6.7C-270.8,390.8-273.9,387.8-277.5,387.8z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['nav-layout-solid']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/nav-layout-solid ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <g>\n    <path d="M-264,384h-22c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-3C-263,384.4-263.4,384-264,384z"/>\n    <path d="M-264,391h-12c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h12c0.6,0,1-0.4,1-1v-3C-263,391.4-263.4,391-264,391z"/>\n    <path d="M-286,396h6c0.6,0,1-0.4,1-1v-3c0-0.6-0.4-1-1-1h-6c-0.6,0-1,0.4-1,1v3C-287,395.6-286.6,396-286,396z"/>\n    <path d="M-286,403h12c0.6,0,1-0.4,1-1v-3c0-0.6-0.4-1-1-1h-12c-0.6,0-1,0.4-1,1v3C-287,402.6-286.6,403-286,403z"/>\n    <path d="M-264,398h-6c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h6c0.6,0,1-0.4,1-1v-3C-263,398.4-263.4,398-264,398z"/>\n    <path d="M-264,405h-22c-0.6,0-1,0.4-1,1v3c0,0.6,0.4,1,1,1h22c0.6,0,1-0.4,1-1v-3C-263,405.4-263.4,405-264,405z"/>\n  </g>\n</svg>';
-
-}
-return __p
-};templates['nav-settings-solid']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- // icons/nav-settings-solid ;
-__p += '\n<svg class="cs-custom-icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-290 382 30 30" enable-background="new -290 382 30 30" xml:space="preserve">\n  <path d="M-262,398.6v-3.1l-2.7-0.5l-0.4-1.4l2.1-1.7l-1.6-2.7l-2.6,1l-1-1l1-2.6l-2.7-1.6l-1.7,2.1l-1.4-0.4l-0.4-2.7h-3.1l-0.5,2.7l-1.4,0.4l-1.7-2.1l-2.7,1.6l1,2.6l-1,1l-2.6-1l-1.6,2.7l2.1,1.7l-0.4,1.4l-2.7,0.4v3.1l2.7,0.5l0.4,1.4l-2.1,1.7l1.6,2.7l2.6-1l1,1l-1,2.6l2.7,1.6l1.7-2.1l1.4,0.4l0.4,2.7h3.1l0.4-2.7l1.4-0.4l1.7,2.1l2.7-1.6l-1-2.6l1-1l2.6,1l1.6-2.7l-2.1-1.7l0.4-1.4L-262,398.6z M-275,403c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S-271.7,403-275,403z"/>\n</svg>';
-
-}
-return __p
-};module.exports=templates;
-},{}],113:[function(require,module,exports){
-/*
- * HTML5 Sortable jQuery Plugin
- * https://github.com/voidberg/html5sortable
- *
- * Original code copyright 2012 Ali Farhadi.
- * This version is mantained by Alexandru Badiu <andu@ctrlz.ro>
- *
- * Thanks to the following contributors: andyburke, bistoco, daemianmack, drskullster, flying-sheep, OscarGodson, Parikshit N. Samant, rodolfospalenza, ssafejava
- *
- * Released under the MIT license.
- */
+},{}],120:[function(require,module,exports){
 'use strict';
 
-(function ($) {
-  var dragging, draggingHeight, placeholders = $();
-  $.fn.sortable = function (options) {
-    var method = String(options);
+var cache = {};
+var start = '(?:^|\\s)';
+var end = '(?:\\s|$)';
 
-    options = $.extend({
-      connectWith: false,
-      placeholder: null,
-      dragImage: null
-    }, options);
+function lookupClass (className) {
+  var cached = cache[className];
+  if (cached) {
+    cached.lastIndex = 0;
+  } else {
+    cache[className] = cached = new RegExp(start + className + end, 'g');
+  }
+  return cached;
+}
 
-    return this.each(function () {
+function addClass (el, className) {
+  var current = el.className;
+  if (!current.length) {
+    el.className = className;
+  } else if (!lookupClass(className).test(current)) {
+    el.className += ' ' + className;
+  }
+}
 
-      var index, items = $(this).children(options.items), handles = options.handle ? items.find(options.handle) : items;
+function rmClass (el, className) {
+  el.className = el.className.replace(lookupClass(className), ' ').trim();
+}
 
-      if (method === 'reload') {
-        $(this).children(options.items).off('dragstart.h5s dragend.h5s selectstart.h5s dragover.h5s dragenter.h5s drop.h5s');
+module.exports = {
+  add: addClass,
+  rm: rmClass
+};
+
+},{}],121:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var emitter = require('contra/emitter');
+var crossvent = require('crossvent');
+var classes = require('./classes');
+var doc = document;
+var documentElement = doc.documentElement;
+var body = doc.body;
+
+function dragula (initialContainers, options) {
+  var len = arguments.length;
+  if (len === 1 && Array.isArray(initialContainers) === false) {
+    options = initialContainers;
+    initialContainers = [];
+  }
+  var _mirror; // mirror image
+  var _source; // source container
+  var _item; // item being dragged
+  var _offsetX; // reference x
+  var _offsetY; // reference y
+  var _moveX; // reference move x
+  var _moveY; // reference move y
+  var _initialSibling; // reference sibling when grabbed
+  var _currentSibling; // reference sibling now
+  var _copy; // item used for copying
+  var _renderTimer; // timer for setTimeout renderMirrorImage
+  var _lastDropTarget = null; // last container item was over
+  var _grabbed; // holds mousedown context until first mousemove
+
+  var o = options || {};
+  if (o.moves === void 0) { o.moves = always; }
+  if (o.accepts === void 0) { o.accepts = always; }
+  if (o.invalid === void 0) { o.invalid = invalidTarget; }
+  if (o.containers === void 0) { o.containers = initialContainers || []; }
+  if (o.isContainer === void 0) { o.isContainer = never; }
+  if (o.copy === void 0) { o.copy = false; }
+  if (o.copySortSource === void 0) { o.copySortSource = false; }
+  if (o.revertOnSpill === void 0) { o.revertOnSpill = false; }
+  if (o.removeOnSpill === void 0) { o.removeOnSpill = false; }
+  if (o.direction === void 0) { o.direction = 'vertical'; }
+  if (o.ignoreInputTextSelection === void 0) { o.ignoreInputTextSelection = true; }
+  if (o.mirrorContainer === void 0) { o.mirrorContainer = body; }
+  if (o.offset === void 0) { o.offset = thru; }
+
+  var drake = emitter({
+    containers: o.containers,
+    start: manualStart,
+    end: end,
+    cancel: cancel,
+    remove: remove,
+    destroy: destroy,
+    dragging: false,
+    isContainer: isContainer
+  });
+
+  if (o.removeOnSpill === true) {
+    drake.on('over', spillOver).on('out', spillOut);
+  }
+
+  events();
+
+  return drake;
+
+  function isContainer (el) {
+    return drake.containers.indexOf(el) !== -1 || o.isContainer(el);
+  }
+
+  function events (remove) {
+    var op = remove ? 'remove' : 'add';
+    touchy(documentElement, op, 'mousedown', grab);
+    touchy(documentElement, op, 'mouseup', release);
+  }
+
+  function eventualMovements (remove) {
+    var op = remove ? 'remove' : 'add';
+    touchy(documentElement, op, 'mousemove', startBecauseMouseMoved);
+  }
+
+  function movements (remove) {
+    var op = remove ? 'remove' : 'add';
+    touchy(documentElement, op, 'selectstart', preventGrabbed); // IE8
+    touchy(documentElement, op, 'click', preventGrabbed);
+  }
+
+  function destroy () {
+    events(true);
+    release({});
+  }
+
+  function preventGrabbed (e) {
+    if (_grabbed) {
+      e.preventDefault();
+    }
+  }
+
+  function grab (e) {
+    _moveX = e.clientX;
+    _moveY = e.clientY;
+
+    var ignore = whichMouseButton(e) !== 1 || e.metaKey || e.ctrlKey;
+    if (ignore) {
+      return; // we only care about honest-to-god left clicks and touch events
+    }
+    var item = e.target;
+    var context = canStart(item);
+    if (!context) {
+      return;
+    }
+    _grabbed = context;
+    eventualMovements();
+    if (e.type === 'mousedown') {
+      if (isInput(item)) { // see also: https://github.com/bevacqua/dragula/issues/208
+        item.focus(); // fixes https://github.com/bevacqua/dragula/issues/176
+      } else {
+        e.preventDefault(); // fixes https://github.com/bevacqua/dragula/issues/155
       }
-      if (/^enable|disable|destroy$/.test(method)) {
-        var citems = $(this).children($(this).data('items')).attr('draggable', method === 'enable');
-        if (method === 'destroy') {
-          $(this).off('sortupdate');
-          $(this).removeData('opts');
-          citems.add(this).removeData('connectWith items')
-            .off('dragstart.h5s dragend.h5s dragover.h5s dragenter.h5s drop.h5s').off('sortupdate');
-          handles.off('selectstart.h5s');
-        }
+    }
+  }
+
+  function startBecauseMouseMoved (e) {
+    if (!_grabbed) {
+      return;
+    }
+    if (whichMouseButton(e) === 0) {
+      release({});
+      return; // when text is selected on an input and then dragged, mouseup doesn't fire. this is our only hope
+    }
+    // truthy check fixes #239, equality fixes #207
+    if (e.clientX !== void 0 && e.clientX === _moveX && e.clientY !== void 0 && e.clientY === _moveY) {
+      return;
+    }
+    if (o.ignoreInputTextSelection) {
+      var clientX = getCoord('clientX', e);
+      var clientY = getCoord('clientY', e);
+      var elementBehindCursor = doc.elementFromPoint(clientX, clientY);
+      if (isInput(elementBehindCursor)) {
         return;
       }
+    }
 
-      var soptions = $(this).data('opts');
+    var grabbed = _grabbed; // call to end() unsets _grabbed
+    eventualMovements(true);
+    movements();
+    end();
+    start(grabbed);
 
-      if (typeof soptions === 'undefined') {
-        $(this).data('opts', options);
+
+    var offset = getOffset(_item);
+    var calculatedOffset = o.offset( {
+      x: getCoord('pageX', e) - offset.left,
+      y: getCoord('pageY', e) - offset.top
+    }, e, _item );
+
+    _offsetX = calculatedOffset.x;
+    _offsetY = calculatedOffset.y;
+
+    classes.add(_copy || _item, 'gu-transit');
+    renderMirrorImage();
+    drag(e);
+  }
+
+  function canStart (item) {
+    if (drake.dragging && _mirror) {
+      return;
+    }
+    if (isContainer(item)) {
+      return; // don't drag container itself
+    }
+    var handle = item;
+    while (getParent(item) && isContainer(getParent(item)) === false) {
+      if (o.invalid(item, handle)) {
+        return;
       }
-      else {
-        options = soptions;
+      item = getParent(item); // drag target should be a top element
+      if (!item) {
+        return;
       }
+    }
+    var source = getParent(item);
+    if (!source) {
+      return;
+    }
+    if (o.invalid(item, handle)) {
+      return;
+    }
 
-      var startParent, newParent;
-      var placeholder = ( options.placeholder === null ) ? $('<' + (/^ul|ol$/i.test(this.tagName) ? 'li' : 'div') + ' class="sortable-placeholder"/>') : $(options.placeholder).addClass('sortable-placeholder');
+    var movable = o.moves(item, source, handle, nextEl(item));
+    if (!movable) {
+      return;
+    }
 
-      $(this).data('items', options.items);
-      placeholders = placeholders.add(placeholder);
-      if (options.connectWith) {
-        $(options.connectWith).add(this).data('connectWith', options.connectWith);
-      }
+    return {
+      item: item,
+      source: source
+    };
+  }
 
-      items.attr('role', 'option');
-      items.attr('aria-grabbed', 'false');
+  function manualStart (item) {
+    var context = canStart(item);
+    if (context) {
+      start(context);
+    }
+  }
 
-      // Setup drag handles
-      handles.attr('draggable', 'true').not('a[href], img').on('selectstart.h5s', function() {
-        if (this.dragDrop) {
-          this.dragDrop();
-        }
+  function start (context) {
+    if (isCopy(context.item, context.source)) {
+      _copy = context.item.cloneNode(true);
+      drake.emit('cloned', _copy, context.item, 'copy');
+    }
+
+    _source = context.source;
+    _item = context.item;
+    _initialSibling = _currentSibling = nextEl(context.item);
+
+    drake.dragging = true;
+    drake.emit('drag', _item, _source);
+  }
+
+  function invalidTarget () {
+    return false;
+  }
+
+  function end () {
+    if (!drake.dragging) {
+      return;
+    }
+    var item = _copy || _item;
+    drop(item, getParent(item));
+  }
+
+  function ungrab () {
+    _grabbed = false;
+    eventualMovements(true);
+    movements(true);
+  }
+
+  function release (e) {
+    ungrab();
+
+    if (!drake.dragging) {
+      return;
+    }
+    var item = _copy || _item;
+    var clientX = getCoord('clientX', e);
+    var clientY = getCoord('clientY', e);
+    var elementBehindCursor = getElementBehindPoint(_mirror, clientX, clientY);
+    var dropTarget = findDropTarget(elementBehindCursor, clientX, clientY);
+    if (dropTarget && ((_copy && o.copySortSource) || (!_copy || dropTarget !== _source))) {
+      drop(item, dropTarget);
+    } else if (o.removeOnSpill) {
+      remove();
+    } else {
+      cancel();
+    }
+  }
+
+  function drop (item, target) {
+    var parent = getParent(item);
+    if (_copy && o.copySortSource && target === _source) {
+      parent.removeChild(_item);
+    }
+    if (isInitialPlacement(target)) {
+      drake.emit('cancel', item, _source, _source);
+    } else {
+      drake.emit('drop', item, target, _source, _currentSibling);
+    }
+    cleanup();
+  }
+
+  function remove () {
+    if (!drake.dragging) {
+      return;
+    }
+    var item = _copy || _item;
+    var parent = getParent(item);
+    if (parent) {
+      parent.removeChild(item);
+    }
+    drake.emit(_copy ? 'cancel' : 'remove', item, parent, _source);
+    cleanup();
+  }
+
+  function cancel (revert) {
+    if (!drake.dragging) {
+      return;
+    }
+    var reverts = arguments.length > 0 ? revert : o.revertOnSpill;
+    var item = _copy || _item;
+    var parent = getParent(item);
+    if (parent === _source && _copy) {
+      parent.removeChild(_copy);
+    }
+    var initial = isInitialPlacement(parent);
+    if (initial === false && !_copy && reverts) {
+      _source.insertBefore(item, _initialSibling);
+    }
+    if (initial || reverts) {
+      drake.emit('cancel', item, _source, _source);
+    } else {
+      drake.emit('drop', item, parent, _source, _currentSibling);
+    }
+    cleanup();
+  }
+
+  function cleanup () {
+    var item = _copy || _item;
+    ungrab();
+    removeMirrorImage();
+    if (item) {
+      classes.rm(item, 'gu-transit');
+    }
+    if (_renderTimer) {
+      clearTimeout(_renderTimer);
+    }
+    drake.dragging = false;
+    if (_lastDropTarget) {
+      drake.emit('out', item, _lastDropTarget, _source);
+    }
+    drake.emit('dragend', item);
+    _source = _item = _copy = _initialSibling = _currentSibling = _renderTimer = _lastDropTarget = null;
+  }
+
+  function isInitialPlacement (target, s) {
+    var sibling;
+    if (s !== void 0) {
+      sibling = s;
+    } else if (_mirror) {
+      sibling = _currentSibling;
+    } else {
+      sibling = nextEl(_copy || _item);
+    }
+    return target === _source && sibling === _initialSibling;
+  }
+
+  function findDropTarget (elementBehindCursor, clientX, clientY) {
+    var target = elementBehindCursor;
+    while (target && !accepted()) {
+      target = getParent(target);
+    }
+    return target;
+
+    function accepted () {
+      var droppable = isContainer(target);
+      if (droppable === false) {
         return false;
-      }).end();
+      }
 
-      // Handle drag events on draggable items
-      items.on('dragstart.h5s', function(e) {
-        var dt = e.originalEvent.dataTransfer;
-        dt.effectAllowed = 'move';
-        dt.setData('text', '');
+      var immediate = getImmediateChild(target, elementBehindCursor);
+      var reference = getReference(target, immediate, clientX, clientY);
+      var initial = isInitialPlacement(target, reference);
+      if (initial) {
+        return true; // should always be able to drop it right back where it was
+      }
+      return o.accepts(_item, target, _source, reference);
+    }
+  }
 
-        if (options.dragImage && dt.setDragImage) {
-          dt.setDragImage(options.dragImage, 0, 0);
-        }
+  function drag (e) {
+    if (!_mirror) {
+      return;
+    }
+    e.preventDefault();
 
-        index = (dragging = $(this)).addClass('sortable-dragging').attr('aria-grabbed', 'true').index();
-        draggingHeight = dragging.outerHeight();
-        startParent = $(this).parent();
-        dragging.parent().triggerHandler('sortstart', {item: dragging, startparent: startParent});
-      }).on('dragend.h5s',function () {
-          if (!dragging) {
-            return;
-          }
-          dragging.removeClass('sortable-dragging').attr('aria-grabbed', 'false').show();
-          placeholders.detach();
-          newParent = $(this).parent();
-          if (index !== dragging.index() || startParent.get(0) !== newParent.get(0)) {
-            dragging.parent().triggerHandler('sortupdate', {item: dragging, oldindex: index, startparent: startParent, endparent: newParent});
-          }
-          dragging = null;
-          draggingHeight = null;
-        }).add([this, placeholder]).on('dragover.h5s dragenter.h5s drop.h5s', function(e) {
-          if (!items.is(dragging) && options.connectWith !== $(dragging).parent().data('connectWith')) {
-            return true;
-          }
-          if (e.type === 'drop') {
-            e.stopPropagation();
-            placeholders.filter(':visible').after(dragging);
-            dragging.trigger('dragend.h5s');
-            return false;
-          }
-          e.preventDefault();
-          e.originalEvent.dataTransfer.dropEffect = 'move';
-          if (items.is(this)) {
-            var thisHeight = $(this).outerHeight();
-            if (options.forcePlaceholderSize) {
-              placeholder.height(draggingHeight);
-            }
+    var clientX = getCoord('clientX', e);
+    var clientY = getCoord('clientY', e);
+    var x = clientX - _offsetX;
+    var y = clientY - _offsetY;
 
-            // Check if $(this) is bigger than the draggable. If it is, we have to define a dead zone to prevent flickering
-            if (thisHeight > draggingHeight) {
-              // Dead zone?
-              var deadZone = thisHeight - draggingHeight, offsetTop = $(this).offset().top;
-              if (placeholder.index() < $(this).index() && e.originalEvent.pageY < offsetTop + deadZone) {
-                return false;
-              }
-              else if (placeholder.index() > $(this).index() && e.originalEvent.pageY > offsetTop + thisHeight - deadZone) {
-                return false;
-              }
-            }
+    _mirror.style.left = x + 'px';
+    _mirror.style.top = y + 'px';
 
-            dragging.hide();
-            $(this)[placeholder.index() < $(this).index() ? 'after' : 'before'](placeholder);
-            placeholders.not(placeholder).detach();
-          } else if (!placeholders.is(this) && !$(this).children(options.items).length) {
-            placeholders.detach();
-            $(this).append(placeholder);
-          }
-          return false;
-        });
-    });
+    var item = _copy || _item;
+    var elementBehindCursor = getElementBehindPoint(_mirror, clientX, clientY);
+    var dropTarget = findDropTarget(elementBehindCursor, clientX, clientY);
+    var changed = dropTarget !== null && dropTarget !== _lastDropTarget;
+    if (changed || dropTarget === null) {
+      out();
+      _lastDropTarget = dropTarget;
+      over();
+    }
+    var parent = getParent(item);
+    if (dropTarget === _source && _copy && !o.copySortSource) {
+      if (parent) {
+        parent.removeChild(item);
+      }
+      return;
+    }
+    var reference;
+    var immediate = getImmediateChild(dropTarget, elementBehindCursor);
+    if (immediate !== null) {
+      reference = getReference(dropTarget, immediate, clientX, clientY);
+    } else if (o.revertOnSpill === true && !_copy) {
+      reference = _initialSibling;
+      dropTarget = _source;
+    } else {
+      if (_copy && parent) {
+        parent.removeChild(item);
+      }
+      return;
+    }
+    if (
+      reference === null ||
+      reference !== item &&
+      reference !== nextEl(item) &&
+      reference !== _currentSibling
+    ) {
+      _currentSibling = reference;
+      dropTarget.insertBefore(item, reference);
+      drake.emit('shadow', item, dropTarget, _source);
+    }
+    function moved (type) { drake.emit(type, item, _lastDropTarget, _source); }
+    function over () { if (changed) { moved('over'); } }
+    function out () { if (_lastDropTarget) { moved('out'); } }
+  }
+
+  function spillOver (el) {
+    classes.rm(el, 'gu-hide');
+  }
+
+  function spillOut (el) {
+    if (drake.dragging) { classes.add(el, 'gu-hide'); }
+  }
+
+  function renderMirrorImage () {
+    if (_mirror) {
+      return;
+    }
+    var rect = _item.getBoundingClientRect();
+    _mirror = _item.cloneNode(true);
+    _mirror.style.width = getRectWidth(rect) + 'px';
+    _mirror.style.height = getRectHeight(rect) + 'px';
+    classes.rm(_mirror, 'gu-transit');
+    classes.add(_mirror, 'gu-mirror');
+    o.mirrorContainer.appendChild(_mirror);
+    touchy(documentElement, 'add', 'mousemove', drag);
+    classes.add(o.mirrorContainer, 'gu-unselectable');
+    drake.emit('cloned', _mirror, _item, 'mirror');
+  }
+
+  function removeMirrorImage () {
+    if (_mirror) {
+      classes.rm(o.mirrorContainer, 'gu-unselectable');
+      touchy(documentElement, 'remove', 'mousemove', drag);
+      getParent(_mirror).removeChild(_mirror);
+      _mirror = null;
+    }
+  }
+
+  function getImmediateChild (dropTarget, target) {
+    var immediate = target;
+    while (immediate !== dropTarget && getParent(immediate) !== dropTarget) {
+      immediate = getParent(immediate);
+    }
+    if (immediate === documentElement) {
+      return null;
+    }
+    return immediate;
+  }
+
+  function getReference (dropTarget, target, x, y) {
+    var horizontal = o.direction === 'horizontal';
+    var reference = target !== dropTarget ? inside() : outside();
+    return reference;
+
+    function outside () { // slower, but able to figure out any position
+      var len = dropTarget.children.length;
+      var i;
+      var el;
+      var rect;
+      for (i = 0; i < len; i++) {
+        el = dropTarget.children[i];
+        rect = el.getBoundingClientRect();
+        if (horizontal && rect.left > x) { return el; }
+        if (!horizontal && rect.top > y) { return el; }
+      }
+      return null;
+    }
+
+    function inside () { // faster, but only available if dropped inside a child element
+      var rect = target.getBoundingClientRect();
+      if (horizontal) {
+        return resolve(x > rect.left + getRectWidth(rect) / 2);
+      }
+      return resolve(y > rect.top + getRectHeight(rect) / 2);
+    }
+
+    function resolve (after) {
+      return after ? nextEl(target) : target;
+    }
+  }
+
+  function isCopy (item, container) {
+    return typeof o.copy === 'boolean' ? o.copy : o.copy(item, container);
+  }
+}
+
+function touchy (el, op, type, fn) {
+  var touch = {
+    mouseup: 'touchend',
+    mousedown: 'touchstart',
+    mousemove: 'touchmove'
   };
-})(jQuery);
-},{}],114:[function(require,module,exports){
+  var microsoft = {
+    mouseup: 'MSPointerUp',
+    mousedown: 'MSPointerDown',
+    mousemove: 'MSPointerMove'
+  };
+  if (global.navigator.msPointerEnabled) {
+    crossvent[op](el, microsoft[type], fn);
+  }
+  crossvent[op](el, touch[type], fn);
+  crossvent[op](el, type, fn);
+}
+
+function whichMouseButton (e) {
+  if (e.touches !== void 0) { return e.touches.length; }
+  if (e.buttons !== void 0) { return e.buttons; }
+  if (e.which !== void 0) { return e.which; }
+  var button = e.button;
+  if (button !== void 0) { // see https://github.com/jquery/jquery/blob/99e8ff1baa7ae341e94bb89c3e84570c7c3ad9ea/src/event.js#L573-L575
+    return button & 1 ? 1 : button & 2 ? 3 : (button & 4 ? 2 : 0);
+  }
+}
+
+function getOffset (el) {
+  var rect = el.getBoundingClientRect();
+  return {
+    left: rect.left + getScroll('scrollLeft', 'pageXOffset'),
+    top: rect.top + getScroll('scrollTop', 'pageYOffset')
+  };
+}
+
+function calculateOffset( ) {
+
+}
+
+function getScroll (scrollProp, offsetProp) {
+  if (typeof global[offsetProp] !== 'undefined') {
+    return global[offsetProp];
+  }
+  if (documentElement.clientHeight) {
+    return documentElement[scrollProp];
+  }
+  return body[scrollProp];
+}
+
+function getElementBehindPoint (point, x, y) {
+  var p = point || {};
+  var state = p.className;
+  var el;
+  p.className += ' gu-hide';
+  el = doc.elementFromPoint(x, y);
+  p.className = state;
+  return el;
+}
+
+function never () { return false; }
+function always () { return true; }
+function thru (val) { return val; }
+function getRectWidth (rect) { return rect.width || (rect.right - rect.left); }
+function getRectHeight (rect) { return rect.height || (rect.bottom - rect.top); }
+function getParent (el) { return el.parentNode === doc ? null : el.parentNode; }
+function isInput (el) { return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT'; }
+
+function nextEl (el) {
+  return el.nextElementSibling || manually();
+  function manually () {
+    var sibling = el;
+    do {
+      sibling = sibling.nextSibling;
+    } while (sibling && sibling.nodeType !== 1);
+    return sibling;
+  }
+}
+
+function getEventHost (e) {
+  // on touchend event, we have to use `e.changedTouches`
+  // see http://stackoverflow.com/questions/7192563/touchend-event-properties
+  // see https://github.com/bevacqua/dragula/issues/34
+  if (e.targetTouches && e.targetTouches.length) {
+    return e.targetTouches[0];
+  }
+  if (e.changedTouches && e.changedTouches.length) {
+    return e.changedTouches[0];
+  }
+  return e;
+}
+
+function getCoord (coord, e) {
+  var host = getEventHost(e);
+  var missMap = {
+    pageX: 'clientX', // IE8
+    pageY: 'clientY' // IE8
+  };
+  if (coord in missMap && !(coord in host) && missMap[coord] in host) {
+    coord = missMap[coord];
+  }
+  return host[coord];
+}
+
+module.exports = dragula;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./classes":120,"contra/emitter":129,"crossvent":133}],122:[function(require,module,exports){
+/*!
+ * HTMLHint v0.9.13
+ * https://github.com/yaniswang/HTMLHint
+ *
+ * (c) 2014-2015 Yanis Wang <yanis.wang@gmail.com>.
+ * MIT Licensed
+ */
+var HTMLHint=function(e){function t(e,t){return Array(e+1).join(t||" ")}var a={};return a.version="0.9.13",a.release="20151030",a.rules={},a.defaultRuleset={"tagname-lowercase":!0,"attr-lowercase":!0,"attr-value-double-quotes":!0,"doctype-first":!0,"tag-pair":!0,"spec-char-escape":!0,"id-unique":!0,"src-not-empty":!0,"attr-no-duplication":!0,"title-require":!0},a.addRule=function(e){a.rules[e.id]=e},a.verify=function(t,n){t=t.replace(/^\s*<!--\s*htmlhint\s+([^\r\n]+?)\s*-->/i,function(t,a){return n===e&&(n={}),a.replace(/(?:^|,)\s*([^:,]+)\s*(?:\:\s*([^,\s]+))?/g,function(t,a,i){"false"===i?i=!1:"true"===i&&(i=!0),n[a]=i===e?!0:i}),""}),(n===e||0===Object.keys(n).length)&&(n=a.defaultRuleset);var i,r=new HTMLParser,s=new a.Reporter(t,n),o=a.rules;for(var l in n)i=o[l],i!==e&&n[l]!==!1&&i.init(r,s,n[l]);return r.parse(t),s.messages},a.format=function(e,a){a=a||{};var n=[],i={white:"",grey:"",red:"",reset:""};a.colors&&(i.white="[37m",i.grey="[90m",i.red="[31m",i.reset="[39m");var r=a.indent||0;return e.forEach(function(e){var a=40,s=a+20,o=e.evidence,l=e.line,u=e.col,d=o.length,c=u>a+1?u-a:1,f=o.length>u+s?u+s:d;a+1>u&&(f+=a-u+1),o=o.replace(/\t/g," ").substring(c-1,f),c>1&&(o="..."+o,c-=3),d>f&&(o+="..."),n.push(i.white+t(r)+"L"+l+" |"+i.grey+o+i.reset);var g=u-c,h=o.substring(0,g).match(/[^\u0000-\u00ff]/g);null!==h&&(g+=h.length),n.push(i.white+t(r)+t((l+"").length+3+g)+"^ "+i.red+e.message+" ("+e.rule.id+")"+i.reset)}),n},a}();"object"==typeof exports&&exports&&(exports.HTMLHint=HTMLHint),function(e){var t=function(){var e=this;e._init.apply(e,arguments)};t.prototype={_init:function(e,t){var a=this;a.html=e,a.lines=e.split(/\r?\n/);var n=e.match(/\r?\n/);a.brLen=null!==n?n[0].length:0,a.ruleset=t,a.messages=[]},error:function(e,t,a,n,i){this.report("error",e,t,a,n,i)},warn:function(e,t,a,n,i){this.report("warning",e,t,a,n,i)},info:function(e,t,a,n,i){this.report("info",e,t,a,n,i)},report:function(e,t,a,n,i,r){for(var s,o,l=this,u=l.lines,d=l.brLen,c=a-1,f=u.length;f>c&&(s=u[c],o=s.length,n>o&&f>a);c++)a++,n-=o,1!==n&&(n-=d);l.messages.push({type:e,message:t,raw:r,evidence:s,line:a,col:n,rule:{id:i.id,description:i.description,link:"https://github.com/yaniswang/HTMLHint/wiki/"+i.id}})}},e.Reporter=t}(HTMLHint);var HTMLParser=function(e){var t=function(){var e=this;e._init.apply(e,arguments)};return t.prototype={_init:function(){var e=this;e._listeners={},e._mapCdataTags=e.makeMap("script,style"),e._arrBlocks=[],e.lastEvent=null},makeMap:function(e){for(var t={},a=e.split(","),n=0;a.length>n;n++)t[a[n]]=!0;return t},parse:function(t){function a(t,a,n,i){var r=n-b+1;i===e&&(i={}),i.raw=a,i.pos=n,i.line=w,i.col=r,L.push(i),c.fire(t,i);for(var s;s=m.exec(a);)w++,b=n+m.lastIndex}var n,i,r,s,o,l,u,d,c=this,f=c._mapCdataTags,g=/<(?:\/([^\s>]+)\s*|!--([\s\S]*?)--|!([^>]*?)|([\w\-:]+)((?:\s+[\w\-:]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'>]*))?)*?)\s*(\/?))>/g,h=/\s*([\w\-:]+)(?:\s*=\s*(?:(")([^"]*)"|(')([^']*)'|([^\s"'>]*)))?/g,m=/\r?\n/g,p=0,v=0,b=0,w=1,L=c._arrBlocks;for(c.fire("start",{pos:0,line:1,col:1});n=g.exec(t);)if(i=n.index,i>p&&(d=t.substring(p,i),o?u.push(d):a("text",d,p)),p=g.lastIndex,!(r=n[1])||(o&&r===o&&(d=u.join(""),a("cdata",d,v,{tagName:o,attrs:l}),o=null,l=null,u=null),o))if(o)u.push(n[0]);else if(r=n[4]){s=[];for(var y,T=n[5],H=0;y=h.exec(T);){var x=y[1],M=y[2]?y[2]:y[4]?y[4]:"",N=y[3]?y[3]:y[5]?y[5]:y[6]?y[6]:"";s.push({name:x,value:N,quote:M,index:y.index,raw:y[0]}),H+=y[0].length}H===T.length?(a("tagstart",n[0],i,{tagName:r,attrs:s,close:n[6]}),f[r]&&(o=r,l=s.concat(),u=[],v=p)):a("text",n[0],i)}else(n[2]||n[3])&&a("comment",n[0],i,{content:n[2]||n[3],"long":n[2]?!0:!1});else a("tagend",n[0],i,{tagName:r});t.length>p&&(d=t.substring(p,t.length),a("text",d,p)),c.fire("end",{pos:p,line:w,col:t.length-b+1})},addListener:function(t,a){for(var n,i=this._listeners,r=t.split(/[,\s]/),s=0,o=r.length;o>s;s++)n=r[s],i[n]===e&&(i[n]=[]),i[n].push(a)},fire:function(t,a){a===e&&(a={}),a.type=t;var n=this,i=[],r=n._listeners[t],s=n._listeners.all;r!==e&&(i=i.concat(r)),s!==e&&(i=i.concat(s));var o=n.lastEvent;null!==o&&(delete o.lastEvent,a.lastEvent=o),n.lastEvent=a;for(var l=0,u=i.length;u>l;l++)i[l].call(n,a)},removeListener:function(t,a){var n=this._listeners[t];if(n!==e)for(var i=0,r=n.length;r>i;i++)if(n[i]===a){n.splice(i,1);break}},fixPos:function(e,t){var a,n=e.raw.substr(0,t),i=n.split(/\r?\n/),r=i.length-1,s=e.line;return r>0?(s+=r,a=i[r].length+1):a=e.col+t,{line:s,col:a}},getMapAttrs:function(e){for(var t,a={},n=0,i=e.length;i>n;n++)t=e[n],a[t.name]=t.value;return a}},t}();"object"==typeof exports&&exports&&(exports.HTMLParser=HTMLParser),HTMLHint.addRule({id:"alt-require",description:"The alt attribute of an <img> element must be present and alt attribute of area[href] and input[type=image] must have a value.",init:function(e,t){var a=this;e.addListener("tagstart",function(n){var i,r=n.tagName.toLowerCase(),s=e.getMapAttrs(n.attrs),o=n.col+r.length+1;"img"!==r||"alt"in s?("area"===r&&"href"in s||"input"===r&&"image"===s.type)&&("alt"in s&&""!==s.alt||(i="area"===r?"area[href]":"input[type=image]",t.warn("The alt attribute of "+i+" must have a value.",n.line,o,a,n.raw))):t.warn("An alt attribute must be present on <img> elements.",n.line,o,a,n.raw)})}}),HTMLHint.addRule({id:"attr-lowercase",description:"All attribute names must be in lowercase.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.attrs,r=e.col+e.tagName.length+1,s=0,o=i.length;o>s;s++){n=i[s];var l=n.name;l!==l.toLowerCase()&&t.error("The attribute name of [ "+l+" ] must be in lowercase.",e.line,r+n.index,a,n.raw)}})}}),HTMLHint.addRule({id:"attr-no-duplication",description:"Elements cannot have duplicate attributes.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i,r=e.attrs,s=e.col+e.tagName.length+1,o={},l=0,u=r.length;u>l;l++)n=r[l],i=n.name,o[i]===!0&&t.error("Duplicate of attribute name [ "+n.name+" ] was found.",e.line,s+n.index,a,n.raw),o[i]=!0})}}),HTMLHint.addRule({id:"attr-unsafe-chars",description:"Attribute values cannot contain unsafe chars.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i,r=e.attrs,s=e.col+e.tagName.length+1,o=/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/,l=0,u=r.length;u>l;l++)if(n=r[l],i=n.value.match(o),null!==i){var d=escape(i[0]).replace(/%u/,"\\u").replace(/%/,"\\x");t.warn("The value of attribute [ "+n.name+" ] cannot contain an unsafe char [ "+d+" ].",e.line,s+n.index,a,n.raw)}})}}),HTMLHint.addRule({id:"attr-value-double-quotes",description:"Attribute values must be in double quotes.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.attrs,r=e.col+e.tagName.length+1,s=0,o=i.length;o>s;s++)n=i[s],(""!==n.value&&'"'!==n.quote||""===n.value&&"'"===n.quote)&&t.error("The value of attribute [ "+n.name+" ] must be in double quotes.",e.line,r+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"attr-value-not-empty",description:"All attributes must have values.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.attrs,r=e.col+e.tagName.length+1,s=0,o=i.length;o>s;s++)n=i[s],""===n.quote&&""===n.value&&t.warn("The attribute [ "+n.name+" ] must have a value.",e.line,r+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"csslint",description:"Scan css with csslint.",init:function(e,t,a){var n=this;e.addListener("cdata",function(e){if("style"===e.tagName.toLowerCase()){var i;if(i="object"==typeof exports&&require?require("csslint").CSSLint.verify:CSSLint.verify,void 0!==a){var r=e.line-1,s=e.col-1;try{var o=i(e.raw,a).messages;o.forEach(function(e){var a=e.line;t["warning"===e.type?"warn":"error"]("["+e.rule.id+"] "+e.message,r+a,(1===a?s:0)+e.col,n,e.evidence)})}catch(l){}}}})}}),HTMLHint.addRule({id:"doctype-first",description:"Doctype must be declared first.",init:function(e,t){var a=this,n=function(i){"start"===i.type||"text"===i.type&&/^\s*$/.test(i.raw)||(("comment"!==i.type&&i.long===!1||/^DOCTYPE\s+/i.test(i.content)===!1)&&t.error("Doctype must be declared first.",i.line,i.col,a,i.raw),e.removeListener("all",n))};e.addListener("all",n)}}),HTMLHint.addRule({id:"doctype-html5",description:'Invalid doctype. Use: "<!DOCTYPE html>"',init:function(e,t){function a(e){e.long===!1&&"doctype html"!==e.content.toLowerCase()&&t.warn('Invalid doctype. Use: "<!DOCTYPE html>"',e.line,e.col,i,e.raw)}function n(){e.removeListener("comment",a),e.removeListener("tagstart",n)}var i=this;e.addListener("all",a),e.addListener("tagstart",n)}}),HTMLHint.addRule({id:"head-script-disabled",description:"The <script> tag cannot be used in a <head> tag.",init:function(e,t){function a(a){var n=e.getMapAttrs(a.attrs),o=n.type,l=a.tagName.toLowerCase();"head"===l&&(s=!0),s!==!0||"script"!==l||o&&r.test(o)!==!0||t.warn("The <script> tag cannot be used in a <head> tag.",a.line,a.col,i,a.raw)}function n(t){"head"===t.tagName.toLowerCase()&&(e.removeListener("tagstart",a),e.removeListener("tagend",n))}var i=this,r=/^(text\/javascript|application\/javascript)$/i,s=!1;e.addListener("tagstart",a),e.addListener("tagend",n)}}),HTMLHint.addRule({id:"href-abs-or-rel",description:"An href attribute must be either absolute or relative.",init:function(e,t,a){var n=this,i="abs"===a?"absolute":"relative";e.addListener("tagstart",function(e){for(var a,r=e.attrs,s=e.col+e.tagName.length+1,o=0,l=r.length;l>o;o++)if(a=r[o],"href"===a.name){("absolute"===i&&/^\w+?:/.test(a.value)===!1||"relative"===i&&/^https?:\/\//.test(a.value)===!0)&&t.warn("The value of the href attribute [ "+a.value+" ] must be "+i+".",e.line,s+a.index,n,a.raw);break}})}}),HTMLHint.addRule({id:"id-class-ad-disabled",description:"The id and class attributes cannot use the ad keyword, it will be blocked by adblock software.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i,r=e.attrs,s=e.col+e.tagName.length+1,o=0,l=r.length;l>o;o++)n=r[o],i=n.name,/^(id|class)$/i.test(i)&&/(^|[-\_])ad([-\_]|$)/i.test(n.value)&&t.warn("The value of attribute "+i+" cannot use the ad keyword.",e.line,s+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"id-class-value",description:"The id and class attribute values must meet the specified rules.",init:function(e,t,a){var n,i=this,r={underline:{regId:/^[a-z\d]+(_[a-z\d]+)*$/,message:"The id and class attribute values must be in lowercase and split by an underscore."},dash:{regId:/^[a-z\d]+(-[a-z\d]+)*$/,message:"The id and class attribute values must be in lowercase and split by a dash."},hump:{regId:/^[a-z][a-zA-Z\d]*([A-Z][a-zA-Z\d]*)*$/,message:"The id and class attribute values must meet the camelCase style."}};if(n="string"==typeof a?r[a]:a,n&&n.regId){var s=n.regId,o=n.message;e.addListener("tagstart",function(e){for(var a,n=e.attrs,r=e.col+e.tagName.length+1,l=0,u=n.length;u>l;l++)if(a=n[l],"id"===a.name.toLowerCase()&&s.test(a.value)===!1&&t.warn(o,e.line,r+a.index,i,a.raw),"class"===a.name.toLowerCase())for(var d,c=a.value.split(/\s+/g),f=0,g=c.length;g>f;f++)d=c[f],d&&s.test(d)===!1&&t.warn(o,e.line,r+a.index,i,d)})}}}),HTMLHint.addRule({id:"id-unique",description:"The value of id attributes must be unique.",init:function(e,t){var a=this,n={};e.addListener("tagstart",function(e){for(var i,r,s=e.attrs,o=e.col+e.tagName.length+1,l=0,u=s.length;u>l;l++)if(i=s[l],"id"===i.name.toLowerCase()){r=i.value,r&&(void 0===n[r]?n[r]=1:n[r]++,n[r]>1&&t.error("The id value [ "+r+" ] must be unique.",e.line,o+i.index,a,i.raw));break}})}}),HTMLHint.addRule({id:"inline-script-disabled",description:"Inline script cannot be use.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i,r=e.attrs,s=e.col+e.tagName.length+1,o=/^on(unload|message|submit|select|scroll|resize|mouseover|mouseout|mousemove|mouseleave|mouseenter|mousedown|load|keyup|keypress|keydown|focus|dblclick|click|change|blur|error)$/i,l=0,u=r.length;u>l;l++)n=r[l],i=n.name.toLowerCase(),o.test(i)===!0?t.warn("Inline script [ "+n.raw+" ] cannot be use.",e.line,s+n.index,a,n.raw):("src"===i||"href"===i)&&/^\s*javascript:/i.test(n.value)&&t.warn("Inline script [ "+n.raw+" ] cannot be use.",e.line,s+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"inline-style-disabled",description:"Inline style cannot be use.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.attrs,r=e.col+e.tagName.length+1,s=0,o=i.length;o>s;s++)n=i[s],"style"===n.name.toLowerCase()&&t.warn("Inline style [ "+n.raw+" ] cannot be use.",e.line,r+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"jshint",description:"Scan script with jshint.",init:function(e,t,a){var n=this;e.addListener("cdata",function(i){if("script"===i.tagName.toLowerCase()){var r=e.getMapAttrs(i.attrs),s=r.type;if(void 0!==r.src||s&&/^(text\/javascript)$/i.test(s)===!1)return;var o;if(o="object"==typeof exports&&require?require("jshint").JSHINT:JSHINT,void 0!==a){var l=i.line-1,u=i.col-1,d=i.raw.replace(/\t/g," ");try{var c=o(d,a);c===!1&&o.errors.forEach(function(e){var a=e.line;t.warn(e.reason,l+a,(1===a?u:0)+e.character,n,e.evidence)})}catch(f){}}}})}}),HTMLHint.addRule({id:"space-tab-mixed-disabled",description:"Do not mix tabs and spaces for indentation.",init:function(e,t,a){var n=this;e.addListener("text",function(i){for(var r,s=i.raw,o=/(^|\r?\n)([ \t]+)/g;r=o.exec(s);){var l=e.fixPos(i,r.index+r[1].length);"space"===a&&/^ +$/.test(r[2])===!1?t.warn("Please use space for indentation.",l.line,1,n,i.raw):"tab"===a&&/^\t+$/.test(r[2])===!1?t.warn("Please use tab for indentation.",l.line,1,n,i.raw):/ +\t|\t+ /.test(r[2])===!0&&t.warn("Do not mix tabs and spaces for indentation.",l.line,1,n,i.raw)}})}}),HTMLHint.addRule({id:"spec-char-escape",description:"Special characters must be escaped.",init:function(e,t){var a=this;e.addListener("text",function(n){for(var i,r=n.raw,s=/[<>]/g;i=s.exec(r);){var o=e.fixPos(n,i.index);t.error("Special characters must be escaped : [ "+i[0]+" ].",o.line,o.col,a,n.raw)}})}}),HTMLHint.addRule({id:"src-not-empty",description:"The src attribute of an img(script,link) must have a value.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.tagName,r=e.attrs,s=e.col+i.length+1,o=0,l=r.length;l>o;o++)n=r[o],(/^(img|script|embed|bgsound|iframe)$/.test(i)===!0&&"src"===n.name||"link"===i&&"href"===n.name||"object"===i&&"data"===n.name)&&""===n.value&&t.error("The attribute [ "+n.name+" ] of the tag [ "+i+" ] must have a value.",e.line,s+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"style-disabled",description:"<style> tags cannot be used.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){"style"===e.tagName.toLowerCase()&&t.warn("The <style> tag cannot be used.",e.line,e.col,a,e.raw)})}}),HTMLHint.addRule({id:"tag-pair",description:"Tag must be paired.",init:function(e,t){var a=this,n=[],i=e.makeMap("area,base,basefont,br,col,embed,frame,hr,img,input,isindex,keygen,link,meta,param,source,track");e.addListener("tagstart",function(e){var t=e.tagName.toLowerCase();void 0!==i[t]||e.close||n.push({tagName:t,line:e.line,raw:e.raw})}),e.addListener("tagend",function(e){for(var i=e.tagName.toLowerCase(),r=n.length-1;r>=0&&n[r].tagName!==i;r--);if(r>=0){for(var s=[],o=n.length-1;o>r;o--)s.push("</"+n[o].tagName+">");if(s.length>0){var l=n[n.length-1];t.error("Tag must be paired, missing: [ "+s.join("")+" ], start tag match failed [ "+l.raw+" ] on line "+l.line+".",e.line,e.col,a,e.raw)}n.length=r}else t.error("Tag must be paired, no start tag: [ "+e.raw+" ]",e.line,e.col,a,e.raw)}),e.addListener("end",function(e){for(var i=[],r=n.length-1;r>=0;r--)i.push("</"+n[r].tagName+">");if(i.length>0){var s=n[n.length-1];t.error("Tag must be paired, missing: [ "+i.join("")+" ], open tag match failed [ "+s.raw+" ] on line "+s.line+".",e.line,e.col,a,"")}})}}),HTMLHint.addRule({id:"tag-self-close",description:"Empty tags must be self closed.",init:function(e,t){var a=this,n=e.makeMap("area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed");e.addListener("tagstart",function(e){var i=e.tagName.toLowerCase();void 0!==n[i]&&(e.close||t.warn("The empty tag : [ "+i+" ] must be self closed.",e.line,e.col,a,e.raw))})}}),HTMLHint.addRule({id:"tagname-lowercase",description:"All html element names must be in lowercase.",init:function(e,t){var a=this;e.addListener("tagstart,tagend",function(e){var n=e.tagName;n!==n.toLowerCase()&&t.error("The html element name of [ "+n+" ] must be in lowercase.",e.line,e.col,a,e.raw)})}}),HTMLHint.addRule({id:"title-require",description:"<title> must be present in <head> tag.",init:function(e,t){function a(e){var t=e.tagName.toLowerCase();"head"===t?r=!0:"title"===t&&r&&(s=!0)}function n(r){var o=r.tagName.toLowerCase();if(s&&"title"===o){var l=r.lastEvent;("text"!==l.type||"text"===l.type&&/^\s*$/.test(l.raw)===!0)&&t.error("<title></title> must not be empty.",r.line,r.col,i,r.raw)}else"head"===o&&(s===!1&&t.error("<title> must be present in <head> tag.",r.line,r.col,i,r.raw),e.removeListener("tagstart",a),e.removeListener("tagend",n))}var i=this,r=!1,s=!1;e.addListener("tagstart",a),e.addListener("tagend",n)}});
+},{"csslint":127,"jshint":127}],123:[function(require,module,exports){
 // Generated by CoffeeScript 1.9.2
 
 /*
@@ -8952,7 +9834,7 @@ Copyright 2015 Kevin Sylvestre
   };
 
 }).call(this);
-},{}],115:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 //https://github.com/customd/jquery-visible
 (function($){
 
@@ -9022,7 +9904,7 @@ Copyright 2015 Kevin Sylvestre
     };
 
 })(jQuery);
-},{}],116:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 //https://github.com/kmewhort/pointer_events_polyfill
 /*
  * Pointer Events Polyfill: Adds support for the style attribute "pointer-events: none" to browsers without this feature (namely, IE).
@@ -9092,7 +9974,7 @@ PointerEventsPolyfill.prototype.register_mouse_events = function(){
         return true;
     });
 };
-},{}],117:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 // Modified to fix transparent pixels being calculated as black (https://github.com/briangonzalez/rgbaster.js/issues/8)
 ;(function(window, undefined){
 
@@ -9216,3203 +10098,266 @@ PointerEventsPolyfill.prototype.register_mouse_events = function(){
   window.RGBaster = window.RGBaster || RGBaster;
 
 })(window);
-},{}],118:[function(require,module,exports){
-//! moment.js
-//! version : 2.10.6
-//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
-//! license : MIT
-//! momentjs.com
+},{}],127:[function(require,module,exports){
 
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    global.moment = factory()
-}(this, function () { 'use strict';
+},{}],128:[function(require,module,exports){
+'use strict';
 
-    var hookCallback;
+var ticky = require('ticky');
 
-    function utils_hooks__hooks () {
-        return hookCallback.apply(null, arguments);
+module.exports = function debounce (fn, args, ctx) {
+  if (!fn) { return; }
+  ticky(function run () {
+    fn.apply(ctx || null, args || []);
+  });
+};
+
+},{"ticky":131}],129:[function(require,module,exports){
+'use strict';
+
+var atoa = require('atoa');
+var debounce = require('./debounce');
+
+module.exports = function emitter (thing, options) {
+  var opts = options || {};
+  var evt = {};
+  if (thing === undefined) { thing = {}; }
+  thing.on = function (type, fn) {
+    if (!evt[type]) {
+      evt[type] = [fn];
+    } else {
+      evt[type].push(fn);
     }
-
-    // This is done to register the method called with moment()
-    // without creating circular dependencies.
-    function setHookCallback (callback) {
-        hookCallback = callback;
+    return thing;
+  };
+  thing.once = function (type, fn) {
+    fn._once = true; // thing.off(fn) still works!
+    thing.on(type, fn);
+    return thing;
+  };
+  thing.off = function (type, fn) {
+    var c = arguments.length;
+    if (c === 1) {
+      delete evt[type];
+    } else if (c === 0) {
+      evt = {};
+    } else {
+      var et = evt[type];
+      if (!et) { return thing; }
+      et.splice(et.indexOf(fn), 1);
     }
-
-    function isArray(input) {
-        return Object.prototype.toString.call(input) === '[object Array]';
-    }
-
-    function isDate(input) {
-        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
-    }
-
-    function map(arr, fn) {
-        var res = [], i;
-        for (i = 0; i < arr.length; ++i) {
-            res.push(fn(arr[i], i));
-        }
-        return res;
-    }
-
-    function hasOwnProp(a, b) {
-        return Object.prototype.hasOwnProperty.call(a, b);
-    }
-
-    function extend(a, b) {
-        for (var i in b) {
-            if (hasOwnProp(b, i)) {
-                a[i] = b[i];
-            }
-        }
-
-        if (hasOwnProp(b, 'toString')) {
-            a.toString = b.toString;
-        }
-
-        if (hasOwnProp(b, 'valueOf')) {
-            a.valueOf = b.valueOf;
-        }
-
-        return a;
-    }
-
-    function create_utc__createUTC (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, true).utc();
-    }
-
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false
-        };
-    }
-
-    function getParsingFlags(m) {
-        if (m._pf == null) {
-            m._pf = defaultParsingFlags();
-        }
-        return m._pf;
-    }
-
-    function valid__isValid(m) {
-        if (m._isValid == null) {
-            var flags = getParsingFlags(m);
-            m._isValid = !isNaN(m._d.getTime()) &&
-                flags.overflow < 0 &&
-                !flags.empty &&
-                !flags.invalidMonth &&
-                !flags.invalidWeekday &&
-                !flags.nullInput &&
-                !flags.invalidFormat &&
-                !flags.userInvalidated;
-
-            if (m._strict) {
-                m._isValid = m._isValid &&
-                    flags.charsLeftOver === 0 &&
-                    flags.unusedTokens.length === 0 &&
-                    flags.bigHour === undefined;
-            }
-        }
-        return m._isValid;
-    }
-
-    function valid__createInvalid (flags) {
-        var m = create_utc__createUTC(NaN);
-        if (flags != null) {
-            extend(getParsingFlags(m), flags);
-        }
-        else {
-            getParsingFlags(m).userInvalidated = true;
-        }
-
-        return m;
-    }
-
-    var momentProperties = utils_hooks__hooks.momentProperties = [];
-
-    function copyConfig(to, from) {
-        var i, prop, val;
-
-        if (typeof from._isAMomentObject !== 'undefined') {
-            to._isAMomentObject = from._isAMomentObject;
-        }
-        if (typeof from._i !== 'undefined') {
-            to._i = from._i;
-        }
-        if (typeof from._f !== 'undefined') {
-            to._f = from._f;
-        }
-        if (typeof from._l !== 'undefined') {
-            to._l = from._l;
-        }
-        if (typeof from._strict !== 'undefined') {
-            to._strict = from._strict;
-        }
-        if (typeof from._tzm !== 'undefined') {
-            to._tzm = from._tzm;
-        }
-        if (typeof from._isUTC !== 'undefined') {
-            to._isUTC = from._isUTC;
-        }
-        if (typeof from._offset !== 'undefined') {
-            to._offset = from._offset;
-        }
-        if (typeof from._pf !== 'undefined') {
-            to._pf = getParsingFlags(from);
-        }
-        if (typeof from._locale !== 'undefined') {
-            to._locale = from._locale;
-        }
-
-        if (momentProperties.length > 0) {
-            for (i in momentProperties) {
-                prop = momentProperties[i];
-                val = from[prop];
-                if (typeof val !== 'undefined') {
-                    to[prop] = val;
-                }
-            }
-        }
-
-        return to;
-    }
-
-    var updateInProgress = false;
-
-    // Moment prototype object
-    function Moment(config) {
-        copyConfig(this, config);
-        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
-        // Prevent infinite loop in case updateOffset creates new moment
-        // objects.
-        if (updateInProgress === false) {
-            updateInProgress = true;
-            utils_hooks__hooks.updateOffset(this);
-            updateInProgress = false;
-        }
-    }
-
-    function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
-    }
-
-    function absFloor (number) {
-        if (number < 0) {
-            return Math.ceil(number);
-        } else {
-            return Math.floor(number);
-        }
-    }
-
-    function toInt(argumentForCoercion) {
-        var coercedNumber = +argumentForCoercion,
-            value = 0;
-
-        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-            value = absFloor(coercedNumber);
-        }
-
-        return value;
-    }
-
-    function compareArrays(array1, array2, dontConvert) {
-        var len = Math.min(array1.length, array2.length),
-            lengthDiff = Math.abs(array1.length - array2.length),
-            diffs = 0,
-            i;
-        for (i = 0; i < len; i++) {
-            if ((dontConvert && array1[i] !== array2[i]) ||
-                (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
-                diffs++;
-            }
-        }
-        return diffs + lengthDiff;
-    }
-
-    function Locale() {
-    }
-
-    var locales = {};
-    var globalLocale;
-
-    function normalizeLocale(key) {
-        return key ? key.toLowerCase().replace('_', '-') : key;
-    }
-
-    // pick the locale from the array
-    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
-    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
-    function chooseLocale(names) {
-        var i = 0, j, next, locale, split;
-
-        while (i < names.length) {
-            split = normalizeLocale(names[i]).split('-');
-            j = split.length;
-            next = normalizeLocale(names[i + 1]);
-            next = next ? next.split('-') : null;
-            while (j > 0) {
-                locale = loadLocale(split.slice(0, j).join('-'));
-                if (locale) {
-                    return locale;
-                }
-                if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
-                    //the next array item is better than a shallower substring of this one
-                    break;
-                }
-                j--;
-            }
-            i++;
-        }
-        return null;
-    }
-
-    function loadLocale(name) {
-        var oldLocale = null;
-        // TODO: Find a better way to register and load all the locales in Node
-        if (!locales[name] && typeof module !== 'undefined' &&
-                module && module.exports) {
-            try {
-                oldLocale = globalLocale._abbr;
-                require('./locale/' + name);
-                // because defineLocale currently also sets the global locale, we
-                // want to undo that for lazy loaded locales
-                locale_locales__getSetGlobalLocale(oldLocale);
-            } catch (e) { }
-        }
-        return locales[name];
-    }
-
-    // This function will load locale and then set the global locale.  If
-    // no arguments are passed in, it will simply return the current global
-    // locale key.
-    function locale_locales__getSetGlobalLocale (key, values) {
-        var data;
-        if (key) {
-            if (typeof values === 'undefined') {
-                data = locale_locales__getLocale(key);
-            }
-            else {
-                data = defineLocale(key, values);
-            }
-
-            if (data) {
-                // moment.duration._locale = moment._locale = data;
-                globalLocale = data;
-            }
-        }
-
-        return globalLocale._abbr;
-    }
-
-    function defineLocale (name, values) {
-        if (values !== null) {
-            values.abbr = name;
-            locales[name] = locales[name] || new Locale();
-            locales[name].set(values);
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-
-            return locales[name];
-        } else {
-            // useful for testing
-            delete locales[name];
-            return null;
-        }
-    }
-
-    // returns locale data
-    function locale_locales__getLocale (key) {
-        var locale;
-
-        if (key && key._locale && key._locale._abbr) {
-            key = key._locale._abbr;
-        }
-
-        if (!key) {
-            return globalLocale;
-        }
-
-        if (!isArray(key)) {
-            //short-circuit everything else
-            locale = loadLocale(key);
-            if (locale) {
-                return locale;
-            }
-            key = [key];
-        }
-
-        return chooseLocale(key);
-    }
-
-    var aliases = {};
-
-    function addUnitAlias (unit, shorthand) {
-        var lowerCase = unit.toLowerCase();
-        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
-    }
-
-    function normalizeUnits(units) {
-        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
-    }
-
-    function normalizeObjectUnits(inputObject) {
-        var normalizedInput = {},
-            normalizedProp,
-            prop;
-
-        for (prop in inputObject) {
-            if (hasOwnProp(inputObject, prop)) {
-                normalizedProp = normalizeUnits(prop);
-                if (normalizedProp) {
-                    normalizedInput[normalizedProp] = inputObject[prop];
-                }
-            }
-        }
-
-        return normalizedInput;
-    }
-
-    function makeGetSet (unit, keepTime) {
-        return function (value) {
-            if (value != null) {
-                get_set__set(this, unit, value);
-                utils_hooks__hooks.updateOffset(this, keepTime);
-                return this;
-            } else {
-                return get_set__get(this, unit);
-            }
-        };
-    }
-
-    function get_set__get (mom, unit) {
-        return mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]();
-    }
-
-    function get_set__set (mom, unit, value) {
-        return mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-    }
-
-    // MOMENTS
-
-    function getSet (units, value) {
-        var unit;
-        if (typeof units === 'object') {
-            for (unit in units) {
-                this.set(unit, units[unit]);
-            }
-        } else {
-            units = normalizeUnits(units);
-            if (typeof this[units] === 'function') {
-                return this[units](value);
-            }
-        }
-        return this;
-    }
-
-    function zeroFill(number, targetLength, forceSign) {
-        var absNumber = '' + Math.abs(number),
-            zerosToFill = targetLength - absNumber.length,
-            sign = number >= 0;
-        return (sign ? (forceSign ? '+' : '') : '-') +
-            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
-    }
-
-    var formattingTokens = /(\[[^\[]*\])|(\\)?(Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Q|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
-
-    var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
-
-    var formatFunctions = {};
-
-    var formatTokenFunctions = {};
-
-    // token:    'M'
-    // padded:   ['MM', 2]
-    // ordinal:  'Mo'
-    // callback: function () { this.month() + 1 }
-    function addFormatToken (token, padded, ordinal, callback) {
-        var func = callback;
-        if (typeof callback === 'string') {
-            func = function () {
-                return this[callback]();
-            };
-        }
-        if (token) {
-            formatTokenFunctions[token] = func;
-        }
-        if (padded) {
-            formatTokenFunctions[padded[0]] = function () {
-                return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
-            };
-        }
-        if (ordinal) {
-            formatTokenFunctions[ordinal] = function () {
-                return this.localeData().ordinal(func.apply(this, arguments), token);
-            };
-        }
-    }
-
-    function removeFormattingTokens(input) {
-        if (input.match(/\[[\s\S]/)) {
-            return input.replace(/^\[|\]$/g, '');
-        }
-        return input.replace(/\\/g, '');
-    }
-
-    function makeFormatFunction(format) {
-        var array = format.match(formattingTokens), i, length;
-
-        for (i = 0, length = array.length; i < length; i++) {
-            if (formatTokenFunctions[array[i]]) {
-                array[i] = formatTokenFunctions[array[i]];
-            } else {
-                array[i] = removeFormattingTokens(array[i]);
-            }
-        }
-
-        return function (mom) {
-            var output = '';
-            for (i = 0; i < length; i++) {
-                output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
-            }
-            return output;
-        };
-    }
-
-    // format date using native date object
-    function formatMoment(m, format) {
-        if (!m.isValid()) {
-            return m.localeData().invalidDate();
-        }
-
-        format = expandFormat(format, m.localeData());
-        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
-
-        return formatFunctions[format](m);
-    }
-
-    function expandFormat(format, locale) {
-        var i = 5;
-
-        function replaceLongDateFormatTokens(input) {
-            return locale.longDateFormat(input) || input;
-        }
-
-        localFormattingTokens.lastIndex = 0;
-        while (i >= 0 && localFormattingTokens.test(format)) {
-            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-            localFormattingTokens.lastIndex = 0;
-            i -= 1;
-        }
-
-        return format;
-    }
-
-    var match1         = /\d/;            //       0 - 9
-    var match2         = /\d\d/;          //      00 - 99
-    var match3         = /\d{3}/;         //     000 - 999
-    var match4         = /\d{4}/;         //    0000 - 9999
-    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
-    var match1to2      = /\d\d?/;         //       0 - 99
-    var match1to3      = /\d{1,3}/;       //       0 - 999
-    var match1to4      = /\d{1,4}/;       //       0 - 9999
-    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
-
-    var matchUnsigned  = /\d+/;           //       0 - inf
-    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
-
-    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
-
-    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
-
-    // any word (or two) characters or numbers including two/three word month in arabic.
-    var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
-
-    var regexes = {};
-
-    function isFunction (sth) {
-        // https://github.com/moment/moment/issues/2325
-        return typeof sth === 'function' &&
-            Object.prototype.toString.call(sth) === '[object Function]';
-    }
-
-
-    function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = isFunction(regex) ? regex : function (isStrict) {
-            return (isStrict && strictRegex) ? strictRegex : regex;
-        };
-    }
-
-    function getParseRegexForToken (token, config) {
-        if (!hasOwnProp(regexes, token)) {
-            return new RegExp(unescapeFormat(token));
-        }
-
-        return regexes[token](config._strict, config._locale);
-    }
-
-    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-    function unescapeFormat(s) {
-        return s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
-            return p1 || p2 || p3 || p4;
-        }).replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    }
-
-    var tokens = {};
-
-    function addParseToken (token, callback) {
-        var i, func = callback;
-        if (typeof token === 'string') {
-            token = [token];
-        }
-        if (typeof callback === 'number') {
-            func = function (input, array) {
-                array[callback] = toInt(input);
-            };
-        }
-        for (i = 0; i < token.length; i++) {
-            tokens[token[i]] = func;
-        }
-    }
-
-    function addWeekParseToken (token, callback) {
-        addParseToken(token, function (input, array, config, token) {
-            config._w = config._w || {};
-            callback(input, config._w, config, token);
-        });
-    }
-
-    function addTimeToArrayFromToken(token, input, config) {
-        if (input != null && hasOwnProp(tokens, token)) {
-            tokens[token](input, config._a, config, token);
-        }
-    }
-
-    var YEAR = 0;
-    var MONTH = 1;
-    var DATE = 2;
-    var HOUR = 3;
-    var MINUTE = 4;
-    var SECOND = 5;
-    var MILLISECOND = 6;
-
-    function daysInMonth(year, month) {
-        return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-    }
-
-    // FORMATTING
-
-    addFormatToken('M', ['MM', 2], 'Mo', function () {
-        return this.month() + 1;
-    });
-
-    addFormatToken('MMM', 0, 0, function (format) {
-        return this.localeData().monthsShort(this, format);
-    });
-
-    addFormatToken('MMMM', 0, 0, function (format) {
-        return this.localeData().months(this, format);
-    });
-
-    // ALIASES
-
-    addUnitAlias('month', 'M');
-
-    // PARSING
-
-    addRegexToken('M',    match1to2);
-    addRegexToken('MM',   match1to2, match2);
-    addRegexToken('MMM',  matchWord);
-    addRegexToken('MMMM', matchWord);
-
-    addParseToken(['M', 'MM'], function (input, array) {
-        array[MONTH] = toInt(input) - 1;
-    });
-
-    addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
-        var month = config._locale.monthsParse(input, token, config._strict);
-        // if we didn't find a month name, mark the date as invalid.
-        if (month != null) {
-            array[MONTH] = month;
-        } else {
-            getParsingFlags(config).invalidMonth = input;
-        }
-    });
-
-    // LOCALES
-
-    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
-    function localeMonths (m) {
-        return this._months[m.month()];
-    }
-
-    var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
-    function localeMonthsShort (m) {
-        return this._monthsShort[m.month()];
-    }
-
-    function localeMonthsParse (monthName, format, strict) {
-        var i, mom, regex;
-
-        if (!this._monthsParse) {
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-        }
-
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            if (strict && !this._longMonthsParse[i]) {
-                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
-                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
-            }
-            if (!strict && !this._monthsParse[i]) {
-                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
-                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (!strict && this._monthsParse[i].test(monthName)) {
-                return i;
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function setMonth (mom, value) {
-        var dayOfMonth;
-
-        // TODO: Move this out of here!
-        if (typeof value === 'string') {
-            value = mom.localeData().monthsParse(value);
-            // TODO: Another silent failure?
-            if (typeof value !== 'number') {
-                return mom;
-            }
-        }
-
-        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
-        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
-        return mom;
-    }
-
-    function getSetMonth (value) {
-        if (value != null) {
-            setMonth(this, value);
-            utils_hooks__hooks.updateOffset(this, true);
-            return this;
-        } else {
-            return get_set__get(this, 'Month');
-        }
-    }
-
-    function getDaysInMonth () {
-        return daysInMonth(this.year(), this.month());
-    }
-
-    function checkOverflow (m) {
-        var overflow;
-        var a = m._a;
-
-        if (a && getParsingFlags(m).overflow === -2) {
-            overflow =
-                a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
-                a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
-                a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
-                a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
-                a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
-                a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
-                -1;
-
-            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
-                overflow = DATE;
-            }
-
-            getParsingFlags(m).overflow = overflow;
-        }
-
-        return m;
-    }
-
-    function warn(msg) {
-        if (utils_hooks__hooks.suppressDeprecationWarnings === false && typeof console !== 'undefined' && console.warn) {
-            console.warn('Deprecation warning: ' + msg);
-        }
-    }
-
-    function deprecate(msg, fn) {
-        var firstTime = true;
-
-        return extend(function () {
-            if (firstTime) {
-                warn(msg + '\n' + (new Error()).stack);
-                firstTime = false;
-            }
-            return fn.apply(this, arguments);
-        }, fn);
-    }
-
-    var deprecations = {};
-
-    function deprecateSimple(name, msg) {
-        if (!deprecations[name]) {
-            warn(msg);
-            deprecations[name] = true;
-        }
-    }
-
-    utils_hooks__hooks.suppressDeprecationWarnings = false;
-
-    var from_string__isoRegex = /^\s*(?:[+-]\d{6}|\d{4})-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
-
-    var isoDates = [
-        ['YYYYYY-MM-DD', /[+-]\d{6}-\d{2}-\d{2}/],
-        ['YYYY-MM-DD', /\d{4}-\d{2}-\d{2}/],
-        ['GGGG-[W]WW-E', /\d{4}-W\d{2}-\d/],
-        ['GGGG-[W]WW', /\d{4}-W\d{2}/],
-        ['YYYY-DDD', /\d{4}-\d{3}/]
-    ];
-
-    // iso time formats and regexes
-    var isoTimes = [
-        ['HH:mm:ss.SSSS', /(T| )\d\d:\d\d:\d\d\.\d+/],
-        ['HH:mm:ss', /(T| )\d\d:\d\d:\d\d/],
-        ['HH:mm', /(T| )\d\d:\d\d/],
-        ['HH', /(T| )\d\d/]
-    ];
-
-    var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
-
-    // date from iso format
-    function configFromISO(config) {
-        var i, l,
-            string = config._i,
-            match = from_string__isoRegex.exec(string);
-
-        if (match) {
-            getParsingFlags(config).iso = true;
-            for (i = 0, l = isoDates.length; i < l; i++) {
-                if (isoDates[i][1].exec(string)) {
-                    config._f = isoDates[i][0];
-                    break;
-                }
-            }
-            for (i = 0, l = isoTimes.length; i < l; i++) {
-                if (isoTimes[i][1].exec(string)) {
-                    // match[6] should be 'T' or space
-                    config._f += (match[6] || ' ') + isoTimes[i][0];
-                    break;
-                }
-            }
-            if (string.match(matchOffset)) {
-                config._f += 'Z';
-            }
-            configFromStringAndFormat(config);
-        } else {
-            config._isValid = false;
-        }
-    }
-
-    // date from iso format or fallback
-    function configFromString(config) {
-        var matched = aspNetJsonRegex.exec(config._i);
-
-        if (matched !== null) {
-            config._d = new Date(+matched[1]);
-            return;
-        }
-
-        configFromISO(config);
-        if (config._isValid === false) {
-            delete config._isValid;
-            utils_hooks__hooks.createFromInputFallback(config);
-        }
-    }
-
-    utils_hooks__hooks.createFromInputFallback = deprecate(
-        'moment construction falls back to js Date. This is ' +
-        'discouraged and will be removed in upcoming major ' +
-        'release. Please refer to ' +
-        'https://github.com/moment/moment/issues/1407 for more info.',
-        function (config) {
-            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
-        }
-    );
-
-    function createDate (y, m, d, h, M, s, ms) {
-        //can't just apply() to create a date:
-        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
-        var date = new Date(y, m, d, h, M, s, ms);
-
-        //the date constructor doesn't accept years < 1970
-        if (y < 1970) {
-            date.setFullYear(y);
-        }
-        return date;
-    }
-
-    function createUTCDate (y) {
-        var date = new Date(Date.UTC.apply(null, arguments));
-        if (y < 1970) {
-            date.setUTCFullYear(y);
-        }
-        return date;
-    }
-
-    addFormatToken(0, ['YY', 2], 0, function () {
-        return this.year() % 100;
-    });
-
-    addFormatToken(0, ['YYYY',   4],       0, 'year');
-    addFormatToken(0, ['YYYYY',  5],       0, 'year');
-    addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
-
-    // ALIASES
-
-    addUnitAlias('year', 'y');
-
-    // PARSING
-
-    addRegexToken('Y',      matchSigned);
-    addRegexToken('YY',     match1to2, match2);
-    addRegexToken('YYYY',   match1to4, match4);
-    addRegexToken('YYYYY',  match1to6, match6);
-    addRegexToken('YYYYYY', match1to6, match6);
-
-    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
-    addParseToken('YYYY', function (input, array) {
-        array[YEAR] = input.length === 2 ? utils_hooks__hooks.parseTwoDigitYear(input) : toInt(input);
-    });
-    addParseToken('YY', function (input, array) {
-        array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-
-    // HELPERS
-
-    function daysInYear(year) {
-        return isLeapYear(year) ? 366 : 365;
-    }
-
-    function isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    }
-
-    // HOOKS
-
-    utils_hooks__hooks.parseTwoDigitYear = function (input) {
-        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+    return thing;
+  };
+  thing.emit = function () {
+    var args = atoa(arguments);
+    return thing.emitterSnapshot(args.shift()).apply(this, args);
+  };
+  thing.emitterSnapshot = function (type) {
+    var et = (evt[type] || []).slice(0);
+    return function () {
+      var args = atoa(arguments);
+      var ctx = this || thing;
+      if (type === 'error' && opts.throws !== false && !et.length) { throw args.length === 1 ? args[0] : args; }
+      et.forEach(function emitter (listen) {
+        if (opts.async) { debounce(listen, args, ctx); } else { listen.apply(ctx, args); }
+        if (listen._once) { thing.off(type, listen); }
+      });
+      return thing;
     };
-
-    // MOMENTS
-
-    var getSetYear = makeGetSet('FullYear', false);
-
-    function getIsLeapYear () {
-        return isLeapYear(this.year());
-    }
-
-    addFormatToken('w', ['ww', 2], 'wo', 'week');
-    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
-
-    // ALIASES
-
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-
-    // PARSING
-
-    addRegexToken('w',  match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W',  match1to2);
-    addRegexToken('WW', match1to2, match2);
-
-    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-
-    // HELPERS
-
-    // firstDayOfWeek       0 = sun, 6 = sat
-    //                      the day of the week that starts the week
-    //                      (usually sunday or monday)
-    // firstDayOfWeekOfYear 0 = sun, 6 = sat
-    //                      the first week is the week that contains the first
-    //                      of this day of the week
-    //                      (eg. ISO weeks use thursday (4))
-    function weekOfYear(mom, firstDayOfWeek, firstDayOfWeekOfYear) {
-        var end = firstDayOfWeekOfYear - firstDayOfWeek,
-            daysToDayOfWeek = firstDayOfWeekOfYear - mom.day(),
-            adjustedMoment;
-
-
-        if (daysToDayOfWeek > end) {
-            daysToDayOfWeek -= 7;
-        }
-
-        if (daysToDayOfWeek < end - 7) {
-            daysToDayOfWeek += 7;
-        }
-
-        adjustedMoment = local__createLocal(mom).add(daysToDayOfWeek, 'd');
-        return {
-            week: Math.ceil(adjustedMoment.dayOfYear() / 7),
-            year: adjustedMoment.year()
-        };
-    }
-
-    // LOCALES
-
-    function localeWeek (mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-
-    var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
-    };
-
-    function localeFirstDayOfWeek () {
-        return this._week.dow;
-    }
-
-    function localeFirstDayOfYear () {
-        return this._week.doy;
-    }
-
-    // MOMENTS
-
-    function getSetWeek (input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    function getSetISOWeek (input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
-
-    // ALIASES
-
-    addUnitAlias('dayOfYear', 'DDD');
-
-    // PARSING
-
-    addRegexToken('DDD',  match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
-
-    // HELPERS
-
-    //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, firstDayOfWeekOfYear, firstDayOfWeek) {
-        var week1Jan = 6 + firstDayOfWeek - firstDayOfWeekOfYear, janX = createUTCDate(year, 0, 1 + week1Jan), d = janX.getUTCDay(), dayOfYear;
-        if (d < firstDayOfWeek) {
-            d += 7;
-        }
-
-        weekday = weekday != null ? 1 * weekday : firstDayOfWeek;
-
-        dayOfYear = 1 + week1Jan + 7 * (week - 1) - d + weekday;
-
-        return {
-            year: dayOfYear > 0 ? year : year - 1,
-            dayOfYear: dayOfYear > 0 ?  dayOfYear : daysInYear(year - 1) + dayOfYear
-        };
-    }
-
-    // MOMENTS
-
-    function getSetDayOfYear (input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
-        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
-    }
-
-    // Pick the first defined of two or three arguments.
-    function defaults(a, b, c) {
-        if (a != null) {
-            return a;
-        }
-        if (b != null) {
-            return b;
-        }
-        return c;
-    }
-
-    function currentDateArray(config) {
-        var now = new Date();
-        if (config._useUTC) {
-            return [now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()];
-        }
-        return [now.getFullYear(), now.getMonth(), now.getDate()];
-    }
-
-    // convert an array to a date.
-    // the array should mirror the parameters below
-    // note: all values past the year are optional and will default to the lowest possible value.
-    // [year, month, day , hour, minute, second, millisecond]
-    function configFromArray (config) {
-        var i, date, input = [], currentDate, yearToUse;
-
-        if (config._d) {
-            return;
-        }
-
-        currentDate = currentDateArray(config);
-
-        //compute day of the year from weeks and weekdays
-        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
-            dayOfYearFromWeekInfo(config);
-        }
-
-        //if the day of the year is set, figure out what it is
-        if (config._dayOfYear) {
-            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
-
-            if (config._dayOfYear > daysInYear(yearToUse)) {
-                getParsingFlags(config)._overflowDayOfYear = true;
-            }
-
-            date = createUTCDate(yearToUse, 0, config._dayOfYear);
-            config._a[MONTH] = date.getUTCMonth();
-            config._a[DATE] = date.getUTCDate();
-        }
-
-        // Default to current date.
-        // * if no year, month, day of month are given, default to today
-        // * if day of month is given, default month and year
-        // * if month is given, default only year
-        // * if year is given, don't default anything
-        for (i = 0; i < 3 && config._a[i] == null; ++i) {
-            config._a[i] = input[i] = currentDate[i];
-        }
-
-        // Zero out whatever was not defaulted, including time
-        for (; i < 7; i++) {
-            config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
-        }
-
-        // Check for 24:00:00.000
-        if (config._a[HOUR] === 24 &&
-                config._a[MINUTE] === 0 &&
-                config._a[SECOND] === 0 &&
-                config._a[MILLISECOND] === 0) {
-            config._nextDay = true;
-            config._a[HOUR] = 0;
-        }
-
-        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-        // Apply timezone offset from input. The actual utcOffset can be changed
-        // with parseZone.
-        if (config._tzm != null) {
-            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-        }
-
-        if (config._nextDay) {
-            config._a[HOUR] = 24;
-        }
-    }
-
-    function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp;
-
-        w = config._w;
-        if (w.GG != null || w.W != null || w.E != null) {
-            dow = 1;
-            doy = 4;
-
-            // TODO: We need to take the current isoWeekYear, but that depends on
-            // how we interpret now (local, utc, fixed offset). So create
-            // a now version of current config (take local/utc/offset flags, and
-            // create now).
-            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(local__createLocal(), 1, 4).year);
-            week = defaults(w.W, 1);
-            weekday = defaults(w.E, 1);
-        } else {
-            dow = config._locale._week.dow;
-            doy = config._locale._week.doy;
-
-            weekYear = defaults(w.gg, config._a[YEAR], weekOfYear(local__createLocal(), dow, doy).year);
-            week = defaults(w.w, 1);
-
-            if (w.d != null) {
-                // weekday -- low day numbers are considered next week
-                weekday = w.d;
-                if (weekday < dow) {
-                    ++week;
-                }
-            } else if (w.e != null) {
-                // local weekday -- counting starts from begining of week
-                weekday = w.e + dow;
-            } else {
-                // default to begining of week
-                weekday = dow;
-            }
-        }
-        temp = dayOfYearFromWeeks(weekYear, week, weekday, doy, dow);
-
-        config._a[YEAR] = temp.year;
-        config._dayOfYear = temp.dayOfYear;
-    }
-
-    utils_hooks__hooks.ISO_8601 = function () {};
-
-    // date from string and format string
-    function configFromStringAndFormat(config) {
-        // TODO: Move this to another part of the creation flow to prevent circular deps
-        if (config._f === utils_hooks__hooks.ISO_8601) {
-            configFromISO(config);
-            return;
-        }
-
-        config._a = [];
-        getParsingFlags(config).empty = true;
-
-        // This array is used to make a Date, either with `new Date` or `Date.UTC`
-        var string = '' + config._i,
-            i, parsedInput, tokens, token, skipped,
-            stringLength = string.length,
-            totalParsedInputLength = 0;
-
-        tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
-
-        for (i = 0; i < tokens.length; i++) {
-            token = tokens[i];
-            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
-            if (parsedInput) {
-                skipped = string.substr(0, string.indexOf(parsedInput));
-                if (skipped.length > 0) {
-                    getParsingFlags(config).unusedInput.push(skipped);
-                }
-                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
-                totalParsedInputLength += parsedInput.length;
-            }
-            // don't parse if it's not a known token
-            if (formatTokenFunctions[token]) {
-                if (parsedInput) {
-                    getParsingFlags(config).empty = false;
-                }
-                else {
-                    getParsingFlags(config).unusedTokens.push(token);
-                }
-                addTimeToArrayFromToken(token, parsedInput, config);
-            }
-            else if (config._strict && !parsedInput) {
-                getParsingFlags(config).unusedTokens.push(token);
-            }
-        }
-
-        // add remaining unparsed input length to the string
-        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
-        if (string.length > 0) {
-            getParsingFlags(config).unusedInput.push(string);
-        }
-
-        // clear _12h flag if hour is <= 12
-        if (getParsingFlags(config).bigHour === true &&
-                config._a[HOUR] <= 12 &&
-                config._a[HOUR] > 0) {
-            getParsingFlags(config).bigHour = undefined;
-        }
-        // handle meridiem
-        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
-
-        configFromArray(config);
-        checkOverflow(config);
-    }
-
-
-    function meridiemFixWrap (locale, hour, meridiem) {
-        var isPm;
-
-        if (meridiem == null) {
-            // nothing to do
-            return hour;
-        }
-        if (locale.meridiemHour != null) {
-            return locale.meridiemHour(hour, meridiem);
-        } else if (locale.isPM != null) {
-            // Fallback
-            isPm = locale.isPM(meridiem);
-            if (isPm && hour < 12) {
-                hour += 12;
-            }
-            if (!isPm && hour === 12) {
-                hour = 0;
-            }
-            return hour;
-        } else {
-            // this is not supposed to happen
-            return hour;
-        }
-    }
-
-    function configFromStringAndArray(config) {
-        var tempConfig,
-            bestMoment,
-
-            scoreToBeat,
-            i,
-            currentScore;
-
-        if (config._f.length === 0) {
-            getParsingFlags(config).invalidFormat = true;
-            config._d = new Date(NaN);
-            return;
-        }
-
-        for (i = 0; i < config._f.length; i++) {
-            currentScore = 0;
-            tempConfig = copyConfig({}, config);
-            if (config._useUTC != null) {
-                tempConfig._useUTC = config._useUTC;
-            }
-            tempConfig._f = config._f[i];
-            configFromStringAndFormat(tempConfig);
-
-            if (!valid__isValid(tempConfig)) {
-                continue;
-            }
-
-            // if there is any input that was not parsed add a penalty for that format
-            currentScore += getParsingFlags(tempConfig).charsLeftOver;
-
-            //or tokens
-            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
-
-            getParsingFlags(tempConfig).score = currentScore;
-
-            if (scoreToBeat == null || currentScore < scoreToBeat) {
-                scoreToBeat = currentScore;
-                bestMoment = tempConfig;
-            }
-        }
-
-        extend(config, bestMoment || tempConfig);
-    }
-
-    function configFromObject(config) {
-        if (config._d) {
-            return;
-        }
-
-        var i = normalizeObjectUnits(config._i);
-        config._a = [i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond];
-
-        configFromArray(config);
-    }
-
-    function createFromConfig (config) {
-        var res = new Moment(checkOverflow(prepareConfig(config)));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
-        }
-
-        return res;
-    }
-
-    function prepareConfig (config) {
-        var input = config._i,
-            format = config._f;
-
-        config._locale = config._locale || locale_locales__getLocale(config._l);
-
-        if (input === null || (format === undefined && input === '')) {
-            return valid__createInvalid({nullInput: true});
-        }
-
-        if (typeof input === 'string') {
-            config._i = input = config._locale.preparse(input);
-        }
-
-        if (isMoment(input)) {
-            return new Moment(checkOverflow(input));
-        } else if (isArray(format)) {
-            configFromStringAndArray(config);
-        } else if (format) {
-            configFromStringAndFormat(config);
-        } else if (isDate(input)) {
-            config._d = input;
-        } else {
-            configFromInput(config);
-        }
-
-        return config;
-    }
-
-    function configFromInput(config) {
-        var input = config._i;
-        if (input === undefined) {
-            config._d = new Date();
-        } else if (isDate(input)) {
-            config._d = new Date(+input);
-        } else if (typeof input === 'string') {
-            configFromString(config);
-        } else if (isArray(input)) {
-            config._a = map(input.slice(0), function (obj) {
-                return parseInt(obj, 10);
-            });
-            configFromArray(config);
-        } else if (typeof(input) === 'object') {
-            configFromObject(config);
-        } else if (typeof(input) === 'number') {
-            // from milliseconds
-            config._d = new Date(input);
-        } else {
-            utils_hooks__hooks.createFromInputFallback(config);
-        }
-    }
-
-    function createLocalOrUTC (input, format, locale, strict, isUTC) {
-        var c = {};
-
-        if (typeof(locale) === 'boolean') {
-            strict = locale;
-            locale = undefined;
-        }
-        // object construction must be done this way.
-        // https://github.com/moment/moment/issues/1423
-        c._isAMomentObject = true;
-        c._useUTC = c._isUTC = isUTC;
-        c._l = locale;
-        c._i = input;
-        c._f = format;
-        c._strict = strict;
-
-        return createFromConfig(c);
-    }
-
-    function local__createLocal (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, false);
-    }
-
-    var prototypeMin = deprecate(
-         'moment().min is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
-         function () {
-             var other = local__createLocal.apply(null, arguments);
-             return other < this ? this : other;
-         }
-     );
-
-    var prototypeMax = deprecate(
-        'moment().max is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
-        function () {
-            var other = local__createLocal.apply(null, arguments);
-            return other > this ? this : other;
-        }
-    );
-
-    // Pick a moment m from moments so that m[fn](other) is true for all
-    // other. This relies on the function fn to be transitive.
-    //
-    // moments should either be an array of moment objects or an array, whose
-    // first element is an array of moment objects.
-    function pickBy(fn, moments) {
-        var res, i;
-        if (moments.length === 1 && isArray(moments[0])) {
-            moments = moments[0];
-        }
-        if (!moments.length) {
-            return local__createLocal();
-        }
-        res = moments[0];
-        for (i = 1; i < moments.length; ++i) {
-            if (!moments[i].isValid() || moments[i][fn](res)) {
-                res = moments[i];
-            }
-        }
-        return res;
-    }
-
-    // TODO: Use [].sort instead?
-    function min () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isBefore', args);
-    }
-
-    function max () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isAfter', args);
-    }
-
-    function Duration (duration) {
-        var normalizedInput = normalizeObjectUnits(duration),
-            years = normalizedInput.year || 0,
-            quarters = normalizedInput.quarter || 0,
-            months = normalizedInput.month || 0,
-            weeks = normalizedInput.week || 0,
-            days = normalizedInput.day || 0,
-            hours = normalizedInput.hour || 0,
-            minutes = normalizedInput.minute || 0,
-            seconds = normalizedInput.second || 0,
-            milliseconds = normalizedInput.millisecond || 0;
-
-        // representation for dateAddRemove
-        this._milliseconds = +milliseconds +
-            seconds * 1e3 + // 1000
-            minutes * 6e4 + // 1000 * 60
-            hours * 36e5; // 1000 * 60 * 60
-        // Because of dateAddRemove treats 24 hours as different from a
-        // day when working around DST, we need to store them separately
-        this._days = +days +
-            weeks * 7;
-        // It is impossible translate months into days without knowing
-        // which months you are are talking about, so we have to store
-        // it separately.
-        this._months = +months +
-            quarters * 3 +
-            years * 12;
-
-        this._data = {};
-
-        this._locale = locale_locales__getLocale();
-
-        this._bubble();
-    }
-
-    function isDuration (obj) {
-        return obj instanceof Duration;
-    }
-
-    function offset (token, separator) {
-        addFormatToken(token, 0, 0, function () {
-            var offset = this.utcOffset();
-            var sign = '+';
-            if (offset < 0) {
-                offset = -offset;
-                sign = '-';
-            }
-            return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
-        });
-    }
-
-    offset('Z', ':');
-    offset('ZZ', '');
-
-    // PARSING
-
-    addRegexToken('Z',  matchOffset);
-    addRegexToken('ZZ', matchOffset);
-    addParseToken(['Z', 'ZZ'], function (input, array, config) {
-        config._useUTC = true;
-        config._tzm = offsetFromString(input);
-    });
-
-    // HELPERS
-
-    // timezone chunker
-    // '+10:00' > ['10',  '00']
-    // '-1530'  > ['-15', '30']
-    var chunkOffset = /([\+\-]|\d\d)/gi;
-
-    function offsetFromString(string) {
-        var matches = ((string || '').match(matchOffset) || []);
-        var chunk   = matches[matches.length - 1] || [];
-        var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
-        var minutes = +(parts[1] * 60) + toInt(parts[2]);
-
-        return parts[0] === '+' ? minutes : -minutes;
-    }
-
-    // Return a moment from input, that is local/utc/zone equivalent to model.
-    function cloneWithOffset(input, model) {
-        var res, diff;
-        if (model._isUTC) {
-            res = model.clone();
-            diff = (isMoment(input) || isDate(input) ? +input : +local__createLocal(input)) - (+res);
-            // Use low-level api, because this fn is low-level api.
-            res._d.setTime(+res._d + diff);
-            utils_hooks__hooks.updateOffset(res, false);
-            return res;
-        } else {
-            return local__createLocal(input).local();
-        }
-    }
-
-    function getDateOffset (m) {
-        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
-        // https://github.com/moment/moment/pull/1871
-        return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
-    }
-
-    // HOOKS
-
-    // This function will be called whenever a moment is mutated.
-    // It is intended to keep the offset in sync with the timezone.
-    utils_hooks__hooks.updateOffset = function () {};
-
-    // MOMENTS
-
-    // keepLocalTime = true means only change the timezone, without
-    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
-    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
-    // +0200, so we adjust the time as needed, to be valid.
-    //
-    // Keeping the time actually adds/subtracts (one hour)
-    // from the actual represented time. That is why we call updateOffset
-    // a second time. In case it wants us to change the offset again
-    // _changeInProgress == true case, then we have to adjust, because
-    // there is no such time in the given timezone.
-    function getSetOffset (input, keepLocalTime) {
-        var offset = this._offset || 0,
-            localAdjust;
-        if (input != null) {
-            if (typeof input === 'string') {
-                input = offsetFromString(input);
-            }
-            if (Math.abs(input) < 16) {
-                input = input * 60;
-            }
-            if (!this._isUTC && keepLocalTime) {
-                localAdjust = getDateOffset(this);
-            }
-            this._offset = input;
-            this._isUTC = true;
-            if (localAdjust != null) {
-                this.add(localAdjust, 'm');
-            }
-            if (offset !== input) {
-                if (!keepLocalTime || this._changeInProgress) {
-                    add_subtract__addSubtract(this, create__createDuration(input - offset, 'm'), 1, false);
-                } else if (!this._changeInProgress) {
-                    this._changeInProgress = true;
-                    utils_hooks__hooks.updateOffset(this, true);
-                    this._changeInProgress = null;
-                }
-            }
-            return this;
-        } else {
-            return this._isUTC ? offset : getDateOffset(this);
-        }
-    }
-
-    function getSetZone (input, keepLocalTime) {
-        if (input != null) {
-            if (typeof input !== 'string') {
-                input = -input;
-            }
-
-            this.utcOffset(input, keepLocalTime);
-
-            return this;
-        } else {
-            return -this.utcOffset();
-        }
-    }
-
-    function setOffsetToUTC (keepLocalTime) {
-        return this.utcOffset(0, keepLocalTime);
-    }
-
-    function setOffsetToLocal (keepLocalTime) {
-        if (this._isUTC) {
-            this.utcOffset(0, keepLocalTime);
-            this._isUTC = false;
-
-            if (keepLocalTime) {
-                this.subtract(getDateOffset(this), 'm');
-            }
-        }
-        return this;
-    }
-
-    function setOffsetToParsedOffset () {
-        if (this._tzm) {
-            this.utcOffset(this._tzm);
-        } else if (typeof this._i === 'string') {
-            this.utcOffset(offsetFromString(this._i));
-        }
-        return this;
-    }
-
-    function hasAlignedHourOffset (input) {
-        input = input ? local__createLocal(input).utcOffset() : 0;
-
-        return (this.utcOffset() - input) % 60 === 0;
-    }
-
-    function isDaylightSavingTime () {
-        return (
-            this.utcOffset() > this.clone().month(0).utcOffset() ||
-            this.utcOffset() > this.clone().month(5).utcOffset()
-        );
-    }
-
-    function isDaylightSavingTimeShifted () {
-        if (typeof this._isDSTShifted !== 'undefined') {
-            return this._isDSTShifted;
-        }
-
-        var c = {};
-
-        copyConfig(c, this);
-        c = prepareConfig(c);
-
-        if (c._a) {
-            var other = c._isUTC ? create_utc__createUTC(c._a) : local__createLocal(c._a);
-            this._isDSTShifted = this.isValid() &&
-                compareArrays(c._a, other.toArray()) > 0;
-        } else {
-            this._isDSTShifted = false;
-        }
-
-        return this._isDSTShifted;
-    }
-
-    function isLocal () {
-        return !this._isUTC;
-    }
-
-    function isUtcOffset () {
-        return this._isUTC;
-    }
-
-    function isUtc () {
-        return this._isUTC && this._offset === 0;
-    }
-
-    var aspNetRegex = /(\-)?(?:(\d*)\.)?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/;
-
-    // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
-    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    var create__isoRegex = /^(-)?P(?:(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?|([0-9,.]*)W)$/;
-
-    function create__createDuration (input, key) {
-        var duration = input,
-            // matching against regexp is expensive, do it on demand
-            match = null,
-            sign,
-            ret,
-            diffRes;
-
-        if (isDuration(input)) {
-            duration = {
-                ms : input._milliseconds,
-                d  : input._days,
-                M  : input._months
-            };
-        } else if (typeof input === 'number') {
-            duration = {};
-            if (key) {
-                duration[key] = input;
-            } else {
-                duration.milliseconds = input;
-            }
-        } else if (!!(match = aspNetRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y  : 0,
-                d  : toInt(match[DATE])        * sign,
-                h  : toInt(match[HOUR])        * sign,
-                m  : toInt(match[MINUTE])      * sign,
-                s  : toInt(match[SECOND])      * sign,
-                ms : toInt(match[MILLISECOND]) * sign
-            };
-        } else if (!!(match = create__isoRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y : parseIso(match[2], sign),
-                M : parseIso(match[3], sign),
-                d : parseIso(match[4], sign),
-                h : parseIso(match[5], sign),
-                m : parseIso(match[6], sign),
-                s : parseIso(match[7], sign),
-                w : parseIso(match[8], sign)
-            };
-        } else if (duration == null) {// checks for null or undefined
-            duration = {};
-        } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
-            diffRes = momentsDifference(local__createLocal(duration.from), local__createLocal(duration.to));
-
-            duration = {};
-            duration.ms = diffRes.milliseconds;
-            duration.M = diffRes.months;
-        }
-
-        ret = new Duration(duration);
-
-        if (isDuration(input) && hasOwnProp(input, '_locale')) {
-            ret._locale = input._locale;
-        }
-
-        return ret;
-    }
-
-    create__createDuration.fn = Duration.prototype;
-
-    function parseIso (inp, sign) {
-        // We'd normally use ~~inp for this, but unfortunately it also
-        // converts floats to ints.
-        // inp may be undefined, so careful calling replace on it.
-        var res = inp && parseFloat(inp.replace(',', '.'));
-        // apply sign while we're at it
-        return (isNaN(res) ? 0 : res) * sign;
-    }
-
-    function positiveMomentsDifference(base, other) {
-        var res = {milliseconds: 0, months: 0};
-
-        res.months = other.month() - base.month() +
-            (other.year() - base.year()) * 12;
-        if (base.clone().add(res.months, 'M').isAfter(other)) {
-            --res.months;
-        }
-
-        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
-
-        return res;
-    }
-
-    function momentsDifference(base, other) {
-        var res;
-        other = cloneWithOffset(other, base);
-        if (base.isBefore(other)) {
-            res = positiveMomentsDifference(base, other);
-        } else {
-            res = positiveMomentsDifference(other, base);
-            res.milliseconds = -res.milliseconds;
-            res.months = -res.months;
-        }
-
-        return res;
-    }
-
-    function createAdder(direction, name) {
-        return function (val, period) {
-            var dur, tmp;
-            //invert the arguments, but complain about it
-            if (period !== null && !isNaN(+period)) {
-                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period).');
-                tmp = val; val = period; period = tmp;
-            }
-
-            val = typeof val === 'string' ? +val : val;
-            dur = create__createDuration(val, period);
-            add_subtract__addSubtract(this, dur, direction);
-            return this;
-        };
-    }
-
-    function add_subtract__addSubtract (mom, duration, isAdding, updateOffset) {
-        var milliseconds = duration._milliseconds,
-            days = duration._days,
-            months = duration._months;
-        updateOffset = updateOffset == null ? true : updateOffset;
-
-        if (milliseconds) {
-            mom._d.setTime(+mom._d + milliseconds * isAdding);
-        }
-        if (days) {
-            get_set__set(mom, 'Date', get_set__get(mom, 'Date') + days * isAdding);
-        }
-        if (months) {
-            setMonth(mom, get_set__get(mom, 'Month') + months * isAdding);
-        }
-        if (updateOffset) {
-            utils_hooks__hooks.updateOffset(mom, days || months);
-        }
-    }
-
-    var add_subtract__add      = createAdder(1, 'add');
-    var add_subtract__subtract = createAdder(-1, 'subtract');
-
-    function moment_calendar__calendar (time, formats) {
-        // We want to compare the start of today, vs this.
-        // Getting start-of-today depends on whether we're local/utc/offset or not.
-        var now = time || local__createLocal(),
-            sod = cloneWithOffset(now, this).startOf('day'),
-            diff = this.diff(sod, 'days', true),
-            format = diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
-        return this.format(formats && formats[format] || this.localeData().calendar(format, this, local__createLocal(now)));
-    }
-
-    function clone () {
-        return new Moment(this);
-    }
-
-    function isAfter (input, units) {
-        var inputMs;
-        units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
-        if (units === 'millisecond') {
-            input = isMoment(input) ? input : local__createLocal(input);
-            return +this > +input;
-        } else {
-            inputMs = isMoment(input) ? +input : +local__createLocal(input);
-            return inputMs < +this.clone().startOf(units);
-        }
-    }
-
-    function isBefore (input, units) {
-        var inputMs;
-        units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
-        if (units === 'millisecond') {
-            input = isMoment(input) ? input : local__createLocal(input);
-            return +this < +input;
-        } else {
-            inputMs = isMoment(input) ? +input : +local__createLocal(input);
-            return +this.clone().endOf(units) < inputMs;
-        }
-    }
-
-    function isBetween (from, to, units) {
-        return this.isAfter(from, units) && this.isBefore(to, units);
-    }
-
-    function isSame (input, units) {
-        var inputMs;
-        units = normalizeUnits(units || 'millisecond');
-        if (units === 'millisecond') {
-            input = isMoment(input) ? input : local__createLocal(input);
-            return +this === +input;
-        } else {
-            inputMs = +local__createLocal(input);
-            return +(this.clone().startOf(units)) <= inputMs && inputMs <= +(this.clone().endOf(units));
-        }
-    }
-
-    function diff (input, units, asFloat) {
-        var that = cloneWithOffset(input, this),
-            zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4,
-            delta, output;
-
-        units = normalizeUnits(units);
-
-        if (units === 'year' || units === 'month' || units === 'quarter') {
-            output = monthDiff(this, that);
-            if (units === 'quarter') {
-                output = output / 3;
-            } else if (units === 'year') {
-                output = output / 12;
-            }
-        } else {
-            delta = this - that;
-            output = units === 'second' ? delta / 1e3 : // 1000
-                units === 'minute' ? delta / 6e4 : // 1000 * 60
-                units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
-                units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
-                units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
-                delta;
-        }
-        return asFloat ? output : absFloor(output);
-    }
-
-    function monthDiff (a, b) {
-        // difference in months
-        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
-            // b is in (anchor - 1 month, anchor + 1 month)
-            anchor = a.clone().add(wholeMonthDiff, 'months'),
-            anchor2, adjust;
-
-        if (b - anchor < 0) {
-            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor - anchor2);
-        } else {
-            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor2 - anchor);
-        }
-
-        return -(wholeMonthDiff + adjust);
-    }
-
-    utils_hooks__hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-
-    function toString () {
-        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
-    }
-
-    function moment_format__toISOString () {
-        var m = this.clone().utc();
-        if (0 < m.year() && m.year() <= 9999) {
-            if ('function' === typeof Date.prototype.toISOString) {
-                // native implementation is ~50x faster, use it when we can
-                return this.toDate().toISOString();
-            } else {
-                return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-            }
-        } else {
-            return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-        }
-    }
-
-    function format (inputString) {
-        var output = formatMoment(this, inputString || utils_hooks__hooks.defaultFormat);
-        return this.localeData().postformat(output);
-    }
-
-    function from (time, withoutSuffix) {
-        if (!this.isValid()) {
-            return this.localeData().invalidDate();
-        }
-        return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
-    }
-
-    function fromNow (withoutSuffix) {
-        return this.from(local__createLocal(), withoutSuffix);
-    }
-
-    function to (time, withoutSuffix) {
-        if (!this.isValid()) {
-            return this.localeData().invalidDate();
-        }
-        return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
-    }
-
-    function toNow (withoutSuffix) {
-        return this.to(local__createLocal(), withoutSuffix);
-    }
-
-    function locale (key) {
-        var newLocaleData;
-
-        if (key === undefined) {
-            return this._locale._abbr;
-        } else {
-            newLocaleData = locale_locales__getLocale(key);
-            if (newLocaleData != null) {
-                this._locale = newLocaleData;
-            }
-            return this;
-        }
-    }
-
-    var lang = deprecate(
-        'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
-        function (key) {
-            if (key === undefined) {
-                return this.localeData();
-            } else {
-                return this.locale(key);
-            }
-        }
-    );
-
-    function localeData () {
-        return this._locale;
-    }
-
-    function startOf (units) {
-        units = normalizeUnits(units);
-        // the following switch intentionally omits break keywords
-        // to utilize falling through the cases.
-        switch (units) {
-        case 'year':
-            this.month(0);
-            /* falls through */
-        case 'quarter':
-        case 'month':
-            this.date(1);
-            /* falls through */
-        case 'week':
-        case 'isoWeek':
-        case 'day':
-            this.hours(0);
-            /* falls through */
-        case 'hour':
-            this.minutes(0);
-            /* falls through */
-        case 'minute':
-            this.seconds(0);
-            /* falls through */
-        case 'second':
-            this.milliseconds(0);
-        }
-
-        // weeks are a special case
-        if (units === 'week') {
-            this.weekday(0);
-        }
-        if (units === 'isoWeek') {
-            this.isoWeekday(1);
-        }
-
-        // quarters are also special
-        if (units === 'quarter') {
-            this.month(Math.floor(this.month() / 3) * 3);
-        }
-
-        return this;
-    }
-
-    function endOf (units) {
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond') {
-            return this;
-        }
-        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
-    }
-
-    function to_type__valueOf () {
-        return +this._d - ((this._offset || 0) * 60000);
-    }
-
-    function unix () {
-        return Math.floor(+this / 1000);
-    }
-
-    function toDate () {
-        return this._offset ? new Date(+this) : this._d;
-    }
-
-    function toArray () {
-        var m = this;
-        return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
-    }
-
-    function toObject () {
-        var m = this;
-        return {
-            years: m.year(),
-            months: m.month(),
-            date: m.date(),
-            hours: m.hours(),
-            minutes: m.minutes(),
-            seconds: m.seconds(),
-            milliseconds: m.milliseconds()
-        };
-    }
-
-    function moment_valid__isValid () {
-        return valid__isValid(this);
-    }
-
-    function parsingFlags () {
-        return extend({}, getParsingFlags(this));
-    }
-
-    function invalidAt () {
-        return getParsingFlags(this).overflow;
-    }
-
-    addFormatToken(0, ['gg', 2], 0, function () {
-        return this.weekYear() % 100;
-    });
-
-    addFormatToken(0, ['GG', 2], 0, function () {
-        return this.isoWeekYear() % 100;
-    });
-
-    function addWeekYearFormatToken (token, getter) {
-        addFormatToken(0, [token, token.length], 0, getter);
-    }
-
-    addWeekYearFormatToken('gggg',     'weekYear');
-    addWeekYearFormatToken('ggggg',    'weekYear');
-    addWeekYearFormatToken('GGGG',  'isoWeekYear');
-    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
-
-    // ALIASES
-
-    addUnitAlias('weekYear', 'gg');
-    addUnitAlias('isoWeekYear', 'GG');
-
-    // PARSING
-
-    addRegexToken('G',      matchSigned);
-    addRegexToken('g',      matchSigned);
-    addRegexToken('GG',     match1to2, match2);
-    addRegexToken('gg',     match1to2, match2);
-    addRegexToken('GGGG',   match1to4, match4);
-    addRegexToken('gggg',   match1to4, match4);
-    addRegexToken('GGGGG',  match1to6, match6);
-    addRegexToken('ggggg',  match1to6, match6);
-
-    addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
-        week[token.substr(0, 2)] = toInt(input);
-    });
-
-    addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
-        week[token] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-
-    // HELPERS
-
-    function weeksInYear(year, dow, doy) {
-        return weekOfYear(local__createLocal([year, 11, 31 + dow - doy]), dow, doy).week;
-    }
-
-    // MOMENTS
-
-    function getSetWeekYear (input) {
-        var year = weekOfYear(this, this.localeData()._week.dow, this.localeData()._week.doy).year;
-        return input == null ? year : this.add((input - year), 'y');
-    }
-
-    function getSetISOWeekYear (input) {
-        var year = weekOfYear(this, 1, 4).year;
-        return input == null ? year : this.add((input - year), 'y');
-    }
-
-    function getISOWeeksInYear () {
-        return weeksInYear(this.year(), 1, 4);
-    }
-
-    function getWeeksInYear () {
-        var weekInfo = this.localeData()._week;
-        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-    }
-
-    addFormatToken('Q', 0, 0, 'quarter');
-
-    // ALIASES
-
-    addUnitAlias('quarter', 'Q');
-
-    // PARSING
-
-    addRegexToken('Q', match1);
-    addParseToken('Q', function (input, array) {
-        array[MONTH] = (toInt(input) - 1) * 3;
-    });
-
-    // MOMENTS
-
-    function getSetQuarter (input) {
-        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
-    }
-
-    addFormatToken('D', ['DD', 2], 'Do', 'date');
-
-    // ALIASES
-
-    addUnitAlias('date', 'D');
-
-    // PARSING
-
-    addRegexToken('D',  match1to2);
-    addRegexToken('DD', match1to2, match2);
-    addRegexToken('Do', function (isStrict, locale) {
-        return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
-    });
-
-    addParseToken(['D', 'DD'], DATE);
-    addParseToken('Do', function (input, array) {
-        array[DATE] = toInt(input.match(match1to2)[0], 10);
-    });
-
-    // MOMENTS
-
-    var getSetDayOfMonth = makeGetSet('Date', true);
-
-    addFormatToken('d', 0, 'do', 'day');
-
-    addFormatToken('dd', 0, 0, function (format) {
-        return this.localeData().weekdaysMin(this, format);
-    });
-
-    addFormatToken('ddd', 0, 0, function (format) {
-        return this.localeData().weekdaysShort(this, format);
-    });
-
-    addFormatToken('dddd', 0, 0, function (format) {
-        return this.localeData().weekdays(this, format);
-    });
-
-    addFormatToken('e', 0, 0, 'weekday');
-    addFormatToken('E', 0, 0, 'isoWeekday');
-
-    // ALIASES
-
-    addUnitAlias('day', 'd');
-    addUnitAlias('weekday', 'e');
-    addUnitAlias('isoWeekday', 'E');
-
-    // PARSING
-
-    addRegexToken('d',    match1to2);
-    addRegexToken('e',    match1to2);
-    addRegexToken('E',    match1to2);
-    addRegexToken('dd',   matchWord);
-    addRegexToken('ddd',  matchWord);
-    addRegexToken('dddd', matchWord);
-
-    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config) {
-        var weekday = config._locale.weekdaysParse(input);
-        // if we didn't get a weekday name, mark the date as invalid
-        if (weekday != null) {
-            week.d = weekday;
-        } else {
-            getParsingFlags(config).invalidWeekday = input;
-        }
-    });
-
-    addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
-        week[token] = toInt(input);
-    });
-
-    // HELPERS
-
-    function parseWeekday(input, locale) {
-        if (typeof input !== 'string') {
-            return input;
-        }
-
-        if (!isNaN(input)) {
-            return parseInt(input, 10);
-        }
-
-        input = locale.weekdaysParse(input);
-        if (typeof input === 'number') {
-            return input;
-        }
-
-        return null;
-    }
-
-    // LOCALES
-
-    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m) {
-        return this._weekdays[m.day()];
-    }
-
-    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
-    function localeWeekdaysShort (m) {
-        return this._weekdaysShort[m.day()];
-    }
-
-    var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
-    function localeWeekdaysMin (m) {
-        return this._weekdaysMin[m.day()];
-    }
-
-    function localeWeekdaysParse (weekdayName) {
-        var i, mom, regex;
-
-        this._weekdaysParse = this._weekdaysParse || [];
-
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-            if (!this._weekdaysParse[i]) {
-                mom = local__createLocal([2000, 1]).day(i);
-                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
-                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (this._weekdaysParse[i].test(weekdayName)) {
-                return i;
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function getSetDayOfWeek (input) {
-        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
-        if (input != null) {
-            input = parseWeekday(input, this.localeData());
-            return this.add(input - day, 'd');
-        } else {
-            return day;
-        }
-    }
-
-    function getSetLocaleDayOfWeek (input) {
-        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-        return input == null ? weekday : this.add(input - weekday, 'd');
-    }
-
-    function getSetISODayOfWeek (input) {
-        // behaves the same as moment#day except
-        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
-        // as a setter, sunday should belong to the previous week.
-        return input == null ? this.day() || 7 : this.day(this.day() % 7 ? input : input - 7);
-    }
-
-    addFormatToken('H', ['HH', 2], 0, 'hour');
-    addFormatToken('h', ['hh', 2], 0, function () {
-        return this.hours() % 12 || 12;
-    });
-
-    function meridiem (token, lowercase) {
-        addFormatToken(token, 0, 0, function () {
-            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
-        });
-    }
-
-    meridiem('a', true);
-    meridiem('A', false);
-
-    // ALIASES
-
-    addUnitAlias('hour', 'h');
-
-    // PARSING
-
-    function matchMeridiem (isStrict, locale) {
-        return locale._meridiemParse;
-    }
-
-    addRegexToken('a',  matchMeridiem);
-    addRegexToken('A',  matchMeridiem);
-    addRegexToken('H',  match1to2);
-    addRegexToken('h',  match1to2);
-    addRegexToken('HH', match1to2, match2);
-    addRegexToken('hh', match1to2, match2);
-
-    addParseToken(['H', 'HH'], HOUR);
-    addParseToken(['a', 'A'], function (input, array, config) {
-        config._isPm = config._locale.isPM(input);
-        config._meridiem = input;
-    });
-    addParseToken(['h', 'hh'], function (input, array, config) {
-        array[HOUR] = toInt(input);
-        getParsingFlags(config).bigHour = true;
-    });
-
-    // LOCALES
-
-    function localeIsPM (input) {
-        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
-        // Using charAt should be more compatible.
-        return ((input + '').toLowerCase().charAt(0) === 'p');
-    }
-
-    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
-    function localeMeridiem (hours, minutes, isLower) {
-        if (hours > 11) {
-            return isLower ? 'pm' : 'PM';
-        } else {
-            return isLower ? 'am' : 'AM';
-        }
-    }
-
-
-    // MOMENTS
-
-    // Setting the hour should keep the time, because the user explicitly
-    // specified which hour he wants. So trying to maintain the same hour (in
-    // a new timezone) makes sense. Adding/subtracting hours does not follow
-    // this rule.
-    var getSetHour = makeGetSet('Hours', true);
-
-    addFormatToken('m', ['mm', 2], 0, 'minute');
-
-    // ALIASES
-
-    addUnitAlias('minute', 'm');
-
-    // PARSING
-
-    addRegexToken('m',  match1to2);
-    addRegexToken('mm', match1to2, match2);
-    addParseToken(['m', 'mm'], MINUTE);
-
-    // MOMENTS
-
-    var getSetMinute = makeGetSet('Minutes', false);
-
-    addFormatToken('s', ['ss', 2], 0, 'second');
-
-    // ALIASES
-
-    addUnitAlias('second', 's');
-
-    // PARSING
-
-    addRegexToken('s',  match1to2);
-    addRegexToken('ss', match1to2, match2);
-    addParseToken(['s', 'ss'], SECOND);
-
-    // MOMENTS
-
-    var getSetSecond = makeGetSet('Seconds', false);
-
-    addFormatToken('S', 0, 0, function () {
-        return ~~(this.millisecond() / 100);
-    });
-
-    addFormatToken(0, ['SS', 2], 0, function () {
-        return ~~(this.millisecond() / 10);
-    });
-
-    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
-    addFormatToken(0, ['SSSS', 4], 0, function () {
-        return this.millisecond() * 10;
-    });
-    addFormatToken(0, ['SSSSS', 5], 0, function () {
-        return this.millisecond() * 100;
-    });
-    addFormatToken(0, ['SSSSSS', 6], 0, function () {
-        return this.millisecond() * 1000;
-    });
-    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
-        return this.millisecond() * 10000;
-    });
-    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
-        return this.millisecond() * 100000;
-    });
-    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
-        return this.millisecond() * 1000000;
-    });
-
-
-    // ALIASES
-
-    addUnitAlias('millisecond', 'ms');
-
-    // PARSING
-
-    addRegexToken('S',    match1to3, match1);
-    addRegexToken('SS',   match1to3, match2);
-    addRegexToken('SSS',  match1to3, match3);
-
-    var token;
-    for (token = 'SSSS'; token.length <= 9; token += 'S') {
-        addRegexToken(token, matchUnsigned);
-    }
-
-    function parseMs(input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
-    }
-
-    for (token = 'S'; token.length <= 9; token += 'S') {
-        addParseToken(token, parseMs);
-    }
-    // MOMENTS
-
-    var getSetMillisecond = makeGetSet('Milliseconds', false);
-
-    addFormatToken('z',  0, 0, 'zoneAbbr');
-    addFormatToken('zz', 0, 0, 'zoneName');
-
-    // MOMENTS
-
-    function getZoneAbbr () {
-        return this._isUTC ? 'UTC' : '';
-    }
-
-    function getZoneName () {
-        return this._isUTC ? 'Coordinated Universal Time' : '';
-    }
-
-    var momentPrototype__proto = Moment.prototype;
-
-    momentPrototype__proto.add          = add_subtract__add;
-    momentPrototype__proto.calendar     = moment_calendar__calendar;
-    momentPrototype__proto.clone        = clone;
-    momentPrototype__proto.diff         = diff;
-    momentPrototype__proto.endOf        = endOf;
-    momentPrototype__proto.format       = format;
-    momentPrototype__proto.from         = from;
-    momentPrototype__proto.fromNow      = fromNow;
-    momentPrototype__proto.to           = to;
-    momentPrototype__proto.toNow        = toNow;
-    momentPrototype__proto.get          = getSet;
-    momentPrototype__proto.invalidAt    = invalidAt;
-    momentPrototype__proto.isAfter      = isAfter;
-    momentPrototype__proto.isBefore     = isBefore;
-    momentPrototype__proto.isBetween    = isBetween;
-    momentPrototype__proto.isSame       = isSame;
-    momentPrototype__proto.isValid      = moment_valid__isValid;
-    momentPrototype__proto.lang         = lang;
-    momentPrototype__proto.locale       = locale;
-    momentPrototype__proto.localeData   = localeData;
-    momentPrototype__proto.max          = prototypeMax;
-    momentPrototype__proto.min          = prototypeMin;
-    momentPrototype__proto.parsingFlags = parsingFlags;
-    momentPrototype__proto.set          = getSet;
-    momentPrototype__proto.startOf      = startOf;
-    momentPrototype__proto.subtract     = add_subtract__subtract;
-    momentPrototype__proto.toArray      = toArray;
-    momentPrototype__proto.toObject     = toObject;
-    momentPrototype__proto.toDate       = toDate;
-    momentPrototype__proto.toISOString  = moment_format__toISOString;
-    momentPrototype__proto.toJSON       = moment_format__toISOString;
-    momentPrototype__proto.toString     = toString;
-    momentPrototype__proto.unix         = unix;
-    momentPrototype__proto.valueOf      = to_type__valueOf;
-
-    // Year
-    momentPrototype__proto.year       = getSetYear;
-    momentPrototype__proto.isLeapYear = getIsLeapYear;
-
-    // Week Year
-    momentPrototype__proto.weekYear    = getSetWeekYear;
-    momentPrototype__proto.isoWeekYear = getSetISOWeekYear;
-
-    // Quarter
-    momentPrototype__proto.quarter = momentPrototype__proto.quarters = getSetQuarter;
-
-    // Month
-    momentPrototype__proto.month       = getSetMonth;
-    momentPrototype__proto.daysInMonth = getDaysInMonth;
-
-    // Week
-    momentPrototype__proto.week           = momentPrototype__proto.weeks        = getSetWeek;
-    momentPrototype__proto.isoWeek        = momentPrototype__proto.isoWeeks     = getSetISOWeek;
-    momentPrototype__proto.weeksInYear    = getWeeksInYear;
-    momentPrototype__proto.isoWeeksInYear = getISOWeeksInYear;
-
-    // Day
-    momentPrototype__proto.date       = getSetDayOfMonth;
-    momentPrototype__proto.day        = momentPrototype__proto.days             = getSetDayOfWeek;
-    momentPrototype__proto.weekday    = getSetLocaleDayOfWeek;
-    momentPrototype__proto.isoWeekday = getSetISODayOfWeek;
-    momentPrototype__proto.dayOfYear  = getSetDayOfYear;
-
-    // Hour
-    momentPrototype__proto.hour = momentPrototype__proto.hours = getSetHour;
-
-    // Minute
-    momentPrototype__proto.minute = momentPrototype__proto.minutes = getSetMinute;
-
-    // Second
-    momentPrototype__proto.second = momentPrototype__proto.seconds = getSetSecond;
-
-    // Millisecond
-    momentPrototype__proto.millisecond = momentPrototype__proto.milliseconds = getSetMillisecond;
-
-    // Offset
-    momentPrototype__proto.utcOffset            = getSetOffset;
-    momentPrototype__proto.utc                  = setOffsetToUTC;
-    momentPrototype__proto.local                = setOffsetToLocal;
-    momentPrototype__proto.parseZone            = setOffsetToParsedOffset;
-    momentPrototype__proto.hasAlignedHourOffset = hasAlignedHourOffset;
-    momentPrototype__proto.isDST                = isDaylightSavingTime;
-    momentPrototype__proto.isDSTShifted         = isDaylightSavingTimeShifted;
-    momentPrototype__proto.isLocal              = isLocal;
-    momentPrototype__proto.isUtcOffset          = isUtcOffset;
-    momentPrototype__proto.isUtc                = isUtc;
-    momentPrototype__proto.isUTC                = isUtc;
-
-    // Timezone
-    momentPrototype__proto.zoneAbbr = getZoneAbbr;
-    momentPrototype__proto.zoneName = getZoneName;
-
-    // Deprecations
-    momentPrototype__proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
-    momentPrototype__proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
-    momentPrototype__proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
-    momentPrototype__proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. https://github.com/moment/moment/issues/1779', getSetZone);
-
-    var momentPrototype = momentPrototype__proto;
-
-    function moment__createUnix (input) {
-        return local__createLocal(input * 1000);
-    }
-
-    function moment__createInZone () {
-        return local__createLocal.apply(null, arguments).parseZone();
-    }
-
-    var defaultCalendar = {
-        sameDay : '[Today at] LT',
-        nextDay : '[Tomorrow at] LT',
-        nextWeek : 'dddd [at] LT',
-        lastDay : '[Yesterday at] LT',
-        lastWeek : '[Last] dddd [at] LT',
-        sameElse : 'L'
-    };
-
-    function locale_calendar__calendar (key, mom, now) {
-        var output = this._calendar[key];
-        return typeof output === 'function' ? output.call(mom, now) : output;
-    }
-
-    var defaultLongDateFormat = {
-        LTS  : 'h:mm:ss A',
-        LT   : 'h:mm A',
-        L    : 'MM/DD/YYYY',
-        LL   : 'MMMM D, YYYY',
-        LLL  : 'MMMM D, YYYY h:mm A',
-        LLLL : 'dddd, MMMM D, YYYY h:mm A'
-    };
-
-    function longDateFormat (key) {
-        var format = this._longDateFormat[key],
-            formatUpper = this._longDateFormat[key.toUpperCase()];
-
-        if (format || !formatUpper) {
-            return format;
-        }
-
-        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
-            return val.slice(1);
-        });
-
-        return this._longDateFormat[key];
-    }
-
-    var defaultInvalidDate = 'Invalid date';
-
-    function invalidDate () {
-        return this._invalidDate;
-    }
-
-    var defaultOrdinal = '%d';
-    var defaultOrdinalParse = /\d{1,2}/;
-
-    function ordinal (number) {
-        return this._ordinal.replace('%d', number);
-    }
-
-    function preParsePostFormat (string) {
-        return string;
-    }
-
-    var defaultRelativeTime = {
-        future : 'in %s',
-        past   : '%s ago',
-        s  : 'a few seconds',
-        m  : 'a minute',
-        mm : '%d minutes',
-        h  : 'an hour',
-        hh : '%d hours',
-        d  : 'a day',
-        dd : '%d days',
-        M  : 'a month',
-        MM : '%d months',
-        y  : 'a year',
-        yy : '%d years'
-    };
-
-    function relative__relativeTime (number, withoutSuffix, string, isFuture) {
-        var output = this._relativeTime[string];
-        return (typeof output === 'function') ?
-            output(number, withoutSuffix, string, isFuture) :
-            output.replace(/%d/i, number);
-    }
-
-    function pastFuture (diff, output) {
-        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return typeof format === 'function' ? format(output) : format.replace(/%s/i, output);
-    }
-
-    function locale_set__set (config) {
-        var prop, i;
-        for (i in config) {
-            prop = config[i];
-            if (typeof prop === 'function') {
-                this[i] = prop;
-            } else {
-                this['_' + i] = prop;
-            }
-        }
-        // Lenient ordinal parsing accepts just a number in addition to
-        // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
-    }
-
-    var prototype__proto = Locale.prototype;
-
-    prototype__proto._calendar       = defaultCalendar;
-    prototype__proto.calendar        = locale_calendar__calendar;
-    prototype__proto._longDateFormat = defaultLongDateFormat;
-    prototype__proto.longDateFormat  = longDateFormat;
-    prototype__proto._invalidDate    = defaultInvalidDate;
-    prototype__proto.invalidDate     = invalidDate;
-    prototype__proto._ordinal        = defaultOrdinal;
-    prototype__proto.ordinal         = ordinal;
-    prototype__proto._ordinalParse   = defaultOrdinalParse;
-    prototype__proto.preparse        = preParsePostFormat;
-    prototype__proto.postformat      = preParsePostFormat;
-    prototype__proto._relativeTime   = defaultRelativeTime;
-    prototype__proto.relativeTime    = relative__relativeTime;
-    prototype__proto.pastFuture      = pastFuture;
-    prototype__proto.set             = locale_set__set;
-
-    // Month
-    prototype__proto.months       =        localeMonths;
-    prototype__proto._months      = defaultLocaleMonths;
-    prototype__proto.monthsShort  =        localeMonthsShort;
-    prototype__proto._monthsShort = defaultLocaleMonthsShort;
-    prototype__proto.monthsParse  =        localeMonthsParse;
-
-    // Week
-    prototype__proto.week = localeWeek;
-    prototype__proto._week = defaultLocaleWeek;
-    prototype__proto.firstDayOfYear = localeFirstDayOfYear;
-    prototype__proto.firstDayOfWeek = localeFirstDayOfWeek;
-
-    // Day of Week
-    prototype__proto.weekdays       =        localeWeekdays;
-    prototype__proto._weekdays      = defaultLocaleWeekdays;
-    prototype__proto.weekdaysMin    =        localeWeekdaysMin;
-    prototype__proto._weekdaysMin   = defaultLocaleWeekdaysMin;
-    prototype__proto.weekdaysShort  =        localeWeekdaysShort;
-    prototype__proto._weekdaysShort = defaultLocaleWeekdaysShort;
-    prototype__proto.weekdaysParse  =        localeWeekdaysParse;
-
-    // Hours
-    prototype__proto.isPM = localeIsPM;
-    prototype__proto._meridiemParse = defaultLocaleMeridiemParse;
-    prototype__proto.meridiem = localeMeridiem;
-
-    function lists__get (format, index, field, setter) {
-        var locale = locale_locales__getLocale();
-        var utc = create_utc__createUTC().set(setter, index);
-        return locale[field](utc, format);
-    }
-
-    function list (format, index, field, count, setter) {
-        if (typeof format === 'number') {
-            index = format;
-            format = undefined;
-        }
-
-        format = format || '';
-
-        if (index != null) {
-            return lists__get(format, index, field, setter);
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < count; i++) {
-            out[i] = lists__get(format, i, field, setter);
-        }
-        return out;
-    }
-
-    function lists__listMonths (format, index) {
-        return list(format, index, 'months', 12, 'month');
-    }
-
-    function lists__listMonthsShort (format, index) {
-        return list(format, index, 'monthsShort', 12, 'month');
-    }
-
-    function lists__listWeekdays (format, index) {
-        return list(format, index, 'weekdays', 7, 'day');
-    }
-
-    function lists__listWeekdaysShort (format, index) {
-        return list(format, index, 'weekdaysShort', 7, 'day');
-    }
-
-    function lists__listWeekdaysMin (format, index) {
-        return list(format, index, 'weekdaysMin', 7, 'day');
-    }
-
-    locale_locales__getSetGlobalLocale('en', {
-        ordinalParse: /\d{1,2}(th|st|nd|rd)/,
-        ordinal : function (number) {
-            var b = number % 10,
-                output = (toInt(number % 100 / 10) === 1) ? 'th' :
-                (b === 1) ? 'st' :
-                (b === 2) ? 'nd' :
-                (b === 3) ? 'rd' : 'th';
-            return number + output;
-        }
-    });
-
-    // Side effect imports
-    utils_hooks__hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', locale_locales__getSetGlobalLocale);
-    utils_hooks__hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', locale_locales__getLocale);
-
-    var mathAbs = Math.abs;
-
-    function duration_abs__abs () {
-        var data           = this._data;
-
-        this._milliseconds = mathAbs(this._milliseconds);
-        this._days         = mathAbs(this._days);
-        this._months       = mathAbs(this._months);
-
-        data.milliseconds  = mathAbs(data.milliseconds);
-        data.seconds       = mathAbs(data.seconds);
-        data.minutes       = mathAbs(data.minutes);
-        data.hours         = mathAbs(data.hours);
-        data.months        = mathAbs(data.months);
-        data.years         = mathAbs(data.years);
-
-        return this;
-    }
-
-    function duration_add_subtract__addSubtract (duration, input, value, direction) {
-        var other = create__createDuration(input, value);
-
-        duration._milliseconds += direction * other._milliseconds;
-        duration._days         += direction * other._days;
-        duration._months       += direction * other._months;
-
-        return duration._bubble();
-    }
-
-    // supports only 2.0-style add(1, 's') or add(duration)
-    function duration_add_subtract__add (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, 1);
-    }
-
-    // supports only 2.0-style subtract(1, 's') or subtract(duration)
-    function duration_add_subtract__subtract (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, -1);
-    }
-
-    function absCeil (number) {
-        if (number < 0) {
-            return Math.floor(number);
-        } else {
-            return Math.ceil(number);
-        }
-    }
-
-    function bubble () {
-        var milliseconds = this._milliseconds;
-        var days         = this._days;
-        var months       = this._months;
-        var data         = this._data;
-        var seconds, minutes, hours, years, monthsFromDays;
-
-        // if we have a mix of positive and negative values, bubble down first
-        // check: https://github.com/moment/moment/issues/2166
-        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
-                (milliseconds <= 0 && days <= 0 && months <= 0))) {
-            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
-            days = 0;
-            months = 0;
-        }
-
-        // The following code bubbles up values, see the tests for
-        // examples of what that means.
-        data.milliseconds = milliseconds % 1000;
-
-        seconds           = absFloor(milliseconds / 1000);
-        data.seconds      = seconds % 60;
-
-        minutes           = absFloor(seconds / 60);
-        data.minutes      = minutes % 60;
-
-        hours             = absFloor(minutes / 60);
-        data.hours        = hours % 24;
-
-        days += absFloor(hours / 24);
-
-        // convert days to months
-        monthsFromDays = absFloor(daysToMonths(days));
-        months += monthsFromDays;
-        days -= absCeil(monthsToDays(monthsFromDays));
-
-        // 12 months -> 1 year
-        years = absFloor(months / 12);
-        months %= 12;
-
-        data.days   = days;
-        data.months = months;
-        data.years  = years;
-
-        return this;
-    }
-
-    function daysToMonths (days) {
-        // 400 years have 146097 days (taking into account leap year rules)
-        // 400 years have 12 months === 4800
-        return days * 4800 / 146097;
-    }
-
-    function monthsToDays (months) {
-        // the reverse of daysToMonths
-        return months * 146097 / 4800;
-    }
-
-    function as (units) {
-        var days;
-        var months;
-        var milliseconds = this._milliseconds;
-
-        units = normalizeUnits(units);
-
-        if (units === 'month' || units === 'year') {
-            days   = this._days   + milliseconds / 864e5;
-            months = this._months + daysToMonths(days);
-            return units === 'month' ? months : months / 12;
-        } else {
-            // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(monthsToDays(this._months));
-            switch (units) {
-                case 'week'   : return days / 7     + milliseconds / 6048e5;
-                case 'day'    : return days         + milliseconds / 864e5;
-                case 'hour'   : return days * 24    + milliseconds / 36e5;
-                case 'minute' : return days * 1440  + milliseconds / 6e4;
-                case 'second' : return days * 86400 + milliseconds / 1000;
-                // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
-                default: throw new Error('Unknown unit ' + units);
-            }
-        }
-    }
-
-    // TODO: Use this.as('ms')?
-    function duration_as__valueOf () {
-        return (
-            this._milliseconds +
-            this._days * 864e5 +
-            (this._months % 12) * 2592e6 +
-            toInt(this._months / 12) * 31536e6
-        );
-    }
-
-    function makeAs (alias) {
-        return function () {
-            return this.as(alias);
-        };
-    }
-
-    var asMilliseconds = makeAs('ms');
-    var asSeconds      = makeAs('s');
-    var asMinutes      = makeAs('m');
-    var asHours        = makeAs('h');
-    var asDays         = makeAs('d');
-    var asWeeks        = makeAs('w');
-    var asMonths       = makeAs('M');
-    var asYears        = makeAs('y');
-
-    function duration_get__get (units) {
-        units = normalizeUnits(units);
-        return this[units + 's']();
-    }
-
-    function makeGetter(name) {
-        return function () {
-            return this._data[name];
-        };
-    }
-
-    var milliseconds = makeGetter('milliseconds');
-    var seconds      = makeGetter('seconds');
-    var minutes      = makeGetter('minutes');
-    var hours        = makeGetter('hours');
-    var days         = makeGetter('days');
-    var months       = makeGetter('months');
-    var years        = makeGetter('years');
-
-    function weeks () {
-        return absFloor(this.days() / 7);
-    }
-
-    var round = Math.round;
-    var thresholds = {
-        s: 45,  // seconds to minute
-        m: 45,  // minutes to hour
-        h: 22,  // hours to day
-        d: 26,  // days to month
-        M: 11   // months to year
-    };
-
-    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
-    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
-        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
-    }
-
-    function duration_humanize__relativeTime (posNegDuration, withoutSuffix, locale) {
-        var duration = create__createDuration(posNegDuration).abs();
-        var seconds  = round(duration.as('s'));
-        var minutes  = round(duration.as('m'));
-        var hours    = round(duration.as('h'));
-        var days     = round(duration.as('d'));
-        var months   = round(duration.as('M'));
-        var years    = round(duration.as('y'));
-
-        var a = seconds < thresholds.s && ['s', seconds]  ||
-                minutes === 1          && ['m']           ||
-                minutes < thresholds.m && ['mm', minutes] ||
-                hours   === 1          && ['h']           ||
-                hours   < thresholds.h && ['hh', hours]   ||
-                days    === 1          && ['d']           ||
-                days    < thresholds.d && ['dd', days]    ||
-                months  === 1          && ['M']           ||
-                months  < thresholds.M && ['MM', months]  ||
-                years   === 1          && ['y']           || ['yy', years];
-
-        a[2] = withoutSuffix;
-        a[3] = +posNegDuration > 0;
-        a[4] = locale;
-        return substituteTimeAgo.apply(null, a);
-    }
-
-    // This function allows you to set a threshold for relative time strings
-    function duration_humanize__getSetRelativeTimeThreshold (threshold, limit) {
-        if (thresholds[threshold] === undefined) {
-            return false;
-        }
-        if (limit === undefined) {
-            return thresholds[threshold];
-        }
-        thresholds[threshold] = limit;
-        return true;
-    }
-
-    function humanize (withSuffix) {
-        var locale = this.localeData();
-        var output = duration_humanize__relativeTime(this, !withSuffix, locale);
-
-        if (withSuffix) {
-            output = locale.pastFuture(+this, output);
-        }
-
-        return locale.postformat(output);
-    }
-
-    var iso_string__abs = Math.abs;
-
-    function iso_string__toISOString() {
-        // for ISO strings we do not use the normal bubbling rules:
-        //  * milliseconds bubble up until they become hours
-        //  * days do not bubble at all
-        //  * months bubble up until they become years
-        // This is because there is no context-free conversion between hours and days
-        // (think of clock changes)
-        // and also not between days and months (28-31 days per month)
-        var seconds = iso_string__abs(this._milliseconds) / 1000;
-        var days         = iso_string__abs(this._days);
-        var months       = iso_string__abs(this._months);
-        var minutes, hours, years;
-
-        // 3600 seconds -> 60 minutes -> 1 hour
-        minutes           = absFloor(seconds / 60);
-        hours             = absFloor(minutes / 60);
-        seconds %= 60;
-        minutes %= 60;
-
-        // 12 months -> 1 year
-        years  = absFloor(months / 12);
-        months %= 12;
-
-
-        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        var Y = years;
-        var M = months;
-        var D = days;
-        var h = hours;
-        var m = minutes;
-        var s = seconds;
-        var total = this.asSeconds();
-
-        if (!total) {
-            // this is the same as C#'s (Noda) and python (isodate)...
-            // but not other JS (goog.date)
-            return 'P0D';
-        }
-
-        return (total < 0 ? '-' : '') +
-            'P' +
-            (Y ? Y + 'Y' : '') +
-            (M ? M + 'M' : '') +
-            (D ? D + 'D' : '') +
-            ((h || m || s) ? 'T' : '') +
-            (h ? h + 'H' : '') +
-            (m ? m + 'M' : '') +
-            (s ? s + 'S' : '');
-    }
-
-    var duration_prototype__proto = Duration.prototype;
-
-    duration_prototype__proto.abs            = duration_abs__abs;
-    duration_prototype__proto.add            = duration_add_subtract__add;
-    duration_prototype__proto.subtract       = duration_add_subtract__subtract;
-    duration_prototype__proto.as             = as;
-    duration_prototype__proto.asMilliseconds = asMilliseconds;
-    duration_prototype__proto.asSeconds      = asSeconds;
-    duration_prototype__proto.asMinutes      = asMinutes;
-    duration_prototype__proto.asHours        = asHours;
-    duration_prototype__proto.asDays         = asDays;
-    duration_prototype__proto.asWeeks        = asWeeks;
-    duration_prototype__proto.asMonths       = asMonths;
-    duration_prototype__proto.asYears        = asYears;
-    duration_prototype__proto.valueOf        = duration_as__valueOf;
-    duration_prototype__proto._bubble        = bubble;
-    duration_prototype__proto.get            = duration_get__get;
-    duration_prototype__proto.milliseconds   = milliseconds;
-    duration_prototype__proto.seconds        = seconds;
-    duration_prototype__proto.minutes        = minutes;
-    duration_prototype__proto.hours          = hours;
-    duration_prototype__proto.days           = days;
-    duration_prototype__proto.weeks          = weeks;
-    duration_prototype__proto.months         = months;
-    duration_prototype__proto.years          = years;
-    duration_prototype__proto.humanize       = humanize;
-    duration_prototype__proto.toISOString    = iso_string__toISOString;
-    duration_prototype__proto.toString       = iso_string__toISOString;
-    duration_prototype__proto.toJSON         = iso_string__toISOString;
-    duration_prototype__proto.locale         = locale;
-    duration_prototype__proto.localeData     = localeData;
-
-    // Deprecations
-    duration_prototype__proto.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', iso_string__toISOString);
-    duration_prototype__proto.lang = lang;
-
-    // Side effect imports
-
-    addFormatToken('X', 0, 0, 'unix');
-    addFormatToken('x', 0, 0, 'valueOf');
-
-    // PARSING
-
-    addRegexToken('x', matchSigned);
-    addRegexToken('X', matchTimestamp);
-    addParseToken('X', function (input, array, config) {
-        config._d = new Date(parseFloat(input, 10) * 1000);
-    });
-    addParseToken('x', function (input, array, config) {
-        config._d = new Date(toInt(input));
-    });
-
-    // Side effect imports
-
-
-    utils_hooks__hooks.version = '2.10.6';
-
-    setHookCallback(local__createLocal);
-
-    utils_hooks__hooks.fn                    = momentPrototype;
-    utils_hooks__hooks.min                   = min;
-    utils_hooks__hooks.max                   = max;
-    utils_hooks__hooks.utc                   = create_utc__createUTC;
-    utils_hooks__hooks.unix                  = moment__createUnix;
-    utils_hooks__hooks.months                = lists__listMonths;
-    utils_hooks__hooks.isDate                = isDate;
-    utils_hooks__hooks.locale                = locale_locales__getSetGlobalLocale;
-    utils_hooks__hooks.invalid               = valid__createInvalid;
-    utils_hooks__hooks.duration              = create__createDuration;
-    utils_hooks__hooks.isMoment              = isMoment;
-    utils_hooks__hooks.weekdays              = lists__listWeekdays;
-    utils_hooks__hooks.parseZone             = moment__createInZone;
-    utils_hooks__hooks.localeData            = locale_locales__getLocale;
-    utils_hooks__hooks.isDuration            = isDuration;
-    utils_hooks__hooks.monthsShort           = lists__listMonthsShort;
-    utils_hooks__hooks.weekdaysMin           = lists__listWeekdaysMin;
-    utils_hooks__hooks.defineLocale          = defineLocale;
-    utils_hooks__hooks.weekdaysShort         = lists__listWeekdaysShort;
-    utils_hooks__hooks.normalizeUnits        = normalizeUnits;
-    utils_hooks__hooks.relativeTimeThreshold = duration_humanize__getSetRelativeTimeThreshold;
-
-    var _moment = utils_hooks__hooks;
-
-    return _moment;
-
-}));
-},{}],119:[function(require,module,exports){
+  };
+  return thing;
+};
+
+},{"./debounce":128,"atoa":130}],130:[function(require,module,exports){
+module.exports = function atoa (a, n) { return Array.prototype.slice.call(a, n); }
+
+},{}],131:[function(require,module,exports){
+var si = typeof setImmediate === 'function', tick;
+if (si) {
+  tick = function (fn) { setImmediate(fn); };
+} else {
+  tick = function (fn) { setTimeout(fn, 0); };
+}
+
+module.exports = tick;
+},{}],132:[function(require,module,exports){
+(function (global){
+
+var NativeCustomEvent = global.CustomEvent;
+
+function useNative () {
+  try {
+    var p = new NativeCustomEvent('cat', { detail: { foo: 'bar' } });
+    return  'cat' === p.type && 'bar' === p.detail.foo;
+  } catch (e) {
+  }
+  return false;
+}
+
+/**
+ * Cross-browser `CustomEvent` constructor.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent.CustomEvent
+ *
+ * @public
+ */
+
+module.exports = useNative() ? NativeCustomEvent :
+
+// IE >= 9
+'function' === typeof document.createEvent ? function CustomEvent (type, params) {
+  var e = document.createEvent('CustomEvent');
+  if (params) {
+    e.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
+  } else {
+    e.initCustomEvent(type, false, false, void 0);
+  }
+  return e;
+} :
+
+// IE <= 8
+function CustomEvent (type, params) {
+  var e = document.createEventObject();
+  e.type = type;
+  if (params) {
+    e.bubbles = Boolean(params.bubbles);
+    e.cancelable = Boolean(params.cancelable);
+    e.detail = params.detail;
+  } else {
+    e.bubbles = false;
+    e.cancelable = false;
+    e.detail = void 0;
+  }
+  return e;
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],133:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var customEvent = require('custom-event');
+var eventmap = require('./eventmap');
+var doc = global.document;
+var addEvent = addEventEasy;
+var removeEvent = removeEventEasy;
+var hardCache = [];
+
+if (!global.addEventListener) {
+  addEvent = addEventHard;
+  removeEvent = removeEventHard;
+}
+
+module.exports = {
+  add: addEvent,
+  remove: removeEvent,
+  fabricate: fabricateEvent
+};
+
+function addEventEasy (el, type, fn, capturing) {
+  return el.addEventListener(type, fn, capturing);
+}
+
+function addEventHard (el, type, fn) {
+  return el.attachEvent('on' + type, wrap(el, type, fn));
+}
+
+function removeEventEasy (el, type, fn, capturing) {
+  return el.removeEventListener(type, fn, capturing);
+}
+
+function removeEventHard (el, type, fn) {
+  var listener = unwrap(el, type, fn);
+  if (listener) {
+    return el.detachEvent('on' + type, listener);
+  }
+}
+
+function fabricateEvent (el, type, model) {
+  var e = eventmap.indexOf(type) === -1 ? makeCustomEvent() : makeClassicEvent();
+  if (el.dispatchEvent) {
+    el.dispatchEvent(e);
+  } else {
+    el.fireEvent('on' + type, e);
+  }
+  function makeClassicEvent () {
+    var e;
+    if (doc.createEvent) {
+      e = doc.createEvent('Event');
+      e.initEvent(type, true, true);
+    } else if (doc.createEventObject) {
+      e = doc.createEventObject();
+    }
+    return e;
+  }
+  function makeCustomEvent () {
+    return new customEvent(type, { detail: model });
+  }
+}
+
+function wrapperFactory (el, type, fn) {
+  return function wrapper (originalEvent) {
+    var e = originalEvent || global.event;
+    e.target = e.target || e.srcElement;
+    e.preventDefault = e.preventDefault || function preventDefault () { e.returnValue = false; };
+    e.stopPropagation = e.stopPropagation || function stopPropagation () { e.cancelBubble = true; };
+    e.which = e.which || e.keyCode;
+    fn.call(el, e);
+  };
+}
+
+function wrap (el, type, fn) {
+  var wrapper = unwrap(el, type, fn) || wrapperFactory(el, type, fn);
+  hardCache.push({
+    wrapper: wrapper,
+    element: el,
+    type: type,
+    fn: fn
+  });
+  return wrapper;
+}
+
+function unwrap (el, type, fn) {
+  var i = find(el, type, fn);
+  if (i) {
+    var wrapper = hardCache[i].wrapper;
+    hardCache.splice(i, 1); // free up a tad of memory
+    return wrapper;
+  }
+}
+
+function find (el, type, fn) {
+  var i, item;
+  for (i = 0; i < hardCache.length; i++) {
+    item = hardCache[i];
+    if (item.element === el && item.type === type && item.fn === fn) {
+      return i;
+    }
+  }
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./eventmap":134,"custom-event":132}],134:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var eventmap = [];
+var eventname = '';
+var ron = /^on/;
+
+for (eventname in global) {
+  if (ron.test(eventname)) {
+    eventmap.push(eventname.slice(2));
+  }
+}
+
+module.exports = eventmap;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],135:[function(require,module,exports){
 /*global define:false */
 /**
  * Copyright 2015 Craig Campbell
@@ -13435,7 +11380,7 @@ PointerEventsPolyfill.prototype.register_mouse_events = function(){
     }
 }) (window, document);
 
-},{}],120:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 /**
  * adds a bindGlobal method to Mousetrap that allows you to
  * bind specific keyboard shortcuts that will still work
@@ -13480,7 +11425,7 @@ PointerEventsPolyfill.prototype.register_mouse_events = function(){
     Mousetrap.init();
 }) (Mousetrap);
 
-},{}],121:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 /* NProgress, (c) 2013, 2014 Rico Sta. Cruz - http://ricostacruz.com/nprogress
  * @license MIT */
 
@@ -13958,7 +11903,7 @@ PointerEventsPolyfill.prototype.register_mouse_events = function(){
 });
 
 
-},{}],122:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -13966,7 +11911,7 @@ PointerEventsPolyfill.prototype.register_mouse_events = function(){
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":123}],123:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":139}],139:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14014,7 +11959,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":129,"../plugin/instances":140}],124:[function(require,module,exports){
+},{"../main":145,"../plugin/instances":156}],140:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14061,7 +12006,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],125:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14150,7 +12095,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],126:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14226,7 +12171,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],127:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14244,7 +12189,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],128:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14330,7 +12275,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":124,"./dom":125}],129:[function(require,module,exports){
+},{"./class":140,"./dom":141}],145:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14346,7 +12291,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":131,"./plugin/initialize":139,"./plugin/update":143}],130:[function(require,module,exports){
+},{"./plugin/destroy":147,"./plugin/initialize":155,"./plugin/update":159}],146:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14368,7 +12313,7 @@ module.exports = {
   wheelSpeed: 1
 };
 
-},{}],131:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14395,7 +12340,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":125,"../lib/helper":128,"./instances":140}],132:[function(require,module,exports){
+},{"../lib/dom":141,"../lib/helper":144,"./instances":156}],148:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14417,7 +12362,7 @@ function bindClickRailHandler(element, i) {
   }
   i.event.bind(i.scrollbarYRail, 'click', function (e) {
     var halfOfScrollbarLength = h.toInt(i.scrollbarYHeight / 2);
-    var positionTop = i.railYRatio * (e.pageY - window.scrollY - pageOffset(i.scrollbarYRail).top - halfOfScrollbarLength);
+    var positionTop = i.railYRatio * (e.pageY - window.pageYOffset - pageOffset(i.scrollbarYRail).top - halfOfScrollbarLength);
     var maxPositionTop = i.railYRatio * (i.railYHeight - i.scrollbarYHeight);
     var positionRatio = positionTop / maxPositionTop;
 
@@ -14438,7 +12383,7 @@ function bindClickRailHandler(element, i) {
   }
   i.event.bind(i.scrollbarXRail, 'click', function (e) {
     var halfOfScrollbarLength = h.toInt(i.scrollbarXWidth / 2);
-    var positionLeft = i.railXRatio * (e.pageX - window.scrollX - pageOffset(i.scrollbarXRail).left - halfOfScrollbarLength);
+    var positionLeft = i.railXRatio * (e.pageX - window.pageXOffset - pageOffset(i.scrollbarXRail).left - halfOfScrollbarLength);
     var maxPositionLeft = i.railXRatio * (i.railXWidth - i.scrollbarXWidth);
     var positionRatio = positionLeft / maxPositionLeft;
 
@@ -14460,7 +12405,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":128,"../instances":140,"../update-geometry":141,"../update-scroll":142}],133:[function(require,module,exports){
+},{"../../lib/helper":144,"../instances":156,"../update-geometry":157,"../update-scroll":158}],149:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14478,7 +12423,7 @@ function bindMouseScrollXHandler(element, i) {
 
   function updateScrollLeft(deltaX) {
     var newLeft = currentLeft + (deltaX * i.railXRatio);
-    var maxLeft = i.scrollbarXRail.getBoundingClientRect().left + (i.railXRatio * (i.railXWidth - i.scrollbarXWidth));
+    var maxLeft = Math.max(0, i.scrollbarXRail.getBoundingClientRect().left) + (i.railXRatio * (i.railXWidth - i.scrollbarXWidth));
 
     if (newLeft < 0) {
       i.scrollbarXLeft = 0;
@@ -14523,7 +12468,7 @@ function bindMouseScrollYHandler(element, i) {
 
   function updateScrollTop(deltaY) {
     var newTop = currentTop + (deltaY * i.railYRatio);
-    var maxTop = i.scrollbarYRail.getBoundingClientRect().top + (i.railYRatio * (i.railYHeight - i.scrollbarYHeight));
+    var maxTop = Math.max(0, i.scrollbarYRail.getBoundingClientRect().top) + (i.railYRatio * (i.railYHeight - i.scrollbarYHeight));
 
     if (newTop < 0) {
       i.scrollbarYTop = 0;
@@ -14568,7 +12513,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":125,"../../lib/helper":128,"../instances":140,"../update-geometry":141,"../update-scroll":142}],134:[function(require,module,exports){
+},{"../../lib/dom":141,"../../lib/helper":144,"../instances":156,"../update-geometry":157,"../update-scroll":158}],150:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14695,14 +12640,13 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/helper":128,"../instances":140,"../update-geometry":141,"../update-scroll":142}],135:[function(require,module,exports){
+},{"../../lib/helper":144,"../instances":156,"../update-geometry":157,"../update-scroll":158}],151:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
 'use strict';
 
-var h = require('../../lib/helper')
-  , instances = require('../instances')
+var instances = require('../instances')
   , updateGeometry = require('../update-geometry')
   , updateScroll = require('../update-scroll');
 
@@ -14779,13 +12723,6 @@ function bindMouseWheelHandler(element, i) {
   }
 
   function mousewheelHandler(e) {
-    // FIXME: this is a quick fix for the select problem in FF and IE.
-    // If there comes an effective way to deal with the problem,
-    // this lines should be removed.
-    if (!h.env.isWebKit && element.querySelector('select:focus')) {
-      return;
-    }
-
     var delta = getDeltaFromEvent(e);
 
     var deltaX = delta[0];
@@ -14842,7 +12779,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../../lib/helper":128,"../instances":140,"../update-geometry":141,"../update-scroll":142}],136:[function(require,module,exports){
+},{"../instances":156,"../update-geometry":157,"../update-scroll":158}],152:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14862,7 +12799,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":140,"../update-geometry":141}],137:[function(require,module,exports){
+},{"../instances":156,"../update-geometry":157}],153:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -14976,7 +12913,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":128,"../instances":140,"../update-geometry":141,"../update-scroll":142}],138:[function(require,module,exports){
+},{"../../lib/helper":144,"../instances":156,"../update-geometry":157,"../update-scroll":158}],154:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -15149,7 +13086,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":140,"../update-geometry":141,"../update-scroll":142}],139:[function(require,module,exports){
+},{"../instances":156,"../update-geometry":157,"../update-scroll":158}],155:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -15198,7 +13135,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":124,"../lib/helper":128,"./handler/click-rail":132,"./handler/drag-scrollbar":133,"./handler/keyboard":134,"./handler/mouse-wheel":135,"./handler/native-scroll":136,"./handler/selection":137,"./handler/touch":138,"./instances":140,"./update-geometry":141}],140:[function(require,module,exports){
+},{"../lib/class":140,"../lib/helper":144,"./handler/click-rail":148,"./handler/drag-scrollbar":149,"./handler/keyboard":150,"./handler/mouse-wheel":151,"./handler/native-scroll":152,"./handler/selection":153,"./handler/touch":154,"./instances":156,"./update-geometry":157}],156:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -15236,6 +13173,7 @@ function Instance(element) {
 
   i.scrollbarXRail = d.appendTo(d.e('div', 'ps-scrollbar-x-rail'), element);
   i.scrollbarX = d.appendTo(d.e('div', 'ps-scrollbar-x'), i.scrollbarXRail);
+  i.scrollbarX.setAttribute('tabindex', 0);
   i.scrollbarXActive = null;
   i.scrollbarXWidth = null;
   i.scrollbarXLeft = null;
@@ -15252,6 +13190,7 @@ function Instance(element) {
 
   i.scrollbarYRail = d.appendTo(d.e('div', 'ps-scrollbar-y-rail'), element);
   i.scrollbarY = d.appendTo(d.e('div', 'ps-scrollbar-y'), i.scrollbarYRail);
+  i.scrollbarY.setAttribute('tabindex', 0);
   i.scrollbarYActive = null;
   i.scrollbarYHeight = null;
   i.scrollbarYTop = null;
@@ -15307,7 +13246,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/dom":125,"../lib/event-manager":126,"../lib/guid":127,"../lib/helper":128,"./default-setting":130}],141:[function(require,module,exports){
+},{"../lib/dom":141,"../lib/event-manager":142,"../lib/guid":143,"../lib/helper":144,"./default-setting":146}],157:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -15399,9 +13338,6 @@ module.exports = function (element) {
     i.scrollbarXLeft = h.toInt((i.negativeScrollAdjustment + element.scrollLeft) * (i.railXWidth - i.scrollbarXWidth) / (i.contentWidth - i.containerWidth));
   } else {
     i.scrollbarXActive = false;
-    i.scrollbarXWidth = 0;
-    i.scrollbarXLeft = 0;
-    element.scrollLeft = 0;
   }
 
   if (!i.settings.suppressScrollY && i.containerHeight + i.settings.scrollYMarginOffset < i.contentHeight) {
@@ -15412,9 +13348,6 @@ module.exports = function (element) {
     i.scrollbarYTop = h.toInt(element.scrollTop * (i.railYHeight - i.scrollbarYHeight) / (i.contentHeight - i.containerHeight));
   } else {
     i.scrollbarYActive = false;
-    i.scrollbarYHeight = 0;
-    i.scrollbarYTop = 0;
-    updateScroll(element, 'top', 0);
   }
 
   if (i.scrollbarXLeft >= i.railXWidth - i.scrollbarXWidth) {
@@ -15426,11 +13359,25 @@ module.exports = function (element) {
 
   updateCss(element, i);
 
-  cls[i.scrollbarXActive ? 'add' : 'remove'](element, 'ps-active-x');
-  cls[i.scrollbarYActive ? 'add' : 'remove'](element, 'ps-active-y');
+  if (i.scrollbarXActive) {
+    cls.add(element, 'ps-active-x');
+  } else {
+    cls.remove(element, 'ps-active-x');
+    i.scrollbarXWidth = 0;
+    i.scrollbarXLeft = 0;
+    updateScroll(element, 'left', 0);
+  }
+  if (i.scrollbarYActive) {
+    cls.add(element, 'ps-active-y');
+  } else {
+    cls.remove(element, 'ps-active-y');
+    i.scrollbarYHeight = 0;
+    i.scrollbarYTop = 0;
+    updateScroll(element, 'top', 0);
+  }
 };
 
-},{"../lib/class":124,"../lib/dom":125,"../lib/helper":128,"./instances":140,"./update-scroll":142}],142:[function(require,module,exports){
+},{"../lib/class":140,"../lib/dom":141,"../lib/helper":144,"./instances":156,"./update-scroll":158}],158:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -15489,13 +13436,13 @@ module.exports = function (element, axis, value) {
 
   var i = instances.get(element);
 
-  if (axis === 'top' && value > i.contentHeight - i.containerHeight) {
+  if (axis === 'top' && value >= i.contentHeight - i.containerHeight) {
     element.scrollTop = i.contentHeight - i.containerHeight;
     element.dispatchEvent(yEndEvent);
     return; // don't allow scroll past container
   }
 
-  if (axis === 'left' && value > i.contentWidth - i.containerWidth) {
+  if (axis === 'left' && value >= i.contentWidth - i.containerWidth) {
     element.scrollLeft = i.contentWidth - i.containerWidth;
     element.dispatchEvent(xEndEvent);
     return; // don't allow scroll past container
@@ -15537,7 +13484,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":140}],143:[function(require,module,exports){
+},{"./instances":156}],159:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -15546,7 +13493,8 @@ module.exports = function (element, axis, value) {
 var d = require('../lib/dom')
   , h = require('../lib/helper')
   , instances = require('./instances')
-  , updateGeometry = require('./update-geometry');
+  , updateGeometry = require('./update-geometry')
+  , updateScroll = require('./update-scroll');
 
 module.exports = function (element) {
   var i = instances.get(element);
@@ -15570,11 +13518,15 @@ module.exports = function (element) {
 
   updateGeometry(element);
 
+  // Update top/left scroll to trigger events
+  updateScroll(element, 'top', element.scrollTop);
+  updateScroll(element, 'left', element.scrollLeft);
+
   d.css(i.scrollbarXRail, 'display', '');
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":125,"../lib/helper":128,"./instances":140,"./update-geometry":141}]},{},[4])(4)
+},{"../lib/dom":141,"../lib/helper":144,"./instances":156,"./update-geometry":157,"./update-scroll":158}]},{},[4])(4)
 });
 //# sourceMappingURL=builder.map
 

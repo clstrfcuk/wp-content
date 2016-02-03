@@ -21,40 +21,10 @@ class Cornerstone_Integration_X_Shortcodes {
 	}
 
 	public function __construct() {
-		add_action( 'init', array( $this, 'init'), -99999 );
-	}
-
-	public function init() {
-
-		// Strip Hooks
+		include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+		deactivate_plugins( array( 'x-shortcodes/x-shortcodes.php' ) );
 		remove_action( 'init', 'x_shortcodes_init' );
-	  remove_action( 'admin_init', array( XSG::instance(), 'admin_init' ) );
-    remove_action( 'wp_ajax_xsg_list_shortcodes', array( XSG::instance(), 'model_endpoint' ) );
-    remove_action( 'admin_init',    'x_shortcodes_version_migration' );
-    remove_action( 'admin_notices', 'x_shortcodes_pairing_notice' );
-    remove_filter( 'user_contactmethods', 'x_modify_contact_methods' );
-
-    // Encourgage users to remove X Shortcodes
-		add_action( 'admin_notices', array( $this, 'pleaseDeleteXShortcodes' ) );
-
-    // Continue to output the X Shortcodes Body Class
-		add_filter( 'body_class', array( $this, 'bodyClass' ), 10001 ); // 1
-
-
-	}
-
-	public function pleaseDeleteXShortcodes() { ?>
-
-		<div class="updated x-notice warning">
-      <p><strong>X &ndash; Shortcodes is still active</strong>. Now that you're using Cornerstone, X Shortcodes can be safely deactivated and deleted from the <a href="<?php echo admin_url('plugins.php'); ?>">plugins page</a>.</p>
-    </div>
-    <?php
-
-	}
-
-	public function bodyClass( $output ) {
-	  $output[] = 'x-shortcodes-v' . str_replace( '.', '_', X_SHORTCODES_VERSION );
-	  return $output;
+    Cornerstone_Admin_Notice::updated( __( '<strong>X &ndash; Shortcodes has been deactivated</strong>. Cornerstone will now provide your site with those shortcodes, and many new ones.', csl18n() ), true );
 	}
 
 }

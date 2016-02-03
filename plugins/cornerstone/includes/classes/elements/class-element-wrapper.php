@@ -22,8 +22,8 @@ class Cornerstone_Element_Wrapper {
 
 	protected $shortcode_template = null;
 
-	protected static $default_flags = array( 'context' => 'all', 'child' => false, '_v' => 'mk2', 'can_preview' => true );
-	protected static $default_ui = array( 'title' => 'Element', 'description' => '', 'autofocus' => '' );
+	protected static $default_flags = array( 'context' => 'all', 'dynamic_child' => false, 'child' => false, '_v' => 'mk2', 'can_preview' => true );
+	protected static $default_ui = array( 'title' => 'Element', 'description' => '', 'autofocus' => '', 'icon_group' => '', 'icon_id' => 'default' );
 	protected static $common_controls = array( 'id', 'class', 'style' );
 
 	protected static $valid_contexts = array( 'all', 'content', 'design' );
@@ -46,8 +46,12 @@ class Cornerstone_Element_Wrapper {
 			$this->shortcode_name = $this->shortcode_prefix . str_replace( '-', '_', $this->name );
 		}
 
-		if ( $native )
+		$this->hook_prefix = "cs_element_{$this->name}_";
+
+		if ( $native ) {
+			add_filter( $this->hook_prefix . 'ui', array( $this, 'native_icons' ), 20 );
 			$this->definition->text_domain = csl18n();
+		}
 
 		if ( isset( $this->definition->text_domain ) )
 			$this->text_domain = $this->definition->text_domain;
@@ -55,7 +59,7 @@ class Cornerstone_Element_Wrapper {
 		if ( isset( $this->definition->preserve_content ) )
 			$this->preserve_content = $this->definition->preserve_content;
 
-		$this->hook_prefix = "cs_element_{$this->name}_";
+
 
 	}
 
@@ -101,7 +105,7 @@ class Cornerstone_Element_Wrapper {
 		add_filter( "shortcode_atts_{$this->shortcode_name}", array( $this, 'shortcode_output_atts' ), 10, 3 );
 
 		if ( $this->preserve_content )
-			add_filter( 'wp_preserve_shortcodes', array( $this, 'preserve_content' ) );
+			add_filter( 'cs_preserve_shortcodes', array( $this, 'preserve_content' ) );
 
 	}
 
@@ -145,7 +149,8 @@ class Cornerstone_Element_Wrapper {
 
 	public function shortcode_output( $atts, $content = "", $shortcode_name ) {
 
-		$atts = shortcode_atts( $this->defaults(), $atts, $shortcode_name );
+		$defaults = $this->controls()->get_transformed_atts( $this->defaults() );
+		$atts = shortcode_atts( $defaults, $atts, $shortcode_name );
 
 		if ( isset( $atts['content'] ) )
 			unset( $atts['content'] );
@@ -167,27 +172,32 @@ class Cornerstone_Element_Wrapper {
 	 */
 	public function shortcode_output_atts( $out, $pairs, $atts ) {
 
-		$atts = apply_filters( $this->hook_prefix . 'shortcode_output_atts', $atts );
-
 		foreach ( $out as $key => $value) {
-			if ( 'false' == $value || 'true' == $value ) {
-				$out[$key] = ( 'true' == $value );
+			if ( 'true' == $value ) {
+				$out[$key] = true;
 				continue;
 			}
-			if ( is_array( $value ) && 5 == count( $value ) && ( $value[4] == 'linked' || $value[4] == 'unlinked' ) ) {
-				$out[$key] = Cornerstone_Control_Dimensions::simplify( $value );
+			if ( 'false' == $value ) {
+				$out[$key] = false;
 				continue;
 			}
 		}
+
+		$out = apply_filters( $this->hook_prefix . 'shortcode_output_atts', $out, $pairs, $atts );
+
 		return $out;
 	}
-
-
 
 	public function ui() {
 
 		if ( !isset( $this->ui ) ) {
+
 			$this->ui = wp_parse_args( apply_filters( $this->hook_prefix . 'ui', array() ), self::$default_ui );
+
+			if ( '' == $this->ui['icon_group'] ) {
+				$this->ui['icon_group'] = 'elements';
+			}
+
 		}
 
 		return $this->ui;
@@ -231,9 +241,12 @@ class Cornerstone_Element_Wrapper {
 	public function model_data() {
 
 		$flags = $this->flags();
+		$ui = $this->ui();
+
 		$data = array(
 			'name'          => $this->name,
-			'ui'            => $this->ui(),
+			'ui'            => $ui,
+			'icon'          => $ui['icon_group'] . '/' . $ui['icon_id'],
 			'flags'         => $flags,
 			'active'        => $this->is_active(),
 			'base_defaults' => $this->transform_defaults( $this->defaults() ),
@@ -252,13 +265,6 @@ class Cornerstone_Element_Wrapper {
 	}
 
 	protected function transform_defaults( $defaults ) {
-
-		foreach ($defaults as $key => $value) {
-			if ( $key == 'id' ) {
-				$defaults['custom_id'] = $value;
-				unset( $defaults['id'] );
-			}
-		}
 
 		return $defaults;
 
@@ -302,38 +308,36 @@ class Cornerstone_Element_Wrapper {
 		return ob_get_clean();
 	}
 
-	public function build_shortcode( $atts, $content = '') {
+	public function build_shortcode( $atts, $content = '', $parent = null ) {
 
-		if ( !apply_filters( $this->hook_prefix . 'should_have_markup', true, $atts, $content ) ) {
+		if ( !apply_filters( $this->hook_prefix . 'should_have_markup', true, $atts, $content, $parent ) ) {
 			return '';
 		}
 
-		$atts = wp_parse_args( $atts, $this->get_applied_defaults() );
-
-		// if ( apply_filters( $this->hook_prefix . 'explicit_defaults', true ) ) {
-
-		// }
+		$atts = wp_parse_args( $atts, $this->get_applied_defaults() ); //backfills legacy defaults..
 
 		$atts = $this->controls()->backfill_content( $atts );
 
 		$atts = $this->controls()->filter_atts_for_shortcode( $atts );
 
-		$atts = apply_filters( $this->hook_prefix . 'update_build_shortcode_atts', $atts );
+		$atts = apply_filters( $this->hook_prefix . 'update_build_shortcode_atts', $atts, $parent );
 
 		$atts = $this->build_shortcode_clean_atts( $atts );
 
-		if ( '' == $content && isset( $atts['content'] ) ) {
-			$content = $atts['content'];
+		if ( isset( $atts['content'] ) ) {
+			if  ( '' == $content )
+				$content = $atts['content'];
 			unset( $atts['content'] );
 		}
 
-		$content = apply_filters( $this->hook_prefix . 'update_build_shortcode_content', $content );
+		$content = apply_filters( $this->hook_prefix . 'update_build_shortcode_content', $content, $parent );
 
 	  $output = "[{$this->shortcode_name}";
 
 	  foreach ($atts as $attribute => $value) {
-		$clean = cs_clean_shortcode_att( $value );
-	    $output .= " {$attribute}=\"{$clean}\"";
+			$clean = cs_clean_shortcode_att( $value );
+			$att = sanitize_key( $attribute );
+	    $output .= " {$att}=\"{$clean}\"";
 	  }
 
 	  if ( $content == '' && !apply_filters( $this->hook_prefix . 'always_close_shortcode', false ) ) {
@@ -352,41 +356,48 @@ class Cornerstone_Element_Wrapper {
 		unset( $atts['elements'] );
 
 		foreach ($atts as $key => $value) {
-			if ( $value == '' || !is_scalar( $value ) ) {
+
+			if ( 'content' == $key )
+				continue;
+
+			if ( !is_scalar( $value ) ) {
 				unset($atts[$key]);
 				continue;
 			}
-			if ( $value === true ) {
-				$atts[$key] = 'true';
-				continue;
-			}
-			if ( $value === false ) {
-				$atts[$key] = 'false';
-				continue;
-			}
 
-			if ( is_array( $value ) && 5 == count( $value ) && ( $value[4] == 'linked' || $value[4] == 'unlinked' ) ) {
-				$atts[$key] = Cornerstone_Control_Dimensions::simplify( $value );
-				continue;
-			}
+		}
 
+		if ( isset( $atts['class'] ) ) {
+			$atts['class'] = cs_sanitize_html_classes( $atts['class'] );
 		}
 
 		return $atts;
 
 	}
 
-	public function preview( $element ) {
+	public function preview( $element, $orchestrator, $parent = null ) {
 
 		$element = $this->sanitize( $element );
 
-		$markup = apply_filters( $this->hook_prefix . 'preview', '', $element );
+		$markup = apply_filters( $this->hook_prefix . 'preview', '', $element, $parent );
 
 		if ( '' === $markup ) {
 			$content = '';
-			if ( isset( $element['elements'] ) && !empty( $element['elements'] ) )
-				$content = '<div class="cs-inception"></div>';
-			$markup = $this->build_shortcode( $element, $content );
+			if ( isset( $element['elements'] ) && is_array( $element['elements'] ) && !empty( $element['elements'] ) ) {
+
+				$flags = $this->flags();
+
+				if ( $flags['dynamic_child'] ) {
+					$content = '<div class="cs-inception"></div>';
+				} else {
+					foreach ($element['elements'] as $child ) {
+						$child_definition = $orchestrator->get( $child['_type'] );
+						unset( $child['_type'] );
+						$content .= $child_definition->preview( $child, $orchestrator, $element );
+					}
+				}
+			}
+			$markup = $this->build_shortcode( $element, $content, $parent );
 		}
 
 		return $markup;
@@ -416,6 +427,18 @@ class Cornerstone_Element_Wrapper {
 	public function preserve_content( $shortcodes ) {
 		$shortcodes[] = $this->shortcode_name;
 		return $shortcodes;
+	}
+
+
+	public function native_icons( $ui ) {
+
+		$ui['icon_group'] = 'elements';
+
+		if ( !isset($ui['icon_id']) || '' == $ui['icon_id'] ) {
+ 			$ui['icon_id'] = $this->name;
+		}
+
+		return $ui;
 	}
 
 	public function version() {

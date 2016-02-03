@@ -9,7 +9,7 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
   public function setup() {
 
 		add_action( 'admin_init', array( $this, 'start' ) );
-  	add_action( 'cornerstone_load_builder', array( $this, 'start' ) );
+		add_action( 'cornerstone_load_builder', array( $this, 'start' ) );
     add_action( 'wp_ajax_csg_list_shortcodes', array( &$this, 'modelEndpoint' ) );
 
   }

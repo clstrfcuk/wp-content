@@ -22,4 +22,4 @@ function x_shortcode_raw_content( $atts, $content = null ) {
 }
 
 add_shortcode( 'x_raw_content', 'x_shortcode_raw_content' );
-WP_Shortcode_Preserver::preserve('x_raw_content');
+CS_Shortcode_Preserver::preserve('x_raw_content');
