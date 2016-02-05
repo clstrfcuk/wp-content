@@ -1,0 +1,178 @@
+msgid ""
+msgstr "MIME-Version: 1.0\n"
+
+#. Name.
+msgid "Transient Cleaner"
+msgstr ""
+
+#. Short description.
+msgid "Housekeep expired transients from your options table"
+msgstr ""
+
+#. Screenshot description.
+msgid "Administration screen showing contextual help screen"
+msgstr ""
+
+#. Found in description paragraph.
+msgid "\"Transients are a simple and standardized way of storing cached data in the WordPress database temporarily by giving it a custom name and a timeframe after which it will expire and be deleted.\""
+msgstr ""
+
+#. Found in description paragraph.
+msgid "Unfortunately, expired entries will only be deleted if you attempt to access the transient again. If you don't access the transient then, even though it's expired, WordPress will not remove it. This is <a href=\"http://core.trac.wordpress.org/ticket/20316\" title=\"Ticket #20316\">a known \"issue\"</a> but due to reason, which are explained in the FAQ, have not been resolved."
+msgstr ""
+
+#. Found in description paragraph.
+msgid "Why is this a problem? Transients are often used by plugins to \"cache\" data (my own plugins included). Because of the housekeeping problems this means that expired data can be left and build up, resulting in a bloated database table."
+msgstr ""
+
+#. Found in description paragraph.
+msgid "Meantime, this plugin is the solution, using the same proposed method as the WordPress core change will use. Simply activate the plugin, sit back and enjoy a much cleaner, smaller options table. It also adds the additional recommendation that after a database upgrade all transients will be cleared down."
+msgstr ""
+
+#. Found in description paragraph.
+msgid "Within <code>Administration</code> -&gt; <code>Tools</code> -&gt; <code>Transients</code> an options screen exists allowing you to tweak which of the various housekeeping you'd like to happen, including the ability to perform an ad-hoc run. You can also request an optimization of the options table to give your system a real \"pep\"!"
+msgstr ""
+
+#. Found in description paragraph.
+msgid "We'd like to thank WordPress Developer Andrew Nacin for his early discussion on this. Also, we'd like to acknowledge <a href=\"http://www.staze.org/wordpress-_transient-buildup/\" title=\"WordPress _transient buildup\">the useful article at Everybody Staze</a> for ensuring the proposed solution wasn't totally mad, and <a href=\"http://w-shadow.com/blog/2012/04/17/delete-stale-transients/\" title=\"Cleaning Up Stale Transients\">W-Shadow.com</a> for the cleaning code."
+msgstr ""
+
+#. Found in installation list item.
+msgid "Upload the entire <code>artiss-transient-cleaner</code> folder to your wp-content/plugins/ directory."
+msgstr ""
+
+#. Found in installation list item.
+msgid "Activate the plugin through the 'Plugins' menu in WordPress."
+msgstr ""
+
+#. Found in installation list item.
+msgid "That's it - you're done. Options can be changed in Administration via the Tools-&gt;Transients screen."
+msgstr ""
+
+#. Found in installation paragraph.
+msgid "Transient Cleaner can be found and installed via the Plugin menu within WordPress administration. Alternatively, it can be downloaded and installed manually..."
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Maintenance: Added a text domain and domain path"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Added links to settings in plugin meta"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Updated admin screen headings for WP 4.3"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Now used time() instead of gmmktime(), so as to follow strict usage"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Bug: Big PHP error clean-up"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Maintenance: Updated links on plugin meta"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Bug: Removed PHP error"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Options are now only available to admin (super admin if a multisite)"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Bug: Removed reporting of \"orphaned\" transients - these are actually transients without a timeout"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Maintenance: Updated the branding of the plugin"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Added support link to plugin meta"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Maintenance: Split files because of additional code size"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Maintenance: Removed run upon activation"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Improved transient cleaning code efficiency (including housekeeping MU wide transients)"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Added administration screen (Tools-&gt;Transients) to allow ad-hoc runs and specify run options"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Show within new admin screen whether orphaned transients have been found (in this case full clear of the option table is recommended)"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Added internationalisation"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: If external memory cache is in use display an admin box to indicate this plugin is not required"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Enhancement: Transients will be initially housekept when the plugin is activated"
+msgstr ""
+
+#. Found in changelog list item.
+msgid "Initial release"
+msgstr ""
+
+#. Found in faq header.
+msgid "Why hasn't this been fixed in the WordPress core?"
+msgstr ""
+
+#. Found in faq header.
+msgid "Does that mean this plugin could break my site?"
+msgstr ""
+
+#. Found in faq header.
+msgid "Have WordPress not done anything, then?"
+msgstr ""
+
+#. Found in faq header.
+msgid "How often will expired transients be cleared down?"
+msgstr ""
+
+#. Found in faq header.
+msgid "Even after performing the scheduled housekeeping there are still expired transients left"
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "An attempt was made and lots of discussions ensued. Basically, some plugins don't use transients correctly and they use them as required storage instead of temporary cache data. This would mean any attempt by WordPress core to regularly housekeep transients may break some plugins and, hence, websites. WordPress didn't want to do this."
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "If you have one of these badly written plugins, yes. However, we've yet to come across anybody reporting an issue."
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "Yes, they implemented the clearing down of all transients upon a database upgrade. However, they don't optimise the table after, which this plugin does. So we have retained our version of this funcionality. This could mean that the WordPress may run and ours as well but, well, if it's already been cleared then the second run isn't going to do anything so it doesn't add any overheads - it just ensures the optimisation occurs, no matter what."
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "It runs alongside the existing trash deletion, which is timed to run once a day. However, it will also run whenever you activate the plugin, ensuring that you can immediately test the results."
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "This can happen when transients become \"orphaned\". Each transient consists of 2 record - one holds the expiry time and the other the actual data. If one is removed without the other then this will then cause problems for the scheduled housekeeping."
+msgstr ""
+
+#. Found in faq paragraph.
+msgid "In this situation the Database Upgrade run, which removes all transients even if they're orphaned, will be the solution."
+msgstr ""
