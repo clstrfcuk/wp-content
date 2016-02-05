@@ -29,8 +29,8 @@ $output = '
 	<div class="' . esc_attr( $css_class ) . '">
 		<div class="wpb_wrapper">
 			' . wpb_widget_title( array( 'title' => $title, 'extraclass' => 'wpb_flickr_heading' ) ) . '
-			<script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=' . $count . '&amp;display=' . $display . '&amp;size=s&amp;layout=x&amp;source=' . $type . '&amp;' . $type . '=' . $flickr_id . '"></script>
-			<p class="flickr_stream_wrap"><a class="wpb_follow_btn wpb_flickr_stream" href="http://www.flickr.com/photos/' . $flickr_id . '">' . __( 'View stream on flickr', 'js_composer' ) . '</a></p>
+			<script type="text/javascript" src="//www.flickr.com/badge_code_v2.gne?count=' . $count . '&amp;display=' . $display . '&amp;size=s&amp;layout=x&amp;source=' . $type . '&amp;' . $type . '=' . $flickr_id . '"></script>
+			<p class="flickr_stream_wrap"><a class="wpb_follow_btn wpb_flickr_stream" href="//www.flickr.com/photos/' . $flickr_id . '">' . __( 'View stream on flickr', 'js_composer' ) . '</a></p>
 		</div>
 	</div>
 ';

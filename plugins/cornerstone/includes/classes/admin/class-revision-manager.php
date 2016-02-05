@@ -15,7 +15,7 @@ class Cornerstone_Revision_Manager extends Cornerstone_Plugin_Component {
 	public function setup() {
 
 		// Disable revision through filter
-		if ( apply_filters( 'cornerstone_disable_revisions', false ) || !CS()->common()->uses_cornerstone() ) return;
+		if ( apply_filters( 'cornerstone_disable_revisions', false ) ) return;
 
 		// Save cornerstone revision
 		add_action( 'save_post', array( $this, 'saveRevision' ) , 10, 2 );

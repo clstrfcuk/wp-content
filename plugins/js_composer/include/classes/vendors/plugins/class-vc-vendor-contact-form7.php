@@ -17,6 +17,23 @@ class Vc_Vendor_ContactForm7 implements Vc_Vendor_Interface {
 	 * @since 4.3
 	 */
 	public function load() {
+
+		vc_lean_map( 'contact-form-7', array(
+			$this,
+			'addShortcodeSettings',
+		) );
+	}
+
+	/**
+	 * Mapping settings for lean method.
+	 *
+	 * @since 4.9
+	 *
+	 * @param $tag
+	 *
+	 * @return array
+	 */
+	public function addShortcodeSettings( $tag ) {
 		/**
 		 * Add Shortcode To Visual Composer
 		 */
@@ -30,8 +47,9 @@ class Vc_Vendor_ContactForm7 implements Vc_Vendor_Interface {
 		} else {
 			$contact_forms[ __( 'No contact forms found', 'js_composer' ) ] = 0;
 		}
-		vc_map( array(
-			'base' => 'contact-form-7',
+
+		return array(
+			'base' => $tag,
 			'name' => __( 'Contact Form 7', 'js_composer' ),
 			'icon' => 'icon-wpb-contactform7',
 			'category' => __( 'Content', 'js_composer' ),
@@ -53,6 +71,6 @@ class Vc_Vendor_ContactForm7 implements Vc_Vendor_Interface {
 					'description' => __( 'Choose previously created contact form from the drop down list.', 'js_composer' ),
 				),
 			),
-		) );
+		);
 	}
 }

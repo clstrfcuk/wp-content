@@ -34,6 +34,8 @@ class Cornerstone_Preview_Window extends Cornerstone_Plugin_Component {
 
 		do_action( 'cornerstone_load_preview' );
 
+		nocache_headers();
+
 	}
 
 	/**

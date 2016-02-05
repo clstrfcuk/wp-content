@@ -337,7 +337,7 @@ span.setting_text_3 { 	color:#232323!important;	line-height:30px;	font-size:12px
 }
 
 
-#ui-datepicker-div													{	padding:0px 20px 20px; background:#f1f1f1; border:1px solid #e5e5e5;}
+#ui-datepicker-div													{	padding:0px 20px 20px; background:#f1f1f1; border:1px solid #e5e5e5;z-index:2100 !important;}
 .ui-datepicker-header												{	font-size:16px;vertical-align: top; line-height:25px;}
 #ui-datepicker-div .ui-icon											{	text-indent: 0px;display: inline-block;margin-right: 15px;font-size: 12px;text-align: center; cursor: pointer;}
 
@@ -682,7 +682,7 @@ li.selected .rs-icon-edit-basic,li:hover .rs-icon-edit-basic { 	background-image
 
 
 .quick-layers-list												{ 	margin:0px 0px 0px; padding:0px 30px;max-height:175px; overflow: hidden; position: relative;}
-.quick-layers-list li 											{	margin-bottom:5px; padding-left:0px; border:none; border-bottom:1px solid #2e2e2e; background-color:inherit; background-image:none;}
+.quick-layers-list li 											{	margin-bottom:5px; padding-left:0px; border:none !important; border-bottom:1px solid #2e2e2e !important; background:transparent !important;}
 .quick-edit-toolbar-in-list 									 {	visibility:hidden; float:left;display:block;}
 .quicksortlayer.selected .quick-edit-toolbar-in-list,
 .quick-layers-list li:hover .quick-edit-toolbar-in-list 		{	visibility: visible}

@@ -22,6 +22,14 @@ class Vc_Mapper {
 	 * @var array
 	 */
 	protected $init_activity = array();
+	/**
+	 *
+	 *
+	 * @since 4.9
+	 *
+	 * @var array
+	 */
+	protected $element_activities = array();
 
 	protected $hasAccess = array();
 
@@ -44,7 +52,7 @@ class Vc_Mapper {
 		do_action( 'vc_mapper_init_before' );
 		require_once vc_path_dir( 'PARAMS_DIR', 'load.php' );
 		WPBMap::setInit();
-		require_once vc_path_dir( 'CONFIG_DIR', 'map.php' );
+		require_once vc_path_dir( 'CONFIG_DIR', 'lean-map.php' );
 		$this->callActivities();
 		do_action( 'vc_mapper_init_after' );
 	}
@@ -61,7 +69,32 @@ class Vc_Mapper {
 	 * @param array $params - list of attributes for object method
 	 */
 	public function addActivity( $object, $method, $params = array() ) {
-		$this->init_activity[] = array( $object, $method, $params );
+		$this->init_activity[] = array(
+			$object,
+			$method,
+			$params,
+		);
+	}
+
+	/**
+	 * This method is called by VC objects methods if it is called before VC initialization.
+	 *
+	 * @see WPBMAP
+	 * @since  4.9
+	 * @access public
+	 *
+	 * @param $tag - shortcode tag of element
+	 * @param $method - method name
+	 * @param array $params - list of attributes for object method
+	 */
+	public function addElementActivity( $tag, $method, $params = array() ) {
+		if ( ! isset( $this->element_activities[ $tag ] ) ) {
+			$this->element_activities[ $tag ] = array();
+		}
+		$this->element_activities[ $tag ][] = array(
+			$method,
+			$params,
+		);
 	}
 
 	/**
@@ -145,5 +178,32 @@ class Vc_Mapper {
 	 */
 	public function setCheckForAccess( $checkForAccess ) {
 		$this->checkForAccess = $checkForAccess;
+	}
+
+	public function callElementActivities( $tag ) {
+		do_action( 'vc_mapper_call_activities_before' );
+		if ( isset( $this->element_activities[ $tag ] ) ) {
+			while ( $activity = each( $this->element_activities[ $tag ] ) ) {
+				list( $method, $params ) = $activity[1];
+				switch ( $method ) {
+					case 'drop_param':
+						WPBMap::dropParam( $params['name'], $params['attribute_name'] );
+						break;
+					case 'add_param':
+						WPBMap::addParam( $params['name'], $params['attribute'] );
+						break;
+					case 'mutate_param':
+						WPBMap::mutateParam( $params['name'], $params['attribute'] );
+						break;
+					case 'drop_shortcode':
+						WPBMap::dropShortcode( $params['name'] );
+						break;
+					case 'modify':
+						WPBMap::modify( $params['name'], $params['setting_name'], $params['value'] );
+						break;
+				}
+			}
+		}
+
 	}
 }

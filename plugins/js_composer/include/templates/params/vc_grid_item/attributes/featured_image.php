@@ -16,7 +16,7 @@ extract( $atts );
 $style = ( '' !== $style ) ? $style : '';
 $border_color = ( '' !== $border_color ) ? ' vc_box_border_' . $border_color : '';
 
-$img_id = get_post_thumbnail_id( $post->ID );
+$img_id = has_post_thumbnail( $post->ID ) ? get_post_thumbnail_id( $post->ID ) : $post->ID;
 $img = wpb_getImageBySize( array(
 	'attach_id' => $img_id,
 	'thumb_size' => $img_size,
@@ -27,9 +27,9 @@ if ( null === $img || false === $img ) {
 	return '';
 }
 $el_class = $img_class->getExtraClass( $el_class );
-
+$style = preg_replace( '/_circle_2$/', '_circle', $style );
 $wrapperClass = 'vc_single_image-wrapper ' . $style . ' ' . $border_color;
-$link = vc_gitem_create_link_real( $atts, $post, '', $title );
+$link = vc_gitem_create_link_real( $atts, $post, $wrapperClass, $title );
 
 $image_string = ! empty( $link ) ? '<' . $link . '>' . $img['thumbnail'] . '</a>' : '<div class="' . $wrapperClass . '">' . $img['thumbnail'] . '</div>';
 $css_class = apply_filters( VC_SHORTCODE_CUSTOM_CSS_FILTER_TAG, 'wpb_single_image wpb_content_element' . $el_class . vc_shortcode_custom_css_class( $css, ' ' ), $img_class->settings( 'base' ), $atts );

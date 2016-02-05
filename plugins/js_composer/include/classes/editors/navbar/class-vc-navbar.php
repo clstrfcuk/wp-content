@@ -17,6 +17,8 @@ class Vc_Navbar implements Vc_Render {
 		'preview',
 		'frontend',
 		'custom_css',
+		'fullscreen',
+		'windowed',
 	);
 	/**
 	 * @var string
@@ -106,6 +108,24 @@ class Vc_Navbar implements Vc_Render {
 		return '<li class="vc_pull-right"><a id="vc_post-settings-button" class="vc_icon-btn vc_post-settings" title="'
 		       . __( 'Page settings', 'js_composer' ) . '">'
 		       . '<span id="vc_post-css-badge" class="vc_badge vc_badge-custom-css" style="display: none;">' . __( 'CSS', 'js_composer' ) . '</span></a>'
+		       . '</li>';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getControlFullscreen() {
+		return '<li class="vc_show-mobile vc_pull-right">'
+		       . '<a id="vc_fullscreen-button" class="vc_icon-btn vc_fullscreen-button" title="'. __( 'Full screen', 'js_composer' ) . '"></a>'
+		       . '</li>';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getControlWindowed() {
+		return '<li class="vc_show-mobile vc_pull-right">'
+		       . '<a id="vc_windowed-button" class="vc_icon-btn vc_windowed-button" title="'. __( 'Exit full screen', 'js_composer' ) . '"></a>'
 		       . '</li>';
 	}
 

@@ -1,6 +1,6 @@
 /********************************************
- * REVOLUTION 5.1.4 EXTENSION - PARALLAX
- * @version: 1.1.1 (25.11.2015)
+ * REVOLUTION 5.1.6 EXTENSION - PARALLAX
+ * @version: 1.2 (04.01.2016)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch
 *********************************************/
@@ -67,15 +67,16 @@ jQuery.extend(true,_R, {
 				punchgs.TweenLite.set(dddwl,{force3D:"auto",transformOrigin:"50% 50%",zIndex:5});					
 				punchgs.TweenLite.set(opt.ul,{transformStyle:"preserve-3d",transformPerspective:1600});					
 			}
-			
-			for (var i = 1; i<=_.levels.length;i++)				
-				li.find('.rs-parallaxlevel-'+i).each(function() {					
-					var pw = jQuery(this),
-						tpw = pw.closest('.tp-parallax-wrap');												
-					tpw.data('parallaxlevel',_.levels[i-1])
-					tpw.addClass("tp-parallax-container");								
-				});			
-		})
+						
+		});
+
+		for (var i = 1; i<=_.levels.length;i++)				
+			opt.c.find('.rs-parallaxlevel-'+i).each(function() {					
+				var pw = jQuery(this),
+					tpw = pw.closest('.tp-parallax-wrap');												
+				tpw.data('parallaxlevel',_.levels[i-1])
+				tpw.addClass("tp-parallax-container");								
+			});		
 
 		
 		if (_.type=="mouse" || _.type=="scroll+mouse" || _.type=="mouse+scroll" || _.type=="3D" || _.type=="3d") {
@@ -132,8 +133,15 @@ jQuery.extend(true,_R, {
 					diffh = _.ddd_lasth || 0;
 					diffv = _.ddd_lastv || 0;							
 				}*/
+				var pcnts = [];
+				currslide.find(".tp-parallax-container").each(function(i){					
+					pcnts.push(jQuery(this));
+				});
+				container.find('.tp-static-layers .tp-parallax-container').each(function(){
+					pcnts.push(jQuery(this));
+				});
 				
-				currslide.find(".tp-parallax-container").each(function() {
+				jQuery.each(pcnts, function() {
 					var pc = jQuery(this),
 						bl = parseInt(pc.data('parallaxlevel'),0),
 						pl = _.type=="3D" || _.type=="3d" ? bl/200 : bl/100,
@@ -200,9 +208,17 @@ jQuery.extend(true,_R, {
 						ch = container.height(),
 						diffh = (360/cw * x),
 				  		diffv = (180/ch * y),
-				  		s = _.speed/1000 || 3;
-				  	
-				  	currslide.find(".tp-parallax-container").each(function() {
+				  		s = _.speed/1000 || 3,				  	
+				  		pcnts = [];
+					
+					currslide.find(".tp-parallax-container").each(function(i){					
+						pcnts.push(jQuery(this));
+					});
+					container.find('.tp-static-layers .tp-parallax-container').each(function(){
+						pcnts.push(jQuery(this));
+					});
+
+				  	jQuery.each(pcnts, function() {
 						var pc = jQuery(this),
 							bl = parseInt(pc.data('parallaxlevel'),0),
 							pl = bl/100,
@@ -256,20 +272,28 @@ jQuery.extend(true,_R, {
 	},
 	
 	scrollTicker : function(opt,container) {
+		var faut;
+
 		if (opt.scrollTicker!=true) {
-			opt.scrollTicker = true;				
-			punchgs.TweenLite.ticker.fps(150);
-			punchgs.TweenLite.ticker.addEventListener("tick",function() {_R.scrollHandling(opt);},container,false,1);
-		}
+			opt.scrollTicker = true;		
+			if (_ISM) {		
+				punchgs.TweenLite.ticker.fps(150);
+				punchgs.TweenLite.ticker.addEventListener("tick",function() {_R.scrollHandling(opt);},container,false,1);
+			} else {				
+				jQuery(window).on('scroll mousewheel DOMMouseScroll', function() {				
+					_R.scrollHandling(opt,true);					
+				});
+			}		
+				
+		}		
+		_R.scrollHandling(opt, true);
 	},
 
 
 
 	//	-	SET POST OF SCROLL PARALLAX	-
-	scrollHandling : function(opt) {	
-		
-
-
+	scrollHandling : function(opt,fromMouse) {	
+	
 		opt.lastwindowheight = opt.lastwindowheight || jQuery(window).height();
 
 		var t = opt.c.offset().top,
@@ -279,8 +303,10 @@ jQuery.extend(true,_R, {
 			_ = opt.parallax;
 
 		
-		if (opt.lastscrolltop==st && !opt.duringslidechange) return false;
+		if (opt.lastscrolltop==st && !opt.duringslidechange && !fromMouse) return false;
 		//if (opt.lastscrolltop==st) return false;
+
+		
 
 		function saveLastScroll(opt,st) {			
 			opt.lastscrolltop = st;			
@@ -297,10 +323,16 @@ jQuery.extend(true,_R, {
 		if (_R.callBackHandling)
 			_R.callBackHandling(opt,"parallax","start");
 
-		var area = 1-Math.abs(proc);
-		area = area<0 ? 0 : area;
-				
+		
+
 		if (_v.enable) {
+			var area = 1-Math.abs(proc);
+			area = area<0 ? 0 : area;
+			// To Make sure it is not any more in %			
+			if (!jQuery.isNumeric(_v.visible_area))
+			 if (_v.visible_area.indexOf('%')!==-1) 
+				_v.visible_area = parseInt(_v.visible_area)/100;
+			
 
 		 	if (1-_v.visible_area<=area) {
 				if (!opt.inviewport) {
@@ -314,6 +346,8 @@ jQuery.extend(true,_R, {
 				}
 			}
 		}
+
+			
 		// SCROLL BASED PARALLAX EFFECT 
 		if (_ISM && opt.parallax.disable_onmobile=="on") return false;
 
@@ -325,21 +359,21 @@ jQuery.extend(true,_R, {
 				opt.c.find(".tp-parallax-container").each(function(i) {
 					var pc = jQuery(this),
 						pl = parseInt(pc.data('parallaxlevel'),0)/100,
-						offsv =	proc * -(pl*opt.conh);
-					pc.data('parallaxoffset',offsv);
+						offsv =	proc * -(pl*opt.conh) || 0;
+					pc.data('parallaxoffset',offsv);					
 					pt.add(punchgs.TweenLite.set(pc,{force3D:"auto",y:offsv}),0);
 				});		
 
 			opt.c.find('.tp-revslider-slidesli .slotholder, .tp-revslider-slidesli .rs-background-video-layer').each(function() {			
 				var t = jQuery(this),
 					l = t.data('bgparallax') || opt.parallax.bgparallax;				
-					l = l == "on" ? 1 : l;				
+					l = l == "on" ? 1 : l;						
 					if (l!== undefined || l !== "off") {
 
 						var pl = opt.parallax.levels[parseInt(l,0)-1]/100,
-						offsv =	proc * -(pl*opt.conh);		
-						if (jQuery.isNumeric(offsv))	
-							pt.add(punchgs.TweenLite.set(t,{position:"absolute",top:"0px",left:"0px",backfaceVisibility:"hidden",force3D:"true",y:offsv+"px",overwrite:"auto"}),0);
+						offsv =	proc * -(pl*opt.conh) || 0;		
+						if (jQuery.isNumeric(offsv))																					
+							pt.add(punchgs.TweenLite.set(t,{position:"absolute",top:"0px",left:"0px",backfaceVisibility:"hidden",force3D:"true",y:offsv+"px"}),0);								
 					}
 			});
 		}

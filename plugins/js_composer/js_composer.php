@@ -3,7 +3,7 @@
 Plugin Name: WPBakery Visual Composer
 Plugin URI: http://vc.wpbakery.com
 Description: Drag and drop page builder for WordPress. Take full control over your WordPress site, build any layout you can imagine – no programming knowledge required.
-Version: 4.8.1
+Version: 4.9.2
 Author: Michael M - WPBakery.com
 Author URI: http://wpbakery.com
 */
@@ -19,7 +19,7 @@ if ( ! defined( 'WPB_VC_VERSION' ) ) {
 	/**
 	 *
 	 */
-	define( 'WPB_VC_VERSION', '4.8.1' );
+	define( 'WPB_VC_VERSION', '4.9.2' );
 }
 
 /**
@@ -259,8 +259,6 @@ class Vc_Manager {
 		 * if frontend editor is enabled init editor.
 		 */
 		vc_enabled_frontend() && vc_frontend_editor()->init();
-		// Load Automapper
-		vc_automapper()->addAjaxActions();
 		do_action( 'vc_before_mapping' ); // VC ACTION
 		// Include default shortcodes.
 		$this->mapper()->init(); //execute all required
@@ -325,30 +323,25 @@ class Vc_Manager {
 	 * @since 4.4
 	 */
 	public function loadComponents() {
-		$manifest_file = apply_filters(
-			'vc_autoload_components_manifest_file',
-			vc_path_dir( 'AUTOLOAD_DIR', $this->components_manifest )
-		);
+		$manifest_file = apply_filters( 'vc_autoload_components_manifest_file', vc_path_dir( 'AUTOLOAD_DIR', $this->components_manifest ) );
 		if ( is_file( $manifest_file ) ) {
 			ob_start();
 			require_once $manifest_file;
 			$data = ob_get_clean();
 			if ( $data ) {
 				$components = (array) json_decode( $data );
-				$components = apply_filters(
-					'vc_autoload_components_list',
-					$components
-				);
+				$components = apply_filters( 'vc_autoload_components_list', $components );
+				$dir = vc_path_dir( 'AUTOLOAD_DIR' );
 				foreach ( $components as $component => $description ) {
-					$component_path = vc_path_dir( 'AUTOLOAD_DIR', $component );
-					if ( false === strpos( $component_path, '*' ) && is_file( $component_path ) ) {
-						require $component_path;
+					$component_path = $dir . '/' . $component;
+					if ( false === strpos( $component_path, '*' ) ) {
+						require_once $component_path;
 					} else {
 						$components_paths = glob( $component_path );
-						if ( is_array( $components_paths ) && ! empty( $components_paths ) ) {
+						if ( is_array( $components_paths ) ) {
 							foreach ( $components_paths as $path ) {
-								if ( false === strpos( $path, '*' ) && is_file( $path ) ) {
-									require $path;
+								if ( false === strpos( $path, '*' ) ) {
+									require_once $path;
 								}
 							}
 						}
@@ -367,14 +360,8 @@ class Vc_Manager {
 	 * @return void
 	 */
 	protected function asAdmin() {
-		// License management and activation/deactivation methods.
-		vc_license()->addAjaxHooks();
-		// Settings page. Adds menu page in admin panel.
-		// vc_settings()->addMenuPageHooks();
-		// Load backend editor hooks
-		// @todo : maybe do this only if be editor is enabled? fix_roles
+		vc_license()->init();
 		vc_backend_editor()->addHooksSettings();
-		// If auto updater is enabled initialize updating notifications service.
 	}
 
 	/**
@@ -399,7 +386,6 @@ class Vc_Manager {
 		 * 6. page_editable - by vc_action
 		 */
 		if ( is_admin() ) {
-
 			if ( 'vc_inline' === vc_action() ) {
 				vc_user_access()
 					->wpAny( array(
@@ -413,15 +399,13 @@ class Vc_Manager {
 				$this->mode = 'admin_frontend_editor';
 			} elseif ( ( vc_user_access()
 					->wpAny( 'edit_posts', 'edit_pages' )
-					->get() ) && (
-				           'vc_upgrade' === vc_action() ||
-				           ( 'update-selected' === vc_get_param( 'action' ) && $this->pluginName() === vc_get_param( 'plugins' ) ) )
+					->get() ) && ( 'vc_upgrade' === vc_action() || ( 'update-selected' === vc_get_param( 'action' ) && $this->pluginName() === vc_get_param( 'plugins' ) ) )
 			) {
 				$this->mode = 'admin_updater';
 			} elseif ( vc_user_access()
 				           ->wpAny( 'manage_options' )
 				           ->get() && isset( $_GET['page'] ) && $_GET['page'] === $this->settings()
-			                                                                           ->page()
+			                                                                         ->page()
 			) {
 				$this->mode = 'admin_settings_page';
 			} else {
@@ -458,7 +442,10 @@ class Vc_Manager {
 	protected function setVersion() {
 		$version = get_option( 'vc_version' );
 		if ( ! is_string( $version ) || version_compare( $version, WPB_VC_VERSION ) !== 0 ) {
-			add_action( 'vc_after_init', array( vc_settings(), 'rebuild' ) );
+			add_action( 'vc_after_init', array(
+				vc_settings(),
+				'rebuild',
+			) );
 			update_option( 'vc_version', WPB_VC_VERSION );
 		}
 	}
@@ -535,7 +522,9 @@ class Vc_Manager {
 	 */
 	public function editorPostTypes() {
 		if ( is_null( $this->editor_post_types ) ) {
-			$post_types = array_keys( vc_user_access()->part( 'post_types' )->getAllCaps() );
+			$post_types = array_keys( vc_user_access()
+				->part( 'post_types' )
+				->getAllCaps() );
 			$this->editor_post_types = $post_types ? $post_types : $this->editorDefaultPostTypes();
 		}
 
@@ -561,7 +550,8 @@ class Vc_Manager {
 			$all_post_types = $part->getAllCaps();
 
 			foreach ( $all_post_types as $post_type => $value ) {
-				$part->getRole()->remove_cap( $part->getStateKey() . '/' . $post_type );
+				$part->getRole()
+				     ->remove_cap( $part->getStateKey() . '/' . $post_type );
 			}
 			$part->setState( 'custom' );
 
@@ -639,7 +629,10 @@ class Vc_Manager {
 	 * @param bool $value
 	 */
 	public function disableUpdater( $value = true ) {
-		if ( 'administrator' !== vc_user_access()->part( 'settings' )->getRoleName() ) {
+		if ( 'administrator' !== vc_user_access()
+				->part( 'settings' )
+				->getRoleName()
+		) {
 			$this->disable_updater = $value;
 		}
 	}
@@ -853,6 +846,7 @@ class Vc_Manager {
 	 * @return Vc_Updater
 	 */
 	public function updater() {
+
 		if ( ! isset( $this->factory['updater'] ) ) {
 			do_action( 'vc_before_init_updater' );
 			require_once $this->path( 'UPDATERS_DIR', 'class-vc-updater.php' );

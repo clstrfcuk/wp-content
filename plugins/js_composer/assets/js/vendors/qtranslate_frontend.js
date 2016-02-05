@@ -1,7 +1,7 @@
 (function ( $ ) {
 	$( '#vc_vendor_qtranslate_langs_front' ).change( function () {
 		vc.closeActivePanel();
-		$( '#vc_logo' ).addClass( 'vc_ajax-loading' );
+		$( '#vc_logo' ).addClass( 'vc_ui-wp-spinner' );
 		window.location.href = $( this ).val();
 	} );
 

@@ -17,7 +17,7 @@ class Vc_Navbar_Frontend extends Vc_Navbar {
 		'view_post',
 		'save_update',
 		'screen_size',
-		'guides_switch',
+		//'guides_switch', // disabled in 4.9
 		'custom_css',
 	);
 	/**
@@ -28,6 +28,11 @@ class Vc_Navbar_Frontend extends Vc_Navbar {
 	 * @var string
 	 */
 	protected $brand_url = 'http://vc.wpbakery.com/?utm_campaign=VCplugin&utm_source=vc_user&utm_medium=frontend_editor';
+
+	/**
+	 * @var string
+	 */
+	protected $css_class = 'vc_navbar vc_navgar-frontend';
 
 	/**
 	 * @return string

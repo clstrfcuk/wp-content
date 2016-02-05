@@ -257,7 +257,7 @@ $startanims = $operations->getArrAnimations();
 								<li data-content="#style-sub-transfrom" ><?php _e("Transform",'revslider'); ?></li>
 								<li data-content="#style-sub-rotation" ><?php _e("Rotation",'revslider'); ?></li>
 								<li data-content="#style-sub-perspective"><?php _e("Perspective",'revslider'); ?></li>								
-								<li data-content="#style-sub-sharpc"><?php _e("Corners",'revslider'); ?></li>
+								<li data-content="#style-sub-sharpc"><?php _e("Corners",'revslider'); ?></li>								
 								<li data-content="#style-sub-advcss"><?php _e("Advanced CSS",'revslider'); ?></li>		
 								<li data-content="#style-sub-hover"><?php _e("Hover",'revslider'); ?></li>
 								<li data-content="#style-sub-toggle"><?php _e("Toggle",'revslider'); ?></li>		
@@ -293,6 +293,18 @@ $startanims = $operations->getArrAnimations();
 									<option value="center"><?php _e('Center', 'revslider'); ?></option>
 									<option value="right"><?php _e('Right', 'revslider'); ?></option>
 								</select>
+
+								<span class="rs-layer-toolbar-space" style="margin-right:15px"></span>
+
+								<!-- LAYER SELECTABLE -->
+								<i class="rs-mini-layer-icon eg-icon-lightbulb rs-toolbar-icon tipsy_enabled_top" title="<?php _e("Layer is Selectable",'revslider'); ?>" style="margin-right:10px"></i>
+								<!--input type="checkbox" id="css_layer_selectable" name="css_layer_selectable-style" class="rs-staticcustomstylechange tipsy_enabled_top tp-moderncheckbox" title="<?php _e("Layer is Seletable / Markable on Frontend",'revslider'); ?>"-->
+								<select class="rs-staticcustomstylechange rs-layer-input-field  tipsy_enabled_top" title="<?php _e("Layer is Seletable / Markable on Frontend",'revslider'); ?>" style="width:100px;cursor:pointer" id="css_layer_selectable" name="css_layer_selectable-style">
+									<option value="default"><?php _e('Default', 'revslider'); ?></option>
+									<option value="off"><?php _e('Off', 'revslider'); ?></option>
+									<option value="on"><?php _e('On', 'revslider'); ?></option>
+								</select>
+								<span class="rs-layer-toolbar-space" style="margin-right:15px"></span>
 								
 							</span>
 

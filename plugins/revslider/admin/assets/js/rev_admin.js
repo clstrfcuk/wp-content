@@ -1014,6 +1014,10 @@ var RevSliderAdmin = new function(){
 				resizable:false,
 				buttons:{
 					"Local":function(){
+						if(RS_DEMO){
+							alert(rev_lang.not_available_in_demo);
+							return false;
+						}
 						jQuery(".input_import_slider").val('');
 						jQuery('.rs-import-slider-button').hide();
 						
@@ -1100,6 +1104,10 @@ var RevSliderAdmin = new function(){
 		
 		//import slide dialog
 		jQuery("#button_import_slider").click(function(){
+			if(RS_DEMO){
+				alert(rev_lang.not_available_in_demo);
+				return false;
+			}
 			jQuery('.rev-import-slider-button').hide();
 			
 			jQuery(".input_import_slider").val('');
@@ -2272,6 +2280,7 @@ var RevSliderAdmin = new function(){
 
 		});
 		
+		RevSliderSettings.onoffStatus(jQuery('input[name="hideslideonmobile"]'));
 		RevSliderSettings.onoffStatus(jQuery('input[name="stream_do_cover"]'));
 		RevSliderSettings.onoffStatus(jQuery('input[name="stream_do_cover_both"]'));
 		RevSliderSettings.onoffStatus(jQuery('input[name="kenburn_effect"]'));

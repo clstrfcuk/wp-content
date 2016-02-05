@@ -7,6 +7,8 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 
 	public function ajax_handler( $data ) {
 
+		add_shortcode( 'cs_render_wrapper', array( $this, 'wrapping_shortcode' ) );
+
 		CS_Shortcode_Preserver::init();
 
 		if ( $this->sandbox_the_content )
@@ -89,13 +91,20 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 	 */
 	public function render_element( $element, $legacy = false ) {
 
+		$transient = null;
+		if ( isset( $element['_transient'] ) ) {
+			$transient = $element['_transient'];
+			unset( $element['_transient'] );
+		}
+
 		if ( $legacy ) {
 			$markup = $this->mk1->renderElement( $element );
 		} else {
 			$definition = $this->orchestrator->get( $element['_type'] );
-			unset( $element['_type'] );
-			$markup = $definition->preview( $element, $this->orchestrator );
+			$markup = $definition->preview( $element, $this->orchestrator, null, $transient );
 		}
+
+		$markup = '[cs_render_wrapper]' . $markup . '[/cs_render_wrapper]';
 
 		$filter = ( $this->sandbox_the_content ) ? 'cs_render_the_content': 'the_content';
 		$markup = ( $this->raw_markup ) ? $markup : apply_filters( $filter, $markup );
@@ -105,6 +114,10 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 
 		return $markup;
 
+	}
+
+	public function wrapping_shortcode( $atts, $content = '' ) {
+		return do_shortcode( cs_noemptyp( $content ) );
 	}
 
 }

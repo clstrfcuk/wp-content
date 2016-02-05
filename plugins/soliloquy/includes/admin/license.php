@@ -412,7 +412,7 @@ class Soliloquy_License {
         if ( ! $key ) :
         ?>
         <div class="error">
-            <p><?php printf( __( 'No valid license key has been entered, so automatic updates for Soliloquy have been turned off. <a href="%s">Please click here to enter your license key and begin receiving automatic updates.</a>', 'soliloquy' ), add_query_arg( array( 'post_type' => 'soliloquy', 'page' => 'soliloquy-settings' ), admin_url( 'edit.php' ) ) ); ?></p>
+            <p><?php printf( __( 'No valid license key has been entered, so automatic updates for Soliloquy have been turned off. <a href="%s">Please click here to enter your license key and begin receiving automatic updates.</a>', 'soliloquy' ), esc_url( add_query_arg( array( 'post_type' => 'soliloquy', 'page' => 'soliloquy-settings' ), admin_url( 'edit.php' ) ) ) ); ?></p>
         </div>
         <?php
         endif;

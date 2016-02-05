@@ -93,29 +93,14 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 		wp_register_script( 'vc_grid-js-imagesloaded',
 			vc_asset_url( 'lib/bower/imagesloaded/imagesloaded.pkgd.min.js' )
 		);
-		wp_register_script( 'vc_grid-style-all', vc_asset_url( 'js/components/vc_grid_style_all.js' ),
-			array(), WPB_VC_VERSION, true
-		);
-		wp_register_script( 'vc_grid-style-load-more', vc_asset_url( 'js/components/vc_grid_style_load_more.js' ),
-			array(), WPB_VC_VERSION, true
-		);
-		wp_register_script( 'vc_grid-style-lazy', vc_asset_url( 'js/components/vc_grid_style_lazy.js' ),
-			array( 'waypoints' ), WPB_VC_VERSION, true
-		);
-		wp_register_script( 'vc_grid-style-pagination', vc_asset_url( 'js/components/vc_grid_style_pagination.js' ),
-			array(), WPB_VC_VERSION, true
-		);
-		wp_register_script( 'vc_grid', vc_asset_url( 'js/components/vc_grid.js' ),
+		wp_register_script( 'vc_grid', vc_asset_url( 'js/dist/vc_grid.min.js' ),
 			array(
 				'jquery',
 				'underscore',
 				'vc_pageable_owl-carousel',
 				'waypoints',
 				//'isotope',
-				'vc_grid-style-all',
-				'vc_grid-style-load-more',
-				'vc_grid-style-lazy',
-				'vc_grid-style-pagination',
+				'vc_grid-js-imagesloaded',
 			), WPB_VC_VERSION, true
 		);
 	}
@@ -144,7 +129,7 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 	 * @return string
 	 */
 	public function getHash( $atts, $content ) {
-		_deprecated_function( 'WPBakeryShortCode_VC_Basic_Grid::getHash', '4.4.3', 'getId resave your grid' );
+		// _deprecated_function( 'WPBakeryShortCode_VC_Basic_Grid::getHash', '4.4.3 (will be removed in 4.10)', 'getId resave your grid' );
 		if ( vc_is_page_editable() || is_preview() ) {
 			/* We are in Frontend editor
 			 * We need to send RAW shortcode data, so hash is just json_encode of atts and content
@@ -206,7 +191,7 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 	 * @return bool|array
 	 */
 	public function findPostShortcodeByHash( $page_id, $hash ) {
-		_deprecated_function( 'WPBakeryShortCode_VC_Basic_Grid::findPostShortcodeByHash', '4.4.3', 'findPostShortcodeById resave your grid to renew' );
+		// _deprecated_function( 'WPBakeryShortCode_VC_Basic_Grid::findPostShortcodeByHash', '4.4.3 (will be removed in 4.10)', 'findPostShortcodeById resave your grid to renew' );
 
 		if ( $hash ) {
 			if ( $this->currentUserCanManage( $page_id ) && preg_match( '/\"tag\"\:/', urldecode( $hash ) ) ) {
@@ -244,20 +229,24 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 	private function renderItems() {
 		$output = $items = '';
 		$this->buildGridSettings();
-		$css_classes = 'vc_grid vc_row' . esc_attr( $this->atts['gap'] > 0 ? ' vc_grid-gutter-' . (int) $this->atts['gap'] . 'px' : '' );
+		$atts = $this->atts;
+		$settings = $this->grid_settings;
+		$filter_terms = $this->filter_terms;
+		$is_end = isset( $this->is_end ) && $this->is_end;
+		$css_classes = 'vc_grid vc_row' . esc_attr( $atts['gap'] > 0 ? ' vc_grid-gutter-' . (int) $atts['gap'] . 'px' : '' );
 		if ( is_array( $this->items ) && ! empty( $this->items ) ) {
 			require_once vc_path_dir( 'PARAMS_DIR', 'vc_grid_item/class-vc-grid-item.php' );
 			$grid_item = new Vc_Grid_Item();
-			$grid_item->setGridAttributes( $this->atts );
-			$grid_item->setIsEnd( isset( $this->is_end ) && $this->is_end );
-			$grid_item->setTemplateById( $this->atts['item'] );
+			$grid_item->setGridAttributes( $atts );
+			$grid_item->setIsEnd( $is_end );
+			$grid_item->setTemplateById( $atts['item'] );
 			$output .= $grid_item->addShortcodesCustomCss();
 			ob_start();
 			wp_print_styles();
 			$output .= ob_get_clean();
 			$attributes = array(
-				'filter_terms' => $this->filter_terms,
-				'atts' => $this->atts,
+				'filter_terms' => $filter_terms,
+				'atts' => $atts,
 				'grid_item',
 				$grid_item,
 			);
@@ -266,9 +255,10 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 				the_post();
 				$items .= $grid_item->renderItem( get_post() );
 			}
+			wp_reset_postdata();
 		}
 		$items = apply_filters( $this->shortcode . '_items_list', $items );
-		$output .= $this->renderPagination( $this->atts['style'], $this->grid_settings, $items, $css_classes ) . "\n";
+		$output .= $this->renderPagination( $atts['style'], $settings, $items, $css_classes );
 
 		return $output;
 	}
@@ -320,10 +310,11 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 			$hash = isset( $vc_request_param['shortcode_hash'] ) ? $vc_request_param['shortcode_hash'] : false;
 			$shortcode = $this->findPostShortcodeByHash( $vc_request_param['page_id'], $hash );
 		}
-
 		if ( ! is_array( $shortcode ) ) {
 			return "{'status':'Nothing found'}"; // Nothing found
 		}
+		visual_composer()->registerAdminCss();
+		visual_composer()->registerAdminJavascript();
 		// Set post id
 		$this->post_id = (int) $vc_request_param['page_id'];
 

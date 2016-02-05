@@ -93,6 +93,7 @@ class Cornerstone_Control {
 			self::$control_classes = apply_filters( 'cornerstone_control_types', array(
 				'choose'       => 'Cornerstone_Control_Choose',
 				'color'        => 'Cornerstone_Control_Color',
+				'code-editor'  => 'Cornerstone_Control_Code_Editor',
 				'date'         => 'Cornerstone_Control_Date',
 				'dimensions'   => 'Cornerstone_Control_Dimensions',
 				'editor'       => 'Cornerstone_Control_Editor',

@@ -23,6 +23,7 @@ class CSE_Pricing_Table {
   }
 
 	public function update_build_shortcode_atts( $atts ) {
+		$atts['columns'] = count( $atts['elements'] );
 		return $atts;
 	}
 

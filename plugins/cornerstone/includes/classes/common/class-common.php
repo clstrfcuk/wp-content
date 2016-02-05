@@ -16,9 +16,16 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 		$this->fontIcons = $this->plugin->config( 'common/font-icons' );
 		add_action( 'init', array( $this, 'init' ) );
 
-		if ( defined( 'CS_ALPHA' ) && CS_ALPHA ) {
-			$this->plugin->loadComponent('Alpha');
+		$version = CS()->version();
+
+		if ( false !== strpos( $version, '-alpha' ) ) {
+			$this->plugin->loadComponent( 'Alpha' );
 		}
+
+		if ( false !== strpos( $version, '-' ) ) {
+			$this->plugin->loadComponent( 'Prerelease' );
+		}
+
 	}
 
 	public function init() {

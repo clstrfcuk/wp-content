@@ -1,6 +1,19 @@
 <?php
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
+}
+/**
+ * Lean map shortcodes
+ *
+ * @since 4.9
+ *
+ * @param $tag
+ * @param null $settings_function
+ * @param null $settings_file
+ */
+function vc_lean_map( $tag, $settings_function = null, $settings_file = null ) {
+	WPBMap::leanMap( $tag, $settings_function, $settings_file );
 }
 
 /**
@@ -23,7 +36,7 @@ function vc_map( $attributes ) {
  * @deprecated, use vc_map instead
  */
 function wpb_map( $attributes ) {
-	_deprecated_function( 'wpb_map', '4.2', 'vc_map' );
+	// _deprecated_function( 'wpb_map', '4.2 (will be removed in 4.10)', 'vc_map' );
 
 	vc_map( $attributes );
 }
@@ -45,7 +58,7 @@ function vc_remove_element( $shortcode ) {
  * @deprecated use vc_remove_element instead
  */
 function wpb_remove( $shortcode ) {
-	_deprecated_function( 'wpb_remove', '4.2', 'vc_remove_element' );
+	// _deprecated_function( 'wpb_remove', '4.2 (will be removed in 4.10)', 'vc_remove_element' );
 
 	vc_remove_element( $shortcode );
 }
@@ -88,7 +101,7 @@ function vc_add_params( $shortcode, $attributes ) {
  * @deprecated
  */
 function wpb_add_param( $shortcode, $attributes ) {
-	_deprecated_function( 'wpb_add_param', '4.2', 'vc_add_param' );
+	// _deprecated_function( 'wpb_add_param', '4.2 (will be removed in 4.10)', 'vc_add_param' );
 
 	vc_add_param( $shortcode, $attributes );
 }
@@ -254,7 +267,7 @@ if ( ! function_exists( 'vc_set_template_dir' ) ) {
 	 * @param string - full directory path to new template directory with trailing slash
 	 */
 	function vc_set_template_dir( $dir ) {
-		_deprecated_function( 'vc_set_template_dir', '4.2', 'vc_set_shortcodes_templates_dir' );
+		// _deprecated_function( 'vc_set_template_dir', '4.2 (will be removed in 4.10)', 'vc_set_shortcodes_templates_dir' );
 
 		vc_set_shortcodes_templates_dir( $dir );
 	}
@@ -307,7 +320,11 @@ if ( ! function_exists( 'vc_add_default_templates' ) ) {
 }
 
 function vc_map_integrate_shortcode( $shortcode, $field_prefix = '', $group_prefix = '', $change_fields = null, $dependency = null ) {
-	$shortcode_data = WPBMap::getShortCode( $shortcode );
+	if ( is_string( $shortcode ) ) {
+		$shortcode_data = WPBMap::getShortCode( $shortcode );
+	} else {
+		$shortcode_data = $shortcode;
+	}
 	if ( is_array( $shortcode_data ) && ! empty( $shortcode_data ) ) {
 		/**
 		 * @var $shortcode WPBakeryShortCodeFishBones
@@ -340,15 +357,15 @@ function vc_map_integrate_shortcode( $shortcode, $field_prefix = '', $group_pref
 				} elseif ( ! empty( $dependency ) ) {
 					$param = vc_map_integrate_add_dependency( $param, $dependency );
 				}
-				$param['integrated_shortcode'] = $shortcode;
+				$param['integrated_shortcode'] = is_array( $shortcode ) ? $shortcode['base'] : $shortcode;
 				$param['integrated_shortcode_field'] = $field_prefix;
 			}
 		}
 
-		return is_array( $params ) ? array_filter( $params ) : false;
+		return is_array( $params ) ? array_filter( $params ) : array();
 	}
 
-	return false;
+	return array();
 }
 
 /**
@@ -464,9 +481,9 @@ function vc_map_integrate_get_params( $base_shortcode, $integrated_shortcode, $f
 	$params = array();
 	if ( is_array( $shortcode_data ) && is_array( $shortcode_data['params'] ) && ! empty( $shortcode_data['params'] ) ) {
 		foreach ( $shortcode_data['params'] as $param ) {
-			if ( is_array( $param ) && isset( $param['integrated_shortcode'] ) && $integrated_shortcode == $param['integrated_shortcode'] ) {
+			if ( is_array( $param ) && isset( $param['integrated_shortcode'] ) && $integrated_shortcode === $param['integrated_shortcode'] ) {
 				if ( ! empty( $field_prefix ) ) {
-					if ( isset( $param['integrated_shortcode_field'] ) && $field_prefix == $param['integrated_shortcode_field'] ) {
+					if ( isset( $param['integrated_shortcode_field'] ) && $field_prefix === $param['integrated_shortcode_field'] ) {
 						$params[] = $param;
 					}
 				} else {
@@ -621,7 +638,7 @@ function vc_map_get_attributes( $tag, $atts = array() ) {
  * @since 4.3
  */
 function new_vc() {
-	_deprecated_function( 'new_vc', '4.7', 'vc_frontend_editor' );
+	// _deprecated_function( 'new_vc', '4.7 (will be removed in 4.10)', 'vc_frontend_editor' );
 
 	return vc_frontend_editor();
 }

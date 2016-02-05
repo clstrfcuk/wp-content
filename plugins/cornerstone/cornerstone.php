@@ -5,8 +5,7 @@ Plugin URI: http://theme.co/cornerstone
 Description: The WordPress Page Builder
 Author: Themeco
 Author URI: http://theme.co/
-Version: 1.1.0
-X Plugin: cornerstone
+Version: 1.1.1
 Text Domain: cornerstone
 Domain Path: lang
 */

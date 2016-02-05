@@ -78,16 +78,6 @@ function vc_page_editable_enqueue_pointer_scripts() {
 	if ( vc_is_page_editable() ) {
 		wp_enqueue_style( 'wp-pointer' );
 		wp_enqueue_script( 'wp-pointer' );
-		// Add pointers script to queue. Add custom script.
-		wp_enqueue_script( 'vc_pointer-message', vc_asset_url( 'js/lib/vc-pointers/vc-pointer-message.js' ),
-			array(
-				'jquery',
-				'underscore',
-				'wp-pointer',
-			),
-			WPB_VC_VERSION,
-			true
-		);
 	}
 }
 

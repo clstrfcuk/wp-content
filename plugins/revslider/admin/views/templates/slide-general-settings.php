@@ -548,13 +548,32 @@
 				<!-- SLIDE STATE --->
 				<p>
 					<?php $state = RevSliderFunctions::getVal($slideParams, 'state','published'); ?>
-					<label><?php _e("Slide State",'revslider'); ?></label>
+					<label><?php _e("Slide State:",'revslider'); ?></label>
 					<select id="state" name="state">
 						<option value="published"<?php selected($state, 'published'); ?>><?php _e("Published",'revslider'); ?></option>
 						<option value="unpublished"<?php selected($state, 'unpublished'); ?>><?php _e("Unpublished",'revslider'); ?></option>
 					</select>
 					<span class="description"><?php _e("The state of the slide. The unpublished slide will be excluded from the slider.",'revslider'); ?></span>
 				</p>
+
+				<!-- SLIDE HIDE AFTER LOOP -->
+				<p>
+					<?php $hideslideafter = RevSliderFunctions::getVal($slideParams, 'hideslideafter',0); ?>
+					<label><?php _e('Hide Slide After Loop:','revslider'); ?></label>
+					<input type="text" class="small-text" id="hideslideafter" name="hideslideafter" value="<?php echo $hideslideafter; ?>">
+					<span class="description"><?php _e("After how many Loops should the Slide be hidden ? 0 = Slide is never hidden.",'revslider'); ?></span>
+				</p>
+
+				<!-- HIDE SLIDE ON MOBILE -->
+				<p>
+					<?php $hideslideonmobile = RevSliderFunctions::getVal($slideParams, 'hideslideonmobile', 'off'); ?>
+					<label><?php _e('Hide Slide On Mobile:','revslider'); ?></label>
+					<span style="display:inline-block; width:200px; margin-right:20px;line-height:27px">
+						<input type="checkbox" class="tp-moderncheckbox" id="hideslideonmobile" name="hideslideonmobile" data-unchecked="off" <?php checked($hideslideonmobile, 'on'); ?>>
+					</span>
+					<span class="description"><?php _e("Show/Hide this Slide if Slider loaded on Mobile Device.",'revslider'); ?></span>
+				</p>
+
 				<!-- SLIDE LANGUAGE SELECTOR -->
 				<?php
 				if(isset($slider) && $slider->isInited()){

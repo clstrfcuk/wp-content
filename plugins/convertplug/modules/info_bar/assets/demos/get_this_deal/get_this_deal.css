@@ -1,0 +1,24 @@
+.cp-live-preview .cp-ifb-toggle-btn {
+    display: none;
+}
+
+.cp-get-this-deal {
+     font-family: "Bitter", sans-serif;
+     color: #fff;
+}
+
+.cp-get-this-deal .cp-msg-container {
+	font-family: "Bitter", sans-serif;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: normal;
+    line-height: 1em;
+}
+
+.cp-get-this-deal .cp-submit {
+	font-family: "Bitter", sans-serif;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: normal;
+    line-height: 1em;
+}

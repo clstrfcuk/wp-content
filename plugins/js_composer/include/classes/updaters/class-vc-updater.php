@@ -48,6 +48,12 @@ class Vc_Updater {
 
 	public function init() {
 		add_filter( 'upgrader_pre_download', array( $this, 'preUpgradeFilter' ), 10, 4 );
+
+		add_action( 'wp_ajax_nopriv_vc_check_license_key', array( $this, 'checkLicenseKeyFromRemote' ) );
+	}
+
+	public function checkLicenseKeyFromRemote() {
+		vc_license()->checkLicenseKeyFromRemote();
 	}
 
 	/**
@@ -84,7 +90,10 @@ class Vc_Updater {
 	 * @return array|boolean JSON response or false if request failed
 	 */
 	public function getDownloadUrl( $license_key ) {
-		$url = $this->download_link_url . '?product=vc&url=' . rawurlencode( $_SERVER['HTTP_HOST'] ) . '&key=' . rawurlencode( $license_key );
+		$url = rawurlencode( $_SERVER['HTTP_HOST'] );
+		$key = rawurlencode( $license_key );
+
+		$url = $this->download_link_url . '?product=vc&url=' . $url . '&key=' . $key . '&version=' . WPB_VC_VERSION;
 
 		$response = wp_remote_get( $url );
 
@@ -116,7 +125,7 @@ class Vc_Updater {
 			return new WP_Error( 'no_credentials', __( "Error! Can't connect to filesystem", 'js_composer' ) );
 		}
 
-		$license_key = vc_settings()->get( 'js_composer_purchase_code' );
+		$license_key = vc_license()->getLicenseKey();
 
 		if ( ! $license_key || ! vc_license()->isActivated() ) {
 			return new WP_Error( 'no_credentials', __( 'To receive automatic updates license activation is required. Please visit <a href="' . admin_url( 'admin.php?page=vc-updater' ) . '' . '" target="_blank">Settings</a> to activate your Visual Composer.', 'js_composer' ) );
@@ -159,7 +168,6 @@ class Vc_Updater {
 	 * Downloads new VC from Envato marketplace and unzips into temporary directory.
 	 *
 	 * @deprecated 4.8
-	 * @todo Remove this function after 2015-12-01
 	 *
 	 * @param $reply
 	 * @param $package
@@ -168,6 +176,7 @@ class Vc_Updater {
 	 * @return mixed|string|WP_Error
 	 */
 	public function upgradeFilterFromEnvato( $reply, $package, $updater ) {
+		_deprecated_function( '\Vc_Updater::upgradeFilterFromEnvato', '4.8 (will be removed in 4.11)' );
 		global $wp_filesystem;
 
 		if ( ( isset( $updater->skin->plugin ) && $updater->skin->plugin === vc_plugin_name() ) ||
@@ -182,7 +191,7 @@ class Vc_Updater {
 			}
 			$username = vc_settings()->get( 'envato_username' );
 			$api_key = vc_settings()->get( 'envato_api_key' );
-			$purchase_code = vc_settings()->get( 'js_composer_purchase_code' );
+			$purchase_code = vc_license()->getLicenseKey();
 			if ( ! vc_license()->isActivated() || empty( $username ) || empty( $api_key ) || empty( $purchase_code ) ) {
 				return new WP_Error( 'no_credentials', __( 'To receive automatic updates license activation is required. Please visit <a href="' . admin_url( 'admin.php?page=vc-updater' ) . '' . '" target="_blank">Settings</a> to activate your Visual Composer.', 'js_composer' ) );
 			}
@@ -213,9 +222,9 @@ class Vc_Updater {
 
 	/**
 	 * @deprecated 4.8
-	 * @todo Remove this function after 2015-12-01
 	 */
 	public function removeTemporaryDir() {
+		_deprecated_function( '\Vc_Updater::removeTemporaryDir', '4.8 (will be removed in 4.11)' );
 		global $wp_filesystem;
 		if ( is_dir( $wp_filesystem->wp_content_dir() . 'uploads/js_composer_envato_package' ) ) {
 			$wp_filesystem->delete( $wp_filesystem->wp_content_dir() . 'uploads/js_composer_envato_package', true );
@@ -224,7 +233,6 @@ class Vc_Updater {
 
 	/**
 	 * @deprecated 4.8
-	 * @todo Remove this function after 2015-12-01
 	 *
 	 * @param $username
 	 * @param $api_key
@@ -233,6 +241,8 @@ class Vc_Updater {
 	 * @return string
 	 */
 	protected function envatoDownloadPurchaseUrl( $username, $api_key, $purchase_code ) {
+		_deprecated_function( '\Vc_Updater::envatoDownloadPurchaseUrl', '4.8 (will be removed in 4.11)' );
+
 		return 'http://marketplace.envato.com/api/edge/' . rawurlencode( $username ) . '/' . rawurlencode( $api_key ) . '/download-purchase:' . rawurlencode( $purchase_code ) . '.json';
 	}
 

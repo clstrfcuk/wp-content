@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<li><a href="http://kb.wpbakery.com" target="_blank">Official Knowledge Base</a></li>
 				<li><a href="http://vc.wpbakery.com/video-academy/" target="_blank">Video Academy</a></li>
 				<li><a href="http://support.wpbakery.com" target="_blank">Official support</a></li>
-				<li><a href="http://facebook.com/wpbakery" target="_blank">Facebook page</a></li>
+				<li><a href="http://facebook.com/VisualComposer.wpbakery" target="_blank">Facebook page</a></li>
 				<li><a href="http://twitter.com/wpbakery" target="_blank">Twitter account</a></li>
 			</ul>
 		</div>

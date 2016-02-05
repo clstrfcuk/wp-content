@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WPBakery Visual Composer Plugin
  *
- * @package VPBakeryVisualComposer
+ * @package WPBakeryVisualComposer
  *
  */
 
@@ -177,6 +177,7 @@ class Vc_Settings {
 				unset( $tabs[ $key ] );
 			}
 		}
+		do_action( 'vc-settings-render-tab-' . $tab );
 		$page = new Vc_Page();
 		$page
 			->setSlug( $tab )
@@ -259,8 +260,6 @@ class Vc_Settings {
 			&$this,
 			'buildCustomCss',
 		) );
-
-		$this->deactivate = vc_license()->deactivation(); // TODO: Refactor with separate class.
 
 		/**
 		 * Tab: General Settings
@@ -345,18 +344,6 @@ class Vc_Settings {
 		 */
 		$tab = 'updater';
 		$this->addSection( $tab );
-		$this->addField( $tab, __( 'Envato Username', 'js_composer' ), 'envato_username', array(
-			&$this,
-			'sanitize_envato_username',
-		), array( &$this, 'envato_username_callback' ) );
-		$this->addField( $tab, __( 'Secret API Key', 'js_composer' ), 'envato_api_key', array(
-			&$this,
-			'sanitize_envato_api_key',
-		), array( &$this, 'envato_api_key_callback' ) );
-		$this->addField( $tab, __( 'Visual Composer License Key', 'js_composer' ), 'js_composer_purchase_code', array(
-			&$this,
-			'sanitize_js_composer_purchase_code',
-		), array( &$this, 'js_composer_purchase_code_callback' ) );
 	}
 
 	/**
@@ -413,7 +400,7 @@ class Vc_Settings {
 	 * @deprecated since 4.4
 	 */
 	public function removeAllCssClasses() {
-		_deprecated_function( '\Vc_Settings::removeAllCssClasses', '4.4' );
+		// _deprecated_function( '\Vc_Settings::removeAllCssClasses', '4.4 (will be removed in 4.10)' );
 		delete_option( self::$field_prefix . 'row_css_class' );
 		delete_option( self::$field_prefix . 'column_css_classes' );
 	}
@@ -443,31 +430,40 @@ class Vc_Settings {
 	 */
 
 	function adminLoad() {
+		wp_register_script( 'wpb_js_composer_settings', vc_asset_url( 'js/dist/settings.min.js' ), array(), WPB_VC_VERSION, true );
 		wp_enqueue_style( 'js_composer_settings', vc_asset_url( 'css/js_composer_settings.min.css' ), false, WPB_VC_VERSION, false );
+		wp_enqueue_script( 'backbone' );
+		wp_enqueue_script( 'shortcode' );
+		wp_enqueue_script( 'underscore' );
 		wp_enqueue_script( 'jquery-ui-accordion' );
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		wp_enqueue_script( 'wpb_js_composer_settings' );
-		wp_enqueue_script( 'ace-editor' );
 		$this->locale = array(
 			'are_you_sure_reset_css_classes' => __( 'Are you sure you want to reset to defaults?', 'js_composer' ),
 			'are_you_sure_reset_color' => __( 'Are you sure you want to reset to defaults?', 'js_composer' ),
-			'vc_updater_error' => sprintf( __( 'Envato API error. Try again later  or open support ticket at <a href="%s" target="_blank">%s</a>.', 'js_composer' ), 'http://support.wpbakery.com', 'support.wpbakery.com' ),
-			'vc_updater_license_activation_success' => __( 'License successfully activated.', 'js_composer' ),
-			'vc_updater_license_deactivation_success' => __( 'License Key is deactivated.', 'js_composer' ),
-			'vc_updater_empty_data' => __( 'Envato Username and/or License Key are required.', 'js_composer' ),
-			'vc_updater_wrong_license_key' => sprintf( __( 'Invalid License Key. Visit your profile to retrieve valid License Key or read <a href="%s" target="_blank">tutorial</a>.', 'js_composer' ), 'http://go.wpbakery.com/purchase-code' ),
-			'vc_updater_wrong_data' => sprintf( __( 'Invalid data. Check your information or open support ticket at <a href="%s" target="_blank">%s</a>.', 'js_composer' ), 'http://support.wpbakery.com', 'support.wpbakery.com' ),
-			'vc_updater_already_activated' => __( 'License successfully activated.', 'js_composer' ),
-			'vc_updater_already_activated_another_url' => sprintf( __( 'Your License Key is already activated on another site ({site}), you should deactivate it first or <a href="%s" target="_blank">obtain new License Key</a>.', 'js_composer' ), esc_url( 'http://bit.ly/vcomposer' ) ),
-			'vc_updater_activate_license' => __( 'Activate License', 'js_composer' ),
-			'vc_updater_deactivate_license' => __( 'Deactivate License', 'js_composer' ),
-			'wrong_username_api_key' => sprintf( __( 'Invalid Username and/or API Key. Check your data or read <a href="%s" target="_blank">tutorial</a>.', 'js_composer' ), 'http://go.wpbakery.com/activation' ),
 			'saving' => __( 'Saving...', 'js_composer' ),
 			'save' => __( 'Save Changes', 'js_composer' ),
 			'saved' => __( 'Design Options successfully saved.', 'js_composer' ),
 			'save_error' => __( 'Design Options could not be saved', 'js_composer' ),
 			'form_save_error' => __( 'Problem with AJAX request execution, check internet connection and try again.', 'js_composer' ),
+			'are_you_sure_delete' => __( 'Are you sure you want to delete this shortcode?', 'js_composer' ),
+			'are_you_sure_delete_param' => __( "Are you sure you want to delete the shortcode's param?", 'js_composer' ),
+			'my_shortcodes_category' => __( 'My shortcodes', 'js_composer' ),
+			'error_shortcode_name_is_required' => __( 'Shortcode name is required.', 'js_composer' ),
+			'error_enter_valid_shortcode_tag' => __( 'Please enter valid shortcode tag.', 'js_composer' ),
+			'error_enter_required_fields' => __( 'Please enter all required fields for params.', 'js_composer' ),
+			'new_shortcode_mapped' => __( 'New shortcode mapped from string!', 'js_composer' ),
+			'shortcode_updated' => __( 'Shortcode updated!', 'js_composer' ),
+			'error_content_param_not_manually' => __( 'Content param can not be added manually, please use checkbox.', 'js_composer' ),
+			'error_param_already_exists' => __( 'Param %s already exists. Param names must be unique.', 'js_composer' ),
+			'error_wrong_param_name' => __( 'Please use only letters, numbers and underscore for param name', 'js_composer' ),
+			'error_enter_valid_shortcode' => __( 'Please enter valid shortcode to parse!', 'js_composer' ),
+
 		);
+		wp_localize_script( 'wpb_js_composer_settings', 'vcData', apply_filters( 'vc_global_js_data', array(
+			'version' => WPB_VC_VERSION,
+			'debug' => wpb_debug(),
+		) ) );
 		wp_localize_script( 'wpb_js_composer_settings', 'i18nLocaleSettings', $this->locale );
 	}
 
@@ -476,6 +472,7 @@ class Vc_Settings {
 	 * @deprecated 4.8
 	 */
 	public function groups_access_rules_callback() {
+		// _deprecated_function( '\Vc_Settings::groups_access_rules_callback', '4.8 (will be removed in 4.11)' );
 		global $wp_roles;
 		$groups = is_object( $wp_roles ) ? $wp_roles->roles : array();
 
@@ -566,6 +563,7 @@ class Vc_Settings {
 	 * @deprecated 4.8
 	 */
 	public function content_types_field_callback() {
+		// _deprecated_function( '\Vc_Settings::content_types_field_callback', '4.8 (will be removed in 4.11)' );
 		$pt_array = ( $pt_array = get_option( 'wpb_js_content_types' ) ) ? ( $pt_array ) : vc_default_editor_post_types();
 		foreach ( $this->getPostTypes() as $pt ) {
 			if ( ! in_array( $pt, $this->getExcluded() ) ) {
@@ -591,6 +589,7 @@ class Vc_Settings {
 	 * @deprecated 4.8
 	 */
 	public function theme_content_types_field_callback() {
+		// _deprecated_function( '\Vc_Settings::theme_content_types_field_callback', '4.8 (will be removed in 4.11)' );
 		$pt_array = ( $pt_array = get_option( 'wpb_js_theme_content_types' ) ) ? $pt_array : vc_manager()->editorPostTypes();
 		foreach ( $this->getPostTypes() as $pt ) {
 			if ( ! in_array( $pt, $this->getExcluded() ) ) {
@@ -732,7 +731,7 @@ class Vc_Settings {
 	 * Row css class callback
 	 */
 	public function row_css_class_callback() {
-		_deprecated_function( '\Vc_Settings::row_css_class_callback', '4.4' );
+		// _deprecated_function( '\Vc_Settings::row_css_class_callback', '4.4' );
 		$value = ( $value = get_option( self::$field_prefix . 'row_css_class' ) ) ? $value : '';
 		echo ! empty( $value ) ? $value : '<i>' . __( 'Empty value', 'js_composer' ) . '</i>';
 	}
@@ -803,36 +802,6 @@ class Vc_Settings {
 	}
 
 	/**
-	 *
-	 */
-	public function envato_username_callback() {
-		$field = 'envato_username';
-		$value = ( $value = get_option( self::$field_prefix . $field ) ) ? $value : '';
-		echo '<input type="text" name="' . self::$field_prefix . $field . '" value="' . $value . '"' . $this->disableIfActivated() . '>';
-		echo '<p class="description indicator-hint">' . __( 'Enter your Envato username.', 'js_composer' ) . '</p>';
-	}
-
-	/**
-	 *
-	 */
-	public function js_composer_purchase_code_callback() {
-		$field = 'js_composer_purchase_code';
-		$value = ( $value = get_option( self::$field_prefix . $field ) ) ? $value : '';
-		echo '<input type="text" name="' . self::$field_prefix . $field . '" value="' . $value . '"' . $this->disableIfActivated() . '>';
-		echo '<p class="description indicator-hint">' . sprintf( __( 'Please enter your CodeCanyon Visual Composer license key, you can find your key by following the instructions on <a href="%s" target="_blank">this page</a>. (Example of license key: bjg759fk-kvta-6584-94h6-75jg8vblatftq)', 'js_composer' ), esc_url( 'http://go.wpbakery.com/purchase-code' ) ) . '</p>';
-	}
-
-	/**
-	 *
-	 */
-	public function envato_api_key_callback() {
-		$field = 'envato_api_key';
-		$value = ( $value = get_option( self::$field_prefix . $field ) ) ? $value : '';
-		echo '<input type="password" name="' . self::$field_prefix . $field . '" value="' . $value . '"' . $this->disableIfActivated() . '>';
-		echo '<p class="description indicator-hint">' . sprintf( __( "Enter your API key, you can find your API key by following the instructions on <a href='%s' target='_blank'>this page</a>.", 'js_composer' ), esc_url( 'http://go.wpbakery.com/faq-api-key' ) ) . '</p>';
-	}
-
-	/**
 	 * @param $key
 	 *
 	 * @return string
@@ -842,9 +811,12 @@ class Vc_Settings {
 	}
 
 	/**
+   * @deprecated 4.8 Remove after 2015-12-01
+   *
 	 * @return string
 	 */
 	public function disableIfActivated() {
+		// _deprecated_function( '\Vc_Settings::disableIfActivated', '4.8 (will be removed in 4.11)' );
 		if ( ! isset( $this->deactivate_license ) ) {
 			$this->deactivate_license = vc_license()->deactivation();
 		}
@@ -873,10 +845,6 @@ class Vc_Settings {
 						</p>
 					</div>
 				<?php endif ?>
-				<p>
-					<?php //_e('Add your Envato credentials, to enable auto updater. With correct login credentials Visual Composer will be updated automatically (same as other plugins do).', 'js_composer') ?>
-					<?php echo sprintf( __( 'A valid license key qualifies you for support and enables automatic updates. <strong>A license key may only be used for one Visual Composer installation on one WordPress site at a time.</strong> If you previosly activated your license key on another site, then you should deactivate it first or <a href="%s" target="_blank">obtain new license key</a>.', 'js_composer' ), esc_url( 'http://bit.ly/vcomposer' ) ); ?>
-				</p>
 			</div>
 		<?php endif;
 	}
@@ -886,6 +854,7 @@ class Vc_Settings {
 	 * @deprecated 4.8
 	 */
 	protected function getExcluded() {
+		// _deprecated_function( '\Vc_Settings::getExcluded', '4.8 (will be removed in 4.11)' );
 		if ( ! isset( $this->vc_excluded_post_types ) ) {
 			$this->vc_excluded_post_types = apply_filters( 'vc_settings_exclude_post_type',
 			array( 'attachment', 'revision', 'nav_menu_item', 'mediapage' ) );
@@ -899,6 +868,7 @@ class Vc_Settings {
 	 * @deprecated 4.8
 	 */
 	protected function getPostTypes() {
+		// _deprecated_function( '\Vc_Settings::getPostTypes', '4.8 (will be removed in 4.11)' );
 		return get_post_types( array( 'public' => true ) );
 	}
 
@@ -913,12 +883,14 @@ class Vc_Settings {
 	 * Access rules for user's groups
 	 *
 	 * @param $rules - Array of selected rules for each user's group
+	 *
 	 * @deprecated 4.8
 	 *
 	 * @return array
 	 */
 
 	public function sanitize_group_access_rules_callback( $rules ) {
+		// _deprecated_function( '\Vc_Settings::sanitize_group_access_rules_callback', '4.8 (will be removed in 4.11)' );
 		$sanitize_rules = array();
 		$groups = get_editable_roles();
 		foreach ( $groups as $key => $params ) {
@@ -945,7 +917,7 @@ class Vc_Settings {
 	 * @return mixed
 	 */
 	public function sanitize_row_css_class_callback( $value ) {
-		_deprecated_function( '\Vc_Settings::row_css_class_callback', '4.4' );
+		// _deprecated_function( '\Vc_Settings::row_css_class_callback', '4.4' );
 		return $value;
 	}
 
@@ -959,6 +931,7 @@ class Vc_Settings {
 	 */
 
 	public function sanitize_post_types_callback( $post_types ) {
+		// _deprecated_function( '\Vc_Settings::sanitize_post_types_callback', '4.8 (will be removed in 4.11)' );
 		$pt_array = array();
 		if ( isset( $post_types ) && is_array( $post_types ) ) {
 			foreach ( $post_types as $pt ) {
@@ -1004,7 +977,7 @@ class Vc_Settings {
 	 * @return mixed
 	 */
 	public function sanitize_custom_css_callback( $css ) {
-		return $css;
+		return strip_tags($css);
 	}
 
 	/**
@@ -1066,33 +1039,6 @@ class Vc_Settings {
 		return $responsive_max;
 	}
 
-	/**
-	 * @param $username
-	 *
-	 * @return mixed
-	 */
-	public function sanitize_envato_username( $username ) {
-		return $username;
-	}
-
-	/**
-	 * @param $api_key
-	 *
-	 * @return mixed
-	 */
-	public function sanitize_envato_api_key( $api_key ) {
-		return $api_key;
-	}
-
-	/**
-	 * @param $code
-	 *
-	 * @return mixed
-	 */
-	public function sanitize_js_composer_purchase_code( $code ) {
-		return $code;
-	}
-
 	// }}
 	/**
 	 * @param $number
@@ -1118,7 +1064,7 @@ class Vc_Settings {
 	 * @return bool
 	 */
 	public static function requireNotification() {
-		_deprecated_function( '\Vc_Settings::requireNotification', '4.4' );
+		// _deprecated_function( '\Vc_Settings::requireNotification', '4.4 (will be removed in 4.10)' );
 		$row_css_class = ( $value = get_option( self::$field_prefix . 'row_css_class' ) ) ? $value : '';
 		$column_css_classes = ( $value = get_option( self::$field_prefix . 'column_css_classes' ) ) ? $value : '';
 
@@ -1185,6 +1131,7 @@ class Vc_Settings {
 		$css_string = get_option( self::$field_prefix . 'compiled_js_composer_less' );
 		if ( strlen( trim( $css_string ) ) > 0 ) {
 			update_option( self::$field_prefix . 'less_version', WPB_VC_VERSION );
+			$css_string = strip_tags( $css_string );
 			// HERE goes the magic
 			if ( ! $wp_filesystem->put_contents( $filename, $css_string, FS_CHMOD_FILE ) ) {
 				if ( is_wp_error( $wp_filesystem->errors ) && $wp_filesystem->errors->get_error_code() ) {
@@ -1227,6 +1174,7 @@ class Vc_Settings {
 		if ( ! empty( $custom_css_string ) ) {
 			$assets_url = vc_asset_url( '' );
 			$css_string .= preg_replace( '/(url\(\.\.\/(?!\.))/', 'url(' . $assets_url, $custom_css_string );
+			$css_string = strip_tags( $css_string );
 		}
 
 		if ( ! $wp_filesystem->put_contents( $filename, $css_string, FS_CHMOD_FILE ) ) {

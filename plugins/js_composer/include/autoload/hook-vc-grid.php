@@ -45,7 +45,7 @@ class Vc_Hooks_Vc_Grid implements Vc_Vendor_Interface {
 	 * @return string
 	 */
 	private function getShortcodeRegexForHash() {
-		_deprecated_function( 'Vc_Hooks_Vc_Grid: getShortcodeRegexForHash method', '4.4.3', 'getShortcodeRegexForId' );
+		// _deprecated_function( 'Vc_Hooks_Vc_Grid: getShortcodeRegexForHash method', '4.4.3', 'getShortcodeRegexForId' );
 		$tagnames = apply_filters( 'vc_grid_shortcodes_tags', array(
 			'vc_basic_grid',
 			'vc_masonry_grid',
@@ -118,7 +118,7 @@ class Vc_Hooks_Vc_Grid implements Vc_Vendor_Interface {
 	 * @return array - shortcode settings to save.
 	 */
 	public function gridSavePostSettings( array $settings, $post_id, $post ) {
-		_deprecated_function( 'Vc_Hooks_Vc_Grid: gridSavePostSettings method', '4.4.3', 'gridSavePostSettingsId' );
+		// _deprecated_function( 'Vc_Hooks_Vc_Grid: gridSavePostSettings method', '4.4.3 (will be removed in 4.10)', 'gridSavePostSettingsId' );
 
 		$pattern = $this->getShortcodeRegexForHash();
 		preg_match_all( "/$pattern/", $post->post_content, $found ); // fetch only needed shortcodes
@@ -235,25 +235,27 @@ add_action( 'vc_after_init', array(
 	'load',
 ) );
 
-VcShortcodeAutoloader::getInstance()
-                     ->includeClass( 'WPBakeryShortCode_VC_Basic_Grid' );
+if ( 'vc_edit_form' === vc_post_param( 'action' ) ) {
+	VcShortcodeAutoloader::getInstance()
+	                     ->includeClass( 'WPBakeryShortCode_VC_Basic_Grid' );
 
-add_filter( 'vc_edit_form_fields_attributes_vc_basic_grid', array(
-	'WPBakeryShortCode_VC_Basic_Grid',
-	'convertButton2ToButton3',
-) );
+	add_filter( 'vc_edit_form_fields_attributes_vc_basic_grid', array(
+		'WPBakeryShortCode_VC_Basic_Grid',
+		'convertButton2ToButton3',
+	) );
 
-add_filter( 'vc_edit_form_fields_attributes_vc_media_grid', array(
-	'WPBakeryShortCode_VC_Basic_Grid',
-	'convertButton2ToButton3',
-) );
+	add_filter( 'vc_edit_form_fields_attributes_vc_media_grid', array(
+		'WPBakeryShortCode_VC_Basic_Grid',
+		'convertButton2ToButton3',
+	) );
 
-add_filter( 'vc_edit_form_fields_attributes_vc_masonry_grid', array(
-	'WPBakeryShortCode_VC_Basic_Grid',
-	'convertButton2ToButton3',
-) );
+	add_filter( 'vc_edit_form_fields_attributes_vc_masonry_grid', array(
+		'WPBakeryShortCode_VC_Basic_Grid',
+		'convertButton2ToButton3',
+	) );
 
-add_filter( 'vc_edit_form_fields_attributes_vc_masonry_media_grid', array(
-	'WPBakeryShortCode_VC_Basic_Grid',
-	'convertButton2ToButton3',
-) );
+	add_filter( 'vc_edit_form_fields_attributes_vc_masonry_media_grid', array(
+		'WPBakeryShortCode_VC_Basic_Grid',
+		'convertButton2ToButton3',
+	) );
+}

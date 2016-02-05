@@ -1,0 +1,181 @@
+/*---youtube ------*/
+.cp-youtube.cp-modal-body {
+    padding: 0;
+    margin: 0px auto;
+    line-height: 0;
+    font-family: 'open sans';
+}
+.cp-youtube .cp-form-container {
+    display: none;
+    padding: 20px 0;
+    position: relative;
+}
+.cp-modal-popup-container .cp-youtube input {
+    /* margin-bottom: 0; */
+    line-height: normal;
+}
+.cp-modal .cp-youtube .cp-submit {
+    border: none;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.38em;
+    outline: 0;
+    margin: 0px;
+}
+/*.cp-youtube .cp_simple_submit.col-md-12 .cp-submit {
+    margin-top: 10px;
+}
+*/
+/* .cp-youtube .cp-form .cp-form-email input[name=email],
+.cp-youtube .cp-form .cp-form-email input[type=email],
+.cp-youtube .cp-form .cp-form-name input[name=name],
+.cp-youtube .cp-form .cp-form-name input[type=text] {
+    margin-bottom: 0 !important;
+} */
+/*.cp-email-form.col-md-12 {
+    margin-bottom: 10px;
+}*/
+/*.cp-youtube .col-md-8 input[name=name],
+.cp-youtube .col-md-8 input[name=email],
+.cp-youtube .col-md-8 input[type=text],
+.cp-youtube .col-md-8 input[type=email] {
+     margin-bottom: 0px; 
+}
+.cp-youtube .cp-submit {
+    margin-bottom: 0 !important;
+}
+*/
+/**	= CTA
+ *-----------------------------------------------------------*/
+/* Button */
+.cp-youtube-cta-button .cp-form-without-name,
+.cp-youtube-cta-button .cp-form-with-name {
+    display: none !important;
+}
+.cp-modal .cp-youtube .cp-youtube-cta-button .cp-submit {
+    display: inline-block !important;
+    width: auto;
+}
+.cp-youtube-cta-button .cp-submit-container {
+    text-align: center;
+}
+/* Positioning */
+.cp-modal-window-size .cp-form-container {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 99999999999999999999999;
+    background: inherit;
+}
+.cp-modal-window-size .form-main,
+.cp-modal-window-size .cp-youtube-form .default-form,
+.cp-modal-window-size .cp-youtube-form .custom-html-form {
+    max-width: 650px;
+    margin: 0 auto;
+    float: none;
+}
+.cp-modal-window-size .cp-modal-body.cp-youtube {
+    max-width: 100% !important;
+}
+
+.cp-modal .cp-youtube .cp-email.no-margin,
+.cp-modal .cp-youtube .cp-name.no-margin{
+    margin-bottom: 10px !important;
+} 
+
+.cp-modal .cp-youtube .cp-email,
+.cp-modal .cp-youtube .cp-name{
+    text-align: center;
+}
+
+.cp-modal .cp-youtube .col-md-12 .cp-email{
+    text-align: center;
+}
+
+@media only screen and (min-width : 768px) {
+
+    .cp-modal .cp-youtube .cp-submit-container,
+    .cp-modal .cp-youtube .cp-form-submit{
+        padding-left: 0px;
+    }
+
+    .cp-modal .cp-youtube .cp-form-with-name .cp-email-form,
+    .cp-modal .cp-youtube .cp-formwith-name .cp-form-email{
+        padding-left: 0px;
+    }
+
+    .cp-modal .cp-youtube .cp-submit-container.col-md-12,
+    .cp-modal .cp-youtube .cp-form-submit.col-md-12{
+        padding-left: 15px;
+    }
+
+    .cp-modal .cp-youtube .cp-center-align-text .cp-form-with-name input[name=name],
+    .cp-modal .cp-youtube .cp-center-align-text .cp-form-with-name input[name=email]{
+        text-align: left !important;
+    }
+
+    .cp-modal .cp-youtube .col-md-4 .cp-email.no-margin,
+    .cp-modal .cp-youtube .col-md-4 .cp-name.no-margin{
+        margin-bottom: 0px !important;
+    }
+
+    .cp-modal .cp-youtube .cp-email.no-margin,
+    .cp-modal .cp-youtube .cp-name.no-margin{
+        margin-bottom: 0px !important;
+    }
+
+    .cp-modal .cp-youtube .cp-email,
+    .cp-modal .cp-youtube .cp-name{
+        text-align: left;
+    }
+
+
+    /* For desktop only - Remove margin bottom from bottom*/
+    /* .cp-youtube .cp-form .cp-form-email input[name=email],
+    .cp-youtube .cp-form .cp-form-email input[type=email],
+    .cp-youtube .cp-form .cp-form-name input[name=name],
+    .cp-youtube .cp-form .cp-form-name input[type=text],
+    .cp-form-without-name .cp-email-form.col-md-6 .cp-email,
+    .cp-modal-popup-container .cp-form-with-name button,
+    .cp-modal-popup-container .cp-form-with-name input,
+    .cp-modal-popup-container .cp-form-with-name select,
+    .cp-modal-popup-container .cp-form-with-name textarea {
+        margin-bottom: 0;
+    } */
+    /* .cp-form-without-name .cp-email-form, */
+    /*.cp-name-form.col-lg-4 {
+        padding-right: 0px;
+    }*/
+    /*.cp-form-without-name .cp-email.col-md-6,
+    .cp-form-with-name .cp-name-form.col-lg-4,
+    .cp-form-with-name .cp-email-form.col-lg-4 {
+        padding-right: 0;
+    }*/
+}
+/* 768 */
+/*@media only screen and (max-width : 1024px) {
+    .cp-form-with-name .cp-name,
+    .cp-form-with-name .cp-email {
+        margin-bottom: 5px !important;
+    }
+}*/
+/* .cp-modal-popup-container .cp-youtube button,
+.cp-modal-popup-container .cp-youtube input,
+.cp-modal-popup-container .cp-youtube select,
+.cp-modal-popup-container .cp-youtube textarea {
+    margin-bottom: 0;
+}
+.cp-modal-popup-container .cp-youtube .cp-form-with-name .cp-email {
+    margin-bottom: 5px;
+}
+@media only screen and (max-width : 768px) {
+    .cp-modal-popup-container .cp-youtube .cp-name,
+    .cp-modal-popup-container .cp-youtube .cp-email {
+        margin-bottom: 5px;
+    }
+} */
+.cp-modal-inline .cp-youtube-cta-form {
+    display: block !important;
+}

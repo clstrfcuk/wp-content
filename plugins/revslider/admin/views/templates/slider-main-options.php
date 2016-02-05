@@ -1738,62 +1738,65 @@ if (isset($linksEditSlides)) {
 			<div class="divide20"></div>
 
 			<?php
-			if ($is_edit) {
-				$custom_css = '';
-				$custom_js = '';
-				if (!empty($sliderID)) {
-					$custom_css = @stripslashes($arrFieldsParams['custom_css']);
-					$custom_js = @stripslashes($arrFieldsParams['custom_javascript']);
-				}
-				?>
-				<div class="setting_box" id="css-javascript-customs" style="max-width:100%;position:relative;overflow:hidden">
-					<h3><span class="setting-step-number">6</span><span><?php _e("Custom CSS / Javascript", 'revslider');?></span></h3>
-					<div class="inside" id="codemirror-wrapper">
+			if(!RevSliderFunctionsWP::isAdminUser() && apply_filters('revslider_restrict_role', true)){
+			}else{
+				if ($is_edit) {
+					$custom_css = '';
+					$custom_js = '';
+					if (!empty($sliderID)) {
+						$custom_css = @stripslashes($arrFieldsParams['custom_css']);
+						$custom_js = @stripslashes($arrFieldsParams['custom_javascript']);
+					}
+					?>
+					<div class="setting_box" id="css-javascript-customs" style="max-width:100%;position:relative;overflow:hidden">
+						<h3><span class="setting-step-number">6</span><span><?php _e("Custom CSS / Javascript", 'revslider');?></span></h3>
+						<div class="inside" id="codemirror-wrapper">
 
-						<span class="cbi-title"><?php _e("Custom CSS", 'revslider')?></span>
-						<textarea name="custom_css" id="rs_custom_css"><?php echo $custom_css;?></textarea>
-						<div class="divide20"></div>
+							<span class="cbi-title"><?php _e("Custom CSS", 'revslider')?></span>
+							<textarea name="custom_css" id="rs_custom_css"><?php echo $custom_css;?></textarea>
+							<div class="divide20"></div>
 
-						<span class="cbi-title"><?php _e("Custom JavaScript", 'revslider')?></span>
-						<textarea name="custom_javascript" id="rs_custom_javascript"><?php echo $custom_js;?></textarea>
-						<div class="divide20"></div>
+							<span class="cbi-title"><?php _e("Custom JavaScript", 'revslider')?></span>
+							<textarea name="custom_javascript" id="rs_custom_javascript"><?php echo $custom_js;?></textarea>
+							<div class="divide20"></div>
 
+						</div>
 					</div>
-				</div>
 
-				<script type="text/javascript">
-					rev_cm_custom_css = null;
-					rev_cm_custom_js = null;
-					
-					jQuery(document).ready(function(){
-						rev_cm_custom_css = CodeMirror.fromTextArea(document.getElementById("rs_custom_css"), {
-							onChange: function(){ },
-							lineNumbers: true,
-							mode: 'css',
-							lineWrapping:true											
+					<script type="text/javascript">
+						rev_cm_custom_css = null;
+						rev_cm_custom_js = null;
+						
+						jQuery(document).ready(function(){
+							rev_cm_custom_css = CodeMirror.fromTextArea(document.getElementById("rs_custom_css"), {
+								onChange: function(){ },
+								lineNumbers: true,
+								mode: 'css',
+								lineWrapping:true											
+							});
+
+							rev_cm_custom_js = CodeMirror.fromTextArea(document.getElementById("rs_custom_javascript"), {
+								onChange: function(){ },
+								lineNumbers: true,
+								mode: 'text/html',
+								lineWrapping:true													
+							});
+
+
+							jQuery('.rs-cm-refresh').click(function(){
+								rev_cm_custom_css.refresh();
+								rev_cm_custom_js.refresh();
+							});
+
+							var hlLineC = rev_cm_custom_css.setLineClass(0, "activeline"),
+								hlLineJ = rev_cm_custom_js.setLineClass(0, "activeline");
+
+
 						});
+					</script>
 
-						rev_cm_custom_js = CodeMirror.fromTextArea(document.getElementById("rs_custom_javascript"), {
-							onChange: function(){ },
-							lineNumbers: true,
-							mode: 'text/html',
-							lineWrapping:true													
-						});
-
-
-						jQuery('.rs-cm-refresh').click(function(){
-							rev_cm_custom_css.refresh();
-							rev_cm_custom_js.refresh();
-						});
-
-						var hlLineC = rev_cm_custom_css.setLineClass(0, "activeline"),
-							hlLineJ = rev_cm_custom_js.setLineClass(0, "activeline");
-
-
-					});
-				</script>
-
-				<?php
+					<?php
+				}
 			}
 			?>
 		</div>
@@ -2061,6 +2064,12 @@ if (isset($linksEditSlides)) {
 
 								<!-- GENERAL DEFAULTS -->
 								<div id="general-defaults" style="display:none">
+									<!-- DEFAULT LAYER SELECTION -->
+									<?php $layer_selection = RevSliderFunctions::getVal($arrFieldsParams, 'def-layer_selection', 'off'); ?>									
+									<span id="def-layer_selection" origtitle="<?php _e("Default Layer Selection on Frontend enabled or disabled", 'revslider');?>" class="label"><?php _e('Layers Selectable:', 'revslider');?></span>
+									<input type="checkbox" class="tp-moderncheckbox withlabel" id="def-layer_selection" name="def-layer_selection" data-unchecked="off" <?php checked($layer_selection, 'on');?>>
+
+
 									<!-- DELAY -->
 									<span class="label" id="label_delay" origtitle="<?php _e("The time one slide stays on the screen in Milliseconds. This is a Default Global value. Can be adjusted slide to slide also in the slide editor.", 'revslider');?>"><?php _e("Default Slide Duration", 'revslider');?> </span>
 									<input type="text"  class="text-sidebar withlabel" id="delay" name="delay" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, 'delay', '9000');?>">
@@ -3373,7 +3382,7 @@ if (isset($linksEditSlides)) {
 									<div class="clear"></div>
 
 									<span class="label" id="label_swipe_min_touches" origtitle="<?php _e("Defines how many fingers are needed minimum for swiping", 'revslider');?>"><?php _e("Swipe Min Finger", 'revslider');?> </span>
-									<input type="text" class="text-sidebar withlabel" id="swipe_min_touches" name="swipe_min_touches" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, "swipe_min_touches", "50");?>">
+									<input type="text" class="text-sidebar withlabel" id="swipe_min_touches" name="swipe_min_touches" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, "swipe_min_touches", "1");?>">
 									<div class="clear"></div>
 
 									<span class="label" id="label_swipe_direction" origtitle="<?php _e("Swipe Direction to swap slides?", 'revslider');?>"><?php _e("Swipe Direction", 'revslider');?></span>
@@ -3394,14 +3403,18 @@ if (isset($linksEditSlides)) {
 									<span class="label" id="label_keyboard_direction" origtitle="<?php _e("Keyboard Direction to swap slides (horizontal - left/right arrow, vertical - up/down arrow)?", 'revslider');?>"><?php _e("Key Direction", 'revslider');?></span>
 									<select id="keyboard_direction" name="keyboard_direction" class="withlabel">
 										<option value="horizontal" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, 'keyboard_direction', 'horizontal'), "horizontal");?>><?php _e("Horizontal", 'revslider');?></option>
-										<option value="vertical" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, 'keyboard_direction', 'horizontal'), "vertical");?>><?php _e("Vertical", 'revslider');?></option>											
+										<option value="vertical" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, 'keyboard_direction', 'horizontal'), "vertical");?>><?php _e("Vertical", 'revslider');?></option>
 									</select>
 									<div class="clear"></div>
 
 									<span class="label" id="label_mousescroll_navigation" origtitle="<?php _e("Allow/disallow to navigate the slider with Mouse Scroll.", 'revslider');?>"><?php _e("Mouse Scroll Navigation", 'revslider');?></span>
-									<input type="checkbox" class="tp-moderncheckbox withlabel" id="mousescroll_navigation" name="mousescroll_navigation" data-unchecked="off" <?php checked(RevSliderFunctions::getVal($arrFieldsParams, 'mousescroll_navigation', 'off'), "on");?>>
+									<select id="mousescroll_navigation" name="mousescroll_navigation" class="withlabel">
+										<option value="on" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, 'mousescroll_navigation', 'off'), "on");?>><?php _e("Off", 'revslider');?></option>
+										<option value="off" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, 'mousescroll_navigation', 'off'), "off");?>><?php _e("On", 'revslider');?></option>
+										<option value="carousel" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, 'mousescroll_navigation', 'off'), "carousel");?>><?php _e("Carousel", 'revslider');?></option>
+									</select>
 									<div class="clear"></div>
-
+									
 								</div><!-- END KEYBOARD NAVIGATION -->
 								
 								<!-- PREVIEW IMAGE SIZES -->									
@@ -3418,7 +3431,6 @@ if (isset($linksEditSlides)) {
 									<span><?php _e("px", 'revslider');?></span>
 									<div class="clear"></div>
 									
-									<div class="clear"></div>
 								</div>
 							</div>
 							<script>
@@ -3986,15 +3998,16 @@ if (isset($linksEditSlides)) {
 								<div class="clearfix"></div>
 								
 								<?php
-								$seo_opti = RevSliderFunctions::getVal($arrFieldsParams, 'seo_optimization', 'none');
+								/*$seo_opti = RevSliderFunctions::getVal($arrFieldsParams, 'seo_optimization', 'none');
 								?>
 								<span id="label_seo_optimization" class="label" origtitle="<?php _e('Define SEO Optimization for the Images in the Slider, useful if Lazy Load is on.', 'revslider');?>"><?php _e('SEO Optimization', 'revslider');?> </span>
 								<select id="seo_optimization" name="seo_optimization" class="withlabel">
 									<option value="none" <?php selected($seo_opti, 'none');?>><?php _e("None", 'revslider');?></option>
-									<option value="noscript" <?php selected($seo_opti, 'single');?>><?php _e("NoScript", 'revslider');?></option>
-									<option value="noframe" <?php selected($seo_opti, 'smart');?>><?php _e("NoFrame", 'revslider');?></option>
+									<option value="noscript" <?php selected($seo_opti, 'noscript');?>><?php _e("NoScript", 'revslider');?></option>
+									<option value="noframe" <?php selected($seo_opti, 'noframe');?>><?php _e("NoFrame", 'revslider');?></option>
 								</select>
 								<div class="clearfix"></div>
+								*/ ?>
 								
 								<!-- MONITORING PART -->
 								<?php //list all images and speed here ?>
@@ -4225,74 +4238,83 @@ if (isset($linksEditSlides)) {
 			
 				<!-- IMPORT / EXPORT SETTINGS -->
 				<?php
-				if ($is_edit) {
-					?>
-					<div class="setting_box">
-						<h3 class="box_closed"><i class="rs-rp-accordion-icon eg-icon-upload"></i>
-							<div class="setting_box-arrow"></div>
-							<span><?php _e('Import / Export / Replace', 'revslider');?></span>
-						</h3>
-						<div class="inside" style="display:none">
-							<ul class="main-options-small-tabs" style="display:inline-block; ">
-								<li data-content="#import-import" class="selected"><?php _e('Import', 'revslider');?></li>
-								<li data-content="#import-export" class=""><?php _e('Export', 'revslider');?></li>
-								<li data-content="#import-replace" class=""><?php _e('Replace URL', 'revslider');?></li>
-							</ul>
+				if(!RS_DEMO){
+					if ($is_edit) {
+						?>
+						<div class="setting_box">
+							<h3 class="box_closed"><i class="rs-rp-accordion-icon eg-icon-upload"></i>
+								<div class="setting_box-arrow"></div>
+								<span><?php _e('Import / Export / Replace', 'revslider');?></span>
+							</h3>
+							<div class="inside" style="display:none">
+								<ul class="main-options-small-tabs" style="display:inline-block; ">
+									<li data-content="#import-import" class="selected"><?php _e('Import', 'revslider');?></li>
+									<li data-content="#import-export" class=""><?php _e('Export', 'revslider');?></li>
+									<li data-content="#import-replace" class=""><?php _e('Replace URL', 'revslider');?></li>
+								</ul>
+								
+								<div id="import-import">
+									<?php
+									if(!RevSliderFunctionsWP::isAdminUser() && apply_filters('revslider_restrict_role', true)){
+										_e('Import only available for Administrators', 'revslider');
+									}else{
+										?>
+										<form name="import_slider_form" id="rs_import_slider_form" action="<?php echo RevSliderBase::$url_ajax; ?>" enctype="multipart/form-data" method="post">
+											<input type="hidden" name="action" value="revslider_ajax_action">
+											<input type="hidden" name="client_action" value="import_slider">
+											<input type="hidden" name="sliderid" value="<?php echo $sliderID; ?>">
+											<input type="hidden" name="nonce" value="<?php echo wp_create_nonce("revslider_actions");?>">
+											<input type="file" name="import_file" class="input_import_slider" style="width:100%; font-size:12px;">
+											<div style="width:100%;height:25px"></div>
 
-							<div id="import-import">
-								<form name="import_slider_form" id="rs_import_slider_form" action="<?php echo RevSliderBase::$url_ajax; ?>" enctype="multipart/form-data" method="post">
-									<input type="hidden" name="action" value="revslider_ajax_action">
-									<input type="hidden" name="client_action" value="import_slider">
-									<input type="hidden" name="sliderid" value="<?php echo $sliderID; ?>">
-									<input type="hidden" name="nonce" value="<?php echo wp_create_nonce("revslider_actions");?>">
-									<input type="file" name="import_file" class="input_import_slider" style="width:100%; font-size:12px;">
-									<div style="width:100%;height:25px"></div>
+											<span class="label label-with-subsection" id="label_update_animations" origtitle="<?php _e("Overwrite or append the custom animations due the new imported values ?", 'revslider');?>"><?php _e("Custom Animations", 'revslider');?> </span>
+											<input class="withlabel" type="radio" name="update_animations" value="true" checked="checked"> <?php _e("overwrite", 'revslider')?>
+											<input class="withlabel"  type="radio" name="update_animations" value="false"> <?php _e("append", 'revslider')?>
+											<div class="tp-clearfix"></div>
 
-									<span class="label label-with-subsection" id="label_update_animations" origtitle="<?php _e("Overwrite or append the custom animations due the new imported values ?", 'revslider');?>"><?php _e("Custom Animations", 'revslider');?> </span>
-									<input class="withlabel" type="radio" name="update_animations" value="true" checked="checked"> <?php _e("overwrite", 'revslider')?>
-									<input class="withlabel"  type="radio" name="update_animations" value="false"> <?php _e("append", 'revslider')?>
+											<span class="label label-with-subsection" id="label_update_static_captions" origtitle="<?php _e("Overwrite or append the static styles due the new imported values ?", 'revslider');?>"><?php _e("Static Styles", 'revslider');?> </span>
+											<input class="withlabel" type="radio" name="update_static_captions" value="true"> <?php _e("overwrite", 'revslider')?>
+											<input class="withlabel" type="radio" name="update_static_captions" value="false"> <?php _e("append", 'revslider')?>
+											<input class="withlabel" type="radio" name="update_static_captions" value="none" checked="checked"> <?php _e("ignore",'revslider'); ?>
+											<div class="tp-clearfix"></div>
+
+											<div class="divide5"></div>
+											<input type="submit" style="width:100%" class="button-primary revgreen" id="rs-submit-import-form" value="<?php _e('Import Slider', 'revslider'); ?>">
+										</form>
+										<div class="divide20"></div>
+										<div class="revred api-desc" style="padding:8px;color:#fff;font-weight:600;font-size:12px"><?php _e("Note! Style templates will be updated if they exist. Importing slider, will delete all the current slider settings and slides and replacing it with the imported content.", 'revslider')?></div>
+										<?php
+									}
+									?>
+								</div>
+
+								<div id="import-export" style="display:none">
+									<a id="button_export_slider" class='button-primary revgreen' href='javascript:void(0)' style="width:100%;text-align:center;" ><?php _e("Export Slider", 'revslider')?></a> <div style="display: none;"><input type="checkbox" name="export_dummy_images"> <?php _e("Export with Dummy Images", 'revslider')?></div>
+								</div>
+
+								<div id="import-replace" style="display:none">
+
+									<span class="label label-with-subsection" id="label_replace_url_from" origtitle="<?php _e("Replace all layer and backgorund image url's. example - replace from: http://localhost", 'revslider');?>"><?php _e("Replace From", 'revslider');?> </span>
+									<input type="text" class="text-sidebar-link withlabel" id="replace_url_from">
 									<div class="tp-clearfix"></div>
 
-									<span class="label label-with-subsection" id="label_update_static_captions" origtitle="<?php _e("Overwrite or append the static styles due the new imported values ?", 'revslider');?>"><?php _e("Static Styles", 'revslider');?> </span>
-									<input class="withlabel" type="radio" name="update_static_captions" value="true"> <?php _e("overwrite", 'revslider')?>
-									<input class="withlabel" type="radio" name="update_static_captions" value="false"> <?php _e("append", 'revslider')?>
-									<input class="withlabel" type="radio" name="update_static_captions" value="none" checked="checked"> <?php _e("ignore",'revslider'); ?>
+									<span class="label label-with-subsection" id="label_replace_url_to" origtitle="<?php _e("Replace all layer and backgorund image url's. example - replace to: http://yoursite.com", 'revslider');?>"><?php _e("Replace To", 'revslider');?> </span>
+									<input type="text" class="text-sidebar-link withlabel" id="replace_url_to">
 									<div class="tp-clearfix"></div>
 
-									<div class="divide5"></div>
-									<input type="submit" style="width:100%" class="button-primary revgreen" id="rs-submit-import-form" value="<?php _e('Import Slider', 'revslider'); ?>">
-								</form>
-								<div class="divide20"></div>
-								<div class="revred api-desc" style="padding:8px;color:#fff;font-weight:600;font-size:12px"><?php _e("Note! Style templates will be updated if they exist. Importing slider, will delete all the current slider settings and slides and replacing it with the imported content.", 'revslider')?></div>
 
-							</div>
+									<div style="width:100%;height:15px;display:block"></div>
 
-							<div id="import-export" style="display:none">
-								<a id="button_export_slider" class='button-primary revgreen' href='javascript:void(0)' style="width:100%;text-align:center;" ><?php _e("Export Slider", 'revslider')?></a> <div style="display: none;"><input type="checkbox" name="export_dummy_images"> <?php _e("Export with Dummy Images", 'revslider')?></div>
-							</div>
-
-							<div id="import-replace" style="display:none">
-
-								<span class="label label-with-subsection" id="label_replace_url_from" origtitle="<?php _e("Replace all layer and backgorund image url's. example - replace from: http://localhost", 'revslider');?>"><?php _e("Replace From", 'revslider');?> </span>
-								<input type="text" class="text-sidebar-link withlabel" id="replace_url_from">
-								<div class="tp-clearfix"></div>
-
-								<span class="label label-with-subsection" id="label_replace_url_to" origtitle="<?php _e("Replace all layer and backgorund image url's. example - replace to: http://yoursite.com", 'revslider');?>"><?php _e("Replace To", 'revslider');?> </span>
-								<input type="text" class="text-sidebar-link withlabel" id="replace_url_to">
-								<div class="tp-clearfix"></div>
-
-
-								<div style="width:100%;height:15px;display:block"></div>
-
-								<a id="button_replace_url" class='button-primary revgreen' href='javascript:void(0)' style="width:100%; text-align:center;"  ><?php _e("Replace URL's", 'revslider')?></a>
-								<div id="loader_replace_url" class="loader_round" style="display:none;"><?php _e("Replacing...", 'revslider')?> </div>
-								<div id="replace_url_success" class="success_message" class="display:none;"></div>
-								<div class="divide20"></div>
-								<div class="revred api-desc" style="padding:8px;color:#fff;font-weight:600;font-size:12px"><?php _e("Note! The replace process is not reversible !", 'revslider')?></div>
+									<a id="button_replace_url" class='button-primary revgreen' href='javascript:void(0)' style="width:100%; text-align:center;"  ><?php _e("Replace URL's", 'revslider')?></a>
+									<div id="loader_replace_url" class="loader_round" style="display:none;"><?php _e("Replacing...", 'revslider')?> </div>
+									<div id="replace_url_success" class="success_message" class="display:none;"></div>
+									<div class="divide20"></div>
+									<div class="revred api-desc" style="padding:8px;color:#fff;font-weight:600;font-size:12px"><?php _e("Note! The replace process is not reversible !", 'revslider')?></div>
+								</div>
 							</div>
 						</div>
-					</div>
-					<?php 
+						<?php 
+					}
 				}
 				?> <!-- END OF IMPORT EXPORT SETTINGS -->
 
@@ -4356,6 +4378,11 @@ if (isset($linksEditSlides)) {
 									<span class="label" id="label_apiapi10" style="min-width:130px" origtitle="<?php _e("Recalculate all positions, sizing etc in the slider.  This should be called i.e. if Slider was invisible and becomes visible without any window resize event.", 'revslider');?>"><?php _e("Redraw Slider", 'revslider')?>:</span>
 									<input type="text" style="width:180px" readonly  class="api-input withlabel" id="apiapi10" value="<?php echo $api?>.revredraw();"></span>
 									<div class="tp-clearfix"></div>
+
+									<span class="label" id="label_apiapi12" style="min-width:130px" origtitle="<?php _e("Remove One Slide with Slide Index from the Slider. Index starts with 0 which will remove the first slide.", 'revslider');?>"><?php _e("Remove Slide", 'revslider')?>:</span>
+									<input type="text" style="width:180px" readonly  class="api-input withlabel" id="apiapi12" value="<?php echo $api?>.revremoveslide(slideindex);"></span>
+									<div class="tp-clearfix"></div>
+
 
 									<span class="label" id="label_apiapi11" style="min-width:130px" origtitle="<?php _e("Unbind all listeners, remove current animations and delete containers. Ready for Garbage collection.", 'revslider');?>"><?php _e("Kill Slider", 'revslider')?>:</span>
 									<input type="text" style="width:180px" readonly  class="api-input withlabel" id="apiapi11" value="<?php echo $api?>.revkill();"></span>

@@ -169,7 +169,7 @@ class VcLoopQueryBuilder {
 		foreach ( $terms as $t ) {
 			$operator = in_array( (int) $t->term_id, $negative_term_list ) ? 'NOT IN' : 'IN';
 			$this->args['tax_query'][] = array(
-				'field' => 'id',
+				'field' => 'term_id',
 				'taxonomy' => $t->taxonomy,
 				'terms' => $t->term_id,
 				'operator' => $operator,

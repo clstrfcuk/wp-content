@@ -46,22 +46,22 @@ class Soliloquy_Widget extends WP_Widget {
         // Load the base class object.
         $this->base = Soliloquy::get_instance();
 
-        $widget_ops = apply_filters( 'soliloquy_widget_ops',
-            array(
-                'classname'   => 'soliloquy',
-                'description' => __( 'Place a Soliloquy slider into a widgetized area.', 'soliloquy' )
-            )
+		// Widget options
+		$widget_ops = array(
+            'classname'   => 'soliloquy',
+            'description' => __( 'Place a Soliloquy slider into a widgetized area.', 'soliloquy' )
         );
+        $widget_ops = apply_filters( 'soliloquy_widget_ops', $widget_ops );
 
-        $control_ops = apply_filters( 'soliloquy_widget_control_ops',
-            array(
-                'id_base' => 'soliloquy',
-                'height'  => 350,
-                'width'   => 225
-            )
+		// Control options
+		$control_ops = array(
+            'id_base' => 'soliloquy',
+            'height'  => 350,
+            'width'   => 225
         );
+        $control_ops = apply_filters( 'soliloquy_widget_control_ops', $control_ops );
 
-        $this->WP_Widget( 'soliloquy', apply_filters( 'soliloquy_widget_name', __( 'Soliloquy', 'soliloquy' ) ), $widget_ops, $control_ops );
+        parent::__construct( 'soliloquy', apply_filters( 'soliloquy_widget_name', __( 'Soliloquy', 'soliloquy' ) ), $widget_ops, $control_ops );
 
     }
 
@@ -138,7 +138,7 @@ class Soliloquy_Widget extends WP_Widget {
     public function form( $instance ) {
 
         // Get all avilable sliders and widget properties.
-        $sliders   = Soliloquy::get_instance()->get_sliders();
+        $sliders   = Soliloquy::get_instance()->get_sliders( false, true );
         $title     = isset( $instance['title'] ) ? $instance['title'] : '';
         $slider_id = isset( $instance['soliloquy_id'] ) ? $instance['soliloquy_id'] : false;
 
@@ -153,16 +153,18 @@ class Soliloquy_Widget extends WP_Widget {
             <label for="<?php echo $this->get_field_id( 'soliloquy_id' ); ?>"><?php _e( 'Slider', 'soliloquy' ); ?></label>
             <select id="<?php echo esc_attr( $this->get_field_id( 'soliloquy_id' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'soliloquy_id' ) ); ?>" style="width: 100%;">
                 <?php
-                foreach ( $sliders as $slider ) {
-                    if ( ! empty( $slider['config']['title'] ) ) {
-                        $title = $slider['config']['title'];
-                    } else if ( ! empty( $slider['config']['slug'] ) ) {
-                        $title = $slider['config']['title'];
-                    } else {
-                        $title = sprintf( __( 'Slider ID #%s', 'soliloquy' ), $slider['id'] );
-                    }
+                if ( is_array( $sliders ) ) {
+                    foreach ( $sliders as $slider ) {
+                        if ( ! empty( $slider['config']['title'] ) ) {
+                            $title = $slider['config']['title'];
+                        } else if ( ! empty( $slider['config']['slug'] ) ) {
+                            $title = $slider['config']['title'];
+                        } else {
+                            $title = sprintf( __( 'Slider ID #%s', 'soliloquy' ), $slider['id'] );
+                        }
 
-                    echo '<option value="' . $slider['id'] . '"' . selected( $slider['id'], $slider_id, false ) . '>' . $title . '</option>';
+                        echo '<option value="' . $slider['id'] . '"' . selected( $slider['id'], $slider_id, false ) . '>' . $title . '</option>';
+                    }
                 }
                 ?>
             </select>

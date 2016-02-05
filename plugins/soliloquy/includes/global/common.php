@@ -77,30 +77,30 @@ class Soliloquy_Common {
         global $_wp_additional_image_sizes;
         $wp_sizes = get_intermediate_image_sizes();
         foreach ( (array) $wp_sizes as $size ) {
-			if ( isset( $_wp_additional_image_sizes[$size] ) ) {
-				$width 	= absint( $_wp_additional_image_sizes[$size]['width'] );
-				$height = absint( $_wp_additional_image_sizes[$size]['height'] );
-			} else {
-				$width	= absint( get_option( $size . '_size_w' ) );
-				$height	= absint( get_option( $size . '_size_h' ) );
-			}
-
-			if ( ! $width && ! $height ) {
-				$sizes[] = array(
-				    'value'  => $size,
-				    'name'   => ucwords( str_replace( array( '-', '_' ), ' ', $size ) ),
-				    'width'  => 0,
-				    'height' => 0
-				);
-			} else {
-			    $sizes[] = array(
-				    'value'  => $size,
-				    'name'   => ucwords( str_replace( array( '-', '_' ), ' ', $size ) ) . ' (' . $width . ' &#215; ' . $height . ')',
-				    'width'  => $width,
-				    'height' => $height
-				);
+            if ( isset( $_wp_additional_image_sizes[$size] ) ) {
+                $width  = absint( $_wp_additional_image_sizes[$size]['width'] );
+                $height = absint( $_wp_additional_image_sizes[$size]['height'] );
+            } else {
+                $width  = absint( get_option( $size . '_size_w' ) );
+                $height = absint( get_option( $size . '_size_h' ) );
             }
-		}
+
+            if ( ! $width && ! $height ) {
+                $sizes[] = array(
+                    'value'  => $size,
+                    'name'   => ucwords( str_replace( array( '-', '_' ), ' ', $size ) ),
+                    'width'  => 0,
+                    'height' => 0
+                );
+            } else {
+                $sizes[] = array(
+                    'value'  => $size,
+                    'name'   => ucwords( str_replace( array( '-', '_' ), ' ', $size ) ) . ' (' . $width . ' &#215; ' . $height . ')',
+                    'width'  => $width,
+                    'height' => $height
+                );
+            }
+        }
 
         return apply_filters( 'soliloquy_slider_sizes', $sizes );
 
@@ -153,6 +153,10 @@ class Soliloquy_Common {
             array(
                 'value' => 'vertical',
                 'name'  => __( 'Scroll Vertical', 'soliloquy' )
+            ),
+            array(
+                'value' => 'ticker',
+                'name'  => __( 'Ticker (Continuous) Scroll Horizontal', 'soliloquy' )
             )
         );
 
@@ -189,6 +193,66 @@ class Soliloquy_Common {
         );
 
         return apply_filters( 'soliloquy_slider_positions', $positions );
+
+    }
+
+    /**
+     * Helper method for retrieving caption positions.
+     *
+     * @since 2.4.1.1
+     *
+     * @return array Array of slider position data.
+     */
+    public function get_caption_positions() {
+
+        $positions = array(
+            array(
+                'value' => 'top',
+                'name'  => __( 'Top', 'soliloquy' )
+            ),
+            array(
+                'value' => 'bottom',
+                'name'  => __( 'Bottom', 'soliloquy' )
+            ),
+            array(
+                'value' => 'left',
+                'name'  => __( 'Left', 'soliloquy' )
+            ),
+            array(
+                'value' => 'right',
+                'name'  => __( 'Right', 'soliloquy' )
+            ),
+        );
+
+        return apply_filters( 'soliloquy_caption_positions', $positions );
+
+    }
+
+    /**
+     * Helper method for retrieving aria-live priorities
+     *
+     * @since 2.4.0.9
+     *
+     * @return array Array of aria-live priorities
+     */
+    public function get_aria_live_values() {
+
+        $values = array(
+            array(
+                'value' => 'off',
+                'name'  => __( 'Off', 'soliloquy' )
+            ),
+            array(
+                'value' => 'polite',
+                'name'  => __( 'Polite', 'soliloquy' )
+            ),
+            array(
+                'value' => 'assertive',
+                'name'  => __( 'Assertive', 'soliloquy' )
+            ),
+        );
+
+        return apply_filters( 'soliloquy_aria_live_values', $values );
 
     }
 
@@ -232,38 +296,70 @@ class Soliloquy_Common {
     public function get_config_defaults( $post_id ) {
 
         $defaults = array(
-            'type'          => 'default',
-            'slider_theme'  => 'base',
-            'slider_size'   => 'default',
-            'slider_width'  => 960,
-            'slider_height' => 300,
-            'transition'    => 'fade',
-            'duration'      => 5000,
-            'speed'         => 400,
-            'position'      => 'center',
-            'gutter'        => 20,
-            'slider'        => 1,
-            'mobile'        => 1,
-            'mobile_width'  => 600,
-            'mobile_height' => 200,
-            'auto'          => 1,
-            'smooth'        => 1,
-            'arrows'        => 1,
-            'control'       => 1,
-            'pauseplay'     => 0,
-            'hover'         => 0,
-            'keyboard'      => 1,
-            'css'           => 1,
-            'loop'          => 1,
-            'random'        => 0,
-            'delay'         => 0,
-            'start'         => 0,
+            'type'              => 'default',
+            'slider_theme'      => 'base',
+            'slider_size'       => 'default',
+            'slider_width'      => 960,
+            'slider_height'     => 300,
+            'transition'        => 'fade',
+            'duration'          => 5000,
+            'speed'             => 400,
+            'position'          => 'center',
+            'gutter'            => 20,
+            'slider'            => 1,
+            'caption_position'  => 'bottom',
+            'caption_delay'     => 0,
+            'mobile'            => 1,
+            'mobile_width'      => 600,
+            'mobile_height'     => 200,
+            'auto'              => 1,
+            'smooth'            => 1,
+            'dimensions'        => 0,
+            'arrows'            => 1,
+            'control'           => 1,
+            'pauseplay'         => 0,
+            'mobile_caption'    => 0,
+            'hover'             => 0,
+            'pause'             => 1,
+            'mousewheel'        => 0,
+            'keyboard'          => 1,
+            'css'               => 1,
+            'loop'              => 1,
+            'random'            => 0,
+            'delay'             => 0,
+            'start'             => 0,
+            'aria_live'         => 'polite',
+
+            // Misc
             'classes'       => array(),
             'title'         => '',
-            'slug'          => ''
+            'slug'          => '',
+            'rtl'           => 0,
         );
         return apply_filters( 'soliloquy_defaults', $defaults, $post_id );
 
+    }
+
+    /**
+     * Returns an array of supported file type groups and file types
+     *
+     * @since 2.4.3
+     *
+     * @return array Supported File Types
+     */
+    public function get_supported_filetypes() {
+
+        $supported_file_types = array(
+            array(
+                'title'     => __( 'Image Files', 'soliloquy' ),
+                'extensions'=> 'jpg,jpeg,jpe,gif,png,bmp,tif,tiff,JPG,JPEG,JPE,GIF,PNG,BMP,TIF,TIFF',
+            ),
+        );
+
+        // Allow Developers and Addons to filter the supported file types
+        $supported_file_types = apply_filters( 'soliloquy_supported_file_types', $supported_file_types );
+
+        return $supported_file_types;
     }
 
     /**
@@ -319,6 +415,54 @@ class Soliloquy_Common {
 
         );
         return apply_filters( 'soliloquy_meta_defaults', $defaults, $post_id, $attach_id );
+
+    }
+
+    /**
+     * Returns an array of self hosted video supported file types
+     * Edit this to extend support, but bear in mind mediaelementplayer's limitations
+     *
+     * @since 2.4.1.4
+     *
+     * @return array Supported File Types
+     */
+    public function get_self_hosted_supported_filetypes() {
+
+        $file_types = array(
+            'mp4',
+            'flv',
+            'ogv',
+            'webm',
+        );
+
+        $file_types = apply_filters( 'soliloquy_get_self_hosted_supported_filetypes', $file_types );
+
+        return $file_types;
+
+    }
+
+    /**
+     * Converts the given array to a string
+     *
+     * @since 2.4.1.4
+     *
+     * @param string $glue Glue to join array values together
+     * @return string Supported File Types
+     */
+    public function get_self_hosted_supported_filetypes_string( $glue = '|' ) {
+
+        $file_types = $this->get_self_hosted_supported_filetypes();
+        $file_types_str = '';
+        foreach ( $file_types as $file_type ) {
+            $file_types_str .= '.' . $file_type . $glue;
+        }
+
+        // Trim final glue
+        if ( ! empty( $glue ) ) {
+            $file_types_str = rtrim( $file_types_str, $glue );
+        }
+
+        return $file_types_str;
 
     }
 
@@ -538,7 +682,7 @@ class Soliloquy_Common {
         $dest_file_name = "${dir}/${name}-${suffix}.${ext}";
 
         // Return the info.
-        return array(
+        $image_info = array(
             'dir'            => $dir,
             'name'           => $name,
             'ext'            => $ext,
@@ -551,6 +695,7 @@ class Soliloquy_Common {
             'file_path'      => $file_path,
             'dest_file_name' => $dest_file_name,
         );
+        return apply_filters( 'soliloquy_get_image_info', $image_info, $data );
 
     }
 

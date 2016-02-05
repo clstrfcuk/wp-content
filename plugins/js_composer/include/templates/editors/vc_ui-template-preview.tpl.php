@@ -2,6 +2,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+if ( ! defined( 'VC_IS_TEMPLATE_PREVIEW' ) ) {
+	define( 'VC_IS_TEMPLATE_PREVIEW', true );
+}
 add_action( 'admin_enqueue_scripts', array( vc_backend_editor(), 'enqueueEditorScripts' ) );
 add_action( 'admin_enqueue_scripts', array( visual_composer()->templatesPanelEditor(), 'enqueuePreviewScripts' ) );
 add_filter( 'admin_body_class', array( visual_composer()->templatesPanelEditor(), 'addBodyClassTemplatePreview' ) );
@@ -22,12 +25,11 @@ remove_action( 'admin_print_styles', 'print_emoji_styles' );
 add_thickbox();
 wp_enqueue_script( 'vc_editors-templates-preview-js' );
 wp_enqueue_media( array( 'post' => $post_ID ) );
-
-
+visual_composer()->templatesPanelEditor()->registerPreviewScripts();
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 <style type="text/css">
-	#screen-meta, #adminmenumain, .notice {
+	#screen-meta, #adminmenumain, .notice, #wpfooter, #message, .updated {
 		display: none !important;
 	}
 
@@ -69,10 +71,11 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 	       value="<?php esc_attr_e( 'Crunching...', 'js_composer' ) ?>"/>
 </div>
 <?php
+add_filter( 'vc_role_access_with_backend_editor_get_state', '__return_true' );
 vc_include_template( 'editors/partials/access-manager-js.tpl.php' );
 vc_include_template( 'editors/partials/backend-shortcodes-templates.tpl.php' );
 do_action( 'vc_ui-template-preview' );
 // fix bug #59741644518985 in firefox
-wp_dequeue_script( 'isotope' );
+//wp_dequeue_script( 'isotope' );
 require_once( ABSPATH . 'wp-admin/admin-footer.php' );
 

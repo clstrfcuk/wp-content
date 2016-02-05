@@ -978,8 +978,6 @@ var UniteAdminRev = new function(){
 		
 		data.id = jQuery.trim(data.id);
 		
-		jQuery("#video_type_chooser").hide();
-		
 		//disable fields:
 		//jQuery("#youtube_id,#vimeo_id").prop("disabled","disabled").addClass("input-disabled");
 		

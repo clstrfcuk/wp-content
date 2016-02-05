@@ -1,0 +1,41 @@
+Version 1.1.1 - 19 January, 2015
+- Improvement: Manual triggers support like shortocode, display inline for Info Bar & Slide In
+- Improvement: Push page down support for Info Bar
+- Improvement: Special pages (Frontpage / Blog Page / Search / 404 / Author / Archive) support in Target Pages setting
+- Fixed: Mozilla Firefox hyperlink issue
+
+ver 1.1.0 - 8 January 2015
+- New: Introduced new module - Slide In
+- New: Introduced new trigger - At the end of post / page content
+- New: Introduced 3 brand new Info Bar styles
+- New: Introduced toggle button feature for Info Bar
+- Improvement: Conversion can calculate from submit button click as well
+- Improvement: Added border color option for Info Bar
+- Improvement: Provided default styling for Contact Form 7 added by shortcode
+
+ver 1.0.3 - 30 December 2015
+- Fixed: Compatibility issue with mod_security
+- Fixed: Hyperlink issue of Info Bar module
+- Fixed: Info Bar import / export issue
+- Fixed: Scheduled Popup JS issue
+- Fixed: TripAdvisor js blocking issue
+- Improvement: Introduced new feature to display modal popup inline as a part of page content / widget
+- Improvement: Provided an option to disable modules on mobile / tab devices
+- Improvement: Provided an option to disable Google font loading at frontend
+
+ver 1.0.2 - 22 December, 2015
+- Fixed: Modal not saving issue due to mod_security
+- Fixed: Redirect after subscription
+- Improvement: Connects List
+
+ver 1.0.1 - 17 December, 2015
+- Fixed: Anchor tag color of default WP dashboard is hijacking through CP admin CSS
+- Fixed: License registration not working
+- Fixed: Modal / Info Bar loading priority for same trigger event
+- Improvement: Custom post type support for target pages
+- Improvement: Introduced new inline close link position for Info Bar
+- Improvement: JS optimization
+- Improvement: Quick view action button for behaviour settings
+
+ver 1.0.0 - 14 December, 2015
+- Initial ConvertPlug Plugin

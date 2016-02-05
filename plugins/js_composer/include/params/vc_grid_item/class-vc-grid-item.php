@@ -225,6 +225,7 @@ class Vc_Grid_Item {
 			$shortcodes_custom_css = visual_composer()->parseShortcodesCustomCss( $predefined_template['template'] );
 		}
 		if ( ! empty( $shortcodes_custom_css ) ) {
+			$shortcodes_custom_css = strip_tags( $shortcodes_custom_css );
 			$output .= '<style type="text/css" data-type="vc_shortcodes-custom-css">';
 			$output .= $shortcodes_custom_css;
 			$output .= '</style>';
@@ -240,6 +241,7 @@ class Vc_Grid_Item {
 	 */
 	public function parseTemplate( $template ) {
 		$this->mapShortcodes();
+		WPBMap::addAllMappedShortcodes();
 		$attr = ' width="' . $this->gridAttribute( 'element_width', 12 ) . '"'
 		        . ' is_end="' . ( 'true' === $this->isEnd() ? 'true' : '' ) . '"';
 		$template = preg_replace( '/(\[(\[?)vc_gitem\b)/', '$1' . $attr, $template );

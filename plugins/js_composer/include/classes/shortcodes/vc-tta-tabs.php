@@ -9,6 +9,7 @@ class WPBakeryShortCode_VC_Tta_Tabs extends WPBakeryShortCode_VC_Tta_Accordion {
 	public $layout = 'tabs';
 
 	public function enqueueTtaScript() {
+		wp_register_script( 'vc_tabs_script', vc_asset_url( 'lib/vc_tabs/vc-tabs.min.js' ), array( 'vc_accordion_script' ), WPB_VC_VERSION, true );
 		parent::enqueueTtaScript();
 		wp_enqueue_script( 'vc_tabs_script' );
 	}

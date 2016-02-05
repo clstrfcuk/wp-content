@@ -7,7 +7,7 @@ vcWoocommerceProductAttributeFilterDependencyCallback = function () {
 	(function ( $, that ) {
 		var $filterDropdown, $empty;
 
-		$filterDropdown = $( '[data-vc-ui-element="panel-shortcode-param"].vc_dependent-hidden', that.$content );
+		$filterDropdown = $( '[data-vc-shortcode-param-name="filter"]', that.$content );
 		$filterDropdown.removeClass( 'vc_dependent-hidden' );
 		$empty = $( '#filter-empty', $filterDropdown );
 		if ( $empty.length ) {

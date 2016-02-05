@@ -18,15 +18,13 @@ add_action( 'vc_before_init', 'vc_check_for_custom_css_build' );
  */
 function vc_check_for_custom_css_build() {
 	$version = vc_settings()->getCustomCssVersion();
-	if ( vc_settings()->useCustomCss() && ( ! $version || version_compare( WPB_VC_VERSION, $version, '<>' ) ) ) {
-		if ( vc_user_access()
+	if ( vc_user_access()
 			->wpAny( 'manage_options' )
 			->part( 'settings' )
 			->can( 'vc-color-tab' )
-			->get()
-		) {
-			add_action( 'admin_notices', 'vc_custom_css_admin_notice' );
-		}
+			->get() && vc_settings()->useCustomCss() && ( ! $version || version_compare( WPB_VC_VERSION, $version, '<>' ) )
+	) {
+		add_action( 'admin_notices', 'vc_custom_css_admin_notice' );
 	}
 }
 
@@ -62,8 +60,8 @@ function vc_custom_css_admin_notice() {
 }
 
 function vc_page_settings_tab_color_submit_attributes( $submitButtonAttributes ) {
-	$submitButtonAttributes['data-vc-less-path'] = vc_asset_url( 'less/js_composer.less' );
-	$submitButtonAttributes['data-vc-less-root'] = vc_asset_url( 'less' );
+	$submitButtonAttributes['data-vc-less-path'] = vc_str_remove_protocol( vc_asset_url( 'less/js_composer.less' ) );
+	$submitButtonAttributes['data-vc-less-root'] = vc_str_remove_protocol( vc_asset_url( 'less' ) );
 	$submitButtonAttributes['data-vc-less-variables'] = json_encode( apply_filters( 'vc_settings-less-variables', array(
 		// Main accent color:
 		'vc_grey' => array(
@@ -138,11 +136,7 @@ function vc_page_settings_tab_color_submit_attributes( $submitButtonAttributes )
 
 function vc_page_settings_desing_options_load() {
 	add_filter( 'vc_settings-tab-submit-button-attributes-color', 'vc_page_settings_tab_color_submit_attributes' );
-	wp_enqueue_script( 'vc_less_js', vc_asset_url( 'lib/bower/lessjs/dist/less.min.js' ), array( 'wpb_js_composer_js_listeners' ), WPB_VC_VERSION );
-	wp_enqueue_script( 'vc_less_builder', vc_asset_url( 'js/lib/vc_less.js' ), array(
-		'vc_less_js',
-		'wpb_js_composer_js_tools',
-	), WPB_VC_VERSION );
+	wp_enqueue_script( 'vc_less_js', vc_asset_url( 'lib/bower/lessjs/dist/less.min.js' ), array(), WPB_VC_VERSION );
 }
 
-add_action( 'vc_settings_tab-color', 'vc_page_settings_desing_options_load' );
+add_action( 'vc-settings-render-tab-vc-color', 'vc_page_settings_desing_options_load' );

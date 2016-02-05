@@ -56,36 +56,8 @@ function vc_pointer_load() {
 	if ( empty( $vc_pointers['pointers'] ) ) {
 		return;
 	}
-
-	// Add pointers style to queue.
 	wp_enqueue_style( 'wp-pointer' );
-
-	// Add pointers script to queue. Add custom script.
-	wp_enqueue_script( 'vc_pointer-message', vc_asset_url( 'js/lib/vc-pointers/vc-pointer-message.js' ),
-		array(
-			'jquery',
-			'underscore',
-			'wp-pointer',
-		),
-		WPB_VC_VERSION,
-		true
-	);
-	wp_enqueue_script( 'vc_pointers-controller', vc_asset_url( 'js/lib/vc-pointers/vc-pointers-controller.js' ),
-		array(
-			'vc_pointer-message',
-			'wpb_js_composer_js_listeners',
-			'wpb_scrollTo_js',
-		),
-		WPB_VC_VERSION,
-		true
-	);
-
-	wp_enqueue_script( 'vc_wp-pointer',
-		vc_asset_url( 'js/lib/vc-pointers/pointers.js' ),
-		array( 'vc_pointers-controller' ),
-		WPB_VC_VERSION,
-		true
-	);
+	wp_enqueue_script( 'wp-pointer' );
 	// messages
 	$vc_pointers['texts'] = array(
 		'finish' => __( 'Finish', 'js_composer' ),
@@ -94,7 +66,7 @@ function vc_pointer_load() {
 	);
 
 	// Add pointer options to script.
-	wp_localize_script( 'vc_wp-pointer', 'vcPointer', $vc_pointers );
+	wp_localize_script( 'wp-pointer', 'vcPointer', $vc_pointers );
 }
 
 /**

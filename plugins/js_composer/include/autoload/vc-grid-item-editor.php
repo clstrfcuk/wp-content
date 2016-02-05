@@ -103,10 +103,12 @@ function vc_grid_item_render_preview() {
  * @param array $list
  *
  * @since 4.4
- * @deprecated, will be removed in 4.9
+ * @deprecated 4.10
  * @return array
  */
 function vc_grid_item_vc_settings_exclude( array $list ) {
+	_deprecated_function( 'vc_grid_item_vc_settings_exclude function', '4.4 (will be removed in 4.10)');
+
 	require_once vc_path_dir( 'PARAMS_DIR', 'vc_grid_item/editor/class-vc-grid-item-editor.php' );
 	$vc_grid_item_editor = new Vc_Grid_Item_Editor();
 	$list[] = $vc_grid_item_editor->postType();
@@ -187,7 +189,7 @@ add_action( 'wp_ajax_vc_gitem_preview', 'vc_grid_item_render_preview', 5 );
  * Add vc grid item to the list of the excluded post types for enabling Vc editor.
  *
  * Called with with 'vc_settings_exclude_post_type' action.
- * @deprecated, will be removed in 4.9
+ * @deprecated, will be removed in 4.10
  */
 if ( 'admin_settings_page' === vc_mode() ) {
 	add_filter( 'vc_settings_exclude_post_type', 'vc_grid_item_vc_settings_exclude' );

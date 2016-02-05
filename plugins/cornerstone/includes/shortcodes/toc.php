@@ -65,8 +65,13 @@ function x_shortcode_toc_item( $atts ) {
       $page = '';
       break;
     default :
-      $page = $page . '/';
-      $page = ( get_the_ID() == get_option( 'page_on_front' ) ) ? 'page/' . $page . '/' : $page . '/';
+      $page = $page;
+
+      if ( get_post_status( get_the_ID() )  == "draft" ) {
+        $page = '&page=' . $page;
+      } else {
+        $page = ( get_the_ID() == get_option( 'page_on_front' ) ) ? 'page/' . $page . '/' : $page . '/';
+      }
   }
 
   $link = esc_url( get_permalink() );

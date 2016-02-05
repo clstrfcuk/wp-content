@@ -3,8 +3,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-add_filter( 'vc_edit_form_fields_attributes_vc_single_image', 'vc_single_image_convert_old_link_to_new' );
-
+if ( 'vc_edit_form' === vc_post_param( 'action' ) ) {
+	add_filter( 'vc_edit_form_fields_attributes_vc_single_image', 'vc_single_image_convert_old_link_to_new' );
+}
 /**
  * Backward compatibility
  *

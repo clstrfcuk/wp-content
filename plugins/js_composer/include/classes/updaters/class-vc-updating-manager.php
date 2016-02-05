@@ -81,7 +81,7 @@ class Vc_Updating_Manager {
 		$remote_version = $this->getRemote_version();
 
 		// If a newer version is available, add the update
-		if (version_compare( $this->current_version, $remote_version, '<' ) ) {
+		if ( version_compare( $this->current_version, $remote_version, '<' ) ) {
 			$obj = new stdClass();
 			$obj->slug = $this->slug;
 			$obj->new_version = $remote_version;
@@ -173,7 +173,7 @@ class Vc_Updating_Manager {
 	public function addUpgradeMessageLink() {
 		$username = vc_settings()->get( 'envato_username' );
 		$api_key = vc_settings()->get( 'envato_api_key' );
-		$purchase_code = vc_settings()->get( 'js_composer_purchase_code' );
+		$purchase_code = vc_license()->getLicenseKey();
 		echo '<style type="text/css" media="all">tr#wpbakery-visual-composer + tr.plugin-update-tr a.thickbox + em { display: none; }</style>';
 		if ( empty( $username ) || empty( $api_key ) || empty( $purchase_code ) ) {
 			echo ' <a href="' . $this->url . '">' . __( 'Download new version from CodeCanyon.', 'js_composer' ) . '</a>';

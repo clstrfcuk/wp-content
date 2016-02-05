@@ -92,21 +92,27 @@ return array(
 	'elements-return'  => __( 'Back to Elements', $td ),
 
 	// Inspector
-	'inspector-heading'        => __( 'Inspector', $td ),
-	'inspector-return'         => __( 'Back to Inspector', $td ),
-	'inspector-blank-title'    => __( 'No elements are selected!', $td ),
-	'inspector-blank-sub'      => __( 'Inspect an element by clicking on it in the preview pane.', $td ),
-	'inspector-duplicate'      => __( 'Duplicate', $td ),
-	'inspector-delete'         => __( 'Delete', $td ),
-	'inspector-really-delete'  => __( 'Really Delete?', $td ),
-	'inspector-delete-confirm' => __( 'Are you sure you wish to delete this element?', $td ),
-	'inspector-erase'          => __( 'Erase', $td ),
-	'inspector-really-erase'   => __( 'Really Erase?', $td ),
-	'inspector-manage-layout'  => __( 'Manage Layout', $td ),
+	'inspector-heading'            => __( 'Inspector', $td ),
+	'inspector-return'             => __( 'Back to Inspector', $td ),
+	'inspector-blank-title'        => __( 'No elements are selected!', $td ),
+	'inspector-blank-pane-title'   => __( 'Nothing Selected', $td ),
+	'inspector-blank-pane-message' => __( 'Click on an element in the site preview to begin inspecting it.', $td ),
+	'inspector-blank-sub'          => __( 'Inspect an element by clicking on it in the preview pane.', $td ),
+	'inspector-duplicate'          => __( 'Duplicate', $td ),
+	'inspector-delete'             => __( 'Delete', $td ),
+	'inspector-really-delete'      => __( 'Really Delete?', $td ),
+	'inspector-delete-confirm'     => __( 'Are you sure you wish to delete this element?', $td ),
+	'inspector-erase'              => __( 'Erase', $td ),
+	'inspector-really-erase'       => __( 'Really Erase?', $td ),
+	'inspector-manage-layout'      => __( 'Manage Layout', $td ),
 
 	// Controls
 	'controls-on'           => __( 'On', $td ),
 	'controls-off'          => __( 'Off', $td ),
+	'dimensions-top'        => __( 'Top', $td ),
+	'dimensions-right'      => __( 'Right', $td ),
+	'dimensions-bottom'     => __( 'Bottom', $td ),
+	'dimensions-left'       => __( 'Left', $td ),
 	'dimensions-link'       => __( 'Link', $td ),
 	'dimensions-unlink'     => __( 'Unlink', $td ),
 	'tooltip-inspect'       => __( 'Inspect', $td ),
@@ -122,7 +128,7 @@ return array(
 	'sortable-duplicate'    => __( 'Copy of %s', $td ),
 	'sortable-empty'        => __( 'No items!', $td ),
 	'sortable-empty-sub'    => __( 'Add some to continue building.', $td ),
-	'expand-control'        => __( 'Expand'),
+	'expand-control'        => __( 'Expand', $td ),
 
 	// Settings
 	'settings-heading'       => __( 'Settings', $td ),
@@ -151,11 +157,17 @@ return array(
 	'options-editor-position-sub'   => __( 'Move the editor to your preferred side of the window.', $td ),
 
 	// Respond
-	'respond-extra-large' => __( 'Extra Large', $td ),
-	'respond-fullscreen'  => __( 'Fullscreen', $td ),
-	'respond-large'       => __( 'Large', $td ),
-	'respond-medium'      => __( 'Medium', $td ),
-	'respond-small'       => __( 'Small', $td ),
+
+	'respond-xl-title' => __( 'Extra Large', $td ),
+	'respond-lg-title' => __( 'Large', $td ),
+	'respond-md-title' => __( 'Medium', $td ),
+	'respond-sm-title' => __( 'Small', $td ),
+	'respond-xs-title' => __( 'Extra Small', $td ),
+	'respond-xl-desc'  => __( '1200px &amp; Up', $td ),
+	'respond-lg-desc'  => __( '980px &ndash; 1199px', $td ),
+	'respond-md-desc'  => __( '768px &ndash; 979px', $td ),
+	'respond-sm-desc'  => __( '481px &ndash; 767px', $td ),
+	'respond-xs-desc'  => __( '480px &amp; Smaller', $td ),
 
 	//Confirm
 	'confirm-message'                 => __( 'Are you sure?', $td ),

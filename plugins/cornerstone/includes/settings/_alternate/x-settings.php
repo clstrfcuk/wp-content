@@ -90,7 +90,7 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       )
     );
 
-    $meta = get_post_meta( $post->ID, '_x_entry_image_full_duration', true );
+    $meta = get_post_meta( $post->ID, '_x_entry_bg_image_full_duration', true );
     $default = ( $meta == '' ) ? '7500' : $meta;
 
     $this->addControl(
@@ -144,11 +144,13 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
     );
 
     $meta = get_post_meta( $post->ID, '_x_page_one_page_navigation', true );
-    $default = ( $meta == '' ) ? 'Deactivated' : $meta;
+
+    $deactivated_label = __( 'Deactivated', csl18n() );
+    $default = ( $meta == '' ) ? $deactivated_label : $meta;
 
     $menus = get_terms( 'nav_menu', array( 'hide_empty' => true ) );
     $choices = array();
-    $choices[] = array( 'value' => 'Deactivated', 'label' => 'Deactivated' );
+    $choices[] = array( 'value' => 'Deactivated', 'label' => $deactivated_label );
     foreach ( $menus as $menu ) {
       $choices[] = array( 'value' => $menu->name, 'label' => $menu->name );
     }
@@ -190,7 +192,7 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       )
     );
 
-    $meta = get_post_meta( $post->ID, '_x_entry_image_full_duration', true );
+    $meta = get_post_meta( $post->ID, '_x_entry_bg_image_full_duration', true );
     $default = ( $meta == '' ) ? '7500' : $meta;
 
     $this->addControl(
@@ -403,7 +405,7 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       )
     );
 
-    $meta = get_post_meta( $post->ID, '_x_entry_image_full_duration', true );
+    $meta = get_post_meta( $post->ID, '_x_entry_bg_image_full_duration', true );
     $default = ( $meta == '' ) ? '7500' : $meta;
 
     $this->addControl(
@@ -432,7 +434,7 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
   	update_post_meta( $post->ID, '_x_entry_alternate_index_title', sanitize_text_field( $alternate_index_title ) );
   	update_post_meta( $post->ID, '_x_entry_bg_image_full', $bg_image_full );
     update_post_meta( $post->ID, '_x_entry_bg_image_full_fade', $bg_image_full_fade );
-    update_post_meta( $post->ID, '_x_entry_image_full_duration', $image_full_duration );
+    update_post_meta( $post->ID, '_x_entry_bg_image_full_duration', $image_full_duration );
 
     if ( $post->post_type == 'post') {
 

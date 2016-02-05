@@ -45,6 +45,7 @@ $vc_params_list = array(
 	'taxonomies',
 	'taxomonies',
 	'exploded_textarea',
+	'exploded_textarea_safe',
 	'textarea_raw_html',
 	'textarea_safe',
 	'textarea',

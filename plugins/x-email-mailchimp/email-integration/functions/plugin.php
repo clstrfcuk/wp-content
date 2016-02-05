@@ -91,7 +91,7 @@ class X_Email_Integration extends X_Email_Integration_Base {
   //
 
   function shortcode_post_type_column( $result, $item ) {
-    return "<input type=\"text\" disabled value='[x_subscribe form=\"{$item->ID}\"]'>";
+    return "<input type=\"text\" readonly=\"readonly\" value='[x_subscribe form=\"{$item->ID}\"]'>";
   }
 
 
@@ -192,7 +192,7 @@ class X_Email_Integration extends X_Email_Integration_Base {
   function get_all_forms() {
 
     $forms = array();
-    $posts = get_posts( array( 'post_type' => 'x-email-forms' ) );
+    $posts = get_posts( array( 'post_type' => 'x-email-forms', 'posts_per_page' => 999 ) );
 
     foreach ( $posts as $form ) {
       $forms[(string)$form->ID] = $form->post_title;

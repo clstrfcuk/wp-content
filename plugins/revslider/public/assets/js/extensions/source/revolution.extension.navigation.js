@@ -1,10 +1,9 @@
 /********************************************
- * REVOLUTION 5.0 EXTENSION - NAVIGATION
- * @version: 1.0.4 (10.11.2015)
+ * REVOLUTION 5.1.5 EXTENSION - NAVIGATION
+ * @version: 1.1 (04.01.2016)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch
 *********************************************/
-
 (function($) {
 
 var _R = jQuery.fn.revolution,
@@ -33,26 +32,66 @@ jQuery.extend(true,_R, {
 		
 	},
 
-	resizeThumbsTabs : function(opt) {	
+	resizeThumbsTabs : function(opt,force) {	
 		
 		
 		if ((opt.navigation && opt.navigation.tabs.enable) || (opt.navigation && opt.navigation.thumbnails.enable)) {
 			var f = (jQuery(window).width()-480) / 500,
 				tws = new punchgs.TimelineLite(),
 				otab = opt.navigation.tabs,
-				othu = opt.navigation.thumbnails;
+				othu = opt.navigation.thumbnails,
+				otbu = opt.navigation.bullets;
 
 			tws.pause();
 			f = f>1 ? 1 : f<0 ? 0 : f;
 			
-			if (ckNO(otab) && otab.width>otab.min_width) rtt(f,tws,opt.c,otab,opt.slideamount,'tab');	
-			if (ckNO(othu) && othu.width>othu.min_width) rtt(f,tws,opt.c,othu,opt.slideamount,'thumb');
+			if (ckNO(otab) && (force || otab.width>otab.min_width)) rtt(f,tws,opt.c,otab,opt.slideamount,'tab');	
+			if (ckNO(othu) && (force || othu.width>othu.min_width)) rtt(f,tws,opt.c,othu,opt.slideamount,'thumb');
+			if (ckNO(otbu) && force) {
+				// SET BULLET SPACES AND POSITION
+				var bw = opt.c.find('.tp-bullets');
+
+				bw.find('.tp-bullet').each(function(i){
+					var b = jQuery(this),			
+						am = i+1,
+						w = b.outerWidth()+parseInt((otbu.space===undefined? 0:otbu.space),0),
+						h = b.outerHeight()+parseInt((otbu.space===undefined? 0:otbu.space),0);					
+					
+				if (otbu.direction==="vertical") {
+					b.css({top:((am-1)*h)+"px", left:"0px"});
+					bw.css({height:(((am-1)*h) + b.outerHeight()),width:b.outerWidth()});
+				}
+				else {
+					b.css({left:((am-1)*w)+"px", top:"0px"});
+					bw.css({width:(((am-1)*w) + b.outerWidth()),height:b.outerHeight()});			
+				}
+				});
+				
+			}
 
 			tws.play();	
 			
 			setONHeights(opt);
 		}
 		return true;
+	},
+
+	updateNavIndexes : function(opt) {
+		var _ = opt.c;
+		
+		function setNavIndex(a) {
+			if (_.find(a).lenght>0) {
+				_.find(a).each(function(i) {				
+					jQuery(this).data('liindex',i);
+				})
+			}
+		}
+		
+		setNavIndex('.tp-tab');
+		setNavIndex('.tp-bullet');
+		setNavIndex('.tp-thumb');		
+		_R.resizeThumbsTabs(opt,true);
+		_R.manageNavigation(opt);
 	},
 
 
@@ -166,7 +205,7 @@ jQuery.extend(true,_R, {
 			var pi = ai>0 ? ai-1 : opt.slideamount-1,
 				ni = (ai+1)==opt.slideamount ? 0 : ai+1;
 				
-		
+			
 			if (_a.enable === true) {
 				var inst = _a.tmp;
 				jQuery.each(opt.thumbs[pi].params,function(i,obj) {
@@ -381,43 +420,67 @@ var initKeyboard = function(container,opt) {
 	});		
 };
 
-var initMouseScroll = function(container,opt) {				
-	if (opt.navigation.mouseScrollNavigation!=="on") return;
-	var bl = navigator.userAgent.match(/mozilla/i) ?  -29 : -49,
-		tl = navigator.userAgent.match(/mozilla/i) ? 29 : 49;
 
+
+var initMouseScroll = function(container,opt) {			
+
+	if (opt.navigation.mouseScrollNavigation!=="on" && opt.navigation.mouseScrollNavigation!=="carousel") return;
+	opt.isIEEleven = !!navigator.userAgent.match(/Trident.*rv\:11\./);
+	opt.isSafari = !!navigator.userAgent.match(/safari/i);
+	opt.ischrome = !!navigator.userAgent.match(/chrome/i);
+
+	
+	var bl = opt.ischrome ? -49 : opt.isIEEleven || opt.isSafari ? -9 : navigator.userAgent.match(/mozilla/i) ?  -29 :  -49,
+		tl = opt.ischrome ? 49 : opt.isIEEleven || opt.isSafari ? 9 : navigator.userAgent.match(/mozilla/i) ? 29 :  49;
+	
+	
 	container.on('mousewheel DOMMouseScroll', function(e) {							
+						
 			var res = normalizeWheel(e.originalEvent),		
 				asi = container.find('.tp-revslider-slidesli.active-revslide').index(),
 				psi = container.find('.tp-revslider-slidesli.processing-revslide').index(),
 				fs = asi!=-1 && asi==0 || psi!=-1 && psi==0 ? true : false,
-				ls = asi!=-1 && asi==opt.slideamount-1 || psi!=1 && psi==opt.slideamount-1 ? true:false;
-					
-		if (psi==-1) {			
-			if(res.pixelY<bl) {			 
+				ls = asi!=-1 && asi==opt.slideamount-1 || psi!=1 && psi==opt.slideamount-1 ? true:false,				
+				ret = true;
+			if (opt.navigation.mouseScrollNavigation=="carousel") 
+				fs = ls = false;						
+		
+		if (psi==-1) {					
+			if(res.pixelY<bl) {						
 				if (!fs) {
 					opt.sc_indicator="arrow";
 					opt.sc_indicator_dir = 0;
-					_R.callingNewSlide(opt,container,-1);																		
-					return false;			 
+					_R.callingNewSlide(opt,container,-1);	
+					
+					ret = false;			 
 				}
 			 }
 			 else 
-			 if(res.pixelY>tl) {				 
+			 if(res.pixelY>tl) {				
 			 	if (!ls) {
 				 	opt.sc_indicator="arrow";
 				 	opt.sc_indicator_dir = 1;
-					_R.callingNewSlide(opt,container,1);								 
-					return false;
+					_R.callingNewSlide(opt,container,1);	
+					
+					ret = false;
 				}
 			 }
 			 
 			
-		} else {
-			if (!ls)
-				return false;
+		} else {							
+			if ((!ls && (res.spinY>0)) || (!fs && (res.spinY<=0))) {				
+				ret = false;	
+			}
+			else 
+				ret = true;		
 		}	
-		e.preventDefault();	
+
+		if (ret==false) {
+			e.preventDefault(e);    		
+			return false;
+		} else {			
+			return;
+		}
 	});
 };
 
@@ -453,7 +516,10 @@ var swipeAction = function(container,opt,vertical) {
 
 	SwipeOn.swipetp({			
 		allowPageScroll:pagescroll,			
-		triggerOnTouchLeave:true,					
+		triggerOnTouchLeave:true,
+		treshold:opt.navigation.touch.swipe_treshold,
+		fingers:opt.navigation.touch.swipe_min_touches,
+						
 		excludeElements:jQuery.fn.swipetp.defaults.excludedElements,	
 			
 		swipeStatus:function(event,phase,direction,distance,duration,fingerCount,fingerData) {			
@@ -943,7 +1009,7 @@ var addThumb = function(container,o,li,what,opt) {
 	
 
 	tm.css({maxWidth:maxw+"px",maxHeight:maxh+"px",overflow:"hidden",position:"relative"});		
-	t.css({maxWidth:(maxw)+"px",margin:_margin, maxHeight:maxh+"px",overflow:"visible",position:position,background:cHex(o.wrapper_color,o.wrapper_opacity),padding:o.wrapper_padding+"px",boxSizing:"contet-box"});
+	t.css({maxWidth:(maxw)+"px",/*margin:_margin, */maxHeight:maxh+"px",overflow:"visible",position:position,background:cHex(o.wrapper_color,o.wrapper_opacity),padding:o.wrapper_padding+"px",boxSizing:"contet-box"});
 
 	
 	

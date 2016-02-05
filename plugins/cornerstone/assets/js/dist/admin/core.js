@@ -6,260 +6,271 @@ var App = {
 	RegisteredComponents: {},
 
 	/**
-   * Shim Backbone.Radio instead of Wreqr
-   */
-  _initChannel: function() {
-    this.channelName = 'cs';
-    this.channel = Backbone.Radio.channel( this.channelName );
-    var app = this;
-    Backbone.Radio.debugLog = function(warning, eventName, channelName) {
-		  if (Backbone.Radio.DEBUG && console && console.warn && app.radioDebug ) {
-		    console.warn(Backbone.Radio._debugText(warning, eventName, channelName));
-		  }
+	 * Shim Backbone.Radio instead of Wreqr
+	 */
+	_initChannel: function() {
+		this.channelName = 'cs';
+		this.channel = Backbone.Radio.channel( this.channelName );
+		var app = this;
+		Backbone.Radio.debugLog = function( warning, eventName, channelName ) {
+			if ( Backbone.Radio.DEBUG && console && console.warn && app.radioDebug ) {
+				console.warn( Backbone.Radio._debugText( warning, eventName, channelName ) );
+			}
 		};
+	},
+
+	initialize: function() {
+
+		this.Config = this._booleanize( this.Config );
+		this.events = Backbone.Radio.channel( 'cs:event' );
+
+		/**
+		 * Debug Mode
+		 */
+		if ( this.Config.debug ) {
+			Backbone.Radio.DEBUG = true;
+		}
+
+		this.bootTime = new Date().getTime();
+		this.registerComponents( require( './components' ) );
+
+	},
+
+	onBeforeStart: function( options ) {
+		this.loadComponents( 'common' );
+	},
+
+	onStart: function() {
+		jQuery( _.bind( function() {
+			this.loadComponents( 'start' );
+		}, this ) );
+	},
+
+	/**
+	 * Load a group of components
+	 */
+	loadComponents: function( group ) {
+
+		if ( ! this.Registry[group] ) return;
+
+		_.each( this.Registry[group], function( item ) {
+			this.loadComponent( item );
+		}, this );
+
+	},
+
+	/**
+	 * Load an individual component
+	 */
+	loadComponent: function( name ) {
+
+		if ( this.components[name] )
+			return this.components[name];
+
+		this.components[name] = new ( this.RegisteredComponents[name] )( { cs: this } );
+
+	},
+
+	/**
+	 * Component accessor method. Used components to access each other.
+	 */
+	component: function( name ) {
+		if ( this.components[name] )
+			return this.components[name];
+		return {};
+	},
+
+	registerComponents: function( components ) {
+		this.RegisteredComponents = _.extend( components, this.RegisteredComponents );
+	},
+
+	updateConfig: function( updates ) {
+		this.Config = _.deepExtend( this._booleanize( updates ), this.Config || {} );
+	},
+
+	updateRegistry: function( updates ) {
+
+		_.each( updates, function( group, key ) {
+
+			var previous = this.Registry[key] || [];
+			this.Registry[key] = _.unique( _.union( previous, group ) );
+
+		}, this );
+
   },
 
-  initialize: function() {
+	loadTemplates: function( templates ) {
+		this.Templates = _.extend( this.Templates || {}, templates );
+	},
 
-  	this.Config = this._booleanize( this.Config );
-  	this.events = Backbone.Radio.channel( 'cs:event' )
-
-    /**
-     * Debug Mode
-     */
-    if (this.Config.debug) {
-      Backbone.Radio.DEBUG = true;
-    }
-
-    this.bootTime = new Date().getTime();
-    this.registerComponents( require( './components') );
-  },
-
-  onBeforeStart: function( options ) {
-  	this.loadComponents( 'common' );
-  },
-
-  onStart: function() {
-  	jQuery( _.bind( function(){
-  		this.loadComponents( 'start' );
-  	}, this ) );
-  },
-
-  /**
-   * Load a group of components
-   */
-  loadComponents: function( group ) {
-  	if (!this.Registry[group]) return;
-
-  	_.each( this.Registry[group], function( item ) {
-  		this.loadComponent( item )
-  	}, this );
-
-  },
-
-  /**
-   * Load an individual component
-   */
-  loadComponent: function( name ) {
-
-  	if ( this.components[name] )
-  		return this.components[name];
-
-  	this.components[name] = new (this.RegisteredComponents[name])( { cs: this } );
-
-  },
-
-  /**
-   * Component accessor method. Used components to access each other.
-   */
-  component: function( name ) {
-  	if ( this.components[name] )
-  		return this.components[name];
-  	return {};
-  },
-
-  registerComponents: function ( components ) {
-  	this.RegisteredComponents = _.extend( components, this.RegisteredComponents );
-  },
-
-  updateConfig: function ( updates ) {
-  	this.Config = _.deepExtend( this._booleanize( updates ), this.Config || {} );
-  },
-
-  updateRegistry: function ( updates ) {
-
-  	_.each( updates, function( group, key ) {
-
-  		var previous = this.Registry[key] || [];
-  		this.Registry[key] = _.unique( _.union( previous, group ) );
-
-  	}, this );
-
-  },
-
-  loadTemplates: function( templates ) {
-  	this.Templates = _.extend( this.Templates || {}, templates );
-  },
-
-  config: function ( key ) {
-  	return ( _.has( this.Config, key ) ) ? this.Config[key] : null;
-  },
+	config: function( key ) {
+		return ( _.has( this.Config, key ) ) ? this.Config[key] : null;
+	},
 
   debug: function() {
-  	return ( this.config('debug') );
-  },
+		return ( this.config( 'debug' ) );
+	},
 
-  // Work in tandom with the cs_booleanize helper to preserve boolean values
-  // passed through wp_localize_script
-  _booleanize: function( data ) {
-  	_.each( data, function( item, key ) {
-  		if ( item == 'true' ) data[key] = true;
-  		if ( item == 'false' ) data[key] = false;
-  	} );
-  	return data;
-  }
+	// Work in tandom with the cs_booleanize helper to preserve boolean values
+	// passed through wp_localize_script
+	_booleanize: function( data ) {
+		_.each( data, function( item, key ) {
+			if ( 'true'  == item ) data[key] = true;
+			if ( 'false' == item ) data[key] = false;
+		} );
+		return data;
+	}
 
-}
+};
 
-_.extend( App, require('./modules/cs') );
+_.extend( App, require( './modules/cs' ) );
 App = Cornerstone.Mn.Application.extend( App );
 
-module.exports = function( config, registry ){
-  ( window.cs = new App( { Config: config, Registry: registry } ) ).start({});
-}
+module.exports = function( config, registry ) {
+	( window.cs = new App( { Config: config, Registry: registry } ) ).start({});
+};
+
 },{"./components":12,"./modules/cs":25}],2:[function(require,module,exports){
 module.exports = Backbone.Collection.extend({
-	model: require('../models/control')
-});
+	model: require( '../models/control' )
+} );
+
 },{"../models/control":15}],3:[function(require,module,exports){
 module.exports = Backbone.Collection.extend({
-	model: require('../models/element-definition')
-});
+	model: require( '../models/element-definition' )
+} );
+
 },{"../models/element-definition":16}],4:[function(require,module,exports){
-var ProxyableCollection = require('./proxyable');
+var ProxyableCollection = require( './proxyable' );
 module.exports = ProxyableCollection.extend({
-	model: require('../models/element'),
+
+	model: require( '../models/element' ),
 
 	comparator: function( m ) {
-    return m.get('rank');
-  },
+    return m.get( 'rank' );
+	},
 
-  constructor: function( models, options ) {
+	constructor: function( models, options ) {
 
-    this.on( 'update:position', this.updatePosition );
-    Backbone.Collection.apply( this, arguments );
+		this.on( 'update:position', this.updatePosition );
+		Backbone.Collection.apply( this, arguments );
 
-    this.on( 'add', this.pageDirty )
-    this.on( 'remove', this.pageDirty )
-    this.on( 'sort', this.pageDirty )
+		this.on( 'add', this.pageDirty );
+		this.on( 'remove', this.pageDirty );
+		this.on( 'sort', this.pageDirty );
 
-  },
+	},
 
 	create: function( atts, options, opts ) {
 
-		var opts = opts || {}
+		var opts = opts || {};
 
-		if (!atts._type) {
+		if ( ! atts._type ) {
 			cs.warn( 'Elements can not be created without a type', atts );
 		}
 
-    var model = new this.model( atts, options );
+		var model = new this.model( atts, options );
 
-    if ( opts.replace && _.isFunction( opts.replace.destroy ) ) {
-    	opts.replace.trigger('imminent:replacement', model );
-    	opts.replace.destroy();
-    }
+		if ( opts.replace && _.isFunction( opts.replace.destroy ) ) {
+			opts.replace.trigger( 'imminent:replacement', model );
+			opts.replace.destroy();
+		}
 
-    if ( _.isFunction( opts.after ) ) {
-    	opts.after( model );
-    }
+		if ( _.isFunction( opts.after ) ) {
+			opts.after( model );
+		};
 
+		this.updatePosition( model, ( _.isFinite( opts.position ) ) ? opts.position : this.length );
+		model.trigger( 'created', model );
 
+		return model;
 
-    this.updatePosition( model, ( _.isFinite( opts.position ) ) ? opts.position : this.length );
-    model.trigger( 'created', model );
+	},
 
-    return model;
-  },
+	pageDirty: function() {
+		cs.channel.trigger( 'page:unsaved' );
+	},
 
-  pageDirty: function() {
-    cs.channel.trigger( 'page:unsaved' );
-  },
+	updatePosition: function( model, newIndex ) {
 
-  updatePosition: function( model, newIndex ) {
+		this.remove( model );
 
-		this.remove(model);
+		// Items BEFORE keep their index,
+		// Items AFTER have their index incremented
+		this.each( function( model, index ) {
+			var rank = index;
+			if ( index >= newIndex ) rank += 1;
+			model.set( 'rank', rank );
+		});
 
-    // Items BEFORE keep their index,
-    // Items AFTER have their index incremented
-    this.each(function (model, index) {
-      var rank = index;
-      if (index >= newIndex)
-        rank += 1;
-      model.set('rank', rank);
-    });
+		model.set( 'rank', newIndex );
+		this.add( model, { at: newIndex } );
+		this.sort();
 
-    model.set('rank', newIndex);
-    this.add(model, {at: newIndex});
-    this.sort();
+		this.each( function( item ) {
+			item.trigger( 'position:updated' );
+		});
+	},
 
-    this.each(function(item){
-      item.trigger('position:updated');
-    })
-  },
+	getParent: function() {
+		return this.parent || null;
+	}
 
-  getParent: function() {
-  	return this.parent || null;
-  }
+} );
 
-});
 },{"../models/element":17,"./proxyable":6}],5:[function(require,module,exports){
 module.exports = {
-	Proxyable : require('./proxyable'),
-	Element : require('./element'),
-	ElementDefinition : require('./element-definition'),
-	Control : require('./control'),
-	Template : require('./template'),
-	Setting : require('./setting'),
-}
+	Proxyable:         require( './proxyable' ),
+	Element:           require( './element' ),
+	ElementDefinition: require( './element-definition' ),
+	Control:           require( './control' ),
+	Template:          require( './template' ),
+	Setting:           require( './setting' )
+};
+
 },{"./control":2,"./element":4,"./element-definition":3,"./proxyable":6,"./setting":7,"./template":8}],6:[function(require,module,exports){
 var ProxyableCollection = Backbone.Collection.extend({
 
-	model: require('../models/proxyable'),
+	model: require( '../models/proxyable' ),
 
 	toProxy: function() {
 		var collection = new Backbone.Collection;
 		this.each( function( item ) {
 			var defaults = item.getDefaults();
-			collection.add( new (item.proxyClass)( _.extend( defaults, item.proxyData() ), { source: item, defaults: defaults } ) );
-		})
+			collection.add( new ( item.proxyClass )( _.extend( defaults, item.proxyData() ), { source: item, defaults: defaults } ) );
+		});
 		return collection;
-	},
+	}
 
 });
 
-ProxyableCollection.prototype.sync = function() { return null; };
-ProxyableCollection.prototype.fetch = function() { return null; };
-ProxyableCollection.prototype.save = function() { return null; };
+ProxyableCollection.prototype.sync = Cornerstone.Helpers.csnull;
+ProxyableCollection.prototype.fetch = Cornerstone.Helpers.csnull;
+ProxyableCollection.prototype.save = Cornerstone.Helpers.csnull;
 module.exports = ProxyableCollection;
+
 },{"../models/proxyable":19}],7:[function(require,module,exports){
-var ProxyableCollection = require('./proxyable');
+var ProxyableCollection = require( './proxyable' );
 module.exports = ProxyableCollection.extend({
-	model: require('../models/setting'),
+	model: require( '../models/setting' )
 });
+
 },{"../models/setting":20,"./proxyable":6}],8:[function(require,module,exports){
 var TemplateCollection = Backbone.Collection.extend({
-  model: require('../models/template'),
-  section: function( section ) {
+	model: require( '../models/template' ),
+	section: function( section ) {
 
-    bySection = this.filter( function( shortcode ) {
-      return shortcode.get('section') === section;
-    });
+		bySection = this.filter( function( shortcode ) {
+			return shortcode.get( 'section' ) === section;
+		});
 
-    return new TemplateCollection( bySection );
-  },
+		return new TemplateCollection( bySection );
+	}
+
 });
+
 module.exports = TemplateCollection;
+
 },{"../models/template":21}],9:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
@@ -276,7 +287,7 @@ module.exports = Cornerstone.Component.extend({
 
 });
 
-},{"../utility/renderer":30}],10:[function(require,module,exports){
+},{"../utility/renderer":29}],10:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -300,6 +311,8 @@ module.exports = Cornerstone.Component.extend({
           _.defer( options.success );
       }
     });
+
+    cs.elements.trigger( 'element:deleted' );
 
 	},
 
@@ -339,9 +352,12 @@ module.exports = Cornerstone.Component.extend({
     if ( clone[title_field] )
       clone[title_field] = cs.l18n('sortable-duplicate').replace('%s', clone[title_field] );
 
-    model.collection.create( clone, _.clone( model.options ), model.collection.indexOf( model ) + 1, function( newModel ) {
-    	cs.render.shadow( newModel, model.cid );
-    } );
+		model.collection.create( clone, _.clone( model.options ), {
+			position: model.collection.indexOf( model ) + 1,
+			after: function( newModel ) {
+				cs.render.shadow( newModel, model.cid );
+			}
+		} );
 
 	}
 
@@ -442,20 +458,19 @@ module.exports = {
 	'element-handler': require( './element-handler' )
 }
 },{"./common":9,"./element-handler":10,"./element-library":11}],13:[function(require,module,exports){
-require('./modules/bootstrap');
+require( './modules/bootstrap' );
 
-require('./app-mk2')( csCoreData, {
+require( './app-mk2' )( csCoreData, {
 	common: [ 'common', 'element-library', 'element-handler' ]
-});
+} );
+
 },{"./app-mk2":1,"./modules/bootstrap":23}],14:[function(require,module,exports){
 var ControlProxy = Backbone.Model.extend({
 
 	initialize: function( attributes, options ) {
 
 		this.source = options.source || null;
-
 		var defaults = options.defaults || null;
-
 
 		if ( this.source ) {
 			this.elements = options.source.elements || null;
@@ -477,7 +492,7 @@ var ControlProxy = Backbone.Model.extend({
 	},
 
 	getIndex: function() {
-		return this.source.getIndex()
+		return this.source.getIndex();
 	},
 
 	getSource: function() {
@@ -493,15 +508,17 @@ var ControlProxy = Backbone.Model.extend({
 	},
 
 	refresh: function() {
-		this.set( _.clone(this.source.attributes), { silent: true });
+		this.set( _.clone( this.source.attributes ), { silent: true });
 	}
 
 });
 
-ControlProxy.prototype.sync = function() { return null; };
-ControlProxy.prototype.fetch = function() { return null; };
-ControlProxy.prototype.save = function() { return null; };
+ControlProxy.prototype.sync = Cornerstone.Helpers.csnull;
+ControlProxy.prototype.fetch = Cornerstone.Helpers.csnull;
+ControlProxy.prototype.save = Cornerstone.Helpers.csnull;
+
 module.exports = ControlProxy;
+
 },{}],15:[function(require,module,exports){
 module.exports =  Backbone.Model.extend({
 
@@ -517,8 +534,8 @@ module.exports =  Backbone.Model.extend({
 
 	initialize: function() {
 		this.proxy = null;
-		if ( _.isNull( this.get('key') ) )
-			this.set('key', this.get('name') );
+		if ( _.isNull( this.get( 'key' ) ) )
+			this.set( 'key', this.get( 'name' ) );
 	},
 
 	setProxy: function( proxy ) {
@@ -526,9 +543,11 @@ module.exports =  Backbone.Model.extend({
 		this.trigger( 'set:proxy' );
 	}
 
-});
+} );
+
 },{}],16:[function(require,module,exports){
 module.exports =  Backbone.Model.extend({
+
 	defaults: {
 		name: null,
 		ui: null,
@@ -547,30 +566,29 @@ module.exports =  Backbone.Model.extend({
 
 		var context = context || 'all';
 
-		return _.filter( this.get( 'controls' ) , function( control ) {
-			if ( context == 'all' && control.context.indexOf("_") !== 0 ) return true; // Exclude private context groups from "all"
+		return _.filter( this.get( 'controls' ), function( control ) {
+			if ( 'all' == context && 0 !== control.context.indexOf( '_' ) ) return true; // Exclude private context groups from "all"
 			return ( control.context == context );
 		}, this );
 
-	},
+	}
 
+} );
 
-});
 },{}],17:[function(require,module,exports){
-var Proxyable = require('./proxyable');
-
+var Proxyable = require( './proxyable' );
 module.exports = Proxyable.extend({
 
 	idAttribute: '_elID',
 
-	proxyClass: require('./control-proxy'),
+	proxyClass: require( './control-proxy' ),
 	proxyExclusions: [ 'elements' ],
 
 	defaults: {
-		_type: 'undefined', // Reference to Element Library definition
+		_type: 'undefined' // Reference to Element Library definition
 	},
 
-	initialize: function ( options ) {
+	initialize: function( options ) {
 
 		var localElements, defaults, elements, layoutDefaults;
 
@@ -579,7 +597,7 @@ module.exports = Proxyable.extend({
 		// Backfill layout defaults
 		if ( ( layoutDefaults = this.definition.get( '_layout_defaults' ) ) ) {
 			_.each( layoutDefaults, function( value, key ) {
-				if ( !this.has( key ) )	this.set( key, value );
+				if ( ! this.has( key ) )	this.set( key, value );
 			}, this );
 		}
 
@@ -588,8 +606,7 @@ module.exports = Proxyable.extend({
 		this.elements.parent = this;
 
 		localElements = this.get( 'elements' );
-		defaults = this.definition.get('defaults');
-
+		defaults = this.definition.get( 'defaults' );
 
 		// Checking if undefined allows defaults to come through only if the
 		// elements are not intentionall empty
@@ -599,17 +616,27 @@ module.exports = Proxyable.extend({
 			elements = localElements;
 		}
 
-		if ( elements && !_.isEmpty( elements ) )
+		if ( elements && ! _.isEmpty( elements ) )
 			this.elements.add( elements );
-
 
 		this.listenTo( this.elements, 'update', function() {
 			this.trigger( 'children:updated' );
 		});
 
 		// Notify our collection when an attribute changes
-		this.on('change', function( model, options ){
-			if ( this.collection ) this.collection.trigger( 'model:change', model, options );
+		this.on( 'change', function( model, options ) {
+
+			if ( this.collection ) {
+				this.collection.trigger( 'model:change', model, options );
+			}
+
+			if ( ! this.elements.isEmpty() && ! _.isEmpty( _.omit( model.changed, ['elements'] ) ) ) {
+				this.elements.each( function( item ) {
+					console.log(item)
+					item.trigger( 'parent:change', model, options );
+				} );
+			}
+
 		});
 
 		this.on( 'update:child:data', this.updateChildData );
@@ -631,18 +658,21 @@ module.exports = Proxyable.extend({
 	updateChildData: function() {
 
 		if ( this.elements.isEmpty() ) {
-			this.set('elements', [] );
+			this.set( 'elements', [] );
 			return;
 		}
 
-		this.elements.invoke('updateChildData');
-		this.set('elements', this.elements.toJSON() );
-		this.trigger( 'child:data:updated' );
+		this.elements.invoke( 'updateChildData' );
+		this.set( 'elements', this.elements.toJSON() );
 
 	},
 
+	getDataForChild: function() {
+		return _.omit( this.toJSON(), ['elements'] );
+	},
+
 	getDefinition: function() {
-		return cs.elementLibrary.lookup( this.get('_type') );
+		return cs.elementLibrary.lookup( this.get( '_type' ) );
 	},
 
 	eraseChildren: function() {
@@ -660,54 +690,57 @@ module.exports = Proxyable.extend({
 	},
 
 	atFloor: function() {
-		var flags = this.definition.get('flags');
+		var flags = this.definition.get( 'flags' );
 		return ( flags.elements && flags.elements.floor && this.elements.length <= flags.elements.floor );
 	}
 
-});
+} );
+
 },{"./control-proxy":14,"./proxyable":19}],18:[function(require,module,exports){
 var Models = {
-	Element : require('./element'),
-	ElementDefinition : require('./element-definition'),
-	Control : require('./control'),
-	Setting : require('./setting'),
-	Proxyable : require('./proxyable'),
-	Template: require('./template'),
-	ControlProxy : require('./control-proxy'),
-}
+	Element:           require( './element' ),
+	ElementDefinition: require( './element-definition' ),
+	Control:           require( './control' ),
+	Setting:           require( './setting' ),
+	Proxyable:         require( './proxyable' ),
+	Template:          require( './template' ),
+	ControlProxy:      require( './control-proxy' )
+};
+
 module.exports = Models;
+
 },{"./control":15,"./control-proxy":14,"./element":17,"./element-definition":16,"./proxyable":19,"./setting":20,"./template":21}],19:[function(require,module,exports){
 var Proxyable = Backbone.Model.extend({
 
 	proxyClass: Backbone.Model,
 	proxyExclusions: [],
 
-	constructor: function(attributes, options) {
+	constructor: function( attributes, options ) {
 		var attrs = attributes || {};
-		options || (options = {});
-		this.cid = _.uniqueId(this.cidPrefix);
+		options || ( options = {});
+		this.cid = _.uniqueId( this.cidPrefix );
 		this.attributes = {};
-		if (options.collection) this.collection = options.collection;
-		if (options.parse) attrs = this.parse(attrs, options) || {};
+		if ( options.collection ) this.collection = options.collection;
+		if ( options.parse ) attrs = this.parse( attrs, options ) || {};
 
-		attrs = _.defaults({}, attrs, _.result(this, 'defaults'));
-		this.set(attrs, options);
+		attrs = _.defaults({}, attrs, _.result( this, 'defaults' ) );
+		this.set( attrs, options );
 		this.changed = {};
-		this.initialize.apply(this, arguments);
+		this.initialize.apply( this, arguments );
 	},
 
 	setMeta: function( key, value ) {
-		var meta = this.get( '_csmeta' ) || {}
+		var meta = this.get( '_csmeta' ) || {};
 		var previous = _.clone( meta );
 		meta[key] = value;
 		this.set( { '_csmeta': meta }, { silent: true } );
-		this.trigger('meta:change', key, value, previous, this );
-		this.trigger('meta:change:' + key, value, previous[key], this );
+		this.trigger( 'meta:change', key, value, previous, this );
+		this.trigger( 'meta:change:' + key, value, previous[key], this );
 		return this;
 	},
 
 	getMeta: function( key ) {
-		var meta = this.get( '_csmeta' ) || {}
+		var meta = this.get( '_csmeta' ) || {};
 		if ( _.isUndefined( key ) )
 			return meta;
 		return ( _.isUndefined( meta[key] ) ) ? undefined : meta[key];
@@ -715,14 +748,13 @@ var Proxyable = Backbone.Model.extend({
 
 	toJSON: function() {
 		var json = Backbone.Model.prototype.toJSON.apply( this, arguments );
-		if ( !_.isEmpty( this.meta ) && _.isObject( this.meta ) ) {
+		if ( ! _.isEmpty( this.meta ) && _.isObject( this.meta ) ) {
 			json._csmeta = this.meta;
 		}
     return json;
 	},
 
 	clone: function() {
-		console.log('CLONED');
 		return Backbone.Model.prototype.toJSON.apply( this, arguments );
 	},
 
@@ -735,7 +767,7 @@ var Proxyable = Backbone.Model.extend({
 
 	toProxy: function() {
 		var defaults = this.getDefaults();
-		return new (this.proxyClass)( _.extend( defaults, this.proxyData() ), { source: this, defaults: defaults } );
+		return new ( this.proxyClass )( _.extend( defaults, this.proxyData() ), { source: this, defaults: defaults } );
 	},
 
 	/**
@@ -745,40 +777,41 @@ var Proxyable = Backbone.Model.extend({
 	proxyUpdate: function( update ) {
 		var defaults = this.getDefaults();
 		_.each( update, function( value, key ) {
-			if ( key == 'disabled' ) return;
+			if ( 'disabled' == key ) return;
 			if ( _.isEqual( defaults[key], value ) ) {
-				this.unset(key);
+				this.unset( key );
 			} else {
 				this.set( key, value );
 			}
 		}, this );
 	},
 
-	getDefaults: function () {
+	getDefaults: function() {
 		return {};
-	},
+	}
 
-});
+} );
 
-Proxyable.prototype.sync = function() { return null; };
-Proxyable.prototype.fetch = function() { return null; };
-Proxyable.prototype.save = function() { return null; };
+Proxyable.prototype.sync = Cornerstone.Helpers.csnull;
+Proxyable.prototype.fetch = Cornerstone.Helpers.csnull;
+Proxyable.prototype.save = Cornerstone.Helpers.csnull;
 module.exports = Proxyable;
+
 },{}],20:[function(require,module,exports){
-var Proxyable = require('./proxyable');
+var Proxyable = require( './proxyable' );
 
 module.exports = Proxyable.extend({
 
 	idAttribute: '_sID',
 
-	proxyClass: require('./control-proxy'),
+	proxyClass: require( './control-proxy' ),
 	proxyExclusions: [ 'elements' ],
 
 	defaults: {
-		_section: 'undefined', // Reference to Element Library definition
+		_section: 'undefined' // Reference to Element Library definition
 	},
 
-	initialize: function ( options ) {
+	initialize: function( options ) {
 
 		var localElements, defaults, elements;
 
@@ -789,7 +822,7 @@ module.exports = Proxyable.extend({
 		this.elements.parent = this;
 
 		localElements = this.get( 'elements' );
-		defaults = this.section.get('defaults');
+		defaults = this.section.get( 'defaults' );
 
 		if ( _.isEmpty( localElements ) ) {
 			elements = ( defaults.elements ) ? defaults.elements : [];
@@ -797,7 +830,7 @@ module.exports = Proxyable.extend({
 			elements = localElements;
 		}
 
-		if ( elements && !_.isEmpty( elements ) )
+		if ( elements && ! _.isEmpty( elements ) )
 			this.elements.add( elements );
 
 		this.listenTo( this.elements, 'update', function() {
@@ -805,7 +838,7 @@ module.exports = Proxyable.extend({
 		});
 
 		// Notify our collection when an attribute changes
-		this.on('change', function( model, options ){
+		this.on( 'change', function( model, options ) {
 			if ( this.collection ) this.collection.trigger( 'model:change', model, options );
 		});
 
@@ -813,23 +846,23 @@ module.exports = Proxyable.extend({
 	},
 
 	getDefaults: function() {
-		return _.clone( this.section.get('defaults') );
+		return _.clone( this.section.get( 'defaults' ) );
 	},
 
 	updateChildData: function() {
 
 		if ( this.elements.isEmpty() ) {
-			this.set('elements', [] );
+			this.set( 'elements', [] );
 			return;
 		}
 
-		this.elements.invoke('updateChildData');
-		this.set('elements', this.elements.toJSON() );
+		this.elements.invoke( 'updateChildData' );
+		this.set( 'elements', this.elements.toJSON() );
 
 	},
 
 	getSection: function() {
-		return cs.settingSections.findWhere( { name: this.get('_section') });
+		return cs.settingSections.findWhere( { name: this.get( '_section' ) });
 	},
 
 	eraseChildren: function() {
@@ -843,19 +876,21 @@ module.exports = Proxyable.extend({
 	},
 
 	toJSON: function() {
-    return _.omit( Proxyable.prototype.toJSON.apply( this, arguments ), [ 'rank' ] );
+		return _.omit( Proxyable.prototype.toJSON.apply( this, arguments ), [ 'rank' ] );
 	}
 
-});
+} );
+
 },{"./control-proxy":14,"./proxyable":19}],21:[function(require,module,exports){
 module.exports = Backbone.Model.extend({
-  defaults: {
-    title: 'Generic Block',
-    section: 'user-blocks',
-    type: 'block',
-    elements: []
-  }
-});
+	defaults: {
+		title: 'Generic Block',
+		section: 'user-blocks',
+		type: 'block',
+		elements: []
+	}
+} );
+
 },{}],22:[function(require,module,exports){
 /**
  * Post JSON function
@@ -865,21 +900,26 @@ module.exports = function( action, data, opts ) {
 	var urlBase = ( cs.fallbackAjax ) ? 'fallbackAjaxUrl' : 'ajaxUrl';
 	var json = JSON.stringify( data || {} );
 	var postData;
-	if (cs.config('useLegacyAjax')) {
-		postData = { data: Cornerstone.Vendor.Base64.encode( json ) }
+	if ( cs.config( 'useLegacyAjax' ) ) {
+		postData = { data: Cornerstone.Vendor.Base64.encode( json ) };
 	} else {
 		postData = json;
 	}
 
+	// Remove any query parameters so they can be moved to the end.
+	var ajaxUrl = cs.config( urlBase ).split( '?' );
+	var extra = ( ajaxUrl[1] ) ? '&' + ajaxUrl[1] : '';
+
 	var options = _.defaults( opts || {}, {
 		type:    'POST',
-		url:     cs.config(urlBase) + '?action=' + action,
+		url:     ajaxUrl[0] + '?action=' + action + extra,
 		context: this,
 		data: postData,
 		dataType: 'json'
 	});
 
 	return Backbone.$.Deferred( function( deferred ) {
+
 		// Transfer callbacks.
 		if ( options.always )
 			deferred.always( options.always );
@@ -892,21 +932,23 @@ module.exports = function( action, data, opts ) {
 		delete options.success;
 		delete options.error;
 
-		var errorRecovery = function() {
+		function errorRecovery() {
 
 			if ( 'fallbackAjaxUrl' == urlBase ) {
 
-				if ( cs.fallbackAjax ) {
+				if ( cs.fallbackAjax && ! cs.config( 'useLegacyAjax' ) && 'cs_endpoint_save' != action ) {
+
 					// Switch to legacy AJAX and start over...
 					Backbone.$.ajax( {
 						type:    'POST',
-						url:     cs.config('fallbackAjaxUrl') + '?action=cs_legacy_ajax',
+						url:     cs.config( 'fallbackAjaxUrl' ) + '?action=cs_legacy_ajax',
 						data: { enable: true },
 						complete: function() {
 							cs.fallbackAjax = false;
 							window.location = window.location;
 						}
 					} );
+
 				} else {
 					console.log( 'Unhandled AJAX error.' );
 				}
@@ -915,67 +957,78 @@ module.exports = function( action, data, opts ) {
 				cs.global.trigger( 'ajax:fallback', true );
 				cs.fallbackAjax = true;
 			}
+
 		}
 
 		// Use with PHP's wp_send_json_success() and wp_send_json_error()
 		Backbone.$.ajax( options ).done( function( response ) {
-			if ( ( 'true' != arguments[2].getResponseHeader('Cornerstone') && 'ajaxUrl' == urlBase ) || !response || !response.success ) {
+
+			if ( ( 'true' != arguments[2].getResponseHeader( 'Cornerstone' ) && 'ajaxUrl' == urlBase ) || ! response || ! response.success ) {
 				errorRecovery();
 			}
-			if ( _.isObject( response ) && ! _.isUndefined( response.success ) )
+
+			if ( _.isObject( response ) && ! _.isUndefined( response.success ) ) {
 				deferred[ response.success ? 'resolveWith' : 'rejectWith' ]( this, [response.data, options]	);
-			else
+			} else {
 				deferred.rejectWith( this, [response ] );
+			}
+
 		}).fail( function( response ) {
 			errorRecovery();
 			deferred.rejectWith( this, arguments );
 		});
 	}).promise();
-}
+};
+
 },{}],23:[function(require,module,exports){
 window.Cornerstone = window.CS = {};
 
 var _ = require('./../../vendor/underscore-shim.js');
 
 // Load modules afffecting global scope
-require('../../vendor/string_score');
-require('../../vendor/equalize');
-require('../utility/polyfills');
-require('backbone.radio');
-require('backbone.stickit');
-_.mixin( { deepExtend: require('underscore-deep-extend')(_) } );
+require( '../../vendor/string_score' );
+require( '../../vendor/equalize' );
+require( 'backbone.radio' );
+require( 'backbone.stickit' );
+_.mixin( { deepExtend: require( 'underscore-deep-extend' )( _ ) } );
 
 // Load vendor dependencies
 Cornerstone.Vendor = {
-	Base64: require('../../vendor/base64'),
-	Color: require('../../vendor/color'),
-	FileSaver: require('../../vendor/FileSaver'),
-	Fuse: require('fuse.js'),
-	Marionette: require('backbone.marionette'),
-	moment: require('moment'),
-	bowser: require('bowser'),
-	Pikaday: require('pikaday'),
-	svg4everybody: require( 'svg4everybody' ),
-}
+	Base64: require( '../../vendor/base64' ),
+	Color: require( '../../vendor/color' ),
+	FileSaver: require( '../../vendor/FileSaver' ),
+	Fuse: require( 'fuse.js' ),
+	Marionette: require( 'backbone.marionette' ),
+	moment: require( 'moment' ),
+	bowser: require( 'bowser' ),
+	Pikaday: require( 'pikaday' ),
+	svg4everybody: require( 'svg4everybody' )
+};
+
+Cornerstone.Helpers = {
+	csnull: function() {
+		return null;
+	}
+};
 
 // Initialize Polyfills
 Cornerstone.Vendor.svg4everybody();
-
 
 // Assign Aliases
 Cornerstone.Mn = Cornerstone.Vendor.Marionette;
 
 // Require Cornerstone modules
-Cornerstone.Component = require('./component-base')
-Cornerstone.Models = require('../models');
-Cornerstone.Collections = require('../collections');
+Cornerstone.Component = require( './component-base' );
+Cornerstone.Models = require( '../models' );
+Cornerstone.Collections = require( '../collections' );
 
 Cornerstone.InspectionSupervisor = require( './inspection-supervisor' );
-Cornerstone.Post = require('./post');
-Cornerstone.serial = require('./serial');
+Cornerstone.Post = require( './post' );
+Cornerstone.serial = require( './serial' );
 
 module.exports = Cornerstone;
-},{"../../vendor/FileSaver":32,"../../vendor/base64":34,"../../vendor/color":35,"../../vendor/equalize":36,"../../vendor/string_score":38,"../collections":5,"../models":18,"../utility/polyfills":29,"./../../vendor/underscore-shim.js":39,"./component-base":24,"./inspection-supervisor":26,"./post":27,"./serial":28,"backbone.marionette":41,"backbone.radio":42,"backbone.stickit":43,"bowser":44,"fuse.js":46,"moment":47,"pikaday":48,"svg4everybody":49,"underscore-deep-extend":50}],24:[function(require,module,exports){
+
+},{"../../vendor/FileSaver":31,"../../vendor/base64":33,"../../vendor/color":34,"../../vendor/equalize":35,"../../vendor/string_score":37,"../collections":5,"../models":18,"./../../vendor/underscore-shim.js":38,"./component-base":24,"./inspection-supervisor":26,"./post":27,"./serial":28,"backbone.marionette":40,"backbone.radio":41,"backbone.stickit":42,"bowser":43,"fuse.js":45,"moment":46,"pikaday":47,"svg4everybody":48,"underscore-deep-extend":49}],24:[function(require,module,exports){
 module.exports = Cornerstone.Mn.Object.extend({
 	constructor: function(options) {
 		this.options = options || {};
@@ -1230,47 +1283,49 @@ module.exports = function(tasks) {
 
   return promise;
 }
-},{"./../../vendor/jquery-shim.js":37}],29:[function(require,module,exports){
-
-},{}],30:[function(require,module,exports){
+},{"./../../vendor/jquery-shim.js":36}],29:[function(require,module,exports){
 /**
  * Custom Renderer using Cornerstone precompiled templates as a source
  * Includes global template helpers
  */
 module.exports = {
 
-	templateHelpers: require('./template-helpers'),
+	templateHelpers: require( './template-helpers' ),
 
 	render: function( template, data, view ) {
 
 		var data = data || {};
 
-    if ( view && _.isFunction( view.triggerMethod ) )
-    	view.triggerMethod( 'template:data:ready', data );
+		if ( view && _.isFunction( view.triggerMethod ) )
+			view.triggerMethod( 'template:data:ready', data );
 
-    if ( template === false ) return;
+		if ( false === template ) return;
 
-    if (!template) {
-      throw new Cornerstone.Mn.Error({
-        name: 'TemplateNotFoundError',
-        message: 'Cannot render the template since its false, null or undefined.'
-      });
-    }
+		if ( ! template ) {
+			throw new Cornerstone.Mn.Error({
+				name: 'TemplateNotFoundError',
+				message: 'Cannot render the template since its false, null or undefined.'
+			});
+		}
 
-    var templateFunc = _.isFunction(template) ? template : cs.template( template );
+		var templateFunc = _.isFunction( template ) ? template : cs.template( template );
 
-    if (!templateFunc) {
-      throw new Cornerstone.Mn.Error({
-        name: 'TemplateLookupError',
-        message: 'Template not found in precompiled templates: ' + template
-      });
-    }
+		if ( ! templateFunc ) {
+			throw new Cornerstone.Mn.Error({
+				name: 'TemplateLookupError',
+				message: 'Template not found in precompiled templates: ' + template
+			});
+		}
 
-    return templateFunc( _.extend( data, this.templateHelpers ) );
-  }
-}
-},{"./template-helpers":31}],31:[function(require,module,exports){
+		return templateFunc( _.extend( data, this.templateHelpers ) );
+
+	}
+
+};
+
+},{"./template-helpers":30}],30:[function(require,module,exports){
 var TemplateHelpers = {
+
 	/**
 	 * Wrapper for global l18n
 	 */
@@ -1282,14 +1337,14 @@ var TemplateHelpers = {
 	 * Wrapper for Icon Lookup
 	 */
 	getIcon: function() {
-		return cs.icon.apply( cs, arguments )
+		return cs.icon.apply( cs, arguments );
 	},
 
 	/**
 	 * Wrapper for HTML entity Font icon
 	 */
 	fontIcon: function() {
-		return cs.fontIcon.apply( cs, arguments )
+		return cs.fontIcon.apply( cs, arguments );
 	},
 
 	/**
@@ -1302,16 +1357,21 @@ var TemplateHelpers = {
 	/**
 	 * Returns message if debug mode is active
 	 */
-	debug: function ( message ) { return ''; }
-}
+	debug: function( message ) {
+		return '';
+	}
+
+};
 
 if ( cs.debug() ) {
-	TemplateHelpers.debug = function ( message ) { return message; }
+	TemplateHelpers.debug = function( message ) {
+		return message;
+	};
 }
 
 module.exports = TemplateHelpers;
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /* FileSaver.js
  * A saveAs() FileSaver implementation.
  * 1.1.20150716
@@ -1568,16 +1628,16 @@ if (typeof module !== "undefined" && module.exports) {
     return saveAs;
   });
 }
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 window.CornerstoneShims = window.CornerstoneShims || {};
 
-if (!window.CornerstoneShims.Backbone){
+if ( ! window.CornerstoneShims.Backbone ) {
 	window.CornerstoneShims.Backbone = window.Backbone;
 }
 
 module.exports = window.CornerstoneShims.Backbone;
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*
 Copyright (c) 2008 Fred Palmer fred.palmer_at_gmail.com
 
@@ -1796,7 +1856,7 @@ Base64DecodeEnumerator.prototype =
 };
 
 module.exports = Base64;
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*! Color.js - v0.9.11 - 2013-08-09
 * https://github.com/Automattic/Color.js
 * Copyright (c) 2013 Matt Wiebe; Licensed GPLv2 */
@@ -2389,7 +2449,7 @@ module.exports = Base64;
 		global.Color = Color;
 
 }(this));
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /**
  * equalize.js
  * Author & copyright (c) 2012: Tim Svensen
@@ -2460,7 +2520,7 @@ module.exports = Base64;
   };
 
 }(jQuery));
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 window.CornerstoneShims = window.CornerstoneShims || {};
 
 if (!window.CornerstoneShims.$){
@@ -2469,7 +2529,7 @@ if (!window.CornerstoneShims.$){
 
 module.exports = window.CornerstoneShims.$;
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*!
  * string_score.js: String Scoring Algorithm 0.1.22
  *
@@ -2574,7 +2634,7 @@ String.prototype.score = function (word, fuzziness) {
 
   return finalScore;
 };
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 window.CornerstoneShims = window.CornerstoneShims || {};
 
 if (!window.CornerstoneShims._){
@@ -2583,7 +2643,7 @@ if (!window.CornerstoneShims._){
 
 module.exports = window.CornerstoneShims._;
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.10
@@ -2775,7 +2835,7 @@ module.exports = window.CornerstoneShims._;
 
 }));
 
-},{"./../../../assets/js/src/admin/vendor/backbone-shim.js":33,"./../../../assets/js/src/admin/vendor/underscore-shim.js":39}],41:[function(require,module,exports){
+},{"./../../../assets/js/src/admin/vendor/backbone-shim.js":32,"./../../../assets/js/src/admin/vendor/underscore-shim.js":38}],40:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.4
@@ -6282,7 +6342,7 @@ module.exports = window.CornerstoneShims._;
   return Marionette;
 }));
 
-},{"./../../../../assets/js/src/admin/vendor/backbone-shim.js":33,"./../../../../assets/js/src/admin/vendor/underscore-shim.js":39,"backbone.babysitter":40,"backbone.wreqr":45}],42:[function(require,module,exports){
+},{"./../../../../assets/js/src/admin/vendor/backbone-shim.js":32,"./../../../../assets/js/src/admin/vendor/underscore-shim.js":38,"backbone.babysitter":39,"backbone.wreqr":44}],41:[function(require,module,exports){
 // Backbone.Radio v1.0.2
 (function (global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory(require('./../../../assets/js/src/admin/vendor/underscore-shim.js'), require('./../../../assets/js/src/admin/vendor/backbone-shim.js')) : typeof define === "function" && define.amd ? define(["underscore", "backbone"], factory) : global.Backbone.Radio = factory(global._, global.Backbone);
@@ -6619,7 +6679,7 @@ module.exports = window.CornerstoneShims._;
   return backbone_radio;
 });
 
-},{"./../../../assets/js/src/admin/vendor/backbone-shim.js":33,"./../../../assets/js/src/admin/vendor/underscore-shim.js":39}],43:[function(require,module,exports){
+},{"./../../../assets/js/src/admin/vendor/backbone-shim.js":32,"./../../../assets/js/src/admin/vendor/underscore-shim.js":38}],42:[function(require,module,exports){
 // Backbone.Stickit v0.9.2, MIT Licensed
 // Copyright (c) 2012-2015 The New York Times, CMS Group, Matthew DeLambo <delambo@gmail.com>
 
@@ -7313,7 +7373,7 @@ module.exports = window.CornerstoneShims._;
 
 }));
 
-},{"./../../assets/js/src/admin/vendor/backbone-shim.js":33,"./../../assets/js/src/admin/vendor/underscore-shim.js":39}],44:[function(require,module,exports){
+},{"./../../assets/js/src/admin/vendor/backbone-shim.js":32,"./../../assets/js/src/admin/vendor/underscore-shim.js":38}],43:[function(require,module,exports){
 /*!
   * Bowser - a browser detector
   * https://github.com/ded/bowser
@@ -7606,9 +7666,9 @@ module.exports = window.CornerstoneShims._;
   return bowser
 });
 
+},{}],44:[function(require,module,exports){
+
 },{}],45:[function(require,module,exports){
-arguments[4][29][0].apply(exports,arguments)
-},{"dup":29}],46:[function(require,module,exports){
 /**
  * @license
  * Fuse - Lightweight fuzzy-search
@@ -8111,7 +8171,7 @@ arguments[4][29][0].apply(exports,arguments)
 
 })(this);
 
-},{}],47:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -11307,7 +11367,7 @@ arguments[4][29][0].apply(exports,arguments)
     return _moment;
 
 }));
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /*!
  * Pikaday
  *
@@ -12393,10 +12453,10 @@ arguments[4][29][0].apply(exports,arguments)
 
 }));
 
-},{"moment":47}],49:[function(require,module,exports){
+},{"moment":46}],48:[function(require,module,exports){
 !function(a,b){"function"==typeof define&&define.amd?define([],function(){return a.svg4everybody=b()}):"object"==typeof exports?module.exports=b():a.svg4everybody=b()}(this,function(){/*! svg4everybody v2.0.0 | github.com/jonathantneal/svg4everybody */
 function a(a,b){if(b){var c=!a.getAttribute("viewBox")&&b.getAttribute("viewBox"),d=document.createDocumentFragment(),e=b.cloneNode(!0);for(c&&a.setAttribute("viewBox",c);e.childNodes.length;)d.appendChild(e.firstChild);a.appendChild(d)}}function b(b){b.onreadystatechange=function(){if(4===b.readyState){var c=document.createElement("x");c.innerHTML=b.responseText,b.s.splice(0).map(function(b){a(b[0],c.querySelector("#"+b[1].replace(/(\W)/g,"\\$1")))})}},b.onreadystatechange()}function c(c){function d(){for(var c,l,m=0;m<f.length;)if(c=f[m],l=c.parentNode,l&&/svg/i.test(l.nodeName)){var n=c.getAttribute("xlink:href");if(e){var o=new Image,p=l.getAttribute("width"),q=l.getAttribute("height");o.src=g(n,l,c),p&&o.setAttribute("width",p),q&&o.setAttribute("height",q),l.replaceChild(o,c)}else if(h&&(!i||i(n,l,c))){var r=n.split("#"),s=r[0],t=r[1];if(l.removeChild(c),s.length){var u=k[s]=k[s]||new XMLHttpRequest;u.s||(u.s=[],u.open("GET",s),u.send()),u.s.push([l,t]),b(u)}else a(l,document.getElementById(t))}}else m+=1;j(d,17)}c=c||{};var e,f=document.getElementsByTagName("use"),g=c.fallback||function(a){return a.replace(/\?[^#]+/,"").replace("#",".").replace(/^\./,"")+".png"+(/\?[^#]+/.exec(a)||[""])[0]};e="nosvg"in c?c.nosvg:/\bMSIE [1-8]\b/.test(navigator.userAgent),e&&(document.createElement("svg"),document.createElement("use"));var h="polyfill"in c?c.polyfill:e||/\bEdge\/12\b|\bMSIE [1-8]\b|\bTrident\/[567]\b|\bVersion\/7.0 Safari\b/.test(navigator.userAgent)||(navigator.userAgent.match(/AppleWebKit\/(\d+)/)||[])[1]<537,i=c.validate,j=window.requestAnimationFrame||setTimeout,k={};h&&d()}return c});
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /* implementation: Copyright (C) 2012-2013 Kurt Milam - http://xioup.com | Source: https://gist.github.com/1868955
 *  NPM packaging: Copyright (C) 2012-2014 Pierre-Yves Gérardy | https://github.com/pygy/underscoreDeepExtend
 *

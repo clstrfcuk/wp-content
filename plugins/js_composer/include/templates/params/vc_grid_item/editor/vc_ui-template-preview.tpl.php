@@ -7,6 +7,8 @@ do_action( 'vc-render-templates-preview-template' );
 /** @var $vc_grid_item_editor Vc_Grid_Item_Editor */
 global $vc_grid_item_editor;
 if ( $vc_grid_item_editor ) {
+	$vc_grid_item_editor->registerBackendCss();
+	$vc_grid_item_editor->registerBackendJavascript();
 	add_filter( 'admin_body_class', array( $vc_grid_item_editor->templatesEditor(), 'addBodyClassTemplatePreview' ) );
 	add_action( 'admin_enqueue_scripts', array( &$vc_grid_item_editor, 'enqueueEditorScripts' ) );
 	add_action( 'admin_footer', array( &$vc_grid_item_editor, 'renderEditorFooter' ) );
@@ -30,10 +32,11 @@ remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 remove_action( 'admin_print_styles', 'print_emoji_styles' );
 add_thickbox();
 wp_enqueue_media( array( 'post' => $post_ID ) );
+visual_composer()->templatesPanelEditor()->registerPreviewScripts();
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 	<style type="text/css">
-		#screen-meta, #adminmenumain, .notice {
+		#screen-meta, #adminmenumain, .notice, #wpfooter, #message, .updated {
 			display: none !important;
 		}
 
@@ -120,5 +123,5 @@ do_action( 'vc_backend_editor_render' );
 do_action( 'vc_vc_grid_item_editor_render' );
 do_action( 'vc_ui-template-preview' );
 // fix bug #59741644518985 in firefox
-wp_dequeue_script( 'isotope' );
+//wp_dequeue_script( 'isotope' );
 require_once( ABSPATH . 'wp-admin/admin-footer.php' );

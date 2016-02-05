@@ -311,7 +311,7 @@ class CS_Feature_Box extends Cornerstone_Element_Base {
   public function migrate( $element, $version ) {
 
   	if ( version_compare( $version, '1.0.10', '<' ) ) {
-  		if ( !isset( $element['content'] ) || '' == $element['content'] && isset( $element['text'] ) ) {
+  		if ( isset( $element['text'] ) && ( !isset( $element['content'] ) || '' == $element['content'] ) ) {
 				$element['content'] = $element['text'];
 				unset($element['text']);
 			}

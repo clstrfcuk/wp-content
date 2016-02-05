@@ -44,12 +44,12 @@ class Cornerstone_Integration_X_Theme {
 	  add_filter('cs_recent_posts_post_types', array( $this, 'recentPostTypes' ) );
 
 	  // Use Audio and Video shortcodes for X native players.
-	  add_filter( 'wp_audio_shortcode_library', 'x_wp_audio_shortcode_library' );
-		add_filter( 'wp_audio_shortcode', 'x_wp_audio_shortcode' );
-		add_filter( 'wp_audio_shortcode_class', 'x_wp_audio_shortcode_class' );
-		add_filter( 'wp_video_shortcode_library', 'x_wp_video_shortcode_library' );
-		add_filter( 'wp_video_shortcode', 'x_wp_video_shortcode' );
-		add_filter( 'wp_video_shortcode_class', 'x_wp_video_shortcode_class' );
+	  add_filter( 'wp_audio_shortcode_library', 'x_wp_native_audio_shortcode_library' );
+		add_filter( 'wp_audio_shortcode', 'x_wp_native_audio_shortcode' );
+		add_filter( 'wp_audio_shortcode_class', 'x_wp_native_audio_shortcode_class' );
+		add_filter( 'wp_video_shortcode_library', 'x_wp_native_video_shortcode_library' );
+		add_filter( 'wp_video_shortcode', 'x_wp_native_video_shortcode' );
+		add_filter( 'wp_video_shortcode_class', 'x_wp_native_video_shortcode_class' );
 	}
 
 	public function init() {
@@ -60,8 +60,8 @@ class Cornerstone_Integration_X_Theme {
 
 		add_action( 'admin_menu', array( $this, 'optionsPage' ) );
 
-		// Remove empty p and br HTML elements
-		add_filter( 'the_content', array( $this, 'cleanShortcodes' ) );
+		// Remove empty p and br HTML elements for legacy pages not using Cornerstone sections
+		add_filter( 'the_content', 'cs_noemptyp' );
 
 		// Enqueue Legacy font classes
 		$settings = CS()->settings();
@@ -164,25 +164,11 @@ class Cornerstone_Integration_X_Theme {
     if ( isset( $user_contactmethods['jabber'] ) )
     	unset( $user_contactmethods['jabber'] );
 
-    $user_contactmethods['facebook']   = 'Facebook Profile';
-    $user_contactmethods['twitter']    = 'Twitter Profile';
-    $user_contactmethods['googleplus'] = 'Google+ Profile';
+    $user_contactmethods['facebook']   = __( 'Facebook Profile',  csl18n() );
+    $user_contactmethods['twitter']    = __( 'Twitter Profile',  csl18n() );
+    $user_contactmethods['googleplus'] = __( 'Google+ Profile',  csl18n() );
 
     return $user_contactmethods;
-  }
-
-  public function cleanShortcodes( $content ) {
-
-    $array = array (
-      '<p>['    => '[',
-      ']</p>'   => ']',
-      ']<br />' => ']'
-    );
-
-    $content = strtr( $content, $array );
-
-    return $content;
-
   }
 
   public function shortcodeGeneratorPreviewBefore() {
@@ -190,17 +176,17 @@ class Cornerstone_Integration_X_Theme {
   	remove_all_actions( 'cornerstone_generator_preview_before' );
 
 	  $list_stacks = array(
-	    'integrity' => __( 'Integrity',  '__x__' ),
-	    'renew'     => __( 'Renew',  '__x__' ),
-	    'icon'      => __( 'Icon',  '__x__' ),
-	    'ethos'     => __( 'Ethos',  '__x__' )
+	    'integrity' => __( 'Integrity',  csl18n() ),
+	    'renew'     => __( 'Renew',  csl18n() ),
+	    'icon'      => __( 'Icon',  csl18n() ),
+	    'ethos'     => __( 'Ethos',  csl18n() )
 	  );
 
 	  $stack = $this->x_get_stack();
 	  $stack_name = ( isset( $list_stacks[ $stack ] ) ) ? $list_stacks[ $stack ] : 'X';
 
 		printf(
-	    __('You&apos;re using %s. Click the button below to check out a live example of this shortcode when using this Stack.', '__x__' ),
+	    __('You&apos;re using %s. Click the button below to check out a live example of this shortcode when using this Stack.', csl18n() ),
 	    '<strong>' . $stack_name . '</strong>'
 	  );
 	}
@@ -252,7 +238,7 @@ class Cornerstone_Integration_X_Theme {
 	    </th>
 	    <td>
 	      <fieldset>
-	        <?php echo CS()->component( 'Admin' )->settings->renderField( 'enable_legacy_font_classes', array( 'type' => 'checkbox', 'value' => '1', 'label' => 'Enable' ) ) ?>
+	        <?php echo CS()->component( 'Admin' )->settings->renderField( 'enable_legacy_font_classes', array( 'type' => 'checkbox', 'value' => '1', 'label' => __( 'Enable', csl18n() ) ) ) ?>
 	      </fieldset>
 	    </td>
 	  </tr>
@@ -310,16 +296,16 @@ class Cornerstone_Integration_X_Theme {
 // 3. Class.
 //
 
-function x_wp_audio_shortcode_library() { // 1
+function x_wp_native_audio_shortcode_library() { // 1
   wp_enqueue_script( 'mediaelement' );
   return false;
 }
 
-function x_wp_audio_shortcode( $html ) { // 2
+function x_wp_native_audio_shortcode( $html ) { // 2
   return '<div class="x-audio player" data-x-element="x_mejs">' . $html . '</div>';
 }
 
-function x_wp_audio_shortcode_class() { // 3
+function x_wp_native_audio_shortcode_class() { // 3
   return 'x-mejs x-wp-audio-shortcode advanced-controls';
 }
 
@@ -332,16 +318,16 @@ function x_wp_audio_shortcode_class() { // 3
 // 3. Class.
 //
 
-function x_wp_video_shortcode_library() { // 1
+function x_wp_native_video_shortcode_library() { // 1
   wp_enqueue_script( 'mediaelement' );
   return false;
 }
 
-function x_wp_video_shortcode( $output ) { // 2
+function x_wp_native_video_shortcode( $output ) { // 2
   return '<div class="x-video player" data-x-element="x_mejs">' . preg_replace('/<div(.*?)>/', '<div class="x-video-inner">', $output ) . '</div>';
 }
 
-function x_wp_video_shortcode_class() { // 3
+function x_wp_native_video_shortcode_class() { // 3
   return 'x-mejs x-wp-video-shortcode advanced-controls';
 }
 

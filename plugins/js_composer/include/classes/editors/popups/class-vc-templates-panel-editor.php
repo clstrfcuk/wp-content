@@ -69,10 +69,10 @@ class Vc_Templates_Panel_Editor implements Vc_Render {
 		) );
 		add_action( 'wp_ajax_vc_delete_template', array( &$this, 'delete' ) );
 
-		add_action( 'vc-render-templates-preview-template', array(
+/*		add_action( 'vc-render-templates-preview-template', array(
 			&$this,
 			'addScriptsToTemplatePreview',
-		) );
+		) );*/
 
 	}
 
@@ -281,6 +281,7 @@ HTML;
 		if ( '' === $template_id ) {
 			die( 'Error: Vc_Templates_Panel_Editor::renderFrontendTemplate:1' );
 		}
+		WPBMap::addAllMappedShortcodes();
 		if ( 'my_templates' === $template_type ) {
 			$saved_templates = get_option( $this->option_name );
 			vc_frontend_editor()->setTemplateContent( $saved_templates[ $template_id ]['template'] );
@@ -324,6 +325,7 @@ HTML;
 	 * vc_filter: vc_templates_render_template - hook to override singe template rendering in panel window
 	 */
 	public function render() {
+		_deprecated_function( '\Vc_Templates_Panel_Editor::render', '4.7 (will be removed in 4.11)', '\Vc_Templates_Panel_Editor::renderUITemplate' );
 		vc_include_template( 'editors/popups/panel_templates.tpl.php', array(
 			'box' => $this,
 		) );
@@ -408,6 +410,7 @@ HTML;
 		if ( ! isset( $template_id, $template_type ) || '' === $template_id || '' === $template_type ) {
 			die( 'Error: Vc_Templates_Panel_Editor::renderBackendTemplate:1' );
 		}
+		WPBMap::addAllMappedShortcodes();
 		if ( 'my_templates' === $template_type ) {
 			$saved_templates = get_option( $this->option_name );
 
@@ -451,6 +454,7 @@ HTML;
 		if ( ! isset( $template_id, $template_type ) || '' === $template_id || '' === $template_type ) {
 			die( __( 'Error: wrong template id.', 'js_composer' ) );
 		}
+		WPBMap::addAllMappedShortcodes();
 		if ( 'my_templates' === $template_type ) {
 			$saved_templates = get_option( $this->option_name );
 
@@ -474,12 +478,22 @@ HTML;
 		die();
 
 	}
-
+	public function registerPreviewScripts() {
+		visual_composer()->registerAdminJavascript();
+		visual_composer()->registerAdminCss();
+		vc_backend_editor()->registerBackendJavascript();
+		vc_backend_editor()->registerBackendCss();
+		wp_register_script( 'vc_editors-templates-preview-js', vc_asset_url( 'js/editors/templates-preview.js' ), array(
+			'vc-backend-min-js',
+		), WPB_VC_VERSION, true );
+	}
 	/**
 	 * Enqueue required scripts for template preview
 	 * @since 4.8
 	 */
 	public function enqueuePreviewScripts() {
+		vc_backend_editor()->enqueueCss();
+		vc_backend_editor()->enqueueJs();
 		wp_enqueue_script( 'vc_editors-templates-preview-js' );
 	}
 
@@ -831,6 +845,7 @@ HTML;
 		$output = $shortcodes_custom_css = '';
 		$shortcodes_custom_css = visual_composer()->parseShortcodesCustomCss( vc_frontend_editor()->getTemplateContent() );
 		if ( ! empty( $shortcodes_custom_css ) ) {
+			$shortcodes_custom_css = strip_tags( $shortcodes_custom_css );
 			$output .= '<style type="text/css" data-type="vc_shortcodes-custom-css">';
 			$output .= $shortcodes_custom_css;
 			$output .= '</style>';
@@ -839,7 +854,7 @@ HTML;
 	}
 
 	public function addScriptsToTemplatePreview() {
-		wp_enqueue_script( 'vc-template-preview-script', vc_asset_url( 'js/editors/vc_ui-panel-templates-preview-be.js' ), array( 'wpb_js_composer_js_custom_views' ), WPB_VC_VERSION, true );
+		// wp_enqueue_script( 'vc-template-preview-script', vc_asset_url( 'js/editors/vc_ui-panel-templates-preview-be.js' ), array( 'vc-backend-min-js' ), WPB_VC_VERSION, true );
 	}
 
 	public function renderTemplateListItem( $template ) {
@@ -847,7 +862,7 @@ HTML;
 		$template_id = esc_attr( $template['unique_id'] );
 		$template_id_hash = md5( $template_id ); // needed for jquery target for TTA
 		$template_name = esc_html( $name );
-		$template_name_lower = esc_attr( strtolower( $template_name ) );
+		$template_name_lower = esc_attr( vc_slugify( $template_name ) );
 		$template_type = esc_attr( isset( $template['type'] ) ? $template['type'] : 'custom' );
 		$custom_class = esc_attr( isset( $template['custom_class'] ) ? $template['custom_class'] : '' );
 

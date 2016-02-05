@@ -69,7 +69,7 @@ class Vc_Add_Element_Box implements Vc_Render {
 		}
 		$data .= ' data-vc-ui-element="add-element-button"';
 		$description = ! empty( $params['description'] ) ? '<i class="vc_element-description">' . htmlspecialchars( $params['description'] ) . '</i>' : '';
-		$output .= '<li data-element="' . $params['base'] . '" class="wpb-layout-element-button vc_col-xs-12 vc_col-sm-4 vc_col-md-3 vc_col-lg-2' . ( isset( $params['deprecated'] ) ? ' vc_element-deprecated' : '' ) . $category_css_classes . $class_out . '"' . $data . '><div class="vc_el-container"><a id="' . $params['base'] . '" data-tag="' . $params['base'] . '" class="dropable_el vc_shortcode-link' . $class . '" href="#" data-vc-clickable>' . $this->getIcon( $params ) . htmlspecialchars( __( stripslashes( $params['name'] ), 'js_composer' ) ) . $description . '</a></div></li>';
+		$output .= '<li data-element="' . $params['base'] . '" class="wpb-layout-element-button vc_col-xs-12 vc_col-sm-4 vc_col-md-3 vc_col-lg-2' . ( isset( $params['deprecated'] ) ? ' vc_element-deprecated' : '' ) . $category_css_classes . $class_out . '"' . $data . '><div class="vc_el-container"><a id="' . $params['base'] . '" data-tag="' . $params['base'] . '" class="dropable_el vc_shortcode-link' . $class . '" href="#" data-vc-clickable>' . $this->getIcon( $params ) . htmlspecialchars( stripslashes( $params['name'] ) ) . $description . '</a></div></li>';
 
 		return $output;
 	}

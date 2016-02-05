@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Under Construction
 Plugin URI: http://theme.co/x/
 Description: Got a little work that needs to be done under the hood? The Under Construction plugin is the easiest maintenance plugin you'll ever setup and the last one you'll ever need.
-Version: 1.1.0
+Version: 1.1.1
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-under-construction
 // Constants.
 //
 
-define( 'X_UNDER_CONSTRUCTION_VERSION', '1.1.0' );
+define( 'X_UNDER_CONSTRUCTION_VERSION', '1.1.1' );
 define( 'X_UNDER_CONSTRUCTION_URL', plugins_url( '', __FILE__ ) );
 define( 'X_UNDER_CONSTRUCTION_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

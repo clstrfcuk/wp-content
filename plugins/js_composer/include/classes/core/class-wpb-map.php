@@ -9,18 +9,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package WPBakeryVisualComposer
  * @since   4.2
  */
-
-/**
- * Vc mapper new class.
- *
- * This class maps shortcodes settings to VC editors. You can manage add new shortcodes or manage default shortcodes
- * mapped in config/map.php. For developers it is possible to use API functions to add update settings attributes.
- *
- * @see config/map.php
- * @see include/helpers/helpers_api.php
- * @since 3.1
- *
- */
 class WPBMap {
 
 	/**
@@ -72,6 +60,11 @@ class WPBMap {
 	 * @var bool
 	 */
 	protected static $is_init = false;
+
+	/**
+	 * @var bool
+	 */
+	protected static $init_elements = array();
 
 	/**
 	 * Set init status fro WPMap.
@@ -157,12 +150,10 @@ class WPBMap {
 			} elseif ( empty( $attributes['base'] ) ) {
 				trigger_error( sprintf( __( 'Wrong base for shortcode:%s. Base required', 'js_composer' ), $tag ) );
 			} else {
-				vc_mapper()->addActivity(
-					'mapper', 'map', array(
-						'tag' => $tag,
-						'attributes' => $attributes,
-					)
-				);
+				vc_mapper()->addActivity( 'mapper', 'map', array(
+					'tag' => $tag,
+					'attributes' => $attributes,
+				) );
 
 				return true;
 			}
@@ -176,12 +167,41 @@ class WPBMap {
 		} else {
 			self::$sc[ $tag ] = $attributes;
 
-			visual_composer()->addShortCode( self::$sc[ $tag ] );
-
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Lazy method to map shortcode to VC.
+	 *
+	 * This method maps shortcode to VC.
+	 * You can shortcode settings as you do in self::map method. Bu also you
+	 * can pass function name or file, which will be used to add settings for
+	 * element. But this will be done only when element data is really required.
+	 *
+	 * @static
+	 * @since 4.9
+	 *
+	 * @param $tag
+	 * @param $settings_file
+	 * @param $settings_function
+	 * @param $attributes
+	 *
+	 * @return bool
+	 */
+	public static function leanMap( $tag, $settings_function = null, $settings_file = null, $attributes = array() ) {
+		self::$sc[ $tag ] = $attributes;
+		self::$sc[ $tag ]['base'] = $tag;
+		if ( is_string( $settings_file ) ) {
+			self::$sc[ $tag ]['__vc_settings_file'] = $settings_file;
+		}
+		if ( ! is_null( $settings_function ) ) {
+			self::$sc[ $tag ]['__vc_settings_function'] = $settings_function;
+		}
+
+		return true;
 	}
 
 	/**
@@ -203,9 +223,13 @@ class WPBMap {
 		$deprecated = 'deprecated';
 		$add_deprecated = false;
 		if ( is_array( self::$sc ) && ! empty( self::$sc ) ) {
-			foreach ( self::$sc as $name => $values ) {
-				if ( vc_user_access_check_shortcode_all( $name )
-				) {
+			foreach ( array_keys( self::$sc ) as $name ) {
+				self::setElementSettings( $name );
+				if ( ! isset( self::$sc[ $name ] ) ) {
+					continue;
+				}
+				$values = self::$sc[ $name ];
+				if ( vc_user_access_check_shortcode_all( $name ) ) {
 					if ( ! isset( $values['content_element'] ) || true === $values['content_element'] ) {
 						$categories = isset( $values['category'] ) ? $values['category'] : '_other_category_';
 						$values['_category_ids'] = array();
@@ -254,6 +278,9 @@ class WPBMap {
 	protected static function generateData( $force = false ) {
 		if ( ! $force && false !== self::$categories ) {
 			return;
+		}
+		foreach ( self::$sc as $tag => $settings ) {
+			self::setElementSettings( $tag );
 		}
 		self::$categories = self::collectCategories( self::$sc );
 		$sort = new Vc_Sort( array_values( self::$sc ) );
@@ -329,7 +356,14 @@ class WPBMap {
 	 * @return array|null null @since 4.4.3
 	 */
 	public static function getShortCode( $tag ) {
-		return isset( self::$sc[ $tag ] ) && is_array( self::$sc[ $tag ] ) ? self::$sc[ $tag ] : null;
+		if ( isset( self::$sc[ $tag ] ) && is_array( self::$sc[ $tag ] ) ) {
+			self::setElementSettings( $tag );
+			$shortcode = self::$sc[ $tag ];
+		} else {
+			$shortcode = null;
+		}
+
+		return $shortcode;
 	}
 
 	/**
@@ -402,13 +436,11 @@ class WPBMap {
 	 * @return bool
 	 */
 	public static function dropParam( $name, $attribute_name ) {
-		if ( ! self::$is_init ) {
-			vc_mapper()->addActivity(
-				'mapper', 'drop_param', array(
-					'name' => $name,
-					'attribute_name' => $attribute_name,
-				)
-			);
+		if ( ! isset( self::$init_elements[ $name ] ) ) {
+			vc_mapper()->addElementActivity( $name, 'drop_param', array(
+				'name' => $name,
+				'attribute_name' => $attribute_name,
+			) );
 
 			return true;
 		}
@@ -439,6 +471,15 @@ class WPBMap {
 		if ( ! isset( self::$sc[ $tag ] ) ) {
 			return trigger_error( sprintf( __( 'Wrong name for shortcode:%s. Name required', 'js_composer' ), $tag ) );
 		}
+
+		if ( isset( self::$sc[ $tag ]['__vc_settings_function'] ) || isset( self::$sc[ $tag ]['__vc_settings_file'] ) ) {
+			self::setElementSettings( $tag );
+		}
+
+		if ( ! isset( self::$sc[ $tag ]['params'] ) ) {
+			return false;
+		}
+
 		foreach ( self::$sc[ $tag ]['params'] as $index => $param ) {
 			if ( $param['param_name'] == $param_name ) {
 				return self::$sc[ $tag ]['params'][ $index ];
@@ -459,13 +500,11 @@ class WPBMap {
 	 * @return bool - true if added, false if scheduled/rejected
 	 */
 	public static function addParam( $name, $attribute = array() ) {
-		if ( ! self::$is_init ) {
-			vc_mapper()->addActivity(
-				'mapper', 'add_param', array(
-					'name' => $name,
-					'attribute' => $attribute,
-				)
-			);
+		if ( ! isset( self::$init_elements[ $name ] ) ) {
+			vc_mapper()->addElementActivity( $name, 'add_param', array(
+				'name' => $name,
+				'attribute' => $attribute,
+			) );
 
 			return false;
 		}
@@ -490,8 +529,6 @@ class WPBMap {
 			$sort = new Vc_Sort( self::$sc[ $name ]['params'] );
 			self::$sc[ $name ]['params'] = $sort->sortByKey();
 
-			visual_composer()->addShortCode( self::$sc[ $name ] );
-
 			return true;
 		}
 
@@ -509,13 +546,11 @@ class WPBMap {
 	 * @return bool
 	 */
 	public static function mutateParam( $name, $attribute = array() ) {
-		if ( ! self::$is_init ) {
-			vc_mapper()->addActivity(
-				'mapper', 'mutate_param', array(
-					'name' => $name,
-					'attribute' => $attribute,
-				)
-			);
+		if ( ! isset( self::$init_elements[ $name ] ) ) {
+			vc_mapper()->addElementActivity( $name, 'mutate_param', array(
+				'name' => $name,
+				'attribute' => $attribute,
+			) );
 
 			return false;
 		}
@@ -539,7 +574,6 @@ class WPBMap {
 			}
 			$sort = new Vc_Sort( self::$sc[ $name ]['params'] );
 			self::$sc[ $name ]['params'] = $sort->sortByKey();
-			visual_composer()->addShortCode( self::$sc[ $name ] );
 		}
 
 		return true;
@@ -555,12 +589,10 @@ class WPBMap {
 	 * @return bool
 	 */
 	public static function dropShortcode( $name ) {
-		if ( ! self::$is_init ) {
-			vc_mapper()->addActivity(
-				'mapper', 'drop_shortcode', array(
-					'name' => $name,
-				)
-			);
+		if ( ! isset( self::$init_elements[ $name ] ) ) {
+			vc_mapper()->addElementActivity( $name, 'drop_shortcode', array(
+				'name' => $name,
+			) );
 
 			return false;
 		}
@@ -572,9 +604,7 @@ class WPBMap {
 
 	public static function dropAllShortcodes() {
 		if ( ! self::$is_init ) {
-			vc_mapper()->addActivity(
-				'mapper', 'drop_all_shortcodes', array()
-			);
+			vc_mapper()->addActivity( '*', 'drop_all_shortcodes', array() );
 
 			return false;
 		}
@@ -601,14 +631,12 @@ class WPBMap {
 	 * @return array|bool
 	 */
 	public static function modify( $name, $setting_name, $value = '' ) {
-		if ( ! self::$is_init ) {
-			vc_mapper()->addActivity(
-				'mapper', 'modify', array(
-					'name' => $name,
-					'setting_name' => $setting_name,
-					'value' => $value,
-				)
-			);
+		if ( ! isset( self::$init_elements[ $name ] ) ) {
+			vc_mapper()->addElementActivity( $name, 'modify', array(
+				'name' => $name,
+				'setting_name' => $setting_name,
+				'value' => $value,
+			) );
 
 			return false;
 		}
@@ -654,7 +682,7 @@ class WPBMap {
 	 * @return int
 	 */
 	public static function sort( $a, $b ) {
-		_deprecated_function( 'WPBMap::sort', '4.4', 'Vc_Sort class, :sortByKey' );
+		// _deprecated_function( 'WPBMap::sort', '4.4 (will be removed in 4.10)', 'Vc_Sort class, :sortByKey' );
 		$a_weight = isset( $a['weight'] ) ? (int) $a['weight'] : 0;
 		$b_weight = isset( $b['weight'] ) ? (int) $b['weight'] : 0;
 		if ( $a_weight == $b_weight ) {
@@ -701,5 +729,42 @@ class WPBMap {
 		}
 
 		return $categories_list;
+	}
+
+	/**
+	 * Process files/functions for lean mapping settings
+	 *
+	 * @since 4.9
+	 *
+	 * @param $tag
+	 *
+	 * @return bool
+	 */
+	public static function setElementSettings( $tag ) {
+		if ( ! isset( self::$sc[ $tag ] ) ) {
+			return false;
+		}
+		$settings = self::$sc[ $tag ];
+		if ( isset( $settings['__vc_settings_function'] ) ) {
+			self::$sc[ $tag ] = call_user_func( $settings['__vc_settings_function'], $tag );
+		} elseif ( isset( $settings['__vc_settings_file'] ) ) {
+			self::$sc[ $tag ] = include $settings['__vc_settings_file'];
+		}
+		self::$sc[ $tag ]['base'] = $tag;
+		self::$init_elements[ $tag ] = true;
+		vc_mapper()->callElementActivities( $tag );
+	}
+
+	/**
+	 * Add elements as shortcodes
+	 *
+	 * @since 4.9
+	 */
+	public static function addAllMappedShortcodes() {
+		foreach ( self::$sc as $tag => $settings ) {
+			if ( ! shortcode_exists( $tag ) ) {
+				add_shortcode( $tag, 'vc_do_shortcode' );
+			}
+		}
 	}
 }

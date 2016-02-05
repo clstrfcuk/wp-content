@@ -54,10 +54,11 @@ function vc_welcome_menu_hooks() {
 	                                        ->get();
 	add_action( 'vc_menu_page_build', 'vc_page_welcome_add_sub_page',
 	$settings_tab_enabled ? 11 : 1 );
-	add_action( 'vc_network_menu_page_build', 'vc_page_welcome_add_sub_page', $settings_tab_enabled ? 11 : 1 );
+	add_action( 'vc_network_menu_page_build', 'vc_page_welcome_add_sub_page', $settings_tab_enabled && ! is_main_site() ? 11 : 1 );
 }
 
-add_action( 'init', 'vc_welcome_menu_hooks' );
+add_action( 'admin_menu', 'vc_welcome_menu_hooks', 9 );
+add_action( 'network_admin_menu', 'vc_welcome_menu_hooks', 9 );
 /**
  * ====================
  * Redirect to welcome page on plugin activation.
@@ -86,7 +87,7 @@ function vc_page_welcome_redirect() {
 
 // Enables redirect on activation.
 add_action( 'vc_activation_hook', 'vc_page_welcome_set_redirect' );
-add_action( 'init', 'vc_page_welcome_redirect' );
+add_action( 'admin_init', 'vc_page_welcome_redirect' );
 
 /**
  * ===============================

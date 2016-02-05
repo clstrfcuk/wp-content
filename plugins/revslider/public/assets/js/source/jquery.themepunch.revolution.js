@@ -1,6 +1,6 @@
 /**************************************************************************
  * jquery.themepunch.revolution.js - jQuery Plugin for Revolution Slider
- * @version: 5.1.4 (25.11.2015)
+ * @version: 5.1.6 (04.12.2015)
  * @requires jQuery v1.7 or later (tested on 1.9)
  * @author ThemePunch
 **************************************************************************/
@@ -94,7 +94,7 @@
 				navigation : {
 					keyboardNavigation:"on",	
 					keyboard_direction:"horizontal",		//	horizontal - left/right arrows,  vertical - top/bottom arrows
-					mouseScrollNavigation:"off",					
+					mouseScrollNavigation:"off",			// on, off, carousel					
 					onHoverStop:"on",						// Stop Banner Timet at Hover on Slide on/off
 
 					touch:{
@@ -219,6 +219,9 @@
 				options.scriptsneeded = getNeededScripts(options,c);
 				options.curWinRange = 0;	
 
+				  if (options.navigation!=undefined && options.navigation.touch!=undefined) 
+       				 options.navigation.touch.swipe_min_touches = options.navigation.touch.swipe_min_touches >5 ? 1 : options.navigation.touch.swipe_min_touches;
+   
 
 
 				jQuery(this).on("scriptsloaded",function() {
@@ -237,6 +240,43 @@
 
 				waitForScripts(c,options.scriptsneeded);
 			})
+		},
+
+		// Remove a Slide from the Slider
+		revremoveslide : function(sindex) {
+
+			return this.each(function() {	
+				
+				var container=jQuery(this);
+				if (container!=undefined && container.length>0 && jQuery('body').find('#'+container.attr('id')).length>0) {
+					var bt = container.parent().find('.tp-bannertimer'),
+						opt = bt.data('opt');
+					if (opt && opt.li.length>0) {
+						if (sindex>0 || sindex<=opt.li.length) {
+							
+							var li = jQuery(opt.li[sindex]),
+								ref = li.data("index"),
+								nextslideafter = false;
+										
+							opt.slideamount = opt.slideamount-1;										
+							removeNavWithLiref('.tp-bullet',ref,opt);
+							removeNavWithLiref('.tp-tab',ref,opt);
+							removeNavWithLiref('.tp-thumb',ref,opt);	
+							if (li.hasClass('active-revslide')) 
+								nextslideafter = true;													
+							li.remove();
+							opt.li = removeArray(opt.li,sindex);	
+							if (opt.carousel && opt.carousel.slides)
+								opt.carousel.slides = removeArray(opt.carousel.slides,sindex)
+							opt.thumbs = removeArray(opt.thumbs,sindex);	
+							if (_R.updateNavIndexes) _R.updateNavIndexes(opt); 
+							if (nextslideafter) container.revnext();
+								
+						}
+					}
+				}
+			});
+			
 		},
 
 		// Add a New Call Back to some Module
@@ -769,6 +809,23 @@ var	_ISM = _R.is_mobile();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////		
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+var removeArray = function(arr,i) {
+				var newarr = [];
+				jQuery.each(arr,function(a,b) {
+					if (a!=i) newarr.push(b);
+				})
+				return newarr;
+			}
+
+var removeNavWithLiref = function(a,ref,opt) {
+	opt.c.find(a).each(function() {
+		var a = jQuery(this);
+		if (a.data('liref')===ref)
+			a.remove();
+	})
+}
+
+
 var lAjax = function(s,o) {
 	if (jQuery('body').data(s)) return false;
 	if (o.filesystem) {
@@ -1016,10 +1073,21 @@ var initSlider = function (container,opt) {
 	// CREATE SOME DEFAULT OPTIONS FOR LATER			
 	opt.c=container;
 	opt.ul = container.find('.tp-revslider-mainul');
+
+	 // Remove Not Needed Slides for Mobile Devices
+    opt.ul.find('>li').each(function(i) {
+    	var li = jQuery(this);    	
+    	if (li.data('hideslideonmobile')=="on" && _ISM) li.remove();
+   	});
+
+
 	opt.cid = container.attr('id');
 	opt.ul.css({visibility:"visible"});
     opt.slideamount = opt.ul.find('>li').length;
     opt.slayers = container.find('.tp-static-layers');
+
+   
+
 
     // Save Original Index of Slides
     opt.ul.find('>li').each(function(i) {
@@ -1397,8 +1465,10 @@ var initSlider = function (container,opt) {
 		opt.inviewport = false;
 		
 		if (_v !=undefined && _v.enable) {
-			_v.visible_area = parseFloat(_v.visible_area)/100;
-			_v.visible_area = _v.visible_area<0.001 ? _v.visible_area*100 : _v.visible_area;
+			if (!jQuery.isNumeric(_v.visible_area))
+			 if (_v.visible_area.indexOf('%')!==-1) 
+				_v.visible_area = parseInt(_v.visible_area)/100;
+				
 			if (_R.scrollTicker) _R.scrollTicker(opt,container);
 		}
 		
@@ -1725,12 +1795,11 @@ var prepareSlides = function(container,opt) {
 		img.addClass('defaultimg');				
 						
 		// TURN OF KEN BURNS IF WE ARE ON MOBILE AND IT IS WISHED SO
-		if (opt.panZoomDisableOnMobile == "on"  && _ISM) {
+		if (opt.fallbacks.panZoomDisableOnMobile == "on"  && _ISM) {
 			img.data('kenburns',"off");
 			img.data('bgfit',"cover");
 		}
 
-	
 		img.wrap('<div class="slotholder" style="width:100%;height:100%;"></div>');
 		bgvid.appendTo(img.closest('li').find('.slotholder'));
 		var dts = img.data();
@@ -2018,7 +2087,8 @@ var swapSlide = function(container,opt) {
 		return false;
 	}
 	nextli.removeClass("next-revslide").addClass("processing-revslide");
-			
+		
+	nextli.data('slide_on_focus_amount',(nextli.data('slide_on_focus_amount')+1) || 1);
 	// CHECK IF WE ARE ALREADY AT LAST ITEM TO PLAY IN REAL LOOP SESSION
 	if (opt.stopLoop=="on" && nextli.index()==opt.lastslidetoshow-1) {
 		container.find('.tp-bannertimer').css({'visibility':'hidden'});
@@ -2032,7 +2102,7 @@ var swapSlide = function(container,opt) {
 		if (opt.looptogo<=0)
 				opt.stopLoop="on";
 	}	
-	
+
 	opt.tonpause = true;
 	container.trigger('stoptimer');
 	opt.cd=0;
@@ -2214,18 +2284,25 @@ var swapSlideProgress = function(opt,defimg,container) {
 		mtl.pause();
 	}
 
+	if (_R.scrollHandling) {
+		_R.scrollHandling(opt, true);
+		mtl.eventCallback("onUpdate",function() {
+			_R.scrollHandling(opt, true);
+		});
+	}
+	
 	// START PARALLAX IF NEEDED		
 	if (opt.parallax.type!="off" && opt.parallax.firstgo==undefined && _R.scrollHandling) {
 		opt.parallax.firstgo = true;
 		opt.lastscrolltop = -999;
-		_R.scrollHandling(opt);
+		_R.scrollHandling(opt,true);
 		setTimeout(function() {
 			opt.lastscrolltop = -999;
-			_R.scrollHandling(opt);
+			_R.scrollHandling(opt,true);
 		},210);
 		setTimeout(function() {
 			opt.lastscrolltop = -999;
-			_R.scrollHandling(opt);
+			_R.scrollHandling(opt,true);
 		},420);
 	}
 	
@@ -2323,9 +2400,18 @@ var letItFree = function(container,opt,nextsh,actsh,nextli,actli,mtl) {
 	container.trigger('revolution.slide.onafterswap',data);	
 
 	opt.duringslidechange = false;
+
+	var lastSlideLoop = actli.data('slide_on_focus_amount'),
+		lastSlideMaxLoop = actli.data('hideafterloop');	
+	if (lastSlideMaxLoop!=0 && lastSlideMaxLoop<=lastSlideLoop) {
+		opt.c.revremoveslide(actli.index());
+	}
 	//if (_R.callStaticDDDParallax) _R.callStaticDDDParallax(container,opt,nextli);		
 	
 }
+
+
+
 
 
 ///////////////////////////

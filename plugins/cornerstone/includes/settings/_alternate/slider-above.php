@@ -86,12 +86,12 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     );
 
     $alignments = array(
-      array( 'value' => 'top left', 'label'      => 'Top Left' ),
-      array( 'value' => 'top center', 'label'    => 'Top Center' ),
-      array( 'value' => 'top right', 'label'     => 'Top Right' ),
-      array( 'value' => 'bottom left', 'label'   => 'Bottom Left' ),
-      array( 'value' => 'bottom center', 'label' => 'Bottom Center' ),
-      array( 'value' => 'bottom right', 'label'  => 'Bottom Right' )
+      array( 'value' => 'top left', 'label'      => __( 'Top Left', csl18n() ) ),
+      array( 'value' => 'top center', 'label'    => __( 'Top Center', csl18n() ) ),
+      array( 'value' => 'top right', 'label'     => __( 'Top Right', csl18n() ) ),
+      array( 'value' => 'bottom left', 'label'   => __( 'Bottom Left', csl18n() ) ),
+      array( 'value' => 'bottom center', 'label' => __( 'Bottom Center', csl18n() ) ),
+      array( 'value' => 'bottom right', 'label'  => __( 'Bottom Right', csl18n() ) )
     );
 
     $this->addControl(

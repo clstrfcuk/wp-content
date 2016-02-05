@@ -14,14 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 	<p class="vc-page-actions">
 		<?php if ( vc_user_access()
-			->wpAny( 'manage_options' )
-			->part( 'settings' )
-			->can( 'vc-general-tab' )
-			->get() && ! is_main_site() ) : ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=vc-general' ) ) ?>"
-		   class="button button-primary"><?php _e( 'Settings', 'js_composer' ) ?></a><?php endif; ?>
+				->wpAny( 'manage_options' )
+				->part( 'settings' )
+				->can( 'vc-general-tab' )
+				->get() && ( ! is_multisite() || ! is_main_site() )
+		) : ?>
+			<a href="<?php echo esc_attr( admin_url( 'admin.php?page=vc-general' ) ) ?>"
+			class="button button-primary"><?php _e( 'Settings', 'js_composer' ) ?></a><?php endif; ?>
 		<a href="https://twitter.com/share" class="twitter-share-button"
-		   data-text="Take full control over your WordPress site with Visual Composer page builder by @WPBakery"
-		   data-url="http://vc.wpbakery.com" data-size="large">Tweet</a>
+			data-text="Take full control over your WordPress site with Visual Composer page builder by @WPBakery"
+			data-url="http://vc.wpbakery.com" data-size="large">Tweet</a>
 		<script>! function ( d, s, id ) {
 				var js, fjs = d.getElementsByTagName( s )[ 0 ], p = /^http:/.test( d.location ) ? 'http' : 'https';
 				if ( ! d.getElementById( id ) ) {
@@ -32,8 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				}
 			}( document, 'script', 'twitter-wjs' );</script>
 	</p>
-	<?php vc_include_template( '/pages/partials/_tabs.php',
-	array(
+	<?php vc_include_template( '/pages/partials/_tabs.php', array(
 			'slug' => $page->getSlug(),
 			'active_tab' => $active_page->getSlug(),
 			'tabs' => $pages,

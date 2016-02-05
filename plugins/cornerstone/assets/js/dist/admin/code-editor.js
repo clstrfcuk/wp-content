@@ -135,93 +135,93 @@ require( './jquery.cs-code-editor' );
 			$textarea.parent().keyup( function( e ) {
 				if ( 27 === e.keyCode ) $textarea.trigger( 'csCodeEditor.toggle', false );
 			});
-    }
+		}
 
-    return this;
-  };
+		return this;
+	};
 
-  $.fn.csCodeEditorShow = function() {
-    if ( invalidEl( this ) ) return this;
-    this.trigger( 'csCodeEditor.toggle', true );
-    return this;
-  };
+	$.fn.csCodeEditorShow = function() {
+		if ( invalidEl( this ) ) return this;
+		this.trigger( 'csCodeEditor.toggle', true );
+		return this;
+	};
 
-  $.fn.csCodeEditorHide = function() {
-    if ( invalidEl( this ) ) return this;
-    this.trigger( 'csCodeEditor.toggle', false );
-    return this;
-  };
+	$.fn.csCodeEditorHide = function() {
+		if ( invalidEl( this ) ) return this;
+		this.trigger( 'csCodeEditor.toggle', false );
+		return this;
+	};
 
-  $.fn.csCodeEditorToggle = function( state ) {
-    if ( invalidEl( this ) ) return this;
-    this.trigger( 'csCodeEditor.toggle', state );
-    return this;
-  };
+	$.fn.csCodeEditorToggle = function( state ) {
+		if ( invalidEl( this ) ) return this;
+		this.trigger( 'csCodeEditor.toggle', state );
+		return this;
+	};
 
-  $.fn.csCodeEditor.defaults = {
-    wrapper: '<div class="cs-code-editor-wrapper code-editor"></div>',
-    panel: '<div class="cs-code-editor-panel"><button class="cs-close">&times;</button><button class="cs-expand">&#9654;</button><button class="cs-collapse">&#9664;</button></div>',
+	$.fn.csCodeEditor.defaults = {
+		wrapper: '<div class="cs-code-editor-wrapper code-editor"></div>',
+		panel: '<div class="cs-code-editor-panel"><button class="cs-close">&times;</button><button class="cs-expand">&#9654;</button><button class="cs-collapse">&#9664;</button></div>',
 
-    settings: {
+		settings: {
 
-      //
-      // General
-      //
+			//
+			// General
+			//
 
-      closeWithEsc: true,
+			closeWithEsc: true,
 
-      //
-      // CodeMirror Settings
-      //
+			//
+			// CodeMirror Settings
+			//
 
-      mode:                        'css',
-      theme:                       'solarized dark',
-      indentUnit:                  2,
-      smartIndent:                 true,
-      tabSize:                     2,
-      indentWithTabs:              false,
-      electricChars:               true,
-      keyMap:                      'sublime',
-      lineWrapping:                false,
-      lineNumbers:                 true,
-      firstLineNumber:             1,
-      fixedGutter:                 true,
-      scrollbarStyle:              'overlay',
-      inputStyle:                  'contenteditable',
-      showCursorWhenSelecting:     false,
-      lineWiseCopyCut:             false,
-      undoDepth:                   200,
-      historyEventDelay:           1500,
-      autofocus:                   false,
-      dragDrop:                    true,
-      cursorBlinkRate:             750,
-      cursorScrollMargin:          0,
-      cursorHeight:                1,
-      resetSelectionOnContextMenu: true,
-      workTime:                    200,
-      workDelay:                   300,
-      pollInterval:                100,
-      flattenSpans:                true,
-      addModeClass:                true,
-      maxHighlightLength:          10000,
-      viewportMargin:              10,
-      lineWrapping:                true,
+			mode:                        'css',
+			theme:                       'solarized dark',
+			indentUnit:                  2,
+			smartIndent:                 true,
+			tabSize:                     2,
+			indentWithTabs:              false,
+			electricChars:               true,
+			keyMap:                      'sublime',
+			lineWrapping:                false,
+			lineNumbers:                 true,
+			firstLineNumber:             1,
+			fixedGutter:                 true,
+			scrollbarStyle:              'overlay',
+			inputStyle:                  'contenteditable',
+			showCursorWhenSelecting:     false,
+			lineWiseCopyCut:             false,
+			undoDepth:                   200,
+			historyEventDelay:           1500,
+			autofocus:                   false,
+			dragDrop:                    true,
+			cursorBlinkRate:             750,
+			cursorScrollMargin:          0,
+			cursorHeight:                1,
+			resetSelectionOnContextMenu: true,
+			workTime:                    200,
+			workDelay:                   300,
+			pollInterval:                100,
+			flattenSpans:                true,
+			addModeClass:                true,
+			maxHighlightLength:          10000,
+			viewportMargin:              10,
+			lineWrapping:                false,
 
-      //
-      // CodeMirror Extensions.
-      //
+			//
+			// CodeMirror Extensions.
+			//
 
-      showTrailingSpace: true,
-      styleActiveLine:   true,
-      styleSelectedText: false,
-      matchBrackets:     true,
-      autoCloseBrackets: true,
-      autoCloseTags:     true,
-      closeTag:          true,
-      foldGutter:        true
+			showTrailingSpace: true,
+			styleActiveLine:   true,
+			styleSelectedText: false,
+			matchBrackets:     true,
+			autoCloseBrackets: true,
+			autoCloseTags:     true,
+			closeTag:          true,
+			foldGutter:        true
 
-    }
-  };
+		}
+	};
 
 }( jQuery ) );
 

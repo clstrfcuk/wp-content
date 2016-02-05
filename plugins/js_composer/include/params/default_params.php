@@ -179,7 +179,7 @@ function vc_taxonomies_form_field( $settings, $value ) {
 }
 
 /**
- * @deprecated, will be removed in 4.9
+ * @deprecated 4.9
  *
  * @param $settings
  * @param $value
@@ -188,6 +188,7 @@ function vc_taxonomies_form_field( $settings, $value ) {
  * @return string
  */
 function vc_taxomonies_form_field( $settings, $value ) {
+	_deprecated_function( 'vc_taxomonies_form_field', '4.9 (will be removed in 4.11)' );
 	return vc_taxonomies_form_field( $settings, $value );
 }
 
@@ -208,6 +209,25 @@ function vc_exploded_textarea_form_field( $settings, $value ) {
 	return '<textarea name="'
 	       . $settings['param_name'] . '" class="wpb_vc_param_value wpb-textarea '
 	       . $settings['param_name'] . ' ' . $settings['type'] . '">' . $value . '</textarea>';
+}
+
+/**
+ * Safe Textarea shortcode attribute type generator.
+ *
+ * @param $settings
+ * @param $value
+ *
+ * @since 4.8.2
+ * @return string - html string.
+ */
+function vc_exploded_textarea_safe_form_field( $settings, $value ) {
+	$value = vc_value_from_safe( $value, true );
+	$value = str_replace( ',', "\n", $value );
+
+	return '<textarea name="'
+	. $settings['param_name'] . '" class="wpb_vc_param_value wpb-textarea '
+	. $settings['param_name'] . ' ' . $settings['type'] . '">'
+	. $value . '</textarea>';
 }
 
 /**

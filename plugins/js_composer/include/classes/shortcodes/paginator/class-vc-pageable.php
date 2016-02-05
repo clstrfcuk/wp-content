@@ -19,13 +19,12 @@ abstract class WPBakeryShortCode_Vc_Pageable extends WPBakeryShortCode {
 	 * Register scripts and styles for pager
 	 */
 	public function shortcodeScripts() {
-		wp_register_script( 'vc_pageable_owl-carousel', vc_asset_url( 'lib/owl-carousel2-dist/owl.carousel.js' ), array(
+		wp_register_script( 'vc_pageable_owl-carousel', vc_asset_url( 'lib/owl-carousel2-dist/owl.carousel.min.js' ), array(
 			'jquery',
 		), WPB_VC_VERSION, true );
 		wp_register_script( 'waypoints', vc_asset_url( 'lib/waypoints/waypoints.min.js' ), array( 'jquery' ), WPB_VC_VERSION, true );
 
-		wp_register_style( 'vc_pageable_owl-carousel-css', vc_asset_url( 'lib/owl-carousel2-dist/assets/owl.carousel.css' ), array(), WPB_VC_VERSION, false );
-		wp_register_style( 'vc_pageable_owl-carousel-css-theme', vc_asset_url( 'lib/owl-carousel2-dist/assets/owl.theme.default.css' ), array(), WPB_VC_VERSION, false );
+		wp_register_style( 'vc_pageable_owl-carousel-css', vc_asset_url( 'lib/owl-carousel2-dist/assets/owl.min.css' ), array(), WPB_VC_VERSION, false );
 		wp_register_style( 'animate-css', vc_asset_url( 'lib/bower/animate-css/animate.min.css' ), array(), WPB_VC_VERSION, false );
 	}
 
@@ -113,7 +112,6 @@ abstract class WPBakeryShortCode_Vc_Pageable extends WPBakeryShortCode {
 	public function enqueueScripts() {
 		wp_enqueue_script( 'vc_pageable_owl-carousel' );
 		wp_enqueue_style( 'vc_pageable_owl-carousel-css' );
-		wp_enqueue_style( 'vc_pageable_owl-carousel-css-theme' );
 		wp_enqueue_style( 'animate-css' );
 	}
 

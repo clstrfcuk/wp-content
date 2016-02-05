@@ -26,7 +26,7 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 
 	protected function shortcodeScripts() {
 		wp_register_script( 'vc_jquery_skrollr_js', vc_asset_url( 'lib/bower/skrollr/dist/skrollr.min.js' ), array( 'jquery' ), WPB_VC_VERSION, true );
-		wp_register_script( 'vc_youtube_iframe_api_js', 'https://www.youtube.com/iframe_api', array(), WPB_VC_VERSION, true );
+		wp_register_script( 'vc_youtube_iframe_api_js', '//www.youtube.com/iframe_api', array(), WPB_VC_VERSION, true );
 	}
 
 	protected function content( $atts, $content = null ) {
@@ -51,7 +51,7 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 	}
 
 	public function getColumnControls( $controls, $extended_css = '' ) {
-		$output = '<div class="vc_controls vc_controls-row controls controls_row vc_clearfix">';
+		$output = '<div class="vc_controls vc_controls-row controls_row vc_clearfix">';
 		$controls_end = '</div>';
 		//Create columns
 		$controls_layout = $this->getLayoutsControl();
@@ -75,8 +75,8 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 			foreach ( $controls as $control ) {
 				$control_var = 'controls_' . $control;
 				if ( ( $editAccess && 'edit' == $control ) || $allAccess ) {
-					if ( isset( $$control_var ) ) {
-						$output .= $$control_var;
+					if ( isset( ${$control_var} ) ) {
+						$output .= ${$control_var};
 					}
 				}
 			}
@@ -84,8 +84,8 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 		} elseif ( is_string( $controls ) ) {
 			$control_var = 'controls_' . $controls;
 			if ( ( $editAccess && 'edit' === $controls ) || $allAccess ) {
-				if ( isset( $$control_var ) ) {
-					$output .= $$control_var . $controls_end;
+				if ( isset( ${$control_var} ) ) {
+					$output .= ${$control_var} . $controls_end;
 				}
 			}
 		} else {
@@ -112,7 +112,7 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 
 	public function contentAdmin( $atts, $content = null ) {
 		$width = $el_class = '';
-		extract( shortcode_atts( $this->predefined_atts, $atts ) );
+		$atts = shortcode_atts( $this->predefined_atts, $atts );
 
 		$output = '';
 
@@ -133,7 +133,10 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 			if ( isset( $this->settings['params'] ) ) {
 				$inner = '';
 				foreach ( $this->settings['params'] as $param ) {
-					$param_value = isset( $$param['param_name'] ) ? $$param['param_name'] : '';
+					if ( ! isset( $param['param_name'] ) ) {
+						continue;
+					}
+					$param_value = isset( $atts[ $param['param_name'] ] ) ? $atts[ $param['param_name'] ] : '';
 					if ( is_array( $param_value ) ) {
 						// Get first element from the array
 						reset( $param_value );
@@ -163,13 +166,13 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 	 * @return string
 	 */
 	public function customAdminBockParams() {
-		_deprecated_function( 'WPBakeryShortCode_VC_Row::customAdminBockParams', '4.5' );
+		// _deprecated_function( 'WPBakeryShortCode_VC_Row::customAdminBockParams', '4.5 (will be removed in 4.10)' );
 
 		return '';
 	}
 
 	/**
-	 * @deprecated and will be removed in 4.9
+	 * @deprecated 4.5
 	 *
 	 * @param string $bg_image
 	 * @param string $bg_color
@@ -181,7 +184,7 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 	 * @return string
 	 */
 	public function buildStyle( $bg_image = '', $bg_color = '', $bg_image_repeat = '', $font_color = '', $padding = '', $margin_bottom = '' ) {
-		_deprecated_function( 'WPBakeryShortCode_VC_Row::buildStyle', '4.5' );
+		// _deprecated_function( 'WPBakeryShortCode_VC_Row::buildStyle', '4.5 (will be removed in 4.10)' );
 
 		$has_image = false;
 		$style = '';

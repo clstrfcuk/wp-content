@@ -153,7 +153,7 @@ class RevSliderPluginUpdate {
 		$db = new RevSliderDB();
 		
 		foreach($v5 as $v5class){
-			$result = $db->fetch(RevSliderGlobals::$table_css, "handle = '".$v5class['handle']."'");
+			$result = $db->fetch(RevSliderGlobals::$table_css, $db->prepare("handle = %s", array($v5class['handle'])));
 			if(empty($result)){
 				//add v5 style
 				$db->insert(RevSliderGlobals::$table_css, $v5class);
@@ -346,7 +346,7 @@ class RevSliderPluginUpdate {
 							
 							$static_id = $sl->getStaticSlideID($template_id);
 							if($static_id !== false){
-								$record = $db->fetchSingle(RevSliderGlobals::$table_static_slides,"id=$static_id");
+								$record = $db->fetchSingle(RevSliderGlobals::$table_static_slides, $db->prepare("id = %s", array($static_id)));
 								unset($record['id']);
 								$record['slider_id'] = $slider_id;
 								

@@ -608,53 +608,26 @@ function soliloquy_ajax_load_library() {
 
     // Prepare variables.
     $offset  = (int) $_POST['offset'];
+    $search  = trim( stripslashes( $_POST['search'] ) );
     $post_id = absint( $_POST['post_id'] );
     $html    = '';
 
-    // Grab the library contents with the included offset parameter.
-    $library = get_posts( array( 'post_type' => 'attachment', 'post_mime_type' => 'image', 'post_status' => 'any', 'posts_per_page' => 20, 'offset' => $offset ) );
-    if ( $library ) {
-        foreach ( (array) $library as $image ) {
-            $has_slider = get_post_meta( $image->ID, '_sol_has_slider', true );
-            $class       = $has_slider && in_array( $post_id, (array) $has_slider ) ? ' selected soliloquy-in-slider' : '';
+    // Build args
+    $args = array(
+        'post_type'     => 'attachment', 
+        'post_mime_type'=> 'image', 
+        'post_status'   => 'any', 
+        'posts_per_page'=> 20, 
+        'offset'        => $offset,
+    );
 
-            $html .= '<li class="attachment' . $class . '" data-attachment-id="' . absint( $image->ID ) . '">';
-                $html .= '<div class="attachment-preview landscape">';
-                    $html .= '<div class="thumbnail">';
-                        $html .= '<div class="centered">';
-                            $src = wp_get_attachment_image_src( $image->ID, 'thumbnail' );
-                            $html .= '<img src="' . esc_url( $src[0] ) . '" />';
-                        $html .= '</div>';
-                    $html .= '</div>';
-                    $html .= '<a class="check" href="#"><div class="media-modal-icon"></div></a>';
-                $html .= '</div>';
-            $html .= '</li>';
-        }
+    // Add search term to args if not empty
+    if ( ! empty( $search ) ) {
+        $args['s'] = $search;
     }
 
-    echo json_encode( array( 'html' => stripslashes( $html ) ) );
-    die;
-
-}
-
-add_action( 'wp_ajax_soliloquy_library_search', 'soliloquy_ajax_library_search' );
-/**
- * Searches the Media Library for images matching the term specified in the search.
- *
- * @since 1.0.0
- */
-function soliloquy_ajax_library_search() {
-
-    // Run a security check first.
-    check_ajax_referer( 'soliloquy-library-search', 'nonce' );
-
-    // Prepare variables.
-    $search  = stripslashes( $_POST['search'] );
-    $post_id = absint( $_POST['post_id'] );
-    $html    = '';
-
-    // Grab the library contents with the included offset parameter.
-    $library = get_posts( array( 'post_type' => 'attachment', 'post_mime_type' => 'image', 'post_status' => 'any', 'posts_per_page' => -1, 's' => $search ) );
+    // Grab the library contents
+    $library = get_posts( $args );
     if ( $library ) {
         foreach ( (array) $library as $image ) {
             $has_slider = get_post_meta( $image->ID, '_sol_has_slider', true );
@@ -732,19 +705,21 @@ function soliloquy_ajax_insert_slides() {
     // Loop through the videos and add them to the slider.
     foreach ( (array) $videos as $i => $data ) {
         // Pass over if the main items necessary for the video are not set.
-        if ( ! isset( $data['title'] ) || ! isset( $data['url'] ) || ! isset( $data['thumb'] ) ) {
+        if ( ! isset( $data['title'] ) || ! isset( $data['url'] ) || ! isset( $data['src'] ) ) {
             continue;
         }
 
         // Generate a custom ID for the video.
-        $id = sanitize_title_with_dashes( $slider_data['id'] . '-' . $data['title'] );
+        // Note: we don't use sanitize_title_with_dashes as this retains special accented characters, resulting in jQuery errors
+        // when subsequently trying to edit an exitsing slide.
+        $id = $slider_data['id'] . '-' . preg_replace("/[^A-Za-z0-9]/", '', strtolower($data['title']));
 
         // Now add the image to the slider for this particular post.
         $in_slider[] = $id;
         $slider_data = soliloquy_ajax_prepare_slider_data( $slider_data, $id, 'video', $data );
     }
 
-    // Loop through the videos and add them to the slider.
+    // Loop through the HTML and add them to the slider.
     foreach ( (array) $html as $i => $data ) {
         // Pass over if the main items necessary for the video are not set.
         if ( empty( $data['title'] ) || empty( $data['code'] ) ) {
@@ -752,7 +727,7 @@ function soliloquy_ajax_insert_slides() {
         }
 
         // Generate a custom ID for the video.
-        $id = sanitize_title_with_dashes( $slider_data['id'] . '-' . $data['title'] );
+        $id = $slider_data['id'] . '-' . preg_replace("/[^A-Za-z0-9]/", '', strtolower($data['title']));
 
         // Now add the image to the slider for this particular post.
         $in_slider[] = $id;
@@ -789,7 +764,11 @@ function soliloquy_ajax_sort_images() {
     $order       = explode( ',', $_POST['order'] );
     $post_id     = absint( $_POST['post_id'] );
     $slider_data = get_post_meta( $post_id, '_sol_slider_data', true );
-    $new_order   = array();
+    
+    // Copy the slider config, removing the slides
+    $new_order   = $slider_data;
+    unset( $new_order['slider'] );
+    $new_order['slider'] = array();
 
     // Loop through the order and generate a new array based on order received.
     foreach ( $order as $id ) {
@@ -873,6 +852,10 @@ function soliloquy_ajax_save_meta() {
     $slider_data['slider'][$attach_id]['id'] = $attach_id;
 
     // Save the different types of default meta fields for images, videos and HTML slides.
+    if ( isset( $meta['status'] ) ) {
+        $slider_data['slider'][$attach_id]['status'] = trim( esc_html( $meta['status'] ) );
+    }
+    
     if ( isset( $meta['title'] ) ) {
         $slider_data['slider'][$attach_id]['title'] = trim( esc_html( $meta['title'] ) );
     }
@@ -884,8 +867,12 @@ function soliloquy_ajax_save_meta() {
     if ( isset( $meta['link'] ) ) {
         $slider_data['slider'][$attach_id]['link'] = esc_url( $meta['link'] );
     }
-
-    $slider_data['slider'][$attach_id]['linktab'] = isset( $meta['linktab'] ) && $meta['linktab'] ? 1 : 0;
+    
+    if ( isset( $meta['linktab'] ) && $meta['linktab'] ) {
+        $slider_data['slider'][$attach_id]['linktab'] = 1;
+    } else {
+	    $slider_data['slider'][$attach_id]['linktab'] = 0;
+    }
 
     if ( isset( $meta['caption'] ) ) {
         $slider_data['slider'][$attach_id]['caption'] = trim( $meta['caption'] );
@@ -895,9 +882,8 @@ function soliloquy_ajax_save_meta() {
         $slider_data['slider'][$attach_id]['url'] = esc_url( $meta['url'] );
     }
 
-    if ( isset( $meta['thumb'] ) ) {
-        $slider_data['slider'][$attach_id]['thumb'] = esc_url( $meta['thumb'] );
-        $slider_data['slider'][$attach_id]['src']   = esc_url( $meta['thumb'] );
+    if ( isset( $meta['src'] ) ) {
+        $slider_data['slider'][$attach_id]['src'] = esc_url( $meta['src'] );
     }
 
     if ( isset( $meta['code'] ) ) {
@@ -997,6 +983,7 @@ function soliloquy_ajax_install_addon() {
             ),
             admin_url( 'admin.php' )
         );
+        $url = esc_url( $url );
 
         // Start output bufferring to catch the filesystem form if credentials are needed.
         ob_start();
@@ -1091,56 +1078,284 @@ function soliloquy_ajax_deactivate_addon() {
  * @since 1.0.0
  *
  * @param array $slider_data  Array of data for the slider.
- * @param int $id             The attachment ID to prepare data for.
+ * @param int $id             The Post ID to prepare data for.
  * @param string $type        The type of slide to prepare (defaults to image).
  * @param array $data         Data to be used for the slide.
  * @return array $slider_data Amended slider data with updated image metadata.
  */
 function soliloquy_ajax_prepare_slider_data( $slider_data, $id, $type = 'image', $data = array() ) {
 
+	// Get global option for slide status
+	$publishingDefault = get_option( 'soliloquy-publishing-default', 'pending' );
+	
     switch ( $type ) {
         case 'image' :
             $attachment = get_post( $id );
             $url        = wp_get_attachment_image_src( $id, 'full' );
             $alt_text   = get_post_meta( $id, '_wp_attachment_image_alt', true );
-            $slider_data['slider'][$id] = array(
-                'status'  => 'pending',
-                'id'      => $id,
-                'src'     => isset( $url[0] ) ? esc_url( $url[0] ) : '',
-                'title'   => get_the_title( $id ),
-                'link'    => '',
-                'alt'     => ! empty( $alt_text ) ? $alt_text : get_the_title( $id ),
-                'caption' => ! empty( $attachment->post_excerpt ) ? $attachment->post_excerpt : '',
-                'type'    => $type
+            $slide = array(
+                'status'  		=> $publishingDefault,
+                'id'      		=> $id,
+                'attachment_id' => $id,
+                'src'     		=> isset( $url[0] ) ? esc_url( $url[0] ) : '',
+                'title'   		=> get_the_title( $id ),
+                'link'    		=> '',
+                'alt'     		=> ! empty( $alt_text ) ? $alt_text : get_the_title( $id ),
+                'caption' 		=> ! empty( $attachment->post_excerpt ) ? $attachment->post_excerpt : '',
+                'type'    		=> $type
             );
             break;
         case 'video' :
-            $slider_data['slider'][$id] = array(
-                'status'  => 'pending',
+            $slide = array(
+                'status'  => $publishingDefault,
                 'id'      => $id,
-                'src'     => isset( $data['thumb'] ) ? esc_url( $data['thumb'] ) : '',
+                'src'     => isset( $data['src'] ) ? esc_url( $data['src'] ) : '',
                 'title'   => isset( $data['title'] ) ? esc_html( $data['title'] ) : '',
                 'url'     => isset( $data['url'] ) ? esc_url( $data['url'] ) : '',
-                'thumb'   => isset( $data['thumb'] ) ? esc_url( $data['thumb'] ) : '',
                 'caption' => isset( $data['caption'] ) ? trim( $data['caption'] ) : '',
                 'type'    => $type
             );
+            
+            // If no thumbnail specified, attempt to get it from the video
+			if ( empty( $data['src'] ) ) {
+	            // Get Video Thumbnail
+		        if ( preg_match( '#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=youtu.be/)[^&\n]+#', $data['url'], $y_matches ) ) {
+		            // YouTube
+		            $videoID = $y_matches[0];
+		            
+		            // Get HD or SD thumbnail
+		            $data['src'] = soliloquy_ajax_get_youtube_thumbnail_url($videoID);
+		        } elseif ( preg_match( '#(?:https?:\/\/(?:[\w]+\.)*vimeo\.com(?:[\/\w]*\/videos?)?\/([0-9]+)[^\s]*)#i', $data['url'], $v_matches ) ) {
+		            // Vimeo
+		            $videoID = $v_matches[1];
+		            
+		            // Get highest resolution thumbnail
+		            $data['src'] = soliloquy_ajax_get_vimeo_thumbnail_url($videoID);
+		        } elseif ( preg_match( '/https?:\/\/(.+)?(wistia.com|wi.st)\/.*/i', $data['url'], $w_matches ) ) {
+		            // Wistia
+		            $parts = explode( '/', $w_matches[0] );
+	                $videoID = array_pop( $parts );
+	                
+	                // Get image from API
+	                $res = wp_remote_get( 'http://fast.wistia.net/oembed?url=' . urlencode( $item['url'] ) );
+	                $bod = wp_remote_retrieve_body( $res );
+	                $api = json_decode( $bod, true );
+	                if ( ! empty( $api['thumbnail_url'] ) ) {
+	                    $data['src'] = remove_query_arg( 'image_crop_resized', $api['thumbnail_url'] );
+	                }
+		        } else {
+		            // Unknown
+		            $videoID = false;
+		        }
+		        
+		        // If a thumbnail was found, import it to the local filesystem
+		        $stream = Soliloquy_Import::get_instance()->import_remote_image( $data['src'], $data, $id, 0, true );
+                if ( ! is_wp_error( $stream ) ) {
+    		        if ( empty( $stream['error'] ) || isset( $stream['error'] ) && ! $stream['error'] ) {
+    	                $slide['attachment_id'] = $stream['attachment_id'];
+    	                $slide['src'] = $stream['url'];
+    	            }
+                }
+	        }
+	            
             break;
         case 'html' :
-            $slider_data['slider'][$id] = array(
-                'status' => 'pending',
+            $slide = array(
+                'status' => $publishingDefault,
                 'id'     => $id,
-                'src'    => isset( $data['thumb'] ) ? esc_url( $data['thumb'] ) : '',
                 'title'  => isset( $data['title'] ) ? esc_html( $data['title'] ) : '',
                 'code'   => isset( $data['code'] ) ? trim( $data['code'] ) : '',
-                'thumb'  => isset( $data['thumb'] ) ? esc_url( $data['thumb'] ) : '',
                 'type'   => $type
             );
             break;
     }
 
+    // If slider data is not an array (i.e. we have no slides), just add the slide to the array
+    if ( ! isset( $slider_data['slider'] ) || ! is_array( $slider_data['slider'] ) ) {
+        $slider_data['slider'] = array();
+        $slider_data['slider'][ $id ] = $slide;
+    } else {
+        // Add this image to the start or end of the gallery, depending on the setting
+        $slide_position = get_option( 'soliloquy_slide_position' );
+
+        switch ( $slide_position ) {
+            case 'before':
+                // Add slide to start of slides array
+                // Store copy of slides, reset slider array and rebuild
+                $slides = $slider_data['slider'];
+                $slider_data['slider'] = array();
+                $slider_data['slider'][ $id ] = $slide;
+                foreach ( $slides as $old_slide_id => $old_slide ) {
+                    $slider_data['slider'][ $old_slide_id ] = $old_slide;
+                }
+                break;
+            case 'after':
+            default: 
+                // Add slide, this will default to the end of the array
+                $slider_data['slider'][ $id ] = $slide;  
+                break;
+        } 
+    }
+
+    // Filter and return
     $slider_data = apply_filters( 'soliloquy_ajax_item_data', $slider_data, $id, $type );
 
     return $slider_data;
+
+}
+
+/**
+* Attempts to get a HD thumbnail URL for the given video ID.
+* If a 120x90 grey placeholder image is returned, the video isn't HD, so
+* the function will return the SD thumbnail URL
+*
+* @since 2.3.9.7
+*
+* @param string $videoID YouTube Video ID
+* @return string HD or SD Thumbnail URL
+*/
+function soliloquy_ajax_get_youtube_thumbnail_url($videoID) {
+	
+	// Determine video URL
+	$prefix = is_ssl() ? 'https' : 'http';
+	$baseURL = $prefix . '://img.youtube.com/vi/' . $videoID . '/';
+	$hdURL = $baseURL . 'maxresdefault.jpg'; // 1080p or 720p
+	$sdURL = $baseURL . '0.jpg'; // 480x360
+	
+	// Get HD image from YouTube
+	$imageData = wp_remote_get( $hdURL, array(
+		'timeout' => 10,	
+	) );
+	
+	// Check request worked
+	if ( is_wp_error( $imageData ) || !isset( $imageData['body'] ) ) {
+		// Failed - fallback to SD Thumbnail
+		return $sdURL;	
+	}
+	
+	// Get image size
+	$imageSize = getimagesizefromstring( $imageData['body'] );	
+	
+	// Check request worked
+	if ( !is_array( $imageSize ) ) {
+		// Failed - fallback to SD Thumbnail
+		return $sdURL;	
+	}
+	
+	// Check image size isn't 120x90
+	if ( $imageSize[0] == 120 && $imageSize[1] == 90) {
+		// Failed - fallback to SD Thumbnail
+		return $sdURL;
+	}
+	
+	// Image is a valid YouTube HD thumbnail
+	return $hdURL;
+	
+}
+
+/**
+* Attempts to get the highest resolution thumbnail URL for the given video ID.
+*
+* @since 2.3.9.7
+*
+* @param string $videoID Vimeo Video ID
+* @return string Best resolution URL
+*/
+function soliloquy_ajax_get_vimeo_thumbnail_url($videoID) {
+	
+	// Get existing access token
+	$vimeoAccessToken = get_option( 'soliloquy_vimeo_access_token' );
+	
+	// Load Vimeo API
+	$vimeo = new Soliloquy_Vimeo( '5edbf52df73b6834db186409f88d2108df6a3d7f', '54e233c7ec90b22ad7cc77875b9a5a9d3083fa08' );
+	$vimeo->setToken( $vimeoAccessToken );
+	
+	// Attempt to get video
+	$response = $vimeo->request( '/videos/' . $videoID . '/pictures' );
+	
+	// Check response
+	if ( $response['status'] != 200 ) {
+		// May need a new access token
+		// Clear old token + request a new one
+		$vimeo->setToken( '' );
+		$token = $vimeo->clientCredentials();
+		$vimeoAccessToken = $token['body']['access_token'];
+		$vimeo->setToken( $vimeoAccessToken );
+		
+		// Store new token in options data
+		update_option( 'soliloquy_vimeo_access_token', $vimeoAccessToken );
+		
+		// Run request again
+		$response = $vimeo->request( '/videos/' . $videoID . '/pictures' );
+	}
+	
+	// Check response
+	if ( $response['status'] != 200 ) {
+		// Really a failure!
+		return false;
+	}
+	
+	// If here, we got the video details
+	// Check thumbnails are in the response
+	if ( !isset( $response['body']['data'] ) || !isset( $response['body']['data'][0] ) || !isset( $response['body']['data'][0]['sizes'] ) ) {
+		return false;
+	}
+	
+	// Get last item from the array index, as this is the highest resolution thumbnail
+	$thumbnail = end( $response['body']['data'][0]['sizes'] );
+	
+	// Check thumbnail URL exists
+	if ( !isset( $thumbnail['link'] ) ) {
+		return false;
+	}
+	
+	// Return thumbnail URL
+	unset( $vimeo );
+	return $thumbnail['link'];
+	
+}
+
+add_action( 'wp_ajax_soliloquy_init_sliders', 'soliloquy_ajax_init_sliders' );
+add_action( 'wp_ajax_nopriv_soliloquy_init_sliders', 'soliloquy_ajax_init_sliders' );
+/**
+ * Grabs JS and executes it for any uninitialised sliders on screen
+ *
+ * Used by soliloquyInitManually() JS function, which in turn is called
+ * by AJAX requests e.g. after an Infinite Scroll event.
+ *
+ * @since 1.0.0
+ */
+function soliloquy_ajax_init_sliders() {
+
+    // Run a security check first.
+    check_ajax_referer( 'soliloquy-ajax-nonce', 'ajax_nonce' );
+
+    // Check we have some slider IDs
+    if ( ! isset( $_REQUEST['ids'] ) ) {
+        die();
+    }
+
+    // Setup instance
+    $instance = Soliloquy_Shortcode::get_instance();
+    $base = Soliloquy::get_instance();
+
+    // Build JS for each slider
+    $js = '';
+    foreach ( $_REQUEST['ids'] as $slider_id ) {
+        // Get slider
+        $data = $base->get_slider( $slider_id );
+
+        // If no slider found, skip
+        if ( ! $data ) {
+            continue;
+        }
+
+        // Build JS for this slider
+        $js .= $instance->slider_init_single( $data, true );
+    }
+
+    // Output JS
+    echo $js;
+    die();
 
 }

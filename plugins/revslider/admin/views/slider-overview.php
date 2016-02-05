@@ -199,16 +199,27 @@ $stable_version = get_option('revslider-stable-version', '4.1');
 					<div class="rs-dash-strong-content"><?php _e("Purchase Code",'revslider'); ?></div>
 					<div><?php _e("You can learn how to find your purchase key <a target='_blank' href='http://www.themepunch.com/faq/where-to-find-the-purchase-code/'>here</a>",'revslider'); ?></div>
 				</div>
-				<div class="rs-dash-content-space"></div>				
-				<input type="text" name="rs-validation-token" class="rs-dashboard-input" style="width:100%" value="<?php echo $code; ?>" <?php echo ($validated === 'true') ? ' readonly="readonly"' : ''; ?> style="width: 350px;" />
 				<div class="rs-dash-content-space"></div>
-				<div><?php _e("In order to register your purchase code on another domain, deregister <br>it first by clicking the button below.",'revslider'); ?></div>
-				<div class="rs-dash-bottom-wrapper">
-					<span style="display:none" id="rs_purchase_validation" class="loader_round"><?php _e('Please Wait...', 'revslider'); ?></span>					
-					<a href="javascript:void(0);" <?php echo ($validated !== 'true') ? '' : 'style="display: none;"'; ?> id="rs-validation-activate" class="rs-dash-button"><?php _e('Register the code','revslider'); ?></a>				
-					<a href="javascript:void(0);" <?php echo ($validated === 'true') ? '' : 'style="display: none;"'; ?> id="rs-validation-deactivate" class="rs-dash-button"><?php _e('Deregister the code','revslider'); ?></a>
-				</div>					
-				
+				<?php if(!RS_DEMO){ ?>				
+					<input type="text" name="rs-validation-token" class="rs-dashboard-input" style="width:100%" value="<?php echo $code; ?>" <?php echo ($validated === 'true') ? ' readonly="readonly"' : ''; ?> style="width: 350px;" />
+					<div class="rs-dash-content-space"></div>
+					
+					<?php if ($validated == 'true') {
+					?>
+						<div><?php _e("In order to register your purchase code on another domain, deregister <br>it first by clicking the button below.",'revslider'); ?></div>				
+					<?php 
+					} else { ?>
+						<div><?php _e("Reminder ! One registration per Website. If registered elsewhere please deactivate that registration first.",'revslider'); ?></div>				
+					<?php 
+					}
+					?>
+					
+					<div class="rs-dash-bottom-wrapper">
+						<span style="display:none" id="rs_purchase_validation" class="loader_round"><?php _e('Please Wait...', 'revslider'); ?></span>					
+						<a href="javascript:void(0);" <?php echo ($validated !== 'true') ? '' : 'style="display: none;"'; ?> id="rs-validation-activate" class="rs-dash-button"><?php _e('Register the code','revslider'); ?></a>				
+						<a href="javascript:void(0);" <?php echo ($validated === 'true') ? '' : 'style="display: none;"'; ?> id="rs-validation-deactivate" class="rs-dash-button"><?php _e('Deregister the code','revslider'); ?></a>
+					</div>					
+				<?php } ?>
 			</div>		
 			
 			<script>
@@ -257,32 +268,33 @@ $stable_version = get_option('revslider-stable-version', '4.1');
 				<div><?php echo $latest_version; ?></div>
 				<div class="rs-dash-content-space"></div>
 				<a class='rs-dash-invers-button' href='?page=revslider&checkforupdates=true' id="rev_check_version"><?php _e("Check for Updates",'revslider'); ?> </a>			
-				<div class="rs-dash-bottom-wrapper">
-				<?php if ($validated === 'true') 
-					{ 					
-						if (version_compare(RevSliderGlobals::SLIDER_REVISION, $latest_version, '<')) { 
-						?>
-							<a href="update-core.php?checkforupdates=true" id="rs-check-updates" class="rs-dash-button"><?php _e('Update Now', 'revslider'); ?></a>
-						<?php	
+				<?php if(!RS_DEMO){ ?>	
+					<div class="rs-dash-bottom-wrapper">
+					<?php if ($validated === 'true') 
+						{ 					
+							if (version_compare(RevSliderGlobals::SLIDER_REVISION, $latest_version, '<')) { 
+							?>
+								<a href="update-core.php?checkforupdates=true" id="rs-check-updates" class="rs-dash-button"><?php _e('Update Now', 'revslider'); ?></a>
+							<?php	
+							} else {
+							?>	
+								<span  class="rs-dash-button-gray"><?php _e('Update to date', 'revslider'); ?></span>
+							<?php 					
+							}					
 						} else {
-						?>	
-							<span  class="rs-dash-button-gray"><?php _e('Update to date', 'revslider'); ?></span>
-						<?php 					
-						}					
-					} else {
-					?>
-						<span class="rs-dash-button-gray"><?php _e('Register to Access Update', 'revslider'); ?></a>
-					<?php
-					}	
-					
-
-					if($validated !== 'true' && version_compare(RevSliderGlobals::SLIDER_REVISION, $stable_version, '<')){
 						?>
-						<a href="update-core.php?checkforupdates=true" id="rs-check-updates" class="rs-dash-button"><?php _e('Update to Stable (Free)','revslider'); ?></a><br>
+							<span class="rs-dash-button-gray"><?php _e('Register to Access Update', 'revslider'); ?></a>
 						<?php
-					}
-					?>	
-				</div>
+						}	
+						
+						if($validated !== 'true' && version_compare(RevSliderGlobals::SLIDER_REVISION, $stable_version, '<')){
+							?>
+							<a href="update-core.php?checkforupdates=true" id="rs-check-updates" class="rs-dash-button"><?php _e('Update to Stable (Free)','revslider'); ?></a><br>
+							<?php
+						}
+						?>	
+					</div>
+				<?php } ?>
 			</div>
 			
 		</div><!-- END OF VERSION INFORMATION WIDGET -->
@@ -317,7 +329,7 @@ $stable_version = get_option('revslider-stable-version', '4.1');
 			<div class="rs-dash-title-wrap <?php echo $dash_rr_status; ?>">
 				<div class="rs-dash-title"><?php _e("System Requirements",'revslider'); ?></div>
 				<div class="rs-dash-title-button rs-status-red"><i class="icon-problem-found"></i><?php _e("Problem Found",'revslider'); ?></div>
-				<div class="rs-dash-title-button rs-status-green"><i class="icon-no-problem-found"></i><?php _e("No Problems",'revslider'); ?></div>
+				<a class="rs-status-red rs-dash-title-button requirement-link" target="_blank" href="http://www.themepunch.com/revslider-doc/requirements-and-recommendations/" ><i class="eg-icon-info"></i></a> <div class="rs-dash-title-button rs-status-green"><i class="icon-no-problem-found"></i><?php _e("No Problems",'revslider'); ?></div>
 			</div>
 			<div class="rs-dash-widget-inner">
 				<span class="rs-dash-label"><?php _e('Uploads folder writable', 'revslider'); ?></span>
@@ -655,7 +667,6 @@ $stable_version = get_option('revslider-stable-version', '4.1');
 		<input type="submit" class="button-primary revblue tp-be-button rev-import-slider-button" style="display: none;" value="<?php _e("Import Slider",'revslider'); ?>">
 	</form>
 </div>
-
 
 <div id="dialog_duplicate_slider" class="dialog_duplicate_layer" title="<?php _e('Duplicate', 'revslider'); ?>" style="display:none;">
 	<div style="margin-top:14px">

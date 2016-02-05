@@ -37,7 +37,7 @@ function x_shortcode_google_map( $atts, $content = null ) {
 
   $data = cs_generate_data_attributes( 'google_map', $js_params );
 
-  wp_register_script( 'vendor-google-maps', 'https://maps.googleapis.com/maps/api/js?sensor=false', array( 'jquery' ) );
+  wp_register_script( 'vendor-google-maps', 'https://maps.googleapis.com/maps/api/js' );
   wp_enqueue_script( 'vendor-google-maps' );
 
   $output = "<div id=\"{$id}\" class=\"{$class}{$no_container}\" {$data} {$style}><div class=\"x-map-inner x-google-map-inner\" {$height}></div>" . do_shortcode( $content ) . "</div>";

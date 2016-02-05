@@ -37,7 +37,7 @@
   </th>
   <td>
     <fieldset>
-      <?php echo $this->settings->renderField( 'show_wp_toolbar', array( 'type' => 'checkbox', 'value' => '1', 'label' => 'Enable' ) ); ?>
+      <?php echo $this->settings->renderField( 'show_wp_toolbar', array( 'type' => 'checkbox', 'value' => '1', 'label' => __( 'Enable', csl18n() ) ) ); ?>
     </fieldset>
   </td>
 </tr>
@@ -51,7 +51,7 @@
   </th>
   <td>
     <fieldset>
-      <?php echo $this->settings->renderField( 'visual_enhancements', array( 'type' => 'checkbox', 'value' => '1', 'label' => 'Enable' ) ); ?>
+      <?php echo $this->settings->renderField( 'visual_enhancements', array( 'type' => 'checkbox', 'value' => '1', 'label' => __( 'Enable', csl18n() ) ) ); ?>
     </fieldset>
   </td>
 </tr>

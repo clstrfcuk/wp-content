@@ -58,6 +58,7 @@ if ( 'nivo' === $type ) {
 } elseif ( 'image_grid' === $type ) {
 	wp_enqueue_script( 'vc_grid-js-imagesloaded' );
 	wp_enqueue_script( 'isotope' );
+	wp_enqueue_style( 'isotope-css' );
 
 	$el_start = '<li class="isotope-item">';
 	$el_end = '</li>';

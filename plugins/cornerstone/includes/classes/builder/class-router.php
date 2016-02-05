@@ -118,7 +118,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 	public function use_legacy_ajax() {
 		if ( defined( 'CS_LEGACY_AJAX' ) )
 			return CS_LEGACY_AJAX;
-		return get_option( 'cs_legacy_ajax', false );
+		return ( false !== get_option( 'cs_legacy_ajax', false ) );
 	}
 
 	public function get_ajax_url() {

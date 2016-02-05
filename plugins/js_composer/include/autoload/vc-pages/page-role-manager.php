@@ -41,8 +41,7 @@ function vc_roles_settings_save() {
 add_action( 'wp_ajax_vc_roles_settings_save', 'vc_roles_settings_save' );
 if ( 'vc-roles' == vc_get_param( 'page' ) ) {
 	function vc_settings_render_tab_vc_roles_scripts() {
-		wp_register_script( 'vc_settings-roles-tab-js', vc_asset_url( 'js/lib/vc-roles-tab.js' ),
-		array( 'jquery' ), WPB_VC_VERSION, true );
+		wp_register_script( 'vc_accordion_script', vc_asset_url( 'lib/vc_accordion/vc-accordion.min.js' ), array( 'jquery' ), WPB_VC_VERSION, true );
 	}
 
 	add_action( 'admin_init', 'vc_settings_render_tab_vc_roles_scripts' );

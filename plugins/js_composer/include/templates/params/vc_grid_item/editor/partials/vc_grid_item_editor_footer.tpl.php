@@ -11,9 +11,6 @@ require_once vc_path_dir( 'PARAMS_DIR', 'vc_grid_item/editor/popups/class-vc-tem
 $templates_editor = new Vc_Templates_Editor_Grid_Item();
 $templates_editor->renderUITemplate();
 
-require_once vc_path_dir( 'EDITORS_DIR', 'popups/class-vc-edit-layout.php' );
-$edit_layout = new Vc_Edit_Layout();
-$edit_layout->render();
 $grid_item = new Vc_Grid_Item();
 $shortcodes = $grid_item->shortcodes();
 

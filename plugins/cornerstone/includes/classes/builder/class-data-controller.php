@@ -74,7 +74,7 @@ class Cornerstone_Data_Controller  extends Cornerstone_Plugin_Component {
 	public function common_migrations( $element, $version ) {
 
 		// MK2 Upgrade
-		if ( version_compare( $version, '1.0.10', '<' ) ) {
+		if ( version_compare( $version, '1.1.1', '<' ) ) {
 
 			// Ensure '_type' is set
 			if ( isset( $element['elType'] ) ) {
@@ -110,6 +110,13 @@ class Cornerstone_Data_Controller  extends Cornerstone_Plugin_Component {
 			if ( isset( $element['custom_id'] ) ) {
 				$element['id'] = $element['custom_id'];
 				unset($element['custom_id']);
+			}
+
+			if ( isset( $element['border'] ) ) {
+				if ( !isset( $element['border_width'] ) ) {
+					$element['border_width'] = $element['border'];
+				}
+				unset( $element['border'] );
 			}
 
 		}

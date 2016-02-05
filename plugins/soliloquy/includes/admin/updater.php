@@ -2,7 +2,7 @@
 /**
  * Updater class.
  *
- * @since 1.0.0
+ * @since 2.0.0
  *
  * @package Soliloquy
  * @author  Thomas Griffin
@@ -12,7 +12,7 @@ class Soliloquy_Updater {
     /**
      * Plugin name.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var bool|string
      */
@@ -21,7 +21,7 @@ class Soliloquy_Updater {
     /**
      * Plugin slug.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var bool|string
      */
@@ -30,7 +30,7 @@ class Soliloquy_Updater {
     /**
      * Plugin path.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var bool|string
      */
@@ -39,7 +39,7 @@ class Soliloquy_Updater {
     /**
      * URL of the plugin.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var bool|string
      */
@@ -48,7 +48,7 @@ class Soliloquy_Updater {
     /**
      * Remote URL for getting plugin updates.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var bool|string
      */
@@ -57,7 +57,7 @@ class Soliloquy_Updater {
     /**
      * Version number of the plugin.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var bool|int
      */
@@ -66,16 +66,34 @@ class Soliloquy_Updater {
     /**
      * License key for the plugin.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var bool|string
      */
     public $key = false;
+    
+    /**
+     * Holds the update data returned from the API.
+     *
+     * @since 2.1.3
+     *
+     * @var bool|object
+     */
+    public $update = false;
+    
+    /**
+     * Holds the plugin info details for the update.
+     *
+     * @since 2.1.3
+     *
+     * @var bool|object
+     */
+    public $info = false;
 
     /**
      * Path to the file.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var string
      */
@@ -84,7 +102,7 @@ class Soliloquy_Updater {
     /**
      * Holds the base class object.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @var object
      */
@@ -93,7 +111,7 @@ class Soliloquy_Updater {
     /**
      * Primary class constructor.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @param array $config Array of updater config args.
      */
@@ -121,22 +139,6 @@ class Soliloquy_Updater {
             return;
         }
 
-        global $pagenow;
-
-        // Only run every 12 hours.
-        $timestamp = get_option( 'soliloquy_updates_' . $this->plugin_slug );
-        if ( ! $timestamp ) {
-            $timestamp = strtotime( '+12 hours' );
-            update_option( 'soliloquy_updates_' . $this->plugin_slug, $timestamp );
-        } else {
-            $current_timestamp = time();
-            if ( $current_timestamp < $timestamp && 'update-core.php' !== $pagenow && 'update.php' !== $pagenow && ! ( isset( $_GET['tab'] ) && 'plugin-information' == $_GET['tab'] && isset( $_GET['plugin'] ) && $this->plugin_slug == $_GET['plugin'] ) ) {
-                return;
-            } else {
-                update_option( 'soliloquy_updates_' . $this->plugin_slug, strtotime( '+12 hours' ) );
-            }
-        }
-
         // Load the updater hooks and filters.
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'update_plugins_filter' ) );
         add_filter( 'http_request_args', array( $this, 'http_request_args' ), 10, 2 );
@@ -147,7 +149,7 @@ class Soliloquy_Updater {
     /**
      * Infuse plugin update details when WordPress runs its update checker.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @param object $value  The WordPress update object.
      * @return object $value Amended WordPress update object on success, default if object is empty.
@@ -159,16 +161,19 @@ class Soliloquy_Updater {
             return $value;
         }
 
-        // Run update check by pinging the external API. If it fails, return the default update object.
-        $plugin_update = $this->perform_remote_request( 'get-plugin-update', array( 'tgm-updater-plugin' => $this->plugin_slug ) );
-        if ( ! $plugin_update || ! empty( $plugin_update->error ) ) {
-            return $value;
-        }
+		// Run update check by pinging the external API. If it fails, return the default update object.
+		if ( ! $this->update ) {
+            $this->update = $this->perform_remote_request( 'get-plugin-update', array( 'tgm-updater-plugin' => $this->plugin_slug ) );
+	        if ( ! $this->update || ! empty( $this->update->error ) ) {
+		        $this->update = false;
+	            return $value;
+	        }
+		}
 
         // Infuse the update object with our data if the version from the remote API is newer.
-        if ( isset( $plugin_update->new_version ) && version_compare( $this->version, $plugin_update->new_version, '<' ) ) {
+        if ( isset( $this->update->new_version ) && version_compare( $this->version, $this->update->new_version, '<' ) ) {
             // The $plugin_update object contains new_version, package, slug and last_update keys.
-            $value->response[$this->plugin_path] = $plugin_update;
+            $value->response[$this->plugin_path] = $this->update;
         }
 
         // Return the update object.
@@ -179,7 +184,7 @@ class Soliloquy_Updater {
     /**
      * Disables SSL verification to prevent download package failures.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @param array $args  Array of request args.
      * @param string $url  The URL to be pinged.
@@ -200,7 +205,7 @@ class Soliloquy_Updater {
      * Filters the plugins_api function to get our own custom plugin information
      * from our private repo.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @param object $api    The original plugins_api object.
      * @param string $action The action sent by plugins_api.
@@ -223,7 +228,7 @@ class Soliloquy_Updater {
     /**
      * Pings a remote API to retrieve plugin information for WordPress to display.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @param object $default_api The default API object.
      * @return object $api        Return custom plugin information to plugins_api.
@@ -231,24 +236,27 @@ class Soliloquy_Updater {
     public function set_plugins_api( $default_api ) {
 
         // Perform the remote request to retrieve our plugin information. If it fails, return the default object.
-        $plugin_info = $this->perform_remote_request( 'get-plugin-info', array( 'tgm-updater-plugin' => $this->plugin_slug ) );
-        if ( ! $plugin_info || ! empty( $plugin_update->error ) ) {
-            return $default_api;
-        }
+        if ( ! $this->info ) {
+	        $this->info = $this->perform_remote_request( 'get-plugin-info', array( 'tgm-updater-plugin' => $this->plugin_slug ) );
+	        if ( ! $this->info || ! empty( $this->info->error ) ) {
+		        $this->info = false;
+	            return $default_api;
+	        }
+	    }
 
         // Create a new stdClass object and populate it with our plugin information.
         $api                        = new stdClass;
-        $api->name                  = isset( $plugin_info->name )           ? $plugin_info->name           : '';
-        $api->slug                  = isset( $plugin_info->slug )           ? $plugin_info->slug           : '';
-        $api->version               = isset( $plugin_info->version )        ? $plugin_info->version        : '';
-        $api->author                = isset( $plugin_info->author )         ? $plugin_info->author         : '';
-        $api->author_profile        = isset( $plugin_info->author_profile ) ? $plugin_info->author_profile : '';
-        $api->requires              = isset( $plugin_info->requires )       ? $plugin_info->requires       : '';
-        $api->tested                = isset( $plugin_info->tested )         ? $plugin_info->tested         : '';
-        $api->last_updated          = isset( $plugin_info->last_updated )   ? $plugin_info->last_updated   : '';
-        $api->homepage              = isset( $plugin_info->homepage )       ? $plugin_info->homepage       : '';
-        $api->sections['changelog'] = isset( $plugin_info->changelog )      ? $plugin_info->changelog      : '';
-        $api->download_link         = isset( $plugin_info->download_link )  ? $plugin_info->download_link  : '';
+        $api->name                  = isset( $this->info->name )           ? $this->info->name           : '';
+        $api->slug                  = isset( $this->info->slug )           ? $this->info->slug           : '';
+        $api->version               = isset( $this->info->version )        ? $this->info->version        : '';
+        $api->author                = isset( $this->info->author )         ? $this->info->author         : '';
+        $api->author_profile        = isset( $this->info->author_profile ) ? $this->info->author_profile : '';
+        $api->requires              = isset( $this->info->requires )       ? $this->info->requires       : '';
+        $api->tested                = isset( $this->info->tested )         ? $this->info->tested         : '';
+        $api->last_updated          = isset( $this->info->last_updated )   ? $this->info->last_updated   : '';
+        $api->homepage              = isset( $this->info->homepage )       ? $this->info->homepage       : '';
+        $api->sections['changelog'] = isset( $this->info->changelog )      ? $this->info->changelog      : '';
+        $api->download_link         = isset( $this->info->download_link )  ? $this->info->download_link  : '';
 
         // Return the new API object with our custom data.
         return $api;
@@ -258,7 +266,7 @@ class Soliloquy_Updater {
     /**
      * Queries the remote URL via wp_remote_post and returns a json decoded response.
      *
-     * @since 1.0.0
+     * @since 2.0.0
      *
      * @param string $action        The name of the $_POST action var.
      * @param array $body           The content to retrieve from the remote URL.

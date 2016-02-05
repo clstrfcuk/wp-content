@@ -294,13 +294,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
         $styles[] = 'border-width: ' . $atts['border_width'] . ';';
       }
 
-      if ( isset( $atts['border'] ) && $atts['border'] != '' ) {
-      	if ( is_array( $atts['border'] ) ) {
-					$atts['border'] = Cornerstone_Control_Dimensions::simplify( $atts['border'] );
-				}
-        $styles[] = 'border-width: ' . $atts['border'] . ';';
-      }
-
       if ( isset( $atts['border_color'] ) && $atts['border_color'] != '' ) {
         $styles[] = 'border-color: ' . $atts['border_color'] . ';';
       }

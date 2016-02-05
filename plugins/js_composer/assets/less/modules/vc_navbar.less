@@ -37,8 +37,17 @@
     width: 42px;
     height: 42px;
     padding: 27px 30px 27px 35px;
-    &.vc_ajax-loading {
-      background-image: url(@vc_navbar_spinner);
+    &.vc_ui-wp-spinner {
+      background-image: none;
+    }
+  }
+  &.vc_navgar-frontend {
+    .vc_navbar-brand {
+      &.vc_ui-wp-spinner {
+        &::before {
+          background-image: url(@vc_ui-wp-spinner-light-svg-src);
+        }
+      }
     }
   }
   .vc_last {
@@ -100,6 +109,13 @@
   .vc_post-settings {
     position: relative;
     background-position: @vc_navbar_sprite_left_position -110px;
+  }
+  .vc_fullscreen-button {
+    background-position: @vc_navbar_sprite_left_position -222px;
+  }
+  .vc_windowed-button {
+    background-position: @vc_navbar_sprite_left_position -282px;
+    display: none;
   }
   .vc_badge-custom-css {
     display: block;
@@ -230,7 +246,21 @@
   }
 }
 
-@media screen and (max-width: @screen-sm-min) {
+.folded {
+  .vc_subnav-fixed {
+    padding-left: 40px;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .auto-fold {
+    .vc_subnav-fixed {
+      padding-left: 40px;
+    }
+  }
+}
+
+@media screen and (max-width: 782px) {
   .vc_navbar li, .navbar-header {
     display: none;
   }
@@ -250,6 +280,25 @@
 
   .vc_navbar-header {
     float: left;
+  }
+
+  .vc_navbar {
+    padding-left: 0;
+    position: fixed;
+    z-index: 9980;
+    width: 100%;
+    left: 0;
+    top: 46px; // #wpadminbar height
+  }
+
+  #wpcontent {
+    padding-top: @vc_navbar_height;
+  }
+
+  .auto-fold {
+    .vc_subnav-fixed {
+      padding-left: 0;
+    }
   }
 }
 

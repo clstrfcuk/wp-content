@@ -118,7 +118,7 @@ class X_Shortcode_X_Subscribe {
       $response = array(
         'error'       => true,
         'log_message' => $result->get_error_message(),
-        'message'     => __( 'We\'re sorry! Something went wrong. We were unable to add your email to the list. Please try again later.' )
+        'message'     => __( 'We\'re sorry! Something went wrong. We were unable to add your email to the list. Please try again later.', '__x__' )
       );
     }
 

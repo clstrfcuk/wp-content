@@ -29,7 +29,9 @@ html				{	background: #ddd !important}
 /* BUTTONS */
 #viewWrapper .button-primary,
 .button-primary.tp-be-button {		display: inline-block;	height: 35px;	line-height: 35px;padding: 0px 10px 1px;-webkit-transition: all 0.2s ease-out;-moz-transition: all 0.2s ease-out;-o-transition: all 0.2s ease-out;-ms-transition: all 0.2s ease-out;
-									border: none;text-shadow: none;border: none;outline: none;box-shadow: none;line-height: 26px;height: 27px;margin: 2px 3px 2px 0px;color: #FFF;background: rgba(0, 0, 0, 0); border-radius: 0px; -webkit-border-radius: 0px;-moz-border-radius: 0px;}
+									border: none;text-shadow: none;border: none;outline: none;box-shadow: none;line-height: 26px;height: 27px;margin: 2px 3px 2px 0px;color: #FFF;background: rgba(0, 0, 0, 0); border-radius: 0px; -webkit-border-radius: 0px;-moz-border-radius: 0px;
+									text-shadow:none !important;
+								}
 
 
 /* REVBLUE */
@@ -2410,7 +2412,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00252525', e
 .rs-dash-content-space 			{	display:block;width:100%;height:14px;}
 
 .rs-dash-deactivated 			{	opacity:0.3;}
-
+.requirement-link 				{	outline:none !important; box-shadow:none !important; color:#fff !important;position:relative !important; top:1px !important;right:auto !important; margin-left:5px;}
+.requirement-link .eg-icon-info,
+.requirement-link .eg-icon-info:before 		{	color:#fff !important;}
 .rs-status-red,
 .rs-status-orange,
 .rs-status-green,

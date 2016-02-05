@@ -97,7 +97,7 @@ if ( is_page( $x_video_lock_entries_include ) || is_single( $x_video_lock_entrie
   //
 
   if ( ( $x_video_lock_close_enable == 1 ) ) {
-    $close_output = '<a href="#" class="x-video-lock-close"><i class="x-icon x-icon-close"></i></a>';
+    $close_output = '<a href="#" class="x-video-lock-close"><i class="x-icon-close" data-x-icon="&#xf00d;"></i></a>';
   } else {
     $close_output = '';
   }

@@ -12,9 +12,9 @@ class WPBakeryShortCode_VC_Single_image extends WPBakeryShortCode {
 	}
 
 	public function jsScripts() {
-		wp_register_script( 'zoom', vc_asset_url( 'lib/bower/zoom/jquery.zoom.min.js' ) );
+		wp_register_script( 'zoom', vc_asset_url( 'lib/bower/zoom/jquery.zoom.min.js' ), array(), WPB_VC_VERSION );
 
-		wp_register_script( 'vc_image_zoom', vc_asset_url( 'lib/vc_image_zoom/vc_image_zoom.js' ), array(
+		wp_register_script( 'vc_image_zoom', vc_asset_url( 'lib/vc_image_zoom/vc_image_zoom.min.js' ), array(
 			'jquery',
 			'zoom',
 		), WPB_VC_VERSION, true );

@@ -26,7 +26,7 @@ class CS_Settings_Customizer {
     ), admin_url( 'customize.php' ) );
 
     $link = '<a href="' . $url . '">' . __( 'Customizer', csl18n() ) . '</a>';
-    $html = '<ul class="cs-controls"><li class="cs-control cs-control-info-box"><h4>Looking for global styling?</h4><p>' . sprintf( __( 'Sitewide styles outside of the content area are managed via the %s.', csl18n() ), $link ) . '</p></li></ul>';
+    $html = '<ul class="cs-controls"><li class="cs-control cs-control-info-box"><h4>' . __( 'Looking for global styling?', csl18n() ) .'</h4><p>' . sprintf( __( 'Sitewide styles outside of the content area are managed via the %s.', csl18n() ), $link ) . '</p></li></ul>';
 
     return array(
 	'customizer_message' => array(

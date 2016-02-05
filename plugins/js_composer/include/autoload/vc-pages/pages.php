@@ -3,7 +3,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-
 /**
  * @since 4.5
  */
@@ -48,10 +47,11 @@ function vc_pages_group_build( $slug, $title, $tab = '' ) {
  * @since 4.5
  */
 function vc_menu_page_build() {
-	if ( vc_user_access()->wpAny( 'manage_options' )
-	                     ->part( 'settings' )
-	                     ->can( 'vc-general-tab' )
-	                     ->get()
+	if ( vc_user_access()
+		->wpAny( 'manage_options' )
+		->part( 'settings' )
+		->can( 'vc-general-tab' )
+		->get()
 	) {
 		define( 'VC_PAGE_MAIN_SLUG', 'vc-general' );
 	} else {
@@ -62,10 +62,11 @@ function vc_menu_page_build() {
 }
 
 function vc_network_menu_page_build() {
-	if ( vc_user_access()->wpAny( 'manage_options' )
-	                     ->part( 'settings' )
-	                     ->can( 'vc-general-tab' )
-	                     ->get() && ! is_main_site()
+	if ( vc_user_access()
+			->wpAny( 'manage_options' )
+			->part( 'settings' )
+			->can( 'vc-general-tab' )
+			->get() && ! is_main_site()
 	) {
 		define( 'VC_PAGE_MAIN_SLUG', 'vc-general' );
 	} else {

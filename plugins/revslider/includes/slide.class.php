@@ -1400,15 +1400,14 @@ class RevSliderSlide extends RevSliderElementsBase{
 				
 				RevSliderFunctions::validateNumeric($sliderID,"Slider ID");
 				
-				$sliderID = $this->db->escape($sliderID);
-				$record = $this->db->fetch(RevSliderGlobals::$table_static_slides,"slider_id=$sliderID");
+				$record = $this->db->fetch(RevSliderGlobals::$table_static_slides, $this->db->prepare("slider_id = %s", array($sliderID)));
 				
 				if(empty($record)){
 					try{
 						//create a new static slide for the Slider and then use it
 						$slide_id = $this->createSlide($sliderID,"",true);
 						
-						$record = $this->db->fetch(RevSliderGlobals::$table_static_slides,"slider_id=$sliderID");
+						$record = $this->db->fetch(RevSliderGlobals::$table_static_slides, $this->db->prepare("slider_id = %s", array($sliderID)));
 						
 						$this->initByData($record[0]);
 					}catch(Exception $e){}
@@ -1417,8 +1416,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 				}
 			}else{
 				RevSliderFunctions::validateNumeric($slideid,"Slide ID");
-				$slideid = $this->db->escape($slideid);
-				$record = $this->db->fetchSingle(RevSliderGlobals::$table_slides,"id=$slideid");
+				$record = $this->db->fetchSingle(RevSliderGlobals::$table_slides, $this->db->prepare("id = %d", array($slideid)));
 				
 				$this->initByData($record);
 			}
@@ -1443,8 +1441,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 				
 				RevSliderFunctions::validateNumeric($sliderID,"Slider ID");
 				
-				$sliderID = $db->escape($sliderID);
-				$record = $db->fetch(RevSliderGlobals::$table_static_slides,"slider_id=$sliderID");
+				$record = $db->fetch(RevSliderGlobals::$table_static_slides, $db->prepare("slider_id = %s", array($sliderID)));
 				
 				if(empty($record)) return false;
 				
@@ -1452,8 +1449,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 				
 			}else{
 				
-				$slideid = $db->escape($slideid);
-				$record = $db->fetchSingle(RevSliderGlobals::$table_slides,"id=$slideid");
+				$record = $db->fetchSingle(RevSliderGlobals::$table_slides, $db->prepare("id = %s", array($slideid)));
 				
 				if(empty($record)) return false;
 				
@@ -1473,8 +1469,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 	public function initByStaticID($slideid){
 	
 		RevSliderFunctions::validateNumeric($slideid,"Slide ID");
-		$slideid = $this->db->escape($slideid);
-		$record = $this->db->fetchSingle(RevSliderGlobals::$table_static_slides,"id=$slideid");
+		$record = $this->db->fetchSingle(RevSliderGlobals::$table_static_slides, $this->db->prepare("id = %s", array($slideid)));
 		
 		$this->initByData($record);
 	}
@@ -1488,8 +1483,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 		
 		RevSliderFunctions::validateNumeric($sliderID,"Slider ID");
 		
-		$sliderID = $this->db->escape($sliderID);
-		$record = $this->db->fetch(RevSliderGlobals::$table_static_slides,"slider_id=$sliderID");
+		$record = $this->db->fetch(RevSliderGlobals::$table_static_slides, $this->db->prepare("slider_id = %s", array($sliderID)));
 		
 		if(empty($record)){
 			return false;
@@ -1788,6 +1782,16 @@ class RevSliderSlide extends RevSliderElementsBase{
 		$urlImage = RevSliderFunctions::getVal($arrParams, "image");
 		if(!empty($urlImage))
 			$arrParams["image"] = RevSliderFunctionsWP::getImagePathFromURL($urlImage);
+		
+		//check if we are transparent or solid and remove unneeded image
+		$bgtype = RevSliderFunctions::getVal($arrParams, "background_type", 'transparent');
+		switch($bgtype){
+			case 'transparent':
+			case 'trans':
+			case 'solid':
+				$arrParams["image"] = '';
+			break;
+		}
 		
 		return($arrParams);
 	}
@@ -2250,7 +2254,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 	public function deleteSlide(){
 		$this->validateInited();
 		
-		$this->db->delete(RevSliderGlobals::$table_slides,"id='".$this->id."'");
+		$this->db->delete(RevSliderGlobals::$table_slides, $this->db->prepare("id = %s", array($this->id)));
 	}
 	
 	
@@ -2342,30 +2346,15 @@ class RevSliderSlide extends RevSliderElementsBase{
 		
 		$slideID = RevSliderFunctions::getVal($data, "slide_id");
 		
-		if($slider->isSlidesFromPosts()){
-			$postData = RevSliderFunctionsWP::getPost($slideID);
-			
-			$oldState = $postData["post_status"];
-			$newState = ($oldState == RevSliderFunctionsWP::STATE_PUBLISHED)?RevSliderFunctionsWP::STATE_DRAFT:RevSliderFunctionsWP::STATE_PUBLISHED;
-			
-			//update the state in wp
-			RevSliderFunctionsWP::updatePostState($slideID, $newState);
-			
-			//return state:
-			$newState = ($newState == RevSliderFunctionsWP::STATE_PUBLISHED)?"published":"unpublished";
-			
-		}else{
-			$this->initByID($slideID);
-			
-			$state = $this->getParam("state","published");
-			$newState = ($state == "published")?"unpublished":"published";
-			
-			$arrUpdate = array();
-			$arrUpdate["state"] = $newState;
-			
-			$this->updateParamsInDB($arrUpdate);
-			
-		}
+		$this->initByID($slideID);
+		
+		$state = $this->getParam("state","published");
+		$newState = ($state == "published")?"unpublished":"published";
+		
+		$arrUpdate = array();
+		$arrUpdate["state"] = $newState;
+		
+		$this->updateParamsInDB($arrUpdate);
 		
 		return($newState);
 	}

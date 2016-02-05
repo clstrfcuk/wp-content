@@ -79,7 +79,7 @@ class Vc_Role_Access_Controller extends Vc_Access {
 
 	/**
 	 * Can user do what he doo.
-	 * Any rule has three types of state: true,false, string.
+	 * Any rule has three types of state: true, false, string.
 	 *
 	 * @param string $rule
 	 * @param bool|true $check_state

@@ -21,7 +21,7 @@ class WPBakeryShortCode_VC_Gitem extends WPBakeryShortCodesContainer {
 		if ( isset( $this->settings['params'] ) ) {
 			$inner = '';
 			foreach ( $this->settings['params'] as $param ) {
-				$param_value = isset( $$param['param_name'] ) ? $$param['param_name'] : '';
+				$param_value = isset( ${$param['param_name']} ) ? ${$param['param_name']} : '';
 				if ( is_array( $param_value ) ) {
 					// Get first element from the array
 					reset( $param_value );

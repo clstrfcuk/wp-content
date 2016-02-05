@@ -9,10 +9,6 @@ if ( ! class_exists( 'WPBakeryVisualComposerCssEditor' ) ) {
 	 */
 	class WPBakeryVisualComposerCssEditor {
 		/**
-		 * @var bool
-		 */
-		protected $js_script_appended = false;
-		/**
 		 * @var array
 		 */
 		protected $settings = array();
@@ -117,10 +113,6 @@ if ( ! class_exists( 'WPBakeryVisualComposerCssEditor' ) ) {
 			           . '  <a href="#" class="vc_icon-remove"></a>'
 			           . '</li>'
 			           . '</script>';
-			if ( ! $this->js_script_appended ) {
-				$output .= '<script type="text/javascript" src="' . vc_asset_url( 'js/params/css_editor.js' ) . '"></script>';
-				$this->js_script_appended = true;
-			}
 
 			return apply_filters( 'vc_css_editor', $output );
 		}

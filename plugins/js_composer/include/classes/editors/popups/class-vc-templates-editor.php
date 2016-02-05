@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
-_deprecated_file( 'class-vc-templates-editor.php', '4.4', 'class-vc-templates-panel-editor.php', ' will be removed in 4.9' );
+// _deprecated_file( 'class-vc-templates-editor.php', '4.4 (will be removed in 4.10)', 'class-vc-templates-panel-editor.php', ' will be removed in 4.9' );
 
 /**
  * The templates manager for VC.
@@ -34,7 +34,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @deprecated 4.4 use Vc_Templates_Panel_Editor::init
 	 */
 	public function init() {
-		_deprecated_function( 'Vc_Templates_Editor::init', '4.4', 'Vc_Templates_Panel_editor' );
+		// _deprecated_function( 'Vc_Templates_Editor::init', '4.4 (will be removed in 4.10)', 'Vc_Templates_Panel_editor' );
 
 		if ( $this->initialized ) {
 			return;
@@ -62,7 +62,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @deprecated 4.4 will be removed, use action 'vc_frontend_template_panel'
 	 */
 	function renderFrontendTemplate() {
-		_deprecated_function( 'Vc_Templates_Editor::renderFrontendTemplate', '4.4', 'Vc_Templates_Panel_editor' );
+		// _deprecated_function( 'Vc_Templates_Editor::renderFrontendTemplate', '4.4 (will be removed in 4.10)', 'Vc_Templates_Panel_editor' );
 		add_filter( 'vc_frontend_template_the_content', array(
 			&$this,
 			'frontendDoTemplatesShortcodes',
@@ -84,7 +84,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @deprecated 4.4 and will be removed, use Vc_Templates_Panel_Editor::save
 	 */
 	public function save() {
-		_deprecated_function( 'Vc_Templates_Editor::save', '4.4', 'Vc_Templates_Panel_Editor::save' );
+		// _deprecated_function( 'Vc_Templates_Editor::save', '4.4 (will be removed in 4.10)', 'Vc_Templates_Panel_Editor::save' );
 
 		vc_user_access()
 			->checkAdminNonce()
@@ -128,7 +128,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @deprecated 4.4 and will be removed, use Vc_Templates_Panel_Editor::renderBackendTemplate
 	 */
 	public function load() {
-		_deprecated_function( 'Vc_Templates_Editor::load', '4.4', 'Vc_Templates_Panel_Editor::renderBackendTemplate' );
+		// _deprecated_function( 'Vc_Templates_Editor::load', '4.4 (will be removed in 4.10)', 'Vc_Templates_Panel_Editor::renderBackendTemplate' );
 
 		vc_user_access()
 			->checkAdminNonce()
@@ -157,9 +157,10 @@ class Vc_Templates_Editor implements Vc_Render {
 	}
 
 	/**
-	 * @deprecated and will not used anymore
+	 * @deprecated 4.9
 	 */
 	public function loadInline() {
+		// _deprecated_function( '\Vc_Templates_Editor::loadInline', '4.9 (will be removed in 4.11)', '\Vc_Post_Admin::save' );
 		echo $this->renderMenu();
 		die();
 	}
@@ -168,7 +169,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @deprecated and will not used anymore
 	 */
 	public function loadTemplateShortcodes() {
-		_deprecated_function( 'Vc_Templates_Editor::loadTemplateShortcodes', '4.4' );
+		// _deprecated_function( 'Vc_Templates_Editor::loadTemplateShortcodes', '4.4 (will be removed in 4.10)' );
 
 		vc_user_access()
 			->checkAdminNonce()
@@ -200,7 +201,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @deprecated 4.4 and will be removed, use Vc_Templates_Panel_Editor::delete
 	 */
 	public function delete() {
-		_deprecated_function( 'Vc_Templates_Editor::delete', '4.4', 'Vc_Templates_Panel_Editor::delete' );
+		// _deprecated_function( 'Vc_Templates_Editor::delete', '4.4 (will be removed in 4.10)', 'Vc_Templates_Panel_Editor::delete' );
 
 		vc_user_access()
 			->checkAdminNonce()
@@ -240,7 +241,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @return bool true if added, false if failed
 	 */
 	public function addDefaultTemplates( $data ) {
-		_deprecated_function( 'Vc_Templates_Editor::addDefaultTemplates', '4.4', 'visual_composer()->templatesPanelEditor()->addDefaultTemplates( $data )' );
+		// _deprecated_function( 'Vc_Templates_Editor::addDefaultTemplates', '4.4 (will be removed in 4.10)', 'visual_composer()->templatesPanelEditor()->addDefaultTemplates( $data )' );
 
 		return visual_composer()
 			->templatesPanelEditor()
@@ -269,7 +270,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @return array
 	 */
 	public function loadDefaultTemplates() {
-		_deprecated_function( 'Vc_Templates_Editor::loadDefaultTemplates', '4.4', 'visual_composer()->templatesPanelEditor()->loadDefaultTemplates()' );
+		// _deprecated_function( 'Vc_Templates_Editor::loadDefaultTemplates', '4.4 (will be removed in 4.10)', 'visual_composer()->templatesPanelEditor()->loadDefaultTemplates()' );
 
 		return visual_composer()
 			->templatesPanelEditor()
@@ -283,7 +284,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @return array - list of default templates
 	 */
 	public function getDefaultTemplates() {
-		_deprecated_function( 'Vc_Templates_Editor::getDefaultTemplates', '4.4', 'visual_composer()->templatesPanelEditor()->getDefaultTemplates()' );
+		// _deprecated_function( 'Vc_Templates_Editor::getDefaultTemplates', '4.4 (will be removed in 4.10)', 'visual_composer()->templatesPanelEditor()->getDefaultTemplates()' );
 
 		return visual_composer()->templatesPanelEditor()->getDefaultTemplates();
 	}
@@ -299,7 +300,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @return array|bool
 	 */
 	public function getDefaultTemplate( $template_index ) {
-		_deprecated_function( 'Vc_Templates_Editor::getDefaultTemplate', '4.4', 'visual_composer()->templatesPanelEditor()->getDefaultTemplate( $id )' );
+		// _deprecated_function( 'Vc_Templates_Editor::getDefaultTemplate', '4.4 (will be removed in 4.10)', 'visual_composer()->templatesPanelEditor()->getDefaultTemplate( $id )' );
 
 		return visual_composer()
 			->templatesPanelEditor()
@@ -316,7 +317,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @return string
 	 */
 	public function getBackendDefaultTemplate( $return = false ) {
-		_deprecated_function( 'Vc_Templates_Editor::getBackendDefaultTemplate', '4.4', 'visual_composer()->templatesPanelEditor()->getBackendDefaultTemplate( $id )' );
+		// _deprecated_function( 'Vc_Templates_Editor::getBackendDefaultTemplate', '4.4 (will be removed in 4.10)', 'visual_composer()->templatesPanelEditor()->getBackendDefaultTemplate( $id )' );
 
 		vc_user_access()
 			->checkAdminNonce()
@@ -336,7 +337,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @deprecated 4.4 use Vc_Templates_Panel_Editor::render
 	 */
 	public function render() {
-		_deprecated_function( 'Vc_Templates_Editor::render', '4.4', 'Vc_Templates_Panel_Editor::render' );
+		// _deprecated_function( 'Vc_Templates_Editor::render', '4.4 (will be removed in 4.10)', 'Vc_Templates_Panel_Editor::render' );
 
 		vc_include_template( 'editors/popups/panel_templates_editor.tpl.php', array(
 			'box' => $this,
@@ -352,7 +353,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @return string
 	 */
 	public function outputMenuButton( $id, $params ) {
-		_deprecated_function( 'Vc_Templates_Editor::outputMenuButton', '4.4' );
+		// _deprecated_function( 'Vc_Templates_Editor::outputMenuButton', '4.4 (will be removed in 4.10)' );
 
 		if ( empty( $params ) ) {
 			return '';
@@ -370,6 +371,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @return string
 	 */
 	public function renderMenu( $only_list = false ) {
+		// _deprecated_function( 'Vc_Templates_Editor::renderMenu', '4.4 (will be removed in 4.11)' );
 		$templates = get_option( $this->option_name );
 		$output = '';
 		if ( false === $only_list ) {
@@ -413,6 +415,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 *   Vc_Templates_Panel_Editor::renderFrontendDefaultTemplate
 	 */
 	public function renderFrontendDefaultTemplate() {
+		// _deprecated_function( 'Vc_Templates_Editor::renderMenu', '4.4 (will be removed in 4.11)', 'Vc_Templates_Panel_Editor::renderFrontendDefaultTemplat' );
 		$template_index = vc_post_param( 'template_name' );
 		$data = $this->getDefaultTemplate( $template_index );
 		! $data && die( '0' );
@@ -432,7 +435,7 @@ class Vc_Templates_Editor implements Vc_Render {
 	 * @return string
 	 */
 	public function frontendDoTemplatesShortcodes( $content ) {
-		_deprecated_function( 'Vc_Templates_Editor::frontendDoTemplatesShortcodes', '4.4' );
+		// _deprecated_function( 'Vc_Templates_Editor::frontendDoTemplatesShortcodes', '4.4' );
 
 		return do_shortcode( $content );
 	}

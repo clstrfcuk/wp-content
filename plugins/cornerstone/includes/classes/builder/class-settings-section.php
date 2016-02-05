@@ -127,7 +127,7 @@ class Cornerstone_Settings_Section {
 	}
 
 	public function condition_filter( $key ) {
-		return apply_filters( $this->hook_prefix . 'condition_filter', true, $this->post_meta, $this->post_type_object );
+		return apply_filters( $this->hook_prefix . 'condition_filter', $key );
 	}
 
 	final public function register() {

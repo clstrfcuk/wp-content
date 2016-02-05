@@ -31,6 +31,6 @@ require( X_CUSTOM_404_PATH . '/functions/options.php' );
 
 if ( isset( $x_custom_404_enable ) && $x_custom_404_enable == 1 ) {
 
-  add_filter( '404_template', 'x_custom_404_output' );
+  x_custom_404_output();
 
 }

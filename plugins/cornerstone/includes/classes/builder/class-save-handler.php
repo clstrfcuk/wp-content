@@ -124,7 +124,7 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 	}
 
-	public function save_element( $element ) {
+	public function save_element( $element, $parent = null ) {
 
 		if ( !isset( $element['_type'] ) )
 			return new WP_Error( 'Cornerstone_Save_Handler', 'Element _type not set: ' . maybe_serialize( $element ) );
@@ -134,6 +134,11 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 		if ( 'mk1' == $definition->version() )
 			return $this->legacy->save_element( $element );
 
+		$flags = $definition->flags();
+
+		if ( !isset( $flags['child'] ) || !$flags['child'] )
+			$parent = null;
+
 		if ( isset( $element['_csmeta'] ) ) {
 			unset( $element['_csmeta'] );
 		}
@@ -142,15 +147,14 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 		if ( isset( $element['elements'] ) ) {
 			foreach ( $element['elements'] as $child ) {
-				$content = $this->save_element( $child );
+				$content = $this->save_element( $child, $definition->compose( $element ) );
 				if ( is_wp_error( $content ) )
 					return $content;
 				$buffer .= $content;
 			}
 		}
 
-
-		$output = $definition->build_shortcode( $element, $buffer );
+		$output = $definition->build_shortcode( $element, $buffer, $parent );
 
 		return $output;
 

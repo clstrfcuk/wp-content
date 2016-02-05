@@ -14,9 +14,9 @@
 @vc_navbar_background_color: #FCFCFC;
 @vc_navbar_icon_btn_color: #F5F5F5;
 @vc_navbar_border_color: #F5F5F5;
-@vc_navbar_spinner: '../vc/backend_ajax_spinner.gif';
 @import "modules/vc_license_activation_notice.less";
 @import "modules/vc_navbar.less";
+@import "modules/vc_fullscreen.less";
 // Message box shown when post content is empty
 @import "modules/vc_welcome.less";
 
@@ -110,6 +110,9 @@
   line-height: 1;
   label {
     vertical-align: inherit;
+  }
+  &.hidden-label {
+    display: none;
   }
 }
 
@@ -211,11 +214,4 @@
 // fix mobile overlay
 body.mobile.modal-open #wpwrap {
   position: relative !important;
-}
-
-@media (max-width: @screen-xs-max) {
-  .vc_subnav-fixed {
-    top: 0;
-    padding-left: 10px;
-  }
 }

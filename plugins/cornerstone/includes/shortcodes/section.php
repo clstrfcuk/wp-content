@@ -61,7 +61,7 @@ function x_shortcode_section( $atts, $content = null ) {
 
   $output = "<div id=\"{$id}\" class=\"{$class}{$bg_class}\" style=\"{$style}{$bg_style}\" {$data}>"
             . $before
-            . do_shortcode( $content )
+            . do_shortcode( cs_noemptyp( $content ) )
           . '</div>';
 
   return $output;

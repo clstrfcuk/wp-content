@@ -365,3 +365,24 @@ function cs_booleanize( $data ) {
 	return $data;
 
 }
+
+/**
+ * Remove <p> and <br> tags added by wpautop around shortcodes.
+ * This is used for anything within a Cornerstone section to keep
+ * the markup clean and predictable.
+ * @param  string $content Content to be cleaned
+ * @return string          Cleaned content
+ */
+function cs_noemptyp( $content ) {
+
+	$array = array (
+		'<p>['    => '[',
+		']</p>'   => ']',
+		']<br />' => ']'
+	);
+
+	$content = strtr( $content, $array );
+
+	return $content;
+
+}

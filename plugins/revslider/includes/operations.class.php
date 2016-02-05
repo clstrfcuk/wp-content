@@ -478,10 +478,11 @@ class RevSliderOperations extends RevSliderElementsBase{
 	 * delete custom animations
 	 */
 	public static function deleteCustomAnim($rawID){
+		
 		if(trim($rawID) != '') {
 			$db = new RevSliderDB();
 			$id = str_replace(array('customin-', 'customout-'), array('', ''), $rawID);
-			$db->delete(RevSliderGlobals::$table_layer_anims, "id = '".intval($id)."'");
+			$db->delete(RevSliderGlobals::$table_layer_anims, $db->prepare("id = %s", array(intval($id))));
 		}
 
 		$arrAnims['customin'] = RevSliderOperations::getCustomAnimations();
@@ -574,7 +575,7 @@ class RevSliderOperations extends RevSliderElementsBase{
 	public static function getCustomAnimationByHandle($handle){
 		$db = new RevSliderDB();
 
-		$result = $db->fetch(RevSliderGlobals::$table_layer_anims, "handle = '".$handle."'");
+		$result = $db->fetch(RevSliderGlobals::$table_layer_anims, $db->prepare("handle = %s", array($handle)));
 		if(!empty($result)) return json_decode(str_replace("'", '"', $result[0]['params']), true);
 
 		return false;
@@ -587,7 +588,7 @@ class RevSliderOperations extends RevSliderElementsBase{
 	public static function getFullCustomAnimationByID($id){
 		$db = new RevSliderDB();
 
-		$result = $db->fetch(RevSliderGlobals::$table_layer_anims, "id = '".$id."'");
+		$result = $db->fetch(RevSliderGlobals::$table_layer_anims, $db->prepare("id = %s", array($id)));
 
 		if(!empty($result)){
 			$customAnimations = array();
@@ -926,7 +927,8 @@ class RevSliderOperations extends RevSliderElementsBase{
 		$db = new RevSliderDB();
 
 		//first get single entry to merge settings
-		$styles = $db->fetchSingle(RevSliderGlobals::$table_css, '`handle` = "'.$db->escape('.tp-caption.'.$content['handle']).'"');
+
+		$styles = $db->fetchSingle(RevSliderGlobals::$table_css, $db->prepare('`handle` = %s', array('.tp-caption.'.$content['handle'])));
 	
 		if(empty($styles)) return false;
 		
@@ -977,7 +979,7 @@ class RevSliderOperations extends RevSliderElementsBase{
 		$db = new RevSliderDB();
 		
 		//get current styles
-		$styles = $db->fetchSingle(RevSliderGlobals::$table_css, '`handle` = "'.$db->escape($data['handle']).'"');
+		$styles = $db->fetchSingle(RevSliderGlobals::$table_css, $db->prepare('`handle` = %s', array($data['handle'])));
 		
 		if(!empty($styles)){
 			if(!isset($styles['advanced'])) $styles['advanced'] = '';
@@ -1047,8 +1049,8 @@ class RevSliderOperations extends RevSliderElementsBase{
 	 */
 	public function deleteCaptionsContentData($handle){
 		$db = new RevSliderDB();
-
-		$db->delete(RevSliderGlobals::$table_css,"handle='.tp-caption.".$handle."'");
+		
+		$db->delete(RevSliderGlobals::$table_css, $db->prepare("handle= %s", array(".tp-caption.".$handle)));
 
 		//$this->updateDynamicCaptions();
 
@@ -1167,7 +1169,7 @@ class RevSliderOperations extends RevSliderElementsBase{
 					$arrInsert["params"] = json_encode($styles);
 				}
 				//check if class exists
-				$result = $db->fetch(RevSliderGlobals::$table_css, "handle = '".$class."'");
+				$result = $db->fetch(RevSliderGlobals::$table_css, $db->prepare("handle = %s", array($class)));
 
 				if(!empty($result)){ //update
 					$db->update(RevSliderGlobals::$table_css, $arrInsert, array('handle' => $class));

@@ -66,7 +66,7 @@
                 <span><?php _e( 'Enter your desired heading.', '__x__' ); ?></span>
               </label>
             </th>
-            <td><input name="x_under_construction_heading" id="x_under_construction_heading" type="text" value="<?php echo ( isset( $x_under_construction_heading ) ) ? $x_under_construction_heading : ''; ?>" class="large-text"></td>
+            <td><input name="x_under_construction_heading" id="x_under_construction_heading" type="text" value="<?php echo ( isset( $x_under_construction_heading ) ) ? stripslashes( $x_under_construction_heading ) : ''; ?>" class="large-text"></td>
           </tr>
 
           <tr>
@@ -76,7 +76,7 @@
                 <span><?php _e( 'Enter your desired subheading.', '__x__' ); ?></span>
               </label>
             </th>
-            <td><input name="x_under_construction_subheading" id="x_under_construction_subheading" type="text" value="<?php echo ( isset( $x_under_construction_subheading ) ) ? $x_under_construction_subheading : ''; ?>" class="large-text"></td>
+            <td><input name="x_under_construction_subheading" id="x_under_construction_subheading" type="text" value="<?php echo ( isset( $x_under_construction_subheading ) ) ? stripslashes( $x_under_construction_subheading ) : ''; ?>" class="large-text"></td>
           </tr>
 
           <tr>

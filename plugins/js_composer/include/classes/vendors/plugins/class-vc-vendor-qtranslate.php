@@ -189,7 +189,7 @@ class Vc_Vendor_Qtranslate implements Vc_Vendor_Interface {
 
 			wp_enqueue_script( 'vc_vendor_qtranslate_backend',
 				vc_asset_url( 'js/vendors/qtranslate_backend.js' ),
-				array( 'wpb_js_composer_js_storage' ), '1.0', true
+				array( 'vc-backend-min-js' ), '1.0', true
 			);
 		}
 	}
@@ -202,7 +202,7 @@ class Vc_Vendor_Qtranslate implements Vc_Vendor_Interface {
 
 			wp_enqueue_script( 'vc_vendor_qtranslate_frontend',
 				vc_asset_url( 'js/vendors/qtranslate_frontend.js' ),
-				array( 'vc_inline_shortcodes_builder_js' ), '1.0', true
+				array( 'vc-frontend-editor-min-js' ), '1.0', true
 			);
 			global $q_config;
 			$q_config['js']['qtrans_save'] = '';

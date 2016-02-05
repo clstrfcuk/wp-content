@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @var $el_class
  * @var $full_width
  * @var $full_height
+ * @var $equal_height
+ * @var $columns_placement
  * @var $content_placement
  * @var $parallax
  * @var $parallax_image
@@ -21,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Shortcode class
  * @var $this WPBakeryShortCode_VC_Row
  */
-$el_class = $full_height = $full_width = $content_placement = $parallax = $parallax_image = $css = $el_id = $video_bg = $video_bg_url = $video_bg_parallax = '';
+$el_class = $full_height = $full_width = $equal_height = $flex_row = $columns_placement = $content_placement = $parallax = $parallax_image = $css = $el_id = $video_bg = $video_bg_url = $video_bg_parallax = '';
 $output = $after_output = '';
 $atts = vc_map_get_attributes( $this->getShortcode(), $atts );
 extract( $atts );
@@ -37,6 +39,15 @@ $css_classes = array(
 	$el_class,
 	vc_shortcode_custom_css_class( $css ),
 );
+
+if (vc_shortcode_custom_css_has_property( $css, array('border', 'background') ) || $video_bg || $parallax) {
+	$css_classes[]='vc_row-has-fill';
+}
+
+if (!empty($atts['gap'])) {
+	$css_classes[] = 'vc_column-gap-'.$atts['gap'];
+}
+
 $wrapper_attributes = array();
 // build attributes for wrapper
 if ( ! empty( $el_id ) ) {
@@ -56,9 +67,24 @@ if ( ! empty( $full_width ) ) {
 
 if ( ! empty( $full_height ) ) {
 	$css_classes[] = ' vc_row-o-full-height';
-	if ( ! empty( $content_placement ) ) {
-		$css_classes[] = ' vc_row-o-content-' . $content_placement;
+	if ( ! empty( $columns_placement ) ) {
+		$flex_row = true;
+		$css_classes[] = ' vc_row-o-columns-' . $columns_placement;
 	}
+}
+
+if ( ! empty( $equal_height ) ) {
+	$flex_row = true;
+	$css_classes[] = ' vc_row-o-equal-height';
+}
+
+if ( ! empty( $content_placement ) ) {
+	$flex_row = true;
+	$css_classes[] = ' vc_row-o-content-' . $content_placement;
+}
+
+if ( ! empty( $flex_row ) ) {
+	$css_classes[] = ' vc_row-flex';
 }
 
 $has_video_bg = ( ! empty( $video_bg ) && ! empty( $video_bg_url ) && vc_extract_youtube_id( $video_bg_url ) );

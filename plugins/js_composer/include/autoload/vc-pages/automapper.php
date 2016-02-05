@@ -8,11 +8,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 4.5
  */
 function vc_automapper_init() {
-	vc_user_access()
+	if ( vc_user_access()
 		->wpAny( 'manage_options' )
 		->part( 'settings' )
 		->can( 'vc-automapper-tab' )
-		->get() && vc_automapper()->build();
+		->get()
+	) {
+		vc_automapper()->addAjaxActions();
+	}
+
 }
 
 /**
@@ -27,4 +31,4 @@ function vc_page_automapper_build() {
 
 // TODO: move to separate file in autoload
 add_filter( 'vc_settings-render-tab-vc-automapper', 'vc_page_automapper_build' );
-is_admin() && 'vc-automapper' === vc_get_param( 'page' ) && add_action( 'admin_enqueue_scripts', 'vc_automapper_init' );
+is_admin() && ( 'vc_automapper' === vc_request_param( 'action' ) || 'vc-automapper' === vc_get_param( 'page' ) ) && add_action( 'admin_init', 'vc_automapper_init' );

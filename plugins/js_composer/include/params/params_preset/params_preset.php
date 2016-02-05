@@ -17,7 +17,6 @@ $vc_params_preset_form_field_js_appended = false;
  * @return string - html string.
  */
 function vc_params_preset_form_field( $settings, $value ) {
-	global $vc_params_preset_form_field_js_appended;
 	$output = '';
 	$output .= '<select name="'
 	           . $settings['param_name']
@@ -41,10 +40,6 @@ function vc_params_preset_form_field( $settings, $value ) {
 		}
 	}
 	$output .= '</select>';
-	if ( ! $vc_params_preset_form_field_js_appended ) {
-		$output .= '<script type="text/javascript" src="' . vc_asset_url( 'js/params/params_preset.js' ) . '"></script>';
-		$vc_params_preset_form_field_js_appended = true;
-	}
 
 	return $output;
 }

@@ -316,7 +316,7 @@ class Vc_Edit_Form_Fields implements Vc_Render {
 		if ( empty( $vc_params_list ) ) {
 			return false;
 		}
-		$script_url = vc_asset_url( 'js/params/all.js' );
+		$script_url = vc_asset_url( 'js/dist/edit-form.min.js' );
 		foreach ( $vc_params_list as $param ) {
 			vc_add_shortcode_param( $param, 'vc_' . $param . '_form_field', $script_url );
 		}

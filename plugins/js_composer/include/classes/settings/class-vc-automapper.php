@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * WPBakery Visual Composer Plugin
  *
- * @package VPBakeryVisualComposer
+ * @package WPBakeryVisualComposer
  *
  */
 if ( ! class_exists( 'Vc_Automap_Model' ) ) {
@@ -201,32 +201,8 @@ if ( ! class_exists( 'Vc_Automapper' ) ) {
 		 */
 		public function addAjaxActions() {
 			add_action( 'wp_ajax_vc_automapper', array( &$this, 'goAction' ) );
-		}
 
-		/**
-		 *
-		 */
-		public function build() {
-			wp_register_script( 'wpb_js_composer_automapper', vc_asset_url( 'js/backend/composer-automapper.js' ), array(
-				'wpb_js_composer_settings',
-				'backbone',
-				'shortcode',
-			), WPB_VC_VERSION, true ); // TODO: remove to automapper render
-			wp_enqueue_script( 'wpb_js_composer_automapper' );
-			wp_localize_script( 'wpb_js_composer_automapper', 'i18nLocaleVcAutomapper', array(
-				'are_you_sure_delete' => __( 'Are you sure you want to delete this shortcode?', 'js_composer' ),
-				'are_you_sure_delete_param' => __( "Are you sure you want to delete the shortcode's param?", 'js_composer' ),
-				'my_shortcodes_category' => __( 'My shortcodes', 'js_composer' ),
-				'error_shortcode_name_is_required' => __( 'Shortcode name is required.', 'js_composer' ),
-				'error_enter_valid_shortcode_tag' => __( 'Please enter valid shortcode tag.', 'js_composer' ),
-				'error_enter_required_fields' => __( 'Please enter all required fields for params.', 'js_composer' ),
-				'new_shortcode_mapped' => __( 'New shortcode mapped from string!', 'js_composer' ),
-				'shortcode_updated' => __( 'Shortcode updated!', 'js_composer' ),
-				'error_content_param_not_manually' => __( 'Content param can not be added manually, please use checkbox.', 'js_composer' ),
-				'error_param_already_exists' => __( 'Param %s already exists. Param names must be unique.', 'js_composer' ),
-				'error_wrong_param_name' => __( 'Please use only letters, numbers and underscore for param name', 'js_composer' ),
-				'error_enter_valid_shortcode' => __( 'Please enter valid shortcode to parse!', 'js_composer' ),
-			) );
+			return $this;
 		}
 
 		// Render methods {{
@@ -354,7 +330,7 @@ if ( ! class_exists( 'Vc_Automapper' ) ) {
 				</div>
 			</script>
 			<script type="text/html" id="vc_atm-form-param-tpl">
-				<div class="vc_controls vc_controls-row controls vc_clearfix"><a
+				<div class="vc_controls vc_controls-row vc_clearfix"><a
 						class="vc_control column_move vc_move-param" href="#"
 						title="<?php _e( 'Drag row to reorder', 'js_composer' ) ?>" data-vc-control="move"><i
 							class="vc_icon"></i></a><span class="vc_row_edit_clone_delete"><a

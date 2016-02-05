@@ -33,7 +33,7 @@ $class_to_filter .= vc_shortcode_custom_css_class( $css, ' ' ) . $this->getExtra
 $css_class = apply_filters( VC_SHORTCODE_CUSTOM_CSS_FILTER_TAG, $class_to_filter, $this->settings['base'], $atts );
 
 $output .= '<div class="' . esc_attr( $css_class ) . '">';
-$output .= '<a href="http://pinterest.com/pin/create/button/?url=' . $url . $media . $description . '" class="pin-it-button" count-layout="' . $type . '"><img border="0" src="//assets.pinterest.com/images/PinExt.png" title="Pin It" /></a>';
+$output .= '<a href="//pinterest.com/pin/create/button/?url=' . $url . $media . $description . '" class="pin-it-button" count-layout="' . $type . '"><img border="0" src="//assets.pinterest.com/images/PinExt.png" title="Pin It" /></a>';
 $output .= '</div>';
 
 echo $output;

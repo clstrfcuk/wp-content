@@ -9,8 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Shortcode class
  * @var $this WPBakeryShortCode_VC_Basic_Grid
  */
+$this->post_id = false;
 $css = $el_class = '';
-$isotope_options = $posts = $filter_terms = array();
+$posts = $filter_terms = array();
 $this->buildAtts( $atts, $content );
 
 $css = isset( $atts['css'] ) ? $atts['css'] : '';

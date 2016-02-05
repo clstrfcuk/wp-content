@@ -1,4 +1,5 @@
 <?php
+/** @var $box Vc_Add_Element_Box */
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }

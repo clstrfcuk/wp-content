@@ -193,6 +193,9 @@ class CS_Tabs extends Cornerstone_Element_Base {
       case 5 :
         $type = 'five-up';
         break;
+      default:
+        $type = 'two-up';
+        break;
     }
 
 

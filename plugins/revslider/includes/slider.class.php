@@ -83,10 +83,9 @@ class RevSliderSlider extends RevSliderElementsBase{
 	 */
 	public function initByID($sliderID){
 		RevSliderFunctions::validateNumeric($sliderID,"Slider ID");
-		$sliderID = $this->db->escape($sliderID);
 		
 		try{
-			$sliderData = $this->db->fetchSingle(RevSliderGlobals::$table_sliders,"id=$sliderID");								
+			$sliderData = $this->db->fetchSingle(RevSliderGlobals::$table_sliders, $this->db->prepare("id = %s", array($sliderID)));
 		}catch(Exception $e){
 			$message = $e->getMessage();
 			echo $message;
@@ -101,10 +100,9 @@ class RevSliderSlider extends RevSliderElementsBase{
 	 * init slider by alias
 	 */
 	public function initByAlias($alias){
-		$alias = $this->db->escape($alias);
 
 		try{
-			$where = "alias='$alias' AND `type` != 'template'";
+			$where = $this->db->prepare("alias = %s  AND `type` != 'template'", array($alias));
 			
 			$sliderData = $this->db->fetchSingle(RevSliderGlobals::$table_sliders,$where);
 			
@@ -115,7 +113,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 			if(!empty($arrAliases)){
 				$arrAliases = array_slice($arrAliases, 0, 6); //show 6 other, will be enough
 				
-				$strAliases = "'".implode("' or '", $arrAliases)."'";
+				$strAliases = "'".implode("' or '", sanitize_text_field($arrAliases))."'";
 			}
 				
 			$errorMessage = 'Slider with alias <strong>'.esc_attr($alias).'</strong> not found.';
@@ -259,13 +257,11 @@ class RevSliderSlider extends RevSliderElementsBase{
 	 * check if alias exists in DB
 	 */
 	public function isAliasExistsInDB($alias){
-		$alias = $this->db->escape($alias);
 		
-		$where = "alias='$alias'";
+		$where = $this->db->prepare("alias = %s ", array($alias));
 		if(!empty($this->id)){
-			$id = $this->db->escape($this->id);
 			
-			$where .= " and id != '".$id."' AND `type` != 'template'";
+			$where .= $this->db->prepare(" and id != %s  AND `type` != 'template'", array($this->id));
 		}
 		
 		$response = $this->db->fetch(RevSliderGlobals::$table_sliders,$where);
@@ -334,12 +330,27 @@ class RevSliderSlider extends RevSliderElementsBase{
 		
 		$params = array_merge($arrMain,$params);
 		
-		$title = RevSliderFunctions::getVal($arrMain, "title");
-		$alias = RevSliderFunctions::getVal($arrMain, "alias");
+		$title = sanitize_text_field(RevSliderFunctions::getVal($arrMain, "title"));
+		$alias = sanitize_text_field(RevSliderFunctions::getVal($arrMain, "alias"));
 		
-		if(!empty($sliderID))
+		//params css and js check
+		if(!RevSliderFunctionsWP::isAdminUser() && apply_filters('revslider_restrict_role', true)){
+			//dont allow css and javascript from users other than administrator
+			unset($params['custom_css']);
+			unset($params['custom_javascript']);
+		}
+		
+		if(!empty($sliderID)){
 			$this->initByID($sliderID);
 			
+			if(!RevSliderFunctionsWP::isAdminUser() && apply_filters('revslider_restrict_role', true)){
+				//check for js and css, add it to $params
+				$params['custom_css'] = $this->getParam('custom_css', '');
+				$params['custom_javascript'] = $this->getParam('custom_javascript', '');
+			}
+			
+		}
+		
 		$this->validateInputSettings($title, $alias, $params);
 		
 		$jsonParams = json_encode($params);
@@ -377,7 +388,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		$this->validateInited();
 		
 		//delete slider
-		$this->db->delete(RevSliderGlobals::$table_sliders,"id=".$this->id);
+		$this->db->delete(RevSliderGlobals::$table_sliders, $this->db->prepare("id = %s", array($this->id)));
 		
 		//delete slides
 		$this->deleteAllSlides();
@@ -391,7 +402,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 	private function deleteAllSlides(){
 		$this->validateInited();
 		
-		$this->db->delete(RevSliderGlobals::$table_slides,"slider_id=".$this->id);			
+		$this->db->delete(RevSliderGlobals::$table_slides, $this->db->prepare("slider_id = %s", array($this->id)));
 	}
 	
 
@@ -402,7 +413,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 	public function deleteStaticSlide(){
 		$this->validateInited();
 		
-		$this->db->delete(RevSliderGlobals::$table_static_slides,"slider_id=".$this->id);			
+		$this->db->delete(RevSliderGlobals::$table_static_slides, $this->db->prepare("slider_id = %s", array($this->id)));
 	}
 	
 	
@@ -441,11 +452,11 @@ class RevSliderSlider extends RevSliderElementsBase{
 			$newSliderTitle = "Slider".$newSliderSerial;
 			$newSliderAlias = "slider".$newSliderSerial;
 		}else{
-			$newSliderTitle = $title;
+			$newSliderTitle = sanitize_text_field($title);
 			$newSliderAlias = sanitize_title($title);
 			
 			// Check Duplicate Alias
-			$sqlTitle = $this->db->fetch(RevSliderGlobals::$table_sliders,"alias='".sanitize_title($title)."'");
+			$sqlTitle = $this->db->fetch(RevSliderGlobals::$table_sliders, $this->db->prepare("alias = %s", array(sanitize_title($title))));
 			if(!empty($sqlTitle)){
 				$response = $this->db->fetch(RevSliderGlobals::$table_sliders);
 				$numSliders = count($response);
@@ -456,7 +467,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		}
 		
 		//insert a new slider
-		$sqlSelect = "select ".RevSliderGlobals::FIELDS_SLIDER." from ".RevSliderGlobals::$table_sliders." where id=".$this->id."";
+		$sqlSelect = $this->db->prepare("select ".RevSliderGlobals::FIELDS_SLIDER." from ".RevSliderGlobals::$table_sliders." where id = %s", array($this->id));
 		$sqlInsert = "insert into ".RevSliderGlobals::$table_sliders." (".RevSliderGlobals::FIELDS_SLIDER.") ($sqlSelect)";
 		
 		$this->db->runSql($sqlInsert);
@@ -482,7 +493,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		$this->db->update(RevSliderGlobals::$table_sliders, $arrUpdate, array("id"=>$lastID));
 		
 		//duplicate Slides
-		$slides = $this->db->fetch(RevSliderGlobals::$table_slides, "slider_id=".$this->id);
+		$slides = $this->db->fetch(RevSliderGlobals::$table_slides, $this->db->prepare("slider_id = %s", array($this->id)));
 		if(!empty($slides)){
 			foreach($slides as $slide){
 				$slide['slider_id'] = $lastID;
@@ -501,7 +512,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		$staticID = $slide->getStaticSlideID($this->id);
 		$static_id = 0;
 		if($staticID !== false){
-			$record = $this->db->fetchSingle(RevSliderGlobals::$table_static_slides,"id=$staticID");
+			$record = $this->db->fetchSingle(RevSliderGlobals::$table_static_slides, $this->db->prepare("id = %s", array($staticID)));
 			unset($record['id']);
 			$record['slider_id'] = $lastID;
 			
@@ -510,9 +521,9 @@ class RevSliderSlider extends RevSliderElementsBase{
 		
 		
 		//update actions
-		$slides = $this->db->fetch(RevSliderGlobals::$table_slides, "slider_id=$lastID");
+		$slides = $this->db->fetch(RevSliderGlobals::$table_slides, $this->db->prepare("slider_id = %s", array($lastID)));
 		if($static_id > 0){
-			$slides_static = $this->db->fetch(RevSliderGlobals::$table_static_slides, "id=$static_id");
+			$slides_static = $this->db->fetch(RevSliderGlobals::$table_static_slides, $this->db->prepare("id = %s", array($static_id)));
 			$slides = array_merge($slides, $slides_static);
 		}
 		if(!empty($slides)){
@@ -589,7 +600,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		$this->shiftOrder($newOrder);
 		
 		//do duplication
-		$sqlSelect = "select ".RevSliderGlobals::FIELDS_SLIDE." from ".RevSliderGlobals::$table_slides." where id=".intval($slideID);
+		$sqlSelect = $this->db->prepare("select ".RevSliderGlobals::FIELDS_SLIDE." from ".RevSliderGlobals::$table_slides." where id = %s", array(intval($slideID)));
 		$sqlInsert = "insert into ".RevSliderGlobals::$table_slides." (".RevSliderGlobals::FIELDS_SLIDE.") ($sqlSelect)";
 		
 		$this->db->runSql($sqlInsert);
@@ -643,7 +654,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 	 */
 	private function shiftOrder($fromOrder){
 		
-		$where = " slider_id=".$this->id." and slide_order >= $fromOrder";
+		$where = $this->db->prepare(" slider_id = %s and slide_order >= %s", array($this->id, $fromOrder));
 		$sql = "update ".RevSliderGlobals::$table_slides." set slide_order=(slide_order+1) where $where";
 		$this->db->runSql($sql);
 		
@@ -1097,7 +1108,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 				$animations = @unserialize($animations);
 				if(!empty($animations)){
 					foreach($animations as $key => $animation){ //$animation['id'], $animation['handle'], $animation['params']
-						$exist = $db->fetch(RevSliderGlobals::$table_layer_anims, "handle = '".$animation['handle']."'");
+						$exist = $db->fetch(RevSliderGlobals::$table_layer_anims, $db->prepare("handle = %s", array($animation['handle'])));
 						if(!empty($exist)){ //update the animation, get the ID
 							if($updateAnim == "true"){ //overwrite animation if exists
 								$arrUpdate = array();
@@ -1177,7 +1188,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 							$arrInsert["settings"] = '';
 						}
 						//check if class exists
-						$result = $db->fetch(RevSliderGlobals::$table_css, "handle = '".$class."'");
+						$result = $db->fetch(RevSliderGlobals::$table_css, $db->prepare("handle = %s", array($class)));
 						
 						if(!empty($result)){ //update
 							$db->update(RevSliderGlobals::$table_css, $arrInsert, array('handle' => $class));
@@ -1196,7 +1207,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 				if(!empty($navigations)){
 					
 					foreach($navigations as $key => $navigation){
-						$exist = $db->fetch(RevSliderGlobals::$table_navigation, "handle = '".$navigation['handle']."'");
+						$exist = $db->fetch(RevSliderGlobals::$table_navigation, $db->prepare("handle = %s", array($navigation['handle'])));
 						unset($navigation['id']);
 						
 						$rh = $navigation["handle"];
@@ -2114,7 +2125,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 	/**
 	 * get slides from posts
 	 */
-	public function getSlidesFromPosts($publishedOnly = false){
+	public function getSlidesFromPosts($publishedOnly = false, $gal_ids = array()){
 		
 		$slideTemplates = $this->getSlidesFromGallery($publishedOnly);
 		$slideTemplates = RevSliderFunctions::assocToArray($slideTemplates);
@@ -2122,6 +2133,9 @@ class RevSliderSlider extends RevSliderElementsBase{
 		if(count($slideTemplates) == 0) return array();
 		
 		$sourceType = $this->getParam("source_type","gallery");
+		
+		if(!empty($gal_ids)) $sourceType = 'specific_posts'; //change to specific posts, give the gal_ids to the list
+		
 		switch($sourceType){
 			case "posts":
 				//check where to get posts from
@@ -2146,7 +2160,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 				}
 			break;
 			case "specific_posts":
-				$arrPosts = $this->getPostsFromSpecificList();
+				$arrPosts = $this->getPostsFromSpecificList($gal_ids);
 			break;
 			case 'woocommerce':
 				$arrPosts = $this->getProductsFromCategories($publishedOnly);
@@ -2351,7 +2365,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		$this->validateInited();
 		
 		$arrSlides = array();
-		$arrSlideRecords = $this->db->fetch(RevSliderGlobals::$table_slides,"slider_id=".$this->id,"slide_order");
+		$arrSlideRecords = $this->db->fetch(RevSliderGlobals::$table_slides,$this->db->prepare("slider_id = %s", array($this->id)),"slide_order");
 		
 		$arrChildren = array();
 		
@@ -2428,7 +2442,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 	 * get slides for output
 	 * one level only without children
 	 */
-	public function getSlidesForOutput($publishedOnly = false, $lang = 'all'){
+	public function getSlidesForOutput($publishedOnly = false, $lang = 'all',$gal_ids = array()){
 		
 		$isSlidesFromPosts = $this->isSlidesFromPosts();
 		$isSlidesFromStream = $this->isSlidesFromStream();
@@ -2445,7 +2459,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		}
 		
 		if($isSlidesFromPosts){
-			$arrParentSlides = $this->getSlidesFromPosts($publishedOnly);
+			$arrParentSlides = $this->getSlidesFromPosts($publishedOnly, $gal_ids);
 		}elseif($isSlidesFromStream !== false){
 			$arrParentSlides = $this->getSlidesFromStream($publishedOnly);
 		}else{
@@ -2569,6 +2583,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 			$slideNew["slide_order"] = $slide->getOrder();
 			$slideNew["layers"] = $slide->getLayersForExport($useDummy);
 			$slideNew["settings"] = $slide->getSettings();
+			
 			$arrSlidesExport[] = $slideNew;
 		}
 		
@@ -2834,7 +2849,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 	public function getMaxOrder(){
 		$this->validateInited();
 		$maxOrder = 0;
-		$arrSlideRecords = $this->db->fetch(RevSliderGlobals::$table_slides,"slider_id=".$this->id,"slide_order desc","","limit 1");
+		$arrSlideRecords = $this->db->fetch(RevSliderGlobals::$table_slides,$this->db->prepare("slider_id = %s", array($this->id)),"slide_order desc","","limit 1");
 		if(empty($arrSlideRecords))
 			return($maxOrder);
 		$maxOrder = $arrSlideRecords[0]["slide_order"];
@@ -3188,15 +3203,25 @@ class RevSliderSlider extends RevSliderElementsBase{
 	 * 
 	 * get posts from specific posts list
 	 */
-	private function getPostsFromSpecificList(){
+	private function getPostsFromSpecificList($gal_ids = array()){
 		
-		$strPosts = $this->getParam("posts_list","");
-		
-		$strPosts = apply_filters('revslider_set_posts_list', $strPosts, $this->getID());
+		$is_gal = false;
+		$additional = array();
+		if(!empty($gal_ids)){
+			$strPosts = $gal_ids;
+			$strPosts = apply_filters('revslider_set_posts_list_gal', $strPosts, $this->getID());
+			$is_gal = true;
+		}else{
+			$strPosts = $this->getParam("posts_list", "");
+			$additional['order'] = $this->getParam("posts_sort_direction", "DESC");
+			$additional['orderby'] = $this->getParam("post_sortby", "");
+			
+			$strPosts = apply_filters('revslider_set_posts_list', $strPosts, $this->getID());
+		}
 		
 		$slider_id = $this->getID();
 		
-		$arrPosts = RevSliderFunctionsWP::getPostsByIDs($strPosts, $slider_id);
+		$arrPosts = RevSliderFunctionsWP::getPostsByIDs($strPosts, $slider_id, $is_gal, $additional);
 		
 		return($arrPosts);
 	}

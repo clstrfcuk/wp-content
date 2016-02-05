@@ -148,6 +148,10 @@ function x_under_construction_output_site_styles() {
     .x-under-construction-social a:hover {
       opacity: 1;
     }
+    
+    .backstretch {
+      display: none;
+    }
 
 
     /*
@@ -169,6 +173,16 @@ function x_under_construction_output_site_styles() {
       }
 
     <?php endif; ?>
+
+    @media (max-width: 768px) {
+      .x-under-construction h1 {
+        font-size: 32px;
+      }
+
+      .x-under-construction h2 {
+        font-size: 21px;
+      }
+    }
 
     @media (max-width: 580px) {
       .x-under-construction-countdown span {

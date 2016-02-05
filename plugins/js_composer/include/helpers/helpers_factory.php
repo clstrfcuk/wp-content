@@ -311,8 +311,7 @@ function vc_get_dropdown_option( $param, $value ) {
 	}
 	if ( is_array( $value ) ) {
 		reset( $value );
-		$value = isset( $value['value'] ) ? $value['value'] :
-			current( $value );
+		$value = isset( $value['value'] ) ? $value['value'] : current( $value );
 	}
 	$value = preg_replace( '/\s/', '_', $value );
 
@@ -330,7 +329,10 @@ function vc_get_css_color( $prefix, $color ) {
 	$rgb_color = preg_match( '/rgba/', $color ) ? preg_replace( array(
 		'/\s+/',
 		'/^rgba\((\d+)\,(\d+)\,(\d+)\,([\d\.]+)\)$/',
-	), array( '', 'rgb($1,$2,$3)' ), $color ) : $color;
+	), array(
+		'',
+		'rgb($1,$2,$3)',
+	), $color ) : $color;
 	$string = $prefix . ':' . $rgb_color . ';';
 	if ( $rgb_color !== $color ) {
 		$string .= $prefix . ':' . $color . ';';
@@ -353,6 +355,44 @@ function vc_shortcode_custom_css_class( $param_value, $prefix = '' ) {
 }
 
 /**
+ * @param $subject
+ * @param $property
+ * @param bool|false $strict
+ *
+ * @since 4.9
+ * @return bool
+ */
+function vc_shortcode_custom_css_has_property( $subject, $property, $strict = false ) {
+	$styles = array();
+	$pattern = '/\{([^\}]*?)\}/i';
+	preg_match( $pattern, $subject, $styles );
+	if ( array_key_exists( 1, $styles ) ) {
+		$styles = explode( ';', $styles[1] );
+	}
+	$new_styles = array();
+	foreach ( $styles as $val ) {
+		$val = explode( ':', $val );
+		if ( is_array( $property ) ) {
+			foreach ( $property as $prop ) {
+				$pos = strpos( $val[0], $prop );
+				$full = ( $strict ) ? ( $pos === 0 && strlen( $val[0] ) === strlen( $prop ) ) : true;
+				if ( $pos !== false && $full ) {
+					$new_styles[] = $val;
+				}
+			}
+		} else {
+			$pos = strpos( $val[0], $property );
+			$full = ( $strict ) ? ( $pos === 0 && strlen( $val[0] ) === strlen( $property ) ) : true;
+			if ( $pos !== false && $full ) {
+				$new_styles[] = $val;
+			}
+		}
+	}
+
+	return ! empty( $new_styles );
+}
+
+/**
  * Plugin name for VC.
  *
  * @since 4.2
@@ -369,7 +409,7 @@ function vc_plugin_name() {
  *
  * @return bool|mixed|string
  */
-function vc_file_get_contents( $filename ) {
+function vc_file_get_contents( $filename, $partial = false ) {
 	global $wp_filesystem;
 	if ( empty( $wp_filesystem ) ) {
 		require_once( ABSPATH . '/wp-admin/includes/file.php' );
@@ -477,16 +517,19 @@ function vc_check_post_type( $type ) {
 	if ( empty( $type ) ) {
 		$type = get_post_type();
 	}
-	$state = vc_user_access()->part( 'post_types' )->getState();
-	if ( null === $state ) {
-		return in_array( $type, vc_default_editor_post_types() );
-	} else if ( true === $state && ! in_array( $type, vc_default_editor_post_types() ) ) {
-		$valid = false;
-	} else {
-		$valid = vc_user_access()
-			->part( 'post_types' )
-			->can( $type )
-			->get();
+	$valid = apply_filters( 'vc_check_post_type_validation', null, $type );
+	if ( is_null( $valid ) ) {
+		$state = vc_user_access()->part( 'post_types' )->getState();
+		if ( null === $state ) {
+			return in_array( $type, vc_default_editor_post_types() );
+		} else if ( true === $state && ! in_array( $type, vc_default_editor_post_types() ) ) {
+			$valid = false;
+		} else {
+			$valid = vc_user_access()
+				->part( 'post_types' )
+				->can( $type )
+				->get();
+		}
 	}
 
 	return $valid;
@@ -518,14 +561,14 @@ function vc_user_access_check_shortcode_all( $shortcode ) {
 
 	if ( is_null( $do_check ) ) {
 		return vc_user_access()
-			       ->part( 'shortcodes' )
-			       ->checkStateAny( true, 'custom', null )->can( $shortcode . '_all' )
-			       ->get();
+			->part( 'shortcodes' )
+			->checkStateAny( true, 'custom', null )
+			->can( $shortcode . '_all' )
+			->get();
 	} else {
 		return $do_check;
 	}
 }
-
 
 /**
  * htmlspecialchars_decode_deep
@@ -550,4 +593,11 @@ function vc_htmlspecialchars_decode_deep( $value ) {
 	}
 
 	return $value;
+}
+
+function vc_str_remove_protocol( $str ) {
+	return str_replace( array(
+		'https://',
+		'http://',
+	), '//', $str );
 }

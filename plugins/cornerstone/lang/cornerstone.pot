@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Cornerstone package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Cornerstone 1.1.0-beta1\n"
+"Project-Id-Version: Cornerstone 1.1.1-alpha1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/cornerstone\n"
-"POT-Creation-Date: 2016-01-19 22:40:52+00:00\n"
+"POT-Creation-Date: 2016-01-28 03:52:13+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -29,7 +29,8 @@ msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:55
 #: includes/config/controls/mixins.php:13
-msgid "Add an ID to this element so you can target it with your own customizations."
+msgid ""
+"Add an ID to this element so you can target it with your own customizations."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:67
@@ -40,7 +41,9 @@ msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:68
 #: includes/config/controls/mixins.php:26
-msgid "Add custom classes to this element. Multiple classes should be seperated by spaces. They will be added at the root level element."
+msgid ""
+"Add custom classes to this element. Multiple classes should be seperated by "
+"spaces. They will be added at the root level element."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:80
@@ -53,7 +56,9 @@ msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:81
 #: includes/config/controls/mixins.php:39
-msgid "Add an inline style to this element. This only contain valid CSS rules with no selectors or braces."
+msgid ""
+"Add an inline style to this element. This only contain valid CSS rules with "
+"no selectors or braces."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:93
@@ -71,7 +76,9 @@ msgstr ""
 #: includes/elements/_alternate/_column.php:34
 #: includes/elements/_alternate/_row.php:55
 #: includes/elements/_alternate/_section.php:142
-msgid "Specify a custom padding for each side of this element. Can accept CSS units like px, ems, and % (default unit is px)."
+msgid ""
+"Specify a custom padding for each side of this element. Can accept CSS units "
+"like px, ems, and % (default unit is px)."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:105
@@ -81,7 +88,9 @@ msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:106
 #: includes/config/controls/mixins.php:128
-msgid "Specify a custom border for this element by selecting a style, choosing a color, and inputting your dimensions."
+msgid ""
+"Specify a custom border for this element by selecting a style, choosing a "
+"color, and inputting your dimensions."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:110
@@ -185,7 +194,10 @@ msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:185
 #: includes/config/controls/mixins.php:98
-msgid "Hide this element at different screen widths. Keep in mind that the &ldquo;Extra Large&rdquo; toggle is 1200px+, so you may not see your element disappear if your preview window is not large enough."
+msgid ""
+"Hide this element at different screen widths. Keep in mind that the &ldquo;"
+"Extra Large&rdquo; toggle is 1200px+, so you may not see your element "
+"disappear if your preview window is not large enough."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:190
@@ -224,7 +236,8 @@ msgid "Set a text alignment, or deselect to inherit from parent elements."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:213
-#: includes/config/builder/strings-builder.php:149
+#: includes/config/builder/strings-builder.php:115
+#: includes/config/builder/strings-builder.php:155
 #: includes/config/controls/mixins.php:82
 #: includes/elements/_alternate/_column.php:64
 #: includes/elements/_alternate/_pullquote.php:50
@@ -249,7 +262,8 @@ msgid "Center"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:215
-#: includes/config/builder/strings-builder.php:150
+#: includes/config/builder/strings-builder.php:113
+#: includes/config/builder/strings-builder.php:156
 #: includes/config/controls/mixins.php:84
 #: includes/elements/_alternate/_column.php:62
 #: includes/elements/_alternate/_pullquote.php:51
@@ -294,7 +308,9 @@ msgstr ""
 #: includes/classes/builder/class-control-mixins.php:240
 #: includes/config/controls/mixins.php:243
 #: includes/elements/_alternate/feature-list.php:199
-msgid "Specify a percentage value where the element should appear on screen for the animation to take place."
+msgid ""
+"Specify a percentage value where the element should appear on screen for the "
+"animation to take place."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:252
@@ -305,7 +321,9 @@ msgstr ""
 #: includes/classes/builder/class-control-mixins.php:253
 #: includes/config/controls/mixins.php:258
 #: includes/elements/_alternate/feature-list.php:213
-msgid "Specify an amount of time before the graphic animation starts in milliseconds."
+msgid ""
+"Specify an amount of time before the graphic animation starts in "
+"milliseconds."
 msgstr ""
 
 #: includes/classes/builder/class-huebert.php:27
@@ -313,7 +331,7 @@ msgid "Select Color"
 msgstr ""
 
 #: includes/classes/builder/class-legacy-setting-section.php:39
-#: includes/config/builder/strings-builder.php:128
+#: includes/config/builder/strings-builder.php:134
 #: includes/views/admin/options-main.php:8
 msgid "Settings"
 msgstr ""
@@ -391,6 +409,8 @@ msgstr ""
 msgid "(Optional) Enter inline CSS."
 msgstr ""
 
+#. #-#-#-#-#  cornerstone.pot (Cornerstone 1.1.1-alpha1)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
 #: includes/classes/common/class-common.php:35
 #: includes/config/admin/strings-admin.php:9
 #: includes/views/admin/editor-tab.php:7
@@ -437,7 +457,7 @@ msgid "Mini"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:97
-#: includes/config/builder/strings-builder.php:158
+#: includes/config/builder/strings-builder.php:164
 #: includes/elements/_alternate/button.php:71
 msgid "Small"
 msgstr ""
@@ -448,13 +468,13 @@ msgid "Regular"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:99
-#: includes/config/builder/strings-builder.php:156
+#: includes/config/builder/strings-builder.php:162
 #: includes/elements/_alternate/button.php:73
 msgid "Large"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:100
-#: includes/config/builder/strings-builder.php:154
+#: includes/config/builder/strings-builder.php:161
 msgid "Extra Large"
 msgstr ""
 
@@ -552,7 +572,10 @@ msgid "Allowed Post Types"
 msgstr ""
 
 #: includes/config/admin/info-items.php:10
-msgid "Cornerstone works great with posts and pages - <strong>especially in X</strong>. We&apos;re unable to guarantee it will be compatible with other post types."
+msgid ""
+"Cornerstone works great with posts and pages - <strong>especially in X</"
+"strong>. We&apos;re unable to guarantee it will be compatible with other "
+"post types."
 msgstr ""
 
 #: includes/config/admin/info-items.php:13
@@ -569,7 +592,8 @@ msgid "API Key"
 msgstr ""
 
 #: includes/config/admin/info-items.php:18
-msgid "Enjoy and update to latest version automatically by validating your product."
+msgid ""
+"Enjoy and update to latest version automatically by validating your product."
 msgstr ""
 
 #: includes/config/admin/strings-admin.php:10
@@ -583,22 +607,27 @@ msgstr ""
 
 #: includes/config/admin/strings-admin.php:12
 #: includes/config/builder/strings-builder.php:72
-#: includes/config/builder/strings-builder.php:162
+#: includes/config/builder/strings-builder.php:174
 msgid "Yep"
 msgstr ""
 
 #: includes/config/admin/strings-admin.php:13
 #: includes/config/builder/strings-builder.php:73
-#: includes/config/builder/strings-builder.php:163
+#: includes/config/builder/strings-builder.php:175
 msgid "Nope"
 msgstr ""
 
 #: includes/config/admin/strings-admin.php:14
-msgid "Hold up! You&apos;re welcome to make changes to the content. However, these will not be reflected in Cornerstone. If you edit the page in Cornerstone again, any changes made here will be overwritten. Do you wish to continue?"
+msgid ""
+"Hold up! You&apos;re welcome to make changes to the content. However, these "
+"will not be reflected in Cornerstone. If you edit the page in Cornerstone "
+"again, any changes made here will be overwritten. Do you wish to continue?"
 msgstr ""
 
 #: includes/config/admin/strings-admin.php:15
-msgid "Hold up! The content has been modified outside of Cornerstone. Editing in Cornerstone will replace the current content. Do you wish to continue?"
+msgid ""
+"Hold up! The content has been modified outside of Cornerstone. Editing in "
+"Cornerstone will replace the current content. Do you wish to continue?"
 msgstr ""
 
 #: includes/config/admin/strings-admin.php:16
@@ -670,11 +699,14 @@ msgid "Templates"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:33
-msgid "Are you sure you want to delete this section along with all it&apos;s contents?"
+msgid ""
+"Are you sure you want to delete this section along with all it&apos;s "
+"contents?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:34
-msgid "Are you sure you want to delete this row along with all it&apos;s contents?"
+msgid ""
+"Are you sure you want to delete this row along with all it&apos;s contents?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:35
@@ -686,7 +718,9 @@ msgid "Just getting started?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:37
-msgid "Add a section then click on it to manage column layouts or drag it to reorder."
+msgid ""
+"Add a section then click on it to manage column layouts or drag it to "
+"reorder."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:42
@@ -694,7 +728,9 @@ msgid "Custom"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:47
-msgid "This will remove all elements from this column. Are you sure you want to continue?"
+msgid ""
+"This will remove all elements from this column. Are you sure you want to "
+"continue?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:51
@@ -702,7 +738,9 @@ msgid "Blocks and pages?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:52
-msgid "<strong>Blocks</strong> are appended to your content, whereas <strong>Pages</strong> will replace your content."
+msgid ""
+"<strong>Blocks</strong> are appended to your content, whereas <strong>Pages</"
+"strong> will replace your content."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:54
@@ -747,7 +785,9 @@ msgid "Block"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:63
-msgid "How would you like this added to your page? Remember, using a page will ERASE your current page contents."
+msgid ""
+"How would you like this added to your page? Remember, using a page will "
+"ERASE your current page contents."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:66
@@ -771,7 +811,9 @@ msgid "My Blocks"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:71
-msgid "Using a page will <span style=\"color: #e74c3c;\">erase</span> your current page contents. Are you sure you wish to proceed?"
+msgid ""
+"Using a page will <span style=\"color: #e74c3c;\">erase</span> your current "
+"page contents. Are you sure you wish to proceed?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:74
@@ -795,8 +837,8 @@ msgid "Remove Templates"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:79
-#: includes/config/builder/strings-builder.php:100
-#: includes/config/builder/strings-builder.php:116
+#: includes/config/builder/strings-builder.php:102
+#: includes/config/builder/strings-builder.php:122
 msgid "Delete"
 msgstr ""
 
@@ -853,316 +895,383 @@ msgid "No elements are selected!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:98
-msgid "Inspect an element by clicking on it in the preview pane."
+msgid "Nothing Selected"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:99
-#: includes/config/builder/strings-builder.php:115
-msgid "Duplicate"
+msgid "Click on an element in the site preview to begin inspecting it."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:100
+msgid "Inspect an element by clicking on it in the preview pane."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:101
-msgid "Really Delete?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:102
-msgid "Are you sure you wish to delete this element?"
+#: includes/config/builder/strings-builder.php:121
+msgid "Duplicate"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:103
-#: includes/config/builder/strings-builder.php:114
-msgid "Erase"
+msgid "Really Delete?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:104
-msgid "Really Erase?"
+msgid "Are you sure you wish to delete this element?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:105
-#: includes/config/builder/strings-builder.php:113
+#: includes/config/builder/strings-builder.php:120
+msgid "Erase"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:106
+msgid "Really Erase?"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:107
+#: includes/config/builder/strings-builder.php:119
 msgid "Manage Layout"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:108
+#: includes/config/builder/strings-builder.php:110
 msgid "On"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:109
+#: includes/config/builder/strings-builder.php:111
 msgid "Off"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:110
+#: includes/config/builder/strings-builder.php:112
+#: includes/elements/_alternate/_column.php:61
+#: includes/elements/_alternate/button.php:157
+#: includes/elements/_alternate/feature-box.php:279
+#: includes/elements/_alternate/feature-list.php:110
+#: includes/elements/_alternate/image.php:125
+#: includes/elements/_alternate/tabs.php:44
+#: includes/elements/column/controls.php:31
+msgid "Top"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:114
+#: includes/elements/_alternate/_column.php:63
+#: includes/elements/_alternate/button.php:159
+#: includes/elements/_alternate/image.php:127
+#: includes/elements/column/controls.php:33
+msgid "Bottom"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:116
 #: includes/elements/_alternate/creative-cta.php:131
 #: includes/elements/_alternate/image.php:53
 #: includes/elements/_alternate/image.php:218
 msgid "Link"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:111
+#: includes/config/builder/strings-builder.php:117
 msgid "Unlink"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:112
+#: includes/config/builder/strings-builder.php:118
 msgid "Inspect"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:117
+#: includes/config/builder/strings-builder.php:123
 msgid "Add"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:118
+#: includes/config/builder/strings-builder.php:124
 msgid "Are you sure you wish to remove this item?"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:119
-msgid "The last item can&apos;t be deleted, but would you like to reset it to defaults?"
+#: includes/config/builder/strings-builder.php:125
+msgid ""
+"The last item can&apos;t be deleted, but would you like to reset it to "
+"defaults?"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:120
-msgid "This element has reached it&apos;s capacity. You can&apos;t add any more."
+#: includes/config/builder/strings-builder.php:126
+msgid ""
+"This element has reached it&apos;s capacity. You can&apos;t add any more."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:121
+#: includes/config/builder/strings-builder.php:127
 msgid "New Item %s"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:122
+#: includes/config/builder/strings-builder.php:128
 msgid "Copy of %s"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:123
+#: includes/config/builder/strings-builder.php:129
 msgid "No items!"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:124
+#: includes/config/builder/strings-builder.php:130
 msgid "Add some to continue building."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:125
+#: includes/config/builder/strings-builder.php:131
 msgid "Expand"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:129
+#: includes/config/builder/strings-builder.php:135
 msgid "Back to Settings"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:130
+#: includes/config/builder/strings-builder.php:136
 msgid "Please wait while the settings are loaded."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:131
+#: includes/config/builder/strings-builder.php:137
 msgid "Custom CSS"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:132
+#: includes/config/builder/strings-builder.php:138
 msgid "Custom JS"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:133
+#: includes/config/builder/strings-builder.php:139
 msgid "Your user role does not permit editing javascript."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:134
+#: includes/config/builder/strings-builder.php:140
 msgid "Remember to save to see your script applied."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:135
-msgid "You&apos;ve updated a WordPress setting. Please save your page to apply the changes."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:136
-msgid "You&apos;ve updated a theme setting. Please save your page to apply the changes."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:139
-msgid "You have not saved any changes!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:140
-msgid "Last saved: %s."
-msgstr ""
-
 #: includes/config/builder/strings-builder.php:141
-msgid "View Page"
+msgid ""
+"You&apos;ve updated a WordPress setting. Please save your page to apply the "
+"changes."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:142
-msgid "Dashboard"
+msgid ""
+"You&apos;ve updated a theme setting. Please save your page to apply the "
+"changes."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:143
-msgid "Wait! You have unsaved changes."
+#: includes/config/builder/strings-builder.php:145
+msgid "You have not saved any changes!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:146
-msgid "Help Text"
+msgid "Last saved: %s."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:147
-msgid "Enables tooltips when you hover over control labels and other bits of informational text througout the interface."
+msgid "View Page"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:148
+msgid "Dashboard"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:149
+msgid "Wait! You have unsaved changes."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:152
+msgid "Help Text"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:153
+msgid ""
+"Enables tooltips when you hover over control labels and other bits of "
+"informational text througout the interface."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:154
 msgid "Editor Position"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:151
+#: includes/config/builder/strings-builder.php:157
 msgid "Move the editor to your preferred side of the window."
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:155
-msgid "Fullscreen"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:157
+#: includes/config/builder/strings-builder.php:163
 msgid "Medium"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:161
-msgid "Are you sure?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:164
-msgid "Back"
+#: includes/config/builder/strings-builder.php:165
+msgid "Extra Small"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:166
-msgid "Are you sure you wish to delete this %s?"
+msgid "1200px &amp; Up"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:167
-msgid "Are you sure you wish to delete this %s, along with it&apos;s contents?"
+msgid "980px &ndash; 1199px"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:168
+msgid "768px &ndash; 979px"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:169
+msgid "481px &ndash; 767px"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:170
-msgid "Unable to save page."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:171
-msgid "Content saved."
+msgid "480px &amp; Smaller"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:173
-msgid "Woohoo!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:174
-msgid "Rock On!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:175
-msgid "Radical!"
+msgid "Are you sure?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:176
-msgid "Tubular!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:177
-msgid "Spiffy!"
+msgid "Back"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:178
-msgid "Yahoo!"
+msgid "Are you sure you wish to delete this %s?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:179
-msgid "Yippee!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:180
-msgid "Have Fun!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:181
-msgid "Neat-O!"
+msgid "Are you sure you wish to delete this %s, along with it&apos;s contents?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:182
-msgid "Bodacious!"
+msgid "Unable to save page."
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:183
-msgid "Scintillating!"
+msgid "Content saved."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:185
+msgid "Woohoo!"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:186
+msgid "Rock On!"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:187
+msgid "Radical!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:188
-msgid "Hey!"
+msgid "Tubular!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:189
-msgid "Awesome!"
+msgid "Spiffy!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:190
-msgid "Uh oh!"
+msgid "Yahoo!"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:191
+msgid "Yippee!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:192
-msgid "January_February_March_April_May_June_July_August_September_October_November_December"
+msgid "Have Fun!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:193
-msgid "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec"
+msgid "Neat-O!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:194
-msgid "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday"
+msgid "Bodacious!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:195
-msgid "Sun_Mon_Tue_Wed_Thu_Fri_Sat"
+msgid "Scintillating!"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:196
-msgid "Su_Mo_Tu_We_Th_Fr_Sa"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:197
-msgid "Previous Month"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:198
-msgid "Next Month"
+#: includes/config/builder/strings-builder.php:200
+msgid "Hey!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:201
-msgid "We're sorry! Your web browser does not support this action."
+msgid "Awesome!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:202
-msgid "%s (Preview Unsupported)"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:203
-msgid "An unidentifiable error is preventing the live preview from loading. Switching to Skeleton Mode."
+msgid "Uh oh!"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:204
-msgid "A suitable content area for the live preview couldn't be identified. Switching to Skeleton Mode."
+msgid "January_February_March_April_May_June_July_August_September_October_November_December"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:205
-msgid "Skeleton Mode can not be closed because the live preview is unavailable."
+msgid "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:206
-msgid "Loading the preview took longer than expected. There may be script conflicts on this page."
+msgid "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:207
-msgid "We found some invalid HTML in your content."
+msgid "Sun_Mon_Tue_Wed_Thu_Fri_Sat"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:208
-msgid "You have unclosed HTML tags."
+msgid "Su_Mo_Tu_We_Th_Fr_Sa"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:209
-msgid "If not part of an HTML tag, consider using HTML entities for angle brackets by converting <span class=\"monospace\">&lt;</span> to <span class=\"monospace\">&amp;lt;</span> and <span class=\"monospace\">&gt;</span> to <span class=\"monospace\">&amp;gt;</span>"
+msgid "Previous Month"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:212
+#: includes/config/builder/strings-builder.php:210
+msgid "Next Month"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:213
+msgid "We're sorry! Your web browser does not support this action."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:214
+msgid "%s (Preview Unsupported)"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:215
+msgid ""
+"An unidentifiable error is preventing the live preview from loading. "
+"Switching to Skeleton Mode."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:216
+msgid ""
+"A suitable content area for the live preview couldn't be identified. "
+"Switching to Skeleton Mode."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:217
+msgid ""
+"Skeleton Mode can not be closed because the live preview is unavailable."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:218
+msgid ""
+"Loading the preview took longer than expected. There may be script conflicts "
+"on this page."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:219
+msgid "We found some invalid HTML in your content."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:220
+msgid "You have unclosed HTML tags."
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:221
+msgid ""
+"If not part of an HTML tag, consider using HTML entities for angle brackets "
+"by converting <span class=\"monospace\">&lt;</span> to <span class="
+"\"monospace\">&amp;lt;</span> and <span class=\"monospace\">&gt;</span> to "
+"<span class=\"monospace\">&amp;gt;</span>"
+msgstr ""
+
+#: includes/config/builder/strings-builder.php:224
 msgid "Skeleton Mode"
 msgstr ""
 
@@ -1309,7 +1418,9 @@ msgid "Margin"
 msgstr ""
 
 #: includes/config/controls/mixins.php:52
-msgid "Specify a custom margin for each side of this element. Can accept CSS units like px, ems, and % (default unit is px)."
+msgid ""
+"Specify a custom margin for each side of this element. Can accept CSS units "
+"like px, ems, and % (default unit is px)."
 msgstr ""
 
 #: includes/config/controls/mixins.php:183
@@ -1321,7 +1432,9 @@ msgid "Enter a destination URL for when this is clicked."
 msgstr ""
 
 #: includes/config/controls/mixins.php:196
-msgid "Enter in the title attribute you want for your link. This often appears in a browser tooltip when hovering."
+msgid ""
+"Enter in the title attribute you want for your link. This often appears in a "
+"browser tooltip when hovering."
 msgstr ""
 
 #: includes/config/controls/mixins.php:207
@@ -1329,7 +1442,8 @@ msgid "Open Link in New Tab"
 msgstr ""
 
 #: includes/config/controls/mixins.php:208
-msgid "Select to open your link in a new tab, or a new window in older browsers."
+msgid ""
+"Select to open your link in a new tab, or a new window in older browsers."
 msgstr ""
 
 #: includes/config/controls/mixins.php:273
@@ -1386,7 +1500,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_alert.php:44
 #: includes/elements/alert/controls.php:29
-msgid "There are multiple alert types for different situations. Select the one that best suits your needs."
+msgid ""
+"There are multiple alert types for different situations. Select the one that "
+"best suits your needs."
 msgstr ""
 
 #: includes/elements/_alternate/_alert.php:49
@@ -1425,7 +1541,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_alert.php:62
 #: includes/elements/alert/controls.php:47
-msgid "Enabling the close button will make the alert dismissible, allowing your users to remove it if desired."
+msgid ""
+"Enabling the close button will make the alert dismissible, allowing your "
+"users to remove it if desired."
 msgstr ""
 
 #: includes/elements/_alternate/_alert.php:73
@@ -1512,7 +1630,10 @@ msgstr ""
 
 #: includes/elements/_alternate/_block-grid-item.php:32
 #: includes/elements/block-grid-item/controls.php:22
-msgid "Add some content to your block grid item here. The block grid responds a little differently than traditional columns, allowing you to mix and match for cool effects."
+msgid ""
+"Add some content to your block grid item here. The block grid responds a "
+"little differently than traditional columns, allowing you to mix and match "
+"for cool effects."
 msgstr ""
 
 #: includes/elements/_alternate/_block-grid-item.php:45
@@ -1563,7 +1684,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_block-grid.php:38
 #: includes/elements/block-grid/controls.php:32
-msgid "Select how many columns of items should be displayed on larger screens. These will update responsively based on screen size."
+msgid ""
+"Select how many columns of items should be displayed on larger screens. "
+"These will update responsively based on screen size."
 msgstr ""
 
 #: includes/elements/_alternate/_block-grid.php:42
@@ -1602,7 +1725,9 @@ msgid "Want to add content?"
 msgstr ""
 
 #: includes/elements/_alternate/_column.php:14
-msgid "Click the <strong class=\"glue\">%s Elements</strong> icon and drag your elements into a column."
+msgid ""
+"Click the <strong class=\"glue\">%s Elements</strong> icon and drag your "
+"elements into a column."
 msgstr ""
 
 #: includes/elements/_alternate/_column.php:26
@@ -1616,7 +1741,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_column.php:44
 #: includes/elements/column/controls.php:17
-msgid "Activating will make this column fade into view when the user scrolls to it for the first time."
+msgid ""
+"Activating will make this column fade into view when the user scrolls to it "
+"for the first time."
 msgstr ""
 
 #: includes/elements/_alternate/_column.php:51
@@ -1626,24 +1753,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_column.php:52
 #: includes/elements/column/controls.php:25
-msgid "Choose a direction to fade from. \"None\" will allow the column to fade in without coming from a particular direction."
-msgstr ""
-
-#: includes/elements/_alternate/_column.php:61
-#: includes/elements/_alternate/button.php:157
-#: includes/elements/_alternate/feature-box.php:279
-#: includes/elements/_alternate/feature-list.php:110
-#: includes/elements/_alternate/image.php:125
-#: includes/elements/_alternate/tabs.php:44
-#: includes/elements/column/controls.php:31
-msgid "Top"
-msgstr ""
-
-#: includes/elements/_alternate/_column.php:63
-#: includes/elements/_alternate/button.php:159
-#: includes/elements/_alternate/image.php:127
-#: includes/elements/column/controls.php:33
-msgid "Bottom"
+msgid ""
+"Choose a direction to fade from. \"None\" will allow the column to fade in "
+"without coming from a particular direction."
 msgstr ""
 
 #: includes/elements/_alternate/_column.php:72
@@ -1692,13 +1804,14 @@ msgstr ""
 #: includes/elements/_alternate/icon.php:8
 #: includes/elements/_alternate/icon.php:20
 #: includes/elements/icon-list-item/controls.php:18
-#: includes/integrations/x-theme.php:195
+#: includes/integrations/x-theme.php:181
 msgid "Icon"
 msgstr ""
 
 #: includes/elements/_alternate/_icon-list-item.php:31
 #: includes/elements/icon-list-item/controls.php:19
-msgid "Specify the icon you would like to use as the bullet for your Icon List Item."
+msgid ""
+"Specify the icon you would like to use as the bullet for your Icon List Item."
 msgstr ""
 
 #: includes/elements/_alternate/_icon-list-item.php:44
@@ -1838,7 +1951,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_pricing-table-column.php:76
 #: includes/elements/pricing-table-column/controls.php:64
-msgid "Enter the duration for this payment (e.g. \"Weekly,\" \"Per Year,\" et cetera)."
+msgid ""
+"Enter the duration for this payment (e.g. \"Weekly,\" \"Per Year,\" et "
+"cetera)."
 msgstr ""
 
 #: includes/elements/_alternate/_pricing-table-column.php:77
@@ -1999,12 +2114,15 @@ msgstr ""
 
 #: includes/elements/_alternate/_pullquote.php:26
 #: includes/elements/_alternate/blockquote.php:26
-msgid "Enter your quote in the textarea below. If you want to cite your quote, you can place that in the input following the textarea."
+msgid ""
+"Enter your quote in the textarea below. If you want to cite your quote, you "
+"can place that in the input following the textarea."
 msgstr ""
 
 #: includes/elements/_alternate/_pullquote.php:27
 #: includes/elements/_alternate/blockquote.php:27
-msgid "Input your quotation here. Also, you can cite your quotes if you would like."
+msgid ""
+"Input your quotation here. Also, you can cite your quotes if you would like."
 msgstr ""
 
 #: includes/elements/_alternate/_pullquote.php:29
@@ -2073,7 +2191,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:29
 #: includes/elements/responsive-text/definition.php:47
-msgid "Enter in the selector for your Responsive Text (e.g. if your class is \"h-responsive\" enter \".h-responsive\")."
+msgid ""
+"Enter in the selector for your Responsive Text (e.g. if your class is \"h-"
+"responsive\" enter \".h-responsive\")."
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:36
@@ -2083,7 +2203,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:37
 #: includes/elements/responsive-text/definition.php:56
-msgid "Enter the compression for your Responsive Text. Adjust up and down to desired level in small increments (e.g. 0.95, 1.15, et cetera)."
+msgid ""
+"Enter the compression for your Responsive Text. Adjust up and down to "
+"desired level in small increments (e.g. 0.95, 1.15, et cetera)."
 msgstr ""
 
 #: includes/elements/_alternate/_responsive-text.php:44
@@ -2117,7 +2239,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_row.php:22
 #: includes/elements/row/controls.php:15
-msgid "Disabling this control will allow your columns to be as wide as the browser window."
+msgid ""
+"Disabling this control will allow your columns to be as wide as the browser "
+"window."
 msgstr ""
 
 #: includes/elements/_alternate/_row.php:29
@@ -2127,7 +2251,10 @@ msgstr ""
 
 #: includes/elements/_alternate/_row.php:30
 #: includes/elements/row/controls.php:23
-msgid "This will remove the margin around your columns, allowing their borders to be flush with one another. This is often used to create block or grid layouts."
+msgid ""
+"This will remove the margin around your columns, allowing their borders to "
+"be flush with one another. This is often used to create block or grid "
+"layouts."
 msgstr ""
 
 #: includes/elements/_alternate/_row.php:38
@@ -2135,7 +2262,10 @@ msgid "Select the background color of your Row."
 msgstr ""
 
 #: includes/elements/_alternate/_row.php:46
-msgid "Specify the margins for your Row utilizing the controls below. For most situations you will likely want no margin. Can accept CSS units like px, ems, and % (default unit is px)."
+msgid ""
+"Specify the margins for your Row utilizing the controls below. For most "
+"situations you will likely want no margin. Can accept CSS units like px, "
+"ems, and % (default unit is px)."
 msgstr ""
 
 #: includes/elements/_alternate/_section.php:10
@@ -2169,13 +2299,13 @@ msgstr ""
 #: includes/elements/_alternate/image.php:8
 #: includes/elements/_alternate/image.php:176
 #: includes/elements/section/controls.php:22
-#: includes/settings/_alternate/x-settings.php:280
+#: includes/settings/_alternate/x-settings.php:282
 msgid "Image"
 msgstr ""
 
 #: includes/elements/_alternate/_section.php:30
 #: includes/elements/section/controls.php:23
-#: includes/settings/_alternate/x-settings.php:282
+#: includes/settings/_alternate/x-settings.php:284
 msgid "Video"
 msgstr ""
 
@@ -2200,7 +2330,9 @@ msgstr ""
 
 #: includes/elements/_alternate/_section.php:66
 #: includes/elements/section/controls.php:50
-msgid "Background images are resized to fill the entire Section, regardless of screen size. Keep this in mind when using images that are already cropped."
+msgid ""
+"Background images are resized to fill the entire Section, regardless of "
+"screen size. Keep this in mind when using images that are already cropped."
 msgstr ""
 
 #: includes/elements/_alternate/_section.php:79
@@ -2230,7 +2362,11 @@ msgstr ""
 
 #: includes/elements/_alternate/_section.php:106
 #: includes/elements/section/controls.php:80
-msgid "Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv). For performance reasons, videos are not loaded into the editor but are shown live."
+msgid ""
+"Include your video URL(s) here. If using multiple sources, separate them "
+"using the pipe character (|) and place fallbacks towards the end (i.e. .webm "
+"then .mp4 then .ogv). For performance reasons, videos are not loaded into "
+"the editor but are shown live."
 msgstr ""
 
 #: includes/elements/_alternate/_section.php:113
@@ -2240,7 +2376,10 @@ msgid "video.mp4"
 msgstr ""
 
 #: includes/elements/_alternate/_section.php:134
-msgid "Specify the margins for your Section utilizing the controls below. For most situations you will likely want no margin. Can accept CSS units like px, ems, and % (default unit is px)."
+msgid ""
+"Specify the margins for your Section utilizing the controls below. For most "
+"situations you will likely want no margin. Can accept CSS units like px, "
+"ems, and % (default unit is px)."
 msgstr ""
 
 #: includes/elements/_alternate/_text.php:10
@@ -2277,7 +2416,9 @@ msgid "Parent ID"
 msgstr ""
 
 #: includes/elements/_alternate/accordion-item.php:66
-msgid "Optionally include an ID given to the parent accordion to only allow one toggle to be open at a time."
+msgid ""
+"Optionally include an ID given to the parent accordion to only allow one "
+"toggle to be open at a time."
 msgstr ""
 
 #: includes/elements/_alternate/accordion-item.php:72
@@ -2331,7 +2472,9 @@ msgid "Link Items (Requires ID)"
 msgstr ""
 
 #: includes/elements/_alternate/accordion.php:38
-msgid "This will make opening one item close the others. It requires that you set an ID below."
+msgid ""
+"This will make opening one item close the others. It requires that you set "
+"an ID below."
 msgstr ""
 
 #: includes/elements/_alternate/accordion.php:84
@@ -2363,7 +2506,10 @@ msgstr ""
 
 #: includes/elements/_alternate/author.php:32
 #: includes/elements/_alternate/author.php:58
-msgid "By default the author of the post or page will be output by leaving this input blank. If you would like to output the information of another author, enter in their user ID here."
+msgid ""
+"By default the author of the post or page will be output by leaving this "
+"input blank. If you would like to output the information of another author, "
+"enter in their user ID here."
 msgstr ""
 
 #: includes/elements/_alternate/author.php:43
@@ -2482,7 +2628,9 @@ msgid "Icon Placement"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:109
-msgid "Place the icon before or after the button text, or even override the button text."
+msgid ""
+"Place the icon before or after the button text, or even override the button "
+"text."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:115
@@ -2504,7 +2652,8 @@ msgstr ""
 
 #: includes/elements/_alternate/button.php:137
 #: includes/elements/_alternate/button.php:328
-msgid "Select whether or not you want to add a popover or tooltip to your button."
+msgid ""
+"Select whether or not you want to add a popover or tooltip to your button."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:142
@@ -2596,7 +2745,9 @@ msgid "Enter in the URL you want your button to link to."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:313
-msgid "Enter in the title attribute you want for your button (will also double as title for popover or tooltip if you have chosen to display one)."
+msgid ""
+"Enter in the title attribute you want for your button (will also double as "
+"title for popover or tooltip if you have chosen to display one)."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:319
@@ -2616,7 +2767,9 @@ msgid "Lightbox Thumbnail"
 msgstr ""
 
 #: includes/elements/_alternate/button.php:372
-msgid "Use this option to select a thumbnail for your lightbox thumbnail navigation or to set an image if you are linking out to a video."
+msgid ""
+"Use this option to select a thumbnail for your lightbox thumbnail navigation "
+"or to set an image if you are linking out to a video."
 msgstr ""
 
 #: includes/elements/_alternate/button.php:378
@@ -2736,7 +2889,8 @@ msgid "Flip Direction"
 msgstr ""
 
 #: includes/elements/_alternate/card.php:32
-msgid "Specify the animation you would like to use for you Card while it flips."
+msgid ""
+"Specify the animation you would like to use for you Card while it flips."
 msgstr ""
 
 #: includes/elements/_alternate/card.php:48
@@ -2744,7 +2898,9 @@ msgid "Center Vertically"
 msgstr ""
 
 #: includes/elements/_alternate/card.php:49
-msgid "Enabling this control ensures that all of your content is centered vertically in the Card."
+msgid ""
+"Enabling this control ensures that all of your content is centered "
+"vertically in the Card."
 msgstr ""
 
 #: includes/elements/_alternate/card.php:57
@@ -2764,7 +2920,10 @@ msgid "Front Title"
 msgstr ""
 
 #: includes/elements/_alternate/card.php:79
-msgid "This is the content for the front of your Card. You can put anything you like here! Make sure it&apos;s something not too long though. As Shakespeare once said, &ldquo;Brevity is the soul of wit.&rdquo;"
+msgid ""
+"This is the content for the front of your Card. You can put anything you "
+"like here! Make sure it&apos;s something not too long though. As Shakespeare "
+"once said, &ldquo;Brevity is the soul of wit.&rdquo;"
 msgstr ""
 
 #: includes/elements/_alternate/card.php:93
@@ -2924,11 +3083,14 @@ msgid "Code Snippet description."
 msgstr ""
 
 #: includes/elements/_alternate/code.php:24
-msgid "The content you want output. Keep in mind that this shortcode is meant to display code snippets, not output functioning code."
+msgid ""
+"The content you want output. Keep in mind that this shortcode is meant to "
+"display code snippets, not output functioning code."
 msgstr ""
 
 #: includes/elements/_alternate/code.php:25
-msgid "This shortcode is great for outputting code snippets or preformatted text."
+msgid ""
+"This shortcode is great for outputting code snippets or preformatted text."
 msgstr ""
 
 #: includes/elements/_alternate/code.php:34
@@ -2999,7 +3161,9 @@ msgid "Ending Number"
 msgstr ""
 
 #: includes/elements/_alternate/counter.php:33
-msgid "Enter in the number that you would like your counter to end at. This must be higher than your starting number."
+msgid ""
+"Enter in the number that you would like your counter to end at. This must be "
+"higher than your starting number."
 msgstr ""
 
 #: includes/elements/_alternate/counter.php:40
@@ -3078,7 +3242,9 @@ msgstr ""
 
 #: includes/elements/_alternate/counter.php:89
 #: includes/elements/_alternate/counter.php:166
-msgid "Select the color of your text above and below the number if you have include any."
+msgid ""
+"Select the color of your text above and below the number if you have include "
+"any."
 msgstr ""
 
 #: includes/elements/_alternate/counter.php:101
@@ -3086,7 +3252,9 @@ msgid "Include an animated number counter in your content"
 msgstr ""
 
 #: includes/elements/_alternate/counter.php:115
-msgid "Enter int he number that you would like your counter to end at. This must be higher than your starting number."
+msgid ""
+"Enter int he number that you would like your counter to end at. This must be "
+"higher than your starting number."
 msgstr ""
 
 #: includes/elements/_alternate/creative-cta.php:8
@@ -3240,7 +3408,9 @@ msgstr ""
 #: includes/elements/_alternate/custom-headline.php:53
 #: includes/elements/_alternate/feature-headline.php:53
 #: includes/elements/_alternate/text-type.php:78
-msgid "Allows you to alter the appearance of the heading, while still outputting it as a different HTML tag."
+msgid ""
+"Allows you to alter the appearance of the heading, while still outputting it "
+"as a different HTML tag."
 msgstr ""
 
 #: includes/elements/_alternate/custom-headline.php:63
@@ -3288,7 +3458,8 @@ msgstr ""
 #: includes/elements/_alternate/embedded-audio.php:22
 #: includes/elements/_alternate/embedded-video.php:22
 #: includes/elements/_alternate/map-embed.php:22
-msgid "Input your &lt;iframe&gt; or &lt;embed&gt; code from a third party service."
+msgid ""
+"Input your &lt;iframe&gt; or &lt;embed&gt; code from a third party service."
 msgstr ""
 
 #: includes/elements/_alternate/embedded-audio.php:32
@@ -3305,7 +3476,7 @@ msgstr ""
 #: includes/elements/_alternate/self-hosted-video.php:133
 #: includes/elements/_alternate/slide.php:44
 #: includes/elements/_alternate/slider.php:126
-#: includes/settings/_alternate/x-settings.php:364
+#: includes/settings/_alternate/x-settings.php:366
 msgid "Media"
 msgstr ""
 
@@ -3323,7 +3494,9 @@ msgstr ""
 #: includes/elements/_alternate/embedded-audio.php:40
 #: includes/elements/_alternate/embedded-video.php:65
 #: includes/elements/_alternate/map-embed.php:48
-msgid "Switch to the \"text\" editor and do not place anything else here other than your &lsaquo;iframe&rsaquo; or &lsaquo;embed&rsaquo; code."
+msgid ""
+"Switch to the \"text\" editor and do not place anything else here other than "
+"your &lsaquo;iframe&rsaquo; or &lsaquo;embed&rsaquo; code."
 msgstr ""
 
 #: includes/elements/_alternate/embedded-video.php:8
@@ -3464,7 +3637,9 @@ msgid "Feature Box Title"
 msgstr ""
 
 #: includes/elements/_alternate/feature-box.php:34
-msgid "This is where the text for your Feature Box should go. It&apos;s best to keep it short and sweet."
+msgid ""
+"This is where the text for your Feature Box should go. It&apos;s best to "
+"keep it short and sweet."
 msgstr ""
 
 #: includes/elements/_alternate/feature-box.php:43
@@ -3581,7 +3756,9 @@ msgstr ""
 
 #: includes/elements/_alternate/feature-box.php:292
 #: includes/elements/_alternate/feature-list.php:120
-msgid "Specify an amount of spacing you want between your side graphic and the content."
+msgid ""
+"Specify an amount of spacing you want between your side graphic and the "
+"content."
 msgstr ""
 
 #: includes/elements/_alternate/feature-box.php:304
@@ -3590,7 +3767,9 @@ msgid "Max Width"
 msgstr ""
 
 #: includes/elements/_alternate/feature-box.php:305
-msgid "Enter in a max width for your Feature Box if desired. This will keep your Feature Box from stretching out too far on smaller breakpoints."
+msgid ""
+"Enter in a max width for your Feature Box if desired. This will keep your "
+"Feature Box from stretching out too far on smaller breakpoints."
 msgstr ""
 
 #: includes/elements/_alternate/feature-headline.php:8
@@ -3635,7 +3814,9 @@ msgid "Specify the content for your Feature List Item."
 msgstr ""
 
 #: includes/elements/_alternate/feature-list-item.php:36
-msgid "This is where the text for your Feature List Item should go. It&apos;s best to keep it short and sweet."
+msgid ""
+"This is where the text for your Feature List Item should go. It&apos;s best "
+"to keep it short and sweet."
 msgstr ""
 
 #: includes/elements/_alternate/feature-list-item.php:67
@@ -3685,7 +3866,9 @@ msgstr ""
 #: includes/elements/_alternate/feature-list.php:26
 #: includes/elements/_alternate/feature-list.php:34
 #: includes/elements/_alternate/feature-list.php:42
-msgid "This is an Feature List Item that is part of an Feature List. Notice the connector between the three graphics to show that they are related."
+msgid ""
+"This is an Feature List Item that is part of an Feature List. Notice the "
+"connector between the three graphics to show that they are related."
 msgstr ""
 
 #: includes/elements/_alternate/feature-list.php:51
@@ -3693,7 +3876,9 @@ msgid "Feature List Item %s"
 msgstr ""
 
 #: includes/elements/_alternate/feature-list.php:64
-msgid "Choose between an icon, a custom image, or incremental numbers for your graphic."
+msgid ""
+"Choose between an icon, a custom image, or incremental numbers for your "
+"graphic."
 msgstr ""
 
 #: includes/elements/_alternate/feature-list.php:70
@@ -3709,7 +3894,9 @@ msgid "Select the vertical alignment of the Feature List Item."
 msgstr ""
 
 #: includes/elements/_alternate/feature-list.php:128
-msgid "Enter in a max width for your Feature List Item if desired. This will keep your Feature List Item from stretching out too far on smaller breakpoints."
+msgid ""
+"Enter in a max width for your Feature List Item if desired. This will keep "
+"your Feature List Item from stretching out too far on smaller breakpoints."
 msgstr ""
 
 #: includes/elements/_alternate/feature-list.php:140
@@ -3747,7 +3934,9 @@ msgstr ""
 
 #: includes/elements/_alternate/gap.php:25
 #: includes/elements/_alternate/gap.php:44
-msgid "Enter in the size of your gap. Pixels, ems, and percentages are all valid units of measurement."
+msgid ""
+"Enter in the size of your gap. Pixels, ems, and percentages are all valid "
+"units of measurement."
 msgstr ""
 
 #: includes/elements/_alternate/gap.php:38
@@ -3790,7 +3979,9 @@ msgid "Enter in optional text to appear if your map marker is hovered over."
 msgstr ""
 
 #: includes/elements/_alternate/google-map-marker.php:54
-msgid "Upload an optional alternate image to use in place of the standard map marker."
+msgid ""
+"Upload an optional alternate image to use in place of the standard map "
+"marker."
 msgstr ""
 
 #: includes/elements/_alternate/google-map-marker.php:68
@@ -3810,7 +4001,9 @@ msgid "Additional Information"
 msgstr ""
 
 #: includes/elements/_alternate/google-map-marker.php:86
-msgid "Optional description text to appear in a popup when your marker is clicked on."
+msgid ""
+"Optional description text to appear in a popup when your marker is clicked "
+"on."
 msgstr ""
 
 #: includes/elements/_alternate/google-map-marker.php:91
@@ -3818,7 +4011,8 @@ msgid "Custom Marker Image"
 msgstr ""
 
 #: includes/elements/_alternate/google-map-marker.php:92
-msgid "Utilize a custom marker image instead of the default provided by Google."
+msgid ""
+"Utilize a custom marker image instead of the default provided by Google."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:8
@@ -3882,7 +4076,9 @@ msgid "Height"
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:74
-msgid "Specify a custom height for your map if desired. You may use pixels, ems, or percentages."
+msgid ""
+"Specify a custom height for your map if desired. You may use pixels, ems, or "
+"percentages."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:81
@@ -3890,7 +4086,9 @@ msgid "Map Hue"
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:82
-msgid "Specifying a hexadecimal map hue will give your map a different color palette."
+msgid ""
+"Specifying a hexadecimal map hue will give your map a different color "
+"palette."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:93
@@ -3921,7 +4119,9 @@ msgid "Zoom Level"
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:132
-msgid "Choose the initial zoom level of your map. This value should be between 1 and 18. 1 is fully zoomed out and 18 is right at street level."
+msgid ""
+"Choose the initial zoom level of your map. This value should be between 1 "
+"and 18. 1 is fully zoomed out and 18 is right at street level."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:138
@@ -3929,7 +4129,10 @@ msgid "Select to activate the zoom control for the map."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:145
-msgid "Choose an optional height for your map. If no height is selected, a responsive, proportional unit will be used. Any type of unit is acceptable (e.g. 450px, 30em, 40%, et cetera)."
+msgid ""
+"Choose an optional height for your map. If no height is selected, a "
+"responsive, proportional unit will be used. Any type of unit is acceptable "
+"(e.g. 450px, 30em, 40%, et cetera)."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:150
@@ -3949,7 +4152,10 @@ msgid "Display issues?"
 msgstr ""
 
 #: includes/elements/_alternate/gravity-forms.php:15
-msgid "<strong>Gravity Forms</strong> uses it&apos;s own dynamic process to render forms, which could result in visual differences in the preview area. Be sure to test by viewing the true front end of this page."
+msgid ""
+"<strong>Gravity Forms</strong> uses it&apos;s own dynamic process to render "
+"forms, which could result in visual differences in the preview area. Be sure "
+"to test by viewing the true front end of this page."
 msgstr ""
 
 #: includes/elements/_alternate/gravity-forms.php:42
@@ -3990,7 +4196,7 @@ msgid "Select the image style."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:27
-#: includes/settings/_alternate/x-settings.php:363
+#: includes/settings/_alternate/x-settings.php:365
 msgid "Thumbnail"
 msgstr ""
 
@@ -4022,7 +4228,8 @@ msgstr ""
 
 #: includes/elements/_alternate/image.php:102
 #: includes/elements/_alternate/image.php:245
-msgid "Select whether or not you want to add a popover or tooltip to your image."
+msgid ""
+"Select whether or not you want to add a popover or tooltip to your image."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:178
@@ -4038,11 +4245,17 @@ msgid "Enter in the alt text for your image."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:226
-msgid "Enter in the URL you want your image to link to. If using this image for a lightbox, enter the URL of your media here (e.g. YouTube embed URL, et cetera). Leave this field blank if you want to link to the image uploaded to the \"Src\" for your lightbox."
+msgid ""
+"Enter in the URL you want your image to link to. If using this image for a "
+"lightbox, enter the URL of your media here (e.g. YouTube embed URL, et "
+"cetera). Leave this field blank if you want to link to the image uploaded to "
+"the \"Src\" for your lightbox."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:232
-msgid "Enter in the title attribute you want for your image (will also double as title for popover or tooltip if you have chosen to display one)."
+msgid ""
+"Enter in the title attribute you want for your image (will also double as "
+"title for popover or tooltip if you have chosen to display one)."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:238
@@ -4050,7 +4263,10 @@ msgid "Select to open your image link in a new window."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:285
-msgid "Use this option to select a different thumbnail for your lightbox thumbnail navigation or to set an image if you are linking out to a video. Will default to the \"Src\" image if nothing is set."
+msgid ""
+"Use this option to select a different thumbnail for your lightbox thumbnail "
+"navigation or to set an image if you are linking out to a video. Will "
+"default to the \"Src\" image if nothing is set."
 msgstr ""
 
 #: includes/elements/_alternate/image.php:291
@@ -4143,7 +4359,9 @@ msgid "Promo Image &amp; Alt Text"
 msgstr ""
 
 #: includes/elements/_alternate/promo.php:33
-msgid "Include an image for your Promo element and provide the alt text in the input below. Alt text is used to describe an image to search engines."
+msgid ""
+"Include an image for your Promo element and provide the alt text in the "
+"input below. Alt text is used to describe an image to search engines."
 msgstr ""
 
 #: includes/elements/_alternate/promo.php:54
@@ -4233,7 +4451,9 @@ msgid "Protect description."
 msgstr ""
 
 #: includes/elements/_alternate/protect.php:22
-msgid "Enter the text to go inside your Protect shortcode. This will only be visible to users who are logged in."
+msgid ""
+"Enter the text to go inside your Protect shortcode. This will only be "
+"visible to users who are logged in."
 msgstr ""
 
 #: includes/elements/_alternate/protect.php:34
@@ -4253,11 +4473,17 @@ msgid "Using Javascript?"
 msgstr ""
 
 #: includes/elements/_alternate/raw-content.php:13
-msgid "We recommend using <strong>Custom JS</strong> in <strong class=\"glue\">%s Settings</strong>. Be sure to test on the front end, as it may not work as expected in the preview."
+msgid ""
+"We recommend using <strong>Custom JS</strong> in <strong class=\"glue\">%s "
+"Settings</strong>. Be sure to test on the front end, as it may not work as "
+"expected in the preview."
 msgstr ""
 
 #: includes/elements/_alternate/raw-content.php:26
-msgid "Accepts shortcodes and no special formatting is applied to this output. Keep in mind if your markup is empty or styled in a way that you cannot see it and you click away, you will not be able to get back to this element."
+msgid ""
+"Accepts shortcodes and no special formatting is applied to this output. Keep "
+"in mind if your markup is empty or styled in a way that you cannot see it "
+"and you click away, you will not be able to get back to this element."
 msgstr ""
 
 #: includes/elements/_alternate/recent-posts.php:8
@@ -4304,7 +4530,10 @@ msgstr ""
 
 #: includes/elements/_alternate/recent-posts.php:67
 #: includes/elements/_alternate/recent-posts.php:154
-msgid "To filter your posts by category, enter in the slug of your desired category. To filter by multiple categories, enter in your slugs separated by a comma."
+msgid ""
+"To filter your posts by category, enter in the slug of your desired "
+"category. To filter by multiple categories, enter in your slugs separated by "
+"a comma."
 msgstr ""
 
 #: includes/elements/_alternate/recent-posts.php:74
@@ -4398,7 +4627,10 @@ msgid "Audio Player description."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-audio.php:22
-msgid "Include your audio URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .mp3 then .ogg)."
+msgid ""
+"Include your audio URL(s) here. If using multiple sources, separate them "
+"using the pipe character (|) and place fallbacks towards the end (i.e. .mp3 "
+"then .ogg)."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-audio.php:26
@@ -4420,7 +4652,10 @@ msgid "Preload"
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-audio.php:58
-msgid "Specifies if and how the audio should be loaded when the page loads. \"None\" means the audio is not loaded when the page loads, \"Auto\" loads the audio entirely, and \"Metadata\" loads only metadata."
+msgid ""
+"Specifies if and how the audio should be loaded when the page loads. \"None"
+"\" means the audio is not loaded when the page loads, \"Auto\" loads the "
+"audio entirely, and \"Metadata\" loads only metadata."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-audio.php:63
@@ -4469,7 +4704,8 @@ msgid "OGA"
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-audio.php:106
-msgid "Include and .oga version of your audio for additional native browser support."
+msgid ""
+"Include and .oga version of your audio for additional native browser support."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-video.php:8
@@ -4487,7 +4723,10 @@ msgstr ""
 #: includes/elements/_alternate/self-hosted-video.php:22
 #: includes/settings/_alternate/slider-above.php:59
 #: includes/settings/_alternate/slider-below.php:59
-msgid "Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv)."
+msgid ""
+"Include your video URL(s) here. If using multiple sources, separate them "
+"using the pipe character (|) and place fallbacks towards the end (i.e. .webm "
+"then .mp4 then .ogv)."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-video.php:74
@@ -4506,7 +4745,10 @@ msgid "Select to automatically play your self-hosted video."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-video.php:99
-msgid "Specifies if and how the video should be loaded when the page loads. \"None\" means the video is not loaded when the page loads, \"Auto\" loads the video entirely, and \"Metadata\" loads only metadata."
+msgid ""
+"Specifies if and how the video should be loaded when the page loads. \"None"
+"\" means the video is not loaded when the page loads, \"Auto\" loads the "
+"video entirely, and \"Metadata\" loads only metadata."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-video.php:114
@@ -4538,7 +4780,8 @@ msgid "OGV"
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-video.php:159
-msgid "Include and .ogv version of your video for additional native browser support."
+msgid ""
+"Include and .ogv version of your video for additional native browser support."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-video.php:164
@@ -4572,7 +4815,9 @@ msgid "Percent"
 msgstr ""
 
 #: includes/elements/_alternate/skill-bar.php:33
-msgid "Enter the percentage of your skill and be sure to include the percentage sign (e.g. 90%)."
+msgid ""
+"Enter the percentage of your skill and be sure to include the percentage "
+"sign (e.g. 90%)."
 msgstr ""
 
 #: includes/elements/_alternate/skill-bar.php:40
@@ -4581,7 +4826,8 @@ msgid "Bar Text"
 msgstr ""
 
 #: includes/elements/_alternate/skill-bar.php:41
-msgid "Enter in some alternate text in place of the percentage inside the Skill Bar."
+msgid ""
+"Enter in some alternate text in place of the percentage inside the Skill Bar."
 msgstr ""
 
 #: includes/elements/_alternate/skill-bar.php:48
@@ -4601,11 +4847,14 @@ msgid "Enter the heading of your skill bar."
 msgstr ""
 
 #: includes/elements/_alternate/skill-bar.php:73
-msgid "Enter the percentage of your skill and be sure to include the percentage sign (i.e. 90%)."
+msgid ""
+"Enter the percentage of your skill and be sure to include the percentage "
+"sign (i.e. 90%)."
 msgstr ""
 
 #: includes/elements/_alternate/skill-bar.php:79
-msgid "Enter in some alternate text in place of the percentage inside the skill bar."
+msgid ""
+"Enter in some alternate text in place of the percentage inside the skill bar."
 msgstr ""
 
 #: includes/elements/_alternate/slide.php:8
@@ -4670,7 +4919,9 @@ msgid "Animation Speed"
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:52
-msgid "The amount of time in milliseconds the transition between each slide should take."
+msgid ""
+"The amount of time in milliseconds the transition between each slide should "
+"take."
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:59
@@ -4679,7 +4930,9 @@ msgid "Slideshow"
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:60
-msgid "Enabling this control will have your slider automatically cycle through like a slideshow."
+msgid ""
+"Enabling this control will have your slider automatically cycle through like "
+"a slideshow."
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:67
@@ -4687,7 +4940,9 @@ msgid "Slide Duration"
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:68
-msgid "The amount of time in milliseconds each slide should remain visible before transitioning to the next one."
+msgid ""
+"The amount of time in milliseconds each slide should remain visible before "
+"transitioning to the next one."
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:80
@@ -4696,7 +4951,8 @@ msgid "Random"
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:81
-msgid "Select to have your slider appear in a random order each time the page loads."
+msgid ""
+"Select to have your slider appear in a random order each time the page loads."
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:88
@@ -4705,7 +4961,9 @@ msgid "Control Navigation"
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:89
-msgid "Select to enable the control navigation, which displays how many slides you have in your slider."
+msgid ""
+"Select to enable the control navigation, which displays how many slides you "
+"have in your slider."
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:96
@@ -4713,7 +4971,9 @@ msgid "Prev/Next Navigation"
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:97
-msgid "Select to enable the prev/next navigation, which displays two arrows for you to cycle through the slides in your slider."
+msgid ""
+"Select to enable the prev/next navigation, which displays two arrows for you "
+"to cycle through the slides in your slider."
 msgstr ""
 
 #: includes/elements/_alternate/slider.php:105
@@ -4798,7 +5058,9 @@ msgid "Share Title"
 msgstr ""
 
 #: includes/elements/_alternate/social-sharing.php:29
-msgid "Enter in the title that displays when you share the page. The default is the Page title."
+msgid ""
+"Enter in the title that displays when you share the page. The default is the "
+"Page title."
 msgstr ""
 
 #: includes/elements/_alternate/social-sharing.php:36
@@ -4904,7 +5166,9 @@ msgid "Initial Active Tab"
 msgstr ""
 
 #: includes/elements/_alternate/tab.php:39
-msgid "Only one tab must be specified as the initial active Tab. If no active Tab or multiple active Tabs are specified, there will be layout errors."
+msgid ""
+"Only one tab must be specified as the initial active Tab. If no active Tab "
+"or multiple active Tabs are specified, there will be layout errors."
 msgstr ""
 
 #: includes/elements/_alternate/tabs.php:8
@@ -4927,7 +5191,12 @@ msgstr ""
 
 #: includes/elements/_alternate/tabs.php:24
 #: includes/elements/_alternate/tabs.php:25
-msgid "The content for your Tab goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium, nisi ut volutpat mollis, leo risus interdum arcu, eget facilisis quam felis id mauris. Ut convallis, lacus nec ornare volutpat, velit turpis scelerisque purus, quis mollis velit purus ac massa. Fusce quis urna metus. Donec et lacus et sem lacinia cursus."
+msgid ""
+"The content for your Tab goes here. Lorem ipsum dolor sit amet, consectetur "
+"adipiscing elit. Pellentesque pretium, nisi ut volutpat mollis, leo risus "
+"interdum arcu, eget facilisis quam felis id mauris. Ut convallis, lacus nec "
+"ornare volutpat, velit turpis scelerisque purus, quis mollis velit purus ac "
+"massa. Fusce quis urna metus. Donec et lacus et sem lacinia cursus."
 msgstr ""
 
 #: includes/elements/_alternate/tabs.php:25
@@ -4959,7 +5228,8 @@ msgid "Tab Nav Items Per Row"
 msgstr ""
 
 #: includes/elements/_alternate/tabs.php:67
-msgid "If your tab nav is on top, select how many tab nav items you want per row."
+msgid ""
+"If your tab nav is on top, select how many tab nav items you want per row."
 msgstr ""
 
 #: includes/elements/_alternate/tabs.php:78
@@ -5016,7 +5286,9 @@ msgid "Prefix, Strings, &amp; Suffix"
 msgstr ""
 
 #: includes/elements/_alternate/text-type.php:30
-msgid "Enter in your prefix text in the first input and suffix text in the last input. Typing strings go in the textarea and are separated by a new line."
+msgid ""
+"Enter in your prefix text in the first input and suffix text in the last "
+"input. Typing strings go in the textarea and are separated by a new line."
 msgstr ""
 
 #: includes/elements/_alternate/text-type.php:31
@@ -5137,7 +5409,9 @@ msgid "Select the alignment of your table of contents."
 msgstr ""
 
 #: includes/elements/_alternate/toc.php:50
-msgid "Select a column count for your links if you have chosen \"Fullwidth\" as your alignment."
+msgid ""
+"Select a column count for your links if you have chosen \"Fullwidth\" as "
+"your alignment."
 msgstr ""
 
 #: includes/elements/_alternate/visibility.php:8
@@ -5186,7 +5460,10 @@ msgid "Column Layout &ndash; %%title%%"
 msgstr ""
 
 #: includes/elements/row/controls.php:40
-msgid "Choose from one of our predefined column layouts, or specify your own using the input below. Columns cannot be any smaller than 1/6 and must add up to a whole."
+msgid ""
+"Choose from one of our predefined column layouts, or specify your own using "
+"the input below. Columns cannot be any smaller than 1/6 and must add up to a "
+"whole."
 msgstr ""
 
 #: includes/elements/row/controls.php:49
@@ -5198,7 +5475,9 @@ msgid "Click and drag to reorder your columns."
 msgstr ""
 
 #: includes/elements/section/controls.php:101
-msgid "Choose a layout, click the <strong class=\"glue\">%%icon-nav-elements-solid%% Elements</strong> icon above, then drag elements into a column."
+msgid ""
+"Choose a layout, click the <strong class=\"glue\">%%icon-nav-elements-solid%"
+"% Elements</strong> icon above, then drag elements into a column."
 msgstr ""
 
 #: includes/elements/undefined/definition.php:11
@@ -5210,39 +5489,68 @@ msgid "Where did it go?"
 msgstr ""
 
 #: includes/elements/undefined/definition.php:26
-msgid "The element that calls itself <strong>%%element-type%%</strong> could not be found. It was probably registered by a plugin not currently active on your site. <br/><br/>Not to worry, the settings have been preserved in hope of this element&apos;s return."
+msgid ""
+"The element that calls itself <strong>%%element-type%%</strong> could not be "
+"found. It was probably registered by a plugin not currently active on your "
+"site. <br/><br/>Not to worry, the settings have been preserved in hope of "
+"this element&apos;s return."
 msgstr ""
 
 #: includes/integrations/x-shortcodes.php:27
-msgid "<strong>X &ndash; Shortcodes has been deactivated</strong>. Cornerstone will now provide your site with those shortcodes, and many new ones."
+msgid ""
+"<strong>X &ndash; Shortcodes has been deactivated</strong>. Cornerstone will "
+"now provide your site with those shortcodes, and many new ones."
 msgstr ""
 
-#: includes/integrations/x-theme.php:193
+#: includes/integrations/x-theme.php:167
+msgid "Facebook Profile"
+msgstr ""
+
+#: includes/integrations/x-theme.php:168
+msgid "Twitter Profile"
+msgstr ""
+
+#: includes/integrations/x-theme.php:169
+msgid "Google+ Profile"
+msgstr ""
+
+#: includes/integrations/x-theme.php:179
 msgid "Integrity"
 msgstr ""
 
-#: includes/integrations/x-theme.php:194
+#: includes/integrations/x-theme.php:180
 msgid "Renew"
 msgstr ""
 
-#: includes/integrations/x-theme.php:196
+#: includes/integrations/x-theme.php:182
 msgid "Ethos"
 msgstr ""
 
-#: includes/integrations/x-theme.php:203
-msgid "You&apos;re using %s. Click the button below to check out a live example of this shortcode when using this Stack."
+#: includes/integrations/x-theme.php:189
+msgid ""
+"You&apos;re using %s. Click the button below to check out a live example of "
+"this shortcode when using this Stack."
 msgstr ""
 
-#: includes/integrations/x-theme.php:249 includes/integrations/x-theme.php:284
+#: includes/integrations/x-theme.php:235 includes/integrations/x-theme.php:270
 msgid "Enable Legacy Font Classes"
 msgstr ""
 
-#: includes/integrations/x-theme.php:250
+#: includes/integrations/x-theme.php:236
 msgid "Check to enable legacy font classes."
 msgstr ""
 
-#: includes/integrations/x-theme.php:285
-msgid "X no longer provides the <strong>.x-icon*</strong> classes. This was done for performance reasons. If you need these classes, you can enable them again with this setting."
+#: includes/integrations/x-theme.php:241
+#: includes/views/admin/mb-settings.php:40
+#: includes/views/admin/mb-settings.php:54
+msgid "Enable"
+msgstr ""
+
+#: includes/integrations/x-theme.php:271
+msgid ""
+"X no longer provides the <strong>.x-icon*</strong> classes. This was done "
+"for performance reasons. If you need these classes, you can enable them "
+"again with this setting."
 msgstr ""
 
 #: includes/settings/_alternate/slider-above.php:8
@@ -5251,12 +5559,15 @@ msgstr ""
 
 #: includes/settings/_alternate/slider-above.php:32
 #: includes/settings/_alternate/slider-below.php:32
+#: includes/settings/_alternate/x-settings.php:148
 msgid "Deactivated"
 msgstr ""
 
 #: includes/settings/_alternate/slider-above.php:47
 #: includes/settings/_alternate/slider-below.php:47
-msgid "To activate your slider, select an option from the dropdown. To deactivate your slider, set the dropdown back to \"Deactivated.\""
+msgid ""
+"To activate your slider, select an option from the dropdown. To deactivate "
+"your slider, set the dropdown back to \"Deactivated.\""
 msgstr ""
 
 #: includes/settings/_alternate/slider-above.php:58
@@ -5271,7 +5582,11 @@ msgstr ""
 
 #: includes/settings/_alternate/slider-above.php:70
 #: includes/settings/_alternate/slider-below.php:70
-msgid "Click the button to upload your video poster image to show on mobile devices, or enter it in manually using the text field above. Only select one image for this field. To clear, delete the image URL from the text field and save your page."
+msgid ""
+"Click the button to upload your video poster image to show on mobile "
+"devices, or enter it in manually using the text field above. Only select one "
+"image for this field. To clear, delete the image URL from the text field and "
+"save your page."
 msgstr ""
 
 #: includes/settings/_alternate/slider-above.php:80
@@ -5282,6 +5597,36 @@ msgstr ""
 #: includes/settings/_alternate/slider-above.php:81
 #: includes/settings/_alternate/slider-below.php:81
 msgid "Select to enable the scroll bottom anchor for your slider."
+msgstr ""
+
+#: includes/settings/_alternate/slider-above.php:89
+#: includes/settings/_alternate/slider-below.php:89
+msgid "Top Left"
+msgstr ""
+
+#: includes/settings/_alternate/slider-above.php:90
+#: includes/settings/_alternate/slider-below.php:90
+msgid "Top Center"
+msgstr ""
+
+#: includes/settings/_alternate/slider-above.php:91
+#: includes/settings/_alternate/slider-below.php:91
+msgid "Top Right"
+msgstr ""
+
+#: includes/settings/_alternate/slider-above.php:92
+#: includes/settings/_alternate/slider-below.php:92
+msgid "Bottom Left"
+msgstr ""
+
+#: includes/settings/_alternate/slider-above.php:93
+#: includes/settings/_alternate/slider-below.php:93
+msgid "Bottom Center"
+msgstr ""
+
+#: includes/settings/_alternate/slider-above.php:94
+#: includes/settings/_alternate/slider-below.php:94
+msgid "Bottom Right"
 msgstr ""
 
 #: includes/settings/_alternate/slider-above.php:100
@@ -5324,14 +5669,16 @@ msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:38
 #: includes/settings/_alternate/x-settings.php:116
-#: includes/settings/_alternate/x-settings.php:216
+#: includes/settings/_alternate/x-settings.php:218
 msgid "Body CSS Class(es)"
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:39
 #: includes/settings/_alternate/x-settings.php:117
-#: includes/settings/_alternate/x-settings.php:217
-msgid "Add a custom CSS class to the &lt;body&gt; element. Separate multiple class names with a space."
+#: includes/settings/_alternate/x-settings.php:219
+msgid ""
+"Add a custom CSS class to the &lt;body&gt; element. Separate multiple class "
+"names with a space."
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:49
@@ -5339,55 +5686,66 @@ msgid "Fullwidth Post Layout"
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:50
-msgid "If your global content layout includes a sidebar, selecting this option will remove the sidebar for this post."
+msgid ""
+"If your global content layout includes a sidebar, selecting this option will "
+"remove the sidebar for this post."
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:60
 #: includes/settings/_alternate/x-settings.php:127
-#: includes/settings/_alternate/x-settings.php:227
+#: includes/settings/_alternate/x-settings.php:229
 msgid "Alternate Index Title"
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:61
 #: includes/settings/_alternate/x-settings.php:128
-#: includes/settings/_alternate/x-settings.php:228
-msgid "Filling out this text input will replace the standard title on all index pages (i.e. blog, category archives, search, et cetera) with this one."
+#: includes/settings/_alternate/x-settings.php:230
+msgid ""
+"Filling out this text input will replace the standard title on all index "
+"pages (i.e. blog, category archives, search, et cetera) with this one."
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:71
-#: includes/settings/_alternate/x-settings.php:171
-#: includes/settings/_alternate/x-settings.php:384
+#: includes/settings/_alternate/x-settings.php:173
+#: includes/settings/_alternate/x-settings.php:386
 msgid "Background Image(s)"
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:72
-#: includes/settings/_alternate/x-settings.php:172
-#: includes/settings/_alternate/x-settings.php:385
-msgid "Enter a single URL, or multiple comma separated URLs. Loading multiple background images will create a slideshow effect. To clear, delete the image URLs from the text field and save your page."
+#: includes/settings/_alternate/x-settings.php:174
+#: includes/settings/_alternate/x-settings.php:387
+msgid ""
+"Enter a single URL, or multiple comma separated URLs. Loading multiple "
+"background images will create a slideshow effect. To clear, delete the image "
+"URLs from the text field and save your page."
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:85
-#: includes/settings/_alternate/x-settings.php:185
-#: includes/settings/_alternate/x-settings.php:398
+#: includes/settings/_alternate/x-settings.php:187
+#: includes/settings/_alternate/x-settings.php:400
 msgid "Background Image(s) Fade"
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:86
-#: includes/settings/_alternate/x-settings.php:186
-#: includes/settings/_alternate/x-settings.php:399
-msgid "Set a time in milliseconds for your image(s) to fade in. To disable this feature, set the value to \"0.\""
+#: includes/settings/_alternate/x-settings.php:188
+#: includes/settings/_alternate/x-settings.php:401
+msgid ""
+"Set a time in milliseconds for your image(s) to fade in. To disable this "
+"feature, set the value to \"0.\""
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:99
-#: includes/settings/_alternate/x-settings.php:199
-#: includes/settings/_alternate/x-settings.php:412
+#: includes/settings/_alternate/x-settings.php:201
+#: includes/settings/_alternate/x-settings.php:414
 msgid "Background Images Duration"
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:100
-#: includes/settings/_alternate/x-settings.php:200
-#: includes/settings/_alternate/x-settings.php:413
-msgid "Only applicable if multiple images are selected, creating a background image slider. Set a time in milliseconds for your images to remain on screen."
+#: includes/settings/_alternate/x-settings.php:202
+#: includes/settings/_alternate/x-settings.php:415
+msgid ""
+"Only applicable if multiple images are selected, creating a background image "
+"slider. Set a time in milliseconds for your images to remain on screen."
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:138
@@ -5395,88 +5753,111 @@ msgid "Disable Page Title"
 msgstr ""
 
 #: includes/settings/_alternate/x-settings.php:139
-msgid "Select to disable the page title. Disabling the page title provides greater stylistic flexibility on individual pages."
+msgid ""
+"Select to disable the page title. Disabling the page title provides greater "
+"stylistic flexibility on individual pages."
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:159
+#: includes/settings/_alternate/x-settings.php:161
 msgid "One Page Navigation"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:160
-msgid "To activate your one page navigation, select a menu from the dropdown. To deactivate one page navigation, set the dropdown back to \"Deactivated.\""
+#: includes/settings/_alternate/x-settings.php:162
+msgid ""
+"To activate your one page navigation, select a menu from the dropdown. To "
+"deactivate one page navigation, set the dropdown back to \"Deactivated.\""
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:262
+#: includes/settings/_alternate/x-settings.php:264
 msgid "Portfolio Parent"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:263
-msgid "Assign the parent portfolio page for this portfolio item. This will be used in various places throughout the theme such as your breadcrumbs. If \"Default\" is selected then the first page with the \"Layout - Portfolio\" template assigned to it will be used."
+#: includes/settings/_alternate/x-settings.php:265
+msgid ""
+"Assign the parent portfolio page for this portfolio item. This will be used "
+"in various places throughout the theme such as your breadcrumbs. If \"Default"
+"\" is selected then the first page with the \"Layout - Portfolio\" template "
+"assigned to it will be used."
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:275
+#: includes/settings/_alternate/x-settings.php:277
 msgid "Media Type"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:276
-msgid "Select which kind of media you want to display for your portfolio. If selecting a \"Gallery,\" simply upload your images to this post and organize them in the order you want them to display."
+#: includes/settings/_alternate/x-settings.php:278
+msgid ""
+"Select which kind of media you want to display for your portfolio. If "
+"selecting a \"Gallery,\" simply upload your images to this post and organize "
+"them in the order you want them to display."
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:281
+#: includes/settings/_alternate/x-settings.php:283
 msgid "Gallery"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:292
+#: includes/settings/_alternate/x-settings.php:294
 msgid "Video Aspect Ratio"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:293
-msgid "If selecting \"Video,\" choose the aspect ratio you would like for your video."
+#: includes/settings/_alternate/x-settings.php:295
+msgid ""
+"If selecting \"Video,\" choose the aspect ratio you would like for your "
+"video."
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:313
+#: includes/settings/_alternate/x-settings.php:315
 msgid "M4V File URL"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:314
+#: includes/settings/_alternate/x-settings.php:316
 msgid "If selecting \"Video,\" place the URL to your .m4v video file here."
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:327
+#: includes/settings/_alternate/x-settings.php:329
 msgid "OGV File URL"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:328
+#: includes/settings/_alternate/x-settings.php:330
 msgid "If selecting \"Video,\" place the URL to your .ogv video file here."
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:343
+#: includes/settings/_alternate/x-settings.php:345
 msgid "Embedded Video Code"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:344
-msgid "If you are using something other than self hosted video such as YouTube, Vimeo, or Wistia, paste the embed code here. This field will override the above."
+#: includes/settings/_alternate/x-settings.php:346
+msgid ""
+"If you are using something other than self hosted video such as YouTube, "
+"Vimeo, or Wistia, paste the embed code here. This field will override the "
+"above."
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:358
+#: includes/settings/_alternate/x-settings.php:360
 msgid "Featured Content"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:359
-msgid "Select \"Media\" if you would like to show your video or gallery on the index page in place of the featured image."
+#: includes/settings/_alternate/x-settings.php:361
+msgid ""
+"Select \"Media\" if you would like to show your video or gallery on the "
+"index page in place of the featured image."
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:373
+#: includes/settings/_alternate/x-settings.php:375
 msgid "Project Link"
 msgstr ""
 
-#: includes/settings/_alternate/x-settings.php:374
-msgid "Provide an external link to the project you worked on if one is available."
+#: includes/settings/_alternate/x-settings.php:376
+msgid ""
+"Provide an external link to the project you worked on if one is available."
 msgstr ""
 
 #: includes/settings/customizer/definition.php:17
 #: includes/settings/customizer/definition.php:28
 msgid "Customizer"
+msgstr ""
+
+#: includes/settings/customizer/definition.php:29
+msgid "Looking for global styling?"
 msgstr ""
 
 #: includes/settings/customizer/definition.php:29
@@ -5496,7 +5877,9 @@ msgid "Allow Comments"
 msgstr ""
 
 #: includes/settings/general/controls.php:44
-msgid "Opens or closes comments. Note: The comment form may not be shown if your chosen page template doesn&apost support them."
+msgid ""
+"Opens or closes comments. Note: The comment form may not be shown if your "
+"chosen page template doesn&apost support them."
 msgstr ""
 
 #: includes/settings/general/controls.php:54
@@ -5615,6 +5998,18 @@ msgstr ""
 msgid "Visual"
 msgstr ""
 
+#: includes/views/admin/mb-product-validation.php:3
+msgid ""
+"<strong>Congrats! Cornerstone is validated</strong>. Automatic updates are "
+"up and running."
+msgstr ""
+
+#: includes/views/admin/mb-product-validation.php:7
+msgid ""
+"<strong>Uh oh! It looks like Cornerstone isn&apos;t validated</strong>. "
+"Product validation enables automatic updates."
+msgstr ""
+
 #: includes/views/admin/mb-settings.php:6
 msgid "Select which post types to enable for Cornerstone."
 msgstr ""
@@ -5628,7 +6023,8 @@ msgid "Show WordPress Toolbar"
 msgstr ""
 
 #: includes/views/admin/mb-settings.php:35
-msgid "While editing in Cornerstone, you may opt to display the WordPress toolbar."
+msgid ""
+"While editing in Cornerstone, you may opt to display the WordPress toolbar."
 msgstr ""
 
 #: includes/views/admin/mb-settings.php:48
@@ -5651,7 +6047,9 @@ msgid "<strong>Huzzah!</strong> All settings have been successfully saved."
 msgstr ""
 
 #: includes/views/admin/options-sidebar.php:17
-msgid "Once you are satisfied with your settings, click the button below to save them."
+msgid ""
+"Once you are satisfied with your settings, click the button below to save "
+"them."
 msgstr ""
 
 #: includes/views/admin/options-sidebar.php:28
@@ -5673,14 +6071,17 @@ msgid "There was an error when reading this WXR file"
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:43
-msgid "Details are shown above. The importer will now try again with a different parser..."
+msgid ""
+"Details are shown above. The importer will now try again with a different "
+"parser..."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:84
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:89
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:279
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:468
-msgid "This does not appear to be a WXR file, missing/invalid WXR version number"
+msgid ""
+"This does not appear to be a WXR file, missing/invalid WXR version number"
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:134
@@ -5708,15 +6109,21 @@ msgid "Remember to update the passwords and roles of imported users."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:199
-msgid "The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem."
+msgid ""
+"The export file could not be found at <code>%s</code>. It is likely that "
+"this was caused by a permissions problem."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:215
-msgid "This WXR file (version %s) may not be supported by this version of the importer. Please consider updating."
+msgid ""
+"This WXR file (version %s) may not be supported by this version of the "
+"importer. Please consider updating."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:240
-msgid "Failed to import author %s. Their posts will be attributed to the current user."
+msgid ""
+"Failed to import author %s. Their posts will be attributed to the current "
+"user."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:266
@@ -5724,11 +6131,18 @@ msgid "Assign Authors"
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:267
-msgid "To make it easier for you to edit and save the imported content, you may want to reassign the author of the imported item to an existing user of this site. For example, you may want to import all the entries as <code>admin</code>s entries."
+msgid ""
+"To make it easier for you to edit and save the imported content, you may "
+"want to reassign the author of the imported item to an existing user of this "
+"site. For example, you may want to import all the entries as <code>admin</"
+"code>s entries."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:269
-msgid "If a new user is created by WordPress, a new password will be randomly generated and the new user&#8217;s role will be set as %s. Manually changing the new user&#8217;s details will be necessary."
+msgid ""
+"If a new user is created by WordPress, a new password will be randomly "
+"generated and the new user&#8217;s role will be set as %s. Manually changing "
+"the new user&#8217;s details will be necessary."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:279
@@ -5768,7 +6182,9 @@ msgid "- Select -"
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:374
-msgid "Failed to create new user for %s. Their posts will be attributed to the current user."
+msgid ""
+"Failed to create new user for %s. Their posts will be attributed to the "
+"current user."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:425
@@ -5837,11 +6253,16 @@ msgid "Import WordPress"
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1040
-msgid "A new version of this importer is available. Please update to version %s to ensure compatibility with newer export files."
+msgid ""
+"A new version of this importer is available. Please update to version %s to "
+"ensure compatibility with newer export files."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1055
-msgid "Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import the posts, pages, comments, custom fields, categories, and tags into this site."
+msgid ""
+"Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import "
+"the posts, pages, comments, custom fields, categories, and tags into this "
+"site."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1056
@@ -5849,10 +6270,9 @@ msgid "Choose a WXR (.xml) file to upload, then click Upload file and import."
 msgstr ""
 
 #: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1130
-msgid "Import <strong>posts, pages, comments, custom fields, categories, and tags</strong> from a WordPress export file."
-msgstr ""
-#. Plugin Name of the plugin/theme
-msgid "Cornerstone"
+msgid ""
+"Import <strong>posts, pages, comments, custom fields, categories, and tags</"
+"strong> from a WordPress export file."
 msgstr ""
 
 #. Plugin URI of the plugin/theme

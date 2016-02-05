@@ -54,6 +54,7 @@ if ( '' === $images ) {
 }
 
 if ( 'custom_link' === $onclick ) {
+	$custom_links = vc_value_from_safe( $custom_links );
 	$custom_links = explode( ',', $custom_links );
 }
 

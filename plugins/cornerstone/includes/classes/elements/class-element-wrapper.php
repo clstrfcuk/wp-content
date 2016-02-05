@@ -16,6 +16,7 @@ class Cornerstone_Element_Wrapper {
 	protected $path;
 	protected $definition;
 	protected $defaults;
+	protected $applied_defaults;
 	protected $flags;
 	protected $control_group;
 	protected $hook_prefix;
@@ -249,8 +250,8 @@ class Cornerstone_Element_Wrapper {
 			'icon'          => $ui['icon_group'] . '/' . $ui['icon_id'],
 			'flags'         => $flags,
 			'active'        => $this->is_active(),
-			'base_defaults' => $this->transform_defaults( $this->defaults() ),
-			'defaults'      => $this->transform_defaults( $this->get_applied_defaults() ),
+			'base_defaults' => $this->defaults(),
+			'defaults'      => $this->get_applied_defaults(),
 			'controls'      => $this->controls()->model_data()
 		);
 
@@ -264,30 +265,22 @@ class Cornerstone_Element_Wrapper {
 
 	}
 
-	protected function transform_defaults( $defaults ) {
-
-		return $defaults;
-
-	}
-
 	protected function get_applied_defaults() {
 
-		$option = get_option( 'cs_element_' . $this->name, array() );
+		if ( !isset( $this->applied_defaults ) ) {
 
-		if ( !is_array( $option ) ) {
-			trigger_error( "Cornerstone. Customizer data for 'cs_element_{$this->name}' is malformed. Recommend deleting that option key so it can be saved again.", E_USER_WARNING );
-			return $this->defaults();
+			$option = get_option( 'cs_element_' . $this->name, array() );
+
+			if ( !is_array( $option ) ) {
+				trigger_error( "Cornerstone. Customizer data for 'cs_element_{$this->name}' is malformed. Recommend deleting that option key so it can be saved again.", E_USER_WARNING );
+				return $this->defaults();
+			}
+
+			$this->applied_defaults = $this->controls()->backfill_content( wp_parse_args( $option, $this->defaults() ) );
+
 		}
 
-		$applied_defaults = wp_parse_args( $option, $this->defaults() );
-
-
-		foreach ( $this->controls()->get_suggestions() as $key => $value ) {
-			if ( isset( $option[$key] ) ) continue;
-			$applied_defaults[$key] = $value;
-		}
-
-		return $applied_defaults;
+		return $this->applied_defaults;
 
 	}
 
@@ -308,20 +301,23 @@ class Cornerstone_Element_Wrapper {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Data is assumed to be sanitize
+	 * @param  [type] $atts    [description]
+	 * @param  string $content [description]
+	 * @param  [type] $parent  [description]
+	 * @return [type]          [description]
+	 */
 	public function build_shortcode( $atts, $content = '', $parent = null ) {
 
 		if ( !apply_filters( $this->hook_prefix . 'should_have_markup', true, $atts, $content, $parent ) ) {
 			return '';
 		}
 
-		$atts = wp_parse_args( $atts, $this->get_applied_defaults() ); //backfills legacy defaults..
-
-		$atts = $this->controls()->backfill_content( $atts );
+		$atts = $this->compose( $atts );
 
 		$atts = $this->controls()->filter_atts_for_shortcode( $atts );
-
 		$atts = apply_filters( $this->hook_prefix . 'update_build_shortcode_atts', $atts, $parent );
-
 		$atts = $this->build_shortcode_clean_atts( $atts );
 
 		if ( isset( $atts['content'] ) ) {
@@ -375,9 +371,33 @@ class Cornerstone_Element_Wrapper {
 
 	}
 
-	public function preview( $element, $orchestrator, $parent = null ) {
+	public function preview( $element, $orchestrator, $parent = null, $transient = null ) {
 
 		$element = $this->sanitize( $element );
+
+		$sanitize_parent = false; // Recursive calls are already sanitized.
+
+		if ( $transient && isset( $transient['parent'] ) ) {
+			$parent = $transient['parent'];
+			$sanitize_parent = true;
+		}
+
+		if ( ! is_null( $parent ) ) {
+
+			$parent_definition = $orchestrator->get( $parent['_type'] );
+
+			if ( $sanitize_parent )
+				$parent = $parent_definition->sanitize( $parent );
+
+			$parent = $parent_definition->compose( $parent );
+
+			unset( $parent['elements'] );
+
+		}
+
+		if ( isset( $element['_csmeta'] ) ) {
+			unset( $element['_csmeta'] );
+		}
 
 		$markup = apply_filters( $this->hook_prefix . 'preview', '', $element, $parent );
 
@@ -410,6 +430,10 @@ class Cornerstone_Element_Wrapper {
 			return $this->definition->migrate( $element, $version );
 
 		return $element;
+	}
+
+	public function compose( $data ) {
+		return wp_parse_args( $data, $this->get_applied_defaults() );
 	}
 
 	public function sanitize( $data ) {

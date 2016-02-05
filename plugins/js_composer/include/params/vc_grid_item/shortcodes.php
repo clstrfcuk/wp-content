@@ -6,7 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 VcShortcodeAutoloader::getInstance()->includeClass( 'WPBakeryShortCode_VC_Gitem_Animated_Block' );
 
 global $vc_column_width_list;
-global $vc_add_css_animation;
 global $vc_gitem_add_link_param;
 $vc_gitem_add_link_param = apply_filters( 'vc_gitem_add_link_param', array(
 	'type' => 'dropdown',
@@ -469,7 +468,7 @@ $list = array(
 				'description' => __( 'Border color.', 'js_composer' ),
 				'param_holder_class' => 'vc_colored-dropdown',
 			),
-			$vc_add_css_animation,
+			vc_add_css_animation(),
 			array(
 				'type' => 'textfield',
 				'heading' => __( 'Extra class name', 'js_composer' ),
@@ -610,7 +609,7 @@ $list['vc_single_image'] = array(
 				'value' => 'external_link',
 			),
 		),
-		$vc_add_css_animation,
+		vc_add_css_animation(),
 		array(
 			'type' => 'textfield',
 			'heading' => __( 'Image size', 'js_composer' ),

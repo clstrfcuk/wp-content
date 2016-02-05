@@ -1,7 +1,7 @@
 <?php
 
 // =============================================================================
-// VIEWS/SITE/TERMS-OF-USE.PHP
+// VIEWS/SITE/UNDER-CONSTRUCTION.PHP
 // -----------------------------------------------------------------------------
 // Plugin site output.
 // =============================================================================
@@ -50,8 +50,8 @@ $instagram   = $x_under_construction_instagram;
       <div class="x-under-construction-wrap-inner">
         <div class="x-under-construction">
 
-          <h1><?php echo $x_under_construction_heading; ?></h1>
-          <h2><?php echo $x_under_construction_subheading; ?></h2>
+          <h1><?php echo stripslashes( $x_under_construction_heading ); ?></h1>
+          <h2><?php echo stripslashes( $x_under_construction_subheading ); ?></h2>
 
           <?php if ( $x_under_construction_date != '' ) : ?>
 
@@ -84,10 +84,10 @@ $instagram   = $x_under_construction_instagram;
           <?php if ( $facebook || $twitter || $google_plus || $instagram ) : ?>
 
             <div class="x-under-construction-social">
-              <?php if ( $facebook )    : ?><a href="<?php echo $facebook ?>" target="_blank"><i class="x-icon x-icon-facebook-square"></i></a><?php endif; ?>
-              <?php if ( $twitter )     : ?><a href="<?php echo $twitter ?>" target="_blank"><i class="x-icon x-icon-twitter-square"></i></a><?php endif; ?>
-              <?php if ( $google_plus ) : ?><a href="<?php echo $google_plus ?>" target="_blank"><i class="x-icon x-icon-google-plus-square"></i></a><?php endif; ?>
-              <?php if ( $instagram )   : ?><a href="<?php echo $instagram ?>" target="_blank"><i class="x-icon x-icon-instagram"></i></a><?php endif; ?>
+              <?php if ( $facebook )    : ?><a href="<?php echo $facebook ?>" target="_blank"><i class="x-icon-facebook-square" data-x-icon="&#xf082;"></i></a><?php endif; ?>
+              <?php if ( $twitter )     : ?><a href="<?php echo $twitter ?>" target="_blank"><i class="x-icon-twitter-square" data-x-icon="&#xf081;"></i></a><?php endif; ?>
+              <?php if ( $google_plus ) : ?><a href="<?php echo $google_plus ?>" target="_blank"><i class="x-icon-google-plus-square" data-x-icon="&#xf0d4;"></i></a><?php endif; ?>
+              <?php if ( $instagram )   : ?><a href="<?php echo $instagram ?>" target="_blank"><i class="x-icon-instagram" data-x-icon="&#xf16d;"></i></a><?php endif; ?>
             </div>
 
           <?php endif; ?>

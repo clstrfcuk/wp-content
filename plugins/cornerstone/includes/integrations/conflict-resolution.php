@@ -16,12 +16,11 @@ class Cornerstone_Integration_Conflict_Resolution {
 
 		//WPML Integration - pre_get_posts only works on __construct
 		if ( class_exists( 'SitePress' ) && apply_filters( 'cornerstone_enable_wpml_integration', true ) ) {
-
-     			add_filter( 'pre_get_posts', array( $this, 'wpml_get_posts') );
-     			add_filter( 'the_title', array( $this, 'wpml_title'), 99, 2 );
-     			add_filter( 'the_permalink', array( $this, 'wpml_permalink') );
-     			//Due to deep connection with cornerstone to the_excerpt, let's not add another excerpt filter for now
-     			//add_filter( 'get_the_excerpt', array( $this, 'wpml_excerpt') );
+			add_filter( 'pre_get_posts', array( $this, 'wpml_get_posts') );
+			add_filter( 'the_title', array( $this, 'wpml_title'), 99, 2 );
+			add_filter( 'the_permalink', array( $this, 'wpml_permalink') );
+			//Due to deep connection with cornerstone to the_excerpt, let's not add another excerpt filter for now
+			//add_filter( 'get_the_excerpt', array( $this, 'wpml_excerpt') );
 		}
 
 	}
@@ -41,20 +40,25 @@ class Cornerstone_Integration_Conflict_Resolution {
 
 	public function disableCaching() {
 
-		// General DONOTCACHEPAGE for WP Super Cache, W3TC and others.
+		// Define constants shared throughout many caching and performance plugins.
+
 		if (!defined('DONOTCACHEPAGE'))
 			define( 'DONOTCACHEPAGE', true );
 
-		// Disable W3TC
-		if ( class_exists('W3_Root') && apply_filters( 'cornerstone_compat_w3tc', true ) ) {
+		if ( !defined( 'DONOTMINIFY') )
+			define( 'DONOTMINIFY', true );
 
-			if ( !defined( 'DONOTMINIFY') )
-				define( 'DONOTMINIFY', true );
+		if ( !defined( 'DONOTCDN') )
+			define( 'DONOTCDN', true );
 
-			if ( !defined( 'DONOTCDN') )
-				define( 'DONOTCDN', true );
+		// Outliers who don't use the constants
+		add_filter( 'bwp_minify_is_loadable', '__return_false' );
+
+		// Optionally Disable CloudFlare Rocket Loader. This should in most cases
+		// already be avoided by the no-cache headers.
+		if ( apply_filters( 'cornerstone_compat_cloudflare', false ) ) {
+			add_filter( 'script_loader_tag', array( $this, 'disable_cloudflare_rocket_loader' ), 10, 3 );
 		}
-
 	}
 
 	public function beforeLoadPreview() {
@@ -75,6 +79,10 @@ class Cornerstone_Integration_Conflict_Resolution {
 
 	}
 
+	public function disable_cloudflare_rocket_loader( $tag, $handle, $src ) {
+		return str_replace("type='text/javascript'", "type='text/javascript' data-cfasync=\"false\"", $tag );
+	}
+
 	public function wpml_get_posts ( $query ) {
 
 		global $sitepress;
@@ -91,11 +99,11 @@ class Cornerstone_Integration_Conflict_Resolution {
 	}
 
 	//WPML Post object usable by multiple filters
-	private function wpml_post () {
+	private function wpml_post() {
 
 		global $post, $sitepress;
 
-		if ( !function_exists('icl_object_id') || !is_callable( array( $sitepress, 'get_current_language' ) ) )
+		if ( !$post || !function_exists('icl_object_id') || !is_callable( array( $sitepress, 'get_current_language' ) ) )
 			return;
 
 		return get_post( icl_object_id( $post->ID, 'post', false, $sitepress->get_current_language() ) );
@@ -105,7 +113,7 @@ class Cornerstone_Integration_Conflict_Resolution {
 
 		$post = $this->wpml_post();
 
-		return $post->ID !== $id ? $title :
+		return ( !is_a( $post, 'WP_Post' ) || $post->ID !== $id ) ? $title :
 			//Let's apply the_title filters (apply_filters causes loop)
 			trim (
 			convert_chars (
@@ -118,7 +126,10 @@ class Cornerstone_Integration_Conflict_Resolution {
 
 		$post = $this->wpml_post();
 
-		return get_permalink( $post->ID );
+		if ( is_a( $post, 'WP_Post' ) )
+			$permalink = get_permalink( $post->ID );
+
+		return $permalink;
 
 	}
 

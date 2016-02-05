@@ -1,6 +1,6 @@
 /********************************************
  * REVOLUTION 5.0 EXTENSION - LAYER ANIMATION
- * @version: 1.3 (26.11.2015)
+ * @version: 1.4 (15.12.2015)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch
 *********************************************/

@@ -59,6 +59,9 @@ class Soliloquy_Posttype_Admin {
         // Force the menu icon to be scaled to proper size (for Retina displays).
         add_action( 'admin_head', array( $this, 'menu_icon' ) );
 
+        // Check if any soliloquyv2 post types still exist, and if so migrate them once
+        add_action( 'init', array( $this, 'maybe_fix_soliloquyv2_cpts' ) );
+
     }
 
     /**
@@ -153,21 +156,20 @@ class Soliloquy_Posttype_Admin {
         global $post;
 
         // Contextualize the messages.
-        $messages['soliloquy'] = apply_filters( 'soliloquy_messages',
-            array(
-                0  => '',
-                1  => __( 'Soliloquy slider updated.', 'soliloquy' ),
-                2  => __( 'Soliloquy slider custom field updated.', 'soliloquy' ),
-                3  => __( 'Soliloquy slider custom field deleted.', 'soliloquy' ),
-                4  => __( 'Soliloquy slider updated.', 'soliloquy' ),
-                5  => isset( $_GET['revision'] ) ? sprintf( __( 'Soliloquy slider restored to revision from %s.', 'soliloquy' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-                6  => __( 'Soliloquy slider published.', 'soliloquy' ),
-                7  => __( 'Soliloquy slider saved.', 'soliloquy' ),
-                8  => __( 'Soliloquy slider submitted.', 'soliloquy' ),
-                9  => sprintf( __( 'Soliloquy slider scheduled for: <strong>%1$s</strong>.', 'soliloquy' ), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ) ),
-                10 => __( 'Soliloquy slider draft updated.', 'soliloquy' )
-            )
+        $messagesArr = array(
+            0  => '',
+            1  => __( 'Soliloquy slider updated.', 'soliloquy' ),
+            2  => __( 'Soliloquy slider custom field updated.', 'soliloquy' ),
+            3  => __( 'Soliloquy slider custom field deleted.', 'soliloquy' ),
+            4  => __( 'Soliloquy slider updated.', 'soliloquy' ),
+            5  => isset( $_GET['revision'] ) ? sprintf( __( 'Soliloquy slider restored to revision from %s.', 'soliloquy' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+            6  => __( 'Soliloquy slider published.', 'soliloquy' ),
+            7  => __( 'Soliloquy slider saved.', 'soliloquy' ),
+            8  => __( 'Soliloquy slider submitted.', 'soliloquy' ),
+            9  => sprintf( __( 'Soliloquy slider scheduled for: <strong>%1$s</strong>.', 'soliloquy' ), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ) ),
+            10 => __( 'Soliloquy slider draft updated.', 'soliloquy' )
         );
+        $messages['soliloquy'] = apply_filters( 'soliloquy_messages', $messagesArr);
 
         return $messages;
 
@@ -184,6 +186,88 @@ class Soliloquy_Posttype_Admin {
         <style type="text/css">#menu-posts-soliloquy .wp-menu-image img { width: 16px; height: 16px; }</style>
         <?php
 
+    }
+
+    /**
+     * Maybe fixes a v1 to v2 upgrade where the sliders end up with the soliloquyv2
+     * post type, when it should be the soliloquy CPT.
+     *
+     * Once run, sets an option in wp_options so we don't run this every time.
+     *
+     * @since 2.4.1
+     */
+    public function maybe_fix_soliloquyv2_cpts() {
+
+        global $fixedSliders;
+
+        // Check if this routine has already run
+        $soliloquy_upgrade_cpts = get_option( 'soliloquy_upgrade_cpts' );
+        if ( $soliloquy_upgrade_cpts ) {
+            return;
+        }
+
+        // Retrieve any soliloquyv2 sliders and convert the post type back to the proper CPT.
+        $v2_sliders = get_posts(
+            array(
+                'post_type'      => 'soliloquyv2',
+                'posts_per_page' => -1,
+            )
+        );
+
+        // If no soliloquyv2 CPT posts exist, bail
+        if ( count( $v2_sliders ) == 0 ) {
+            update_option( 'soliloquy_upgrade_cpts', true );
+            return;
+        }
+
+        // Loop through the sliders, grab the data, delete and backwards convert them back to 'soliloquy' post type.
+        $fixedSliders = 0;
+        foreach ( (array) $v2_sliders as $slider ) {
+            // Grab any slider meta and add the attachment ID to the data array.
+            $slider_meta = get_post_meta( $slider->ID, '_sol_slider_data', true );
+            if ( ! empty( $slider_meta['slider'] ) ) {
+                foreach ( $slider_meta['slider'] as $id => $data ) {
+                    $slider_meta['slider'][$id]['id'] = $id;
+                }
+            }
+
+            update_post_meta( $slider->ID, '_sol_slider_data', $slider_meta );
+
+            $data = array(
+                'ID'        => $slider->ID,
+                'post_type' => 'soliloquy'
+            );
+            wp_update_post( $data );
+
+            // Increment count for notice
+            $fixedSliders++;
+        }
+        
+        // Make sure this doesn't run again
+        update_option( 'soliloquy_upgrade_cpts', true );
+
+        // Output an admin notice so the user knows what happened
+        if ( $fixedSliders > 0 ) {
+            add_action( 'admin_notices', array( $this, 'fixed_soliloquyv2_cpts' ) );
+        }
+
+    }
+
+    /**
+     * Outputs a WordPress style notification to tell the user how many sliders were
+     * fixed after running the soliloquyv2 --> soliloquy CPT migration automatically
+     *
+     * @since 2.4.1
+     */
+    public function fixed_soliloquyv2_cpts() {
+        global $fixedSliders;
+        
+        ?>
+        <div class="updated">
+            <p><strong><?php echo $fixedSliders . __( ' slider(s) fixed successfully. This is a one time operation, and you don\'t need to do anything else.', 'soliloquy' ); ?></strong></p>
+        </div>
+        <?php
+            
     }
 
     /**

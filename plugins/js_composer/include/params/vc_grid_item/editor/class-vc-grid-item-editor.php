@@ -24,20 +24,29 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 	public function addHooksSettings() {
 		add_action( 'add_meta_boxes', array(
 			$this,
-			'addScripts',
+			'render',
 		) );
 		add_action( 'vc_templates_render_backend_template', array(
 			&$this,
 			'loadPredefinedTemplate',
 		), 10, 2 );
-		add_action( 'vc_ui-template-preview', array(
+/*		add_action( 'vc_ui-template-preview', array(
 			&$this,
 			'replaceTemplatesPanelEditorJsAction',
-		) );
+		) );*/
 	}
 
 	public function addScripts() {
-		if ( $this->isValidPostType() ) {
+		$this->render( get_post_type() );
+	}
+
+	public function render( $post_type ) {
+		if ( $this->isValidPostType( $post_type ) ) {
+			$this->registerBackendJavascript();
+			$this->registerBackendCss();
+			// B.C:
+			visual_composer()->registerAdminCss();
+			visual_composer()->registerAdminJavascript();
 			add_action( 'admin_print_scripts-post.php', array(
 				&$this,
 				'printScriptsMessages',
@@ -47,6 +56,10 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 				'printScriptsMessages',
 			), 300 );
 		}
+	}
+
+	public function editorEnabled() {
+		return vc_user_access()->part( 'grid_builder' )->can()->get();
 	}
 
 	public function replaceTemplatesPanelEditorJsAction() {
@@ -59,8 +72,7 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 	 * @return void
 	 */
 	public static function createPostType() {
-		register_post_type( self::$post_type,
-			array(
+		register_post_type( self::$post_type, array(
 				'labels' => self::getPostTypesLabels(),
 				'public' => false,
 				'has_archive' => false,
@@ -73,9 +85,11 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 				'capability_type' => 'post',
 				'hierarchical' => false,
 				'menu_position' => null,
-				'supports' => array( 'title', 'editor' ),
-			)
-		);
+				'supports' => array(
+					'title',
+					'editor',
+				),
+			) );
 	}
 
 	public static function getPostTypesLabels() {
@@ -96,8 +110,10 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 	 *
 	 * @return bool
 	 */
-	public function isValidPostType() {
-		return get_post_type() === $this->postType();
+	public function isValidPostType( $type = '' ) {
+		$type = ! empty( $type ) ? $type : get_post_type();
+
+		return $this->editorEnabled() && $this->postType() === $type;
 	}
 
 	/**
@@ -116,9 +132,7 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 	 * @access public
 	 */
 	public function addMetaBox() {
-		add_meta_box( 'wpb_visual_composer',
-			__( 'Grid Builder', 'js_composer' ),
-			array(
+		add_meta_box( 'wpb_visual_composer', __( 'Grid Builder', 'js_composer' ), array(
 				&$this,
 				'renderEditor',
 			), $this->postType(), 'normal', 'high' );
@@ -130,7 +144,10 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 	 * @return array
 	 */
 	public function shortcodesControls() {
-		return array( 'delete', 'edit' );
+		return array(
+			'delete',
+			'edit',
+		);
 	}
 
 	/**
@@ -141,6 +158,10 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 	 * @return mixed|void
 	 */
 	public function renderEditor( $post = null ) {
+		if ( ! vc_user_access()->part( 'grid_builder' )->can()->get() ) {
+			return;
+		}
+
 		add_filter( 'vc_wpbakery_shortcode_get_controls_list', array(
 			$this,
 			'shortcodesControls',
@@ -151,7 +172,10 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 			'editor' => $this,
 			'post' => $this->post,
 		) );
-		add_action( 'admin_footer', array( &$this, 'renderEditorFooter' ) );
+		add_action( 'admin_footer', array(
+			&$this,
+			'renderEditorFooter',
+		) );
 		do_action( 'vc_backend_editor_render' );
 		do_action( 'vc_vc_grid_item_editor_render' );
 		add_action( 'vc_user_access_check-shortcode_edit', array(
@@ -165,17 +189,11 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 	}
 
 	public function accessCheckShortcodeEdit( $null, $shortcode ) {
-		return vc_user_access()
-			->part( 'grid_builder' )
-			->can()
-			->get();
+		return vc_user_access()->part( 'grid_builder' )->can()->get();
 	}
 
 	public function accessCheckShortcodeAll( $null, $shortcode ) {
-		return vc_user_access()
-			->part( 'grid_builder' )
-			->can()
-			->get();
+		return vc_user_access()->part( 'grid_builder' )->can()->get();
 	}
 
 	/**
@@ -191,37 +209,18 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 		do_action( 'vc_backend_editor_footer_render' );
 	}
 
-	/**
-	 *
-	 */
-	/*
-	public function printScriptsMessages() {
-		parent::printScriptsMessages();
-
-		if ( $this->isValidPostType() ) {
-			$this->enqueueEditorScripts();
-		}
-	}
-	*/
-	/**
-	 * Enqueue required javascript libraries and css files.
-	 *
-	 * @since  4.8
-	 * @access public
-	 */
-	public function enqueueEditorScripts() {
-		parent::enqueueEditorScripts();
-		wp_register_script( 'vc_grid_item_editor',
-			vc_asset_url( 'js/params/vc_grid_item/editor.js' ),
-			array( 'wpb_js_composer_js_custom_views' ),
-		WPB_VC_VERSION, true );
-
+	public function registerBackendJavascript() {
+		parent::registerBackendJavascript();
+		wp_register_script( 'vc_grid_item_editor', vc_asset_url( 'js/dist/grid-builder.min.js' ), array( 'vc-backend-min-js' ), WPB_VC_VERSION, true );
 		wp_localize_script( 'vc_grid_item_editor', 'i18nLocaleGItem', array(
 			'preview' => __( 'Preview', 'js_composer' ),
 			'builder' => __( 'Builder', 'js_composer' ),
-			'add_template_message' => __( 'If you add this template, all your current changes will be removed. Are you sure you want to add template?',
-			'js_composer' ),
+			'add_template_message' => __( 'If you add this template, all your current changes will be removed. Are you sure you want to add template?', 'js_composer' ),
 		) );
+	}
+
+	public function enqueueJs() {
+		parent::enqueueJs();
 		wp_enqueue_script( 'vc_grid_item_editor' );
 	}
 

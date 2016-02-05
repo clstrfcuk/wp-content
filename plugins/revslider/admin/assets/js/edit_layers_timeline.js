@@ -222,6 +222,7 @@ var tpLayerTimelinesRev = new function(){
 		});
 		jQuery('input[name="transition_duration"]').change(function(){
 			jQuery('.slide-trans-cur-ul li.selected').data('duration', jQuery(this).val());
+			setSlideTransitionTimerBar();
 		});
 		jQuery('select[name="transition_ease_in"]').change(function(){
 			jQuery('.slide-trans-cur-ul li.selected').data('ease_in', jQuery(this).val());
@@ -2058,6 +2059,18 @@ var tpLayerTimelinesRev = new function(){
 	/**************************************
 		-	ADD SLIDE MAIN TO SORTBOX	-
 	**************************************/
+
+	var setSlideTransitionTimerBar = function() {
+		var cur = jQuery('#slide_in_sort_time'),
+			dragspeedin = cur.find('.tl-startanim'),
+			dur = jQuery('#transition_duration').val(),
+			maxtime = (mainMaxTimeLeft)-15;			
+		cur.find('.tl-fullanim').css({left:"15px",width:maxtime});
+		cur.find('.tl-startanim').css({width:dur/10});
+		cur.find('.sortbox_speedin').html(msToSec(dur));
+	}
+
+
 	var addSlideToSortbox = function() {
 
 		

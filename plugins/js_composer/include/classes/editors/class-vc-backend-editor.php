@@ -49,7 +49,10 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 		if ( function_exists( 'add_theme_support' ) ) {
 			add_theme_support( 'post-thumbnails' ); // @todo check is it needed?
 		}
-		add_action( 'admin_init', array( &$this, 'render' ), 5 );
+		add_action( 'add_meta_boxes', array(
+			&$this,
+			'render',
+		), 5 );
 		add_action( 'admin_print_scripts-post.php', array(
 			&$this,
 			'printScriptsMessages',
@@ -68,33 +71,19 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 * @since  4.2
 	 * @access public
 	 */
-	public function render() {
-		// @todo fix_roles bc for post_types, maybe initialize ajax hooks also when we are inside vc_editor_post_types?
-		global $pagenow;
-		if ( 'post.php' === $pagenow ) {
-			do_action( 'vc_backend_editor_before_render' );
-			// we editing existing entity
-			$id = (int) vc_request_param( 'post' );
-			// @todo add check if vc is enabled for this post_type
-			$type = get_post_type( $id );
-			$valid = vc_check_post_type( $type );
-			if ( $valid ) {
-				add_meta_box( 'wpb_visual_composer', __( 'Visual Composer', 'js_composer' ), array(
-					&$this,
-					'renderEditor',
-				), $type, 'normal', 'high' );
-			}
-		} elseif ( 'post-new.php' === $pagenow ) {
-			// we creating new entitiy
-			$type = sanitize_text_field( vc_request_param( 'post_type' ) );
-			$type = empty( $type ) ? 'post' : $type;
-			$valid = vc_check_post_type( $type );
-			if ( $valid ) {
-				add_meta_box( 'wpb_visual_composer', __( 'Visual Composer', 'js_composer' ), array(
-					&$this,
-					'renderEditor',
-				), $type, 'normal', 'high' );
-			}
+	public function render( $post_type ) {
+		if ( $this->isValidPostType( $post_type ) ) {
+			$this->registerBackendJavascript();
+			$this->registerBackendCss();
+			// B.C:
+			visual_composer()->registerAdminCss();
+			visual_composer()->registerAdminJavascript();
+
+			// meta box to render
+			add_meta_box( 'wpb_visual_composer', __( 'Visual Composer', 'js_composer' ), array(
+				&$this,
+				'renderEditor',
+			), $post_type, 'normal', 'high' );
 		}
 	}
 
@@ -113,12 +102,16 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 			return false;
 		}
 		$this->post = $post;
-		$this->post_custom_css = get_post_meta( $post->ID, '_wpb_post_custom_css', true );
+		$post_custom_css = strip_tags( get_post_meta( $post->ID, '_wpb_post_custom_css', true ) );
+		$this->post_custom_css = $post_custom_css;
 		vc_include_template( 'editors/backend_editor.tpl.php', array(
 			'editor' => $this,
 			'post' => $this->post,
 		) );
-		add_action( 'admin_footer', array( &$this, 'renderEditorFooter' ) );
+		add_action( 'admin_footer', array(
+			&$this,
+			'renderEditorFooter',
+		) );
 		do_action( 'vc_backend_editor_render' );
 
 		return true;
@@ -142,8 +135,9 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 *
 	 * @return bool
 	 */
-	public function isValidPostType() {
-		return vc_check_post_type( get_post_type() );
+	public function isValidPostType( $type = '' ) {
+		if( 'vc_grid_item' === $type ) { return false; }
+		return vc_check_post_type( ! empty( $type ) ? $type : get_post_type() );
 	}
 
 	/**
@@ -155,7 +149,7 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 * @access public
 	 */
 	public function printScriptsMessages() {
-		if ( $this->isValidPostType() ) {
+		if ( ! vc_is_frontend_editor() && $this->isValidPostType() ) {
 			if ( vc_user_access()
 				->wpAny( 'manage_options' )
 				->part( 'settings' )
@@ -175,71 +169,22 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 * @access public
 	 */
 	public function enqueueEditorScripts() {
-		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_script( 'wp-color-picker' );
-		wp_enqueue_style( 'farbtastic' );
-		wp_enqueue_style( 'ui-custom-theme' );
-		wp_enqueue_style( 'isotope-css' );
-		wp_enqueue_style( 'animate-css' );
-		wp_enqueue_style( 'font-awesome' );
-		wp_enqueue_style( 'js_composer' );
-		wp_enqueue_style( 'wpb_jscomposer_autosuggest' );
-		//wp_enqueue_style( 'js_composer_settings', vc_asset_url( 'css/js_composer_settings.min.css' ), array(), WPB_VC_VERSION, false );
-		WPBakeryShortCodeFishBones::enqueueCss();
-
-		wp_enqueue_script( 'jquery-ui-tabs' );
-		wp_enqueue_script( 'jquery-ui-sortable' );
-		wp_enqueue_script( 'jquery-ui-droppable' );
-		wp_enqueue_script( 'jquery-ui-draggable' );
-		wp_enqueue_script( 'jquery-ui-accordion' );
-		wp_enqueue_script( 'jquery-ui-autocomplete' );
-		wp_enqueue_script( 'jquery-ui-resizable' );
-		wp_enqueue_script( 'farbtastic' );
-		wp_enqueue_script( 'isotope' );
-		$bootstrap_version = '3.0.2';
-		wp_enqueue_script( 'vc_bootstrap_js_1', vc_asset_url( 'lib/bower/bootstrap3/js/modal.js' ), array( 'jquery' ), $bootstrap_version, true );
-		wp_enqueue_script( 'vc_bootstrap_js_2', vc_asset_url( 'lib/bower/bootstrap3/js/dropdown.js' ), array( 'jquery' ), $bootstrap_version, true );
-		wp_enqueue_script( 'vc_bootstrap_js_11', vc_asset_url( 'lib/bower/bootstrap3/js/transition.js' ), array( 'jquery' ), $bootstrap_version, true );
-		wp_enqueue_script( 'wpb_scrollTo_js' );
-		wp_enqueue_script( 'wpb_php_js' );
-		wp_enqueue_script( 'wpb_js_composer_js_sortable' );
-		wp_enqueue_script( 'wpb_json-js' );
-		wp_enqueue_script( 'ace-editor' );
-		wp_enqueue_script( 'webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js' ); // Google Web Font CDN
-		wp_enqueue_script( 'wpb_js_composer_js_tools' );
-		wp_enqueue_script( 'wpb_js_composer_js_storage' );
-		wp_enqueue_script( 'wpb_js_composer_js_models' );
-		wp_enqueue_script( 'wpb_js_composer_js_view' );
-		wp_enqueue_script( 'wpb_js_composer_js_custom_views' );
-		/**
-		 * Enqueue deprecated
-		 * @since 4.4 removed
-		 */
-		wp_enqueue_script( 'wpb_js_composer_js_backbone' );
-		wp_enqueue_script( 'wpb_jscomposer_composer_js' );
-		wp_enqueue_script( 'wpb_jscomposer_shortcode_js' );
-		wp_enqueue_script( 'wpb_jscomposer_modal_js' );
-		wp_enqueue_script( 'wpb_jscomposer_templates_js' );
-		wp_enqueue_script( 'wpb_jscomposer_stage_js' );
-		wp_enqueue_script( 'wpb_jscomposer_layout_js' );
-		wp_enqueue_script( 'wpb_jscomposer_row_js' );
-		wp_enqueue_script( 'wpb_jscomposer_settings_js' );
-		wp_enqueue_script( 'wpb_jscomposer_media_editor_js' );
-		wp_enqueue_script( 'wpb_jscomposer_autosuggest_js' );
-		wp_enqueue_script( 'wpb_js_composer_js' );
-		/**
-		 * @since 4.4
-		 */
+		if($this->editorEnabled()) {
+			$this->enqueueJs();
+			$this->enqueueCss();
+			WPBakeryShortCodeFishBones::enqueueCss();
+			WPBakeryShortCodeFishBones::enqueueJs();
+		} else {
+			wp_enqueue_script( 'vc-backend-actions-js' );
+			$this->enqueueCss(); //needed for navbar @todo split
+		}
 		do_action( 'vc_backend_editor_enqueue_js_css' );
-		WPBakeryShortCodeFishBones::enqueueJs();
 	}
 
 	/**
 	 * Save generated shortcodes, html and visual composer status in posts meta.
 	 *
 	 * @deprecated 4.4
-	 * @remove @todo remove this. comment added in 4.8
-	 * @unused.
 	 * @since  3.0
 	 * @access public
 	 *
@@ -248,7 +193,7 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 * @return void
 	 */
 	public function save( $post_id ) {
-		visual_composer()->postAdmin()->save( $post_id );
+		_deprecated_function( '\Vc_Backend_Editor::save', '4.4 (will be removed in 4.10)', '\Vc_Post_Admin::save' );
 	}
 
 	/**
@@ -256,16 +201,17 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 *
 	 * @since  3.0
 	 * @access public
-	 * @deprecated
+	 * @deprecated 4.9
 	 */
 	public function elementBackendHtml() {
+		_deprecated_function( '\Vc_Backend_Editor::elementBackendHtml', '4.9 (will be removed in 4.10)' );
 		vc_user_access()
 			->checkAdminNonce()
 			->validateDie()
 			->wpAny( 'edit_posts', 'edit_pages' )
 			->validateDie()
 			->part( 'backend_editor' )
-			->can() // checks is backend_editor enabled( !== false )
+			->can()// checks is backend_editor enabled( !== false )
 			->validateDie();
 
 		$data_element = vc_post_param( 'data_element' );
@@ -284,7 +230,7 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	}
 
 	/**
-	 * @deprecated since 4.8
+	 * @deprecated 4.8
 	 * @return string
 	 */
 	public function showRulesValue() {
@@ -295,5 +241,117 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 		$role = is_object( $current_user ) && isset( $current_user->roles[0] ) ? $current_user->roles[0] : '';
 
 		return isset( $settings[ $role ]['show'] ) ? $settings[ $role ]['show'] : '';
+	}
+
+	public function registerBackendJavascript() {
+		// editor can be disabled but fe can be enabled. so we currently need this file. @todo maybe make backend-disabled.min.js
+		wp_register_script( 'vc-backend-actions-js', vc_asset_url( 'js/dist/backend-actions.min.js' ), array(
+			'jquery',
+			'backbone',
+			'underscore',
+		), WPB_VC_VERSION, true );
+		wp_register_script( 'vc-backend-min-js', vc_asset_url( 'js/dist/backend.min.js' ), array( 'vc-backend-actions-js' ), WPB_VC_VERSION, true );
+		// used in tta shortcodes, and panels.
+		wp_register_script( 'vc_accordion_script', vc_asset_url( 'lib/vc_accordion/vc-accordion.min.js' ), array( 'jquery' ), WPB_VC_VERSION, true );
+		wp_register_script( 'wpb_php_js', vc_asset_url( 'lib/php.default/php.default.min.js' ), array( 'jquery' ), WPB_VC_VERSION, true );
+		// used as polyfill for JSON.stringify and etc
+		wp_register_script( 'wpb_json-js', vc_asset_url( 'lib/bower/json-js/json2.min.js' ), array(), WPB_VC_VERSION, true );
+		// used in post settings editor
+		wp_register_script( 'ace-editor', vc_asset_url( 'lib/bower/ace-builds/src-min-noconflict/ace.js' ), array( 'jquery' ), WPB_VC_VERSION, true );
+		wp_register_script( 'webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js' ); // Google Web Font CDN
+
+		wp_localize_script( 'vc-backend-actions-js', 'i18nLocale', visual_composer()->getEditorsLocale() );
+	}
+
+	public function registerBackendCss() {
+		wp_register_style( 'js_composer', vc_asset_url( 'css/js_composer_backend_editor.min.css' ), array(), WPB_VC_VERSION, false );
+
+		if ( $this->editorEnabled() ) {
+			/**
+			 * @deprecated, used for accordions/tabs/tours
+			 */
+			wp_register_style( 'ui-custom-theme', vc_asset_url( 'css/ui-custom-theme/jquery-ui-less.custom.min.css' ), array(), WPB_VC_VERSION, false );
+
+			/**
+			 * @todo check vc_add-element-deprecated-warning for fa icon usage ( set to our font )
+			 * also used in vc_icon shortcode
+			 */
+			wp_register_style( 'font-awesome', vc_asset_url( 'lib/bower/font-awesome/css/font-awesome.min.css' ), array(), WPB_VC_VERSION, false );
+
+			/**
+			 * @todo check for usages
+			 * definetelly used in edit form param: css_animation, but curreny vc_add_shortcode_param doesn't accept css [ @todo refactor that ]
+			 */
+			wp_register_style( 'animate-css', vc_asset_url( 'lib/bower/animate-css/animate.min.css' ), array(), WPB_VC_VERSION, false );
+		}
+	}
+
+	public function enqueueJs() {
+		$wp_dependencies = array(
+			'jquery',
+			'underscore',
+			'backbone',
+			'media-views',
+			'media-editor',
+			'wp-pointer',
+			'mce-view',
+			'wp-color-picker',
+			'jquery-ui-sortable',
+			'jquery-ui-droppable',
+			'jquery-ui-draggable',
+			'jquery-ui-autocomplete',
+			'jquery-ui-resizable',
+			// used in @deprecated tabs
+			'jquery-ui-tabs',
+			'jquery-ui-accordion',
+		);
+		$dependencies = array(
+			'vc_accordion_script',
+			'wpb_php_js',
+			// used in our files [e.g. edit form saving sprintf]
+			'wpb_json-js',
+			'ace-editor',
+			'webfont',
+			'vc-backend-min-js',
+		);
+
+		// This workaround will allow to disable any of dependency on-the-fly
+		foreach ( $wp_dependencies as $dependency ) {
+			wp_enqueue_script( $dependency );
+		}
+		foreach ( $dependencies as $dependency ) {
+			wp_enqueue_script( $dependency );
+		}
+	}
+
+	public function enqueueCss() {
+		$wp_dependencies = array(
+			'wp-color-picker',
+			'farbtastic',
+			// deprecated for tabs/accordion
+			'ui-custom-theme',
+			// used in deprecated message and also in vc-icon shortcode
+			'font-awesome',
+			// used in css_animation edit form param
+			'animate-css',
+		);
+		$dependencies = array(
+			'js_composer',
+		);
+
+		// This workaround will allow to disable any of dependency on-the-fly
+		foreach ( $wp_dependencies as $dependency ) {
+			wp_enqueue_style( $dependency );
+		}
+		foreach ( $dependencies as $dependency ) {
+			wp_enqueue_style( $dependency );
+		}
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function editorEnabled() {
+		return vc_user_access()->part( 'backend_editor' )->can()->get();
 	}
 }

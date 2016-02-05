@@ -1,3 +1,43 @@
+12.01.2016 - ver 4.9.2
+   - Fixed: "Editing an existing Post Grid, page IDs are displayed instead of titles."
+   - Fixed: Extra CSS class name for single image in post grid
+   - Fixed: Third elements not working in templates
+   - Fixed: Visual Composer button is now added even if post doesn't support title
+   - Fixed: Yoast + single image without default value
+   - Fixed: Grid builder on multisite
+   - Fixed: 404 error on WP multisite
+   - Improved: Tab activation through menu (links on same page)
+   - Improved: PHP7 compatibility
+
+23.12.2015 - ver 4.9.1
+   - Improved: VC save action is fired on wp save_post instead of edit_post
+   - Improved: Some unneded files removed from package
+   - Fixed: Element is calling save method only if changes were made
+   - Fixed: svg image selection in single image element
+   - Fixed: image style in post grid is now applied correctly
+   - Fixed: Equal height in Safari
+
+7.12.2015 - ver 4.9
+   - Improved: Now Visual Composer is faster at least for 30%
+   - Added: Equal height columns
+   - Added: Vertical alignment of element within a column
+   - Added: Vertical aligment of column within a row
+   - Added: Fullscreen editing mode in backend editor
+   - Improved: Single click License activation
+   - Improved: Removed margins from row and now applied to content elements
+   - Improved: All loaders are unified in VC interface
+   - Removed: Guides on/off removed from backend editor
+   - Fixed: ACF repeater field
+   - Fixed: Presets for columns
+   - Fixed: Ninja Forms
+   - Fixed: WPML taxonomies (thanks to dev guys from WPML)
+   - Fixed: Social button breaks ssl
+   - Fixed: Template search
+   - Fixed: Rem units in Design options
+   - Fixed: Advanced TinyMCE support
+   - Fixed: Icon display for nested shortcodes
+   - Other minor improvements and fixes
+
 6.11.2015 - ver 4.8.1
    - Added: Support for Advanced TinyMCE
    - Improved: Envato API changed to new version 2.0
@@ -8,7 +48,7 @@
    - Fixed: Responsive Column Behavior
    - Fixed: Numbers of line chart displayed properly
    - Fixed: Text display on grid buttons
-   - Fixed: Error 404 on vc-general on WP multi site install !!!!!
+   - Fixed: Error 404 on vc-general on WP multi site install
    - Fixed: wp multisite hardcoded 'js_composer/js_composer.php', so impossible to use other plugin name
    - Fixed: Backend display proper column width
    - Fixed: Column offset resets after update

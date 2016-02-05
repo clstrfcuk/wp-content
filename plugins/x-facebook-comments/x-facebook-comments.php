@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Facebook Comments
 Plugin URI: http://theme.co/x/
 Description: Take advantage of powerful and unique features by integrating Facebook comments on your website instead of the standard WordPress commenting system.
-Version: 1.0.0
+Version: 1.0.1
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-facebook-comments
 // Constants.
 //
 
-define( 'X_FACEBOOK_COMMENTS_VERSION', '1.0.0' );
+define( 'X_FACEBOOK_COMMENTS_VERSION', '1.0.1' );
 define( 'X_FACEBOOK_COMMENTS_URL', plugins_url( '', __FILE__ ) );
 define( 'X_FACEBOOK_COMMENTS_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

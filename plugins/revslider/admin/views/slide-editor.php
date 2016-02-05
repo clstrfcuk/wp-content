@@ -905,7 +905,7 @@ require self::getPathTemplate('template-selector');
 			 
 			jQuery(document).ready(function() {
 
-				
+				UniteLayersRev.addPreventLeave();
 				
 				<?php if(!empty($jsonLayers)){ ?>
 					//set init layers object

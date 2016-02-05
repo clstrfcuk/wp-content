@@ -81,7 +81,7 @@ class Soliloquy_Common_Admin {
 
         ?>
         <div class="error">
-            <p><?php printf( __( 'Soliloquy is now rocking v2! <strong>You need to upgrade your legacy v1 sliders and pre-official release v2 sliders to the official v2 slider architecture.</strong> <a href="%s">Click here to begin the upgrade process.</a>', 'soliloquy' ), add_query_arg( 'page', 'soliloquy-settings#!soliloquy-tab-upgrade', admin_url( 'edit.php?post_type=soliloquy' ) ) ); ?></p>
+            <p><?php printf( __( 'Soliloquy is now rocking v2! <strong>You need to upgrade your legacy v1 sliders and pre-official release v2 sliders to the official v2 slider architecture.</strong> <a href="%s">Click here to begin the upgrade process.</a>', 'soliloquy' ), esc_url( add_query_arg( 'page', 'soliloquy-settings#!soliloquy-tab-upgrade', admin_url( 'edit.php?post_type=soliloquy' ) ) ) ); ?></p>
         </div>
         <?php
 
@@ -251,6 +251,30 @@ class Soliloquy_Common_Admin {
 
         update_post_meta( $id, '_sol_slider_data', $slider_data );
 
+    }
+
+    /**
+     * Returns an array of positions for new slides to be added to in an existing Slider
+     *
+     * @since 2.4.1.7
+     *
+     * @return array 
+     */
+    public function get_slide_positions() {
+
+        $positions = array(
+            array(
+                'value' => 'before',
+                'name'  => __( 'Before Existing Slides', 'soliloquy' )
+            ),
+            array(
+                'value' => 'after',
+                'name'  => __( 'After Existing Slides', 'soliloquy' )
+            ),
+        );
+
+        return apply_filters( 'soliloquy_slide_positions', $positions );
+        
     }
 
     /**

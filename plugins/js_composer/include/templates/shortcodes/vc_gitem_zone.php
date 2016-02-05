@@ -27,8 +27,6 @@ $image_block = $image = '';
 $atts = vc_map_get_attributes( $this->getShortcode(), $atts );
 extract( $atts );
 
-extract( $atts );
-
 if ( 'no' === $render ) {
 	echo '';
 

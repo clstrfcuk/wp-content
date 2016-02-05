@@ -36,7 +36,7 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 	 * @return array
 	 */
 	public function settings() {
-		return get_option( 'cornerstone_settings', $this->config( 'common/default-settings' ) );
+		return wp_parse_args( get_option( 'cornerstone_settings', array() ), $this->config( 'common/default-settings' ) );
 	}
 
 	/**

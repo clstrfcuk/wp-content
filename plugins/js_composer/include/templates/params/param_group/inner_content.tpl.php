@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 return '
-<div class="vc_controls vc_controls-row controls vc_clearfix vc_param_group-controls">
+<div class="vc_controls vc_controls-row vc_clearfix vc_param_group-controls">
 	<a class="vc_control column_move vc_move-param" href="#" title="' . __( 'Drag row to reorder', 'js_composer' ) . '" data-vc-control="move"><i class="vc_icon"></i></a>
 	<span class="vc_param-group-admin-labels"></span>
 	<span class="vc_row_edit_clone_delete">

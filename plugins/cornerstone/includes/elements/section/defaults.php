@@ -15,7 +15,7 @@ return array(
 	'padding'      => array( '45px', '0px', '45px', '0px', 'unlinked' ),
 	'border_style' => 'none',
 	'border_color' => '',
-	'border_width' => array( '0px', '0px', '0px', '0px', 'linked' ),
+	'border_width' => array( '1px', '1px', '1px', '1px', 'linked' ),
 
 	'bg_type'           => 'none',
 	'bg_image'          => '',

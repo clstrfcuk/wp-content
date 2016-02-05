@@ -65,6 +65,12 @@ class Soliloquy_Settings {
         // Add the settings menu item to the Plugins table.
         add_filter( 'plugin_action_links_' . plugin_basename( plugin_dir_path( dirname( dirname( __FILE__ ) ) ) . 'soliloquy.php' ), array( $this, 'settings_link' ) );
 
+        // Check if the soliloquy-publishing-default option is set. If not, default it to active
+        $publishing_default = get_option( 'soliloquy-publishing-default' );
+        if ( ! $publishing_default ) {
+            update_option ( 'soliloquy-publishing-default', 'active' );
+        }
+
         // Possibly add a callback for upgrading.
         $upgrade_lite = get_option( 'soliloquy_upgrade' );
         if ( $upgrade_lite ) {
@@ -100,6 +106,8 @@ class Soliloquy_Settings {
         // If successful, load admin assets only on that page and check for addons refresh.
         if ( $this->hook ) {
             add_action( 'load-' . $this->hook, array( $this, 'maybe_refresh_addons' ) );
+            add_action( 'load-' . $this->hook, array( $this, 'maybe_fix_migration' ) );
+            add_action( 'load-' . $this->hook, array( $this, 'update_settings' ) );
             add_action( 'load-' . $this->hook, array( $this, 'settings_page_assets' ) );
         }
 
@@ -128,6 +136,136 @@ class Soliloquy_Settings {
 
         $this->get_addons_data( $this->base->get_license_key() );
 
+    }
+    
+    /**
+     * Maybe fixes the broken migration.
+     *
+     * @since 2.3.9.6
+     *
+     * @return null Return early if not fixing the broken migration
+     */
+    public function maybe_fix_migration() {
+	    
+	    // Check if user pressed 'Fix' button and nonce is valid
+	    if ( !isset( $_POST['soliloquy-serialization-submit'] ) ) {
+		   	return;
+		}
+		if ( !wp_verify_nonce( $_POST['soliloquy-serialization-nonce'], 'soliloquy-serialization-nonce' ) ) {
+			return;
+		}
+		
+		// If here, fix potentially broken migration
+		// Get WPDB and serialization class
+		global $wpdb, $fixedSliders;
+		require plugin_dir_path( __FILE__ ) . 'serialization.php';
+		$instance = Soliloquy_Serialization_Admin::get_instance();
+		 
+		// Keep count of the number of sliders that get fixed
+		$fixedSliders = 0;
+		
+		// Query to get all Soliloquy CPTs
+		$sliders = new WP_Query( array (
+			'post_type' => 'soliloquy',
+			'post_status' => 'any',
+			'posts_per_page' => -1,	
+		) );
+		
+		// Iterate through sliders
+		if ( $sliders->posts ) {
+			foreach ( $sliders->posts as $slider ) {
+				
+				// Attempt to get slider data
+				$slider_data = get_post_meta( $slider->ID, '_sol_slider_data', true );
+				if ( is_array( $slider_data ) ) {
+					// Nothing to fix here, continue
+					continue;
+				}
+				
+				// Need to fix the broken serialized string for this slider
+				// Get raw string from DB
+				$query = $wpdb->prepare( "	SELECT meta_value
+					        				FROM ".$wpdb->prefix."postmeta
+					        				WHERE post_id = %d
+					        				AND meta_key = %s
+					        				LIMIT 1",
+					        				$slider->ID,
+					        				'_sol_slider_data' );
+				$raw_slider_data = $wpdb->get_row( $query );
+				
+				// Do the fix, which returns an unserialized array
+				$slider_data = $instance->fix_serialized_string( $raw_slider_data->meta_value );
+				
+				// Check we now have an array of unserialized data
+				if ( is_array ( $slider_data ) ) {
+					update_post_meta( $slider->ID, '_sol_slider_data', $slider_data );
+					$fixedSliders++;
+				}
+			}
+		}
+	    
+	    // Output an admin notice so the user knows what happened
+	    add_action( 'admin_notices', array( $this, 'fixed_migration' ) );
+	    
+    }
+    
+    /**
+     * Update settings, if defined
+     *
+     * @since 2.3.9.6
+     *
+     * @return null Invalid nonce / no need to save
+     */
+    public function update_settings() {
+
+        // Check form was submitted
+        if ( ! isset( $_POST['soliloquy-settings-submit'] ) ) {	
+            return;
+        }
+
+        // Check nonce is valid
+		if ( ! wp_verify_nonce( $_POST['soliloquy-settings-nonce'], 'soliloquy-settings-nonce' ) ) {
+			return;
+		}
+	
+		// Update options
+		update_option( 'soliloquy-publishing-default', $_POST['soliloquy-publishing-default'] );
+        update_option( 'soliloquy_slide_position', $_POST['soliloquy_slide_position'] );
+
+        // Show confirmation notice
+        add_action( 'admin_notices', array( $this, 'updated_settings' ) );
+    
+    }
+    
+    /**
+	 * Outputs a WordPress style notification to tell the user how many sliders were
+	 * fixed after running the migration fixer
+	 *
+	 * @since 2.3.9.6
+	 */
+    public function fixed_migration() {
+	    global $fixedSliders;
+	    
+	    ?>
+	    <div class="updated">
+            <p><strong><?php echo $fixedSliders . __( ' slider(s) fixed successfully.', 'soliloquy' ); ?></strong></p>
+        </div>
+	    <?php
+		    
+    }
+    
+     /**
+	 * Outputs a WordPress style notification to tell the user their settings were saved
+	 *
+	 * @since 2.3.9.6
+	 */
+    public function updated_settings() {
+	    ?>
+	    <div class="updated">
+            <p><?php _e( 'Settings updated.', 'soliloquy' ); ?></p>
+        </div>
+	    <?php
+		    
     }
 
     /**
@@ -185,7 +323,7 @@ class Soliloquy_Settings {
                 'installing'       => __( 'Installing...', 'soliloquy' ),
                 'proceed'          => __( 'Proceed', 'soliloquy' ),
                 'ajax'             => admin_url( 'admin-ajax.php' ),
-                'redirect'         => add_query_arg( array( 'post_type' => 'soliloquy', 'soliloquy-upgraded' => true ), admin_url( 'edit.php' ) ),
+                'redirect'         => esc_url( add_query_arg( array( 'post_type' => 'soliloquy', 'soliloquy-upgraded' => true ), admin_url( 'edit.php' ) ) ),
                 'upgrade_nonce'    => wp_create_nonce( 'soliloquy-upgrade' )
             )
         );
@@ -262,7 +400,13 @@ class Soliloquy_Settings {
      * @since 1.0.0
      */
     public function settings_general_tab() {
-
+	    
+	    // Get settings
+	    $publishingDefault = get_option( 'soliloquy-publishing-default' );
+        $slide_position = get_option( 'soliloquy_slide_position' );
+        if ( empty ( $slide_position ) ) {
+            $slide_position = 'after';
+        }
         ?>
         <div id="soliloquy-settings-general">
             <table class="form-table">
@@ -297,9 +441,72 @@ class Soliloquy_Settings {
                         </td>
                     </tr>
                     <?php endif; ?>
-                    <?php do_action( 'soliloquy_settings_general_box' ); ?>
+                    
+                    <tr id="soliloquy-serialization-box">
+                        <th scope="row">
+                            <label for="soliloquy-serialization"><?php _e( 'Fix Broken Migration', 'soliloquy' ); ?></label>
+                        </th>
+                        <td>
+                            <form id="soliloquy-serialization" method="post">
+                                <?php wp_nonce_field( 'soliloquy-serialization-nonce', 'soliloquy-serialization-nonce' ); ?>
+                                <?php submit_button( __( 'Fix', 'soliloquy' ), 'primary', 'soliloquy-serialization-submit', false ); ?>
+                                <p class="description"><?php _e( 'If you have changed the URL of your WordPress web site, and manually executed a search/replace query on URLs in your WordPress database, your sliders will probably no longer show any slides.  <strong>If this is the case</strong>, click the button above to fix this. We recommend using a migration plugin or script next time :)', 'soliloquy' ); ?></p>
+                            </form>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+
+            <!-- General Settings -->
+            <form id="soliloquy-settings" method="post">
+                <table class="form-table">
+                    <tbody> 
+                        <!-- Publishing Default -->
+                        <tr id="soliloquy-publishing-default">
+                            <th scope="row">
+                                <label for="soliloquy-publishing-default"><?php _e( 'New Slide Status', 'soliloquy' ); ?></label>
+                            </th>
+                            <td>
+                                <select name="soliloquy-publishing-default" size="1">
+	                                <option value="active"<?php selected( $publishingDefault, 'active' ); ?>><?php _e( 'Published', 'soliloquy' ); ?></option>
+	                                <option value="pending"<?php selected( $publishingDefault, 'pending' ); ?>><?php _e( 'Draft', 'soliloquy' ); ?></option>
+                                </select>
+                                <p class="description"><?php _e( 'Choose the default status of any new slides that are added/uploaded to your Soliloquy sliders. You can always change slides on an individual basis by editing them.', 'soliloquy' ); ?></p>
+                            </td>
+                        </tr>
+
+                        <!-- Media Position -->
+                        <tr id="soliloquy-slide-position-box">
+                            <th scope="row">
+                                <label for="soliloquy-slide-position"><?php _e( 'New Slide Position', 'soliloquy' ); ?></label>
+                            </th>
+                            <td>
+                                <select id="soliloquy-slide-position" name="soliloquy_slide_position">
+                                    <?php foreach ( (array) Soliloquy_Common_Admin::get_instance()->get_slide_positions() as $i => $data ) : ?>
+                                        <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $slide_position ); ?>><?php echo $data['name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <p class="description"><?php _e( 'When adding slides to a Slider, choose whether to add slides before or after any existing slides.', 'soliloquy' ); ?></p>
+                            </td>
+                        </tr>
+
+                        <!-- Submit -->
+                        <tr>
+                            <th scope="row">
+                                &nbsp;
+                            </th>
+                            <td>
+                                <?php 
+                                wp_nonce_field( 'soliloquy-settings-nonce', 'soliloquy-settings-nonce' );
+                                submit_button( __( 'Update', 'soliloquy' ), 'primary', 'soliloquy-settings-submit', false ); 
+                                ?>
+                            </td>
+                        </tr>      
+                        
+                        <?php do_action( 'soliloquy_settings_general_box' ); ?>
+                    </tbody>
+                </table>
+            </form>
         </div>
         <?php
 
@@ -337,6 +544,11 @@ class Soliloquy_Settings {
                             $plugin_basename   = $this->get_plugin_basename_from_slug( $addon->slug );
                             $installed_plugins = get_plugins();
                             $last              = ( 2 == $i%3 ) ? 'last' : '';
+                            
+                            // If site is HTTPS, serve $addon->image as HTTPS too, this prevents warnings
+                            if ( is_ssl() ) {
+	                            $addon->image = str_replace( 'http://', 'https://', $addon->image );
+                            }
 
                             echo '<div class="soliloquy-addon ' . $last . '">';
                                 echo '<img class="soliloquy-addon-thumb" src="' . esc_url( $addon->image ) . '" width="300px" height="250px" alt="' . esc_attr( $addon->title ) . '" />';
@@ -519,7 +731,7 @@ class Soliloquy_Settings {
      */
     public function settings_link( $links ) {
 
-        $settings_link = sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'post_type' => 'soliloquy', 'page' => 'soliloquy-settings' ), admin_url( 'edit.php' ) ), __( 'Settings', 'soliloquy' ) );
+        $settings_link = sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( array( 'post_type' => 'soliloquy', 'page' => 'soliloquy-settings' ), admin_url( 'edit.php' ) ) ), __( 'Settings', 'soliloquy' ) );
         array_unshift( $links, $settings_link );
 
         return $links;

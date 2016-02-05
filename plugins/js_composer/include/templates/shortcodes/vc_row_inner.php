@@ -9,11 +9,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @var $el_class
  * @var $css
  * @var $el_id
+ * @var $equal_height
+ * @var $content_placement
  * @var $content - shortcode content
  * Shortcode class
  * @var $this WPBakeryShortCode_VC_Row_Inner
  */
-$el_class = $css = $el_id = '';
+$el_class = $equal_height = $content_placement = $css = $el_id = '';
 $output = $after_output = '';
 $atts = vc_map_get_attributes( $this->getShortcode(), $atts );
 extract( $atts );
@@ -27,6 +29,29 @@ $css_classes = array(
 	$el_class,
 	vc_shortcode_custom_css_class( $css ),
 );
+
+if (vc_shortcode_custom_css_has_property( $css, array('border', 'background') )) {
+	$css_classes[]='vc_row-has-fill';
+}
+
+if (!empty($atts['gap'])) {
+	$css_classes[] = 'vc_column-gap-'.$atts['gap'];
+}
+
+if ( ! empty( $equal_height ) ) {
+	$flex_row = true;
+	$css_classes[] = ' vc_row-o-equal-height';
+}
+
+if ( ! empty( $content_placement ) ) {
+	$flex_row = true;
+	$css_classes[] = ' vc_row-o-content-' . $content_placement;
+}
+
+if ( ! empty( $flex_row ) ) {
+	$css_classes[] = ' vc_row-flex';
+}
+
 $wrapper_attributes = array();
 // build attributes for wrapper
 if ( ! empty( $el_id ) ) {

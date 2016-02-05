@@ -6,7 +6,6 @@ $tab = esc_attr( preg_replace( '/^vc\-/', '', $page->getSlug() ) );
 $editable_roles = get_editable_roles();
 require_once vc_path_dir( 'SETTINGS_DIR', 'class-vc-roles.php' );
 $vc_role = new Vc_Roles();
-wp_enqueue_script( 'vc_settings-roles-tab-js' );
 ?>
 <form action="<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>" method="post"
       id="vc_settings-<?php echo $tab ?>"
@@ -77,6 +76,7 @@ wp_enqueue_script( 'vc_settings-roles-tab-js' );
 			<?php endforeach; ?>
 		</div>
 	</div>
+	<span class="vc_settings-spinner vc_ui-wp-spinner" style="display: none;" id="vc_wp-spinner"></span>
 	<!-- Settings template end -->
 	<?php
 	wp_nonce_field( 'vc_settings-' . $tab . '-action', 'vc_nonce_field' );
@@ -85,7 +85,6 @@ wp_enqueue_script( 'vc_settings-roles-tab-js' );
 	$submit_button_attributes = apply_filters( 'vc_settings-tab-submit-button-attributes-' . $tab, $submit_button_attributes, $tab );
 	submit_button( __( 'Save Changes', 'js_composer' ), 'primary', 'submit_btn', true, $submit_button_attributes );
 	?>
-	<span class="spinner" id="vc_wp-spinner"></span>
 	<input type="hidden" name="action" value="vc_roles_settings_save"
 	       id="vc_settings-<?php echo $tab; ?>-action"/>
 </form>
