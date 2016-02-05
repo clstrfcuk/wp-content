@@ -49,25 +49,22 @@ if ( ! function_exists( 'x_register_theme_plugins' ) ) :
     //
 
     $extensions = array();
-    $addons     = X_Update_API::get_cached_addons();
+    $addons     = get_site_option( 'x_extension_list', false );
 
-    if ( is_array( $addons ) && ! isset( $addons['error'] ) ) {
+    if ( is_array( $addons ) ) {
 
       foreach ( $addons as $ext => $data ) {
-
-        $data['force_activation']   = ( $data['force_activation']   == 'on' ) ? true : false;
-        $data['force_deactivation'] = ( $data['force_deactivation'] == 'on' ) ? true : false;
 
         $extensions[$ext] = array(
           'name'               => $data['title'],
           'slug'               => $data['slug'],
-          'source'             => $data['download_url'],
+          'source'             => $data['package'],
           'required'           => false,
-          'version'            => $data['latest_version'],
-          'force_activation'   => $data['force_activation'],
+          'version'            => $data['new_version'],
+          'force_activation'   => false,
           'force_deactivation' => false,
           'external_url'       => '',
-          'x_plugin'           => $data['plugin_file'],
+          'x_plugin'           => $data['plugin'],
           'x_author'           => $data['author'],
           'x_description'      => $data['description'],
           'x_logo'             => $data['logo_url'],

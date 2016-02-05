@@ -88,7 +88,7 @@
 
 	<?php do_action( 'bp_after_directory_forums_list' ); ?>
 
-	<div id="pag-bottom" class="pagination">
+	<div id="pag-bottom" class="x-pagination pagination">
 
 		<div class="pagination-links" id="topic-pag-bottom">
 			<?php bp_forum_pagination(); ?>

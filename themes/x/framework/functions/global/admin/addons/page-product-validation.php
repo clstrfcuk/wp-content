@@ -60,40 +60,26 @@ function x_addons_product_validation() {
   if ( isset( $_POST['validate'] ) && check_admin_referer( 'x-addons-product-validation' ) ) {
     if ( strip_tags( $_POST['x_addons_product_validation_submitted'] ) == 'submitted' ) {
 
-      //
-      // If $input is set and an empty string, delete the option and provide a
-      // message to confirm that the key has been removed.
-      //
-      // Else, check the value returned by $response['code'] and provide an
-      // appropriate action and message.
-      //
-      // $response['code'] == 1 - Success
-      // $response['code'] == 2 - General Error
-      // $response['code'] == 3 - Invalid API Key
-      // $response['code'] == 4 - Connection Error
-      //
-
       $name  = x_addons_get_api_key_option_name();
       $input = strip_tags( $_POST[$name] );
 
       if ( isset( $input ) && $input == '' ) {
         delete_option( $name );
-        echo '<div class="updated"><p>API key removed successfully!</p></div>';
+        Themeco_Update_Api::refresh();
+        echo '<div class="updated"><p>' . __('API key removed successfully!', '__x__') . '</p></div>';
       } else {
-        $response = X_Update_API::validate_key( $input );
-        if ( $response['code'] == 2 || $response['code'] == 3 || $response['code'] == 4 ) {
-          delete_option( $name );
-          echo '<div class="error"><p>' . $response['message'] . '</p></div>';
-          if ( isset( $_GET['x-verbose'] ) && $_GET['x-verbose'] == 1 ) {
-            x_dump( X_Update_API::get_errors(), 350, 'var_dump' );
-          }
-        } else {
+        $validation = X_Update_API::validate_key( $input );
+        if (  $validation['valid'] ) {
           update_option( $name, $input );
-          echo '<div class="updated"><p>' . $response['message'] . '</p></div>';
+          echo '<div class="updated"><p>' . $validation['message']  . '</p></div>';
+        } else {
+          delete_option( $name );
+          echo '<div class="error"><p>' . $validation['message'] . '</p></div>';
+          if ( isset( $_GET['x-verbose'] ) && $_GET['x-verbose'] == 1 ) {
+            x_dump( $validation['verbose'], 350, 'var_dump' );
+          }
         }
       }
-
-      delete_site_option( 'x_addon_list_cache' );
 
     }
   }

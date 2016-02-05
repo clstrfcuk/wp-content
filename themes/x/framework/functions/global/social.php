@@ -31,6 +31,7 @@ if ( ! function_exists( 'x_social_global' ) ) :
     $pinterest   = x_get_option( 'x_social_pinterest' );
     $dribbble    = x_get_option( 'x_social_dribbble' );
     $flickr      = x_get_option( 'x_social_flickr' );
+    $github      = x_get_option( 'x_social_github' );
     $behance     = x_get_option( 'x_social_behance' );
     $tumblr      = x_get_option( 'x_social_tumblr' );
     $whatsapp    = x_get_option( 'x_social_whatsapp' );
@@ -51,6 +52,7 @@ if ( ! function_exists( 'x_social_global' ) ) :
       if ( $pinterest )   : $output .= '<a href="' . $pinterest   . '" class="pinterest" title="Pinterest" target="_blank"><i class="x-icon-pinterest-square" data-x-icon="&#xf0d3;" aria-hidden="true"></i></a>'; endif;
       if ( $dribbble )    : $output .= '<a href="' . $dribbble    . '" class="dribbble" title="Dribbble" target="_blank"><i class="x-icon-dribbble" data-x-icon="&#xf17d;" aria-hidden="true"></i></a>'; endif;
       if ( $flickr )      : $output .= '<a href="' . $flickr      . '" class="flickr" title="Flickr" target="_blank"><i class="x-icon-flickr" data-x-icon="&#xf16e;" aria-hidden="true"></i></a>'; endif;
+      if ( $github )      : $output .= '<a href="' . $github      . '" class="github" title="GitHub" target="_blank"><i class="x-icon-github-square" data-x-icon="&#xf092;" aria-hidden="true"></i></a>'; endif;
       if ( $behance )     : $output .= '<a href="' . $behance     . '" class="behance" title="Behance" target="_blank"><i class="x-icon-behance-square" data-x-icon="&#xf1b5;" aria-hidden="true"></i></a>'; endif;
       if ( $tumblr )      : $output .= '<a href="' . $tumblr      . '" class="tumblr" title="Tumblr" target="_blank"><i class="x-icon-tumblr-square" data-x-icon="&#xf174;" aria-hidden="true"></i></a>'; endif;
       if ( $whatsapp )    : $output .= '<a href="' . $whatsapp    . '" class="tumblr" title="Whatsapp" target="_blank"><i class="x-icon-whatsapp" data-x-icon="&#xf232;" aria-hidden="true"></i></a>'; endif;

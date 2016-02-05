@@ -57,7 +57,7 @@
 
 	<?php do_action( 'bp_after_member_messages_options' ); ?>
 
-	<div class="pagination no-ajax" id="user-pag">
+	<div class="x-pagination pagination no-ajax" id="user-pag">
 
 		<div class="pagination-links" id="messages-dir-pag">
 			<?php bp_messages_pagination(); ?>

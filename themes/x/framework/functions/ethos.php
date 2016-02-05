@@ -180,7 +180,7 @@ if ( ! function_exists( 'x_ethos_entry_cover' ) ) :
 
       <?php GLOBAL $post_carousel_entry_id; ?>
 
-      <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+      <article <?php post_class(); ?>>
         <a class="entry-cover" href="<?php the_permalink(); ?>" style="<?php echo x_ethos_entry_cover_background_image_style(); ?>">
           <h2 class="h-entry-cover"><span><?php ( $post_carousel_entry_id == get_the_ID() ) ? the_title() : x_the_alternate_title(); ?></span></h2>
           <div class="x-post-carousel-meta">

@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License v2.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: X 4.3.1-RC1\n"
+"Project-Id-Version: X 4.3.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/theme/x\n"
-"POT-Creation-Date: 2016-01-19 22:40:54+00:00\n"
+"POT-Creation-Date: 2016-02-04 19:36:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,7 +25,11 @@ msgid "Move reply \"%s\""
 msgstr ""
 
 #: bbpress/form-reply-move.php:29
-msgid "<strong>WARNING:</strong> This process cannot be undone. You can either make this reply a new topic with a new title, or merge it into an existing topic. If you choose an existing topic, replies will be ordered by the time and date they were created."
+msgid ""
+"<strong>WARNING:</strong> This process cannot be undone. You can either make "
+"this reply a new topic with a new title, or merge it into an existing topic. "
+"If you choose an existing topic, replies will be ordered by the time and "
+"date they were created."
 msgstr ""
 
 #: bbpress/form-reply-move.php:34 bbpress/form-topic-split.php:34
@@ -62,7 +66,9 @@ msgid "Reply To: %s"
 msgstr ""
 
 #: bbpress/form-reply.php:36
-msgid "This topic is marked as closed to new replies, however your posting capabilities still allow you to do so."
+msgid ""
+"This topic is marked as closed to new replies, however your posting "
+"capabilities still allow you to do so."
 msgstr ""
 
 #: bbpress/form-reply.php:44 bbpress/form-topic.php:53
@@ -70,7 +76,9 @@ msgid "Your account has the ability to post unrestricted HTML content."
 msgstr ""
 
 #: bbpress/form-reply.php:64 bbpress/form-topic.php:82
-msgid "You may use these <abbr title=\"HyperText Markup Language\">HTML</abbr> tags and attributes:"
+msgid ""
+"You may use these <abbr title=\"HyperText Markup Language\">HTML</abbr> tags "
+"and attributes:"
 msgstr ""
 
 #: bbpress/form-reply.php:75
@@ -124,7 +132,15 @@ msgid "Merge topic \"%s\""
 msgstr ""
 
 #: bbpress/form-topic-merge.php:29
-msgid "<strong>WARNING:</strong> This process cannot be undone. Select the topic to merge this one into. The destination topic will remain the lead topic, and this one will change into a reply. To keep this topic as the lead, go to the other topic and use the merge tool from there instead. All replies within both topics will be merged chronologically. The order of the merged replies is based on the time and date they were posted. If the destination topic was created after this one, it's post date will be updated to second earlier than this one."
+msgid ""
+"<strong>WARNING:</strong> This process cannot be undone. Select the topic to "
+"merge this one into. The destination topic will remain the lead topic, and "
+"this one will change into a reply. To keep this topic as the lead, go to the "
+"other topic and use the merge tool from there instead. All replies within "
+"both topics will be merged chronologically. The order of the merged replies "
+"is based on the time and date they were posted. If the destination topic was "
+"created after this one, it's post date will be updated to second earlier "
+"than this one."
 msgstr ""
 
 #: bbpress/form-topic-merge.php:35
@@ -160,7 +176,13 @@ msgid "Split topic \"%s\""
 msgstr ""
 
 #: bbpress/form-topic-split.php:29
-msgid "<strong>WARNING:</strong> This process cannot be undone. When you split a topic, you are slicing it in half starting with the reply you just selected. Choose to use that reply as a new topic with a new title, or merge those replies into an existing topic. If you use the existing topic option, replies within both topics will be merged chronologically. The order of the merged replies is based on the time and date they were posted."
+msgid ""
+"<strong>WARNING:</strong> This process cannot be undone. When you split a "
+"topic, you are slicing it in half starting with the reply you just selected. "
+"Choose to use that reply as a new topic with a new title, or merge those "
+"replies into an existing topic. If you use the existing topic option, "
+"replies within both topics will be merged chronologically. The order of the "
+"merged replies is based on the time and date they were posted."
 msgstr ""
 
 #: bbpress/form-topic-split.php:35
@@ -184,7 +206,9 @@ msgid "Rename"
 msgstr ""
 
 #: bbpress/form-topic-tag.php:21
-msgid "Leave the slug empty to have one automatically generated. Changing the slug affects its permalink. Any links to the old slug will stop working."
+msgid ""
+"Leave the slug empty to have one automatically generated. Changing the slug "
+"affects its permalink. Any links to the old slug will stop working."
 msgstr ""
 
 #: bbpress/form-topic-tag.php:27
@@ -212,7 +236,8 @@ msgid "Existing tag:"
 msgstr ""
 
 #: bbpress/form-topic-tag.php:65
-msgid "Are you sure you want to merge the \"%s\" tag into the tag you specified?"
+msgid ""
+"Are you sure you want to merge the \"%s\" tag into the tag you specified?"
 msgstr ""
 
 #: bbpress/form-topic-tag.php:80 bbpress/form-topic-tag.php:89
@@ -224,11 +249,15 @@ msgid "Delete"
 msgstr ""
 
 #: bbpress/form-topic-tag.php:83
-msgid "Deleting a tag cannot be undone. This does not delete your topics. Only the tag itself is deleted. Any links to this tag will no longer function."
+msgid ""
+"Deleting a tag cannot be undone. This does not delete your topics. Only the "
+"tag itself is deleted. Any links to this tag will no longer function."
 msgstr ""
 
 #: bbpress/form-topic-tag.php:89
-msgid "Are you sure you want to delete the \"%s\" tag? This is permanent and cannot be undone."
+msgid ""
+"Are you sure you want to delete the \"%s\" tag? This is permanent and cannot "
+"be undone."
 msgstr ""
 
 #: bbpress/form-topic.php:33
@@ -244,7 +273,9 @@ msgid "Create New Topic"
 msgstr ""
 
 #: bbpress/form-topic.php:45
-msgid "This forum is marked as closed to new topics, however your posting capabilities still allow you to do so."
+msgid ""
+"This forum is marked as closed to new topics, however your posting "
+"capabilities still allow you to do so."
 msgstr ""
 
 #: bbpress/form-topic.php:67
@@ -337,7 +368,9 @@ msgid "Email"
 msgstr ""
 
 #: bbpress/form-user-edit.php:103
-msgid "There is a pending email address change to <code>%1$s</code>. <a href=\"%2$s\">Cancel</a>"
+msgid ""
+"There is a pending email address change to <code>%1$s</code>. <a href=\"%2$s"
+"\">Cancel</a>"
 msgstr ""
 
 #: bbpress/form-user-edit.php:112
@@ -345,7 +378,9 @@ msgid "New Password"
 msgstr ""
 
 #: bbpress/form-user-edit.php:114
-msgid "If you would like to change the password type a new one. Otherwise leave this blank."
+msgid ""
+"If you would like to change the password type a new one. Otherwise leave "
+"this blank."
 msgstr ""
 
 #: bbpress/form-user-edit.php:119
@@ -381,7 +416,9 @@ msgid "Lost Password"
 msgstr ""
 
 #: bbpress/form-user-lost-pass.php:18
-msgid "Enter in your username or email address below then select the &ldquo;Reset&rdquo; button."
+msgid ""
+"Enter in your username or email address below then select the &ldquo;"
+"Reset&rdquo; button."
 msgstr ""
 
 #: bbpress/form-user-lost-pass.php:22
@@ -397,7 +434,9 @@ msgid "Create an Account"
 msgstr ""
 
 #: bbpress/form-user-register.php:18
-msgid "Your username must be unique, and cannot be changed later. We use your email address to email you a secure password and verify your account."
+msgid ""
+"Your username must be unique, and cannot be changed later. We use your email "
+"address to email you a secure password and verify your account."
 msgstr ""
 
 #: bbpress/form-user-register.php:35
@@ -580,9 +619,10 @@ msgstr ""
 
 #. translators: 1: user profile link, 2: user name, 3: activity permalink, 4:
 #. activity timestamp
-
 #: buddypress/activity/comment.php:30
-msgid "<a href=\"%1$s\">%2$s</a> replied <a href=\"%3$s\" class=\"activity-time-since\"><span class=\"time-since\">%4$s</span></a>"
+msgid ""
+"<a href=\"%1$s\">%2$s</a> replied <a href=\"%3$s\" class=\"activity-time-"
+"since\"><span class=\"time-since\">%4$s</span></a>"
 msgstr ""
 
 #: buddypress/activity/comment.php:40
@@ -789,13 +829,11 @@ msgid "Permanent link to this post"
 msgstr ""
 
 #. translators: "started by [poster] in [forum]"
-
 #: buddypress/forums/forums-loop.php:45
 msgid "Started by %1$s"
 msgstr ""
 
 #. translators: "started by [poster] in [forum]"
-
 #: buddypress/forums/forums-loop.php:56
 msgid "in %1$s"
 msgstr ""
@@ -846,7 +884,6 @@ msgid "Post In Group Forum:"
 msgstr ""
 
 #. translators: no option picked in select box
-
 #: buddypress/forums/index.php:98
 msgid "----"
 msgstr ""
@@ -856,7 +893,12 @@ msgid "Post Topic"
 msgstr ""
 
 #: buddypress/forums/index.php:127
-msgid "You are not a member of any groups so you don't have any group forums you can post in. To start posting, first find a group that matches the topic subject you'd like to start. If this group does not exist, why not <a href='%s'>create a new group</a>? Once you have joined or created the group you can post your topic in that group's forum."
+msgid ""
+"You are not a member of any groups so you don't have any group forums you "
+"can post in. To start posting, first find a group that matches the topic "
+"subject you'd like to start. If this group does not exist, why not <a "
+"href='%s'>create a new group</a>? Once you have joined or created the group "
+"you can post your topic in that group's forum."
 msgstr ""
 
 #: buddypress/groups/create.php:39 buddypress/groups/single/admin.php:30
@@ -881,7 +923,8 @@ msgstr ""
 
 #: buddypress/groups/create.php:68 buddypress/groups/create.php:77
 #: buddypress/groups/single/admin.php:78 buddypress/groups/single/admin.php:88
-msgid "This group will be listed in the groups directory and in search results."
+msgid ""
+"This group will be listed in the groups directory and in search results."
 msgstr ""
 
 #: buddypress/groups/create.php:69 buddypress/groups/single/admin.php:79
@@ -898,7 +941,8 @@ msgstr ""
 
 #: buddypress/groups/create.php:78 buddypress/groups/create.php:87
 #: buddypress/groups/single/admin.php:89 buddypress/groups/single/admin.php:99
-msgid "Group content and activity will only be visible to members of the group."
+msgid ""
+"Group content and activity will only be visible to members of the group."
 msgstr ""
 
 #: buddypress/groups/create.php:83 buddypress/groups/single/admin.php:95
@@ -910,7 +954,8 @@ msgid "Only users who are invited can join the group."
 msgstr ""
 
 #: buddypress/groups/create.php:86 buddypress/groups/single/admin.php:98
-msgid "This group will not be listed in the groups directory or search results."
+msgid ""
+"This group will not be listed in the groups directory or search results."
 msgstr ""
 
 #: buddypress/groups/create.php:92 buddypress/groups/single/admin.php:104
@@ -946,11 +991,15 @@ msgid "Enable discussion forum"
 msgstr ""
 
 #: buddypress/groups/create.php:126
-msgid "<strong>Attention Site Admin:</strong> Group forums require the <a href=\"%s\">correct setup and configuration</a> of a bbPress installation."
+msgid ""
+"<strong>Attention Site Admin:</strong> Group forums require the <a href=\"%s"
+"\">correct setup and configuration</a> of a bbPress installation."
 msgstr ""
 
 #: buddypress/groups/create.php:152 buddypress/groups/single/admin.php:137
-msgid "Upload an image to use as an avatar for this group. The image will be shown on the main group page, and in search results."
+msgid ""
+"Upload an image to use as an avatar for this group. The image will be shown "
+"on the main group page, and in search results."
 msgstr ""
 
 #: buddypress/groups/create.php:156 buddypress/groups/single/admin.php:141
@@ -988,7 +1037,9 @@ msgid "Remove Invite"
 msgstr ""
 
 #: buddypress/groups/create.php:249
-msgid "Once you have built up friend connections you will be able to invite others to your group."
+msgid ""
+"Once you have built up friend connections you will be able to invite others "
+"to your group."
 msgstr ""
 
 #: buddypress/groups/create.php:271
@@ -1037,7 +1088,9 @@ msgid "Save"
 msgstr ""
 
 #: buddypress/groups/single/admin.php:148
-msgid "If you'd like to remove the existing avatar but not upload a new one, please use the following link:"
+msgid ""
+"If you'd like to remove the existing avatar but not upload a new one, please "
+"use the following link:"
 msgstr ""
 
 #: buddypress/groups/single/admin.php:149
@@ -1109,7 +1162,9 @@ msgid "This group has no members."
 msgstr ""
 
 #: buddypress/groups/single/admin.php:337
-msgid "WARNING: Deleting this group will completely remove ALL content associated with it. There is no way back, please be careful with this option."
+msgid ""
+"WARNING: Deleting this group will completely remove ALL content associated "
+"with it. There is no way back, please be careful with this option."
 msgstr ""
 
 #: buddypress/groups/single/admin.php:340
@@ -1198,11 +1253,15 @@ msgid "Send"
 msgstr ""
 
 #: buddypress/members/activate.php:14
-msgid "Your account was activated successfully! Your account details have been sent to you in a separate email."
+msgid ""
+"Your account was activated successfully! Your account details have been sent "
+"to you in a separate email."
 msgstr ""
 
 #: buddypress/members/activate.php:16
-msgid "Your account was activated successfully! You can now <a href=\"%s\">log in</a> with the username and password you provided when you signed up."
+msgid ""
+"Your account was activated successfully! You can now <a href=\"%s\">log in</"
+"a> with the username and password you provided when you signed up."
 msgstr ""
 
 #: buddypress/members/activate.php:23
@@ -1227,7 +1286,9 @@ msgid "User registration is currently not allowed."
 msgstr ""
 
 #: buddypress/members/register.php:22
-msgid "Registering for this site is easy. Just fill in the fields below, and we'll get a new account set up for you in no time."
+msgid ""
+"Registering for this site is easy. Just fill in the fields below, and we'll "
+"get a new account set up for you in no time."
 msgstr ""
 
 #: buddypress/members/register.php:30
@@ -1259,7 +1320,8 @@ msgstr ""
 #: buddypress/members/register.php:79 buddypress/members/register.php:94
 #: buddypress/members/single/profile/edit.php:33
 #: buddypress/members/single/profile/edit.php:47
-msgid "This field can be seen by: <span class=\"current-visibility-level\">%s</span>"
+msgid ""
+"This field can be seen by: <span class=\"current-visibility-level\">%s</span>"
 msgstr ""
 
 #: buddypress/members/register.php:79
@@ -1296,7 +1358,9 @@ msgid "Site Title"
 msgstr ""
 
 #: buddypress/members/register.php:145
-msgid "I would like my site to appear in search engines, and in public listings around this network."
+msgid ""
+"I would like my site to appear in search engines, and in public listings "
+"around this network."
 msgstr ""
 
 #: buddypress/members/register.php:148
@@ -1312,11 +1376,16 @@ msgid "Sign Up"
 msgstr ""
 
 #: buddypress/members/register.php:179
-msgid "You have successfully created your account! To begin using this site you will need to activate your account via the email we have just sent to your address."
+msgid ""
+"You have successfully created your account! To begin using this site you "
+"will need to activate your account via the email we have just sent to your "
+"address."
 msgstr ""
 
 #: buddypress/members/register.php:181
-msgid "You have successfully created your account! Please log in using the username and password you have just created."
+msgid ""
+"You have successfully created your account! Please log in using the username "
+"and password you have just created."
 msgstr ""
 
 #: buddypress/members/single/friends/requests.php:20
@@ -1415,11 +1484,17 @@ msgid "Change Profile Photo"
 msgstr ""
 
 #: buddypress/members/single/profile/change-avatar.php:13
-msgid "Your profile photo will be used on your profile and throughout the site. If there is a <a href=\"http://gravatar.com\">Gravatar</a> associated with your account email we will use that, or you can upload an image from your computer."
+msgid ""
+"Your profile photo will be used on your profile and throughout the site. If "
+"there is a <a href=\"http://gravatar.com\">Gravatar</a> associated with your "
+"account email we will use that, or you can upload an image from your "
+"computer."
 msgstr ""
 
 #: buddypress/members/single/profile/change-avatar.php:20
-msgid "Click below to select a JPG, GIF or PNG format photo from your computer and then click 'Upload Image' to proceed."
+msgid ""
+"Click below to select a JPG, GIF or PNG format photo from your computer and "
+"then click 'Upload Image' to proceed."
 msgstr ""
 
 #: buddypress/members/single/profile/change-avatar.php:24
@@ -1427,7 +1502,9 @@ msgid "Upload Image"
 msgstr ""
 
 #: buddypress/members/single/profile/change-avatar.php:29
-msgid "If you'd like to delete your current profile photo but not upload a new one, please use the delete profile photo button."
+msgid ""
+"If you'd like to delete your current profile photo but not upload a new one, "
+"please use the delete profile photo button."
 msgstr ""
 
 #: buddypress/members/single/profile/change-avatar.php:30
@@ -1455,7 +1532,11 @@ msgid "Crop Image"
 msgstr ""
 
 #: buddypress/members/single/profile/change-avatar.php:69
-msgid "Your profile photo will be used on your profile and throughout the site. To change your profile photo, please create an account with <a href=\"http://gravatar.com\">Gravatar</a> using the same email address as you used to register with this site."
+msgid ""
+"Your profile photo will be used on your profile and throughout the site. To "
+"change your profile photo, please create an account with <a href=\"http://"
+"gravatar.com\">Gravatar</a> using the same email address as you used to "
+"register with this site."
 msgstr ""
 
 #: buddypress/members/single/profile/edit.php:10
@@ -1471,11 +1552,15 @@ msgid "This user is a spammer."
 msgstr ""
 
 #: buddypress/members/single/settings/delete-account.php:8
-msgid "Deleting your account will delete all of the content you have created. It will be completely irrecoverable."
+msgid ""
+"Deleting your account will delete all of the content you have created. It "
+"will be completely irrecoverable."
 msgstr ""
 
 #: buddypress/members/single/settings/delete-account.php:12
-msgid "Deleting this account will delete all of the content it has created. It will be completely irrecoverable."
+msgid ""
+"Deleting this account will delete all of the content it has created. It will "
+"be completely irrecoverable."
 msgstr ""
 
 #: buddypress/members/single/settings/delete-account.php:23
@@ -1483,7 +1568,9 @@ msgid "I understand the consequences."
 msgstr ""
 
 #: buddypress/members/single/settings/general.php:7
-msgid "Current Password <span>(required to update email or change current password)</span>"
+msgid ""
+"Current Password <span>(required to update email or change current "
+"password)</span>"
 msgstr ""
 
 #: buddypress/members/single/settings/general.php:9
@@ -1574,7 +1661,9 @@ msgstr ""
 
 #: framework/functions/ethos.php:369 framework/functions/integrity.php:225
 #: framework/functions/renew.php:199
-msgid "Reply <span class=\"comment-reply-link-after\"><i class=\"x-icon-reply\" data-x-icon=\"&#xf112;\"></i></span>"
+msgid ""
+"Reply <span class=\"comment-reply-link-after\"><i class=\"x-icon-reply\" "
+"data-x-icon=\"&#xf112;\"></i></span>"
 msgstr ""
 
 #: framework/functions/ethos.php:371
@@ -1596,45 +1685,67 @@ msgstr ""
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-plugin-updater.php:237
-msgid "There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox\" title=\"%3$s\">View version %4$s details</a>."
+#: framework/functions/global/admin/addons/class-plugin-updater.php:207
+msgid ""
+"There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox"
+"\" title=\"%3$s\">View version %4$s details</a>."
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-plugin-updater.php:239
-msgid "There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox\" title=\"%3$s\">View version %4$s details</a>. %5$s"
+#: framework/functions/global/admin/addons/class-plugin-updater.php:209
+msgid ""
+"There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox"
+"\" title=\"%3$s\">View version %4$s details</a>. %5$s"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-plugin-updater.php:241
-msgid "There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox\" title=\"%3$s\">View version %4$s details</a> or <a href=\"%5$s\">update now</a>."
+#: framework/functions/global/admin/addons/class-plugin-updater.php:211
+msgid ""
+"There is a new version of %1$s available. <a href=\"%2$s\" class=\"thickbox"
+"\" title=\"%3$s\">View version %4$s details</a> or <a href=\"%5$s\">update "
+"now</a>."
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:135
-msgid "Could not establish connection. For assistance, please start by reviewing our article on troubleshooting <a href=\"https://community.theme.co/kb/connection-issues/\">connection issues.</a>"
+#: framework/functions/global/admin/addons/class-themeco-update-api.php:47
+msgid ""
+"Could not establish connection. For assistance, please start by reviewing "
+"our article on troubleshooting <a href=\"https://community.theme.co/kb/"
+"connection-issues/\">connection issues.</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:212
-#: framework/functions/global/admin/addons/class-update-api.php:216
+#: framework/functions/global/admin/addons/class-x-update-api.php:140
+msgid "API Key Successfuly Validated!"
+msgstr ""
+
+#: framework/functions/global/admin/addons/class-x-update-api.php:159
+#: framework/functions/global/admin/addons/class-x-update-api.php:163
 msgid "<a href=\"%s\">Validate X to enable automatic updates</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:220
-msgid "X is not validated. <a href=\"%s\">Validate X to enable automatic updates</a>"
+#: framework/functions/global/admin/addons/class-x-update-api.php:167
+msgid ""
+"X is not validated. <a href=\"%s\">Validate X to enable automatic updates</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:224
+#: framework/functions/global/admin/addons/class-x-update-api.php:171
 msgid "<a href=\"%s\">Validate X to enable automatic updates</a>."
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:228
-msgid "<a href=\"%s\">Validate X to enable automatic updates (go to \"Addons\" &gt; \"Home\" to learn more.)</a>"
+#: framework/functions/global/admin/addons/class-x-update-api.php:175
+msgid ""
+"<a href=\"%s\">Validate X to enable automatic updates (go to \"Addons\" &gt; "
+"\"Home\" to learn more.)</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:232
-msgid "X is not validated. <a href=\"%s\">Validate X to enable automatic updates.</a>"
+#: framework/functions/global/admin/addons/class-x-update-api.php:179
+msgid ""
+"X is not validated. <a href=\"%s\">Validate X to enable automatic updates.</"
+"a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/class-update-api.php:246
-msgid "Could not retrieve extensions list. For assistance, please start by reviewing our article on troubleshooting <a href=\"https://community.theme.co/kb/connection-issues/\">connection issues.</a>"
+#: framework/functions/global/admin/addons/class-x-update-api.php:196
+msgid ""
+"Could not retrieve extensions list. For assistance, please start by "
+"reviewing our article on troubleshooting <a href=\"https://community.theme."
+"co/kb/connection-issues/\">connection issues.</a>"
 msgstr ""
 
 #: framework/functions/global/admin/addons/demo/class-x-demo-import-processor.php:148
@@ -1707,7 +1818,9 @@ msgid "Portfolio"
 msgstr ""
 
 #: framework/functions/global/admin/addons/page-demo-content.php:33
-msgid "Demo content cache has been cleared. All imported content will be considered new."
+msgid ""
+"Demo content cache has been cleared. All imported content will be considered "
+"new."
 msgstr ""
 
 #: framework/functions/global/admin/addons/page-demo-content.php:37
@@ -1715,7 +1828,10 @@ msgid "Demo Content"
 msgstr ""
 
 #: framework/functions/global/admin/addons/page-demo-content.php:38
-msgid "Quick start the design process with our Standard and Expanded demos. <a href=\"https://community.theme.co/kb/demo-content/\" target=\"_blank\">Learn More</a>."
+msgid ""
+"Quick start the design process with our Standard and Expanded demos. <a href="
+"\"https://community.theme.co/kb/demo-content/\" target=\"_blank\">Learn "
+"More</a>."
 msgstr ""
 
 #: framework/functions/global/admin/addons/page-demo-content.php:64
@@ -1734,14 +1850,25 @@ msgid "Setup Standard Demo: %s"
 msgstr ""
 
 #: framework/functions/global/admin/addons/page-demo-content.php:175
-msgid "Unable to retrieve demo content. Your WordPress install may be having issues making outbound HTTP requests. For more information, please review the <a href=\"https://theme.co/community/kb/connection-issues/\">connection issues</a> article in our Knowledge Base."
+msgid ""
+"Unable to retrieve demo content. Your WordPress install may be having issues "
+"making outbound HTTP requests. For more information, please review the <a "
+"href=\"https://theme.co/community/kb/connection-issues/\">connection issues</"
+"a> article in our Knowledge Base."
 msgstr ""
 
 #: framework/functions/global/admin/addons/page-demo-content.php:188
-msgid "No demos found. Refreshing this page may resolve the issue. If it persists, please review the <a href=\"https://theme.co/community/kb/connection-issues/\">connection issues</a> article in our Knowledge Base."
+msgid ""
+"No demos found. Refreshing this page may resolve the issue. If it persists, "
+"please review the <a href=\"https://theme.co/community/kb/connection-issues/"
+"\">connection issues</a> article in our Knowledge Base."
 msgstr ""
 
-#: framework/functions/global/admin/addons/setup.php:117
+#: framework/functions/global/admin/addons/page-product-validation.php:69
+msgid "API key removed successfully!"
+msgstr ""
+
+#: framework/functions/global/admin/addons/setup.php:118
 msgid "<a href=\"%s\">Extensions</a>"
 msgstr ""
 
@@ -3212,54 +3339,58 @@ msgid "Flickr Profile URL"
 msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:1329
-msgid "Behance Profile URL"
+msgid "GitHub Profile URL"
 msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:1332
-msgid "Tumblr Profile URL"
+msgid "Behance Profile URL"
 msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:1335
-msgid "Whatsapp Profile URL"
+msgid "Tumblr Profile URL"
 msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:1338
-msgid "SoundCloud Profile URL"
+msgid "Whatsapp Profile URL"
 msgstr ""
 
 #: framework/functions/global/admin/customizer/register.php:1341
+msgid "SoundCloud Profile URL"
+msgstr ""
+
+#: framework/functions/global/admin/customizer/register.php:1344
 msgid "RSS Feed URL"
 msgstr ""
 
-#: framework/functions/global/admin/customizer/register.php:1349
+#: framework/functions/global/admin/customizer/register.php:1352
 msgid "Enable Open Graph"
 msgstr ""
 
-#: framework/functions/global/admin/customizer/register.php:1357
+#: framework/functions/global/admin/customizer/register.php:1360
 msgid "Social Fallback Image"
 msgstr ""
 
-#: framework/functions/global/admin/customizer/register.php:1365
+#: framework/functions/global/admin/customizer/register.php:1368
 msgid "Favicon (Set Path to Image Below)"
 msgstr ""
 
-#: framework/functions/global/admin/customizer/register.php:1368
+#: framework/functions/global/admin/customizer/register.php:1371
 msgid "Touch Icon (iOS and Android)"
 msgstr ""
 
-#: framework/functions/global/admin/customizer/register.php:1371
+#: framework/functions/global/admin/customizer/register.php:1374
 msgid "Tile Icon (Microsoft)"
 msgstr ""
 
-#: framework/functions/global/admin/customizer/register.php:1374
+#: framework/functions/global/admin/customizer/register.php:1377
 msgid "Tile Icon Background Color"
 msgstr ""
 
-#: framework/functions/global/admin/customizer/register.php:1382
+#: framework/functions/global/admin/customizer/register.php:1385
 msgid "CSS"
 msgstr ""
 
-#: framework/functions/global/admin/customizer/register.php:1385
+#: framework/functions/global/admin/customizer/register.php:1388
 msgid "JavaScript"
 msgstr ""
 
@@ -3268,7 +3399,9 @@ msgid "Page Settings"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:25
-msgid "Here you will find various options you can use to create different page layouts and styles."
+msgid ""
+"Here you will find various options you can use to create different page "
+"layouts and styles."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:31
@@ -3280,7 +3413,9 @@ msgstr ""
 #: framework/functions/global/admin/meta/entries.php:32
 #: framework/functions/global/admin/meta/entries.php:326
 #: framework/functions/global/admin/meta/entries.php:593
-msgid "Add a custom CSS class to the &lt;body&gt; element. Separate multiple class names with a space."
+msgid ""
+"Add a custom CSS class to the &lt;body&gt; element. Separate multiple class "
+"names with a space."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:38
@@ -3292,7 +3427,9 @@ msgstr ""
 #: framework/functions/global/admin/meta/entries.php:39
 #: framework/functions/global/admin/meta/entries.php:340
 #: framework/functions/global/admin/meta/entries.php:600
-msgid "Filling out this text input will replace the standard title on all index pages (i.e. blog, category archives, search, et cetera) with this one."
+msgid ""
+"Filling out this text input will replace the standard title on all index "
+"pages (i.e. blog, category archives, search, et cetera) with this one."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:45
@@ -3300,7 +3437,9 @@ msgid "Disable Page Title"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:46
-msgid "Select to disable the page title. Disabling the page title provides greater stylistic flexibility on individual pages."
+msgid ""
+"Select to disable the page title. Disabling the page title provides greater "
+"stylistic flexibility on individual pages."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:52
@@ -3308,7 +3447,9 @@ msgid "One Page Navigation"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:53
-msgid "To activate your one page navigation, select a menu from the dropdown. To deactivate one page navigation, set the dropdown back to \"Deactivated.\""
+msgid ""
+"To activate your one page navigation, select a menu from the dropdown. To "
+"deactivate one page navigation, set the dropdown back to \"Deactivated.\""
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:59
@@ -3320,7 +3461,11 @@ msgstr ""
 #: framework/functions/global/admin/meta/entries.php:60
 #: framework/functions/global/admin/meta/entries.php:347
 #: framework/functions/global/admin/meta/entries.php:637
-msgid "Click the button to upload your background image(s), or enter them in manually using the text field above. Loading multiple background images will create a slideshow effect. To clear, delete the image URLs from the text field and save your page."
+msgid ""
+"Click the button to upload your background image(s), or enter them in "
+"manually using the text field above. Loading multiple background images will "
+"create a slideshow effect. To clear, delete the image URLs from the text "
+"field and save your page."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:66
@@ -3332,7 +3477,9 @@ msgstr ""
 #: framework/functions/global/admin/meta/entries.php:67
 #: framework/functions/global/admin/meta/entries.php:354
 #: framework/functions/global/admin/meta/entries.php:644
-msgid "Set a time in milliseconds for your image(s) to fade in. To disable this feature, set the value to \"0.\""
+msgid ""
+"Set a time in milliseconds for your image(s) to fade in. To disable this "
+"feature, set the value to \"0.\""
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:73
@@ -3344,7 +3491,9 @@ msgstr ""
 #: framework/functions/global/admin/meta/entries.php:74
 #: framework/functions/global/admin/meta/entries.php:361
 #: framework/functions/global/admin/meta/entries.php:651
-msgid "Only applicable if multiple images are selected, creating a background image slider. Set a time in milliseconds for your images to remain on screen."
+msgid ""
+"Only applicable if multiple images are selected, creating a background image "
+"slider. Set a time in milliseconds for your images to remain on screen."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:93
@@ -3352,7 +3501,9 @@ msgid "Icon Page Settings"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:94
-msgid "Here you will find some options specific to Icon that you can use to create different page layouts."
+msgid ""
+"Here you will find some options specific to Icon that you can use to create "
+"different page layouts."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:100
@@ -3360,7 +3511,10 @@ msgid "Blank Template Sidebar"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:101
-msgid "Because of Icon's unique layout, there may be times where you wish to show a sidebar on your blank templates. If that is the case, select \"Yes\" to activate your sidebar."
+msgid ""
+"Because of Icon's unique layout, there may be times where you wish to show a "
+"sidebar on your blank templates. If that is the case, select \"Yes\" to "
+"activate your sidebar."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:123
@@ -3379,7 +3533,9 @@ msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:131
 #: framework/functions/global/admin/meta/entries.php:195
-msgid "To activate your slider, select an option from the dropdown. To deactivate your slider, set the dropdown back to \"Deactivated.\""
+msgid ""
+"To activate your slider, select an option from the dropdown. To deactivate "
+"your slider, set the dropdown back to \"Deactivated.\""
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:137
@@ -3389,7 +3545,10 @@ msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:138
 #: framework/functions/global/admin/meta/entries.php:202
-msgid "Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv)."
+msgid ""
+"Include your video URL(s) here. If using multiple sources, separate them "
+"using the pipe character (|) and place fallbacks towards the end (i.e. .webm "
+"then .mp4 then .ogv)."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:144
@@ -3399,7 +3558,11 @@ msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:145
 #: framework/functions/global/admin/meta/entries.php:209
-msgid "Click the button to upload your video poster image to show on mobile devices, or enter it in manually using the text field above. Only select one image for this field. To clear, delete the image URL from the text field and save your page."
+msgid ""
+"Click the button to upload your video poster image to show on mobile "
+"devices, or enter it in manually using the text field above. Only select one "
+"image for this field. To clear, delete the image URL from the text field and "
+"save your page."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:151
@@ -3463,7 +3626,11 @@ msgid "Category Select"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:265
-msgid "To select multiple nonconsecutive pages or posts, hold down \"CTRL\" (Windows) or \"COMMAND\" (Mac), and then click each item you want to select. To cancel the selection of individual items, hold down \"CTRL\" or \"COMMAND\", and then click the items that you don't want to include."
+msgid ""
+"To select multiple nonconsecutive pages or posts, hold down \"CTRL"
+"\" (Windows) or \"COMMAND\" (Mac), and then click each item you want to "
+"select. To cancel the selection of individual items, hold down \"CTRL\" or "
+"\"COMMAND\", and then click the items that you don't want to include."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:272
@@ -3471,11 +3638,16 @@ msgid "Select how many columns you would like to display for your portfolio."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:280
-msgid "Select the layout you would like to display for your portfolio. The \"Use Global Content Layout\" option allows you to keep your sidebar if you have already selected \"Content Left, Sidebar Right\" or \"Sidebar Left, Content Right\" for your \"Content Layout\" in the Customizer."
+msgid ""
+"Select the layout you would like to display for your portfolio. The \"Use "
+"Global Content Layout\" option allows you to keep your sidebar if you have "
+"already selected \"Content Left, Sidebar Right\" or \"Sidebar Left, Content "
+"Right\" for your \"Content Layout\" in the Customizer."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:288
-msgid "Select how many posts you would like to display per page for your portfolio."
+msgid ""
+"Select how many posts you would like to display per page for your portfolio."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:294
@@ -3483,7 +3655,9 @@ msgid "Disable Filtering"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:295
-msgid "Turning off the portfolio filters will remove the ability to sort portfolio items by category."
+msgid ""
+"Turning off the portfolio filters will remove the ability to sort portfolio "
+"items by category."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:318
@@ -3491,7 +3665,9 @@ msgid "Post Settings"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:319
-msgid "Here you will find various options you can use to create different page styles."
+msgid ""
+"Here you will find various options you can use to create different page "
+"styles."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:332
@@ -3499,7 +3675,9 @@ msgid "Fullwidth Post Layout"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:333
-msgid "If your global content layout includes a sidebar, selecting this option will remove the sidebar for this post."
+msgid ""
+"If your global content layout includes a sidebar, selecting this option will "
+"remove the sidebar for this post."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:378
@@ -3582,7 +3760,10 @@ msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:465
 #: framework/functions/global/admin/meta/entries.php:698
-msgid "If you are using something other than self hosted video such as YouTube, Vimeo, or Wistia, paste the embed code here. This field will override the above."
+msgid ""
+"If you are using something other than self hosted video such as YouTube, "
+"Vimeo, or Wistia, paste the embed code here. This field will override the "
+"above."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:482
@@ -3614,7 +3795,9 @@ msgid "Embedded Audio Code"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:504
-msgid "If you are using something other than self hosted audio such as Soundcloud paste the embed code here. This field will override the above."
+msgid ""
+"If you are using something other than self hosted audio such as Soundcloud "
+"paste the embed code here. This field will override the above."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:523
@@ -3622,7 +3805,9 @@ msgid "Ethos Post Settings"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:524
-msgid "Here you will find some options specific to Ethos that you can use to create different post layouts."
+msgid ""
+"Here you will find some options specific to Ethos that you can use to create "
+"different post layouts."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:530
@@ -3638,7 +3823,9 @@ msgid "Index Featured Post Size"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:538
-msgid "If the \"Index Featured Post Layout\" option above is selected, select a size for the output."
+msgid ""
+"If the \"Index Featured Post Layout\" option above is selected, select a "
+"size for the output."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:545
@@ -3646,7 +3833,9 @@ msgid "Post Carousel Display"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:546
-msgid "Display this post in the Post Carousel if you have \"Featured\" selected in the Customizer."
+msgid ""
+"Display this post in the Post Carousel if you have \"Featured\" selected in "
+"the Customizer."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:552
@@ -3654,7 +3843,9 @@ msgid "Post Slider Display &ndash; Blog"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:553
-msgid "Display this post in the Blog Post Slider if you have \"Featured\" selected in the Customizer."
+msgid ""
+"Display this post in the Blog Post Slider if you have \"Featured\" selected "
+"in the Customizer."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:559
@@ -3662,7 +3853,9 @@ msgid "Post Slider Display &ndash; Archives"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:560
-msgid "Display this post in the Archives Post Slider if you have \"Featured\" selected in the Customizer."
+msgid ""
+"Display this post in the Archives Post Slider if you have \"Featured\" "
+"selected in the Customizer."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:585
@@ -3678,7 +3871,11 @@ msgid "Portfolio Parent"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:607
-msgid "Assign the parent portfolio page for this portfolio item. This will be used in various places throughout the theme such as your breadcrumbs. If \"Default\" is selected then the first page with the \"Layout - Portfolio\" template assigned to it will be used."
+msgid ""
+"Assign the parent portfolio page for this portfolio item. This will be used "
+"in various places throughout the theme such as your breadcrumbs. If \"Default"
+"\" is selected then the first page with the \"Layout - Portfolio\" template "
+"assigned to it will be used."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:613
@@ -3686,7 +3883,10 @@ msgid "Media Type"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:614
-msgid "Select which kind of media you want to display for your portfolio. If selecting a \"Gallery,\" simply upload your images to this post and organize them in the order you want them to display."
+msgid ""
+"Select which kind of media you want to display for your portfolio. If "
+"selecting a \"Gallery,\" simply upload your images to this post and organize "
+"them in the order you want them to display."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:621
@@ -3694,7 +3894,9 @@ msgid "Featured Content"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:622
-msgid "Select \"Media\" if you would like to show your video or gallery on the index page in place of the featured image."
+msgid ""
+"Select \"Media\" if you would like to show your video or gallery on the "
+"index page in place of the featured image."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:629
@@ -3702,7 +3904,8 @@ msgid "Project Link"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:630
-msgid "Provide an external link to the project you worked on if one is available."
+msgid ""
+"Provide an external link to the project you worked on if one is available."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:668
@@ -3718,7 +3921,9 @@ msgid "Video Aspect Ratio"
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:676
-msgid "If selecting \"Video,\" choose the aspect ratio you would like for your video."
+msgid ""
+"If selecting \"Video,\" choose the aspect ratio you would like for your "
+"video."
 msgstr ""
 
 #: framework/functions/global/admin/meta/entries.php:684
@@ -3764,107 +3969,129 @@ msgstr ""
 msgid "Primary Menu"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:105
+#: framework/functions/global/admin/tmg/register.php:102
 #: framework/functions/global/admin/tmg/setup.php:162
 msgid "Install Required Plugins"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:106
+#: framework/functions/global/admin/tmg/register.php:103
 #: framework/functions/global/admin/tmg/setup.php:163
 msgid "Install Plugins"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:107
+#: framework/functions/global/admin/tmg/register.php:104
 #: framework/functions/global/admin/tmg/setup.php:164
 msgid "Installing Plugin: %s"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:108
+#: framework/functions/global/admin/tmg/register.php:105
 msgid "Something went wrong with the plugin API."
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:109
+#: framework/functions/global/admin/tmg/register.php:106
 #: framework/functions/global/admin/tmg/setup.php:166
 msgid "This theme requires the following plugin: %1$s."
 msgid_plural "This theme requires the following plugins: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:110
+#: framework/functions/global/admin/tmg/register.php:107
 #: framework/functions/global/admin/tmg/setup.php:167
 msgid "This theme recommends the following plugin: %1$s."
 msgid_plural "This theme recommends the following plugins: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:111
+#: framework/functions/global/admin/tmg/register.php:108
 #: framework/functions/global/admin/tmg/setup.php:168
-msgid "Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed."
-msgid_plural "Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed."
+msgid ""
+"Sorry, but you do not have the correct permissions to install the %s plugin. "
+"Contact the administrator of this site for help on getting the plugin "
+"installed."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to install the %s "
+"plugins. Contact the administrator of this site for help on getting the "
+"plugins installed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:112
+#: framework/functions/global/admin/tmg/register.php:109
 #: framework/functions/global/admin/tmg/setup.php:169
 msgid "The following required plugin is currently inactive: %1$s."
 msgid_plural "The following required plugins are currently inactive: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:113
+#: framework/functions/global/admin/tmg/register.php:110
 #: framework/functions/global/admin/tmg/setup.php:170
 msgid "The following recommended plugin is currently inactive: %1$s."
 msgid_plural "The following recommended plugins are currently inactive: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:114
+#: framework/functions/global/admin/tmg/register.php:111
 #: framework/functions/global/admin/tmg/setup.php:171
-msgid "Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated."
-msgid_plural "Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated."
+msgid ""
+"Sorry, but you do not have the correct permissions to activate the %s "
+"plugin. Contact the administrator of this site for help on getting the "
+"plugin activated."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to activate the %s "
+"plugins. Contact the administrator of this site for help on getting the "
+"plugins activated."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:115
+#: framework/functions/global/admin/tmg/register.php:112
 #: framework/functions/global/admin/tmg/setup.php:172
-msgid "The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s."
-msgid_plural "The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s."
+msgid ""
+"The following plugin needs to be updated to its latest version to ensure "
+"maximum compatibility with this theme: %1$s."
+msgid_plural ""
+"The following plugins need to be updated to their latest version to ensure "
+"maximum compatibility with this theme: %1$s."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:116
+#: framework/functions/global/admin/tmg/register.php:113
 #: framework/functions/global/admin/tmg/setup.php:173
-msgid "Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated."
-msgid_plural "Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated."
+msgid ""
+"Sorry, but you do not have the correct permissions to update the %s plugin. "
+"Contact the administrator of this site for help on getting the plugin "
+"updated."
+msgid_plural ""
+"Sorry, but you do not have the correct permissions to update the %s plugins. "
+"Contact the administrator of this site for help on getting the plugins "
+"updated."
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:117
+#: framework/functions/global/admin/tmg/register.php:114
 #: framework/functions/global/admin/tmg/setup.php:174
 msgid "Begin installing plugin"
 msgid_plural "Begin installing plugins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:118
+#: framework/functions/global/admin/tmg/register.php:115
 #: framework/functions/global/admin/tmg/setup.php:175
 msgid "Activate installed plugin"
 msgid_plural "Activate installed plugins"
 msgstr[0] ""
 msgstr[1] ""
 
-#: framework/functions/global/admin/tmg/register.php:119
+#: framework/functions/global/admin/tmg/register.php:116
 #: framework/functions/global/admin/tmg/setup.php:176
 msgid "Return to Required Plugins Installer"
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:120
+#: framework/functions/global/admin/tmg/register.php:117
 #: framework/functions/global/admin/tmg/setup.php:178
 #: framework/functions/global/admin/tmg/setup.php:1847
 msgid "Plugin activated successfully."
 msgstr ""
 
-#: framework/functions/global/admin/tmg/register.php:121
+#: framework/functions/global/admin/tmg/register.php:118
 msgid "All plugins installed and activated successfully. %s"
 msgstr ""
 
@@ -3929,7 +4156,9 @@ msgid "Installed But Not Activated"
 msgstr ""
 
 #: framework/functions/global/admin/tmg/setup.php:1282
-msgid "No plugins to install or activate. <a href=\"%1$s\" title=\"Return to the Dashboard\">Return to the Dashboard</a>"
+msgid ""
+"No plugins to install or activate. <a href=\"%1$s\" title=\"Return to the "
+"Dashboard\">Return to the Dashboard</a>"
 msgstr ""
 
 #: framework/functions/global/admin/tmg/setup.php:1298
@@ -3984,7 +4213,9 @@ msgid "Plugin activation failed."
 msgstr ""
 
 #: framework/functions/global/admin/tmg/setup.php:1956
-msgid "The installation and activation process is starting. This process may take a while on some hosts, so please be patient."
+msgid ""
+"The installation and activation process is starting. This process may take a "
+"while on some hosts, so please be patient."
 msgstr ""
 
 #: framework/functions/global/admin/tmg/setup.php:1957
@@ -4010,7 +4241,9 @@ msgid "Installing and Activating Plugin %1$s (%2$d/%3$d)"
 msgstr ""
 
 #: framework/functions/global/admin/tmg/setup.php:1963
-msgid "The installation process is starting. This process may take a while on some hosts, so please be patient."
+msgid ""
+"The installation process is starting. This process may take a while on some "
+"hosts, so please be patient."
 msgstr ""
 
 #: framework/functions/global/admin/tmg/setup.php:1964
@@ -4110,7 +4343,11 @@ msgid "Working on it..."
 msgstr ""
 
 #: framework/functions/global/enqueue/scripts.php:81
-msgid "Installing demo content will not alter any of your pages or posts, but it will overwrite your Customizer settings. This is not reversible unless you have previously made a backup of your settings. Are you sure you want to proceed?"
+msgid ""
+"Installing demo content will not alter any of your pages or posts, but it "
+"will overwrite your Customizer settings. This is not reversible unless you "
+"have previously made a backup of your settings. Are you sure you want to "
+"proceed?"
 msgstr ""
 
 #: framework/functions/global/enqueue/scripts.php:83
@@ -4161,7 +4398,9 @@ msgid "To Parent Forum"
 msgstr ""
 
 #: framework/functions/global/plugins/bbpress.php:348
-msgid "Your password should be at least ten characters long. Use upper and lower case letters, numbers, and symbols to make it even stronger."
+msgid ""
+"Your password should be at least ten characters long. Use upper and lower "
+"case letters, numbers, and symbols to make it even stronger."
 msgstr ""
 
 #: framework/functions/global/plugins/bbpress.php:428
@@ -4244,7 +4483,9 @@ msgid "Show all %d comments"
 msgstr ""
 
 #: framework/functions/global/plugins/buddypress.php:595
-msgid "Your profile has unsaved changes. If you leave the page, the changes will be lost."
+msgid ""
+"Your profile has unsaved changes. If you leave the page, the changes will be "
+"lost."
 msgstr ""
 
 #: framework/functions/global/plugins/buddypress.php:596
@@ -4293,7 +4534,11 @@ msgid "Enable"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:162
-msgid "Activate X integration with Visual Composer. This allows for the theme to overwrite certain Visual Composer shortcodes and map in custom shortcodes. Turning this off will make Visual Composer oparate natively without any overwriting being done."
+msgid ""
+"Activate X integration with Visual Composer. This allows for the theme to "
+"overwrite certain Visual Composer shortcodes and map in custom shortcodes. "
+"Turning this off will make Visual Composer oparate natively without any "
+"overwriting being done."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:166
@@ -4313,7 +4558,8 @@ msgid "Hides access to the Frontend editor."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:182
-msgid "Hides Visual Composer options for which X already provides functionality."
+msgid ""
+"Hides Visual Composer options for which X already provides functionality."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:496
@@ -4609,7 +4855,9 @@ msgid "Size"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:589
-msgid "Enter in the size of your gap. Pixels, ems, and percentages are all valid units of measurement."
+msgid ""
+"Enter in the size of your gap. Pixels, ems, and percentages are all valid "
+"units of measurement."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:631
@@ -4770,7 +5018,9 @@ msgstr ""
 #: framework/functions/global/plugins/visual-composer.php:914
 #: framework/functions/global/plugins/visual-composer.php:2065
 #: framework/functions/global/plugins/visual-composer.php:2986
-msgid "Switch to the \"text\" editor and do not place anything else here other than your &lsaquo;iframe&rsaquo; or &lsaquo;embed&rsaquo; code."
+msgid ""
+"Switch to the \"text\" editor and do not place anything else here other than "
+"your &lsaquo;iframe&rsaquo; or &lsaquo;embed&rsaquo; code."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:922
@@ -4825,7 +5075,9 @@ msgid "Zoom Level"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1005
-msgid "Choose the initial zoom level of your map. This value should be between 1 and 18. 1 is fully zoomed out and 18 is right at street level."
+msgid ""
+"Choose the initial zoom level of your map. This value should be between 1 "
+"and 18. 1 is fully zoomed out and 18 is right at street level."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1012
@@ -4841,7 +5093,10 @@ msgid "Height"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1023
-msgid "Choose an optional height for your map. If no height is selected, a responsive, proportional unit will be used. Any type of unit is acceptable (e.g. 450px, 30em, 40%, et cetera)."
+msgid ""
+"Choose an optional height for your map. If no height is selected, a "
+"responsive, proportional unit will be used. Any type of unit is acceptable "
+"(e.g. 450px, 30em, 40%, et cetera)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1030
@@ -4873,7 +5128,9 @@ msgid "Additional Information"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1101
-msgid "Optional description text to appear in a popup when your marker is clicked on."
+msgid ""
+"Optional description text to appear in a popup when your marker is clicked "
+"on."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1108
@@ -4881,7 +5138,8 @@ msgid "Custom Marker Image"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1109
-msgid "Utilize a custom marker image instead of the default provided by Google."
+msgid ""
+"Utilize a custom marker image instead of the default provided by Google."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1125
@@ -4901,7 +5159,9 @@ msgid "Percent"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1143
-msgid "Enter the percentage of your skill and be sure to include the percentage sign (i.e. 90%)."
+msgid ""
+"Enter the percentage of your skill and be sure to include the percentage "
+"sign (i.e. 90%)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1150
@@ -4909,7 +5169,8 @@ msgid "Bar Text"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1151
-msgid "Enter in some alternate text in place of the percentage inside the skill bar."
+msgid ""
+"Enter in some alternate text in place of the percentage inside the skill bar."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1192
@@ -5012,7 +5273,9 @@ msgid "Title"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1343
-msgid "Enter in the title attribute you want for your button (will also double as title for popover or tooltip if you have chosen to display one)."
+msgid ""
+"Enter in the title attribute you want for your button (will also double as "
+"title for popover or tooltip if you have chosen to display one)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1350
@@ -5032,7 +5295,8 @@ msgid "Info"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1361
-msgid "Select whether or not you want to add a popover or tooltip to your button."
+msgid ""
+"Select whether or not you want to add a popover or tooltip to your button."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1373
@@ -5071,7 +5335,9 @@ msgid "Lightbox Thumbnail"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1409
-msgid "Use this option to select a thumbnail for your lightbox thumbnail navigation or to set an image if you are linking out to a video."
+msgid ""
+"Use this option to select a thumbnail for your lightbox thumbnail navigation "
+"or to set an image if you are linking out to a video."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1415
@@ -5155,11 +5421,17 @@ msgid "Select to wrap your image in an anchor tag."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1642
-msgid "Enter in the URL you want your image to link to. If using this image for a lightbox, enter the URL of your media here (e.g. YouTube embed URL, et cetera). Leave this field blank if you want to link to the image uploaded to the \"Src\" for your lightbox."
+msgid ""
+"Enter in the URL you want your image to link to. If using this image for a "
+"lightbox, enter the URL of your media here (e.g. YouTube embed URL, et "
+"cetera). Leave this field blank if you want to link to the image uploaded to "
+"the \"Src\" for your lightbox."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1650
-msgid "Enter in the title attribute you want for your image (will also double as title for popover or tooltip if you have chosen to display one)."
+msgid ""
+"Enter in the title attribute you want for your image (will also double as "
+"title for popover or tooltip if you have chosen to display one)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1658
@@ -5167,11 +5439,15 @@ msgid "Select to open your image link in a new window."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1668
-msgid "Select whether or not you want to add a popover or tooltip to your image."
+msgid ""
+"Select whether or not you want to add a popover or tooltip to your image."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1716
-msgid "Use this option to select a different thumbnail for your lightbox thumbnail navigation or to set an image if you are linking out to a video. Will default to the \"Src\" image if nothing is set."
+msgid ""
+"Use this option to select a different thumbnail for your lightbox thumbnail "
+"navigation or to set an image if you are linking out to a video. Will "
+"default to the \"Src\" image if nothing is set."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1723
@@ -5233,7 +5509,8 @@ msgid "OGV"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1967
-msgid "Include and .ogv version of your video for additional native browser support."
+msgid ""
+"Include and .ogv version of your video for additional native browser support."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:1974
@@ -5299,7 +5576,9 @@ msgid "Parent ID"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2199
-msgid "Optionally include an ID given to the parent accordion to only allow one toggle to be open at a time."
+msgid ""
+"Optionally include an ID given to the parent accordion to only allow one "
+"toggle to be open at a time."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2207
@@ -5327,7 +5606,8 @@ msgid "Tab Nav Items Per Row"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2271
-msgid "If your tab nav is on top, select how many tab nav items you want per row."
+msgid ""
+"If your tab nav is on top, select how many tab nav items you want per row."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2284
@@ -5504,7 +5784,10 @@ msgid "Category"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2834
-msgid "To filter your posts by category, enter in the slug of your desired category. To filter by multiple categories, enter in your slugs separated by a comma."
+msgid ""
+"To filter your posts by category, enter in the slug of your desired "
+"category. To filter by multiple categories, enter in your slugs separated by "
+"a comma."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2841
@@ -5558,7 +5841,8 @@ msgid "OGA"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2925
-msgid "Include and .oga version of your audio for additional native browser support."
+msgid ""
+"Include and .oga version of your audio for additional native browser support."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:2933
@@ -5705,7 +5989,10 @@ msgid "Selector"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3387
-msgid "Enter in the selector for your images (e.g. if your class is \"lightbox-img\" enter \".lightbox-img\"). Set to \".x-img-link\" to automatically setup a lightbox for all linked [image] shortcodes on your page."
+msgid ""
+"Enter in the selector for your images (e.g. if your class is \"lightbox-img"
+"\" enter \".lightbox-img\"). Set to \".x-img-link\" to automatically setup a "
+"lightbox for all linked [image] shortcodes on your page."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3395
@@ -5721,7 +6008,8 @@ msgid "Backdrop Opacity"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3406
-msgid "Enter in the opacity for the backdrop (valid inputs are numbers 0 to 1)."
+msgid ""
+"Enter in the opacity for the backdrop (valid inputs are numbers 0 to 1)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3414
@@ -5729,7 +6017,8 @@ msgid "Previous Item Scale"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3415
-msgid "Enter in the scale for the previous item (valid inputs are numbers 0 to 1)."
+msgid ""
+"Enter in the scale for the previous item (valid inputs are numbers 0 to 1)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3423
@@ -5737,7 +6026,8 @@ msgid "Previous Item Opacity"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3424
-msgid "Enter in the opacity for the previous item (valid inputs are numbers 0 to 1)."
+msgid ""
+"Enter in the opacity for the previous item (valid inputs are numbers 0 to 1)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3432
@@ -5753,7 +6043,8 @@ msgid "Next Item Opacity"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3442
-msgid "Enter in the opacity for the next item (valid inputs are numbers 0 to 1)."
+msgid ""
+"Enter in the opacity for the next item (valid inputs are numbers 0 to 1)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3451
@@ -5781,7 +6072,10 @@ msgid "Author ID"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3525
-msgid "By default the author of the post or page will be output by leaving this input blank. If you would like to output the information of another author, enter in their user ID here."
+msgid ""
+"By default the author of the post or page will be output by leaving this "
+"input blank. If you would like to output the information of another author, "
+"enter in their user ID here."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3542
@@ -5897,7 +6191,9 @@ msgid "Select the alignment of your table of contents."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3814
-msgid "Select a column count for your links if you have chosen \"Fullwidth\" as your alignment."
+msgid ""
+"Select a column count for your links if you have chosen \"Fullwidth\" as "
+"your alignment."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:3860
@@ -5989,7 +6285,9 @@ msgid "Include responsive text in your content"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4189
-msgid "Enter in the selector for your responsive text (e.g. if your class is \"h-responsive\" enter \".h-responsive\")."
+msgid ""
+"Enter in the selector for your responsive text (e.g. if your class is \"h-"
+"responsive\" enter \".h-responsive\")."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4196
@@ -5997,7 +6295,9 @@ msgid "Compression"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4197
-msgid "Enter the compression for your responsive text (adjust up and down to desired level in small increments)."
+msgid ""
+"Enter the compression for your responsive text (adjust up and down to "
+"desired level in small increments)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4205
@@ -6041,7 +6341,9 @@ msgid "Ending Number"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4293
-msgid "Enter int he number that you would like your counter to end at. This must be higher than your starting number."
+msgid ""
+"Enter int he number that you would like your counter to end at. This must be "
+"higher than your starting number."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4301
@@ -6097,7 +6399,9 @@ msgid "Text Color"
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4350
-msgid "Select the color of your text above and below the number if you have include any."
+msgid ""
+"Select the color of your text above and below the number if you have include "
+"any."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4395
@@ -6121,7 +6425,10 @@ msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4495
 #: framework/functions/global/plugins/visual-composer.php:4659
-msgid "Select to insert a container inside of the content band. Use this instead of the [container] shortcode for greater flexibility and to contain multiple columns."
+msgid ""
+"Select to insert a container inside of the content band. Use this instead of "
+"the [container] shortcode for greater flexibility and to contain multiple "
+"columns."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4505
@@ -6131,7 +6438,9 @@ msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4506
 #: framework/functions/global/plugins/visual-composer.php:4670
-msgid "Select to remove the margin from the content band and stack them on top of each other."
+msgid ""
+"Select to remove the margin from the content band and stack them on top of "
+"each other."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4516
@@ -6151,7 +6460,8 @@ msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4527
 #: framework/functions/global/plugins/visual-composer.php:4691
-msgid "Set the bottom padding of the content band (leave blank to keep default)."
+msgid ""
+"Set the bottom padding of the content band (leave blank to keep default)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4536
@@ -6166,7 +6476,9 @@ msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4556
 #: framework/functions/global/plugins/visual-composer.php:4720
-msgid "Select the background color of your content band (leave blank for \"transparent\")."
+msgid ""
+"Select the background color of your content band (leave blank for "
+"\"transparent\")."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4564
@@ -6176,7 +6488,9 @@ msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4572
 #: framework/functions/global/plugins/visual-composer.php:4736
-msgid "Upload a background image to your content band (this will overwrite your Background Pattern)."
+msgid ""
+"Upload a background image to your content band (this will overwrite your "
+"Background Pattern)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4579
@@ -6186,7 +6500,8 @@ msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4580
 #: framework/functions/global/plugins/visual-composer.php:4744
-msgid "Select to activate the parallax effect with background patterns and images."
+msgid ""
+"Select to activate the parallax effect with background patterns and images."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4590
@@ -6196,7 +6511,9 @@ msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4591
 #: framework/functions/global/plugins/visual-composer.php:4755
-msgid "Include the path to your background video (this will overwrite both your Background Pattern and Background Image)."
+msgid ""
+"Include the path to your background video (this will overwrite both your "
+"Background Pattern and Background Image)."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:4599
@@ -6316,15 +6633,26 @@ msgid "Select to enable the AJAX functionality of your form."
 msgstr ""
 
 #: framework/functions/global/plugins/visual-composer.php:5141
-msgid "The layout you are trying to use on this page does not conform to Visual Composer&#39;s layout guidelines. For more information on this situation and how to avoid this error going forward, please see our <a href=\"http://theme.co/x/member/kb/solutions-to-potential-setup-issues-visual-composer/\" target=\"_blank\">Knowledge Base article</a> in the X Member Area."
+msgid ""
+"The layout you are trying to use on this page does not conform to Visual "
+"Composer&#39;s layout guidelines. For more information on this situation and "
+"how to avoid this error going forward, please see our <a href=\"http://theme."
+"co/x/member/kb/solutions-to-potential-setup-issues-visual-composer/\" target="
+"\"_blank\">Knowledge Base article</a> in the X Member Area."
 msgstr ""
 
-#: framework/functions/global/plugins/woocommerce.php:325
-#: framework/functions/global/plugins/woocommerce.php:327
-msgid "There doesn&lsquo;t seem to be any available shipping methods. Please double check your address, or contact us if you need any help."
+#: framework/functions/global/plugins/woocommerce.php:316
+#: framework/functions/global/plugins/woocommerce.php:318
+msgid ""
+"There doesn&lsquo;t seem to be any available shipping methods. Please double "
+"check your address, or contact us if you need any help."
 msgstr ""
 
-#: framework/functions/global/plugins/woocommerce.php:416
+#: framework/functions/global/plugins/woocommerce.php:341
+msgid "Apply Coupon"
+msgstr ""
+
+#: framework/functions/global/plugins/woocommerce.php:413
 msgid "%d Item"
 msgid_plural "%d Items"
 msgstr[0] ""
@@ -6377,7 +6705,9 @@ msgid "The Blog"
 msgstr ""
 
 #: framework/functions/global/stack-data.php:168
-msgid "Welcome to our little corner of the Internet. Kick your feet up and stay a while."
+msgid ""
+"Welcome to our little corner of the Internet. Kick your feet up and stay a "
+"while."
 msgstr ""
 
 #: framework/functions/global/stack-data.php:169
@@ -6392,7 +6722,8 @@ msgid "The Shop"
 msgstr ""
 
 #: framework/functions/global/stack-data.php:173
-msgid "Welcome to our online store. Take some time to browse through our items."
+msgid ""
+"Welcome to our online store. Take some time to browse through our items."
 msgstr ""
 
 #: framework/functions/global/stack-data.php:335
@@ -6440,7 +6771,8 @@ msgid "Find others with similar interests and get plugged in."
 msgstr ""
 
 #: framework/functions/global/stack-data.php:359
-msgid "See what others are writing about. Learn something new and exciting today!"
+msgid ""
+"See what others are writing about. Learn something new and exciting today!"
 msgstr ""
 
 #: framework/functions/global/stack-data.php:360
@@ -6448,11 +6780,15 @@ msgid "Meet your new online community. Kick up your feet and stay awhile."
 msgstr ""
 
 #: framework/functions/global/stack-data.php:361
-msgid "Just fill in the fields below and we'll get a new account set up for you in no time!"
+msgid ""
+"Just fill in the fields below and we'll get a new account set up for you in "
+"no time!"
 msgstr ""
 
 #: framework/functions/global/stack-data.php:362
-msgid "You're almost there! Simply enter your activation code below and we'll take care of the rest."
+msgid ""
+"You're almost there! Simply enter your activation code below and we'll take "
+"care of the rest."
 msgstr ""
 
 #: framework/functions/icon.php:89 framework/functions/integrity.php:202
@@ -6461,7 +6797,9 @@ msgid "%1$s at %2$s"
 msgstr ""
 
 #: framework/functions/icon.php:93
-msgid "Reply<span class=\"comment-reply-link-after\"><i class=\"x-icon-reply\" data-x-icon=\"&#xf112;\"></i></span>"
+msgid ""
+"Reply<span class=\"comment-reply-link-after\"><i class=\"x-icon-reply\" data-"
+"x-icon=\"&#xf112;\"></i></span>"
 msgstr ""
 
 #: framework/functions/icon.php:97 framework/functions/integrity.php:190
@@ -6586,7 +6924,11 @@ msgid "Your Comment *"
 msgstr ""
 
 #: framework/views/global/_content-404.php:11
-msgid "The page you are looking for is no longer here, or never existed in the first place (bummer). You can try searching for what you are looking for using the form below. If that still doesn't provide the results you are looking for, you can always start over from the home page."
+msgid ""
+"The page you are looking for is no longer here, or never existed in the "
+"first place (bummer). You can try searching for what you are looking for "
+"using the form below. If that still doesn't provide the results you are "
+"looking for, you can always start over from the home page."
 msgstr ""
 
 #: framework/views/global/_content-none.php:14
@@ -6594,7 +6936,10 @@ msgid "Nothing to Show Right Now"
 msgstr ""
 
 #: framework/views/global/_content-none.php:17
-msgid "It appears whatever you were looking for is no longer here or perhaps wasn't here to begin with. You might want to try starting over from the homepage to see if you can find what you're after from there."
+msgid ""
+"It appears whatever you were looking for is no longer here or perhaps wasn't "
+"here to begin with. You might want to try starting over from the homepage to "
+"see if you can find what you're after from there."
 msgstr ""
 
 #: framework/views/global/_footer-scroll-top.php:13
@@ -6655,46 +7000,6 @@ msgstr ""
 
 #: woocommerce/cart/cross-sells.php:42
 msgid "You May Be Interested In&hellip;"
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:17
-msgid "Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction."
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:21
-msgid "Please attempt your purchase again or go to your account page."
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:23
-msgid "Please attempt your purchase again."
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:27
-msgid "Pay"
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:29
-msgid "My Account"
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:35 woocommerce/checkout/_thankyou.php:66
-msgid "Thank you. Your order has been received."
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:39
-msgid "Order:"
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:43
-msgid "Date:"
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:47
-msgid "Total:"
-msgstr ""
-
-#: woocommerce/checkout/_thankyou.php:52
-msgid "Payment method:"
 msgstr ""
 
 #: woocommerce/single-product/up-sells.php:43
@@ -6768,8 +7073,10 @@ msgid "Very Poor"
 msgstr ""
 
 #: woocommerce/single-product-reviews.php:121
-msgid "Only logged in customers who have purchased this product may leave a review."
+msgid ""
+"Only logged in customers who have purchased this product may leave a review."
 msgstr ""
+
 #. Theme Name of the plugin/theme
 msgid "X"
 msgstr ""

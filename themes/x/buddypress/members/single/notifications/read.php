@@ -2,7 +2,7 @@
 
 	<?php bp_get_template_part( 'members/single/notifications/notifications-loop' ); ?>
 
-	<div id="pag-bottom" class="pagination no-ajax">
+	<div id="pag-bottom" class="x-pagination pagination no-ajax">
 		<div class="pagination-links" id="notifications-pag-bottom">
 			<?php bp_notifications_pagination_links(); ?>
 		</div>

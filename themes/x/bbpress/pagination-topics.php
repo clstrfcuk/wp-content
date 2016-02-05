@@ -13,7 +13,7 @@
 
 	<?php do_action( 'bbp_template_before_pagination_loop' ); ?>
 
-	<div class="bbp-pagination pagination">
+	<div class="bbp-pagination x-pagination">
 		<div class="bbp-pagination-links">
 
 			<?php bbp_forum_pagination_links(); ?>

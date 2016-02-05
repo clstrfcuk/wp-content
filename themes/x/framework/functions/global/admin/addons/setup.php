@@ -63,7 +63,8 @@ function x_addons_get_link_extensions() {
 // Require Files
 // =============================================================================
 
-require_once( $addn_path . '/class-update-api.php' );
+require_once( $addn_path . '/class-themeco-update-api.php' );
+require_once( $addn_path . '/class-x-update-api.php' );
 require_once( $addn_path . '/class-theme-updater.php' );
 require_once( $addn_path . '/class-plugin-updater.php' );
 require_once( $addn_path . '/page-home.php' );

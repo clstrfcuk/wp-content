@@ -23,10 +23,11 @@ class X_Plugin_Updater {
 
   public function __construct() {
 
-    add_action( 'init', array( $this, 'init' ) );
-    add_action( 'admin_init', array( $this, 'replace_default_wp_update_message' ), 999 );
+  	if ( current_user_can( 'update_plugins' ) ) {
+    	add_action( 'admin_init', array( $this, 'replace_default_wp_update_message' ), 999 );
+    	add_filter( 'plugins_api', array( $this, 'plugins_api' ), 99, 3 );
+    }
 
-    add_filter( 'plugins_api', array( $this, 'plugins_api' ), 99, 3 );
     add_filter( 'extra_plugin_headers', array( $this, 'add_plugin_headers' ) );
 
     if ( empty( $_GET['action'] ) || ! in_array( $_GET['action'], array( 'do-core-reinstall', 'do-core-upgrade' ), true ) ) {
@@ -77,64 +78,33 @@ class X_Plugin_Updater {
       return $data;
     }
 
+    Themeco_Update_Api::refresh();
+    $update_cache = Themeco_Update_Api::get_update_cache();
 
-    //
-    // Create Batch of plugins to update.
-    //
+    if ( !isset( $update_cache['plugins'] ) || empty( $update_cache['plugins'] ) )
+    	return $data;
 
-    $plugins = $this->get_plugin_meta();
-    $batch   = array();
+    include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
-    foreach ( $plugins as $slug => $plugin ) {
-      $batch[] = $plugin->product_slug;
+    $installed_plugins   = get_plugins();
+
+    foreach ( (array) $installed_plugins as $plugin_file => $local ) {
+
+    	// Only check plugins in the Themeco update cache
+    	if ( !isset( $update_cache['plugins'][$plugin_file] ) ) continue;
+
+    	$remote = $update_cache['plugins'][$plugin_file];
+
+    	// Version check
+    	if ( version_compare( $remote['new_version'], $local['Version'], '<=' ) ) continue;
+
+    	if ( !$remote['package'] ) {
+    		$remote['upgrade_notice'] = X_Update_API::get_validation_html_plugin_updates();
+    	}
+
+    	$data->response[ $plugin_file ] = (object) $remote;
+
     }
-
-    if ( ! empty( $batch ) ) {
-
-      //
-      // Request update information from the remote API.
-      //
-
-      $request        = X_Update_API::get_products( $batch );
-      $remote_plugins = ( isset( $request['products'] ) ) ? $request['products'] : array();
-
-
-      //
-      // Set update info for each plugin.
-      //
-
-      foreach ( $plugins as $slug => $plugin ) {
-
-        //
-        // Continue if there was a response from the server for this plugin.
-        //
-
-        if ( isset( $remote_plugins[$plugin->product_slug] ) ) {
-          $remote = $remote_plugins[$plugin->product_slug];
-        } else {
-          continue;
-        }
-
-        $update = array(
-          'upgrade_notice' => ( $remote['download_url'] == null ) ? X_Update_API::get_validation_html_plugin_updates() : '',
-          'plugin'         => $slug,
-          'slug'           => dirname( $slug ),
-          'new_version'    => $remote['latest_version'],
-          'url'            => 'http://theme.co/changelog/?iframe=true',
-          'package'        => $remote['download_url'],
-        );
-
-        $remote_is_newer = ( 1 === version_compare( $remote['latest_version'], $plugin->local_version ) );
-
-        if ( $remote_is_newer ) {
-          $data->response[ $slug ] = (object) $update;
-        }
-
-      }
-    }
-
-    // Clear addon list cache
-    delete_site_option( 'x_addon_list_cache' );
 
     return $data;
 

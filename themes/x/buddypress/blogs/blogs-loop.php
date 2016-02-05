@@ -50,7 +50,7 @@
 
 	<?php bp_blog_hidden_fields(); ?>
 
-	<div id="pag-bottom" class="pagination">
+	<div id="pag-bottom" class="x-pagination pagination">
 
 		<div class="pagination-links" id="blog-dir-pag-bottom">
 

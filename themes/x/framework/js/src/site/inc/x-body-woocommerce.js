@@ -28,13 +28,15 @@ jQuery(document).ready(function($) {
     });
 
     $('body').on('added_to_cart', function(e, fragments, cart_hash) {
-      $notification.removeClass('loading').addClass('added');
       setTimeout(function() {
-        $notification.removeClass('appear');
+        $notification.removeClass('loading').addClass('added');
         setTimeout(function() {
-          $notification.removeClass('added bring-forward');
-        }, 650);
-      }, 1000);
+          $notification.removeClass('appear');
+          setTimeout(function() {
+            $notification.removeClass('added bring-forward');
+          }, 650);
+        }, 1000);
+      }, 650);
     });
 
   }

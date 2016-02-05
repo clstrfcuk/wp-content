@@ -137,17 +137,6 @@ function x_get_shop_link() {
 
 
 //
-// Remove.
-//
-// 1. Rating.
-// 2. Add to cart button.
-//
-
-remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 ); // 1
-remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 ); // 2
-
-
-//
 // Columns and posts per page.
 //
 
@@ -194,7 +183,7 @@ add_action( 'woocommerce_before_shop_loop_item_title', 'x_woocommerce_shop_produ
 
 
 //
-// Shop wrapper.
+// Shop item wrapper.
 //
 
 function x_woocommerce_before_shop_loop_item() {
@@ -210,7 +199,7 @@ function x_woocommerce_before_shop_loop_item_title() {
 }
 
 function x_woocommerce_after_shop_loop_item_title() {
-  woocommerce_get_template( 'loop/add-to-cart.php' );
+  woocommerce_template_loop_add_to_cart();
   echo '</header></div>';
 }
 
@@ -218,6 +207,8 @@ add_action( 'woocommerce_before_shop_loop_item', 'x_woocommerce_before_shop_loop
 add_action( 'woocommerce_after_shop_loop_item', 'x_woocommerce_after_shop_loop_item', 10 );
 add_action( 'woocommerce_before_shop_loop_item_title', 'x_woocommerce_before_shop_loop_item_title', 10 );
 add_action( 'woocommerce_after_shop_loop_item_title', 'x_woocommerce_after_shop_loop_item_title', 10 );
+remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
+remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 
 
 
@@ -340,8 +331,14 @@ function x_woocommerce_cart_actions() {
 
   $output = '';
 
-  if ( wc_coupons_enabled() ) {
-    $output .= '<input type="submit" class="button" name="apply_coupon" value="' . esc_attr( 'Apply Coupon', '__x__' ) . '">';
+
+  //
+  // Check based off of wc_coupons_enabled(), which is only available in
+  // WooCommerce v2.5+.
+  //
+
+  if ( apply_filters( 'woocommerce_coupons_enabled', 'yes' === get_option( 'woocommerce_enable_coupons' ) ) ) {
+    $output .= '<input type="submit" class="button" name="apply_coupon" value="' . esc_attr__( 'Apply Coupon', '__x__' ) . '">';
   }
 
   echo $output;

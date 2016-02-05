@@ -68,7 +68,7 @@ if ( $is_blog || $is_archive ) :
           <?php while ( $wp_query->have_posts() ) : $wp_query->the_post(); ?>
 
             <li class="x-slide">
-              <article id="post-<?php the_ID(); ?>" <?php post_class( 'x-post-slider-entry' ); ?> style="<?php echo x_ethos_entry_cover_background_image_style(); ?>">
+              <article <?php post_class( 'x-post-slider-entry' ); ?> style="<?php echo x_ethos_entry_cover_background_image_style(); ?>">
                 <a href="<?php the_permalink(); ?>">
                   <div class="cover">
                     <div class="middle">

@@ -30,7 +30,7 @@
 
 	<?php do_action( 'bp_friend_requests_content' ); ?>
 
-	<div id="pag-bottom" class="pagination no-ajax">
+	<div id="pag-bottom" class="x-pagination pagination no-ajax">
 
 		<div class="pagination-links" id="member-dir-pag-bottom">
 

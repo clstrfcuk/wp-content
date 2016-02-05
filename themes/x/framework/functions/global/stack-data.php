@@ -129,7 +129,7 @@ endif;
 // Define Constants
 // =============================================================================
 
-define( 'X_VERSION', '4.3.1' );
+define( 'X_VERSION', '4.3.3' );
 define( 'X_TEMPLATE_PATH', get_template_directory() );
 define( 'X_TEMPLATE_URL', get_template_directory_uri() );
 define( 'X_BBPRESS_IS_ACTIVE', class_exists( 'bbPress' ) );
@@ -404,6 +404,7 @@ $customizer_settings_data = array(
   'x_social_pinterest'                                  => '',
   'x_social_dribbble'                                   => '',
   'x_social_flickr'                                     => '',
+  'x_social_github'                                     => '',
   'x_social_behance'                                    => '',
   'x_social_tumblr'                                     => '',
   'x_social_whatsapp'                                   => '',

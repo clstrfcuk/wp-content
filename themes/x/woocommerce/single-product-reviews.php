@@ -49,7 +49,7 @@ if ( $stack == 'ethos' ) {
         <?php wp_list_comments( apply_filters( 'woocommerce_product_review_list_args', array( 'callback' => $stack_comment ) ) ); ?>
       </ol>
       <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
-        <nav class="woocommerce-pagination">
+        <nav class="x-pagination">
           <?php
           paginate_comments_links( apply_filters( 'woocommerce_comment_pagination_args', array(
             'prev_text' => '&larr;',

@@ -52,7 +52,7 @@
 
 	<?php if ( bp_has_forum_topic_posts() ) : ?>
 
-		<div class="pagination no-ajax">
+		<div class="x-pagination pagination no-ajax">
 
 			<div id="post-count-top" class="pag-count">
 
@@ -101,7 +101,7 @@
 
 		<?php do_action( 'bp_after_group_forum_topic_posts' ); ?>
 
-		<div class="pagination no-ajax">
+		<div class="x-pagination pagination no-ajax">
 
 			<div id="post-count-bottom" class="pag-count">
 				<?php bp_the_topic_pagination_count(); ?>

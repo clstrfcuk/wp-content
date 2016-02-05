@@ -60,7 +60,7 @@
 
 	<?php bp_member_hidden_fields(); ?>
 
-	<div id="pag-bottom" class="pagination">
+	<div id="pag-bottom" class="x-pagination pagination">
 
 		<div class="pagination-links" id="member-dir-pag-bottom">
 

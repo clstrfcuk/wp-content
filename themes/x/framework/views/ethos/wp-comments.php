@@ -12,7 +12,7 @@ $commenter     = wp_get_current_commenter();
 $req           = get_option( 'require_name_email' );
 $asterisk      = ( $req ? '*' : '' );
 $asterisk_html = ( $req ? '<span class="required">*</span>' : '' );
-$aria_req      = ( $req ? " aria-required='true'" : '' );
+$aria_req      = ( $req ? " aria-required='true' required='required'" : '' );
 
 ?>
 
@@ -83,7 +83,7 @@ if ( post_password_required() )
     ),
     'comment_field' => '<p class="comment-form-comment">' .
                          '<label for="comment">' . _x( 'Comment', 'noun', '__x__' ) . '</label>' .
-                         '<textarea id="comment" name="comment" cols="45" rows="8" placeholder="' . _x( 'Your Comment *', 'noun', '__x__' ) . '" aria-required="true"></textarea>' .
+                         '<textarea id="comment" name="comment" cols="45" rows="8" placeholder="' . _x( 'Your Comment *', 'noun', '__x__' ) . '"' . $aria_req . '></textarea>' .
                        '</p>'
   ) );
   ?>

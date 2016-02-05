@@ -24,7 +24,7 @@ function x_addons_page_extensions() { ?>
   //
 
   if ( isset( $_GET['force-check'] ) && $_GET['force-check'] == 1 ) {
-    delete_site_option( 'x_addon_list_cache' );
+    delete_site_option( 'x_extension_list' );
   }
 
 
@@ -39,11 +39,9 @@ function x_addons_page_extensions() { ?>
   // Show connection errors on screen.
   //
 
-  if ( isset( $_GET['x-verbose'] ) && $_GET['x-verbose'] == 1 ) {
-
-    delete_site_option( 'x_addon_list_cache' );
-    x_dump( X_Update_API::get_errors(), 350, 'var_dump' );
-
+  if ( isset( $_GET['x-verbose'] ) && $_GET['x-verbose'] == 1  ) {
+  	$message = ( isset( $addons_cache['verbose'] ) ) ? $addons_cache['verbose'] : 'No connection errors';
+    x_dump( $message, 350, 'var_dump' );
   }
 
   ?>

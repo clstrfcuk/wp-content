@@ -55,7 +55,7 @@
 
 	<?php do_action( 'bp_after_directory_groups_list' ); ?>
 
-	<div id="pag-bottom" class="pagination">
+	<div id="pag-bottom" class="x-pagination pagination">
 
 		<div class="pagination-links" id="group-dir-pag-bottom">
 

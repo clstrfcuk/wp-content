@@ -2,7 +2,7 @@
 
 <?php if ( bp_has_message_threads() ) : ?>
 
-	<div class="pagination no-ajax" id="user-pag">
+	<div class="x-pagination pagination no-ajax" id="user-pag">
 
 		<div class="pag-count" id="messages-dir-count">
 			<?php bp_messages_pagination_count(); ?>

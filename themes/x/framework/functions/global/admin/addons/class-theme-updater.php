@@ -23,8 +23,6 @@ class X_Theme_Updater {
 
   public function __construct() {
 
-    add_action( 'init', array( $this, 'init' ) );
-
     if ( empty( $_GET['action'] ) || ! in_array( $_GET['action'], array( 'do-core-reinstall', 'do-core-upgrade' ), true ) ) {
       add_filter( 'pre_set_site_transient_update_themes', array( $this, 'pre_set_site_transient_update_themes' ) );
     }
@@ -42,28 +40,33 @@ class X_Theme_Updater {
 
   public function pre_set_site_transient_update_themes( $data ) {
 
-    $theme = $this->get_theme_meta();
-
-
-    //
-    // Only check once.
+  	//
+    // Only run after other themes are checked.
     //
 
-    if ( ! empty( $theme ) && ! empty( $data->checked ) ) {
+    if ( empty( $data->checked ) )
+      return $data;
 
-      $remote = X_Update_API::get_x_theme();
-      
-      $update = array(
-        'new_version' => ( $remote['download_url'] == NULL ) ? ( $remote['latest_version'] . '<br/>' . X_Update_API::get_validation_html_theme_updates() ) : $remote['latest_version'],
-        'url'         => 'http://theme.co/changelog/?iframe=true',
-        'package'     => $remote['download_url'],
-      );
+    Themeco_Update_Api::refresh();
+    $update_cache = Themeco_Update_Api::get_update_cache();
 
-      $remote_is_newer = ( 1 === version_compare( $remote['latest_version'], $theme->local_version ) );
+    if ( !isset( $update_cache['themes'] ) || !isset( $update_cache['themes']['x'] ) )
+    	return $data;
 
-      if ( $remote_is_newer ) {
-        $data->response[ $theme->stylesheet ] = $update;
-      }
+    $themes = ( is_multisite() ) ? $this->multisite_get_themes() : wp_get_themes();
+
+    if ( isset( $themes['x'] ) ) {
+
+    	$remote = $update_cache['themes']['x'];
+
+		  if ( version_compare( $remote['new_version'], $themes['x']->get( 'Version' ), '<=' ) )
+		  	return $data;
+
+		  if ( !$remote['package'] ) {
+		  	$remote['new_version'] = $remote['new_version'] . '<br/>' . X_Update_API::get_validation_html_theme_updates();
+		  }
+
+		  $data->response[ 'x' ] = $remote;
 
     }
 
@@ -93,59 +96,18 @@ class X_Theme_Updater {
 
   }
 
-
-  //
-  // Get the meta data from the style.css headers.
-  //
-
-  protected function get_theme_meta() {
-
-    $themes = wp_get_themes();
-
-    if ( is_multisite() ) {
-      $themes = $this->multisite_get_themes();
-    }
-
-    $x_theme = array();
-
-    foreach ( (array) $themes as $theme ) {
-
-      $x_theme['name']      = $theme->get( 'Name' );
-      $x_theme['theme_uri'] = $theme->get( 'ThemeURI' );
-
-      if ( $x_theme['name'] == 'X' && $x_theme['theme_uri'] == 'http://theme.co/x/' ) {
-
-        $x_theme['stylesheet']              = $theme->stylesheet;
-        $x_theme['name']                    = $theme->get( 'Name' );
-        $x_theme['theme_uri']               = $theme->get( 'ThemeURI' );
-        $x_theme['author']                  = $theme->get( 'Author' );
-        $x_theme['local_version']           = $theme->get( 'Version' );
-        $x_theme['sections']['description'] = $theme->get( 'Description' );
-        $x_theme['local_path']              = get_theme_root() . '/' . $theme->stylesheet;
-
-      }
-
-    }
-
-    return (object) $x_theme;
-
-  }
-
-
   //
   // Customize the update HTML for the theme.
   //
 
   public function customize_theme_update_html( $prepared_themes ) {
 
-    $theme = $this->get_theme_meta();
+    if ( isset( $prepared_themes['x'] ) ) {
 
-    if ( isset( $prepared_themes[$theme->stylesheet] ) ) {
-
-      $update = $prepared_themes[$theme->stylesheet]['update'];
+      $update = $prepared_themes['x']['update'];
       $update = preg_replace( '/(details)[^(or)]*?<em>.*?<\/em>/', '', $update );
 
-      $prepared_themes[$theme->stylesheet]['update'] = $update;
+      $prepared_themes['x']['update'] = $update;
 
     }
 

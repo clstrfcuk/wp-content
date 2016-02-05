@@ -1325,6 +1325,9 @@ function x_customizer_options_register( $wp_customize ) {
       $x['set'][] = array( 'x_social_flickr', 'refresh' );
       $x['con'][] = array( 'x_social_flickr', 'text', __( 'Flickr Profile URL', '__x__' ), 'x_customizer_section_social' );
 
+      $x['set'][] = array( 'x_social_github', 'refresh' );
+      $x['con'][] = array( 'x_social_github', 'text', __( 'GitHub Profile URL', '__x__' ), 'x_customizer_section_social' );
+
       $x['set'][] = array( 'x_social_behance', 'refresh' );
       $x['con'][] = array( 'x_social_behance', 'text', __( 'Behance Profile URL', '__x__' ), 'x_customizer_section_social' );
 
