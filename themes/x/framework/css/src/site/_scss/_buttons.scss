@@ -218,7 +218,7 @@
     margin: 0 auto;
     background-repeat: no-repeat;
     background-position: center center;
-    z-index: 0;
+    z-index: 1;
   }
 
   &:before {
@@ -239,6 +239,24 @@
 
   .x-btn {
     position: relative;
-    z-index: 1;
+    z-index: 2;
+  }
+
+  @include break(middle-bear) {
+    &:before {
+      top: 2px;
+      width: 112px;
+      height: 28px;
+      background-image: url(../../../../img/global/btn-circle-top-small.png);
+      background-size: 112px 28px;
+    }
+
+    &:after {
+      bottom: 2px;
+      width: 127px;
+      height: 29px;
+      background-image: url(../../../../img/global/btn-circle-bottom-small.png);
+      background-size: 127px 29px;
+    }
   }
 }

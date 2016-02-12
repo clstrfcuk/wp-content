@@ -84,6 +84,7 @@
   }
 }
 
+.x-main .widget,
 .x-sidebar .widget {
   color: $navbarBackground;
 
@@ -122,6 +123,7 @@
   }
 }
 
+body .x-main .widget,
 body .x-sidebar .widget {
   @include break(cubs) {
     color: $textColor;
@@ -161,6 +163,7 @@ body .x-sidebar .widget {
   color: $baseModBackground;
 }
 
+.x-main .h-widget,
 .x-sidebar .h-widget {
   margin-top: 0;
   border: 1px solid $navbarBackground;
@@ -173,6 +176,7 @@ body .x-sidebar .widget {
   background-color: transparent;
 }
 
+body .x-main .h-widget,
 body .x-sidebar .h-widget {
   @include break(cubs) {
     color: $headingsColor;
@@ -281,6 +285,7 @@ body .x-sidebar .h-widget {
 
 }
 
+.x-main,
 .x-sidebar {
   .widget_calendar #wp-calendar {
     th,
@@ -443,6 +448,7 @@ body .x-sidebar .h-widget {
 
 }
 
+.x-main,
 .x-sidebar {
   .widget.widget_recent_comments li {
     padding-top: 8px;
@@ -481,6 +487,7 @@ body .x-sidebar .h-widget {
   }
 }
 
+.x-main,
 .x-sidebar {
   .widget.widget_recent_entries li {
     padding-top: 8px;
@@ -552,6 +559,7 @@ body .x-sidebar .h-widget {
   }
 }
 
+.x-main,
 .x-sidebar {
   .widget.widget_rss li {
     padding: 8px 0;
@@ -612,6 +620,7 @@ body .x-sidebar .h-widget {
 
 }
 
+.x-main,
 .x-sidebar {
   .widget_tag_cloud .tagcloud a,
   .widget_product_tag_cloud .tagcloud a {
@@ -648,6 +657,7 @@ body .x-sidebar .h-widget {
 
 }
 
+.x-main .widget_text,
 .x-sidebar .widget_text {
   ol,
   ul {
@@ -675,6 +685,7 @@ body .x-sidebar .h-widget {
 // WordPress Widget Groups
 // =============================================================================
 
+.x-main,
 .x-sidebar {
   .widget.widget_pages .current_page_item,
   .widget.widget_nav_menu .current-menu-item {
@@ -694,6 +705,7 @@ body .x-sidebar .h-widget {
 }
 
 @include break(cubs) {
+  body .x-main,
   body .x-sidebar {
     .widget.widget_pages .current_page_item,
     .widget.widget_nav_menu .current-menu-item {

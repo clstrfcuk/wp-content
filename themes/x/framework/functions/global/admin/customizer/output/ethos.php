@@ -52,6 +52,9 @@ h6 a:hover,
 .x-comment-time:hover,
 .p-meta > span > a:hover,
 .format-link .link a:hover,
+.x-main .widget ul li a:hover,
+.x-main .widget ol li a:hover,
+.x-main .widget_tag_cloud .tagcloud a:hover,
 .x-sidebar .widget ul li a:hover,
 .x-sidebar .widget ol li a:hover,
 .x-sidebar .widget_tag_cloud .tagcloud a:hover,
@@ -309,6 +312,13 @@ foreach ( $items as $item ) {
 */
 
 .h-landmark,
+.x-main .h-widget,
+.x-main .h-widget a.rsswidget,
+.x-main .h-widget a.rsswidget:hover,
+.x-main .widget.widget_pages .current_page_item a,
+.x-main .widget.widget_nav_menu .current-menu-item a,
+.x-main .widget.widget_pages .current_page_item a:hover,
+.x-main .widget.widget_nav_menu .current-menu-item a:hover,
 .x-sidebar .h-widget,
 .x-sidebar .h-widget a.rsswidget,
 .x-sidebar .h-widget a.rsswidget:hover,
@@ -319,6 +329,19 @@ foreach ( $items as $item ) {
   color: <?php echo $x_ethos_sidebar_widget_headings_color; ?>;
 }
 
+.x-main .widget,
+.x-main .widget a,
+.x-main .widget ul li a,
+.x-main .widget ol li a,
+.x-main .widget_tag_cloud .tagcloud a,
+.x-main .widget_product_tag_cloud .tagcloud a,
+.x-main .widget a:hover,
+.x-main .widget ul li a:hover,
+.x-main .widget ol li a:hover,
+.x-main .widget_tag_cloud .tagcloud a:hover,
+.x-main .widget_product_tag_cloud .tagcloud a:hover,
+.x-main .widget_shopping_cart .buttons .button,
+.x-main .widget_price_filter .price_slider_amount .button,
 .x-sidebar .widget,
 .x-sidebar .widget a,
 .x-sidebar .widget ul li a,
@@ -340,6 +363,9 @@ foreach ( $items as $item ) {
 // Border color.
 */
 
+.x-main .h-widget,
+.x-main .widget.widget_pages .current_page_item,
+.x-main .widget.widget_nav_menu .current-menu-item,
 .x-sidebar .h-widget,
 .x-sidebar .widget.widget_pages .current_page_item,
 .x-sidebar .widget.widget_nav_menu .current-menu-item {
@@ -451,6 +477,13 @@ foreach ( $items as $item ) {
     left: -5000em;
   }
 
+  body .x-main .widget,
+  body .x-main .widget a,
+  body .x-main .widget a:hover,
+  body .x-main .widget ul li a,
+  body .x-main .widget ol li a,
+  body .x-main .widget ul li a:hover,
+  body .x-main .widget ol li a:hover,
   body .x-sidebar .widget,
   body .x-sidebar .widget a,
   body .x-sidebar .widget a:hover,
@@ -461,6 +494,11 @@ foreach ( $items as $item ) {
     color: <?php echo $x_body_font_color; ?>;
   }
 
+  body .x-main .h-widget,
+  body .x-main .widget.widget_pages .current_page_item a,
+  body .x-main .widget.widget_nav_menu .current-menu-item a,
+  body .x-main .widget.widget_pages .current_page_item a:hover,
+  body .x-main .widget.widget_nav_menu .current-menu-item a:hover,
   body .x-sidebar .h-widget,
   body .x-sidebar .widget.widget_pages .current_page_item a,
   body .x-sidebar .widget.widget_nav_menu .current-menu-item a,
@@ -469,6 +507,9 @@ foreach ( $items as $item ) {
     color: <?php echo $x_headings_font_color; ?>;
   }
 
+  body .x-main .h-widget,
+  body .x-main .widget.widget_pages .current_page_item,
+  body .x-main .widget.widget_nav_menu .current-menu-item,
   body .x-sidebar .h-widget,
   body .x-sidebar .widget.widget_pages .current_page_item,
   body .x-sidebar .widget.widget_nav_menu .current-menu-item {
