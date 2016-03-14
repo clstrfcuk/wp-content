@@ -19,7 +19,7 @@ return array(
       'tooltip' => __( 'Specify your pricing column content.', csl18n() ),
 		),
 		'context' => 'content',
-		'suggest' => __( "[x_icon_list]\n    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"times\"]Second Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n[/x_icon_list]\n\n[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]", csl18n() ),
+		'suggest' => __( "[cs_icon_list]\n    [cs_icon_list_item type=\"check\"]First Feature[/cs_icon_list_item]\n    [cs_icon_list_item type=\"times\"]Second Feature[/cs_icon_list_item]\n    [cs_icon_list_item type=\"times\"]Third Feature[/cs_icon_list_item]\n[/cs_icon_list]\n\n[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]", csl18n() ),
 	),
 
 	'featured' => array(

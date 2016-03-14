@@ -76,7 +76,7 @@ class Cornerstone_Legacy_Renderer {
 		}
 
 		if ( $renderEmpty || !$element->can_preview() )
-				return '';
+			return '';
 
 		return $element->renderElement( $data );
 

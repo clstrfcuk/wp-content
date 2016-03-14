@@ -104,7 +104,8 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 			$markup = $definition->preview( $element, $this->orchestrator, null, $transient );
 		}
 
-		$markup = '[cs_render_wrapper]' . $markup . '[/cs_render_wrapper]';
+		if ( '' != $markup )
+			$markup = '[cs_render_wrapper]' . $markup . '[/cs_render_wrapper]';
 
 		$filter = ( $this->sandbox_the_content ) ? 'cs_render_the_content': 'the_content';
 		$markup = ( $this->raw_markup ) ? $markup : apply_filters( $filter, $markup );

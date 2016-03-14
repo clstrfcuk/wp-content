@@ -2198,7 +2198,7 @@ module.exports = handlers;
 },{}],28:[function(require,module,exports){
 ( function( $ ) {
 
-		var $shadow = $( '<div class="shadow-height" style="position:absolute;top:-100%;visibility:hidden;"></div>' );
+		var $shadow = $( '<div class="shadow-height x-section" style="position:absolute;top:-100%;visibility:hidden;"></div>' );
 
 		$.fn.shadowHeight = function() {
 
@@ -2410,11 +2410,6 @@ module.exports = CS.Mn.CompositeView.extend({
         var controlValue = source.get(conditionName);
 
 	  		var check = ( _.isArray( conditionValue ) ) ? _.contains( conditionValue, controlValue ) : ( controlValue == conditionValue );
-
-	  		if ( conditionName == 'tag' ) {
-	  			console.log(conditions);
-        	console.log( conditionName, controlValue, conditionValue, check, negate );
-        }
 
 	  		return (negate) ? check : !check;
 
@@ -7178,45 +7173,57 @@ module.exports = {
 },{"./accordion":94,"./alert":95,"./card":97,"./column":98,"./gap":99,"./google-map":100,"./gravity-forms":101,"./line":103,"./row":104,"./section":105,"./slider":106,"./tabs":107}],103:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
-  template: _.template('<hr class="x-hr">'),
-  remoteRender: false,
+	template: _.template( '<hr class="x-hr">' ),
+	remoteRender: false,
 
-  onRender: function() {
+	onRender: function() {
 
-    var $line, classes, visibility, customID, customStyle;
-    $line = this.$('hr');
+		var $line, classes, visibility, customID, style, customStyle, color, height;
+		$line = this.$( 'hr' );
 
-    classes = [ 'x-hr' ];
+		classes = [ 'x-hr' ];
 
-    if (visibility = this.model.get('visibility')) {
-      classes = _.union( classes, visibility );
-    }
+		if ( visibility = this.model.get( 'visibility' ) ) {
+			classes = _.union( classes, visibility );
+		}
 
-    classes.push(this.model.get('class'))
-    $line.attr('class', classes.join(' '));
+		classes.push( this.model.get( 'class' ) );
+		$line.attr( 'class', classes.join( ' ' ) );
 
-    customID = this.model.get('custom_id');
-    if (customID) $line.attr( 'id', customID );
+		customID = this.model.get( 'custom_id' );
+		if ( customID ) $line.attr( 'id', customID );
 
-    $line.removeAttr('style');
-    customStyle = this.model.get('style');
-    if (customStyle) $line.attr('style', customStyle );
+		$line.removeAttr( 'style' );
+		style = '';
 
-    // Replace margin with padding after this first render
-    // This helps make the line clickable in the preview window
-    _.defer(function(){
+		customStyle = this.model.get( 'style' );
 
-      $line.css({
-        'paddingBottom' : $line.css('marginBottom'),
-        'marginBottom' : '0'
-      });
+		height = this.model.get( 'line_height' );
+		if ( height )
+			style += ' border-top-width: ' + height + ';';
 
-    })
+		color = this.model.get( 'line_color' );
+		if ( color )
+			style += ' border-top-color: ' + color + ';';
 
+		if ( customStyle ) style += ' ' + customStyle;
+		$line.attr( 'style', style );
 
-  },
+		// Replace margin with padding after this first render
+		// This helps make the line clickable in the preview window
+		_.defer( function() {
 
-});
+			$line.css({
+				'paddingBottom': $line.css( 'marginBottom' ),
+				'marginBottom': '0'
+			});
+
+		} );
+
+	}
+
+} );
+
 },{}],104:[function(require,module,exports){
 module.exports = Cornerstone.ElementViews.Base.extend({
 
@@ -7399,7 +7406,7 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		// Defer things that may depend on height.
 		_.defer( _.bind( function(){
 			if ( this.$el.hasClass('parallax') ) {
-		    if ( Modernizr && Modernizr.touchevents ) {
+		    if ( csModernizr.touchevents ) {
 		      this.$el.css('background-attachment', 'scroll');
 		    } else {
 		      if ( this.$el.hasClass('bg-image')   ) speed = 0.1;
@@ -8040,150 +8047,7 @@ module.exports = Cornerstone.SkeletonViews.Base.extend({
 });
 
 },{}],117:[function(require,module,exports){
-var templates={};templates['extra/confirm']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- //builder/extra/confirm ;
-__p += '\n<div class="' +
-((__t = ( contentClass )) == null ? '' : __t) +
-'">\n	';
- if ( message ) { ;
-__p += '<p class="message">' +
-((__t = ( message )) == null ? '' : __t) +
-'</p>';
- } ;
-__p += '\n  ';
- if ( yep )  { ;
-__p += '<button class="action yep sad">' +
-((__t = ( yep )) == null ? '' : __t) +
-'</button>';
- } ;
-__p += '\n  ';
- if ( nope ) { ;
-__p += '<button class="action nope">' +
-((__t = ( nope )) == null ? '' : __t) +
-'</button>';
- } ;
-__p += '\n  ';
- if ( subtext ) { ;
-__p += '<p class="subtext">' +
-((__t = ( subtext )) == null ? '' : __t) +
-'</p>';
- } ;
-__p += '\n</div>';
-
-}
-return __p
-};templates['extra/expanded-control']=function (obj) {
-obj || (obj = {});
-var __t, __p = '';
-with (obj) {
-__p += '<div class="cs-expanded-content-inner"></div>\n<button class="cs-expanded-close">&times;</button>';
-
-}
-return __p
-};templates['extra/home']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- //builder/extra/home ;
-__p += '\n<p class="saved-last ' +
-((__t = ( savedLastClass )) == null ? '' : __t) +
-'">' +
-((__t = ( savedLastMessage )) == null ? '' : __t) +
-'</p>\n<ul class="cs-controls">\n  <li class="cs-control cs-control-actions">\n    <ul class="cs-actions">\n      <li class="action new">\n        <a href="' +
-((__t = ( dashboardEditUrl )) == null ? '' : __t) +
-'">\n          <i class="cs-icon" data-cs-icon="&#xf19a;"></i>\n          <span>' +
-((__t = ( l18n('home-dashboard') )) == null ? '' : __t) +
-'</span>\n        </a>\n      </li>\n      <li class="action templates">\n        <a href="' +
-((__t = ( frontEndUrl )) == null ? '' : __t) +
-'">\n          <i class="cs-icon" data-cs-icon="&#xf14c;"></i>\n          <span>' +
-((__t = ( l18n('home-view-site') )) == null ? '' : __t) +
-'</span>\n        </a>\n      </li>\n    </ul>\n  </li>\n</ul>';
-
-}
-return __p
-};templates['extra/options']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- //builder/extra/options ;
-__p += '\n';
-
-}
-return __p
-};templates['extra/respond']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- //builder/extra/respond ;
-__p += '\n<div class="cs-respond-buttons">\n  <button class="cs-icon xl" data-respond="xl" data-cs-icon="' +
-((__t = ( cs.fontIcon('desktop') )) == null ? '' : __t) +
-'"></button>\n  <button class="cs-icon lg" data-respond="lg" data-cs-icon="' +
-((__t = ( cs.fontIcon('laptop') )) == null ? '' : __t) +
-'"></button>\n  <button class="cs-icon md" data-respond="md" data-cs-icon="' +
-((__t = ( cs.fontIcon('tablet') )) == null ? '' : __t) +
-'"></button>\n  <button class="cs-icon sm" data-respond="sm" data-cs-icon="' +
-((__t = ( cs.fontIcon('tablet') )) == null ? '' : __t) +
-'"></button>\n  <button class="cs-icon xs" data-respond="xs" data-cs-icon="' +
-((__t = ( cs.fontIcon('mobile') )) == null ? '' : __t) +
-'"></button>\n</div>\n<div class="cs-respond-labels">\n  <div class="xl" data-respond="xl" ><i class="cs-icon" data-cs-icon="' +
-((__t = ( cs.fontIcon('desktop') )) == null ? '' : __t) +
-'"></i><span class="label">' +
-((__t = ( l18n('respond-xl-title') )) == null ? '' : __t) +
-'</span><span class="size">' +
-((__t = ( l18n('respond-xl-desc') )) == null ? '' : __t) +
-'</span></div>\n  <div class="lg" data-respond="lg" ><i class="cs-icon" data-cs-icon="' +
-((__t = ( cs.fontIcon('laptop')  )) == null ? '' : __t) +
-'"></i><span class="label">' +
-((__t = ( l18n('respond-lg-title') )) == null ? '' : __t) +
-'</span><span class="size">' +
-((__t = ( l18n('respond-lg-desc') )) == null ? '' : __t) +
-'</span></div>\n  <div class="md" data-respond="md" ><i class="cs-icon" data-cs-icon="' +
-((__t = ( cs.fontIcon('tablet')  )) == null ? '' : __t) +
-'"></i><span class="label">' +
-((__t = ( l18n('respond-md-title') )) == null ? '' : __t) +
-'</span><span class="size">' +
-((__t = ( l18n('respond-md-desc') )) == null ? '' : __t) +
-'</span></div>\n  <div class="sm" data-respond="sm" ><i class="cs-icon" data-cs-icon="' +
-((__t = ( cs.fontIcon('tablet')  )) == null ? '' : __t) +
-'"></i><span class="label">' +
-((__t = ( l18n('respond-sm-title') )) == null ? '' : __t) +
-'</span><span class="size">' +
-((__t = ( l18n('respond-sm-desc') )) == null ? '' : __t) +
-'</span></div>\n  <div class="xs" data-respond="xs" ><i class="cs-icon" data-cs-icon="' +
-((__t = ( cs.fontIcon('mobile')  )) == null ? '' : __t) +
-'"></i><span class="label">' +
-((__t = ( l18n('respond-xs-title') )) == null ? '' : __t) +
-'</span><span class="size">' +
-((__t = ( l18n('respond-xs-desc') )) == null ? '' : __t) +
-'</span></div>\n</div>';
-
-}
-return __p
-};templates['extra/save-complete']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- //builder/extra/save-complete ;
-__p += '\n<p class="message">' +
-((__t = ( message )) == null ? '' : __t) +
-'</p>\n';
-
-}
-return __p
-};templates['controls/base']=function (obj) {
+var templates={};templates['controls/base']=function (obj) {
 obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
@@ -8634,30 +8498,158 @@ __p += '\n<div class="cs-wp-select"></div>';
 
 }
 return __p
-};templates['library/element-stub']=function (obj) {
+};templates['extra/confirm']=function (obj) {
 obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
- //builder/library/element-stub ;
-__p += '\n<span class="icon">' +
-((__t = ( icon )) == null ? '' : __t) +
-'</span>\n<span class="name"><span>' +
-((__t = ( ui.title )) == null ? '' : __t) +
-'</span></span>';
+ //builder/extra/confirm ;
+__p += '\n<div class="' +
+((__t = ( contentClass )) == null ? '' : __t) +
+'">\n	';
+ if ( message ) { ;
+__p += '<p class="message">' +
+((__t = ( message )) == null ? '' : __t) +
+'</p>';
+ } ;
+__p += '\n  ';
+ if ( yep )  { ;
+__p += '<button class="action yep sad">' +
+((__t = ( yep )) == null ? '' : __t) +
+'</button>';
+ } ;
+__p += '\n  ';
+ if ( nope ) { ;
+__p += '<button class="action nope">' +
+((__t = ( nope )) == null ? '' : __t) +
+'</button>';
+ } ;
+__p += '\n  ';
+ if ( subtext ) { ;
+__p += '<p class="subtext">' +
+((__t = ( subtext )) == null ? '' : __t) +
+'</p>';
+ } ;
+__p += '\n</div>';
 
 }
 return __p
-};templates['library/search']=function (obj) {
+};templates['extra/expanded-control']=function (obj) {
 obj || (obj = {});
 var __t, __p = '';
 with (obj) {
-__p += '<div class="cs-search-section">\n  <div class="cs-search">\n    <input type="search" placeholder="' +
-((__t = ( l18n('elements-search') )) == null ? '' : __t) +
-'" id="elements-search">\n    <i class="cs-icon" data-cs-icon="' +
-((__t = ( fontIcon('search') )) == null ? '' : __t) +
-'"></i>\n  </div>\n</div>';
+__p += '<div class="cs-expanded-content-inner"></div>\n<button class="cs-expanded-close">&times;</button>';
+
+}
+return __p
+};templates['extra/home']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ //builder/extra/home ;
+__p += '\n<p class="saved-last ' +
+((__t = ( savedLastClass )) == null ? '' : __t) +
+'">' +
+((__t = ( savedLastMessage )) == null ? '' : __t) +
+'</p>\n<ul class="cs-controls">\n  <li class="cs-control cs-control-actions">\n    <ul class="cs-actions">\n      <li class="action new">\n        <a href="' +
+((__t = ( dashboardEditUrl )) == null ? '' : __t) +
+'">\n          <i class="cs-icon" data-cs-icon="&#xf19a;"></i>\n          <span>' +
+((__t = ( l18n('home-dashboard') )) == null ? '' : __t) +
+'</span>\n        </a>\n      </li>\n      <li class="action templates">\n        <a href="' +
+((__t = ( frontEndUrl )) == null ? '' : __t) +
+'">\n          <i class="cs-icon" data-cs-icon="&#xf14c;"></i>\n          <span>' +
+((__t = ( l18n('home-view-site') )) == null ? '' : __t) +
+'</span>\n        </a>\n      </li>\n    </ul>\n  </li>\n</ul>';
+
+}
+return __p
+};templates['extra/options']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ //builder/extra/options ;
+__p += '\n';
+
+}
+return __p
+};templates['extra/respond']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ //builder/extra/respond ;
+__p += '\n<div class="cs-respond-buttons">\n  <button class="cs-icon xl" data-respond="xl" data-cs-icon="' +
+((__t = ( cs.fontIcon('desktop') )) == null ? '' : __t) +
+'"></button>\n  <button class="cs-icon lg" data-respond="lg" data-cs-icon="' +
+((__t = ( cs.fontIcon('laptop') )) == null ? '' : __t) +
+'"></button>\n  <button class="cs-icon md" data-respond="md" data-cs-icon="' +
+((__t = ( cs.fontIcon('tablet') )) == null ? '' : __t) +
+'"></button>\n  <button class="cs-icon sm" data-respond="sm" data-cs-icon="' +
+((__t = ( cs.fontIcon('tablet') )) == null ? '' : __t) +
+'"></button>\n  <button class="cs-icon xs" data-respond="xs" data-cs-icon="' +
+((__t = ( cs.fontIcon('mobile') )) == null ? '' : __t) +
+'"></button>\n</div>\n<div class="cs-respond-labels">\n  <div class="xl" data-respond="xl" ><i class="cs-icon" data-cs-icon="' +
+((__t = ( cs.fontIcon('desktop') )) == null ? '' : __t) +
+'"></i><span class="label">' +
+((__t = ( l18n('respond-xl-title') )) == null ? '' : __t) +
+'</span><span class="size">' +
+((__t = ( l18n('respond-xl-desc') )) == null ? '' : __t) +
+'</span></div>\n  <div class="lg" data-respond="lg" ><i class="cs-icon" data-cs-icon="' +
+((__t = ( cs.fontIcon('laptop')  )) == null ? '' : __t) +
+'"></i><span class="label">' +
+((__t = ( l18n('respond-lg-title') )) == null ? '' : __t) +
+'</span><span class="size">' +
+((__t = ( l18n('respond-lg-desc') )) == null ? '' : __t) +
+'</span></div>\n  <div class="md" data-respond="md" ><i class="cs-icon" data-cs-icon="' +
+((__t = ( cs.fontIcon('tablet')  )) == null ? '' : __t) +
+'"></i><span class="label">' +
+((__t = ( l18n('respond-md-title') )) == null ? '' : __t) +
+'</span><span class="size">' +
+((__t = ( l18n('respond-md-desc') )) == null ? '' : __t) +
+'</span></div>\n  <div class="sm" data-respond="sm" ><i class="cs-icon" data-cs-icon="' +
+((__t = ( cs.fontIcon('tablet')  )) == null ? '' : __t) +
+'"></i><span class="label">' +
+((__t = ( l18n('respond-sm-title') )) == null ? '' : __t) +
+'</span><span class="size">' +
+((__t = ( l18n('respond-sm-desc') )) == null ? '' : __t) +
+'</span></div>\n  <div class="xs" data-respond="xs" ><i class="cs-icon" data-cs-icon="' +
+((__t = ( cs.fontIcon('mobile')  )) == null ? '' : __t) +
+'"></i><span class="label">' +
+((__t = ( l18n('respond-xs-title') )) == null ? '' : __t) +
+'</span><span class="size">' +
+((__t = ( l18n('respond-xs-desc') )) == null ? '' : __t) +
+'</span></div>\n</div>';
+
+}
+return __p
+};templates['extra/save-complete']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ //builder/extra/save-complete ;
+__p += '\n<p class="message">' +
+((__t = ( message )) == null ? '' : __t) +
+'</p>\n';
+
+}
+return __p
+};templates['layout/actions']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<ul class="cs-actions">\n  <li class="action new">\n    <i class="cs-icon" data-cs-icon="&#xf0fe;"></i>\n    <span>' +
+((__t = ( l18n('layout-add-section') )) == null ? '' : __t) +
+'</span>\n  </li>\n  <li class="action templates">\n    <i class="cs-icon" data-cs-icon="&#xf15b;"></i>\n    <span>' +
+((__t = ( l18n('layout-templates') )) == null ? '' : __t) +
+'</span>\n  </li>\n</ul>';
 
 }
 return __p
@@ -8685,23 +8677,23 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
  if ( count > 0 ) { ;
-__p += '\n  <button data-level="0" ';
+__p += '<button data-level="0" ';
  if ( items.length == 1 ) { print('class="disabled"') } ;
 __p += '>';
  print((items.length == 1) ? _.first( items ).title : _.first( items ).label ) ;
-__p += '</button>\n  ';
+__p += '</button>';
  _.each( _.rest( items ), function(item,index) { ;
-__p += '\n  	<span><i class="cs-icon" data-cs-icon="' +
+__p += '<span><i class="cs-icon" data-cs-icon="' +
 ((__t = ( fontIcon( (rtl) ? 'angle-left' : 'angle-right' ) )) == null ? '' : __t) +
-'"></i></span>\n  	<button ';
+'"></i></span><button ';
  if ( count == index+2 ) { print('class="disabled"') } ;
 __p += ' data-level="' +
 ((__t = ( index + 1 )) == null ? '' : __t) +
 '" >' +
 ((__t = ( item.label )) == null ? '' : __t) +
-'</button>\n  ';
+'</button>';
  }) ;
-__p += '\n';
+
  } ;
 
 
@@ -8758,55 +8750,6 @@ __p += '<ul class="cs-actions">\n  <li class="action manage-layout">\n    <i cla
 '</span>\n    <span class="quick-confirm">' +
 ((__t = ( l18n('inspector-really-delete') )) == null ? '' : __t) +
 '</span>\n  </li>\n</ul>';
-
-}
-return __p
-};templates['layout/actions']=function (obj) {
-obj || (obj = {});
-var __t, __p = '';
-with (obj) {
-__p += '<ul class="cs-actions">\n  <li class="action new">\n    <i class="cs-icon" data-cs-icon="&#xf0fe;"></i>\n    <span>' +
-((__t = ( l18n('layout-add-section') )) == null ? '' : __t) +
-'</span>\n  </li>\n  <li class="action templates">\n    <i class="cs-icon" data-cs-icon="&#xf15b;"></i>\n    <span>' +
-((__t = ( l18n('layout-templates') )) == null ? '' : __t) +
-'</span>\n  </li>\n</ul>';
-
-}
-return __p
-};templates['settings/actions']=function (obj) {
-obj || (obj = {});
-var __t, __p = '';
-with (obj) {
-__p += '<ul class="cs-actions">\n  <li class="action css">\n    <i class="cs-icon" data-cs-icon="' +
-((__t = ( fontIcon('paint-brush') )) == null ? '' : __t) +
-'"></i>\n    <span>' +
-((__t = ( l18n('settings-css-editor') )) == null ? '' : __t) +
-'</span>\n  </li>\n  <li class="action js">\n    <i class="cs-icon" data-cs-icon="' +
-((__t = ( fontIcon('code') )) == null ? '' : __t) +
-'"></i>\n    <span>' +
-((__t = ( l18n('settings-js-editor') )) == null ? '' : __t) +
-'</span>\n  </li>\n</ul>';
-
-}
-return __p
-};templates['settings/content']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- //builder/settings/page-settings ;
-__p += '\n<div id="controls"></div>\n<div id="sections"></div>';
-
-}
-return __p
-};templates['settings/section']=function (obj) {
-obj || (obj = {});
-var __t, __p = '';
-with (obj) {
-__p += '<h3 class="cs-pane-section-toggle">' +
-((__t = ( _section_title )) == null ? '' : __t) +
-'</h3>\n<div class="cs-pane-section">\n	<ul class="cs-controls"></ul>\n</div>';
 
 }
 return __p
@@ -8936,6 +8879,70 @@ obj || (obj = {});
 var __t, __p = '';
 with (obj) {
 __p += '<div class="cs-skeleton-content-inner">\n	<div class="cs-skeleton-items"></div>\n</div>';
+
+}
+return __p
+};templates['library/element-stub']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ //builder/library/element-stub ;
+__p += '\n<span class="icon">' +
+((__t = ( icon )) == null ? '' : __t) +
+'</span>\n<span class="name"><span>' +
+((__t = ( ui.title )) == null ? '' : __t) +
+'</span></span>';
+
+}
+return __p
+};templates['library/search']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<div class="cs-search-section">\n  <div class="cs-search">\n    <input type="search" placeholder="' +
+((__t = ( l18n('elements-search') )) == null ? '' : __t) +
+'" id="elements-search">\n    <i class="cs-icon" data-cs-icon="' +
+((__t = ( fontIcon('search') )) == null ? '' : __t) +
+'"></i>\n  </div>\n</div>';
+
+}
+return __p
+};templates['settings/actions']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<ul class="cs-actions">\n  <li class="action css">\n    <i class="cs-icon" data-cs-icon="' +
+((__t = ( fontIcon('paint-brush') )) == null ? '' : __t) +
+'"></i>\n    <span>' +
+((__t = ( l18n('settings-css-editor') )) == null ? '' : __t) +
+'</span>\n  </li>\n  <li class="action js">\n    <i class="cs-icon" data-cs-icon="' +
+((__t = ( fontIcon('code') )) == null ? '' : __t) +
+'"></i>\n    <span>' +
+((__t = ( l18n('settings-js-editor') )) == null ? '' : __t) +
+'</span>\n  </li>\n</ul>';
+
+}
+return __p
+};templates['settings/content']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ //builder/settings/page-settings ;
+__p += '\n<div id="controls"></div>\n<div id="sections"></div>';
+
+}
+return __p
+};templates['settings/section']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<h3 class="cs-pane-section-toggle">' +
+((__t = ( _section_title )) == null ? '' : __t) +
+'</h3>\n<div class="cs-pane-section">\n	<ul class="cs-controls"></ul>\n</div>';
 
 }
 return __p

@@ -53,8 +53,6 @@ class CS_Widget_Area extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() { }
-
   public function render( $atts ) {
 
     extract( $atts );

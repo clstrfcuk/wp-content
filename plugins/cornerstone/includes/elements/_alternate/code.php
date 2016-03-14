@@ -27,30 +27,6 @@ class CS_Code extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'        => 'x_code',
-		    'title'        => __( 'Code', csl18n() ),
-		    'section'    => __( 'Typography', csl18n() ),
-		    'description' => __( 'Add a block of example code to your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/code/',
-		  'params'      => array(
-		      array(
-		        'param_name'  => 'content',
-		        'heading'     => __( 'Text', csl18n() ),
-		        'description' => __( 'Enter your text.', csl18n() ),
-		        'type'        => 'textarea_html',
-		        'value'       => ''
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-  }
-
   public function render( $atts ) {
 
     extract( $atts );

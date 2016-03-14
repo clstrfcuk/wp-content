@@ -45,45 +45,6 @@ class CS_Promo extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'        => 'x_promo',
-		    'title'        => __( 'Promo', csl18n() ),
-		    'section'    => __( 'Marketing', csl18n() ),
-		    'description' => __( 'Include a marketing promo in your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/promo/',
-		  'params'      => array(
-		      array(
-		        'param_name'  => 'content',
-		        'heading'     => __( 'Text', csl18n() ),
-		        'description' => __( 'Enter your text.', csl18n() ),
-		        'type'        => 'textarea_html',
-
-		        'value'       => ''
-		      ),
-		      array(
-		        'param_name'  => 'image',
-		        'heading'     => __( 'Promo Image', csl18n() ),
-		        'description' => __( 'Include an image for your promo element.', csl18n() ),
-		        'type'        => 'attach_image',
-
-		      ),
-		      array(
-		        'param_name'  => 'alt',
-		        'heading'     => __( 'Alt', csl18n() ),
-		        'description' => __( 'Enter in the alt text for your promo image.', csl18n() ),
-		        'type'        => 'textfield',
-
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-  }
-
   public function render( $atts ) {
 
     extract( $atts );

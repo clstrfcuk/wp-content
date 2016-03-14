@@ -57,46 +57,6 @@ class CS_Google_Map_Marker extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'            => 'x_google_map_marker',
-		    'title'            => __( 'Google Map Marker', csl18n() ),
-		    'weight'          => 530,
-		    'icon'            => 'google-map-marker',
-		    'section'        => __( 'Media', csl18n() ),
-		    'description'     => __( 'Place a location marker on your Google map', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/map/',
-		  'params'          => array(
-		      array(
-		        'param_name'  => 'lat',
-		        'heading'     => __( 'Latitude', csl18n() ),
-		        'description' => __( 'Enter in the latitude of your marker.', csl18n() ),
-		        'type'        => 'textfield',
-		      ),
-		      array(
-		        'param_name'  => 'lng',
-		        'heading'     => __( 'Longitude', csl18n() ),
-		        'description' => __( 'Enter in the longitude of your marker.', csl18n() ),
-		        'type'        => 'textfield',
-		      ),
-		      array(
-		        'param_name'  => 'info',
-		        'heading'     => __( 'Additional Information', csl18n() ),
-		        'description' => __( 'Optional description text to appear in a popup when your marker is clicked on.', csl18n() ),
-		        'type'        => 'textfield',
-		      ),
-		      array(
-		        'param_name'  => 'image',
-		        'heading'     => __( 'Custom Marker Image', csl18n() ),
-		        'description' => __( 'Utilize a custom marker image instead of the default provided by Google.', csl18n() ),
-		        'type'        => 'attach_image',
-		      ),
-		    )
-		  )
-		);
-  }
-
   // public function render( $atts ) {
 
   //   extract( $atts );

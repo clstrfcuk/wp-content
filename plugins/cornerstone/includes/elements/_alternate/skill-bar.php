@@ -52,41 +52,6 @@ class CS_Skill_Bar extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'        => 'x_skill_bar',
-		    'title'        => __( 'Skill Bar', csl18n() ),
-		    'section'    => __( 'Information', csl18n() ),
-		    'description' => __( 'Include an informational skill bar', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/skill-bar/',
-		  'params'      => array(
-		      array(
-		        'param_name'  => 'heading',
-		        'heading'     => __( 'Heading', csl18n() ),
-		        'description' => __( 'Enter the heading of your skill bar.', csl18n() ),
-		        'type'        => 'textfield',
-		      ),
-		      array(
-		        'param_name'  => 'percent',
-		        'heading'     => __( 'Percent', csl18n() ),
-		        'description' => __( 'Enter the percentage of your skill and be sure to include the percentage sign (i.e. 90%).', csl18n() ),
-		        'type'        => 'textfield',
-		      ),
-		      array(
-		        'param_name'  => 'bar_text',
-		        'heading'     => __( 'Bar Text', csl18n() ),
-		        'description' => __( 'Enter in some alternate text in place of the percentage inside the skill bar.', csl18n() ),
-		        'type'        => 'textfield',
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-  }
-
   public function render( $atts ) {
 
     extract( $atts );

@@ -155,7 +155,7 @@ class Cornerstone_Control_Group {
 		$suggestions = $this->get_suggestions();
 
 		foreach ($suggestions as $key => $value) {
-			if ( !isset( $data[$key] ) )
+			if ( !isset( $data[$key] ) || '' == $data[$key] )
 				$data[$key] = $value;
 		}
 

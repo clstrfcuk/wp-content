@@ -34,8 +34,6 @@ class CS_Raw_Content extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() { }
-
   public function render( $atts ) {
 
     extract( $atts );

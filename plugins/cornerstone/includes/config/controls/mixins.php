@@ -177,7 +177,7 @@ return array(
 			// Link.URL
 			//
 
-		'link_url' => array(
+		'url' => array(
 			'type' => 'text',
 			'ui' => array(
 				'title' => __( 'URL', $td ),
@@ -189,7 +189,7 @@ return array(
 		// Link.Title
 		//
 
-		'link_title' => array(
+		'title' => array(
 			'type' => 'text',
 			'ui' => array(
 				'title' => __( 'Link Title Attribute', $td ),
@@ -201,7 +201,7 @@ return array(
 		// Link.NewTab
 		//
 
-		'link_new_tab' => array(
+		'new_tab' => array(
 			'type' => 'toggle',
 			'ui' => array(
 				'title' => __( 'Open Link in New Tab', $td ),

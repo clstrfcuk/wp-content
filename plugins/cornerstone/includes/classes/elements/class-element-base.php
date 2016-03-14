@@ -48,10 +48,6 @@ abstract class Cornerstone_Element_Base {
 
 	public function register() {
 
-		// Temporary Shortcode generator mapping
-		if ( method_exists( $this, 'xsg' ) )
-			$this->xsg();
-
 	}
 
 	public function load_controls() {
@@ -342,8 +338,14 @@ abstract class Cornerstone_Element_Base {
     $atts['injected_classes'] = array();
 		$atts['injected_styles'] = array();
 
+		//
 		// BEGIN
 		//
+
+		if ( isset( $atts['text_color'] ) && $atts['text_color'] != '' ) {
+      $atts['injected_styles'][] = 'color: ' . $atts['text_color'] . ';';
+    }
+
 		if ( isset( $atts['margin'] ) && $atts['margin'] != '' ) {
       $atts['injected_styles'][] = 'margin: ' . implode( $atts['margin'], ' ' ) . ';';
     }
@@ -377,6 +379,7 @@ abstract class Cornerstone_Element_Base {
 		// END
 
 
+    $atts = $this->attribute_injections( $atts );
 
 		// Combine user and injected values for shortcode injection
 		if ( count( $atts['injected_classes'] ) > 0 )
@@ -389,6 +392,10 @@ abstract class Cornerstone_Element_Base {
 		$atts['extra'] = $this->extra( $atts );
 
     return $atts;
+	}
+
+	public function attribute_injections( $atts ) {
+		return $atts;
 	}
 
 	/**

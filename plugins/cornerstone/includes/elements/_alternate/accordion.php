@@ -73,23 +73,4 @@ class CS_Accordion extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'            => 'x_accordion',
-		    'title'            => __( 'Accordion', csl18n() ),
-		    'weight'          => 930,
-		    'icon'            => 'accordion',
-		    'section'        => __( 'Content', csl18n() ),
-		    'description'     => __( 'Include an accordion into your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/accordion/',
-		  'params'          => array(
-		      Cornerstone_Shortcode_Generator::map_default_id( array( 'advanced' => false) ),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-  }
-
 }

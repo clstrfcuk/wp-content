@@ -42,6 +42,4 @@ class CS_Tab extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() { }
-
 }

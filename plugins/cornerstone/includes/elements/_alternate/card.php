@@ -290,11 +290,24 @@ class CS_Card extends Cornerstone_Element_Base {
     //
 
     $this->addControl(
+      'back_button_enabled',
+      'toggle',
+      __( 'Back Button', csl18n() ),
+      __( 'This will show a button on the back of the card, which you can link anywhere you like.', csl18n() ),
+      true
+    );
+
+    $this->addControl(
       'back_button_text',
       'text',
       __( 'Back Button Text', csl18n() ),
       __( 'Specify the title and content for the back of your Card.', csl18n() ),
-      __( 'Click Me!', csl18n() )
+      __( 'Click Me!', csl18n() ),
+      array(
+        'condition' => array(
+          'back_button_enabled' => true
+        )
+      )
     );
 
     $this->addControl(
@@ -302,7 +315,12 @@ class CS_Card extends Cornerstone_Element_Base {
       'text',
       __( 'Back Button Link', csl18n() ),
       __( 'Specify the URL for the button on the back of your Card.', csl18n() ),
-      '#'
+      '#',
+      array(
+        'condition' => array(
+          'back_button_enabled' => true
+        )
+      )
     );
 
     $this->addControl(
@@ -310,7 +328,12 @@ class CS_Card extends Cornerstone_Element_Base {
       'color',
       __( 'Back Button Text Color', csl18n() ),
       __( 'Select the text color for button on the back of your Card.', csl18n() ),
-      '#ffffff'
+      '#ffffff',
+      array(
+        'condition' => array(
+          'back_button_enabled' => true
+        )
+      )
     );
 
     $this->addControl(
@@ -318,12 +341,15 @@ class CS_Card extends Cornerstone_Element_Base {
       'color',
       __( 'Back Button Background Color', csl18n() ),
       __( 'Select the background color for button on the back of your Card.', csl18n() ),
-      '#744288'
+      '#744288',
+      array(
+        'condition' => array(
+          'back_button_enabled' => true
+        )
+      )
     );
 
   }
-
-  public function xsg() { }
 
   public function render( $atts ) {
 
@@ -354,7 +380,13 @@ class CS_Card extends Cornerstone_Element_Base {
     $back_text        = cs_clean_shortcode_att( $back_text );
     $back_button_text = cs_clean_shortcode_att( $back_button_text );
 
-    $shortcode = "[x_card animation=\"$animation\" center_vertically=\"$center_vertically\" front_style=\"$front_style\" $front_graphic front_title=\"$front_title\" front_text=\"$front_text\" back_style=\"$back_style\" back_title=\"$back_title\" back_text=\"$back_text\" back_button_text=\"$back_button_text\" back_button_link=\"$back_button_link\" back_button_color=\"$back_button_color\" back_button_bg_color=\"$back_button_bg_color\" padding=\"$card_padding\"{$extra}]";
+    if ( 'true' == $back_button_enabled ) {
+    	$back_button_atts = " back_button_text=\"$back_button_text\" back_button_link=\"$back_button_link\" back_button_color=\"$back_button_color\" back_button_bg_color=\"$back_button_bg_color\"";
+    } else {
+    	$back_button_atts = " back_button_enabled=\"false\"";
+    }
+
+    $shortcode = "[x_card animation=\"$animation\" center_vertically=\"$center_vertically\" front_style=\"$front_style\" $front_graphic front_title=\"$front_title\" front_text=\"$front_text\" back_style=\"$back_style\" back_title=\"$back_title\" back_text=\"$back_text\" $back_button_atts padding=\"$card_padding\"{$extra}]";
 
     return $shortcode;
 

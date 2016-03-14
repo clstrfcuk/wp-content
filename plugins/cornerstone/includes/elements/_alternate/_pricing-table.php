@@ -35,40 +35,6 @@ class CS_Pricing_Table extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'            => 'x_pricing_table',
-		    'title'            => __( 'Pricing Table', csl18n() ),
-		    'weight'          => 680,
-		    'icon'            => 'pricing-table',
-		    'section'        => __( 'Marketing', csl18n() ),
-		    'description'     => __( 'Include a pricing table in your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/responsive-pricing-table/',
-		  'params'          => array(
-		      array(
-		        'param_name'  => 'columns',
-		        'heading'     => __( 'Columns', csl18n() ),
-		        'description' => __( 'Select how many columns you want for your pricing table.', csl18n() ),
-		        'type'        => 'dropdown',
-
-		        'value'       => array(
-		          '1' => '1',
-		          '2' => '2',
-		          '3' => '3',
-		          '4' => '4',
-		          '5' => '5'
-		        )
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-
-  }
-
   public function render( $atts ) {
 
     extract( $atts );

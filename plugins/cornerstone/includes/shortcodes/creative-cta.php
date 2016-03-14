@@ -17,27 +17,29 @@ function x_shortcode_creative_cta( $atts ) { // 1
     'image_width'    => '',
     'animation'      => '',
     'link'           => '',
+    'target'         => '',
     'color'          => '',
     'bg_color'       => '',
     'bg_color_hover' => ''
 
   ), $atts, 'x_creative_cta' ) );
 
-  $id             = ( $id             != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
-  $class          = ( $class          != '' ) ? 'x-creative-cta ' . esc_attr( $class ) : 'x-creative-cta';
-  $style          = ( $style          != '' ) ? ' ' . $style : '';
-  $padding        = ( $padding        != '' ) ? $padding : '35px';
-  $text           = ( $text           != '' ) ? wp_specialchars_decode( $text, ENT_QUOTES ) : 'Place Your<br>Text Here';
-  $font_size      = ( $font_size      != '' ) ? $font_size : '36px';
-  $icon           = ( $icon           != '' ) ? $icon : '';
-  $icon_size      = ( $icon_size      != '' ) ? $icon_size : '36px';
-  $image          = ( $image          != '' ) ? $image : '';
-  $image_width    = ( $image_width    != '' ) ? $image_width : '';
-  $animation      = ( $animation      != '' ) ? ' ' . $animation : '';
-  $link           = ( $link           != '' ) ? $link : '#';
-  $color          = ( $color          != '' ) ? $color : '#ffffff';
-  $bg_color       = ( $bg_color       != '' ) ? $bg_color : '#ff2a13';
-  $bg_color_hover = ( $bg_color_hover != '' ) ? $bg_color_hover : '#d80f0f';
+  $id             = ( $id             != ''      ) ? 'id="' . esc_attr( $id ) . '"' : '';
+  $class          = ( $class          != ''      ) ? 'x-creative-cta ' . esc_attr( $class ) : 'x-creative-cta';
+  $style          = ( $style          != ''      ) ? ' ' . $style : '';
+  $padding        = ( $padding        != ''      ) ? $padding : '35px';
+  $text           = ( $text           != ''      ) ? wp_specialchars_decode( $text, ENT_QUOTES ) : 'Place Your<br>Text Here';
+  $font_size      = ( $font_size      != ''      ) ? $font_size : '36px';
+  $icon           = ( $icon           != ''      ) ? $icon : '';
+  $icon_size      = ( $icon_size      != ''      ) ? $icon_size : '36px';
+  $image          = ( $image          != ''      ) ? $image : '';
+  $image_width    = ( $image_width    != ''      ) ? $image_width : '';
+  $animation      = ( $animation      != ''      ) ? ' ' . $animation : '';
+  $link           = ( $link           != ''      ) ? $link : '#';
+  $target         = ( $target         == 'blank' ) ? ' target="_blank"' : '';
+  $color          = ( $color          != ''      ) ? $color : '#ffffff';
+  $bg_color       = ( $bg_color       != ''      ) ? $bg_color : '#ff2a13';
+  $bg_color_hover = ( $bg_color_hover != ''      ) ? $bg_color_hover : '#d80f0f';
 
   if ( $animation != '' ) {
     if ( $image != '' ) {
@@ -57,7 +59,7 @@ function x_shortcode_creative_cta( $atts ) { // 1
 
   $data = cs_generate_data_attributes( 'creative_cta', $js_params );
 
-  $output = "<a {$id} class=\"{$class}{$animation}\" href=\"{$link}\" style=\"padding: {$padding}; color: {$color}; background-color: {$bg_color};{$style}\" {$data}>"
+  $output = "<a {$id} class=\"{$class}{$animation}\" href=\"{$link}\"{$target} style=\"padding: {$padding}; color: {$color}; background-color: {$bg_color};{$style}\" {$data}>"
             . "<span class=\"text\" style=\"font-size: {$font_size};\">{$text}</span>"
             . $graphic
           . "</a>";

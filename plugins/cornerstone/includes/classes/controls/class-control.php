@@ -61,7 +61,9 @@ class Cornerstone_Control {
 		if ( ( isset( $config['group'] ) && $config['group'] === true ) || ( isset( $mixins[$type]['group'] ) && $mixins[$type]['group'] === true ) )
 			$depth = 4;
 
-		return self::factory( $name, cs_deep_array_merge( $config, $mixins[$type], $depth ) );
+		$merged = cs_deep_array_merge( $mixins[$type], $config, $depth );
+
+		return self::factory( $name, $merged );
 
 	}
 

@@ -632,7 +632,6 @@ module.exports = Proxyable.extend({
 
 			if ( ! this.elements.isEmpty() && ! _.isEmpty( _.omit( model.changed, ['elements'] ) ) ) {
 				this.elements.each( function( item ) {
-					console.log(item)
 					item.trigger( 'parent:change', model, options );
 				} );
 			}

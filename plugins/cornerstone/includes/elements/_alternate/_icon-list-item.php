@@ -32,39 +32,16 @@ class CS_Icon_List_Item extends Cornerstone_Element_Base {
       'check'
     );
 
-  }
+    $this->addControl(
+      'icon_color',
+      'color',
+      __( 'Icon Color', csl18n() ),
+      __( 'Choose a custom color for your Icon List Item\'s icon.', csl18n() ),
+      ''
+    );
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'            => 'x_icon_list_item',
-		    'title'            => __( 'Icon List Item', csl18n() ),
-		    'weight'          => 770,
-		    'icon'            => 'icon-list-item',
-		    'section'        => __( 'Typography', csl18n() ),
-		    'description'     => __( 'Include an icon list item in your icon list', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/icon-list/',
-		  'params'          => array(
-		      array(
-		        'param_name'  => 'content',
-		        'heading'     => __( 'Text', csl18n() ),
-		        'description' => __( 'Enter your text.', csl18n() ),
-		        'type'        => 'textarea_html',
-		        'value'       => ''
-		      ),
-		      array(
-		        'param_name'  => 'type',
-		        'heading'     => __( 'Type', csl18n() ),
-		        'description' => __( 'Select your icon.', csl18n() ),
-		        'type'        => 'dropdown',
-		        'value'       => array_keys( fa_all_unicode() )
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
+    $this->addSupport( 'link' );
+
   }
 
   // public function render( $atts ) {

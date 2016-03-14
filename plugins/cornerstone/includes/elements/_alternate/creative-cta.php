@@ -134,6 +134,14 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     );
 
     $this->addControl(
+      'href_target',
+      'toggle',
+      __( 'Open Link in New Window', csl18n() ),
+      __( 'Select to open your link in a new window.', csl18n() ),
+      false
+    );
+
+    $this->addControl(
       'color',
       'color',
       __( 'Text Color', csl18n() ),
@@ -159,11 +167,11 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() { }
-
   public function render( $atts ) {
 
     extract( $atts );
+
+    $href_target = ( $href_target == 'true' ) ? ' target="blank"' : '';
 
     $alt_padding = implode( ' ', $alt_padding );
 
@@ -173,7 +181,7 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
       $graphic = "image=\"$image\" image_width=\"$image_width\"";
     }
     $text = cs_clean_shortcode_att( $text );
-    $shortcode = "[x_creative_cta padding=\"$alt_padding\" text=\"$text\" font_size=\"$font_size\" $graphic animation=\"$animation\" link=\"$link\" color=\"$color\" bg_color=\"$bg_color\" bg_color_hover=\"$bg_color_hover\"{$extra}]";
+    $shortcode = "[x_creative_cta padding=\"$alt_padding\" text=\"$text\" font_size=\"$font_size\" $graphic animation=\"$animation\" link=\"$link\"{$href_target} color=\"$color\" bg_color=\"$bg_color\" bg_color_hover=\"$bg_color_hover\"{$extra}]";
 
     return $shortcode;
 

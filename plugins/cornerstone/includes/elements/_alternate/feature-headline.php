@@ -11,8 +11,8 @@ class CS_Feature_Headline extends Cornerstone_Element_Base {
       'supports'    => array( 'text_align', 'id', 'class', 'style' ),
       'empty'       => array( 'content' => '' ),
       'autofocus' => array(
-    		'content' => '.h-feature-headline',
-    	)
+        'content' => '.h-feature-headline',
+      )
     );
   }
 
@@ -46,15 +46,25 @@ class CS_Feature_Headline extends Cornerstone_Element_Base {
       )
     );
 
+    if ( apply_filters( 'cornerstone_looks_like_support', false ) ) {
+      $this->addControl(
+        'looks_like',
+        'select',
+        __( 'Looks Like', csl18n() ),
+        __( 'Allows you to alter the appearance of the heading, while still outputting it as a different HTML tag.', csl18n() ),
+        'h3',
+        array(
+          'choices' => $headingChoices
+        )
+      );
+    }
+
     $this->addControl(
-      'looks_like',
-      'select',
-      __( 'Looks Like', csl18n() ),
-      __( 'Allows you to alter the appearance of the heading, while still outputting it as a different HTML tag.', csl18n() ),
-      'h3',
-      array(
-        'choices' => $headingChoices
-      )
+      'text_color',
+      'color',
+      __( 'Text Color', csl18n() ),
+      __( 'Choose a specific color for the headline text. Reset the color picker to inherit a color.', csl18n() ),
+      ''
     );
 
     $this->addControl(
@@ -65,88 +75,35 @@ class CS_Feature_Headline extends Cornerstone_Element_Base {
       'lightbulb-o'
     );
 
-  }
+    $this->addControl(
+      'icon_color',
+      'color',
+      __( 'Icon Color &amp; Background Color', csl18n() ),
+      __( 'Choose a specific color for the icon. Reset the color picker to inherit a color.', csl18n() ),
+      ''
+    );
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'        => 'x_feature_headline',
-		    'title'        => __( 'Feature Headline', csl18n() ),
-		    'section'    => __( 'Typography', csl18n() ),
-		    'description' => __( 'Include a feature headline in your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/feature-headline/',
-		  'params'      => array(
-		      array(
-		        'param_name'  => 'content',
-		        'heading'     => __( 'Text', csl18n() ),
-		        'description' => __( 'Enter your text.', csl18n() ),
-		        'type'        => 'textarea_html',
+    $this->addControl(
+      'icon_bg_color',
+      'color',
+      NULL,
+      NULL,
+      ''
+    );
 
-		        'value'       => ''
-		      ),
-		      array(
-		        'param_name'  => 'type',
-		        'heading'     => __( 'Alignment', csl18n() ),
-		        'description' => __( 'Select which way to align the feature headline.', csl18n() ),
-		        'type'        => 'dropdown',
 
-		        'value'       => array(
-		          'Left'   => 'left',
-		          'Center' => 'center',
-		          'Right'  => 'right'
-		        )
-		      ),
-		      array(
-		        'param_name'  => 'level',
-		        'heading'     => __( 'Heading Level', csl18n() ),
-		        'description' => __( 'Select which level to use for your heading (e.g. h2).', csl18n() ),
-		        'type'        => 'dropdown',
-
-		        'value'       => array(
-		          'h1' => 'h1',
-		          'h2' => 'h2',
-		          'h3' => 'h3',
-		          'h4' => 'h4',
-		          'h5' => 'h5',
-		          'h6' => 'h6'
-		        )
-		      ),
-		      array(
-		        'param_name'  => 'looks_like',
-		        'heading'     => __( 'Looks Like', csl18n() ),
-		        'description' => __( 'Select which level your heading should look like (e.g. h3).', csl18n() ),
-		        'type'        => 'dropdown',
-
-		        'value'       => array(
-		          'h1' => 'h1',
-		          'h2' => 'h2',
-		          'h3' => 'h3',
-		          'h4' => 'h4',
-		          'h5' => 'h5',
-		          'h6' => 'h6'
-		        )
-		      ),
-		      array(
-		        'param_name'  => 'icon',
-		        'heading'     => __( 'Icon', csl18n() ),
-		        'description' => __( 'Select the icon to use with your feature headline.', csl18n() ),
-		        'type'        => 'dropdown',
-
-		        'value'       => array_keys( fa_all_unicode() )
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
   }
 
   public function render( $atts ) {
 
     extract( $atts );
 
-    $shortcode = "[x_feature_headline level=\"$level\" looks_like=\"$looks_like\" icon=\"$icon_type\"{$extra}]{$content}[/x_feature_headline]";
+    $looks_like = ( apply_filters( 'cornerstone_looks_like_support', false ) ) ? "looks_like=\"$looks_like\"" : '';
+
+    $icon_color = ( '' != $icon_color ) ? " icon_color=\"$icon_color\"" : '';
+    $icon_bg_color = ( '' != $icon_bg_color ) ? " icon_bg_color=\"$icon_bg_color\"" : '';
+
+    $shortcode = "[x_feature_headline level=\"$level\" {$looks_like} icon=\"$icon_type\"{$icon_color}{$icon_bg_color}{$extra}]{$content}[/x_feature_headline]";
 
     return $shortcode;
 

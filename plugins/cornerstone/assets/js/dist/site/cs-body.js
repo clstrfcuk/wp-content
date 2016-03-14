@@ -7,8 +7,14 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Imports
+//   01. Setup
+//   02. Imports
 // =============================================================================
+
+// Setup
+// =============================================================================
+
+window.csModernizr = window.csModernizr || {};
 
 // Imports
 // =============================================================================
@@ -4102,8 +4108,7 @@ jQuery(window).load(function() {
 
 });
 
-
-(function($) {
+( function( $ ) {
 // =============================================================================
 // CARD.JS
 // -----------------------------------------------------------------------------
@@ -4123,7 +4128,7 @@ xData.api.map('card', function( params ) {
 
   var $card = $(this);
 
-  if ( Modernizr && Modernizr.preserve3d ) {
+  if ( csModernizr.preserve3d ) {
     $card.addClass('flip-3d');
   }
 
@@ -4730,7 +4735,7 @@ xData.api.map('x_mejs', function( params ) {
 
     pFeatures = [];
 
-    if ( Modernizr && Modernizr.touchevents ) {
+    if ( csModernizr.touchevents ) {
       $(element).addClass('poster').css({'background-image' : 'url(' + params.poster + ')'});
       setTimeout(function() {
         $(element).removeClass('transparent');
@@ -5036,7 +5041,7 @@ function sectionSetup( params ) {
   var backgroundSetup = function() {
 
     if ( $this.hasClass('parallax') ) {
-      if ( Modernizr && Modernizr.touchevents ) {
+      if ( csModernizr.touchevents ) {
         $this.css('background-attachment', 'scroll');
       } else {
         if ( $this.hasClass('bg-image')   ) speed = 0.1;
@@ -5157,4 +5162,4 @@ xData.api.map('text_type', function( params ) {
 
 });
 
-})(jQuery);
+} )( jQuery );

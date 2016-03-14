@@ -48,37 +48,6 @@ class CS_Block_Grid extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'            => 'x_block_grid',
-		    'title'            => __( 'Block Grid', csl18n() ),
-		    'weight'          => 880,
-		    'icon'            => 'block-grid',
-		    'section'        => __( 'Content', csl18n() ),
-		    'description'     => __( 'Include a block grid container in your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/block-grid/',
-		  'params'          => array(
-		      array(
-		        'param_name'  => 'type',
-		        'heading'     => __( 'Type', csl18n() ),
-		        'description' => __( 'Select how many block grid items you want per row.', csl18n() ),
-		        'type'        => 'dropdown',
-		        'value'       => array(
-		          'Two'   => 'two-up',
-		          'Three' => 'three-up',
-		          'Four'  => 'four-up',
-		          'Five'  => 'five-up'
-		        )
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-  }
-
   public function render( $atts ) {
 
     extract( $atts );

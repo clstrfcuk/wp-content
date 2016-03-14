@@ -25,31 +25,6 @@ class CS_Embedded_Audio extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'        => 'x_audio_embed',
-		    'title'        => __( 'Audio (Embedded)', csl18n() ),
-		    'section'    => __( 'Media', csl18n() ),
-		    'description' => __( 'Place audio files into your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/audio/',
-		  'params'      => array(
-		      array(
-		        'param_name'  => 'content',
-		        'heading'     => __( 'Code (See Notes Below)', csl18n() ),
-		        'description' => __( 'Switch to the "text" editor and do not place anything else here other than your &lsaquo;iframe&rsaquo; or &lsaquo;embed&rsaquo; code.', csl18n() ),
-		        'type'        => 'textarea_html',
-
-		        'value'       => ''
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-  }
-
   public function is_active() {
     return current_user_can( 'unfiltered_html' );
   }

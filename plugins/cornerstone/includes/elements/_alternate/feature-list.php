@@ -236,8 +236,6 @@ class CS_Feature_List extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() { }
-
   public function render( $atts ) {
 
     extract( $atts );

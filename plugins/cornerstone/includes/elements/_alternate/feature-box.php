@@ -321,8 +321,6 @@ class CS_Feature_Box extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() { }
-
   public function render( $atts ) {
 
     extract( $atts );

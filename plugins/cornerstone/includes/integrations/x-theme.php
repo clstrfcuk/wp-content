@@ -32,6 +32,9 @@ class Cornerstone_Integration_X_Theme {
 		// Enable X specific settings pane items
 		add_filter( 'x_settings_pane', '__return_true' );
 
+		// Declare support for page builder features
+		add_filter( 'cornerstone_looks_like_support', '__return_true' );
+
 		// Shortcode generator tweaks
 		add_action('cornerstone_generator_preview_before', array( $this, 'shortcodeGeneratorPreviewBefore' ), -9999 );
 		add_filter('cornerstone_generator_map', array( $this, 'shortcodeGeneratorDemoURL' ) );

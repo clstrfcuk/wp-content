@@ -21,6 +21,7 @@ function x_shortcode_card( $atts ) {
     'back_style'           => '',
     'back_title'           => '',
     'back_text'            => '',
+    'back_button_enabled'  => 'true',
     'back_button_text'     => '',
     'back_button_link'     => '',
     'back_button_color'    => '',
@@ -60,6 +61,12 @@ function x_shortcode_card( $atts ) {
 
   $data = cs_generate_data_attributes( 'card', array() );
 
+  $button_markup  = '';
+
+  if ( 'true' == $back_button_enabled ) {
+  	$button_markup = "<a class=\"x-face-button\" style=\"color: {$back_button_color}; background-color: {$back_button_bg_color};\" href=\"{$back_button_link}\">{$back_button_text}</a>";
+  }
+
   $output = "<div {$id} class=\"{$class}{$animation}{$center_vertically}\" {$data}{$style}>"
             . '<div class="x-card-inner">'
               . "<div class=\"x-face-outer front\" style=\"{$front_style}\">"
@@ -76,7 +83,7 @@ function x_shortcode_card( $atts ) {
                   . "<div class=\"x-face-content\" style=\"padding: {$padding};\">"
                     . "<h4 class=\"x-face-title\">{$back_title}</h4>"
                     . "<p class=\"x-face-text\">{$back_text}</p>"
-                    . "<a class=\"x-face-button\" style=\"color: {$back_button_color}; background-color: {$back_button_bg_color};\" href=\"{$back_button_link}\">{$back_button_text}</a>"
+                    . $button_markup
                   . '</div>'
                 . '</div>'
               . '</div>'

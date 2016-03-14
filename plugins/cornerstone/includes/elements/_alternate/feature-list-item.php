@@ -203,6 +203,4 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() { }
-
 }

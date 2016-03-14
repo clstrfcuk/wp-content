@@ -47,11 +47,17 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 		$result = array(
 			'elements' => $elements,
 			'settings' => $settings,
+
 		);
 
 		//Suppress PHP error output unless debugging
-		if ( CS()->common()->isDebug() )
+		if ( CS()->common()->isDebug() ) {
+			$result['debug'] = array(
+				'memory' => memory_get_peak_usage()
+			);
 			return wp_send_json_success( $result );
+		}
+
 		return @wp_send_json_success( $result );
 
 	}

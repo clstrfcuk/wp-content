@@ -64,7 +64,7 @@ function x_shortcode_pricing_table_column( $atts, $content = null ) {
   $class        = ( $class != ''        ) ? 'x-pricing-column ' . esc_attr( $class ) : 'x-pricing-column';
   $style        = ( $style != ''        ) ? 'style="' . $style . '"' : '';
   $featured     = ( $featured == 'true' ) ? ' featured' : '';
-  $featured_sub = ( $featured_sub != '' ) ? ' <span>' . $featured_sub . '</span>' : '';
+  $featured_sub = ( $featured_sub != '' ) ? ' <span class="x-featured-sub">' . $featured_sub . '</span>' : '';
   $title        = ( $title != ''        ) ? $title : '';
   $currency     = ( $currency != ''     ) ? $currency : '';
   $price        = ( $price != ''        ) ? $price : '';
@@ -77,7 +77,7 @@ function x_shortcode_pricing_table_column( $atts, $content = null ) {
             . '</h2>'
             . '<div class="x-pricing-column-info">'
               . "<h3 class=\"x-price\">{$currency}{$price}</h3>"
-              . "<span>{$interval}</span>"
+              . "<span class=\"x-interval\">{$interval}</span>"
               . do_shortcode( $content )
             . '</div>'
           . '</div>';

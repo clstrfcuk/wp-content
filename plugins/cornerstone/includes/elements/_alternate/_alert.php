@@ -65,56 +65,6 @@ class CS_Alert extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'        => 'x_alert',
-		    'title'        => __( 'Alert', csl18n() ),
-		    'section'    => __( 'Information', csl18n() ),
-		    'description' => __( 'Provide information to users with alerts', csl18n() ),
-		    'demo' => 'http://theme.co/x/demo/integrity/1/shortcodes/alert/',
-		  'params'      => array(
-		      array(
-		        'param_name'  => 'content',
-		        'heading'     => __( 'Text', csl18n() ),
-		        'description' => __( 'Enter your text.', csl18n() ),
-		        'type'        => 'textarea_html',
-		        'value'       => ''
-		      ),
-		      array(
-		        'param_name'  => 'heading',
-		        'heading'     => __( 'Heading', csl18n() ),
-		        'description' => __( 'Enter the heading of your alert.', csl18n() ),
-		        'type'        => 'textfield',
-		      ),
-		      array(
-		        'param_name'  => 'type',
-		        'heading'     => __( 'Type', csl18n() ),
-		        'description' => __( 'Select the alert style.', csl18n() ),
-		        'type'        => 'dropdown',
-		        'value'       => array(
-		          'Success' => 'success',
-		          'Info'    => 'info',
-		          'Warning' => 'warning',
-		          'Danger'  => 'danger',
-		          'Muted'   => 'muted'
-		        )
-		      ),
-		      array(
-		        'param_name'  => 'close',
-		        'heading'     => __( 'Close', csl18n() ),
-		        'description' => __( 'Select to display the close button.', csl18n() ),
-		        'type'        => 'checkbox',
-		        'value'       => 'true'
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-  }
-
   public function render( $atts ) {
   	// jsond( $atts );
     extract( $atts );

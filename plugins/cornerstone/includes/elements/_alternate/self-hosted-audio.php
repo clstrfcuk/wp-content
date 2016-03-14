@@ -84,37 +84,6 @@ class CS_Self_Hosted_Audio extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'        => 'x_audio_player',
-		    'title'        => __( 'Audio (Self Hosted)', csl18n() ),
-		    'section'    => __( 'Media', csl18n() ),
-		    'description' => __( 'Place audio files into your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/audio/',
-		  'params'      => array(
-		      array(
-		        'param_name'  => 'mp3',
-		        'heading'     => __( 'MP3', csl18n() ),
-		        'description' => __( 'Include and .mp3 version of your audio.', csl18n() ),
-		        'type'        => 'textfield',
-
-		      ),
-		      array(
-		        'param_name'  => 'oga',
-		        'heading'     => __( 'OGA', csl18n() ),
-		        'description' => __( 'Include and .oga version of your audio for additional native browser support.', csl18n() ),
-		        'type'        => 'textfield',
-
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style()
-		    )
-		  )
-		);
-  }
-
   public function render( $atts ) {
 
     extract( $atts );

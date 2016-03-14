@@ -5,13 +5,15 @@
 
 function x_shortcode_feature_headline( $atts, $content = null ) {
   extract( shortcode_atts( array(
-    'id'         => '',
-    'class'      => '',
-    'style'      => '',
-    'type'       => '',
-    'level'      => '',
-    'looks_like' => '',
-    'icon'       => ''
+    'id'            => '',
+    'class'         => '',
+    'style'         => '',
+    'type'          => '',
+    'level'         => '',
+    'looks_like'    => '',
+    'icon'          => '',
+    'icon_color'    => '',
+    'icon_bg_color' => ''
   ), $atts, 'x_feature_headline' ) );
 
   $id    = ( $id    != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
@@ -32,8 +34,24 @@ function x_shortcode_feature_headline( $atts, $content = null ) {
   $icon       = ( $icon       != '' ) ? $icon : '';
 
   if ( $icon != '' ) {
+
+    $icon_style = '';
+
+    if ( $icon_color != '' ) {
+      $icon_style .= "color: {$icon_color};";
+    }
+
+    if ( $icon_bg_color !=  '' ) {
+      $icon_style .= "background-color: {$icon_bg_color};";
+    }
+
+    if ( $icon_style != '' ) {
+      $icon_style = " style=\"{$icon_style}\" ";
+    }
+
     $unicode = fa_unicode( $icon );
-    $icon    = '<i class="x-icon-' . $icon . '" data-x-icon="&#x' . $unicode . ';"></i>';
+    $icon    = "<i class=\"x-icon-{$icon}\" data-x-icon=\"&#x{$unicode};\"{$icon_style}></i>";
+
   }
 
   $output = "<{$level} {$id} class=\"{$class}{$type}{$looks_like}\" {$style}><span>{$icon}" . do_shortcode( $content ) . "</span></{$level}>";

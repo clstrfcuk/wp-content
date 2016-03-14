@@ -71,26 +71,29 @@ class CS_Text_Type extends Cornerstone_Element_Base {
       )
     );
 
-    $this->addControl(
-      'looks_like',
-      'select',
-      __( 'Looks Like', csl18n() ),
-      __( 'Allows you to alter the appearance of the heading, while still outputting it as a different HTML tag.', csl18n() ),
-      'h3',
-      array(
-        'choices' => array(
-          array( 'value' => 'h1', 'label' => __( 'h1', csl18n() ) ),
-          array( 'value' => 'h2', 'label' => __( 'h2', csl18n() ) ),
-          array( 'value' => 'h3', 'label' => __( 'h3', csl18n() ) ),
-          array( 'value' => 'h4', 'label' => __( 'h4', csl18n() ) ),
-          array( 'value' => 'h5', 'label' => __( 'h5', csl18n() ) ),
-          array( 'value' => 'h6', 'label' => __( 'h6', csl18n() ) )
-        ),
-        'condition' => array(
-          'tag' => array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' )
-        )
-      )
-    );
+    if ( apply_filters( 'cornerstone_looks_like_support', false ) ) {
+
+	    $this->addControl(
+	      'looks_like',
+	      'select',
+	      __( 'Looks Like', csl18n() ),
+	      __( 'Allows you to alter the appearance of the heading, while still outputting it as a different HTML tag.', csl18n() ),
+	      'h3',
+	      array(
+	        'choices' => array(
+	          array( 'value' => 'h1', 'label' => __( 'h1', csl18n() ) ),
+	          array( 'value' => 'h2', 'label' => __( 'h2', csl18n() ) ),
+	          array( 'value' => 'h3', 'label' => __( 'h3', csl18n() ) ),
+	          array( 'value' => 'h4', 'label' => __( 'h4', csl18n() ) ),
+	          array( 'value' => 'h5', 'label' => __( 'h5', csl18n() ) ),
+	          array( 'value' => 'h6', 'label' => __( 'h6', csl18n() ) )
+	        ),
+	        'condition' => array(
+	          'tag' => array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' )
+	        )
+	      )
+	    );
+	  }
 
 
     //
@@ -165,15 +168,14 @@ class CS_Text_Type extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() { }
-
   public function render( $atts ) {
 
     extract( $atts );
 
     $strings = htmlspecialchars( str_replace( "\n", '|', $strings ) );
 
-    if ( $tag == 'h1' || $tag == 'h2' || $tag == 'h3' || $tag == 'h4' || $tag == 'h5' || $tag == 'h6' ) {
+
+    if ( apply_filters( 'cornerstone_looks_like_support', false ) && ( $tag == 'h1' || $tag == 'h2' || $tag == 'h3' || $tag == 'h4' || $tag == 'h5' || $tag == 'h6' ) ) {
       $looks_like = ' looks_like="' . $looks_like . '"';
     } else {
       $looks_like = '';

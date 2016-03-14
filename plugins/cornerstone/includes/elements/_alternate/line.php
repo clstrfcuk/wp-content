@@ -12,22 +12,37 @@ class CS_Line extends Cornerstone_Element_Base {
     );
   }
 
-  public function controls() { }
+  public function controls() {
 
-  public function xsg() {
-  	$this->sg_map(array(
-	    'id'        => 'x_line',
-	    'title'        => __( 'Line', csl18n() ),
-	    'section'    => __( 'Structure', csl18n() ),
-	    'description' => __( 'Place a horizontal rule in your content', csl18n() ),
-	    'demo' => 'http://theme.co/x/demo/integrity/1/shortcodes/line/',
-	    'params'      => array(
-	      Cornerstone_Shortcode_Generator::map_default_id( array( 'advanced' => false ) ),
-	      Cornerstone_Shortcode_Generator::map_default_class(),
-	      Cornerstone_Shortcode_Generator::map_default_style()
-	    )
-	  ));
+  	$this->addControl(
+      'line_color',
+      'color',
+      __( 'Color', csl18n() ),
+      __( 'Choose a specific color for this line. Reset the color picker to inherit a color.', csl18n() ),
+      ''
+    );
+
+    $this->addControl(
+      'line_height',
+      'text',
+      __( 'Height', csl18n() ),
+      __( 'Specify a height for this line.', csl18n() ),
+      '1px'
+    );
+
   }
+
+  public function attribute_injections( $atts ) {
+
+  	if ( isset( $atts['line_color'] ) && '' != $atts['line_color'] )
+			$atts['injected_styles'][] = 'border-top-color: ' . $atts['line_color'] . ';';
+
+		if ( isset( $atts['line_height'] ) && '' != $atts['line_height'] )
+			$atts['injected_styles'][] = 'border-top-width: ' . $atts['line_height'] . ';';
+
+  	return $atts;
+  }
+
 
   public function render( $atts ) {
 

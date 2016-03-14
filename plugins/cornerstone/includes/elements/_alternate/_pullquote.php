@@ -55,46 +55,6 @@ class CS_Pullquote extends Cornerstone_Element_Base {
 
   }
 
-  public function xsg() {
-  	$this->sg_map(
-		  array(
-		    'id'        => 'x_pullquote',
-		    'title'        => __( 'Pullquote', csl18n() ),
-		    'section'    => __( 'Typography', csl18n() ),
-		    'description' => __( 'Include a pullquote in your content', csl18n() ),
-		    'demo' =>   'http://theme.co/x/demo/integrity/1/shortcodes/pullquote/',
-		  'params'      => array(
-		      array(
-		        'param_name'  => 'content',
-		        'heading'     => __( 'Text', csl18n() ),
-		        'description' => __( 'Enter your text.', csl18n() ),
-		        'type'        => 'textarea_html',
-		        'value'       => ''
-		      ),
-		      array(
-		        'param_name'  => 'cite',
-		        'heading'     => __( 'Cite', csl18n() ),
-		        'description' => __( 'Cite the person you are quoting.', csl18n() ),
-		        'type'        => 'textfield',
-		      ),
-		      array(
-		        'param_name'  => 'type',
-		        'heading'     => __( 'Alignment', csl18n() ),
-		        'description' => __( 'Select the alignment of the pullquote.', csl18n() ),
-		        'type'        => 'dropdown',
-		        'value'       => array(
-		          'Left'   => 'left',
-		          'Right'  => 'right'
-		        )
-		      ),
-		      Cornerstone_Shortcode_Generator::map_default_id(),
-		      Cornerstone_Shortcode_Generator::map_default_class(),
-		      Cornerstone_Shortcode_Generator::map_default_style(),
-		    )
-		  )
-		);
-  }
-
   public function render( $atts ) {
 
     extract( $atts );
