@@ -1,0 +1,553 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Slate Pro Admin\n"
+"POT-Creation-Date: 2014-12-23 13:37-0800\n"
+"PO-Revision-Date: 2014-12-23 13:37-0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: inc/content.php:20
+msgid "It looks like you’re using"
+msgstr ""
+
+#: inc/content.php:20
+msgid "without a license."
+msgstr ""
+
+#: inc/content.php:21
+msgid "If you like"
+msgstr ""
+
+#: inc/content.php:21
+msgid "please consider"
+msgstr ""
+
+#: inc/content.php:21
+msgid "entering a license key"
+msgstr ""
+
+#: inc/content.php:21
+msgid ""
+"to help support us and continue its development. You’ll also receive free "
+"updates and technical support!"
+msgstr ""
+
+#: inc/content.php:21
+msgid "Visit"
+msgstr ""
+
+#: inc/content.php:21
+msgid "for purchasing information."
+msgstr ""
+
+#: inc/content.php:28
+msgid "Settings saved."
+msgstr ""
+
+#: inc/content.php:39
+msgid "Color Schemes"
+msgstr ""
+
+#: inc/content.php:44
+msgid "Default"
+msgstr ""
+
+#: inc/content.php:50
+msgid "Light"
+msgstr ""
+
+#: inc/content.php:56
+msgid "Blue"
+msgstr ""
+
+#: inc/content.php:62
+msgid "Coffee"
+msgstr ""
+
+#: inc/content.php:68
+msgid "Ectoplasm"
+msgstr ""
+
+#: inc/content.php:74
+msgid "Midnight"
+msgstr ""
+
+#: inc/content.php:80
+msgid "Ocean"
+msgstr ""
+
+#: inc/content.php:86
+msgid "Sunrise"
+msgstr ""
+
+#: inc/content.php:92
+msgid "Custom"
+msgstr ""
+
+#: inc/content.php:100
+msgid "Custom Color Options"
+msgstr ""
+
+#: inc/content.php:102
+msgid "Login Page"
+msgstr ""
+
+#: inc/content.php:103 inc/content.php:435
+msgid "Admin Menu"
+msgstr ""
+
+#: inc/content.php:104 inc/content.php:529
+msgid "Admin Bar"
+msgstr ""
+
+#: inc/content.php:105 inc/content.php:547
+msgid "Admin Footer"
+msgstr ""
+
+#: inc/content.php:106
+msgid "Content"
+msgstr ""
+
+#: inc/content.php:107
+msgid "Sidebar/Sortables"
+msgstr ""
+
+#: inc/content.php:145
+msgid "Hide “Admin Color Scheme” Options on User Profile Pages"
+msgstr ""
+
+#: inc/content.php:151
+msgid "Hide Admin Menu and Sidebar Shadows"
+msgstr ""
+
+#: inc/content.php:162
+msgid "Branding"
+msgstr ""
+
+#: inc/content.php:165
+msgid "Login Page Logo Link Title and Address"
+msgstr ""
+
+#: inc/content.php:168
+msgid "Link Title"
+msgstr ""
+
+#: inc/content.php:171
+msgid "Link Address"
+msgstr ""
+
+#: inc/content.php:177
+msgid "Login Page Logo"
+msgstr ""
+
+#: inc/content.php:186 inc/content.php:211 inc/content.php:281
+#: inc/content.php:300 inc/content.php:319
+msgid "Select Image"
+msgstr ""
+
+#: inc/content.php:187 inc/content.php:212 inc/content.php:282
+#: inc/content.php:301 inc/content.php:320
+msgid "Delete Image"
+msgstr ""
+
+#: inc/content.php:190
+msgid ""
+"Make sure the image is no greater than 320 pixels wide by 80 pixels high."
+msgstr ""
+
+#: inc/content.php:195
+msgid "Hide the Login Logo"
+msgstr ""
+
+#: inc/content.php:202
+msgid "Login Page Background Image"
+msgstr ""
+
+#: inc/content.php:215
+msgid ""
+"Your logo should be no larger than 320px by 80px or else it will be resized "
+"on the login screen."
+msgstr ""
+
+#: inc/content.php:239
+msgid "Background Position"
+msgstr ""
+
+#: inc/content.php:259
+msgid "Background Repeat"
+msgstr ""
+
+#: inc/content.php:265
+msgid "Make the Background Image Fill the Page"
+msgstr ""
+
+#: inc/content.php:272
+msgid "Full Width Menu Logo"
+msgstr ""
+
+#: inc/content.php:285
+msgid ""
+"Make sure the image is no wider than 200 pixels. Double it for high "
+"resolution."
+msgstr ""
+
+#: inc/content.php:291
+msgid "Collapsed Menu Logo"
+msgstr ""
+
+#: inc/content.php:304
+msgid ""
+"Make sure the image is no wider than 36 pixels. Double it for high "
+"resolution."
+msgstr ""
+
+#: inc/content.php:310
+msgid "Favicon"
+msgstr ""
+
+#: inc/content.php:323
+msgid "Make sure the image exactly 16 pixels high and 16 pixels wide."
+msgstr ""
+
+#: inc/content.php:333
+msgid "Dashboard"
+msgstr ""
+
+#: inc/content.php:336
+msgid "Welcome Message"
+msgstr ""
+
+#: inc/content.php:341
+msgid "Hide the Dashboard Welcome Message"
+msgstr ""
+
+#: inc/content.php:348
+msgid "Custom Widget"
+msgstr ""
+
+#: inc/content.php:353
+msgid "Show a Custom Widget on the Dashboard"
+msgstr ""
+
+#: inc/content.php:357
+msgid "Widget Title"
+msgstr ""
+
+#: inc/content.php:360
+msgid "Widget Content (HTML Allowed)"
+msgstr ""
+
+#: inc/content.php:368
+msgid "Hide Widgets"
+msgstr ""
+
+#: inc/content.php:368 inc/content.php:438 inc/content.php:497
+msgid "Select All"
+msgstr ""
+
+#: inc/content.php:368 inc/content.php:438 inc/content.php:497
+msgid "Select None"
+msgstr ""
+
+#: inc/content.php:374
+msgid "Activity"
+msgstr ""
+
+#: inc/content.php:381
+msgid "WordPress News"
+msgstr ""
+
+#: inc/content.php:388
+msgid "At a Glance"
+msgstr ""
+
+#: inc/content.php:395
+msgid "Recent Comments"
+msgstr ""
+
+#: inc/content.php:402
+msgid "Quick Press"
+msgstr ""
+
+#: inc/content.php:409
+msgid "Recent Drafts"
+msgstr ""
+
+#: inc/content.php:416
+msgid "Incoming Links"
+msgstr ""
+
+#: inc/content.php:423
+msgid "Plugins"
+msgstr ""
+
+#: inc/content.php:438
+msgid "Hide the following Menu Items"
+msgstr ""
+
+#: inc/content.php:497
+msgid "Apply to the following Users"
+msgstr ""
+
+#: inc/content.php:526
+msgid "Admin Bar &amp; Footer"
+msgstr ""
+
+#: inc/content.php:534
+msgid "Hide the WordPress Logo"
+msgstr ""
+
+#: inc/content.php:540
+msgid "Hide the Admin Bar"
+msgstr ""
+
+#: inc/content.php:552
+msgid "Display Custom Footer Text"
+msgstr ""
+
+#: inc/content.php:556
+msgid "Footer Text (HTML Allowed)"
+msgstr ""
+
+#: inc/content.php:563
+msgid "Hide Version Number"
+msgstr ""
+
+#: inc/content.php:569
+msgid "Hide the Admin Footer"
+msgstr ""
+
+#: inc/content.php:581
+msgid "Content &amp; Notices"
+msgstr ""
+
+#: inc/content.php:588
+msgid "Hide the Help Tab"
+msgstr ""
+
+#: inc/content.php:594
+msgid "Hide the Screen Options Tab"
+msgstr ""
+
+#: inc/content.php:600
+msgid "Hide WordPress Update Notices"
+msgstr ""
+
+#: inc/content.php:606
+msgid "Hide WordPress Theme Update Notices"
+msgstr ""
+
+#: inc/content.php:612
+msgid "Hide WordPress Plugin Update Notices"
+msgstr ""
+
+#: inc/content.php:624
+msgid "Permissions"
+msgstr ""
+
+#: inc/content.php:626
+msgid "Below you can choose which users will see the"
+msgstr ""
+
+#: inc/content.php:626
+msgid "plugin. Keep in mind that if you"
+msgstr ""
+
+#: inc/content.php:626
+msgid "check your own name, you’ll no longer be able to access these settings"
+msgstr ""
+
+#: inc/content.php:626
+msgid "If that happens, you’ll need to"
+msgstr ""
+
+#: inc/content.php:626
+msgid "bookmark this page"
+msgstr ""
+
+#: inc/content.php:626
+msgid ""
+"or deactivate and reactivate the plugin. Make sure to keep an up-to-date"
+msgstr ""
+
+#: inc/content.php:626
+msgid "backup of your settings"
+msgstr ""
+
+#: inc/content.php:626
+msgid ""
+"Only users who already have permission to access plugins are shown below."
+msgstr ""
+
+#: inc/content.php:634
+msgid "Hide"
+msgstr ""
+
+#: inc/content.php:634
+msgid "from the following Users"
+msgstr ""
+
+#: inc/content.php:667
+msgid "Import / Export"
+msgstr ""
+
+#: inc/content.php:670
+msgid "Import"
+msgstr ""
+
+#: inc/content.php:675
+msgid "The Import was Successful!"
+msgstr ""
+
+#: inc/content.php:677
+msgid "Oops, the import didn’t work."
+msgstr ""
+
+#: inc/content.php:681
+msgid ""
+"Paste your settings above and click “Save Changes” to import. It should look "
+"like the text in the Export field below."
+msgstr ""
+
+#: inc/content.php:689
+msgid "Export"
+msgstr ""
+
+#: inc/content.php:692
+msgid "Copy and save the text above to backup your"
+msgstr ""
+
+#: inc/content.php:692
+msgid "settings."
+msgstr ""
+
+#: inc/content.php:702
+msgid "About"
+msgstr ""
+
+#: inc/content.php:704
+msgid "If you need product support, please leave a comment on the"
+msgstr ""
+
+#: inc/content.php:704
+msgid "CodeCanyon product page"
+msgstr ""
+
+#: inc/content.php:704
+msgid ""
+"Remember that we’re not able to support third party plugins that might "
+"conflict with"
+msgstr ""
+
+#: inc/content.php:705
+msgid "was made by"
+msgstr ""
+
+#: inc/content.php:705
+msgid "If you’re interested in customizing"
+msgstr ""
+
+#: inc/content.php:705
+msgid ""
+"or any other web design and development projects, please contact us through "
+"the"
+msgstr ""
+
+#: inc/content.php:705
+msgid "website."
+msgstr ""
+
+#: inc/content.php:708
+msgid "Email Opt-in"
+msgstr ""
+
+#: inc/content.php:710
+msgid "Stay up to date regarding"
+msgstr ""
+
+#: inc/content.php:710
+msgid "and other"
+msgstr ""
+
+#: inc/content.php:710
+msgid "products."
+msgstr ""
+
+#: inc/content.php:788
+msgid "License"
+msgstr ""
+
+#: inc/content.php:789
+msgid ""
+"Enter your license key to qualify for premium customer support, receive "
+"updates via the WordPress Plugins page, access future updates, and other "
+"added benefits. Your license key is the same as the “Purchase Code” you "
+"received in your CodeCanyon.net purchase receipt email."
+msgstr ""
+
+#: inc/content.php:791
+msgid "If you need a license key,"
+msgstr ""
+
+#: inc/content.php:791
+msgid "please visit"
+msgstr ""
+
+#: inc/content.php:791
+msgid "for info on how to buy"
+msgstr ""
+
+#: inc/content.php:796
+msgid "License Key"
+msgstr ""
+
+#: inc/content.php:799
+msgid "Your License Key was successfully activated!"
+msgstr ""
+
+#: inc/content.php:801
+msgid "Awesome, your license is valid and active!"
+msgstr ""
+
+#: inc/content.php:803
+msgid "Shoot, it looks like your License Key isn’t valid."
+msgstr ""
+
+#: inc/content.php:805
+msgid ""
+"Looks like this key is already activated. It needs to be deactivated before "
+"you can use it."
+msgstr ""
+
+#: inc/content.php:807
+msgid "Your license key was successfully removed."
+msgstr ""
+
+#: inc/content.php:809
+msgid ""
+"The license key you’re deactivating doesn’t match the website its activated "
+"on. Please deactivate from the proper website."
+msgstr ""
+
+#: inc/content.php:811
+msgid "Oops, we couldn’t connect to the licensing server."
+msgstr ""
+
+#: slate-pro-admin.php:1147 slate-pro-admin.php:1155 slate-pro-admin.php:1163
+#: slate-pro-admin.php:1170 slate-pro-admin.php:1177 slate-pro-admin.php:1184
+#: slate-pro-admin.php:1191 slate-pro-admin.php:1198 slate-pro-admin.php:1205
+#: slate-pro-admin.php:1212
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
