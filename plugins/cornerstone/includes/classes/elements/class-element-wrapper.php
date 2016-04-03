@@ -51,7 +51,7 @@ class Cornerstone_Element_Wrapper {
 
 		if ( $native ) {
 			add_filter( $this->hook_prefix . 'ui', array( $this, 'native_icons' ), 20 );
-			$this->definition->text_domain = csl18n();
+			$this->definition->text_domain = 'cornerstone';
 		}
 
 		if ( isset( $this->definition->text_domain ) )
@@ -285,13 +285,11 @@ class Cornerstone_Element_Wrapper {
 	}
 
 	protected function get_file_array( $file = '' ) {
-		$td = $this->text_domain;
 		$filename = $this->path . $file . '.php';
 		return ( file_exists( $filename) ) ? include( $filename ): array();
 	}
 
 	protected function get_file_template( $file = '' ) {
-		$td = $this->text_domain;
 		$filename = $this->path . $file . '.php';
 		if ( !file_exists( $filename) )
 			return '';
@@ -318,6 +316,8 @@ class Cornerstone_Element_Wrapper {
 
 		$atts = $this->controls()->filter_atts_for_shortcode( $atts );
 		$atts = apply_filters( $this->hook_prefix . 'update_build_shortcode_atts', $atts, $parent );
+		$atts = apply_filters( 'cornerstone_control_injections', $atts );
+
 		$atts = $this->build_shortcode_clean_atts( $atts );
 
 		if ( isset( $atts['content'] ) ) {
@@ -332,8 +332,10 @@ class Cornerstone_Element_Wrapper {
 
 	  foreach ($atts as $attribute => $value) {
 			$clean = cs_clean_shortcode_att( $value );
-			$att = sanitize_key( $attribute );
-	    $output .= " {$att}=\"{$clean}\"";
+			if ( '' !== $clean ) {
+				$att = sanitize_key( $attribute );
+				$output .= " {$att}=\"{$clean}\"";
+			}
 	  }
 
 	  if ( $content == '' && !apply_filters( $this->hook_prefix . 'always_close_shortcode', false ) ) {

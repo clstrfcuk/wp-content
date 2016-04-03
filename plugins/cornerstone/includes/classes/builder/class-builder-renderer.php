@@ -23,7 +23,7 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 
 		global $post;
 		if ( !isset( $data['post_id'] ) || !$post = get_post( (int) $data['post_id'] ) )
-      wp_send_json_error( array('message' => 'post_id not set' ) );
+      cs_send_json_error( array('message' => 'post_id not set' ) );
 
     setup_postdata( $post );
 
@@ -35,20 +35,26 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
     	$this->raw_markup = (bool) $data['raw_markup'];
 
     if ( !isset( $data['batch'] ) )
-			wp_send_json_error( array('message' => 'No element data recieved' ) );
+			cs_send_json_error( array('message' => 'No element data recieved' ) );
 
 		$jobs = $this->batch( $data['batch'] );
 		$scripts = $this->enqueue_extractor->get_scripts();
+		$styles = $this->enqueue_extractor->get_styles();
 
 		if ( is_wp_error( $jobs ) )
-			wp_send_json_error( array( 'message' => $jobs->get_error_message() ) );
+			cs_send_json_error( array( 'message' => $jobs->get_error_message() ) );
 
-		$result = array( 'jobs' => $jobs, 'scripts' => $scripts );
+		$result = array( 'jobs' => $jobs );
 
-		//Suppress PHP error output unless debugging
-		if ( CS()->common()->isDebug() )
-			return wp_send_json_success( $result );
-		return @wp_send_json_success( $result );
+		if ( ! empty( $scripts ) ) {
+			$result['scripts'] = $scripts;
+		}
+
+		if ( ! empty( $styles ) ) {
+			$result['styles'] = $styles;
+		}
+
+		return cs_send_json_success( $result );
 
 	}
 
@@ -70,12 +76,18 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 
 			$markup =  $this->render_element( $job['data'], ( $job['provider'] != 'mk2' ) );
 
-			$scripts = $this->enqueue_extractor->extract();
+			$scripts = $this->enqueue_extractor->extract_scripts();
+			$styles  = $this->enqueue_extractor->extract_styles();
 
 			$results[$job['jobID']] = array( 'markup' => $markup, 'ts' => $job['ts'] );
 
-			if ( !empty($scripts) )
-				$results[$job['jobID']]['scripts'] = $scripts;
+			if ( ! empty( $scripts ) ) {
+				$results[ $job['jobID'] ]['scripts'] = $scripts;
+			}
+
+			if ( ! empty( $styles ) ) {
+				$results[ $job['jobID'] ]['styles'] = $styles;
+			}
 
 		}
 

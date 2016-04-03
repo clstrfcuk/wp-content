@@ -326,8 +326,14 @@ class X_Demo_Import_Processor {
       return new WP_Error( '__x__', 'Post importer should not be used to process menu items.' );
 
     if ( $this->registry->get( 'post', $post['ID'] ) ) {
-      $this->skipPostMeta( $post['ID'] );
-      return false;
+
+      if ( ! is_null( get_post( $post['ID'] ) ) ) {
+        $this->skipPostMeta( $post['ID'] );
+        return false;
+      }
+
+      $this->registry->delete( 'post', $post['ID'] );
+
     }
 
     $newPost = array();

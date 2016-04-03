@@ -19,8 +19,8 @@ function x_shortcode_section( $atts, $content = null ) {
   static $count = 0; $count++;
 
   $id               = ( $id              != ''     ) ? $id : 'x-section-' . $count;
-  $class            = ( $class           != ''     ) ? 'x-section ' . esc_attr( $class ) : 'x-section';
-  $style            = ( $style           != ''     ) ? ' ' . $style : '';
+  $class            = ( $class           != ''     ) ? 'x-section ' . $class : 'x-section';
+  $style            = ( $style           != ''     ) ? $style : '';
   $bg_color         = ( $bg_color        != ''     ) ? $bg_color : 'transparent';
   $bg_pattern       = ( $bg_pattern      != ''     ) ? $bg_pattern : '';
   $bg_image         = ( $bg_image        != ''     ) ? $bg_image : '';
@@ -59,10 +59,13 @@ function x_shortcode_section( $atts, $content = null ) {
 
   }
 
-  $output = "<div id=\"{$id}\" class=\"{$class}{$bg_class}\" style=\"{$style}{$bg_style}\" {$data}>"
-            . $before
-            . do_shortcode( cs_noemptyp( $content ) )
-          . '</div>';
+  $atts = cs_atts( array(
+    'id'    => $id,
+    'class' => trim( $class . $bg_class ),
+    'style' => $style . ' ' . $bg_style
+  ) );
+
+  $output = "<div {$atts} {$data}>" . $before . do_shortcode( $content ) . '</div>';
 
   return $output;
 }

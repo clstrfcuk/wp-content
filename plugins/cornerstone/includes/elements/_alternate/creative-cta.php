@@ -5,9 +5,9 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'creative-cta',
-      'title'       => __( 'Creative CTA', csl18n() ),
+      'title'       => __( 'Creative CTA', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Creative CTA description.', csl18n() ),
+      'description' => __( 'Creative CTA description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'text' => '.x-creative-cta',
@@ -20,38 +20,38 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     $this->addControl(
       'alt_padding',
       'dimensions',
-      __( 'Padding', csl18n() ),
-      __( 'Specify the padding you would like to use for your Creative CTA.', csl18n() ),
+      __( 'Padding', 'cornerstone' ),
+      __( 'Specify the padding you would like to use for your Creative CTA.', 'cornerstone' ),
       array( '25px', '25px', '25px', '25px', 'linked' )
     );
 
     $this->addControl(
       'text',
       'text',
-      __( 'Text', csl18n() ),
-      __( 'Specify the text for your Creative CTA.', csl18n() ),
-      __( 'Click Here<br>To Learn More!', csl18n() )
+      __( 'Text', 'cornerstone' ),
+      __( 'Specify the text for your Creative CTA.', 'cornerstone' ),
+      __( 'Click Here<br>To Learn More!', 'cornerstone' )
     );
 
     $this->addControl(
       'font_size',
       'text',
-      __( 'Text Size', csl18n() ),
-      __( 'Specify the size of your text.', csl18n() ),
+      __( 'Text Size', 'cornerstone' ),
+      __( 'Specify the size of your text.', 'cornerstone' ),
       '36px'
     );
 
     $this->addControl(
       'graphic',
       'select',
-      __( 'Graphic', csl18n() ),
-      __( 'Choose between an icon and a custom image for your graphic.', csl18n() ),
+      __( 'Graphic', 'cornerstone' ),
+      __( 'Choose between an icon and a custom image for your graphic.', 'cornerstone' ),
       'icon',
       array(
         'columns' => '2',
         'choices' => array(
-          array( 'value' => 'icon',  'label' => __( 'Icon', csl18n() ) ),
-          array( 'value' => 'image', 'label' => __( 'Image', csl18n() ) )
+          array( 'value' => 'icon',  'label' => __( 'Icon', 'cornerstone' ) ),
+          array( 'value' => 'image', 'label' => __( 'Image', 'cornerstone' ) )
         )
       )
     );
@@ -59,8 +59,8 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     $this->addControl(
       'icon_type',
       'icon-choose',
-      __( 'Icon', csl18n() ),
-      __( 'Specify the icon you would like to use for your Creative CTA.', csl18n() ),
+      __( 'Icon', 'cornerstone' ),
+      __( 'Specify the icon you would like to use for your Creative CTA.', 'cornerstone' ),
       'lightbulb-o',
       array(
         'condition' => array(
@@ -72,8 +72,8 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     $this->addControl(
       'icon_size',
       'text',
-      __( 'Icon Size', csl18n() ),
-      __( 'Specify the size of your icon.', csl18n() ),
+      __( 'Icon Size', 'cornerstone' ),
+      __( 'Specify the size of your icon.', 'cornerstone' ),
       '48px',
       array(
         'condition' => array(
@@ -85,8 +85,8 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     $this->addControl(
       'image',
       'image',
-      __( 'Image', csl18n() ),
-      __( 'Specify the image you would like to use for your Creative CTA.', csl18n() ),
+      __( 'Image', 'cornerstone' ),
+      __( 'Specify the image you would like to use for your Creative CTA.', 'cornerstone' ),
       '',
       array(
         'condition' => array(
@@ -98,8 +98,8 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     $this->addControl(
       'image_width',
       'text',
-      __( 'Image Width', csl18n() ),
-      __( 'Specify the width of your image.', csl18n() ),
+      __( 'Image Width', 'cornerstone' ),
+      __( 'Specify the width of your image.', 'cornerstone' ),
       '100px',
       array(
         'condition' => array(
@@ -111,8 +111,8 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     $this->addControl(
       'animation',
       'choose',
-      __( 'Animation', csl18n() ),
-      __( 'Specify the animation you would like to use for you Creative CTA.', csl18n() ),
+      __( 'Animation', 'cornerstone' ),
+      __( 'Specify the animation you would like to use for you Creative CTA.', 'cornerstone' ),
       'slide-top',
       array(
         'columns' => '4',
@@ -128,40 +128,40 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     $this->addControl(
       'link',
       'text',
-      __( 'Link', csl18n() ),
-      __( 'Specify the URL for your Creative CTA.', csl18n() ),
+      __( 'Link', 'cornerstone' ),
+      __( 'Specify the URL for your Creative CTA.', 'cornerstone' ),
       '#'
     );
 
     $this->addControl(
       'href_target',
       'toggle',
-      __( 'Open Link in New Window', csl18n() ),
-      __( 'Select to open your link in a new window.', csl18n() ),
+      __( 'Open Link in New Window', 'cornerstone' ),
+      __( 'Select to open your link in a new window.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'color',
       'color',
-      __( 'Text Color', csl18n() ),
-      __( 'Select the text color for your Creative CTA.', csl18n() ),
+      __( 'Text Color', 'cornerstone' ),
+      __( 'Select the text color for your Creative CTA.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'bg_color',
       'color',
-      __( 'Background Color', csl18n() ),
-      __( 'Select the background color for your Creative CTA.', csl18n() ),
+      __( 'Background Color', 'cornerstone' ),
+      __( 'Select the background color for your Creative CTA.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'bg_color_hover',
       'color',
-      __( 'Background Color Hover', csl18n() ),
-      __( 'Select the background color hover for your Creative CTA.', csl18n() ),
+      __( 'Background Color Hover', 'cornerstone' ),
+      __( 'Select the background color hover for your Creative CTA.', 'cornerstone' ),
       ''
     );
 

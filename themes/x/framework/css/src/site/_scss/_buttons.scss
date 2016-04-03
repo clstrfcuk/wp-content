@@ -179,18 +179,7 @@
 .x-btn {
   [class*="#{$fa-css-prefix}-"] {
     display: inline;
-    margin-right: 0.5em;
-  }
-}
-
-
-//
-// Icon only.
-//
-
-.x-btn-icon-only {
-  [class*="#{$fa-css-prefix}-"] {
-    margin: 0;
+    margin: 0 0.5em 0 0;
   }
 }
 

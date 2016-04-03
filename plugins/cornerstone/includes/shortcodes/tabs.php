@@ -18,7 +18,13 @@ function x_shortcode_tab_nav( $atts, $content = null ) {
   $type  = ( $type  != '' ) ? ' ' . $type : '';
   $float = ( $float != '' ) ? ' ' . $float : ' top';
 
-  $output = "<ul {$id} class=\"{$class}{$type}{$float}\" {$style}>" . do_shortcode( $content ) . "</ul>";
+  $js_params = array(
+    'orientation' => ( ' top' === $float ) ? 'horizontal' : 'vertical'
+  );
+
+  $data = cs_generate_data_attributes( 'tab_nav', $js_params );
+
+  $output = "<ul {$id} class=\"{$class}{$type}{$float}\" {$data} {$style} >" . do_shortcode( $content ) . "</ul>";
 
   return $output;
 }
@@ -47,7 +53,7 @@ function x_shortcode_tab_nav_item( $atts ) {
 
   static $count = 0; $count++;
 
-  $output = "<li {$id} class=\"{$class}{$active}\" {$style}><a href=\"#tab-{$count}\" data-toggle=\"tab\">{$title}</a></li>";
+  $output = "<li {$id} class=\"{$class}{$active}\" {$style}><a data-cs-tab-toggle=\"{$count}\" >{$title}</a></li>";
 
   return $output;
 }
@@ -91,11 +97,11 @@ function x_shortcode_tab( $atts, $content = null ) {
 
   $class  = ( $class  != ''     ) ? 'x-tab-pane fade in ' . esc_attr( $class ) : 'x-tab-pane fade in';
   $style  = ( $style  != ''     ) ? 'style="' . $style . '"' : '';
-  $active = ( $active == 'true' ) ? ' fade in active' : '';
+  $active = ( $active == 'true' ) ? ' active' : '';
 
   static $count = 0; $count++;
 
-  $output = "<div id=\"tab-{$count}\" class=\"{$class}{$active}\" {$style}>" . do_shortcode( $content ) . "</div>";
+  $output = "<div data-cs-tab-index=\"{$count}\" class=\"{$class}{$active}\" {$style}>" . do_shortcode( $content ) . "</div>";
 
   return $output;
 }

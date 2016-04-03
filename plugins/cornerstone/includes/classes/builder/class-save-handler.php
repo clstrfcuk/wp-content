@@ -5,60 +5,54 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 	public function ajax_handler( $data ) {
 
-		if ( !isset( $data['elements'] )  )
-			wp_send_json_error( array('message' => 'No element data recieved' ) );
+		if ( ! isset( $data['elements'] )  ) {
+			cs_send_json_error( array( 'message' => 'No element data recieved' ) );
+		}
 
-		if ( !isset( $data['settings'] ) )
-			wp_send_json_error( array('message' => 'No setting data recieved' ) );
+		if ( ! isset( $data['settings'] ) ) {
+			cs_send_json_error( array( 'message' => 'No setting data recieved' ) );
+		}
 
-		if ( !is_array( $data['elements'] )  )
-			wp_send_json_error( array('message' => 'Element data invalid' ) );
+		if ( ! is_array( $data['elements'] )  ) {
+			cs_send_json_error( array( 'message' => 'Element data invalid' ) );
+		}
 
-		if ( !is_array( $data['settings'] ) )
-			wp_send_json_error( array('message' => 'Setting data invalid' ) );
+		if ( ! is_array( $data['settings'] ) ) {
+			cs_send_json_error( array( 'message' => 'Setting data invalid' ) );
+		}
 
 		global $post;
+		$post = get_post( (int) $data['post_id'] ); // WPCS: override ok.
 
-		if ( !isset( $data['post_id'] ) || !$post = get_post( (int) $data['post_id'] ) )
-      wp_send_json_error( array('message' => 'post_id not set' ) );
+		if ( ! isset( $data['post_id'] ) || ! $post ) {
+			cs_send_json_error( array( 'message' => 'post_id not set' ) );
+		}
 
-    setup_postdata( $post );
+		setup_postdata( $post );
 
-    $this->append = array();
+		$this->append = array();
 
-    $this->post_id = $data['post_id'];
+		$this->post_id = $data['post_id'];
 
-    $this->legacy = new Cornerstone_Legacy_Renderer( $this->plugin->component('Legacy_Elements') );
+		$this->legacy = new Cornerstone_Legacy_Renderer( $this->plugin->component( 'Legacy_Elements' ) );
 
 		$settings = $this->save_settings( $data['settings'] );
 
-		if ( is_wp_error( $settings ) )
-			wp_send_json_error( array( 'message' => $settings->get_error_message() ) );
+		if ( is_wp_error( $settings ) ) {
+			cs_send_json_error( array( 'message' => $settings->get_error_message() ) );
+		}
 
-		$elements = $this->save_elements( $data['elements'] );
+		$element_buffer = $this->save_elements( $data['elements'] );
 
 		wp_reset_postdata();
 
-		if ( is_wp_error( $elements ) )
-			wp_send_json_error( array( 'message' => $elements->get_error_message() ) );
+		if ( is_wp_error( $element_buffer ) ) {
+			cs_send_json_error( array( 'message' => $element_buffer->get_error_message() ) );
+		}
 
 		update_post_meta( $this->post_id, '_cornerstone_version', $this->plugin->version() );
 
-		$result = array(
-			'elements' => $elements,
-			'settings' => $settings,
-
-		);
-
-		//Suppress PHP error output unless debugging
-		if ( CS()->common()->isDebug() ) {
-			$result['debug'] = array(
-				'memory' => memory_get_peak_usage()
-			);
-			return wp_send_json_success( $result );
-		}
-
-		return @wp_send_json_success( $result );
+		return cs_send_json_success();
 
 	}
 
@@ -69,8 +63,9 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 		foreach ( $settings as $setting ) {
 			$result = $this->save_setting( $setting );
-			if ( is_wp_error( $result ) )
+			if ( is_wp_error( $result ) ) {
 				return $result;
+			}
 		}
 
 		return true;
@@ -83,23 +78,25 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 		// Santize values according to their kind
 		foreach ( $elements as $index => $child ) {
-			$elements[$index] = $this->sanitize_element( $child );
+			$elements[ $index ] = $this->sanitize_element( $child );
 		}
 
-		if ( !isset( $this->append ) )
+		if ( ! isset( $this->append ) ) {
 			$this->append = array();
+		}
 
 		foreach ( $this->append as $index => $child ) {
-			$this->append[$index] = $this->sanitize_element( $child );
+			$this->append[ $index ] = $this->sanitize_element( $child );
 		}
 
 		// Generate shortcodes
-		$element_data = array_merge($elements, $this->append );
+		$element_data = array_merge( $elements, $this->append );
 		$buffer = '';
 		foreach ( $element_data as $element ) {
 			$content = $this->save_element( $element );
-			if ( is_wp_error( $content ) )
+			if ( is_wp_error( $content ) ) {
 				return $content;
+			}
 			$buffer .= $content;
 		}
 
@@ -107,23 +104,32 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 		delete_post_meta( $this->post_id, '_cornerstone_override' );
 
 		$buffer = $this->process_content( $buffer );
+		$post_content = '[cs_content]' . $buffer . '[/cs_content]';
 
 		wp_update_post( array(
-      'ID'           => $this->post_id,
-      'post_content' => $buffer
-    ) );
+			'ID'           => $this->post_id,
+			'post_content' => $post_content,
+		) );
+
+		$post_type = get_post_type( $this->post_id );
+
+		if ( $post_type !== false && post_type_supports( $post_type, 'excerpt' ) ) {
+			update_post_meta( $this->post_id, '_cornerstone_excerpt', cs_derive_excerpt( $post_content, true ) );
+		}
 
 		return $buffer;
 	}
 
 	public function save_setting( $setting ) {
 
-		if ( !isset( $setting['_section'] ) )
+		if ( ! isset( $setting['_section'] ) ) {
 			return new WP_Error( 'Cornerstone_Save_Handler', 'Element _section not set: ' . maybe_serialize( $setting ) );
+		}
 
 		$section = $this->settings_manager->get( $setting['_section'] );
-		if ( is_null( $section ) )
+		if ( is_null( $section ) ) {
 			return null;
+		}
 
 		unset( $setting['_section'] );
 		return $section->save( $setting );
@@ -132,18 +138,21 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 	public function save_element( $element, $parent = null ) {
 
-		if ( !isset( $element['_type'] ) )
+		if ( ! isset( $element['_type'] ) ) {
 			return new WP_Error( 'Cornerstone_Save_Handler', 'Element _type not set: ' . maybe_serialize( $element ) );
+		}
 
 		$definition = $this->orchestrator->get( $element['_type'] );
 
-		if ( 'mk1' == $definition->version() )
+		if ( 'mk1' === $definition->version() ) {
 			return $this->legacy->save_element( $element );
+		}
 
 		$flags = $definition->flags();
 
-		if ( !isset( $flags['child'] ) || !$flags['child'] )
+		if ( ! isset( $flags['child'] ) || ! $flags['child'] ) {
 			$parent = null;
+		}
 
 		if ( isset( $element['_csmeta'] ) ) {
 			unset( $element['_csmeta'] );
@@ -154,8 +163,9 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 		if ( isset( $element['elements'] ) ) {
 			foreach ( $element['elements'] as $child ) {
 				$content = $this->save_element( $child, $definition->compose( $element ) );
-				if ( is_wp_error( $content ) )
+				if ( is_wp_error( $content ) ) {
 					return $content;
+				}
 				$buffer .= $content;
 			}
 		}
@@ -168,14 +178,15 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 	public function sanitize_element( $element ) {
 
-		if ( !isset( $element['_type'] ) )
+		if ( ! isset( $element['_type'] ) ) {
 			return new WP_Error( 'Cornerstone_Save_Handler', 'Element _type not set: ' . maybe_serialize( $element ) );
+		}
 
 		$definition = $this->orchestrator->get( $element['_type'] );
 
 		if ( isset( $element['elements'] ) ) {
 			foreach ( $element['elements'] as $index => $child ) {
-				$element['elements'][$index] = $this->sanitize_element( $child );
+				$element['elements'][ $index ] = $this->sanitize_element( $child );
 			}
 		}
 
@@ -185,8 +196,9 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 	public function append_element( $element ) {
 
-		if ( !isset( $this->append ) )
+		if ( ! isset( $this->append ) ) {
 			$this->append = array();
+		}
 
 		$this->append[] = $element;
 
@@ -195,14 +207,15 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 	public function process_content( $content ) {
 
 		// Move all <!--nextpage--> directives to outside their section.
-		$content = preg_replace('#(?:<!--nextpage-->.*?)(\[\/cs_section\])#', '$0<!--nextpage-->', $content );
+		$content = preg_replace( '#(?:<!--nextpage-->.*?)(\[\/cs_section\])#', '$0<!--nextpage-->', $content );
 
 		//Strip all <!--nextpage--> directives still within sections
-		$content = preg_replace('#(?<!\[\/cs_section\])<!--nextpage-->#', '', $content );
+		$content = preg_replace( '#(?<!\[\/cs_section\])<!--nextpage-->#', '', $content );
 
 		$content = str_replace( '<!--more-->', '', $content );
 
 		return $content;
+
 	}
 
 }

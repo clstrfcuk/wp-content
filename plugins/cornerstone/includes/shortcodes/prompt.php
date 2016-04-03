@@ -23,9 +23,9 @@ function x_shortcode_prompt( $atts ) {
   $class       = ( $class       != ''      ) ? 'x-prompt ' . esc_attr( $class ) : 'x-prompt';
   $style       = ( $style       != ''      ) ? 'style="' . $style . '"' : '';
   $type        = ( $type        != ''      ) ? $type : '';
-  $title       = ( $title       != ''      ) ? $title : 'Enter Your Text';
-  $message     = ( $message     != ''      ) ? $message : 'Don\'t forget to enter in your text.';
-  $button_text = ( $button_text != ''      ) ? $button_text : 'Enter Your Text';
+  $title       = ( $title       != ''      ) ? cs_decode_shortcode_attribute( $title ) : 'Enter Your Text';
+  $message     = ( $message     != ''      ) ? cs_decode_shortcode_attribute( $message ) : 'Don\'t forget to enter in your text.';
+  $button_text = ( $button_text != ''      ) ? cs_decode_shortcode_attribute( $button_text ) : 'Enter Your Text';
   $button_icon = ( $button_icon != ''      ) ? $button_icon : '';
   $href        = ( $href        != ''      ) ? $href : '#';
   $href_title  = ( $href_title  != ''      ) ? $href_title : $button_text;
@@ -33,7 +33,7 @@ function x_shortcode_prompt( $atts ) {
 
   if ( $button_icon != '' ) {
     $unicode     = fa_unicode( $button_icon );
-    $button_icon = '<i class="x-icon-' . $button_icon . '" data-x-icon="&#x' . $unicode . ';"></i>';
+    $button_icon = '<i class="x-icon-' . $button_icon . ' mvn mls mrs" data-x-icon="&#x' . $unicode . ';"></i>';
   }
 
   if ( $circle == 'true' ) {

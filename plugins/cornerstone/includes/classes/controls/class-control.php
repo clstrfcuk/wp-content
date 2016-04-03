@@ -93,6 +93,7 @@ class Cornerstone_Control {
 
 		if ( !isset( self::$control_classes ) ) {
 			self::$control_classes = apply_filters( 'cornerstone_control_types', array(
+				'checkbox'     => 'Cornerstone_Control_Checkbox',
 				'choose'       => 'Cornerstone_Control_Choose',
 				'color'        => 'Cornerstone_Control_Color',
 				'code-editor'  => 'Cornerstone_Control_Code_Editor',
@@ -103,7 +104,9 @@ class Cornerstone_Control {
 				'image'        => 'Cornerstone_Control_Image',
 				'info'         => 'Cornerstone_Control_Info',
 				'multi-choose' => 'Cornerstone_Control_Multi_Choose',
+				'multi-select' => 'Cornerstone_Control_Multi_Select',
 				'number'       => 'Cornerstone_Control_Number',
+				'select'       => 'Cornerstone_Control_Select',
 				'sortable'     => 'Cornerstone_Control_Sortable',
 				'text'         => 'Cornerstone_Control_Text',
 				'textarea'     => 'Cornerstone_Control_Textarea',

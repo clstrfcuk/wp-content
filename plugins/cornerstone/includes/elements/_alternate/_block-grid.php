@@ -5,9 +5,9 @@ class CS_Block_Grid extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'block-grid',
-      'title'       => __( 'Block Grid', csl18n() ),
+      'title'       => __( 'Block Grid', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Block Grid description.', csl18n() ),
+      'description' => __( 'Block Grid description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'renderChild' => true
     );
@@ -18,15 +18,15 @@ class CS_Block_Grid extends Cornerstone_Element_Base {
     $this->addControl(
       'elements',
       'sortable',
-      __( 'Block Grid Items', csl18n() ),
-      __( 'Add a new item to your Block Grid.', csl18n() ),
+      __( 'Block Grid Items', 'cornerstone' ),
+      __( 'Add a new item to your Block Grid.', 'cornerstone' ),
       array(
-        array( 'title' => __( 'Block Grid Item 1', csl18n() ) ),
-        array( 'title' => __( 'Block Grid Item 2', csl18n() ) )
+        array( 'title' => __( 'Block Grid Item 1', 'cornerstone' ) ),
+        array( 'title' => __( 'Block Grid Item 2', 'cornerstone' ) )
       ),
       array(
       	'element'   => 'block-grid-item',
-        'newTitle' => __( 'Block Grid Item %s', csl18n() ),
+        'newTitle' => __( 'Block Grid Item %s', 'cornerstone' ),
         'floor'    => 2
       )
     );
@@ -34,14 +34,14 @@ class CS_Block_Grid extends Cornerstone_Element_Base {
     $this->addControl(
       'type',
       'select',
-      __( 'Columns', csl18n() ),
-      __( 'Select how many columns of items should be displayed on larger screens. These will update responsively based on screen size.', csl18n() ),
+      __( 'Columns', 'cornerstone' ),
+      __( 'Select how many columns of items should be displayed on larger screens. These will update responsively based on screen size.', 'cornerstone' ),
       'two-up',
       array(
         'choices' => array(
-          array( 'value' => 'two-up',   'label' => __( '2', csl18n() ) ),
-          array( 'value' => 'three-up', 'label' => __( '3', csl18n() ) ),
-          array( 'value' => 'four-up',  'label' => __( '4', csl18n() ) )
+          array( 'value' => 'two-up',   'label' => __( '2', 'cornerstone' ) ),
+          array( 'value' => 'three-up', 'label' => __( '3', 'cornerstone' ) ),
+          array( 'value' => 'four-up',  'label' => __( '4', 'cornerstone' ) )
         )
       )
     );

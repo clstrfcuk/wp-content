@@ -5,7 +5,7 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
   public function data() {
     return array(
       'name'        => 'slider-above',
-      'title'       => __( 'Slider Settings: Above Masthead', csl18n() ),
+      'title'       => __( 'Slider Settings: Above Masthead', 'cornerstone' ),
       'priority' => '25'
     );
   }
@@ -29,7 +29,7 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     global $post;
 
     $choices = array(
-      array( 'value' => '', 'label' => __( 'Deactivated', csl18n() ) )
+      array( 'value' => '', 'label' => __( 'Deactivated', 'cornerstone' ) )
     );
 
     $sliders = apply_filters( 'x_sliders_meta', array() );
@@ -43,8 +43,8 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     $this->addControl(
       'x_slider_above',
       'select',
-      __( 'Slider', csl18n() ),
-      __( 'To activate your slider, select an option from the dropdown. To deactivate your slider, set the dropdown back to "Deactivated."', csl18n() ),
+      __( 'Slider', 'cornerstone' ),
+      __( 'To activate your slider, select an option from the dropdown. To deactivate your slider, set the dropdown back to "Deactivated."', 'cornerstone' ),
       $default_slider,
       array(
         'choices' => $choices,
@@ -55,8 +55,8 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     $this->addControl(
       'x_slider_above_bg_video',
       'text',
-      __( 'Optional Background Video', csl18n() ),
-      __( 'Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv).', csl18n() ),
+      __( 'Optional Background Video', 'cornerstone' ),
+      __( 'Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv).', 'cornerstone' ),
       get_post_meta( $post->ID, '_x_slider_above_bg_video', true ),
       array(
         'notLive' => 'settings-theme-changed'
@@ -66,8 +66,8 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     $this->addControl(
       'x_slider_above_bg_video_poster',
       'text',
-      __( 'Video Poster Image (For Mobile)', csl18n() ),
-      __( 'Click the button to upload your video poster image to show on mobile devices, or enter it in manually using the text field above. Only select one image for this field. To clear, delete the image URL from the text field and save your page.', csl18n() ),
+      __( 'Video Poster Image (For Mobile)', 'cornerstone' ),
+      __( 'Click the button to upload your video poster image to show on mobile devices, or enter it in manually using the text field above. Only select one image for this field. To clear, delete the image URL from the text field and save your page.', 'cornerstone' ),
       get_post_meta( $post->ID, '_x_slider_above_bg_video_poster', true ),
       array(
         'notLive' => 'settings-theme-changed'
@@ -77,8 +77,8 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     $this->addControl(
       'x_slider_above_scroll_bottom_anchor_enable',
       'toggle',
-      __( 'Enable Scroll Bottom Anchor', csl18n() ),
-      __( 'Select to enable the scroll bottom anchor for your slider.', csl18n() ),
+      __( 'Enable Scroll Bottom Anchor', 'cornerstone' ),
+      __( 'Select to enable the scroll bottom anchor for your slider.', 'cornerstone' ),
       ( 'on' == get_post_meta( $post->ID, '_x_slider_above_scroll_bottom_anchor_enable', true ) ),
       array(
         'notLive' => 'settings-theme-changed'
@@ -86,19 +86,19 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     );
 
     $alignments = array(
-      array( 'value' => 'top left', 'label'      => __( 'Top Left', csl18n() ) ),
-      array( 'value' => 'top center', 'label'    => __( 'Top Center', csl18n() ) ),
-      array( 'value' => 'top right', 'label'     => __( 'Top Right', csl18n() ) ),
-      array( 'value' => 'bottom left', 'label'   => __( 'Bottom Left', csl18n() ) ),
-      array( 'value' => 'bottom center', 'label' => __( 'Bottom Center', csl18n() ) ),
-      array( 'value' => 'bottom right', 'label'  => __( 'Bottom Right', csl18n() ) )
+      array( 'value' => 'top left', 'label'      => __( 'Top Left', 'cornerstone' ) ),
+      array( 'value' => 'top center', 'label'    => __( 'Top Center', 'cornerstone' ) ),
+      array( 'value' => 'top right', 'label'     => __( 'Top Right', 'cornerstone' ) ),
+      array( 'value' => 'bottom left', 'label'   => __( 'Bottom Left', 'cornerstone' ) ),
+      array( 'value' => 'bottom center', 'label' => __( 'Bottom Center', 'cornerstone' ) ),
+      array( 'value' => 'bottom right', 'label'  => __( 'Bottom Right', 'cornerstone' ) )
     );
 
     $this->addControl(
       'x_slider_above_scroll_bottom_anchor_alignment',
       'select',
-      __( 'Scroll Bottom Anchor Alignment', csl18n() ),
-      __( 'Select the alignment of the scroll bottom anchor for your slider.', csl18n() ),
+      __( 'Scroll Bottom Anchor Alignment', 'cornerstone' ),
+      __( 'Select the alignment of the scroll bottom anchor for your slider.', 'cornerstone' ),
       get_post_meta( $post->ID, '_x_slider_above_scroll_bottom_anchor_alignment', true ),
       array(
         'choices' => $alignments,
@@ -109,8 +109,8 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     $this->addControl(
       'x_slider_above_scroll_bottom_anchor_color',
       'text',
-      __( 'Scroll Bottom Anchor Color', csl18n() ),
-      __( 'Select the color of the scroll bottom anchor for your slider.', csl18n() ),
+      __( 'Scroll Bottom Anchor Color', 'cornerstone' ),
+      __( 'Select the color of the scroll bottom anchor for your slider.', 'cornerstone' ),
       get_post_meta( $post->ID, '_x_slider_above_scroll_bottom_anchor_color', true ),
       array(
         'notLive' => 'settings-theme-changed'
@@ -120,8 +120,8 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
     $this->addControl(
       'x_slider_above_scroll_bottom_anchor_color_hover',
       'text',
-      __( 'Scroll Bottom Anchor Color Hover', csl18n() ),
-      __( 'Select the hover color of the scroll bottom anchor for your slider.', csl18n() ),
+      __( 'Scroll Bottom Anchor Color Hover', 'cornerstone' ),
+      __( 'Select the hover color of the scroll bottom anchor for your slider.', 'cornerstone' ),
       get_post_meta( $post->ID, '_x_slider_above_scroll_bottom_anchor_color_hover', true ),
       array(
         'notLive' => 'settings-theme-changed'

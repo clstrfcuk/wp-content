@@ -5,9 +5,9 @@ class CS_Block_Grid_Item extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'block-grid-item',
-      'title'       => __( 'Block Grid Item', csl18n() ),
+      'title'       => __( 'Block Grid Item', 'cornerstone' ),
       'section'     => '_content',
-      'description' => __( 'Block Grid Item description.', csl18n() ),
+      'description' => __( 'Block Grid Item description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'render'      => false,
       'delegate'    => true
@@ -27,9 +27,9 @@ class CS_Block_Grid_Item extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'editor',
-      __( 'Content', csl18n() ),
-      __( 'Include your desired content for your Block Grid Item here.', csl18n() ),
-      __( 'Add some content to your block grid item here. The block grid responds a little differently than traditional columns, allowing you to mix and match for cool effects.', csl18n() )
+      __( 'Content', 'cornerstone' ),
+      __( 'Include your desired content for your Block Grid Item here.', 'cornerstone' ),
+      __( 'Add some content to your block grid item here. The block grid responds a little differently than traditional columns, allowing you to mix and match for cool effects.', 'cornerstone' )
     );
 
   }

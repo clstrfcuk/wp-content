@@ -5,9 +5,9 @@ class CS_Counter extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'counter',
-      'title'       => __( 'Counter', csl18n() ),
+      'title'       => __( 'Counter', 'cornerstone' ),
       'section'     => 'information',
-      'description' => __( 'Counter description.', csl18n() ),
+      'description' => __( 'Counter description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'text_above' => '.text-above',
@@ -21,72 +21,72 @@ class CS_Counter extends Cornerstone_Element_Base {
     $this->addControl(
       'num_start',
       'number',
-      __( 'Starting Number', csl18n() ),
-      __( 'Enter in the number that you would like your counter to start from.', csl18n() ),
+      __( 'Starting Number', 'cornerstone' ),
+      __( 'Enter in the number that you would like your counter to start from.', 'cornerstone' ),
       '0'
     );
 
     $this->addControl(
       'num_end',
       'number',
-      __( 'Ending Number', csl18n() ),
-      __( 'Enter in the number that you would like your counter to end at. This must be higher than your starting number.', csl18n() ),
+      __( 'Ending Number', 'cornerstone' ),
+      __( 'Enter in the number that you would like your counter to end at. This must be higher than your starting number.', 'cornerstone' ),
       '1000'
     );
 
     $this->addControl(
       'num_speed',
       'number',
-      __( 'Counter Speed', csl18n() ),
-      __( 'The amount of time to transition between numbers in milliseconds.', csl18n() ),
+      __( 'Counter Speed', 'cornerstone' ),
+      __( 'The amount of time to transition between numbers in milliseconds.', 'cornerstone' ),
       '1500'
     );
 
     $this->addControl(
       'num_prefix',
       'text',
-      __( 'Number Prefix', csl18n() ),
-      __( 'Prefix your number with a symbol or text.', csl18n() ),
+      __( 'Number Prefix', 'cornerstone' ),
+      __( 'Prefix your number with a symbol or text.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'num_suffix',
       'text',
-      __( 'Number Suffix', csl18n() ),
-      __( 'Suffix your number with a symbol or text.', csl18n() ),
+      __( 'Number Suffix', 'cornerstone' ),
+      __( 'Suffix your number with a symbol or text.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'num_color',
       'color',
-      __( 'Number Color', csl18n() ),
-      __( 'Select the color of your number.', csl18n() ),
+      __( 'Number Color', 'cornerstone' ),
+      __( 'Select the color of your number.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'text_above',
       'text',
-      __( 'Text Above', csl18n() ),
-      __( 'Optionally include text above your number.', csl18n() ),
-      __( 'There Are', csl18n() )
+      __( 'Text Above', 'cornerstone' ),
+      __( 'Optionally include text above your number.', 'cornerstone' ),
+      __( 'There Are', 'cornerstone' )
     );
 
     $this->addControl(
       'text_below',
       'text',
-      __( 'Text Below', csl18n() ),
-      __( 'Optionally include text below your number.', csl18n() ),
-      __( 'Options', csl18n() )
+      __( 'Text Below', 'cornerstone' ),
+      __( 'Optionally include text below your number.', 'cornerstone' ),
+      __( 'Options', 'cornerstone' )
     );
 
     $this->addControl(
       'text_color',
       'color',
-      __( 'Text Color', csl18n() ),
-      __( 'Select the color of your text above and below the number if you have include any.', csl18n() ),
+      __( 'Text Color', 'cornerstone' ),
+      __( 'Select the color of your text above and below the number if you have include any.', 'cornerstone' ),
       ''
     );
 

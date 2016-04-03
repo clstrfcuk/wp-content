@@ -8,7 +8,7 @@ class CSE_Pricing_Table {
 
 	public function ui() {
 		return array(
-      'title'       => __( 'Pricing Table', csl18n() ),
+      'title'       => __( 'Pricing Table', 'cornerstone' ),
     );
 	}
 

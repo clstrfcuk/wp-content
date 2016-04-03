@@ -8,7 +8,7 @@ class CSE_Section {
 
 	public function ui() {
 		return array(
-      'title'       => __( 'Section', csl18n() ),
+      'title'       => __( 'Section', 'cornerstone' ),
     );
 	}
 
@@ -39,7 +39,6 @@ class CSE_Section {
 	public function update_build_shortcode_atts( $atts ) {
 
 		unset( $atts['title'] );
-		unset( $atts['elements'] );
 
 		if ( isset($atts['bg_type'])  ) {
 
@@ -65,10 +64,6 @@ class CSE_Section {
 			unset( $atts['bg_type'] );
 
 		}
-
-
-
-		$atts = Cornerstone_Control_Mixins::legacy_injections( $atts );
 
 		return $atts;
 

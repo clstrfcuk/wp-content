@@ -5,18 +5,19 @@
 
 function x_shortcode_slider( $atts, $content = null ) {
   extract( shortcode_atts( array(
-    'id'            => '',
-    'class'         => '',
-    'style'         => '',
-    'animation'     => '',
-    'slide_time'    => '',
-    'slide_speed'   => '',
-    'slideshow'     => '',
-    'random'        => '',
-    'control_nav'   => '',
-    'prev_next_nav' => '',
-    'no_container'  => '',
-    'touch'         => ''
+    'id'             => '',
+    'class'          => '',
+    'style'          => '',
+    'animation'      => '',
+    'slide_time'     => '',
+    'slide_speed'    => '',
+    'slideshow'      => '',
+    'random'         => '',
+    'control_nav'    => '',
+    'prev_next_nav'  => '',
+    'no_container'   => '',
+    'touch'          => '',
+    'pause_on_hover' => '',
   ), $atts, 'x_slider' ) );
 
   static $count = 0; $count++;
@@ -27,14 +28,15 @@ function x_shortcode_slider( $atts, $content = null ) {
   $no_container  = ( $no_container  == 'true' ) ? '' : ' with-container';
 
   $js_params = array(
-    'animation'   => ( $animation     == 'fade'  ) ? 'fade' : 'slide',
-    'slideTime'   => ( $slide_time    != ''      ) ? $slide_time : '7000',
-    'slideSpeed'  => ( $slide_speed   != ''      ) ? $slide_speed : '600',
-    'controlNav'  => ( $control_nav   == 'true'  ),
-    'prevNextNav' => ( $prev_next_nav == 'true'  ),
-    'slideshow'   => ( $slideshow     == 'true'  ),
-    'random'      => ( $random        == 'true'  ),
-    'touch'       => ( $touch         != 'false' )
+    'animation'    => ( $animation      == 'fade'  ) ? 'fade' : 'slide',
+    'slideTime'    => ( $slide_time     != ''      ) ? $slide_time : '7000',
+    'slideSpeed'   => ( $slide_speed    != ''      ) ? $slide_speed : '600',
+    'controlNav'   => ( $control_nav    == 'true'  ),
+    'prevNextNav'  => ( $prev_next_nav  == 'true'  ),
+    'slideshow'    => ( $slideshow      == 'true'  ),
+    'random'       => ( $random         == 'true'  ),
+    'touch'        => ( $touch          != 'false' ),
+    'pauseOnHover' => ( $pause_on_hover == 'true' )
   );
 
   $data = cs_generate_data_attributes( 'slider', $js_params );

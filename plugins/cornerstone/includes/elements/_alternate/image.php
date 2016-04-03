@@ -5,9 +5,9 @@ class CS_Image extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'image',
-      'title'       => __( 'Image', csl18n() ),
+      'title'       => __( 'Image', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Image description.', csl18n() ),
+      'description' => __( 'Image description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'empty'       => array( 'src' => '' )
     );
@@ -18,15 +18,15 @@ class CS_Image extends Cornerstone_Element_Base {
     $this->addControl(
       'image_style',
       'select',
-      __( 'Style', csl18n() ),
-      __( 'Select the image style.', csl18n() ),
+      __( 'Style', 'cornerstone' ),
+      __( 'Select the image style.', 'cornerstone' ),
       'none',
       array(
         'choices' => array(
-          array( 'value' => 'none',      'label' => __( 'None', csl18n() ) ),
-          array( 'value' => 'thumbnail', 'label' => __( 'Thumbnail', csl18n() ) ),
-          array( 'value' => 'rounded',   'label' => __( 'Rounded', csl18n() ) ),
-          array( 'value' => 'circle',    'label' => __( 'Circle', csl18n() ) )
+          array( 'value' => 'none',      'label' => __( 'None', 'cornerstone' ) ),
+          array( 'value' => 'thumbnail', 'label' => __( 'Thumbnail', 'cornerstone' ) ),
+          array( 'value' => 'rounded',   'label' => __( 'Rounded', 'cornerstone' ) ),
+          array( 'value' => 'circle',    'label' => __( 'Circle', 'cornerstone' ) )
         )
       )
     );
@@ -34,32 +34,32 @@ class CS_Image extends Cornerstone_Element_Base {
     $this->addControl(
       'src',
       'image',
-      __( 'Src', csl18n() ),
-      __( 'Enter your image.', csl18n() ),
+      __( 'Src', 'cornerstone' ),
+      __( 'Enter your image.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'alt',
       'text',
-      __( 'Alt', csl18n() ),
-      __( 'Enter in the alt text for your image', csl18n() ),
+      __( 'Alt', 'cornerstone' ),
+      __( 'Enter in the alt text for your image', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'link',
       'toggle',
-      __( 'Link', csl18n() ),
-      __( 'Select to wrap your image in an anchor tag.', csl18n() ),
+      __( 'Link', 'cornerstone' ),
+      __( 'Select to wrap your image in an anchor tag.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'href',
       'text',
-      __( 'Href', csl18n() ),
-      __( 'Enter in the URL you want to link to.', csl18n() ),
+      __( 'Href', 'cornerstone' ),
+      __( 'Enter in the URL you want to link to.', 'cornerstone' ),
       '#',
       array(
       	'condition' => array(
@@ -72,8 +72,8 @@ class CS_Image extends Cornerstone_Element_Base {
     $this->addControl(
       'href_title',
       'text',
-      __( 'Link Title Attribute', csl18n() ),
-      __( 'Enter in the title attribute you want for your link.', csl18n() ),
+      __( 'Link Title Attribute', 'cornerstone' ),
+      __( 'Enter in the title attribute you want for your link.', 'cornerstone' ),
       '',
       array(
       	'condition' => array(
@@ -85,8 +85,8 @@ class CS_Image extends Cornerstone_Element_Base {
     $this->addControl(
       'href_target',
       'toggle',
-      __( 'Open Link in New Window', csl18n() ),
-      __( 'Select to open your link in a new window.', csl18n() ),
+      __( 'Open Link in New Window', 'cornerstone' ),
+      __( 'Select to open your link in a new window.', 'cornerstone' ),
       false,
       array(
       	'condition' => array(
@@ -98,14 +98,14 @@ class CS_Image extends Cornerstone_Element_Base {
     $this->addControl(
       'info',
       'select',
-      __( 'Info', csl18n() ),
-      __( 'Select whether or not you want to add a popover or tooltip to your image.', csl18n() ),
+      __( 'Info', 'cornerstone' ),
+      __( 'Select whether or not you want to add a popover or tooltip to your image.', 'cornerstone' ),
       'none',
       array(
         'choices' => array(
-          array( 'value' => 'none',    'label' => __( 'None', csl18n() ), ),
-          array( 'value' => 'popover', 'label' => __( 'Popover', csl18n() ), ),
-          array( 'value' => 'tooltip', 'label' => __( 'Tooltip', csl18n() ), )
+          array( 'value' => 'none',    'label' => __( 'None', 'cornerstone' ), ),
+          array( 'value' => 'popover', 'label' => __( 'Popover', 'cornerstone' ), ),
+          array( 'value' => 'tooltip', 'label' => __( 'Tooltip', 'cornerstone' ), )
         ),
         'condition' => array(
           'link' => true
@@ -116,16 +116,16 @@ class CS_Image extends Cornerstone_Element_Base {
     $this->addControl(
       'info_place',
       'choose',
-      __( 'Info Placement', csl18n() ),
-      __( 'Select where you want your popover or tooltip to appear.', csl18n() ),
+      __( 'Info Placement', 'cornerstone' ),
+      __( 'Select where you want your popover or tooltip to appear.', 'cornerstone' ),
       'top',
       array(
         'columns' => '4',
         'choices' => array(
-          array( 'value' => 'top',    'icon' => fa_entity('arrow-up'),    'tooltip' => __( 'Top', csl18n() ) ),
-          array( 'value' => 'right',  'icon' => fa_entity('arrow-right'), 'tooltip' => __( 'Right', csl18n() ) ),
-          array( 'value' => 'bottom', 'icon' => fa_entity('arrow-down'),  'tooltip' => __( 'Bottom', csl18n() ) ),
-          array( 'value' => 'left',   'icon' => fa_entity('arrow-left'),  'tooltip' => __( 'Left', csl18n() ) )
+          array( 'value' => 'top',    'icon' => fa_entity('arrow-up'),    'tooltip' => __( 'Top', 'cornerstone' ) ),
+          array( 'value' => 'right',  'icon' => fa_entity('arrow-right'), 'tooltip' => __( 'Right', 'cornerstone' ) ),
+          array( 'value' => 'bottom', 'icon' => fa_entity('arrow-down'),  'tooltip' => __( 'Bottom', 'cornerstone' ) ),
+          array( 'value' => 'left',   'icon' => fa_entity('arrow-left'),  'tooltip' => __( 'Left', 'cornerstone' ) )
         ),
         'condition' => array(
           'link' => true,
@@ -137,14 +137,14 @@ class CS_Image extends Cornerstone_Element_Base {
     $this->addControl(
       'info_trigger',
       'select',
-      __( 'Info Trigger', csl18n() ),
-      __( 'Select what actions you want to trigger the popover or tooltip.', csl18n() ),
+      __( 'Info Trigger', 'cornerstone' ),
+      __( 'Select what actions you want to trigger the popover or tooltip.', 'cornerstone' ),
       'hover',
       array(
         'choices' => array(
-          array( 'value' => 'hover', 'label' => __( 'Hover', csl18n() ) ),
-          array( 'value' => 'click', 'label' => __( 'Click', csl18n() ) ),
-          array( 'value' => 'focus', 'label' => __( 'Focus', csl18n() ) )
+          array( 'value' => 'hover', 'label' => __( 'Hover', 'cornerstone' ) ),
+          array( 'value' => 'click', 'label' => __( 'Click', 'cornerstone' ) ),
+          array( 'value' => 'focus', 'label' => __( 'Focus', 'cornerstone' ) )
         ),
         'condition' => array(
           'link' => true,
@@ -156,8 +156,8 @@ class CS_Image extends Cornerstone_Element_Base {
     $this->addControl(
       'info_content',
       'text',
-      __( 'Info Content', csl18n() ),
-      __( 'Extra content for the popover.', csl18n() ),
+      __( 'Info Content', 'cornerstone' ),
+      __( 'Extra content for the popover.', 'cornerstone' ),
       '',
       array(
         'condition' => array(

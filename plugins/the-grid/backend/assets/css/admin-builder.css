@@ -1,0 +1,448 @@
+
+
+
+.tg-filter-tooltip-holder {
+	position: relative;
+	display: inline-block;
+	margin: 0 1px 0 0;
+}
+.tg-filter-tooltip {
+	position: absolute;
+	display: block;
+    white-space: nowrap;
+	z-index: 999;
+	bottom: 100%;
+	left: 50%;
+	height: 18px;
+	max-height: 18px;
+	min-height: 18px;
+	margin: 0 0 6px 0;
+	padding: 4px 10px;
+	line-height: 18px;
+	font-size: 12px;
+	opacity: 0;
+	text-align: center;
+	pointer-events: none;
+	color: #ffffff !important;
+	background: rgba(0,0,0,.7);
+	-webkit-transform: translateY(14px) translateX(-50%);
+	-moz-transform: translateY(14px) translateX(-50%);
+	-ms-transform: translateY(14px) translateX(-50%);
+	-o-transform: translateY(14px) translateX(-50%);
+	transform: translateY(14px) translateX(-50%);
+	-webkit-transition: opacity 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+	-moz-transition: opacity 0.2s ease-in-out, -moz-transform 0.2s ease-in-out;
+	-ms-transition: opacity 0.2s ease-in-out, -ms-transform 0.2s ease-in-out;
+	-o-transition: opacity 0.2s ease-in-out, -o-transform 0.2s ease-in-out;
+	transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+.tg-filter-tooltip:after {
+	position: absolute;
+	content: '';
+	width: 0;
+	height: 0;
+	left: 50%;
+	bottom: -5px;
+	margin-left: -5px;
+	border-top: 5px solid rgba(0,0,0,.7);
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+}
+.tg-filter-tooltip-holder:hover .tg-filter-tooltip,
+input[type=number].tomb-text:hover + .tg-filter-tooltip {
+	opacity: 1;
+	-webkit-transform: translateY(0) translateX(-50%);
+	-moz-transform: translateY(0) translateX(-50%);
+	-ms-transform: translateY(0) translateX(-50%);
+	-o-transform: translateY(0) translateX(-50%);
+	transform: translateY(0) translateX(-50%);
+}
+.element_animation_data {
+	display: none !important;
+}
+.tg-container-toggle {
+    position: absolute;
+    display: block;
+    width: 24px;
+    height: 24px;
+    top: 13px;
+    right: 20px;
+    padding: 0;
+    color: #ffffff;
+    text-align: center;
+	cursor: pointer;
+}
+.tg-container-toggle:before {
+	position: absolute;
+    display: block;
+    content: '\f140';
+    width: 100%;
+    height: 100%;
+    font-family: dashicons;
+    speak: none;
+    font-size: 20px;
+    text-align: center;
+    line-height: 24px;
+}
+.tg-container-footer {
+	position: absolute;
+    display: block;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    height: 40px;
+	background: #f1f1f1;
+}
+.tg-container-footer .tg-button {
+    position: relative;
+    display: inline-block;
+    float: right;
+    background: #e74c3c;
+    padding: 0px 8px;
+    margin: 7px 20px 0 0;
+}
+.tg-item-animations,
+.tg-item-animations .tomb-tabs-holder,
+.tomb-tabs-item-setttings,
+.tomb-tabs-element-setttings {
+    margin: 0;
+    padding: 0;
+}
+.tomb-tabs-item-setttings,
+.tomb-tabs-item-setttings .tomb-tab {
+	color: #ffffff;
+	background: rgb(94, 108, 121);
+}
+.tomb-tabs-item-setttings .tomb-tab:hover,
+.tomb-tabs-item-setttings .tomb-tab.selected {
+	color: #ffffff;
+	background: #2c3e50;
+}
+.tomb-tabs-element-setttings,
+.tomb-tabs-element-setttings .tomb-tab {
+	color: #ffffff;
+	background: rgb(155, 227, 222);
+}
+.tomb-tabs-element-setttings .tomb-tab:hover,
+.tomb-tabs-element-setttings .tomb-tab.selected {
+	background: #4ECDC4;
+}
+.tg-item-settings-holder .tg-container-header,
+.tg-item-settings-holder .tg-container-title {
+	color: #ffffff;
+	background: #2c3e50;
+}
+.tg-item-settings-holder .tg-container-title:before {
+    content: "\f116";
+    position: relative;
+    display: inline-block;
+    padding: 0 8px 0 0;
+    margin: 0 0 0 -6px;
+    font-size: 26px;
+    font-family: dashicons;
+    vertical-align: top;
+}
+.tg-element-settings-holder .tg-container-header,
+.tg-element-settings-holder .tg-container-title {
+	color: #ffffff;
+	background: #4ECDC4;
+}
+.tg-element-settings-holder .tg-container-title:before {
+    content: "\f107";
+    position: relative;
+    display: inline-block;
+    padding: 0 8px 0 0;
+    margin: 0 0 0 -6px;
+    font-size: 26px;
+    font-family: dashicons;
+    vertical-align: top;
+}
+.tg-item-settings-holder .tg-container-title,
+.tg-element-settings-holder .tg-container-title {
+	cursor: pointer;
+}
+.tomb-tab-content.tg-media-animation,
+.tomb-tab-content.tg-overlay-animation,
+.tomb-tab-content.tg-item-layout,
+.tomb-tab-content.tg-item-styles,
+.tomb-tab-content.tg-overlay-styles,
+.tomb-tab-content.tg-content-styles,
+.tomb-tab-content.tg-element-animations,
+.tomb-tab-content.tg-element-sources,
+.tomb-tab-content.tg-element-animations {
+	padding: 18px 0;
+}
+.tomb-tabs-element-styles {
+	position: relative;
+    margin: 0;
+    padding: 0 0 0 69px;	
+}
+.tomb-tabs-element-styles .tomb-tab {
+	position: relative;
+    width: 70px;
+    height: 70px;
+    box-sizing: border-box;
+    font-size: 11px;
+    font-weight: 400 !important;
+    text-align: center;
+    padding: 12px 6px;
+}
+.tomb-tabs-element-styles .tomb-icon {
+	position: relative;
+    display: block;
+    margin-right: 5px;
+    text-align: center;
+    margin: 0 auto 4px auto;
+}
+.tomb-tabs-element-styles .tomb-switch {
+    position: absolute;
+    display: block;
+    height: 20px;
+    width: 47px;
+    left: 80px;
+    top: 20px;
+    padding: 0 0 0 10px;
+}
+.tomb-tabs-element-styles input.tomb-checkbox + label:before {
+	background-color: #f5f5f5;
+}
+.tomb-metabox {
+	overflow: visible;
+}
+.tg-settings-holder,
+.tg-item-settings-holder,
+.tg-element-settings-holder,
+.tg-skin-builder-holder,
+.tg-skin-elements-holder {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 450px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    margin: 30px 0 0 30px;
+}
+.tg-settings-holder,
+.tg-item-settings-holder,
+.tg-element-settings-holder {
+	overflow: hidden;
+	width: 600px;
+	margin: 30px 0 0 0;
+}
+.tg-settings-holder {
+	overflow: visible;
+	background: none;
+	border: none;
+	-webkit-box-shadow: none;
+    box-shadow: none;
+	margin: 0;
+}
+.tg-element-settings-holder .tg-container-content {
+	display: inline-block;
+	padding: 0 0 40px 0;
+}
+.tg-element-settings-holder .tomb-text.number {
+    width: 50px;
+}
+.tg-skin-elements-inner {
+	margin: 20px;
+}
+.tomb-metabox:after {
+    content: "";
+}
+.tomb-menu-options .tomb-tab {
+    font-weight: 700;
+}
+.tomb-row {
+    padding: 6px 18px;
+}
+.tomb-label {
+    font-weight: 400;
+    display: inline-block;
+	float: left;
+    width: 150px;
+    height: 28px;
+    line-height: 28px;
+    vertical-align: top;
+}
+.tomb-type-image .tomb-label {
+    min-height: 50px;
+}
+.tg-element-draggable {
+	cursor: pointer;
+}
+.tg-element-selected:before {
+	content: "\f107";
+    position: absolute;
+    display: block;
+    top: -25px;
+    left: 50%;
+    width: 26px;
+    height: 20px;
+    margin: 0 0 0 -13px;
+    line-height: 20px;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+    background: #4ECDC4;
+    color: #ffffff;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    font-family: dashicons;
+    text-decoration: inherit;
+    text-align: center;
+    text-indent: -2px;
+    text-align: center;
+    text-transform: none;
+    text-shadow: none;
+    text-decoration: none;
+    -webkit-box-shadow: 0px 0px 6px 0 rgba(14,21,47,0.4);
+    box-shadow: 0px 0px 6px 0 rgba(14,21,47,0.4); 
+}
+.tg-element-selected:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    left: 50%;
+    top: -5px;
+    margin-left: -5px;
+    border-top: 5px solid #4ECDC4;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+}
+.tg-item * {
+	pointer-events: none;
+}
+.tg-item .tg-element-selected:before,
+.tg-item .tg-element-selected:after {
+	display: none !important;
+}
+.tg-skin-build-inner {
+    position: relative;
+    display: block;
+    height: auto;
+    max-width: 100%;
+    padding: 20px;
+    border: 20px solid #ffffff;
+    background: #f1f1f1;
+	background-image: url('../images/checker-bg.gif');
+}
+.tg-skin-build-inner:before {
+	content: "";
+    position: absolute;
+    display: block;
+    top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+    border: 1px solid #e5e5e5;
+	box-sizing: border-box;
+}
+.tg-skin-body-content {
+	position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+	height: auto;
+	min-height: 80px;
+}
+#tg-item-preview {
+	position: absolute;
+	display: block;
+	top: 5px;
+	left: 20px;
+	background: #2c3e50;
+}
+#tg-item-preview {
+    position: absolute;
+    display: block;
+    top: 6px;
+    right: 16px;
+    left: auto;
+    background: #2c3e50;
+}
+#tg-item-preview.is-previewed {
+	background: #4ECDC4;
+}
+
+.tg-layout-grid .tg-item-inner,
+.tg-layout-masonry .tg-item-inner {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: auto;
+}
+.tg-layout-grid .tg-item-media-holder {
+	position: absolute;
+	display: block;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	max-width: 100%;
+	height: 100%;
+}
+.tg-item-media-wrapper {
+	height: 250px;
+}
+.tg-item-inner,
+.tg-item-media-wrapper,
+.tg-item-content {
+	position: relative;
+	display: block;
+}
+.tg-item-media-holder {
+	background-image: url(http://localhost/wordpress/wp-content/plugins/the-grid/backend/assets/images/skin-placeholder.jpg);
+}
+.tg-item-overlay,
+.tg-item-media-holder,
+.tg-item-overlay-content {
+	position: absolute !important;
+	display: block !important;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	box-sizing: border-box; 
+}
+.tg-item-content {
+	background: #ffffff;
+}
+.tg-item-clear {
+	clear: both;
+}
+.tg-area-droppable:before {
+    content: attr(data-name);
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    margin: -10px 0 0 -50px;
+    text-align: center;
+    font-weight: 700;
+    color: rgba(231,76,60,0.58);
+}
+.tg-area-droppable:after {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 2px dashed rgba(231,76,60,0.58);
+    background: rgba(231,76,60,0.05);
+}
+.tg-item .tg-area-droppable:before,
+.tg-item .tg-area-droppable:after,
+.tg-area-filled.tg-area-droppable:before,
+.tg-area-filled.tg-area-droppable:after {
+	display: none;
+}

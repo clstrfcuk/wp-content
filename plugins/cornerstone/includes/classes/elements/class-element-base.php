@@ -24,9 +24,9 @@ abstract class Cornerstone_Element_Base {
 
 		$this->data = wp_parse_args( $this->data(), array(
 			'name'        => '',
-			'title'       => __('Generic Element', csl18n() ),
+			'title'       => __('Generic Element', 'cornerstone' ),
 			'section'     =>  'content',
-			'description' => __( 'Generic Element', csl18n() ),
+			'description' => __( 'Generic Element', 'cornerstone' ),
 			'autofocus'   => '',
 			'controls'    => array(),
 			'empty'       => false,
@@ -324,78 +324,26 @@ abstract class Cornerstone_Element_Base {
 	 */
 	public function injectAtts( $atts ) {
 
-    // Set custom values to blank strings to prepare for injections
-    if ( !isset( $atts['class'] ) )
-			$atts['class'] = '';
+		add_filter( 'cornerstone_control_mixin_expanders_dynamic', array( $this, 'add_mixin_expander' ) );
+		$atts = apply_filters( 'cornerstone_control_injections', $atts );
+		remove_filter( 'cornerstone_control_mixin_expanders_dynamic', array( $this, 'add_mixin_expander' ) );
 
-		if ( !isset( $atts['style'] ) )
-			$atts['style'] = '';
-
-
-		// Split generated and user values for access in render method
-    $atts['user_class'] = $atts['class'];
-		$atts['user_style'] = $atts['style'];
-    $atts['injected_classes'] = array();
-		$atts['injected_styles'] = array();
-
-		//
-		// BEGIN
-		//
-
-		if ( isset( $atts['text_color'] ) && $atts['text_color'] != '' ) {
-      $atts['injected_styles'][] = 'color: ' . $atts['text_color'] . ';';
-    }
-
-		if ( isset( $atts['margin'] ) && $atts['margin'] != '' ) {
-      $atts['injected_styles'][] = 'margin: ' . implode( $atts['margin'], ' ' ) . ';';
-    }
-
-    if ( isset( $atts['padding'] ) && $atts['padding'] != '' ) {
-      $atts['injected_styles'][] = 'padding: ' . implode( $atts['padding'], ' ' ) . ';';
-    }
-
-    if ( isset( $atts['border_style'] ) && $atts['border_style'] != 'none' ) {
-
-      $atts['injected_styles'][] = 'border-style: ' . $atts['border_style'] . ';';
-
-      if ( isset( $atts['border'] ) && $atts['border'] != '' ) {
-        $atts['injected_styles'][] = 'border-width: ' . implode( ' ', $atts['border'] ) . ';';
-      }
-
-      if ( isset( $atts['border_color'] ) && $atts['border_color'] != '' ) {
-        $atts['injected_styles'][] = 'border-color: ' . $atts['border_color'] . ';';
-      }
-
-    }
-
-    if ( isset( $atts['visibility'] ) && is_array( $atts['visibility'] ) && count( $atts['visibility'] ) > 0 ) {
-      $atts['injected_classes'] = array_merge( $atts['injected_classes'], $atts['visibility'] );
-    }
-
-    if ( isset( $atts['text_align'] ) && $atts['text_align'] != 'none' ) {
-      $atts['injected_classes'][] = $atts['text_align'];
-    }
-
-		// END
-
-
-    $atts = $this->attribute_injections( $atts );
-
-		// Combine user and injected values for shortcode injection
-		if ( count( $atts['injected_classes'] ) > 0 )
-			$atts['class'] = implode( $atts['injected_classes'], ' ' ) . ' ' . $atts['class'];
-
-		if ( count( $atts['injected_styles'] ) > 0 )
-			$atts['style'] = implode( $atts['injected_styles'], ' ' ) . ' ' . $atts['style'];
-
-		// Apply helper function to create a string of id, class, and style attributes.
 		$atts['extra'] = $this->extra( $atts );
 
     return $atts;
 	}
 
-	public function attribute_injections( $atts ) {
-		return $atts;
+	public function add_mixin_expander( $expanders ) {
+		$expanders['undefined'] = array( $this, 'mixin_expander' );
+		return $expanders;
+	}
+
+	public function mixin_expander( $inject, $atts ) {
+		return $this->attribute_injections( $inject, $atts );
+	}
+
+	public function attribute_injections( $inject, $atts ) {
+		return $inject;
 	}
 
 	/**

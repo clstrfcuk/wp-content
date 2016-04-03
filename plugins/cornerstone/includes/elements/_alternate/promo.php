@@ -5,9 +5,9 @@ class CS_Promo extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'promo',
-      'title'       => __( 'Promo', csl18n() ),
+      'title'       => __( 'Promo', 'cornerstone' ),
       'section'     => 'marketing',
-      'description' => __( 'Promo description.', csl18n() ),
+      'description' => __( 'Promo description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'content' => '.x-promo-content',
@@ -21,16 +21,16 @@ class CS_Promo extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'editor',
-      __( 'Content', csl18n() ),
-      __( 'Enter your Promo content.', csl18n() ),
+      __( 'Content', 'cornerstone' ),
+      __( 'Enter your Promo content.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'image',
       'image',
-      __( 'Promo Image &amp; Alt Text', csl18n() ),
-      __( 'Include an image for your Promo element and provide the alt text in the input below. Alt text is used to describe an image to search engines.', csl18n() ),
+      __( 'Promo Image &amp; Alt Text', 'cornerstone' ),
+      __( 'Include an image for your Promo element and provide the alt text in the input below. Alt text is used to describe an image to search engines.', 'cornerstone' ),
       CS()->common()->placeholderImage( 650, 1500 )
     );
 

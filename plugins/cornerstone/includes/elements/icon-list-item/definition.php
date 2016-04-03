@@ -8,7 +8,7 @@ class CSE_Icon_List_Item {
 
 	public function ui() {
 		return array(
-      'title'       => __( 'Icon List Item', csl18n() ),
+      'title'       => __( 'Icon List Item', 'cornerstone' ),
     );
 	}
 

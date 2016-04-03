@@ -5,7 +5,7 @@ class CS_Visibility extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'visibility',
-      'title'       => __( 'Visibility', csl18n() ),
+      'title'       => __( 'Visibility', 'cornerstone' ),
       'context'     => 'generator'
     );
   }

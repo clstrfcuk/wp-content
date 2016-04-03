@@ -66,7 +66,7 @@ function x_shortcode_button( $atts, $content = null ) {
   }
 
   if ( $circle == 'true' ) {
-    $output = "<div {$id} class=\"x-btn-circle-wrap{$size}{$block}{$float}\" {$style}><a class=\"x-btn{$class}{$type}{$shape}{$size}{$block}{$icon_only}\" href=\"{$href}\" {$title} {$target} {$tooltip_attr} {$lightbox_caption} {$lightbox_options}>" . do_shortcode( $content ) . "</a></div>";
+    $output = "<div {$id} class=\"x-btn-circle-wrap{$class}{$size}{$block}{$float}\" {$style}><a class=\"x-btn{$type}{$shape}{$size}{$block}{$icon_only}\" href=\"{$href}\" {$title} {$target} {$tooltip_attr} {$lightbox_caption} {$lightbox_options}>" . do_shortcode( $content ) . "</a></div>";
   } else {
     $output = "<a {$id} class=\"x-btn{$class}{$type}{$shape}{$size}{$block}{$float}{$icon_only}\" {$style} href=\"{$href}\" {$title} {$target} {$tooltip_attr} {$lightbox_caption} {$lightbox_options}>" . do_shortcode( $content ) . "</a>";
   }

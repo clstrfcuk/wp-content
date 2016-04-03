@@ -19,12 +19,14 @@ class Cornerstone_Integration_X_Theme {
 	public function __construct() {
 
 		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+
 		add_action( 'cornerstone_load_preview', array( $this, 'load_preview' ) );
 		add_filter( 'cornerstone_config_common_default-settings', array( $this, 'addDefaultSettings' ) );
 
 		// Don't enqueue native styles
 		add_filter( 'cornerstone_enqueue_styles', '__return_false' );
-		add_filter( 'cornerstone_inline_styles',  '__return_false' );
+		add_filter( 'cornerstone_customizer_output',  '__return_false' );
 
 		// Don't load the Customizer
 		add_filter( 'cornerstone_use_customizer',  '__return_false' );
@@ -42,17 +44,9 @@ class Cornerstone_Integration_X_Theme {
 	  // Alias legacy shortcode names.
 	  add_action('cornerstone_shortcodes_loaded', array( $this, 'aliasShortcodes' ) );
 
-
 	  add_filter('cornerstone_scrolltop_selector', array( $this, 'scrollTopSelector' ) );
 	  add_filter('cs_recent_posts_post_types', array( $this, 'recentPostTypes' ) );
 
-	  // Use Audio and Video shortcodes for X native players.
-	  add_filter( 'wp_audio_shortcode_library', 'x_wp_native_audio_shortcode_library' );
-		add_filter( 'wp_audio_shortcode', 'x_wp_native_audio_shortcode' );
-		add_filter( 'wp_audio_shortcode_class', 'x_wp_native_audio_shortcode_class' );
-		add_filter( 'wp_video_shortcode_library', 'x_wp_native_video_shortcode_library' );
-		add_filter( 'wp_video_shortcode', 'x_wp_native_video_shortcode' );
-		add_filter( 'wp_video_shortcode_class', 'x_wp_native_video_shortcode_class' );
 	}
 
 	public function init() {
@@ -60,8 +54,6 @@ class Cornerstone_Integration_X_Theme {
 		// Add Logic for additional contact methods if not overridden in a child theme
 		if ( ! function_exists( 'x_modify_contact_methods' ) )
 			add_filter( 'user_contactmethods', array( $this, 'modifyContactMethods' ) );
-
-		add_action( 'admin_menu', array( $this, 'optionsPage' ) );
 
 		// Remove empty p and br HTML elements for legacy pages not using Cornerstone sections
 		add_filter( 'the_content', 'cs_noemptyp' );
@@ -72,6 +64,18 @@ class Cornerstone_Integration_X_Theme {
 			add_filter( 'cornerstone_legacy_font_classes', '__return_true' );
 		}
 
+		add_filter( 'pre_option_cs_product_validation_key', array( $this, 'validation_passthru' ) );
+
+	}
+
+	public function admin_init() {
+		if ( ! has_action( '_cornerstone_home_not_validated' ) ) {
+			add_action( '_cornerstone_home_not_validated', '__return_empty_string' );
+		}
+	}
+
+	public function validation_passthru( $key ) {
+		return get_option( 'x_product_validation_key', false );
 	}
 
 	public function aliasShortcodes() {
@@ -144,6 +148,8 @@ class Cornerstone_Integration_X_Theme {
 		cs_alias_shortcode( 'toc_item',             'x_toc_item', false );
 		cs_alias_shortcode( 'visibility',           'x_visibility', false );
 
+		CS_Shortcode_Preserver::preserve( 'code' );
+
 	}
 
 
@@ -167,9 +173,9 @@ class Cornerstone_Integration_X_Theme {
     if ( isset( $user_contactmethods['jabber'] ) )
     	unset( $user_contactmethods['jabber'] );
 
-    $user_contactmethods['facebook']   = __( 'Facebook Profile',  csl18n() );
-    $user_contactmethods['twitter']    = __( 'Twitter Profile',  csl18n() );
-    $user_contactmethods['googleplus'] = __( 'Google+ Profile',  csl18n() );
+    $user_contactmethods['facebook']   = __( 'Facebook Profile',  'cornerstone' );
+    $user_contactmethods['twitter']    = __( 'Twitter Profile',  'cornerstone' );
+    $user_contactmethods['googleplus'] = __( 'Google+ Profile',  'cornerstone' );
 
     return $user_contactmethods;
   }
@@ -179,17 +185,17 @@ class Cornerstone_Integration_X_Theme {
   	remove_all_actions( 'cornerstone_generator_preview_before' );
 
 	  $list_stacks = array(
-	    'integrity' => __( 'Integrity',  csl18n() ),
-	    'renew'     => __( 'Renew',  csl18n() ),
-	    'icon'      => __( 'Icon',  csl18n() ),
-	    'ethos'     => __( 'Ethos',  csl18n() )
+	    'integrity' => __( 'Integrity',  'cornerstone' ),
+	    'renew'     => __( 'Renew',  'cornerstone' ),
+	    'icon'      => __( 'Icon',  'cornerstone' ),
+	    'ethos'     => __( 'Ethos',  'cornerstone' )
 	  );
 
 	  $stack = $this->x_get_stack();
 	  $stack_name = ( isset( $list_stacks[ $stack ] ) ) ? $list_stacks[ $stack ] : 'X';
 
 		printf(
-	    __('You&apos;re using %s. Click the button below to check out a live example of this shortcode when using this Stack.', csl18n() ),
+	    __('You&apos;re using %s. Click the button below to check out a live example of this shortcode when using this Stack.', 'cornerstone' ),
 	    '<strong>' . $stack_name . '</strong>'
 	  );
 	}
@@ -215,68 +221,6 @@ class Cornerstone_Integration_X_Theme {
 		return $settings;
 	}
 
-	/**
-	 * Swap out the Design and Product Validation Metaboxes on the Options page
-	 */
-	public function optionsPage() {
-
-		remove_action( 'cornerstone_options_mb_validation', array( CS()->component( 'Admin' ), 'renderValidationMB' ) );
-		add_action( 'cornerstone_options_mb_settings',      array( $this, 'legacyFontClasses' ) );
-		add_action( 'cornerstone_options_mb_validation',    array( $this, 'renderValidationMB' ) );
-		add_filter( 'cornerstone_config_admin_info-items',  array( $this, 'removeInfoItems' ) );
-	}
-
-	/**
-	 *
-	 */
-	public function legacyFontClasses() {
-
-		?>
-		<tr>
-	    <th>
-	      <label for="cornerstone-fields-enable_legacy_font_classes">
-	        <strong><?php _e( 'Enable Legacy Font Classes', csl18n() ); ?></strong>
-	        <span><?php _e( 'Check to enable legacy font classes.', csl18n() ); ?></span>
-	      </label>
-	    </th>
-	    <td>
-	      <fieldset>
-	        <?php echo CS()->component( 'Admin' )->settings->renderField( 'enable_legacy_font_classes', array( 'type' => 'checkbox', 'value' => '1', 'label' => __( 'Enable', csl18n() ) ) ) ?>
-	      </fieldset>
-	    </td>
-	  </tr>
-
-	  <?php
-
-	}
-
-
-	/**
-	 * Output custom Product Validation Metabox
-	 */
-	public function renderValidationMB() { ?>
-
-		<?php if ( x_is_validated() ) : ?>
-			<p class="cs-validated"><strong>Congrats! X is active and validated</strong>. Because of this you don't need to validate Cornerstone and automatic updates are up and running.</p>
-		<?php else : ?>
-			<p class="cs-not-validated"><strong>Uh oh! It looks like X isn't validated</strong>. Cornerstone validates through X, which enables automatic updates. Head over to the product validation page to get that setup.<br><a href="<?php echo x_addons_get_link_product_validation(); ?>">Validate</a></p>
-		<?php endif;
-
-	}
-
-	public function removeInfoItems( $info_items ) {
-
-		unset( $info_items['api-key'] );
-		unset( $info_items['design-options'] );
-
-		$info_items['enable-legacy-font-classes' ] = array(
-			'title' => __( 'Enable Legacy Font Classes', csl18n() ),
-			'content' => __( 'X no longer provides the <strong>.x-icon*</strong> classes. This was done for performance reasons. If you need these classes, you can enable them again with this setting.', csl18n() )
-		);
-
-		return $info_items;
-	}
-
 	public function load_preview() {
 
 		if ( defined( 'X_VIDEO_LOCK_VERSION' ) )
@@ -285,52 +229,3 @@ class Cornerstone_Integration_X_Theme {
 	}
 
 }
-
-
-// Native shortcode alterations.
-// =============================================================================
-
-// [audio]
-// =============================================================================
-
-//
-// 1. Library.
-// 2. Output.
-// 3. Class.
-//
-
-function x_wp_native_audio_shortcode_library() { // 1
-  wp_enqueue_script( 'mediaelement' );
-  return false;
-}
-
-function x_wp_native_audio_shortcode( $html ) { // 2
-  return '<div class="x-audio player" data-x-element="x_mejs">' . $html . '</div>';
-}
-
-function x_wp_native_audio_shortcode_class() { // 3
-  return 'x-mejs x-wp-audio-shortcode advanced-controls';
-}
-
-// [video]
-// =============================================================================
-
-//
-// 1. Library.
-// 2. Output.
-// 3. Class.
-//
-
-function x_wp_native_video_shortcode_library() { // 1
-  wp_enqueue_script( 'mediaelement' );
-  return false;
-}
-
-function x_wp_native_video_shortcode( $output ) { // 2
-  return '<div class="x-video player" data-x-element="x_mejs">' . preg_replace('/<div(.*?)>/', '<div class="x-video-inner">', $output ) . '</div>';
-}
-
-function x_wp_native_video_shortcode_class() { // 3
-  return 'x-mejs x-wp-video-shortcode advanced-controls';
-}
-

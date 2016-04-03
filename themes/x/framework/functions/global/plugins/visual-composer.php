@@ -37,6 +37,13 @@ function x_visual_composer_legacy_update() {
 add_action( 'admin_init', 'x_visual_composer_legacy_update' );
 
 
+function x_visual_composer_remove_meta_generator() {
+  remove_action( 'wp_head', array( visual_composer(), 'addMetaData' ) );
+}
+
+add_action( 'vc_after_init', 'x_visual_composer_remove_meta_generator' );
+
+
 
 // Check if Visual Composer Integration is On
 // =============================================================================
@@ -65,6 +72,7 @@ function x_visual_composer_set_as_theme() {
 }
 
 add_action( 'vc_before_init', 'x_visual_composer_set_as_theme' );
+
 
 function x_visual_composer_hide_update_notice() {
   remove_action( 'admin_notices', array( vc_license(), 'adminNoticeLicenseActivation' ) );
@@ -4776,7 +4784,7 @@ if ( ! function_exists( 'x_visual_composer_update_existing_shortcodes' ) && x_vi
         '' => 'true'
       )
     ) );
-    
+
     vc_add_param( 'vc_row_inner', array(
       'param_name'  => 'class',
       'heading'     => __( 'Class', '__x__' ),

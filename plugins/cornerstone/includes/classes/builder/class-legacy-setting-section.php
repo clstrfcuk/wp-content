@@ -36,7 +36,7 @@ abstract class Cornerstone_Legacy_Setting_Section {
 	public function register() {
 
 		$data = wp_parse_args( $this->data(), array(
-			'title'       => __('Settings', csl18n() ),
+			'title'       => __('Settings', 'cornerstone' ),
 			'priority'    => 10
 		));
 

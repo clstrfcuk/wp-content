@@ -86,12 +86,12 @@ class Envira_Gallery_Shortcode {
         wp_register_style( $this->base->plugin_slug . '-style', plugins_url( 'assets/css/envira.css', $this->base->file ), array(), $this->base->version );
 
         // Register main gallery script.
-		wp_register_script( $this->base->plugin_slug . '-script', plugins_url( 'assets/js/min/envira-min.js', $this->base->file ), array( 'jquery' ), $this->base->version, true );
+        wp_register_script( $this->base->plugin_slug . '-script', plugins_url( 'assets/js/min/envira-min.js', $this->base->file ), array( 'jquery' ), $this->base->version, true );
 
         // Load hooks and filters.
         add_shortcode( 'envira-gallery', array( $this, 'shortcode' ) );
         add_filter( 'widget_text', 'do_shortcode' );
-        add_filter( 'envira_gallery_output_image_attr', array( $this, 'add_image_srcset_attributes' ), 10, 5 );
+        //add_filter( 'envira_gallery_output_image_attr', array( $this, 'add_image_srcset_attributes' ), 10, 5 );
         add_filter( 'style_loader_tag', array( $this, 'add_stylesheet_property_attribute' ) );
 
     }
@@ -124,6 +124,7 @@ class Envira_Gallery_Shortcode {
         } else {
             // A custom attribute must have been passed. Allow it to be filtered to grab data from a custom source.
             $data = apply_filters( 'envira_gallery_custom_gallery_data', false, $atts, $post );
+            $gallery_id = $data['config']['id']; // was $data['config']['id']
         }
 
         // Change the gallery order, if specified
@@ -139,7 +140,7 @@ class Envira_Gallery_Shortcode {
 
         // Allow the data to be filtered before it is stored and used to create the gallery output.
         $data = apply_filters( 'envira_gallery_pre_data', $data, $gallery_id );
-
+        
         // If there is no data to output or the gallery is inactive, do nothing.
         if ( ! $data || empty( $data['gallery'] ) || isset( $data['status'] ) && 'inactive' == $data['status'] && ! is_preview() ) {
             return;
@@ -149,8 +150,8 @@ class Envira_Gallery_Shortcode {
         $this->plugin_humility();
 
         // Prepare variables.
-        $this->data[$data['id']]  = $data;
-        $this->index[$data['id']] = array();
+        $this->data[ $data['id'] ]  = $data;
+        $this->index[ $data['id'] ] = array();
         $gallery                  = '';
         $i                        = 1;
 
@@ -182,11 +183,6 @@ class Envira_Gallery_Shortcode {
         // Apply a filter before starting the gallery HTML.
         $gallery = apply_filters( 'envira_gallery_output_start', $gallery, $data );
 
-        // Get some config values that we'll reuse for each image
-        // @TODO See if we can add more config values here for better performance
-        $padding = absint( round( $this->get_config( 'gutter', $data ) / 2 ) );
-        $html5_attribute = ( ( $this->get_config( 'html5', $data ) == '1' ) ? 'data-envirabox-group' : 'rel' );
-
         // Build out the gallery HTML.
         $gallery .= '<div id="envira-gallery-wrap-' . sanitize_html_class( $data['id'] ) . '" class="' . $this->get_gallery_classes( $data ) . '">';
             $gallery  = apply_filters( 'envira_gallery_output_before_container', $gallery, $data );
@@ -197,50 +193,19 @@ class Envira_Gallery_Shortcode {
             }
 
             $gallery .= '<div id="envira-gallery-' . sanitize_html_class( $data['id'] ) . '" class="envira-gallery-public envira-gallery-' . sanitize_html_class( $this->get_config( 'columns', $data ) ) . '-columns envira-clear' . ( $this->get_config( 'isotope', $data ) ? ' enviratope' : '' ) . ( $this->get_config( 'css_animations', $data ) ? ' envira-gallery-css-animations' : '' ) . '" data-envira-columns="' . $this->get_config( 'columns', $data ) . '">';
+                
+                // Start image loop
                 foreach ( $data['gallery'] as $id => $item ) {
-                    // Skip over images that are pending (ignore if in Preview mode).
-                    if ( isset( $item['status'] ) && 'pending' == $item['status'] && ! is_preview() ) {
-                        continue;
-                    }
 
-                    $item     = apply_filters( 'envira_gallery_output_item_data', $item, $id, $data, $i );
-                    $imagesrc = $this->get_image_src( $id, $item, $data );
-                    $gallery  = apply_filters( 'envira_gallery_output_before_item', $gallery, $id, $item, $data, $i );
-                    
-                    // Maybe change the item's link if it is an image and we have an image size defined for the Lightbox
-                    $item = $this->maybe_change_link( $id, $item, $data );
-
-                    $output   = '<div id="envira-gallery-item-' . sanitize_html_class( $id ) . '" class="' . $this->get_gallery_item_classes( $item, $i, $data ) . '" style="padding-left: ' . $padding . 'px; padding-bottom: ' . $this->get_config( 'margin', $data ) . 'px; padding-right: ' . $padding . 'px;" ' . apply_filters( 'envira_gallery_output_item_attr', '', $id, $item, $data, $i ) . '>';
-                        
-                        $output .= '<div class="envira-gallery-item-inner">';
-                        $output  = apply_filters( 'envira_gallery_output_before_link', $output, $id, $item, $data, $i );
-
-                        // Caption
-                        $caption = do_shortcode( str_replace( "\n", '<br />', esc_attr( $item['caption'] ) ) );
-
-                        if ( ! empty( $item['link'] ) ) {
-                            $output .= '<a href="' . esc_url( $item['link'] ) . '" class="envira-gallery-' . sanitize_html_class( $data['id'] ) . ' envira-gallery-link" ' . $html5_attribute . '="enviragallery' . sanitize_html_class( $data['id'] ) . '" title="' . strip_tags( html_entity_decode( $item['title'] ) ) . '" data-envira-caption="' . $caption . '" data-thumbnail="' . esc_url( $item['thumb'] ) . '"' . ( ( isset($item['link_new_window']) && $item['link_new_window'] == 1 ) ? ' target="_blank"' : '' ) . ' ' . apply_filters( 'envira_gallery_output_link_attr', '', $id, $item, $data, $i ) . '>';
-                        }
-
-                            $output  = apply_filters( 'envira_gallery_output_before_image', $output, $id, $item, $data, $i );
-							$output .= '<img id="envira-gallery-image-' . sanitize_html_class( $id ) . '" class="envira-gallery-image envira-gallery-image-' . $i . '" data-envira-index="' . $i . '" src="' . esc_url( $imagesrc ) . '"' . ( $this->get_config( 'dimensions', $data ) ? ' width="' . $this->get_config( 'crop_width', $data ) . '" height="' . $this->get_config( 'crop_height', $data ) . '"' : '' ) . ' data-envira-src="' . esc_url( $imagesrc ) . '" data-envira-gallery-id="' . $data['id'] . '" data-envira-item-id="' . $id . '" alt="' . esc_attr( $item['alt'] ) . '" title="' . strip_tags( html_entity_decode( $item['title'] ) ) . '" ' . apply_filters( 'envira_gallery_output_image_attr', '', $id, $item, $data, $i ) . ' />';
-                            $output  = apply_filters( 'envira_gallery_output_after_image', $output, $id, $item, $data, $i );
-
-                        if ( ! empty( $item['link'] ) ) {
-                            $output .= '</a>';
-                        }
-
-                        $output  = apply_filters( 'envira_gallery_output_after_link', $output, $id, $item, $data, $i );
-                        $output .= '</div>';
-                        
-                    $output .= '</div>';
-                    $output  = apply_filters( 'envira_gallery_output_single_item', $output, $id, $item, $data, $i );
-                    $gallery .= $output;
-                    $gallery  = apply_filters( 'envira_gallery_output_after_item', $gallery, $id, $item, $data, $i );
+                    // Add the gallery item to the markup
+                    $gallery = $this->generate_gallery_item_markup( $gallery, $data, $item, $id, $i );
 
                     // Increment the iterator.
                     $i++;
+
                 }
+                // End image loop
+
             $gallery .= '</div>';
             // Description
             if ( isset( $data['config']['description_position'] ) && $data['config']['description_position'] == 'below' ) {
@@ -268,6 +233,86 @@ class Envira_Gallery_Shortcode {
 
         // Return the gallery HTML.
         return apply_filters( 'envira_gallery_output', $gallery, $data );
+
+    }
+
+    /**
+    * Outputs an individual gallery item in the grid
+    *
+    * @since 1.4.2.1
+    *
+    * @param    string  $gallery    Gallery HTML
+    * @param    array   $data       Gallery Config
+    * @param    array   $item       Gallery Item (Image)
+    * @param    int     $id         Gallery Image ID
+    * @param    int     $i          Index
+    * @return   string              Gallery HTML
+    */
+    public function generate_gallery_item_markup( $gallery, $data, $item, $id, $i ) {
+
+        // Get some config values that we'll reuse for each image
+        $padding = absint( round( $this->get_config( 'gutter', $data ) / 2 ) );
+        $html5_attribute = ( ( $this->get_config( 'html5', $data ) == '1' ) ? 'data-envirabox-group' : 'rel' );
+        $thumbnail_start_url = get_bloginfo( 'url' ) . '/' . get_bloginfo( 'url' );
+
+        // Skip over images that are pending (ignore if in Preview mode).
+        if ( isset( $item['status'] ) && 'pending' == $item['status'] && ! is_preview() ) {
+            return $gallery;
+        }
+
+        $item     = apply_filters( 'envira_gallery_output_item_data', $item, $id, $data, $i );
+        $imagesrc = $this->get_image_src( $id, $item, $data );
+        $gallery  = apply_filters( 'envira_gallery_output_before_item', $gallery, $id, $item, $data, $i );
+        
+        // Maybe change the item's link if it is an image and we have an image size defined for the Lightbox
+        $item = $this->maybe_change_link( $id, $item, $data );
+
+        // Non-ASCII filenames fail when FILTER_VALIDATE_URL is applied to them when saving a gallery to generate thumbs
+        // This resulted in the blog URL being prepended to the URL, therefore breaking the thumbnail URL
+        // This reverts that change for the few edge cases where this happened
+        if ( strpos( $item['thumb'], $thumbnail_start_url ) !== false ) {
+            $item['thumb'] = str_replace( $thumbnail_start_url, get_bloginfo( 'url' ) . '/', $item['thumb'] );
+        }
+
+        $output   = '<div id="envira-gallery-item-' . sanitize_html_class( $id ) . '" class="' . $this->get_gallery_item_classes( $item, $i, $data ) . '" style="padding-left: ' . $padding . 'px; padding-bottom: ' . $this->get_config( 'margin', $data ) . 'px; padding-right: ' . $padding . 'px;" ' . apply_filters( 'envira_gallery_output_item_attr', '', $id, $item, $data, $i ) . '>';
+            
+            $output .= '<div class="envira-gallery-item-inner">';
+            $output  = apply_filters( 'envira_gallery_output_before_link', $output, $id, $item, $data, $i );
+
+            // Caption
+            $caption = do_shortcode( str_replace( "\n", '<br />', esc_attr( $item['caption'] ) ) );
+
+            if ( ! empty( $item['link'] ) ) {
+                $output .= '<a href="' . esc_url( $item['link'] ) . '" class="envira-gallery-' . sanitize_html_class( $data['id'] ) . ' envira-gallery-link" ' . $html5_attribute . '="enviragallery' . sanitize_html_class( $data['id'] ) . '" title="' . strip_tags( html_entity_decode( $item['title'] ) ) . '" data-envira-caption="' . $caption . '" data-thumbnail="' . esc_url( $item['thumb'] ) . '"' . ( ( isset($item['link_new_window']) && $item['link_new_window'] == 1 ) ? ' target="_blank"' : '' ) . ' ' . apply_filters( 'envira_gallery_output_link_attr', '', $id, $item, $data, $i ) . '>';
+            }
+
+                $output  = apply_filters( 'envira_gallery_output_before_image', $output, $id, $item, $data, $i );
+                
+                // Build the image and allow filtering
+                $output_item = '<img id="envira-gallery-image-' . sanitize_html_class( $id ) . '" class="envira-gallery-image envira-gallery-image-' . $i . '" data-envira-index="' . $i . '" src="' . esc_url( $imagesrc ) . '"' . ( $this->get_config( 'dimensions', $data ) ? ' width="' . $this->get_config( 'crop_width', $data ) . '" height="' . $this->get_config( 'crop_height', $data ) . '"' : '' ) . ' data-envira-src="' . esc_url( $imagesrc ) . '" data-envira-gallery-id="' . $data['id'] . '" data-envira-item-id="' . $id . '" alt="' . esc_attr( $item['alt'] ) . '" title="' . strip_tags( html_entity_decode( $item['title'] ) ) . '" ' . apply_filters( 'envira_gallery_output_image_attr', '', $id, $item, $data, $i ) . ' />';
+                $output_item = apply_filters( 'envira_gallery_output_image', $output_item, $id, $item, $data, $i );
+
+                // Add image to output
+                $output .= $output_item;
+                $output  = apply_filters( 'envira_gallery_output_after_image', $output, $id, $item, $data, $i );
+
+            if ( ! empty( $item['link'] ) ) {
+                $output .= '</a>';
+            }
+
+            $output  = apply_filters( 'envira_gallery_output_after_link', $output, $id, $item, $data, $i );
+            $output .= '</div>';
+            
+        $output .= '</div>';
+        $output  = apply_filters( 'envira_gallery_output_single_item', $output, $id, $item, $data, $i );
+
+        // Append the image to the gallery output
+        $gallery .= $output;
+
+        // Filter the output before returning
+        $gallery  = apply_filters( 'envira_gallery_output_after_item', $gallery, $id, $item, $data, $i );
+
+        return $gallery;
 
     }
 
@@ -422,6 +467,38 @@ class Envira_Gallery_Shortcode {
                 break;
 
             /**
+            * Published Date
+            */
+            case 'date':
+                // Get published date for each
+                $keys = array();
+                foreach ( $data['gallery'] as $id => $item ) {
+                    // If the attachment isn't in the Media Library, we can't get a post date - assume now
+                    if ( ! is_numeric( $id ) || ( false === ( $attachment = get_post( $id ) ) ) ) {
+                        $keys[ $id ] = date( 'Y-m-d H:i:s' );
+                    } else {
+                        $keys[ $id ] = $attachment->post_date;
+                    }
+                }
+
+                // Sort titles / captions
+                if ( $sorting_direction == 'ASC' ) {
+                    asort( $keys );
+                } else {
+                    arsort( $keys );
+                }
+
+                // Iterate through sorted items, rebuilding gallery
+                $new = array();
+                foreach( $keys as $key => $title ) {
+                    $new[ $key ] = $data['gallery'][ $key ];
+                }
+
+                // Assign back to gallery
+                $data['gallery'] = $new;  
+                break;
+
+            /**
             * None
             * - Do nothing
             */
@@ -455,7 +532,31 @@ class Envira_Gallery_Shortcode {
 
         $gallery .= '<div class="envira-gallery-description envira-gallery-description-above" style="padding-bottom: ' . $this->get_config( 'margin', $data ) . 'px;">';
             $gallery  = apply_filters( 'envira_gallery_output_before_description', $gallery, $data ); 
-            $gallery .= wpautop( $data['config']['description'] );
+
+            // Get description.
+            $description = $data['config']['description'];
+
+            // If the WP_Embed class is available, use that to parse the content using registered oEmbed providers.
+            if ( isset( $GLOBALS['wp_embed'] ) ) {
+                $description = $GLOBALS['wp_embed']->autoembed( $description );
+            }
+
+            // Get the description and apply most of the filters that apply_filters( 'the_content' ) would use
+            // We don't use apply_filters( 'the_content' ) as this would result in a nested loop and a failure.
+            $description = wptexturize( $description );
+            $description = convert_smilies( $description );
+            $description = wpautop( $description );
+            $description = prepend_attachment( $description );
+            
+            // Requires WordPress 4.4+
+            if ( function_exists( 'wp_make_content_images_responsive' ) ) {
+                $description = wp_make_content_images_responsive( $description );
+            }
+
+            // Append the description to the gallery output.
+            $gallery .= $description;
+
+            // Filter the gallery HTML.
             $gallery  = apply_filters( 'envira_gallery_output_after_description', $gallery, $data );
         $gallery .= '</div>'; 
         
@@ -470,7 +571,9 @@ class Envira_Gallery_Shortcode {
     public function gallery_init() {
 
         ?>
-        <script type="text/javascript">jQuery(document).ready(function($){<?php ob_start();
+        <script type="text/javascript">
+            var envira_galleries = [];
+            jQuery(document).ready(function($){<?php ob_start();
             do_action( 'envira_gallery_api_start_global' );
             foreach ( $this->data as $data ) {
                 // Prevent multiple init scripts for the same gallery ID.
@@ -488,26 +591,37 @@ class Envira_Gallery_Shortcode {
                 <?php
                 // Isotope: Start
                 if ( $this->get_config( 'isotope', $data ) ) {
-	                ?>
+                    ?>
                     envira_container_<?php echo $data['id']; ?> = $('#envira-gallery-<?php echo $data['id']; ?>').enviratope( {
                         <?php do_action( 'envira_gallery_api_enviratope_config', $data ); ?>
                         itemSelector: '.envira-gallery-item',
-                        masonry: {
-                            columnWidth: '.envira-gallery-item'
+                        <?php
+                        // If columns = 0, use fitRows
+                        if ( $this->get_config( 'columns', $data ) > 0 ) {
+                            ?>
+                            masonry: {
+                                columnWidth: '.envira-gallery-item'
+                            }
+                            <?php
+                        } else {
+                            ?>
+                            layoutMode: 'fitRows'
+                            <?php
                         }
+                        ?>
                     });
                 
                     // Reload again once all images have loaded, so everything is placed correctly
-	                envira_container_<?php echo $data['id']; ?>.imagesLoaded( function() {
-		                envira_container_<?php echo $data['id']; ?>.enviratope('layout');
-					});
-	                <?php 
-		            do_action( 'envira_gallery_api_enviratope', $data ); 
-		        }
-		        // Isotope: End
-		        
-		        // CSS Animations: Start
-		        if ( $this->get_config( 'css_animations', $data ) ) {
+                    envira_container_<?php echo $data['id']; ?>.imagesLoaded( function() {
+                        envira_container_<?php echo $data['id']; ?>.enviratope('layout');
+                    });
+                    <?php 
+                    do_action( 'envira_gallery_api_enviratope', $data ); 
+                }
+                // Isotope: End
+                
+                // CSS Animations: Start
+                if ( $this->get_config( 'css_animations', $data ) ) {
                     $opacity = $this->get_config( 'css_opacity', $data );
                     
                     // Defaults Addon Gallery may not have been saved since opacity introduction, so force a value if one doesn't exist.
@@ -517,18 +631,18 @@ class Envira_Gallery_Shortcode {
 
                     // Reduce to factor of 1
                     $opacity = ( $opacity / 100 );
-	                ?>
-	                envira_container_<?php echo $data['id']; ?> = $('#envira-gallery-<?php echo $data['id']; ?>').imagesLoaded( function() {
-		                $('.envira-gallery-item img').fadeTo( 'slow', <?php echo $opacity; ?> );
-					});
-	                <?php
-		        }
-		        // CSS Animations: End
-		        
-		        // Fancybox: Start
+                    ?>
+                    envira_container_<?php echo $data['id']; ?> = $('#envira-gallery-<?php echo $data['id']; ?>').imagesLoaded( function() {
+                        $('.envira-gallery-item img').fadeTo( 'slow', <?php echo $opacity; ?> );
+                    });
+                    <?php
+                }
+                // CSS Animations: End
+                
+                // Fancybox: Start
                 if ( $this->get_config( 'lightbox_enabled', $data ) ) {
-    		        ?>
-    				$('.envira-gallery-<?php echo $data['id']; ?>').envirabox({
+                    ?>
+                    envira_galleries['<?php echo $data['id']; ?>'] = $('.envira-gallery-<?php echo $data['id']; ?>').envirabox({
                         <?php do_action( 'envira_gallery_api_config', $data ); // Depreciated ?>
                         <?php do_action( 'envira_gallery_api_envirabox_config', $data ); ?>
                         <?php if ( ! $this->get_config( 'keyboard', $data ) ) : ?>
@@ -580,7 +694,7 @@ class Envira_Gallery_Shortcode {
                         tpl: {
                             wrap     : '<?php echo $this->get_lightbox_template( $data ); ?>',
                             image    : '<img class="envirabox-image" src="{href}" alt="" data-envira-title="" data-envira-caption="" data-envira-index="" data-envira-data="" />',
-                            iframe   : '<iframe id="envirabox-frame{rnd}" name="envirabox-frame{rnd}" class="envirabox-iframe" frameborder="0" vspace="0" hspace="0" allowtransparency="true"\></iframe>',
+                            iframe   : '<iframe id="envirabox-frame{rnd}" name="envirabox-frame{rnd}" class="envirabox-iframe" frameborder="0" vspace="0" hspace="0" allowtransparency="true" wekitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
                             error    : '<p class="envirabox-error"><?php echo __( 'The requested content cannot be loaded.<br/>Please try again later.</p>', 'envira-gallery' ); ?>',
                             closeBtn : '<a title="<?php echo __( 'Close', 'envira-gallery' ); ?>" class="envirabox-item envirabox-close" href="javascript:;"></a>',
                             next     : '<a title="<?php echo __( 'Next', 'envira-gallery' ); ?>" class="envirabox-nav envirabox-next envirabox-arrows-<?php echo $this->get_config( 'arrows_position', $data ); ?>" href="javascript:;"><span></span></a>',
@@ -620,8 +734,8 @@ class Envira_Gallery_Shortcode {
                         },
                         <?php do_action( 'envira_gallery_api_config_callback', $data ); ?>
                         beforeLoad: function(){
-    	                    this.title = $(this.element).data('envira-caption');
-    	                    <?php do_action( 'envira_gallery_api_before_load', $data ); ?>
+                            this.title = $(this.element).data('envira-caption');
+                            <?php do_action( 'envira_gallery_api_before_load', $data ); ?>
                         },
                         afterLoad: function(){
                             <?php do_action( 'envira_gallery_api_after_load', $data ); ?>
@@ -655,13 +769,13 @@ class Envira_Gallery_Shortcode {
                             <?php
                             if ( $this->get_config( 'mobile_touchwipe', $data ) ) {
                                 ?>
-                              	$('.envirabox-wrap').swipe( {
-        		                    swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
-        			                    if (direction === 'left') {
-        				                    $.envirabox.next(direction);
-        			                    } else if (direction === 'right') {
-        				                    $.envirabox.prev(direction);
-        			                    } else if (direction === 'up') {
+                                $('.envirabox-wrap').swipe( {
+                                    swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
+                                        if (direction === 'left') {
+                                            $.envirabox.next(direction);
+                                        } else if (direction === 'right') {
+                                            $.envirabox.prev(direction);
+                                        } else if (direction === 'up') {
                                             <?php
                                             if ( $this->get_config( 'mobile_touchwipe_close', $data ) ) {
                                                 ?>
@@ -670,8 +784,8 @@ class Envira_Gallery_Shortcode {
                                             }
                                             ?>
                                         }
-        		                    }
-        	                    } );
+                                    }
+                                } );
                                 <?php
                             }
                           
@@ -685,7 +799,7 @@ class Envira_Gallery_Shortcode {
                                 }
                                 <?php
                             }
-                            
+
                             do_action( 'envira_gallery_api_after_show', $data ); ?>
                         },
                         beforeClose: function(){
@@ -723,10 +837,10 @@ class Envira_Gallery_Shortcode {
                     });
 
                     <?php 
-    	            do_action( 'envira_gallery_api_lightbox', $data ); 
-    	            // Fancybox: End
+                    do_action( 'envira_gallery_api_lightbox', $data ); 
+                    // Fancybox: End
                 }
-	            
+                
                 do_action( 'envira_gallery_api_end', $data );
             } // foreach
 
@@ -896,22 +1010,35 @@ class Envira_Gallery_Shortcode {
      * @return string      The proper image src attribute for the image.
      */
     public function get_image_src( $id, $item, $data, $mobile = false ) {
-	    
-	    // Detect if user is on a mobile device - if so, override $mobile flag which may be manually set
-	    // by out of date addons or plugins
-	    if ( $this->get_config( 'mobile', $data ) ) {
-	    	$mobile = wp_is_mobile();
-	    }
-	    
-	    // Get the full image src. If it does not return the data we need, return the image link instead.
-        $src   = wp_get_attachment_image_src( $id, 'full' );
-        $image = ! empty( $src[0] ) ? $src[0] : false;
-        if ( ! $image ) {
-            $image = ! empty( $item['src'] ) ? $item['src'] : false;
-            if ( ! $image ) {
-                return apply_filters( 'envira_gallery_no_image_src', $item['link'], $id, $item, $data );
-            }
-        };
+
+        // Detect if user is on a mobile device - if so, override $mobile flag which may be manually set
+        // by out of date addons or plugins
+        if ( $this->get_config( 'mobile', $data ) ) {
+            $mobile = wp_is_mobile();
+        }
+
+        // Check if this Gallery uses a WordPress defined image size
+        $image_size = $this->get_config( 'image_size', $data );
+        if ( $image_size != 'default' ) {
+            // Get the requested image size
+            $src = wp_get_attachment_image_src( $id, $image_size );
+        } else {
+            // Get the full image
+            $src = wp_get_attachment_image_src( $id, 'full' );
+        }
+
+        // Check if this returned an image
+        if ( ! $src ) {
+            // Fallback to the $item's image source
+            $image = $item['src'];
+        } else {
+            $image = $src[0];
+        }
+
+        // If we still don't have an image at this point, something went wrong
+        if ( ! isset( $image ) ) {
+            return apply_filters( 'envira_gallery_no_image_src', $item['link'], $id, $item, $data );
+        }
 
         // Prep our indexable images.
         if ( $image && ! $mobile ) {
@@ -921,7 +1048,14 @@ class Envira_Gallery_Shortcode {
             );
         }
         
-        // Resize or crop image
+        // If the image size is a WordPress size, we don't need to resize or crop anything
+        if ( $image_size != 'default' ) {
+            // Return the image
+            return apply_filters( 'envira_gallery_image_src', $image, $id, $item, $data ); 
+        }
+
+        // If the image size is default (i.e. the user has input their own custom dimensions in the Gallery),
+        // we may need to resize the image now
         // This is safe to call every time, as resize_image() will check if the image already exists, preventing thumbnails
         // from being generated every single time.
         $type = $mobile ? 'mobile' : 'crop'; // 'crop' is misleading here - it's the key that stores the thumbnail width + height      
@@ -979,8 +1113,8 @@ class Envira_Gallery_Shortcode {
                 
                 // Title
                 if ( $this->get_config( 'toolbar_title', $data ) ) {
-	            	$template .= '<li id="envirabox-buttons-title"><span>' . $this->get_config( 'title', $data ) . '</span></li>';
-					$template  = apply_filters( 'envira_gallery_toolbar_after_title', $template, $data );   
+                    $template .= '<li id="envirabox-buttons-title"><span>' . $this->get_config( 'title', $data ) . '</span></li>';
+                    $template  = apply_filters( 'envira_gallery_toolbar_after_title', $template, $data );   
                 }
                 
                 // Close
@@ -997,20 +1131,20 @@ class Envira_Gallery_Shortcode {
     }
     
     /**
-	* Helper method to retrieve the gallery lightbox template
-	*
-	* @since 1.3.1.4
-	*
-	* @param array $data Array of gallery data
-	* @return string String template for the gallery lightbox
-	*/
+    * Helper method to retrieve the gallery lightbox template
+    *
+    * @since 1.3.1.4
+    *
+    * @param array $data Array of gallery data
+    * @return string String template for the gallery lightbox
+    */
     public function get_lightbox_template( $data ) {
-	   
-		// Build out the lightbox template
+       
+        // Build out the lightbox template
         $template = '<div class="envirabox-wrap" tabIndex="-1"><div class="envirabox-skin envirabox-theme-' . $this->get_config( 'lightbox_theme', $data ) . '"><div class="envirabox-outer"><div class="envirabox-inner"></div></div></div></div>';
     
-		// Return the template, filters applied
-		return apply_filters( 'envira_gallery_lightbox_template', $template, $data );
+        // Return the template, filters applied
+        return apply_filters( 'envira_gallery_lightbox_template', $template, $data );
     
     }
 

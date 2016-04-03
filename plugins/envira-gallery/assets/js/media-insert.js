@@ -1,7 +1,7 @@
 /**
-* Creates and handles a wp.media instance for Envira Galleries, allowing
-* the user to insert images from the Media Library into their Gallery
-*/
+ * Creates and handles a wp.media instance for Envira Galleries, allowing
+ * the user to insert images from the WordPress Media Library into their Gallery
+ */
 jQuery( document ).ready( function( $ ) {
 
     // Add Images
@@ -39,9 +39,36 @@ jQuery( document ).ready( function( $ ) {
         } );
 
         // Insert into Gallery Button Clicked
-        wp.media.frames.envira.on( 'insert', function() {
-            // Get all selected images in JSON format
-            var images = wp.media.frames.envira.state().get( 'selection' ).toJSON();
+        wp.media.frames.envira.on( 'insert', function( selection ) {
+
+            // Get state
+            var state = wp.media.frames.envira.state(),
+                images = [];
+
+            // Iterate through selected images, building an images array
+            selection.each( function( attachment ) {
+                // Get the chosen options for this image (size, alignment, link type, link URL)
+                var display = state.display( attachment ).toJSON();
+
+                // Change the image link parameter based on the "Link To" setting the user chose in the media view
+                switch ( display.link ) {
+                    case 'none':
+                        attachment.set( 'link', '' );
+                        break;
+                    case 'file':
+                        attachment.set( 'link', attachment.get( 'url' ) );
+                        break;
+                    case 'post':
+                        // Already linked to post by default
+                        break;
+                    case 'custom':
+                        attachment.set( 'link', display.linkUrl );
+                        break;
+                }
+
+                // Add the image to the images array
+                images.push( attachment.toJSON() );
+            }, this );
 
             // Send the ajax request with our data to be processed.
             $.post(
@@ -59,7 +86,7 @@ jQuery( document ).ready( function( $ ) {
                         $( '#envira-gallery-output' ).html( response.success );
 
                         // Repopulate the Envira Gallery Image Collection
-                        EnviraGalleryImagesUpdate();
+                        EnviraGalleryImagesUpdate( false );
                     }
                 },
                 'json'
@@ -72,8 +99,8 @@ jQuery( document ).ready( function( $ ) {
 
         // Remove the 'Create Gallery' left hand menu item in the modal, as we don't
         // want users inserting galleries!
-        $( 'div.media-menu a.media-menu-item:nth-child(2)' ).addClass( 'hidden' );
-        $( 'div.media-menu a.media-menu-item:nth-child(6)' ).addClass( 'hidden' );
+        //$( 'div.media-menu a.media-menu-item:nth-child(2)' ).addClass( 'hidden' );
+        //$( 'div.media-menu a.media-menu-item:nth-child(6)' ).addClass( 'hidden' );
         
 
         return;

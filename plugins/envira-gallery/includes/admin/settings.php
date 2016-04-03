@@ -129,10 +129,10 @@ class Envira_Gallery_Settings {
     public function maybe_fix_migration() {
         
         // Check if user pressed 'Fix' button and nonce is valid
-        if ( !isset( $_POST['envira-serialization-submit'] ) ) {
+        if ( ! isset( $_POST['envira-serialization-submit'] ) ) {
             return;
         }
-        if ( !wp_verify_nonce( $_POST['envira-serialization-nonce'], 'envira-serialization-nonce' ) ) {
+        if ( ! wp_verify_nonce( $_POST['envira-serialization-nonce'], 'envira-serialization-nonce' ) ) {
             return;
         }
         
@@ -276,6 +276,7 @@ class Envira_Gallery_Settings {
 
         // Update settings
         $this->update_setting( 'media_position', $_POST['envira_media_position'] );
+        $this->update_setting( 'image_delete', $_POST['envira_image_delete'] );
         $this->update_setting( 'media_delete', $_POST['envira_media_delete'] );
 
         // Output an admin notice so the user knows what happened
@@ -506,6 +507,7 @@ class Envira_Gallery_Settings {
 
         // Get settings
         $media_position = $this->get_setting( 'media_position' );
+        $image_delete = $this->get_setting( 'image_delete' );
         $media_delete = $this->get_setting( 'media_delete' );
         ?>
         <div id="envira-settings-general">
@@ -580,6 +582,19 @@ class Envira_Gallery_Settings {
                         </tr>
 
                         <!-- Delete Media -->
+                        <tr id="envira-image-delete-box">
+                            <th scope="row">
+                                <label for="envira-image-delete"><?php _e( 'Delete Image on Gallery Image Deletion', 'envira-gallery' ); ?></label>
+                            </th>
+                            <td>
+                                <select id="envira-image-delete" name="envira_image_delete">
+                                    <?php foreach ( (array) Envira_Gallery_Common::get_instance()->get_media_delete_options() as $i => $data ) : ?>
+                                        <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $image_delete ); ?>><?php echo $data['name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <p class="description"><?php _e( 'When deleting an <strong>Image from a Gallery</strong>, choose whether to delete all media associated with that image. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
+                            </td>
+                        </tr>
                         <tr id="envira-media-delete-box">
                             <th scope="row">
                                 <label for="envira-media-delete"><?php _e( 'Delete Images on Gallery Deletion', 'envira-gallery' ); ?></label>
@@ -590,7 +605,7 @@ class Envira_Gallery_Settings {
                                         <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $media_delete ); ?>><?php echo $data['name']; ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <p class="description"><?php _e( 'When deleting a Gallery, choose whether to delete all media associated with the gallery. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
+                                <p class="description"><?php _e( 'When deleting a <strong>Gallery</strong>, choose whether to delete all media associated with the gallery. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
                             </td>
                         </tr>
 

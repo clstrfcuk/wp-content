@@ -5,9 +5,9 @@ class CS_Google_Map extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'google-map',
-      'title'       => __( 'Google Map', csl18n() ),
+      'title'       => __( 'Google Map', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Google Map description.', csl18n() ),
+      'description' => __( 'Google Map description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'renderChild' => true
     );
@@ -18,68 +18,68 @@ class CS_Google_Map extends Cornerstone_Element_Base {
     $this->addControl(
       'elements',
       'sortable',
-      __( 'Map Markers', csl18n() ),
-      __( 'Optionally include markers to your map to specify certain locations.', csl18n() ),
+      __( 'Map Markers', 'cornerstone' ),
+      __( 'Optionally include markers to your map to specify certain locations.', 'cornerstone' ),
       NULL,
       array(
       	'element'   => 'google-map-marker',
-        'newTitle' => __( 'Map Marker %s', csl18n() )
+        'newTitle' => __( 'Map Marker %s', 'cornerstone' )
       )
     );
 
     $this->addControl(
       'lat',
       'text',
-      __( 'Latitude', csl18n() ),
-      __( 'Enter the latitude for the center of your map.', csl18n() ),
+      __( 'Latitude', 'cornerstone' ),
+      __( 'Enter the latitude for the center of your map.', 'cornerstone' ),
       '40.7056308'
     );
 
     $this->addControl(
       'lng',
       'text',
-      __( 'Longitude', csl18n() ),
-      __( 'Enter the longitude for the center of your map.', csl18n() ),
+      __( 'Longitude', 'cornerstone' ),
+      __( 'Enter the longitude for the center of your map.', 'cornerstone' ),
       '-73.9780035'
     );
 
     $this->addControl(
       'zoom',
       'number',
-      __( 'Zoom', csl18n() ),
-      __( 'Specify a number between 1 and 18 for the zoom level of your map.', csl18n() ),
+      __( 'Zoom', 'cornerstone' ),
+      __( 'Specify a number between 1 and 18 for the zoom level of your map.', 'cornerstone' ),
       '12'
     );
 
     $this->addControl(
       'zoom_control',
       'toggle',
-      __( 'Zoom Control', csl18n() ),
-      __( 'Enable to display the zoom controls for your map.', csl18n() ),
+      __( 'Zoom Control', 'cornerstone' ),
+      __( 'Enable to display the zoom controls for your map.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'drag',
       'toggle',
-      __( 'Draggable', csl18n() ),
-      __( 'Enable to make your map draggable.', csl18n() ),
+      __( 'Draggable', 'cornerstone' ),
+      __( 'Enable to make your map draggable.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'height',
       'text',
-      __( 'Height', csl18n() ),
-      __( 'Specify a custom height for your map if desired. You may use pixels, ems, or percentages.', csl18n() ),
+      __( 'Height', 'cornerstone' ),
+      __( 'Specify a custom height for your map if desired. You may use pixels, ems, or percentages.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'hue',
       'color',
-      __( 'Map Hue', csl18n() ),
-      __( 'Specifying a hexadecimal map hue will give your map a different color palette.', csl18n() ),
+      __( 'Map Hue', 'cornerstone' ),
+      __( 'Specifying a hexadecimal map hue will give your map a different color palette.', 'cornerstone' ),
       false,
       array(
         'output_format' => 'hex'
@@ -89,8 +89,8 @@ class CS_Google_Map extends Cornerstone_Element_Base {
     $this->addControl(
       'no_container',
       'toggle',
-      __( 'No Container', csl18n() ),
-      __( 'Select to remove the container around the map.', csl18n() ),
+      __( 'No Container', 'cornerstone' ),
+      __( 'Select to remove the container around the map.', 'cornerstone' ),
       false
     );
 
@@ -105,7 +105,7 @@ class CS_Google_Map extends Cornerstone_Element_Base {
 
     foreach ( $elements as $e ) {
 
-      $contents .= '[x_google_map_marker lat="' . $e['lat'] . '" lng="' . $e['lng'] . '" info="' . $e['info'] . '" image="' . $e['image'] . '"]';
+      $contents .= '[x_google_map_marker lat="' . $e['lat'] . '" lng="' . $e['lng'] . '" start_open="' . $e['start_open'] .'" info="' . cs_clean_shortcode_att( $e['info'] ) . '" image="' . $e['image'] . '"]';
 
     }
 

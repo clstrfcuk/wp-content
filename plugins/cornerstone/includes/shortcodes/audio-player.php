@@ -73,11 +73,16 @@ function x_shortcode_audio_player( $atts ) {
   // Markup.
   //
 
-  $output = "<div {$id} class=\"{$class}{$autoplay}{$loop}\" {$data} {$style}>"
-            . "<audio class=\"x-mejs{$advanced_controls}\"{$preload}{$autoplay}{$loop}>"
-              . implode( '', $sources )
-            . '</audio>'
-          . '</div>';
+  if ( ! empty( $sources ) ) {
+
+    $sources = implode( '', $sources );
+    $audio = "<audio class=\"x-mejs{$advanced_controls}\"{$preload}{$autoplay}{$loop}>{$sources}</audio>";
+
+  } else {
+    $audio = '<span class="x-mejs-no-source">' . __( 'Audio source missing', 'cornerstone' ) . '</span>';
+  }
+
+  $output = "<div {$id} class=\"{$class}{$autoplay}{$loop}\" {$data} {$style}>{$audio}</div>";
 
   return $output;
 }

@@ -1,11 +1,21 @@
 <?php
-	$default_value = '';
-	if ( $this->setting->default );
-		$default_value = cs_att('data-huebert-default-value', $this->setting->default );
+
+$input_atts = array(
+	'data-cs-customizer-control' => 'huebert',
+	'type'                       => 'text',
+	'id'                         => 'input_' . $this->id,
+	'value'                      => $this->value(),
+);
+
+if ( $this->setting->default ) {
+	$input_atts['data-huebert-default-value'] = $this->setting->default;
+}
+
 ?>
 <label>
 	<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-	<input data-cs-customizer-control="huebert" type="text" id="input_<?php echo $this->id; ?>" value="<?php echo $this->value(); ?>" <?php echo $default_value . ' '; $this->link(); ?>/>
+	<input <?php echo cs_atts( $input_atts ) . ' ';
+	$this->link(); ?>/>
 </label>
 
 <script>

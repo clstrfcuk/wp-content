@@ -50,6 +50,7 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 	 */
 	private function init(){
 		global $revSliderAsTheme;
+		global $pagenow;
 		
 		$template = new RevSliderTemplate();
 		$operations = new RevSliderOperations();
@@ -113,6 +114,90 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 		add_action('wp_ajax_nopriv_revslider_ajax_call_front', array('RevSliderAdmin', 'onFrontAjaxAction')); //for not logged in users
 		
 		add_action( 'admin_head', array('RevSliderAdmin', 'include_custom_css' ));
+		
+		if($pagenow == 'plugins.php'){
+			add_action('admin_notices', array('RevSliderAdmin', 'add_plugins_page_notices'));
+		}
+		
+		// Add-on Admin
+		$addon_admin = new Rev_addon_Admin( 'rev_addon', RevSliderGlobals::SLIDER_REVISION );
+		add_action( 'admin_enqueue_scripts', array( $addon_admin, 'enqueue_styles') );
+		add_action( 'admin_enqueue_scripts', array( $addon_admin, 'enqueue_scripts') );
+		add_action( 'admin_menu', array( $addon_admin, 'add_plugin_admin_menu'), 11 );
+		// Add-on Admin Button Ajax Actions
+		add_action( 'wp_ajax_activate_plugin', array( $addon_admin, 'activate_plugin') );
+		add_action( 'wp_ajax_nopriv_activate_plugin', array( $addon_admin, 'activate_plugin') );
+		add_action( 'wp_ajax_deactivate_plugin', array( $addon_admin, 'deactivate_plugin'));
+		add_action( 'wp_ajax_nopriv_deactivate_plugin', array( $addon_admin, 'deactivate_plugin') );
+		add_action( 'wp_ajax_install_plugin', array( $addon_admin, 'install_plugin'));
+		add_action( 'wp_ajax_nopriv_install_plugin', array( $addon_admin, 'install_plugin') );
+		
+		
+		//add_filter('plugin_action_links', array('RevSliderAdmin', 'plugin_action_links' ), 10, 2);
+	}
+	
+	
+	public static function add_plugins_page_notices(){
+		$plugins = get_plugins();
+        
+        foreach($plugins as $plugin_id => $plugin){
+            
+            $slug = dirname($plugin_id);
+            if(empty($slug)) continue;
+			if($slug !== 'revslider') continue;
+            
+			//check version, latest updates and if registered or not
+			$validated = get_option('revslider-valid', 'false');
+			$latestv = get_option('revslider-latest-version', RevSliderGlobals::SLIDER_REVISION);
+			
+			if($validated == 'false'){ //activate for updates and support
+				add_action( "after_plugin_row_" . $plugin_id, array('RevSliderAdmin', 'show_purchase_notice'), 10, 3);
+			}
+			
+			if(version_compare($latestv, $plugin['Version'], '>')){
+				add_action( "after_plugin_row_" . $plugin_id, array('RevSliderAdmin', 'show_update_notice'), 10, 3);
+			}
+		}   
+	}
+	
+	
+	public static function show_purchase_notice(){
+		$wp_list_table = _get_list_table('WP_Plugins_List_Table');
+        ?>
+        <tr class="plugin-update-tr"><td colspan="<?php echo $wp_list_table->get_column_count(); ?>" class="plugin-update colspanchange">
+            <div class="update-message installer-q-icon">
+            <?php _e('Activate Slider Revolution for <a href="http://revolution.themepunch.com/direct-customer-benefits/" target="_blank">Premium Benefits</a>. You can <a href="'.admin_url('admin.php?page=revslider').'">Enter an existing licence key</a> or <a href="http://codecanyon.net/item/slider-revolution-responsive-wordpress-plugin/2751380?ref=themepunch&license=regular&open_purchase_for_item_id=2751380&purchasable=source" target="_blank">Purchase a licence key</a>.', 'revslider'); ?>
+            </div>
+        </tr>
+        <?php 
+	}
+	
+	
+	public static function show_update_notice(){
+		$wp_list_table = _get_list_table('WP_Plugins_List_Table');
+        ?>
+        <tr class="plugin-update-tr"><td colspan="<?php echo $wp_list_table->get_column_count(); ?>" class="plugin-update colspanchange">
+            <div class="update-message">
+            <?php _e('A new version of Slider Revolution is available.', 'revslider'); ?>
+            </div>
+        </tr>
+        <?php 
+	}
+	
+	
+	public static function plugin_action_links($links, $file){
+		if ($file == plugin_basename(RS_PLUGIN_FILE_PATH)){
+			$rs_enabled = get_option('revslider-valid', 'false');
+			
+			if($rs_enabled == 'true'){
+				krsort($links);
+				end($links);
+				$key = key($links);
+				$links[$key] .= '';
+			}
+		}
+		
+		return $links;
 	}
 	
 	
@@ -294,13 +379,14 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 			'layer' => __('layer:', 'revslider'),
 			'start_layer_in' => __('Start Layer "in" animation', 'revslider'),
 			'start_layer_out' => __('Start Layer "out" animation', 'revslider'),
-			'start_video' => __('Start Video', 'revslider'),
-			'stop_video' => __('Stop Video', 'revslider'),
-			'mute_video' => __('Mute Video', 'revslider'),
-			'unmute_video' => __('Unmute Video', 'revslider'),
+			'start_video' => __('Start Media', 'revslider'),
+			'stop_video' => __('Stop Media', 'revslider'),
+			'mute_video' => __('Mute Media', 'revslider'),
+			'unmute_video' => __('Unmute Media', 'revslider'),
 			'toggle_layer_anim' => __('Toggle Layer Animation', 'revslider'),
-			'toggle_video' => __('Toggle Video', 'revslider'),
-			'toggle_mute_video' => __('Toggle Mute Video', 'revslider'),
+			'toggle_video' => __('Toggle Media', 'revslider'),
+			'toggle_mute_video' => __('Toggle Mute Media', 'revslider'),
+			'toggle_global_mute_video' => __('Toggle Mute All Media', 'revslider'),
 			'last_slide' => __('Last Slide', 'revslider'),
 			'simulate_click' => __('Simulate Click', 'revslider'),
 			'togglefullscreen' => __('Toggle FullScreen', 'revslider'),
@@ -334,7 +420,8 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 			'import_selected_layer' => __('Import Selected Layer?', 'revslider'),
 			'import_all_layer_from_actions' => __('Layer Imported! The Layer has actions which include other Layers. Import all connected layers?', 'revslider'),
             'not_available_in_demo' => __('Not available in Demo Mode', 'revslider'),
-            'leave_not_saved' => __('By leaving now, all changes since the last saving will be lost. Really leave now?', 'revslider')
+            'leave_not_saved' => __('By leaving now, all changes since the last saving will be lost. Really leave now?', 'revslider'),
+            'static_layers' => __('--- Static Layers ---', 'revslider')
 		);
 
 		return $lang;
@@ -822,8 +909,16 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 					case 'import_slider_slidersview':
 					case 'import_slider_template_slidersview':
 					case 'import_slide_template_slidersview':
+					case 'fix_database_issues':
 						RevSliderFunctions::throwError(__('Function Only Available for Adminstrators', 'revslider'));
 						exit;
+					break;
+					default:
+						$return = apply_filters('revslider_admin_onAjaxAction_user_restriction', true, $action, $data, $slider, $slide, $operations);
+						if($return !== true){
+							RevSliderFunctions::throwError(__('Function Only Available for Adminstrators', 'revslider'));
+							exit;
+						}
 					break;
 				}
 			}
@@ -1001,8 +1096,7 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 					$responseText = __("Slide copied to current Slider, redirecting...",'revslider');
 					self::ajaxResponseSuccessRedirect($responseText,$urlRedirect);
 				break;
-				case "update_slide":
-				
+				case 'update_slide':
 					$slide->updateSlideFromData($data);
 					self::ajaxResponseSuccess(__("Slide updated",'revslider'));
 				break;
@@ -1230,6 +1324,7 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 				break;
 				case "preview_slide":
 					$operations->putSlidePreviewByData($data);
+					exit;
 				break;
 				case "preview_slider":
 					$sliderID = RevSliderFunctions::getPostGetVariable("sliderid");
@@ -1239,6 +1334,8 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 						$operations->previewOutputMarkup($sliderID);
 					else
 						$operations->previewOutput($sliderID);
+					
+					exit;
 				break;
 				case "get_import_slides_data":
 					$slides = array();
@@ -1274,6 +1371,30 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 						self::ajaxResponseData('');
 					}
 				break;
+				case "create_navigation_preset":
+					$nav = new RevSliderNavigation();
+					
+					$return = $nav->add_preset($data);
+					
+					if($return === true){
+						self::ajaxResponseSuccess(__('Navigation preset saved/updated', 'revslider'), array('navs' => $nav->get_all_navigations()));
+					}else{
+						if($return === false) $return = __('Preset could not be saved/values are the same', 'revslider');
+						self::ajaxResponseError($return);
+					}
+				break;
+				case "delete_navigation_preset":
+					$nav = new RevSliderNavigation();
+					
+					$return = $nav->delete_preset($data);
+					
+					if($return){
+						self::ajaxResponseSuccess(__('Navigation preset deleted', 'revslider'), array('navs' => $nav->get_all_navigations()));
+					}else{
+						if($return === false) $return = __('Preset not found', 'revslider');
+						self::ajaxResponseError($return);
+					}
+				break;
 				case "toggle_slide_state":
 					$currentState = $slide->toggleSlideStatFromData($data);
 					self::ajaxResponseData(array("state"=>$currentState));
@@ -1290,13 +1411,19 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 					$operations->updateGeneralSettings($data);
 					self::ajaxResponseSuccess(__("General settings updated",'revslider'));
 				break;
+				case "fix_database_issues":
+					update_option('revslider_change_database', true);
+					RevSliderFront::createDBTables();
+					
+					self::ajaxResponseSuccess(__('Database structure creation/update done','revslider'));
+				break;
 				case "update_posts_sortby":
 					$slider->updatePostsSortbyFromData($data);
 					self::ajaxResponseSuccess(__("Sortby updated",'revslider'));
 				break;
 				case "replace_image_urls":
 					$slider->replaceImageUrlsFromData($data);
-					self::ajaxResponseSuccess(__("Image urls replaced",'revslider'));
+					self::ajaxResponseSuccess(__("All Urls replaced",'revslider'));
 				break;
 				case "reset_slide_settings":
 					$slider->resetSlideSettings($data);
@@ -1520,10 +1647,16 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 					self::ajaxResponseData(array("data"=>$response));
 				break;
 				default:
-					self::ajaxResponseError("wrong ajax action: ".esc_attr($action));
+					$return = apply_filters('revslider_admin_onAjaxAction_switch', false, $action, $data, $slider, $slide, $operations);
+					if($return === false)
+						self::ajaxResponseError("wrong ajax action: ".esc_attr($action));
+					
+					exit;
 				break;
 			}
-
+			
+			
+			$role = self::getMenuRole(); //add additional security check and allow for example import only for admin
 		}
 		catch(Exception $e){
 

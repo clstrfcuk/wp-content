@@ -31,7 +31,7 @@ function x_shortcode_icon( $atts ) {
 
   if ( ! empty( $check ) ) {
 
-    $styles_output = '';
+    $styles_output = 'text-align: center; ';
 
     foreach ( $styles as $style ) {
       $styles_output .= $style . ' ';

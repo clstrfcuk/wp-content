@@ -8,7 +8,7 @@ class CSE_Alert {
 
 	public function ui() {
 		return array(
-      'title'       => __( 'Alert', csl18n() ),
+      'title'       => __( 'Alert', 'cornerstone' ),
       'autofocus' => array(
     		'heading' => '.x-alert .h-alert',
 				'content' => '.x-alert'

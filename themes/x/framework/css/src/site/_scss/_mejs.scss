@@ -74,6 +74,7 @@
     @include font-size(1.4);
     line-height: inherit;
     text-align: center;
+    vertical-align: top;
     background: none;
 
     &:focus,

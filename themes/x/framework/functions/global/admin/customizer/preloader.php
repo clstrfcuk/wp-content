@@ -52,10 +52,12 @@ function x_customizer_preloader() {
       font-size: 250px;
       font-weight: 600;
       line-height: 1;
-      -webkit-animation: pulseRotate 6s ease infinite;
-         -moz-animation: pulseRotate 6s ease infinite;
-           -o-animation: pulseRotate 6s ease infinite;
-              animation: pulseRotate 6s ease infinite;
+      animation: pulseRotate 6s ease infinite;
+    }
+
+    .x-preloader-logo svg {
+      width: 100%;
+      height: 100%;
     }
 
     .x-preloader-text {
@@ -77,15 +79,6 @@ function x_customizer_preloader() {
     // Animation.
     */
 
-    @-webkit-keyframes pulseRotate {
-      0%  { -webkit-transform: rotateY(0deg); }
-      10% { -webkit-transform: rotateY(180deg); }
-      20% { -webkit-transform: rotateY(360deg); }
-      50% { -webkit-transform: rotateY(360deg); }
-      60% { -webkit-transform: rotateY(180deg); }
-      70% { -webkit-transform: rotateY(0deg); }
-    }
-
     @keyframes pulseRotate {
       0%  { transform: rotateY(0deg); }
       10% { transform: rotateY(180deg); }
@@ -98,7 +91,7 @@ function x_customizer_preloader() {
   </style>
 
   <div class="x-preloader" id="x-customizer-preloader">
-    <div class="x-preloader-logo">X</div>
+    <div class="x-preloader-logo"><?php x_tco()->x_logo(); ?></div>
     <div class="x-preloader-text"><?php _e( 'Powered by Themeco', '__x__' ); ?></div>
   </div>
 

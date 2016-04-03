@@ -5,9 +5,9 @@ class CS_Revolution_Slider extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'revolution-slider',
-      'title'       => __( 'Revolution Slider', csl18n() ),
+      'title'       => __( 'Revolution Slider', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Place a Revolution Slider element into your content.', csl18n() ),
+      'description' => __( 'Place a Revolution Slider element into your content.', 'cornerstone' ),
       'supports'    => array()
     );
   }
@@ -34,7 +34,7 @@ class CS_Revolution_Slider extends Cornerstone_Element_Base {
 
       $found[] = array(
         'value'    => 'none',
-        'label'    => __( 'No Slider Available', csl18n() ),
+        'label'    => __( 'No Slider Available', 'cornerstone' ),
         'disabled' => true
       );
 
@@ -43,8 +43,8 @@ class CS_Revolution_Slider extends Cornerstone_Element_Base {
     $this->addControl(
       'alias',
       'select',
-      __( 'Select Slider', csl18n() ),
-      __( 'Choose from Revolution Slider elements that have already been created.', csl18n() ),
+      __( 'Select Slider', 'cornerstone' ),
+      __( 'Choose from Revolution Slider elements that have already been created.', 'cornerstone' ),
       $found[0]['value'],
       array(
         'choices' => $found

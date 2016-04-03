@@ -8,7 +8,7 @@
  * https://codex.wordpress.org/WordPress_Versions
  */
 
-if ( !function_exists('wp_json_encode') && !function_exists('_wp_json_sanity_check') && !function_exists('_wp_json_convert_string') ) :
+if ( ! function_exists( 'wp_json_encode' ) && ! function_exists( '_wp_json_sanity_check' ) && ! function_exists( '_wp_json_convert_string' ) ) :
 
 	/**
 	 * Encode a variable into JSON, with some sanity checks.
@@ -38,7 +38,7 @@ if ( !function_exists('wp_json_encode') && !function_exists('_wp_json_sanity_che
 		// If json_encode() was successful, no need to do more sanity checking.
 		// ... unless we're in an old version of PHP, and json_encode() returned
 		// a string containing 'null'. Then we need to do more sanity checking.
-		if ( false !== $json && ( version_compare( PHP_VERSION, '5.5', '>=' ) || false === strpos( $json, 'null' ) ) )  {
+		if ( false !== $json && ( version_compare( PHP_VERSION, '5.5', '>=' ) || false === strpos( $json, 'null' ) ) ) {
 			return $json;
 		}
 		try {
@@ -140,7 +140,7 @@ if ( !function_exists('wp_json_encode') && !function_exists('_wp_json_sanity_che
 
 endif;
 
-if ( !function_exists('wp_scripts') ) :
+if ( ! function_exists( 'wp_scripts' ) ) :
 	/**
 	 * Initialize $wp_scripts if it has not been set.
 	 *
@@ -153,8 +153,27 @@ if ( !function_exists('wp_scripts') ) :
 	function wp_scripts() {
 		global $wp_scripts;
 		if ( ! ( $wp_scripts instanceof WP_Scripts ) ) {
-			$wp_scripts = new WP_Scripts();
+			$wp_scripts = new WP_Scripts(); // WPCS: override ok.
 		}
 		return $wp_scripts;
+	}
+endif;
+
+if ( ! function_exists( 'wp_styles' ) ) :
+	/**
+	 * Initialize $wp_styles if it has not been set.
+	 *
+	 * @global WP_Styles $wp_styles
+	 *
+	 * @since 4.2.0
+	 *
+	 * @return WP_Styles WP_Styles instance.
+	 */
+	function wp_styles() {
+		global $wp_styles;
+		if ( ! ( $wp_styles instanceof WP_Styles ) ) {
+			$wp_styles = new WP_Styles();
+		}
+		return $wp_styles;
 	}
 endif;

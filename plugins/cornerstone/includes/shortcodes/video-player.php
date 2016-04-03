@@ -133,14 +133,18 @@ function x_shortcode_video_player( $atts ) {
   //
   // Markup.
   //
+  if ( ! empty( $sources ) ) {
+
+    $sources = implode( '', $sources );
+    $video = "<video class=\"x-mejs{$advanced_controls}\"{$poster_attr}{$preload}{$autoplay}{$loop}{$muted}>{$sources}</video>";
+
+  } else {
+    $video = '<span class="x-mejs-no-source">' . __( 'Video source missing', 'cornerstone' ) . '</span>';
+  }
 
   $output = "<div {$id} class=\"{$class}{$hide_controls}{$autoplay}{$loop}{$muted}{$no_container}{$vimeo}{$youtube}\" {$data} {$style}>"
             . $bg_template_start
-              . "<div class=\"x-video-inner{$type}\">"
-                . "<video class=\"x-mejs{$advanced_controls}\"{$poster_attr}{$preload}{$autoplay}{$loop}{$muted}>"
-                  . implode( '', $sources )
-                . '</video>'
-              . '</div>'
+              . "<div class=\"x-video-inner{$type}\">{$video}</div>"
             . $bg_template_end
           . '</div>';
 

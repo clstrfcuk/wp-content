@@ -56,7 +56,7 @@ window.csg = window.csg || {};
 
 
 
-    $(window).load(function(){
+    $(window).on( 'load', function(){
     	this.shortcodes = new ShortcodeCollection();
     	this.shortcodes.fetch( {reset: true } );
     }.bind(this));
@@ -445,10 +445,16 @@ module.exports = Backbone.View.extend({
 
     var atts = {};
     var content = '';
+    var closeShortcode = this.collection.selected.get( 'container' ) || false;
+
     this.controls.each(function(control){
 
       var data = control.get('data'),
           name = control.get('param_name');
+
+      if ( name == 'content' ) {
+        closeShortcode = true;
+      }
 
       if ( data !== undefined && data != '' ) {
 
@@ -468,10 +474,9 @@ module.exports = Backbone.View.extend({
 
     var tag = this.collection.selected.get( 'id' );
 
-    output = '[' + tag;
-    closingTag = '';
+    var output = '[' + tag;
 
-    _(atts).each(function(value, name){
+    _( atts ).each(function(value, name){
       output += ' '+name + '="' + value +'"';
     });
 
@@ -479,10 +484,8 @@ module.exports = Backbone.View.extend({
 
     if (content) output += content;
 
-    if (content || this.collection.selected.get( 'content_element' ) ) {
-
-      closingTag = '[/' + tag + ']';
-      output += closingTag;
+    if ( closeShortcode ) {
+      output += '[/' + tag + ']';
     }
 
     console.log( "Inserting Shortcode: " + output );

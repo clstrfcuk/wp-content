@@ -5,9 +5,9 @@ class CS_Prompt extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'prompt',
-      'title'       => __( 'Prompt', csl18n() ),
+      'title'       => __( 'Prompt', 'cornerstone' ),
       'section'     => 'marketing',
-      'description' => __( 'Prompt description.', csl18n() ),
+      'description' => __( 'Prompt description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'heading' => '.h-prompt',
@@ -22,9 +22,9 @@ class CS_Prompt extends Cornerstone_Element_Base {
     $this->addControl(
       'heading',
       'text',
-      __( 'Title &amp; Content', csl18n() ),
-      __( 'Enter the title and content for your Prompt.', csl18n() ),
-      __( 'Prompt Title', csl18n() )
+      __( 'Title &amp; Content', 'cornerstone' ),
+      __( 'Enter the title and content for your Prompt.', 'cornerstone' ),
+      __( 'Prompt Title', 'cornerstone' )
     );
 
     $this->addControl(
@@ -32,33 +32,33 @@ class CS_Prompt extends Cornerstone_Element_Base {
       'textarea',
       NULL,
       NULL,
-      __( 'This is where the main content for your Prompt can go.', csl18n() ),
+      __( 'This is where the main content for your Prompt can go.', 'cornerstone' ),
       array(
-        'expandable' => __( 'Content', csl18n() )
+        'expandable' => __( 'Content', 'cornerstone' )
       )
     );
 
     $this->addControl(
       'button_text',
       'text',
-      __( 'Button Text', csl18n() ),
-      __( 'Enter the text for your Prompt button.', csl18n() ),
-      __( 'Click Me!', csl18n() )
+      __( 'Button Text', 'cornerstone' ),
+      __( 'Enter the text for your Prompt button.', 'cornerstone' ),
+      __( 'Click Me!', 'cornerstone' )
     );
 
     $this->addControl(
       'button_icon',
       'icon-choose',
-      __( 'Button Icon', csl18n() ),
-      __( 'Optionally enter the button icon.', csl18n() ),
+      __( 'Button Icon', 'cornerstone' ),
+      __( 'Optionally enter the button icon.', 'cornerstone' ),
       'lightbulb-o'
     );
 
     $this->addControl(
       'circle',
       'toggle',
-      __( 'Marketing Circle', csl18n() ),
-      __( 'Select to include a marketing circle around your button', csl18n() ),
+      __( 'Marketing Circle', 'cornerstone' ),
+      __( 'Select to include a marketing circle around your button', 'cornerstone' ),
       false
     );
 
@@ -67,14 +67,14 @@ class CS_Prompt extends Cornerstone_Element_Base {
     $this->addControl(
       'align',
       'choose',
-      __( 'Alignment', csl18n() ),
-      __( 'Select the alignment of your Prompt.', csl18n() ),
+      __( 'Alignment', 'cornerstone' ),
+      __( 'Select the alignment of your Prompt.', 'cornerstone' ),
       'left',
       array(
         'columns' => '2',
         'choices' => array(
-          array( 'value' => 'left',  'label' => __( 'Left', csl18n() ),  'icon' => fa_entity( 'align-left' ) ),
-          array( 'value' => 'right', 'label' => __( 'Right', csl18n() ), 'icon' => fa_entity( 'align-right' ) )
+          array( 'value' => 'left',  'label' => __( 'Left', 'cornerstone' ),  'icon' => fa_entity( 'align-left' ) ),
+          array( 'value' => 'right', 'label' => __( 'Right', 'cornerstone' ), 'icon' => fa_entity( 'align-right' ) )
         )
       )
     );
@@ -86,6 +86,10 @@ class CS_Prompt extends Cornerstone_Element_Base {
     extract( $atts );
 
     $href_target = ( $href_target == 'true' ) ? 'blank' : '';
+
+    $heading     = cs_clean_shortcode_att( $heading );
+    $message     = cs_clean_shortcode_att( $message );
+    $button_text = cs_clean_shortcode_att( $button_text );
 
     $shortcode = "[x_prompt type=\"$align\" title=\"$heading\" message=\"$message\" button_text=\"$button_text\" button_icon=\"$button_icon\" circle=\"$circle\" href=\"$href\" href_title=\"$href_title\" target=\"$href_target\"{$extra}]";
 

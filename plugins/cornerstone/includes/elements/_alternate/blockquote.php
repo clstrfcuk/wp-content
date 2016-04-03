@@ -5,9 +5,9 @@ class CS_Blockquote extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'blockquote',
-      'title'       => __( 'Blockquote', csl18n() ),
+      'title'       => __( 'Blockquote', 'cornerstone' ),
       'section'     => 'typography',
-      'description' => __( 'Block Quote shortcode.', csl18n() ),
+      'description' => __( 'Block Quote shortcode.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'empty'       => array( 'content' => '', 'cite' => '' ),
       'autofocus' => array(
@@ -22,11 +22,11 @@ class CS_Blockquote extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'textarea',
-      __( 'Quote &amp Citation', csl18n() ),
-      __( 'Enter your quote in the textarea below. If you want to cite your quote, you can place that in the input following the textarea.', csl18n() ),
-      __( 'Input your quotation here. Also, you can cite your quotes if you would like.', csl18n() ),
+      __( 'Quote &amp Citation', 'cornerstone' ),
+      __( 'Enter your quote in the textarea below. If you want to cite your quote, you can place that in the input following the textarea.', 'cornerstone' ),
+      __( 'Input your quotation here. Also, you can cite your quotes if you would like.', 'cornerstone' ),
       array(
-        'expandable' => __( 'Quote', csl18n() )
+        'expandable' => __( 'Quote', 'cornerstone' )
       )
     );
 
@@ -35,21 +35,21 @@ class CS_Blockquote extends Cornerstone_Element_Base {
       'text',
       NULL,
       NULL,
-      __( 'Mr. WordPress', csl18n() )
+      __( 'Mr. WordPress', 'cornerstone' )
     );
 
     $this->addControl(
       'align',
       'choose',
-      __( 'Alignment', csl18n() ),
-      __( 'Select the alignment of the blockquote.', csl18n() ),
+      __( 'Alignment', 'cornerstone' ),
+      __( 'Select the alignment of the blockquote.', 'cornerstone' ),
       'left',
       array(
         'columns' => '3',
         'choices' => array(
-          array( 'value' => 'left',   'tooltip' => __( 'Left', csl18n() ),   'icon' => fa_entity( 'align-left' ) ),
-          array( 'value' => 'center', 'tooltip' => __( 'Center', csl18n() ), 'icon' => fa_entity( 'align-center' ) ),
-          array( 'value' => 'right',  'tooltip' => __( 'Right', csl18n() ),  'icon' => fa_entity( 'align-right' ) )
+          array( 'value' => 'left',   'tooltip' => __( 'Left', 'cornerstone' ),   'icon' => fa_entity( 'align-left' ) ),
+          array( 'value' => 'center', 'tooltip' => __( 'Center', 'cornerstone' ), 'icon' => fa_entity( 'align-center' ) ),
+          array( 'value' => 'right',  'tooltip' => __( 'Right', 'cornerstone' ),  'icon' => fa_entity( 'align-right' ) )
         )
       )
     );

@@ -29,10 +29,7 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 
 		$result = $this->getAll();
 
-		// Suppress PHP error output unless debugging
-		if ( CS()->common()->isDebug() )
-			return wp_send_json_success( $result );
-		return @wp_send_json_success( $result );
+		return cs_send_json_success( $result );
 
 	}
 
@@ -41,12 +38,9 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 		$result = $this->data_migration( $data );
 
 		if ( is_wp_error( $result ) )
-			wp_send_json_error( array( 'message' => $result->get_error_message() ) );
+			cs_send_json_error( array( 'message' => $result->get_error_message() ) );
 
-		// Suppress PHP error output unless debugging
-		if ( CS()->common()->isDebug() )
-			return wp_send_json_success( $result );
-		return @wp_send_json_success( $result );
+		return cs_send_json_success( $result );
 
 	}
 
@@ -69,6 +63,7 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 
 	public function loadNativeBlocks() {
 
+		if ( ! $this->plugin->common()->is_validated() ) return;
 
 		foreach ( glob( $this->source_path . "block-*.php" ) as $filename ) {
 
@@ -89,6 +84,7 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 
 	public function loadNativePages() {
 
+		if ( ! $this->plugin->common()->is_validated() ) return;
 
 		foreach ( glob( $this->source_path . "page-*.php" ) as $filename ) {
 
@@ -133,20 +129,20 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 	public function ajax_save( $post ) {
 
 		if ( !isset( $post['elements'] ) )
-			wp_send_json_error( 'Missing element data.' );
+			cs_send_json_error( 'Missing element data.' );
 
 		if ( !isset( $post['type'] ) )
 			$post['type'] = 'block';
 
 		if ( !isset( $post['title'] ) )
-			$post['title'] = __( 'Untitled', csl18n() );
+			$post['title'] = __( 'Untitled', 'cornerstone' );
 
 		$post['slug'] = uniqid( sanitize_key( $post['title'] ) . '_' );
 
 		$title = $post['title'];
 		$duplicates = 1;
 		while ( !is_null( get_page_by_title( $title, ARRAY_N, 'cs_user_templates' ) ) ) {
-			$title = sprintf( __( '%s (%d)', csl18n() ), $post['title'], $duplicates++ );
+			$title = sprintf( __( '%s (%d)', 'cornerstone' ), $post['title'], $duplicates++ );
 		}
 		$post['title'] = $title;
 
@@ -170,16 +166,14 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 		$result = array( 'template' => $post );
 
 		// Suppress PHP error output unless debugging
-		if ( CS()->common()->isDebug() )
-			return wp_send_json_success( $result );
-		return @wp_send_json_success( $result );
+		return cs_send_json_success( $result );
 
 	}
 
 	public function ajax_delete( $post ) {
 
 		if ( !isset( $post['slug'] ) )
-			return wp_send_json_error( 'Invalid request.' );
+			return cs_send_json_error( 'Invalid request.' );
 
 		$query = new WP_Query( array(
 			'post_type'  => 'cs_user_templates',
@@ -190,12 +184,10 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 		) );
 
 		if ( $query->post && wp_delete_post( $query->post->ID, true ) ) {
-			if ( CS()->common()->isDebug() )
-				return wp_send_json_success();
-			return @wp_send_json_success();
+			return cs_send_json_success();
 		}
 
-		return wp_send_json_error( 'Unable to delete template.' );
+		return cs_send_json_error( 'Unable to delete template.' );
 
 	}
 

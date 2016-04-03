@@ -198,12 +198,10 @@ jQuery(document).ready(function($) {
   //
 
   $('a[href*="#"]').on('touchstart click', function(e) {
-    $href            = $(this).attr('href');
-    notComments      = $href.indexOf('#comments') === -1;
-    notAccordion     = $href.indexOf('#collapse-') === -1;
-    notTabbedContent = $href.indexOf('#tab-') === -1;
-    if ( $href !== '#' && notComments && notAccordion && notTabbedContent ) {
-      var theId = $href.split('#').pop();
+    href        = $(this).attr('href');
+    notComments = href.indexOf('#comments') === -1;
+    if ( href !== '#' && notComments ) {
+      var theId = href.split('#').pop();
       var $el   = $('#' + theId);
       if ( $el.length > 0 ) {
         e.preventDefault();

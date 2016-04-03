@@ -5,9 +5,9 @@ class CS_Layerslider extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'layerslider',
-      'title'       => __( 'LayerSlider', csl18n() ),
+      'title'       => __( 'LayerSlider', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Place a LayerSlider element into your content.', csl18n() ),
+      'description' => __( 'Place a LayerSlider element into your content.', 'cornerstone' ),
       'supports'    => array()
     );
   }
@@ -33,7 +33,7 @@ class CS_Layerslider extends Cornerstone_Element_Base {
 
       $found[] = array(
         'value'    => 'none',
-        'label'    => __( 'No Slider Available', csl18n() ),
+        'label'    => __( 'No Slider Available', 'cornerstone' ),
         'disabled' => true
       );
 
@@ -42,8 +42,8 @@ class CS_Layerslider extends Cornerstone_Element_Base {
     $this->addControl(
       'source_id',
       'select',
-      __( 'Select Slider', csl18n() ),
-      __( 'Choose from LayerSlider elements that have already been created.', csl18n() ),
+      __( 'Select Slider', 'cornerstone' ),
+      __( 'Choose from LayerSlider elements that have already been created.', 'cornerstone' ),
       $found[0]['value'],
       array(
         'choices' => $found

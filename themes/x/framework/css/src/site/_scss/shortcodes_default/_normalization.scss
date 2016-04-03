@@ -13,10 +13,9 @@
 // Box Sizing Reset
 // =============================================================================
 
-.x-section,
-.x-section *,
-.x-section *:before,
-.x-section *:after {
+*,
+*:before,
+*:after {
   -webkit-box-sizing: border-box !important;
      -moz-box-sizing: border-box !important;
           box-sizing: border-box !important;
@@ -27,11 +26,9 @@
 // Images
 // =============================================================================
 
-.x-section {
-  img {
-    max-width: 100%;
-    height: auto;
-    vertical-align: middle;
-    -ms-interpolation-mode: bicubic;
-  }
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+  -ms-interpolation-mode: bicubic;
 }

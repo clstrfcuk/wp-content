@@ -5,13 +5,13 @@ class CS_Column extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'column',
-      'title'       => __( 'Column', csl18n() ),
+      'title'       => __( 'Column', 'cornerstone' ),
       'section'     => '_internal',
-      'description' => __( 'Column description.', csl18n() ),
+      'description' => __( 'Column description.', 'cornerstone' ),
       'supports'    => array( 'text_align', 'id', 'class', 'style' ),
       'helpText'   => array(
-        'title' => __( 'Want to add content?', csl18n() ),
-        'message' => sprintf( __( 'Click the <strong class="glue">%s Elements</strong> icon and drag your elements into a column.', csl18n() ), '%%icon-nav-elements-solid%%' ),
+        'title' => __( 'Want to add content?', 'cornerstone' ),
+        'message' => sprintf( __( 'Click the <strong class="glue">%s Elements</strong> icon and drag your elements into a column.', 'cornerstone' ), '%%icon-nav-elements-solid%%' ),
       ),
       'render'      => false,
     );
@@ -22,16 +22,16 @@ class CS_Column extends Cornerstone_Element_Base {
     $this->addControl(
       'bg_color',
       'color',
-      __( 'Background Color', csl18n() ),
-      __( 'Select the background color of your Column.', csl18n() ),
+      __( 'Background Color', 'cornerstone' ),
+      __( 'Select the background color of your Column.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'padding',
       'dimensions',
-      __( 'Padding', csl18n() ),
-      __( 'Specify a custom padding for each side of this element. Can accept CSS units like px, ems, and % (default unit is px).', csl18n() ),
+      __( 'Padding', 'cornerstone' ),
+      __( 'Specify a custom padding for each side of this element. Can accept CSS units like px, ems, and % (default unit is px).', 'cornerstone' ),
       array( '0px', '0px', '0px', '0px', 'linked' )
     );
 
@@ -40,16 +40,16 @@ class CS_Column extends Cornerstone_Element_Base {
     $this->addControl(
       'fade',
       'toggle',
-      __( 'Enable Fade Effect', csl18n() ),
-      __( 'Activating will make this column fade into view when the user scrolls to it for the first time.', csl18n() ),
+      __( 'Enable Fade Effect', 'cornerstone' ),
+      __( 'Activating will make this column fade into view when the user scrolls to it for the first time.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'fade_animation',
       'choose',
-      __( 'Fade Direction', csl18n() ),
-      __( 'Choose a direction to fade from. "None" will allow the column to fade in without coming from a particular direction.', csl18n() ),
+      __( 'Fade Direction', 'cornerstone' ),
+      __( 'Choose a direction to fade from. "None" will allow the column to fade in without coming from a particular direction.', 'cornerstone' ),
       'in',
       array(
         'condition' => array(
@@ -57,11 +57,11 @@ class CS_Column extends Cornerstone_Element_Base {
         ),
         'columns' => '5',
         'choices' => array(
-          array( 'value' => 'in',             'tooltip' => __( 'None', csl18n() ),   'icon' => fa_entity( 'ban' ) ),
-          array( 'value' => 'in-from-bottom', 'tooltip' => __( 'Top', csl18n() ),    'icon' => fa_entity( 'arrow-up' ) ),
-          array( 'value' => 'in-from-left',   'tooltip' => __( 'Right', csl18n() ),  'icon' => fa_entity( 'arrow-right' ) ),
-          array( 'value' => 'in-from-top',    'tooltip' => __( 'Bottom', csl18n() ), 'icon' => fa_entity( 'arrow-down' ) ),
-          array( 'value' => 'in-from-right',  'tooltip' => __( 'Left', csl18n() ),   'icon' => fa_entity( 'arrow-left' ) )
+          array( 'value' => 'in',             'tooltip' => __( 'None', 'cornerstone' ),   'icon' => fa_entity( 'ban' ) ),
+          array( 'value' => 'in-from-bottom', 'tooltip' => __( 'Top', 'cornerstone' ),    'icon' => fa_entity( 'arrow-up' ) ),
+          array( 'value' => 'in-from-left',   'tooltip' => __( 'Right', 'cornerstone' ),  'icon' => fa_entity( 'arrow-right' ) ),
+          array( 'value' => 'in-from-top',    'tooltip' => __( 'Bottom', 'cornerstone' ), 'icon' => fa_entity( 'arrow-down' ) ),
+          array( 'value' => 'in-from-right',  'tooltip' => __( 'Left', 'cornerstone' ),   'icon' => fa_entity( 'arrow-left' ) )
         )
       )
     );
@@ -69,8 +69,8 @@ class CS_Column extends Cornerstone_Element_Base {
     $this->addControl(
       'fade_animation_offset',
       'text',
-      __( 'Offset', csl18n() ),
-      __( 'Determines how drastic the fade effect will be.', csl18n() ),
+      __( 'Offset', 'cornerstone' ),
+      __( 'Determines how drastic the fade effect will be.', 'cornerstone' ),
       '45px',
       array(
         'condition' => array(
@@ -83,8 +83,8 @@ class CS_Column extends Cornerstone_Element_Base {
     $this->addControl(
       'fade_duration',
       'text',
-      __( 'Duration', csl18n() ),
-      __( 'Determines how long the fade effect will be.', csl18n() ),
+      __( 'Duration', 'cornerstone' ),
+      __( 'Determines how long the fade effect will be.', 'cornerstone' ),
       '750',
       array(
         'condition' => array(

@@ -5,9 +5,9 @@ class CS_Icon extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'icon',
-      'title'       => __( 'Icon', csl18n() ),
+      'title'       => __( 'Icon', 'cornerstone' ),
       'section'     => 'typography',
-      'description' => __( 'Icon description.', csl18n() ),
+      'description' => __( 'Icon description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' )
     );
   }
@@ -17,16 +17,16 @@ class CS_Icon extends Cornerstone_Element_Base {
     $this->addControl(
       'type',
       'icon-choose',
-      __( 'Icon', csl18n() ),
-      __( 'Specify the icon you would like to use.', csl18n() ),
+      __( 'Icon', 'cornerstone' ),
+      __( 'Specify the icon you would like to use.', 'cornerstone' ),
       'check'
     );
 
     $this->addControl(
       'icon_color',
       'color',
-      __( 'Icon Color &amp; Background Color', csl18n() ),
-      __( 'Specify custom colors for your icon if desired.', csl18n() ),
+      __( 'Icon Color &amp; Background Color', 'cornerstone' ),
+      __( 'Specify custom colors for your icon if desired.', 'cornerstone' ),
       ''
     );
 
@@ -41,8 +41,8 @@ class CS_Icon extends Cornerstone_Element_Base {
     $this->addControl(
       'icon_size',
       'text',
-      __( 'Icon Size &amp; Background Size', csl18n() ),
-      __( 'Specify custom dimensions for your icon for use in situations other than inline.', csl18n() ),
+      __( 'Icon Size &amp; Background Size', 'cornerstone' ),
+      __( 'Specify custom dimensions for your icon for use in situations other than inline.', 'cornerstone' ),
       ''
     );
 
@@ -57,8 +57,8 @@ class CS_Icon extends Cornerstone_Element_Base {
     $this->addControl(
       'bg_border_radius',
       'text',
-      __( 'Background Border Radius', csl18n() ),
-      __( 'Give your icon\'s background a custom border radius.', csl18n() ),
+      __( 'Background Border Radius', 'cornerstone' ),
+      __( 'Give your icon\'s background a custom border radius.', 'cornerstone' ),
       ''
     );
 

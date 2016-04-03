@@ -5,9 +5,9 @@ class CS_Essential_Grid extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'essential-grid',
-      'title'       => __( 'Essential Grid', csl18n() ),
+      'title'       => __( 'Essential Grid', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Place an Essential Grid element into your content.', csl18n() ),
+      'description' => __( 'Place an Essential Grid element into your content.', 'cornerstone' ),
       'supports'    => array()
     );
   }
@@ -33,7 +33,7 @@ class CS_Essential_Grid extends Cornerstone_Element_Base {
 
       $found[] = array(
         'value'    => 'none',
-        'label'    => __( 'No Grids Available', csl18n() ),
+        'label'    => __( 'No Grids Available', 'cornerstone' ),
         'disabled' => true
       );
 
@@ -42,8 +42,8 @@ class CS_Essential_Grid extends Cornerstone_Element_Base {
     $this->addControl(
       'alias',
       'select',
-      __( 'Select Grid', csl18n() ),
-      __( 'Choose from Essential Grid elements that have already been created.', csl18n() ),
+      __( 'Select Grid', 'cornerstone' ),
+      __( 'Choose from Essential Grid elements that have already been created.', 'cornerstone' ),
       $found[0]['value'],
       array(
         'choices' => $found

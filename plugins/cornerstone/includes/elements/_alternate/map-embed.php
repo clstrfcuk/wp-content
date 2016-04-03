@@ -5,9 +5,9 @@ class CS_Map_Embed extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'map-embed',
-      'title'       => __( 'Map Embed', csl18n() ),
+      'title'       => __( 'Map Embed', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Map Embed description.', csl18n() ),
+      'description' => __( 'Map Embed description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'empty'       => array( 'content' => '' )
     );
@@ -18,16 +18,16 @@ class CS_Map_Embed extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'textarea',
-      __( 'Embed Code', csl18n() ),
-      __( 'Input your &lt;iframe&gt; or &lt;embed&gt; code from a third party service.', csl18n() ),
+      __( 'Embed Code', 'cornerstone' ),
+      __( 'Input your &lt;iframe&gt; or &lt;embed&gt; code from a third party service.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'no_container',
       'toggle',
-      __( 'No Container', csl18n() ),
-      __( 'Select to remove the container around the map.', csl18n() ),
+      __( 'No Container', 'cornerstone' ),
+      __( 'Select to remove the container around the map.', 'cornerstone' ),
       false
     );
 

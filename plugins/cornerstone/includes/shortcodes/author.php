@@ -15,7 +15,7 @@ function x_shortcode_author( $atts ) {
   $id        = ( $id        != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
   $class     = ( $class     != '' ) ? 'x-author-box cf ' . esc_attr( $class ) : 'x-author-box cf';
   $style     = ( $style     != '' ) ? 'style="' . $style . '"' : '';
-  $title     = ( $title     != '' ) ? $title : __( 'About the Author', csl18n() );
+  $title     = ( $title     != '' ) ? $title : __( 'About the Author', 'cornerstone' );
   $author_id = ( $author_id != '' ) ? $author_id : get_the_author_meta( 'ID' );
 
   $description  = get_the_author_meta( 'description', $author_id );

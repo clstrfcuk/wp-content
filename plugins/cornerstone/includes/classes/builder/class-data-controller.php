@@ -121,6 +121,21 @@ class Cornerstone_Data_Controller  extends Cornerstone_Plugin_Component {
 
 		}
 
+		// Remap old visibility
+		if ( isset( $element['visibility'] ) && is_array( $element['visibility'] ) ) {
+			foreach ( $element['visibility'] as $key => $value) {
+				$element['visibility'][$key] = str_replace( 'x-hide-', '', $value );
+			}
+		}
+
+		// Remap old text align
+		if ( isset( $element['text_align'] ) ) {
+			$ta_migrate = array( 'left-text' => 'l', 'center-text' => 'c', 'right-text' => 'r', 'justify-text' => 'j' );
+			if ( isset( $ta_migrate[ $element['text_align'] ] ) ) {
+				$element['text_align'] = $ta_migrate[ $element['text_align'] ];
+			}
+		}
+
 		return $element;
 
 	}

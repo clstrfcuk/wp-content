@@ -5,9 +5,9 @@ class CS_Button extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'button',
-      'title'       => __( 'Button', csl18n() ),
+      'title'       => __( 'Button', 'cornerstone' ),
       'section'     => 'marketing',
-      'description' => __( 'Button description.', csl18n() ),
+      'description' => __( 'Button description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'content' => '.x-btn'
@@ -20,9 +20,9 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'text',
-      __( 'Text', csl18n() ),
-      __( 'Enter your text.', csl18n() ),
-      __( 'Click Me!', csl18n() )
+      __( 'Text', 'cornerstone' ),
+      __( 'Enter your text.', 'cornerstone' ),
+      __( 'Click Me!', 'cornerstone' )
     );
 
     $this->addSupport( 'link' );
@@ -30,15 +30,15 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'type',
       'select',
-      __( 'Type', csl18n() ),
-      __( 'Select the button type.', csl18n() ),
+      __( 'Type', 'cornerstone' ),
+      __( 'Select the button type.', 'cornerstone' ),
       'global',
       array(
         'choices' => array(
-          array( 'value' => 'global',      'label' => __( '&ndash; Global Setting &ndash;', csl18n() ) ),
-          array( 'value' => 'real',        'label' => __( 'Real', csl18n() ) ),
-          array( 'value' => 'flat',        'label' => __( 'Flat', csl18n() ) ),
-          array( 'value' => 'transparent', 'label' => __( 'Transparent', csl18n() ) )
+          array( 'value' => 'global',      'label' => __( 'Global Setting', 'cornerstone' ) ),
+          array( 'value' => 'real',        'label' => __( 'Real', 'cornerstone' ) ),
+          array( 'value' => 'flat',        'label' => __( 'Flat', 'cornerstone' ) ),
+          array( 'value' => 'transparent', 'label' => __( 'Transparent', 'cornerstone' ) )
         )
       )
     );
@@ -46,15 +46,15 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'shape',
       'select',
-      __( 'Shape', csl18n() ),
-      __( 'Select the button shape.', csl18n() ),
+      __( 'Shape', 'cornerstone' ),
+      __( 'Select the button shape.', 'cornerstone' ),
       'global',
       array(
         'choices' => array(
-          array( 'value' => 'global',  'label' => __( '&ndash; Global Setting &ndash;', csl18n() ) ),
-          array( 'value' => 'square',  'label' => __( 'Square', csl18n() ) ),
-          array( 'value' => 'rounded', 'label' => __( 'Rounded', csl18n() ) ),
-          array( 'value' => 'pill',    'label' => __( 'Pill', csl18n() ) )
+          array( 'value' => 'global',  'label' => __( 'Global Setting', 'cornerstone' ) ),
+          array( 'value' => 'square',  'label' => __( 'Square', 'cornerstone' ) ),
+          array( 'value' => 'rounded', 'label' => __( 'Rounded', 'cornerstone' ) ),
+          array( 'value' => 'pill',    'label' => __( 'Pill', 'cornerstone' ) )
         )
       )
     );
@@ -62,17 +62,18 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'button_size',
       'select',
-      __( 'Size', csl18n() ),
-      __( 'Select the button size.', csl18n() ),
-      'large',
+      __( 'Size', 'cornerstone' ),
+      __( 'Select the button size.', 'cornerstone' ),
+      'global',
       array(
         'choices' => array(
-          array( 'value' => 'mini',    'label' => __( 'Mini', csl18n() ) ),
-          array( 'value' => 'small',   'label' => __( 'Small', csl18n() ) ),
-          array( 'value' => 'regular', 'label' => __( 'Regular', csl18n() ) ),
-          array( 'value' => 'large',   'label' => __( 'Large', csl18n() ) ),
-          array( 'value' => 'x-large', 'label' => __( 'X-Large', csl18n() ) ),
-          array( 'value' => 'jumbo',   'label' => __( 'Jumbo', csl18n() ) )
+          array( 'value' => 'global',  'label' => __( 'Global Setting', 'cornerstone' ) ),
+          array( 'value' => 'mini',    'label' => __( 'Mini', 'cornerstone' ) ),
+          array( 'value' => 'small',   'label' => __( 'Small', 'cornerstone' ) ),
+          array( 'value' => 'regular', 'label' => __( 'Regular', 'cornerstone' ) ),
+          array( 'value' => 'large',   'label' => __( 'Large', 'cornerstone' ) ),
+          array( 'value' => 'x-large', 'label' => __( 'X-Large', 'cornerstone' ) ),
+          array( 'value' => 'jumbo',   'label' => __( 'Jumbo', 'cornerstone' ) )
         ),
         'offState' => 'notreallyno'
       )
@@ -81,40 +82,39 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'block',
       'toggle',
-      __( 'Block', csl18n() ),
-      __( 'Select to make your button go fullwidth.', csl18n() ),
+      __( 'Block', 'cornerstone' ),
+      __( 'Select to make your button go fullwidth.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'circle',
       'toggle',
-      __( 'Marketing Circle', csl18n() ),
-      __( 'Select to include a marketing circle around your button.', csl18n() ),
+      __( 'Marketing Circle', 'cornerstone' ),
+      __( 'Select to include a marketing circle around your button.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'icon_toggle',
       'toggle',
-      __( 'Enable Icon', csl18n() ),
-      __( 'Select if you would like to add an icon to your button', csl18n() ),
+      __( 'Enable Icon', 'cornerstone' ),
+      __( 'Select if you would like to add an icon to your button', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'icon_placement',
-      'choose',
-      __( 'Icon Placement', csl18n() ),
-      __( 'Place the icon before or after the button text, or even override the button text.', csl18n() ),
+      'select',
+      __( 'Icon Placement', 'cornerstone' ),
+      __( 'Place the icon before or after the button text, or even override the button text.', 'cornerstone' ),
       'before',
       array(
         'condition' => array( 'icon_toggle' => true ),
-        'columns' => '3',
         'choices' => array(
-          array( 'value' => 'notext', 'label' => __( 'Icon Only', csl18n() ),  'icon' => fa_entity( 'ban' ) ),
-          array( 'value' => 'before', 'label' => __( 'Before', csl18n() ),  'icon' => fa_entity( 'arrow-left' ) ),
-          array( 'value' => 'after',  'label' => __( 'After', csl18n() ), 'icon' => fa_entity( 'arrow-right' ) )
+          array( 'value' => 'notext', 'label' => __( 'Icon Only', 'cornerstone' ) ),
+          array( 'value' => 'before', 'label' => __( 'Before', 'cornerstone' ) ),
+          array( 'value' => 'after',  'label' => __( 'After', 'cornerstone' ) )
         )
       )
     );
@@ -122,8 +122,8 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'icon_type',
       'icon-choose',
-      __( 'Icon', csl18n() ),
-      __( 'Icon to be displayed inside your button.', csl18n() ),
+      __( 'Icon', 'cornerstone' ),
+      __( 'Icon to be displayed inside your button.', 'cornerstone' ),
       'lightbulb-o',
       array(
         'condition' => array( 'icon_toggle' => true )
@@ -133,14 +133,14 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'info',
       'select',
-      __( 'Info', csl18n() ),
-      __( 'Select whether or not you want to add a popover or tooltip to your button.', csl18n() ),
+      __( 'Info', 'cornerstone' ),
+      __( 'Select whether or not you want to add a popover or tooltip to your button.', 'cornerstone' ),
       'none',
       array(
         'choices' => array(
-          array( 'value' => 'none',    'label' => __( 'None', csl18n() ) ),
-          array( 'value' => 'popover', 'label' => __( 'Popover', csl18n() ) ),
-          array( 'value' => 'tooltip', 'label' => __( 'Tooltip', csl18n() ) )
+          array( 'value' => 'none',    'label' => __( 'None', 'cornerstone' ) ),
+          array( 'value' => 'popover', 'label' => __( 'Popover', 'cornerstone' ) ),
+          array( 'value' => 'tooltip', 'label' => __( 'Tooltip', 'cornerstone' ) )
         )
       )
     );
@@ -148,16 +148,16 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'info_place',
       'choose',
-      __( 'Info Placement', csl18n() ),
-      __( 'Select where you want your popover or tooltip to appear.', csl18n() ),
+      __( 'Info Placement', 'cornerstone' ),
+      __( 'Select where you want your popover or tooltip to appear.', 'cornerstone' ),
       'top',
       array(
         'columns' => '4',
         'choices' => array(
-          array( 'value' => 'top',    'icon' => fa_entity( 'arrow-up' ),    'tooltip' => __( 'Top', csl18n() ) ),
-          array( 'value' => 'right',  'icon' => fa_entity( 'arrow-right' ), 'tooltip' => __( 'Right', csl18n() ) ),
-          array( 'value' => 'bottom', 'icon' => fa_entity( 'arrow-down' ),  'tooltip' => __( 'Bottom', csl18n() ) ),
-          array( 'value' => 'left',   'icon' => fa_entity( 'arrow-left' ),  'tooltip' => __( 'Left', csl18n() ) )
+          array( 'value' => 'top',    'icon' => fa_entity( 'arrow-up' ),    'tooltip' => __( 'Top', 'cornerstone' ) ),
+          array( 'value' => 'right',  'icon' => fa_entity( 'arrow-right' ), 'tooltip' => __( 'Right', 'cornerstone' ) ),
+          array( 'value' => 'bottom', 'icon' => fa_entity( 'arrow-down' ),  'tooltip' => __( 'Bottom', 'cornerstone' ) ),
+          array( 'value' => 'left',   'icon' => fa_entity( 'arrow-left' ),  'tooltip' => __( 'Left', 'cornerstone' ) )
         ),
         'condition' => array(
           'info' => array( 'popover', 'tooltip' )
@@ -168,14 +168,14 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'info_trigger',
       'select',
-      __( 'Info Trigger', csl18n() ),
-      __( 'Select what actions you want to trigger the popover or tooltip.', csl18n() ),
+      __( 'Info Trigger', 'cornerstone' ),
+      __( 'Select what actions you want to trigger the popover or tooltip.', 'cornerstone' ),
       'hover',
       array(
         'choices' => array(
-          array( 'value' => 'hover', 'label' => __( 'Hover', csl18n() ) ),
-          array( 'value' => 'click', 'label' => __( 'Click', csl18n() ) ),
-          array( 'value' => 'focus', 'label' => __( 'Focus', csl18n() ) )
+          array( 'value' => 'hover', 'label' => __( 'Hover', 'cornerstone' ) ),
+          array( 'value' => 'click', 'label' => __( 'Click', 'cornerstone' ) ),
+          array( 'value' => 'focus', 'label' => __( 'Focus', 'cornerstone' ) )
         ),
         'condition' => array(
           'info' => array( 'popover', 'tooltip' )
@@ -186,8 +186,8 @@ class CS_Button extends Cornerstone_Element_Base {
     $this->addControl(
       'info_content',
       'text',
-      __( 'Info Content', csl18n() ),
-      __( 'Extra content for the popover.', csl18n() ),
+      __( 'Info Content', 'cornerstone' ),
+      __( 'Extra content for the popover.', 'cornerstone' ),
       '',
       array(
         'condition' => array(
@@ -199,24 +199,24 @@ class CS_Button extends Cornerstone_Element_Base {
     // $this->addControl(
     //   'lightbox_thumb',
     //   'image',
-    //   __( 'Lightbox Thumbnail', csl18n() ),
-    //   __( 'Use this option to select a thumbnail for your lightbox thumbnail navigation or to set an image if you are linking out to a video.', csl18n() ),
+    //   __( 'Lightbox Thumbnail', 'cornerstone' ),
+    //   __( 'Use this option to select a thumbnail for your lightbox thumbnail navigation or to set an image if you are linking out to a video.', 'cornerstone' ),
     //   ''
     // );
 
     // $this->addControl(
     //   'lightbox_video',
     //   'toggle',
-    //   __( 'Lightbox Video', csl18n() ),
-    //   __( 'Select if you are linking to a video from this button in the lightbox.', csl18n() ),
+    //   __( 'Lightbox Video', 'cornerstone' ),
+    //   __( 'Select if you are linking to a video from this button in the lightbox.', 'cornerstone' ),
     //   false
     // );
 
     // $this->addControl(
     //   'lightbox_caption',
     //   'text',
-    //   __( 'Lightbox Caption', csl18n() ),
-    //   __( 'Lightbox caption text.', csl18n() ),
+    //   __( 'Lightbox Caption', 'cornerstone' ),
+    //   __( 'Lightbox caption text.', 'cornerstone' ),
     //   ''
     // );
 
@@ -231,7 +231,19 @@ class CS_Button extends Cornerstone_Element_Base {
 
     if ( $icon_toggle == 'true' ) {
 
-      $icon_markup = "[x_icon type=\"{$icon_type}\"]";
+      $icon_placement_class = '';
+
+      if ( $icon_placement == 'notext' ) {
+        $icon_placement_class = ' class="man"';
+      } elseif ( $icon_placement == 'before' ) {
+        $icon_placement_class = ' class="mvn mln mrs"';
+      } elseif ( $icon_placement == 'after' ) {
+        $icon_placement_class = ' class="mvn mls mrn"';
+      } else {
+        $icon_placement_class = '';
+      }
+
+      $icon_markup = "[x_icon type=\"{$icon_type}\"{$icon_placement_class}]";
 
       if ( $icon_placement == 'notext' ) {
         $icon_only = 'true';
@@ -243,10 +255,11 @@ class CS_Button extends Cornerstone_Element_Base {
       }
     }
 
-    $shape = ($shape != 'global' ) ? "shape=\"$shape\"" : '';
-    $type = ($type != 'global' ) ? "type=\"$type\"" : '';
+    $shape = ( $shape != 'global' ) ? " shape=\"$shape\"" : '';
+    $type  = ( $type  != 'global' ) ? " type=\"$type\"" : '';
+    $size  = ( $type  != 'global' ) ? " size=\"$button_size\"" : '';
 
-    $shortcode = "[x_button {$type} {$shape} size=\"$button_size\" block=\"$block\" circle=\"$circle\" icon_only=\"$icon_only\" href=\"$href\" title=\"$href_title\" target=\"$href_target\" info=\"$info\" info_place=\"$info_place\" info_trigger=\"$info_trigger\" info_content=\"$info_content\"{$extra}]{$content}[/x_button]";
+    $shortcode = "[x_button{$type}{$shape}{$size} block=\"$block\" circle=\"$circle\" icon_only=\"$icon_only\" href=\"$href\" title=\"$href_title\" target=\"$href_target\" info=\"$info\" info_place=\"$info_place\" info_trigger=\"$info_trigger\" info_content=\"$info_content\"{$extra}]{$content}[/x_button]";
 
     return $shortcode;
 

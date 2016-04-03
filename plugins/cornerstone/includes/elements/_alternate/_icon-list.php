@@ -5,9 +5,9 @@ class CS_Icon_List extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'icon-list',
-      'title'       => __( 'Icon List', csl18n() ),
+      'title'       => __( 'Icon List', 'cornerstone' ),
       'section'     => 'typography',
-      'description' => __( 'Icon List description.', csl18n() ),
+      'description' => __( 'Icon List description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'renderChild' => true
     );
@@ -18,16 +18,16 @@ class CS_Icon_List extends Cornerstone_Element_Base {
     $this->addControl(
       'elements',
       'sortable',
-      __( 'Icon List Items', csl18n() ),
-      __( 'Add new items to your Icon List.', csl18n() ),
+      __( 'Icon List Items', 'cornerstone' ),
+      __( 'Add new items to your Icon List.', 'cornerstone' ),
       array(
-        array( 'title' => __( 'Icon List Item 1', csl18n() ), 'type' => 'check' ),
-        array( 'title' => __( 'Icon List Item 2', csl18n() ), 'type' => 'check' ),
-        array( 'title' => __( 'Icon List Item 3', csl18n() ), 'type' => 'times' )
+        array( 'title' => __( 'Icon List Item 1', 'cornerstone' ), 'type' => 'check' ),
+        array( 'title' => __( 'Icon List Item 2', 'cornerstone' ), 'type' => 'check' ),
+        array( 'title' => __( 'Icon List Item 3', 'cornerstone' ), 'type' => 'times' )
       ),
       array(
         'element'  => 'icon-list-item',
-        'newTitle' => __( 'Icon List Item %s', csl18n() ),
+        'newTitle' => __( 'Icon List Item %s', 'cornerstone' ),
         'floor'    => 1
       )
     );

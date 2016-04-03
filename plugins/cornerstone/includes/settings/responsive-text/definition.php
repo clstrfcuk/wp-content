@@ -4,7 +4,7 @@ class CS_Settings_Responsive_Text {
 	public $priority = 30;
 
 	public function ui() {
-		return array( 'title' => __( 'Responsive Text', csl18n() ) );
+		return array( 'title' => __( 'Responsive Text', 'cornerstone' ) );
 	}
 
 	public function defaults() {

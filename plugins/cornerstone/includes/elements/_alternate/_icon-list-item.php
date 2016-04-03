@@ -5,9 +5,9 @@ class CS_Icon_List_Item extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'icon-list-item',
-      'title'       => __( 'Icon List Item', csl18n() ),
+      'title'       => __( 'Icon List Item', 'cornerstone' ),
       'section'     => '_typography',
-      'description' => __( 'Icon List Item description.', csl18n() ),
+      'description' => __( 'Icon List Item description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'render'      => false,
       'delegate'    => true
@@ -27,16 +27,16 @@ class CS_Icon_List_Item extends Cornerstone_Element_Base {
     $this->addControl(
       'type',
       'icon-choose',
-      __( 'Icon', csl18n() ),
-      __( 'Specify the icon you would like to use as the bullet for your Icon List Item.', csl18n() ),
+      __( 'Icon', 'cornerstone' ),
+      __( 'Specify the icon you would like to use as the bullet for your Icon List Item.', 'cornerstone' ),
       'check'
     );
 
     $this->addControl(
       'icon_color',
       'color',
-      __( 'Icon Color', csl18n() ),
-      __( 'Choose a custom color for your Icon List Item\'s icon.', csl18n() ),
+      __( 'Icon Color', 'cornerstone' ),
+      __( 'Choose a custom color for your Icon List Item\'s icon.', 'cornerstone' ),
       ''
     );
 

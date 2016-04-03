@@ -11,16 +11,16 @@ return array(
 	'bg_type' => array(
 		'type' => 'choose',
 		'ui' => array(
-			'title' => __( 'Background Type', $td ),
-      'tooltip' => __( 'Configure the background appearance for this Section.', $td ),
+			'title' => __( 'Background Type', 'cornerstone' ),
+      'tooltip' => __( 'Configure the background appearance for this Section.', 'cornerstone' ),
 		),
 		'options' => array(
       'columns' => '4',
       'choices' => array(
-        array( 'value' => 'none',  'icon' => fa_entity( 'ban' ),        'tooltip' => __( 'None', $td ) ),
-        array( 'value' => 'color', 'icon' => fa_entity( 'eyedropper' ), 'tooltip' => __( 'Color', $td ) ),
-        array( 'value' => 'image', 'icon' => fa_entity( 'image' ),      'tooltip' => __( 'Image', $td ) ),
-        array( 'value' => 'video', 'icon' => fa_entity( 'film' ),       'tooltip' => __( 'Video', $td ) ),
+        array( 'value' => 'none',  'icon' => fa_entity( 'ban' ),        'tooltip' => __( 'None', 'cornerstone' ) ),
+        array( 'value' => 'color', 'icon' => fa_entity( 'eyedropper' ), 'tooltip' => __( 'Color', 'cornerstone' ) ),
+        array( 'value' => 'image', 'icon' => fa_entity( 'image' ),      'tooltip' => __( 'Image', 'cornerstone' ) ),
+        array( 'value' => 'video', 'icon' => fa_entity( 'film' ),       'tooltip' => __( 'Video', 'cornerstone' ) ),
       )
     )
   ),
@@ -33,8 +33,8 @@ return array(
 	'bg_image' => array(
 		'type' => 'image',
 		'ui' => array(
-			'title' => __( 'Background Pattern', $td ),
-      'tooltip' => __( 'Background patterns will tile and repeat across your Section.', $td ),
+			'title' => __( 'Background Pattern', 'cornerstone' ),
+      'tooltip' => __( 'Background patterns will tile and repeat across your Section.', 'cornerstone' ),
 		),
 		'condition' => array(
 			'bg_type'           => 'image',
@@ -46,8 +46,8 @@ return array(
 		'type' => 'image',
 		'key'  => 'bg_image', // Alias the same value for background image
 		'ui' => array(
-			'title' => __( 'Background Image', $td ),
-      'tooltip' => __( 'Background images are resized to fill the entire Section, regardless of screen size. Keep this in mind when using images that are already cropped.', $td ),
+			'title' => __( 'Background Image', 'cornerstone' ),
+      'tooltip' => __( 'Background images are resized to fill the entire Section, regardless of screen size. Keep this in mind when using images that are already cropped.', 'cornerstone' ),
 		),
 		'condition' => array(
 			'bg_type'           => 'image',
@@ -58,8 +58,8 @@ return array(
 	'bg_pattern_toggle' => array(
 		'type' => 'toggle',
 		'ui' => array(
-			'title' => __( 'Pattern', $td ),
-      'tooltip' => __( 'Switch how the image is applied to the background.', $td ),
+			'title' => __( 'Pattern', 'cornerstone' ),
+      'tooltip' => __( 'Switch how the image is applied to the background.', 'cornerstone' ),
 		),
 		'condition' => array( 'bg_type' => 'image' )
 	),
@@ -67,8 +67,8 @@ return array(
 	'parallax' => array(
 		'type' => 'toggle',
 		'ui' => array(
-			'title' => __( 'Parallax', $td ),
-      'tooltip' => __( 'Activates the parallax effect with background patterns and images.', $td ),
+			'title' => __( 'Parallax', 'cornerstone' ),
+      'tooltip' => __( 'Activates the parallax effect with background patterns and images.', 'cornerstone' ),
 		),
 		'condition' => array( 'bg_type' => 'image' )
 	),
@@ -76,12 +76,12 @@ return array(
 	'bg_video' => array(
 		'type' => 'text',
 		'ui' => array(
-			'title' => __( 'Background Video URL &amp; Poster', $td ),
-      'tooltip' => __( 'Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv). For performance reasons, videos are not loaded into the editor but are shown live.', $td ),
+			'title' => __( 'Background Video URL &amp; Poster', 'cornerstone' ),
+      'tooltip' => __( 'Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv). For performance reasons, videos are not loaded into the editor but are shown live.', 'cornerstone' ),
 		),
 		'options' => array(
 			'expandable' => false,
-      'placeholder' => home_url( __( 'video.mp4', $td ) )
+      'placeholder' => home_url( __( 'video.mp4', 'cornerstone' ) )
 		),
 		'condition' => array( 'bg_type' => 'video' )
 	),
@@ -97,8 +97,8 @@ return array(
 		'type' => 'info-box',
 		'key' => 'disabled',
 		'ui' => array(
-			'title' => __( 'Want to add content?', $td ),
-			'message' => __( 'Choose a layout, click the <strong class="glue">%%icon-nav-elements-solid%% Elements</strong> icon above, then drag elements into a column.', $td )
+			'title' => __( 'Want to add content?', 'cornerstone' ),
+			'message' => __( 'Choose a layout, click the <strong class="glue">%%icon-nav-elements-solid%% Elements</strong> icon above, then drag elements into a column.', 'cornerstone' )
 		),
 		'context' => '_layout'
 	),

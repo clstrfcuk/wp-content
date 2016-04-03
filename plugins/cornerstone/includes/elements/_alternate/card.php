@@ -5,9 +5,9 @@ class CS_Card extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'card',
-      'title'       => __( 'Card', csl18n() ),
+      'title'       => __( 'Card', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Card description.', csl18n() ),
+      'description' => __( 'Card description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array()
     );
@@ -22,8 +22,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'animation',
       'choose',
-      __( 'Flip Direction', csl18n() ),
-      __( 'Specify the animation you would like to use for you Card while it flips.', csl18n() ),
+      __( 'Flip Direction', 'cornerstone' ),
+      __( 'Specify the animation you would like to use for you Card while it flips.', 'cornerstone' ),
       'flip-from-top',
       array(
         'columns' => '4',
@@ -39,16 +39,16 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'center_vertically',
       'toggle',
-      __( 'Center Vertically', csl18n() ),
-      __( 'Enabling this control ensures that all of your content is centered vertically in the Card.', csl18n() ),
+      __( 'Center Vertically', 'cornerstone' ),
+      __( 'Enabling this control ensures that all of your content is centered vertically in the Card.', 'cornerstone' ),
       true
     );
 
     $this->addControl(
       'card_padding',
       'dimensions',
-      __( 'Padding', csl18n() ),
-      __( 'Specify the padding you would like to use for both sides of your Card.', csl18n() ),
+      __( 'Padding', 'cornerstone' ),
+      __( 'Specify the padding you would like to use for both sides of your Card.', 'cornerstone' ),
       array( '10%', '10%', '10%', '10%', 'linked' )
     );
 
@@ -60,9 +60,9 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'front_title',
       'text',
-      __( 'Front Title &amp; Content', csl18n() ),
-      __( 'Specify the title and content for the front of your Card.', csl18n() ),
-      __( 'Front Title', csl18n() )
+      __( 'Front Title &amp; Content', 'cornerstone' ),
+      __( 'Specify the title and content for the front of your Card.', 'cornerstone' ),
+      __( 'Front Title', 'cornerstone' )
     );
 
     $this->addControl(
@@ -70,9 +70,9 @@ class CS_Card extends Cornerstone_Element_Base {
       'textarea',
       NULL,
       NULL,
-      __( 'This is the content for the front of your Card. You can put anything you like here! Make sure it&apos;s something not too long though. As Shakespeare once said, &ldquo;Brevity is the soul of wit.&rdquo;', csl18n() ),
+      __( 'This is the content for the front of your Card. You can put anything you like here! Make sure it&apos;s something not too long though. As Shakespeare once said, &ldquo;Brevity is the soul of wit.&rdquo;', 'cornerstone' ),
       array(
-        'expandable' => __( 'Content', csl18n() )
+        'expandable' => __( 'Content', 'cornerstone' )
       )
     );
 
@@ -84,7 +84,7 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addSupport( 'border',
       array(
         'name'         => 'front_border_style',
-        'controlTitle' => __( 'Front Border', csl18n() ),
+        'controlTitle' => __( 'Front Border', 'cornerstone' ),
         'defaultValue' => 'solid'
       ),
       array(
@@ -110,30 +110,30 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'front_color',
       'color',
-      __( 'Front Text Color', csl18n() ),
-      __( 'Select the text color for the front of your Card.', csl18n() ),
+      __( 'Front Text Color', 'cornerstone' ),
+      __( 'Select the text color for the front of your Card.', 'cornerstone' ),
       '#ffffff'
     );
 
     $this->addControl(
       'front_bg_color',
       'color',
-      __( 'Front Background Color', csl18n() ),
-      __( 'Select the background color for the front of your Card.', csl18n() ),
+      __( 'Front Background Color', 'cornerstone' ),
+      __( 'Select the background color for the front of your Card.', 'cornerstone' ),
       '#3498db'
     );
 
     $this->addControl(
       'front_graphic',
       'select',
-      __( 'Front Graphic', csl18n() ),
-      __( 'Choose between an icon and a custom image for your front graphic.', csl18n() ),
+      __( 'Front Graphic', 'cornerstone' ),
+      __( 'Choose between an icon and a custom image for your front graphic.', 'cornerstone' ),
       'icon',
       array(
         'columns' => '2',
         'choices' => array(
-          array( 'value' => 'icon',  'label' => __( 'Icon', csl18n() ) ),
-          array( 'value' => 'image', 'label' => __( 'Image', csl18n() ) )
+          array( 'value' => 'icon',  'label' => __( 'Icon', 'cornerstone' ) ),
+          array( 'value' => 'image', 'label' => __( 'Image', 'cornerstone' ) )
         )
       )
     );
@@ -146,8 +146,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'front_icon',
       'icon-choose',
-      __( 'Icon', csl18n() ),
-      __( 'Specify the icon you would like to use for your Card.', csl18n() ),
+      __( 'Icon', 'cornerstone' ),
+      __( 'Specify the icon you would like to use for your Card.', 'cornerstone' ),
       'ship',
       array(
         'condition' => array(
@@ -159,8 +159,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'front_icon_size',
       'text',
-      __( 'Icon Size', csl18n() ),
-      __( 'Specify the size of your icon.', csl18n() ),
+      __( 'Icon Size', 'cornerstone' ),
+      __( 'Specify the size of your icon.', 'cornerstone' ),
       '36px',
       array(
         'condition' => array(
@@ -172,8 +172,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'front_icon_color',
       'color',
-      __( 'Icon Color', csl18n() ),
-      __( 'Specify the color of your icon.', csl18n() ),
+      __( 'Icon Color', 'cornerstone' ),
+      __( 'Specify the color of your icon.', 'cornerstone' ),
       '#99cbed',
       array(
         'condition' => array(
@@ -190,8 +190,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'front_image',
       'image',
-      __( 'Image', csl18n() ),
-      __( 'Specify the image you would like to use for your Card.', csl18n() ),
+      __( 'Image', 'cornerstone' ),
+      __( 'Specify the image you would like to use for your Card.', 'cornerstone' ),
       '',
       array(
         'condition' => array(
@@ -203,8 +203,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'front_image_width',
       'text',
-      __( 'Image Width', csl18n() ),
-      __( 'Specify the width of your image.', csl18n() ),
+      __( 'Image Width', 'cornerstone' ),
+      __( 'Specify the width of your image.', 'cornerstone' ),
       '100px',
       array(
         'condition' => array(
@@ -221,9 +221,9 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'back_title',
       'text',
-      __( 'Back Title &amp; Content', csl18n() ),
-      __( 'Specify the title and content for the back of your Card.', csl18n() ),
-      __( 'Back Title', csl18n() )
+      __( 'Back Title &amp; Content', 'cornerstone' ),
+      __( 'Specify the title and content for the back of your Card.', 'cornerstone' ),
+      __( 'Back Title', 'cornerstone' )
     );
 
     $this->addControl(
@@ -231,9 +231,9 @@ class CS_Card extends Cornerstone_Element_Base {
       'textarea',
       NULL,
       NULL,
-      __( 'This is the content for the back of your Card.', csl18n() ),
+      __( 'This is the content for the back of your Card.', 'cornerstone' ),
       array(
-        'expandable' => __( 'Content', csl18n() )
+        'expandable' => __( 'Content', 'cornerstone' )
       )
     );
 
@@ -245,7 +245,7 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addSupport( 'border',
       array(
         'name'         => 'back_border_style',
-        'controlTitle' => __( 'Back Border', csl18n() ),
+        'controlTitle' => __( 'Back Border', 'cornerstone' ),
         'defaultValue' => 'solid'
       ),
       array(
@@ -271,16 +271,16 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'back_color',
       'color',
-      __( 'Back Text Color', csl18n() ),
-      __( 'Select the text color for the back of your Card.', csl18n() ),
+      __( 'Back Text Color', 'cornerstone' ),
+      __( 'Select the text color for the back of your Card.', 'cornerstone' ),
       '#ffffff'
     );
 
     $this->addControl(
       'back_bg_color',
       'color',
-      __( 'Back Background Color', csl18n() ),
-      __( 'Select the background color for the back of your Card.', csl18n() ),
+      __( 'Back Background Color', 'cornerstone' ),
+      __( 'Select the background color for the back of your Card.', 'cornerstone' ),
       '#9b59b6'
     );
 
@@ -292,17 +292,17 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'back_button_enabled',
       'toggle',
-      __( 'Back Button', csl18n() ),
-      __( 'This will show a button on the back of the card, which you can link anywhere you like.', csl18n() ),
+      __( 'Back Button', 'cornerstone' ),
+      __( 'This will show a button on the back of the card, which you can link anywhere you like.', 'cornerstone' ),
       true
     );
 
     $this->addControl(
       'back_button_text',
       'text',
-      __( 'Back Button Text', csl18n() ),
-      __( 'Specify the title and content for the back of your Card.', csl18n() ),
-      __( 'Click Me!', csl18n() ),
+      __( 'Back Button Text', 'cornerstone' ),
+      __( 'Specify the title and content for the back of your Card.', 'cornerstone' ),
+      __( 'Click Me!', 'cornerstone' ),
       array(
         'condition' => array(
           'back_button_enabled' => true
@@ -313,8 +313,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'back_button_link',
       'text',
-      __( 'Back Button Link', csl18n() ),
-      __( 'Specify the URL for the button on the back of your Card.', csl18n() ),
+      __( 'Back Button Link', 'cornerstone' ),
+      __( 'Specify the URL for the button on the back of your Card.', 'cornerstone' ),
       '#',
       array(
         'condition' => array(
@@ -326,8 +326,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'back_button_color',
       'color',
-      __( 'Back Button Text Color', csl18n() ),
-      __( 'Select the text color for button on the back of your Card.', csl18n() ),
+      __( 'Back Button Text Color', 'cornerstone' ),
+      __( 'Select the text color for button on the back of your Card.', 'cornerstone' ),
       '#ffffff',
       array(
         'condition' => array(
@@ -339,8 +339,8 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'back_button_bg_color',
       'color',
-      __( 'Back Button Background Color', csl18n() ),
-      __( 'Select the background color for button on the back of your Card.', csl18n() ),
+      __( 'Back Button Background Color', 'cornerstone' ),
+      __( 'Select the background color for button on the back of your Card.', 'cornerstone' ),
       '#744288',
       array(
         'condition' => array(

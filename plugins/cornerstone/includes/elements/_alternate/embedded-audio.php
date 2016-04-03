@@ -5,9 +5,9 @@ class CS_Embedded_Audio extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'embedded-audio',
-      'title'       => __( 'Embedded Audio', csl18n() ),
+      'title'       => __( 'Embedded Audio', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Embedded Audio description.', csl18n() ),
+      'description' => __( 'Embedded Audio description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'empty'       => array( 'content' => '' ),
     );
@@ -18,8 +18,8 @@ class CS_Embedded_Audio extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'textarea',
-      __( 'Embed Code', csl18n() ),
-      __( 'Input your &lt;iframe&gt; or &lt;embed&gt; code from a third party service.', csl18n() ),
+      __( 'Embed Code', 'cornerstone' ),
+      __( 'Input your &lt;iframe&gt; or &lt;embed&gt; code from a third party service.', 'cornerstone' ),
       ''
     );
 

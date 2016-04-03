@@ -8,7 +8,7 @@ class CSE_Column {
 
 	public function ui() {
 		return array(
-      'title' => __( 'Column', csl18n() ),
+      'title' => __( 'Column', 'cornerstone' ),
     );
 	}
 
@@ -38,14 +38,12 @@ class CSE_Column {
 
 		unset( $atts['_active'] );
 		unset( $atts['title'] );
-		unset( $atts['elements'] );
 
 		if ( isset( $atts['size'] ) ) {
 			$atts['type'] = $atts['size'];
 			unset( $atts['size'] );
 		}
 
-		$atts = Cornerstone_Control_Mixins::legacy_injections( $atts );
 		return $atts;
 
 	}

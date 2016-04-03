@@ -18,9 +18,8 @@ window.csModernizr = window.csModernizr || {};
 
 // Imports
 // =============================================================================
-/*global jQuery */
-/*!
-* FitText.js 1.2
+/*
+* Based on FitText.js 1.2
 *
 * Copyright 2011, Dave Rupert http://daverupert.com
 * Released under the WTFPL license
@@ -31,7 +30,7 @@ window.csModernizr = window.csModernizr || {};
 
 (function( $ ){
 
-  $.fn.fitText = function( kompressor, options ) {
+  $.fn.csFitText = function( kompressor, options ) {
 
     // Setup options
     var compressor = kompressor || 1,
@@ -3897,7 +3896,79 @@ https://github.com/imakewebthings/jquery-waypoints/blob/master/licenses.txt
 
 }(jQuery);
 // =============================================================================
-// JS/SRC/SITE/INC/X-BODY-CUSTOM.JS
+// JS/SRC/SITE/INC/BODY-COLLAPSE.JS
+// -----------------------------------------------------------------------------
+// Custom collapse plugin
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Collapse
+// =============================================================================
+
+// Collapse
+// =============================================================================
+
+jQuery( function( $ ) {
+
+	$( document ).on( 'click', '[data-cs-collapse-toggle]', function( e ) {
+
+		var $this = $( this );
+		toggle( $this );
+
+		var $linkedSiblings = $this.closest( '[data-cs-collapse-linked]' ).find( '[data-cs-collapse-toggle]' ).not( this );
+		if ( ! $linkedSiblings.length ) {
+			var parentId = $this.data( 'cs-collapse-parent' );
+			if ( parentId ) $linkedSiblings = $this.closest( parentId ).find( '[data-cs-collapse-toggle]' ).not( this );
+		}
+
+		$linkedSiblings.each( function() {
+			toggle( $( this ), false );
+		});
+
+	} );
+
+	function toggle( $toggle, state ) {
+
+		var $content = $toggle.closest( '[data-cs-collapse-group]' ).find( '[data-cs-collapse-content]' );
+		if ( ! $content.length || $content.hasClass( 'collapsing' ) ) return;
+
+		var isOpen = $content.hasClass( 'collapse in' );
+		if ( 'undefined' === typeof state ) state = ! isOpen;
+		$toggle.toggleClass( 'collapsed', ! state );
+
+		if ( state && ! isOpen ) show( $content );
+		if ( ! state && isOpen ) hide( $content );
+
+		function show( $el ) {
+
+			$el.removeClass( 'collapse' ).addClass( 'collapsing' ).height( 0 );
+
+			$el.one( 'csTransitionEnd', function() {
+				$el.removeClass( 'collapsing' ).addClass( 'collapse in' ).height( '' );
+			} ).height( $el[0].scrollHeight ).csEmulateTransitionEnd( 350 );
+
+		}
+
+		function hide( $el ) {
+
+			$el.height( $el.height() )[0].offsetHeight;
+
+			$el.addClass( 'collapsing' ).removeClass( 'collapse' ).removeClass( 'in' );
+
+			$el.height( 0 ).one( 'csTransitionEnd', function() {
+				$el.removeClass( 'collapsing' ).addClass( 'collapse' );
+			}).csEmulateTransitionEnd( 350 );
+
+		}
+
+	}
+
+} );
+
+// =============================================================================
+// JS/SRC/SITE/INC/BODY-CUSTOM.JS
 // -----------------------------------------------------------------------------
 // Includes all miscellaneous, custom functionality to be output near the
 // closing </body> tag.
@@ -3960,17 +4031,11 @@ jQuery(document).ready(function($) {
   };
 
 
-  //
-  // Ensure accordion has proper collapse class.
-  //
 
-  $('.x-accordion-toggle[data-parent]').on('click', function() {
-    $(this).closest('.x-accordion').find('.x-accordion-toggle:not(.collapsed)').addClass('collapsed');
-  });
 
 });
 // =============================================================================
-// JS/SRC/SITE/INC/X-BODY-DATA-ATTR-API.JS
+// JS/SRC/SITE/INC/BODY-DATA-ATTR-API.JS
 // -----------------------------------------------------------------------------
 // Sets up the data attribute API used by certain shortcodes to ease the
 // implementation of specific functionality.
@@ -4078,7 +4143,7 @@ window.xData = window.xData || {};
 
 })( xData, jQuery );
 // =============================================================================
-// JS/SRC/SITE/INC/X-BODY-FLEXSLIDER.JS
+// JS/SRC/SITE/INC/BODY-FLEXSLIDER.JS
 // -----------------------------------------------------------------------------
 // Sets up Flexslider for certain theme features such as the "Gallery" post
 // format and portfolio gallery.
@@ -4107,6 +4172,72 @@ jQuery(window).load(function() {
   });
 
 });
+// =============================================================================
+// JS/SRC/SITE/INC/BODY-TRANSITION.JS
+// -----------------------------------------------------------------------------
+// Custom CSS Transition Event based on Modernizr and Bootstrap
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Transitions
+// =============================================================================
+
+// Transitions
+// =============================================================================
+
+( function( $ ) {
+
+  function transitionEnd() {
+    var el = document.createElement( 'div' );
+
+    var transEndEventNames = {
+      WebkitTransition: 'webkitTransitionEnd',
+      MozTransition:    'transitionend',
+      OTransition:      'oTransitionEnd otransitionend',
+      transition:       'transitionend'
+    };
+
+    for ( var name in transEndEventNames ) {
+      if ( undefined !== el.style[name] ) {
+        return { end: transEndEventNames[name] };
+      }
+    }
+
+    return false;
+  }
+
+  // http://blog.alexmaccaw.com/css-transitions
+  $.fn.csEmulateTransitionEnd = function( duration ) {
+    var called = false;
+    var $el = this;
+    $( this ).one( 'csTransitionEnd', function() {
+      called = true;
+    } );
+    setTimeout( function() {
+      if ( ! called ) $( $el ).trigger( $.support.transition.end );
+    }, duration );
+    return this;
+  };
+
+  $( function() {
+    $.support.transition = transitionEnd();
+
+    if ( ! $.support.transition ) return;
+
+    $.event.special.csTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function( e ) {
+        if ( $( e.target ).is( this ) ) return e.handleObj.handler.apply( this, arguments );
+      }
+    };
+
+  });
+
+})( jQuery );
+
 
 ( function( $ ) {
 // =============================================================================
@@ -4124,59 +4255,105 @@ jQuery(window).load(function() {
 // Card
 // =============================================================================
 
-xData.api.map('card', function( params ) {
+xData.api.map( 'card', function( params ) {
 
-  var $card = $(this);
+  var $card = $( this );
+
+  //
+  // CSS3 Support
+  //
 
   if ( csModernizr.preserve3d ) {
-    $card.addClass('flip-3d');
+    $card.addClass( 'flip-3d' );
   }
 
-  $card.on('click', function() {
-    $card.toggleClass('flipped');
+  //
+  // Mouse Events
+  //
+
+  $card.on( 'click', flip );
+  $card.on( 'mouseenter', flipOver );
+  $card.on( 'mouseleave', flipBack );
+
+  //
+  // Touch Events
+  //
+
+  $card.on( 'touchstart', function( e ) {
+    $card.off( 'touchend', flip );
+    $card.on( 'touchend', flip );
   });
 
-  $card.on('click', 'a', function(e) {
-  	e.stopPropagation();
+  $card.on( 'touchmove', function() {
+    $card.off( 'touchend', flip );
   });
 
-  $card.on('mouseenter', function() {
-    $card.addClass('flipped');
+  // Disable mouse events on first touch
+  $card.one( 'touchstart', function( e ) {
+    $card.off( 'click', flip );
+    $card.off( 'mouseenter', flipOver );
+    $card.off( 'mouseleave', flipBack );
   });
 
-  $card.on('mouseleave', function() {
-    $card.removeClass('flipped');
-  });
+  //
+  // Don't flip when clicking the button
+  //
 
-  $card.on('cs:setcardheight', function() {
+  $card.on( 'click touchend', 'a', function( e ) {
+    console.log( 'click link' );
+    e.stopPropagation();
+  } );
 
-    var $this = $(this);
+  //
+  // Event Handlers
+  //
 
-    var front             = $this.find('.x-face-outer.front');
-    var frontContent      = front.find('.x-face-content').outerHeight();
-    var frontBorderTop    = parseInt(front.css('border-top-width'), 10);
-    var frontBorderBottom = parseInt(front.css('border-bottom-width'), 10);
+  function flip( e ) {
+    $card.toggleClass( 'flipped' );
+  }
+
+  function flipOver( e ) {
+    $card.addClass( 'flipped' );
+  }
+
+  function flipBack( e ) {
+    $card.removeClass( 'flipped' );
+  }
+
+  //
+  // Manage Height
+  //
+
+  $card.on( 'cs:setcardheight', function() {
+
+    var $this = $( this );
+
+    var $front            = $this.find( '.x-face-outer.front' );
+    var frontContent      = $front.find( '.x-face-content' ).outerHeight();
+    var frontBorderTop    = parseInt( $front.css( 'border-top-width' ), 10 );
+    var frontBorderBottom = parseInt( $front.css( 'border-bottom-width' ), 10 );
     var frontHeight       = frontContent + frontBorderTop + frontBorderBottom;
 
-    var back              = $this.find('.x-face-outer.back');
-    var backContent       = back.find('.x-face-content').outerHeight();
-    var backBorderTop     = parseInt(back.css('border-top-width'), 10);
-    var backBorderBottom  = parseInt(back.css('border-bottom-width'), 10);
+    var $back             = $this.find( '.x-face-outer.back' );
+    var backContent       = $back.find( '.x-face-content' ).outerHeight();
+    var backBorderTop     = parseInt( $back.css( 'border-top-width' ), 10 );
+    var backBorderBottom  = parseInt( $back.css( 'border-bottom-width' ), 10 );
     var backHeight        = backContent + backBorderTop + backBorderBottom;
 
-    var height = Math.max(frontHeight, backHeight);
+    var height = Math.max( frontHeight, backHeight );
 
-    $this.find('.x-card-inner').css({'height' : height});
+    $this.find( '.x-card-inner' ).css( { 'height': height } );
 
   });
 
-  $card.trigger('cs:setcardheight');
+  $card.trigger( 'cs:setcardheight' );
 
-  $(window).on('load resize', function() {
-    $card.trigger('cs:setcardheight');
+  $( window ).on( 'load resize', function() {
+    $card.trigger( 'cs:setcardheight' );
   });
 
-});
+} );
+
 // =============================================================================
 // COLUMN.JS
 // -----------------------------------------------------------------------------
@@ -4196,17 +4373,12 @@ xData.api.map('column', function( params ) {
 
   if ( params.fade ) {
 
-    $(this).waypoint(function() {
+    var $this   = $(this);
+    var $parent = $this.parent();
 
-      var options = { opacity: '1' };
-      var duration = params.duration || 750;
+    $parent.waypoint(function() {
 
-      if      ( params.animation === 'in-from-top' )    { options.top = '0';    }
-      else if ( params.animation === 'in-from-left' )   { options.left = '0';   }
-      else if ( params.animation === 'in-from-right' )  { options.right = '0';  }
-      else if ( params.animation === 'in-from-bottom' ) { options.bottom = '0'; }
-
-      $(this).animate( options, duration, 'easeOutExpo' );
+      $this.css({ 'opacity' : '1', 'transform' : 'translate(0, 0)' });
 
     }, { offset : '65%', triggerOnce : true });
 
@@ -4537,36 +4709,44 @@ function animationHelper( target, targetAnimation, i, msDelay ) {
 
 xData.fn.setMarkers = function( googleMap ) {
 
-  var googleMarkers     = [];
-  var googleInfoWindows = [];
+	var googleMarkers     = [];
+	var googleInfoWindows = [];
 
-  $(this).find('.x-google-map-marker').each( function( index, item ) {
+	$( this ).find( '.x-google-map-marker' ).each( function( index, item ) {
 
-    var params = $(item).data('x-params');
+		var params = $( item ).data( 'x-params' );
 
-    googleMarkers[index] = new google.maps.Marker({
-      map             : googleMap,
-      position        : new google.maps.LatLng(params.lat, params.lng),
-      infoWindowIndex : index,
-      icon            : params.image
-    });
+		var marker = new google.maps.Marker({
+			map:              googleMap,
+			position:         new google.maps.LatLng( params.lat, params.lng ),
+			infoWindowIndex:  index,
+			icon:             params.image
+		});
 
-    googleInfoWindows[index] = new google.maps.InfoWindow({
-      content  : params.markerInfo,
-      maxWidth : 200
-    });
+		googleMarkers[index] = marker;
 
-    google.maps.event.addListener(googleMarkers[index], 'click', function() {
-      if ( params.markerInfo !== '' ) {
-        googleInfoWindows[index].open(googleMap, this);
-      }
-    });
+		if ( '' !== params.markerInfo ) {
 
-  });
+			var infoWindow = new google.maps.InfoWindow({
+				content:  params.markerInfo,
+				maxWidth: 200
+			});
+
+			googleInfoWindows[index] = infoWindow;
+
+			if ( params.startOpen ) {
+				infoWindow.open( googleMap, marker );
+			}
+
+			google.maps.event.addListener( googleMarkers[index], 'click', function() {
+				infoWindow.open( googleMap, this );
+			} );
+
+		}
+
+	});
 
 };
-
-
 
 // Google Maps
 // =============================================================================
@@ -4868,6 +5048,10 @@ xData.api.map('x_mejs', function( params ) {
 
 	      }
 
+	      $( player.container ).on( 'exitedfullscreen', function() {
+	        $( media ).removeAttr( 'style' ); // remove inline styles added when exiting fullscreen
+	      } );
+
 
 	      //
 	      // Set fallback video size.
@@ -5013,7 +5197,7 @@ xData.api.map('responsive_text', function( params ) {
     options.maxFontSize = params.maxFontSize;
   }
 
-  $(params.selector).fitText(params.compression, options);
+  $(params.selector).csFitText(params.compression, options);
 
 });
 // =============================================================================
@@ -5098,40 +5282,118 @@ xData.api.map('skill_bar', function( params ) {
 // Slider
 // =============================================================================
 
-xData.api.map('slider', function( params ) {
+xData.api.map( 'slider', function( params ) {
 
-  var $this = jQuery(this);
+  var $this = jQuery( this );
 
   var setupSlider = function() {
 
     $this.flexslider({
-      selector       : '.x-slides > li',
-      prevText       : '<i class=\"x-icon-chevron-left\" data-x-icon=\"&#xf053;\"></i>',
-      nextText       : '<i class=\"x-icon-chevron-right\" data-x-icon=\"&#xf054;\"></i>',
-      animation      : params.animation,
-      controlNav     : params.controlNav,
-      directionNav   : params.prevNextNav,
-      slideshowSpeed : parseInt(params.slideTime),
-      animationSpeed : parseInt( params.slideSpeed ),
-      slideshow      : (params.slideshow),
-      randomize      : params.random,
-      touch          : params.touch,
-      pauseOnHover   : true,
-      useCSS         : true,
-      video          : true,
-      smoothHeight   : true,
-      easing         : 'easeInOutExpo'
+      selector:       '.x-slides > li',
+      prevText:       '<i class=\"x-icon-chevron-left\" data-x-icon=\"&#xf053;\"></i>',
+      nextText:       '<i class=\"x-icon-chevron-right\" data-x-icon=\"&#xf054;\"></i>',
+      animation:      params.animation,
+      controlNav:     params.controlNav,
+      directionNav:   params.prevNextNav,
+      slideshowSpeed: parseInt( params.slideTime ),
+      animationSpeed: parseInt( params.slideSpeed ),
+      slideshow:      ( params.slideshow ),
+      randomize:      params.random,
+      touch:          params.touch,
+      pauseOnHover:   ( params.pauseOnHover ),
+      useCSS:         true,
+      video:          true,
+      smoothHeight:   true,
+      easing:         'easeInOutExpo'
     });
 
   };
 
-  if ( document.readyState === 'complete' ) {
+  if ( 'complete' === document.readyState ) {
     setupSlider();
   } else {
-    jQuery(window).load( setupSlider );
+    jQuery( window ).load( setupSlider );
   }
 
-});
+} );
+
+// =============================================================================
+// COLUMN.JS
+// -----------------------------------------------------------------------------
+// Shortcode data attribute API information.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Column
+// =============================================================================
+
+// Column
+// =============================================================================
+
+xData.api.map( 'tab_nav', function( params ) {
+
+  var $ul = $( this );
+  var $content = $ul.next( '.x-tab-content' );
+  var $tabs = $content.find( '.x-tab-pane' );
+
+  //
+  // Ensure one, and only one "first active"
+  //
+
+  var $firstActive = $content.find( '.x-tab-pane.active' ).first();
+
+  if ( ! $firstActive.length ) {
+    $firstActive = $content.find( '.x-tab-pane' ).first();
+  }
+
+  //
+  // Navigate to the first active tab
+  //
+
+  navigate( $firstActive.data( 'cs-tab-index' ) );
+
+  //
+  // Add a min height on vertical tabs
+  //
+
+  if ( 'vertical' === params.orientation ) {
+    $content.css( {
+      'minHeight': $ul.outerHeight()
+    } );
+  }
+
+  //
+  // Click Navigation
+  //
+
+  $ul.on( 'click', 'a[data-cs-tab-toggle]', function( e ) {
+    e.preventDefault();
+    var $a = $( this );
+    navigate( $a.data( 'cs-tab-toggle' ), $a );
+  });
+
+  //
+  // Navigation Handler
+  //
+
+  function navigate( index, $a ) {
+
+    $ul.find( 'li.x-nav-tabs-item' ).removeClass( 'active' );
+    $tabs.removeClass( 'active' );
+    $content.find( '.x-tab-pane[data-cs-tab-index="' + index + '"]' ).addClass( 'active' );
+
+    if ( ! $a ) {
+      $a = $ul.find( 'li.x-nav-tabs-item a[data-cs-tab-toggle="' + index + '"]' );
+    }
+
+    $a.parent().addClass( 'active' );
+
+  }
+
+} );
+
 // =============================================================================
 // TEXT-TYPE.JS
 // -----------------------------------------------------------------------------

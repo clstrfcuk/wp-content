@@ -5,9 +5,9 @@ class CS_Columnize extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'columnize',
-      'title'       => __( 'Columnize', csl18n() ),
+      'title'       => __( 'Columnize', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Columnize description.', csl18n() ),
+      'description' => __( 'Columnize description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'empty'       => array( 'content' => '' ),
       'autofocus' => array(

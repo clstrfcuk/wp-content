@@ -206,6 +206,10 @@ class RevSliderUpdate {
 			if(isset($version_info->dashboard)){
 				update_option('revslider-dashboard', $version_info->dashboard);
 			}
+
+			if(isset($version_info->addons)){
+				update_option('revslider-addons', $version_info->addons);
+			}
 			
 			if(isset($version_info->deactivated) && $version_info->deactivated === true){
 				if(get_option('revslider-valid', 'false') == 'true'){

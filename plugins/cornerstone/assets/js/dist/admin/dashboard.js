@@ -1,35 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.CS_dashboard = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = function( type, message, callback, context, args ) {
-
-	$overlay = jQuery( '<div class="cs-admin-confirm-outer">' +
-											'<div class="cs-admin-confirm-inner">' +
-												'<div class="cs-admin-confirm-content">' +
-													'<p class="cs-admin-confirm-message">' + message + '</p>' +
-													'<div class="cs-admin-confirm-actions">' +
-														'<button class="nope">' + csAdmin.l18n( 'confirm-nope' ) + '</button>' +
-														'<button class="yep ' + type + '">' + csAdmin.l18n( 'confirm-yep' ) + '</span></button>' +
-													'</div>' +
-												'</div>' +
-											'</div>' +
-										'</div>' );
-
-	$overlay.find( '.cs-admin-confirm-actions button' ).on( 'click', function( e ) {
-
-		$overlay.remove();
-
-		if ( _.isFunction( callback ) && jQuery( this ).hasClass( 'yep' ) ) {
-			var context = context || this;
-			var args = args || [];
-			callback.apply( context, args );
-		}
-
-  });
-
-  jQuery( 'body' ).append( $overlay );
-
-};
-
-},{}],2:[function(require,module,exports){
 window.csAdmin.l18n =  function( key ) {
 	return csAdmin.strings[key] || '';
 };
@@ -40,10 +9,10 @@ if ( 'true' == csAdmin.isSettingsPage )
 if ( 'true' == csAdmin.isPostEditor )
 	jQuery( window ).ready( require( './post-editor' ) );
 
-},{"./post-editor":3,"./settings-page":4}],3:[function(require,module,exports){
-module.exports = function( $ ) {
+},{"./post-editor":2,"./settings-page":3}],2:[function(require,module,exports){
+jQuery( window ).ready( function( $ ) {
 
-	var Confirm = require( './confirm' );
+	if ( 'true' !== csAdmin.isPostEditor ) return;
 
 	//
 	// Cornerstone Editor Tab
@@ -158,58 +127,28 @@ module.exports = function( $ ) {
 
 	});
 
-};
+} );
 
-},{"./confirm":1}],4:[function(require,module,exports){
-module.exports = function( $ ) {
+},{}],3:[function(require,module,exports){
+jQuery( function( $ ) {
 
-	$( document ).ready(function() {
+	//
+	// Save button.
+	//
 
-		//
-		// Accordion.
-		//
-
-		$( '.accordion > .toggle' ).click(function() {
-
-			if ( $( this ).hasClass( 'active' ) ) {
-				$( this ).removeClass( 'active' ).next().slideUp();
-				return;
-			}
-
-			$( '.accordion > .panel' ).slideUp();
-			$( this ).siblings().removeClass( 'active' );
-			$( this ).addClass( 'active' ).next().slideDown();
-
-		});
-
-		//
-		// Save button.
-		//
-
-		$( '#submit' ).click(function() {
-			$( this ).addClass( 'saving' ).val( csAdmin.l18n( 'updating' ) );
-		});
-
-		//
-		// Meta box toggle.
-		//
-
-		postboxes.add_postbox_toggles( pagenow );
-
-    //
-    // Color picker
-    //
-
-		$( '.wp-color-picker' ).wpColorPicker();
-			$( 'a.wp-color-result' ).each( function() {
-				$( this ).attr( 'title', $( '.wp-color-picker.cs-picker', $( this ).parent() ).data( 'title' ) );
-		} );
-
+	$( '#submit' ).click(function() {
+		$( this ).addClass( 'saving' ).val( csAdmin.l18n( 'updating' ) );
 	});
 
-};
+	//
+	// Meta box toggle.
+	//
 
-},{}]},{},[2])(2)
+	postboxes.add_postbox_toggles( pagenow );
+
+} );
+
+},{}]},{},[1])(1)
 });
 //# sourceMappingURL=dashboard.map
 

@@ -8,7 +8,7 @@ class CSE_Text {
 
 	public function ui() {
 		return array(
-      'title'       => __( 'Text', csl18n() ),
+      'title'       => __( 'Text', 'cornerstone' ),
       'autofocus' => array(
     		'content' => '.x-text',
     	)

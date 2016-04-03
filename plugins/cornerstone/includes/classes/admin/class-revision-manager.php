@@ -9,13 +9,15 @@ class Cornerstone_Revision_Manager extends Cornerstone_Plugin_Component {
 	public $post_meta = array(
 		'_cornerstone_data',
 		'_cornerstone_override',
-		'_cornerstone_settings'
+		'_cornerstone_settings',
 	);
 
 	public function setup() {
 
 		// Disable revision through filter
-		if ( apply_filters( 'cornerstone_disable_revisions', false ) ) return;
+		if ( apply_filters( 'cornerstone_disable_revisions', false ) ) {
+			return;
+		}
 
 		// Save cornerstone revision
 		add_action( 'save_post', array( $this, 'saveRevision' ) , 10, 2 );
@@ -52,13 +54,14 @@ class Cornerstone_Revision_Manager extends Cornerstone_Plugin_Component {
 
 		foreach ( $this->post_meta as $name ) {
 
-				$meta  = get_metadata( 'post', $revision->ID, $name, true );
+			$meta  = get_metadata( 'post', $revision->ID, $name, true );
 
-				if ( false !== $meta ) {
-					update_post_meta( $post_id, $name, $meta );
-				} else {
-					delete_post_meta( $post_id, $name );
-				}
+			if ( false !== $meta ) {
+				update_post_meta( $post_id, $name, $meta );
+			} else {
+				delete_post_meta( $post_id, $name );
+			}
+
 		}
 
 	}

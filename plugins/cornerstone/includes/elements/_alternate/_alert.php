@@ -5,9 +5,9 @@ class CS_Alert extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'alert',
-      'title'       => __( 'Alert', csl18n() ),
+      'title'       => __( 'Alert', 'cornerstone' ),
       'section'     => 'information',
-      'description' => __( 'Alert description.', csl18n() ),
+      'description' => __( 'Alert description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'heading' => '.x-alert .h-alert',
@@ -21,9 +21,9 @@ class CS_Alert extends Cornerstone_Element_Base {
     $this->addControl(
       'heading',
       'text',
-      __( 'Heading &amp; Content', csl18n() ),
-      __( 'Text for your alert heading and content.', csl18n() ),
-      __( 'Alert Title', csl18n() )
+      __( 'Heading &amp; Content', 'cornerstone' ),
+      __( 'Text for your alert heading and content.', 'cornerstone' ),
+      __( 'Alert Title', 'cornerstone' )
     );
 
     $this->addControl(
@@ -31,7 +31,7 @@ class CS_Alert extends Cornerstone_Element_Base {
       'textarea',
       NULL,
       NULL,
-      __( 'Click to inspect, then edit as needed.', csl18n() ),
+      __( 'Click to inspect, then edit as needed.', 'cornerstone' ),
       array(
         'expandable' => true
       )
@@ -40,17 +40,17 @@ class CS_Alert extends Cornerstone_Element_Base {
     $this->addControl(
       'type',
       'choose',
-      __( 'Type', csl18n() ),
-      __( 'There are multiple alert types for different situations. Select the one that best suits your needs.', csl18n() ),
+      __( 'Type', 'cornerstone' ),
+      __( 'There are multiple alert types for different situations. Select the one that best suits your needs.', 'cornerstone' ),
       'success',
       array(
         'columns' => '5',
         'choices' => array(
-          array( 'value' => 'muted',   'tooltip' => __( 'Muted', csl18n() ),   'icon' => fa_entity( 'ban' ) ),
-          array( 'value' => 'success', 'tooltip' => __( 'Success', csl18n() ), 'icon' => fa_entity( 'check' ) ),
-          array( 'value' => 'info',    'tooltip' => __( 'Info', csl18n() ),    'icon' => fa_entity( 'info' ) ),
-          array( 'value' => 'warning', 'tooltip' => __( 'Warning', csl18n() ), 'icon' => fa_entity( 'exclamation-triangle' ) ),
-          array( 'value' => 'danger',  'tooltip' => __( 'Danger', csl18n() ),  'icon' => fa_entity( 'exclamation-circle' ) )
+          array( 'value' => 'muted',   'tooltip' => __( 'Muted', 'cornerstone' ),   'icon' => fa_entity( 'ban' ) ),
+          array( 'value' => 'success', 'tooltip' => __( 'Success', 'cornerstone' ), 'icon' => fa_entity( 'check' ) ),
+          array( 'value' => 'info',    'tooltip' => __( 'Info', 'cornerstone' ),    'icon' => fa_entity( 'info' ) ),
+          array( 'value' => 'warning', 'tooltip' => __( 'Warning', 'cornerstone' ), 'icon' => fa_entity( 'exclamation-triangle' ) ),
+          array( 'value' => 'danger',  'tooltip' => __( 'Danger', 'cornerstone' ),  'icon' => fa_entity( 'exclamation-circle' ) )
         )
       )
     );
@@ -58,8 +58,8 @@ class CS_Alert extends Cornerstone_Element_Base {
     $this->addControl(
       'close',
       'toggle',
-      __( 'Close Button', csl18n() ),
-      __( 'Enabling the close button will make the alert dismissible, allowing your users to remove it if desired.', csl18n() ),
+      __( 'Close Button', 'cornerstone' ),
+      __( 'Enabling the close button will make the alert dismissible, allowing your users to remove it if desired.', 'cornerstone' ),
       false
     );
 

@@ -8,7 +8,7 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 	private $templateLoader;
 	private $router;
 	public $mixins;
-	public $dependencies = array( 'Router', 'Control_Mixins', 'Data_Controller', 'Shortcode_Generator2' );
+	public $dependencies = array( 'Router', 'Injector', 'Control_Mixins', 'Data_Controller', 'Shortcode_Generator2' );
 
 	/**
 	 * Determine whether we are working in the iframe, or primary screen.
@@ -60,7 +60,7 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 
 		$settings = $this->plugin->settings();
 
-		$options['showAdminBar'] = ($settings['show_wp_toolbar'] == '1');
+		$options['showAdminBar'] = (bool) $settings['show_wp_toolbar'];
 
 		return $options;
 	}
@@ -126,21 +126,21 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 		$settings = $this->plugin->settings();
 
 		return cs_booleanize( wp_parse_args( array(
-				'strings' => $this->plugin->config( 'builder/strings-builder' ),
-				'isPreview' => $this->isPreview(),
-				'post' => $this->get_post_data(),
-				'dashboardEditUrl' => get_edit_post_link(),
-				'frontEndUrl' => get_the_permalink(),
-				'fontAwesome' => $this->plugin->common()->getFontIcons(),
-				'editorMarkup' => $this->getWPeditor(),
-				'remoteRenderDelay' => apply_filters( 'cornerstone_render_debounce', 200 ),
-				'loginURL' => wp_login_url( get_permalink() ),
-				'scrollTopSelector' => apply_filters( 'cornerstone_scrolltop_selector', null ),
-				'savedLast' => get_the_modified_time('U'),
-				'visualEnhancements' => (bool) $settings['visual_enhancements'],
-				'keybindings' => $this->plugin->config( 'builder/keybindings' ) // filterable on: cornerstone_config_builder_keybindings
-			), apply_filters( 'cornerstone_config_data', array() )
-		) );
+			'strings' => $this->plugin->config( 'builder/strings-builder' ),
+			'isPreview' => $this->isPreview(),
+			'post' => $this->get_post_data(),
+			'dashboardEditUrl' => get_edit_post_link(),
+			'frontEndUrl' => get_the_permalink(),
+			'fontAwesome' => $this->plugin->common()->getFontIcons(),
+			'editorMarkup' => $this->getWPeditor(),
+			'remoteRenderDelay' => apply_filters( 'cornerstone_render_debounce', 200 ),
+			'loginURL' => wp_login_url( get_permalink() ),
+			'scrollTopSelector' => apply_filters( 'cornerstone_scrolltop_selector', null ),
+			'savedLast' => get_the_modified_time('U'),
+			'visualEnhancements' => (bool) $settings['visual_enhancements'],
+			'keybindings' => $this->plugin->config( 'builder/keybindings' ), // filterable on: cornerstone_config_builder_keybindings
+			'cssClassMap' => $this->plugin->config( 'common/class-map' ),
+		), apply_filters( 'cornerstone_config_data', array() ) ) );
 
 	}
 

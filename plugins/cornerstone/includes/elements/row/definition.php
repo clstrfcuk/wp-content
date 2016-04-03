@@ -8,7 +8,7 @@ class CSE_Row {
 
 	public function ui() {
 		return array(
-      'title' => __( 'Row', csl18n() ),
+      'title' => __( 'Row', 'cornerstone' ),
     );
 	}
 
@@ -45,9 +45,7 @@ class CSE_Row {
 
 		unset( $atts['title'] );
 		unset( $atts['_column_layout'] );
-		unset( $atts['elements'] );
 
-		$atts = Cornerstone_Control_Mixins::legacy_injections( $atts );
 		return $atts;
 
 	}

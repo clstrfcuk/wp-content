@@ -74,9 +74,31 @@
 						break;
 				}
 
+				// Get video width and height
+				var video_width = $( 'a[href="' + obj.href + '"]' ).attr( 'data-video-width' ),
+					video_height = $( 'a[href="' + obj.href + '"]' ).attr( 'data-video-height' );
+
 				// Set content as HTML
-				obj.content = '<video class="envira-video" width="90%" height="90%" preload="metadata"><source type="' + content_type + '" src="' + obj.href + '" /></video>';
+				obj.content = '<div class="envira-video-container" style="max-width:' + video_width + 'px;max-height:' + video_height + 'px;"><video class="envira-video" width="' + video_width + '" height="' + video_height + '" preload="metadata" style="width:' + video_width + 'px;height:' + video_width + 'px;"><source type="' + content_type + '" src="' + obj.href + '" /></video></div>';
 				obj.type = 'html';
+
+				// Build features for MediaElementPlayer
+				var features = [];
+				if (opts.playpause === 1) {
+					features.push('playpause');
+				}
+				if (opts.progress === 1) {
+					features.push('progress');
+				}
+				if (opts.current === 1) {
+					features.push('current');
+				}
+				if (opts.duration === 1) {
+					features.push('duration');
+				}
+				if (opts.volume === 1) {
+					features.push('volume');
+				}
 			}
 		},
 
@@ -103,8 +125,11 @@
 				}
 
 				// Init MediaElementPlayer
-				$( '.envira-video' ).mediaelementplayer({
+				var envira_video_mejs = $( '.envira-video' ).mediaelementplayer({
 					features: features,
+					videoWidth: '100%',
+  					videoHeight: '100%',
+  					enableAutosize: true,
 					success: function( mediaElement, domObject ) {
 						if (opts.autoplay === 1) {
 							mediaElement.addEventListener('canplay', function() {
@@ -115,10 +140,11 @@
 					}
 				});
 
+				
 				// Trigger envirabox resize
-				setTimeout(function() {
-					$(window).trigger('resize');	
-				}, 500);
+				setTimeout( function() {
+					$( window ).trigger( 'resize' );	
+				}, 500 );
 			}
 		}
 

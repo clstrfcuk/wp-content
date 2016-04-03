@@ -285,7 +285,7 @@ class RevSliderFunctionsWP{
 	public static function getImageUrlFromPath($pathImage){
 		//protect from absolute url
 		$pathLower = strtolower($pathImage);
-		if(strpos($pathLower, "http://") !== false || strpos($pathLower, "www.") === 0)
+		if(strpos($pathLower, "http://") !== false || strpos($pathLower, "https://") !== false || strpos($pathLower, "www.") === 0)
 			return($pathImage);
 		
 		$urlImage = self::getUrlUploads().$pathImage;
@@ -437,7 +437,7 @@ class RevSliderFunctionsWP{
 		}else{
 			$arr = $strIDs;
 		}
-		
+
 		$query = array(
 			'post_type'=>"any",
 			'ignore_sticky_posts' => 1,
@@ -446,6 +446,7 @@ class RevSliderFunctionsWP{
 		
 		if($is_gal){
 			$query['post_status'] = 'inherit';
+			$query['orderby'] = 'post__in';
 		}
 		
 		$query = array_merge($query, $additional);
@@ -453,10 +454,9 @@ class RevSliderFunctionsWP{
 		
 		$objQuery = new WP_Query($query);
 		
-		$arrPosts = $objQuery->posts;						
-		
+		$arrPosts = $objQuery->posts;		
+
 		//dmp($query);dmp("num posts: ".count($arrPosts));exit();
-		
 		foreach($arrPosts as $key=>$post){
 				
 			if(method_exists($post, "to_array"))
@@ -465,6 +465,8 @@ class RevSliderFunctionsWP{
 				$arrPosts[$key] = (array)$post;
 		}
 		
+
+
 		return($arrPosts);
 	}
 	

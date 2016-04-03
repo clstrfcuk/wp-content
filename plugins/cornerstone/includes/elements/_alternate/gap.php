@@ -5,9 +5,9 @@ class CS_Gap extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'gap',
-      'title'       => __( 'Gap', csl18n() ),
+      'title'       => __( 'Gap', 'cornerstone' ),
       'section'     => 'structure',
-      'description' => __( 'Gap description.', csl18n() ),
+      'description' => __( 'Gap description.', 'cornerstone' ),
       'supports'    => array( 'visibility', 'id', 'class', 'style' ),
       'render'      => false,
       'autofocus' => array(
@@ -21,8 +21,8 @@ class CS_Gap extends Cornerstone_Element_Base {
     $this->addControl(
       'gap_size',
       'text',
-      __( 'Size', csl18n() ),
-      __( 'Enter in the size of your gap. Pixels, ems, and percentages are all valid units of measurement.', csl18n() ),
+      __( 'Size', 'cornerstone' ),
+      __( 'Enter in the size of your gap. Pixels, ems, and percentages are all valid units of measurement.', 'cornerstone' ),
       '50px'
     );
 

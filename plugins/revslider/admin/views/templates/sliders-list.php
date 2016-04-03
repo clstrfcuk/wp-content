@@ -109,7 +109,6 @@ if( !defined( 'ABSPATH') ) exit();
 				
 				$editLink = self::getViewUrl(RevSliderAdmin::VIEW_SLIDER,"id=$id");
 				
-				$orderSlidesLink = ($isFromPosts) ? self::getViewUrl(RevSliderAdmin::VIEW_SLIDES,"id=$id") : '';
 				$editSlidesLink = self::getViewUrl(RevSliderAdmin::VIEW_SLIDE,"id=$first_slide_id");
 
 				$showTitle = RevSliderFunctions::getHtmlLink($editLink, $showTitle);
@@ -148,16 +147,7 @@ if( !defined( 'ABSPATH') ) exit();
 
 				<div class="tls-hover-metas">
 					<!--<span class="tls-shortcode"><?php echo $shortCode; ?></span>-->
-					<span class="button-primary rs-embed-slider" ><i class="eg-icon-plus"></i><?php _e("Embed Slider",'revslider'); ?></span>		
-					
-					
-					<?php
-					if($isFromPosts){
-						?>
-						<a class="button-primary " href='<?php echo $orderSlidesLink; ?>'><i class="revicon-pencil-1"></i><?php _e("Order Posts",'revslider'); ?></a>
-						<?php
-					}
-					?>
+					<span class="button-primary rs-embed-slider" ><i class="eg-icon-plus"></i><?php _e("Embed Slider",'revslider'); ?></span>
 					<?php if(!RS_DEMO){ ?>
 						<a class="button-primary  export_slider_overview" id="export_slider_<?php echo $id; ?>" href="javascript:void(0);" ><i class="revicon-export"></i><?php _e("Export",'revslider'); ?></a>
 						<?php
@@ -204,7 +194,7 @@ if( !defined( 'ABSPATH') ) exit();
 					<i class="slider_list_add_buttons add_new_template_icon"></i>
 				</span>
 				<span class="tls-title-wrapper">			
-					<span class="tls-title"><?php _e("Add Slider Template",'revslider'); ?></span>					
+					<span class="tls-title"><?php _e("Add Slider From Template",'revslider'); ?></span>					
 				</span>
 			</span>
 		</a>

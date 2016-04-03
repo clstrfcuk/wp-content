@@ -88,7 +88,7 @@ class Cornerstone_Preview_Window extends Cornerstone_Plugin_Component {
 	 */
 	public function wrap_content( $content ) {
 		$this->content_cache = $content;
-		return '<div id="cornerstone-preview-entry" class="cs-preview-loading"></div>';
+		return '<div id="cs-content" class="cs-content cs-preview-loading"></div>';
 	}
 
 	/**

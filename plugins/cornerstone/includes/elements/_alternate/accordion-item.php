@@ -5,9 +5,9 @@ class CS_Accordion_Item extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'accordion-item',
-      'title'       => __( 'Accordion Item', csl18n() ),
+      'title'       => __( 'Accordion Item', 'cornerstone' ),
       'section'     => '_content',
-      'description' => __( 'Accordion Item description.', csl18n() ),
+      'description' => __( 'Accordion Item description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'render'      => false,
       'delegate'    => true
@@ -27,16 +27,16 @@ class CS_Accordion_Item extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'editor',
-      __( 'Content', csl18n() ),
-      __( 'Include your desired content for your Accordion Item here.', csl18n() ),
+      __( 'Content', 'cornerstone' ),
+      __( 'Include your desired content for your Accordion Item here.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'open',
       'toggle',
-      __( 'Starts Open', csl18n() ),
-      __( 'If the Accordion Items are linked, only one can start open.', csl18n() ),
+      __( 'Starts Open', 'cornerstone' ),
+      __( 'If the Accordion Items are linked, only one can start open.', 'cornerstone' ),
       false
     );
 

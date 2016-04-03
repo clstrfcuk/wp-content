@@ -5,9 +5,9 @@ class CS_Google_Map_Marker extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'google-map-marker',
-      'title'       => __( 'Google Map Marker', csl18n() ),
+      'title'       => __( 'Google Map Marker', 'cornerstone' ),
       'section'     => '_media',
-      'description' => __( 'Google Map Marker description.', csl18n() ),
+      'description' => __( 'Google Map Marker description.', 'cornerstone' ),
       'render'      => false,
       'delegate'    => true
     );
@@ -26,32 +26,40 @@ class CS_Google_Map_Marker extends Cornerstone_Element_Base {
     $this->addControl(
       'lat',
       'text',
-      __( 'Latitude', csl18n() ),
-      __( 'Enter the latitude for your map marker.', csl18n() ),
+      __( 'Latitude', 'cornerstone' ),
+      __( 'Enter the latitude for your map marker.', 'cornerstone' ),
       '40.7056308'
     );
 
     $this->addControl(
       'lng',
       'text',
-      __( 'Longitude', csl18n() ),
-      __( 'Enter the longitude for your map marker.', csl18n() ),
+      __( 'Longitude', 'cornerstone' ),
+      __( 'Enter the longitude for your map marker.', 'cornerstone' ),
       '-73.9780035'
     );
 
     $this->addControl(
       'info',
       'text',
-      __( 'Text', csl18n() ),
-      __( 'Enter in optional text to appear if your map marker is hovered over.', csl18n() ),
+      __( 'Text', 'cornerstone' ),
+      __( 'Enter in optional text to appear if your map marker is hovered over.', 'cornerstone' ),
       ''
+    );
+
+    $this->addControl(
+      'start_open',
+      'toggle',
+      __( 'Start Open', 'cornerstone' ),
+      __( 'Toggle if the marker info should be open by default.', 'cornerstone' ),
+      false
     );
 
     $this->addControl(
       'image',
       'image',
-      __( 'Image', csl18n() ),
-      __( 'Upload an optional alternate image to use in place of the standard map marker.', csl18n() ),
+      __( 'Image', 'cornerstone' ),
+      __( 'Upload an optional alternate image to use in place of the standard map marker.', 'cornerstone' ),
       ''
     );
 

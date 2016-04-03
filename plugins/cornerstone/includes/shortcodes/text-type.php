@@ -26,20 +26,20 @@ function x_shortcode_text_type( $atts ) {
   $id         = ( $id         != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
   $class      = ( $class      != '' ) ? 'x-text-type ' . esc_attr( $class ) : 'x-text-type';
   $style      = ( $style      != '' ) ? 'style="' . $style . '"' : '';
-  $prefix     = ( $prefix     != '' ) ? '<span class="prefix">' . $prefix . '</span>' : '';
-  $suffix     = ( $suffix     != '' ) ? '<span class="suffix">' . $suffix . '</span>' : '';
+  $prefix     = ( $prefix     != '' ) ? '<span class="prefix">' . cs_decode_shortcode_attribute( $prefix ) . '</span>' : '';
+  $suffix     = ( $suffix     != '' ) ? '<span class="suffix">' . cs_decode_shortcode_attribute( $suffix ) . '</span>' : '';
   $tag        = ( $tag        != '' ) ? $tag : 'span';
   $looks_like = ( $looks_like != '' ) ? ' ' . $looks_like : '';
 
   $js_params = array(
-    'strings'     => ( $strings     != ''     ) ? explode( '|', $strings ) : '',
+    'strings'     => ( $strings     != ''     ) ? explode( '|', cs_decode_shortcode_attribute( $strings ) ) : '',
     'type_speed'  => ( $type_speed  != ''     ) ? intval( $type_speed ) : 50,
     'start_delay' => ( $start_delay != ''     ) ? intval( $start_delay ) : 0,
     'back_speed'  => ( $back_speed  != ''     ) ? intval( $back_speed ) : 50,
     'back_delay'  => ( $back_delay  != ''     ) ? intval( $back_delay ) : 1000,
     'loop'        => ( $loop        == 'true' ),
     'show_cursor' => ( $show_cursor == 'true' ),
-    'cursor'      => ( $cursor      != ''     ) ? $cursor : '|',
+    'cursor'      => ( $cursor      != ''     ) ? cs_decode_shortcode_attribute( $cursor ) : '|',
   );
 
   $data = cs_generate_data_attributes( 'text_type', $js_params );

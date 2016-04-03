@@ -5,9 +5,9 @@ class CS_Feature_List extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'feature-list',
-      'title'       => __( 'Feature List', csl18n() ),
+      'title'       => __( 'Feature List', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Feature List description.', csl18n() ),
+      'description' => __( 'Feature List description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'renderChild' => true
     );
@@ -18,28 +18,28 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'elements',
       'sortable',
-      __( 'Feature List Items', csl18n() ),
-      __( 'Add your Feature List Items here.', csl18n() ),
+      __( 'Feature List Items', 'cornerstone' ),
+      __( 'Add your Feature List Items here.', 'cornerstone' ),
       array(
         array(
-          'title'                 => __( 'Feature List Item', csl18n() ),
-          'text'                  => __( 'This is an Feature List Item that is part of an Feature List. Notice the connector between the three graphics to show that they are related.', csl18n() ),
+          'title'                 => __( 'Feature List Item', 'cornerstone' ),
+          'text'                  => __( 'This is an Feature List Item that is part of an Feature List. Notice the connector between the three graphics to show that they are related.', 'cornerstone' ),
           'graphic_shape'         => 'circle',
           'graphic_icon'          => 'diamond',
           'graphic_icon_color'    => '#3498db',
           'graphic_icon_bg_color' => '#272727'
         ),
         array(
-          'title'                 => __( 'Feature List Item', csl18n() ),
-          'text'                  => __( 'This is an Feature List Item that is part of an Feature List. Notice the connector between the three graphics to show that they are related.', csl18n() ),
+          'title'                 => __( 'Feature List Item', 'cornerstone' ),
+          'text'                  => __( 'This is an Feature List Item that is part of an Feature List. Notice the connector between the three graphics to show that they are related.', 'cornerstone' ),
           'graphic_shape'         => 'circle',
           'graphic_icon'          => 'bicycle',
           'graphic_icon_color'    => '#9b59b6',
           'graphic_icon_bg_color' => '#272727'
         ),
         array(
-          'title'                 => __( 'Feature List Item', csl18n() ),
-          'text'                  => __( 'This is an Feature List Item that is part of an Feature List. Notice the connector between the three graphics to show that they are related.', csl18n() ),
+          'title'                 => __( 'Feature List Item', 'cornerstone' ),
+          'text'                  => __( 'This is an Feature List Item that is part of an Feature List. Notice the connector between the three graphics to show that they are related.', 'cornerstone' ),
           'graphic_shape'         => 'circle',
           'graphic_icon'          => 'envelope-o',
           'graphic_icon_color'    => '#2ecc71',
@@ -48,7 +48,7 @@ class CS_Feature_List extends Cornerstone_Element_Base {
       ),
       array(
       	'element'   => 'feature-list-item',
-        'newTitle' => __( 'Feature List Item %s', csl18n() )
+        'newTitle' => __( 'Feature List Item %s', 'cornerstone' )
       )
     );
 
@@ -60,14 +60,14 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'graphic',
       'select',
-      __( 'Graphic', csl18n() ),
-      __( 'Choose between an icon, a custom image, or incremental numbers for your graphic.', csl18n() ),
+      __( 'Graphic', 'cornerstone' ),
+      __( 'Choose between an icon, a custom image, or incremental numbers for your graphic.', 'cornerstone' ),
       'icon',
       array(
         'choices' => array(
-          array( 'value' => 'icon',    'label' => __( 'Icon', csl18n() ) ),
-          array( 'value' => 'image',   'label' => __( 'Image', csl18n() ) ),
-          array( 'value' => 'numbers', 'label' => __( 'Numbers', csl18n() ) )
+          array( 'value' => 'icon',    'label' => __( 'Icon', 'cornerstone' ) ),
+          array( 'value' => 'image',   'label' => __( 'Image', 'cornerstone' ) ),
+          array( 'value' => 'numbers', 'label' => __( 'Numbers', 'cornerstone' ) )
         )
       )
     );
@@ -75,8 +75,8 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'graphic_size',
       'text',
-      __( 'Graphic Size', csl18n() ),
-      __( 'Specify the size of your graphic.', csl18n() ),
+      __( 'Graphic Size', 'cornerstone' ),
+      __( 'Specify the size of your graphic.', 'cornerstone' ),
       '60px'
     );
 
@@ -88,13 +88,13 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'align_h',
       'select',
-      __( 'Horizontal Alignment', csl18n() ),
-      __( 'Select the horizontal alignment of the Feature List Item.', csl18n() ),
+      __( 'Horizontal Alignment', 'cornerstone' ),
+      __( 'Select the horizontal alignment of the Feature List Item.', 'cornerstone' ),
       'left',
       array(
         'choices' => array(
-          array( 'value' => 'left',  'label' => __( 'Left', csl18n() ) ),
-          array( 'value' => 'right', 'label' => __( 'Right', csl18n() ) )
+          array( 'value' => 'left',  'label' => __( 'Left', 'cornerstone' ) ),
+          array( 'value' => 'right', 'label' => __( 'Right', 'cornerstone' ) )
         )
       )
     );
@@ -102,13 +102,13 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'align_v',
       'select',
-      __( 'Vertical Alignment', csl18n() ),
-      __( 'Select the vertical alignment of the Feature List Item.', csl18n() ),
+      __( 'Vertical Alignment', 'cornerstone' ),
+      __( 'Select the vertical alignment of the Feature List Item.', 'cornerstone' ),
       'top',
       array(
         'choices' => array(
-          array( 'value' => 'top',    'label' => __( 'Top', csl18n() ) ),
-          array( 'value' => 'middle', 'label' => __( 'Middle', csl18n() ) )
+          array( 'value' => 'top',    'label' => __( 'Top', 'cornerstone' ) ),
+          array( 'value' => 'middle', 'label' => __( 'Middle', 'cornerstone' ) )
         )
       )
     );
@@ -116,16 +116,16 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'side_graphic_spacing',
       'text',
-      __( 'Graphic Spacing', csl18n() ),
-      __( 'Specify an amount of spacing you want between your side graphic and the content.', csl18n() ),
+      __( 'Graphic Spacing', 'cornerstone' ),
+      __( 'Specify an amount of spacing you want between your side graphic and the content.', 'cornerstone' ),
       '20px'
     );
 
     $this->addControl(
       'max_width',
       'text',
-      __( 'Max Width', csl18n() ),
-      __( 'Enter in a max width for your Feature List Item if desired. This will keep your Feature List Item from stretching out too far on smaller breakpoints.', csl18n() ),
+      __( 'Max Width', 'cornerstone' ),
+      __( 'Enter in a max width for your Feature List Item if desired. This will keep your Feature List Item from stretching out too far on smaller breakpoints.', 'cornerstone' ),
       'none'
     );
 
@@ -137,14 +137,14 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'connector_style',
       'select',
-      __( 'Connector Style, Color, &amp; Width', csl18n() ),
-      __( 'Specify the style of the connector between graphics.', csl18n() ),
+      __( 'Connector Style, Color, &amp; Width', 'cornerstone' ),
+      __( 'Specify the style of the connector between graphics.', 'cornerstone' ),
       'dashed',
       array(
         'choices' => array(
-          array( 'value' => 'solid',  'label' => __( 'Solid', csl18n() ) ),
-          array( 'value' => 'dashed', 'label' => __( 'Dashed', csl18n() ) ),
-          array( 'value' => 'dotted', 'label' => __( 'Dotted', csl18n() ) )
+          array( 'value' => 'solid',  'label' => __( 'Solid', 'cornerstone' ) ),
+          array( 'value' => 'dashed', 'label' => __( 'Dashed', 'cornerstone' ) ),
+          array( 'value' => 'dotted', 'label' => __( 'Dotted', 'cornerstone' ) )
         )
       )
     );
@@ -173,8 +173,8 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'graphic_animation',
       'select',
-      __( 'Graphic Animation', csl18n() ),
-      __( 'Optionally add animation to your element as users scroll down the page.', csl18n() ),
+      __( 'Graphic Animation', 'cornerstone' ),
+      __( 'Optionally add animation to your element as users scroll down the page.', 'cornerstone' ),
       'none',
       array(
         'choices' => Cornerstone_Control_Mixins::animationChoices()
@@ -184,8 +184,8 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'connector_animation',
       'select',
-      __( 'Connector Animation', csl18n() ),
-      __( 'Optionally add animation to your element as users scroll down the page.', csl18n() ),
+      __( 'Connector Animation', 'cornerstone' ),
+      __( 'Optionally add animation to your element as users scroll down the page.', 'cornerstone' ),
       'none',
       array(
         'choices' => Cornerstone_Control_Mixins::animationChoices()
@@ -195,8 +195,8 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'animation_offset',
       'text',
-      __( 'Animation Offset (%)', csl18n() ),
-      __( 'Specify a percentage value where the element should appear on screen for the animation to take place.', csl18n() ),
+      __( 'Animation Offset (%)', 'cornerstone' ),
+      __( 'Specify a percentage value where the element should appear on screen for the animation to take place.', 'cornerstone' ),
       '50',
       array(
         'condition' => array(
@@ -209,8 +209,8 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'animation_delay_initial',
       'text',
-      __( 'Animation Initial Delay (ms)', csl18n() ),
-      __( 'Specify an amount of time before the graphic animation starts in milliseconds.', csl18n() ),
+      __( 'Animation Initial Delay (ms)', 'cornerstone' ),
+      __( 'Specify an amount of time before the graphic animation starts in milliseconds.', 'cornerstone' ),
       '0',
       array(
         'condition' => array(
@@ -223,8 +223,8 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'animation_delay_between',
       'text',
-      __( 'Animation Delay Between (ms)', csl18n() ),
-      __( 'Specify an amount of time between graphic animations in milliseconds.', csl18n() ),
+      __( 'Animation Delay Between (ms)', 'cornerstone' ),
+      __( 'Specify an amount of time between graphic animations in milliseconds.', 'cornerstone' ),
       '300',
       array(
         'condition' => array(

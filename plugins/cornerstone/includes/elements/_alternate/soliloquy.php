@@ -5,9 +5,9 @@ class CS_Soliloquy extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'soliloquy',
-      'title'       => __( 'Soliloquy', csl18n() ),
+      'title'       => __( 'Soliloquy', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Place an Soliloquy element into your content.', csl18n() ),
+      'description' => __( 'Place an Soliloquy element into your content.', 'cornerstone' ),
       'supports'    => array(),
       'can_preview' => false
     );
@@ -37,7 +37,7 @@ class CS_Soliloquy extends Cornerstone_Element_Base {
 
       $found[] = array(
         'value'    => 'none',
-        'label'    => __( 'No Sliders Available', csl18n() ),
+        'label'    => __( 'No Sliders Available', 'cornerstone' ),
         'disabled' => true
       );
 
@@ -46,8 +46,8 @@ class CS_Soliloquy extends Cornerstone_Element_Base {
     $this->addControl(
       'source_id',
       'select',
-      __( 'Select Slider', csl18n() ),
-      __( 'Choose from Soliloquy elements that have already been created.', csl18n() ),
+      __( 'Select Slider', 'cornerstone' ),
+      __( 'Choose from Soliloquy elements that have already been created.', 'cornerstone' ),
       $found[0]['value'],
       array(
         'choices' => $found

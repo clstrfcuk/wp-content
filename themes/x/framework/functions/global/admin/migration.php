@@ -10,10 +10,9 @@
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
 //   01. Version Migration
-//   02. Pairing Notice
-//   03. Version Migration Notice
-//   04. Theme Migration
-//   05. Term Splitting Migration (WordPress 4.2 Breaking Change)
+//   02. Version Migration Notice
+//   03. Theme Migration
+//   04. Term Splitting Migration (WordPress 4.2 Breaking Change)
 // =============================================================================
 
 // Version Migration
@@ -21,7 +20,17 @@
 
 function x_version_migration() {
 
-  $prior = get_option( 'x_version', X_VERSION );
+  $prior = get_option( 'x_version', false );
+
+  //
+  // Store the version on first install
+  //
+
+  if ( false === $prior ) {
+    update_option( 'x_version', X_VERSION );
+    update_option( 'x_dismiss_update_notice', true );
+    return;
+  }
 
   if ( version_compare( $prior, X_VERSION, '<' ) ) {
 
@@ -208,8 +217,14 @@ function x_version_migration() {
     // Turn on the version migration notice.
     //
 
-    update_option( 'x_version_migration_notice', true );
+    delete_option( 'x_dismiss_update_notice' );
 
+
+    //
+    // Enable validation reminder
+    //
+
+    delete_option( 'x_dismiss_validation_notice' );
 
     //
     // Bust caches.
@@ -225,36 +240,6 @@ add_action( 'admin_init', 'x_version_migration' );
 
 
 
-// Pairing Notice
-// =============================================================================
-
-//
-// Define current version of plugin and prompt for plugin update if:
-//
-// 1. Plugin doesn't specify current theme constant (i.e. is too old).
-// 2. Plugin is older than what the theme desires it to be
-//
-
-define( 'X_CORNERSTONE_CURRENT', '1.0.0' );
-
-function x_pairing_notice() {
-
-  if ( x_plugin_cornerstone_exists() && class_exists('CS') ) {
-    if ( ! defined( 'X_CURRENT' ) || version_compare( CS()->version(), X_CORNERSTONE_CURRENT, '<' ) ) { ?>
-
-      <div class="updated x-notice warning">
-        <p><strong>IMPORTANT: Please update Cornerstone</strong>. You are using a newer version of X that may not be compatible. After updating, please ensure that you have cleared out your browser cache and any caching plugins you may be using. This message will self destruct upon updating Cornerstone.</p>
-      </div>
-
-    <?php }
-  }
-
-}
-
-add_action( 'admin_notices', 'x_pairing_notice' );
-
-
-
 // Version Migration Notice
 // =============================================================================
 
@@ -265,14 +250,15 @@ add_action( 'admin_notices', 'x_pairing_notice' );
 
 function x_version_migration_notice() { // 1
 
-  if ( get_option( 'x_version_migration_notice' ) == true ) { ?>
+  if ( false === get_option( 'x_dismiss_update_notice', false ) ) {
 
-    <div class="updated x-notice dismissible">
-      <a href="<?php echo esc_url( add_query_arg( array( 'x-dismiss-notice' => true ) ) ); ?>" class="dismiss"><span class="dashicons dashicons-no"></span></a>
-      <p>Congratulations, you've successfully updated X! Be sure to <a href="//theme.co/changelog/" target="_blank">check out the release notes and changelog</a> for this latest version to see all that has changed, especially if you're utilizing any additional plugins or have made modifications to your website via a child theme.</p>
-    </div>
+    x_tco()->admin_notice( array(
+      'message' => __( 'Congratulations, you&apos;ve successfully updated X! Be sure to <a href="//theme.co/changelog/" target="_blank">check out the release notes and changelog</a> to see all that has changed, especially if you&apos;re utilizing any additional plugins or have made modifications to your website via a child theme.', '__x__' ),
+      'dismissible' => true,
+      'ajax_dismiss' => 'x_dismiss_update_notice'
+    ) );
 
-  <?php }
+  }
 
 }
 
@@ -281,13 +267,13 @@ add_action( 'admin_notices', 'x_version_migration_notice' );
 
 function x_version_migration_notice_dismiss() { // 2
 
-  if ( isset( $_GET['x-dismiss-notice'] ) ) {
-    update_option( 'x_version_migration_notice', false );
-  }
+  update_option( 'x_dismiss_update_notice', true );
+  wp_send_json_success();
 
 }
 
-add_action( 'admin_init', 'x_version_migration_notice_dismiss' );
+add_action( 'wp_ajax_x_dismiss_update_notice', 'x_version_migration_notice_dismiss' );
+
 
 
 

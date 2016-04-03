@@ -30,7 +30,7 @@ function x_shortcode_toc( $atts, $content = null ) {
     default :
       $columns = '';
   }
-  $title = ( $title != '' ) ? $title : __( 'Table of Contents', csl18n() );
+  $title = ( $title != '' ) ? $title : __( 'Table of Contents', 'cornerstone' );
 
   $output = "<div {$id} class=\"{$class}{$type}{$columns}\" {$style}><h4 class=\"h-toc\">{$title}</h4><ul class=\"unstyled cf\">" . do_shortcode( $content ) . '</ul></div>';
 

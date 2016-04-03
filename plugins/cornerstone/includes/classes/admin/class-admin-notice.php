@@ -16,20 +16,22 @@ class Cornerstone_Admin_Notice {
 
 	public function get_notice() {
 
-		if ( empty( $this->message ) )
+		if ( empty( $this->message ) ) {
 			return '';
+		}
 
-		$classes = explode(' ', $this->class );
+		$classes = explode( ' ', $this->class );
 		array_map( 'sanitize_html_class', $classes );
 
 		$classes[] = 'notice';
 
-		if ( $this->dissmissable )
+		if ( $this->dissmissable ) {
 			$classes[] = 'is-dismissible';
+		}
 
 		$class = implode( ' ', $classes );
 
-		return sprintf( "<div class=\"%s\"><p>%s</p></div>", $class, $this->message );
+		return sprintf( '<div class="%s"><p>%s</p></div>', $class, $this->message );
 
 	}
 
@@ -39,8 +41,9 @@ class Cornerstone_Admin_Notice {
 
 	public function conditional_notice() {
 
-		if ( !is_callable( $callback ) || !call_user_func( $this->callback ) )
+		if ( ! is_callable( $callback ) || ! call_user_func( $this->callback ) ) {
 			return;
+		}
 
 		$this->the_notice();
 
@@ -48,8 +51,9 @@ class Cornerstone_Admin_Notice {
 
 	public function hook( $hook_priority = 20, $callback = false ) {
 
-		if ( did_action( 'admin_notices' ) )
+		if ( did_action( 'admin_notices' ) ) {
 			return false;
+		}
 
 		$this->hook_priority = $hook_priority;
 		$method = 'the_notice';
@@ -64,8 +68,9 @@ class Cornerstone_Admin_Notice {
 	}
 
 	public function unhook() {
-		if ( !isset( $this->hook_priority ) )
+		if ( ! isset( $this->hook_priority ) ) {
 			return;
+		}
 		remove_action( 'admin_notices', array( $this, 'the_notice' ), $this->hook_priority );
 	}
 

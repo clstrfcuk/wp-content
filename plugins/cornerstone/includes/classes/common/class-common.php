@@ -39,7 +39,7 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 	 * @return string
 	 */
 	public function properTitle() {
-		return __( 'Cornerstone', csl18n() );
+		return __( 'Cornerstone', 'cornerstone' );
 	}
 
 	/**
@@ -52,8 +52,19 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 		$settings = $this->plugin->settings();
 		$user = wp_get_current_user();
 
-		if ( !empty( $user ) && ( user_can( $user, 'manage_options' ) || count( array_intersect( $settings['permitted_roles'], (array) $user->roles ) ) > 0 ) )
-			return apply_filters( 'cornerstone_allowed_post_types', $settings['allowed_post_types'] );
+		$allowed_types   = $settings['allowed_post_types'];
+		$permitted_roles = $settings['permitted_roles'];
+
+		if ( ! is_array( $settings['allowed_post_types'] ) ) {
+			$allowed_types = explode( ',', $settings['allowed_post_types'] );
+		}
+
+		if ( ! is_array( $settings['permitted_roles'] ) ) {
+			$permitted_roles = explode( ',', $settings['permitted_roles'] );
+		}
+
+		if ( !empty( $user ) && ( user_can( $user, 'manage_options' ) || count( array_intersect( $permitted_roles, (array) $user->roles ) ) > 0 ) )
+			return apply_filters( 'cornerstone_allowed_post_types', $allowed_types );
 
 		return array();
 	}
@@ -98,7 +109,13 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 		$settings = $this->plugin->settings();
 		$post = $this->locatePost( $post_id );
 
-		return ( $post && in_array( $post->post_type, apply_filters( 'cornerstone_allowed_post_types', $settings['allowed_post_types'] ) ) );
+		$allowed_types = $settings['allowed_post_types'];
+
+		if ( ! is_array( $settings['allowed_post_types'] ) ) {
+			$allowed_types = explode( ',', $settings['allowed_post_types'] );
+		}
+
+		return ( $post && in_array( $post->post_type, apply_filters( 'cornerstone_allowed_post_types', $allowed_types ) ) );
 
 	}
 
@@ -187,9 +204,9 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 	 * Detect if a post has saved Cornerstone data
 	 * @return bool true is Cornerstone meta exists
 	 */
-	public function uses_cornerstone() {
+	public function uses_cornerstone( $post_id = '' ) {
 
-		$post = $this->locatePost();
+		$post = $this->locatePost( $post_id );
 
 		if (!$post)
 			return false;
@@ -240,4 +257,60 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 	public function placeholderImage( $height = '300', $width = '250', $color = '#eeeeee' ) {
 		return 'data:image/svg+xml;base64,' . base64_encode( "<svg xmlns='http://www.w3.org/2000/svg' width='{$width}px' height='{$height}px' viewBox='0 0 {$width} {$height}' version='1.1'><rect fill='{$color}' x='0' y='0' width='{$width}' height='{$height}'></rect></svg>" );
 	}
+
+	public function classMap( $group = '', $classes ) {
+
+		$single = false;
+
+		if ( ! is_array( $classes ) ) {
+			$single = true;
+			$classes = array( $classes );
+		}
+
+		if ( ! isset( $this->cssClassMap ) ) {
+			$this->cssClassMap = $this->plugin->config( 'common/class-map' );
+		}
+
+		if ( ! isset( $this->cssClassMap[ $group ] ) ) {
+			trigger_error( "Cornerstone_Common::classMap group: $group doesn't exist in class map.", E_USER_WARNING );
+			return array( '' );
+		}
+
+		$this->cssClassMapGroup = $this->cssClassMap[ $group ];
+
+		$map = array_map( array( $this, 'classMapHandler' ), $classes );
+
+		return ( $single ) ? $map[0] : $map;
+
+	}
+
+	protected function classMapHandler( $class ) {
+
+		if ( ! isset( $this->cssClassMapGroup[ $class ] ) ) {
+			return '';
+		}
+
+		return $this->cssClassMapGroup[ $class ];
+
+	}
+
+	public function set_default_post_types( $types = array() ) {
+
+		if ( is_array( $types ) ) {
+			$this->default_post_types = $types;
+		}
+
+		add_filter( 'cornerstone_config_common_default-settings', array( $this, 'filter_default_post_types' ) );
+
+	}
+
+	public function filter_default_post_types( $config ) {
+		$config['allowed_post_types'] = $this->default_post_types;
+		return $config;
+	}
+
+	public function is_validated() {
+		return ( get_option( 'cs_product_validation_key', false ) !== false );
+	}
+
 }

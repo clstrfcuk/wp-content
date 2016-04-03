@@ -116,12 +116,13 @@ cs.updateRegistry( {
 		'inspector',
 		'settings',
 		'skeleton',
-		'element-manager'
+		'element-manager',
+		'cheatsheet'
 	],
 	preview: [ 'preview', 'render-queue' ]
 } );
 
-},{"../vendor/dragula":120,"../vendor/htmlhint":121,"../vendor/jquery.growl":122,"../vendor/jquery.visible":123,"../vendor/pointer-events-polyfill":124,"../vendor/rgbaster":125,"./components":24,"./utility/jquery.shadow-height":28,"./utility/string-replace-all":30,"mousetrap":134,"mousetrap/plugins/global-bind/mousetrap-global-bind":135,"nprogress":136,"perfect-scrollbar/jquery":137}],5:[function(require,module,exports){
+},{"../vendor/dragula":122,"../vendor/htmlhint":123,"../vendor/jquery.growl":124,"../vendor/jquery.visible":125,"../vendor/pointer-events-polyfill":126,"../vendor/rgbaster":127,"./components":25,"./utility/jquery.shadow-height":29,"./utility/string-replace-all":31,"mousetrap":136,"mousetrap/plugins/global-bind/mousetrap-global-bind":137,"nprogress":138,"perfect-scrollbar/jquery":139}],5:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -275,6 +276,11 @@ module.exports = Cornerstone.Component.extend({
 			clearTimeout( noRender );
 		});
 
+		this.on( 'hold', function( state ) {
+			this.holdRender = !! state;
+			if ( false === state ) this.run();
+		} );
+
 	},
 
 	onQueue: function( model ) {
@@ -320,7 +326,9 @@ module.exports = Cornerstone.Component.extend({
 
 	shadow: function( model, original ) {
 		var cache = this.cache[original];
-		if ( cache ) this.cache[model.cid] = _.clone( cache );
+		if ( cache ) {
+			this.cache[model.cid] = ( _.isFunction( cache ) ) ? cache : _.clone( cache );
+		}
 	},
 
 	getCache: function( model ) {
@@ -329,14 +337,21 @@ module.exports = Cornerstone.Component.extend({
 			this.triggerMethod( 'queue', model );
 			cache = cs.template( 'loading' );
 		}
+
 		return cache;
 	},
 
 	queue: function( id, provider, data, callback ) {
+
 		var timestamp = Date.now();
+
 		this.timing[id] = timestamp;
 		this.jobs[ id ] = { data: data, provider: provider, ts: timestamp, callback: callback };
+
+		if ( this.holdRender ) return;
+
 		this.run();
+
 	},
 
 	run: function( data ) {
@@ -362,13 +377,27 @@ module.exports = Cornerstone.Component.extend({
 
 		var request = cs.ajax( 'cs_render_element', data, {
 
-			success: _.bind( function( response, options ) {
+			success: _.bind( function( response ) {
 
-				Cornerstone.serial( _.map( response.scripts, function( script, key ) {
-					return function( next ) {
-						cs.preview.trigger( 'late:enqueue', key, script.tag, script.src, next );
-					};
-				}, this ).concat( _.map( response.jobs, function( job, jobID ) {
+				var handlers = [];
+
+				if ( response.scripts ) {
+					handlers = handlers.concat( _.map( response.scripts, function( script, key ) {
+						return function( next ) {
+							cs.preview.trigger( 'late:script:enqueue', key, script, next );
+						};
+					}, this ) );
+				}
+
+				if ( response.styles ) {
+					handlers = handlers.concat( _.map( response.styles, function( style, key ) {
+						return function( next ) {
+							cs.preview.trigger( 'late:style:enqueue', key, style, next );
+						};
+					}, this ) );
+				}
+
+				handlers = handlers.concat( _.map( response.jobs, function( job, jobID ) {
 
 					return _.bind( function( next ) {
 
@@ -376,12 +405,12 @@ module.exports = Cornerstone.Component.extend({
 							next(); return;
 						}
 
-						if ( 0 == job.markup.indexOf( '%%TMPL%%' ) ) {
+						if ( 0 === job.markup.indexOf( '%%TMPL%%' ) ) {
 							job.markup = job.markup.replace( '%%TMPL%%', '' );
 							job.markup = _.template( job.markup );
 						}
 
-						if ( '' == job.markup ) {
+						if ( '' === job.markup ) {
 							job.markup = cs.template( 'empty-element' );
 						}
 
@@ -393,7 +422,10 @@ module.exports = Cornerstone.Component.extend({
 						next();
 
 					}, this );
-				}, this ) ) ).done( _.bind( function( message ) {
+
+				}, this ) );
+
+				Cornerstone.serial( handlers ).done( _.bind( function( message ) {
 
 					this.trigger( 'primed' );
 
@@ -402,18 +434,6 @@ module.exports = Cornerstone.Component.extend({
 
 				}, this ) );
 
-			}, this ),
-			error: _.bind( function( response ) {
-				if ( ! this.retry ) {
-					this.retry = true;
-					this.run( data );
-					console.warn( 'Could not reach render endpoint. Attempting fallback...' );
-				}
-				if ( '0' == response.message ) {
-					cs.warn( 'Invalid render response. Check for PHP errors, or that the user is logged in.' );
-					return;
-				}
-				cs.warn( response.message );
 			}, this )
 		} );
 
@@ -451,7 +471,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{"../../../tmp/templates-builder.js":117,"../../../tmp/templates-elements.js":118}],11:[function(require,module,exports){
+},{"../../../tmp/templates-builder.js":119,"../../../tmp/templates-elements.js":120}],11:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -497,7 +517,33 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{"../../views/controls":45,"../../views/controls/base":31,"../../views/preview":102,"../../views/preview/base":96,"../../views/skeleton":114,"../../views/skeleton/base":112}],12:[function(require,module,exports){
+},{"../../views/controls":46,"../../views/controls/base":32,"../../views/preview":103,"../../views/preview/base":97,"../../views/skeleton":116,"../../views/skeleton/base":114}],12:[function(require,module,exports){
+module.exports = Cornerstone.Component.extend({
+
+	initialize: function() {
+
+		cs.data.reply( 'cheatsheet:data', false );
+		// this.listenTo( cs.global, 'editor:ready', this.fetchSheets );
+
+	},
+
+	fetchSheets: function() {
+
+		cs.ajax( 'cs_cheatsheet', {
+			post_id: this.cs.post.get( 'post_id' )
+		}, {
+			success: function( response ) {
+				if ( response && response.sheets && _.isArray( response.sheets ) ) {
+					cs.data.reply( 'cheatsheet:data', response.sheets );
+				}
+			}
+		} );
+
+	}
+
+} );
+
+},{}],13:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function( options ) {
@@ -505,13 +551,9 @@ module.exports = Cornerstone.Component.extend({
 		cs.global = Backbone.Radio.channel( 'cs:remote' );
 		this.listenToOnce( cs.global, 'preview:primed', this.primed );
 
-		this.listenTo( cs.global, 'ajax:fallback', function( state ) {
-			cs.fallbackAjax = state;
-		} );
-
 		// Defer views until window and iFrame are loaded.
-		Backbone.$( window ).load( _.bind( this.loadView, this ) );
-		Backbone.$( '#preview-frame' ).load( _.bind( this.loadIFrame, this ) );
+		Backbone.$( window ).on( 'load', _.bind( this.loadView, this ) );
+		Backbone.$( '#preview-frame' ).on( 'load', _.bind( this.loadIFrame, this ) );
 
 		Backbone.$( window ).resize( function( e ) {
 			cs.events.trigger( 'editor:resize', e );
@@ -578,7 +620,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{"../../utility/custom-media-manager":26,"../../views/main/editor":88}],13:[function(require,module,exports){
+},{"../../utility/custom-media-manager":27,"../../views/main/editor":89}],14:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function( ) {
@@ -597,7 +639,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function( ) {
@@ -682,7 +724,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -860,7 +902,7 @@ module.exports = Cornerstone.Component.extend({
 
 });
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	nativeSections: [ 'themeco-pages', 'themeco-blocks' ],
@@ -977,7 +1019,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1107,7 +1149,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	panes: {
@@ -1171,7 +1213,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1196,7 +1238,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1255,8 +1297,6 @@ module.exports = Cornerstone.Component.extend({
 				cs.data.trigger( 'save:error', response );
 			},
 			always: function( response ) {
-				cs.log( 'save', response );
-				cs.data.trigger( 'save:response', response );
 				Cornerstone.Vendor.NProgress.done();
 			}
 		} );
@@ -1277,7 +1317,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1300,10 +1340,7 @@ module.exports = Cornerstone.Component.extend({
 		cs.ajax( 'cs_setting_sections', {
 			post_id: this.cs.post.get( 'post_id' )
 		}, {
-			success: _.bind( this.loadSettings, this ),
-			error: function( response ) {
-				cs.warn( response.message );
-			}
+			success: _.bind( this.loadSettings, this )
 		} );
 
 	},
@@ -1322,6 +1359,24 @@ module.exports = Cornerstone.Component.extend({
 
 		this.cs.settingSections = new Backbone.Collection( response.models );
 		this.settings = new Cornerstone.Collections.Setting( response.data );
+
+		var general = this.settings.findWhere( { _section: 'general' } );
+
+		if ( general ) {
+
+			//
+			// Auto publish brand new pages
+			//
+
+			if ( window.localStorage.getItem( 'cornerstone_auto_draft' ) === cs.post.data.get( 'post_id' ).toString() ) {
+				localStorage.removeItem( 'cornerstone_auto_draft' );
+
+				if ( 'draft' === general.get( 'post_status' ) ) {
+					general.set( 'post_status', 'publish' );
+				}
+
+			}
+		}
 
 		this.settings.each( function( setting ) {
 
@@ -1356,12 +1411,25 @@ module.exports = Cornerstone.Component.extend({
 		var model = this.settings.findWhere( { _section: 'general' } );
 
 		if ( model ) {
+
+			if ( window.localStorage.getItem( 'cornerstone_auto_draft' ) === cs.post.data.get( 'post_id' ).toString() ) {
+				localStorage.removeItem( 'cornerstone_auto_draft' );
+
+				if ( 'draft' === model.get( 'post_status' ) ) {
+					console.log("MATCH");
+					model.set( 'post_status', 'publish' );
+				}
+
+			}
+
 			this.listenTo( model, 'change:custom_css', function( model, value ) {
 				cs.global.trigger( 'update:custom_css', value );
 			});
+
 			cs.global.trigger( 'update:custom_css', model.get( 'custom_css' ) );
+
 		} else {
-			console.warn( 'Unable to load Custom CSS because Cornerstone settings are corrupted.' );
+			cs.warn( 'Unable to load Custom CSS because Cornerstone settings are corrupted.' );
 		}
 
 		model = this.settings.findWhere( { _section: 'responsive-text' } );
@@ -1382,14 +1450,14 @@ module.exports = Cornerstone.Component.extend({
 			update();
 
 		} else {
-			console.warn( 'Unable to load Responsive Text because Cornerstone settings are corrupted. ' );
+			cs.warn( 'Unable to load Responsive Text because Cornerstone settings are corrupted. ' );
 		}
 
 	}
 
 } );
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1452,7 +1520,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function() {
@@ -1477,10 +1545,7 @@ module.exports = Cornerstone.Component.extend({
 			success: _.bind( function( response, options ) {
 				this.templates.add( response );
 				cs.templates.trigger( 'ready', this );
-			}, this ),
-			error: function( response ) {
-				cs.warn( response.message );
-			}
+			}, this )
 		} );
 	},
 
@@ -1511,20 +1576,55 @@ module.exports = Cornerstone.Component.extend({
 
 			success: _.bind( function( response ) {
 
-				_.each( response.elements, function( section ) {
-					elements.create( section );
-				}, this );
+				var count = 0, inserts = [];
 
-				cs.message.trigger( 'success', ( 'page' == format  ) ? cs.l18n( 'templates-page-updated' ) : cs.l18n( 'templates-block-inserted' ) );
+				cs.render.trigger( 'hold', true );
+
+				var p = new Promise( function( resolve, reject ) {
+
+					inserts = _.map( response.elements, function( section ) {
+						return function() {
+
+							try {
+								//console.log( 'section added', count++ );
+								elements.create( section );
+							} catch ( e ) {
+								console.warn( 'Template import error', e );
+								reject();
+								return;
+							}
+
+							_.defer( loop );
+
+						};
+					}, this );
+
+					inserts.reverse();
+
+					function loop() {
+						if ( inserts.length <= 0 ) resolve();
+						var cb = inserts.pop();
+						if ( _.isFunction( cb ) ) cb();
+					}
+
+					loop();
+
+				} ).then( function() {
+					cs.render.trigger( 'hold', false );
+					cs.message.trigger( 'success', ( 'page' == format  ) ? cs.l18n( 'templates-page-updated' ) : cs.l18n( 'templates-block-inserted' ) );
+				}, fail );
 
 			}, this ),
-			error: function( response ) {
-				cs.message.trigger( 'error', cs.l18n( 'templates-error-import' ) );
-			},
+			error: fail,
 			always: function( response ) {
 				cs.log( 'template_migration', response );
 			}
 		} );
+
+		function fail() {
+			cs.render.trigger( 'hold', false );
+			cs.message.trigger( 'error', cs.l18n( 'templates-error-import' ) );
+		}
 
 	},
 
@@ -1551,7 +1651,7 @@ module.exports = Cornerstone.Component.extend({
 			type: type || 'block',
 			title: title || 'Untitled'
 		} );
-
+		console.log("SAVING!!!");
 		cs.ajax( 'cs_save_template', data, {
 			success: _.bind( function( response ) {
 				this.templates.add( response.template );
@@ -1619,7 +1719,7 @@ module.exports = Cornerstone.Component.extend({
 
 } );
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = {
 
 	// Common
@@ -1644,19 +1744,20 @@ module.exports = {
 	'template-manager': require( './editor/template-manager' ),
 	'skeleton':         require( './editor/skeleton' ),
 	'element-manager':  require( './editor/element-manager' ),
+	'cheatsheet':       require( './editor/cheatsheet' ),
 
 	// Preview
 	'preview': require( './preview/preview' )
 
 };
 
-},{"./common/builder":5,"./common/keybindings":6,"./common/mn-extensions":7,"./common/model-loader":8,"./common/render-queue":9,"./common/template-loader":10,"./common/view-loader":11,"./editor/editor":12,"./editor/element-library":13,"./editor/element-manager":14,"./editor/inspector":15,"./editor/layout":17,"./editor/layout-templates":16,"./editor/navigator":18,"./editor/options":19,"./editor/post-handler":20,"./editor/settings":21,"./editor/skeleton":22,"./editor/template-manager":23,"./preview/preview":25}],25:[function(require,module,exports){
+},{"./common/builder":5,"./common/keybindings":6,"./common/mn-extensions":7,"./common/model-loader":8,"./common/render-queue":9,"./common/template-loader":10,"./common/view-loader":11,"./editor/cheatsheet":12,"./editor/editor":13,"./editor/element-library":14,"./editor/element-manager":15,"./editor/inspector":16,"./editor/layout":18,"./editor/layout-templates":17,"./editor/navigator":19,"./editor/options":20,"./editor/post-handler":21,"./editor/settings":22,"./editor/skeleton":23,"./editor/template-manager":24,"./preview/preview":26}],26:[function(require,module,exports){
 module.exports = Cornerstone.Component.extend({
 
 	initialize: function( options ) {
 
 		Backbone.$( document ).ready(function() {
-			Backbone.$('#cornerstone-preview-entry').empty();
+			Backbone.$( '#cs-content' ).empty();
 		});
 
 		cs.preview  = Backbone.Radio.channel( 'cs:preview' );
@@ -1665,9 +1766,7 @@ module.exports = Cornerstone.Component.extend({
 		xData.isPreview = true;
 
 		// Hook before preview initializes
-    this.listenTo(cs.preview, 'iframe:ready', this.reload );
-
-    //window.onbeforeunload = _.bind( this.cleanUp, this );
+    this.listenTo( cs.preview, 'iframe:ready', this.reload );
 
     // Hook after initialization. This does not gaurantee preview window is
     // accessible. You should probably use 'preview:reloaded' instead.
@@ -1676,10 +1775,15 @@ module.exports = Cornerstone.Component.extend({
 		cs.preview.reply( 'responsive:text', null );
 
 		this.listenTo( cs.preview, 'responsive:text', this.responsiveTextUpdate );
-		this.listenTo( cs.preview, 'late:enqueue', this.lateEnqueue );
+		this.listenTo( cs.preview, 'late:script:enqueue', this.lateScriptEnqueue );
+		this.listenTo( cs.preview, 'late:style:enqueue', this.lateStyleEnqueue );
+
+		// Fix: Uncaught ReferenceError: ajaxurl is not defined
+		if ( cs.config( 'useLegacyAjax' ) ) {
+			window.ajaxurl = cs.config( 'fallbackAjaxUrl' );
+		}
 
 	},
-
 
 	reload: function( editor ) {
 
@@ -1689,27 +1793,27 @@ module.exports = Cornerstone.Component.extend({
 
     this.cs.post = editor.cs.post;
 
-    if ( Backbone.$('#cornerstone-preview-entry').length == 0 ) {
-			console.log( 'Unable to initialize preview. #cornerstone-preview-entry missing.' );
+    if ( 0 == Backbone.$( '#cs-content' ).length ) {
+			console.log( 'Unable to initialize preview. #cs-content missing.' );
 			this.noContentArea = true;
     }
 
-    var PreviewView = require('../../views/main/preview.js');
-    this.view = new PreviewView( { el: '#cornerstone-preview-entry', model: this.cs.post.data } )
+    var PreviewView = require( '../../views/main/preview.js' );
+    this.view = new PreviewView( { el: '#cs-content', model: this.cs.post.data } );
 		this.view.render();
 
 		this.sendWindowDimensions();
 		this.listenToOnce( cs.render, 'primed', this.primed );
-		_.delay( _.bind( function(){
+
+		_.delay( _.bind( function() {
 			this.primed( true );
 			this.sendWindowDimensions();
 		}, this ), 9000 );
+
     this.listenTo( cs.global, 'settings:ready', this.settingsPingback );
     this.listenTo( cs.global, 'update:custom_css', this.customCSS );
     this.listenTo( cs.global, 'update:responsive_text', this.responsiveText );
-    this.listenTo( cs.global, 'ajax:fallback', function( state ) {
-			cs.fallbackAjax = state;
-		} );
+
     cs.events.trigger( 'preview:iframe:reloaded' );
 
     cs.observer.reply( 'get:collapse', false );
@@ -1717,24 +1821,28 @@ module.exports = Cornerstone.Component.extend({
 			cs.observer.reply( 'get:collapse', state );
 		} );
 
-		Backbone.$(window).resize( this.sendWindowDimensions );
+		Backbone.$( window ).resize( function() {
+			cs.events.trigger( 'preview:resize' );
+		} );
+
+		this.listenTo( cs.events, 'preview:resize', this.sendWindowDimensions );
 
   },
 
   sendWindowDimensions: function() {
-  	var $body = Backbone.$('body');
-  	var $window = Backbone.$(window);
-  	cs.global.trigger( 'preview:resize', {
-  		Window: {
-  			width: $window.width(),
-  			height: $window.height(),
-  		},
-  		Body: {
-  			width: $body.width(),
-  			height: $body.height(),
-  		}
+		var $body = Backbone.$( 'body' );
+		var $window = Backbone.$( window );
+		cs.global.trigger( 'preview:resize', {
+			Window: {
+				width: $window.width(),
+				height: $window.height()
+			},
+			Body: {
+				width: $body.width(),
+				height: $body.height()
+			}
 
-  	} );
+		} );
   },
 
   primed: function( late ) {
@@ -1746,67 +1854,111 @@ module.exports = Cornerstone.Component.extend({
 		cs.global.trigger( 'preview:primed', late || false );
 
 		if ( this.noContentArea ) {
-			_.defer(function(){
-				cs.global.trigger( 'preview:failure', cs.l18n( 'preview-failure2') );
+			_.defer( function() {
+				cs.global.trigger( 'preview:failure', cs.l18n( 'preview-failure2' ) );
 			});
 		}
 
 	},
 
-  settingsPingback: function(){
-  	cs.global.trigger( 'settings:pingback' );
-  },
+	settingsPingback: function() {
+		cs.global.trigger( 'settings:pingback' );
+	},
 
-  customCSS: function( value ) {
-  	Backbone.$('#cornerstone-custom-page-css').html( value );
-  },
+	customCSS: function( value ) {
+		Backbone.$( '#cornerstone-custom-page-css' ).html( value );
+	},
 
-  responsiveText: function( elements ) {
-    cs.preview.reply( 'responsive:text', elements );
-    Backbone.$(window).trigger('fittextReset');
-    cs.preview.trigger( 'responsive:text' );
-  },
+	responsiveText: function( elements ) {
+		cs.preview.reply( 'responsive:text', elements );
+		Backbone.$( window ).trigger( 'fittextReset' );
+		cs.preview.trigger( 'responsive:text' );
+	},
 
-  responsiveTextUpdate: function( scope ) {
-	  var scope = scope || Backbone;
+	responsiveTextUpdate: function( scope ) {
 
-	  var items = cs.preview.request( 'responsive:text' );
-	  if (!items) return;
+		var scope = scope || Backbone;
 
-    _.each( items , function( item ) {
-      scope.$(item.selector).fitText( item.compression, {
-        minFontSize: item.min_size,
-        maxFontSize: item.max_size,
-      });
-    }, this );
+		var items = cs.preview.request( 'responsive:text' );
 
-  },
+		if ( ! items ) return;
 
-  lateEnqueue: function( handle, html, src, done ) {
-		if ( Backbone.$('script[data-handle="' + handle + '"]').length == 0 ) {
+		_.each( items, function( item ) {
 
-			var timeout = setTimeout(function(){
-				done('Unable to load: ' + handle );
+			var $items = scope.$( item.selector );
+
+				_.defer( function() {
+					$items.css( 'font-size', '' );
+					$items.csFitText( item.compression, {
+						minFontSize: item.min_size,
+						maxFontSize: item.max_size
+					});
+				} );
+
+		}, this );
+
+	},
+
+  lateScriptEnqueue: function( handle, script, done ) {
+
+		if ( 0 == Backbone.$( 'script[data-cs-handle="' + handle + '"]' ).length && script.src ) {
+
+			var timeout = setTimeout( function() {
+				cs.warn(  'Unable to load: ' + handle );
+				done();
 			}, 10000 );
 
-			var script = document.createElement('script');
-				Backbone.$('body').append(script);
-				script.onload = function() {
-				clearTimeout(timeout);
-				_.defer( done, 'Script loaded: ' + handle );
-				};
+			if ( script.before ) {
+				var $before = Backbone.$( '<script data-cs-script-extra="' + handle + '">' + script.before + '</script>' );
+				Backbone.$( 'body' ).append( $before );
+			}
 
-				script.src = src;
+			var scriptEl = document.createElement( 'script' );
+			Backbone.$( 'body' ).append( scriptEl );
+			scriptEl.onload = function() {
+				clearTimeout( timeout );
+				cs.log( 'Cornerstone | Runtime script loaded: ' + handle );
+				_.defer( done );
+			};
 
-				Backbone.$(script).attr('data-handle', handle );
+			scriptEl.src = script.src;
+
+			Backbone.$( scriptEl ).attr( 'data-cs-handle', handle );
 
 		} else {
 			done();
 		}
+
+  },
+
+  lateStyleEnqueue: function( handle, style, done ) {
+
+		if ( 0 == Backbone.$( 'script[data-cs-handle="' + handle + '"]' ).length && style.tag ) {
+
+			var timeout = setTimeout( function() {
+				cs.warn(  'Unable to load: ' + handle );
+				done();
+			}, 10000 );
+
+			var $styleEl = Backbone.$( style.tag );
+			$styleEl[0].onload = function() {
+				clearTimeout( timeout );
+				cs.log( 'Cornerstone | Runtime style loaded: ' + handle );
+				_.defer( done );
+			};
+
+			Backbone.$( 'head' ).append( $styleEl );
+			done();
+
+		} else {
+			done();
+		}
+
   }
 
-});
-},{"../../views/main/preview.js":92}],26:[function(require,module,exports){
+} );
+
+},{"../../views/main/preview.js":93}],27:[function(require,module,exports){
 var media = wp.media;
 var l10n = media.view.l10n;
 wp.media.view.MediaFrame.Cornerstone = wp.media.view.MediaFrame.Post.extend({
@@ -2133,7 +2285,7 @@ wp.media.view.MediaFrame.Cornerstone = wp.media.view.MediaFrame.Post.extend({
 //   }
 
 // });
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 var handlers = {
 
 	editorCloned: function( clone, original, type ) {
@@ -2195,10 +2347,10 @@ var handlers = {
 
 module.exports = handlers;
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ( function( $ ) {
 
-		var $shadow = $( '<div class="shadow-height x-section" style="position:absolute;top:-100%;visibility:hidden;"></div>' );
+		var $shadow = $( '<div class="shadow-height x-section" style="position:absolute;top:200%;visibility:hidden;"></div>' );
 
 		$.fn.shadowHeight = function() {
 
@@ -2207,7 +2359,7 @@ module.exports = handlers;
 			var $el = this.length > 1 ? this.eq( 0 ) : this;
 			var $copy = $el.clone();
 
-			$shadow.empty().appendTo( 'body' );
+			$shadow.empty().appendTo( '#cs-content' );
 			$shadow.append( $copy );
 
 			var height = $copy.outerHeight();
@@ -2287,7 +2439,7 @@ module.exports = handlers;
 
 })( jQuery );
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports.reduceFractions = function( replace ) {
 	reductions = [ { f: '2\/4', r: '1/2' }, { f: '2\/6', r: '1/3' }, { f:'3\/6', r: '1/2' }, { f:'4\/6', r: '2/3' }];
 	var string = replace;
@@ -2303,12 +2455,12 @@ module.exports.layoutIsValid = function( layout ) {
 		.contains( layout );
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 String.prototype.replaceAll = function( find, replace ) {
 	return this.replace( new RegExp( find.replace( /([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1' ), 'g' ), replace );
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = CS.Mn.CompositeView.extend({
 	tagName: 'li',
 	template: 'controls/base',
@@ -2362,12 +2514,9 @@ module.exports = CS.Mn.CompositeView.extend({
 
     var key = this.model.get( 'key' );
     if ( this.proxy.definition && ! this.proxy.has( key ) && ! _.contains(['elements', 'disabled'], key ) ) {
-    	console.warn('Element [' + this.proxy.definition.get('name') + '] missing ['+ key +'] attribute.');
-    	console.log(this.proxy);
-    	//this.proxy = null;
-    	return;
+			cs.warn( 'Element [' + this.proxy.definition.get( 'name' ) + '] missing [' + key + '] attribute.', this.proxy );
+			return;
     }
-
 
     var conditions = this.model.get('condition');
     if ( conditions ) {
@@ -2566,7 +2715,7 @@ module.exports = CS.Mn.CompositeView.extend({
   },
 
 });
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-breadcrumbs cs-control-divider',
@@ -2644,7 +2793,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 	module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'choose',
 	binding: {
@@ -2698,7 +2847,7 @@ module.exports = CS.Mn.ItemView.extend({
     }
   }
 });
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'div',
 	className: 'cs-control-external cs-control-code-editor',
@@ -2738,7 +2887,7 @@ module.exports = CS.Mn.ItemView.extend({
 	}
 
 });
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 
 	controlName: 'color',
@@ -2756,7 +2905,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 
 });
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-actions cs-control-divider',
@@ -2792,7 +2941,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
 });
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = CS.Mn.CollectionView.extend({
 	tagName: 'ul',
 
@@ -2841,7 +2990,7 @@ module.exports = CS.Mn.CollectionView.extend({
   }
 
 })
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	template: 'controls/custom-markup',
 	controlName: 'custom-markup',
@@ -2851,7 +3000,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 		return { message: message };
 	},
 });
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 
 	controlName: 'date',
@@ -2982,7 +3131,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 	}
 
 });
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'dimensions',
 	binding: {
@@ -3098,7 +3247,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     }
 	}
 });
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
   controlName: 'editor',
   controlTemplate: 'controls/textarea',
@@ -3205,7 +3354,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-actions cs-control-divider',
@@ -3235,7 +3384,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
 });
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'icon-choose',
   childViewContainer: 'ul.cs-choose',
@@ -3382,7 +3531,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 
 var ImageControl =  Cornerstone.ControlViews.Base.extend({
   controlName: 'image',
@@ -3474,7 +3623,7 @@ var ImageControl =  Cornerstone.ControlViews.Base.extend({
 });
 
 module.exports = ImageControl;
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = {
 
 	// General Purpose
@@ -3523,7 +3672,7 @@ module.exports = {
 	'template-save-dialog'    : require('./layout/template-save-dialog'),
 	'template-upload-dialog'  : require('./layout/template-upload-dialog')
 }
-},{"./breadcrumbs":32,"./choose":33,"./code-editor":34,"./color":35,"./column-actions":36,"./custom-markup":38,"./date":39,"./dimensions":40,"./editor":41,"./element-actions":42,"./icon-choose":43,"./image":44,"./info-box":46,"./layout/column-layout":47,"./layout/column-order":49,"./layout/layout-actions":50,"./layout/sortable-rows":51,"./layout/sortable-sections":52,"./layout/template-actions":53,"./layout/template-remove":54,"./layout/template-save-dialog":55,"./layout/template-select":56,"./layout/template-upload-dialog":57,"./multi-choose":58,"./number":59,"./row-actions":60,"./section-actions":61,"./select":62,"./settings-actions":63,"./sortable":66,"./text":67,"./textarea":68,"./title":69,"./toggle":70,"./wpselect":71}],46:[function(require,module,exports){
+},{"./breadcrumbs":33,"./choose":34,"./code-editor":35,"./color":36,"./column-actions":37,"./custom-markup":39,"./date":40,"./dimensions":41,"./editor":42,"./element-actions":43,"./icon-choose":44,"./image":45,"./info-box":47,"./layout/column-layout":48,"./layout/column-order":50,"./layout/layout-actions":51,"./layout/sortable-rows":52,"./layout/sortable-sections":53,"./layout/template-actions":54,"./layout/template-remove":55,"./layout/template-save-dialog":56,"./layout/template-select":57,"./layout/template-upload-dialog":58,"./multi-choose":59,"./number":60,"./row-actions":61,"./section-actions":62,"./select":63,"./settings-actions":64,"./sortable":67,"./text":68,"./textarea":69,"./title":70,"./toggle":71,"./wpselect":72}],47:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	template: 'controls/info-box',
 	controlName: 'info-box',
@@ -3533,7 +3682,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 		this.$el.toggleClass( 'hide', !cs.options.request( 'help:text' ) );
 	}
 });
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var RowValidator = require('../../../utility/row-validator');
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'column-layout',
@@ -3649,7 +3798,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 	}
 
 });
-},{"../../../utility/row-validator":29}],48:[function(require,module,exports){
+},{"../../../utility/row-validator":30}],49:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
 	template: 'controls/column-order-item',
@@ -3689,7 +3838,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 })
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 var Sortable = require('../sortable');
 module.exports = Sortable.extend({
 
@@ -3734,7 +3883,7 @@ module.exports = Sortable.extend({
 
 
 });
-},{"../sortable":66,"./column-order-item":48}],50:[function(require,module,exports){
+},{"../sortable":67,"./column-order-item":49}],51:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-actions cs-control-divider',
@@ -3765,7 +3914,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 var Sortable = require('../sortable');
 module.exports = Sortable.extend({
 
@@ -3821,7 +3970,7 @@ module.exports = Sortable.extend({
   }
 
 });
-},{"../sortable":66}],52:[function(require,module,exports){
+},{"../sortable":67}],53:[function(require,module,exports){
 var Sortable = require('../sortable');
 module.exports = Sortable.extend({
 
@@ -3840,7 +3989,7 @@ module.exports = Sortable.extend({
   }
 
 });
-},{"../sortable":66}],53:[function(require,module,exports){
+},{"../sortable":67}],54:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-template-actions cs-control-divider',
@@ -3872,7 +4021,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
   //template: 'layout/sub-templates/template-select',
   controlName: 'template-select',
@@ -3903,7 +4052,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   },
 
 });
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 
   template: 'layout/sub-templates/save-dialog',
@@ -3933,11 +4082,13 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   },
 
   onConfirmAccept: function() {
+  	console.log('ACCEPT SAVE')
     cs.templates.trigger( 'save', 'page', this.proxy.get( 'title' ) );
     this.close();
   },
 
   onConfirmDecline: function() {
+  	console.log('DECLINE SAVE')
     cs.templates.trigger( 'save', 'block', this.proxy.get( 'title' ) );
     this.close();
   },
@@ -3957,7 +4108,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	//template: 'layout/sub-templates/template-select',
   controlName: 'template-select',
@@ -4004,7 +4155,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 
 
 });
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 
   template: 'layout/sub-templates/upload-dialog',
@@ -4016,28 +4167,34 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   },
 
   events: {
-    'click @ui.close':  'close'
-  },
-
-  behaviors: {
-    Confirm: {
-      ui: 'upload',
-      message: cs.l18n('templates-upload-message'),
-      yep:     cs.l18n('templates-upload-yep'),
-      nope:    cs.l18n('templates-upload-nope')
-    }
+    'click @ui.close':  'close',
+    'click @ui.upload': 'confirmUpload'
   },
 
   initialize: function() {
     this.listenTo(cs.data, 'template:upload:complete', this.uploadComplete );
   },
 
-  onConfirmAccept: function() {
-    _.defer( _.bind( this.upload, this), 'page' );
+  confirmUpload: function() {
+    cs.confirm.trigger( 'open', {
+      message: cs.l18n('templates-upload-message'),
+      accept:  _.bind( this.uploadPage, this ),
+      decline: _.bind( this.uploadBlock, this ),
+      yep:     cs.l18n('templates-upload-yep'),
+      nope:    cs.l18n('templates-upload-nope')
+    });
   },
 
-  onConfirmDecline: function() {
-    _.defer( _.bind( this.upload, this), 'block' );
+  uploadPage: function() {
+    this.deferredUpload( 'page' );
+  },
+
+  uploadBlock: function() {
+    this.deferredUpload( 'block' );
+  },
+
+  deferredUpload: function( format ) {
+    _.defer( _.bind( this.upload, this ), format );
   },
 
   upload: function( format ) {
@@ -4083,7 +4240,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'multi-choose',
   controlTemplate: 'controls/choose',
@@ -4142,12 +4299,12 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     }
   }
 });
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'number',
 	bindingSelector: 'input[type=number]'
 });
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
 	className: 'cs-control cs-control-actions cs-control-divider',
@@ -4177,9 +4334,9 @@ module.exports = CS.Mn.ItemView.extend({
 	},
 
 });
-},{}],61:[function(require,module,exports){
-arguments[4][60][0].apply(exports,arguments)
-},{"dup":60}],62:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
+arguments[4][61][0].apply(exports,arguments)
+},{"dup":61}],63:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'select',
 	bindingSelector: 'select',
@@ -4196,7 +4353,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 		}, this );
 	}
 });
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	tagName: 'li',
   className: 'cs-control cs-control-actions cs-control-divider',
@@ -4234,7 +4391,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
 });
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 var SortableItem = require('./sortable-item');
 
 module.exports = SortableItem.extend({
@@ -4256,7 +4413,7 @@ module.exports = SortableItem.extend({
   },
 
 });
-},{"./sortable-item":65}],65:[function(require,module,exports){
+},{"./sortable-item":66}],66:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 
   tagName: 'li',
@@ -4326,7 +4483,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
 });
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'sortable',
 	childViewContainer: 'ul',
@@ -4524,7 +4681,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{"./sortable-item":65,"./sortable-item-wide":64}],67:[function(require,module,exports){
+},{"./sortable-item":66,"./sortable-item-wide":65}],68:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'text',
 	bindingSelector: 'input[type=text]',
@@ -4537,7 +4694,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 			this.$('input[type=text]').attr('placeholder', options.placeholder );
 	}
 });
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'textarea',
 	bindingSelector: 'textarea',
@@ -4569,7 +4726,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     }
   }
 });
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'title',
 	divider: true,
@@ -4589,7 +4746,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   }
 
 });
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'toggle',
   binding: {
@@ -4619,7 +4776,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     }
   }
 })
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
 	controlName: 'wpselect',
 	bindingSelector: 'select',
@@ -4633,83 +4790,102 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 		this.$( '.cs-wp-select' ).append( this.$select );
 	}
 });
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 // Confirm
 module.exports = CS.Mn.ItemView.extend({
-  className: 'cs-confirm',
-  template: 'extra/confirm',
+	className: 'cs-confirm',
+	template: 'extra/confirm',
 
-  defaultConfig: {
-    message: cs.l18n('confirm-message'),
-    allowQuickConfirm: false,
-    subtext: false,
-    yep: cs.l18n('confirm-yep'),
-    nope: cs.l18n('confirm-nope'),
-    classes: [],
-    view: null
+	defaultConfig: {
+		message: cs.l18n( 'confirm-message' ),
+		allowQuickConfirm: false,
+		subtext: false,
+		yep: cs.l18n( 'confirm-yep' ),
+		nope: cs.l18n( 'confirm-nope' ),
+		classes: [],
+		view: null
+	},
+
+	events: {
+		'click .yep':  'acceptDebounce',
+		'click .nope': 'declineDebounce'
+	},
+
+	initialize: function( options ) {
+
+		this.data = _.clone( this.defaultConfig );
+
+		// Prevent multiple clicks
+		this.acceptDebounced = _.debounce( _.bind( this.accept, this ), 500, true );
+		this.declineDebounced = _.debounce( _.bind( this.decline, this ), 500, true );
+
+		this.listenTo( cs.confirm, 'abort', this.declineDebounce );
+		this.listenTo( cs.confirm, 'open', this.open );
+	},
+
+  acceptDebounce: function() {
+    this.acceptDebounced();
   },
 
-  events: {
-    'click .yep'  : 'acceptDebounce',
-    'click .nope' : 'declineDebounce',
+  declineDebounce: function() {
+    this.declineDebounced();
   },
 
-  initialize: function( options ) {
-
-    this.data = _.clone( this.defaultConfig );
-
-    // Prevent multiple clicks
-    this.acceptDebounce = _.debounce( _.bind( this.accept, this ), 500, true );
-    this.declineDebounce = _.debounce( _.bind( this.decline, this ), 500, true );
-
-    this.listenTo( cs.confirm, 'abort', this.declineDebounce );
-    this.listenTo( cs.confirm, 'open', this.open );
+	open: function( data, context ) {
+		this.context = context || {};
+		this.data = _.extend( _.clone( this.defaultConfig ), data );
+		if ( this.data.allowQuickConfirm && cs.data.request( 'delete:confirm:key' ) ) {
+			this.accept();
+			return;
+		}
+		this.render();
+		this.$el.addClass( 'active' );
   },
 
-  open: function( data, context ) {
-  	this.context = context || {};
-    this.data = _.extend( _.clone( this.defaultConfig ), data );
-    if ( this.data.allowQuickConfirm && cs.data.request('delete:confirm:key' ) ) {
-    	this.accept();
-    	return;
-    }
-    this.render();
-    this.$el.addClass('active');
-  },
-
-  serializeData: function(){
+  serializeData: function() {
 
     var data = _.clone( this.data );
 
-    if ( _.isFunction( data.message ) ) data.message = data.message.call(this.context);
-    if ( _.isFunction( data.subtext ) ) data.subtext = data.subtext.call(this.context);
-    if ( _.isFunction( data.classes ) ) data.classes = data.classes.call(this.context);
-    if ( _.isFunction( data.yep ) )         data.yep = data.yep.call(this.context);
-    if ( _.isFunction( data.nope ) )       data.nope = data.nope.call(this.context);
+    if ( _.isFunction( data.message ) ) data.message = data.message.call( this.context );
+    if ( _.isFunction( data.subtext ) ) data.subtext = data.subtext.call( this.context );
+    if ( _.isFunction( data.classes ) ) data.classes = data.classes.call( this.context );
+    if ( _.isFunction( data.yep ) )         data.yep = data.yep.call( this.context );
+    if ( _.isFunction( data.nope ) )       data.nope = data.nope.call( this.context );
 
     data.classes.unshift( 'cs-confirm-content' );
-    data.contentClass = data.classes.join(' ');
+    data.contentClass = data.classes.join( ' ' );
     return data;
   },
 
-  accept: function() {
-  	if ( _.isFunction( this.data.accept ) ) {
-  		this.data.accept()
-  	}
-    this.$el.removeClass('active');
-  },
+	accept: function() {
 
-  decline: function() {
+		if ( _.isFunction( this.data.accept ) ) {
+			this.data.accept();
+		}
 
-  	if ( _.isFunction( this.data.decline ) ) {
-  		this.data.decline();
-  	}
+		this.close();
 
-    this.$el.removeClass('active');
-  },
+	},
 
-});
-},{}],73:[function(require,module,exports){
+	decline: function() {
+
+		if ( _.isFunction( this.data.decline ) ) {
+			this.data.decline();
+		}
+
+		this.close();
+
+	},
+
+	close: function() {
+		this.context = null;
+		this.data = {};
+		this.$el.removeClass( 'active' );
+	}
+
+} );
+
+},{}],74:[function(require,module,exports){
 // Expand
 module.exports = CS.Mn.ItemView.extend({
   tagName: 'button',
@@ -4744,7 +4920,7 @@ module.exports = CS.Mn.ItemView.extend({
 
   }
 });
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 // Expansion
 var ControlListView = require('../controls/control-collection')
 
@@ -4810,7 +4986,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{"../controls/control-collection":37}],75:[function(require,module,exports){
+},{"../controls/control-collection":38}],76:[function(require,module,exports){
 // Home
 module.exports = CS.Mn.ItemView.extend({
   className: 'cs-home',
@@ -4833,7 +5009,7 @@ module.exports = CS.Mn.ItemView.extend({
     return data;
   }
 });
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 // Options
 
 module.exports = CS.Mn.CompositeView.extend({
@@ -4847,7 +5023,7 @@ module.exports = CS.Mn.CompositeView.extend({
   }
 
 });
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 // Respond
 module.exports = CS.Mn.ItemView.extend({
   className: 'cs-respond',
@@ -4892,7 +5068,7 @@ module.exports = CS.Mn.ItemView.extend({
   }
 
 });
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 // SaveComplete
 module.exports = CS.Mn.ItemView.extend({
   className: 'cs-saved',
@@ -4931,13 +5107,13 @@ module.exports = CS.Mn.ItemView.extend({
 
 });
 
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
   tagName: 'li',
   className: 'cs-control-empty',
   template: 'inspector/blank-state',
 });
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 // InspectorPane
 var ControlListView = require('../controls/control-collection');
 var ViewBasePane = require('../main/base-pane');
@@ -4979,7 +5155,7 @@ module.exports = ViewBasePane.extend({
   }
 
 });
-},{"../controls/control-collection":37,"../main/base-pane":87,"./empty-controls":79}],81:[function(require,module,exports){
+},{"../controls/control-collection":38,"../main/base-pane":88,"./empty-controls":80}],82:[function(require,module,exports){
 var ControlListView = require('../controls/control-collection')
 var ViewBasePane = require('../main/base-pane');
 module.exports = ViewBasePane.extend({
@@ -5001,7 +5177,7 @@ module.exports = ViewBasePane.extend({
   },
 
 });
-},{"../controls/control-collection":37,"../main/base-pane":87,"./sub-row/layout-sub-rows":82,"./sub-templates/layout-sub-templates":83}],82:[function(require,module,exports){
+},{"../controls/control-collection":38,"../main/base-pane":88,"./sub-row/layout-sub-rows":83,"./sub-templates/layout-sub-templates":84}],83:[function(require,module,exports){
 // RowSubPane
 var ViewControlCollection = require('../../controls/control-collection')
 
@@ -5107,7 +5283,7 @@ module.exports = CS.Mn.LayoutView.extend({
   },
 
 });
-},{"../../controls/control-collection":37}],83:[function(require,module,exports){
+},{"../../controls/control-collection":38}],84:[function(require,module,exports){
 // TemplatesSubPane
 var ViewControlCollection = require('../../controls/control-collection')
 
@@ -5130,7 +5306,7 @@ module.exports = CS.Mn.LayoutView.extend({
   },
 
 });
-},{"../../controls/control-collection":37}],84:[function(require,module,exports){
+},{"../../controls/control-collection":38}],85:[function(require,module,exports){
 var ViewBasePane = require( '../main/base-pane' );
 module.exports = ViewBasePane.extend({
 	name: 'elements',
@@ -5159,47 +5335,47 @@ module.exports = ViewBasePane.extend({
 
 } );
 
-},{"../main/base-pane":87,"./library-list":86}],85:[function(require,module,exports){
+},{"../main/base-pane":88,"./library-list":87}],86:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 
-  className: 'cs-element-stub',
+	className: 'cs-element-stub',
 
-  template: 'library/element-stub',
+	template: 'library/element-stub',
 
-  attributes: function() {
-  	var atts = {}
+	attributes: function() {
+		var atts = {};
 
-  	if ( !cs.options.request( 'skeleton:mode' ) && typeof MouseEvent !== 'function' )
-  		atts['draggable'] = 'true';
+		if ( ! cs.options.request( 'skeleton:mode' ) && 'function' !== typeof MouseEvent   )
+			atts.draggable = 'true';
 
-  	return atts;
+		return atts;
+
   },
 
   initialize: function() {
-		this.listenTo( cs.events, 'toggle:skeleton:mode', function(){
-			this.$el.attr(_.extend({}, _.result(this, 'attributes')));
+		this.listenTo( cs.events, 'toggle:skeleton:mode', function() {
+			this.$el.attr( _.extend({}, _.result( this, 'attributes' ) ) );
 		} );
 
 		// Cancel element pane drags when skeleton is inactive
     this.listenTo( cs.global, 'drag:exit', function() {
-    	if (this.clone) {
-    		Backbone.$( this.clone ).hide();
-    		Backbone.$('#preview').one( 'mouseleave', _.bind( function(){
-    			cs.global.trigger( 'drag:resume');
-    		}, this ) );
-    	}
+			if ( this.clone ) {
+				Backbone.$( this.clone ).hide();
+				Backbone.$( '#preview' ).one( 'mouseleave', _.bind( function() {
+					cs.global.trigger( 'drag:resume' );
+				}, this ) );
+			}
 		});
 
 		this.listenTo( cs.global, 'drag:resume', function() {
-    	if (this.clone)
-    		Backbone.$( this.clone ).show();
+			if ( this.clone ) Backbone.$( this.clone ).show();
 		});
 
   },
 
   serializeData: function() {
-		return _.extend( CS.Mn.ItemView.prototype.serializeData.apply(this,arguments), {
-			icon: cs.icon( this.model.get( 'icon' ) ),
+		return _.extend( CS.Mn.ItemView.prototype.serializeData.apply( this, arguments ), {
+			icon: cs.icon( this.model.get( 'icon' ) )
 		});
 	},
 
@@ -5218,43 +5394,42 @@ module.exports = CS.Mn.ItemView.extend({
 
 	},
 
-	endDrag: function(e) {
+	endDrag: function( e ) {
 		cs.global.trigger( 'dragging', false );
 	},
 
 	dragStart: function( e, clone ) {
-		this.clone = clone
-		this.setIncoming();
-	},
-
-	setIncoming: function() {
+		this.clone = clone;
 		cs.global.trigger( 'incoming:element', this.model.get( 'name' ) );
 	},
 
-	setData: function (e) {
+	setData: function( e ) {
 
-		cs.global.trigger( 'dragging', true );
-		this.setIncoming();
+		cs.global.trigger( 'dragging', true, true );
+		cs.global.trigger( 'incoming:element', this.model.get( 'name' ), true );
 
-		var dataTransfer = e.originalEvent.dataTransfer;
-    dataTransfer.effectAllowed = 'copy';
-    var data = JSON.stringify({
+		var dataTransfer = e.originalEvent.dataTransfer; // No data transfer?
+		dataTransfer.effectAllowed = 'copy';
+		dataTransfer.dropEffect = 'copy';
+
+		var data = JSON.stringify({
 			action: 'create',
-    	_type: this.model.get( 'name' )
-    });
+			_type: this.model.get( 'name' )
+		});
 
-    var $icon = this.$('svg');
+		var $icon = this.$( 'svg' );
 
-    if ($icon.length) {
-    	dataTransfer.setDragImage( $icon[0], 25, 25 );
-    }
+		if ( $icon.length && 'function' === typeof dataTransfer.setDragImage ) {
+			dataTransfer.setDragImage( $icon[0], 25, 25 );
+		}
 
-    dataTransfer.setData( 'cornerstone/element', data );
+		dataTransfer.setData( 'text', data );
 
 	}
 
-});
-},{}],86:[function(require,module,exports){
+} );
+
+},{}],87:[function(require,module,exports){
 module.exports = CS.Mn.CollectionView.extend({
 	className: 'cs-elements',
 	childView: require('./element-stub'),
@@ -5283,7 +5458,7 @@ module.exports = CS.Mn.CollectionView.extend({
   }
 
 });
-},{"./element-stub":85}],87:[function(require,module,exports){
+},{"./element-stub":86}],88:[function(require,module,exports){
 // BasePane
 var BasePane = CS.Mn.LayoutView.extend({
 
@@ -5366,7 +5541,7 @@ var BasePane = CS.Mn.LayoutView.extend({
 
 module.exports = BasePane;
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 // Editor
 
 var ViewHeader    = require('./header')
@@ -5567,7 +5742,7 @@ module.exports = CS.Mn.LayoutView.extend({
   }
 
 });
-},{"../extra/expansion":74,"../inspector/inspector":80,"../layout/layout":81,"../library/element-library":84,"../settings/settings":111,"./footer":89,"./header":90,"./skeleton":93}],89:[function(require,module,exports){
+},{"../extra/expansion":75,"../inspector/inspector":81,"../layout/layout":82,"../library/element-library":85,"../settings/settings":113,"./footer":90,"./header":91,"./skeleton":94}],90:[function(require,module,exports){
 var ViewExpand  = require('../extra/expand')
   , ViewConfirm = require('../extra/confirm')
   , ViewHome    = require('../extra/home')
@@ -5770,7 +5945,7 @@ module.exports = CS.Mn.ItemView.extend({
   },
 
 });
-},{"../extra/confirm":72,"../extra/expand":73,"../extra/home":75,"../extra/options":76,"../extra/respond":77,"../extra/save-complete":78}],90:[function(require,module,exports){
+},{"../extra/confirm":73,"../extra/expand":74,"../extra/home":76,"../extra/options":77,"../extra/respond":78,"../extra/save-complete":79}],91:[function(require,module,exports){
 // EditorHeader
 module.exports = CS.Mn.ItemView.extend({
   tagName: 'nav',
@@ -5811,7 +5986,7 @@ module.exports = CS.Mn.ItemView.extend({
     this.$( '.' + pane ).addClass('active').siblings().removeClass('active');
   }
 });
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports = CS.Mn.ItemView.extend({
 	template: 'observer',
 	className: 'cs-observer',
@@ -5830,7 +6005,7 @@ module.exports = CS.Mn.ItemView.extend({
 		this.listenTo( cs.global,   'kill:observer', this.kill );
 		this.listenTo( cs.observer, 'kill', this.kill );
 
-		this.$wrapper = Backbone.$('#cornerstone-preview-entry');
+		this.$wrapper = Backbone.$('#cs-content');
 
 	},
 
@@ -5962,7 +6137,7 @@ module.exports = CS.Mn.ItemView.extend({
 	},
 
 });
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = Cornerstone.Mn.CompositeView.extend({
 
 	template: false,
@@ -6134,7 +6309,7 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
     }, this );
 
 
-		this.listenTo( cs.global, 'incoming:element', function( type ) {
+		this.listenTo( cs.global, 'incoming:element', function( type, legacy ) {
 
 			cs.incoming = {
 				data: { _type: type },
@@ -6148,7 +6323,8 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
       cs.$indicator.removeAttr('style');
       cs.$indicator.append( Backbone.$( cs.elementIcon(type) ) );
 
-      document.addEventListener('mousemove', eventualDragStart, false);
+      if ( ! legacy ) document.addEventListener('mousemove', eventualDragStart, false);
+
     });
 
     var eventualDragStart = _.bind( function( e ) {
@@ -6164,6 +6340,11 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
       document.addEventListener('mouseup', stopDragging, false);
 
     }, this );
+
+    this.on( 'drag:cancel', function() {
+    	document.removeEventListener('mousemove', eventualDragStart, false );
+    	this.drake.cancel();
+    })
 
     cs.$ic = Backbone.$('<div class="cs-indicator-container"></div>');
 
@@ -6200,15 +6381,21 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
 		this.$el.toggleClass('cs-editor-inactive', state )
 	},
 
-	toggleDragging: function( state ) {
+	toggleDragging: function( state, legacy ) {
 
 		if (!state) {
 			cs.$indicator.detach();
-			this.drake.cancel();
+			if ( ! legacy ) {
+				this.trigger( 'drag:cancel' );
+			}
 		}
 
 		this.$el.toggleClass('gu-unselectable', state );
-		Backbone.$('body').toggleClass( 'cs-hide-cursor', state );
+
+		Backbone.$('body')
+			.toggleClass( 'cs-hide-cursor', state )
+			.toggleClass( 'cs-indicate-invisible', state );
+
 	},
 
 	autoScroll: function( view ) {
@@ -6228,7 +6415,7 @@ module.exports = Cornerstone.Mn.CompositeView.extend({
 	}
 
 });
-},{"./observer.js":91}],93:[function(require,module,exports){
+},{"./observer.js":92}],94:[function(require,module,exports){
 module.exports = CS.Mn.CompositeView.extend({
 
 	className: 'cs-skeleton-content-outer',
@@ -6500,7 +6687,7 @@ module.exports = CS.Mn.CompositeView.extend({
 	}
 
 });
-},{"../../utility/dragula-handlers":27}],94:[function(require,module,exports){
+},{"../../utility/dragula-handlers":28}],95:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	toggle: function( e ) {
@@ -6529,7 +6716,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 	},
 
 });
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	elementEvents: {
@@ -6540,13 +6727,18 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 		e.preventDefault();
 	}
 });
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 module.exports = CS.Mn.CompositeView.extend( {
 
 	remoteRender: true,
 	template: false, // <div class="cs-inception"></div>
 	childViewContainer: '@ui.root',
 	className: 'cs-preview-element-wrapper',
+	attributes: function() {
+		return {
+			'data-element': this.model.get( '_type' )
+		};
+	},
 	draggable: true,
 	htmlhint: { 'tagname-lowercase': false, 'attr-lowercase': false, 'attr-value-double-quotes': false, 'doctype-first': false, 'tag-pair': true, 'spec-char-escape': false, 'id-unique': false, 'src-not-empty': false, 'attr-no-duplication': false, 'title-require': false },
 
@@ -6633,6 +6825,8 @@ module.exports = CS.Mn.CompositeView.extend( {
 				cs.preview.trigger( 'autoscroll', this );
 		} );
 
+		this.listenTo( cs.events, 'preview:resize', this.exposeVisibility );
+
 	},
 
 	_setupChildren: function() {
@@ -6706,6 +6900,16 @@ module.exports = CS.Mn.CompositeView.extend( {
     return this;
   },
 
+  exposeVisibility: function() {
+		var invisible = this.$el.outerHeight() <= 0;
+		this.$el.toggleClass( 'cs-invisible', invisible );
+		this.triggerMethod( 'visibility:exposed', invisible );
+  },
+
+  onChildviewVisibilityExposed: function( item ) {
+		this.exposeVisibility(); // Repropogate visibility changes
+  },
+
 	// Bind the @root ui dynamically. Use inception parent if it exists, otherwise this.$el
 	// This is used for our composite view's childViewContainer
 	bindUIElements: function() {
@@ -6738,6 +6942,8 @@ module.exports = CS.Mn.CompositeView.extend( {
 				}
 			}, this ), 0 );
 		}
+
+		_.defer( _.bind( this.exposeVisibility, this ) );
 
 	},
 
@@ -6814,7 +7020,7 @@ module.exports = CS.Mn.CompositeView.extend( {
 
 } );
 
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	onAfterElementRender: function() {
@@ -6830,7 +7036,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 	}
 
 });
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 module.exports = Cornerstone.ElementViews.Base.extend({
 
 	remoteRender: false,
@@ -6848,7 +7054,7 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		'dragula:source:over': 'dragSourceOver',
 		'drop.h5s': 'receiveNew',
 		'dragenter.h5s': 'dragEnterH',
-		'dragover.h5s': 'dragOverH',
+		'dragover.h5s': 'dragOverH'
 	},
 
 	initialize: function() {
@@ -6858,23 +7064,21 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		this.checkDragLeave = _.debounce( this.dragLeave, 50 );
 		this.detachIndicator = _.debounce( this._detachIndicator, 50 );
 		this.throttleSetDragIndicator = _.throttle( _.bind( this.setDragIndicator, this ), 125, { leading: false, trailing: false } );
-		this.dropIndex = 0;
-
-		this.$empty = Backbone.$( cs.template('empty-column')() );
+		this.legacyBefore = null;
+		this.$empty = Backbone.$( cs.template( 'empty-column' )() );
 
 	},
 
-
 	receiveElement: function( e, el, source, sibling ) {
 
-		cs.observer.trigger( 'kill');
+		cs.observer.trigger( 'kill' );
 
-		var isNew = !_.isFunction( cs.incoming.toJSON )
+		var isNew = ! _.isFunction( cs.incoming.toJSON );
 		var data = ( isNew ) ? cs.incoming.data : cs.incoming.toJSON();
 
 		var shadow = cs.incoming.cid;
 		var newModel = this.model.elements.create( data, _.clone( cs.incoming.options ), {
-			position: ( sibling ) ? Backbone.$(sibling).index() - 1 : this.collection.length,
+			position: ( sibling ) ? Backbone.$( sibling ).index() - 1 : this.collection.length,
 			replace: cs.incoming,
 			after: function( model ) {
 				cs.render.shadow( model, shadow );
@@ -6888,25 +7092,10 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 
 	},
 
-	receiveNew: function ( e ) {
+	receiveNew: function( e ) {
 
-		this.$el.toggleClass( 'cs-receiving', false );
-
-    cs.observer.trigger( 'kill');
-    cs.preview.trigger( 'dragging', false );
-
-    var data = JSON.parse( e.originalEvent.dataTransfer.getData('cornerstone/element') );
-
-		if ( !data ) return;
-
-    if ( data.action == 'create' && data._type ) {
-    	var newModel = this.model.elements.create( { _type: data._type }, {}, this.dropIndex, function( model ) {
-    		cs.render.shadow( model, 'new:' + data._type );
-    	}  );
-    	cs.global.trigger( 'inspect', newModel )
-    }
-
-    this.emptyClassCheck();
+		this.receiveElement( null, null, null, this.legacyBefore );
+		cs.preview.trigger( 'dragging', false );
 
 	},
 
@@ -6924,21 +7113,22 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 	},
 
 	dragShadow: function() {
-		if ( this.collection.length == 1 && this.$el.children().length <= 1 )
+		if ( 1 === this.collection.length && this.$el.children().length <= 1 )
 			this.emptyClassCheck( true );
 	},
 
 	clickIcon: function( e ) {
 		e.stopPropagation();
-		cs.global.trigger('nav:kylelements');
+		cs.global.trigger( 'nav:kylelements' );
 	},
 
 	onRemoveChild: function() {
-  	this.emptyClassCheck();
-  },
+		this.emptyClassCheck();
+	},
 
-  onAddChild: function( child ) {
-		child.triggerMethod('added:to:column');
+	onAddChild: function( child ) {
+		this.emptyClassCheck();
+		child.triggerMethod( 'added:to:column' );
 	},
 
 	emptyClassCheck: function( force ) {
@@ -6947,9 +7137,9 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		this.$el.removeClass( 'cs-empty' );
 
 		if ( this.collection.isEmpty() || force ) {
-			this.$el.append(this.$empty);
+			this.$el.append( this.$empty );
 			this.$el.addClass( 'cs-empty' );
-			this.$('.cs-empty-column').removeAttr('style');
+			this.$( '.cs-empty-column' ).removeAttr( 'style' );
 		}
 
 	},
@@ -6964,19 +7154,19 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		this.checkDragLeave();
 	},
 
-	dragOverH: function(e) {
+	dragOverH: function( e ) {
 
 		this.checkDragOverStart();
 		this.checkDragLeave();
 
-    if ( e.originalEvent.preventDefault )
-      e.originalEvent.preventDefault();
+			if ( e.originalEvent.preventDefault )
+			e.originalEvent.preventDefault();
 
-  	this.throttleSetDragIndicator( e.originalEvent.pageY );
+		this.throttleSetDragIndicator( e.originalEvent.pageY );
 
 	},
 
-	dragLeave: function () {
+	dragLeave: function() {
 		this.$el.toggleClass( 'cs-receiving', false );
 		this.checkDragOverStart = _.once( this.dragOverStart );
 	},
@@ -6993,28 +7183,27 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 
 			if ( view.$el.shadowHeight < 1 ) return false;
 
-    	if ( y > view.$el.offset().top + ( view.$el.outerHeight() / 2 ) ) {
-    		++index;
-    	} else {
-    		return true;
-    	}
+			if ( y > view.$el.offset().top + ( view.$el.outerHeight() / 2 ) ) {
+				++index;
+			} else {
+				return true;
+			}
 
-    	return false;
+			return false;
 
 		}, this ) );
 
-		this.dropIndex = index;
+		this.legacyBefore = null;
 
-
-		if ( this.collection.length == this.dropIndex ) {
+		if ( this.collection.length == index ) {
 			this.$el.append( cs.$indicator );
 		} else {
-			this.children.findByModel( model ).$el.before(cs.$indicator);
+			var before = this.children.findByModel( model );
+			this.legacyBefore = before.el;
+			before.$el.before( cs.$indicator );
 		}
 
 	},
-
-
 
 	onElementInit: function() {
 
@@ -7028,7 +7217,7 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 		classes.push( 'x-' + data.size.replace('/','-') );
 
 		if ( 'none' != data.text_align ) {
-			classes.push(data.text_align);
+			classes.push( cs.classMap( 'text_align', data.text_align ) );
 		}
 
 		if ( _.isArray( padding = _.clone( data.padding ) ) ) {
@@ -7072,7 +7261,7 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 	}
 
 })
-},{}],99:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	template: _.template( '<div></div>' ),
@@ -7088,7 +7277,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 		classes = [ 'cs-empty-element', 'cs-gap' ];
 		styles = {};
 
-		classes = _.union( classes, data.visibility );
+		classes = _.union( classes, cs.classMap( 'visibility', data.visibility ) );
 
 		if ( '' != data.id ) $gap.attr( 'id', data.id );
 
@@ -7104,18 +7293,15 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 		$gap.css( {
 			'padding': data.gap_size + ' 0 0',
 			'margin':  0,
-			'height':  0
+			'height':  0,
+			'minHeight': this.minHeight + 'px'
 		} );
-
-		if ( $gap.outerHeight() < this.minHeight ) {
-			$gap.css( { 'padding': this.minHeight + 'px 0 0' } );
-		}
 
 	}
 
 } );
 
-},{}],100:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	// Stop "no container" from being detected as empty too early
@@ -7142,7 +7328,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	}
 });
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	onAfterElementRender: function() {
@@ -7150,27 +7336,28 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 	}
 
 });
-},{}],102:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 module.exports = {
 
-	'section' : require('./section'),
-	'row'     : require('./row'),
-	'column'  : require('./column'),
+	'section': require( './section' ),
+	'row':     require( './row' ),
+	'column':  require( './column' ),
 
-	'accordion'         : require('./accordion'),
-	'alert'             : require('./alert'),
-	'card'              : require('./card'),
-	'row'               : require('./row'),
-	'gap'               : require('./gap'),
-	'google-map'        : require('./google-map'),
-	'line'              : require('./line'),
-	'slider'            : require('./slider'),
-	'tabs'              : require('./tabs'),
+	'accordion':     require( './accordion' ),
+	'alert':         require( './alert' ),
+	'card':          require( './card' ),
+	'pricing-table': require( './pricing-table' ),
+	'row':           require( './row' ),
+	'gap':           require( './gap' ),
+	'google-map':    require( './google-map' ),
+	'line':          require( './line' ),
+	'slider':        require( './slider' ),
+	'tabs':          require( './tabs' ),
 
 	// 3rd party
-	'gravity-forms'     : require('./gravity-forms'),
+	'gravity-forms': require( './gravity-forms' ),
 }
-},{"./accordion":94,"./alert":95,"./card":97,"./column":98,"./gap":99,"./google-map":100,"./gravity-forms":101,"./line":103,"./row":104,"./section":105,"./slider":106,"./tabs":107}],103:[function(require,module,exports){
+},{"./accordion":95,"./alert":96,"./card":98,"./column":99,"./gap":100,"./google-map":101,"./gravity-forms":102,"./line":104,"./pricing-table":105,"./row":106,"./section":107,"./slider":108,"./tabs":109}],104:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	template: _.template( '<hr class="x-hr">' ),
@@ -7224,7 +7411,36 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 
 } );
 
-},{}],104:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
+module.exports =  Cornerstone.ElementViews.Base.extend({
+
+	onRemoveChild: function() {
+		this.updateColumnClass();
+	},
+
+	onAddChild: function( child ) {
+		this.updateColumnClass();
+	},
+
+	updateColumnClass: function() {
+
+		var $table = this.$( '.x-pricing-table' );
+		var classes = [ 'one-column', 'two-columns', 'three-columns', 'four-columns', 'five-columns' ];
+
+		if ( classes[ this.collection.length - 1 ] ) {
+			var columnClass = classes[ this.collection.length - 1 ];
+			if ( ! $table.hasClass( columnClass ) ) {
+				$table.removeClass( classes.join( ' ' ) ).addClass( columnClass );
+			}
+		} else {
+			$table.removeClass( classes.join( ' ' ) );
+		}
+
+	}
+
+} );
+
+},{}],106:[function(require,module,exports){
 module.exports = Cornerstone.ElementViews.Base.extend({
 
 	remoteRender: false,
@@ -7245,10 +7461,10 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 			classes.push('max width')
 		}
 
-		classes = _.union( classes, data.visibility );
+		classes = _.union( classes, cs.classMap( 'visibility', data.visibility ) );
 
 		if ( 'none' != data.text_align ) {
-			classes.push(data.text_align);
+			classes.push( cs.classMap( 'text_align', data.text_align ) );
 		}
 
 		if ( data.marginless_columns ) classes.push('marginless-columns');
@@ -7294,7 +7510,7 @@ module.exports = Cornerstone.ElementViews.Base.extend({
   }
 
 });
-},{}],105:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = Cornerstone.ElementViews.Base.extend({
 
 	remoteRender: false,
@@ -7309,7 +7525,7 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 			color: null,
 			image: null,
 			activeClass: null
-		}
+		};
 
 		this.listenTo( this.model, 'change:bg_color', function() {
 			this.contrast.color = null;
@@ -7323,20 +7539,20 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 	onConstructElement: function( data ) {
 
 		var classes, styles, bgClass, padding, margin, borderWidth;
-		this.$el.attr('id', 'x-section-' + (this.modelIndex + 1) );
+		this.$el.attr( 'id', 'x-section-' + ( this.modelIndex + 1 ) );
 
 		classes = [ 'x-section' ];
 		styles = {};
 		bgClass = '';
 
-		if (this.contrastClass) {
-			classes.push(this.contrastClass);
+		if ( this.contrastClass ) {
+			classes.push( this.contrastClass );
 		}
 
-		classes = _.union( classes, data.visibility );
+		classes = _.union( classes, cs.classMap( 'visibility', data.visibility ) );
 
 		if ( 'none' != data.text_align ) {
-			classes.push(data.text_align);
+			classes.push( cs.classMap( 'text_align', data.text_align ) );
 		}
 
 		switch ( data.bg_type ) {
@@ -7350,7 +7566,7 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 				if ( data.parallax ) classes.push( 'parallax' );
 				if ( '' != data.bg_image ) styles['backgroundImage'] = 'url("' + data.bg_image +'")';
 				if ( _.isNull( this.contrast.image ) ) this.lazyDetectImageContrast( data.bg_image, data.bg_color );
-				if ( !_.isNull( this.contrast.activeClass) ) classes.push(this.contrast.activeClass);
+				if ( ! _.isNull( this.contrast.activeClass ) ) classes.push( this.contrast.activeClass );
 				styles['background-color'] = ( '' != data.bg_color ) ? data.bg_color : 'transparent';
 
 				break;
@@ -7456,13 +7672,13 @@ module.exports = Cornerstone.ElementViews.Base.extend({
 	}
 
 })
-},{}],106:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
-	// emptyDetection: function() {
- //    // Prevent empty detection
- //  }
-});
-},{}],107:[function(require,module,exports){
+	emptyDetection: function() {
+		// Prevent empty detection
+	}
+} );
+},{}],109:[function(require,module,exports){
 module.exports =  Cornerstone.ElementViews.Base.extend({
 
 	onClickBeforeInspect: function( e ) {
@@ -7473,7 +7689,7 @@ module.exports =  Cornerstone.ElementViews.Base.extend({
 	},
 
 });
-},{}],108:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = CS.Mn.CollectionView.extend({
 	childView: require('./settings-section'),
 	events: {
@@ -7500,7 +7716,7 @@ module.exports = CS.Mn.CollectionView.extend({
 
   }
 });
-},{"./settings-section":110}],109:[function(require,module,exports){
+},{"./settings-section":112}],111:[function(require,module,exports){
 var ControlListView = require('../controls/control-collection');
 var SettingsCollectionView = require('./settings-collection');
 module.exports = CS.Mn.LayoutView.extend({
@@ -7529,7 +7745,7 @@ module.exports = CS.Mn.LayoutView.extend({
   }
 
 });
-},{"../controls/control-collection":37,"./settings-collection":108}],110:[function(require,module,exports){
+},{"../controls/control-collection":38,"./settings-collection":110}],112:[function(require,module,exports){
 module.exports = CS.Mn.CompositeView.extend({
 	template: 'settings/section',
 	className: 'cs-settings-section',
@@ -7553,7 +7769,7 @@ module.exports = CS.Mn.CompositeView.extend({
 
 	}
 });
-},{}],111:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 var ViewBasePane = require('../main/base-pane');
 var SettingsContentView = require('./settings-content');
 var ControlListView = require('../controls/control-collection');
@@ -7586,7 +7802,7 @@ module.exports = ViewBasePane.extend({
   }
 
 });
-},{"../controls/control-collection":37,"../main/base-pane":87,"./settings-content":109}],112:[function(require,module,exports){
+},{"../controls/control-collection":38,"../main/base-pane":88,"./settings-content":111}],114:[function(require,module,exports){
 module.exports = CS.Mn.CompositeView.extend( {
 
 	remoteRender: true,
@@ -7880,7 +8096,7 @@ module.exports = CS.Mn.CompositeView.extend( {
 	}
 
 } );
-},{}],113:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 module.exports = Cornerstone.SkeletonViews.Base.extend({
 
 	receiver: true,
@@ -7907,13 +8123,13 @@ module.exports = Cornerstone.SkeletonViews.Base.extend({
   },
 
 });
-},{}],114:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = {
 	'section' : require('./section'),
 	'row'     : require('./row'),
 	'column'  : require('./column'),
 }
-},{"./column":113,"./row":115,"./section":116}],115:[function(require,module,exports){
+},{"./column":115,"./row":117,"./section":118}],117:[function(require,module,exports){
 module.exports = Cornerstone.SkeletonViews.Base.extend({
 
 	receiver: false,
@@ -8030,7 +8246,7 @@ module.exports = Cornerstone.SkeletonViews.Base.extend({
   }
 
 });
-},{"../../utility/dragula-handlers":27}],116:[function(require,module,exports){
+},{"../../utility/dragula-handlers":28}],118:[function(require,module,exports){
 module.exports = Cornerstone.SkeletonViews.Base.extend({
 	receiver: true,
 	manageable: true,
@@ -8046,7 +8262,7 @@ module.exports = Cornerstone.SkeletonViews.Base.extend({
 
 });
 
-},{}],117:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 var templates={};templates['controls/base']=function (obj) {
 obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
@@ -8641,18 +8857,6 @@ __p += '\n<p class="message">' +
 
 }
 return __p
-};templates['layout/actions']=function (obj) {
-obj || (obj = {});
-var __t, __p = '';
-with (obj) {
-__p += '<ul class="cs-actions">\n  <li class="action new">\n    <i class="cs-icon" data-cs-icon="&#xf0fe;"></i>\n    <span>' +
-((__t = ( l18n('layout-add-section') )) == null ? '' : __t) +
-'</span>\n  </li>\n  <li class="action templates">\n    <i class="cs-icon" data-cs-icon="&#xf15b;"></i>\n    <span>' +
-((__t = ( l18n('layout-templates') )) == null ? '' : __t) +
-'</span>\n  </li>\n</ul>';
-
-}
-return __p
 };templates['inspector/blank-state']=function (obj) {
 obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
@@ -8750,6 +8954,45 @@ __p += '<ul class="cs-actions">\n  <li class="action manage-layout">\n    <i cla
 '</span>\n    <span class="quick-confirm">' +
 ((__t = ( l18n('inspector-really-delete') )) == null ? '' : __t) +
 '</span>\n  </li>\n</ul>';
+
+}
+return __p
+};templates['layout/actions']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<ul class="cs-actions">\n  <li class="action new">\n    <i class="cs-icon" data-cs-icon="&#xf0fe;"></i>\n    <span>' +
+((__t = ( l18n('layout-add-section') )) == null ? '' : __t) +
+'</span>\n  </li>\n  <li class="action templates">\n    <i class="cs-icon" data-cs-icon="&#xf15b;"></i>\n    <span>' +
+((__t = ( l18n('layout-templates') )) == null ? '' : __t) +
+'</span>\n  </li>\n</ul>';
+
+}
+return __p
+};templates['library/element-stub']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ //builder/library/element-stub ;
+__p += '\n<span class="icon">' +
+((__t = ( icon )) == null ? '' : __t) +
+'</span>\n<span class="name"><span>' +
+((__t = ( ui.title )) == null ? '' : __t) +
+'</span></span>';
+
+}
+return __p
+};templates['library/search']=function (obj) {
+obj || (obj = {});
+var __t, __p = '';
+with (obj) {
+__p += '<div class="cs-search-section">\n  <div class="cs-search">\n    <input type="search" placeholder="' +
+((__t = ( l18n('elements-search') )) == null ? '' : __t) +
+'" id="elements-search">\n    <i class="cs-icon" data-cs-icon="' +
+((__t = ( fontIcon('search') )) == null ? '' : __t) +
+'"></i>\n  </div>\n</div>';
 
 }
 return __p
@@ -8882,33 +9125,6 @@ __p += '<div class="cs-skeleton-content-inner">\n	<div class="cs-skeleton-items"
 
 }
 return __p
-};templates['library/element-stub']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-
- //builder/library/element-stub ;
-__p += '\n<span class="icon">' +
-((__t = ( icon )) == null ? '' : __t) +
-'</span>\n<span class="name"><span>' +
-((__t = ( ui.title )) == null ? '' : __t) +
-'</span></span>';
-
-}
-return __p
-};templates['library/search']=function (obj) {
-obj || (obj = {});
-var __t, __p = '';
-with (obj) {
-__p += '<div class="cs-search-section">\n  <div class="cs-search">\n    <input type="search" placeholder="' +
-((__t = ( l18n('elements-search') )) == null ? '' : __t) +
-'" id="elements-search">\n    <i class="cs-icon" data-cs-icon="' +
-((__t = ( fontIcon('search') )) == null ? '' : __t) +
-'"></i>\n  </div>\n</div>';
-
-}
-return __p
 };templates['settings/actions']=function (obj) {
 obj || (obj = {});
 var __t, __p = '';
@@ -9026,7 +9242,7 @@ __p += '<input id="template-upload" type="file" name="blockUpload"/>\n<button cl
 }
 return __p
 };module.exports=templates;
-},{}],118:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 var templates={};templates['dragging-placeholder']=function (obj) {
 obj || (obj = {});
 var __t, __p = '';
@@ -9094,7 +9310,7 @@ __p += '<div class="cs-observer-tooltip top left">' +
 }
 return __p
 };module.exports=templates;
-},{}],119:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 'use strict';
 
 var cache = {};
@@ -9129,7 +9345,7 @@ module.exports = {
   rm: rmClass
 };
 
-},{}],120:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -9182,8 +9398,7 @@ function dragula (initialContainers, options) {
     cancel: cancel,
     remove: remove,
     destroy: destroy,
-    dragging: false,
-    isContainer: isContainer
+    dragging: false
   });
 
   if (o.removeOnSpill === true) {
@@ -9663,10 +9878,6 @@ function getOffset (el) {
   };
 }
 
-function calculateOffset( ) {
-
-}
-
 function getScroll (scrollProp, offsetProp) {
   if (typeof global[offsetProp] !== 'undefined') {
     return global[offsetProp];
@@ -9735,7 +9946,7 @@ module.exports = dragula;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./classes":119,"contra/emitter":128,"crossvent":132}],121:[function(require,module,exports){
+},{"./classes":121,"contra/emitter":130,"crossvent":134}],123:[function(require,module,exports){
 /*!
  * HTMLHint v0.9.13
  * https://github.com/yaniswang/HTMLHint
@@ -9744,7 +9955,7 @@ module.exports = dragula;
  * MIT Licensed
  */
 var HTMLHint=function(e){function t(e,t){return Array(e+1).join(t||" ")}var a={};return a.version="0.9.13",a.release="20151030",a.rules={},a.defaultRuleset={"tagname-lowercase":!0,"attr-lowercase":!0,"attr-value-double-quotes":!0,"doctype-first":!0,"tag-pair":!0,"spec-char-escape":!0,"id-unique":!0,"src-not-empty":!0,"attr-no-duplication":!0,"title-require":!0},a.addRule=function(e){a.rules[e.id]=e},a.verify=function(t,n){t=t.replace(/^\s*<!--\s*htmlhint\s+([^\r\n]+?)\s*-->/i,function(t,a){return n===e&&(n={}),a.replace(/(?:^|,)\s*([^:,]+)\s*(?:\:\s*([^,\s]+))?/g,function(t,a,i){"false"===i?i=!1:"true"===i&&(i=!0),n[a]=i===e?!0:i}),""}),(n===e||0===Object.keys(n).length)&&(n=a.defaultRuleset);var i,r=new HTMLParser,s=new a.Reporter(t,n),o=a.rules;for(var l in n)i=o[l],i!==e&&n[l]!==!1&&i.init(r,s,n[l]);return r.parse(t),s.messages},a.format=function(e,a){a=a||{};var n=[],i={white:"",grey:"",red:"",reset:""};a.colors&&(i.white="[37m",i.grey="[90m",i.red="[31m",i.reset="[39m");var r=a.indent||0;return e.forEach(function(e){var a=40,s=a+20,o=e.evidence,l=e.line,u=e.col,d=o.length,c=u>a+1?u-a:1,f=o.length>u+s?u+s:d;a+1>u&&(f+=a-u+1),o=o.replace(/\t/g," ").substring(c-1,f),c>1&&(o="..."+o,c-=3),d>f&&(o+="..."),n.push(i.white+t(r)+"L"+l+" |"+i.grey+o+i.reset);var g=u-c,h=o.substring(0,g).match(/[^\u0000-\u00ff]/g);null!==h&&(g+=h.length),n.push(i.white+t(r)+t((l+"").length+3+g)+"^ "+i.red+e.message+" ("+e.rule.id+")"+i.reset)}),n},a}();"object"==typeof exports&&exports&&(exports.HTMLHint=HTMLHint),function(e){var t=function(){var e=this;e._init.apply(e,arguments)};t.prototype={_init:function(e,t){var a=this;a.html=e,a.lines=e.split(/\r?\n/);var n=e.match(/\r?\n/);a.brLen=null!==n?n[0].length:0,a.ruleset=t,a.messages=[]},error:function(e,t,a,n,i){this.report("error",e,t,a,n,i)},warn:function(e,t,a,n,i){this.report("warning",e,t,a,n,i)},info:function(e,t,a,n,i){this.report("info",e,t,a,n,i)},report:function(e,t,a,n,i,r){for(var s,o,l=this,u=l.lines,d=l.brLen,c=a-1,f=u.length;f>c&&(s=u[c],o=s.length,n>o&&f>a);c++)a++,n-=o,1!==n&&(n-=d);l.messages.push({type:e,message:t,raw:r,evidence:s,line:a,col:n,rule:{id:i.id,description:i.description,link:"https://github.com/yaniswang/HTMLHint/wiki/"+i.id}})}},e.Reporter=t}(HTMLHint);var HTMLParser=function(e){var t=function(){var e=this;e._init.apply(e,arguments)};return t.prototype={_init:function(){var e=this;e._listeners={},e._mapCdataTags=e.makeMap("script,style"),e._arrBlocks=[],e.lastEvent=null},makeMap:function(e){for(var t={},a=e.split(","),n=0;a.length>n;n++)t[a[n]]=!0;return t},parse:function(t){function a(t,a,n,i){var r=n-b+1;i===e&&(i={}),i.raw=a,i.pos=n,i.line=w,i.col=r,L.push(i),c.fire(t,i);for(var s;s=m.exec(a);)w++,b=n+m.lastIndex}var n,i,r,s,o,l,u,d,c=this,f=c._mapCdataTags,g=/<(?:\/([^\s>]+)\s*|!--([\s\S]*?)--|!([^>]*?)|([\w\-:]+)((?:\s+[\w\-:]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'>]*))?)*?)\s*(\/?))>/g,h=/\s*([\w\-:]+)(?:\s*=\s*(?:(")([^"]*)"|(')([^']*)'|([^\s"'>]*)))?/g,m=/\r?\n/g,p=0,v=0,b=0,w=1,L=c._arrBlocks;for(c.fire("start",{pos:0,line:1,col:1});n=g.exec(t);)if(i=n.index,i>p&&(d=t.substring(p,i),o?u.push(d):a("text",d,p)),p=g.lastIndex,!(r=n[1])||(o&&r===o&&(d=u.join(""),a("cdata",d,v,{tagName:o,attrs:l}),o=null,l=null,u=null),o))if(o)u.push(n[0]);else if(r=n[4]){s=[];for(var y,T=n[5],H=0;y=h.exec(T);){var x=y[1],M=y[2]?y[2]:y[4]?y[4]:"",N=y[3]?y[3]:y[5]?y[5]:y[6]?y[6]:"";s.push({name:x,value:N,quote:M,index:y.index,raw:y[0]}),H+=y[0].length}H===T.length?(a("tagstart",n[0],i,{tagName:r,attrs:s,close:n[6]}),f[r]&&(o=r,l=s.concat(),u=[],v=p)):a("text",n[0],i)}else(n[2]||n[3])&&a("comment",n[0],i,{content:n[2]||n[3],"long":n[2]?!0:!1});else a("tagend",n[0],i,{tagName:r});t.length>p&&(d=t.substring(p,t.length),a("text",d,p)),c.fire("end",{pos:p,line:w,col:t.length-b+1})},addListener:function(t,a){for(var n,i=this._listeners,r=t.split(/[,\s]/),s=0,o=r.length;o>s;s++)n=r[s],i[n]===e&&(i[n]=[]),i[n].push(a)},fire:function(t,a){a===e&&(a={}),a.type=t;var n=this,i=[],r=n._listeners[t],s=n._listeners.all;r!==e&&(i=i.concat(r)),s!==e&&(i=i.concat(s));var o=n.lastEvent;null!==o&&(delete o.lastEvent,a.lastEvent=o),n.lastEvent=a;for(var l=0,u=i.length;u>l;l++)i[l].call(n,a)},removeListener:function(t,a){var n=this._listeners[t];if(n!==e)for(var i=0,r=n.length;r>i;i++)if(n[i]===a){n.splice(i,1);break}},fixPos:function(e,t){var a,n=e.raw.substr(0,t),i=n.split(/\r?\n/),r=i.length-1,s=e.line;return r>0?(s+=r,a=i[r].length+1):a=e.col+t,{line:s,col:a}},getMapAttrs:function(e){for(var t,a={},n=0,i=e.length;i>n;n++)t=e[n],a[t.name]=t.value;return a}},t}();"object"==typeof exports&&exports&&(exports.HTMLParser=HTMLParser),HTMLHint.addRule({id:"alt-require",description:"The alt attribute of an <img> element must be present and alt attribute of area[href] and input[type=image] must have a value.",init:function(e,t){var a=this;e.addListener("tagstart",function(n){var i,r=n.tagName.toLowerCase(),s=e.getMapAttrs(n.attrs),o=n.col+r.length+1;"img"!==r||"alt"in s?("area"===r&&"href"in s||"input"===r&&"image"===s.type)&&("alt"in s&&""!==s.alt||(i="area"===r?"area[href]":"input[type=image]",t.warn("The alt attribute of "+i+" must have a value.",n.line,o,a,n.raw))):t.warn("An alt attribute must be present on <img> elements.",n.line,o,a,n.raw)})}}),HTMLHint.addRule({id:"attr-lowercase",description:"All attribute names must be in lowercase.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.attrs,r=e.col+e.tagName.length+1,s=0,o=i.length;o>s;s++){n=i[s];var l=n.name;l!==l.toLowerCase()&&t.error("The attribute name of [ "+l+" ] must be in lowercase.",e.line,r+n.index,a,n.raw)}})}}),HTMLHint.addRule({id:"attr-no-duplication",description:"Elements cannot have duplicate attributes.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i,r=e.attrs,s=e.col+e.tagName.length+1,o={},l=0,u=r.length;u>l;l++)n=r[l],i=n.name,o[i]===!0&&t.error("Duplicate of attribute name [ "+n.name+" ] was found.",e.line,s+n.index,a,n.raw),o[i]=!0})}}),HTMLHint.addRule({id:"attr-unsafe-chars",description:"Attribute values cannot contain unsafe chars.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i,r=e.attrs,s=e.col+e.tagName.length+1,o=/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/,l=0,u=r.length;u>l;l++)if(n=r[l],i=n.value.match(o),null!==i){var d=escape(i[0]).replace(/%u/,"\\u").replace(/%/,"\\x");t.warn("The value of attribute [ "+n.name+" ] cannot contain an unsafe char [ "+d+" ].",e.line,s+n.index,a,n.raw)}})}}),HTMLHint.addRule({id:"attr-value-double-quotes",description:"Attribute values must be in double quotes.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.attrs,r=e.col+e.tagName.length+1,s=0,o=i.length;o>s;s++)n=i[s],(""!==n.value&&'"'!==n.quote||""===n.value&&"'"===n.quote)&&t.error("The value of attribute [ "+n.name+" ] must be in double quotes.",e.line,r+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"attr-value-not-empty",description:"All attributes must have values.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.attrs,r=e.col+e.tagName.length+1,s=0,o=i.length;o>s;s++)n=i[s],""===n.quote&&""===n.value&&t.warn("The attribute [ "+n.name+" ] must have a value.",e.line,r+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"csslint",description:"Scan css with csslint.",init:function(e,t,a){var n=this;e.addListener("cdata",function(e){if("style"===e.tagName.toLowerCase()){var i;if(i="object"==typeof exports&&require?require("csslint").CSSLint.verify:CSSLint.verify,void 0!==a){var r=e.line-1,s=e.col-1;try{var o=i(e.raw,a).messages;o.forEach(function(e){var a=e.line;t["warning"===e.type?"warn":"error"]("["+e.rule.id+"] "+e.message,r+a,(1===a?s:0)+e.col,n,e.evidence)})}catch(l){}}}})}}),HTMLHint.addRule({id:"doctype-first",description:"Doctype must be declared first.",init:function(e,t){var a=this,n=function(i){"start"===i.type||"text"===i.type&&/^\s*$/.test(i.raw)||(("comment"!==i.type&&i.long===!1||/^DOCTYPE\s+/i.test(i.content)===!1)&&t.error("Doctype must be declared first.",i.line,i.col,a,i.raw),e.removeListener("all",n))};e.addListener("all",n)}}),HTMLHint.addRule({id:"doctype-html5",description:'Invalid doctype. Use: "<!DOCTYPE html>"',init:function(e,t){function a(e){e.long===!1&&"doctype html"!==e.content.toLowerCase()&&t.warn('Invalid doctype. Use: "<!DOCTYPE html>"',e.line,e.col,i,e.raw)}function n(){e.removeListener("comment",a),e.removeListener("tagstart",n)}var i=this;e.addListener("all",a),e.addListener("tagstart",n)}}),HTMLHint.addRule({id:"head-script-disabled",description:"The <script> tag cannot be used in a <head> tag.",init:function(e,t){function a(a){var n=e.getMapAttrs(a.attrs),o=n.type,l=a.tagName.toLowerCase();"head"===l&&(s=!0),s!==!0||"script"!==l||o&&r.test(o)!==!0||t.warn("The <script> tag cannot be used in a <head> tag.",a.line,a.col,i,a.raw)}function n(t){"head"===t.tagName.toLowerCase()&&(e.removeListener("tagstart",a),e.removeListener("tagend",n))}var i=this,r=/^(text\/javascript|application\/javascript)$/i,s=!1;e.addListener("tagstart",a),e.addListener("tagend",n)}}),HTMLHint.addRule({id:"href-abs-or-rel",description:"An href attribute must be either absolute or relative.",init:function(e,t,a){var n=this,i="abs"===a?"absolute":"relative";e.addListener("tagstart",function(e){for(var a,r=e.attrs,s=e.col+e.tagName.length+1,o=0,l=r.length;l>o;o++)if(a=r[o],"href"===a.name){("absolute"===i&&/^\w+?:/.test(a.value)===!1||"relative"===i&&/^https?:\/\//.test(a.value)===!0)&&t.warn("The value of the href attribute [ "+a.value+" ] must be "+i+".",e.line,s+a.index,n,a.raw);break}})}}),HTMLHint.addRule({id:"id-class-ad-disabled",description:"The id and class attributes cannot use the ad keyword, it will be blocked by adblock software.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i,r=e.attrs,s=e.col+e.tagName.length+1,o=0,l=r.length;l>o;o++)n=r[o],i=n.name,/^(id|class)$/i.test(i)&&/(^|[-\_])ad([-\_]|$)/i.test(n.value)&&t.warn("The value of attribute "+i+" cannot use the ad keyword.",e.line,s+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"id-class-value",description:"The id and class attribute values must meet the specified rules.",init:function(e,t,a){var n,i=this,r={underline:{regId:/^[a-z\d]+(_[a-z\d]+)*$/,message:"The id and class attribute values must be in lowercase and split by an underscore."},dash:{regId:/^[a-z\d]+(-[a-z\d]+)*$/,message:"The id and class attribute values must be in lowercase and split by a dash."},hump:{regId:/^[a-z][a-zA-Z\d]*([A-Z][a-zA-Z\d]*)*$/,message:"The id and class attribute values must meet the camelCase style."}};if(n="string"==typeof a?r[a]:a,n&&n.regId){var s=n.regId,o=n.message;e.addListener("tagstart",function(e){for(var a,n=e.attrs,r=e.col+e.tagName.length+1,l=0,u=n.length;u>l;l++)if(a=n[l],"id"===a.name.toLowerCase()&&s.test(a.value)===!1&&t.warn(o,e.line,r+a.index,i,a.raw),"class"===a.name.toLowerCase())for(var d,c=a.value.split(/\s+/g),f=0,g=c.length;g>f;f++)d=c[f],d&&s.test(d)===!1&&t.warn(o,e.line,r+a.index,i,d)})}}}),HTMLHint.addRule({id:"id-unique",description:"The value of id attributes must be unique.",init:function(e,t){var a=this,n={};e.addListener("tagstart",function(e){for(var i,r,s=e.attrs,o=e.col+e.tagName.length+1,l=0,u=s.length;u>l;l++)if(i=s[l],"id"===i.name.toLowerCase()){r=i.value,r&&(void 0===n[r]?n[r]=1:n[r]++,n[r]>1&&t.error("The id value [ "+r+" ] must be unique.",e.line,o+i.index,a,i.raw));break}})}}),HTMLHint.addRule({id:"inline-script-disabled",description:"Inline script cannot be use.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i,r=e.attrs,s=e.col+e.tagName.length+1,o=/^on(unload|message|submit|select|scroll|resize|mouseover|mouseout|mousemove|mouseleave|mouseenter|mousedown|load|keyup|keypress|keydown|focus|dblclick|click|change|blur|error)$/i,l=0,u=r.length;u>l;l++)n=r[l],i=n.name.toLowerCase(),o.test(i)===!0?t.warn("Inline script [ "+n.raw+" ] cannot be use.",e.line,s+n.index,a,n.raw):("src"===i||"href"===i)&&/^\s*javascript:/i.test(n.value)&&t.warn("Inline script [ "+n.raw+" ] cannot be use.",e.line,s+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"inline-style-disabled",description:"Inline style cannot be use.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.attrs,r=e.col+e.tagName.length+1,s=0,o=i.length;o>s;s++)n=i[s],"style"===n.name.toLowerCase()&&t.warn("Inline style [ "+n.raw+" ] cannot be use.",e.line,r+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"jshint",description:"Scan script with jshint.",init:function(e,t,a){var n=this;e.addListener("cdata",function(i){if("script"===i.tagName.toLowerCase()){var r=e.getMapAttrs(i.attrs),s=r.type;if(void 0!==r.src||s&&/^(text\/javascript)$/i.test(s)===!1)return;var o;if(o="object"==typeof exports&&require?require("jshint").JSHINT:JSHINT,void 0!==a){var l=i.line-1,u=i.col-1,d=i.raw.replace(/\t/g," ");try{var c=o(d,a);c===!1&&o.errors.forEach(function(e){var a=e.line;t.warn(e.reason,l+a,(1===a?u:0)+e.character,n,e.evidence)})}catch(f){}}}})}}),HTMLHint.addRule({id:"space-tab-mixed-disabled",description:"Do not mix tabs and spaces for indentation.",init:function(e,t,a){var n=this;e.addListener("text",function(i){for(var r,s=i.raw,o=/(^|\r?\n)([ \t]+)/g;r=o.exec(s);){var l=e.fixPos(i,r.index+r[1].length);"space"===a&&/^ +$/.test(r[2])===!1?t.warn("Please use space for indentation.",l.line,1,n,i.raw):"tab"===a&&/^\t+$/.test(r[2])===!1?t.warn("Please use tab for indentation.",l.line,1,n,i.raw):/ +\t|\t+ /.test(r[2])===!0&&t.warn("Do not mix tabs and spaces for indentation.",l.line,1,n,i.raw)}})}}),HTMLHint.addRule({id:"spec-char-escape",description:"Special characters must be escaped.",init:function(e,t){var a=this;e.addListener("text",function(n){for(var i,r=n.raw,s=/[<>]/g;i=s.exec(r);){var o=e.fixPos(n,i.index);t.error("Special characters must be escaped : [ "+i[0]+" ].",o.line,o.col,a,n.raw)}})}}),HTMLHint.addRule({id:"src-not-empty",description:"The src attribute of an img(script,link) must have a value.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){for(var n,i=e.tagName,r=e.attrs,s=e.col+i.length+1,o=0,l=r.length;l>o;o++)n=r[o],(/^(img|script|embed|bgsound|iframe)$/.test(i)===!0&&"src"===n.name||"link"===i&&"href"===n.name||"object"===i&&"data"===n.name)&&""===n.value&&t.error("The attribute [ "+n.name+" ] of the tag [ "+i+" ] must have a value.",e.line,s+n.index,a,n.raw)})}}),HTMLHint.addRule({id:"style-disabled",description:"<style> tags cannot be used.",init:function(e,t){var a=this;e.addListener("tagstart",function(e){"style"===e.tagName.toLowerCase()&&t.warn("The <style> tag cannot be used.",e.line,e.col,a,e.raw)})}}),HTMLHint.addRule({id:"tag-pair",description:"Tag must be paired.",init:function(e,t){var a=this,n=[],i=e.makeMap("area,base,basefont,br,col,embed,frame,hr,img,input,isindex,keygen,link,meta,param,source,track");e.addListener("tagstart",function(e){var t=e.tagName.toLowerCase();void 0!==i[t]||e.close||n.push({tagName:t,line:e.line,raw:e.raw})}),e.addListener("tagend",function(e){for(var i=e.tagName.toLowerCase(),r=n.length-1;r>=0&&n[r].tagName!==i;r--);if(r>=0){for(var s=[],o=n.length-1;o>r;o--)s.push("</"+n[o].tagName+">");if(s.length>0){var l=n[n.length-1];t.error("Tag must be paired, missing: [ "+s.join("")+" ], start tag match failed [ "+l.raw+" ] on line "+l.line+".",e.line,e.col,a,e.raw)}n.length=r}else t.error("Tag must be paired, no start tag: [ "+e.raw+" ]",e.line,e.col,a,e.raw)}),e.addListener("end",function(e){for(var i=[],r=n.length-1;r>=0;r--)i.push("</"+n[r].tagName+">");if(i.length>0){var s=n[n.length-1];t.error("Tag must be paired, missing: [ "+i.join("")+" ], open tag match failed [ "+s.raw+" ] on line "+s.line+".",e.line,e.col,a,"")}})}}),HTMLHint.addRule({id:"tag-self-close",description:"Empty tags must be self closed.",init:function(e,t){var a=this,n=e.makeMap("area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed");e.addListener("tagstart",function(e){var i=e.tagName.toLowerCase();void 0!==n[i]&&(e.close||t.warn("The empty tag : [ "+i+" ] must be self closed.",e.line,e.col,a,e.raw))})}}),HTMLHint.addRule({id:"tagname-lowercase",description:"All html element names must be in lowercase.",init:function(e,t){var a=this;e.addListener("tagstart,tagend",function(e){var n=e.tagName;n!==n.toLowerCase()&&t.error("The html element name of [ "+n+" ] must be in lowercase.",e.line,e.col,a,e.raw)})}}),HTMLHint.addRule({id:"title-require",description:"<title> must be present in <head> tag.",init:function(e,t){function a(e){var t=e.tagName.toLowerCase();"head"===t?r=!0:"title"===t&&r&&(s=!0)}function n(r){var o=r.tagName.toLowerCase();if(s&&"title"===o){var l=r.lastEvent;("text"!==l.type||"text"===l.type&&/^\s*$/.test(l.raw)===!0)&&t.error("<title></title> must not be empty.",r.line,r.col,i,r.raw)}else"head"===o&&(s===!1&&t.error("<title> must be present in <head> tag.",r.line,r.col,i,r.raw),e.removeListener("tagstart",a),e.removeListener("tagend",n))}var i=this,r=!1,s=!1;e.addListener("tagstart",a),e.addListener("tagend",n)}});
-},{"csslint":126,"jshint":126}],122:[function(require,module,exports){
+},{"csslint":128,"jshint":128}],124:[function(require,module,exports){
 // Generated by CoffeeScript 1.9.2
 
 /*
@@ -9974,7 +10185,7 @@ Copyright 2015 Kevin Sylvestre
   };
 
 }).call(this);
-},{}],123:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 //https://github.com/customd/jquery-visible
 (function($){
 
@@ -10044,7 +10255,7 @@ Copyright 2015 Kevin Sylvestre
     };
 
 })(jQuery);
-},{}],124:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 //https://github.com/kmewhort/pointer_events_polyfill
 /*
  * Pointer Events Polyfill: Adds support for the style attribute "pointer-events: none" to browsers without this feature (namely, IE).
@@ -10114,7 +10325,7 @@ PointerEventsPolyfill.prototype.register_mouse_events = function(){
         return true;
     });
 };
-},{}],125:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 // Modified to fix transparent pixels being calculated as black (https://github.com/briangonzalez/rgbaster.js/issues/8)
 ;(function(window, undefined){
 
@@ -10238,9 +10449,9 @@ PointerEventsPolyfill.prototype.register_mouse_events = function(){
   window.RGBaster = window.RGBaster || RGBaster;
 
 })(window);
-},{}],126:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 
-},{}],127:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 'use strict';
 
 var ticky = require('ticky');
@@ -10252,7 +10463,7 @@ module.exports = function debounce (fn, args, ctx) {
   });
 };
 
-},{"ticky":130}],128:[function(require,module,exports){
+},{"ticky":132}],130:[function(require,module,exports){
 'use strict';
 
 var atoa = require('atoa');
@@ -10308,10 +10519,10 @@ module.exports = function emitter (thing, options) {
   return thing;
 };
 
-},{"./debounce":127,"atoa":129}],129:[function(require,module,exports){
+},{"./debounce":129,"atoa":131}],131:[function(require,module,exports){
 module.exports = function atoa (a, n) { return Array.prototype.slice.call(a, n); }
 
-},{}],130:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 var si = typeof setImmediate === 'function', tick;
 if (si) {
   tick = function (fn) { setImmediate(fn); };
@@ -10320,7 +10531,7 @@ if (si) {
 }
 
 module.exports = tick;
-},{}],131:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 (function (global){
 
 var NativeCustomEvent = global.CustomEvent;
@@ -10373,7 +10584,7 @@ function CustomEvent (type, params) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],132:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10479,7 +10690,7 @@ function find (el, type, fn) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./eventmap":133,"custom-event":131}],133:[function(require,module,exports){
+},{"./eventmap":135,"custom-event":133}],135:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10497,7 +10708,7 @@ module.exports = eventmap;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],134:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 /*global define:false */
 /**
  * Copyright 2015 Craig Campbell
@@ -11520,7 +11731,7 @@ module.exports = eventmap;
     }
 }) (window, document);
 
-},{}],135:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 /**
  * adds a bindGlobal method to Mousetrap that allows you to
  * bind specific keyboard shortcuts that will still work
@@ -11565,7 +11776,7 @@ module.exports = eventmap;
     Mousetrap.init();
 }) (Mousetrap);
 
-},{}],136:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 /* NProgress, (c) 2013, 2014 Rico Sta. Cruz - http://ricostacruz.com/nprogress
  * @license MIT */
 
@@ -12043,7 +12254,7 @@ module.exports = eventmap;
 });
 
 
-},{}],137:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12051,7 +12262,7 @@ module.exports = eventmap;
 
 module.exports = require('./src/js/adaptor/jquery');
 
-},{"./src/js/adaptor/jquery":138}],138:[function(require,module,exports){
+},{"./src/js/adaptor/jquery":140}],140:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12099,7 +12310,7 @@ if (typeof define === 'function' && define.amd) {
 
 module.exports = mountJQuery;
 
-},{"../main":144,"../plugin/instances":155}],139:[function(require,module,exports){
+},{"../main":146,"../plugin/instances":157}],141:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12146,7 +12357,7 @@ exports.list = function (element) {
   }
 };
 
-},{}],140:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12235,7 +12446,7 @@ DOM.queryChildren = function (element, selector) {
 
 module.exports = DOM;
 
-},{}],141:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12311,7 +12522,7 @@ EventManager.prototype.once = function (element, eventName, handler) {
 
 module.exports = EventManager;
 
-},{}],142:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12329,7 +12540,7 @@ module.exports = (function () {
   };
 })();
 
-},{}],143:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12415,7 +12626,7 @@ exports.env = {
   supportsIePointer: window.navigator.msMaxTouchPoints !== null
 };
 
-},{"./class":139,"./dom":140}],144:[function(require,module,exports){
+},{"./class":141,"./dom":142}],146:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12431,7 +12642,7 @@ module.exports = {
   destroy: destroy
 };
 
-},{"./plugin/destroy":146,"./plugin/initialize":154,"./plugin/update":158}],145:[function(require,module,exports){
+},{"./plugin/destroy":148,"./plugin/initialize":156,"./plugin/update":160}],147:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12453,7 +12664,7 @@ module.exports = {
   wheelSpeed: 1
 };
 
-},{}],146:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12480,7 +12691,7 @@ module.exports = function (element) {
   instances.remove(element);
 };
 
-},{"../lib/dom":140,"../lib/helper":143,"./instances":155}],147:[function(require,module,exports){
+},{"../lib/dom":142,"../lib/helper":145,"./instances":157}],149:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12545,7 +12756,7 @@ module.exports = function (element) {
   bindClickRailHandler(element, i);
 };
 
-},{"../../lib/helper":143,"../instances":155,"../update-geometry":156,"../update-scroll":157}],148:[function(require,module,exports){
+},{"../../lib/helper":145,"../instances":157,"../update-geometry":158,"../update-scroll":159}],150:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12653,7 +12864,7 @@ module.exports = function (element) {
   bindMouseScrollYHandler(element, i);
 };
 
-},{"../../lib/dom":140,"../../lib/helper":143,"../instances":155,"../update-geometry":156,"../update-scroll":157}],149:[function(require,module,exports){
+},{"../../lib/dom":142,"../../lib/helper":145,"../instances":157,"../update-geometry":158,"../update-scroll":159}],151:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12780,7 +12991,7 @@ module.exports = function (element) {
   bindKeyboardHandler(element, i);
 };
 
-},{"../../lib/helper":143,"../instances":155,"../update-geometry":156,"../update-scroll":157}],150:[function(require,module,exports){
+},{"../../lib/helper":145,"../instances":157,"../update-geometry":158,"../update-scroll":159}],152:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12919,7 +13130,7 @@ module.exports = function (element) {
   bindMouseWheelHandler(element, i);
 };
 
-},{"../instances":155,"../update-geometry":156,"../update-scroll":157}],151:[function(require,module,exports){
+},{"../instances":157,"../update-geometry":158,"../update-scroll":159}],153:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -12939,7 +13150,7 @@ module.exports = function (element) {
   bindNativeScrollHandler(element, i);
 };
 
-},{"../instances":155,"../update-geometry":156}],152:[function(require,module,exports){
+},{"../instances":157,"../update-geometry":158}],154:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -13053,7 +13264,7 @@ module.exports = function (element) {
   bindSelectionHandler(element, i);
 };
 
-},{"../../lib/helper":143,"../instances":155,"../update-geometry":156,"../update-scroll":157}],153:[function(require,module,exports){
+},{"../../lib/helper":145,"../instances":157,"../update-geometry":158,"../update-scroll":159}],155:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -13226,7 +13437,7 @@ module.exports = function (element, supportsTouch, supportsIePointer) {
   bindTouchHandler(element, i, supportsTouch, supportsIePointer);
 };
 
-},{"../instances":155,"../update-geometry":156,"../update-scroll":157}],154:[function(require,module,exports){
+},{"../instances":157,"../update-geometry":158,"../update-scroll":159}],156:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -13275,7 +13486,7 @@ module.exports = function (element, userSettings) {
   updateGeometry(element);
 };
 
-},{"../lib/class":139,"../lib/helper":143,"./handler/click-rail":147,"./handler/drag-scrollbar":148,"./handler/keyboard":149,"./handler/mouse-wheel":150,"./handler/native-scroll":151,"./handler/selection":152,"./handler/touch":153,"./instances":155,"./update-geometry":156}],155:[function(require,module,exports){
+},{"../lib/class":141,"../lib/helper":145,"./handler/click-rail":149,"./handler/drag-scrollbar":150,"./handler/keyboard":151,"./handler/mouse-wheel":152,"./handler/native-scroll":153,"./handler/selection":154,"./handler/touch":155,"./instances":157,"./update-geometry":158}],157:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -13386,7 +13597,7 @@ exports.get = function (element) {
   return instances[getId(element)];
 };
 
-},{"../lib/dom":140,"../lib/event-manager":141,"../lib/guid":142,"../lib/helper":143,"./default-setting":145}],156:[function(require,module,exports){
+},{"../lib/dom":142,"../lib/event-manager":143,"../lib/guid":144,"../lib/helper":145,"./default-setting":147}],158:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -13517,7 +13728,7 @@ module.exports = function (element) {
   }
 };
 
-},{"../lib/class":139,"../lib/dom":140,"../lib/helper":143,"./instances":155,"./update-scroll":157}],157:[function(require,module,exports){
+},{"../lib/class":141,"../lib/dom":142,"../lib/helper":145,"./instances":157,"./update-scroll":159}],159:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -13624,7 +13835,7 @@ module.exports = function (element, axis, value) {
 
 };
 
-},{"./instances":155}],158:[function(require,module,exports){
+},{"./instances":157}],160:[function(require,module,exports){
 /* Copyright (c) 2015 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
  */
@@ -13666,7 +13877,7 @@ module.exports = function (element) {
   d.css(i.scrollbarYRail, 'display', '');
 };
 
-},{"../lib/dom":140,"../lib/helper":143,"./instances":155,"./update-geometry":156,"./update-scroll":157}]},{},[4])(4)
+},{"../lib/dom":142,"../lib/helper":145,"./instances":157,"./update-geometry":158,"./update-scroll":159}]},{},[4])(4)
 });
 //# sourceMappingURL=builder.map
 

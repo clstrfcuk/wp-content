@@ -14,7 +14,7 @@ class CS_Settings_Customizer {
 	public $manager;
 
 	public function ui() {
-		return array( 'title' => __( 'Customizer', csl18n() ) );
+		return array( 'title' => __( 'Customizer', 'cornerstone' ) );
 	}
 
 	public function controls() {
@@ -25,8 +25,8 @@ class CS_Settings_Customizer {
       'url' => CS()->common()->getEditURL( get_the_id() )
     ), admin_url( 'customize.php' ) );
 
-    $link = '<a href="' . $url . '">' . __( 'Customizer', csl18n() ) . '</a>';
-    $html = '<ul class="cs-controls"><li class="cs-control cs-control-info-box"><h4>' . __( 'Looking for global styling?', csl18n() ) .'</h4><p>' . sprintf( __( 'Sitewide styles outside of the content area are managed via the %s.', csl18n() ), $link ) . '</p></li></ul>';
+    $link = '<a href="' . $url . '">' . __( 'Customizer', 'cornerstone' ) . '</a>';
+    $html = '<ul class="cs-controls"><li class="cs-control cs-control-info-box"><h4>' . __( 'Looking for global styling?', 'cornerstone' ) .'</h4><p>' . sprintf( __( 'Sitewide styles outside of the content area are managed via the %s.', 'cornerstone' ), $link ) . '</p></li></ul>';
 
     return array(
 	'customizer_message' => array(

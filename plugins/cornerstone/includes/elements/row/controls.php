@@ -11,16 +11,16 @@ return array(
 	'inner_container' => array(
 		'type' => 'toggle',
 		'ui' => array(
-			'title' => __( 'Column Container', $td ),
-      'tooltip' => __( 'Disabling this control will allow your columns to be as wide as the browser window.', $td ),
+			'title' => __( 'Column Container', 'cornerstone' ),
+      'tooltip' => __( 'Disabling this control will allow your columns to be as wide as the browser window.', 'cornerstone' ),
 		)
 	),
 
 	'marginless_columns' => array(
 		'type' => 'toggle',
 		'ui' => array(
-			'title' => __( 'Marginless Columns', $td ),
-      'tooltip' => __( 'This will remove the margin around your columns, allowing their borders to be flush with one another. This is often used to create block or grid layouts.', $td ),
+			'title' => __( 'Marginless Columns', 'cornerstone' ),
+      'tooltip' => __( 'This will remove the margin around your columns, allowing their borders to be flush with one another. This is often used to create block or grid layouts.', 'cornerstone' ),
 		)
 	),
 
@@ -36,8 +36,8 @@ return array(
 	'_column_layout' => array(
 		'type' => 'column-layout',
 		'ui' => array(
-			'title' => __( 'Column Layout &ndash; %%title%%', $td ),
-			'tooltip' => __( 'Choose from one of our predefined column layouts, or specify your own using the input below. Columns cannot be any smaller than 1/6 and must add up to a whole.', $td )
+			'title' => __( 'Column Layout &ndash; %%title%%', 'cornerstone' ),
+			'tooltip' => __( 'Choose from one of our predefined column layouts, or specify your own using the input below. Columns cannot be any smaller than 1/6 and must add up to a whole.', 'cornerstone' )
 		),
 		'context' => '_layout'
 	),
@@ -46,8 +46,8 @@ return array(
 		'type' => 'column-order',
 		'key'  => 'elements',
 		'ui' => array(
-			'title' => __( 'Column Order &ndash; %%title%%', $td ),
-			'tooltip' => __( 'Click and drag to reorder your columns.', $td )
+			'title' => __( 'Column Order &ndash; %%title%%', 'cornerstone' ),
+			'tooltip' => __( 'Click and drag to reorder your columns.', 'cornerstone' )
 		),
 		'options' => array( 'divider' => true ),
 		'context' => '_layout'

@@ -5,9 +5,9 @@ class CS_Search extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'search',
-      'title'       => __( 'Search', csl18n() ),
+      'title'       => __( 'Search', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Search description.', csl18n() ),
+      'description' => __( 'Search description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' )
     );
   }

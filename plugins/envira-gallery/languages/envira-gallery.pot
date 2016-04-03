@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Envira Gallery package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Envira Gallery 1.4.1.3\n"
+"Project-Id-Version: Envira Gallery 1.4.3.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/envira-gallery\n"
-"POT-Creation-Date: 2016-01-14 20:04:10+00:00\n"
+"POT-Creation-Date: 2016-03-17 19:21:26+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,14 +12,13 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: envira-gallery.php:176
+#: envira-gallery.php:197
 msgid ""
-"Please <a href=\"%s\">deactivate</a> the Envira Lite Plugin. Your premium "
-"version of Envira Gallery may not work as expected until the Lite version is "
-"deactivated."
+"Envira Gallery requires PHP 5.3 or greater for some specific functionality. "
+"Please have your web host resolve this."
 msgstr ""
 
-#: envira-gallery.php:580
+#: envira-gallery.php:599
 msgid ""
 "Sorry, but your version of WordPress does not meet Envira Gallery's required "
 "version of <strong>3.8</strong> to run properly. The plugin has been "
@@ -31,22 +30,22 @@ msgid "Number of Columns"
 msgstr ""
 
 #: includes/admin/common.php:317 includes/admin/common.php:393
-#: includes/admin/metaboxes.php:582
+#: includes/admin/metaboxes.php:597
 msgid "Gallery Theme"
 msgstr ""
 
 #: includes/admin/common.php:326 includes/admin/common.php:404
-#: includes/admin/metaboxes.php:637
+#: includes/admin/metaboxes.php:652
 msgid "Column Gutter Width"
 msgstr ""
 
 #: includes/admin/common.php:331 includes/admin/common.php:409
-#: includes/admin/metaboxes.php:646
+#: includes/admin/metaboxes.php:661
 msgid "Margin Below Each Image"
 msgstr ""
 
 #: includes/admin/common.php:336 includes/admin/common.php:414
-#: includes/admin/metaboxes.php:692 includes/admin/metaboxes.php:795
+#: includes/admin/metaboxes.php:724
 msgid "Image Dimensions"
 msgstr ""
 
@@ -60,43 +59,43 @@ msgstr ""
 msgid "Add Gallery"
 msgstr ""
 
-#: includes/admin/editor.php:132
+#: includes/admin/editor.php:135
 msgid "Choose Your Gallery"
 msgstr ""
 
-#: includes/admin/editor.php:148 includes/global/widget.php:168
+#: includes/admin/editor.php:151 includes/global/widget.php:168
 msgid "Gallery ID #%s"
 msgstr ""
 
-#: includes/admin/editor.php:163
+#: includes/admin/editor.php:166
 msgid "Helpful Tips"
 msgstr ""
 
-#: includes/admin/editor.php:164
+#: includes/admin/editor.php:167
 msgid "Choosing Your Gallery"
 msgstr ""
 
-#: includes/admin/editor.php:165
+#: includes/admin/editor.php:168
 msgid ""
 "To choose your gallery, simply click on one of the boxes to the left. The "
 "\"Insert Gallery\" button will be activated once you have selected a gallery."
 msgstr ""
 
-#: includes/admin/editor.php:166
+#: includes/admin/editor.php:169
 msgid "Inserting Your Gallery"
 msgstr ""
 
-#: includes/admin/editor.php:167
+#: includes/admin/editor.php:170
 msgid ""
 "To insert your gallery into the editor, click on the \"Insert Gallery\" "
 "button below."
 msgstr ""
 
-#: includes/admin/editor.php:179
+#: includes/admin/editor.php:182
 msgid "Cancel Gallery Insertion"
 msgstr ""
 
-#: includes/admin/editor.php:182
+#: includes/admin/editor.php:185
 msgid "Insert Gallery"
 msgstr ""
 
@@ -188,70 +187,95 @@ msgid ""
 "key to continue receiving automatic updates."
 msgstr ""
 
-#: includes/admin/media-view.php:90
+#: includes/admin/media-view.php:95
 msgid "Edit previous media item"
 msgstr ""
 
-#: includes/admin/media-view.php:91
+#: includes/admin/media-view.php:96
 msgid "Edit next media item"
 msgstr ""
 
-#: includes/admin/media-view.php:94
+#: includes/admin/media-view.php:99
 msgid "Edit Item"
 msgstr ""
 
-#: includes/admin/media-view.php:114 includes/admin/media-view.php:149
-#: includes/admin/posttype.php:83 includes/global/common.php:163
+#: includes/admin/media-view.php:119 includes/admin/media-view.php:154
+#: includes/admin/media-view.php:246 includes/admin/media-view.php:278
+#: includes/admin/posttype.php:83 includes/global/common.php:171
 #: includes/global/widget.php:153
 msgid "Title"
 msgstr ""
 
-#: includes/admin/media-view.php:115
+#: includes/admin/media-view.php:120 includes/admin/media-view.php:247
 msgid ""
 "Image titles can take any type of HTML. You can adjust the position of the "
 "titles in the main Lightbox settings."
 msgstr ""
 
-#: includes/admin/media-view.php:120 includes/admin/media-view.php:155
-#: includes/global/common.php:167
+#: includes/admin/media-view.php:125 includes/admin/media-view.php:160
+#: includes/admin/media-view.php:252 includes/admin/media-view.php:284
+#: includes/global/common.php:175
 msgid "Caption"
 msgstr ""
 
-#: includes/admin/media-view.php:121
+#: includes/admin/media-view.php:126 includes/admin/media-view.php:253
 msgid ""
 "Caption can take any type of HTML, and are displayed when an image is "
 "clicked."
 msgstr ""
 
-#: includes/admin/media-view.php:126 includes/admin/media-view.php:171
+#: includes/admin/media-view.php:131 includes/admin/media-view.php:176
+#: includes/admin/media-view.php:258 includes/admin/media-view.php:300
 msgid "Alt Text"
 msgstr ""
 
-#: includes/admin/media-view.php:127
+#: includes/admin/media-view.php:132 includes/admin/media-view.php:259
 msgid "Very important for SEO, the Alt Text describes the image."
 msgstr ""
 
-#: includes/admin/media-view.php:132 includes/admin/media-view.php:177
-#: includes/global/common.php:175
+#: includes/admin/media-view.php:137 includes/admin/media-view.php:182
+#: includes/admin/media-view.php:264 includes/admin/media-view.php:306
+#: includes/global/common.php:183
 msgid "URL"
 msgstr ""
 
-#: includes/admin/media-view.php:133
+#: includes/admin/media-view.php:138 includes/admin/media-view.php:265
 msgid ""
 "Enter a hyperlink if you wish to link this image to somewhere other than its "
 "full size image."
 msgstr ""
 
-#: includes/admin/media-view.php:183
+#: includes/admin/media-view.php:186 includes/admin/media-view.php:310
+msgid "Media File"
+msgstr ""
+
+#: includes/admin/media-view.php:187 includes/admin/media-view.php:311
+msgid "Attachment Page"
+msgstr ""
+
+#: includes/admin/media-view.php:194 includes/admin/media-view.php:318
 msgid "Open URL in New Window?"
 msgstr ""
 
-#: includes/admin/media-view.php:194 includes/admin/media-view.php:195
+#: includes/admin/media-view.php:205 includes/admin/media-view.php:206
+#: includes/admin/media-view.php:330
 msgid "Save Metadata"
 msgstr ""
 
-#: includes/admin/media-view.php:201
+#: includes/admin/media-view.php:212 includes/admin/media-view.php:336
 msgid "Saved."
+msgstr ""
+
+#: includes/admin/media-view.php:227
+msgid "Bulk Edit"
+msgstr ""
+
+#: includes/admin/media-view.php:329
+msgid "Save Metadata to Items"
+msgstr ""
+
+#: includes/admin/media-view.php:373 includes/admin/media-view.php:374
+msgid "Search"
 msgstr ""
 
 #: includes/admin/media.php:298 includes/admin/media.php:299
@@ -286,35 +310,35 @@ msgstr ""
 msgid "Saved!"
 msgstr ""
 
-#: includes/admin/metaboxes.php:277 includes/admin/settings.php:80
+#: includes/admin/metaboxes.php:292 includes/admin/settings.php:80
 msgid "Envira Gallery Settings"
 msgstr ""
 
-#: includes/admin/metaboxes.php:384
+#: includes/admin/metaboxes.php:399
 msgid "Images"
 msgstr ""
 
-#: includes/admin/metaboxes.php:385
+#: includes/admin/metaboxes.php:400
 msgid "Config"
 msgstr ""
 
-#: includes/admin/metaboxes.php:386
+#: includes/admin/metaboxes.php:401
 msgid "Lightbox"
 msgstr ""
 
-#: includes/admin/metaboxes.php:387
+#: includes/admin/metaboxes.php:402
 msgid "Thumbnails"
 msgstr ""
 
-#: includes/admin/metaboxes.php:388
+#: includes/admin/metaboxes.php:403
 msgid "Mobile"
 msgstr ""
 
-#: includes/admin/metaboxes.php:393
+#: includes/admin/metaboxes.php:408
 msgid "Misc"
 msgstr ""
 
-#: includes/admin/metaboxes.php:412
+#: includes/admin/metaboxes.php:427
 msgid ""
 "The GD or Imagick libraries are not installed on your server. Envira Gallery "
 "requires at least one (preferably Imagick) in order to crop images and may "
@@ -322,449 +346,465 @@ msgid ""
 "compile GD or Imagick for your PHP install."
 msgstr ""
 
-#: includes/admin/metaboxes.php:420
+#: includes/admin/metaboxes.php:435
 msgid "Gallery Type"
 msgstr ""
 
-#: includes/admin/metaboxes.php:446 includes/global/common.php:242
+#: includes/admin/metaboxes.php:461 includes/global/common.php:250
 msgid "Default"
 msgstr ""
 
-#: includes/admin/metaboxes.php:494
+#: includes/admin/metaboxes.php:508
+msgid "Edit Selected Images"
+msgstr ""
+
+#: includes/admin/metaboxes.php:509
 msgid "Delete Selected Images from Gallery"
 msgstr ""
 
-#: includes/admin/metaboxes.php:534
+#: includes/admin/metaboxes.php:549
 msgid "(click the icon to open and close the overlay dialog)"
 msgstr ""
 
-#: includes/admin/metaboxes.php:535
+#: includes/admin/metaboxes.php:550
 msgid "Click here to view meta information about this gallery."
 msgstr ""
 
-#: includes/admin/metaboxes.php:537
+#: includes/admin/metaboxes.php:552
 msgid ""
 "You can place this gallery anywhere into your posts, pages, custom post "
 "types or widgets by using <strong>one</strong> the shortcode(s) below:"
 msgstr ""
 
-#: includes/admin/metaboxes.php:542
+#: includes/admin/metaboxes.php:557
 msgid ""
 "You can also place this gallery into your template files by using "
 "<strong>one</strong> the template tag(s) below:"
 msgstr ""
 
-#: includes/admin/metaboxes.php:564
+#: includes/admin/metaboxes.php:579
 msgid ""
 "The settings below adjust the basic configuration options for the gallery."
 msgstr ""
 
-#: includes/admin/metaboxes.php:569
+#: includes/admin/metaboxes.php:584
 msgid "Number of Gallery Columns"
 msgstr ""
 
-#: includes/admin/metaboxes.php:577
-msgid "Determines the number of columns in the gallery."
+#: includes/admin/metaboxes.php:592
+msgid ""
+"Determines the number of columns in the gallery. Automatic will attempt to "
+"fill each row as much as possible before moving on to the next row."
 msgstr ""
 
-#: includes/admin/metaboxes.php:590
+#: includes/admin/metaboxes.php:605
 msgid "Sets the theme for the gallery display."
 msgstr ""
 
-#: includes/admin/metaboxes.php:597
+#: includes/admin/metaboxes.php:612
 msgid "Display Gallery Description?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:609
+#: includes/admin/metaboxes.php:624
 msgid "Choose to display a description above or below this gallery's images."
 msgstr ""
 
-#: includes/admin/metaboxes.php:616
+#: includes/admin/metaboxes.php:631
 msgid "Gallery Description"
 msgstr ""
 
-#: includes/admin/metaboxes.php:631
+#: includes/admin/metaboxes.php:646
 msgid "The description to display for this gallery."
 msgstr ""
 
-#: includes/admin/metaboxes.php:640 includes/admin/metaboxes.php:649
-#: includes/admin/metaboxes.php:695 includes/admin/metaboxes.php:1005
-#: includes/admin/metaboxes.php:1014 includes/admin/metaboxes.php:1068
+#: includes/admin/metaboxes.php:655 includes/admin/metaboxes.php:664
+#: includes/admin/metaboxes.php:727 includes/admin/metaboxes.php:1037
+#: includes/admin/metaboxes.php:1046 includes/admin/metaboxes.php:1100
 msgid "px"
 msgstr ""
 
-#: includes/admin/metaboxes.php:641
+#: includes/admin/metaboxes.php:656
 msgid "Sets the space between the columns (defaults to 10)."
 msgstr ""
 
-#: includes/admin/metaboxes.php:650
+#: includes/admin/metaboxes.php:665
 msgid "Sets the space below each item in the gallery."
 msgstr ""
 
-#: includes/admin/metaboxes.php:657
+#: includes/admin/metaboxes.php:672
 msgid "Sorting"
 msgstr ""
 
-#: includes/admin/metaboxes.php:669
+#: includes/admin/metaboxes.php:684
 msgid ""
 "Choose to sort the images in a different order than displayed on the Images "
 "tab."
 msgstr ""
 
-#: includes/admin/metaboxes.php:674
+#: includes/admin/metaboxes.php:689
 msgid "Direction"
 msgstr ""
 
-#: includes/admin/metaboxes.php:696
+#: includes/admin/metaboxes.php:707 includes/admin/metaboxes.php:827
+msgid "Image Size"
+msgstr ""
+
+#: includes/admin/metaboxes.php:719
+msgid ""
+"Define the maximum image size for the Gallery view. Default will use the "
+"below Image Dimensions."
+msgstr ""
+
+#: includes/admin/metaboxes.php:728
 msgid ""
 "You should adjust these dimensions based on the number of columns in your "
 "gallery. This does not affect the full size lightbox images."
 msgstr ""
 
-#: includes/admin/metaboxes.php:701
+#: includes/admin/metaboxes.php:733
 msgid "Crop Images?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:705
+#: includes/admin/metaboxes.php:737
 msgid ""
 "If enabled, forces images to exactly match the sizes defined above for Image "
 "Dimensions and Mobile Dimensions."
 msgstr ""
 
-#: includes/admin/metaboxes.php:706
+#: includes/admin/metaboxes.php:738
 msgid "If disabled, images will be resized to maintain their aspect ratio."
 msgstr ""
 
-#: includes/admin/metaboxes.php:712
+#: includes/admin/metaboxes.php:744
 msgid "Set Dimensions on Images?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:716
+#: includes/admin/metaboxes.php:748
 msgid ""
 "Enables or disables the width and height attributes on the img element. Only "
 "needs to be enabled if you need to meet Google Pagespeeds requirements."
 msgstr ""
 
-#: includes/admin/metaboxes.php:721
+#: includes/admin/metaboxes.php:753
 msgid "Enable Isotope?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:725
+#: includes/admin/metaboxes.php:757
 msgid ""
 "Enables or disables isotope/masonry layout support for the main gallery "
 "images."
 msgstr ""
 
-#: includes/admin/metaboxes.php:731
+#: includes/admin/metaboxes.php:763
 msgid "Enable CSS Animations?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:735
+#: includes/admin/metaboxes.php:767
 msgid "Enables CSS animations when loading the main gallery images."
 msgstr ""
 
-#: includes/admin/metaboxes.php:741
+#: includes/admin/metaboxes.php:773
 msgid "Image Opacity"
 msgstr ""
 
-#: includes/admin/metaboxes.php:745
+#: includes/admin/metaboxes.php:777
 msgid ""
 "The opacity to display images at when loading the main gallery images using "
 "CSS animations (between 1 and 100%)."
 msgstr ""
 
-#: includes/admin/metaboxes.php:767
+#: includes/admin/metaboxes.php:799
 msgid "The settings below adjust the lightbox outputs and displays."
 msgstr ""
 
-#: includes/admin/metaboxes.php:772 includes/admin/metaboxes.php:1076
+#: includes/admin/metaboxes.php:804 includes/admin/metaboxes.php:1108
 msgid "Enable Lightbox?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:776
+#: includes/admin/metaboxes.php:808
 msgid "Enables or disables the gallery lightbox."
 msgstr ""
 
-#: includes/admin/metaboxes.php:781
+#: includes/admin/metaboxes.php:813
 msgid "Gallery Lightbox Theme"
 msgstr ""
 
-#: includes/admin/metaboxes.php:789
+#: includes/admin/metaboxes.php:821
 msgid "Sets the theme for the gallery lightbox display."
 msgstr ""
 
-#: includes/admin/metaboxes.php:803
+#: includes/admin/metaboxes.php:835
 msgid ""
-"Define the maximum image size for the Lightbox view. Default / Full Size "
-"will display the original, full size image."
+"Define the maximum image size for the Lightbox view. Default will display "
+"the original, full size image."
 msgstr ""
 
-#: includes/admin/metaboxes.php:809
+#: includes/admin/metaboxes.php:841
 msgid "Caption Position"
 msgstr ""
 
-#: includes/admin/metaboxes.php:817
+#: includes/admin/metaboxes.php:849
 msgid "Sets the display of the lightbox image's caption."
 msgstr ""
 
-#: includes/admin/metaboxes.php:822 includes/admin/metaboxes.php:1103
+#: includes/admin/metaboxes.php:854 includes/admin/metaboxes.php:1135
 msgid "Enable Gallery Arrows?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:826
+#: includes/admin/metaboxes.php:858
 msgid "Enables or disables the gallery lightbox navigation arrows."
 msgstr ""
 
-#: includes/admin/metaboxes.php:831
+#: includes/admin/metaboxes.php:863
 msgid "Gallery Arrow Position"
 msgstr ""
 
-#: includes/admin/metaboxes.php:839
+#: includes/admin/metaboxes.php:871
 msgid "Sets the position of the gallery lightbox navigation arrows."
 msgstr ""
 
-#: includes/admin/metaboxes.php:844
+#: includes/admin/metaboxes.php:876
 msgid "Enable Keyboard Navigation?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:848
+#: includes/admin/metaboxes.php:880
 msgid "Enables or disables keyboard navigation in the gallery lightbox."
 msgstr ""
 
-#: includes/admin/metaboxes.php:853
+#: includes/admin/metaboxes.php:885
 msgid "Enable Mousewheel Navigation?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:857
+#: includes/admin/metaboxes.php:889
 msgid "Enables or disables mousewheel navigation in the gallery."
 msgstr ""
 
-#: includes/admin/metaboxes.php:862 includes/admin/metaboxes.php:1112
+#: includes/admin/metaboxes.php:894 includes/admin/metaboxes.php:1144
 msgid "Enable Gallery Toolbar?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:866
+#: includes/admin/metaboxes.php:898
 msgid "Enables or disables the gallery lightbox toolbar."
 msgstr ""
 
-#: includes/admin/metaboxes.php:871
+#: includes/admin/metaboxes.php:903
 msgid "Display Gallery Title in Toolbar?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:875
+#: includes/admin/metaboxes.php:907
 msgid "Display the gallery title in the lightbox toolbar."
 msgstr ""
 
-#: includes/admin/metaboxes.php:880
+#: includes/admin/metaboxes.php:912
 msgid "Gallery Toolbar Position"
 msgstr ""
 
-#: includes/admin/metaboxes.php:888
+#: includes/admin/metaboxes.php:920
 msgid "Sets the position of the lightbox toolbar."
 msgstr ""
 
-#: includes/admin/metaboxes.php:893
+#: includes/admin/metaboxes.php:925
 msgid "Keep Aspect Ratio?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:897
+#: includes/admin/metaboxes.php:929
 msgid ""
 "If enabled, images will always resize based on the original aspect ratio."
 msgstr ""
 
-#: includes/admin/metaboxes.php:902
+#: includes/admin/metaboxes.php:934
 msgid "Loop Gallery Navigation?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:906
+#: includes/admin/metaboxes.php:938
 msgid ""
 "Enables or disables infinite navigation cycling of the lightbox gallery."
 msgstr ""
 
-#: includes/admin/metaboxes.php:911
+#: includes/admin/metaboxes.php:943
 msgid "Lightbox Open/Close Effect"
 msgstr ""
 
-#: includes/admin/metaboxes.php:931
+#: includes/admin/metaboxes.php:963
 msgid "Type of transition when opening and closing the lightbox."
 msgstr ""
 
-#: includes/admin/metaboxes.php:936
+#: includes/admin/metaboxes.php:968
 msgid "Lightbox Transition Effect"
 msgstr ""
 
-#: includes/admin/metaboxes.php:956
+#: includes/admin/metaboxes.php:988
 msgid "Type of transition between images in the lightbox view."
 msgstr ""
 
-#: includes/admin/metaboxes.php:961
+#: includes/admin/metaboxes.php:993
 msgid "HTML5 Output?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:965
+#: includes/admin/metaboxes.php:997
 msgid ""
 "If enabled, uses data-envirabox-gallery instead of rel attributes for W3C "
 "HTML5 validation."
 msgstr ""
 
-#: includes/admin/metaboxes.php:988
+#: includes/admin/metaboxes.php:1020
 msgid ""
 "If enabled, thumbnails are generated automatically inside the lightbox. The "
 "settings below adjust the thumbnail views for the gallery lightbox display."
 msgstr ""
 
-#: includes/admin/metaboxes.php:993 includes/admin/metaboxes.php:1121
+#: includes/admin/metaboxes.php:1025 includes/admin/metaboxes.php:1153
 msgid "Enable Gallery Thumbnails?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:997
+#: includes/admin/metaboxes.php:1029
 msgid "Enables or disables the gallery lightbox thumbnails."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1002
+#: includes/admin/metaboxes.php:1034
 msgid "Gallery Thumbnails Width"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1006
+#: includes/admin/metaboxes.php:1038
 msgid "Sets the width of each lightbox thumbnail."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1011
+#: includes/admin/metaboxes.php:1043
 msgid "Gallery Thumbnails Height"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1015
+#: includes/admin/metaboxes.php:1047
 msgid "Sets the height of each lightbox thumbnail."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1020
+#: includes/admin/metaboxes.php:1052
 msgid "Gallery Thumbnails Position"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1028
+#: includes/admin/metaboxes.php:1060
 msgid "Sets the position of the lightbox thumbnails."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1050
+#: includes/admin/metaboxes.php:1082
 msgid ""
 "The settings below adjust configuration options for the gallery and lightbox "
 "when viewed on a mobile device."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1056
+#: includes/admin/metaboxes.php:1088
 msgid "Create Mobile Gallery Images?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1060
+#: includes/admin/metaboxes.php:1092
 msgid "Enables or disables creating specific images for mobile devices."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1065
+#: includes/admin/metaboxes.php:1097
 msgid "Mobile Dimensions"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1069
+#: includes/admin/metaboxes.php:1101
 msgid "These will be the sizes used for images displayed on mobile devices."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1080
+#: includes/admin/metaboxes.php:1112
 msgid "Enables or disables the gallery lightbox on mobile devices."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1085
+#: includes/admin/metaboxes.php:1117
 msgid "Enable Gallery Touchwipe?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1089
+#: includes/admin/metaboxes.php:1121
 msgid ""
 "Enables or disables touchwipe support for the gallery lightbox on mobile "
 "devices."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1094
+#: includes/admin/metaboxes.php:1126
 msgid "Close Lightbox on Swipe Up?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1098
+#: includes/admin/metaboxes.php:1130
 msgid ""
 "Enables or disables closing the Lightbox when the user swipes up on mobile "
 "devices."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1107
+#: includes/admin/metaboxes.php:1139
 msgid ""
 "Enables or disables the gallery lightbox navigation arrows on mobile devices."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1116
+#: includes/admin/metaboxes.php:1148
 msgid "Enables or disables the gallery lightbox toolbar on mobile devices."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1125
+#: includes/admin/metaboxes.php:1157
 msgid "Enables or disables the gallery lightbox thumbnails on mobile devices."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1148
+#: includes/admin/metaboxes.php:1180
 msgid ""
 "The settings below adjust the miscellaneous settings for the gallery "
 "lightbox display."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1153
+#: includes/admin/metaboxes.php:1185
 msgid "Gallery Title"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1157
+#: includes/admin/metaboxes.php:1189
 msgid "Internal gallery title for identification in the admin."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1162
+#: includes/admin/metaboxes.php:1194
 msgid "Gallery Slug"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1166
+#: includes/admin/metaboxes.php:1198
 msgid ""
 "<strong>Unique</strong> internal gallery slug for identification and "
 "advanced gallery queries."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1171
+#: includes/admin/metaboxes.php:1203
 msgid "Custom Gallery Classes"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1174
+#: includes/admin/metaboxes.php:1206
 msgid "Enter custom gallery CSS classes here, one per line."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1175
+#: includes/admin/metaboxes.php:1207
 msgid "Adds custom CSS classes to this gallery. Enter one class per line."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1180
+#: includes/admin/metaboxes.php:1212
 msgid "Import/Export Gallery"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1193
+#: includes/admin/metaboxes.php:1225
 msgid "Import Gallery"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1200
+#: includes/admin/metaboxes.php:1232
 msgid "Export Gallery"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1206
+#: includes/admin/metaboxes.php:1238
 msgid "Enable RTL Support?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1210
+#: includes/admin/metaboxes.php:1242
 msgid "Enables or disables RTL support in Envira for right-to-left languages."
 msgstr ""
 
-#: includes/admin/metaboxes.php:1457
+#: includes/admin/metaboxes.php:1491
 msgid "Remove Image from Gallery?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:1458
+#: includes/admin/metaboxes.php:1492
 msgid "Modify Image"
 msgstr ""
 
@@ -836,7 +876,7 @@ msgstr ""
 msgid "Envira gallery draft updated."
 msgstr ""
 
-#: includes/admin/settings.php:81 includes/admin/settings.php:807
+#: includes/admin/settings.php:81 includes/admin/settings.php:822
 msgid "Settings"
 msgstr ""
 
@@ -844,97 +884,97 @@ msgstr ""
 msgid " galleries(s) fixed successfully."
 msgstr ""
 
-#: includes/admin/settings.php:385
+#: includes/admin/settings.php:386
 msgid "Settings saved successfully."
 msgstr ""
 
-#: includes/admin/settings.php:431 includes/admin/settings.php:649
+#: includes/admin/settings.php:432 includes/admin/settings.php:664
 msgid "Status: Active"
 msgstr ""
 
-#: includes/admin/settings.php:432 includes/admin/settings.php:670
+#: includes/admin/settings.php:433 includes/admin/settings.php:685
 msgid "Activate"
 msgstr ""
 
-#: includes/admin/settings.php:434
+#: includes/admin/settings.php:435
 msgid "Activating..."
 msgstr ""
 
-#: includes/admin/settings.php:436 includes/admin/settings.php:651
+#: includes/admin/settings.php:437 includes/admin/settings.php:666
 msgid "Deactivate"
 msgstr ""
 
-#: includes/admin/settings.php:438
+#: includes/admin/settings.php:439
 msgid "Deactivating..."
 msgstr ""
 
-#: includes/admin/settings.php:439 includes/admin/settings.php:668
+#: includes/admin/settings.php:440 includes/admin/settings.php:683
 msgid "Status: Inactive"
 msgstr ""
 
-#: includes/admin/settings.php:440
+#: includes/admin/settings.php:441
 msgid "Install"
 msgstr ""
 
-#: includes/admin/settings.php:442
+#: includes/admin/settings.php:443
 msgid "Installing..."
 msgstr ""
 
-#: includes/admin/settings.php:443
+#: includes/admin/settings.php:444
 msgid "Proceed"
 msgstr ""
 
-#: includes/admin/settings.php:491
+#: includes/admin/settings.php:492
 msgid "General"
 msgstr ""
 
-#: includes/admin/settings.php:492
+#: includes/admin/settings.php:493
 msgid "Addons"
 msgstr ""
 
-#: includes/admin/settings.php:516
+#: includes/admin/settings.php:518
 msgid "Envira License Key"
 msgstr ""
 
-#: includes/admin/settings.php:522
+#: includes/admin/settings.php:524
 msgid "Verify Key"
 msgstr ""
 
-#: includes/admin/settings.php:523
+#: includes/admin/settings.php:525
 msgid "Deactivate Key"
 msgstr ""
 
-#: includes/admin/settings.php:524
+#: includes/admin/settings.php:526
 msgid "License key to enable automatic updates for Envira."
 msgstr ""
 
-#: includes/admin/settings.php:531
+#: includes/admin/settings.php:533
 msgid "Envira License Key Type"
 msgstr ""
 
-#: includes/admin/settings.php:535
+#: includes/admin/settings.php:537
 msgid "Your license key type for this site is <strong>%s.</strong>"
 msgstr ""
 
-#: includes/admin/settings.php:538
+#: includes/admin/settings.php:540
 msgid "Refresh Key"
 msgstr ""
 
-#: includes/admin/settings.php:539
+#: includes/admin/settings.php:541
 msgid ""
 "Your license key type (handles updates and Addons). Click refresh if your "
 "license has been upgraded or the type is incorrect."
 msgstr ""
 
-#: includes/admin/settings.php:548
+#: includes/admin/settings.php:550
 msgid "Fix Broken Migration"
 msgstr ""
 
-#: includes/admin/settings.php:553
+#: includes/admin/settings.php:555
 msgid "Fix"
 msgstr ""
 
-#: includes/admin/settings.php:554
+#: includes/admin/settings.php:556
 msgid ""
 "If you have changed the URL of your WordPress web site, and manually "
 "executed a search/replace query on URLs in your WordPress database, your "
@@ -943,62 +983,73 @@ msgid ""
 "migration plugin or script next time :)"
 msgstr ""
 
-#: includes/admin/settings.php:570
+#: includes/admin/settings.php:572
 msgid "Add New Images"
 msgstr ""
 
-#: includes/admin/settings.php:578
+#: includes/admin/settings.php:580
 msgid ""
 "When adding media to a Gallery, choose whether to add this media before or "
 "after any existing images."
 msgstr ""
 
-#: includes/admin/settings.php:585
+#: includes/admin/settings.php:587
+msgid "Delete Image on Gallery Image Deletion"
+msgstr ""
+
+#: includes/admin/settings.php:595
+msgid ""
+"When deleting an <strong>Image from a Gallery</strong>, choose whether to "
+"delete all media associated with that image. Note: If image(s) in the Media "
+"Library are attached to other Posts, they will not be deleted."
+msgstr ""
+
+#: includes/admin/settings.php:600
 msgid "Delete Images on Gallery Deletion"
 msgstr ""
 
-#: includes/admin/settings.php:593
+#: includes/admin/settings.php:608
 msgid ""
-"When deleting a Gallery, choose whether to delete all media associated with "
-"the gallery. Note: If image(s) in the Media Library are attached to other "
-"Posts, they will not be deleted."
+"When deleting a <strong>Gallery</strong>, choose whether to delete all media "
+"associated with the gallery. Note: If image(s) in the Media Library are "
+"attached to other Posts, they will not be deleted."
 msgstr ""
 
-#: includes/admin/settings.php:602
+#: includes/admin/settings.php:617
 msgid "Save Image Settings"
 msgstr ""
 
-#: includes/admin/settings.php:624
+#: includes/admin/settings.php:639
 msgid ""
 "In order to get access to Addons, you need to verify your license key for "
 "Envira Gallery."
 msgstr ""
 
-#: includes/admin/settings.php:628
+#: includes/admin/settings.php:643
 msgid ""
 "Missing addons that you think you should be able to see? Try clicking the "
 "button below to refresh the addon data."
 msgstr ""
 
-#: includes/admin/settings.php:630 includes/admin/settings.php:685
+#: includes/admin/settings.php:645 includes/admin/settings.php:700
 msgid "Refresh Addons"
 msgstr ""
 
-#: includes/admin/settings.php:659
+#: includes/admin/settings.php:674
 msgid "Status: Not Installed"
 msgstr ""
 
-#: includes/admin/settings.php:661
+#: includes/admin/settings.php:676
 msgid "Install Addon"
 msgstr ""
 
-#: includes/admin/settings.php:683
+#: includes/admin/settings.php:698
 msgid ""
 "There was an issue retrieving the addons for this site. Please click on the "
 "button below the refresh the addons data."
 msgstr ""
 
-#: includes/admin/settings.php:691
+#: includes/admin/settings.php:706
 msgid ""
 "In order to get access to Addons, you need to resolve your license key "
 "errors."
@@ -1009,170 +1060,174 @@ msgid "There was an error installing the addon. Please try again."
 msgstr ""
 
 #: includes/global/common.php:63
-msgid "One Column (1)"
+msgid "Automatic"
 msgstr ""
 
 #: includes/global/common.php:67
-msgid "Two Columns (2)"
+msgid "One Column (1)"
 msgstr ""
 
 #: includes/global/common.php:71
-msgid "Three Columns (3)"
+msgid "Two Columns (2)"
 msgstr ""
 
 #: includes/global/common.php:75
-msgid "Four Columns (4)"
+msgid "Three Columns (3)"
 msgstr ""
 
 #: includes/global/common.php:79
-msgid "Five Columns (5)"
+msgid "Four Columns (4)"
 msgstr ""
 
 #: includes/global/common.php:83
+msgid "Five Columns (5)"
+msgstr ""
+
+#: includes/global/common.php:87
 msgid "Six Columns (6)"
 msgstr ""
 
-#: includes/global/common.php:103 includes/global/common.php:220
+#: includes/global/common.php:107 includes/global/common.php:228
 msgid "Base"
 msgstr ""
 
-#: includes/global/common.php:123
+#: includes/global/common.php:127
 msgid "Do not display"
 msgstr ""
 
-#: includes/global/common.php:127
+#: includes/global/common.php:131
 msgid "Display above galleries"
 msgstr ""
 
-#: includes/global/common.php:131
+#: includes/global/common.php:135
 msgid "Display below galleries"
 msgstr ""
 
-#: includes/global/common.php:151
+#: includes/global/common.php:155
 msgid "No Sorting"
 msgstr ""
 
-#: includes/global/common.php:155
+#: includes/global/common.php:159
 msgid "Random"
 msgstr ""
 
-#: includes/global/common.php:159
+#: includes/global/common.php:163
+msgid "Published Date"
+msgstr ""
+
+#: includes/global/common.php:167
 msgid "Filename"
 msgstr ""
 
-#: includes/global/common.php:171
+#: includes/global/common.php:179
 msgid "Alt"
 msgstr ""
 
-#: includes/global/common.php:195
+#: includes/global/common.php:203
 msgid "Ascending (A-Z)"
 msgstr ""
 
-#: includes/global/common.php:199
+#: includes/global/common.php:207
 msgid "Descending (Z-A)"
 msgstr ""
 
-#: includes/global/common.php:250
-msgid "Full Width"
-msgstr ""
-
-#: includes/global/common.php:299
+#: includes/global/common.php:294
 msgid "Float"
 msgstr ""
 
-#: includes/global/common.php:303
+#: includes/global/common.php:298
 msgid "Float (Wrapped)"
 msgstr ""
 
-#: includes/global/common.php:307 includes/global/common.php:335
+#: includes/global/common.php:302 includes/global/common.php:330
 msgid "Inside"
 msgstr ""
 
-#: includes/global/common.php:311 includes/global/common.php:339
+#: includes/global/common.php:306 includes/global/common.php:334
 msgid "Outside"
 msgstr ""
 
-#: includes/global/common.php:315
+#: includes/global/common.php:310
 msgid "Over"
 msgstr ""
 
-#: includes/global/common.php:359
+#: includes/global/common.php:354
 msgid "No Effect"
 msgstr ""
 
-#: includes/global/common.php:363
+#: includes/global/common.php:358
 msgid "Fade"
 msgstr ""
 
-#: includes/global/common.php:367
+#: includes/global/common.php:362
 msgid "Elastic"
 msgstr ""
 
-#: includes/global/common.php:415
+#: includes/global/common.php:410
 msgid "Swing"
 msgstr ""
 
-#: includes/global/common.php:419
+#: includes/global/common.php:414
 msgid "Quad"
 msgstr ""
 
-#: includes/global/common.php:423
+#: includes/global/common.php:418
 msgid "Cubic"
 msgstr ""
 
-#: includes/global/common.php:427
+#: includes/global/common.php:422
 msgid "Quart"
 msgstr ""
 
-#: includes/global/common.php:431
+#: includes/global/common.php:426
 msgid "Quint"
 msgstr ""
 
-#: includes/global/common.php:435
+#: includes/global/common.php:430
 msgid "Sine"
 msgstr ""
 
-#: includes/global/common.php:439
+#: includes/global/common.php:434
 msgid "Expo"
 msgstr ""
 
-#: includes/global/common.php:443
+#: includes/global/common.php:438
 msgid "Circ"
 msgstr ""
 
-#: includes/global/common.php:447
+#: includes/global/common.php:442
 msgid "Back"
 msgstr ""
 
-#: includes/global/common.php:451
+#: includes/global/common.php:446
 msgid "Bounce"
 msgstr ""
 
-#: includes/global/common.php:471 includes/global/common.php:495
+#: includes/global/common.php:466 includes/global/common.php:490
 msgid "Top"
 msgstr ""
 
-#: includes/global/common.php:475 includes/global/common.php:499
+#: includes/global/common.php:470 includes/global/common.php:494
 msgid "Bottom"
 msgstr ""
 
-#: includes/global/common.php:628
+#: includes/global/common.php:624
 msgid "Image Files"
 msgstr ""
 
-#: includes/global/common.php:678
+#: includes/global/common.php:674
 msgid "Before Existing Images"
 msgstr ""
 
-#: includes/global/common.php:682
+#: includes/global/common.php:678
 msgid "After Existing Images"
 msgstr ""
 
-#: includes/global/common.php:702
+#: includes/global/common.php:698
 msgid "No"
 msgstr ""
 
-#: includes/global/common.php:706
+#: includes/global/common.php:702
 msgid "Yes"
 msgstr ""
 
@@ -1200,7 +1255,7 @@ msgstr ""
 msgid "Envira Galleries"
 msgstr ""
 
-#. #-#-#-#-#  envira-gallery.pot (Envira Gallery 1.4.1.3)  #-#-#-#-#
+#. #-#-#-#-#  envira-gallery.pot (Envira Gallery 1.4.3.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: includes/global/posttype.php:52 includes/global/posttype.php:62
 #: includes/global/widget.php:50
@@ -1239,19 +1294,19 @@ msgstr ""
 msgid "No Envira galleries found in trash."
 msgstr ""
 
-#: includes/global/shortcode.php:584
+#: includes/global/shortcode.php:698
 msgid "The requested content cannot be loaded.<br/>Please try again later.</p>"
 msgstr ""
 
-#: includes/global/shortcode.php:585 includes/global/shortcode.php:987
+#: includes/global/shortcode.php:699 includes/global/shortcode.php:1121
 msgid "Close"
 msgstr ""
 
-#: includes/global/shortcode.php:586 includes/global/shortcode.php:977
+#: includes/global/shortcode.php:700 includes/global/shortcode.php:1111
 msgid "Next"
 msgstr ""
 
-#: includes/global/shortcode.php:587 includes/global/shortcode.php:973
+#: includes/global/shortcode.php:701 includes/global/shortcode.php:1107
 msgid "Previous"
 msgstr ""
 

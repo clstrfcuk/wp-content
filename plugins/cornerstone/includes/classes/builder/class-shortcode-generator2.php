@@ -52,12 +52,12 @@ class Cornerstone_Shortcode_Generator2 extends Cornerstone_Plugin_Component {
   }
 
   public function previewBefore() {
-    return '<p>' . __('Click the button below to check out a live example of this shortcode', csl18n() ) . '</p>';
+    return '<p>' . __('Click the button below to check out a live example of this shortcode', 'cornerstone' ) . '</p>';
   }
 
   public function addMediaButton( $editor_id ) {
     $this->enqueue();
-    $title = sprintf( __( 'Insert Shortcodes', csl18n() ) );
+    $title = sprintf( __( 'Insert Shortcodes', 'cornerstone' ) );
     $contents = CS()->view( 'svg/nav-elements-solid', false );
     echo "<button href=\"#\" title=\"{$title}\" id=\"cs-insert-shortcode-button\" class=\"button cs-insert-btn\" data-editor=\"$editor_id\">{$contents}</button>";
   }

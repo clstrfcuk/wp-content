@@ -44,10 +44,10 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
 	//
 
 	if ( '' == $content && '' != $text ) {
-		$content = wp_specialchars_decode( $text, ENT_QUOTES );
+		$content = cs_decode_shortcode_attribute( $text );
 	}
 
-	$title = wp_specialchars_decode( $title, ENT_QUOTES );
+	$title = cs_decode_shortcode_attribute( $title );
 
   $id                       = ( $id                       != ''      ) ? 'id="' . esc_attr( $id ) . '"' : '';
   $class                    = ( $class                    != ''      ) ? 'x-feature-box ' . esc_attr( $class ) : 'x-feature-box';

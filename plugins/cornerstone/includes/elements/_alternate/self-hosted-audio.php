@@ -5,9 +5,9 @@ class CS_Self_Hosted_Audio extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'self-hosted-audio',
-      'title'       => __( 'Audio Player', csl18n() ),
+      'title'       => __( 'Audio Player', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Audio Player description.', csl18n() ),
+      'description' => __( 'Audio Player description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'empty'       => array( 'src' => '' )
     );
@@ -18,50 +18,50 @@ class CS_Self_Hosted_Audio extends Cornerstone_Element_Base {
     $this->addControl(
       'src',
       'text',
-      __( 'Src', csl18n() ),
-      __( 'Include your audio URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .mp3 then .ogg).', csl18n() ),
+      __( 'Src', 'cornerstone' ),
+      __( 'Include your audio URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .mp3 then .ogg).', 'cornerstone' ),
       '',
       array(
         'expandable' => false,
-        'placeholder' => home_url( __( 'audio.mp3', csl18n() ) )
+        'placeholder' => home_url( __( 'audio.mp3', 'cornerstone' ) )
       )
     );
 
     // $this->addControl(
     //   'mp3',
     //   'text',
-    //   __( 'MP3', csl18n() ),
-    //   __( 'Include a .mp3 version of your audio.', csl18n() ),
+    //   __( 'MP3', 'cornerstone' ),
+    //   __( 'Include a .mp3 version of your audio.', 'cornerstone' ),
     //   ''
     // );
 
     // $this->addControl(
     //   'oga',
     //   'text',
-    //   __( 'OGA', csl18n() ),
-    //   __( 'Include a .oga version of your audio for additional native browser support.', csl18n() ),
+    //   __( 'OGA', 'cornerstone' ),
+    //   __( 'Include a .oga version of your audio for additional native browser support.', 'cornerstone' ),
     //   ''
     // );
 
     $this->addControl(
       'advanced_controls',
       'toggle',
-      __( 'Advanced Controls', csl18n() ),
-      __( 'Enable audio player\'s advanced controls.', csl18n() ),
+      __( 'Advanced Controls', 'cornerstone' ),
+      __( 'Enable audio player\'s advanced controls.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'preload',
       'select',
-      __( 'Preload', csl18n() ),
-      __( 'Specifies if and how the audio should be loaded when the page loads. "None" means the audio is not loaded when the page loads, "Auto" loads the audio entirely, and "Metadata" loads only metadata.', csl18n() ),
+      __( 'Preload', 'cornerstone' ),
+      __( 'Specifies if and how the audio should be loaded when the page loads. "None" means the audio is not loaded when the page loads, "Auto" loads the audio entirely, and "Metadata" loads only metadata.', 'cornerstone' ),
       'none',
       array(
         'choices' => array(
-          array( 'value' => 'none',     'label' => __( 'None', csl18n() ) ),
-          array( 'value' => 'auto',     'label' => __( 'Auto', csl18n() ) ),
-          array( 'value' => 'metadata', 'label' => __( 'Metadata', csl18n() ) )
+          array( 'value' => 'none',     'label' => __( 'None', 'cornerstone' ) ),
+          array( 'value' => 'auto',     'label' => __( 'Auto', 'cornerstone' ) ),
+          array( 'value' => 'metadata', 'label' => __( 'Metadata', 'cornerstone' ) )
         )
       )
     );
@@ -69,16 +69,16 @@ class CS_Self_Hosted_Audio extends Cornerstone_Element_Base {
     $this->addControl(
       'autoplay',
       'toggle',
-      __( 'Autoplay', csl18n() ),
-      __( 'Enable audio player\'s autoplay.', csl18n() ),
+      __( 'Autoplay', 'cornerstone' ),
+      __( 'Enable audio player\'s autoplay.', 'cornerstone' ),
       false
     );
 
     $this->addControl(
       'loop',
       'toggle',
-      __( 'Loop', csl18n() ),
-      __( 'Enable audio player\'s loop.', csl18n() ),
+      __( 'Loop', 'cornerstone' ),
+      __( 'Enable audio player\'s loop.', 'cornerstone' ),
       false
     );
 

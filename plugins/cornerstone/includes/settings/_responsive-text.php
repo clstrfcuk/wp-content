@@ -5,7 +5,7 @@ class CS_Settings_Responsive_Text extends Cornerstone_Legacy_Setting_Section {
   public function data() {
     return array(
       'name'        => 'responsive-text',
-      'title'       => __( 'Responsive Text', csl18n() ),
+      'title'       => __( 'Responsive Text', 'cornerstone' ),
       'priority' => '30'
     );
   }

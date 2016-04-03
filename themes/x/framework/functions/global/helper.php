@@ -20,12 +20,9 @@
 //   09. Get Post by Title
 //   10. Get Page by Title
 //   11. Get Portfolio Item by Title
-//   12. Plugin Exists
-//   13. Shortcode Plugin Exists
-//   14. Get Slider Shortcode
-//   15. Array to Object
-//   16. Object to Array
-//   17. Get Current Admin Color Scheme
+//   12. Get Slider Shortcode
+//   13. Array to Object
+//   14. Object to Array
 // =============================================================================
 
 // Get View
@@ -218,48 +215,6 @@ function x_get_portfolio_item_by_title( $title ) {
 
 
 
-// Plugin Exists
-// =============================================================================
-
-//
-// Accepts a string that should include the root directory of the plugin as
-// well as the main plugin file within. For example, if checking for the
-// existence of the "Cornerstone" plugin, the following would be an
-// appropriate input:
-//
-// 'cornerstone/cornerstone.php'
-//
-// Remember to keep off the beginning slash as it is already added by the
-// function after the plugin directory constant is called.
-//
-
-function x_plugin_exists( $plugin ) {
-
-  if ( file_exists( WP_PLUGIN_DIR . '/' . $plugin ) ) {
-    return true;
-  } else {
-    return false;
-  }
-
-}
-
-
-
-// Shortcode Plugin Exists
-// =============================================================================
-
-function x_plugin_cornerstone_exists() {
-
-  if ( x_plugin_exists( 'cornerstone/cornerstone.php' ) ) {
-    return true;
-  } else {
-    return false;
-  }
-
-}
-
-
-
 // Get Slider Shortcode
 // =============================================================================
 
@@ -343,19 +298,3 @@ function x_object_to_array( $object ) {
   return (array) $object;
 }
 
-
-
-// Get Current Admin Color Scheme
-// =============================================================================
-
-function x_get_current_admin_color_scheme( $type = 'colors' ) {
-
-  GLOBAL $_wp_admin_css_colors;
-
-  $current_color_scheme = get_user_option( 'admin_color' );
-  $admin_colors         = $_wp_admin_css_colors;
-  $user_colors          = (array) $admin_colors[$current_color_scheme];
-
-  return ( $type == 'icons' ) ? $user_colors['icon_colors'] : $user_colors['colors'];
-
-}

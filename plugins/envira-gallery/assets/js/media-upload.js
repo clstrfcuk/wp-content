@@ -53,7 +53,7 @@
                         }
 
                         // Repopulate the Envira Gallery Image Collection
-                        EnviraGalleryImagesUpdate();
+                        EnviraGalleryImagesUpdate( false );
 
                     },
                     'json'

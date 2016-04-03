@@ -9,11 +9,6 @@ abstract class Cornerstone_Element {
 	// For example: 'myplugin_myelement'
 	public $shortcode_prefix = 'myplugin_';
 
-	// In controls.php and defaults.php you'll have acces to a '$td' variable for
-	// quick shorthand reference to your text domain. If you'd like to utilize
-	// this, assign it here first.
-	public $text_domain = '';
-
 	public function shortcodes() {
 
 	}

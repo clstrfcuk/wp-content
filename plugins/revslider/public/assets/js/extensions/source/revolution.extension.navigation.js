@@ -1,6 +1,6 @@
 /********************************************
- * REVOLUTION 5.1.5 EXTENSION - NAVIGATION
- * @version: 1.1 (04.01.2016)
+ * REVOLUTION 5.2 EXTENSION - NAVIGATION
+ * @version: 1.2.4 (10.03.2016)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch
 *********************************************/
@@ -108,14 +108,14 @@ jQuery.extend(true,_R, {
 				opt.navigation.bullets.h_offset_old = opt.navigation.bullets.h_offset_old === undefined ? opt.navigation.bullets.h_offset : opt.navigation.bullets.h_offset_old;
 				opt.navigation.bullets.h_offset = opt.navigation.bullets.h_align==="center" ? opt.navigation.bullets.h_offset_old+lof/2 -rof/2: opt.navigation.bullets.h_offset_old+lof-rof;
 			}
-			setNavElPositions(opt.c.find('.tp-bullets'),opt.navigation.bullets);		
+			setNavElPositions(opt.c.find('.tp-bullets'),opt.navigation.bullets,opt);		
 		}
 		
 		if (ckNO(opt.navigation.thumbnails)) 
-			setNavElPositions(opt.c.parent().find('.tp-thumbs'),opt.navigation.thumbnails);		
+			setNavElPositions(opt.c.parent().find('.tp-thumbs'),opt.navigation.thumbnails,opt);		
 
 		if (ckNO(opt.navigation.tabs))
-			setNavElPositions(opt.c.parent().find('.tp-tabs'),opt.navigation.tabs);		
+			setNavElPositions(opt.c.parent().find('.tp-tabs'),opt.navigation.tabs,opt);		
 		
 		if (ckNO(opt.navigation.arrows)) {
 			
@@ -127,8 +127,8 @@ jQuery.extend(true,_R, {
 				opt.navigation.arrows.right.h_offset_old = opt.navigation.arrows.right.h_offset_old === undefined ? opt.navigation.arrows.right.h_offset : opt.navigation.arrows.right.h_offset_old;
 				opt.navigation.arrows.right.h_offset = opt.navigation.arrows.right.h_align==="right" ? opt.navigation.arrows.right.h_offset_old+rof : opt.navigation.arrows.right.h_offset_old+lof;
 			}
-			setNavElPositions(opt.c.find('.tp-leftarrow.tparrows'),opt.navigation.arrows.left);
-			setNavElPositions(opt.c.find('.tp-rightarrow.tparrows'),opt.navigation.arrows.right);
+			setNavElPositions(opt.c.find('.tp-leftarrow.tparrows'),opt.navigation.arrows.left,opt);
+			setNavElPositions(opt.c.find('.tp-rightarrow.tparrows'),opt.navigation.arrows.right,opt);
 		}
 
 
@@ -159,10 +159,26 @@ jQuery.extend(true,_R, {
 
 		// BUILD BULLETS, THUMBS and TABS		
 		opt.li.each(function(index) {
+			
+			var li_rtl = jQuery(opt.li[opt.li.length-1-index]);
 			var li = jQuery(this);				
-			if (b) addBullet(container,_b,li,opt);		
-			if (c) addThumb(container,_c,li,'tp-thumb',opt);		
-			if (d) addThumb(container,_d,li,'tp-tab',opt);
+
+			if (b) 
+				if (opt.navigation.bullets.rtl)
+					addBullet(container,_b,li_rtl,opt);		
+				else
+					addBullet(container,_b,li,opt);	
+			
+			if (c) 
+				if (opt.navigation.thumbnails.rtl)
+					addThumb(container,_c,li_rtl,'tp-thumb',opt);		
+				else
+					addThumb(container,_c,li,'tp-thumb',opt);
+			if (d) 
+				if (opt.navigation.tabs.rtl)
+					addThumb(container,_d,li_rtl,'tp-tab',opt);
+				else
+					addThumb(container,_d,li,'tp-tab',opt);
 		});
 		
 		// LISTEN TO SLIDE CHANGE - SET ACTIVE SLIDE BULLET				
@@ -208,11 +224,13 @@ jQuery.extend(true,_R, {
 			
 			if (_a.enable === true) {
 				var inst = _a.tmp;
+
 				jQuery.each(opt.thumbs[pi].params,function(i,obj) {
 					inst = inst.replace(obj.from,obj.to);
 				});	
 				_a.left.j.html(inst);
 				inst = _a.tmp;
+				if (ni>opt.slideamount) return;
 				jQuery.each(opt.thumbs[ni].params,function(i,obj) {
 					inst = inst.replace(obj.from,obj.to);
 				});	
@@ -443,38 +461,67 @@ var initMouseScroll = function(container,opt) {
 				ls = asi!=-1 && asi==opt.slideamount-1 || psi!=1 && psi==opt.slideamount-1 ? true:false,				
 				ret = true;
 			if (opt.navigation.mouseScrollNavigation=="carousel") 
-				fs = ls = false;						
-		
-		if (psi==-1) {					
-			if(res.pixelY<bl) {						
-				if (!fs) {
+				fs = ls = false;								
+		if (psi==-1) {				
+
+			if(res.pixelY<bl) {
+				
+				if (!fs) {					
 					opt.sc_indicator="arrow";
-					opt.sc_indicator_dir = 0;
-					_R.callingNewSlide(opt,container,-1);	
-					
+					if (opt.navigation.mouseScrollReverse!=="reverse") {
+						opt.sc_indicator_dir = 0;
+						_R.callingNewSlide(opt,container,-1);	
+					} 
+					ret = false;
+				}
+				if (!ls) {
+					opt.sc_indicator="arrow";
+					if (opt.navigation.mouseScrollReverse==="reverse") {
+						opt.sc_indicator_dir = 1;
+						_R.callingNewSlide(opt,container,1);	
+					}					
 					ret = false;			 
 				}
 			 }
 			 else 
 			 if(res.pixelY>tl) {				
-			 	if (!ls) {
+			 	if (!ls) {			 					 		
 				 	opt.sc_indicator="arrow";
-				 	opt.sc_indicator_dir = 1;
-					_R.callingNewSlide(opt,container,1);	
-					
+				 	if (opt.navigation.mouseScrollReverse!=="reverse") {
+						opt.sc_indicator_dir = 1;
+						_R.callingNewSlide(opt,container,1);	
+					} 				
+					ret = false;
+				}
+				if (!fs) {
+					opt.sc_indicator="arrow";
+					if (opt.navigation.mouseScrollReverse==="reverse") {
+						opt.sc_indicator_dir = 0;
+						_R.callingNewSlide(opt,container,-1);	
+					}		
 					ret = false;
 				}
 			 }
 			 
 			
-		} else {							
-			if ((!ls && (res.spinY>0)) || (!fs && (res.spinY<=0))) {				
-				ret = false;	
-			}
-			else 
-				ret = true;		
+		} else {										
+			ret = false;		
 		}	
 
+		var tc = opt.c.offset().top-jQuery('body').scrollTop(),
+			bc = tc+opt.c.height();
+		if (opt.navigation.mouseScrollNavigation!="carousel") {
+			if (opt.navigation.mouseScrollReverse!=="reverse")
+				if ((tc>0 && res.pixelY>0) || (bc<jQuery(window).height() && res.pixelY<0))
+					ret = true;
+			if (opt.navigation.mouseScrollReverse==="reverse")
+				if ((tc<0 && res.pixelY<0) || (bc>jQuery(window).height() && res.pixelY>0))
+					ret = true;
+		} else {
+			ret=false;
+		}
+
+		
 		if (ret==false) {
 			e.preventDefault(e);    		
 			return false;
@@ -742,6 +789,7 @@ var showHideNavElements = function(container,opt,dir,speed) {
 
 // ADD ARROWS
 var initArrows = function(container,o,opt) {
+
 	// SET oIONAL CLASSES
 	o.style = o.style === undefined ? "" : o.style;
 	o.left.style = o.left.style === undefined ? "" : o.left.style;
@@ -755,10 +803,15 @@ var initArrows = function(container,o,opt) {
 		container.append('<div class="tp-rightarrow tparrows '+o.style+' '+o.right.style+'">'+o.tmp+'</div>');	
 	var la = container.find('.tp-leftarrow.tparrows'),
 		ra = container.find('.tp-rightarrow.tparrows');
-	// CLICK HANDLINGS ON LEFT AND RIGHT ARROWS
-	ra.click(function() { opt.sc_indicator="arrow"; opt.sc_indicator_dir = 0;container.revnext();});
-	la.click(function() { opt.sc_indicator="arrow"; opt.sc_indicator_dir = 1;container.revprev();});
-	
+	if (o.rtl) {
+		// CLICK HANDLINGS ON LEFT AND RIGHT ARROWS
+		la.click(function() { opt.sc_indicator="arrow"; opt.sc_indicator_dir = 0;container.revnext();});
+		ra.click(function() { opt.sc_indicator="arrow"; opt.sc_indicator_dir = 1;container.revprev();});
+	} else {
+		// CLICK HANDLINGS ON LEFT AND RIGHT ARROWS
+		ra.click(function() { opt.sc_indicator="arrow"; opt.sc_indicator_dir = 0;container.revnext();});
+		la.click(function() { opt.sc_indicator="arrow"; opt.sc_indicator_dir = 1;container.revprev();});
+	}
 	// SHORTCUTS
 	o.right.j = container.find('.tp-rightarrow.tparrows');
 	o.left.j = container.find('.tp-leftarrow.tparrows')
@@ -768,31 +821,40 @@ var initArrows = function(container,o,opt) {
 	o.padding_bottom = parseInt((opt.carousel.padding_bottom||0),0);
 	
 	// POSITION OF ARROWS
-	setNavElPositions(la,o.left);
-	setNavElPositions(ra,o.right);
+	setNavElPositions(la,o.left,opt);
+	setNavElPositions(ra,o.right,opt);
 
-	if (o.position=="outer-left" || o.position=="outer-right") opt.outernav = true;
+	o.left.opt = opt;
+	o.right.opt = opt;
+	
+
+	if (o.position=="outer-left" || o.position=="outer-right") opt.outernav = true;	
 };
 
 
 // PUT ELEMENTS VERTICAL / HORIZONTAL IN THE RIGHT POSITION
-var putVinPosition = function(el,o) {
+var putVinPosition = function(el,o,opt) {
+	
 	var elh = el.outerHeight(true),
 		elw = el.outerWidth(true),
-		a = o.v_align === "top" ? {top:"0px",y:Math.round(o.v_offset)+"px"} : o.v_align === "center" ? {top:"50%",y:Math.round(((0-elh/2)+o.v_offset))+"px"} : {top:"100%",y:Math.round((0-(elh+o.v_offset)))+"px"};				
+		oh = o.opt== undefined ? 0 : opt.conh == 0 ? opt.height : opt.conh,
+		by = o.container=="layergrid" ? opt.sliderLayout=="fullscreen" ? opt.height/2 - (opt.gridheight[opt.curWinRange]*opt.bh)/2 : (opt.autoHeight=="on" || (opt.minHeight!=undefined && opt.minHeight>0)) ? oh/2 - (opt.gridheight[opt.curWinRange]*opt.bh)/2  : 0 : 0,		
+		a = o.v_align === "top" ? {top:"0px",y:Math.round(o.v_offset+by)+"px"} : o.v_align === "center" ? {top:"50%",y:Math.round(((0-elh/2)+o.v_offset))+"px"} : {top:"100%",y:Math.round((0-(elh+o.v_offset+by)))+"px"};					
 	if (!el.hasClass("outer-bottom")) punchgs.TweenLite.set(el,a);	
+	
 };
 
-var putHinPosition = function(el,o) {
-
+var putHinPosition = function(el,o,opt) {
+	
 	var elh = el.outerHeight(true),
-		elw = el.outerWidth(true),		
-		a = o.h_align === "left" ? {left:"0px",x:Math.round(o.h_offset)+"px"} : o.h_align === "center" ? {left:"50%",x:Math.round(((0-elw/2)+o.h_offset))+"px"} : {left:"100%",x:Math.round((0-(elw+o.h_offset)))+"px"};	
+		elw = el.outerWidth(true),
+		bx = o.container=="layergrid" ? opt.sliderType==="carousel" ? 0 : opt.width/2 - (opt.gridwidth[opt.curWinRange]*opt.bw)/2 : 0,
+		a = o.h_align === "left" ? {left:"0px",x:Math.round(o.h_offset+bx)+"px"} : o.h_align === "center" ? {left:"50%",x:Math.round(((0-elw/2)+o.h_offset))+"px"} : {left:"100%",x:Math.round((0-(elw+o.h_offset+bx)))+"px"};	
 	punchgs.TweenLite.set(el,a);
 };
 
 // SET POSITION OF ELEMENTS
-var setNavElPositions = function(el,o) {
+var setNavElPositions = function(el,o,opt) {
 
 	var wrapper =  
 		el.closest('.tp-simpleresponsive').length>0 ? 
@@ -805,8 +867,8 @@ var setNavElPositions = function(el,o) {
 		ww = wrapper.width(),
 		wh = wrapper.height();	
 
-	putVinPosition(el,o);
-	putHinPosition(el,o);
+	putVinPosition(el,o,opt);
+	putHinPosition(el,o,opt);
 
 	if (o.position==="outer-left" && (o.sliderLayout=="fullwidth" || o.sliderLayout=="fullscreen")) 
 		punchgs.TweenLite.set(el,{left:(0-el.outerWidth())+"px",x:o.h_offset+"px"});
@@ -851,12 +913,12 @@ var setNavElPositions = function(el,o) {
 		// SPAN IS ENABLED
 		if (o.span===true && o.direction==="vertical") {
 			punchgs.TweenLite.set(el,{maxHeight:(cpt+cpb+(wh-2*wpad))+"px",height:(cpt+cpb+(wh-2*wpad))+"px",top:(0-cpt),y:0});					
-			putVinPosition(mask,o);
+			putVinPosition(mask,o,opt);
 		} else 
 
 		if (o.span===true && o.direction==="horizontal") {
 			punchgs.TweenLite.set(el,{maxWidth:"100%",width:(ww-2*wpad)+"px",left:0,x:0});					
-			putHinPosition(mask,o);
+			putHinPosition(mask,o,opt);
 		}
 	}
 };
@@ -867,7 +929,7 @@ var addBullet = function(container,o,li,opt) {
 	
 	// Check if Bullet exists already ?		
 	if (container.find('.tp-bullets').length===0) {
-		o.style = o.style === undefined ? "" : o.style;
+		o.style = o.style === undefined ? "" : o.style;		
 		container.append('<div class="tp-bullets '+o.style+' '+o.direction+'"></div>');
 	}
 	
@@ -890,10 +952,12 @@ var addBullet = function(container,o,li,opt) {
 		//bgimage = li.data('thumb') !==undefined ? li.data('thumb') : li.find('.defaultimg').data('lazyload') !==undefined && li.find('.defaultimg').data('lazyload') !== 'undefined' ? li.find('.defaultimg').data('lazyload') : li.find('.defaultimg').data('src');
 
 	if (o.direction==="vertical") {
+		
 		b.css({top:((am-1)*h)+"px", left:"0px"});
 		bw.css({height:(((am-1)*h) + b.outerHeight()),width:b.outerWidth()});
 	}
 	else {
+		
 		b.css({left:((am-1)*w)+"px", top:"0px"});
 		bw.css({width:(((am-1)*w) + b.outerWidth()),height:b.outerHeight()});			
 	}
@@ -914,11 +978,15 @@ var addBullet = function(container,o,li,opt) {
 	// OUTTUER PADDING DEFAULTS
 	o.padding_top = parseInt((opt.carousel.padding_top||0),0),
 	o.padding_bottom = parseInt((opt.carousel.padding_bottom||0),0);
-
+	o.opt = opt;	
 	if (o.position=="outer-left" || o.position=="outer-right") opt.outernav = true;
 
+	bw.addClass("nav-pos-hor-"+o.h_align);
+	bw.addClass("nav-pos-ver-"+o.v_align);
+	bw.addClass("nav-dir-"+o.direction);
+
 	// PUT ALL CONTAINER IN POSITION
-	setNavElPositions(bw,o);		
+	setNavElPositions(bw,o,opt);		
 };
 
 
@@ -979,7 +1047,8 @@ var addThumb = function(container,o,li,what,opt) {
 			inst = inst.replace(obj.from,obj.to);
 		})	
 	
-	tw.append('<div data-liindex="'+li.index()+'" data-liref="'+linkto+'" class="justaddedthumb '+what+'" style="width:'+o.width+'px;height:'+o.height+'px;">'+inst+'</div>');
+
+		tw.append('<div data-liindex="'+li.index()+'" data-liref="'+linkto+'" class="justaddedthumb '+what+'" style="width:'+o.width+'px;height:'+o.height+'px;">'+inst+'</div>');
 
 
 	// SET BULLET SPACES AND POSITION
@@ -992,11 +1061,11 @@ var addThumb = function(container,o,li,what,opt) {
 	b.find(timg).css({backgroundImage:"url("+opt.thumbs[li.index()].src+")"});
 	
 
-	if (o.direction==="vertical") {
+	if (o.direction==="vertical") {		
 		b.css({top:((am-1)*h)+"px", left:"0px"});
 		tw.css({height:(((am-1)*h) + b.outerHeight()),width:b.outerWidth()});
 	}
-	else {
+	else {		
 		b.css({left:((am-1)*w)+"px", top:"0px"});
 		tw.css({width:(((am-1)*w) + b.outerWidth()),height:b.outerHeight()});			
 	}
@@ -1028,8 +1097,14 @@ var addThumb = function(container,o,li,what,opt) {
 	// REMOVE HELP CLASS
 	b.removeClass("justaddedthumb");
 
+	o.opt = opt;
+
+	t.addClass("nav-pos-hor-"+o.h_align);
+	t.addClass("nav-pos-ver-"+o.v_align);
+	t.addClass("nav-dir-"+o.direction);
+	
 	// PUT ALL CONTAINER IN POSITION		
-	setNavElPositions(t,o);	
+	setNavElPositions(t,o,opt);	
 };
 
 var setONHeights = function(o) {

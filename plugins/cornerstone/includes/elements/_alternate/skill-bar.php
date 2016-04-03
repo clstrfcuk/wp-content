@@ -5,9 +5,9 @@ class CS_Skill_Bar extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'skill-bar',
-      'title'       => __( 'Skill Bar', csl18n() ),
+      'title'       => __( 'Skill Bar', 'cornerstone' ),
       'section'     => 'information',
-      'description' => __( 'Skill Bar description.', csl18n() ),
+      'description' => __( 'Skill Bar description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'heading' => '.h-skill-bar',
@@ -21,32 +21,32 @@ class CS_Skill_Bar extends Cornerstone_Element_Base {
     $this->addControl(
       'heading',
       'text',
-      __( 'Heading', csl18n() ),
-      __( 'Enter the heading of your Skill Bar.', csl18n() ),
-      __( 'Skill Bar Title', csl18n() )
+      __( 'Heading', 'cornerstone' ),
+      __( 'Enter the heading of your Skill Bar.', 'cornerstone' ),
+      __( 'Skill Bar Title', 'cornerstone' )
     );
 
     $this->addControl(
       'percent',
       'text',
-      __( 'Percent', csl18n() ),
-      __( 'Enter the percentage of your skill and be sure to include the percentage sign (e.g. 90%).', csl18n() ),
+      __( 'Percent', 'cornerstone' ),
+      __( 'Enter the percentage of your skill and be sure to include the percentage sign (e.g. 90%).', 'cornerstone' ),
       '90%'
     );
 
     $this->addControl(
       'bar_text',
       'text',
-      __( 'Bar Text', csl18n() ),
-      __( 'Enter in some alternate text in place of the percentage inside the Skill Bar.', csl18n() ),
+      __( 'Bar Text', 'cornerstone' ),
+      __( 'Enter in some alternate text in place of the percentage inside the Skill Bar.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'bar_bg_color',
       'color',
-      __( 'Bar Background Color', csl18n() ),
-      __( 'Select the background color of your Skill Bar.', csl18n() ),
+      __( 'Bar Background Color', 'cornerstone' ),
+      __( 'Select the background color of your Skill Bar.', 'cornerstone' ),
       ''
     );
 

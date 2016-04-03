@@ -29,7 +29,7 @@ if ( post_password_required() )
 
     <h2 class="h-comments-title">
       <?php
-      printf( _n( 'One Comment on &ldquo;%2$s&rdquo;', '%1$s Comments on %2$s', get_comments_number(), '__x__' ),
+      printf( _n( 'One Comment on %2$s', '%1$s Comments on %2$s', get_comments_number(), '__x__' ),
         number_format_i18n( get_comments_number() ),
         '<span>&ldquo;' . get_the_title() . '&rdquo;</span>'
       );

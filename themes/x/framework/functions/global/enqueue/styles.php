@@ -104,27 +104,12 @@ add_action( 'wp_enqueue_scripts', 'x_enqueue_site_styles' );
 if ( ! function_exists( 'x_enqueue_admin_styles' ) ) :
   function x_enqueue_admin_styles( $hook ) {
 
-    wp_enqueue_style( 'x-global', X_TEMPLATE_URL . '/framework/css/dist/admin/global.css', NULL, X_VERSION, 'all' );
+    wp_enqueue_style( x_tco()->handle( 'admin-css' ) );
+    wp_enqueue_style( 'x-base', X_TEMPLATE_URL . '/framework/css/dist/admin/base.css', NULL, X_VERSION, 'all' );
     wp_enqueue_style( 'wp-color-picker' );
 
-    if ( $hook == 'widgets.php' ) {
-      wp_enqueue_style( 'x-widgets', X_TEMPLATE_URL . '/framework/css/dist/admin/widgets.css', NULL, X_VERSION, 'all' );
-    }
-
-    if ( strpos( $hook, 'x-addons' ) != false ) {
-      wp_enqueue_style( 'x-addons', X_TEMPLATE_URL . '/framework/css/dist/admin/addons.css', NULL, X_VERSION, 'all' );
-    }
-
     if ( strpos( $hook, 'x-extensions' ) != false ) {
-      wp_enqueue_style( 'jquery-ui-datepicker', X_TEMPLATE_URL . '/framework/css/dist/admin/datepicker.css', NULL, X_VERSION, 'all' );
-    }
-
-    if ( $hook == 'appearance_page_ups_sidebars' ) {
-      wp_enqueue_style( 'x-sidebars', X_TEMPLATE_URL . '/framework/css/dist/admin/sidebars.css', NULL, X_VERSION, 'all' );    
-    }
-
-    if ( $hook == 'post.php' || $hook == 'post-new.php' || $hook == 'edit-tags.php' ) {
-      wp_enqueue_style( 'x-meta', X_TEMPLATE_URL . '/framework/css/dist/admin/meta.css', NULL, X_VERSION, 'all' );
+      wp_enqueue_style( 'x-datepicker', X_TEMPLATE_URL . '/framework/css/dist/admin/datepicker.css', NULL, X_VERSION, 'all' );
     }
 
     if ( X_VISUAL_COMOPSER_IS_ACTIVE ) {
@@ -144,7 +129,7 @@ add_action( 'admin_enqueue_scripts', 'x_enqueue_admin_styles' );
 if ( ! function_exists( 'x_enqueue_customizer_controls_styles' ) ) :
   function x_enqueue_customizer_controls_styles() {
 
-    wp_enqueue_style( 'x-customizer-controls', X_TEMPLATE_URL . '/framework/css/dist/admin/customizer-controls.css', NULL, X_VERSION, 'all' );
+    wp_enqueue_style( 'x-customizer', X_TEMPLATE_URL . '/framework/css/dist/admin/customizer.css', NULL, X_VERSION, 'all' );
 
   }
 endif;

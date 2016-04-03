@@ -58,12 +58,14 @@ function x_shortcode_google_map_marker( $atts ) {
     'lng'   => '',
     'info'  => '',
     'image' => '',
+    'start_open' => 'false',
   ), $atts, 'x_google_map_marker' ) );
 
   $js_params = array(
     'lat'        => ( $lat   != '' ) ? $lat : '40.7056308',
     'lng'        => ( $lng   != '' ) ? $lng : '-73.9780035',
-    'markerInfo' => ( $info  != '' ) ? $info : ''
+    'markerInfo' => ( $info  != '' ) ? cs_decode_shortcode_attribute( $info ) : '',
+    'startOpen' => ( 'true' == $start_open )
   );
 
   if ( is_numeric( $image ) ) {

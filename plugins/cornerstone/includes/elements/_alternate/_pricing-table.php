@@ -5,9 +5,9 @@ class CS_Pricing_Table extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'pricing-table',
-      'title'       => __( 'Pricing Table', csl18n() ),
+      'title'       => __( 'Pricing Table', 'cornerstone' ),
       'section'     => 'marketing',
-      'description' => __( 'Pricing Table description.', csl18n() ),
+      'description' => __( 'Pricing Table description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'renderChild' => true
     );
@@ -18,16 +18,16 @@ class CS_Pricing_Table extends Cornerstone_Element_Base {
     $this->addControl(
       'elements',
       'sortable',
-      __( 'Pricing Table Columns', csl18n() ),
-      __( 'Add your pricing table columns here.', csl18n() ),
+      __( 'Pricing Table Columns', 'cornerstone' ),
+      __( 'Add your pricing table columns here.', 'cornerstone' ),
       array(
-        array( 'title' => __( 'Basic', csl18n() ),    'price' => '19', 'featured' => false, 'content' => __( "[x_icon_list]\n    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"times\"]Second Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n[/x_icon_list]\n\n[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]", csl18n() ) ),
-        array( 'title' => __( 'Standard', csl18n() ), 'price' => '29', 'featured' => true,  'content' => __( "[x_icon_list]\n    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"check\"]Second Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n[/x_icon_list]\n\n[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]", csl18n() ), 'featured_sub' => 'Most Popular!' ),
-        array( 'title' => __( 'Pro', csl18n() ),      'price' => '39', 'featured' => false, 'content' => __( "[x_icon_list]\n    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"check\"]Second Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"check\"]Third Feature[/x_icon_list_item]\n[/x_icon_list]\n\n[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]", csl18n() ) )
+        array( 'title' => __( 'Basic', 'cornerstone' ),    'price' => '19', 'featured' => false, 'content' => __( "[x_icon_list]\n    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"times\"]Second Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n[/x_icon_list]\n\n[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]", 'cornerstone' ) ),
+        array( 'title' => __( 'Standard', 'cornerstone' ), 'price' => '29', 'featured' => true,  'content' => __( "[x_icon_list]\n    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"check\"]Second Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"times\"]Third Feature[/x_icon_list_item]\n[/x_icon_list]\n\n[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]", 'cornerstone' ), 'featured_sub' => 'Most Popular!' ),
+        array( 'title' => __( 'Pro', 'cornerstone' ),      'price' => '39', 'featured' => false, 'content' => __( "[x_icon_list]\n    [x_icon_list_item type=\"check\"]First Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"check\"]Second Feature[/x_icon_list_item]\n    [x_icon_list_item type=\"check\"]Third Feature[/x_icon_list_item]\n[/x_icon_list]\n\n[x_button href=\"#\" size=\"large\"]Buy Now![/x_button]", 'cornerstone' ) )
       ),
       array(
       	'element'  => 'pricing-table-column',
-        'newTitle' => __( 'Column %s', csl18n() ),
+        'newTitle' => __( 'Column %s', 'cornerstone' ),
         'floor'    => 1,
         'capacity' => 5
       )

@@ -151,7 +151,7 @@ function envira_gallery_ajax_insert_images() {
 
         // Now add the image to the gallery for this particular post.
         $in_gallery[] = $image['id'];
-        $gallery_data = envira_gallery_ajax_prepare_gallery_data( $gallery_data, $image['id'] );
+        $gallery_data = envira_gallery_ajax_prepare_gallery_data( $gallery_data, $image['id'], $image );
     }
 
     // Update the gallery data.
@@ -233,14 +233,14 @@ function envira_gallery_ajax_remove_image() {
     $has_gallery  = get_post_meta( $attach_id, '_eg_has_gallery', true );
 
     // Unset the image from the gallery, in_gallery and has_gallery checkers.
-    unset( $gallery_data['gallery'][$attach_id] );
+    unset( $gallery_data['gallery'][ $attach_id ] );
 
     if ( ( $key = array_search( $attach_id, (array) $in_gallery ) ) !== false ) {
-        unset( $in_gallery[$key] );
+        unset( $in_gallery[ $key ] );
     }
 
     if ( ( $key = array_search( $post_id, (array) $has_gallery ) ) !== false ) {
-        unset( $has_gallery[$key] );
+        unset( $has_gallery[ $key ] );
     }
 
     // Update the gallery data.
@@ -250,6 +250,19 @@ function envira_gallery_ajax_remove_image() {
 
     // Run hook before finishing the reponse.
     do_action( 'envira_gallery_ajax_remove_image', $attach_id, $post_id );
+
+    // If the global setting for deleting images on gallery image deletion is enabled, check
+    // that the image doesn't belong to another gallery and isn't attached
+    $image_delete = Envira_Gallery_Settings::get_instance()->get_setting( 'image_delete' );
+    if ( $image_delete ) {
+        // Get attachment
+        $attachment = get_post( $attach_id );
+
+        // If post parent is the Gallery ID, and the image isn't in another gallery, we're OK to delete the image
+        if ( ( $attachment->post_parent == $post_id ) && ( count( $in_gallery ) == 0 ) ) {
+            wp_delete_attachment( $attach_id );
+        }
+    }
 
     // Flush the gallery cache.
     Envira_Gallery_Common::get_instance()->flush_gallery_caches( $post_id );
@@ -348,6 +361,83 @@ function envira_gallery_ajax_save_meta() {
 
     // Allow filtering of meta before saving.
     $gallery_data = apply_filters( 'envira_gallery_ajax_save_meta', $gallery_data, $meta, $attach_id, $post_id );
+
+    // Update the gallery data.
+    update_post_meta( $post_id, '_eg_gallery_data', $gallery_data );
+
+    // Flush the gallery cache.
+    Envira_Gallery_Common::get_instance()->flush_gallery_caches( $post_id );
+
+    // Done
+    wp_send_json_success();
+    die;
+
+}
+
+add_action( 'wp_ajax_envira_gallery_save_bulk_meta', 'envira_gallery_ajax_save_bulk_meta' );
+/**
+ * Saves the metadata for multiple images in a gallery (bulk edit).
+ *
+ * @since 1.4.2.2
+ */
+function envira_gallery_ajax_save_bulk_meta() {
+
+    // Run a security check first.
+    check_ajax_referer( 'envira-gallery-save-meta', 'nonce' );
+
+    // Prepare variables.
+    $post_id      = absint( $_POST['post_id'] );
+    $image_ids    = $_POST['image_ids'];
+    $meta         = $_POST['meta'];
+    
+    // Check the required variables exist.
+    if ( empty( $post_id ) ) {
+        wp_send_json_error();
+    }
+    if ( empty( $image_ids ) || ! is_array( $image_ids ) ) {
+        wp_send_json_error();
+    }
+    if ( empty( $meta ) || ! is_array( $meta ) ) {
+        wp_send_json_error();
+    }
+
+    // Get gallery.
+    $gallery_data = get_post_meta( $post_id, '_eg_gallery_data', true );
+    if ( empty( $gallery_data ) || ! is_array( $gallery_data ) ) {
+        wp_send_json_error();
+    }
+
+    // Iterate through gallery images, updating the metadata.
+    foreach ( $image_ids as $image_id ) {
+        // If the image isn't in the gallery, something went wrong - so skip this image.
+        if ( ! isset( $gallery_data['gallery'][ $image_id ] ) ) {
+            continue;
+        }
+
+        // Update image metadata.
+        if ( isset( $meta['title'] ) ) {
+            $gallery_data['gallery'][ $image_id ]['title'] = trim( $meta['title'] );
+        }
+
+        if ( isset( $meta['alt'] ) ) {
+            $gallery_data['gallery'][ $image_id ]['alt'] = trim( esc_html( $meta['alt'] ) );
+        }
+
+        if ( isset( $meta['link'] ) ) {
+            $gallery_data['gallery'][ $image_id ]['link'] = esc_url( $meta['link'] );
+        }
+
+        if ( isset( $meta['link_new_window'] ) ) {
+            $gallery_data['gallery'][ $image_id ]['link_new_window'] = trim( $meta['link_new_window'] );
+        }
+        
+        if ( isset( $meta['caption'] ) ) {
+            $gallery_data['gallery'][ $image_id ]['caption'] = trim( $meta['caption'] );
+        }
+
+        // Allow filtering of meta before saving.
+        $gallery_data = apply_filters( 'envira_gallery_ajax_save_bulk_meta', $gallery_data, $meta, $image_id, $post_id );
+    }
 
     // Update the gallery data.
     update_post_meta( $post_id, '_eg_gallery_data', $gallery_data );
@@ -536,22 +626,38 @@ function envira_gallery_ajax_deactivate_addon() {
  *
  * @param array $gallery_data   Array of data for the gallery.
  * @param int   $id             The attachment ID to prepare data for.
+ * @param array $image          Attachment image. Populated if inserting from the Media Library
  * @return array $gallery_data Amended gallery data with updated image metadata.
  */
-function envira_gallery_ajax_prepare_gallery_data( $gallery_data, $id ) {
+function envira_gallery_ajax_prepare_gallery_data( $gallery_data, $id, $image = false ) {
 
+    // Get attachment
     $attachment = get_post( $id );
-    $url        = wp_get_attachment_image_src( $id, 'full' );
-    $alt_text   = get_post_meta( $id, '_wp_attachment_image_alt', true );
-    $image = array(
-        'status'  => 'active',
-        'src'     => isset( $url[0] ) ? esc_url( $url[0] ) : '',
-        'title'   => get_the_title( $id ),
-        'link'    => isset( $url[0] ) ? esc_url( $url[0] ) : '',
-        'alt'     => ! empty( $alt_text ) ? $alt_text : '',
-        'caption' => ! empty( $attachment->post_excerpt ) ? $attachment->post_excerpt : '',
-        'thumb'   => ''
-    );
+
+    // Depending on whether we're inserting from the Media Library or not, prepare the image array
+    if ( ! $image ) {
+        $url        = wp_get_attachment_image_src( $id, 'full' );
+        $alt_text   = get_post_meta( $id, '_wp_attachment_image_alt', true );
+        $image = array(
+            'status'  => 'active',
+            'src'     => isset( $url[0] ) ? esc_url( $url[0] ) : '',
+            'title'   => get_the_title( $id ),
+            'link'    => ( isset( $url[0] ) ? esc_url( $url[0] ) : '' ),
+            'alt'     => ! empty( $alt_text ) ? $alt_text : '',
+            'caption' => ! empty( $attachment->post_excerpt ) ? $attachment->post_excerpt : '',
+            'thumb'   => ''
+        );
+    } else {
+        $image = array(
+            'status'  => 'active',
+            'src'     => $image['url'],
+            'title'   => $image['title'],
+            'link'    => $image['link'],
+            'alt'     => $image['alt'],
+            'caption' => $image['caption'],
+            'thumb'   => '',
+        );
+    }
 
     // If gallery data is not an array (i.e. we have no images), just add the image to the array
     if ( ! isset( $gallery_data['gallery'] ) || ! is_array( $gallery_data['gallery'] ) ) {
@@ -582,7 +688,7 @@ function envira_gallery_ajax_prepare_gallery_data( $gallery_data, $id ) {
     }
 
     // Filter and return
-    $gallery_data = apply_filters( 'envira_gallery_ajax_item_data', $gallery_data, $attachment, $id );
+    $gallery_data = apply_filters( 'envira_gallery_ajax_item_data', $gallery_data, $attachment, $id, $image );
 
     return $gallery_data;
 
@@ -618,3 +724,25 @@ function envira_gallery_ajax_dismiss_notice() {
 
 }
 add_action( 'wp_ajax_envira_gallery_ajax_dismiss_notice', 'envira_gallery_ajax_dismiss_notice' );
+
+/**
+ * Returns the media link (direct image URL) for the given attachment ID
+ *
+ * @since 1.4.1.4
+ */
+add_action( 'wp_ajax_envira_gallery_get_attachment_links', 'envira_gallery_get_attachment_links' );
+function envira_gallery_get_attachment_links() {
+
+    // Check nonce
+    check_ajax_referer( 'envira-gallery-save-meta', 'nonce' );
+
+    // Get required inputs
+    $attachment_id = absint( $_POST['attachment_id'] );
+
+    // Return the attachment's links
+    wp_send_json_success( array(
+        'media_link'      => wp_get_attachment_url( $attachment_id ),
+        'attachment_page' => get_attachment_link( $attachment_id ),
+    ) );
+
+}

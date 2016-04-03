@@ -8,7 +8,7 @@ class CSE_Block_Grid_Item {
 
 	public function ui() {
 		return array(
-      'title' => __( 'Block Grid Item', csl18n() ),
+      'title' => __( 'Block Grid Item', 'cornerstone' ),
     );
 	}
 

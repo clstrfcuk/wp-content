@@ -40,11 +40,11 @@ function x_shortcode_card( $atts ) {
   $front_icon_color     = ( $front_icon_color     != ''     ) ? $front_icon_color : '#272727';
   $front_image          = ( $front_image          != ''     ) ? $front_image : '';
   $front_image_width    = ( $front_image_width    != ''     ) ? $front_image_width : 'auto';
-  $front_title          = ( $front_title          != ''     ) ? wp_specialchars_decode( $front_title, ENT_QUOTES ) : 'Front Title';
-  $front_text           = ( $front_text           != ''     ) ? wp_specialchars_decode( $front_text, ENT_QUOTES ) : 'This is where the text for the front of your card should go. It\'s best to keep it short and sweet.';
+  $front_title          = ( $front_title          != ''     ) ? cs_decode_shortcode_attribute( $front_title ) : 'Front Title';
+  $front_text           = ( $front_text           != ''     ) ? cs_decode_shortcode_attribute( $front_text ) : 'This is where the text for the front of your card should go. It\'s best to keep it short and sweet.';
   $back_style           = ( $back_style           != ''     ) ? $back_style : 'border: 1px solid #ddd; color: #272727; background-color: #fafafa;';
-  $back_title           = ( $back_title           != ''     ) ? wp_specialchars_decode( $back_title, ENT_QUOTES ) : 'Back Title';
-  $back_text            = ( $back_text            != ''     ) ? wp_specialchars_decode( $back_text, ENT_QUOTES ) : 'This is where the text for the back of your card should go.';
+  $back_title           = ( $back_title           != ''     ) ? cs_decode_shortcode_attribute( $back_title ) : 'Back Title';
+  $back_text            = ( $back_text            != ''     ) ? cs_decode_shortcode_attribute( $back_text ) : 'This is where the text for the back of your card should go.';
   $back_button_text     = ( $back_button_text     != ''     ) ? $back_button_text : 'Click Me!';
   $back_button_link     = ( $back_button_link     != ''     ) ? $back_button_link : '#';
   $back_button_color    = ( $back_button_color    != ''     ) ? $back_button_color : '#ffffff';

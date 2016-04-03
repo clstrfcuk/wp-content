@@ -5,9 +5,9 @@ class CS_Tabs extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'tabs',
-      'title'       => __( 'Tabs', csl18n() ),
+      'title'       => __( 'Tabs', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Tabs description.', csl18n() ),
+      'description' => __( 'Tabs description.', 'cornerstone' ),
       'supports'    => array( 'class' ),
       'renderChild' => true
     );
@@ -18,15 +18,15 @@ class CS_Tabs extends Cornerstone_Element_Base {
     $this->addControl(
       'elements',
       'sortable',
-      __( 'Tabs', csl18n() ),
-      __( 'Add a new tab.', csl18n() ),
+      __( 'Tabs', 'cornerstone' ),
+      __( 'Add a new tab.', 'cornerstone' ),
       array(
-        array( 'title' => __( 'Tab 1', csl18n() ), 'content' => __( 'The content for your Tab goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium, nisi ut volutpat mollis, leo risus interdum arcu, eget facilisis quam felis id mauris. Ut convallis, lacus nec ornare volutpat, velit turpis scelerisque purus, quis mollis velit purus ac massa. Fusce quis urna metus. Donec et lacus et sem lacinia cursus.', csl18n() ), 'active' => true ),
-        array( 'title' => __( 'Tab 2', csl18n() ), 'content' => __( 'The content for your Tab goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium, nisi ut volutpat mollis, leo risus interdum arcu, eget facilisis quam felis id mauris. Ut convallis, lacus nec ornare volutpat, velit turpis scelerisque purus, quis mollis velit purus ac massa. Fusce quis urna metus. Donec et lacus et sem lacinia cursus.', csl18n() ) )
+        array( 'title' => __( 'Tab 1', 'cornerstone' ), 'content' => __( 'The content for your Tab goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium, nisi ut volutpat mollis, leo risus interdum arcu, eget facilisis quam felis id mauris. Ut convallis, lacus nec ornare volutpat, velit turpis scelerisque purus, quis mollis velit purus ac massa. Fusce quis urna metus. Donec et lacus et sem lacinia cursus.', 'cornerstone' ), 'active' => true ),
+        array( 'title' => __( 'Tab 2', 'cornerstone' ), 'content' => __( 'The content for your Tab goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium, nisi ut volutpat mollis, leo risus interdum arcu, eget facilisis quam felis id mauris. Ut convallis, lacus nec ornare volutpat, velit turpis scelerisque purus, quis mollis velit purus ac massa. Fusce quis urna metus. Donec et lacus et sem lacinia cursus.', 'cornerstone' ) )
       ),
       array(
       	'element'  => 'tab',
-        'newTitle' => __( 'Tab %s', csl18n() ),
+        'newTitle' => __( 'Tab %s', 'cornerstone' ),
         'floor'    => 2,
         'capacity' => 5
       )
@@ -35,15 +35,15 @@ class CS_Tabs extends Cornerstone_Element_Base {
     $this->addControl(
       'nav_position',
       'choose',
-      __( 'Navigation Position', csl18n() ),
-      __( 'Choose the positioning of your navigation for your tabs.', csl18n() ),
+      __( 'Navigation Position', 'cornerstone' ),
+      __( 'Choose the positioning of your navigation for your tabs.', 'cornerstone' ),
       'top',
       array(
         'columns' => '3',
         'choices' => array(
-          array( 'value' => 'top',   'tooltip' => __( 'Top', csl18n() ),   'icon' => fa_entity( 'arrow-up' ) ),
-          array( 'value' => 'left',  'tooltip' => __( 'Left', csl18n() ),  'icon' => fa_entity( 'arrow-left' ) ),
-          array( 'value' => 'right', 'tooltip' => __( 'Right', csl18n() ), 'icon' => fa_entity( 'arrow-right' ) )
+          array( 'value' => 'top',   'tooltip' => __( 'Top', 'cornerstone' ),   'icon' => fa_entity( 'arrow-up' ) ),
+          array( 'value' => 'left',  'tooltip' => __( 'Left', 'cornerstone' ),  'icon' => fa_entity( 'arrow-left' ) ),
+          array( 'value' => 'right', 'tooltip' => __( 'Right', 'cornerstone' ), 'icon' => fa_entity( 'arrow-right' ) )
         )
       )
     );

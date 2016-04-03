@@ -14,9 +14,9 @@ return array(
 		),
 		'context' => 'content',
 		'suggest' => array(
-	    array( 'title' => __( 'Icon List Item 1', csl18n() ), 'type' => 'check' ),
-	    array( 'title' => __( 'Icon List Item 2', csl18n() ), 'type' => 'check' ),
-	    array( 'title' => __( 'Icon List Item 3', csl18n() ), 'type' => 'times' )
+	    array( 'title' => __( 'Icon List Item 1', 'cornerstone' ), 'type' => 'check' ),
+	    array( 'title' => __( 'Icon List Item 2', 'cornerstone' ), 'type' => 'check' ),
+	    array( 'title' => __( 'Icon List Item 3', 'cornerstone' ), 'type' => 'times' )
 	  )
 
 	),

@@ -5,9 +5,9 @@ class CS_Mailchimp extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'mailchimp',
-      'title'       => __( 'Mailchimp', csl18n() ),
+      'title'       => __( 'Mailchimp', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Mailchimp description.', csl18n() ),
+      'description' => __( 'Mailchimp description.', 'cornerstone' ),
       'empty'       => array( 'form_id' => 'none' )
     );
   }
@@ -27,14 +27,14 @@ class CS_Mailchimp extends Cornerstone_Element_Base {
     }
 
     if ( empty( $choices ) ) {
-      $choices[] = array( 'value' => 'none', 'label' => __( 'No Forms available', csl18n() ), 'disabled' => true );
+      $choices[] = array( 'value' => 'none', 'label' => __( 'No Forms available', 'cornerstone' ), 'disabled' => true );
     }
 
     $this->addControl(
       'form_id',
       'select',
-      __( 'Select Email Form', csl18n() ),
-      __( 'Select a previously setup email form.', csl18n() ),
+      __( 'Select Email Form', 'cornerstone' ),
+      __( 'Select a previously setup email form.', 'cornerstone' ),
       $choices[0]['value'],
       array( 'choices' => $choices )
     );

@@ -5,9 +5,9 @@ class CS_Text extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'text',
-      'title'       => __( 'Text', csl18n() ),
+      'title'       => __( 'Text', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Text description.', csl18n() ),
+      'description' => __( 'Text description.', 'cornerstone' ),
       'supports'    => array( 'text_align', 'id', 'class', 'style' ),
       'empty'       => array( 'content' => '' ),
       'autofocus' => array(

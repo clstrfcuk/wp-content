@@ -102,6 +102,19 @@ class RevSliderDB{
 	
 	/**
 	 * 
+	 * run some sql query
+	 */
+	public function runSqlR($query){
+		global $wpdb;
+		
+		$return = $wpdb->get_results($query, ARRAY_A);
+		
+		return $return;
+	}
+	
+	
+	/**
+	 * 
 	 * insert variables to some table
 	 */
 	public function update($table,$arrItems,$where){

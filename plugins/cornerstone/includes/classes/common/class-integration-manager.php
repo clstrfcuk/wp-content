@@ -16,14 +16,11 @@ class Cornerstone_Integration_Manager extends Cornerstone_Plugin_Component {
 	 */
 	public function setup() {
 
-		$this->registerNativeIntegrations();
+		$this->register_native_integrations();
 
-		if ( class_exists('Cornerstone_Integration_Conflict_Resolution') ) {
-			Cornerstone_Integration_Conflict_Resolution::preInit();
-		}
+		add_action( 'plugins_loaded', array( $this, 'load' ) );
+		add_action( 'after_setup_theme', array( $this, 'load_theme' ) );
 
-		add_action( 'plugins_loaded', array( $this, 'load') );
-		add_action( 'after_setup_theme', array( $this, 'themeIntegration' ) );
 	}
 
 	/**
@@ -42,21 +39,17 @@ class Cornerstone_Integration_Manager extends Cornerstone_Plugin_Component {
 		foreach ($this->registry as $handle => $class_name) {
 
 			if ( is_callable( array( $class_name, 'stylesheet' ) ) ) {
-				$this->themes[$handle] = $class_name;
+				$this->themes[ $handle ] = $class_name;
 				continue;
 			}
 
-			$shouldLoad = array( $class_name, 'shouldLoad' );
+			$should_load = array( $class_name, 'should_load' );
 
-			if ( !is_callable( $shouldLoad ) ) {
-				trigger_error( "Cornerstone_Integration_Manager | Failed to load integration | $class_name::shouldLoad method missing", E_USER_WARNING );
+			if ( is_callable( $should_load ) && ! call_user_func( $should_load )) {
 				continue;
 			}
 
-			if ( !call_user_func( $shouldLoad ) )
-				continue;
-
-			$this->instances[$handle] = new $class_name;
+			$this->instances[ $handle ] = new $class_name;
 
 		}
 
@@ -65,23 +58,24 @@ class Cornerstone_Integration_Manager extends Cornerstone_Plugin_Component {
 	/**
 	 * Directly add a class for theme integration by it's stylesheet
 	 */
-	public function themeIntegration() {
+	public function load_theme() {
 
 		foreach ($this->registry as $handle => $class_name) {
 
 			$stylesheet = array( $class_name, 'stylesheet' );
 
-			if ( !class_exists( $class_name) || !is_callable( $stylesheet ))
+			if ( ! class_exists( $class_name ) || ! is_callable( $stylesheet ) ) {
 				continue;
+			}
 
 			$current_theme = get_stylesheet();
-			if (is_child_theme()) {
+			if ( is_child_theme() ) {
 				$child_theme = wp_get_theme();
 				$current_theme = $child_theme->Template;
 			}
 
-			if ( call_user_func( $stylesheet ) == $current_theme ) {
-				$this->instances[$handle] = new $class_name;
+			if ( call_user_func( $stylesheet ) === $current_theme ) {
+				$this->instances[ $handle ] = new $class_name;
 				return;
 			}
 
@@ -93,27 +87,34 @@ class Cornerstone_Integration_Manager extends Cornerstone_Plugin_Component {
 	 * Register integrations included with Cornerstone
 	 * @return none
 	 */
-	public function registerNativeIntegrations() {
+	public function register_native_integrations() {
 
 		$this->registry = array();
 		$this->themes = array();
 
 		$path = $this->path( 'includes/integrations/' );
 
-		foreach ( glob("$path*.php") as $filename ) {
+		foreach ( glob( "$path*.php" ) as $filename ) {
 
-			if ( !file_exists( $filename) )
+			if ( ! file_exists( $filename ) ) {
 				continue;
-
-			require_once( $filename );
-			$handle = str_replace('.php', '', basename($filename) );
-
-			$words = explode('-', $handle );
-			foreach ($words as $key => $value) {
-				$words[$key] = ucfirst($value);
 			}
 
-			$this->registry[ $handle ] = 'Cornerstone_Integration_' . implode('_', $words);
+			require_once( $filename );
+			$handle = str_replace( '.php', '', basename( $filename ) );
+
+			$words = explode( '-', $handle );
+			foreach ( $words as $key => $value) {
+				$words[ $key ] = ucfirst( $value );
+			}
+
+			$this->registry[ $handle ] = 'Cornerstone_Integration_' . implode( '_', $words );
+
+			$pre_init = array( $this->registry[ $handle ], 'pre_init' );
+
+			if ( is_callable( $pre_init ) ) {
+				call_user_func( $pre_init );
+			}
 
 		}
 
@@ -134,8 +135,9 @@ class Cornerstone_Integration_Manager extends Cornerstone_Plugin_Component {
 	 * @param string $class_name Class being used
 	 */
 	public function unregister( $name ) {
-		if ( isset( $this->registry[ $name ] ) )
+		if ( isset( $this->registry[ $name ] ) ) {
 			unset( $this->registry[ $name ] );
+		}
 	}
 
 	/**
@@ -144,10 +146,33 @@ class Cornerstone_Integration_Manager extends Cornerstone_Plugin_Component {
 	 * @param  string $id
 	 * @return obj|array
 	 */
-	public function get( $id = '') {
-		if ( isset( $this->instances[$id] ) )
-			return $this->instances[$id];
+	public function get( $id = '' ) {
+		if ( isset( $this->instances[ $id ] ) ) {
+			return $this->instances[ $id ];
+		}
 		return $this->instances;
+	}
+
+	/**
+	 * Setup theme integration filters. See includes/utility/api.php
+	 * @param  array $args A list of flags specifying if they should be disabled.
+	 * @return none
+	 */
+	public function theme_integration( $args ) {
+
+		$args = cs_define_defaults( $args, array(
+			'remove_global_validation_notice' => false,
+			'remove_themeco_offers'           => false,
+			'remove_purchase_link'            => false,
+			'remove_support_box'              => false,
+		) );
+
+		foreach ( $args as $key => $value ) {
+			if ( $value ) {
+				add_filter( "_cornerstone_integration_$key", '__return_true' );
+			}
+		}
+
 	}
 
 }

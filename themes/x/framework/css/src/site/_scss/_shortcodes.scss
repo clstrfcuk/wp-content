@@ -8,9 +8,9 @@
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
 //   01. Container
-//   02. Gaps
+//   02. Gap
 //   03. Clear
-//   04. Maps
+//   04. Map
 //   05. Code
 //   06. Icon
 //   07. Block Grid
@@ -45,7 +45,7 @@
 
 
 
-// Gaps
+// Gap
 // =============================================================================
 
 .x-gap {
@@ -66,7 +66,7 @@
 
 
 
-// Maps
+// Map
 // =============================================================================
 
 .x-map {
@@ -142,7 +142,6 @@
   display: block;
   overflow: hidden;
   margin: 0 0 $baseMargin;
-  padding: 0;
 
   > li {
     display: block;
@@ -160,21 +159,15 @@
   &.two-up > li {
     width: 47.5%;
 
-    &:nth-child(-n+2) {
-      margin-top: 0;
-    }
-
-    &:nth-child(2n) {
-      margin-right: 0;
-    }
+    &:nth-child(-n+2) { margin-top: 0;   }
+    &:nth-child(2n)   { margin-right: 0; }
+    &:nth-child(2n+1) { clear: both;     }
 
     @include break(baby-bear) {
       width: 100%;
       margin-right: 0;
 
-      &:nth-child(2) {
-        margin-top: 5%;
-      }
+      &:nth-child(2) { margin-top: 5%; }
     }
   }
 
@@ -186,41 +179,26 @@
   &.three-up > li {
     width: 30%;
 
-    &:nth-child(-n+3) {
-      margin-top: 0;
-    }
-
-    &:nth-child(3n) {
-      margin-right: 0;
-    }
+    &:nth-child(-n+3) { margin-top: 0;   }
+    &:nth-child(3n)   { margin-right: 0; }
+    &:nth-child(3n+1) { clear: both;     }
 
     @include break(cubs) {
       width: 47.5%;
 
-      &:nth-child(3) {
-        margin-top: 5%;
-      }
-
-      &:nth-child(3n) {
-        margin-right: 5%;
-      }
-
-      &:nth-child(2n) {
-        margin-right: 0;
-      }
+      &:nth-child(3)    { margin-top: 5%;   }
+      &:nth-child(3n)   { margin-right: 5%; }
+      &:nth-child(3n+1) { clear: none;      }
+      &:nth-child(2n)   { margin-right: 0;  }
+      &:nth-child(2n+1) { clear: both;      }
     }
 
     @include break(baby-bear) {
       width: 100%;
       margin-right: 0;
 
-      &:nth-child(2) {
-        margin-top: 5%;
-      }
-
-      &:nth-child(3n) {
-        margin-right: 0;
-      }
+      &:nth-child(2)  { margin-top: 5%;  }
+      &:nth-child(3n) { margin-right: 0; }
     }
   }
 
@@ -232,42 +210,27 @@
   &.four-up > li {
     width: 21.25%;
 
-    &:nth-child(-n+4) {
-      margin-top: 0;
-    }
-
-    &:nth-child(4n) {
-      margin-right: 0;
-    }
+    &:nth-child(-n+4) { margin-top: 0;   }
+    &:nth-child(4n)   { margin-right: 0; }
+    &:nth-child(4n+1) { clear: both;     }
 
     @include break(cubs) {
       width: 47.5%;
 
       &:nth-child(3),
-      &:nth-child(4) {
-        margin-top: 5%;
-      }
-
-      &:nth-child(4n) {
-        margin-right: 5%;
-      }
-
-      &:nth-child(2n) {
-        margin-right: 0;
-      }
+      &:nth-child(4)    { margin-top: 5%;   }
+      &:nth-child(4n)   { margin-right: 5%; }
+      &:nth-child(4n+1) { clear: none;      }
+      &:nth-child(2n)   { margin-right: 0;  }
+      &:nth-child(2n+1) { clear: both;      }
     }
 
     @include break(baby-bear) {
       width: 100%;
       margin-right: 0;
 
-      &:nth-child(2) {
-        margin-top: 5%;
-      }
-
-      &:nth-child(4n) {
-        margin-right: 0;
-      }
+      &:nth-child(2)  { margin-top: 5%;  }
+      &:nth-child(4n) { margin-right: 0; }
     }
   }
 }
@@ -282,9 +245,6 @@
   list-style: none;
 
   li {
-    margin-left: 0;
-    list-style: none;
-
     [class*="#{$fa-css-prefix}-"] {
       text-indent: -1.5em;
     }
@@ -478,6 +438,7 @@
 
   .x-face-title {
     margin: 0;
+    padding: 0;
     font-size: 1.75em;
   }
 
@@ -781,10 +742,6 @@
   padding: 1px 0;
   list-style: none;
   counter-reset: xFeatureListNum;
-
-  li {
-    list-style: none;
-  }
 
 
   //

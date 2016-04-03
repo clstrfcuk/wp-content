@@ -39,7 +39,7 @@ var EnviraGalleryModalWindow = new wp.media.view.Modal( {
 /**
 * View
 */
-var EnviraGalleryView = wp.Backbone.View.extend( {
+var EnviraGalleryEditView = wp.Backbone.View.extend( {
 
     /**
     * The Tag Name and Tag's Class(es)
@@ -72,6 +72,9 @@ var EnviraGalleryView = wp.Backbone.View.extend( {
 
         'keyup input#link-search':                      'searchLinks',
         'click div.query-results li':                   'insertLink',
+
+        'click button.media-file':                      'insertMediaFileLink',
+        'click button.attachment-page':                 'insertAttachmentPageLink',
     },
 
     /**
@@ -184,7 +187,6 @@ var EnviraGalleryView = wp.Backbone.View.extend( {
 
         // Display the error message, if it's provided
         if ( typeof response !== 'undefined' ) {
-            console.log( response );
             alert( response );
         }
 
@@ -307,8 +309,89 @@ var EnviraGalleryView = wp.Backbone.View.extend( {
     */
     insertLink: function( event ) {
 
+
     
     },
+
+    /**
+    * Inserts the direct media link for the Media Library item
+    *
+    * The button triggering this event is only displayed if we are editing a
+    * Media Library item, so there's no need to perform further checks
+    */
+    insertMediaFileLink: function( event ) {
+
+        // Tell the View we're loading
+        this.trigger( 'loading' );
+
+        // Make an AJAX request to get the media link
+        wp.media.ajax( 'envira_gallery_get_attachment_links', {
+            context: this,
+            data: {
+                nonce:          envira_gallery_metabox.save_nonce,
+                attachment_id:  this.model.get( 'id' ),
+            },
+            success: function( response ) {
+
+                // Update model
+                this.model.set( 'link', response.media_link );
+
+                // Tell the view we've finished successfully
+                this.trigger( 'loaded loaded:success' );
+
+                // Re-render the view
+                this.render();
+
+            },
+            error: function( error_message ) {
+
+                // Tell wp.media we've finished, but there was an error 
+                this.trigger( 'loaded loaded:error', error_message );
+
+            }
+        } );
+
+    },
+
+    /**
+    * Inserts the attachment page link for the Media Library item
+    *
+    * The button triggering this event is only displayed if we are editing a
+    * Media Library item, so there's no need to perform further checks
+    */
+    insertAttachmentPageLink: function( event ) {
+
+        // Tell the View we're loading
+        this.trigger( 'loading' );
+
+        // Make an AJAX request to get the media link
+        wp.media.ajax( 'envira_gallery_get_attachment_links', {
+            context: this,
+            data: {
+                nonce:          envira_gallery_metabox.save_nonce,
+                attachment_id:  this.model.get( 'id' ),
+            },
+            success: function( response ) {
+
+                // Update model
+                this.model.set( 'link', response.attachment_page );
+
+                // Tell the view we've finished successfully
+                this.trigger( 'loaded loaded:success' );
+
+                // Re-render the view
+                this.render();
+
+            },
+            error: function( error_message ) {
+
+                // Tell wp.media we've finished, but there was an error 
+                this.trigger( 'loaded loaded:error', error_message );
+
+            }
+        } );
+
+    }
 
 } );
 
@@ -324,21 +407,24 @@ var EnviraGalleryChildViews = [];
 */
 jQuery( document ).ready( function( $ ) {
 
-    // Populate the collection
-    EnviraGalleryImagesUpdate();
-
     // Edit Image
     $( '#envira-gallery' ).on( 'click.enviraModify', '.envira-gallery-modify-image', function( e ) {
 
         // Prevent default action
         e.preventDefault();
 
+        // (Re)populate the collection
+        // The collection can change based on whether the user previously selected specific images
+        EnviraGalleryImagesUpdate( false );
+
+        console.log( EnviraGalleryImages );
+
         // Get the selected attachment
         var attachment_id = $( this ).parent().data( 'envira-gallery-image' );
 
         // Pass the collection of images for this gallery to the modal view, as well
         // as the selected attachment
-        EnviraGalleryModalWindow.content( new EnviraGalleryView( {
+        EnviraGalleryModalWindow.content( new EnviraGalleryEditView( {
             collection:     EnviraGalleryImages,
             child_views:    EnviraGalleryChildViews,
             attachment_id:  attachment_id,
@@ -352,23 +438,55 @@ jQuery( document ).ready( function( $ ) {
 } );
 
 /**
-* Populates the EnviraGalleryImages Backbone collection
+* Populates the EnviraGalleryImages Backbone collection, which comprises of a set of Envira Gallery Images
 *
-* Called when images are added, deleted or reordered
-* Doesn't need to be called when an image is edited, as the model will be updated automatically in the collection
+* Called when images are added, deleted, reordered or selected
+*
+* @global           EnviraGalleryImages     The backbone collection of images 
+* @param    bool    selected_only           Only populate collection with images the user has selected
 */
-function EnviraGalleryImagesUpdate() {
+function EnviraGalleryImagesUpdate( selected_only ) {
 
     // Clear the collection
     EnviraGalleryImages.reset();
 
     // Iterate through the gallery images in the DOM, adding them to the collection
-    jQuery( 'ul#envira-gallery-output li.envira-gallery-image' ).each( function() {
+    var selector = 'ul#envira-gallery-output li.envira-gallery-image' + ( selected_only ? '.selected' : '' );
+
+    jQuery( selector ).each( function() {
         // Build an EnviraGalleryImage Backbone Model from the JSON supplied in the element
         var envira_gallery_image = jQuery.parseJSON( jQuery( this ).attr( 'data-envira-gallery-image-model' ) );
 
+        // Strip slashes from some fields
+        envira_gallery_image.alt = EnviraGalleryStripslashes( envira_gallery_image.alt );
+        
         // Add the model to the collection
         EnviraGalleryImages.add( new EnviraGalleryImage( envira_gallery_image ) );
     } );
+
+}
+
+/**
+* Strips slashes from the given string, which may have been added to escape certain characters
+*
+* @since 1.4.2.0
+*
+* @param    string  str     String
+* @return   string          String without slashes
+*/
+function EnviraGalleryStripslashes( str ) {
+
+    return (str + '').replace(/\\(.?)/g, function(s, n1) {
+        switch (n1) {
+            case '\\':
+                return '\\';
+            case '0':
+                return '\u0000';
+            case '':
+                return '';
+            default:
+                return n1;
+        }
+    });
 
 }

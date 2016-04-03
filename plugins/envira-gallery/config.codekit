@@ -1,6 +1,6 @@
 {
 "CodeKitInfo": "This is a CodeKit 2.x project configuration file. It is designed to sync project settings across multiple machines. MODIFYING THE CONTENTS OF THIS FILE IS A POOR LIFE DECISION. If you do so, you will likely cause CodeKit to crash. This file is not useful unless accompanied by the project that created it in CodeKit 2. This file is not backwards-compatible with CodeKit 1.x. For more information, see: http:\/\/incident57.com\/codekit",
-"creatorBuild": "19102",
+"creatorBuild": "19115",
 "files": {
 	"\/assets\/css\/admin.css": {
 		"fileType": 16,
@@ -410,6 +410,17 @@
 		"outputStyle": 1,
 		"syntaxCheckerStyle": 1
 		},
+	"\/assets\/js\/media-bulk-edit.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/assets\/js\/media-bulk-edit.js",
+		"outputAbbreviatedPath": "\/assets\/js\/min\/media-bulk-edit-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
 	"\/assets\/js\/media-delete.js": {
 		"fileType": 64,
 		"ignore": 1,
@@ -427,6 +438,17 @@
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/assets\/js\/media-edit.js",
 		"outputAbbreviatedPath": "\/assets\/js\/min\/media-edit-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/assets\/js\/media-insert-third-party.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/assets\/js\/media-insert-third-party.js",
+		"outputAbbreviatedPath": "\/assets\/js\/min\/media-insert-third-party-min.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 1,
@@ -504,6 +526,28 @@
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/assets\/js\/min\/envira-min.js",
 		"outputAbbreviatedPath": "\/assets\/js\/min\/min\/envira-min-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/assets\/js\/min\/media-insert-min.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/assets\/js\/min\/media-insert-min.js",
+		"outputAbbreviatedPath": "\/assets\/js\/min\/min\/media-insert-min-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/assets\/js\/min\/media-insert-third-party-min.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/assets\/js\/min\/media-insert-third-party-min.js",
+		"outputAbbreviatedPath": "\/assets\/js\/min\/min\/media-insert-third-party-min-min.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 1,
@@ -846,7 +890,7 @@
 	},
 "hooks": [
 	],
-"lastSavedByUser": "Thomas Griffin",
+"lastSavedByUser": "Tim Carr",
 "manualImportLinks": {
 	"\/assets\/js\/envira.js": [
 		{
@@ -937,32 +981,38 @@
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/assets\/js\/media-delete.js",
+			"linkedFileAbbreviatedPath": "\/assets\/js\/media-bulk-edit.js",
 			"position": 3,
 			"type": 0
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/assets\/js\/media-edit.js",
+			"linkedFileAbbreviatedPath": "\/assets\/js\/media-delete.js",
 			"position": 4,
 			"type": 0
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/assets\/js\/media-insert.js",
+			"linkedFileAbbreviatedPath": "\/assets\/js\/media-edit.js",
 			"position": 5,
 			"type": 0
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/assets\/js\/media-manage.js",
+			"linkedFileAbbreviatedPath": "\/assets\/js\/media-insert.js",
 			"position": 6,
 			"type": 0
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/assets\/js\/media-upload.js",
+			"linkedFileAbbreviatedPath": "\/assets\/js\/media-manage.js",
 			"position": 7,
+			"type": 0
+			},
+		{
+			"followForSyntaxChecking": 1,
+			"linkedFileAbbreviatedPath": "\/assets\/js\/media-upload.js",
+			"position": 8,
 			"type": 0
 			}
 		]

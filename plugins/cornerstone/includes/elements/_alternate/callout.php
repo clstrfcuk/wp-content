@@ -5,9 +5,9 @@ class CS_Callout extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'callout',
-      'title'       => __( 'Callout', csl18n() ),
+      'title'       => __( 'Callout', 'cornerstone' ),
       'section'     => 'marketing',
-      'description' => __( 'Callout description.', csl18n() ),
+      'description' => __( 'Callout description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'heading' => '.h-callout',
@@ -22,9 +22,9 @@ class CS_Callout extends Cornerstone_Element_Base {
     $this->addControl(
       'heading',
       'text',
-      __( 'Title &amp; Message', csl18n() ),
-      __( 'Enter the title and message for your Callout below.', csl18n() ),
-      __( 'Callout Title', csl18n() )
+      __( 'Title &amp; Message', 'cornerstone' ),
+      __( 'Enter the title and message for your Callout below.', 'cornerstone' ),
+      __( 'Callout Title', 'cornerstone' )
     );
 
     $this->addControl(
@@ -32,33 +32,33 @@ class CS_Callout extends Cornerstone_Element_Base {
       'textarea',
       NULL,
       NULL,
-      __( 'The message text for your Callout goes here.', csl18n() ),
+      __( 'The message text for your Callout goes here.', 'cornerstone' ),
       array(
-        'expandable' => __( 'Message', csl18n() )
+        'expandable' => __( 'Message', 'cornerstone' )
       )
     );
 
     $this->addControl(
       'button_text',
       'text',
-      __( 'Button Text', csl18n() ),
-      __( 'Enter the text for your Callout button.', csl18n() ),
-      __( 'Enter Your Text', csl18n() )
+      __( 'Button Text', 'cornerstone' ),
+      __( 'Enter the text for your Callout button.', 'cornerstone' ),
+      __( 'Enter Your Text', 'cornerstone' )
     );
 
     $this->addControl(
       'button_icon',
       'icon-choose',
-      __( 'Button Icon', csl18n() ),
-      __( 'Optionally enter the button icon.', csl18n() ),
+      __( 'Button Icon', 'cornerstone' ),
+      __( 'Optionally enter the button icon.', 'cornerstone' ),
       'lightbulb-o'
     );
 
     $this->addControl(
       'circle',
       'toggle',
-      __( 'Marketing Circle', csl18n() ),
-      __( 'Select to include a marketing circle around your button.', csl18n() ),
+      __( 'Marketing Circle', 'cornerstone' ),
+      __( 'Select to include a marketing circle around your button.', 'cornerstone' ),
       false
     );
 
@@ -66,16 +66,15 @@ class CS_Callout extends Cornerstone_Element_Base {
 
     $this->addControl(
       'type',
-      'choose',
-      __( 'Alignment', csl18n() ),
-      __( 'Select the alignment for your Callout.', csl18n() ),
+      'select',
+      __( 'Alignment', 'cornerstone' ),
+      __( 'Select the alignment for your Callout.', 'cornerstone' ),
       'left',
       array(
-        'columns' => '3',
         'choices' => array(
-          array( 'value' => 'left',   'tooltip' => __( 'Left', csl18n() ),   'icon' => fa_entity( 'align-left' ) ),
-          array( 'value' => 'center', 'tooltip' => __( 'Center', csl18n() ), 'icon' => fa_entity( 'align-center' ) ),
-          array( 'value' => 'right',  'tooltip' => __( 'Right', csl18n() ),  'icon' => fa_entity( 'align-right' ) )
+          array( 'value' => 'left',   'tooltip' => __( 'Left', 'cornerstone' ) ),
+          array( 'value' => 'center', 'tooltip' => __( 'Center', 'cornerstone' ) ),
+          array( 'value' => 'right',  'tooltip' => __( 'Right', 'cornerstone' ) )
         )
       )
     );
@@ -87,6 +86,10 @@ class CS_Callout extends Cornerstone_Element_Base {
     extract( $atts );
 
     $href_target = ( $href_target == 'true' ) ? 'blank' : '';
+
+    $heading     = cs_clean_shortcode_att( $heading );
+    $message     = cs_clean_shortcode_att( $message );
+    $button_text = cs_clean_shortcode_att( $button_text );
 
     $shortcode = "[x_callout title=\"$heading\" message=\"$message\" type=\"$type\" button_text=\"$button_text\" circle=\"$circle\" button_icon=\"$button_icon\" href=\"$href\" href_title=\"$href_title\" target=\"$href_target\"{$extra}]";
 

@@ -15,7 +15,7 @@ function x_shortcode_blockquote( $atts, $content = null ) { // 1
   $id    = ( $id    != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
   $class = ( $class != '' ) ? 'x-blockquote ' . esc_attr( $class ) : 'x-blockquote';
   $style = ( $style != '' ) ? 'style="' . $style . '"' : '';
-  $cite  = ( $cite  != '' ) ? '<cite class="x-cite">' . wp_specialchars_decode( $cite, ENT_QUOTES ) . '</cite>' : '';
+  $cite  = ( $cite  != '' ) ? '<cite class="x-cite">' . cs_decode_shortcode_attribute( $cite ) . '</cite>' : '';
   switch ( $type ) {
     case 'right' :
       $type = ' right-text';

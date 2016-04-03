@@ -5,12 +5,12 @@ class CS_Protect extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'protect',
-      'title'       => __( 'Protect', csl18n() ),
+      'title'       => __( 'Protect', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Protect description.', csl18n() ),
+      'description' => __( 'Protect description.', 'cornerstone' ),
       'helpText'    => array(
-        'title'     => __( 'How does this work?', csl18n() ),
-        'message'   => __( 'This element offers simple protection based on being logged in. Logged out users will be prompted to login before viewing the content.', csl18n() ),
+        'title'     => __( 'How does this work?', 'cornerstone' ),
+        'message'   => __( 'This element offers simple protection based on being logged in. Logged out users will be prompted to login before viewing the content.', 'cornerstone' ),
       ),
       'supports'    => array( 'id', 'class', 'style' ),
       'empty'       => array( 'content' => '' )
@@ -20,10 +20,21 @@ class CS_Protect extends Cornerstone_Element_Base {
   public function controls() {
 
     $this->addControl(
+      'heading',
+      'text',
+      __( 'Login Heading', 'cornerstone' ),
+      __( 'Edit the heading promting users to login.', 'cornerstone' ),
+      '',
+      array(
+        'placeholder' => __( 'Restricted Content Login', 'cornerstone' )
+      )
+    );
+
+    $this->addControl(
       'content',
       'textarea',
-      __( 'Content', csl18n() ),
-      __( 'Enter the text to go inside your Protect shortcode. This will only be visible to users who are logged in.', csl18n() ),
+      __( 'Content', 'cornerstone' ),
+      __( 'Enter the text to go inside your Protect shortcode. This will only be visible to users who are logged in.', 'cornerstone' ),
       ''
     );
 
@@ -32,8 +43,8 @@ class CS_Protect extends Cornerstone_Element_Base {
   public function render( $atts ) {
 
     extract( $atts );
-
-    $shortcode = "[x_protect{$extra}]{$content}[/x_protect]";
+    $heading = ( $heading != '' ) ? "heading=\"$heading\"": '';
+    $shortcode = "[x_protect {$heading} {$extra}]{$content}[/x_protect]";
 
     return $shortcode;
 

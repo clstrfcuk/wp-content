@@ -59,6 +59,10 @@ class Envira_Gallery_Common {
 
         $columns = array(
             array(
+                'value' => '0',
+                'name'  => __( 'Automatic', 'envira-gallery' )
+            ),
+            array(
                 'value' => '1',
                 'name'  => __( 'One Column (1)', 'envira-gallery' )
             ),
@@ -156,6 +160,10 @@ class Envira_Gallery_Common {
                 'value' => 1, // Deliberate, as we map the 'random' config key which was a true/false
             ),
             array(
+                'name'  => __( 'Published Date', 'envira-gallery' ),
+                'value' => 'date',
+            ),
+            array(
                 'name'  => __( 'Filename', 'envira-gallery' ),
                 'value' => 'src',
             ),
@@ -240,16 +248,7 @@ class Envira_Gallery_Common {
             array(
                 'value'  => 'default',
                 'name'   => __( 'Default', 'envira-gallery' ),
-                'width'  => 0,
-                'height' => 0
             )
-        );
-
-        $sizes[] = array(
-            'value'  => 'full_width',
-            'name'   => __( 'Full Width', 'envira-gallery' ),
-            'width'  => 0,
-            'height' => 0
         );
 
         global $_wp_additional_image_sizes;
@@ -267,15 +266,11 @@ class Envira_Gallery_Common {
                 $sizes[] = array(
                     'value'  => $size,
                     'name'   => ucwords( str_replace( array( '-', '_' ), ' ', $size ) ),
-                    'width'  => 0,
-                    'height' => 0
                 );
             } else {
                 $sizes[] = array(
                     'value'  => $size,
                     'name'   => ucwords( str_replace( array( '-', '_' ), ' ', $size ) ) . ' (' . $width . ' &#215; ' . $height . ')',
-                    'width'  => $width,
-                    'height' => $height
                 );
             }
         }
@@ -519,7 +514,7 @@ class Envira_Gallery_Common {
         global $id, $post;
 
         // Get the current post ID. If ajax, grab it from the $_POST variable.
-        if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+        if ( defined( 'DOING_AJAX' ) && DOING_AJAX && isset( $_POST['post_id'] ) ) {
             $post_id = absint( $_POST['post_id'] );
         } else {
             $post_id = isset( $post->ID ) ? $post->ID : (int) $id;
@@ -557,6 +552,7 @@ class Envira_Gallery_Common {
             'margin'              => 10,
             'random'              => 0,
             'sorting_direction'   => 'ASC',
+            'image_size'          => 'default', // Default = uses the below crop_width and crop_height
             'crop_width'          => 640,
             'crop_height'         => 480,
             'crop'                => 0,
@@ -738,7 +734,11 @@ class Envira_Gallery_Common {
         $args = apply_filters( 'envira_gallery_resize_image_args', $args );
 
         // Don't resize images that don't belong to this site's URL
-        if ( strpos( $url, get_bloginfo( 'url' ) ) === false ) {
+        // Strip ?lang=fr from blog's URL - WPML adds this on
+        // and means our next statement fails
+        $site_url = preg_replace( '/\?.*/', '', get_bloginfo( 'url' ) );
+
+        if ( strpos( $url, $site_url ) === false ) {
             return $url;
         }
 

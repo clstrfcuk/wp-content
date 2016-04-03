@@ -7,14 +7,16 @@ function x_shortcode_accordion( $atts, $content = null ) {
   extract( shortcode_atts( array(
     'id'    => '',
     'class' => '',
-    'style' => ''
+    'style' => '',
+    'link'  => ''
   ), $atts, 'x_accordion' ) );
 
-  $id    = ( $id    != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
-  $class = ( $class != '' ) ? 'x-accordion ' . esc_attr( $class ) : 'x-accordion';
-  $style = ( $style != '' ) ? 'style="' . $style . '"' : '';
+  $id     = ( $id    != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
+  $class  = ( $class != '' ) ? 'x-accordion ' . esc_attr( $class ) : 'x-accordion';
+  $style  = ( $style != '' ) ? 'style="' . $style . '"' : '';
+  $linked = ( $link === 'true' ) ? 'data-cs-collapse-linked ' : '';
 
-  $output = "<div {$id} class=\"{$class}\" {$style}>" . do_shortcode( $content ) . "</div>";
+  $output = "<div {$id} class=\"{$class}\" {$linked}{$style}>" . do_shortcode( $content ) . "</div>";
 
   return $output;
 }
@@ -39,39 +41,21 @@ function x_shortcode_accordion_item( $atts, $content = null ) {
   $id        = ( $id        != ''     ) ? 'id="' . esc_attr( $id ) . '"' : '';
   $class     = ( $class     != ''     ) ? 'x-accordion-group ' . esc_attr( $class ) : 'x-accordion-group';
   $style     = ( $style     != ''     ) ? 'style="' . $style . '"' : '';
-  $parent_id = ( $parent_id != ''     ) ? 'data-parent="#' . $parent_id . '"' : '';
+  $parent_id = ( $parent_id != ''     ) ? 'data-cs-collapse-parent="#' . $parent_id . '"' : '';
   $title     = ( $title     != ''     ) ? $title : 'Make Sure to Set a Title';
-  $open      = ( $open      == 'true' ) ? 'collapse in' : 'collapse';
+  $collapse  = ( $open      == 'true' ) ? 'collapse in' : 'collapse';
+  $collapsed = ( $open      != 'true' ) ? ' collapsed' : '';
 
-  static $count = 0; $count++;
-
-  if ( $open == 'collapse in' ) {
-
-    $output = "<div {$id} class=\"{$class}\" {$style}>"
-              . '<div class="x-accordion-heading">'
-                . "<a class=\"x-accordion-toggle\" data-toggle=\"collapse\" {$parent_id} href=\"#collapse-{$count}\">{$title}</a>"
+  $output = "<div {$id} class=\"{$class}\" {$style} data-cs-collapse-group>"
+            . '<div class="x-accordion-heading">'
+              . "<a class=\"x-accordion-toggle{$collapsed}\" data-cs-collapse-toggle {$parent_id} >{$title}</a>"
+            . '</div>'
+            . "<div class=\"x-accordion-body {$collapse}\" data-cs-collapse-content>"
+              . '<div class="x-accordion-inner">'
+                . do_shortcode( $content )
               . '</div>'
-              . "<div id=\"collapse-{$count}\" class=\"accordion-body {$open}\">"
-                . '<div class="x-accordion-inner">'
-                  . do_shortcode( $content )
-                . '</div>'
-              . '</div>'
-            . '</div>';
-
-  } else {
-
-    $output = "<div {$id} class=\"{$class}\" {$style}>"
-              . '<div class="x-accordion-heading">'
-                . "<a class=\"x-accordion-toggle collapsed\" data-toggle=\"collapse\" {$parent_id} href=\"#collapse-{$count}\">{$title}</a>"
-              . '</div>'
-              . "<div id=\"collapse-{$count}\" class=\"accordion-body {$open}\">"
-                . '<div class="x-accordion-inner">'
-                  . do_shortcode( $content )
-                . '</div>'
-              . '</div>'
-            . '</div>';
-
-  }
+            . '</div>'
+          . '</div>';
 
   return $output;
 }

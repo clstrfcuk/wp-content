@@ -13,3 +13,19 @@
 * - Add them to the lib subfolder
 * - Add the to the imports directive of this file in CodeKit
 */
+
+/**
+* If a lightbox caption's link is an anchor, close the lightbox
+*/
+jQuery( document ).ready( function( $ ) {
+
+	$( 'body' ).on( 'click', 'div.envirabox-title a[href*=#]:not([href=#])', function( e ) {
+
+		if ( location.pathname.replace( /^\//, '' ) == this.pathname.replace( /^\//, '' ) && location.hostname == this.hostname ) {
+      		$.envirabox.close();
+      		return false;
+      	}
+
+	} );
+
+} );

@@ -84,8 +84,8 @@ class Cornerstone_Settings_Manager extends Cornerstone_Plugin_Component {
 
 		global $post;
 
-		if ( !isset( $data['post_id'] ) || !$post = get_post( (int) $data['post_id'] ) )
-      wp_send_json_error( array('message' => 'post_id not set' ) );
+		if ( ! isset( $data['post_id'] ) || ! $post = get_post( (int) $data['post_id'] ) )
+      cs_send_json_error( array('message' => 'post_id not set' ) );
 
     setup_postdata( $post );
 
@@ -94,10 +94,7 @@ class Cornerstone_Settings_Manager extends Cornerstone_Plugin_Component {
     	'models' => $this->get_models()
 		);
 
-		//Suppress PHP error output unless debugging
-		if ( CS()->common()->isDebug() )
-			return wp_send_json_success( $result );
-		return @wp_send_json_success( $result );
+		return cs_send_json_success( $result );
 
 	}
 

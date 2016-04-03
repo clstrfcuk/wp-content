@@ -18,36 +18,40 @@
 
 return array(
 
-  'files' => array(
-    'preinit' => array(
+	'files' => array(
+		'preinit' => array(
+			'tco/tco',
 			'utility/helpers',
 			'utility/api',
 			'utility/wp-shortcode-preserver',
-    ),
-    'loggedin' => array(
+		),
+		'loggedin' => array(
 			'utility/wp-clean-slate',
-    )
-  ),
+		)
+	),
 
-  'components' => array(
-    'preinit' => array(
-    	'Common',
-    	'Integration_Manager'
-    ),
-    'init' => array(
-    	'Legacy_Elements',
-    	'Shortcode_Generator',
-    	'Element_Orchestrator',
-    	'Core_Scripts',
-    	'Front_End',
-    	'Customizer_Manager',
-    	'Style_Loader'
-    ),
-    'loggedin' => array(
-    	'Admin',
-    	'Revision_Manager',
-    	'Builder',
-    	'Layout_Manager'
-    )
-  )
+	'components' => array(
+		'preinit' => array(
+			'Tco',
+			'Common',
+			'Updates',
+			'Integration_Manager'
+		),
+		'init' => array(
+			'Legacy_Elements',
+			'Shortcode_Generator',
+			'Element_Orchestrator',
+			'Core_Scripts',
+			'Front_End',
+			'Customizer_Manager',
+			'Style_Loader',
+		),
+		'loggedin' => array(
+			'Admin',
+			'Validation',
+			'Revision_Manager',
+			'Builder',
+			'Layout_Manager'
+		)
+	)
 );

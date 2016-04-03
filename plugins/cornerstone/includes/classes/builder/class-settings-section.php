@@ -33,7 +33,7 @@ class Cornerstone_Settings_Section {
 		$this->definition->manager = $this;
 
 		if ( $native ) {
-			$this->definition->text_domain = csl18n();
+			$this->definition->text_domain = 'cornerstone';
 		}
 
 		$this->text_domain = ( isset( $this->definition->text_domain ) ) ? $this->definition->text_domain : $this->definition->name();
@@ -186,7 +186,6 @@ class Cornerstone_Settings_Section {
 	}
 
 	final protected function get_file_array( $file = '' ) {
-		$td = $this->text_domain;
 		$definition = $this->definition;
 		$filename = $this->path . $file . '.php';
 		return ( file_exists( $filename) ) ? include( $filename ) : array();

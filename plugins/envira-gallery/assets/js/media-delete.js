@@ -38,7 +38,7 @@ jQuery( document ).ready( function( $ ) {
                 $('.envira-gallery-load-library').attr('data-envira-gallery-offset', 0).addClass('has-search').trigger('click');
 
                 // Repopulate the Envira Gallery Image Collection
-                EnviraGalleryImagesUpdate();
+                EnviraGalleryImagesUpdate( false );
             },
             'json'
         );
@@ -74,7 +74,7 @@ jQuery( document ).ready( function( $ ) {
                     $('.envira-gallery-load-library').attr('data-envira-gallery-offset', 0).addClass('has-search').trigger('click');
 
                     // Repopulate the Envira Gallery Image Collection
-                    EnviraGalleryImagesUpdate();
+                    EnviraGalleryImagesUpdate( false );
                 });
             },
             'json'

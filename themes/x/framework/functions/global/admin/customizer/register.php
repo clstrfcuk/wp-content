@@ -1382,10 +1382,10 @@ function x_customizer_options_register( $wp_customize ) {
   //
 
       $x['set'][] = array( 'x_custom_styles', 'refresh' );
-      $x['con'][] = array( 'x_custom_styles', 'textarea', __( 'CSS', '__x__' ), 'x_customizer_section_custom' );
+      $x['con'][] = array( 'x_custom_styles', 'cscodeeditor', __( 'Custom Code', '__x__' ), array( 'buttonText' => __( 'Edit Global CSS', '__x__' ), 'mode' => 'css' ), 'x_customizer_section_custom' );
 
       $x['set'][] = array( 'x_custom_scripts', 'refresh' );
-      $x['con'][] = array( 'x_custom_scripts', 'textarea', __( 'JavaScript', '__x__' ), 'x_customizer_section_custom' );
+      $x['con'][] = array( 'x_custom_scripts', 'cscodeeditor', __( 'Custom Code', '__x__' ), array( 'buttonText' => __( 'Edit Global JavaScript', '__x__' ), 'mode' => 'javascript', 'lint' => true ), 'x_customizer_section_custom' );
 
 
   //
@@ -1502,6 +1502,32 @@ function x_customizer_options_register( $wp_customize ) {
           'priority' => $i
         ))
       );
+    } elseif ( $control[1] == 'cscodeeditor' ) {
+
+      if ( class_exists( 'Cornerstone_Customize_Control_Code_Editor' ) ) {
+
+        $wp_customize->add_control(
+          new Cornerstone_Customize_Control_Code_Editor( $wp_customize, $control[0], array(
+            'label'    => $control[2],
+            'section'  => $control[4],
+            'settings' => $control[0],
+            'options'  => $control[3],
+            'priority' => $i
+          ))
+        );
+
+      } else {
+
+        $wp_customize->add_control(
+          new X_Customize_Control_Textarea( $wp_customize, $control[0], array(
+            'label'    => $control[2],
+            'section'  => $control[4],
+            'settings' => $control[0],
+            'priority' => $i
+          ))
+        );
+
+      }
 
     } elseif ( $control[1] == 'image' ) {
 

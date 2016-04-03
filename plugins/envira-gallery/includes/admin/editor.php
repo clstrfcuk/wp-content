@@ -82,6 +82,9 @@ class Envira_Gallery_Editor {
         // Add the action to the footer to output the modal window.
         add_action( 'admin_footer', array( $this, 'gallery_selection_modal' ) );
 
+        // Filter the button
+        $button = apply_filters( 'envira_gallery_media_button', $button, $buttons );
+
         // Append the button.
         return $buttons . $button;
 

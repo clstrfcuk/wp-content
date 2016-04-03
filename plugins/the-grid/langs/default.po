@@ -1,0 +1,3874 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: The Grid Plugin\n"
+"POT-Creation-Date: 2015-11-16 10:50+0100\n"
+"PO-Revision-Date: 2015-11-17 12:55+0100\n"
+"Last-Translator: \n"
+"Language-Team: Themeone <themeone.master@gmail.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.1\n"
+"X-Poedit-KeywordsList: __;_e;_x\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../backend/the-grid-admin.php:229 ../backend/the-grid-admin.php:230
+#: ../backend/the-grid-shortcode.php:161 ../backend/the-grid-shortcode.php:165
+#: ../includes/item-skin.class.php:111 ../the-grid.php:169 ../the-grid.php:177
+#: ../the-grid.php:182
+msgid "The Grid"
+msgstr ""
+
+#: ../backend/the-grid-admin.php:657 ../backend/the-grid-admin.php:682
+msgid "The file uploaded doesn't meet the standard grid settings."
+msgstr ""
+
+#: ../backend/the-grid-shortcode.php:71
+msgid "No grid was found for:"
+msgstr ""
+
+#: ../backend/the-grid-shortcode.php:76
+msgid "The shortcode doesn't contain any grid name"
+msgstr ""
+
+#: ../backend/the-grid-shortcode.php:98 ../backend/the-grid-shortcode.php:99
+msgid "The Grid - Shortcode Generator"
+msgstr ""
+
+#: ../backend/the-grid-shortcode.php:100
+msgid "Select a predefined Grid"
+msgstr ""
+
+#: ../backend/the-grid-shortcode.php:101 ../backend/the-grid-shortcode.php:103
+msgid "Select the grid you want"
+msgstr ""
+
+#: ../backend/the-grid-shortcode.php:102 ../backend/views/grid-list.php:241
+msgid "Currently, you don't have any grid!"
+msgstr ""
+
+#: ../backend/the-grid-shortcode.php:104 ../backend/views/grid-list.php:242
+#: ../includes/the-grid-base.class.php:636
+msgid "Create a Grid"
+msgstr ""
+
+#: ../backend/the-grid-shortcode.php:162
+msgid "Add a predefined Grid"
+msgstr ""
+
+#: ../backend/views/grid-banner1.php:14
+msgid "Overview"
+msgstr ""
+
+#: ../backend/views/grid-banner2.php:14
+msgid "Import & Export Settings"
+msgstr ""
+
+#: ../backend/views/grid-banner3.php:14
+msgid "Global Settings"
+msgstr ""
+
+#: ../backend/views/grid-banner3.php:16
+msgid "Save Settings"
+msgstr ""
+
+#: ../backend/views/grid-banner3.php:17
+msgid "Reset"
+msgstr ""
+
+#: ../backend/views/grid-banner4.php:14
+msgid "Grid Settings"
+msgstr ""
+
+#: ../backend/views/grid-banner4.php:16
+msgid "Save"
+msgstr ""
+
+#: ../backend/views/grid-banner4.php:17 ../backend/views/grid-config.php:2188
+msgid "Preview"
+msgstr ""
+
+#: ../backend/views/grid-banner4.php:18 ../backend/views/grid-list.php:172
+#: ../backend/views/grid-settings.php:529
+msgid "Delete"
+msgstr ""
+
+#: ../backend/views/grid-banner4.php:19 ../backend/views/grid-infobox.php:17
+msgid "Close"
+msgstr ""
+
+#: ../backend/views/grid-banner5.php:14
+msgid "Update Settings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:40
+msgid "Naming"
+msgstr ""
+
+#: ../backend/views/grid-config.php:41
+msgid ""
+"The shortcode can be added everywhere in a page or a post. The grid name "
+"must be unique!"
+msgstr ""
+
+#: ../backend/views/grid-config.php:45 ../backend/views/grid-config.php:55
+#: ../backend/views/grid-config.php:59 ../backend/views/grid-config.php:67
+#: ../backend/views/grid-config.php:71 ../backend/views/grid-config.php:80
+#: ../backend/views/grid-config.php:84 ../backend/views/grid-config.php:94
+#: ../backend/views/grid-config.php:99 ../backend/views/grid-config.php:105
+#: ../backend/views/grid-format.php:51 ../backend/views/grid-format.php:68
+#: ../backend/views/grid-format.php:72 ../backend/views/grid-format.php:82
+#: ../backend/views/grid-format.php:96 ../backend/views/grid-format.php:100
+#: ../backend/views/grid-format.php:114 ../backend/views/grid-format.php:118
+#: ../backend/views/grid-format.php:127 ../backend/views/grid-format.php:131
+#: ../backend/views/grid-format.php:144 ../backend/views/grid-format.php:157
+#: ../backend/views/grid-format.php:522 ../backend/views/grid-format.php:536
+#: ../backend/views/grid-format.php:540 ../backend/views/grid-format.php:552
+#: ../backend/views/grid-format.php:556 ../backend/views/grid-format.php:565
+#: ../backend/views/grid-format.php:569 ../backend/views/grid-format.php:582
+#: ../backend/views/grid-format.php:595 ../backend/views/grid-settings.php:66
+msgid "General"
+msgstr ""
+
+#: ../backend/views/grid-config.php:49 ../backend/views/grid-list.php:91
+#: ../backend/views/grid-settings.php:515
+msgid "Name"
+msgstr ""
+
+#: ../backend/views/grid-config.php:50
+msgid "Enter the name of the current grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:51
+msgid "* The grid name must be unique in order to prevent any conflict."
+msgstr ""
+
+#: ../backend/views/grid-config.php:63 ../backend/views/grid-list.php:96
+msgid "Shortcode"
+msgstr ""
+
+#: ../backend/views/grid-config.php:64
+msgid ""
+"Use this shortcode anywhere in a post type or a page to display the current "
+"grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:64
+msgid ""
+"The shortcode grid name is based on the grid name and can be confused if "
+"several grid have the same name."
+msgstr ""
+
+#: ../backend/views/grid-config.php:66
+msgid "Wrong name"
+msgstr ""
+
+#: ../backend/views/grid-config.php:75
+msgid "Grid ID"
+msgstr ""
+
+#: ../backend/views/grid-config.php:76
+msgid "You will find here the grid ID."
+msgstr ""
+
+#: ../backend/views/grid-config.php:77
+msgid "* The grid ID is unique."
+msgstr ""
+
+#: ../backend/views/grid-config.php:88
+msgid "Custom CSS class"
+msgstr ""
+
+#: ../backend/views/grid-config.php:89
+msgid "Enter your custom css class."
+msgstr ""
+
+#: ../backend/views/grid-config.php:90
+msgid "* Usefull to add custom css to the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:133
+msgid "Content Source"
+msgstr ""
+
+#: ../backend/views/grid-config.php:134
+msgid "Source content settings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:138 ../backend/views/grid-config.php:151
+#: ../backend/views/grid-config.php:155 ../backend/views/grid-config.php:167
+#: ../backend/views/grid-config.php:171 ../backend/views/grid-config.php:185
+#: ../backend/views/grid-config.php:194 ../backend/views/grid-config.php:203
+#: ../backend/views/grid-config.php:225 ../backend/views/grid-config.php:230
+#: ../backend/views/grid-config.php:239 ../backend/views/grid-config.php:252
+#: ../backend/views/grid-config.php:256 ../backend/views/grid-config.php:264
+#: ../backend/views/grid-config.php:268 ../backend/views/grid-config.php:273
+#: ../backend/views/grid-config.php:282 ../backend/views/grid-config.php:297
+#: ../backend/views/grid-config.php:305 ../backend/views/grid-config.php:317
+#: ../backend/views/grid-config.php:330 ../backend/views/grid-config.php:335
+#: ../backend/views/grid-config.php:344 ../backend/views/grid-config.php:354
+#: ../backend/views/grid-config.php:359 ../backend/views/grid-config.php:368
+#: ../backend/views/grid-config.php:383 ../backend/views/grid-config.php:410
+#: ../backend/views/grid-config.php:420 ../backend/views/grid-config.php:433
+#: ../backend/views/grid-config.php:441 ../backend/views/grid-config.php:450
+#: ../backend/views/grid-config.php:466 ../backend/views/grid-config.php:476
+#: ../backend/views/grid-config.php:503 ../backend/views/grid-config.php:513
+#: ../backend/views/grid-config.php:536 ../backend/views/grid-config.php:544
+#: ../backend/views/grid-config.php:552 ../backend/views/grid-config.php:557
+msgid "Source"
+msgstr ""
+
+#: ../backend/views/grid-config.php:142
+msgid "Item Number"
+msgstr ""
+
+#: ../backend/views/grid-config.php:143
+msgid "Enter the number of items to load inside the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:144
+msgid "* -1 allows to load all item of the current select source"
+msgstr ""
+
+#: ../backend/views/grid-config.php:144
+msgid "* 0 correspond to the standard number of "
+msgstr ""
+
+#: ../backend/views/grid-config.php:144
+msgid "post per page."
+msgstr ""
+
+#: ../backend/views/grid-config.php:159
+msgid "Post Types"
+msgstr ""
+
+#: ../backend/views/grid-config.php:160
+msgid "Select one or several post type to display inside the current grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:161 ../backend/views/grid-config.php:245
+msgid "* Multiple selection is posssible"
+msgstr ""
+
+#: ../backend/views/grid-config.php:163 ../backend/views/grid-config.php:1890
+msgid "Select a post type"
+msgstr ""
+
+#: ../backend/views/grid-config.php:176
+msgid "Media Library Images"
+msgstr ""
+
+#: ../backend/views/grid-config.php:177
+msgid "You can select multiple images to add in the current grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:178
+msgid "You can easily arrange order by dragging and dropping images."
+msgstr ""
+
+#: ../backend/views/grid-config.php:178
+msgid ""
+"* Custom order will only works if you have media library as unique post type "
+"source."
+msgstr ""
+
+#: ../backend/views/grid-config.php:180 ../backend/views/grid-format.php:238
+#: ../includes/metabox/fields/gallery.php:82
+msgid "Select or upload images to create a gallery"
+msgstr ""
+
+#: ../backend/views/grid-config.php:181 ../backend/views/grid-format.php:239
+#: ../includes/metabox/fields/gallery.php:83
+msgid "Insert gallery"
+msgstr ""
+
+#: ../backend/views/grid-config.php:182 ../backend/views/grid-format.php:240
+msgid "Add images"
+msgstr ""
+
+#: ../backend/views/grid-config.php:183 ../backend/views/grid-format.php:241
+msgid "Remove gallery"
+msgstr ""
+
+#: ../backend/views/grid-config.php:184 ../backend/views/grid-format.php:242
+msgid "Are you sure you want to remove all the gallery images?"
+msgstr ""
+
+#: ../backend/views/grid-config.php:198
+msgid "Content Status"
+msgstr ""
+
+#: ../backend/views/grid-config.php:199
+msgid "Retrieves content by Post Status."
+msgstr ""
+
+#: ../backend/views/grid-config.php:207
+msgid "Post Status"
+msgstr ""
+
+#: ../backend/views/grid-config.php:208
+msgid ""
+"* Default value is 'publish', but if the user is logged in, 'private' is "
+"added."
+msgstr ""
+
+#: ../backend/views/grid-config.php:209
+msgid "Show posts associated with certain status."
+msgstr ""
+
+#: ../backend/views/grid-config.php:211
+msgid "Select a post status"
+msgstr ""
+
+#: ../backend/views/grid-config.php:214
+msgid "Any"
+msgstr ""
+
+#: ../backend/views/grid-config.php:215
+msgid "Publish"
+msgstr ""
+
+#: ../backend/views/grid-config.php:216
+msgid "Pending"
+msgstr ""
+
+#: ../backend/views/grid-config.php:217
+msgid "Draft"
+msgstr ""
+
+#: ../backend/views/grid-config.php:218
+msgid "Auto Draft"
+msgstr ""
+
+#: ../backend/views/grid-config.php:219
+msgid "Future"
+msgstr ""
+
+#: ../backend/views/grid-config.php:220
+msgid "Private"
+msgstr ""
+
+#: ../backend/views/grid-config.php:221
+msgid "Inherit"
+msgstr ""
+
+#: ../backend/views/grid-config.php:222
+msgid "Trash"
+msgstr ""
+
+#: ../backend/views/grid-config.php:234
+msgid "Category Filter"
+msgstr ""
+
+#: ../backend/views/grid-config.php:235
+msgid "Order your grid by categories"
+msgstr ""
+
+#: ../backend/views/grid-config.php:243 ../includes/media-taxonomies.php:39
+#: ../includes/media-taxonomies.php:49
+msgid "Categories"
+msgstr ""
+
+#: ../backend/views/grid-config.php:244
+msgid "Select categories or tags for the current post type(s)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:244
+msgid ""
+"If no category is selected, then all available categories will be available "
+"for filter."
+msgstr ""
+
+#: ../backend/views/grid-config.php:247 ../backend/views/grid-config.php:1141
+msgid "Select categories"
+msgstr ""
+
+#: ../backend/views/grid-config.php:260
+msgid "Child Categories"
+msgstr ""
+
+#: ../backend/views/grid-config.php:261
+msgid "Allows to display child categories of previous selected categories."
+msgstr ""
+
+#: ../backend/views/grid-config.php:277
+msgid "Page Filter"
+msgstr ""
+
+#: ../backend/views/grid-config.php:278
+msgid "Filter the page to display in the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:289
+msgid "Available page(s)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:290
+msgid "Select the page to display in the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:291
+msgid "* If no page selected then all pages will be displayed"
+msgstr ""
+
+#: ../backend/views/grid-config.php:293
+msgid "Select page(s)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:312
+msgid "Authors Filter"
+msgstr ""
+
+#: ../backend/views/grid-config.php:313
+msgid "Filter the grid by author(s)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:321
+msgid "Author(s)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:322
+msgid "Will displayed the selected authors for the current grid post"
+msgstr ""
+
+#: ../backend/views/grid-config.php:323
+msgid "* If no author selected then all authors will be displayed"
+msgstr ""
+
+#: ../backend/views/grid-config.php:327
+msgid "Select an author(s)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:339
+msgid "Exclude Item(s)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:340
+msgid "Exclude item from the current grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:348
+msgid "Exclude Items From Grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:349
+msgid "Enter post ID(s) to exclude from the current grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:349
+msgid ""
+"You can also easly exclude item(s) thanks to the grid preview and eye icon."
+msgstr ""
+
+#: ../backend/views/grid-config.php:349
+msgid "It will automatically fill this text input."
+msgstr ""
+
+#: ../backend/views/grid-config.php:350 ../backend/views/grid-config.php:416
+msgid "* Add post IDs separated by a comma (e.g: 56, 4, 66, 34, 56, 6)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:363
+msgid "Ordering"
+msgstr ""
+
+#: ../backend/views/grid-config.php:364
+msgid "Order your grid content by parameters"
+msgstr ""
+
+#: ../backend/views/grid-config.php:372
+msgid "Order"
+msgstr ""
+
+#: ../backend/views/grid-config.php:374
+msgid "Designates the ascending or descending order of the 'orderby' parameter"
+msgstr ""
+
+#: ../backend/views/grid-config.php:376 ../backend/views/grid-config.php:1203
+msgid "Select an order"
+msgstr ""
+
+#: ../backend/views/grid-config.php:379
+msgid "ascending"
+msgstr ""
+
+#: ../backend/views/grid-config.php:380
+msgid "descending"
+msgstr ""
+
+#: ../backend/views/grid-config.php:387
+msgid "Order By"
+msgstr ""
+
+#: ../backend/views/grid-config.php:389
+msgid "Sort retrieved posts by parameter. Defaults to 'date (post_date)'."
+msgstr ""
+
+#: ../backend/views/grid-config.php:391 ../backend/views/grid-config.php:484
+msgid "Select an order by"
+msgstr ""
+
+#: ../backend/views/grid-config.php:394
+msgid "No order"
+msgstr ""
+
+#: ../backend/views/grid-config.php:395
+msgid "Order by post id"
+msgstr ""
+
+#: ../backend/views/grid-config.php:396
+msgid "Order by author"
+msgstr ""
+
+#: ../backend/views/grid-config.php:397
+msgid "Order by title"
+msgstr ""
+
+#: ../backend/views/grid-config.php:398
+msgid "Order by post name (post slug)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:399
+msgid "Order by date"
+msgstr ""
+
+#: ../backend/views/grid-config.php:400
+msgid "Order by last modified date"
+msgstr ""
+
+#: ../backend/views/grid-config.php:401
+msgid "Order by post/page parent id"
+msgstr ""
+
+#: ../backend/views/grid-config.php:402
+msgid "Random order"
+msgstr ""
+
+#: ../backend/views/grid-config.php:403
+msgid "Order by number of comments"
+msgstr ""
+
+#: ../backend/views/grid-config.php:404
+msgid "Order by Page Order (Menu Order)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:405
+msgid "Order by Meta Value"
+msgstr ""
+
+#: ../backend/views/grid-config.php:406
+msgid "Order by numeric meta value"
+msgstr ""
+
+#: ../backend/views/grid-config.php:407
+msgid "Preserve post ID order"
+msgstr ""
+
+#: ../backend/views/grid-config.php:414
+msgid "Post In (Order by ID)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:415
+msgid "Please add the desired post to be include in the current grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:416
+msgid "Will only works if page & categories are not selected at the same time."
+msgstr ""
+
+#: ../backend/views/grid-config.php:427
+msgid "Order by a meta key value"
+msgstr ""
+
+#: ../backend/views/grid-config.php:428
+msgid "Enter a meta key name"
+msgstr ""
+
+#: ../backend/views/grid-config.php:445
+msgid "Meta Key Filter"
+msgstr ""
+
+#: ../backend/views/grid-config.php:446
+msgid "Filter your post types by custom meta keys"
+msgstr ""
+
+#: ../backend/views/grid-config.php:454
+msgid "Relation"
+msgstr ""
+
+#: ../backend/views/grid-config.php:462
+msgid "Or"
+msgstr ""
+
+#: ../backend/views/grid-config.php:463
+msgid "And"
+msgstr ""
+
+#: ../backend/views/grid-config.php:470
+msgid "Meta Key Name"
+msgstr ""
+
+#: ../backend/views/grid-config.php:471
+msgid "A meta key name must be informed in order to be takken into account"
+msgstr ""
+
+#: ../backend/views/grid-config.php:480
+msgid "Meta Key Compare"
+msgstr ""
+
+#: ../backend/views/grid-config.php:482
+msgid "Select an operator to compare with the meta key value"
+msgstr ""
+
+#: ../backend/views/grid-config.php:488
+msgid "Equals (=)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:489
+msgid "Does not equal (!=)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:490
+msgid "Greater than (>)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:491
+msgid "Greater than or equal to (>=)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:492
+msgid "Less than (&lt;)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:493
+msgid "Less than or equal to (&lt;=)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:494
+#: ../includes/post-like/post-like.php:227
+#: ../includes/post-like/post-like.php:339
+#: ../includes/post-like/post-like.php:342
+msgid "Like"
+msgstr ""
+
+#: ../backend/views/grid-config.php:495
+msgid "Not like"
+msgstr ""
+
+#: ../backend/views/grid-config.php:496
+msgid "In"
+msgstr ""
+
+#: ../backend/views/grid-config.php:497
+msgid "Not in"
+msgstr ""
+
+#: ../backend/views/grid-config.php:498
+msgid "Between"
+msgstr ""
+
+#: ../backend/views/grid-config.php:499
+msgid "Not between"
+msgstr ""
+
+#: ../backend/views/grid-config.php:500
+msgid "Not exist"
+msgstr ""
+
+#: ../backend/views/grid-config.php:507
+msgid "Meta Key Value"
+msgstr ""
+
+#: ../backend/views/grid-config.php:508
+msgid "Add the meta key value to compare with"
+msgstr ""
+
+#: ../backend/views/grid-config.php:517
+msgid "Meta Key Type"
+msgstr ""
+
+#: ../backend/views/grid-config.php:519
+msgid "Custom meta key field content type."
+msgstr ""
+
+#: ../backend/views/grid-config.php:521
+msgid "Select a field type"
+msgstr ""
+
+#: ../backend/views/grid-config.php:525
+msgid "Numeric"
+msgstr ""
+
+#: ../backend/views/grid-config.php:526
+msgid "Binary"
+msgstr ""
+
+#: ../backend/views/grid-config.php:527
+#: ../includes/the-grid-base.class.php:315
+msgid "Date"
+msgstr ""
+
+#: ../backend/views/grid-config.php:528
+msgid "Char"
+msgstr ""
+
+#: ../backend/views/grid-config.php:529
+msgid "Date time"
+msgstr ""
+
+#: ../backend/views/grid-config.php:530
+msgid "Decimal"
+msgstr ""
+
+#: ../backend/views/grid-config.php:531
+msgid "Signed"
+msgstr ""
+
+#: ../backend/views/grid-config.php:532
+msgid "Time"
+msgstr ""
+
+#: ../backend/views/grid-config.php:533
+msgid "Unsigned"
+msgstr ""
+
+#: ../backend/views/grid-config.php:550
+msgid "Meta Data Info"
+msgstr ""
+
+#: ../backend/views/grid-config.php:551
+msgid ""
+"WordPress has the ability to allow post authors to assign custom fields to a "
+"post. This arbitrary extra information is known as meta-data."
+msgstr ""
+
+#: ../backend/views/grid-config.php:551
+msgid ""
+" Meta-data is handled with key/value pairs. The key is the name of the meta-"
+"data element. The value is the information that will appear in the meta-data "
+"list on each individual post that the information is associated with"
+msgstr ""
+
+#: ../backend/views/grid-config.php:551
+msgid "Learn more about meta-data"
+msgstr ""
+
+#: ../backend/views/grid-config.php:551
+msgid "Learn more about meta query"
+msgstr ""
+
+#: ../backend/views/grid-config.php:551
+msgid ""
+"Regretfully, we cannot provide support for meta-data due to the fact that "
+"there is simply no way to account for all of the potential variables at play "
+"when using another developer's plugin or script."
+msgstr ""
+
+#: ../backend/views/grid-config.php:551
+msgid ""
+"If you are using Woocommerce, you can easly order by a (numeric) meta value "
+"with these key name:"
+msgstr ""
+
+#: ../backend/views/grid-config.php:551
+msgid ""
+" '_price' | '_sale_price' | '_sale_price_dates_from' | "
+"'_sale_price_dates_to' | '_stock'"
+msgstr ""
+
+#: ../backend/views/grid-config.php:562 ../backend/views/grid-config.php:571
+msgid "Default Image"
+msgstr ""
+
+#: ../backend/views/grid-config.php:563
+msgid "Default image fallback for item in grid mode"
+msgstr ""
+
+#: ../backend/views/grid-config.php:567 ../backend/views/grid-config.php:579
+#: ../backend/views/grid-config.php:584 ../backend/views/grid-config.php:593
+#: ../backend/views/grid-config.php:602 ../backend/views/grid-config.php:617
+#: ../backend/views/grid-config.php:622 ../backend/views/grid-config.php:631
+#: ../backend/views/grid-config.php:647 ../backend/views/grid-config.php:651
+#: ../backend/views/grid-config.php:660 ../backend/views/grid-config.php:668
+#: ../backend/views/grid-config.php:677 ../backend/views/grid-config.php:685
+#: ../backend/views/grid-config.php:690
+msgid "Media"
+msgstr ""
+
+#: ../backend/views/grid-config.php:572
+msgid "Add a default image if image is missing (only works in grid style)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:575
+msgid "Select a default image"
+msgstr ""
+
+#: ../backend/views/grid-config.php:576 ../backend/views/grid-format.php:226
+#: ../includes/metabox/fields/image.php:64
+#: ../includes/metabox/fields/image_id.php:64
+#: ../includes/metabox/fields/upload.php:55
+msgid "Insert image"
+msgstr ""
+
+#: ../backend/views/grid-config.php:577 ../backend/views/grid-format.php:227
+#: ../includes/metabox/fields/image.php:62
+#: ../includes/metabox/fields/image_id.php:62
+#: ../includes/metabox/fields/upload.php:53
+msgid "Upload"
+msgstr ""
+
+#: ../backend/views/grid-config.php:578 ../backend/views/grid-format.php:228
+#: ../backend/views/grid-format.php:254 ../backend/views/grid-format.php:271
+#: ../backend/views/grid-format.php:297 ../backend/views/grid-format.php:314
+#: ../backend/views/grid-format.php:331
+msgid "Remove"
+msgstr ""
+
+#: ../backend/views/grid-config.php:588
+msgid "Image Format"
+msgstr ""
+
+#: ../backend/views/grid-config.php:589
+msgid "Set the image size of the grid item"
+msgstr ""
+
+#: ../backend/views/grid-config.php:597 ../backend/views/grid-settings.php:134
+msgid "Smart Resize"
+msgstr ""
+
+#: ../backend/views/grid-config.php:598
+msgid "Resize & crop images uploaded on the fly."
+msgstr ""
+
+#: ../backend/views/grid-config.php:599
+msgid "Don't work with CDN image hosting."
+msgstr ""
+
+#: ../backend/views/grid-config.php:606
+msgid "Images Size"
+msgstr ""
+
+#: ../backend/views/grid-config.php:607
+msgid "Select a size for image in the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:608
+msgid "* You also can set the_grid image sizes in"
+msgstr ""
+
+#: ../backend/views/grid-config.php:608
+msgid "global settings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:610
+msgid "Select a size"
+msgstr ""
+
+#: ../backend/views/grid-config.php:626
+msgid "Media Content"
+msgstr ""
+
+#: ../backend/views/grid-config.php:627
+msgid "Set the kind of media to display in the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:635
+msgid "Item format"
+msgstr ""
+
+#: ../backend/views/grid-config.php:636
+msgid ""
+"Check the media source (post format) you want to display in the current "
+"grid. "
+msgstr ""
+
+#: ../backend/views/grid-config.php:637
+msgid "If everything disabled then it will display only images"
+msgstr ""
+
+#: ../backend/views/grid-config.php:641 ../backend/views/grid-format.php:62
+#: ../backend/views/grid-format.php:234 ../backend/views/grid-format.php:243
+msgid "Gallery"
+msgstr ""
+
+#: ../backend/views/grid-config.php:642 ../backend/views/grid-format.php:64
+#: ../backend/views/grid-format.php:300 ../backend/views/grid-format.php:304
+#: ../backend/views/grid-format.php:317 ../backend/views/grid-format.php:321
+#: ../backend/views/grid-format.php:334 ../backend/views/grid-format.php:338
+#: ../backend/views/grid-format.php:354 ../backend/views/grid-format.php:358
+#: ../backend/views/grid-format.php:368 ../backend/views/grid-format.php:385
+#: ../backend/views/grid-format.php:389 ../backend/views/grid-format.php:399
+#: ../backend/views/grid-format.php:415 ../backend/views/grid-format.php:419
+#: ../backend/views/grid-format.php:429 ../backend/views/grid-format.php:445
+msgid "Video"
+msgstr ""
+
+#: ../backend/views/grid-config.php:643 ../backend/views/grid-format.php:63
+#: ../backend/views/grid-format.php:257 ../backend/views/grid-format.php:261
+#: ../backend/views/grid-format.php:274 ../backend/views/grid-format.php:278
+#: ../backend/views/grid-format.php:286
+msgid "Audio"
+msgstr ""
+
+#: ../backend/views/grid-config.php:644 ../backend/views/grid-format.php:65
+#: ../backend/views/grid-format.php:454 ../backend/views/grid-format.php:458
+#: ../backend/views/grid-format.php:470
+msgid "Quote"
+msgstr ""
+
+#: ../backend/views/grid-config.php:645 ../backend/views/grid-format.php:66
+#: ../backend/views/grid-format.php:479 ../backend/views/grid-format.php:483
+#: ../backend/views/grid-format.php:495 ../backend/views/grid-settings.php:446
+#: ../backend/views/grid-settings.php:447
+#: ../backend/views/grid-settings.php:448
+msgid "Link"
+msgstr ""
+
+#: ../backend/views/grid-config.php:655
+msgid "Gallery slide show"
+msgstr ""
+
+#: ../backend/views/grid-config.php:656
+msgid "Enable gallery slide show in each item"
+msgstr ""
+
+#: ../backend/views/grid-config.php:672
+msgid "Lightbox Content"
+msgstr ""
+
+#: ../backend/views/grid-config.php:673
+msgid "Display or not media video in the lightbox"
+msgstr ""
+
+#: ../backend/views/grid-config.php:681
+msgid "Video Ligthbox"
+msgstr ""
+
+#: ../backend/views/grid-config.php:682
+msgid "Allows to play video inside lightbox."
+msgstr ""
+
+#: ../backend/views/grid-config.php:682
+msgid "By default, videos will be played inside grid item."
+msgstr ""
+
+#: ../backend/views/grid-config.php:682
+msgid ""
+"(In preview mode, videos are automatically set in lightbox for performance "
+"reasons.)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:695
+msgid "Grid Style"
+msgstr ""
+
+#: ../backend/views/grid-config.php:696
+msgid "Style/aspect of items in the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:700 ../backend/views/grid-config.php:710
+#: ../backend/views/grid-config.php:713 ../backend/views/grid-config.php:717
+#: ../backend/views/grid-config.php:722 ../backend/views/grid-config.php:731
+#: ../backend/views/grid-config.php:745 ../backend/views/grid-config.php:749
+#: ../backend/views/grid-config.php:761 ../backend/views/grid-config.php:768
+#: ../backend/views/grid-config.php:784 ../backend/views/grid-config.php:800
+#: ../backend/views/grid-config.php:807 ../backend/views/grid-config.php:819
+#: ../backend/views/grid-config.php:823 ../backend/views/grid-config.php:835
+#: ../backend/views/grid-config.php:842 ../backend/views/grid-config.php:858
+#: ../backend/views/grid-config.php:874 ../backend/views/grid-config.php:883
+#: ../backend/views/grid-config.php:892 ../backend/views/grid-config.php:900
+#: ../backend/views/grid-config.php:904 ../backend/views/grid-config.php:913
+#: ../backend/views/grid-config.php:917 ../backend/views/grid-config.php:931
+#: ../backend/views/grid-config.php:935 ../backend/views/grid-config.php:949
+#: ../backend/views/grid-config.php:962 ../backend/views/grid-config.php:969
+#: ../backend/views/grid-config.php:983 ../backend/views/grid-config.php:996
+#: ../backend/views/grid-config.php:1003 ../backend/views/grid-config.php:1017
+#: ../backend/views/grid-config.php:1030 ../backend/views/grid-config.php:1051
+#: ../backend/views/grid-config.php:1064 ../backend/views/grid-config.php:1071
+#: ../backend/views/grid-config.php:1085 ../backend/views/grid-config.php:1098
+#: ../backend/views/grid-config.php:1105 ../backend/views/grid-config.php:1110
+msgid "Grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:704
+msgid "Style"
+msgstr ""
+
+#: ../backend/views/grid-config.php:705
+msgid "Select the grid style."
+msgstr ""
+
+#: ../backend/views/grid-config.php:706
+msgid ""
+"* Grid style forces each item in the grid to be proportional to each others"
+msgstr ""
+
+#: ../backend/views/grid-config.php:706
+msgid ""
+"* Masonry layout allows you to preserve natural aspect ratio of images and "
+"content"
+msgstr ""
+
+#: ../backend/views/grid-config.php:711
+msgid "Masonry"
+msgstr ""
+
+#: ../backend/views/grid-config.php:726
+msgid "Items"
+msgstr ""
+
+#: ../backend/views/grid-config.php:727
+msgid "Items aspect in the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:735
+msgid "Gutters"
+msgstr ""
+
+#: ../backend/views/grid-config.php:736
+msgid "Set space between each item in the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:756
+msgid "Item Ratio"
+msgstr ""
+
+#: ../backend/views/grid-config.php:757
+msgid "Correspond to the ratio between width and height (X:Y)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:757
+msgid "(e.g: 4:3 or 16:9 format)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:814
+msgid "Force Item Sizes"
+msgstr ""
+
+#: ../backend/views/grid-config.php:815
+msgid "* This option will override all item size set in each post type page"
+msgstr ""
+
+#: ../backend/views/grid-config.php:816
+msgid ""
+"This option allows to force all items in the grid to have the same size."
+msgstr ""
+
+#: ../backend/views/grid-config.php:816
+msgid "The size can be set by the following settings."
+msgstr ""
+
+#: ../backend/views/grid-config.php:830
+msgid "Items Size"
+msgstr ""
+
+#: ../backend/views/grid-config.php:831
+msgid "Set an unique size of each item in the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:887
+#: ../includes/custom-fields.class.php:345
+msgid "Columns"
+msgstr ""
+
+#: ../backend/views/grid-config.php:888
+msgid "Set responsiveness of the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:896
+msgid "Column number setting"
+msgstr ""
+
+#: ../backend/views/grid-config.php:897
+msgid "Choose the number of columns for each device format."
+msgstr ""
+
+#: ../backend/views/grid-config.php:897
+msgid ""
+"Each device format correspond to a maximal width in px. This allows you to "
+"preset the number of columns visible with a particular browser width."
+msgstr ""
+
+#: ../backend/views/grid-config.php:897
+msgid "You can modified these width by activating advanced column settings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:908
+msgid "Advanced column settings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:910
+msgid "Check this option if you want to set custom widths"
+msgstr ""
+
+#: ../backend/views/grid-config.php:925 ../backend/views/grid-infobox.php:51
+msgid "Desktop Large"
+msgstr ""
+
+#: ../backend/views/grid-config.php:943 ../backend/views/grid-infobox.php:50
+msgid "Desktop Medium"
+msgstr ""
+
+#: ../backend/views/grid-config.php:957 ../backend/views/grid-config.php:991
+#: ../backend/views/grid-config.php:1025 ../backend/views/grid-config.php:1059
+#: ../backend/views/grid-config.php:1093
+msgid "max width"
+msgstr ""
+
+#: ../backend/views/grid-config.php:958 ../backend/views/grid-config.php:992
+#: ../backend/views/grid-config.php:1026 ../backend/views/grid-config.php:1060
+#: ../backend/views/grid-config.php:1094 ../backend/views/grid-config.php:1638
+#: ../backend/views/grid-config.php:1652 ../backend/views/grid-config.php:1670
+#: ../backend/views/grid-config.php:1684 ../backend/views/grid-settings.php:50
+msgid "px"
+msgstr ""
+
+#: ../backend/views/grid-config.php:977 ../backend/views/grid-infobox.php:49
+msgid "Desktop Small"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1011 ../backend/views/grid-infobox.php:48
+msgid "Tablet"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1045 ../backend/views/grid-infobox.php:47
+msgid "Tablet Small"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1079 ../backend/views/grid-infobox.php:46
+msgid "Mobile"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1115 ../backend/views/grid-config.php:1192
+#: ../includes/custom-fields.class.php:160
+msgid "Filter"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1116
+msgid "Organize your filter key like you want"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1120 ../backend/views/grid-config.php:1128
+#: ../backend/views/grid-config.php:1132 ../backend/views/grid-config.php:1145
+#: ../backend/views/grid-config.php:1149 ../backend/views/grid-config.php:1157
+#: ../backend/views/grid-config.php:1170 ../backend/views/grid-config.php:1177
+#: ../backend/views/grid-config.php:1185 ../backend/views/grid-config.php:1193
+#: ../backend/views/grid-config.php:1211 ../backend/views/grid-config.php:1225
+#: ../backend/views/grid-config.php:1236 ../backend/views/grid-config.php:1249
+#: ../backend/views/grid-config.php:1264 ../backend/views/grid-config.php:1272
+#: ../backend/views/grid-config.php:1280 ../backend/views/grid-config.php:1288
+#: ../backend/views/grid-config.php:1293 ../backend/views/grid-config.php:1302
+#: ../backend/views/grid-config.php:1315 ../backend/views/grid-config.php:1319
+#: ../backend/views/grid-config.php:1332 ../backend/views/grid-config.php:1336
+#: ../backend/views/grid-config.php:1349 ../backend/views/grid-config.php:1353
+#: ../backend/views/grid-config.php:1363 ../backend/views/grid-config.php:1368
+#: ../backend/views/grid-config.php:1377 ../backend/views/grid-config.php:1387
+#: ../backend/views/grid-config.php:1392
+msgid "Filter/Sort"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1124
+msgid "Filter(s)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1125
+msgid "Drag and drop available filter items in active filter area."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1125
+msgid ""
+"You can add unlimited number of filter areas in order to create complex "
+"filtering system.."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1125
+msgid "Each new filter added will be appear in the layout tab."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1136
+msgid "Filter by on load"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1137
+msgid "Filter the grid by one or multi categories on load."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1153
+msgid "Filter Combination"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1154
+msgid "Filter by multiple values (e.g: red + green elements)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1161
+msgid "Filter Combination Logic"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1162
+msgid "Select a filter logic (for multiple filter selected at the same time)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1163
+msgid "AND - Shows elements that meet all selected filters"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1163
+msgid "OR - Show elements that meet at minimum one of the selected filters"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1167
+msgid "AND"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1168
+msgid "OR"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1197
+msgid "Filter(s) order"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1206
+msgid "Alphabetical (ASC)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1207
+msgid "Alphabetical (DESC)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1208
+msgid "Number (ASC)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1209
+msgid "Number  (DESC)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1215
+msgid "Filter Type"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1222
+msgid "Inline Buttons"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1223
+msgid "DropDown List"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1229
+msgid "Filter DropDown List Title"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1234
+msgid "Filter Categories"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1243
+msgid "Filter \"All\" Text"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1248 ../backend/views/grid-list.php:214
+#: ../includes/custom-fields.class.php:571 ../includes/wpml.class.php:62
+msgid "All"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1253
+msgid "Show Number of Elements"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1260
+#: ../includes/item-animation.class.php:44
+#: ../includes/the-grid-base.class.php:313
+msgid "None"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1261
+msgid "Show in Tooltip"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1262
+msgid "Show in button"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1287
+msgid "Add filter"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1297
+msgid "Sorting"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1298
+msgid "Add sorters to sort items in the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1306 ../backend/views/grid-config.php:1362
+#: ../frontend/the-grid.class.php:928
+msgid "Sort By"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1307
+msgid "Select sorter(s) from available sortings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1308
+msgid "Excerpt will only works if skin have an excerpt."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1310
+msgid "Select Sortings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1323
+msgid "Sort By on Load"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1324
+msgid "Sort the grid by a value on load."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1327
+msgid "Select a value"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1340
+msgid "Sort Order on Load"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1341
+msgid "Sort by ASC (1,2,3;a,b,c) or DESC (3,2,1;c,b,a)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1346
+msgid "DESC"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1347
+msgid "ASC"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1357
+msgid "Sort By Text"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1358
+msgid "Enter the default text used in the sort dropdown list"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1372
+#: ../includes/custom-fields.class.php:159
+msgid "Search"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1373
+msgid "Search form to search inside each item strings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1381
+msgid "Search Text"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1382
+msgid "Enter the default text used in the search bar"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1386
+msgid "Search..."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1397 ../backend/views/grid-config.php:1402
+#: ../backend/views/grid-config.php:1406 ../backend/views/grid-config.php:1410
+#: ../backend/views/grid-config.php:1414 ../backend/views/grid-config.php:1423
+#: ../backend/views/grid-config.php:1427 ../backend/views/grid-config.php:1440
+#: ../backend/views/grid-config.php:1447 ../backend/views/grid-config.php:1457
+#: ../backend/views/grid-config.php:1465 ../backend/views/grid-config.php:1475
+#: ../backend/views/grid-config.php:1492 ../backend/views/grid-config.php:1510
+#: ../backend/views/grid-config.php:1519 ../backend/views/grid-config.php:1529
+#: ../backend/views/grid-config.php:1542 ../backend/views/grid-config.php:1550
+#: ../includes/custom-fields.class.php:163
+msgid "Pagination"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1398
+msgid "Pagination settings"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1407
+msgid "Pagination allows to you to add a real pagination system to the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1407
+msgid "It's really usefull to create a portfolio page."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1418
+msgid "Ajax pagination"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1419
+msgid ""
+"Load only new page item(s) with ajax instead of reloading the whole page."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1420
+msgid ""
+"* In preview mode, ajax is always enabled to avoid reloading the current "
+"page."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1431
+msgid "Pagination Type"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1432
+msgid "Select a pagination type."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1437
+msgid "Page Numbers"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1438 ../backend/views/grid-config.php:1451
+msgid "Prev/Next Buttons"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1452
+msgid "Include the previous and next links in the list or not."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1469
+msgid "Show All Pages"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1470
+msgid "Will show all of the pages instead of a short list of the pages."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1483
+msgid "Middle Size"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1484
+msgid "Number of page links around the current page to display."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1501
+msgid "End Size"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1502
+msgid "Number of page links to either side of current page."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1523
+msgid "Prev Button Text"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1524
+msgid "Type the the prev button text."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1528 ../frontend/the-grid.class.php:1231
+msgid "&#171; Prev"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1536
+msgid "Next Button Text"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1537
+msgid "Type the next button text."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1541 ../frontend/the-grid.class.php:1230
+msgid "Next &#187;"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1555 ../backend/views/grid-config.php:1564
+msgid "Grid Composer"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1556
+msgid "Drag and drop element to compose your custom grid layout"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1560 ../backend/views/grid-config.php:1568
+#: ../backend/views/grid-config.php:1573 ../backend/views/grid-config.php:1577
+#: ../backend/views/grid-config.php:1586 ../backend/views/grid-config.php:1590
+#: ../backend/views/grid-config.php:1599 ../backend/views/grid-config.php:1603
+#: ../backend/views/grid-config.php:1612 ../backend/views/grid-config.php:1616
+#: ../backend/views/grid-config.php:1625 ../backend/views/grid-config.php:1629
+#: ../backend/views/grid-config.php:1643 ../backend/views/grid-config.php:1657
+#: ../backend/views/grid-config.php:1661 ../backend/views/grid-config.php:1675
+#: ../backend/views/grid-config.php:1689 ../backend/views/grid-config.php:1693
+#: ../backend/views/grid-config.php:1703 ../backend/views/grid-config.php:1707
+#: ../backend/views/grid-config.php:1716 ../backend/views/grid-config.php:1725
+#: ../backend/views/grid-config.php:1734 ../backend/views/grid-config.php:1743
+#: ../backend/views/grid-config.php:1760 ../backend/views/grid-config.php:1778
+#: ../backend/views/grid-config.php:1785 ../backend/views/grid-config.php:1804
+#: ../backend/views/grid-config.php:1822 ../backend/views/grid-config.php:1831
+#: ../backend/views/grid-config.php:1843 ../backend/views/grid-config.php:1860
+#: ../backend/views/grid-config.php:1869
+#: ../includes/custom-fields.class.php:341
+msgid "Layout"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1565
+msgid "Simply Drag and drop elements to compose your custom grid layout."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1565
+msgid "In each area you can set margin, padding, and background style."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1581
+msgid "Grid layout"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1591
+msgid "Select the grid layout."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1596
+#: ../includes/custom-fields.class.php:318
+msgid "Vertical"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1597
+msgid "Horizontal"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1607
+msgid "Right To Left (RTL)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1608
+msgid "RTL layout for all grid items."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1620
+msgid "Grid Margin"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1621
+msgid "Add margin to the whole grid (negative values are working)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1637
+msgid "Left:"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1651
+msgid "Top:"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1669
+msgid "Right:"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1683
+msgid "Bottom:"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1697
+msgid "Grid Background Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1698
+msgid "Choose a background color for the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1711
+msgid "Full Width"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1712
+msgid "Force the grid to fill the current window width."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1713
+msgid "* All areas will be also in full width mode"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1720
+msgid "Full Height"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1721
+msgid "Force the grid to fill the current window height."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1722
+msgid "* It will override item ratio aspect."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1738
+msgid "Grid Slider"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1739
+msgid "Slider settings of the grid in horizontal mode"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1750
+msgid "Number of rows"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1751
+msgid "Set the number of rows in the slider."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1752
+msgid "Smart Navigation only available for 1 row"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1768
+msgid "Slider Speed"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1769
+msgid "Animations speed of the slider on release."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1770
+msgid "Swing synchronization speed, where: 1 = instant, 0 = infinite"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1792
+msgid "Item Navigation"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1793
+msgid "Allows to snap items to the border of the slider."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1794
+msgid "Free mode, if no navigation selected"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1797
+msgid "Type of navigation"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1800
+msgid "Basic"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1801
+msgid "Centered"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1802
+msgid "Force Centered"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1812
+msgid "Slider Start At"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1813
+msgid "Starting position in the slider in items."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1814
+msgid "Corresponding to the page bullet number position"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1838
+msgid "Slider Auto Play"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1839
+msgid "Enable automatic cycling by page in the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1850
+msgid "Slider Auto Play Speed"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1851
+msgid "Animations speed of the slider."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1852
+msgid "Delay between cycles in milliseconds (autoplay speed)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1877
+msgid "Item Skins"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1878
+msgid "Choose an skin to apply to the current grid items."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1882 ../backend/views/grid-config.php:1894
+#: ../backend/views/grid-config.php:1904 ../backend/views/grid-config.php:1908
+#: ../backend/views/grid-config.php:1918 ../backend/views/grid-config.php:1931
+#: ../backend/views/grid-config.php:1935 ../backend/views/grid-config.php:1945
+#: ../backend/views/grid-config.php:1958 ../backend/views/grid-config.php:1963
+#: ../backend/views/grid-config.php:1972 ../backend/views/grid-config.php:1984
+#: ../backend/views/grid-config.php:1988 ../backend/views/grid-config.php:1997
+#: ../backend/views/grid-config.php:2006 ../backend/views/grid-config.php:2016
+#: ../backend/views/grid-config.php:2026 ../backend/views/grid-config.php:2031
+#: ../backend/views/grid-config.php:2040 ../backend/views/grid-config.php:2050
+#: ../backend/views/grid-config.php:2059 ../backend/views/grid-config.php:2069
+#: ../backend/views/grid-config.php:2073 ../backend/views/grid-config.php:2082
+#: ../backend/views/grid-config.php:2095 ../backend/views/grid-config.php:2108
+#: ../backend/views/grid-config.php:2121 ../backend/views/grid-config.php:2129
+#: ../includes/custom-fields.class.php:567
+msgid "Skins"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1886 ../backend/views/grid-format.php:106
+#: ../backend/views/grid-format.php:544
+msgid "Item Skin"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1887
+msgid "Choose a skin for each post type added as a source in the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1887
+msgid ""
+"Select a post type and assign a skin to it . The grid support multiple skin "
+"per grid (one per post type)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1902
+msgid "No skin found."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1902
+msgid "Please Wait, loading skins..."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1912 ../backend/views/grid-format.php:171
+#: ../backend/views/grid-format.php:609
+msgid "Content Background Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1913 ../backend/views/grid-format.php:172
+#: ../backend/views/grid-format.php:610
+msgid "Choose a background color for main content holder (masonry)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1922 ../backend/views/grid-format.php:181
+#: ../backend/views/grid-format.php:619
+msgid "Content Color Scheme"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1923 ../backend/views/grid-format.php:182
+#: ../backend/views/grid-format.php:620
+msgid "Select a color scheme for the text content."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1928 ../backend/views/grid-config.php:1955
+#: ../backend/views/grid-format.php:187 ../backend/views/grid-format.php:214
+#: ../backend/views/grid-format.php:625 ../backend/views/grid-format.php:652
+msgid "Light"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1929 ../backend/views/grid-config.php:1956
+#: ../backend/views/grid-format.php:188 ../backend/views/grid-format.php:215
+#: ../backend/views/grid-format.php:626 ../backend/views/grid-format.php:653
+msgid "Dark"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1939 ../backend/views/grid-format.php:198
+#: ../backend/views/grid-format.php:636
+msgid "Overlay Background Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1940 ../backend/views/grid-format.php:199
+#: ../backend/views/grid-format.php:637
+msgid "Choose a background color for the overlay (over image content)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1949 ../backend/views/grid-format.php:208
+#: ../backend/views/grid-format.php:646
+msgid "Overlay Color Scheme"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1950 ../backend/views/grid-format.php:209
+#: ../backend/views/grid-format.php:647
+msgid "Select a color scheme for the overlay."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1967
+msgid "Navigation Skins"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1968
+msgid ""
+"Choose an skin to apply to all navigation element (button, filters,etc...)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:1976
+msgid "Navigation Style"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1977
+msgid "Choose a navigation style"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1980
+msgid "Select a style"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1992
+msgid "Navigation Text Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:1993 ../backend/views/grid-config.php:2036
+msgid "Choose a text color."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2001
+msgid "Navigation Text Accent Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2002
+msgid "Choose an accent text color (hover/active)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2010
+msgid "Navigation Backgound Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2011
+msgid "Choose a backgound color."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2012 ../backend/views/grid-config.php:2022
+msgid "Not all navigation style support background color."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2020
+msgid "Navigation Backgound Accent Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2021
+msgid "Choose an accent backgound color (hover/active)."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2035
+msgid "DropDown List Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2044
+msgid "DropDown List Background"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2045
+msgid "Choose a background color."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2054
+msgid "DropDown List Color Hover/Active"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2055
+msgid "Choose a text color on over."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2063
+msgid "DropDown List Background Hover/Active"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2064
+msgid "Choose a background color on hover/active."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2077
+msgid "Slider Arrow Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2078 ../backend/views/grid-config.php:2090
+msgid "Will be only applied on the left/right slider arrows."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2089
+msgid "Slider Arrow Background"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2102
+msgid "Slider Bullet Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2103
+msgid "Choose a color of bullet slider."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2115
+msgid "Slider Bullet Color Active"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2116
+msgid "Choose a color of the active bullet slider."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2134
+msgid "Item Animations"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2135
+msgid "Set the animation style and duration."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2139 ../backend/views/grid-config.php:2147
+#: ../backend/views/grid-config.php:2159 ../backend/views/grid-config.php:2163
+#: ../backend/views/grid-config.php:2177 ../backend/views/grid-config.php:2181
+#: ../backend/views/grid-config.php:2189 ../backend/views/grid-config.php:2194
+msgid "Animations"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2151
+msgid "Animation Style"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2153
+msgid "Select an animation for the grid items"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2155 ../backend/views/grid-config.php:2330
+msgid "Select an animation"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2167
+msgid "Animation duration"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2168
+msgid ""
+"This option corresponds to the duration of the transition when items change "
+"of position."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2169
+msgid "* (1000ms = 1s)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2199 ../backend/views/grid-config.php:2229
+#: ../frontend/the-grid.class.php:1341
+msgid "Load More"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2200
+msgid "Settings for loading more items with ajax (with a button or on scroll)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2204 ../backend/views/grid-config.php:2217
+#: ../backend/views/grid-config.php:2221 ../backend/views/grid-config.php:2230
+#: ../backend/views/grid-config.php:2239 ../backend/views/grid-config.php:2248
+#: ../backend/views/grid-config.php:2252 ../backend/views/grid-config.php:2261
+#: ../backend/views/grid-config.php:2265 ../backend/views/grid-config.php:2278
+#: ../backend/views/grid-config.php:2292 ../backend/views/grid-config.php:2297
+#: ../backend/views/grid-config.php:2306 ../backend/views/grid-config.php:2315
+#: ../backend/views/grid-config.php:2319 ../backend/views/grid-config.php:2334
+#: ../backend/views/grid-config.php:2346 ../backend/views/grid-config.php:2353
+#: ../backend/views/grid-config.php:2366 ../backend/views/grid-config.php:2383
+#: ../backend/views/grid-config.php:2390 ../backend/views/grid-config.php:2404
+#: ../backend/views/grid-config.php:2412
+msgid "Load/Ajax"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2208
+msgid "Ajax Method"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2209
+msgid "Select a method to load more item with ajax."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2210
+msgid "* Ajax on scroll is not available with horizontal layout (slider)"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2214
+msgid "On Click"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2215
+msgid "On Scroll"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2225
+msgid "Button Text"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2226
+msgid "Type the text that will appear inside the button."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2234
+msgid "Loading Text"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2235
+msgid "Type the text that will appear during loading."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2238
+msgid "Loading..."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2243
+msgid "No More Item Text"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2244
+msgid "Type the text that will appear when all items are loaded."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2247 ../frontend/the-grid.class.php:1345
+msgid "No more item"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2256
+msgid "Item Number Remaining"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2257
+msgid "Allows to display the number of items remaining."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2269
+msgid "Load More Item Number"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2270
+msgid "Number of items to load with ajax."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2271
+msgid "* Works with load more button and ajax scroll"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2282
+msgid "Load More Item Delay"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2283
+msgid "Delay in ms between each new item loaded in the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2284
+msgid ""
+"* If no delay is set (0ms), then all new items will appear at the same time."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2301
+msgid "Pre-loader"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2302
+msgid "Allows to wait all items in the grid are loaded before reveal the grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2310
+msgid "Grid Preloader"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2311
+msgid "Preload all items (images) before to display the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2326
+msgid "Preloader Style"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2327
+msgid "Choose a preloader animation style"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2341
+msgid "Preloader Color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2342
+msgid "Choose a preloader color"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2373
+msgid "Preloader Size"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2374
+msgid "Increase or reduce size of the preloader."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2375
+msgid "* Increase size can degrade preloader quality."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2394
+msgid "Preloader Item Delay"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2395
+msgid "Delay in ms between each item loaded in the grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2396
+msgid ""
+"* If no delay is set (0ms), then all items will appear at the same time."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2417 ../backend/views/grid-config.php:2427
+msgid "Custom css"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2418
+msgid "Apply custom style to the current grid"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2423 ../backend/views/grid-config.php:2437
+#: ../backend/views/grid-config.php:2442 ../backend/views/grid-config.php:2453
+#: ../backend/views/grid-config.php:2467 ../backend/views/grid-config.php:2472
+msgid "css/js Code"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2428
+msgid "Enter you custom css code."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2429
+msgid ""
+"You should use the custom css class in order to only apply this code to the "
+"current grid."
+msgstr ""
+
+#: ../backend/views/grid-config.php:2447 ../backend/views/grid-config.php:2457
+msgid "Custom js"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2448
+msgid ""
+"Add any custom jquery/javascript code to add additionnal functionnalities"
+msgstr ""
+
+#: ../backend/views/grid-config.php:2458
+msgid "Enter you custom js code."
+msgstr ""
+
+#: ../backend/views/grid-export.php:16
+msgid "Exporter"
+msgstr ""
+
+#: ../backend/views/grid-export.php:20 ../includes/the-grid-base.class.php:620
+msgid "Export Grid(s)"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:14 ../backend/views/grid-infobox.php:35
+msgid "Settings Saved"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:15 ../backend/views/grid-infobox.php:33
+msgid "Saving Settings"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:16
+msgid "Settings resetted"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:17
+msgid "Resetting Settings"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:18
+msgid "Grid(s) exported"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:19
+msgid "Exporting grid(s)"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:20
+msgid "Grid(s) imported"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:21
+msgid "Importing grid(s)"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:22
+msgid "Demo imported"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:23
+msgid "Importing Demo"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:24
+msgid "Sorry, an error occurred during saving settings"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:25
+msgid "Sorry, an error occurred during resetting"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:26
+msgid "Sorry, an error occurred during importing"
+msgstr ""
+
+#: ../backend/views/grid-footer.php:27
+msgid "Sorry, an error occurred during exporting"
+msgstr ""
+
+#: ../backend/views/grid-format.php:36
+msgid "The Grid - Item Format"
+msgstr ""
+
+#: ../backend/views/grid-format.php:46
+msgid "Alternative Media"
+msgstr ""
+
+#: ../backend/views/grid-format.php:47
+msgid ""
+"In this option panel, you can set an alternative media content for the "
+"current post in the grid depending of the post format."
+msgstr ""
+
+#: ../backend/views/grid-format.php:47
+msgid ""
+"Alternative content will be retrieved at first. If no alternative content is "
+"set, then the first content in the text editor will be fetched (depending of "
+"native post format)."
+msgstr ""
+
+#: ../backend/views/grid-format.php:47
+msgid "Post_Formats"
+msgstr ""
+
+#: ../backend/views/grid-format.php:61
+msgid "Default"
+msgstr ""
+
+#: ../backend/views/grid-format.php:76
+msgid "Alternative Link"
+msgstr ""
+
+#: ../backend/views/grid-format.php:77
+msgid ""
+"Thanks to this option, you can add an alternative link to the current post "
+"link."
+msgstr ""
+
+#: ../backend/views/grid-format.php:93 ../backend/views/grid-format.php:533
+msgid "Blank"
+msgstr ""
+
+#: ../backend/views/grid-format.php:94 ../backend/views/grid-format.php:534
+msgid "Self"
+msgstr ""
+
+#: ../backend/views/grid-format.php:107 ../backend/views/grid-format.php:545
+msgid "Select a skin for the current post"
+msgstr ""
+
+#: ../backend/views/grid-format.php:108 ../backend/views/grid-format.php:546
+msgid ""
+"The skin selected must correspond to the grid type (Masonry/Grid) otherwise "
+"the default grid/masonry skin will be set."
+msgstr ""
+
+#: ../backend/views/grid-format.php:110 ../backend/views/grid-format.php:548
+msgid "Select a skin"
+msgstr ""
+
+#: ../backend/views/grid-format.php:122 ../backend/views/grid-format.php:560
+msgid "Item Size"
+msgstr ""
+
+#: ../backend/views/grid-format.php:123 ../backend/views/grid-format.php:561
+msgid "Set the current item size"
+msgstr ""
+
+#: ../backend/views/grid-format.php:123 ../backend/views/grid-format.php:561
+msgid "Row number only works for grid layout (not masonry layout)."
+msgstr ""
+
+#: ../backend/views/grid-format.php:163 ../backend/views/grid-format.php:601
+msgid "Here you can override the default colors set in the grid settings."
+msgstr ""
+
+#: ../backend/views/grid-format.php:163 ../backend/views/grid-format.php:601
+msgid ""
+"Keep the background color field empty if you do not want to add a custom "
+"color for the current post."
+msgstr ""
+
+#: ../backend/views/grid-format.php:167 ../backend/views/grid-format.php:177
+#: ../backend/views/grid-format.php:190 ../backend/views/grid-format.php:194
+#: ../backend/views/grid-format.php:204 ../backend/views/grid-format.php:217
+#: ../backend/views/grid-format.php:605 ../backend/views/grid-format.php:615
+#: ../backend/views/grid-format.php:628 ../backend/views/grid-format.php:632
+#: ../backend/views/grid-format.php:642 ../backend/views/grid-format.php:655
+#: ../backend/views/grid-settings.php:68
+msgid "Colors"
+msgstr ""
+
+#: ../backend/views/grid-format.php:221
+msgid "Alternative Image"
+msgstr ""
+
+#: ../backend/views/grid-format.php:222
+msgid ""
+"Add an alternative image to the current feature thumbnail image (if "
+"available)."
+msgstr ""
+
+#: ../backend/views/grid-format.php:222
+msgid "This image will also be used as a poster for video/audio format"
+msgstr ""
+
+#: ../backend/views/grid-format.php:225
+msgid "Select an image as an alternative to the feature image"
+msgstr ""
+
+#: ../backend/views/grid-format.php:229
+msgid "Image"
+msgstr ""
+
+#: ../backend/views/grid-format.php:235
+msgid "Select multiple image to add as a gallery in the current grid item."
+msgstr ""
+
+#: ../backend/views/grid-format.php:236
+msgid ""
+"You can easly arrange the gallery order by dragging and dropping images."
+msgstr ""
+
+#: ../backend/views/grid-format.php:248
+msgid "MP3 File URL"
+msgstr ""
+
+#: ../backend/views/grid-format.php:249
+msgid "Please enter an URL or upload your .mp3 audio file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:251
+msgid "Select a .mp3 file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:252
+msgid "Insert .mp3"
+msgstr ""
+
+#: ../backend/views/grid-format.php:253
+msgid "Add .mp3"
+msgstr ""
+
+#: ../backend/views/grid-format.php:265
+msgid "OGG File URL"
+msgstr ""
+
+#: ../backend/views/grid-format.php:266
+msgid "Please enter an URL or upload your .oga/.ogg audio file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:268
+msgid "Select an .ogg file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:269
+msgid "Insert .ogg"
+msgstr ""
+
+#: ../backend/views/grid-format.php:270
+msgid "Add .ogg"
+msgstr ""
+
+#: ../backend/views/grid-format.php:282
+msgid "SoundCloud ID"
+msgstr ""
+
+#: ../backend/views/grid-format.php:283
+msgid "Please enter your sound ID"
+msgstr ""
+
+#: ../backend/views/grid-format.php:291
+msgid "MP4 File URL"
+msgstr ""
+
+#: ../backend/views/grid-format.php:292
+msgid "Please enter an URL or upload your .m4v/.mp4 video file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:294
+msgid "Select a .mp4 file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:295
+msgid "Insert .mp4"
+msgstr ""
+
+#: ../backend/views/grid-format.php:296 ../backend/views/grid-format.php:313
+#: ../backend/views/grid-format.php:330
+msgid "Add a video"
+msgstr ""
+
+#: ../backend/views/grid-format.php:308
+msgid "OGV File URL"
+msgstr ""
+
+#: ../backend/views/grid-format.php:309
+msgid "Please enter an URL or upload your .ogv/.ogg video file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:311
+msgid "Select an .ogv file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:312
+msgid "Insert .ogv"
+msgstr ""
+
+#: ../backend/views/grid-format.php:325
+msgid "WEBM File URL"
+msgstr ""
+
+#: ../backend/views/grid-format.php:326
+msgid "Please enter an URL or upload your .webm video file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:328
+msgid "Select a .webm file"
+msgstr ""
+
+#: ../backend/views/grid-format.php:329
+msgid "Insert .webm"
+msgstr ""
+
+#: ../backend/views/grid-format.php:342
+msgid "Video Aspect ratio (mp4, ogv, webm)"
+msgstr ""
+
+#: ../backend/views/grid-format.php:344 ../backend/views/grid-format.php:375
+#: ../backend/views/grid-format.php:405
+msgid "Video ratio (only works with masonry)"
+msgstr ""
+
+#: ../backend/views/grid-format.php:362
+msgid "Youtube ID"
+msgstr ""
+
+#: ../backend/views/grid-format.php:363
+msgid "Copy/Paste the Youtube ID"
+msgstr ""
+
+#: ../backend/views/grid-format.php:373
+msgid "Youtube Aspect ratio"
+msgstr ""
+
+#: ../backend/views/grid-format.php:393
+msgid "Vimeo ID"
+msgstr ""
+
+#: ../backend/views/grid-format.php:394
+msgid "Copy/Paste the Vimeo ID"
+msgstr ""
+
+#: ../backend/views/grid-format.php:403
+msgid "Vimeo Aspect ratio"
+msgstr ""
+
+#: ../backend/views/grid-format.php:423
+msgid "Wistia ID"
+msgstr ""
+
+#: ../backend/views/grid-format.php:424
+msgid "Copy/Paste the Wistia ID"
+msgstr ""
+
+#: ../backend/views/grid-format.php:433
+msgid "Wistia Aspect ratio"
+msgstr ""
+
+#: ../backend/views/grid-format.php:435
+msgid "Wistia ratio (only works with masonry)"
+msgstr ""
+
+#: ../backend/views/grid-format.php:450
+msgid "Quote Author"
+msgstr ""
+
+#: ../backend/views/grid-format.php:451
+msgid "Please enter the quote author."
+msgstr ""
+
+#: ../backend/views/grid-format.php:462
+msgid "Quote Content"
+msgstr ""
+
+#: ../backend/views/grid-format.php:463
+msgid "Please type the text for your quote here."
+msgstr ""
+
+#: ../backend/views/grid-format.php:475
+msgid "Link URL"
+msgstr ""
+
+#: ../backend/views/grid-format.php:476
+msgid "Please type the url link"
+msgstr ""
+
+#: ../backend/views/grid-format.php:487
+msgid "Link Content"
+msgstr ""
+
+#: ../backend/views/grid-format.php:488
+msgid "Please enter the Link Content/Text."
+msgstr ""
+
+#: ../backend/views/grid-format.php:506
+msgid "The Grid - Image Settings"
+msgstr ""
+
+#: ../backend/views/grid-format.php:516
+msgid "Custom Link"
+msgstr ""
+
+#: ../backend/views/grid-format.php:517
+msgid ""
+"Attachment doesn't have link to redirect to a particular page/post except "
+"the image url itself."
+msgstr ""
+
+#: ../backend/views/grid-format.php:517
+msgid ""
+"Thanks to this option you can add a custom link to redirect everywhere you "
+"want on your website or external link."
+msgstr ""
+
+#: ../backend/views/grid-format.php:669
+msgid "The Grid Term Color"
+msgstr ""
+
+#: ../backend/views/grid-format.php:677
+msgid "Term color:"
+msgstr ""
+
+#: ../backend/views/grid-format.php:679
+msgid "Choose a color for the current term"
+msgstr ""
+
+#: ../backend/views/grid-import.php:16
+msgid "Importer"
+msgstr ""
+
+#: ../backend/views/grid-import.php:20 ../backend/views/grid-import.php:23
+msgid "Import Grid(s)"
+msgstr ""
+
+#: ../backend/views/grid-import.php:21
+msgid "Please select a .json file created with the current exporter feature."
+msgstr ""
+
+#: ../backend/views/grid-import.php:21
+msgid "Import a grid(s) will create new grid in overview list overview."
+msgstr ""
+
+#: ../backend/views/grid-import.php:24
+msgid "or"
+msgstr ""
+
+#: ../backend/views/grid-import.php:25 ../backend/views/grid-list.php:243
+msgid "Import Demo"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:13
+msgid "The grid name field is accessible in General tab."
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:14
+msgid "This grid name already exist!"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:15
+msgid "Please, change your grid name in order to save your current settings."
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:16
+msgid "The grid name field is empty!"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:16
+msgid "Please, you must fill the grid name field."
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:18
+msgid "Generated Meta Query"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:19
+msgid "This meta query will be used in order to filter the grid."
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:20
+msgid "It will affect the number of item displayed in the grid."
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:21
+msgid "// WP_Meta_Query arguments"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:22
+msgid "// The Meta Query"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:23
+msgid "No Meta_Query available."
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:23
+msgid "You need at least to set one Meta Key name and value."
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:32 ../backend/views/grid-list.php:191
+msgid "Deleting Grid"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:34
+msgid "Grid Deleted"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:36
+msgid "Sorry, an error occurred during, please try again"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:58
+msgid "Fetching grid data, please wait..."
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:62
+msgid "Please Wait"
+msgstr ""
+
+#: ../backend/views/grid-infobox.php:65
+#: ../includes/custom-fields.class.php:277
+msgid "Save Changes"
+msgstr ""
+
+#: ../backend/views/grid-list.php:58
+msgid "&laquo;"
+msgstr ""
+
+#: ../backend/views/grid-list.php:59
+msgid "&raquo;"
+msgstr ""
+
+#: ../backend/views/grid-list.php:84 ../includes/the-grid-base.class.php:314
+msgid "ID"
+msgstr ""
+
+#: ../backend/views/grid-list.php:100
+msgid "Actions"
+msgstr ""
+
+#: ../backend/views/grid-list.php:102
+msgid "Settings"
+msgstr ""
+
+#: ../backend/views/grid-list.php:105
+msgid "Modified"
+msgstr ""
+
+#: ../backend/views/grid-list.php:119
+msgid "New!"
+msgstr ""
+
+#: ../backend/views/grid-list.php:166 ../the-grid.php:231
+msgid "Edit"
+msgstr ""
+
+#: ../backend/views/grid-list.php:169
+msgid "Clone"
+msgstr ""
+
+#: ../backend/views/grid-list.php:188
+msgid "Are you sure you want to delete this grid?"
+msgstr ""
+
+#: ../backend/views/grid-list.php:189
+msgid "Cloning Grid"
+msgstr ""
+
+#: ../backend/views/grid-list.php:190
+msgid "Grid Cloned"
+msgstr ""
+
+#: ../backend/views/grid-list.php:192
+msgid "Grid deleted"
+msgstr ""
+
+#: ../backend/views/grid-list.php:193
+msgid "Sorting Grid"
+msgstr ""
+
+#: ../backend/views/grid-list.php:194
+msgid "Grid Sorted"
+msgstr ""
+
+#: ../backend/views/grid-list.php:195
+msgid "Favoriting Grid"
+msgstr ""
+
+#: ../backend/views/grid-list.php:196
+msgid "Grid Favorited"
+msgstr ""
+
+#: ../backend/views/grid-list.php:197
+msgid "Unfavoriting Grid"
+msgstr ""
+
+#: ../backend/views/grid-list.php:198
+msgid "Grid unfavorited"
+msgstr ""
+
+#: ../backend/views/grid-list.php:199
+msgid "Updating List"
+msgstr ""
+
+#: ../backend/views/grid-list.php:200
+msgid "List Updated"
+msgstr ""
+
+#: ../backend/views/grid-list.php:201
+msgid "Sorry, an error occurred, please try again"
+msgstr ""
+
+#: ../backend/views/grid-list.php:218
+msgid "Create a new Grid"
+msgstr ""
+
+#: ../backend/views/grid-list.php:233
+msgid "Thank You For Purchasing The Grid!"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:51
+msgid "width:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:52
+msgid "height:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:53
+msgid "crop images:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:67
+#: ../backend/views/grid-settings.php:197
+msgid "Image Sizes"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:69
+msgid "LightBox"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:70
+#: ../backend/views/grid-settings.php:495
+msgid "Meta Data"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:80 ../backend/views/grid-settings.php:86
+msgid "Post Formats"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:84
+msgid "Enable post formats on any post type"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:86
+msgid "This options allows to add post formats options on any post types."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:86
+msgid ""
+"You should check this option if your theme doesn't handle post formats "
+"options."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:86
+msgid "Learn more about post formats in Wordpress:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:98
+msgid "Medialement"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:102
+msgid "Mediaelement"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:104
+msgid ""
+"Use mediaelement for HTML audio (mp3/ogg), video (mp4/ogv/webm) elements in "
+"the grid."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:104
+msgid "The style of Mediaelement will depends of your current theme."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:110
+msgid "Enable Mediaelement player"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:120
+msgid "Add Mediaelement Grid StyleSheet"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:125
+msgid ""
+"We cannot be responsible of layout problem while using a theme with custom "
+"css stylesheet for mediaelement."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:125
+msgid "For any appearance problem, you should contact the theme author."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:138
+msgid "Debounce resize"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:140
+msgid ""
+"By using smart resize, you will reduce the number of calculation during "
+"resizing the browser."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:140
+msgid "This allows you to improve performance while resizing browser."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:140
+msgid ""
+"This feature can create an horizontal scrollbar during resizing depending of "
+"the theme layout."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:140
+msgid "If you encounter any problem, please deactivate this option."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:152
+msgid "Caching System"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:156
+msgid "Enable Caching Grid"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:158
+msgid ""
+"This caching system will cache the entire Grid markup and queries. It will "
+"improve drastically performance"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:158
+msgid ""
+"This cache should be cleared after any changes which can affect the grid."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:165
+msgid "Clear Cache"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:166
+msgid "Please wait..."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:167
+msgid "Done!"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:174
+msgid "Debug Mode"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:178
+msgid "Enable Debug Mode"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:180
+msgid ""
+"This options allows to use un-minified css and javascripts for developers or "
+"in order to debug an issue."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:201
+msgid "Image Sizes Settings"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:202
+msgid ""
+"Following image sizes can be set and used to load fitted images in each grid "
+"item."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:202
+msgid "These size are accessible in each grid settings (under media tab)."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:202
+msgid ""
+"It allows to preserve loading speed while preserving optimal image quality."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:202
+msgid "Learn more about image size in Wordpress:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:202
+msgid "add_image_size"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:208
+msgid "The Grid Image Size 1"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:233
+msgid "The Grid Image Size 2"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:259
+msgid "The Grid Image Size 3"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:285
+msgid "The Grid Image Size 4"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:311
+msgid "The Grid Image Size 5"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:336
+msgid "Regenerate your images!"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:337
+msgid ""
+"We highly recommend to regenerate your thumbnail images in order to "
+"correctly apply the previous settings."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:337
+msgid ""
+"If you change these settings or just install this plugin on an old wordpress "
+"installation then you must regenerate your thumbnail."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:337
+msgid ""
+"It exists a lot of plugins that easily allows you to regenerate thumbnails "
+"like:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:337
+msgid "Regenerate Thumbnails Plugin"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:355
+msgid "Color Scheme"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:360
+msgid "Color Scheme Settings"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:361
+msgid "Set your color scheme for title and text insed grid item"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:368
+msgid "Dark Title Color"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:375
+msgid "Dark Text Color"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:382
+msgid "Dark Span Color"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:391
+msgid "Light Title Color"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:398
+msgid "Light Text Color"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:405
+msgid "Light Span Color"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:423
+#: ../backend/views/grid-settings.php:425
+#: ../backend/views/grid-settings.php:427
+msgid "(not available)"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:431
+msgid "Lightbox"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:437
+msgid "LightBox Type"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:438
+msgid "Select the default LightBox to be used."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:439
+msgid "Select a Lightbox"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:440
+msgid "The Grid Lightbox"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:441
+msgid "PrettyPhoto"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:442
+msgid "FancyBox"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:443
+msgid "Foobox (v2)"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:445
+msgid "To use FancyBox or Prettyphoto you must install/activate them."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:446
+msgid "FancyBox WordPress plugin:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:447
+msgid "PrettyPhoto WordPress plugin:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:448
+msgid "FooBoxV2 WordPress plugin:"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:456
+msgid "AutoPlay Video"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:457
+msgid "Automatically play video (hosted & embedded) in the lightbox."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:468
+msgid "Background Color"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:469
+msgid "Please, select the overlay background color of the lightbox."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:477
+msgid "Text Color"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:478
+msgid "Please, select text color of the lightbox."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:500
+msgid "Add custom meta data"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:503
+msgid "In this panel setting, you can add any custom meta data."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:504
+msgid ""
+"These meta data can be used to add new sorter in order to sort the grid by a "
+"custom meta data."
+msgstr ""
+
+#: ../backend/views/grid-settings.php:521
+msgid "Meta key name"
+msgstr ""
+
+#: ../backend/views/grid-settings.php:556
+msgid "Add meta data"
+msgstr ""
+
+#: ../backend/views/grid-update.php:14
+msgid "Register your plugin from CodeCanyon"
+msgstr ""
+
+#: ../backend/views/grid-update.php:15
+msgid "Your Grid Plugin is correctly registered"
+msgstr ""
+
+#: ../backend/views/grid-update.php:25
+msgid "Auto Update"
+msgstr ""
+
+#: ../backend/views/grid-update.php:34
+msgid "Username:"
+msgstr ""
+
+#: ../backend/views/grid-update.php:37
+msgid "Your Envato username."
+msgstr ""
+
+#: ../backend/views/grid-update.php:42
+msgid "Envato API Key:"
+msgstr ""
+
+#: ../backend/views/grid-update.php:45
+msgid ""
+"You will find your API Key on your Envato Account page undere My Settings "
+"tab. The API key is located at the bottom of this page."
+msgstr ""
+
+#: ../backend/views/grid-update.php:45
+msgid "Instructions"
+msgstr ""
+
+#: ../backend/views/grid-update.php:50
+msgid "Purchase code:"
+msgstr ""
+
+#: ../backend/views/grid-update.php:53
+msgid ""
+"Please enter your CodeCanyon The Grid purchase code. You can find your key "
+"by following the instructions"
+msgstr ""
+
+#: ../backend/views/grid-update.php:53
+msgid "on this page."
+msgstr ""
+
+#: ../backend/views/grid-update.php:58
+msgid "Activate"
+msgstr ""
+
+#: ../backend/views/grid-update.php:59
+msgid "Check Update"
+msgstr ""
+
+#: ../backend/views/grid-update.php:60
+msgid "Update"
+msgstr ""
+
+#: ../frontend/the-grid-content.class.php:205
+#: ../includes/item-skins/grid/alofi/alofi.php:19
+#: ../includes/item-skins/grid/apia/apia.php:19
+#: ../includes/item-skins/grid/brasilia/brasilia.php:19
+#: ../includes/item-skins/grid/camberra/camberra.php:19
+#: ../includes/item-skins/grid/caracas/caracas.php:19
+#: ../includes/item-skins/grid/honiara/honiara.php:19
+#: ../includes/item-skins/grid/lome/lome.php:19
+#: ../includes/item-skins/grid/malabo/malabo.php:19
+#: ../includes/item-skins/grid/male/male.php:19
+#: ../includes/item-skins/grid/oslo/oslo.php:19
+#: ../includes/item-skins/grid/pracia/pracia.php:19
+#: ../includes/item-skins/grid/sofia/sofia.php:7
+#: ../includes/item-skins/grid/suva/suva.php:19
+#: ../includes/item-skins/masonry/doha/doha.php:19
+#: ../includes/item-skins/masonry/lusaka/lusaka.php:19
+#: ../includes/item-skins/masonry/maren/maren.php:19
+#: ../includes/item-skins/masonry/panama/panama.php:7
+#: ../includes/item-skins/masonry/panama/panama.php:19
+#: ../includes/item-skins/masonry/praia/praia.php:7
+#: ../includes/item-skins/masonry/quito/quito.php:7
+#: ../includes/item-skins/masonry/quito/quito.php:19
+msgid "Read More"
+msgstr ""
+
+#: ../frontend/the-grid-content.class.php:451
+msgid "No comment"
+msgstr ""
+
+#: ../frontend/the-grid-content.class.php:452
+msgid "comment"
+msgstr ""
+
+#: ../frontend/the-grid-content.class.php:453
+msgid "Comments"
+msgstr ""
+
+#: ../frontend/the-grid-content.class.php:700
+msgid "Sale!"
+msgstr ""
+
+#: ../frontend/the-grid-content.class.php:742
+msgid "Add to cart"
+msgstr ""
+
+#: ../frontend/the-grid.class.php:649
+msgid "No post was found with your current grid settings."
+msgstr ""
+
+#: ../frontend/the-grid.class.php:651
+msgid ""
+"You should verify if you have posts inside the current selected post type(s) "
+"and if the meta key filter is not too much restrictive."
+msgstr ""
+
+#: ../frontend/the-grid.class.php:1472
+msgid "Loading"
+msgstr ""
+
+#: ../frontend/the-grid.class.php:1475
+msgid "Hide item"
+msgstr ""
+
+#: ../frontend/the-grid.class.php:1476
+msgid "Show item"
+msgstr ""
+
+#: ../frontend/the-grid.class.php:1632
+msgid "Loading Error"
+msgstr ""
+
+#: ../frontend/the-grid.class.php:1682 ../frontend/the-grid.class.php:1726
+msgid "Content correctly retrieved"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:81
+msgid "Are you sure you want to delete this filter?"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:82
+msgid "Available Filter item(s)"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:116
+msgid "Active Filter(s)"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:118
+msgid "Remove all"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:119
+msgid "Add all"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:157
+msgid "Available blocs"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:161
+msgid "Sort"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:162
+msgid "Load more"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:166
+msgid "Slider bullets"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:172
+msgid "Grid Layout"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:178
+msgid "Top Area 1"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:187
+msgid "Top Area 2"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:207
+msgid "Left Area"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:216
+msgid "Right Area"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:227
+msgid "Bottom Area 1"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:236
+msgid "Bottom Area 2"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:249
+msgid "Styles"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:250
+msgid "Margin top:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:253
+msgid "Margin bottom:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:256
+msgid "Margin left:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:259
+msgid "Margin right:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:262
+msgid "Padding top:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:265
+msgid "Padding bottom:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:268
+msgid "Padding left:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:271
+msgid "Padding right:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:274
+msgid "Background color:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:294
+msgid "Add a Meta Key"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:295
+msgid "Add relation"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:296
+msgid "Check metakey array"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:337
+msgid "Main Settings"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:339
+msgid "Post Type(s)"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:343
+msgid "Gutter"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:347
+msgid "Skin(s)"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:373
+msgid "Select a skin for:"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:403
+msgid "Grid Skins"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:404
+msgid "Masonry Skins"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:477
+msgid "Select this skin"
+msgstr ""
+
+#: ../includes/custom-fields.class.php:572
+msgid "Selected Skin"
+msgstr ""
+
+#: ../includes/item-animation.class.php:49
+msgid "Fade in"
+msgstr ""
+
+#: ../includes/item-animation.class.php:54
+msgid "Zoom in"
+msgstr ""
+
+#: ../includes/item-animation.class.php:59
+msgid "Zoom out"
+msgstr ""
+
+#: ../includes/item-animation.class.php:64
+msgid "From Bottom"
+msgstr ""
+
+#: ../includes/item-animation.class.php:69
+msgid "From Top"
+msgstr ""
+
+#: ../includes/item-animation.class.php:74
+msgid "From Left"
+msgstr ""
+
+#: ../includes/item-animation.class.php:79
+msgid "From Right"
+msgstr ""
+
+#: ../includes/item-animation.class.php:84
+msgid "From Top Left"
+msgstr ""
+
+#: ../includes/item-animation.class.php:89
+msgid "From Top Right"
+msgstr ""
+
+#: ../includes/item-animation.class.php:94
+msgid "From Bottom left"
+msgstr ""
+
+#: ../includes/item-animation.class.php:99
+msgid "From Bottom Right"
+msgstr ""
+
+#: ../includes/item-animation.class.php:104
+msgid "Slide Bottom"
+msgstr ""
+
+#: ../includes/item-animation.class.php:109
+msgid "Slide Top"
+msgstr ""
+
+#: ../includes/item-animation.class.php:114
+msgid "Slide Left"
+msgstr ""
+
+#: ../includes/item-animation.class.php:119
+msgid "Slide Right"
+msgstr ""
+
+#: ../includes/item-animation.class.php:124
+msgid "Slide Top Left"
+msgstr ""
+
+#: ../includes/item-animation.class.php:129
+msgid "Slide Top Right"
+msgstr ""
+
+#: ../includes/item-animation.class.php:134
+msgid "Slide Bottom Left"
+msgstr ""
+
+#: ../includes/item-animation.class.php:139
+msgid "Slide Bottom Right"
+msgstr ""
+
+#: ../includes/item-animation.class.php:144
+msgid "Flip X"
+msgstr ""
+
+#: ../includes/item-animation.class.php:149
+msgid "Flip Y"
+msgstr ""
+
+#: ../includes/item-animation.class.php:154
+msgid "Flip Z"
+msgstr ""
+
+#: ../includes/item-animation.class.php:159
+msgid "From Bottom Flip X"
+msgstr ""
+
+#: ../includes/item-animation.class.php:164
+msgid "From Bottom Flip Y"
+msgstr ""
+
+#: ../includes/item-animation.class.php:169
+msgid "From Bottom Flip Z"
+msgstr ""
+
+#: ../includes/item-animation.class.php:174
+msgid "From Top Flip X"
+msgstr ""
+
+#: ../includes/item-animation.class.php:179
+msgid "From Top Flip Y"
+msgstr ""
+
+#: ../includes/item-animation.class.php:184
+msgid "From Top Flip Z"
+msgstr ""
+
+#: ../includes/item-animation.class.php:189
+msgid "From Left Flip X"
+msgstr ""
+
+#: ../includes/item-animation.class.php:194
+msgid "From Left Flip Y"
+msgstr ""
+
+#: ../includes/item-animation.class.php:199
+msgid "From Left Flip Z"
+msgstr ""
+
+#: ../includes/item-animation.class.php:204
+msgid "From Right Flip X"
+msgstr ""
+
+#: ../includes/item-animation.class.php:209
+msgid "From Right Flip Y"
+msgstr ""
+
+#: ../includes/item-animation.class.php:214
+msgid "From Right Flip Z"
+msgstr ""
+
+#: ../includes/item-animation.class.php:219
+msgid "Perspective X"
+msgstr ""
+
+#: ../includes/item-animation.class.php:224
+msgid "Perspective Y"
+msgstr ""
+
+#: ../includes/item-animation.class.php:229
+msgid "Perspective Z"
+msgstr ""
+
+#: ../includes/item-animation.class.php:234
+msgid "Falling Rotate"
+msgstr ""
+
+#: ../includes/item-skins/grid/sofia/sofia.php:10
+#: ../includes/item-skins/grid/sofia/sofia.php:15
+#: ../includes/item-skins/masonry/panama/panama.php:10
+#: ../includes/item-skins/masonry/panama/panama.php:15
+#: ../includes/item-skins/masonry/praia/praia.php:10
+#: ../includes/item-skins/masonry/praia/praia.php:15
+#: ../includes/item-skins/masonry/quito/quito.php:10
+#: ../includes/item-skins/masonry/quito/quito.php:15
+msgid "Play Song"
+msgstr ""
+
+#: ../includes/item-skins/grid/sofia/sofia.php:11
+#: ../includes/item-skins/grid/sofia/sofia.php:12
+#: ../includes/item-skins/grid/sofia/sofia.php:13
+#: ../includes/item-skins/grid/sofia/sofia.php:14
+#: ../includes/item-skins/masonry/panama/panama.php:11
+#: ../includes/item-skins/masonry/panama/panama.php:12
+#: ../includes/item-skins/masonry/panama/panama.php:13
+#: ../includes/item-skins/masonry/panama/panama.php:14
+#: ../includes/item-skins/masonry/praia/praia.php:11
+#: ../includes/item-skins/masonry/praia/praia.php:12
+#: ../includes/item-skins/masonry/praia/praia.php:13
+#: ../includes/item-skins/masonry/praia/praia.php:14
+#: ../includes/item-skins/masonry/quito/quito.php:11
+#: ../includes/item-skins/masonry/quito/quito.php:12
+#: ../includes/item-skins/masonry/quito/quito.php:13
+#: ../includes/item-skins/masonry/quito/quito.php:14
+msgid "Play Video"
+msgstr ""
+
+#: ../includes/item-skins/grid/sofia/sofia.php:25
+#: ../includes/item-skins/masonry/maren/maren.php:25
+#: ../includes/item-skins/masonry/panama/panama.php:25
+#: ../includes/item-skins/masonry/praia/praia.php:25
+#: ../includes/item-skins/masonry/quito/quito.php:25
+msgid "By"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:40
+msgid "Category"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:41
+msgid "Search Categories"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:42 ../includes/media-taxonomies.php:163
+msgid "All Categories"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:43
+msgid "Parent Category"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:44
+msgid "Parent Category:"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:45
+msgid "Edit Category"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:46
+msgid "Update Category"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:47
+msgid "Add New Category"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:48
+msgid "New Category Name"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:53
+msgid "media-category"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:61 ../includes/media-taxonomies.php:71
+msgid "Tags"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:62
+msgid "Tag"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:63
+msgid "Search Tags"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:64 ../includes/media-taxonomies.php:164
+msgid "All Tags"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:65
+msgid "Parent Tag"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:66
+msgid "Parent Tag:"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:67
+msgid "Edit Tag"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:68
+msgid "Update Tag"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:69
+msgid "Add New Tag"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:70
+msgid "New Tag Name"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:75
+msgid "media-tag"
+msgstr ""
+
+#: ../includes/media-taxonomies.php:168
+msgid "Most Used"
+msgstr ""
+
+#: ../includes/metabox/fields/gallery.php:80
+msgid "Add/Edit Gallery"
+msgstr ""
+
+#: ../includes/metabox/fields/gallery.php:81
+msgid "Delete Gallery"
+msgstr ""
+
+#: ../includes/metabox/fields/gallery.php:84
+msgid "Are you sure you want to delete the gallery?"
+msgstr ""
+
+#: ../includes/metabox/fields/image.php:63
+#: ../includes/metabox/fields/image_id.php:63
+#: ../includes/metabox/fields/upload.php:54
+msgid "Select or upload an image"
+msgstr ""
+
+#: ../includes/post-like/post-like.php:223
+#: ../includes/post-like/post-like.php:336
+msgid "Unlike"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:297
+msgid "Original Size"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:298
+msgid "Thumbnail"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:299
+msgid "Medium"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:300
+msgid "Large"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:312
+msgid "Standard"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:316
+msgid "Title"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:317
+msgid "Excerpt"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:318
+msgid "Author"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:319
+msgid "Number of comment"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:320
+msgid "Popular post"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:323
+msgid "SKU"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:324
+msgid "Price"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:325
+msgid "Sale Price"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:326
+msgid "Number of sales"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:327
+msgid "Featured Products"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:328
+msgid "Stock Quantity"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:334
+msgid "Custom meta data"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:584
+msgid "Select the desired grid(s) to export."
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:584
+msgid ""
+"The generated file will be a .json file compatibe with the grid importer."
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:585
+msgid "Select a grid from the list"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:589
+msgid "Search a grid..."
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:626
+msgid "Currently, you don&#39;t have any grid."
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:627
+msgid "You need to add a grid in order to export it."
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:628
+msgid "You can create a new grid"
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:629
+msgid "here."
+msgstr ""
+
+#: ../includes/the-grid-base.class.php:633
+msgid "Currently, you do not have any grid!"
+msgstr ""
+
+#: ../includes/update/wp_autoupdate.php:213
+msgid "Download new version from CodeCanyon."
+msgstr ""
+
+#: ../includes/update/wp_autoupdate.php:216
+msgid "Update The Grid now."
+msgstr ""
+
+#: ../includes/update/wp_autoupdate.php:245
+msgid "Downloading package from envato market..."
+msgstr ""
+
+#: ../includes/update/wp_autoupdate.php:251
+msgid "Error! Can't connect to filesystem"
+msgstr ""
+
+#: ../includes/update/wp_autoupdate.php:259
+msgid ""
+"To receive automatic updates license activation is required. Please visit <a "
+"href=\""
+msgstr ""
+
+#: ../includes/update/wp_autoupdate.php:266
+msgid "Error! Envato API error"
+msgstr ""
+
+#: ../includes/update/wp_autoupdate.php:286
+msgid "Error on unzipping package"
+msgstr ""
+
+#: ../includes/wpml.class.php:61
+msgid "Languages"
+msgstr ""
+
+#: ../includes/wpml.class.php:200
+msgid "Grid Language"
+msgstr ""
+
+#: ../includes/wpml.class.php:201
+msgid "Select the current grid language for WPML"
+msgstr ""
+
+#: ../includes/wpml.class.php:202
+msgid "* If no language are selected then the current language will be set"
+msgstr ""
+
+#: ../includes/wpml.class.php:204
+msgid "Select a language"
+msgstr ""
+
+#: ../the-grid.php:170
+msgid "The_Grid"
+msgstr ""
+
+#: ../the-grid.php:171
+msgid "Search The_Grid"
+msgstr ""
+
+#: ../the-grid.php:172
+msgid "All The_Grid"
+msgstr ""
+
+#: ../the-grid.php:173
+msgid "Parent The_Grid"
+msgstr ""

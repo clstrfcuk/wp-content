@@ -41,7 +41,7 @@ class CS_Shortcode_Preserver {
 
 		$this->shortcodes = array();
 		$this->cache = array();
-		$this->attach_hooks( ( $hook == '' ) ? 'the_content' : $hook );
+		$this->attach_hooks( ( '' === $hook ) ? 'the_content' : $hook );
 
 	}
 
@@ -53,8 +53,9 @@ class CS_Shortcode_Preserver {
 	 */
 	public function attach_hooks( $hook ) {
 
-		if ( $hook != 'the_content' )
+		if ( 'the_content' !== $hook ) {
 			$this->sandbox_hooks( $hook );
+		}
 
 		add_filter( $hook, array( $this, 'preserve_shortcodes' ), 9 );
 		add_filter( $hook, array( $this, 'restore_shortcodes' ), 11 );
@@ -72,13 +73,13 @@ class CS_Shortcode_Preserver {
 		add_filter( $hook, array( $GLOBALS['wp_embed'], 'run_shortcode' ), 8 );
 		add_filter( $hook, array( $GLOBALS['wp_embed'], 'autoembed' ), 8 );
 		add_filter( $hook, 'capital_P_dangit', 11 );
-		add_filter( $hook, 'wptexturize'                       );
-		add_filter( $hook, 'convert_smilies'                   );
-		add_filter( $hook, 'wpautop'                           );
-		add_filter( $hook, 'shortcode_unautop'                 );
-		add_filter( $hook, 'prepend_attachment'                );
+		add_filter( $hook, 'wptexturize' );
+		add_filter( $hook, 'convert_smilies' );
+		add_filter( $hook, 'wpautop' );
+		add_filter( $hook, 'shortcode_unautop' );
+		add_filter( $hook, 'prepend_attachment' );
 
-		if ( function_exists('wp_make_content_images_responsive' ) ) {
+		if ( function_exists( 'wp_make_content_images_responsive' ) ) {
 			add_filter( $hook, 'wp_make_content_images_responsive' ); // Added in WP 4.4
 		}
 
@@ -96,21 +97,22 @@ class CS_Shortcode_Preserver {
 
 		$this->shortcodes = apply_filters( 'cs_preserve_shortcodes', $this->shortcodes );
 
-		if ( empty( $this->shortcodes ) )
+		if ( empty( $this->shortcodes ) ) {
 			return $content;
+		}
 
 		global $shortcode_tags;
-    $original = $shortcode_tags;
-    remove_all_shortcodes();
+		$original = $shortcode_tags;
+		remove_all_shortcodes();
 
-    foreach ( $this->shortcodes as $shortcode ) {
-    	add_shortcode( $shortcode, '__return_empty_string' );
-    }
+		foreach ( $this->shortcodes as $shortcode ) {
+			add_shortcode( $shortcode, '__return_empty_string' );
+		}
 
-    $pattern = get_shortcode_regex();
+		$pattern = get_shortcode_regex();
 
 		$content = preg_replace_callback( "/$pattern/s", array( $this, 'preserve_shortcode' ), $content );
-		$shortcode_tags = $original;
+		$shortcode_tags = $original; // WPCS: override ok.
 
 		return $content;
 	}
@@ -128,10 +130,11 @@ class CS_Shortcode_Preserver {
 				$content = str_replace( '<p>' . $key . '</p>', $key, $content );
 			}
 
-			$content = do_shortcode( str_replace( $key, $value, $content ), true );
+			$content = str_replace( $key, $value, $content );
+
 		}
 
-		return $content;
+		return do_shortcode( $content, true );
 
 	}
 
@@ -142,7 +145,7 @@ class CS_Shortcode_Preserver {
 	 */
 	public function preserve_shortcode( $matches ) {
 		$placeholder = '{{{'. uniqid() . '}}}';
-		$this->cache[$placeholder] = $matches[0];
+		$this->cache[ $placeholder ] = $matches[0];
 		return $placeholder;
 	}
 
@@ -152,8 +155,9 @@ class CS_Shortcode_Preserver {
 	 * @return object CS_Shortcode_Preserver::$instance
 	 */
 	public static function init( $hook = '' ) {
-		if (!isset(self::$instance))
+		if ( ! isset( self::$instance ) ) {
 			self::$instance = new CS_Shortcode_Preserver( $hook );
+		}
 		return self::$instance;
 	}
 
@@ -165,8 +169,9 @@ class CS_Shortcode_Preserver {
 	 * @return none
 	 */
 	public static function sandbox( $hook = '' ) {
-		if ( $hook != 'the_content' )
+		if ( 'the_content' !== $hook ) {
 			self::init()->attach_hooks( $hook );
+		}
 	}
 
 	/**
@@ -175,8 +180,9 @@ class CS_Shortcode_Preserver {
 	 * @return none
 	 */
 	public static function preserve( $shortcode ) {
-		if ( !isset(self::$instance) || in_array( $shortcode, self::$instance->shortcodes ) )
+		if ( ! isset( self::$instance ) || in_array( $shortcode, self::$instance->shortcodes, true ) ) {
 			return;
+		}
 
 		self::$instance->shortcodes[] = $shortcode;
 	}

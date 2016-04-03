@@ -50,7 +50,10 @@
       &.marginless-columns {
         display: table;
         table-layout: fixed;
-        width: 100%;
+
+        &:not(.width) {
+          width: 100%;
+        }
 
         &:before,
         &:after {
@@ -147,15 +150,9 @@
         margin-right: 0;
       }
     }
-  }
 
-  .js {
-    .x-column {
-      position: relative;
-
-      &[data-fade="true"] {
-        opacity: 0;
-      }
+    &[data-fade="true"] {
+      transition: opacity $easeOutQuint, transform $easeOutQuint;
     }
   }
 }

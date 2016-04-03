@@ -5,9 +5,9 @@ class CS_Envira_Gallery extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'envira-gallery',
-      'title'       => __( 'Envira Gallery', csl18n() ),
+      'title'       => __( 'Envira Gallery', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Place an Envira Gallery element into your content.', csl18n() ),
+      'description' => __( 'Place an Envira Gallery element into your content.', 'cornerstone' ),
       'supports'    => array(),
       'can_preview' => false
     );
@@ -37,7 +37,7 @@ class CS_Envira_Gallery extends Cornerstone_Element_Base {
 
       $found[] = array(
         'value'    => 'none',
-        'label'    => __( 'No Galleries Available', csl18n() ),
+        'label'    => __( 'No Galleries Available', 'cornerstone' ),
         'disabled' => true
       );
 
@@ -46,8 +46,8 @@ class CS_Envira_Gallery extends Cornerstone_Element_Base {
     $this->addControl(
       'source_id',
       'select',
-      __( 'Select Gallery', csl18n() ),
-      __( 'Choose from Envira Gallery elements that have already been created.', csl18n() ),
+      __( 'Select Gallery', 'cornerstone' ),
+      __( 'Choose from Envira Gallery elements that have already been created.', 'cornerstone' ),
       $found[0]['value'],
       array(
         'choices' => $found

@@ -5,9 +5,9 @@ class CS_Author extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'author',
-      'title'       => __( 'Author', csl18n() ),
+      'title'       => __( 'Author', 'cornerstone' ),
       'section'     => 'social',
-      'description' => __( 'Author description.', csl18n() ),
+      'description' => __( 'Author description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'autofocus' => array(
     		'heading' => '.x-author-box',
@@ -20,16 +20,16 @@ class CS_Author extends Cornerstone_Element_Base {
     $this->addControl(
       'heading',
       'text',
-      __( 'Title', csl18n() ),
-      __( 'Enter in a title for your author information.', csl18n() ),
-      __( 'About the Author', csl18n() )
+      __( 'Title', 'cornerstone' ),
+      __( 'Enter in a title for your author information.', 'cornerstone' ),
+      __( 'About the Author', 'cornerstone' )
     );
 
     $this->addControl(
       'author_id',
       'text',
-      __( 'Author ID', csl18n() ),
-      __( 'By default the author of the post or page will be output by leaving this input blank. If you would like to output the information of another author, enter in their user ID here.', csl18n() ),
+      __( 'Author ID', 'cornerstone' ),
+      __( 'By default the author of the post or page will be output by leaving this input blank. If you would like to output the information of another author, enter in their user ID here.', 'cornerstone' ),
       ''
     );
 

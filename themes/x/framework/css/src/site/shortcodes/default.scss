@@ -27,20 +27,17 @@
 // Shortcodes
 // =============================================================================
 
-@import "../_scss/shortcodes_default/normalization";
-
-.x-section {
-  @import "../_scss/shortcodes";
+#cs-content {
+  @import "../_scss/shortcodes_default/normalization";
+  @import "../_scss/shortcodes_default/shortcodes";
 }
-
-@import "../_scss/shortcodes_default/shortcodes";
 
 
 
 // Components
 // =============================================================================
 
-.x-section {
+#cs-content {
   @import "../_scss/component-animations";
   @import "../_scss/shortcodes_default/mejs";
 }
@@ -52,7 +49,7 @@
 // Animations
 // =============================================================================
 
-.x-section {
+#cs-content {
   @import "../_scss/animate";
 }
 
@@ -61,7 +58,7 @@
 // Utilities
 // =============================================================================
 
-.x-section {
+#cs-content {
   @import "../_scss/util/legacy";
 }
 

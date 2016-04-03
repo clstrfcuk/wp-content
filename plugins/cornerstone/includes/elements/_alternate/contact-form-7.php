@@ -5,9 +5,9 @@ class CS_Contact_Form_7 extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'contact-form-7',
-      'title'       => __( 'Contact Form 7', csl18n() ),
+      'title'       => __( 'Contact Form 7', 'cornerstone' ),
       'section'     => 'content',
-      'description' => __( 'Contact Form 7 description.', csl18n() ),
+      'description' => __( 'Contact Form 7 description.', 'cornerstone' ),
       'empty'       => array( 'form_id' => 'none' )
     );
   }
@@ -26,14 +26,14 @@ class CS_Contact_Form_7 extends Cornerstone_Element_Base {
     }
 
     if ( empty( $choices ) ) {
-      $choices[] = array( 'value' => 'none', 'label' => __( 'No Forms available', csl18n() ), 'disabled' => true );
+      $choices[] = array( 'value' => 'none', 'label' => __( 'No Forms available', 'cornerstone' ), 'disabled' => true );
     }
 
     $this->addControl(
       'form_id',
       'select',
-      __( 'Select Contact Form', csl18n() ),
-      __( 'Select a previously created form.', csl18n() ),
+      __( 'Select Contact Form', 'cornerstone' ),
+      __( 'Select a previously created form.', 'cornerstone' ),
       $choices[0]['value'],
       array( 'choices' => $choices )
     );

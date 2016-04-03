@@ -8,7 +8,7 @@ class CSE_Responsive_Text {
 
 	public function ui() {
 		return array(
-      'title' => __( 'Responsive Text', csl18n() ),
+      'title' => __( 'Responsive Text', 'cornerstone' ),
     );
 	}
 

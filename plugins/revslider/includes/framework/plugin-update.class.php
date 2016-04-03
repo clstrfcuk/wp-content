@@ -190,35 +190,11 @@ class RevSliderPluginUpdate {
 			'opacity' => 'opacity',
 			'padding' => 'padding',
 			'text-decoration' => 'textDecoration',
-			
-			
-			'x' => 'x',
-			'y' => 'y',
-			'z' => 'z',
-			'skewx' => 'skewx',
-			'skewy' => 'skewy',
-			'scalex' => 'scalex',
-			'scaley' => 'scaley',
-			'opacity' => 'opacity',
-			'xrotate' => 'xrotate',
-			'yrotate' => 'yrotate',
-			'2d_rotation' => '2d_rotation',
-			'layer_2d_origin_x' => 'layer_2d_origin_x',
-			'layer_2d_origin_y' => 'layer_2d_origin_y',
-			'2d_origin_x' => '2d_origin_x',
-			'2d_origin_y' => '2d_origin_y',
-			'pers' => 'pers',
-			
-			'color-transparency' => 'color-transparency',
-			'background-transparency' => 'background-transparency',
-			'border-transparency' => 'border-transparency',
-			'css_cursor' => 'css_cursor',
-			'speed' => 'speed',
-			'easing' => 'easing',
-			'corner_left' => 'corner_left',
-			'corner_right' => 'corner_right',
-			'parallax' => 'parallax'
 		);
+		
+		$cs = array_merge($cs, RevSliderCssParser::get_deformation_css_tags());
+		
+		
 		
 		foreach($styles as $key => $attr){
 			
@@ -418,7 +394,7 @@ class RevSliderPluginUpdate {
 						$layers = $slide->getLayers();
 						if(!empty($layers) && is_array($layers)){
 							foreach($layers as $lk => $layer){
-								if(RevSliderFunctions::getVal($layer, 'x_start', false) == false){ //values are not set, set them now through
+								if(RevSliderFunctions::getVal($layer, 'x_start', false) === false){ //values are not set, set them now through
 									$animation = RevSliderFunctions::getVal($layer, 'animation', 'tp-fade');
 									$endanimation = RevSliderFunctions::getVal($layer, 'endanimation', 'tp-fade');
 									if($animation == 'fade') $animation = 'tp-fade';

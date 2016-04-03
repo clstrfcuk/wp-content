@@ -10,28 +10,19 @@
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
 //   01. Set Path
-//   02. Get API Key Option Name
-//   03. Links
+//   02. Links
+//   03. Helpers
 //   04. Require Files
 //   05. Setup Menu
 //   06. Activation Redirect
-//   07. Add Extensions Link to "Add Plugins" Page
-//   08. Setup Demo Importer
+//   07. Instantiate Addons
+//   08. Validation Notice
 // =============================================================================
 
 // Set Path
 // =============================================================================
 
 $addn_path = X_TEMPLATE_PATH . '/framework/functions/global/admin/addons';
-
-
-
-// Get API Key Option Name
-// =============================================================================
-
-function x_addons_get_api_key_option_name() {
-  return 'x_product_validation_key';
-}
 
 
 
@@ -42,20 +33,32 @@ function x_addons_get_link_home() {
   return admin_url( 'admin.php?page=x-addons-home' );
 }
 
-function x_addons_get_link_customizer_manager() {
-  return admin_url( 'admin.php?page=x-addons-customizer-manager' );
+
+
+// Helpers
+// =============================================================================
+
+function x_addons_preview_unlock( $box_class, $text = 'Setup Now' ) {
+
+  ?>
+    <a class="tco-btn tco-btn-nope" href="#" data-tco-toggle="<?php echo $box_class; ?> .tco-overlay"><?php _e( $text, '__x__' ); ?></a>
+  <?php
+
 }
 
-function x_addons_get_link_demo_content() {
-  return admin_url( 'admin.php?page=x-addons-demo-content' );
-}
 
-function x_addons_get_link_product_validation() {
-  return admin_url( 'admin.php?page=x-addons-product-validation' );
-}
+function x_addons_preview_overlay( $box_class ) {
 
-function x_addons_get_link_extensions() {
-  return admin_url( 'admin.php?page=x-addons-extensions' );
+  ?>
+    <div class="tco-overlay tco-overlay-box-content">
+      <a class="tco-overlay-close" href="#" data-tco-toggle="<?php echo $box_class; ?> .tco-overlay"><?php x_tco()->admin_icon( 'no' ); ?></a>
+      <h4 class="tco-box-content-title"><?php _e( 'How do I unlock this feature?', '__x__' ); ?></h4>
+      <p><?php _e( 'If you have purchased X from ThemeForest already, you can find your purchase code <a href="https://community.theme.co/images/find-item-purchase-code.png" target="_blank">here</a>. If you do not have a license or need to get another, you can <a href="https://theme.co/go/join-validation.php" target="_blank">purchase</a> one.', '__x__' ); ?></p>
+      <h4 class="tco-box-content-title"><?php _e( 'Where do I enter my purchase code?', '__x__' ); ?></h4>
+      <p><?php printf( __( 'Once you have a purchase code you can <a %s href="#">enter</a> it in the input at the top of this page.', '__x__' ), 'data-tco-focus="validation-input"' ); ?></p>
+    </div>
+  <?php
+
 }
 
 
@@ -63,20 +66,28 @@ function x_addons_get_link_extensions() {
 // Require Files
 // =============================================================================
 
-require_once( $addn_path . '/class-themeco-update-api.php' );
-require_once( $addn_path . '/class-x-update-api.php' );
-require_once( $addn_path . '/class-theme-updater.php' );
-require_once( $addn_path . '/class-plugin-updater.php' );
-require_once( $addn_path . '/page-home.php' );
-require_once( $addn_path . '/page-customizer-manager.php' );
-require_once( $addn_path . '/page-demo-content.php' );
-require_once( $addn_path . '/page-product-validation.php' );
-require_once( $addn_path . '/page-extensions.php' );
+//
+// 1. Updates API.
+// 2. Demo content API.
+// 3. Addons home modules.
+// 4. Home page.
+//
+
+require_once( $addn_path . '/updates/class-theme-updater.php' );
+require_once( $addn_path . '/updates/class-plugin-updater.php' );
+
 require_once( $addn_path . '/demo/legacy/ajax-handler.php' );
 require_once( $addn_path . '/demo/class-x-demo-import-session.php' );
 require_once( $addn_path . '/demo/class-x-demo-import-registry.php' );
 require_once( $addn_path . '/demo/class-x-demo-import-processor.php' );
 
+require_once( $addn_path . '/modules/class-addons-home.php' );
+require_once( $addn_path . '/modules/class-addons-updates.php' );
+require_once( $addn_path . '/modules/class-addons-validation.php' );
+require_once( $addn_path . '/modules/class-addons-demo-content.php' );
+require_once( $addn_path . '/modules/class-addons-customizer-manager.php' );
+require_once( $addn_path . '/modules/class-addons-extensions.php' );
+require_once( $addn_path . '/page-home.php' );
 
 
 // Setup Menu
@@ -85,10 +96,6 @@ require_once( $addn_path . '/demo/class-x-demo-import-processor.php' );
 function x_addons_add_menu() {
   add_menu_page( 'X &ndash; Addons: Home', 'Addons', 'manage_options', 'x-addons-home', 'x_addons_page_home', NULL, 3 );
   add_submenu_page( 'x-addons-home', 'X &ndash; Addons: Home', 'Home', 'manage_options', 'x-addons-home', 'x_addons_page_home' );
-  add_submenu_page( 'x-addons-home', 'X &ndash; Addons: Customizer Manager', 'Customizer Manager', 'manage_options', 'x-addons-customizer-manager', 'x_addons_page_customizer_manager' );
-  add_submenu_page( 'x-addons-home', 'X &ndash; Addons: Demo Content', 'Demo Content', 'manage_options', 'x-addons-demo-content', 'x_addons_page_demo_content' );
-  add_submenu_page( 'x-addons-home', 'X &ndash; Addons: Product Validation', 'Product Validation', 'manage_options', 'x-addons-product-validation', 'x_addons_page_product_validation' );
-  add_submenu_page( 'x-addons-home', 'X &ndash; Addons: Extensions', 'Extensions', 'manage_options', 'x-addons-extensions', 'x_addons_page_extensions' );
 }
 
 add_action( 'admin_menu', 'x_addons_add_menu' );
@@ -110,22 +117,35 @@ add_action( 'admin_init', 'x_addons_theme_activation_redirect' );
 
 
 
-// Add Extensions Link to "Add Plugins" Page
+// Instantiate Addons
 // =============================================================================
 
-function x_addons_add_plugins_extensions_link( $views ) {
+if ( is_admin() ) {
+  X_Addons_Home::instance();
+  X_Addons_Customizer_Manager::instance();
+  X_Addons_Updates::instance();
+  X_Addons_Demo_Content::instance();
+  X_Addons_Extensions::instance();
+  X_Addons_Validation::instance();
+}
 
-  $views['x-addons'] = sprintf( __( '<a href="%s">Extensions</a>', '__x__' ), x_addons_get_link_extensions() );
 
-  return $views;
+
+// Validation Notice
+// =============================================================================
+
+function x_addons_validation_notice() {
+
+  if ( false === get_option( 'x_dismiss_validation_notice', false ) && ! x_is_validated() && ! in_array( get_current_screen()->parent_base, apply_filters( 'x_validation_notice_blocked_screens', array( 'x-addons-home' ) ) ) ) {
+
+    x_tco()->admin_notice( array(
+      'message' => sprintf( __( 'This X license is ​<strong>not validated</strong>​. <a href="%s">Fix</a>', '__x__' ), x_addons_get_link_home() ),
+      'dismissible' => true,
+      'ajax_dismiss' => 'x_dismiss_validation_notice'
+    ) );
+
+  }
 
 }
 
-add_filter( 'views_plugin-install', 'x_addons_add_plugins_extensions_link' );
-
-
-
-// Setup Demo Importer
-// =============================================================================
-
-X_Demo_Import_Session::instance();
+add_action( 'admin_notices', 'x_addons_validation_notice' );

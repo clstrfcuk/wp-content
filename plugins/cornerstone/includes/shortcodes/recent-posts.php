@@ -5,33 +5,35 @@
 
 function x_shortcode_recent_posts( $atts ) {
   extract( shortcode_atts( array(
-    'id'          => '',
-    'class'       => '',
-    'style'       => '',
-    'type'        => 'post',
-    'count'       => '',
-    'category'    => '',
-    'offset'      => '',
-    'orientation' => '',
-    'no_sticky'   => '',
-    'no_image'    => '',
-    'fade'        => ''
+    'id'           => '',
+    'class'        => '',
+    'style'        => '',
+    'type'         => 'post',
+    'count'        => '',
+    'category'     => '',
+    'offset'       => '',
+    'orientation'  => '',
+    // 'show_excerpt' => 'true',
+    'no_sticky'    => '',
+    'no_image'     => '',
+    'fade'         => ''
   ), $atts, 'x_recent_posts' ) );
 
   $allowed_post_types = apply_filters( 'cs_recent_posts_post_types', array( 'post' => 'post' ) );
   $type = ( isset( $allowed_post_types[$type] ) ) ? $allowed_post_types[$type] : 'post';
 
-  $id            = ( $id          != ''          ) ? 'id="' . esc_attr( $id ) . '"' : '';
-  $class         = ( $class       != ''          ) ? 'x-recent-posts cf ' . esc_attr( $class ) : 'x-recent-posts cf';
-  $style         = ( $style       != ''          ) ? 'style="' . $style . '"' : '';
-  $count         = ( $count       != ''          ) ? $count : 3;
-  $category      = ( $category    != ''          ) ? $category : '';
-  $category_type = ( $type        == 'post'      ) ? 'category_name' : 'portfolio-category';
-  $offset        = ( $offset      != ''          ) ? $offset : 0;
-  $orientation   = ( $orientation != ''          ) ? ' ' . $orientation : ' horizontal';
-  $no_sticky     = ( $no_sticky   == 'true'      );
-  $no_image      = ( $no_image    == 'true'      ) ? $no_image : '';
-  $fade          = ( $fade        == 'true'      ) ? $fade : 'false';
+  $id            = ( $id           != ''     ) ? 'id="' . esc_attr( $id ) . '"' : '';
+  $class         = ( $class        != ''     ) ? 'x-recent-posts cf ' . esc_attr( $class ) : 'x-recent-posts cf';
+  $style         = ( $style        != ''     ) ? 'style="' . $style . '"' : '';
+  $count         = ( $count        != ''     ) ? $count : 3;
+  $category      = ( $category     != ''     ) ? $category : '';
+  $category_type = ( $type         == 'post' ) ? 'category_name' : 'portfolio-category';
+  $offset        = ( $offset       != ''     ) ? $offset : 0;
+  $orientation   = ( $orientation  != ''     ) ? ' ' . $orientation : ' horizontal';
+  // $show_excerpt  = ( $show_excerpt == 'true' );
+  $no_sticky     = ( $no_sticky    == 'true' );
+  $no_image      = ( $no_image     == 'true' ) ? $no_image : '';
+  $fade          = ( $fade         == 'true' ) ? $fade : 'false';
 
   $js_params = array(
     'fade' => ( $fade == 'true' )
@@ -62,13 +64,16 @@ function x_shortcode_recent_posts( $atts ) {
         $image_output_class = 'with-image';
       }
 
-      $output .= '<a class="x-recent-post' . $count . ' ' . $image_output_class . '" href="' . get_permalink( get_the_ID() ) . '" title="' . esc_attr( sprintf( __( 'Permalink to: "%s"', csl18n() ), the_title_attribute( 'echo=0' ) ) ) . '">'
+      // $excerpt = ( $show_excerpt ) ? '<div class="x-recent-posts-excerpt"><p>' . preg_replace('/<a.*?more-link.*?<\/a>/', '', cs_get_raw_excerpt() ) . '</p></div>' : '';
+
+      $output .= '<a class="x-recent-post' . $count . ' ' . $image_output_class . '" href="' . get_permalink( get_the_ID() ) . '" title="' . esc_attr( sprintf( __( 'Permalink to: "%s"', 'cornerstone' ), the_title_attribute( 'echo=0' ) ) ) . '">'
                  . '<article id="post-' . get_the_ID() . '" class="' . implode( ' ', get_post_class() ) . '">'
                    . '<div class="entry-wrap">'
                      . $image_output
                      . '<div class="x-recent-posts-content">'
                        . '<h3 class="h-recent-posts">' . get_the_title() . '</h3>'
                        . '<span class="x-recent-posts-date">' . get_the_date() . '</span>'
+                       // . $excerpt
                      . '</div>'
                    . '</div>'
                  . '</article>'

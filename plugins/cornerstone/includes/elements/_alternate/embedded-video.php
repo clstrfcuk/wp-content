@@ -5,9 +5,9 @@ class CS_Embedded_Video extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'embedded-video',
-      'title'       => __( 'Embedded Video', csl18n() ),
+      'title'       => __( 'Embedded Video', 'cornerstone' ),
       'section'     => 'media',
-      'description' => __( 'Embedded Video description.', csl18n() ),
+      'description' => __( 'Embedded Video description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'empty'       => array( 'content' => '' ),
     );
@@ -18,24 +18,24 @@ class CS_Embedded_Video extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'textarea',
-      __( 'Embed Code', csl18n() ),
-      __( 'Input your &lt;iframe&gt; or &lt;embed&gt; code from a third party service.', csl18n() ),
+      __( 'Embed Code', 'cornerstone' ),
+      __( 'Input your &lt;iframe&gt; or &lt;embed&gt; code from a third party service.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'aspect_ratio',
       'select',
-      __( 'Aspect Ratio', csl18n() ),
-      __( 'Select your aspect ratio.', csl18n() ),
+      __( 'Aspect Ratio', 'cornerstone' ),
+      __( 'Select your aspect ratio.', 'cornerstone' ),
       '16:9',
       array(
         'choices' => array(
-          array( 'value' => '16:9', 'label' => __( '16:9', csl18n() ), ),
-          array( 'value' => '5:3',  'label' => __( '5:3', csl18n() ), ),
-          array( 'value' => '5:4',  'label' => __( '5:4', csl18n() ), ),
-          array( 'value' => '4:3',  'label' => __( '4:3', csl18n() ), ),
-          array( 'value' => '3:2',  'label' => __( '3:2', csl18n() ), )
+          array( 'value' => '16:9', 'label' => __( '16:9', 'cornerstone' ), ),
+          array( 'value' => '5:3',  'label' => __( '5:3', 'cornerstone' ), ),
+          array( 'value' => '5:4',  'label' => __( '5:4', 'cornerstone' ), ),
+          array( 'value' => '4:3',  'label' => __( '4:3', 'cornerstone' ), ),
+          array( 'value' => '3:2',  'label' => __( '3:2', 'cornerstone' ), )
         )
       )
     );
@@ -43,8 +43,8 @@ class CS_Embedded_Video extends Cornerstone_Element_Base {
     $this->addControl(
       'no_container',
       'toggle',
-      __( 'No Container', csl18n() ),
-      __( 'Select to remove the container around the video.', csl18n() ),
+      __( 'No Container', 'cornerstone' ),
+      __( 'Select to remove the container around the video.', 'cornerstone' ),
       false
     );
 

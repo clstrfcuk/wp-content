@@ -11,8 +11,8 @@ class CS_Gravity_Forms extends Cornerstone_Element_Base {
 			'section'     => 'information',
 			'description' => __( 'Alert description.', 'my-text-domain' ),
 			'helpText'   => array(
-        'title' => __( 'Display issues?', csl18n() ),
-        'message' => __( '<strong>Gravity Forms</strong> uses it&apos;s own dynamic process to render forms, which could result in visual differences in the preview area. Be sure to test by viewing the true front end of this page.', csl18n() ),
+        'title' => __( 'Display issues?', 'cornerstone' ),
+        'message' => __( '<strong>Gravity Forms</strong> uses it&apos;s own dynamic process to render forms, which could result in visual differences in the preview area. Be sure to test by viewing the true front end of this page.', 'cornerstone' ),
       ),
 			'supports'    => array( 'id', 'class', 'style' ),
 			'empty'       => array( 'form_id' => 'none' )
@@ -33,7 +33,7 @@ class CS_Gravity_Forms extends Cornerstone_Element_Base {
 		}
 
 		if ( empty( $choices ) ) {
-      $choices[] = array( 'value' => 'none', 'label' => __( 'No Forms available', csl18n() ), 'disabled' => true );
+      $choices[] = array( 'value' => 'none', 'label' => __( 'No Forms available', 'cornerstone' ), 'disabled' => true );
     }
 
 		$this->addControl(
@@ -80,6 +80,9 @@ class CS_Gravity_Forms extends Cornerstone_Element_Base {
 	public function render( $atts ) {
 
 		extract( $atts );
+
+		if ( 'none' === $form_id )
+			return '';
 
 		$shortcode = "[gravityform id=\"{$form_id}\" title=\"{$show_title}\" description=\"{$show_description}\" ajax=\"{$enable_ajax}\"]";
 

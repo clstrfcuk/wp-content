@@ -11,24 +11,6 @@ class RevSliderOperations extends RevSliderElementsBase{
 
 
 	/**
-	 * get button classes
-	 */
-	public function getButtonClasses(){
-
-		$arrButtons = array(
-			"red"=>"Red Button",
-			"green"=>"Green Button",
-			"blue"=>"Blue Button",
-			"orange"=>"Orange Button",
-			"darkgrey"=>"Darkgrey Button",
-			"lightgrey"=>"Lightgrey Button",
-		);
-
-		return($arrButtons);
-	}
-
-
-	/**
 	 * get easing functions array
 	 */
 	public function getArrEasing(){ //true
@@ -767,8 +749,8 @@ class RevSliderOperations extends RevSliderElementsBase{
 		foreach($googlefonts as $f => $val){
 			$fonts[] = array('type' => 'googlefont', 'version' => __('Google Fonts', 'revslider'), 'label' => $f, 'variants' => $val['variants'], 'subsets' => $val['subsets']);
 		}
-
-		return $fonts;
+		
+		return apply_filters('revslider_operations_getArrFontFamilys', $fonts);
 	}
 
 
@@ -1207,7 +1189,7 @@ class RevSliderOperations extends RevSliderElementsBase{
 	 * if output object is null - create object
 	 */
 	public function previewOutput($sliderID,$output = null){
-
+		
 		if($sliderID == "empty_output"){
 			$this->loadingMessageOutput();
 			exit();
@@ -1285,6 +1267,9 @@ class RevSliderOperations extends RevSliderElementsBase{
 					<script type='text/javascript' src='<?php echo $urlPlugin?>js/jquery.themepunch.tools.min.js?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>'></script>
 					<script type='text/javascript' src='<?php echo $urlPlugin?>js/jquery.themepunch.revolution.min.js?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>'></script>
 					
+					<?php
+					do_action('revslider_preview_slider_head');
+					?>
 				</head>
 				<body style="padding:0px;margin:0px;width:100%;height:100%;position:relative;">
 					<?php
@@ -1314,7 +1299,6 @@ class RevSliderOperations extends RevSliderElementsBase{
 				</body>
 			</html>
 		<?php
-		exit();
 	}
 
 	/*
@@ -1566,8 +1550,9 @@ ob_end_clean();
 					$use_path = $path_assets;
 					$use_path_raw = $path_assets_raw;
 					
-					preg_match('/.*?.(?:jpg|jpeg|gif|png)/i', $_file, $match);
-					preg_match('/.*?.(?:ogv|webm|mp4)/i', $_file, $match2);
+					preg_match('/.*?.(?:jpg|jpeg|gif|png|svg)/i', $_file, $match);
+					preg_match('/.*?.(?:ogv|webm|mp4|mp3)/i', $_file, $match2);
+					
 					$f = false;
 					if(!empty($match) && isset($match[0]) && !empty($match[0])){
 						//image
@@ -1617,8 +1602,14 @@ ob_end_clean();
 						$remove = true;
 					}elseif(is_file(RS_PLUGIN_PATH.$_file)){
 						$mf = str_replace('//', '/', RS_PLUGIN_PATH.$_file);
+						
+						//we need to be special with svg files
+						$__file = basename($_file);
+						
 						//remove admin/assets/
-						$__file = str_replace('admin/assets/images/', '', $_file);
+						//$__file = str_replace('admin/assets/images/', '', $_file);
+						
+						
 						if(!$usepcl){
 							$zip->addFile($mf, $use_path_raw.'/'.$__file);
 						}else{
@@ -1765,7 +1756,7 @@ ob_end_clean();
 		}
 
 		$data = RevSliderFunctions::jsonDecodeFromClientSide($data);
-
+		
 		$slideID = $data["slideid"];
 		$slide = new RevSlide();
 		$slide->initByID($slideID);
@@ -1871,13 +1862,21 @@ ob_end_clean();
 	 * get html font import
 	 */
 	public static function getCleanFontImport($font, $class = '', $url = ''){
+		global $revslider_fonts;
+		
+		if(!isset($revslider_fonts)) $revslider_fonts = array(); //if this is called without revslider.php beeing loaded
+		
+		if(in_array($font, $revslider_fonts)) return '';
+		
 		$setBase = (is_ssl()) ? "https://" : "http://";
 		
 		if($class !== '') $class = ' class="'.$class.'"';
 		
+		$revslider_fonts[] = $font;
+		
 		if(strpos($font, "href=") === false){ //fallback for old versions
 			$url = RevSliderFront::modify_punch_url($setBase . 'fonts.googleapis.com/css?family=');
-			return '<link href="'.$url.$font.'"'.$class.' rel="stylesheet" property="stylesheet" type="text/css" media="all" />'; //id="rev-google-font"
+			return '<link href="'.$url.urlencode($font).'"'.$class.' rel="stylesheet" property="stylesheet" type="text/css" media="all" />'; //id="rev-google-font"
 		}else{
 			$font = str_replace(array('http://', 'https://'), array($setBase, $setBase), $font);
 			return html_entity_decode(stripslashes($font));

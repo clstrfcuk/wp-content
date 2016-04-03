@@ -4,7 +4,7 @@ Plugin Name: Slider Revolution
 Plugin URI: http://www.revolution.themepunch.com/
 Description: Slider Revolution - Premium responsive slider
 Author: ThemePunch
-Version: 5.1.6
+Version: 5.2.3.5
 Author URI: http://themepunch.com
 */
 
@@ -17,10 +17,10 @@ if(class_exists('RevSliderFront')) {
 	die('ERROR: It looks like you have more than one instance of Slider Revolution installed. Please remove additional instances for this plugin to work again.');
 }
 
-$revSliderVersion = "5.1.6";
+$revSliderVersion = "5.2.3.5";
 $revSliderAsTheme = false;
 $revslider_screens = array();
-
+$revslider_fonts = array();
 
 $rs_plugin_url = str_replace('index.php','',plugins_url( 'index.php', __FILE__ ));
 if(strpos($rs_plugin_url, 'http') === false) {
@@ -86,7 +86,7 @@ try{
 
 	//add shortcode
 	function rev_slider_shortcode($args, $mid_content = null){
-
+		
         extract(shortcode_atts(array('alias' => ''), $args, 'rev_slider'));
 		extract(shortcode_atts(array('settings' => ''), $args, 'rev_slider'));
 		extract(shortcode_atts(array('order' => ''), $args, 'rev_slider'));
@@ -156,7 +156,7 @@ try{
 	
 	add_action('plugins_loaded', array( 'RevSliderTinyBox', 'visual_composer_include' )); //VC functionality
 	
-	if(is_admin()){		//load admin part
+	if(is_admin()){ //load admin part
 	
 		require_once(RS_PLUGIN_PATH . 'includes/framework/update.class.php');
 		require_once(RS_PLUGIN_PATH . 'includes/framework/newsletter.class.php');
@@ -168,7 +168,7 @@ try{
 		add_action('admin_head', array('RevSliderTinyBox', 'add_tinymce_editor'));
 		
 		
-	}else{		//load front part
+	}else{ //load front part
 
 		/**
 		 *

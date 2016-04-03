@@ -5,9 +5,9 @@ class CS_Clear extends Cornerstone_Element_Base {
   public function data() {
     return array(
       'name'        => 'clear',
-      'title'       => __( 'Clear', csl18n() ),
+      'title'       => __( 'Clear', 'cornerstone' ),
       'section'     => 'structure',
-      'description' => __( 'Clear description.', csl18n() ),
+      'description' => __( 'Clear description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
       'can_preview' => false
     );

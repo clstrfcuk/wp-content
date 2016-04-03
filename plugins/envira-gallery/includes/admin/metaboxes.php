@@ -207,6 +207,21 @@ class Envira_Gallery_Metaboxes {
             )
         );
 
+        // Insert from Third Party Sources
+        wp_register_script( $this->base->plugin_slug . '-media-insert-third-party', plugins_url( 'assets/js/media-insert-third-party.js', $this->base->file ), array( 'jquery' ), $this->base->version, true );
+        wp_enqueue_script( $this->base->plugin_slug . '-media-insert-third-party' );
+        wp_localize_script(
+            $this->base->plugin_slug . '-media-insert-third-party',
+            'envira_gallery_media_insert',
+            array(
+                'nonce'     => wp_create_nonce( 'envira-gallery-media-insert' ),
+                'post_id'   => $post_id,
+
+                // Addons must add their slug/base key/value pair to this array to appear within the "Insert from Other Sources" modal
+                'addons'    => apply_filters( 'envira_gallery_media_insert_third_party_sources', array(), $post_id ),
+            )
+        );
+
         // Link Search
         wp_enqueue_script( 'wp-link' );
 
@@ -489,8 +504,8 @@ class Envira_Gallery_Metaboxes {
 
         // Prepare output data.
         $gallery_data = get_post_meta( $post->ID, '_eg_gallery_data', true );
-
         ?>
+        <a href="#" class="button envira-gallery-images-edit"><?php _e( 'Edit Selected Images', 'envira-gallery' ); ?></a>
         <a href="#" class="button button-red envira-gallery-images-delete"><?php _e( 'Delete Selected Images from Gallery', 'envira-gallery' ); ?></a>
 
         <?php do_action( 'envira_gallery_do_default_display', $post ); ?>
@@ -574,7 +589,7 @@ class Envira_Gallery_Metaboxes {
                                     <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $this->get_config( 'columns', $this->get_config_default( 'columns' ) ) ); ?>><?php echo $data['name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <p class="description"><?php _e( 'Determines the number of columns in the gallery.', 'envira-gallery' ); ?></p>
+                            <p class="description"><?php _e( 'Determines the number of columns in the gallery. Automatic will attempt to fill each row as much as possible before moving on to the next row.', 'envira-gallery' ); ?></p>
                         </td>
                     </tr>
                     <tr id="envira-config-gallery-theme-box">
@@ -687,6 +702,23 @@ class Envira_Gallery_Metaboxes {
                     </tr>
 
                     <!-- Dimensions -->
+                    <tr id="envira-config-image-size-box">
+                        <th scope="row">
+                            <label for="envira-config-image-size"><?php _e( 'Image Size', 'envira-gallery' ); ?></label>
+                        </th>
+                        <td>
+                            <select id="envira-config-image-size" name="_envira_gallery[image_size]" data-envira-conditional="envira-config-crop-size-box,envira-config-crop-box" data-envira-conditional-value="default">
+                                <?php 
+                                foreach ( (array) $this->get_image_sizes() as $i => $data ) {
+                                    ?>
+                                    <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $this->get_config( 'image_size', $this->get_config_default( 'image_size' ) ) ); ?>><?php echo $data['name']; ?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                            <p class="description"><?php _e( 'Define the maximum image size for the Gallery view. Default will use the below Image Dimensions.', 'envira-gallery' ); ?></p>
+                        </td>
+                    </tr>
                     <tr id="envira-config-crop-size-box">
                         <th scope="row">
                             <label for="envira-config-crop-width"><?php _e( 'Image Dimensions', 'envira-gallery' ); ?></label>
@@ -792,15 +824,15 @@ class Envira_Gallery_Metaboxes {
 
                     <tr id="envira-config-lightbox-image-size-box">
                         <th scope="row">
-                            <label for="envira-config-lightbox-image-size"><?php _e( 'Image Dimensions', 'envira-gallery' ); ?></label>
+                            <label for="envira-config-lightbox-image-size"><?php _e( 'Image Size', 'envira-gallery' ); ?></label>
                         </th>
                         <td>
                             <select id="envira-config-lightbox-image-size" name="_envira_gallery[lightbox_image_size]">
                                 <?php foreach ( (array) $this->get_image_sizes() as $i => $data ) : ?>
-                                    <option value="<?php echo $data['value']; ?>" data-envira-width="<?php echo $data['width']; ?>" data-envira-height="<?php echo $data['height']; ?>"<?php selected( $data['value'], $this->get_config( 'lightbox_image_size', $this->get_config_default( 'lightbox_image_size' ) ) ); ?>><?php echo $data['name']; ?></option>
+                                    <option value="<?php echo $data['value']; ?>" <?php selected( $data['value'], $this->get_config( 'lightbox_image_size', $this->get_config_default( 'lightbox_image_size' ) ) ); ?>><?php echo $data['name']; ?></option>
                                 <?php endforeach; ?>
                             </select><br>
-                            <p class="description"><?php _e( 'Define the maximum image size for the Lightbox view. Default / Full Size will display the original, full size image.', 'envira-gallery' ); ?></p>
+                            <p class="description"><?php _e( 'Define the maximum image size for the Lightbox view. Default will display the original, full size image.', 'envira-gallery' ); ?></p>
                         </td>
                     </tr>
 
@@ -1076,7 +1108,7 @@ class Envira_Gallery_Metaboxes {
                             <label for="envira-config-mobile-lightbox"><?php _e( 'Enable Lightbox?', 'envira-gallery' ); ?></label>
                         </th>
                         <td>
-                            <input id="envira-config-mobile-lightbox" type="checkbox" name="_envira_gallery[mobile_lightbox]" value="<?php echo $this->get_config( 'mobile_lightbox', $this->get_config_default( 'mobile_lightbox' ) ); ?>" <?php checked( $this->get_config( 'mobile_lightbox', $this->get_config_default( 'mobile_lightbox' ) ), 1 ); ?> data-envira-conditional="envira-config-mobile-touchwipe-box,envira-config-mobile-arrows-box,envira-config-mobile-toolbar-box,envira-config-mobile-thumbnails-box" />
+                            <input id="envira-config-mobile-lightbox" type="checkbox" name="_envira_gallery[mobile_lightbox]" value="<?php echo $this->get_config( 'mobile_lightbox', $this->get_config_default( 'mobile_lightbox' ) ); ?>" <?php checked( $this->get_config( 'mobile_lightbox', $this->get_config_default( 'mobile_lightbox' ) ), 1 ); ?> data-envira-conditional="envira-config-mobile-touchwipe-box,envira-config-mobile-touchwipe-close-box,envira-config-mobile-arrows-box,envira-config-mobile-toolbar-box,envira-config-mobile-thumbnails-box,envira-config-exif-mobile-box" />
                             <span class="description"><?php _e( 'Enables or disables the gallery lightbox on mobile devices.', 'envira-gallery' ); ?></span>
                         </td>
                     </tr>
@@ -1310,14 +1342,15 @@ class Envira_Gallery_Metaboxes {
         $settings['config']['margin']              = absint( $_POST['_envira_gallery']['margin'] );
         $settings['config']['random']              = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_envira_gallery']['random'] );
         $settings['config']['sorting_direction']   = preg_replace( '#[^A-Z]#', '', $_POST['_envira_gallery']['sorting_direction'] );
-        $settings['config']['crop']                = isset( $_POST['_envira_gallery']['crop'] ) ? 1 : 0;
-        $settings['config']['dimensions']          = isset( $_POST['_envira_gallery']['dimensions'] ) ? 1 : 0;
+        $settings['config']['image_size']          = sanitize_text_field( $_POST['_envira_gallery']['image_size'] );
         $settings['config']['crop_width']          = absint( $_POST['_envira_gallery']['crop_width'] );
         $settings['config']['crop_height']         = absint( $_POST['_envira_gallery']['crop_height'] );
+        $settings['config']['crop']                = isset( $_POST['_envira_gallery']['crop'] ) ? 1 : 0;
+        $settings['config']['dimensions']          = isset( $_POST['_envira_gallery']['dimensions'] ) ? 1 : 0;
         $settings['config']['isotope']             = isset( $_POST['_envira_gallery']['isotope'] ) ? 1 : 0;
         $settings['config']['css_animations']	   = isset( $_POST['_envira_gallery']['css_animations'] ) ? 1 : 0;
         $settings['config']['css_opacity']         = absint( $_POST['_envira_gallery']['css_opacity'] );
-        
+
         // Lightbox
         $settings['config']['lightbox_enabled']    = isset( $_POST['_envira_gallery']['lightbox_enabled'] ) ? 1 : 0;
         $settings['config']['lightbox_theme']      = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_envira_gallery']['lightbox_theme'] );
@@ -1447,15 +1480,16 @@ class Envira_Gallery_Metaboxes {
 
         // Allow addons to populate the item's data - for example, tags which are stored against the attachment
         $data = apply_filters( 'envira_gallery_get_gallery_item', $data, $id, $post_id );
-
+        $data['alt'] = str_replace( "&quot;", '\"', $data['alt'] );
+        
         // Buffer the output
         ob_start(); 
         ?>
         <li id="<?php echo $id; ?>" class="envira-gallery-image envira-gallery-status-<?php echo $data['status']; ?>" data-envira-gallery-image="<?php echo $id; ?>" data-envira-gallery-image-model='<?php echo json_encode( $data, JSON_HEX_APOS ); ?>'>
             <img src="<?php echo esc_url( $thumbnail[0] ); ?>" alt="<?php esc_attr_e( $data['alt'] ); ?>" />
             <a href="#" class="check"><div class="media-modal-icon"></div></a>
-            <a href="#" class="envira-gallery-remove-image" title="<?php esc_attr_e( 'Remove Image from Gallery?', 'envira-gallery' ); ?>"></a>
-            <a href="#" class="envira-gallery-modify-image" title="<?php esc_attr_e( 'Modify Image', 'envira-gallery' ); ?>"></a>
+            <a href="#" class="envira-gallery-remove-image" title="<?php _e( 'Remove Image from Gallery?', 'envira-gallery' ); ?>"></a>
+            <a href="#" class="envira-gallery-modify-image" title="<?php _e( 'Modify Image', 'envira-gallery' ); ?>"></a>
         </li>
         <?php
         return ob_get_clean();
@@ -1503,7 +1537,9 @@ class Envira_Gallery_Metaboxes {
         // Loop through the images and crop them.
         if ( $images ) {
             // Increase the time limit to account for large image sets and suspend cache invalidations.
-            set_time_limit( Envira_Gallery_Common::get_instance()->get_max_execution_time() );
+            if ( ! ini_get( 'safe_mode' ) ) {
+                set_time_limit( Envira_Gallery_Common::get_instance()->get_max_execution_time() );
+            }
             wp_suspend_cache_invalidation( true );
 
             foreach ( $images as $id => $item ) {
@@ -1515,8 +1551,8 @@ class Envira_Gallery_Metaboxes {
                 }
 
                 // Check the image is a valid URL
-                // Some plugins decide to strip the blog's URL
-                if ( ! filter_var( $image[0], FILTER_VALIDATE_URL ) ) {
+                // Some plugins decide to strip the blog's URL from the start of the URL, which can cause issues for Envira
+                if ( strpos( $image[0], get_bloginfo( 'url' ) ) === false ) {
                     $image[0] = get_bloginfo( 'url' ) . '/' . $image[0];
                 }
 
@@ -1566,7 +1602,9 @@ class Envira_Gallery_Metaboxes {
         // Loop through the images and crop them.
         if ( $images ) {
             // Increase the time limit to account for large image sets and suspend cache invalidations.
-            set_time_limit( Envira_Gallery_Common::get_instance()->get_max_execution_time() );
+            if ( ! ini_get( 'safe_mode' ) ) {
+                set_time_limit( Envira_Gallery_Common::get_instance()->get_max_execution_time() );
+            }
             wp_suspend_cache_invalidation( true );
 
             foreach ( $images as $id => $item ) {

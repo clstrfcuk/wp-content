@@ -5,7 +5,7 @@
  * @return array Hash list of icon aliases and unicode values
  */
 function fa_all_unicode() {
-  return CS()->common()->getFontIcons();
+	return CS()->common()->getFontIcons();
 }
 
 /**
@@ -14,7 +14,7 @@ function fa_all_unicode() {
  * @return string      String containing unicode reference for the requested icon
  */
 function fa_unicode( $key ) {
-  return CS()->common()->getFontIcon( $key );
+	return CS()->common()->getFontIcon( $key );
 }
 
 
@@ -24,7 +24,7 @@ function fa_unicode( $key ) {
  * @return string      HTML entity
  */
 function fa_entity( $key ) {
-  return '&#x' . fa_unicode( $key ) . ';';
+	return '&#x' . fa_unicode( $key ) . ';';
 }
 
 /**
@@ -33,7 +33,7 @@ function fa_entity( $key ) {
  * @return string      Data attribute string that can be placed inside an element tag
  */
 function fa_data_icon( $key ) {
-  return 'data-x-icon="' . fa_unicode( $key ) . '"';
+	return 'data-x-icon="' . fa_unicode( $key ) . '"';
 }
 
 
@@ -46,22 +46,27 @@ function fa_data_icon( $key ) {
  */
 function wp_script_data_function( $handle, $function_name, $data ) {
 
-  global $wp_scripts;
+	global $wp_scripts;
 
-  foreach ( (array) $data as $key => $value ) {
-    if ( !is_scalar($value) )
-      continue;
-    $data[$key] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8');
-  }
+	foreach ( (array) $data as $key => $value ) {
+		if ( ! is_scalar( $value ) ) {
+			continue;
+		}
 
-  $script = "var $function_name=function(){ return " . wp_json_encode( $data ) . ';}';
+		$data[ $key ] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8' );
 
-  $data = $wp_scripts->get_data( $handle, 'data' );
+	}
 
-  if ( !empty( $data ) )
-    $script = "$data\n$script";
+	$script = "var $function_name=function(){ return " . wp_json_encode( $data ) . ';}';
 
-  return $wp_scripts->add_data( $handle, 'data', $script );
+	$data = $wp_scripts->get_data( $handle, 'data' );
+
+	if ( ! empty( $data ) ) {
+		$script = "$data\n$script";
+	}
+
+	return $wp_scripts->add_data( $handle, 'data', $script );
+
 }
 
 /**
@@ -72,15 +77,15 @@ function wp_script_data_function( $handle, $function_name, $data ) {
  */
 function cs_get_raw_excerpt() {
 
-  add_filter( 'get_the_excerpt', 'cs_trim_raw_excerpt'  );
-  remove_filter( 'get_the_excerpt', 'wp_trim_excerpt'  );
+	add_filter( 'get_the_excerpt', 'cs_trim_raw_excerpt' );
+	remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
 
-  $excerpt = get_the_excerpt();
+	$excerpt = get_the_excerpt();
 
-  add_filter( 'get_the_excerpt', 'wp_trim_excerpt'  );
-  remove_filter( 'get_the_excerpt', 'cs_trim_raw_excerpt'  );
+	add_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
+	remove_filter( 'get_the_excerpt', 'cs_trim_raw_excerpt' );
 
-  return $excerpt;
+	return $excerpt;
 }
 
 /**
@@ -91,22 +96,26 @@ function cs_get_raw_excerpt() {
  * @return string The excerpt.
  */
 function cs_trim_raw_excerpt( $text = '' ) {
-  $raw_excerpt = $text;
-  if ( '' == $text ) {
-    $text = get_the_content('');
 
-    $text = strip_shortcodes( $text );
+	$raw_excerpt = $text;
 
-    //$text = apply_filters( 'the_content', $text );
-    $text = str_replace(']]>', ']]&gt;', $text);
+	if ( '' === $text ) {
 
-    $excerpt_length = apply_filters( 'excerpt_length', 55 );
+		$text = get_the_content( '' );
 
-    $excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
-    $text = wp_trim_words( $text, $excerpt_length, $excerpt_more );
-  }
+		$text = strip_shortcodes( $text );
 
-  return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt );
+		//$text = apply_filters( 'the_content', $text );
+		$text = str_replace( ']]>', ']]&gt;', $text );
+
+		$excerpt_length = apply_filters( 'excerpt_length', 55 );
+
+		$excerpt_more = apply_filters( 'excerpt_more', ' [&hellip;]' );
+		$text = wp_trim_words( $text, $excerpt_length, $excerpt_more );
+	}
+
+	return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt );
+
 }
 
 // Data Attribute Generator
@@ -114,14 +123,14 @@ function cs_trim_raw_excerpt( $text = '' ) {
 
 function cs_generate_data_attributes( $element, $params = array() ) {
 
-  $data = 'data-x-element="' . $element . '"';
+	$data = 'data-x-element="' . $element . '"';
 
-  if ( ! empty( $params ) ) {
-    $params_json = htmlspecialchars( json_encode( $params ), ENT_QUOTES, 'UTF-8' );
-    $data .= ' data-x-params="' . $params_json . '"';
-  }
+	if ( ! empty( $params ) ) {
+		$params_json = htmlspecialchars( wp_json_encode( $params ), ENT_QUOTES, 'UTF-8' );
+		$data .= ' data-x-params="' . $params_json . '"';
+	}
 
-  return $data;
+	return $data;
 
 }
 
@@ -132,18 +141,19 @@ function cs_generate_data_attributes( $element, $params = array() ) {
 
 function cs_generate_data_attributes_extra( $type, $trigger, $placement, $title = '', $content = '' ) {
 
-  if ( ! in_array( $type, array( 'tooltip', 'popover' ) ) )
-    return '';
+	if ( ! in_array( $type, array( 'tooltip', 'popover' ), true ) ) {
+		return '';
+	}
 
-  $js_params = array(
-    'type'      => ( $type == 'tooltip' ) ? 'tooltip' : 'popover',
-    'trigger'   => $trigger,
-    'placement' => $placement,
-    'title'     => htmlspecialchars_decode( $title ), // to avoid double encoding.
-    'content'   => htmlspecialchars_decode( $content )
-  );
+	$js_params = array(
+		'type'      => ( 'tooltip' === $type ) ? 'tooltip' : 'popover',
+		'trigger'   => $trigger,
+		'placement' => $placement,
+		'title'     => htmlspecialchars_decode( $title ), // to avoid double encoding.
+		'content'   => htmlspecialchars_decode( $content ),
+	);
 
-  return cs_generate_data_attributes( 'extra', $js_params );
+	return cs_generate_data_attributes( 'extra', $js_params );
 
 }
 
@@ -154,9 +164,9 @@ function cs_generate_data_attributes_extra( $type, $trigger, $placement, $title 
 
 function cs_bg_video( $video, $poster ) {
 
-  $output = do_shortcode( '[x_video_player class="bg transparent" src="' . $video . '" poster="' . $poster . '" hide_controls="true" autoplay="true" loop="true" muted="true" no_container="true"]' );
+	$output = do_shortcode( '[x_video_player class="bg transparent" src="' . $video . '" poster="' . $poster . '" hide_controls="true" autoplay="true" loop="true" muted="true" no_container="true"]' );
 
-  return $output;
+	return $output;
 
 }
 
@@ -165,31 +175,31 @@ function cs_bg_video( $video, $poster ) {
 // Build Shortcode
 // =============================================================================
 
-function cs_build_shortcode( $name, $attributes, $extra = '', $content = '' ) {
+function cs_build_shortcode( $name, $attributes, $extra = '', $content = '', $require_content = false ) {
 
-  $output = "[{$name}";
+	$output = "[{$name}";
 
-  if ( isset( $attributes['class'] ) ) {
+	if ( isset( $attributes['class'] ) ) {
 		$attributes['class'] = cs_sanitize_html_classes( $attributes['class'] );
 	}
 
-  foreach ($attributes as $attribute => $value) {
+	foreach ($attributes as $attribute => $value) {
 		$clean = cs_clean_shortcode_att( $value );
 		$att = sanitize_key( $attribute );
-    $output .= " {$att}=\"{$clean}\"";
-  }
+		$output .= " {$att}=\"{$clean}\"";
+	}
 
-  if ($extra != '') {
-    $output .= " {$extra}";
-  }
+	if ( '' !== $extra ) {
+		$output .= " {$extra}";
+	}
 
-  if ( $content == '' ) {
-    $output .= "]";
-  } else {
-    $output .= "]{$content}[/{$name}]";
-  }
+	if ( '' === $content && ! $require_content ) {
+		$output .= ']';
+	} else {
+		$output .= "]{$content}[/{$name}]";
+	}
 
-  return $output;
+	return $output;
 
 }
 
@@ -200,24 +210,34 @@ function cs_build_shortcode( $name, $attributes, $extra = '', $content = '' ) {
 
 function cs_animation_base_class( $animation_string ) {
 
-  if ( strpos( $animation_string, 'In' ) !== false ) {
-    $base_class = ' animated-hide';
-  } else {
-    $base_class = '';
-  }
+	if ( false !== strpos( $animation_string, 'In' ) ) {
+		$base_class = ' animated-hide';
+	} else {
+		$base_class = '';
+	}
 
-  return $base_class;
+	return $base_class;
 
 }
 
 function cs_att( $attribute, $content, $echo = false ) {
+
 	$att = '';
+
 	if ( $content ) {
 		$att = $attribute . '="' . esc_attr( $content ) . '" ';
 	}
-	if ( $echo )
+
+	if ( is_null( $content ) ) {
+		$att = $attribute . ' ';
+	}
+
+	if ( $echo ) {
 		echo $att;
+	}
+
 	return $att;
+
 }
 
 function cs_atts( $atts, $echo = false ) {
@@ -225,27 +245,28 @@ function cs_atts( $atts, $echo = false ) {
 	foreach ( $atts as $att => $content) {
 		$result .= cs_att( $att, $content, false ) . ' ';
 	}
-	if ( $echo )
+	if ( $echo ) {
 		echo $result;
+	}
 	return $result;
 }
 
 
 function cs_deep_array_merge ( array &$defaults, array $data, $max_depth = -1 ) {
 
-	if ( $max_depth-- == 1 ) {
+	if ( 1 === $max_depth-- ) {
 		return $defaults;
 	}
 
-  foreach ( $defaults as $key => &$value ) {
-    if ( isset ( $data[$key] ) && is_array( $value ) && is_array( $data[$key] ) ) {
-      $data[$key] = cs_deep_array_merge( $value, $data[$key], $max_depth );
-      continue;
-    }
-    $data[$key] = $value;
-  }
+	foreach ( $defaults as $key => &$value ) {
+		if ( isset( $data[ $key ] ) && is_array( $value ) && is_array( $data[ $key ] ) ) {
+			$data[ $key ] = cs_deep_array_merge( $value, $data[ $key ], $max_depth );
+			continue;
+		}
+		$data[ $key ] = $value;
+	}
 
-  return $data;
+	return $data;
 }
 
 function cs_alias_shortcode( $new_tag, $existing_tag, $filter_atts = true ) {
@@ -257,18 +278,20 @@ function cs_alias_shortcode( $new_tag, $existing_tag, $filter_atts = true ) {
 		return;
 	}
 
-	if ( !shortcode_exists( $existing_tag ) )
+	if ( ! shortcode_exists( $existing_tag ) ) {
 		return;
+	}
 
 	global $shortcode_tags;
-	add_shortcode( $new_tag, $shortcode_tags[$existing_tag] );
+	add_shortcode( $new_tag, $shortcode_tags[ $existing_tag ] );
 
-	if ( !$filter_atts || !has_filter( $tag = "shortcode_atts_$existing_tag" ) )
+	if ( ! $filter_atts || ! has_filter( $tag = "shortcode_atts_$existing_tag" ) ) {
 		return;
+	}
 
 	global $wp_filter;
 
-	foreach ( $wp_filter[$tag] as $priority => $filter ) {
+	foreach ( $wp_filter[ $tag ] as $priority => $filter ) {
 		foreach ($filter as $tag => $value) {
 			add_filter( "shortcode_atts_$new_tag", $value['function'], $priority, $value['accepted_args'] );
 		}
@@ -278,6 +301,16 @@ function cs_alias_shortcode( $new_tag, $existing_tag, $filter_atts = true ) {
 
 function cs_array_filter_use_keys( $array, $callback ) {
 	return array_intersect_key( $array, array_flip( array_filter( array_keys( $array ), $callback ) ) );
+}
+
+/**
+ * Runs wp_parse_args, then applies key whitelisting based on keys from defaults
+ * @param  array $args     User arguments
+ * @param  array $defaults Default keys ans values
+ * @return array           Arguments with defaults and key whitelisting applied.
+ */
+function cs_define_defaults( $args, $defaults ) {
+	return array_intersect_key( wp_parse_args( $args, $defaults ), array_flip( array_keys( $defaults ) ) );
 }
 
 /**
@@ -307,7 +340,7 @@ function cs_memoize( $key, $callback, $expiration = 0 ) {
 		$args = func_get_args();
 		$value = call_user_func_array( $callback, array_slice( $args, 3 ) );
 
-		if ( false !== $value && !is_wp_error( $value ) ) {
+		if ( false !== $value && ! is_wp_error( $value ) ) {
 			set_transient( $key, $value, $expiration );
 		}
 
@@ -326,7 +359,7 @@ function cs_clean_shortcode_att( $value ) {
 
 	$value = wp_kses( $value, wp_kses_allowed_html( 'post' ) );
 	$value = esc_html( $value );
-	$value = str_replace( ']', '&rsqb;', str_replace('[', '&lsqb;', $value ) );
+	$value = str_replace( ']', '&rsqb;', str_replace( '[', '&lsqb;', $value ) );
 
 	return $value;
 }
@@ -341,9 +374,9 @@ function cs_clean_shortcode_att( $value ) {
  */
 function cs_sanitize_html_classes( $class ) {
 
-	$classes = explode(' ', $class );
-  array_map( 'sanitize_html_class', $classes );
-  $class = implode(' ', $classes );
+	$classes = explode( ' ', $class );
+	array_map( 'sanitize_html_class', $classes );
+	$class = implode( ' ', $classes );
 
 	return $class;
 }
@@ -358,8 +391,9 @@ function cs_sanitize_html_classes( $class ) {
 function cs_booleanize( $data ) {
 
 	foreach ($data as $key => $value) {
-		if ( is_bool( $value ) )
-			$data[$key] = ( $value ) ? 'true' : 'false';
+		if ( is_bool( $value ) ) {
+			$data[ $key ] = ( $value ) ? 'true' : 'false';
+		}
 	}
 
 	return $data;
@@ -375,14 +409,114 @@ function cs_booleanize( $data ) {
  */
 function cs_noemptyp( $content ) {
 
-	$array = array (
+	$array = array(
 		'<p>['    => '[',
 		']</p>'   => ']',
-		']<br />' => ']'
+		']<br />' => ']',
 	);
 
 	$content = strtr( $content, $array );
 
 	return $content;
 
+}
+
+
+/**
+ * Wrap wp_send_json_success allowing for a filterable response
+ * @param mixed $data Data to encode as JSON, then print and die.
+ */
+function cs_send_json_success( $data = null ) {
+
+	$response = array( 'success' => true );
+
+	if ( isset( $data ) ) {
+		$response['data'] = $data;
+	}
+
+	wp_send_json( apply_filters( '_cornerstone_send_json_response', $response ) );
+
+}
+
+/**
+ * Wrap wp_send_json_error allowing for a filterable response
+ * @param mixed $data Data to encode as JSON, then print and die.
+ */
+function cs_send_json_error( $data = null ) {
+
+	$response = array( 'success' => false );
+
+	if ( isset( $data ) ) {
+		if ( is_wp_error( $data ) ) {
+			$result = array();
+			foreach ( $data->errors as $code => $messages ) {
+				foreach ( $messages as $message ) {
+					$result[] = array( 'code' => $code, 'message' => $message );
+				}
+			}
+
+			$response['data'] = $result;
+		} else {
+			$response['data'] = $data;
+		}
+	}
+
+	wp_send_json( apply_filters( '_cornerstone_send_json_response', $response ) );
+
+}
+
+
+/**
+ * Procces content through the_content filters, and strip down to just the
+ * contents of paragraph tags. To finish, pass it through wp_trim_words
+ * using WordPress defaults.
+ * @param  string $content Content to make an excerpt for
+ * @return string          Text result
+ */
+function cs_derive_excerpt( $content, $store = false ) {
+
+
+	$the_content = apply_filters( 'the_content', $content );
+	$length = apply_filters( 'excerpt_length', 55 );
+
+	$offset = 0;
+	$reduction = '';
+
+	while ( str_word_count( $reduction ) < $length * 1.5 ) {
+
+		preg_match( '/<p.*?>(.*?)<\/p>/', $the_content, $matches, PREG_OFFSET_CAPTURE, $offset );
+		if ( empty( $matches ) || ! isset( $matches[1] )  ) {
+			break;
+		}
+
+		$offset = $matches[1][1];
+		$reduction .= strip_tags( $matches[1][0] ) . ' ';
+
+	}
+
+	if ( $store === true ) {
+		return trim( $reduction );
+	}
+
+	return wp_trim_words( trim( $reduction ), $length, apply_filters( 'excerpt_more', ' [&hellip;]' ) );
+
+}
+
+/**
+ * Allows HTML to be passed through shortcode attributes by decoding entities.
+ * We apply the cornerstone_decode_shortcode_attribute filter to allow other
+ * components to process and expand directives if needed.
+ * @param  string $content Original content from shortcode attribute.
+ * @return string          HTML ready to use in shortcode output
+ */
+function cs_decode_shortcode_attribute( $content ) {
+	return apply_filters( 'cornerstone_decode_shortcode_attribute', wp_specialchars_decode( $content, ENT_QUOTES ) );
+}
+
+/**
+ * Accessor function for TCO
+ * @return object TCO instance
+ */
+function cs_tco() {
+	return TCO_1_0::instance();
 }
