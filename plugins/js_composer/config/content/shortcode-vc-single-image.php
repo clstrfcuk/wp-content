@@ -34,6 +34,7 @@ return array(
 				'element' => 'source',
 				'value' => 'media_library',
 			),
+			'admin_label' => true
 		),
 		array(
 			'type' => 'textfield',
@@ -44,6 +45,7 @@ return array(
 				'element' => 'source',
 				'value' => 'external_link',
 			),
+			'admin_label' => true
 		),
 		array(
 			'type' => 'textfield',

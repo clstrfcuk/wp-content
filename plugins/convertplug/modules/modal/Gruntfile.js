@@ -6,13 +6,10 @@ module.exports = function(grunt) {
 				files: {
 					'assets/js/modal.min.js': [
 						'!assets/js/admin.min.js',
-						'../assets/js/convertplug.js',
 						'assets/js/idle-timer.min.js',
 						'assets/js/modal.common.js',
 						'assets/js/modal.js',
 						'assets/js/mailer.js',
-						//'assets/js/moment.min.js',
-						//'assets/js/timezone.js',
 						'../../admin/assets/js/frosty.js',	
 					]
 				}
@@ -26,6 +23,8 @@ module.exports = function(grunt) {
 						'assets/css/modal.css',
 						'assets/css/modal-grid.css',
 						'../assets/css/animate.css',
+						'../assets/css/cp-social-media-style.css',
+						'../assets/css/social-icon-css.css',
 						'../assets/css/convertplug.css',
 						'../../admin/assets/css/frosty.css',
 					]
@@ -57,10 +56,10 @@ module.exports = function(grunt) {
 			var cssFile = newDir + fileName + '.css';
 			var minFile = newDir + fileName + '.min.css';
 			
-			// log the directory, main css and minified css path
-//			grunt.log.writeln('Directory: ' + newDir);
-//			grunt.log.writeln('File Name: ' + cssFile);
-//			grunt.log.writeln('Min File: ' + minFile);
+			// 	log the directory, main css and minified css path
+			//	grunt.log.writeln('Directory: ' + newDir);
+			//	grunt.log.writeln('File Name: ' + cssFile);
+			//	grunt.log.writeln('Min File: ' + minFile);
  
             minify[fileName] = {
 				src: cssFile,

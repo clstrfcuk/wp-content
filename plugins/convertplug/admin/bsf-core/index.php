@@ -19,6 +19,12 @@ Text Domain: bsf
 require_once 'auto-update/admin-functions.php';
 require_once 'auto-update/updater.php';
 
+// abspath of groupi
+
+if ( ! defined( 'BSF_UPDATER_PATH' ) ) {
+	define( 'BSF_UPDATER_PATH', __FILE__ );
+}
+
 if(!function_exists('bsf_convert_core_path_to_relative')) {
 	function bsf_convert_core_path_to_relative($path) {
 		global $bsf_core_url;
@@ -88,6 +94,11 @@ add_action( 'admin_init', 'init_bsf_plugin_installer' );
 if ( ! function_exists( 'init_bsf_plugin_installer' ) ) {
 	function init_bsf_plugin_installer() {
 		require_once 'plugin-installer/admin-functions.php';
+
+		/**
+		 * Action will run after plugin installer is loaded
+		 */
+		do_action( 'bsf_after_plugin_installer' );
 	}
 }
 
@@ -97,12 +108,68 @@ else
 	add_action('network_admin_menu', 'register_bsf_extension_page_network',999);
 if(!function_exists('register_bsf_extension_page')) {
 	function register_bsf_extension_page() {
-		add_submenu_page( 'imedica_options', __('Extensions','bsf'), __('Extensions','bsf'), 'manage_options', 'bsf-extensions', 'bsf_extensions_callback' );
+		add_submenu_page(
+			'imedica_options',
+			 __('Extensions','bsf'),
+			 __('Extensions','bsf'),
+			 'manage_options',
+			 'bsf-extensions-10395942',
+			 'bsf_extensions_callback'
+		);
+
+		$installer_menu = 	'';
+		$reg_menu 		= 	array();
+		$reg_menu 		=	apply_filters( 'bsf_installer_menu', $reg_menu, $installer_menu );
+
+		if( is_array( $reg_menu ) ) {
+
+			foreach ( $reg_menu as $installer => $attr ) {
+				add_submenu_page(
+					$attr['parent_slug'],
+					$attr['page_title'],
+					$attr['menu_title'],
+					'manage_options',
+					'bsf-extensions-' . $attr['product_id'],
+					'bsf_extensions_callback'
+				);
+
+			}
+
+		}
 	}
 }
+
 if(!function_exists('register_bsf_extension_page_network')) {
 	function register_bsf_extension_page_network() {
-		add_submenu_page( 'bsf-registration', __('Extensions','bsf'), __('Extensions','bsf'), 'manage_options', 'bsf-extensions', 'bsf_extensions_callback' );
+
+		$themes = wp_get_themes(array('allowed' => 'network'));
+
+		foreach( $themes as $theme ) {
+			if ( $theme->Name == 'iMedica' ) {
+				add_submenu_page( 'bsf-registration', __('iMedica Extensions','bsf'), __('iMedica Extensions','bsf'), 'manage_options', 'bsf-extensions-10395942', 'bsf_extensions_callback' );
+				break;
+			}
+		}
+
+		$installer_menu = 	'';
+		$reg_menu 		= 	array();
+		$reg_menu 		=	apply_filters( 'bsf_installer_menu', $reg_menu, $installer_menu );
+
+		if( is_array( $reg_menu ) ) {
+
+			foreach ( $reg_menu as $installer => $attr ) {
+				add_submenu_page(
+					'bsf-registration',
+					$installer .' ' . $attr['page_title'],
+					$installer .' ' . $attr['menu_title'],
+					'manage_options',
+					'bsf-extensions-' . $attr['product_id'],
+					'bsf_extensions_callback'
+				);
+			}
+
+		}
+
 	}
 }
 if ( ! function_exists( 'bsf_extensions_callback' ) ) {
@@ -218,8 +285,6 @@ if(!function_exists('register_bsf_core_admin_styles')) {
 		// bsf core style
 		$hook_array = array(
 			'toplevel_page_bsf-registration',
-			'imedica_page_bsf-extensions',
-			'brainstorm_page_bsf-extensions',
 			'update-core.php',
 			'dashboard_page_bsf-registration',
 			'index_page_bsf-registration',
@@ -227,7 +292,8 @@ if(!function_exists('register_bsf_core_admin_styles')) {
 			'settings_page_bsf-registration'
 		);
 		$hook_array = apply_filters('bsf_core_style_screens',$hook_array);
-		if(in_array($hook, $hook_array)){
+
+		if( in_array($hook, $hook_array) || strpos( $hook, 'bsf-extensions' ) !== false ){
 			// add function here
 			global $bsf_core_path;
 			$bsf_core_url = bsf_convert_core_path_to_relative($bsf_core_path);
@@ -290,4 +356,33 @@ if(is_multisite()) {
 		}
 	}
 }
-?>
+
+if ( ! function_exists( 'bsf_flush_bundled_products' ) ) {
+
+	function bsf_flush_bundled_products() {
+		$bsf_force_check_extensions = get_option( 'bsf_force_check_extensions', false );
+
+		if ( $bsf_force_check_extensions == true ) {
+			delete_option( 'brainstrom_bundled_products' );
+			delete_site_transient( 'bsf_get_bundled_products' );
+
+			update_option( 'bsf_force_check_extensions', false );
+		}
+	}
+}
+
+add_action( 'bsf_after_plugin_installer', 'bsf_flush_bundled_products' );
+
+/**
+ * Return extension installer page URL
+ */
+if ( ! function_exists( 'bsf_exension_installer_url' ) ) {
+
+	function bsf_exension_installer_url( $priduct_id ) {
+		if ( is_multisite() ) {
+			return network_admin_url( 'admin.php?page=bsf-extensions-' . $priduct_id );
+		} else {
+			return admin_url( 'admin.php?page=bsf-extensions-' . $priduct_id );
+		}
+	}
+}

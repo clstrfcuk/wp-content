@@ -2,14 +2,12 @@
 /**
  * Responsible for loading all Cornerstone elements
  */
-class Cornerstone_Legacy_Renderer {
+class Cornerstone_Legacy_Renderer extends Cornerstone_Plugin_Component {
 
 	private $manager;
-	private static $instance;
 
-	public function __construct( $manager ) {
-		self::$instance = $this;
-		$this->manager = $manager;
+	public function setup() {
+		$this->manager = CS()->loadComponent( 'Element_Orchestrator' );
 	}
 
 	/**
@@ -17,14 +15,16 @@ class Cornerstone_Legacy_Renderer {
 	 * @param  array $data  element data
 	 * @return string       final shortcode
 	 */
-	public static function save_element( $data ) {
-		$element = self::$instance->manager->get($data['_type']);
+	public function save_element( $data ) {
+
+		$element = $this->manager->get($data['_type']);
 
 		if ( $element->shouldRender() == true ) {
 			return '';
 		}
 
-		return $element->renderElement( self::$instance->formatData( $data, true ) );
+		return $element->renderElement( $this->formatData( $data, true ) );
+
 	}
 
 	/**
@@ -101,7 +101,10 @@ class Cornerstone_Legacy_Renderer {
 	public function formatData( $data, $saving = false, $child = false ) {
 
 		$element = $this->manager->get( $data['_type'] );
-
+		if ( is_null( $element ) ) {
+			trigger_error( sprintf( 'Cornerstone: Element %s not registered.', $data['_type'] ) );
+			return $data;
+		}
 		$data = wp_parse_args( $data, $element->get_defaults() );
 
 		if ( isset( $data['_csmeta'] ) ) {

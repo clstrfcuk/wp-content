@@ -12,8 +12,7 @@ jQuery(document).ready(function(){
 
 		// html container variables 
 
-		var cp_modal_height		= 'auto',
-			cp_submit 			= jQuery(".cp-submit"),
+		var cp_submit 			= jQuery(".cp-submit"),
 			cp_form_button      = jQuery(".form-button"),
 			cp_modal_body		= jQuery(".cp-modal-body"),
 			cp_modal			= jQuery(".cp-modal"),
@@ -41,7 +40,9 @@ jQuery(document).ready(function(){
 			modal_bg_image				= data.modal_bg_image,
 			opt_bg						= data.opt_bg,
 			cp_google_fonts 			= data.cp_google_fonts,
-			affiliate_title 			= data.affiliate_title;
+			affiliate_title 			= data.affiliate_title,
+			cp_modal_height       = data.cp_modal_height,
+			cp_custom_height 			= data.cp_custom_height;
  		
  		/**
  		 *	Add Selected Google Fonts
@@ -60,7 +61,7 @@ jQuery(document).ready(function(){
 		// apply animations to modal
 		cp_apply_animations(data);
 
-		// affilate settings 
+		// affiliate settings 
 		cp_affilate_settings(data);
 		cp_affilate_reinitialize(data);
 
@@ -110,6 +111,21 @@ jQuery(document).ready(function(){
 		// modal background image
 		cp_bg_image(data);
 
+		//apply height to body		
+		if(cp_custom_height == 1){
+			if(!cp_modal_body.find(".cp-row").hasClass('cp-row-center')){
+				cp_modal_body.find(".cp-row").addClass('cp-row-center');
+			}
+			if(!cp_modal_body.find(".ccp-subtitle-container").hasClass('cp-row-equalized-center')){
+				cp_modal_body.find(".cp-subtitle-container").addClass('cp-row-equalized-center');
+			}
+
+			cp_modal_body.css('min-height', cp_modal_height+'px');
+		}else{
+			cp_modal_body.css('min-height', '');
+			cp_modal_body.find(".cp-row").removeClass('cp-row-center');
+			cp_modal_body.find(".cp-subtitle-container").removeClass('cp-row-equalized-center');
+		}
 
 		jQuery(window).resize(function(e) {						
 			cp_affilate_reinitialize(data);

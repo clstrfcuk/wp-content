@@ -19,10 +19,13 @@ function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#39;').replace(/&quot;/g, '"');
 }
 
-function setFocusElement(element){
+function setFocusElement(element){	
 	jQuery(document).trigger('focusElementChanged');
 	var section = jQuery('.'+element).parents('.cp-customizer-tab:first');
 	var section_id = jQuery(section).attr('id');
+	
+	if( typeof section_id == 'undefined' ) 
+		return false;
 	jQuery('.cp-vertical-nav').find('a').each(function(i,a){
 		var data_sec_id = jQuery(a).attr('data-section-id');
 		if(section_id === data_sec_id) {
@@ -73,6 +76,102 @@ function setFocusElement(element){
 
 function customizerLoaded(){
 	jQuery(document).trigger('customize_loaded');
-	jQuery(".cp-save").trigger("click");
 	setFocusElement("style_title");
 }
+
+jQuery(document).ready(function(e) {
+
+	jQuery(document).on( 'change', '#accordion-panel-jugaad .smile-radio-image.modal_layout', function(){
+		var selVal = jQuery("#accordion-panel-jugaad input[name='modal_layout']:checked").val();
+		var modal_width_container  = jQuery(this).closest('.content').find('input[name="modal_col_width"]').closest('.smile-element-container');
+		
+		if( selVal == 'form_left' || selVal == 'form_right' || selVal == 'form_left_img_top' || selVal == 'form_right_img_top' ) {
+			modal_width_container.show();
+		} else {
+			modal_width_container.hide();
+		}
+
+		if( typeof selVal !== 'undefined' ) {
+			hide_button_on_nextline(selVal);
+			hide_modal_img_option(selVal);
+		}
+
+	});
+
+	// update display button on next line option if name field is enabled ( only for modal layout 7 and 8 )
+	jQuery("#accordion-panel-jugaad").find("[data-id='smile_namefield']").on( 'click', function(e) {
+		var layout = jQuery("#accordion-panel-jugaad input[name='modal_layout']:checked").val();	
+		var element  = jQuery(this);			
+		setTimeout(function() {
+				var namefield = element.closest(".smile-element-container").find("#smile_namefield").val();
+				var btn_on_next_line = jQuery("#accordion-panel-jugaad").find("[data-element='btn_disp_next_line']").find('input[name="btn_disp_next_line"]');
+				if( layout == 'form_bottom' || layout == 'form_bottom_img_top' ) {
+					if( namefield == '1' ) {
+						btn_on_next_line.val('0');
+					}
+				}
+		}, 200);		
+		
+	});
+});
+
+jQuery(window).load(function(){
+	var selVal = jQuery("#accordion-panel-jugaad input[name='modal_layout']:checked").val();
+
+	if( typeof selVal !== 'undefined' ) {
+		hide_button_on_nextline(selVal);
+		hide_modal_img_option(selVal);
+	}
+});
+
+// hide/show button on next line option for jugaad style 
+function hide_button_on_nextline(selVal) {
+	var btnContainer = jQuery("#accordion-panel-jugaad").find("[data-element='btn_disp_next_line']");
+	var switchBtn = btnContainer.find("#smile_btn_disp_next_line");
+	var checkboxLable = btnContainer.find('.smile-switch-btn.checkbox-label');
+	var namefield = jQuery("#accordion-panel-jugaad").find("[data-id='smile_namefield']").closest(".smile-element-container").find("#smile_namefield").val();
+
+	if ( selVal == 'form_right' || selVal == 'form_left' || selVal == 'form_left_img_top' || selVal == 'form_right_img_top' ) {
+		if( switchBtn.val() == 0 ) {
+			checkboxLable.trigger('click');
+		}			
+		btnContainer.addClass('cp-hidden');
+	} else if( selVal == 'form_bottom' || selVal == 'form_bottom_img_top' ) {
+		if( switchBtn.val() == 0 && namefield == '0' ) {
+			checkboxLable.trigger('click');
+		} else if( switchBtn.val() == 1 && namefield == '1' ){
+			checkboxLable.trigger('click');
+		}		
+		btnContainer.removeClass('cp-hidden');
+	} else {
+		if( switchBtn.val() == 1 ) {
+			checkboxLable.trigger('click');
+			switchBtn.val('0');
+		}
+		btnContainer.removeClass('cp-hidden');
+	}
+}
+
+// hide/show modal image options according to modal layout 
+function hide_modal_img_option(selVal) {
+
+	var imgContainer = jQuery("#accordion-panel-jugaad").find(".modal_image.media").closest('.smile-element-container');
+	var resize_img_container = jQuery("#accordion-panel-jugaad").find(".image_size").closest('.smile-element-container');
+	var img_horizontal_position = jQuery("#accordion-panel-jugaad").find(".image_horizontal_position").closest('.smile-element-container');   
+	var img_vertical_position = jQuery("#accordion-panel-jugaad").find(".image_vertical_position").closest('.smile-element-container');
+	var img_disp_on_mob = jQuery("#accordion-panel-jugaad").find("#smile_image_displayon_mobile").closest('.smile-element-container');
+
+	if ( selVal == 'form_left' || selVal == 'form_right' || selVal == 'form_bottom' ) {
+ 		imgContainer.hide();
+ 		resize_img_container.hide();
+ 		img_horizontal_position.hide();
+ 		img_vertical_position.hide();
+ 		img_disp_on_mob.hide();
+ 	} else {
+ 		imgContainer.show();
+ 		resize_img_container.show();
+ 		img_vertical_position.show();
+ 		img_horizontal_position.show();
+ 		img_disp_on_mob.show();
+ 	}
+}	

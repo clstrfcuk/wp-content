@@ -58,50 +58,6 @@ if( !function_exists( "cp_add_css" ) ) {
 	}
 }
 
-/*
-* Global functions for info_bar
-*/
-
-if( !function_exists( "smile_get_live_info_bars" )){
-	function smile_get_live_info_bars(){
-		$styles = get_option( 'smile_info_bar_styles' );
-		$smile_variant_tests = get_option( 'info_bar_variant_tests' );
-		$live_array = array();
-		if( is_array($styles) ) {
-			foreach( $styles as $key => $style ){
-				$settings = unserialize( $style[ 'style_settings' ] );
-
-				$split_tests = isset( $smile_variant_tests[$style['style_id']] ) ? $smile_variant_tests[$style['style_id']] : '';
-				if( is_array( $split_tests ) && !empty( $split_tests ) ) {
-					$split_array = array();
-					$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
-					if( $live ){
-						array_push( $split_array, $styles[ $key ] );
-					}
-					foreach( $split_tests as $key => $test ) {
-						$settings = unserialize( $test[ 'style_settings' ] );
-						$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
-						if( $live ){
-							array_push( $split_array, $test );
-						}
-					}
-					if( !empty( $split_array ) ) {
-						$key 	= array_rand( $split_array, 1 );
-						$array 	= $split_array[$key];
-						array_push( $live_array, $array );
-					}
-				} else {
-					$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
-					if( $live ){
-						array_push( $live_array, $styles[ $key ] );
-					}
-				}
-			}
-		}
-		return $live_array;
-	}
-}
-
 /**
  *	= Enqueue mobile detection js
  *
@@ -111,6 +67,8 @@ if( !function_exists( "smile_get_live_info_bars" )){
  *-----------------------------------------------------------*/
  if( !function_exists( "cp_enqueue_detect_device" ) ){
 	function cp_enqueue_detect_device( $devices ) {
+		echo  "herefdvfvb";
+
 		 if (wp_script_is( 'cp-detect-device', 'enqueued' )) {
 	       return;
 	     } else {
@@ -189,28 +147,8 @@ if( !function_exists( "cp_custom_css_filter" ) ) {
 	}
 }
 
-/**
- *	Filter 'cp_valid_mx_email' for MX - Email validation
- *
- * @since 1.0
- */
-add_filter( 'cp_valid_mx_email', 'cp_valid_mx_email_init' );
-if( !function_exists( "cp_valid_mx_email_init" ) ){
-	function cp_valid_mx_email_init($email) {
-		if(cp_is_valid_mx_email($email)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-}
 
-if( !function_exists( "cp_is_valid_mx_email" ) ){
-	function cp_is_valid_mx_email($email,$record = 'MX') {
-		list($user,$domain) = explode('@',$email);
-		return checkdnsrr($domain,$record);
-	}
-}
+
 
 /**
  *	Get Modal Image URL
@@ -252,9 +190,6 @@ if( !function_exists( "cp_modal_visibility_on_devices_browser_os_init" ) ) {
 }
 add_filter( 'cp_modal_visibility', 'cp_modal_visibility_on_devices_browser_os_init');
 
-
-
-
 /**
  * Info Bar Before
  *
@@ -265,7 +200,7 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 
 		$style_id = ( isset( $a['style_id'] ) ) ? $a['style_id'] : '';
 
-		$uid = uniqid();
+		$uid = $a['uid'];
 
 		$isIbInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
 
@@ -277,6 +212,17 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 			$ib_class_name = '.cp-info-bar';
 		}
 
+		// check referrer detection
+		$referrer_check = ( isset( $a['enable_referrer'] ) && (int)$a['enable_referrer'] ) ? 'display' : 'hide';
+		$referrer_domain = ( $referrer_check == 'display' ) ? $a['display_to'] : $a['hide_from'];
+
+		if( $referrer_check !== '' ){
+			$referrer_data = 'data-referrer-domain="'.$referrer_domain.'"';
+			$referrer_data .= ' data-referrer-check="'.$referrer_check.'"';
+		} else {
+			$referrer_data = "";
+		}
+
 		// Enqueue Google Fonts
 		cp_enqueue_google_fonts( $a['cp_google_fonts'] );
 
@@ -285,7 +231,6 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 			cp_enqueue_detect_device( $a['hide_on_device'] );
 		}
 
-
 		// push down page only if info bar position is at top
 		if( $a['infobar_position'] == 'cp-pos-top' && $a['page_down'] ) {
 			$page_down = 1;
@@ -293,24 +238,7 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 			$page_down = 0;
 		}
 
-		$css = $ib_class_name.'.content-'.$uid.'.cp-info-bar-inline .cp-ib-form input,
-			'.$ib_class_name.'.content-'.$uid.'.cp-info-bar .cp-ib-form input,
-			'.$ib_class_name.'.content-'.$uid.''.$ib_class_name.' .cp-ib-form input::-webkit-input-placeholder {
-				color: '.$a['placeholder_color'].';
-				font-family: '.$a['placeholder_font'].';
-			}
-			'.$ib_class_name.'.content-'.$uid.''.$ib_class_name.' .cp-ib-form input:-moz-placeholder { /* Firefox 18- */
-				color: '.$a['placeholder_color'].';
-				font-family: '.$a['placeholder_font'].';
-			}
-			'.$ib_class_name.'.content-'.$uid.''.$ib_class_name.' .cp-ib-form input::-moz-placeholder {  /* Firefox 19+ */
-				color: '.$a['placeholder_color'].';
-				font-family: '.$a['placeholder_font'].';
-			}
-			'.$ib_class_name.'.content-'.$uid.''.$ib_class_name.' .cp-ib-form input:-ms-input-placeholder {
-				color: '.$a['placeholder_color'].';
-				font-family: '.$a['placeholder_font'].';
-			}';
+		$css = '';
 
 		/**
 		 * 	Shadow & Border
@@ -442,7 +370,7 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 		}
 
 		$isScheduled = '';
-		$schedule = $a['schedule'];
+		$schedule = isset( $a['schedule'] ) ? $a['schedule'] : '';
 
 		if( is_array( $schedule ) && $a['live'] == '2' ) {
 			$isScheduled = ' data-scheduled="true" data-start="'.$schedule['start'].'" data-end="'.$schedule['end'].'" ';
@@ -510,10 +438,10 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 			$conversion_cookie = $a['conversion_cookie'];
 		}
 
-		$data_redirect = '';
-		if( $a['on_success'] == 'redirect' && $a['redirect_url'] !== '' && (int)$a['redirect_data'] ){
-			$data_redirect = 'data-redirect-lead-data="'.$a['redirect_data'].'"';
-		}
+		$data_redirect = '';		
+		if( isset($a['on_success']) && $a['on_success'] == 'redirect' && $a['redirect_url'] !== '' && (int)$a['redirect_data'] ){
+				$data_redirect = 'data-redirect-lead-data="'.$a['redirect_data'].'"';
+		}		
 
 		$global_info_bar_settings = 'data-closed-cookie-time="'.$closed_cookie.'" data-conversion-cookie-time="'.$conversion_cookie.'" data-info_bar-id="'.$style_id.'" data-info_bar-style="'.$style_id.'" data-entry-animation="'. $a['entry_animation'] .'" data-exit-animation="'. $a['exit_animation'] .'" data-option="smile_info_bar_styles"' . $inactive_data;
 		$global_class = 'global_info_bar_container';
@@ -664,17 +592,14 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 
 		echo '<style class="cp-ifb-second_submit" type="text/css">'.$ifb_ib_style.'</style>';
 
-
 		ob_start();
 		$data = get_option( 'convert_plug_debug' );
         $push_page_input = isset($data['push-page-input']) ? $data['push-page-input'] : '';
         $top_offset_container = isset($data['top-offset-container']) ? $data['top-offset-container'] : '';
 
-
         //hide on mobile devices
-        $cp_modal_visibility	= apply_filters( 'cp_modal_visibility', $a['hide_on_device'], $a['hide_on_os'], $a['hide_on_browser'] ); 		//	Visibility on Browser, Devices & OS
+        $cp_modal_visibility	= apply_filters( 'cp_modal_visibility', $a['hide_on_device'] ); 		//	Visibility on Browser, Devices & OS
         $global_info_bar_settings .= $cp_modal_visibility ;
-
 
         if( $a['close_info_bar_pos'] == 0 )
         	$ib_close_class = 'ib-close-inline';
@@ -699,21 +624,39 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 
 		//	Enable animation initially
         $toggl_class_name  = '';
-        if( !$isInline && $a['toggle_btn']==1 ){
+        $toggle_container_class = '';
+        if( !$isInline && $a['toggle_btn'] == 1 ) {
         	 $toggl_class_name = 'cp-ifb-with-toggle';
         }
-        $toggle_container_class = $toggl_class_name .' smile-animated ' .$a['entry_animation'];
+
+        if( isset( $a['toggle_btn_visible'] ) && $a['toggle_btn_visible'] == '1' && $a['toggle_btn'] == '1' ) {
+        	$cp_info_bar_class .= ' cp-ifb-hide';
+        } else {
+        	$toggle_container_class = ' smile-animated ' .$a['entry_animation'];
+        }
+
+        $toggle_container_class .= " ".$toggl_class_name;
+
+        if ( ( isset( $a['manual'] ) && $a['manual'] == 'true' ) || ( isset( $a['display'] ) && $a['display'] == 'inline' ) ) 
+        	$ib_onload = '';
+        else
+        	$ib_onload = 'cp-ib-onload';
+
+        //	Is InfoBar InLine?
+		$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
 
         $cp_settings = get_option('convert_plug_debug');
 		$after_content_scroll = isset( $cp_settings['after_content_scroll'] ) ? $cp_settings['after_content_scroll'] : '50';
 		$after_content_data = 'data-after-content-value="'. $after_content_scroll .'"';
 
+        $alwaysVisible = ( ( isset($a['toggle_btn']) && $a['toggle_btn'] == '1' ) && ( isset($a['toggle_btn_visible']) && $a['toggle_btn_visible']  == '1' ) ) ? 'data-toggle-visible=true' : '';
 		?>
 
 		<input type="hidden" id="cp-push-down-support" value="<?php echo $push_page_input; ?>">
 		<input type="hidden" id="cp-top-offset-container" value="<?php echo $top_offset_container; ?>">
 
-        <div id="<?php echo esc_attr( $ib_custom_id ); ?>" <?php echo $after_content_data; ?> class="<?php echo esc_attr( $cp_info_bar_class ); ?> <?php echo esc_attr($a['style_class']); ?> cp-info-bar-container cp-clear <?php echo esc_attr( $a['infobar_position'] ); echo ( !$isInline ) ? ' content-'.$uid .' '.$style_id. ' '.$ib_custom_class : "";?> <?php echo $global_class; ?> <?php echo esc_attr( $toggle_container_class ); ?>" style="min-height:<?php echo esc_attr( $a['infobar_height'] ); ?>px;" data-push-down="<?php echo esc_attr( $page_down ); ?>" data-animate-push-page="<?php echo esc_attr( $a['animate_push_page'] ); ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_info_bar_settings; echo ( !$isInline ) ? ' data-custom-class="'.esc_attr( $ib_custom_class ).'"' : ""; ?> data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" data-placeholder-color="<?php echo $a['placeholder_color']; ?>" <?php echo $data_redirect;?> data-onload-delay="<?php echo esc_attr($load_on_duration); ?>" data-onscroll-value="<?php echo esc_attr($load_after_scroll); ?>" data-exit-intent="<?php echo esc_attr($ib_exit_intent); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" data-tz-offset="<?php echo $schedular_tmz_offset ;?>" data-toggle="<?php echo $a['toggle_btn'] ;?>">
+        <div id="<?php echo esc_attr( $ib_custom_id ); ?>" <?php echo $referrer_data; ?> <?php echo $after_content_data; ?> class="<?php echo esc_attr( $cp_info_bar_class ); ?> <?php echo esc_attr($a['style_class']); ?> cp-info-bar-container <?php echo $ib_onload; ?> cp-clear <?php echo esc_attr( $a['infobar_position'] ); echo ( !$isInline ) ? ' content-'.$uid .' '.$style_id. ' '.$ib_custom_class : "";?> <?php echo $global_class; ?> <?php echo esc_attr( $toggle_container_class ); ?>" style="min-height:<?php echo esc_attr( $a['infobar_height'] ); ?>px;" data-push-down="<?php echo esc_attr( $page_down ); ?>" data-animate-push-page="<?php echo esc_attr( $a['animate_push_page'] ); ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_info_bar_settings; echo ( !$isInline ) ? ' data-custom-class="'.esc_attr( $ib_custom_class ).'"' : ""; ?> data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" <?php echo $data_redirect;?> data-onload-delay="<?php echo esc_attr($load_on_duration); ?>" data-onscroll-value="<?php echo esc_attr($load_after_scroll); ?>" data-exit-intent="<?php echo esc_attr($ib_exit_intent); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" data-tz-offset="<?php echo $schedular_tmz_offset ;?>" data-toggle="<?php echo $a['toggle_btn'] ;?>" <?php echo $alwaysVisible; ?>>
+
             <div class="cp-info-bar-wrapper cp-clear">
                 <div class="cp-info-bar-body-overlay"></div>
                 <div class="cp-flex cp-info-bar-body <?php echo esc_attr($ib_close_class); ?>" style="min-height:<?php echo esc_attr( $a['infobar_height'] ); ?>px;" data-height=''>
@@ -732,7 +675,10 @@ add_filter( 'cp_ib_global_before', 'cp_ib_global_before_init' );
 if( !function_exists( "cp_ib_global_after_init" ) ) {
 	function cp_ib_global_after_init( $a ) {
 
-        $ib_close_html = $ib_close_class = $close_img_class ='';
+		$toggle_class = '';
+		$toggle_btn_style = '';
+        $ib_close_html = $ib_close_class = $close_img_class = '';
+        $style_id 				= ( isset( $a['style_id'] ) ) ? $a['style_id'] : '';
         if( $a['close_info_bar'] == "close_img" ){
         	if ( strpos( $a['close_img'], 'http' ) !== false ) {
 				$close_img_class = 'ib-img-default';
@@ -752,13 +698,21 @@ if( !function_exists( "cp_ib_global_after_init" ) ) {
 		if( $a['close_info_bar'] == 'do_not_close' ){
 			$a['toggle_btn'] = 0;
 		}
-		//	Hide toggle initially
-        $toggle_class = 'cp-ifb-hide';
 
-	    if( $a['toggle_btn_gradient'] == '1'){
-			$toggle_btn_style = 'cp-btn-gradient';
+		if( isset( $a['toggle_btn_visible'] ) && $a['toggle_btn_visible'] !== '1' ) {				
+        	$toggle_class = 'cp-ifb-hide';
+        } else if( isset( $a['toggle_btn_visible'] ) && $a['toggle_btn_visible'] == '1' && $a['toggle_btn'] == '1' ) {
+        	$ifb_toggle_btn_anim ='smile-slideInUp';
+        	if( $a['infobar_position'] == 'cp-pos-top'){
+        		$ifb_toggle_btn_anim = 'smile-slideInDown';
+        	}
+        	$toggle_btn_style .= 'cp-ifb-show smile-animated ' .$ifb_toggle_btn_anim;
+        }
+
+        if( $a['toggle_btn_gradient'] == '1') {
+			$toggle_btn_style .= ' cp-btn-gradient';
 		} else {
-			$toggle_btn_style = 'cp-btn-flat';
+			$toggle_btn_style .= ' cp-btn-flat';
 		}
 
 		//	Is InfoBar InLine?
@@ -772,15 +726,20 @@ if( !function_exists( "cp_ib_global_after_init" ) ) {
 			</div><!-- cp-info-bar-body -->
 		</div>
 		<!--toggle button-->
-			<?php if( $a['toggle_btn'] == '1' ){ ?>
+			<?php if( $a['toggle_btn'] == '1' ) { ?>
 		  	   <div class="cp-ifb-toggle-btn <?php echo esc_attr(  $toggle_class .' '. $toggle_btn_style ); ?> "><?php echo do_shortcode( $a['toggle_button_title'] ); ?></div>
 		  	<?php } ?>
 			<?php
 		    if( !$isInline && $a['close_info_bar_pos'] == 1 && $a['close_info_bar'] !== "do_not_close" )  { ?>
 		        <div class="ib-close <?php echo esc_attr( $ib_close_class ); ?>" style=" <?php echo esc_attr( $ib_img_width ); ?>"><?php echo do_shortcode( $ib_close_html ); ?></div>
-		    <?php }
+		    <?php } ?>
 
-		    if( isset($a['mailer']) && $a['mailer'] !== '' && !isset( $a['button_conversion'] ) ) { ?>
+		    <?php if( $isInline ) { ?>
+				<span class="cp-info_bar-inline-end" data-style="<?php echo $style_id; ?>"></span>
+			<?php } 
+
+		    //	Disable loading for ONLY BUTTON
+		    if( isset($a['mailer']) && $a['mailer'] !== '' && $a['form_layout'] != 'cp-form-layout-4' ) { ?>
 		    <div class="cp-form-processing-wrap" style="position: absolute; display:none; ">
 	            <div class="cp-form-after-submit" style="line-height:<?php echo esc_attr( $a['infobar_height'] ); ?>px;">
 	                <div class ="cp-form-processing">
@@ -847,7 +806,6 @@ add_filter( 'cp_ib_global_after', 'cp_ib_global_after_init' );
 		} else {
 			$GFonts = $fonts;
 		}
-
 
 		//	Check the google fonts is enabled from BackEnd.
 		$data         = get_option( 'convert_plug_settings' );

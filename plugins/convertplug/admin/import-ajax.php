@@ -74,6 +74,19 @@ if( !function_exists( "cp_import_slide_in" ) ){
 		$obj = json_decode($json,true);
 		$import_style = array();
 		$new_style_id = $obj['style_id'];
+		$cp_module = $obj['module'];
+
+		if( $cp_module !== "slide_in" ){
+
+			print_r(json_encode(
+				array(
+					'status' 		=> 'error',
+					'description' 	=> __( "Seems that the file have uploaded the wrong file. This file can be imported for ". str_replace("_", " ", $cp_module ), "smile" )
+				)
+			));
+
+			die();
+		}
 		
 		if( !isset( $obj['style_id'] ) ){
 			print_r(json_encode(
@@ -288,6 +301,20 @@ if( !function_exists( "cp_import_info_bar" ) ){
 		$import_style = array();
 		$new_style_id = $obj['style_id'];
 
+		$cp_module = $obj['module'];
+
+		if( $cp_module !== "info_bar" ){
+
+			print_r(json_encode(
+				array(
+					'status' 		=> 'error',
+					'description' 	=> __( "Seems that the file have uploaded the wrong file. This file can be imported for ". str_replace("_", " ", $cp_module ), "smile" )
+				)
+			));
+
+			die();
+		}
+
 		if( !isset( $obj['style_id'] ) ){
 			print_r(json_encode(
 				array(
@@ -501,6 +528,19 @@ if( !function_exists( "cp_import_modal" ) ){
 		$obj = json_decode($json,true);
 		$import_style = array();
 		$new_style_id = $obj['style_id'];
+		$cp_module = $obj['module'];
+
+		if( $cp_module !== "modal" ){
+
+			print_r(json_encode(
+				array(
+					'status' 		=> 'error',
+					'description' 	=> __( "Seems that the file have uploaded the wrong file. This file can be imported for ". str_replace("_", " ", $cp_module ), "smile" )
+				)
+			));
+
+			die();
+		}
 
 		if( !isset( $obj['style_id'] ) ){
 			print_r(json_encode(

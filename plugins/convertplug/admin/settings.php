@@ -25,6 +25,12 @@
   left: calc( 50% - 33px );
   color: #FFF;
 }
+.debug-section {
+    background: #FAFAFA;
+    padding: 10px 30px;
+    border: 1px solid #efefef;
+    margin-bottom: 15px;
+} 
 </style>
 <div class="wrap about-wrap about-cp bend">
   <div class="wrap-container">
@@ -56,40 +62,104 @@
         <form id="convert_plug_settings" class="cp-options-list">
             <input type="hidden" name="action" value="smile_update_settings" />
 
-            <!-- Google Fonts -->
+            <!-- MX Record Validation For Email -->
+
+          <div class="debug-section">
             <?php
               $data         =  get_option( 'convert_plug_settings' );
-              $gfval        = isset($data['cp-google-fonts']) ? $data['cp-google-fonts'] : 1;
+              $gfval        = isset($data['cp-enable-mx-record']) ? $data['cp-enable-mx-record'] : 0;
               $is_checked   = ( $gfval ) ? ' checked="checked" ' : '';
               $uniq         =  uniqid();
             ?>
             <p>
-              <label for="hide-options" style="width:320px; display: inline-block;"><strong><?php _e( "Google Fonts", "smile" ); ?></strong>
-                <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Load Google Fonts at front end.", "smile" ); ?>">
+              <label for="hide-options" style="width:320px; display: inline-block;"><strong><?php _e( "MX Record Validation For Email", "smile" ); ?></strong>
+                <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Enable / disable MX lookup email validation method.", "smile" ); ?>">
                   <i class="dashicons dashicons-editor-help"></i>
                 </span>
               </label>
               <label class="switch-wrapper" style="display: inline-block;margin: 0;height: 20px;">
-                <input type="text"  id="cp-google-fonts" class="form-control smile-input smile-switch-input"  name="cp-google-fonts" value="<?php echo $gfval; ?>" />
-                <input type="checkbox" <?php echo $is_checked; ?> id="smile_cp-google-fonts_btn_<?php echo $uniq; ?>"  class="ios-toggle smile-input smile-switch-input switch-checkbox smile-switch " value="<?php echo $gfval; ?>" >
-                <label class="smile-switch-btn checkbox-label" data-on="ON"  data-off="OFF" data-id="cp-google-fonts" for="smile_cp-google-fonts_btn_<?php echo $uniq; ?>"></label>
+                <input type="text"  id="cp-enable-mx-record" class="form-control smile-input smile-switch-input"  name="cp-enable-mx-record" value="<?php echo $gfval; ?>" />
+                <input type="checkbox" <?php echo $is_checked; ?> id="smile_cp-enable-mx-record_btn_<?php echo $uniq; ?>"  class="ios-toggle smile-input smile-switch-input switch-checkbox smile-switch " value="<?php echo $gfval; ?>" >
+                <label class="smile-switch-btn checkbox-label" data-on="ON"  data-off="OFF" data-id="cp-enable-mx-record" for="smile_cp-enable-mx-record_btn_<?php echo $uniq; ?>"></label>
               </label>
-            </p><!-- Google Fonts -->
+            </p><!-- MX Record Validation For Email -->
+          </div><!-- .debug-section -->
 
-            <p><?php
+          <div class="debug-section">
+            <!-- Subscription Messages -->
+            <h4>Response Message - When User Is Already Subscribed:</h4>
+            <!-- Show default messages -->
+            <?php
+              $data         =  get_option( 'convert_plug_settings' );
+              $gfval        = isset($data['cp-default-messages']) ? $data['cp-default-messages'] : 1;
+              $is_checked   = ( $gfval ) ? ' checked="checked" ' : '';
+              $uniq         =  uniqid();
+            ?>
+            <p>
+              <label for="hide-options" style="width:320px; display: inline-block;"><strong><?php _e( "Display Your Customized Error Message", "smile" ); ?></strong>
+                <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "If turned OFF, third party mailer error message will be displayed.", "smile" ); ?>">
+                  <i class="dashicons dashicons-editor-help"></i>
+                </span>
+              </label>
+              <label class="switch-wrapper" style="display: inline-block;margin: 0;height: 20px;">
+                <input type="text"  id="cp-default-messages" class="form-control smile-input smile-switch-input"  name="cp-default-messages" value="<?php echo $gfval; ?>" />
+                <input type="checkbox" <?php echo $is_checked; ?> id="smile_cp-default-messages_btn_<?php echo $uniq; ?>"  class="ios-toggle smile-input smile-switch-input switch-checkbox smile-switch " value="<?php echo $gfval; ?>" >
+                <label class="smile-switch-btn checkbox-label" data-on="ON"  data-off="OFF" data-id="cp-default-messages" for="smile_cp-default-messages_btn_<?php echo $uniq; ?>"></label>
+              </label>
+            </p><!-- Show default messages -->
+            <?php
+              $data   = get_option( 'convert_plug_settings' );
+              $msg    = isset($data['cp-already-subscribed']) ? $data['cp-already-subscribed'] : __( 'Already Subscribed...!', 'smile' );
+            ?>          
+            <p <?php if($msg == 1 ) { echo "style='display:none;'"; } ?> >
+              <label for="hide-options" style="width:320px; vertical-align: top; display: inline-block;"><strong><?php _e( "Enter Custom Message", "smile" ); ?></strong>
+                <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Enter your custom message to display when user is already subscribed.", "smile" ); ?>">
+                  <i class="dashicons dashicons-editor-help"></i>
+                </span>
+              </label>
+              <textarea id="cp-already-subscribed" name="cp-already-subscribed" cols="40" rows="5"><?php echo stripslashes( $msg ); ?></textarea>
+            </p><!-- Subscription Messages -->
+          </div><!-- .debug-section -->
 
-                $cp_settings = get_option('convert_plug_settings');
+            <!-- Google Fonts -->
+            <div class="debug-section">
+              <?php
+                $data         =  get_option( 'convert_plug_settings' );
+                $gfval        = isset($data['cp-google-fonts']) ? $data['cp-google-fonts'] : 1;
+                $is_checked   = ( $gfval ) ? ' checked="checked" ' : '';
+                $uniq         =  uniqid();
+              ?>
+              <p>
+                <label for="hide-options" style="width:320px; display: inline-block;"><strong><?php _e( "Google Fonts", "smile" ); ?></strong>
+                  <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Load Google Fonts at front end.", "smile" ); ?>">
+                    <i class="dashicons dashicons-editor-help"></i>
+                  </span>
+                </label>
+                <label class="switch-wrapper" style="display: inline-block;margin: 0;height: 20px;">
+                  <input type="text"  id="cp-google-fonts" class="form-control smile-input smile-switch-input"  name="cp-google-fonts" value="<?php echo $gfval; ?>" />
+                  <input type="checkbox" <?php echo $is_checked; ?> id="smile_cp-google-fonts_btn_<?php echo $uniq; ?>"  class="ios-toggle smile-input smile-switch-input switch-checkbox smile-switch " value="<?php echo $gfval; ?>" >
+                  <label class="smile-switch-btn checkbox-label" data-on="ON"  data-off="OFF" data-id="cp-google-fonts" for="smile_cp-google-fonts_btn_<?php echo $uniq; ?>"></label>
+                </label>
+              </p><!-- Google Fonts -->
+            </div>
 
-                $selected=$wselected=$loggedinuser='';
-                $loggedinuser = explode(",",$cp_settings['cp-user-role']);
-                $timezone = $cp_settings['cp-timezone'];
-		            $user_inactivity = isset( $cp_settings['user_inactivity'] ) ? $cp_settings['user_inactivity'] : '60';
-                if($timezone=='system'){
-                 $selected='selected';
-                }
-                if($timezone=='wordpress'){
-                 $wselected='selected';
-                } ?>
+            <div class="debug-section">
+              <p>
+                <?php
+
+                  $cp_settings = get_option('convert_plug_settings');
+
+                  $selected = $wselected = $loggedinuser = '';
+                  $loggedinuser = explode(",",$cp_settings['cp-user-role']);
+                  $timezone = $cp_settings['cp-timezone'];
+  		            $user_inactivity = isset( $cp_settings['user_inactivity'] ) ? $cp_settings['user_inactivity'] : '60';
+                  if( $timezone == 'system' ){
+                    $selected = 'selected';
+                  }
+                  if( $timezone == 'wordpress' ) {
+                   $wselected = 'selected';
+                  } 
+                ?>
                 <label for="global-timezone" style="width:320px; display: inline-block;"><strong><?php _e( "Set Timezone", "smile" ); ?></strong>
                   <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Depending on your selection, input will be taken for timer based features in ConvertPlug.", "smile" ); ?>">
                     <i class="dashicons dashicons-editor-help"></i>
@@ -99,55 +169,62 @@
                   <option value="wordpress" <?php _e( $wselected ); ?> ><?php _e( "WordPress Timezone", "smile" ); ?></option>
                   <option value="system" <?php _e( $selected ); ?> ><?php _e( "System Default Time", "smile" ); ?></option>
                 </select>
-            </p>
-            <p>
-                <label for="user_inactivity" style="width:320px; display: inline-block;"><strong><?php _e( "User Inactivity Time", "smile" ); ?></strong>
-                  <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Module can be trigger for idle user on your website. This setting helps you control that idle time.", "smile" ); ?>">
-                    <i class="dashicons dashicons-editor-help"></i>
-                  </span>
-                </label>
-                <input type="number" id="user_inactivity" name="user_inactivity" min="1" max="10000" value="<?php echo $user_inactivity; ?>"/> <span class="description"><?php _e( " Seconds", "smile" ); ?></span>
-            </p>
-            <p>
-              <table>
-              	<tr>
-                  <td style="vertical-align: top;padding-top: 20px;">
-                  	<label for="cp-user-role" style="width:320px; display: inline-block;"><strong><?php _e( "Disable modal impression count for", "smile" ); ?></strong>
-                      <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "This setting is used while generating analytics data. For selected WordPress user roles, impressions will not be counted.", "smile" ); ?>">
-                        <i class="dashicons dashicons-editor-help"></i>
-                      </span>
-                    </label>
-                  </td>
-                  <td>
-                  <ul class="checkbox-grid">
-                  <?php
-                       global $wp_roles;
-                       $roles = $wp_roles->get_names();
+              </p>
+            </div>
 
-                          foreach ($roles as $rkey => $rvalue) {
-                            if(!empty($cp_settings)){
-                                        if(in_array($rkey, $loggedinuser)){
-                                                   echo'<li><input type="checkbox" name="cp-user-role" id="cp-user-role" value="'.$rkey.'"  checked >'.$rvalue.'</li>';
-                                                 }else{
-                                                   echo'<li><input type="checkbox" name="cp-user-role" id="cp-user-role" value="'.$rkey.'" >'.$rvalue.'</li>';
-                                                 }
-                             }else{
-                              if($rkey=='administrator'){
+            <div class="debug-section">
+              <p>
+                  <label for="user_inactivity" style="width:320px; display: inline-block;"><strong><?php _e( "User Inactivity Time", "smile" ); ?></strong>
+                    <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Module can be trigger for idle user on your website. This setting helps you control that idle time.", "smile" ); ?>">
+                      <i class="dashicons dashicons-editor-help"></i>
+                    </span>
+                  </label>
+                  <input type="number" id="user_inactivity" name="user_inactivity" min="1" max="10000" value="<?php echo $user_inactivity; ?>"/> <span class="description"><?php _e( " Seconds", "smile" ); ?></span>
+              </p>
+            </div>
 
-                                   echo'<li><input type="checkbox" name="cp-user-role" id="cp-user-role" value="'.$rkey.'"  checked >'.$rvalue.'</li>';
+            <div class="debug-section">
+              <p>
+                <table>
+                	<tr>
+                    <td style="vertical-align: top;padding-top: 20px;">
+                    	<label for="cp-user-role" style="width:320px; display: inline-block;"><strong><?php _e( "Disable modal impression count for", "smile" ); ?></strong>
+                        <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "This setting is used while generating analytics data. For selected WordPress user roles, impressions will not be counted.", "smile" ); ?>">
+                          <i class="dashicons dashicons-editor-help"></i>
+                        </span>
+                      </label>
+                    </td>
+                    <td>
+                      <ul class="checkbox-grid">
+                      <?php
+                           global $wp_roles;
+                           $roles = $wp_roles->get_names();
 
-                                 }else{
-                                    echo'<li><input type="checkbox" name="cp-user-role" id="cp-user-role" value="'.$rkey.'" >'.$rvalue.'</li>';
-                                 }
-                            }
-                          }
+                              foreach ($roles as $rkey => $rvalue) {
+                                if( !empty($cp_settings) ) {
+                                            if(in_array($rkey, $loggedinuser)){
+                                                       echo'<li><input type="checkbox" name="cp-user-role" id="cp-user-role" value="'.$rkey.'"  checked >'.$rvalue.'</li>';
+                                                     }else{
+                                                       echo'<li><input type="checkbox" name="cp-user-role" id="cp-user-role" value="'.$rkey.'" >'.$rvalue.'</li>';
+                                                     }
+                                 } else {
+                                  if( $rkey == 'administrator' ){
 
-                  ?>
-                  </ul>
-              </td>
-            </tr>
-          </table>
-        </p>
+                                       echo'<li><input type="checkbox" name="cp-user-role" id="cp-user-role" value="'.$rkey.'"  checked >'.$rvalue.'</li>';
+
+                                     }else{
+                                        echo'<li><input type="checkbox" name="cp-user-role" id="cp-user-role" value="'.$rkey.'" >'.$rvalue.'</li>';
+                                     }
+                                }
+                              }
+
+                        ?>
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
+              </p>
+            </div>
         </form>
         <button type="button" class="button button-primary button-update-settings"><?php _e("Save Settings", "smile"); ?></button>
     </div>
@@ -156,42 +233,65 @@
 </div>
 <script type="text/javascript">
 jQuery(document).ready(function($){
-  jQuery('.has-tip').frosty();
-	var form = jQuery("#convert_plug_settings");
-	var btn = jQuery(".button-update-settings");
-	var inactive = jQuery("#user_inactivity");
-	var msg = jQuery(".msg");
-	btn.click(function(){
-        var ser = jQuery("[name]").not("#cp-user-role").serialize();
-        var array_values = [];
-    jQuery("input:checkbox").map(function(){
-      if(jQuery(this).is(":checked")){
-         array_values.push( $(this).val() );
-      }
+
+    //  Toggle Response Messages
+    jQuery('#cp-default-messages').siblings('.smile-switch-btn').each(function(index, el) {
+        var self = jQuery(el);
+        toggle_response_messages( self );
+        self.click(function(event) {
+          jQuery("#cp-already-subscribed").parent('p').slideToggle();
+        });
     });
-	var arrayValues = array_values.join(',');
-	ser+="&cp-user-role="+arrayValues;
 
-	var inactive_time = inactive.val();
-	ser+="&user_inactivity="+inactive_time;
+    jQuery('.has-tip').frosty();
+  	var form = jQuery("#convert_plug_settings");
+  	var btn = jQuery(".button-update-settings");
+  	var inactive = jQuery("#user_inactivity");
+  	var msg = jQuery(".msg");
+  	btn.click(function(){
+          var ser = jQuery("[name]").not("#cp-user-role").serialize();
+          var array_values = [];
+      jQuery("input:checkbox").map(function(){
+        if(jQuery(this).is(":checked")){
+           array_values.push( $(this).val() );
+        }
+      });
+  	var arrayValues = array_values.join(',');
+  	ser+="&cp-user-role="+arrayValues;
 
-    var data =ser;
-		jQuery.ajax({
-			url: ajaxurl,
-			data: data,
-			dataType: 'JSON',
-			type: 'POST',
-			success: function(result){
-				if(result.message == "Settings Updated!"){
-					swal("<?php _e( "Updated!", "smile" ); ?>", result.message, "success");
-					setTimeout(function(){
-						window.location = window.location;
-					},500);
-				} else {
-					swal("<?php _e( "Error!", "smile" ); ?>", result.message, "error");
-				}
-			}
-		});
-	});
+  	var inactive_time = inactive.val();
+  	ser+="&user_inactivity="+inactive_time;
+
+      var data =ser;
+  		jQuery.ajax({
+  			url: ajaxurl,
+  			data: data,
+  			dataType: 'JSON',
+  			type: 'POST',
+  			success: function(result){
+  				if(result.message == "Settings Updated!"){
+  					swal("<?php _e( "Updated!", "smile" ); ?>", result.message, "success");
+  					setTimeout(function(){
+  						window.location = window.location;
+  					},500);
+  				} else {
+  					swal("<?php _e( "Error!", "smile" ); ?>", result.message, "error");
+  				}
+  			}
+  		});
+  	});
 });
+
+//  Toggle Response Messages
+function toggle_response_messages( self ) {
+  var id = self.data('id');
+  var value = self.parents(".switch-wrapper").find("#"+id).val();
+
+  if( value == 1 || value == '1' ) {
+    jQuery("#cp-already-subscribed").parent('p').slideDown();
+  } else {
+    jQuery("#cp-already-subscribed").parent('p').slideUp();
+  }
+}
+
 </script>

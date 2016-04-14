@@ -13,10 +13,18 @@ var cp_empty_classes = {
 		".cp-info-container" 		: ".cp-info-container",
 		".cp-short-description"  	: ".cp-short-desc-container",
 		".cp-desc-bottom"           : ".cp-desc-timetable",
-		".cp-mid-description"       : ".cp-mid-desc-container"
+		".cp-mid-description"       : ".cp-mid-desc-container",
+		".cp-short-title"           : ".cp-short-title-container",
+		".cp-modal-note"            : ".modal-note-container",
+		".cp-modal-note-2"          : ".modal-note-container-2"
 	};
 
 jQuery(document).ready(function(){
+
+	//  Model height
+    CPModelHeight();
+
+	jQuery("html").css('overflow','hidden');
 
 	jQuery.each( cp_empty_classes, function( key, value) {
 
@@ -31,7 +39,44 @@ jQuery(document).ready(function(){
 		}
 	});
 
-	jQuery("html").css('overflow','hidden');
+	if( jQuery("#mid_desc_editor").length ) {
+
+		var sel_mid_desc_editor = jQuery("#mid_desc_editor");
+
+		CKEDITOR.disableAutoInline = true;
+		CKEDITOR.inline( 'mid_desc_editor' );
+
+		CKEDITOR.instances.mid_desc_editor.on( 'change', function() {
+
+			//	Set class - `cp-modal-exceed`
+			CPModelHeight();
+
+			//	Set equalize columns
+			cp_column_equilize();
+
+			//Set equalize row for blank style
+			cp_row_equilize();
+
+			//set color for li tags
+        	cp_color_for_list_tag();
+
+        	jQuery(document).trigger('ckeditorChange');
+
+			var data = CKEDITOR.instances.mid_desc_editor.getData();
+			parent.updateHTML(htmlEntities(data),'smile_modal_middle_desc');
+
+			//	2. Add class 'cp-no-responsive' to manage the line height of cp-highlight
+			cp_set_no_responsive( sel_mid_desc_editor, data );
+
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.mid_desc_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
+	}
 
 	if( jQuery("#main_title_editor").length ) {
 
@@ -59,11 +104,16 @@ jQuery(document).ready(function(){
 			//	Set class - `cp-modal-exceed`
 			CPModelHeight();
 
-			//	Set equalize coloumns
+			//	Set equalize columns
 			cp_column_equilize();
+
+			//Set equalize row for blank style
+			cp_row_equilize();
 
 			//set color for li tags
         	cp_color_for_list_tag();
+
+        	jQuery(document).trigger('ckeditorChange');
 
 			var data = CKEDITOR.instances.main_title_editor.getData();
 			parent.updateHTML(htmlEntities(data),'smile_modal_title1');
@@ -71,6 +121,13 @@ jQuery(document).ready(function(){
 			//	2. Add class 'cp-no-responsive' to manage the line height of cp-highlight
 			cp_set_no_responsive( sel_main_title_editor, data );
 
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.main_title_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
 
@@ -93,7 +150,7 @@ jQuery(document).ready(function(){
 			//	Set class - `cp-modal-exceed`
 			CPModelHeight();
 
-			//	Set equalize coloumns
+			//	Set equalize columns
 			cp_column_equilize();
 
 			//set color for li tags
@@ -106,13 +163,19 @@ jQuery(document).ready(function(){
 			cp_set_no_responsive( sel_sec_title_editor, data );
 
 		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.sec_title_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
 	}
 
 
 	if( jQuery("#desc_editor").length ) {
 
 		var sel_desc_editor = jQuery("#desc_editor");
-
 
 		// Turn off automatic editor creation first.
 		CKEDITOR.disableAutoInline = true;
@@ -130,11 +193,13 @@ jQuery(document).ready(function(){
 			//	Set class - `cp-modal-exceed`
 			CPModelHeight();
 
-			//	Set equalize coloumns
+			//	Set equalize columns
 			cp_column_equilize();
 
 			//set color for li tags
         	cp_color_for_list_tag();
+
+        	jQuery(document).trigger('ckeditorChange');
 
 			var data = CKEDITOR.instances.desc_editor.getData();
 			parent.updateHTML(data,'smile_modal_short_desc1');
@@ -142,6 +207,13 @@ jQuery(document).ready(function(){
 			//	2. Add class 'cp-no-responsive' to manage the line height of cp-highlight
 			cp_set_no_responsive( sel_desc_editor, data );
 
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.desc_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
 
@@ -165,11 +237,13 @@ jQuery(document).ready(function(){
 			//	Set class - `cp-modal-exceed`
 			CPModelHeight();
 
-			//	Set equalize coloumns
+			//	Set equalize columns
 			cp_column_equilize();
 
 			//set color for li tags
         	cp_color_for_list_tag();
+
+        	jQuery(document).trigger('ckeditorChange');
 
 			var data = CKEDITOR.instances.info_editor.getData();
 			parent.updateHTML(data,'smile_modal_confidential');
@@ -177,6 +251,13 @@ jQuery(document).ready(function(){
 			//	2. Add class 'cp-no-responsive' to manage the line height of cp-highlight
 			cp_set_no_responsive( sel_info_editor, data );
 
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.info_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
 
@@ -200,7 +281,7 @@ jQuery(document).ready(function(){
 			//	Set class - `cp-modal-exceed`
 			CPModelHeight();
 
-			//	Set equalize coloumns
+			//	Set equalize columns
 			cp_column_equilize();
 
 			//set color for li tags
@@ -213,42 +294,138 @@ jQuery(document).ready(function(){
 			cp_set_no_responsive( sel_short_desc_editor, data );
 
 		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.short_desc_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
 	}
 
-	if( jQuery("#cp_button_editor").length ) {
+	if( jQuery("#short_title_editor").length ) {
 
-		var sel_cp_button_editor = jQuery("#cp_button_editor");
+		var sel_short_title_editor = jQuery("#short_title_editor");
 
-		// Turn off automatic editor creation first.
+		// // Turn off automatic editor creation first.
 		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.inline( 'cp_button_editor' );
-		CKEDITOR.instances.cp_button_editor.config.toolbar = 'Small';
+		CKEDITOR.inline( 'short_title_editor' );
+		CKEDITOR.instances.short_title_editor.config.toolbar = 'Small';
 
-		//	1. Add class 'cp-no-responsive' to manage the line height of cp-highlight
-		CKEDITOR.instances.cp_button_editor.on('instanceReady',function(){
-		   	var data = CKEDITOR.instances.cp_button_editor.getData();
-			cp_set_no_responsive( sel_cp_button_editor, data );
+		// Add class 'cp-no-responsive' to manage the line height of cp-highlight
+		CKEDITOR.instances.short_title_editor.on('instanceReady',function(){
+		   	var data = CKEDITOR.instances.short_title_editor.getData();
+			cp_set_no_responsive( sel_short_title_editor, data );
 		});
 
-		CKEDITOR.instances.cp_button_editor.on( 'change', function() {
+		CKEDITOR.instances.short_title_editor.on( 'change', function() {
 
-			//	Set class - `cp-modal-exceed`
+			// Set class - `cp-modal-exceed`
 			CPModelHeight();
 
-			//	Set equalize coloumns
+			//	Set equalize columns
 			cp_column_equilize();
 
 			//set color for li tags
         	cp_color_for_list_tag();
 
-			var data = CKEDITOR.instances.cp_button_editor.getData();
-			parent.updateHTML(data,'smile_button_title');
-			var test = jQuery("#cp_button_editor").html();
-			jQuery(document).trigger('button_transform' , [test]);
+			var data = CKEDITOR.instances.short_title_editor.getData();
+			parent.updateHTML(data,'smile_modal_short_title');
 
-			//	2. Add class 'cp-no-responsive' to manage the line height of cp-highlight
-			cp_set_no_responsive( sel_cp_button_editor, data );
+			//	Add class 'cp-no-responsive' to manage the line height of cp-highlight
+			cp_set_no_responsive( sel_short_title_editor, data );
 
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.short_title_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
+	}	
+
+	if( jQuery("#modal_note_1").length ) {
+
+		var sel_modal_note_1 = jQuery("#modal_note_1");
+
+		// // Turn off automatic editor creation first.
+		CKEDITOR.disableAutoInline = true;
+		CKEDITOR.inline( 'modal_note_1' );
+		CKEDITOR.instances.modal_note_1.config.toolbar = 'Small';
+
+		// Add class 'cp-no-responsive' to manage the line height of cp-highlight
+		CKEDITOR.instances.modal_note_1.on('instanceReady',function(){
+		   	var data = CKEDITOR.instances.modal_note_1.getData();
+			cp_set_no_responsive( sel_modal_note_1, data );
+		});
+
+		CKEDITOR.instances.modal_note_1.on( 'change', function() {
+
+			// Set class - `cp-modal-exceed`
+			CPModelHeight();
+
+			//	Set equalize columns
+			cp_column_equilize();
+
+			//set color for li tags
+        	cp_color_for_list_tag();
+
+			var data = CKEDITOR.instances.modal_note_1.getData();
+			parent.updateHTML(data,'smile_modal_note_1');
+
+			//	Add class 'cp-no-responsive' to manage the line height of cp-highlight
+			cp_set_no_responsive( sel_modal_note_1, data );
+
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.modal_note_1.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
+	}	
+
+	if( jQuery("#modal_note_2").length ) {
+
+		var sel_modal_note_2 = jQuery("#modal_note_2");
+
+		// // Turn off automatic editor creation first.
+		CKEDITOR.disableAutoInline = true;
+		CKEDITOR.inline( 'modal_note_2' );
+		CKEDITOR.instances.modal_note_2.config.toolbar = 'Small';
+
+		// Add class 'cp-no-responsive' to manage the line height of cp-highlight
+		CKEDITOR.instances.modal_note_2.on('instanceReady',function(){
+		   	var data = CKEDITOR.instances.modal_note_2.getData();
+			cp_set_no_responsive( sel_modal_note_2, data );
+		});
+
+		CKEDITOR.instances.modal_note_2.on( 'change', function() {
+
+			// Set class - `cp-modal-exceed`
+			CPModelHeight();
+
+			//	Set equalize columns
+			cp_column_equilize();
+
+			//set color for li tags
+        	cp_color_for_list_tag();
+
+			var data = CKEDITOR.instances.modal_note_2.getData();
+			parent.updateHTML(data,'smile_modal_note_2');
+
+			//	Add class 'cp-no-responsive' to manage the line height of cp-highlight
+			cp_set_no_responsive( sel_modal_note_2, data );
+
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.modal_note_2.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
 
@@ -272,11 +449,13 @@ jQuery(document).ready(function(){
 			//	Set class - `cp-modal-exceed`
 			CPModelHeight();
 
-			//	Set equalize coloumns
+			//	Set equalize columns
 			cp_column_equilize();
 
 			//set color for li tags
         	cp_color_for_list_tag();
+
+        	jQuery(document).trigger('ckeditorChange');
 
 			var data = CKEDITOR.instances.afl_editor.getData();
 			parent.updateHTML(data,'smile_affiliate_title');
@@ -284,6 +463,13 @@ jQuery(document).ready(function(){
 			//	2. Add class 'cp-no-responsive' to manage the line height of cp-highlight
 			cp_set_no_responsive( sel_afl_editor, data );
 
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.afl_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
 
@@ -304,11 +490,10 @@ jQuery(document).ready(function(){
 		//CKEDITOR.instances.description_bottom.config.toolbar = 'Small';
 		CKEDITOR.instances.description_bottom.on( 'change', function() {
 
-
 			//	Set class - `cp-modal-exceed`
 			CPModelHeight();
 
-			//	Set equalize coloumns
+			//	Set equalize columns
 			cp_column_equilize();
 
 			//set color for li tags
@@ -321,15 +506,60 @@ jQuery(document).ready(function(){
 			cp_set_no_responsive( sel_description_bottom, data );
 
 		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.description_bottom.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
 	}
 
-	parent.setFocusElement("style_title");
+	if( jQuery("#count_down_editor").length ) {
+
+		var sel_count_down_editor = jQuery("#count_down_editor");
+
+		// Turn off automatic editor creation first.
+		CKEDITOR.disableAutoInline = true;
+		CKEDITOR.inline( 'count_down_editor' );
+
+		//	1. Add class 'cp-no-responsive' to manage the line height of cp-highlight
+		CKEDITOR.instances.count_down_editor.on('instanceReady',function(){
+		   	var data = CKEDITOR.instances.count_down_editor.getData();
+			cp_set_no_responsive( sel_count_down_editor, data );
+		});
+
+		//CKEDITOR.instances.description_bottom.config.toolbar = 'Small';
+		CKEDITOR.instances.count_down_editor.on( 'change', function() {
+
+			//	Set class - `cp-modal-exceed`
+			CPModelHeight();
+
+			//	Set equalize coloumns
+			cp_column_equilize();
+
+			//set color for li tags
+        	cp_color_for_list_tag();
+
+			var data = CKEDITOR.instances.count_down_editor.getData();
+			parent.updateHTML(data,'smile_count_down_title');
+
+			//	2. Add class 'cp-no-responsive' to manage the line height of cp-highlight
+			cp_set_no_responsive( sel_count_down_editor, data );
+
+		} );
+	}
+
+
+	//parent.setFocusElement("style_title");
+	jQuery("body").on("click", ".counter-desc-overlay", function(e){ parent.setFocusElement('form_bg_color'); e.stopPropagation(); });
+	jQuery("body").on("click", ".cp-count-down-container", function(e){ parent.setFocusElement('counter_container_bg_color'); e.stopPropagation(); });
+	jQuery("body").on("click", ".cp-form-seperator", function(e){ parent.setFocusElement('form_bg_color'); e.stopPropagation(); });
+	jQuery("body").on("click", "#cp_defaultCountdown", function(e){ parent.setFocusElement('date_time_picker'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-image", function(e){ parent.setFocusElement('modal_image'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-submit", function(e){ parent.setFocusElement('btn_style'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-modal-body", function(e){ parent.setFocusElement('modal_bg_color'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-overlay", function(e) { parent.setFocusElement('modal_overlay_bg_color'); e.stopPropagation(); });
-	jQuery("body").on("click", ".cp-email", function(e){ parent.setFocusElement('placeholder_text'); e.stopPropagation(); });
-	jQuery("body").on("click", ".cp-name", function(e){ parent.setFocusElement('name_text'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-overlay-close", function(e){ parent.setFocusElement('close_modal'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-affilate-link", function(e){ parent.setFocusElement('affiliate_username'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-affilate", function(e){ parent.setFocusElement('affiliate_username'); e.stopPropagation(); });
@@ -339,10 +569,6 @@ jQuery(document).ready(function(){
 		jQuery(".cp-modal-body").find(".blinking-cursor").remove();
 	});
 
-	// Preventing links and form navigation in an iframe
-	jQuery('a').click(function(e){
-		e.preventDefault();
-	});
 	jQuery('button').click(function(e){
 		e.preventDefault();
 	});
@@ -356,14 +582,12 @@ jQuery(window).load(function(){
 	parent.customizerLoaded();
 });
 
-
 // removes &nbsp; and <br> tags from html string
 function cp_get_clean_string(string) {
 	var cleanString = string.replace(/[<]br[^>]*[>]/gi, '').replace(/[&]nbsp[;]/gi, '').replace(/[\u200B]/g, '');
 	cleanString = jQuery.trim(cleanString);
 	return cleanString;
 }
-
 
 // Add cp-empty class
 function cp_add_empty_class(element,container) {
@@ -378,7 +602,6 @@ function cp_add_empty_class(element,container) {
 		jQuery(container).removeClass('cp-empty');
 	}
 }
-
 
 // removes cp-empty class from container
 function cp_remove_empty_class(element) {
@@ -412,7 +635,7 @@ function cp_affilate_settings(data){
 
 	affiliate_title = htmlEntities(affiliate_title);
 	cp_affilate_link.find("a").html(affiliate_title);
-	if( affiliate_title !== "" && typeof affiliate_title !== "undefined" ){
+	if( affiliate_title !== "" && typeof affiliate_title !== "undefined" && jQuery("#afl_editor").length ) {
 		CKEDITOR.instances.afl_editor.setData(affiliate_title);
 	}
 }
@@ -430,7 +653,7 @@ function cp_image_settings(data) {
 	}
 }
 
-// tooltip related settings
+// tool tip related settings
 function cp_tooltip_settings(data) {
 
 	var close_tooltip     		= '',
@@ -678,7 +901,6 @@ function cp_apply_animations(data) {
 		hide_animation_width 	= data.hide_animation_width,
 		overlay_effect			= data.overlay_effect,
 		exit_animation			= data.exit_animation,
-		after_exit				= overlay_effect,
 		cp_animate	   			= jQuery(".cp-animate-container");
 
 	if( disable_overlay_effect == 1 ){
@@ -816,9 +1038,6 @@ function cp_form_style(data) {
 		button_border_color 	   	= data.button_border_color,
 		name_text 				 	= data.name_text,
 		cp_submit 					= jQuery(".cp-submit"),
-		cp_name						= jQuery(".cp-name"),
-		cp_input					= jQuery(".cp-input"),
-		cp_email 					= jQuery(".cp-email"),
 		input_border_color 			= data.input_border_color,
 		placeholder_color		 	= data.placeholder_color,
 		btn_bg_color			  	= data.button_bg_color,
@@ -849,98 +1068,6 @@ function cp_form_style(data) {
 		html_form_container.css('display','none');
 	}
 
-	// email field style
-	cp_email.attr('placeholder',cp_email_data);
-	cp_email.attr("value", placeholder_text);
-	cp_email.attr("placeholder", placeholder_text);
-
-	//	Remove all classes
-	var classList = ['cp-btn-flat', 'cp-btn-3d', 'cp-btn-outline', 'cp-btn-gradient'];
-	jQuery.each(classList, function(i, v){
-       cp_submit.removeClass(v);
-    });
-	cp_submit.addClass( btn_style );
-
-	var c_normal 	= btn_bg_color;
-	var c_hover  	= darkerColor( btn_bg_color, .05 );
-	var light 		= lighterColor( btn_bg_color, .3 );
-
-	cp_submit.css('background', c_normal);
-	//	Apply box shadow to submit button - If its set & equals to - 1
-	var shadow = radius = '';
-	if( btn_shadow == 1 ) {
-		shadow += 'box-shadow: 1px 1px 2px 0px rgba(66, 66, 66, 0.6);';
-	}
-	//	Add - border-radius
-	if( btn_border_radius != '' ) {
-		radius += 'border-radius: ' + btn_border_radius + 'px;';
-	}
-
-	jQuery('head').append('<div id="cp-temporary-inline-css"></div>');
-	switch( btn_style ) {
-		case 'cp-btn-flat': 		jQuery('#cp-temporary-inline-css').html('<style>'
-										+ '.cp-modal .' + btn_style + '.cp-submit{ background: '+c_normal+'!important;' + shadow + radius + '; } '
-										+ '.cp-modal .' + btn_style + '.cp-submit:hover { background: '+c_hover+'!important; } '
-										+ '</style>');
-			break;
-		case 'cp-btn-3d': 			jQuery('#cp-temporary-inline-css').html('<style>'
-										+ '.cp-modal .' + btn_style + '.cp-submit {background: '+c_normal+'!important; '+radius+' position: relative ; box-shadow: 0 6px ' + c_hover + ';} '
-										+ '.cp-modal .' + btn_style + '.cp-submit:hover {background: '+c_normal+'!important;top: 2px; box-shadow: 0 4px ' + c_hover + ';} '
-										+ '.cp-modal .' + btn_style + '.cp-submit:active {background: '+c_normal+'!important;top: 6px; box-shadow: 0 0px ' + c_hover + ';} '
-										+ '</style>');
-			break;
-		case 'cp-btn-outline': 		jQuery('#cp-temporary-inline-css').html('<style>'
-										+ '.cp-modal .' + btn_style + '.cp-submit { background: transparent!important;border: 2px solid ' + c_normal + ';color: inherit ;' + shadow + radius + '}'
-										+ '.cp-modal .' + btn_style + '.cp-submit:hover { background: ' + c_hover + '!important;border: 2px solid ' + c_hover + ';color: ' + button_txt_hover_color + ' ;' + '}'
-										+ '.cp-modal .' + btn_style + '.cp-submit:hover span { color: inherit !important ; } '
-										+ '</style>');
-			break;
-		case 'cp-btn-gradient': 	//	Apply box shadow to submit button - If its set & equals to - 1
-									jQuery('#cp-temporary-inline-css').html('<style>'
-										+ '.cp-modal .' + btn_style + '.cp-submit {'
-										+ '     border: none ;'
-										+ 		shadow + radius
-										+ '     background: -webkit-linear-gradient(' + light + ', ' + c_normal + ') !important;'
-										+ '     background: -o-linear-gradient(' + light + ', ' + c_normal + ') !important;'
-										+ '     background: -moz-linear-gradient(' + light + ', ' + c_normal + ') !important;'
-										+ '     background: linear-gradient(' + light + ', ' + c_normal + ') !important;'
-										+ '}'
-										+ '.cp-modal .' + btn_style + '.cp-submit:hover {'
-										+ '     background: ' + c_normal + ' !important;'
-										+ '}'
-										+ '</style>');
-			break;
-	}
-
-	//	Set either 10% darken color for 'HOVER'
-	//	Or 0.10% darken color for 'GRADIENT'
-	jQuery('#smile_button_bg_hover_color', window.parent.document).val( c_hover );
-	jQuery('#smile_button_bg_gradient_color', window.parent.document).val( light );
-
-	// name field style
-	cp_name.attr("value", name_text);
-	cp_name.attr("placeholder", name_text);
-	jQuery(".cp-name-form").removeClass('cp_big_name');
-
-	if ( placeholder_font == '' ) {
-		placeholder_font = 'inherit';
-	}
-
-	cp_input.css({
-		"background-color":input_bg_color,
-		"border-color":input_border_color,
-		"color":placeholder_color,
-		"font-family": placeholder_font
-	});
-
-	//to align text of form at center
-	if( ( btn_disp_next_line == 1 ) || ( namefield == 1 ) ){
-	 cp_form_container.addClass('cp-center-align-text');
-	} else {
-		cp_form_container.removeClass('cp-center-align-text');
-	}
-
-	apply_boxshaddow(input_border_color);
 }
 
 // setup editors
@@ -956,12 +1083,15 @@ function cp_editor_setup(data) {
 	tip_color				 		= data.tip_color,
 	modal_desc_color		  		= data.modal_desc_color,
 	cp_confidential 				= jQuery(".cp-info-container"),
-	cp_submit 						= jQuery(".cp-submit"),
 	modal_content					= data.modal_content,
 	cp_desc_bottom 					= jQuery(".cp-desc-bottom"),
+	cp_mid_desc 					= jQuery('#mid_desc_editor'),
 	style_id 						= data.style_id,
 	varient_style_id 				= data.variant_style_id,
-	cp_modal_popup_container 		= jQuery(".cp-modal-popup-container");
+	cp_modal_popup_container 		= jQuery(".cp-modal-popup-container"),
+	count_down_title 				= data.count_down_title,
+	cp_count_down_desc 				= jQuery(".cp-count-down-desc"),
+	modal_middle_desc 				= data.modal_middle_desc;
 
 	if( varient_style_id !=='' && typeof varient_style_id !== 'undefined' ){
 		style_id = varient_style_id;
@@ -1002,19 +1132,10 @@ function cp_editor_setup(data) {
 	modal_confidential = htmlEntities(modal_confidential);
 	cp_confidential.html(modal_confidential);
 	if( modal_confidential !== "" && typeof modal_confidential !== "undefined" && jQuery("#info_editor").length ){
-
 		CKEDITOR.instances.info_editor.setData(modal_confidential);
 	}
 
-	//submit button editor
-	button_title = htmlEntities(button_title);
-	cp_submit.html(button_title);
-	if( button_title !== "" && typeof button_title !== "undefined" && jQuery("#cp_button_editor").length ){
-
-		CKEDITOR.instances.cp_button_editor.setData(button_title);
-	}
 	jQuery(".cp-info-container").css('color',tip_color);
-
 
 	//description bottom
 	modal_content = htmlEntities(modal_content);
@@ -1023,6 +1144,19 @@ function cp_editor_setup(data) {
 		CKEDITOR.instances.description_bottom.setData(modal_content);
 	}
 
+	//count down editor
+	count_down_title = htmlEntities(count_down_title);
+	cp_count_down_desc.html(count_down_title);
+	if( jQuery("#count_down_editor").length ) {
+		CKEDITOR.instances.count_down_editor.setData(count_down_title);
+	}
+
+	// 	Extra middle editor 
+	modal_middle_desc = htmlEntities(modal_middle_desc);
+	cp_mid_desc.html(modal_middle_desc);
+	if(jQuery("#mid_desc_editor").length ) {
+		CKEDITOR.instances.mid_desc_editor.setData(modal_middle_desc);
+	}
 
 }
 
@@ -1096,13 +1230,13 @@ function cp_bg_image(data) {
 	}
 }
 
-//decode html char
+//decode HTML char
 function escapeHtml(text) {
     var decoded = jQuery('<div/>').html(text).text();
     return decoded;
 }
 
-//trigger after ajax sucess
+//trigger after Ajax success
 jQuery(document).on("cp_ajax_loaded", function(e,data){
 	// do your stuff here.
 	cp_tooltip_reinitialize(data);
@@ -1139,7 +1273,7 @@ function cp_modal_width_settings(data) {
 
 /**
  * Adds blinking cursor
- * @param container  ( html container class for cursor)
+ * @param container  ( HTML container class for cursor)
  * @param bgcolor ( background color for cursor )
  */
 function cp_blinking_cursor(container,bgcolor) {
@@ -1161,3 +1295,8 @@ function cp_blinking_cursor(container,bgcolor) {
 		}
 	}, 500);
 }
+
+
+jQuery(document).on('smile_data_received',function(e,data){
+    CPModelHeight()
+});

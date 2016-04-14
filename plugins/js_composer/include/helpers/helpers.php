@@ -1124,6 +1124,9 @@ function vc_icon_element_fonts_enqueue( $font ) {
 		case 'linecons':
 			wp_enqueue_style( 'vc_linecons' );
 			break;
+		case 'monosocial':
+			wp_enqueue_style( 'vc_monosocialiconsfont' );
+			break;
 		default:
 			do_action( 'vc_enqueue_font_icon_element', $font ); // hook to custom do enqueue style
 	}

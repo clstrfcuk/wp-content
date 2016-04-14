@@ -1,10 +1,3 @@
-// jQuery.fn.center = function () {
-// 	var $this = this.find('.cp-modal-content');
-// 	this.css("top", ( ( window.outerHeight - $this.height() ) / 2 ) + jQuery(window).scrollTop() + "px");
-// 	return this;
-// }
-
-
 jQuery(document).ready(function(){
 
 	//	Add CSS file of this style
@@ -33,7 +26,6 @@ jQuery(document).ready(function(){
 		// style dependent variables  	
 		var modal_size					= data.modal_size,
 			cp_modal_width				= data.cp_modal_width,
-			cp_modal_height				= 'auto',
 			modal_title 				= data.modal_title1,
 			bg_color					= data.modal_bg_color,
 			overlay_bg_color			= data.modal_overlay_bg_color,
@@ -76,7 +68,7 @@ jQuery(document).ready(function(){
 		// apply animations to modal
 		cp_apply_animations(data);
 
-		// affilate settings 
+		// affiliate settings 
 		cp_affilate_settings(data);
 		cp_affilate_reinitialize(data);
 
@@ -109,9 +101,6 @@ jQuery(document).ready(function(){
 		
 		// set modal width
 		cp_modal_width_settings(data);			
-		
-		//cp_title.attr('style', 'border-top-color: '+title_bg_color+'!important');
-		//cp_title.css({'background-color': title_bg_color });
 
 		//for short description
 		modal_content = htmlEntities(modal_content);
@@ -142,9 +131,6 @@ jQuery(document).ready(function(){
 		// modal background image
 		cp_bg_image(data);
 
-		//$('#leftmenu:empty').parent().remove();
-		//cp_submit.find('a:empty').remove();
-
 		//input form field	
 		if( namefield == 1 ){
 			form_without_name.css({"display":"none"});
@@ -159,15 +145,7 @@ jQuery(document).ready(function(){
 		jQuery(window).resize(function(e) {						
 			cp_affilate_reinitialize(data);
 			cp_tooltip_reinitialize(data);	
-			//cp_image_hide(data);
-		});
-
-		jQuery(document).ready(function(e) {
-			//cp_image_hide(data);
 		});		
-
-		
-		//cp_modal.center();
 
 		// add cp-empty class to empty containers
 		jQuery.each( cp_empty_classes, function( key, value) {

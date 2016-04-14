@@ -689,6 +689,7 @@ tco.addModule( 'x-demo-content', function( $this, targets, data ) {
       this.demoData = demoData;
       this.demoData.action = ( expanded ) ? 'x_demo_importer' : 'x_demo_content_setup';
       this.demoData.attempts = 1;
+      this.demoData._tco_nonce = tcoCommon._tco_nonce;
 
       if (!expanded)
         return this.runStandard();

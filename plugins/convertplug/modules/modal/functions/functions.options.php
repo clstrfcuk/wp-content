@@ -40,8 +40,6 @@ function cp_enqueue_ultimate_google_fonts() {
 			endif;
 		}
 		
-		var_dump($font_call);
-
 		$link = 'https://fonts.googleapis.com/css?family='.$font_call;
 		wp_register_style('cp_ultimate-selected-google-fonts-style',$link);
 	}

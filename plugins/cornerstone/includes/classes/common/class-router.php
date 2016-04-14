@@ -13,6 +13,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 	protected $errors = array();
 	protected $fatal_error = false;
 	protected $routes = array();
+	protected $nonce_verification = true;
 
 	/**
 	 * Instantiate and register AJAX handlers
@@ -79,8 +80,13 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 		}
 
 		do_action( 'cornerstone_before_ajax' );
+		$json = $this->get_json();
 
-		return call_user_func( $handler, $this->get_json() );
+		if ( ! $this->nonce_verification ) {
+			cs_send_json_error( array( 'message' => 'nonce verification failed.' ) );
+		}
+
+		return call_user_func( $handler, $json );
 
 	}
 
@@ -109,6 +115,10 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 		@header( 'X-Robots-Tag: noindex' );
 		send_nosniff_header();
 		nocache_headers();
+
+		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+			define( 'DONOTCACHEPAGE', true );
+		}
 
 		$action = ( is_user_logged_in() ) ? 'cornerstone_endpoint_' : 'cornerstone_endpoint_nopriv_';
 		do_action( $action . $_REQUEST['action'] );
@@ -322,17 +332,45 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 		$data = array();
 
 		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+
+			if ( isset( $_POST['_cs_nonce'] ) ) {
+				$this->nonce_verification = wp_verify_nonce( $_POST['_cs_nonce'], 'cornerstone_nonce' );
+			}
+
 			if ( isset( $_POST['data'] ) ) { // WPCS: CSRF ok.
+
 				if ( is_array( $_POST['data'] ) ) {
 					return $_POST['data'];
 				}
+
 				$data = json_decode( base64_decode( $_POST['data'] ), true ); // WPCS: CSRF ok.
+
 			} else {
+
 				$data = json_decode( file_get_contents( 'php://input' ), true );
+
+				if ( is_null( $data ) ) {
+
+					$data = array();
+					add_filter( '_cornerstone_send_json_response', array( $this, 'failed_php_input' ) );
+
+				}
+
 			}
+
+			if ( isset( $data['_cs_nonce'] ) ) {
+				$this->nonce_verification = wp_verify_nonce( $data['_cs_nonce'], 'cornerstone_nonce' );
+			}
+
 		}
 
 		return $data;
+
+	}
+
+	public function failed_php_input( $response ) {
+		$response['failed_php_input'] = true;
+		return $response;
 	}
 
 	/**

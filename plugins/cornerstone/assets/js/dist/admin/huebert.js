@@ -496,7 +496,7 @@ window.Huebert.localize( csHuebert );
 
 } ) );
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,window || {})
 
 },{"./jquery-shim.js":3,"./underscore-shim.js":4,"tinycolor2":5}],3:[function(require,module,exports){
 window.CornerstoneShims = window.CornerstoneShims || {};

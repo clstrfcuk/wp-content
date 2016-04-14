@@ -149,7 +149,7 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 * @access public
 	 */
 	public function printScriptsMessages() {
-		if ( ! vc_is_frontend_editor() && $this->isValidPostType() ) {
+		if ( ! vc_is_frontend_editor() && $this->isValidPostType( get_post_type() ) ) {
 			if ( vc_user_access()
 				->wpAny( 'manage_options' )
 				->part( 'settings' )
@@ -235,7 +235,7 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 */
 	public function showRulesValue() {
 		global $current_user;
-		get_currentuserinfo();
+		wp_get_current_user();
 		/** @var $settings - get use group access rules */
 		$settings = vc_settings()->get( 'groups_access_rules' );
 		$role = is_object( $current_user ) && isset( $current_user->roles[0] ) ? $current_user->roles[0] : '';

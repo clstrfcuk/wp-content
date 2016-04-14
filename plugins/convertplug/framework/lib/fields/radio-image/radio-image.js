@@ -6,6 +6,8 @@ jQuery(document).ready(function(){
 			jQuery(this).removeClass('selected');
 		});
 		$this.addClass('selected');
+		$this.find('input:radio').prop('checked', true);
 		$this.find('input.smile-radio-image').trigger('change');
+		jQuery(document).trigger('change_radio_image',[$this,true]);
 	});
 });

@@ -12,6 +12,7 @@ return array(
 			'heading' => __( 'Widget title', 'js_composer' ),
 			'param_name' => 'title',
 			'description' => __( 'Enter text used as widget title (Note: located above content element).', 'js_composer' ),
+			'admin_label' => true,
 		),
 		array(
 			'type' => 'widgetised_sidebars',

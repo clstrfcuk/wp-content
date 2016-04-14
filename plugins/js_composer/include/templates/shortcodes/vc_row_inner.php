@@ -40,16 +40,16 @@ if (!empty($atts['gap'])) {
 
 if ( ! empty( $equal_height ) ) {
 	$flex_row = true;
-	$css_classes[] = ' vc_row-o-equal-height';
+	$css_classes[] = 'vc_row-o-equal-height';
 }
 
 if ( ! empty( $content_placement ) ) {
 	$flex_row = true;
-	$css_classes[] = ' vc_row-o-content-' . $content_placement;
+	$css_classes[] = 'vc_row-o-content-' . $content_placement;
 }
 
 if ( ! empty( $flex_row ) ) {
-	$css_classes[] = ' vc_row-flex';
+	$css_classes[] = 'vc_row-flex';
 }
 
 $wrapper_attributes = array();
@@ -58,7 +58,7 @@ if ( ! empty( $el_id ) ) {
 	$wrapper_attributes[] = 'id="' . esc_attr( $el_id ) . '"';
 }
 
-$css_class = preg_replace( '/\s+/', ' ', apply_filters( VC_SHORTCODE_CUSTOM_CSS_FILTER_TAG, implode( ' ', array_filter( $css_classes ) ), $this->settings['base'], $atts ) );
+$css_class = preg_replace( '/\s+/', ' ', apply_filters( VC_SHORTCODE_CUSTOM_CSS_FILTER_TAG, implode( ' ', array_filter( array_unique( $css_classes ) ) ), $this->settings['base'], $atts ) );
 $wrapper_attributes[] = 'class="' . esc_attr( trim( $css_class ) ) . '"';
 
 $output .= '<div ' . implode( ' ', $wrapper_attributes ) . '>';

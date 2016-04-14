@@ -63,13 +63,11 @@ var shuffleme = function(e) {
             t.shuffle("shuffle", function(t, i) {
                 if ("all" !== i.group && -1 === e.inArray(i.group, t.data("groups"))) return !1;
                 var r = e.trim(t.find(".cp-style-name").text()).toLowerCase();
-                console.log(t);
                 if ("-1" == r.indexOf(u)) var r = e.trim(t.data("tags")).toLowerCase();
                 return -1 !== r.indexOf(u);
             }), r.shuffle("shuffle", function(t, i) {
                 if ("all" !== i.group && -1 === e.inArray(i.group, t.data("groups"))) return !1;
                 var r = e.trim(t.find(".cp-style-name").text()).toLowerCase();
-                console.log(t);
                 if ("-1" == r.indexOf(u)) var r = e.trim(t.data("tags")).toLowerCase();
                 return -1 !== r.indexOf(u);
             });

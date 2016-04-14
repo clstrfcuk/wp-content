@@ -143,6 +143,28 @@ return array(
 			),
 		),
 		array(
+			'type' => 'textfield',
+			'heading' => __( 'Parallax speed', 'js_composer' ),
+			'param_name' => 'parallax_speed_video',
+			'value' => '1.5',
+			'description' => __( 'Enter parallax speed ratio (Note: Default value is 1.5, min value is 1)', 'js_composer' ),
+			'dependency' => array(
+				'element' => 'video_bg_parallax',
+				'not_empty' => true,
+			),
+		),
+		array(
+			'type' => 'textfield',
+			'heading' => __( 'Parallax speed', 'js_composer' ),
+			'param_name' => 'parallax_speed_bg',
+			'value' => '1.5',
+			'description' => __( 'Enter parallax speed ratio (Note: Default value is 1.5, min value is 1)', 'js_composer' ),
+			'dependency' => array(
+				'element' => 'parallax',
+				'not_empty' => true,
+			),
+		),
+		array(
 			'type' => 'el_id',
 			'heading' => __( 'Row ID', 'js_composer' ),
 			'param_name' => 'el_id',

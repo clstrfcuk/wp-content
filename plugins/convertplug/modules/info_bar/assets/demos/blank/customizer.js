@@ -1,8 +1,6 @@
 
 jQuery(document).ready(function(){
 	
-	//jQuery("html").css('overflow','hidden');
-
 	//	1. Add CSS file of this ind//ividual style
 	var css_file = '/blank/blank.min.css';
 	jQuery('head').append('<link rel="stylesheet" href="' + info_bar.demo_dir + css_file + '" type="text/css" />');
@@ -18,7 +16,7 @@ jQuery(document).ready(function(){
 		//animation setup
 		cp_info_bar_animation_setup(data);
 
-		//for infobar position
+		//for info bar position
 		cp_info_bar_position_setup(data);
 
 		//form setup

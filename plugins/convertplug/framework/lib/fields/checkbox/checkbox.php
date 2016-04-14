@@ -15,6 +15,7 @@ if ( function_exists('smile_add_input_type'))
 function checkbox_settings_field($name, $settings, $value)
 {
 	$input_name = $name;
+	//print_r($settings);
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
 	$options = isset($settings['options']) ? $settings['options'] : '';

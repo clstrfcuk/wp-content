@@ -91,6 +91,9 @@ jQuery(document).ready(function(){
 		} );
 	}
 
+	//	Highlight Background options
+	jQuery("body").on("click", ".cp-form-container", function(e){ parent.setFocusElement('modal_bg_color'); e.stopPropagation(); });
+
 	// do the stuff to customize the element upon the action "smile_data_received"
 	jQuery(this).on('smile_data_received',function(e,data){
 		// data - this is an object that stores all your input information in a format - input:value
@@ -126,11 +129,11 @@ jQuery(document).ready(function(){
 			cp_email_without_name   = jQuery(".cp-email-form"),
 			cp_submit 				= jQuery(".cp-submit"),
 			cp_img_container		= jQuery(".cp-image-container"),
-			cp_form_container   	= jQuery(".cp-form-container");
+			cp_form_container   	= jQuery(".cp-form-container"),
+			cp_md_overlay       	= jQuery(".cp-modal-body-overlay");
 
 		var modal_size					= data.modal_size,
 			cp_modal_width				= data.cp_modal_width,
-			cp_modal_height		   		= data.cp_modal_height,
 			overlay_bg_color		  	= data.modal_overlay_bg_color,
 			border_str					= data.border,
 			box_shadow_str 				= data.box_shadow,
@@ -145,12 +148,18 @@ jQuery(document).ready(function(){
 			cp_google_fonts				= data.cp_google_fonts,
 			player_actions				= data.player_actions,
 			player_autoplay 			= data.player_autoplay,
+			bg_color					= data.modal_bg_color,
+
+			cta_switch 					= data.cta_switch,
 
 			// Form
 			btn_disp_next_line  		= data.btn_disp_next_line,
 			namefield 					= data.namefield,
 			cta_type					= data.cta_type,
 			youtube_submit 				= data.youtube_submit;
+
+		//	Add background Color
+		cp_md_overlay.css( "background-color", bg_color );
 
 		/**
  		 *	Hide parent modal custom width option for this style only.
@@ -232,9 +241,7 @@ jQuery(document).ready(function(){
 		cp_md_overlay.css( "background-color", cta_bg_color );	
 
 		switch (modal_size) {
-			case 'cp-modal-custom-size':
-						// cp_modal.css({'max-width':cp_modal_width+'px','width':'100%','height':cp_modal_height+'px'});
-						// cp_content_container.css({'height':cp_modal_height+'px'});
+			case 'cp-modal-custom-size':						
 						cp_modal.removeClass('cp-modal-window-size');
 						cp_content_container.css({ 'float':'none', 'max-width':cp_modal_width+'px', 'width':'100%', 'height':valueHeight+'px', 'margin': '0 auto', 'padding': 0 });
 						cp_modal_content.css({'max-width':cp_modal_width+'px','width':'100%'});
@@ -248,8 +255,6 @@ jQuery(document).ready(function(){
 				break;
 			
 			default:
-						// cp_modal.css({'max-width':'auto','width':'auto'});
-						// cp_content_container.css({'max-width':'auto','width':'auto'});
 						cp_modal.removeClass('cp-modal-custom-size');
 						jQuery(".cp_cs_overlay").css({"display":"none"});
 						jQuery(".cp_fs_overlay").css({"display":"block"});
@@ -276,100 +281,10 @@ jQuery(document).ready(function(){
 			cp_modal.attr('class', 'cp-modal cp-modal-exceed '+modal_size);
 		}
 
-		//	Submit button type
-		switch( cta_type ) {
-			case 'none': 		jQuery('.cp-form-container').hide();
-								jQuery('.cp-form-container').addClass('cp-youtube-cta-none');
-								jQuery('.cp-form-container').removeClass('cp-youtube-cta-button cp-youtube-cta-form');
-								// jQuery('.cp-form-container, .cp-section[data-section-id="submission"], #submission').hide();
-				break;
-
-			case 'button': 		jQuery('.cp-form-container').show();
-								jQuery('.cp-form-container').addClass('cp-youtube-cta-button');
-								jQuery('.cp-form-container').removeClass('cp-youtube-cta-none cp-youtube-cta-form');
-								// initialize_ckeditor(data);
-
-				break; 			
-			case 'form': 		jQuery('.cp-form-container').show();
-								jQuery('.cp-form-container').addClass('cp-youtube-cta-form');
-								jQuery('.cp-form-container').removeClass('cp-youtube-cta-none cp-youtube-cta-button');
-								// initialize_ckeditor(data);
-				break;
-
-		}
-
-		//	Form Layout
-		if( namefield == 1 ) {
-
-			// form_container.addClass('cp-form-with-name').removeClass('cp-form-without-name');
-
-			form_without_name.hide();
-			form_with_name.show();
-
-			var add = 'col-md-4 col-lg-4 col-sm-4';
-			var rem = 'col-md-8 col-md-12 col-lg-8 col-sm-8 col-lg-12';
-
-			if( !cp_submit_wrap.hasClass('cp-youtube-cta-button') ) {
-				cp_submit_wrap.addClass( add ).removeClass( rem );
-			}
-			
-			//	Add no margin classes to the inputs
-			cp_name.find('input').addClass('no-margin');
-			cp_email_without_name.find('input').addClass('no-margin');
-			
-			cp_name.addClass( add ).removeClass( rem );
-			cp_email_without_name.addClass( add ).removeClass( rem );
-
-			cp_submit.removeClass("cp_simple_submit");
-			cp_email_with_name.removeClass('cp-text-center');
-			
+		if( cta_switch == '0' ) {
+			jQuery('.cp-form-container').hide();
 		} else {
-			// form_container.addClass('cp-form-without-name').removeClass('cp-form-with-name');
-
-			form_without_name.show();
-			form_with_name.hide();
-
-			cp_submit.removeClass("cp_name_submit");
-			cp_email_with_name.addClass('cp-text-center');
-			if( btn_disp_next_line == 1 ) {
-
-				var add = 'col-md-12 col-lg-12 col-sm-12';
-				var rem = 'col-md-4 col-lg-4 col-sm-4 col-md-8 col-lg-8 col-sm-8';
-
-				//	Remove no margin classes to the inputs
-				cp_name.find('input').removeClass('no-margin');
-				cp_email_without_name.find('input').removeClass('no-margin');
-
-				cp_email_without_name.addClass( add ).removeClass( rem );
-				cp_submit_wrap.addClass( add ).removeClass( rem );
-			} else {
-				var add = 'col-md-8 col-lg-8 col-sm-8';
-				var rem = 'col-md-4 col-lg-4 col-sm-4 col-md-12 col-lg-12 col-sm-12';
-				
-				//	Add no margin classes to the inputs
-				cp_name.find('input').addClass('no-margin');
-				cp_email_without_name.find('input').addClass('no-margin');
-
-				//	If CTA is only {button} then
-				if( cta_type == 'button' ) {
-					var add 	= 'col-md-12 col-lg-12 col-sm-12';
-					var remove 	= 'col-md-4 col-lg-4 col-sm-4 col-md-8 col-lg-8 col-sm-8';
-					cp_submit_wrap.addClass( add ).removeClass( rem );
-				} else {
-					var submit_add = 'col-md-4 col-lg-4 col-sm-4';	
-					var submit_rem = 'col-md-12 col-lg-12 col-sm-12';
-					cp_submit_wrap.addClass( submit_add ).removeClass( submit_rem );
-				}
-
-				cp_email_without_name.addClass( add ).removeClass(rem );
-			}
-		}
-		//	If CTA is only {button} then
-		if( cta_type == 'button' ) {
-
-			var add 	= 'col-md-12 col-lg-12 col-sm-12';
-			var remove 	= 'col-md-4 col-lg-4 col-sm-4';
-			cp_submit_wrap.addClass( add ).removeClass( remove );
+			jQuery('.cp-form-container').show();
 		}
 
 	});

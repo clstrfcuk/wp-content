@@ -12,4 +12,3 @@ switch($test){
 		require_once('variant/variant.php');
 		break;
 }
-?>

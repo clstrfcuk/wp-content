@@ -132,6 +132,8 @@ if( $data_style !== "" ) {
 		$export['media'] = $media;
 	}
 
+	$export['module'] = 'info_bar';
+
 	$export_data = json_encode( $export );
 
 	$content = $export_data;

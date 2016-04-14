@@ -49,9 +49,11 @@ function setFocusElement(element){
 		
 			jQuery("."+element).parents('.smile-element-container').addClass('cp-hl-active cp-set-focus');
 					
-			jQuery('.design-form').animate({
-				scrollTop: jQuery("#"+ID).parents(".smile-element-container").offset().top - 100
-			}, 1000);
+			if( typeof ID !== 'undefined' ) {
+				jQuery('.design-form').animate({
+					scrollTop: jQuery("#"+ID).parents(".smile-element-container").offset().top - 100
+				}, 1000);
+			}
 			setTimeout(function(){
 				jQuery("."+element).parents('.smile-element-container').removeClass('cp-hl-active');
 

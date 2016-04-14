@@ -6,6 +6,11 @@ require_once('functions/functions.options.php');
 
 $style = $_GET['style'];
 $options = Smile_Modals::$options;
+$styles = $options[ $style ];
+$css = isset( $styles['style_css'] ) ? $styles['style_css'] : '';
+if( $css !== ""){
+	echo '<link rel="stylesheet" id="'.$style.'" href="' . $css .'" type="text/css" media="all" />';
+}
 $style_options = $options[$style]['options'];
 $settings = array();
 $settings['style'] = 'preview';
@@ -36,15 +41,15 @@ jQuery(document).ready(function(e) {
 });
 
 jQuery(document).ready(function(){
-	jQuery(document).bind('keydown', function(e) { 
-			if (e.which == 27) {
-				var cp_overlay = jQuery(".cp-open");
-				var modal = cp_overlay;
-				modal.fadeOut('slow').remove();
-				jQuery("#TB_ajaxContent").remove();
-				jQuery("#TB_window").remove();
-				jQuery("#TB_overlay").remove();
-			}
+	jQuery(document).bind('keydown', function(e) {
+		if (e.which == 27) {
+			var cp_overlay = jQuery(".cp-open");
+			var modal = cp_overlay;
+			modal.fadeOut('slow').remove();
+			jQuery("#TB_ajaxContent").remove();
+			jQuery("#TB_window").remove();
+			jQuery("#TB_overlay").remove();
+		}
 	});
 });
 

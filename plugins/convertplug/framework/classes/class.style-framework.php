@@ -41,7 +41,6 @@ if(!function_exists('Smile_Style_Dashboard')){
 				$opts[] = $options['img_url'];
 				$opts[] = $options['customizer_js'];
 
-
 				if( !isset($options['category']) || $options['category'] == null )
 					$category = 'promotions';
 				else
@@ -206,15 +205,17 @@ if(!function_exists('Smile_Style_Dashboard')){
 				$page = $_GET['page'];
 
 				$callback_url = 'admin.php?page='.$page;
+  				$hide_new_style ='';
 
 				if( isset( $_GET['style-view'] ) && $_GET['style-view'] !== "variant" ){
 					$url =  'admin.php?page='.$page.'&style-view=edit&action=new&style='.$dynamic_style_name.'&theme='.$style;
-					$callback_url = 'admin.php?page='.$page;
+					$callback_url = 'admin.php?page='.$page;					
 				} else {
 					$sid = isset( $_GET['style_id'] ) ? $_GET['style_id'] : $_GET['variant-style'];
-					$pid = isset( $_GET['parent-style'] ) ? $_GET['parent-style'] : $_GET['style'] ;
+					$pid = isset( $_GET['parent-style'] ) ? $_GET['parent-style'] : $_GET['style_id'] ;
 					$callback_url = 'admin.php?page='.$page.'&style-view=variant&variant-style='.$sid.'&style='.stripslashes($pid).'&theme='.$theme;
 					$url = 'admin.php?page='.$page.'&style-view=variant&variant-test=edit&action=new&variant-style='.$dynamic_style_name.'&style='.urlencode( stripslashes($style_name )  ).'&style_id='.$variant_style.'&theme='.$style;
+					$hide_new_style ='cp-hidden-variant-style';
 				}
 
 				if( !isset($style_name) ) {
@@ -270,13 +271,19 @@ if(!function_exists('Smile_Style_Dashboard')){
                         <form class="cp-cust-form" id="form-<?php echo $style; ?>" data-action="<?php echo $data_action; ?>">
                         <input type="hidden" name="style" value="<?php echo $style; ?>" />
                         <input type="hidden" name="style_id" value="<?php echo $new_style_id; ?>" />
-                        <input type="hidden" name="option" value="<?php echo $data_option; ?>" />                        
-                        <?php if( isset( $_GET[ 'variant-style' ] ) ) { ?>
-                        <input type="hidden" name="variant-style" value="<?php echo $_GET[ 'variant-style' ]; ?>" />
-                        <input type="hidden" name="variant_style_id" value="<?php echo $_GET[ 'variant-style' ]; ?>" />
+                        <input type="hidden" name="option" value="<?php echo $data_option; ?>" />
+		    			<?php if( isset( $_GET[ 'variant-style' ] ) ) { ?>
+	                        <input type="hidden" name="variant-style" value="<?php echo $_GET[ 'variant-style' ]; ?>" />
+	                        <input type="hidden" name="variant_style_id" value="<?php echo $_GET[ 'variant-style' ]; ?>" />
                         <?php } ?>
-						<div class="customizer metro" id="accordion-panel-<?php echo $style; ?>">
 
+                         <?php 
+                         $timezone_settings = get_option('convert_plug_settings');
+    					 $timezone_name = $timezone_settings['cp-timezone'];
+    					 ?>
+                        <input type="hidden" name="cp_gmt_offset" class ="cp_gmt_offset" value="<?php echo get_option('gmt_offset'); ?>" />
+	                    <input type="hidden" name="cp_counter_timezone" class ="cp_counter_timezone" value="<?php echo $timezone_name; ?>" />
+                   		<div class="customizer metro" id="accordion-panel-<?php echo $style; ?>">
 							<div class="cp-new-cust-section">
                             <div class="cp-vertical-nav">
                             	<div class="cp-vertical-nav-top cp-customize-section">
@@ -314,7 +321,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 									</a>
 								</div>
 
-								<div class="cp-vertical-nav-bottom">
+								<div class="cp-vertical-nav-bottom <?php echo $hide_new_style;?>">
 
 									<a href="#" class="customize-footer-actions customize-collpase-act" >
 										<span class="cp-tooltip-icon has-tip customizer-collapse" title="Collapse">
@@ -349,7 +356,6 @@ if(!function_exists('Smile_Style_Dashboard')){
 							</div><!-- .cp-vertical-nav -->
 							<div class="cp-customizer-tabs-wrapper" style="height:100%;">
 								<div class="preview-notice">
-	                            	<?php /* <span class="preview-label"><?php echo __( "You are customizing", "smile" ); ?></span> */ ?>
 	                                <span class="theme-name site-title"><?php echo $options[0];?></span>
 	                            </div>
 								<?php
@@ -480,9 +486,9 @@ if(!function_exists('Smile_Style_Dashboard')){
                                                     $callback_url = 'admin.php?page='.$page;
                                                 } else {
                                                     $sid = isset( $_GET['style_id'] ) ? $_GET['style_id'] : $_GET['variant-style'];
-                                                    $pid = isset( $_GET['parent-style'] ) ? $_GET['parent-style'] : $_GET['style'] ;
+                                                    $pid = isset( $_GET['parent-style'] ) ? $_GET['parent-style'] : $_GET['style_id'] ;
                                                     $callback_url = 'admin.php?page='.$page.'&style-view=variant&variant-style='.$sid.'&style='.$pid.'&theme='.$theme;
-                                                    $url = 'admin.php?page='.$page.'&style-view=variant&variant-test=edit&action=new&variant-style='.$dynamic_style_name.'&style='.$style_name.'&style_id='.$variant_style.'&theme='.$style;
+                                                    $url = 'admin.php?page='.$page.'&style-view=variant&variant-test=edit&action=new&variant-style='.$dynamic_style_name.'&style='.$style_name.'&style_id='.$variant_style.'&theme='.$style_title;
                                                 }
 
                                                 echo '<div class="cp-style-item '.$active.'cp-style-'.$style_title.'" data-tags=["'.$tags.'"] style="margin: 15px;">';
@@ -563,48 +569,35 @@ if(!function_exists('Smile_Style_Dashboard')){
                                         </div>
                                     </div>
                                 </div>
-
 							</div><!-- .cp-customizer-tabs-wrapper -->
 							</div><!-- .cp-new-cust-section -->
 						</div><!-- .customizer -->
                         </form><!-- .cp-cust-form -->
                     </div> <!-- .design-form -->
                     <script type="text/javascript">
-					jQuery(document).ready(function(){
+						jQuery(document).ready(function(){
+							Ps.initialize(document.getElementById('cp-designer-form'));
+						});
+						jQuery(document).on("focusElementChanged", function(){
+							Ps.update(document.getElementById('cp-designer-form'));
+							setTimeout( function(){
+								cp_changeSize();
+							},600);
+						});
+						function cp_changeSize() {
 
-						// jQuery(".design-form").perfectScrollbar();
-						Ps.initialize(document.getElementById('cp-designer-form'));
-						//jQuery(".scrollable-icons").perfectScrollbar();
-					});
-					jQuery(document).on("focusElementChanged", function(){
-						Ps.update(document.getElementById('cp-designer-form'));
-						setTimeout( function(){
-							cp_changeSize();
-						},600);
-					});
-					function cp_changeSize() {
+							jQuery(".ps-scrollbar-y-rail").remove();
 
-						jQuery(".ps-scrollbar-y-rail").remove();
-
-						// update scrollbars
-						//jQuery('.design-form').perfectScrollbar('update');
-						Ps.update(document.getElementById('cp-designer-form'));
-
-					}
-
-					</script>
-                    <?php
-						$preview_page = get_option('smile-preview-page');
-						if($preview_page){
-							$page_url = get_permalink($preview_page);
-							$page_url .= '&preview=true&preview_id='.$preview_page.'&hidemenubar=true&module='.$module.'&theme='.$_GET['theme'];
-						} else {
-							$page_url = '';
+							// update scrollbars
+							Ps.update(document.getElementById('cp-designer-form'));
 						}
+					</script>                   
+					<?php	 
+						$iframe_url = admin_url('admin.php?page=cp_customizer') . '&module='.$module.'&class='.$class.'&theme='.$_GET['theme'].'&hidemenubar=true'; 
                     ?>
-					<div class="design-content" data-demo-id="<?php echo $_GET['theme']; ?>" data-class="<?php echo $class; ?>" data-module="<?php echo $module; ?>" data-js-url="<?php echo $options[3]; ?>" data-iframe-url="<?php echo esc_url( $page_url ); ?>">
+					<div class="design-content" data-demo-id="<?php echo $_GET['theme']; ?>" data-class="<?php echo $class; ?>" data-module="<?php echo $module; ?>" data-js-url="<?php echo $options[3]; ?>" data-iframe-url="<?php echo esc_url( $iframe_url ); ?>">
                     	<div class="live-design-area">
-                    		<div class="design-area-loading">
+                    		<div class="design-area-loading">                    		
                     			<!-- <span class="spinner"></span> -->
                                 <div class="smile-absolute-loader" style="visibility: visible;">
                                   <div class="smile-loader">

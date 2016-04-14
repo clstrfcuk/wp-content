@@ -9,21 +9,25 @@
     padding: 20px 20px;
     text-align: center;
 }
+
 .cp-modal-every-design .cp-short-desc-container {
     display: block;
     width: 100%;
     float: left;
 }
+
 .cp-modal-every-design .cp-short-description {
     color: #43A78D;
     font-size: 20px;
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;     
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     line-height: 1em;
     font-weight: 600;
 }
+
 .cp-modal-every-design .default-form {
     padding: 0 7%;
 }
+
 .cp-modal-every-design .cp-desc-container {
     padding: 0px 20px;
 }
@@ -36,23 +40,23 @@
 .cp-modal-every-design h1.cp-title {
     margin: 0;
     font-size: 52px;
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;     
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     line-height: 1.15em;
     font-weight: 600;
-    color:rgb(104, 104, 104);
+    color: rgb(104, 104, 104);
 }
 
 .cp-modal-every-design .cp-form-container,
 .ccp-modal-every-design .cp-desc-container,
 .cp-modal-every-design .cp-description {
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif; 
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     font-size: 24px;
     line-height: 1.25em;
     color: rgb(103, 103, 103);
 }
 
 .cp-modal-every-design .cp-info-container {
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif  ;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     color: rgb(68, 68, 68);
     margin-bottom: 0px;
     margin-top: 0px;
@@ -69,33 +73,12 @@
 .cp-modal-every-design .cp-submit {
     background-color: rgb(3, 177, 133);
     color: #FFF;
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif  ;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     font-weight: 600;
     font-size: 15px;
     line-height: 1.38em;
     border-radius: 3px;
     outline: none;
-  }
-
-.cp-modal-every-design .cp-submit,
-.cp-modal-every-design .cp-submit:hover,
-.cp-modal-every-design .cp-submit:active,
-.cp-modal-every-design .cp-submit:focus {
-    background-color: rgb(255, 76, 107);
-    background-image: none;
-    color: #fff;
-    border: none;
-}
-
-.cp-modal .cp-modal-every-design .cp-submit {
-    padding: 10px 25px;
-    border-radius: 3px;
-    margin: 0px;
-
-}
-
-.cp-modal-every-design #cp_button_editor span.cp_responsive.cp_font {
-    line-height: 1em;
 }
 
 .cp-modal-every-design .cp-email-form,
@@ -107,15 +90,6 @@
 
 .cp-modal-every-design .cp-email-form.col-md-8.cp_big_email {
     padding-right: 15px;
-}
-
-.cp-modal-every-design input.cp-email,
-.cp-modal-every-design input.cp_name,
-.cp-modal-every-design input.cp-name {
-    padding: 10px 25px;
-    font-size: 15px;
-    line-height: normal;
-    text-align: left;
 }
 
 .cp-modal-every-design .cp-form-container.cp-no-padding,
@@ -138,21 +112,8 @@
     margin: 0 auto;
 }
 
-.cp-modal-every-design .cp-form input[type="text"],
-.cp-modal-every-design .cp-form input[name="name"],
-.cp-modal-every-design .cp-form input[type="email"],
-.cp-modal-every-design .cp-form input[name="email"],
-.cp-modal-every-design button.cp-submit {
-    margin: 0 0 10px;
-}
-
 .cp-modal-every-design .cp-form-container.cp-resp-form {
     padding: 0 20px;
-}
-
-/*--- form ---*/
-.cp-modal-every-design .cp-row.cp-submit-form {
-    padding: 0 15px;
 }
 
 .cp-modal-every-design .cp-formwith-name>div,
@@ -188,7 +149,6 @@
     margin: 0 auto;
 }
 
-
 .cp-modal-every-design .col-lg-8.cp_form_content {
     padding-right: 15px;
 }
@@ -211,10 +171,6 @@
 @media (max-width:768px) {
     .cp-modal-body.cp-modal-every-design {
         text-align: center;
-    }
-
-    .cp-modal-every-design input.cp-email {
-        text-align: left;
     }
 
     .cp-modal-every-design .col-lg-8.cp_form_content {
@@ -267,14 +223,12 @@
         padding-right: 0;
         display: block;
         width: 100%;
-        float: left;    
+        float: left;
         margin-top: 0;
     }
-    .cp-modal-every-design .cp-submit {
-        float: left;
-    }
-    .cp-modal-every-design .form-main {
-        max-width: 100%;        
+
+     .cp-modal-every-design .form-main {
+        max-width: 100%;
     }
 
 }

@@ -32,7 +32,7 @@ if(!class_exists("Smile_Framework")){
 			$this->fields_dir = SMILE_FRAMEWORK_DIR.'/lib/fields/';
 			// Load options
 			add_action( 'init', array( $this, 'load_framework_functions'));
-			add_action('wp_head',array($this,'load_compatible_scripts'));
+			add_action('admin_head',array($this,'load_compatible_scripts'));
 		}
 		
 		function load_compatible_scripts(){
@@ -43,7 +43,7 @@ if(!class_exists("Smile_Framework")){
 		}
 		
 		/*
-		* Load and initialie
+		* Load and initialize
 		* @Since 1.0
 		*/
 		function load_framework_functions(){

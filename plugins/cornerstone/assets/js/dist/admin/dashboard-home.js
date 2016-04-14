@@ -55,6 +55,7 @@ module.exports = function( $this, targets, data ) {
     tco.ajax({
 
       action: 'cs_update_check',
+      _cs_nonce: csDashboardHomeData._cs_nonce,
 
       done: function( response ) {
 
@@ -95,7 +96,7 @@ module.exports = function( $this, targets, data ) {
       accept: function() {
         $revoke.removeAttr( 'href' );
         $revoke.html( data.revoking );
-        tco.ajax({ action: 'cs_validation_revoke', done: reload, fail: reload });
+        tco.ajax({ action: 'cs_validation_revoke', done: reload, fail: reload, _cs_nonce: csDashboardHomeData._cs_nonce } );
       }
     } );
 
@@ -130,8 +131,9 @@ module.exports = function( $this, targets, data ) {
 		$this.tcoShowMessage( data.verifying );
 
 		tco.ajax({
-			action: 'cs_validation',//'x_validation',
+			action: 'cs_validation',
 			code: $input.val(),
+			_cs_nonce: csDashboardHomeData._cs_nonce,
 			done: done,
 			fail: fail
 		});

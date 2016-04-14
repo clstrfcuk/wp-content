@@ -20,11 +20,6 @@
     line-height: normal;
 }
 
-.cp-direct-download .cp-submit-container {
-    padding-left: 0;
-    display: inline-block;
-}
-
 .cp-direct-download .cp-bigtext-container {
     padding: 25px 15px 10px;
 }
@@ -34,7 +29,7 @@
 }
 
 .cp-direct-download .cp-title,
-.cp-direct-download h1.cp-title {
+.cp-direct-download h2.cp-title{
     margin: 0;
     font-size: 28px;
     font-family: 'Montserrat', sans-serif;
@@ -70,67 +65,8 @@
     padding: 10px 0 0;
 }
 
-.cp-direct-download .cp-submit {
-    background-color: rgb(3, 177, 133);
-    color: #FFF;
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 1.38em;
-    border-radius: 3px;
-    outline: none;
-}
-
-.cp-direct-download .cp-submit,
-.cp-direct-download .cp-submit:hover,
-.cp-direct-download .cp-submit:active,
-.cp-direct-download .cp-submit:focus {
-    background-color: rgb(255, 76, 107);
-    background-image: none;
-    color: #fff;
-    box-shadow: none;
-    border: none;
-    width: auto;
-}
-
-.cp-modal .cp-direct-download .cp-submit {
-    padding: 10px 20px;
-    border-radius: 3px;
-    display: inline-block;
-    margin-right: 0;
-    width: 100%;
-}
-
-.cp-modal .cp-direct-download .cp-submit_new {
-    padding: 10px;
-    border-radius: 2px;
-    display: inline-block;
-}
-
-.cp-direct-download .cp-email-form {
-    padding-left: 0;
-}
-
-.cp-direct-download input.cp-email,
-.cp-direct-download input.cp-name,
-.cp-direct-download input.cp-name {
-    padding: 10px 25px;
-    font-size: 15px;
-    line-height: 1.45em;
-    text-align: left;
-}
-
-.cp-form-container.cp-no-padding {
-    padding-top: 0;
-}
-
-.cp-direct-download .form-main,
-.cp-direct-download .form-content {
-    padding: 0;
+.cp-direct-download-container .cp-form-container .cp-form-layout-4 {
     margin: 0;
-}
-
-.cp-direct-download .form-button {
-    padding-right: 0;
 }
 
 .cp-direct-download .cp-modal-window-size .cp-modal-body,
@@ -146,23 +82,9 @@
     float: left;
 }
 
-.cp-direct-download .cp-email-form {
-    padding-right: 15px;
-    float: left;
-}
-
-.cp-direct-download .cp-row.cp-submit-form {
-    padding: 0 15px;
-}
-
 .cp-direct-download .cp-formwith-name>div,
 .cp-direct-download .cp-form-simple .form-button {
     padding-left: 0;
-}
-
-.cp-direct-download .cp-name-btn {
-    display: inline-block;
-    margin-top: 10px;
 }
 
 .cp-direct-download .cp-formwith-name .cp-form {
@@ -171,14 +93,6 @@
 
 .cp-direct-download form#smile-optin-form {
     margin-bottom: 0;
-}
-
-/*.cp-direct-download .cp_simple_submit {
- margin-right:0px;
-} */
-.cp-direct-download .cp-name-form,
-.cp-direct-download .cp-name-form.cp_big_name {
-    padding-right: 10px;
 }
 
 .cp-direct-download .cp-info-container .error,
@@ -195,12 +109,6 @@
 
 .cp-direct-download div#info_editor {
     padding: 20px 0 0;
-}
-
-.cp-direct-download .cp-submit-container.col-md-12 {
-    float: left;
-    display: block;
-    width: 100%;
 }
 
 .cp-direct-download  .cp-submit  a {
@@ -244,17 +152,7 @@
 
 @media (max-width:1355px) {
     .cp-direct-download .cp_name_submit {
-
-        /*width: 100%;*/
         margin-right: 0;
-        padding-right: 15px;
-    }
-
-    .cp-direct-download .cp-email-form {
-        padding-right: 15px;
-    }
-
-    .cp-direct-download .cp-name-form {
         padding-right: 15px;
     }
 
@@ -262,14 +160,6 @@
 
 @media (max-width:768px) {
     .cp-modal-body.cp-direct-download {
-        text-align: center;
-    }
-
-    .cp-direct-download input.cp-email {
-        text-align: center;
-    }
-
-    .cp-direct-download input.cp-name {
         text-align: center;
     }
 
@@ -287,18 +177,6 @@
     }
 
     .cp-direct-download .cp-formwith-name>div {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .cp-modal .cp-direct-download .cp-submit {
-        width: 100%;
-    }
-
-    .cp-direct-download .cp-email-form,
-    .cp-direct-download .cp-name-form,
-    .cp-direct-download .form-button,
-    .cp-direct-download .cp-form-name {
         padding-left: 0;
         padding-right: 0;
     }
@@ -322,10 +200,6 @@
         margin: 0 auto;
     }
 
-    .cp-direct-download .cp-submit-container {
-        padding-right: 0;
-    }
-
     .cp-direct-download .cp-form-name input[name="name"] {
         text-align: center;
     }
@@ -343,10 +217,7 @@
     .cp-direct-download button.cp-submit.cp-link {
         padding: 5px;
         font-size: 12px;
-    }
-
-    .cp-direct-download  button.cp-submit.btn-modal {
-    }
+    }   
 
 }
 

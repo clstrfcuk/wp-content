@@ -236,9 +236,338 @@
   line-height: initial !important;
 }
 
+/* Helper Classes
+   ========================================================================== */
+.cp-hidden {
+  display: none;
+}
+
+/* ConvertPlug - Form
+   ========================================================================== */
+/*  Manage margins   */
+.cp-form-container {
+  clear: both;
+  float: none;
+  margin: auto auto 10px auto;
+  /* margin-bottom: 10px;
+  margin-left: -15px;
+  margin-right: -15px; */
+}
+.cp-slidein .cp-form-container,
+.cp-info-bar .cp-form-container {
+  margin: 5px 0;
+}
+.cp-info-bar .cp-form-container {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+/* For layout 3 fix the margins */
+.cp-form-container .cp-form-layout-3,
+.cp-form-container .cp-form-layout-4 {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+/*  Placeholder   */
+.cp-form-container ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  font-family: inherit;
+  line-height: normal;
+  color: inherit;
+}
+.cp-form-container :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  font-family: inherit;
+  line-height: normal;
+  color: inherit;
+}
+.cp-form-container ::-moz-placeholder { /* Mozilla Firefox 19+ */
+  font-family: inherit;
+  line-height: normal;
+  color: inherit;
+}
+.cp-form-container :-ms-input-placeholder { /* Internet Explorer 10-11 */
+  font-family: inherit;
+  line-height: normal;
+  color: inherit;
+}
+.cp-form-container :placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+  font-family: inherit;
+  line-height: normal;
+  color: inherit;
+}
+
+/* Reset - Submit */
+.cp-form-container .cp-submit,
+.cp-form-container .cp-submit:hover,
+.cp-form-container .cp-submit:active,
+.cp-form-container .cp-submit:focus {
+    cursor: pointer;
+    background-color: rgb(255, 76, 107);
+    background-image: none;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 0;
+    text-transform: none;
+}
+.cp-form-container .cp-submit.cp-btn-flat,
+.cp-form-container .cp-submit.cp-btn-outline {
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition: all 0.15s ease-in-out;
+    -ms-transition: all 0.15s ease-in-out;
+    -o-transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out;
+}
+
+/* Reset - Labels */
+.cp-form-container label {
+    font-size: 14px;
+    line-height: normal;
+    margin-bottom: 5px;
+    text-align: left;
+    display: block;
+}
+/* Hide for layout - 3 */
+.cp-form-container .cp-form-layout-3 label {
+    display: none;
+}
+/* Reset - Inputs */
+.cp-form-container .cp-form-field button,
+.cp-form-container .cp-form-field button:active,
+.cp-form-container .cp-form-field button:hover,
+.cp-form-container .cp-form-field button:focus,
+.cp-form-container .cp-form-field input,
+.cp-form-container .cp-form-field input:active,
+.cp-form-container .cp-form-field input:hover,
+.cp-form-container .cp-form-field input:focus,
+.cp-form-container .cp-form-field select,
+.cp-form-container .cp-form-field select:active,
+.cp-form-container .cp-form-field select:hover,
+.cp-form-container .cp-form-field select:focus,
+.cp-form-container .cp-form-field textarea,
+.cp-form-container .cp-form-field textarea:active,
+.cp-form-container .cp-form-field textarea:hover,
+.cp-form-container .cp-form-field textarea:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/*    Default -   Inputs      */
+.cp-form-container .cp-form-field select,
+.cp-form-container .cp-form-field button,
+.cp-form-container .cp-form-field input,
+.cp-form-container .cp-form-field textarea {
+    font-size: 16px;
+    line-height: normal;
+    border: 1px solid #ddd;
+    box-shadow: none;
+    border-radius: 3px;
+    font-family: inherit;
+    padding: 10px;
+    outline: 0;
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 100%;
+}
+
+/*    InfoBar -   Inputs      */
+/*.cp-info-bar .cp-form-container .cp-form-field select,
+.cp-info-bar .cp-form-container .cp-form-field button,
+.cp-info-bar .cp-form-container .cp-form-field input,
+.cp-info-bar .cp-form-container .cp-form-field textarea {
+    border: 1px solid #dddddd;
+    letter-spacing: normal;
+    box-shadow: none;
+    font-size: 14px;
+    line-height: normal;
+    border-radius: 3px;
+    font-family: inherit;
+    padding: 7px 10px;
+    outline: none;
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    max-width: 100%;
+    font-weight: normal;
+}*/
+/*    Modal -   Inputs      */
+.cp-modal-popup-container .cp-form-field button:focus,
+.cp-modal-popup-container .cp-form-field input:focus,
+.cp-modal-popup-container .cp-form-field select:focus,
+.cp-modal-popup-container .cp-form-field textarea:focus {
+    box-shadow: none;
+    outline: none;
+}
+.cp-modal-popup-container .cp-form-field button,
+.cp-modal-popup-container .cp-form-field input,
+.cp-modal-popup-container .cp-form-field textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+}
+.cp-modal-popup-container .cp-form-field button,
+.cp-modal-popup-container .cp-form-field input,
+.cp-modal-popup-container .cp-form-field select,
+.cp-modal-popup-container .cp-form-field textarea {
+    -webkit-transition: all .2s ease-in-out;
+       -moz-transition: all .2s ease-in-out;
+        -ms-transition: all .2s ease-in-out;
+         -o-transition: all .2s ease-in-out;
+            transition: all .2s ease-in-out;
+}
+
+/*@media(max-width:768px) {
+  .cp-form-container .cp-submit,
+  .cp-form-container .cp-submit-wrap {
+    clear: both;
+  }
+}*/
+
+@media(max-width:768px) {
+    /* Placeholder */
+    .cp-form-container .cp-form-field input::-webkit-input-placeholder,
+    .cp-form-container .cp-form-field input:-moz-placeholder,
+    .cp-form-container .cp-form-field input::-moz-placeholder,
+    .cp-form-container .cp-form-field input:-ms-input-placeholder {
+        line-height: normal;
+        font-size: 0.85em !important;
+    }
+}
+.cp-form-container .cp-submit {
+    width: auto;
+    display: inline-block;
+}
+.cp-info-bar .cp-form-container .cp-submit {
+  font-size: 14px;
+}
+.cp-form-container .cp-form-layout-3 .cp-submit {
+    display: block;
+}
+.cp-form-container .cp-submit-wrap-full .cp-submit {
+    width: 100%;
+}
+.cp-form-container .cp-submit-wrap-center {
+    text-align: center;
+}
+.cp-form-container .cp-submit-wrap-left {
+    text-align: left;
+}
+.cp-form-container .cp-submit-wrap-right {
+    text-align: right;
+}
+/* CSS FIXES */
+.cp-form-container .cp-form-layout-3 .cp-all-inputs-wrap {
+    padding: 0;
+}
+.cp-info-bar .cp-form-container .cp-form-layout-1,
+.cp-info-bar .cp-form-container .cp-form-layout-2 {
+    margin: 0 auto;
+}
+.cp-info-bar .cp-form-container .cp-form-layout-1,
+.cp-info-bar .cp-form-container .cp-form-layout-2,
+.cp-info-bar .cp-form-container .cp-form-layout-4 {
+    max-width: 550px;
+}
+@media (min-width: 768px) {
+
+    /* Layout - 2 */
+    .cp-form-layout-2 .cp-form-field:nth-child(odd) {
+        padding-right: 5px;
+        clear: both;
+    }
+    .cp-form-layout-2 .cp-form-field:nth-child(even) {
+        padding-left: 5px;
+    }
+
+    /* Layout - 3 */
+    .cp-form-container .cp-form-layout-3 .cp-form-field {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+    .cp-form-container .cp-form-layout-3 .cp-submit-wrap {
+        padding-left: 5px;
+        padding-right: 0;
+    }
+    .cp-form-container .cp-form-layout-3 .cp-form-field:first-child {
+        padding-left: 0;
+    }
+
+    .cp-form-container .cp-form-layout-3 .cp-form-field select,
+    .cp-form-container .cp-form-layout-3 .cp-form-field button,
+    .cp-form-container .cp-form-layout-3 .cp-form-field input,
+    .cp-form-container .cp-form-layout-3 .cp-form-field textarea {
+      margin-bottom: 0px;
+    }
+}
+
+/* ==========================================================================
+   cp-vertical-form-container
+   ========================================================================== */
+.cp-form-container.cp-vertical-form-container .cp-form-layout-3,
+.cp-form-container.cp-vertical-form-container .cp-form-layout-4 {
+    margin: 0;
+}
+.cp-form-container.cp-vertical-form-container .cp-form-layout-1 .cp-submit-wrap,
+.cp-form-container.cp-vertical-form-container .cp-form-layout-2 .cp-submit-wrap {
+    padding-left: 0;
+    padding-right: 0;
+}
+.cp-form-container.cp-vertical-form-container .cp-form-layout-1 .cp-form-field,
+.cp-form-container.cp-vertical-form-container .cp-form-layout-2 .cp-form-field:nth-child(odd) {
+    padding-left: 0;
+}
+.cp-form-container.cp-vertical-form-container .cp-form-layout-1 .cp-form-field,
+.cp-form-container.cp-vertical-form-container .cp-form-layout-2 .cp-form-field:nth-child(even) {
+    padding-right: 0;
+}
+
 /* Custom ShortCode
    ========================================================================== */
 .cp-trigger-shortcode {
     cursor: pointer;
 }
 
+/** DYNAMIC FORM - DISCUSS & REMOVE THE CSS */
+.cp-form-container .cp-all-inputs-wrap {
+    padding: 0;
+}
+.cp-form-container .cp-form-layout-1 .cp-all-inputs-wrap {
+    padding: 0;
+}
+.cp-form-container .cp-form-layout-2 .cp-all-inputs-wrap {
+    padding: 0;
+}
+.cp-form-container .cp-form-layout-4 .cp-submit-wrap {
+    padding: 0;
+}
+
+/**
+ * InfoBar Fixes
+ */
+.cp-info-bar .cp-form-container .cp-form-layout-3,
+.cp-info-bar .cp-form-container .cp-form-layout-3 .cp-all-inputs-wrap {
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    display: -webkit-box !important;
+    display: -webkit-flex !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+}
+
+
+/* Fix for gravity for z-index issue */
+
+html body div#ui-datepicker-div[style] {
+      z-index: 99999999999 !important;
+}
+.cp-form-field select.cp-dropdown {
+    height: auto;
+}

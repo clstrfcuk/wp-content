@@ -12,8 +12,7 @@ jQuery(document).ready(function(){
 
 		// html container variables 
 
-		var cp_modal_height		= 'auto',
-			cp_submit 			= jQuery(".cp-submit"),
+		var cp_submit 			= jQuery(".cp-submit"),
 			cp_form_button      = jQuery(".form-button"),
 			cp_modal_body		= jQuery(".cp-modal-body"),
 			cp_modal			= jQuery(".cp-modal"),

@@ -40,7 +40,9 @@ class X_Addons_Extensions {
 
   public function ajax_install_plugin() {
 
-    if ( ! isset( $_POST['plugin'] ) || ! $_POST['plugin'] ) {
+    x_tco()->check_ajax_referer();
+
+    if ( ! current_user_can( 'install_plugins' ) || ! isset( $_POST['plugin'] ) || ! $_POST['plugin'] ) {
       wp_send_json_error( array( 'message' => 'No plugin specified' ) );
     }
 
@@ -76,8 +78,9 @@ class X_Addons_Extensions {
 
   public function ajax_auto_install_cornerstone() {
 
+    x_tco()->check_ajax_referer();
 
-    if ( self::cornerstone_installed() ) {
+    if ( self::cornerstone_installed() || ! current_user_can( 'install_plugins' ) ) {
       wp_send_json_error();
     }
 
@@ -101,6 +104,8 @@ class X_Addons_Extensions {
   }
 
   public function ajax_auto_activate_cornerstone() {
+
+    x_tco()->check_ajax_referer();
 
     $activate = activate_plugin( 'cornerstone/cornerstone.php', '', false, true );
 

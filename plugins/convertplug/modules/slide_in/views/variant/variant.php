@@ -144,7 +144,7 @@ if( count($variants) > 0 ) {
                             <a class="action-list" style="margin-left: 25px;" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_slide_in_styles" href="?page=smile-slide_in-designer&compFactor=impVsconv&style-view=analytics&style=<?php echo urlencode( $style_id ); ?>"><i class="connects-icon-bar-graph-2"></i><span class="action-tooltip">
                             <?php _e( "View Analytics", "smile" ); ?>
                             </span></a>
-                            <?php echo apply_filters( 'cp_after_delete_action', $style_settings, 'slide_in' ); ?>
+                            <?php echo apply_filters( 'cp_before_delete_action', $style_settings, 'slide_in' ); ?>
                             <a class="action-list trash-style-icon" data-delete="soft" data-variantoption="slide_in_variant_tests" data-style="<?php echo $style_id; ?>" data-option="smile_slide_in_styles" style="margin-left: 25px;" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip">
                             <?php _e( "Delete Slide In", "smile" ); ?>
                             </span></a>
@@ -207,7 +207,7 @@ if( count($variants) > 0 ) {
                   <a class="action-list" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_slide_in_styles" style="margin-left: 25px;" href="?page=smile-slide_in-designer&style-view=analytics&compFactor=impVsconv&style=<?php echo urlencode( $style_id ); ?>"><i class="connects-icon-bar-graph-2"></i><span class="action-tooltip">
                   <?php _e( "View Analytics", "smile" ); ?>
                   </span></a>
-                  <?php echo apply_filters( 'cp_after_delete_action', $style_settings, 'slide_in' ); ?>
+                  <?php echo apply_filters( 'cp_before_delete_action', $style_settings, 'slide_in' ); ?>
                   <a class="action-list trash-style-icon" data-delete="hard" data-variantoption="slide_in_variant_tests" data-style="<?php echo $style_id; ?>" data-option="slide_in_variant_tests" style="margin-left: 25px;" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip">
                   <?php _e( "Delete Slide In", "smile" ); ?>
                   </span></a>

@@ -24,7 +24,6 @@ jQuery(document).ready(function(){
 			// style dependent variables  	
 		var modal_size					= data.modal_size,
 			cp_modal_width				= data.cp_modal_width,
-			cp_modal_height				= 'auto',
 			modal_title 				= data.modal_title1,
 			bg_color					= data.modal_bg_color,
 			overlay_bg_color			= data.modal_overlay_bg_color,
@@ -125,22 +124,22 @@ jQuery(document).ready(function(){
 		if( namefield == 1 ){
 			form_without_name.css({"display":"none"});
 			form_with_name.css({"display":"block"});
-			cp_submit.removeClass("cp_simple_submit");
-			cp_submit.removeClass("col-md-12").addClass('col-md-12 cp_name_submit');
+			// cp_submit.removeClass("cp_simple_submit");
+			// cp_submit.removeClass("col-md-12").addClass('col-md-12 cp_name_submit');
 			cp_email_form.removeClass('col-xs-12 col-md-8 col-sm-8 col-lg-8').addClass('col-md-12');
-			cp_submit.removeClass("col-md-4 col-sm-4 col-lg-4").addClass('col-md-12 cp_simple_submit');
+			// cp_submit.removeClass("col-md-4 col-sm-4 col-lg-4").addClass('col-md-12 cp_simple_submit');
 
 		} else {
 			form_without_name.css({"display":"block"});
 			form_with_name.css({"display":"none"});
-			cp_submit.removeClass("cp_name_submit");			
+			// cp_submit.removeClass("cp_name_submit");			
 			if(btn_disp_next_line == 1){
 				cp_email_form.removeClass('col-xs-12 col-md-8 col-sm-8 col-lg-8').addClass('col-md-12');
-				cp_submit.removeClass("col-md-4 col-sm-4 col-lg-4").addClass('col-md-12 cp_simple_submit');
+				// cp_submit.removeClass("col-md-4 col-sm-4 col-lg-4").addClass('col-md-12 cp_simple_submit');
 
 			}else{
 				cp_email_form.removeClass('col-md-12').addClass('col-xs-12 col-md-8 col-sm-8 col-lg-8');
-				cp_submit.removeClass("col-md-12").addClass('col-md-4 col-sm-4 col-lg-4 cp_simple_submit');
+				// cp_submit.removeClass("col-md-12").addClass('col-md-4 col-sm-4 col-lg-4 cp_simple_submit');
 			}
 		}
 	

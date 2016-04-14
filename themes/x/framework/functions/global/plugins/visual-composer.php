@@ -37,11 +37,12 @@ function x_visual_composer_legacy_update() {
 add_action( 'admin_init', 'x_visual_composer_legacy_update' );
 
 
-function x_visual_composer_remove_meta_generator() {
+function x_visual_composer_filter_removals() {
   remove_action( 'wp_head', array( visual_composer(), 'addMetaData' ) );
+  remove_filter( 'upgrader_pre_download', array( vc_updater(), 'preUpgradeFilter' ) );
 }
 
-add_action( 'vc_after_init', 'x_visual_composer_remove_meta_generator' );
+add_action( 'vc_after_init', 'x_visual_composer_filter_removals' );
 
 
 

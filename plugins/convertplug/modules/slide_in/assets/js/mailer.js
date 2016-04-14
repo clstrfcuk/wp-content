@@ -39,9 +39,30 @@
 		return null;
 	}
 
+    function validate_it( current_ele, value ) {
+        if( !value.trim() ) {
+            return true;
+        } else if( current_ele.hasClass('cp-email') ) {
+            if( !isValidEmailAddress( value ) ) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        } else if( current_ele.hasClass('cp-textfeild') ) {
+            if( /^[a-zA-Z0-9- ]*$/.test( value ) == false ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
+    }
+
 	function slide_in_process_cp_form(t) {
 
-		var form 			= jQuery(t).parents(".cp-slidein-body").find("#smile-optin-form"),
+		var form 			= jQuery(t),
 			data 			= form.serialize(),
 			info_container  = jQuery(t).parents(".cp-animate-container").find('.cp-msg-on-submit'),
 			form_container  = jQuery(t).parents(".cp-slidein-body").find('.cp-form-container'),
@@ -56,52 +77,75 @@
 		var dont_close 		= jQuery(t).parents(".slidein-overlay").hasClass("do_not_close");
 		var redirectdata 	= jQuery(t).parents(".slidein-overlay").data("redirect-lead-data");
 
-		//	check it is required or not
-		var email = form.find('.cp-email').attr('required') ? true : false;
-		var name = form.find('.cp-name').attr('required') ? true : false;
-		var status_email = true;
-		var status_name = true;
+		// Check for required fields are not empty
+		// And create query strings to send to redirect URL after form submission
+        var query_string = '';
+        var submit_status = true;
+        form.find('.cp-input').each( function(index) {
+            var $this = jQuery(this);
+            
+            if( ! $this.hasClass('cp-submit-button')) { // Check condition for Submit Button
+                var    input_name = $this.attr('name'),
+                    input_value = $this.val();
 
-		//to pass data with redirect URL
-		var query_string ='';
-		var string_email = escape(form.find('.cp-email').val());
-		var string_name = escape(form.find('.cp-name').val() || '');
-		if( string_name != '' ) {
-			query_string = "username="+string_name+"&email="+string_email ;
-		} else {
-			query_string = "email="+string_email ;
-		}	
+                var res = input_name.replace(/param/gi, function myFunction(x){return ''; });
+                res = res.replace('[','');
+                res = res.replace(']','');
 
-		// Email - is required?
-		if( email ) {
-			var ev = form.find('.cp-email').val();
-		
-			if( !isValidEmailAddress( ev ) ) {
-				status_email = false;
-				form.find('.cp-email').addClass('cp-error');
-			} else {
-				form.find('.cp-email').removeClass('cp-error');
-				status_email = true;
-			}
-		}
+                query_string += ( index != 0 ) ? "&" : '';
+                query_string += res+"="+input_value ;
 
-		// Name - is required?
-		if( name ) {
-			var ev = form.find('.cp-name').val() || '';
+                var input_required = $this.attr('required') ? true : false;
 
-			if( ev === '' ) {
-				status_name = false;
-				form.find('.cp-name').addClass('cp-error');
-			} else if(/^[a-zA-Z0-9- ]*$/.test(ev) == false) {
-			    status_name = false;
-				form.find('.cp-name').addClass('cp-error');
-			} else {
-				form.find('.cp-name').removeClass('cp-error');
-				status_name = true;
-			}
-		}
+                if( input_required ) {    
+                    if( validate_it( $this, input_value ) ) {
+                        submit_status = false;
+                        $this.addClass('cp-input-error');
+                    } else {
+                        $this.removeClass('cp-input-error');
+                    }
+                }
+            }
+        });
 
-		if( status_email && status_name ) {
+		//	All form fields Validation
+        var fail = false;
+        var fail_log = '';
+        form.find( 'select, textarea, input' ).each(function(i, el ){
+            if( jQuery( el ).prop( 'required' )){
+
+                if ( ! jQuery( el ).val() ) {
+                    fail = true;
+                    jQuery( el ).addClass('cp-error');
+                    name = jQuery( el ).attr( 'name' );
+                    fail_log += name + " is required \n";
+                } else {
+                	//	Client side email Validation
+                	//	If not empty value, Then validate email
+                	if( jQuery( el ).hasClass('cp-email') ) {
+		    			var email = jQuery( el ).val();
+
+		    			if( isValidEmailAddress( email ) ) {
+			    			jQuery( el ).removeClass('cp-error');
+			    			fail = false;
+			    		} else {
+			    			jQuery( el ).addClass('cp-error');
+			    			fail = true;
+			    			var name = jQuery( el ).attr( 'name' ) || '';
+			    			console.log( name + " is required \n" );
+			    		}
+		    		} else {
+                		jQuery( el ).removeClass('cp-error');
+		    		}
+                }
+            }
+        });
+
+        //submit if fail never got set to true
+        if ( fail ) {
+            console.log( fail_log );
+        } else {
+
 			cp_form_processing_wrap.show();
 
 			info_container.fadeOut(120, function() {
@@ -186,8 +230,6 @@
 						           
 						         },3000);
 							}							
-						} else {
-							//form_container.show();	
 						}
 					}
 				},
@@ -204,7 +246,7 @@
 
 	jQuery(document).ready(function(){
 		
-		jQuery('.cp-slidein-body #smile-optin-form').each(function(index, el) {
+		jQuery('.cp-slidein-popup-container').find('#smile-optin-form').each(function(index, el) {
 
 			// enter key press
 			jQuery(el).find("input").keypress(function(event) {
@@ -214,16 +256,28 @@
 			        var check_error = jQuery(this).parents(".cp-animate-container").hasClass('cp-form-submit-error');
 			       
 			        if(!check_sucess){
-			        	slide_in_process_cp_form(this);
+			        	slide_in_process_cp_form( el );
 			    	}		    
 			    }
 			});
 
-		    // submit add subscriber request
-		    jQuery('.cp-slidein-body').find('button.btn-subscribe').click(function(e){
+			// submit add subscriber request
+		    jQuery(el).find('.btn-subscribe').click(function(e){
 				e.preventDefault;
-				slide_in_process_cp_form(this);
+				if( !jQuery(this).hasClass('disabled') ){
+					slide_in_process_cp_form( el );
+					jQuery(document).trigger("si_conversion_done",[this]);
+
+					//	Redirect after conversion
+					var redirect_link 			= jQuery(this).attr('data-redirect-link') || '';
+					var redirect_link_target	= jQuery(this).attr('data-redirect-link-target') || '_blank';
+					if( redirect_link != 'undefined' && redirect_link != '' ) {
+						window.open( redirect_link , redirect_link_target );
+					}
+				}
+				e.preventDefault();
 			});
+
 		});
 
 	});

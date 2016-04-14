@@ -62,13 +62,23 @@ class X_Addons_Customizer_Manager {
   }
 
   public function ajax_reset() {
+
+    x_tco()->check_ajax_referer();
+
+    if ( ! current_user_can( 'manage_options' ) ) {
+      wp_send_json_error( array( 'message' => 'Unable to reset' ) );
+    }
+
     $this->reset();
     wp_send_json_success();
+
   }
 
   public function ajax_import() {
 
-    if ( ! isset( $_POST['import'] ) || ! $_POST['import'] ) {
+    x_tco()->check_ajax_referer();
+
+    if ( ! current_user_can( 'manage_options' ) || ! isset( $_POST['import'] ) || ! $_POST['import'] ) {
       wp_send_json_error( array( 'message' => 'Missing import data' ) );
     }
 

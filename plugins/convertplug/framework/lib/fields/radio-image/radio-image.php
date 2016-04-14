@@ -6,12 +6,11 @@ if ( function_exists('smile_add_input_type'))
 }
 
 add_action('admin_enqueue_scripts','smile_radio_image_scripts');
-function smile_radio_image_scripts(){
-	$screen = get_current_screen();
-	$screen_id = $screen->base;
-	$cp_page = strpos( $screen_id, 'plug_page');
-
-	if( $cp_page == 7 && isset( $_GET['developer'] ) ){
+function smile_radio_image_scripts($hook){
+	$cp_page = strpos( $hook, 'plug_page');
+	$data  =  get_option( 'convert_plug_debug' );
+	
+	if( $cp_page == 7 && isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ){
 		wp_enqueue_style('smile-radio-image',plugins_url('radio-image.css',__FILE__));
 		wp_enqueue_script('smile-radio-image',plugins_url('radio-image.js',__FILE__),array(),'1.0.0',true);
 	}
@@ -29,16 +28,28 @@ function radio_image_settings_field($name, $settings, $value)
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
 	$options = isset($settings['options']) ? $settings['options'] : '';
+	$max_width = isset($settings['width']) ? $settings['width'] : '';
+	$image_title = isset($settings['imagetitle']) ? $settings['imagetitle'] : '';
+
 	$output = '';
 	$n = 0;
+ 	$img_title ='';
+ 	
+ 		
 	foreach ( $options as $key => $img ) {
 		$checked = $cls = '';
 		if ( $value !== '' && (string)$key === (string)$value ) {
 			$checked = ' checked="checked"';
 			$cls = 'selected';
 		}
+		if($image_title !==''){	 		
+	 		$description = $image_title["title-$n"];
+	 		$img_title = 'title = "'.$description.'"';
+	 	}
 		$output .= '<div class="smile-radio-image-holder '.$cls.'">';
-		$output .= '<input type="radio" name="' . $input_name . '" value="'.$key.'" id="smile_'.$key.'_'.$n.'" class="form-control smile-input smile-'.$type.' ' . $input_name . ' ' . $type . '" '.$checked.'> <label for="smile_'.$key.'_'.$n.'" class="smile-radio-control"><img class="smile-radio-control" src="'.$img.'"/></label>';
+		// $output .= '<input type="radio" name="' . $input_name . '" value="'.$key.'" id="smile_'.$key.'_'.$n.'" class="form-control smile-input smile-'.$type.' ' . $input_name . ' ' . $type . '" '.$checked.'> <label for="smile_'.$key.'_'.$n.'" class="smile-radio-control"><img style="max-width: '.$max_width.';" class="smile-radio-control" src="'.$img.'"/></label>';
+		$output .= '<input type="radio" name="' . $input_name . '" value="'.$key.'" data-id="smile_'.$input_name.'" class="form-control smile-input smile-'.$type.' ' . $input_name . ' ' . $type . '" '.$checked.'> <label for="smile_'.$key.'_'.$n.'" class="smile-radio-control"><img style="max-width: '.$max_width.';" class="smile-radio-control '.$input_name . '-' . $key.'" src="'.$img.'" '.$img_title.'/></label>';
+
 		$output .= '</div>';
 		$n++;
 	}

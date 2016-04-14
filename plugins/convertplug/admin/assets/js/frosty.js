@@ -84,7 +84,6 @@
         },
 
         addClass: function(klass) {
-        	console.log("in");
             if (typeof klass === 'string') { this.$el.addClass(klass); }
         },
 

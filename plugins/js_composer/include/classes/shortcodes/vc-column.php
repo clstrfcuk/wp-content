@@ -70,11 +70,8 @@ class WPBakeryShortCode_VC_Column extends WPBakeryShortCode {
 				return $output . $controls_add . $controls_edit . $controls_delete . $controls_end;
 			} elseif ( $editAccess ) {
 				return $output . $controls_add . $controls_edit . $controls_end;
-			} else {
-				return $output . $controls_add . $controls_end;
 			}
-
-			return $output . $controls_end;
+            return $output . $controls_add . $controls_end;
 		} elseif ( is_string( $controls ) ) {
 			$control_var = 'controls_' . $controls;
 			if ( 'add' === $controls || ( $editAccess && 'edit' == $controls || $allAccess ) && isset( ${$control_var} ) ) {
@@ -87,11 +84,9 @@ class WPBakeryShortCode_VC_Column extends WPBakeryShortCode {
 			return $output . $controls_add . $controls_edit . $controls_delete . $controls_end;
 		} elseif ( $editAccess ) {
 			return $output . $controls_add . $controls_edit . $controls_end;
-		} else {
-			return $output . $controls_add . $controls_end;
 		}
-
-		return $output . $controls_end;
+        
+        return $output . $controls_add . $controls_end;
 	}
 
 	/**

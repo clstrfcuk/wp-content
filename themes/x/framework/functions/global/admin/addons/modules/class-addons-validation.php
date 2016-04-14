@@ -38,7 +38,9 @@ class X_Addons_Validation {
 
   public function ajax_validation() {
 
-    if ( ! isset( $_POST['code'] ) || ! $_POST['code'] ) {
+    x_tco()->check_ajax_referer();
+
+    if ( ! current_user_can( 'manage_options' ) || ! isset( $_POST['code'] ) || ! $_POST['code'] ) {
       wp_send_json_error( array( 'message' => 'No purchase code specified.' ) );
     }
 
@@ -122,6 +124,7 @@ class X_Addons_Validation {
   }
 
   public function ajax_revoke() {
+    x_tco()->check_ajax_referer();
     $this->update_validation( false );
     wp_send_json_success();
   }

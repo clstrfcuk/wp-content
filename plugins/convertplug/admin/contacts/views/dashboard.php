@@ -198,29 +198,31 @@
               	<?php
               	if( isset( Smile_Framework::$addon_list[strtolower($provider)]['mailer_type'] ) ) {
               		if( Smile_Framework::$addon_list[strtolower($provider)]['mailer_type'] == 'multiple' ) {
-              			$str = array();
-              			if( count( $provider_list_name ) > 0 && is_array( $provider_list_name ) ) {
-              				foreach( $provider_list_name as $list_names ) {
-              					$str[] = $list_names;
-	              			}
-	              			$first_tag = array_shift( $provider_list_name );
-	              			$tooltip = implode( ', ', $provider_list_name );
-	              			$tooltip_html = '<span data-position="top" class="cp-tooltip-icon has-tip" title="' . $tooltip . '"><a style="cursor: help;" href="javascript:void(0);">' . count( $provider_list_name ) . ' More</a></span>';
-	              			$first_tag = ( $first_tag != -1 ) ? $first_tag : 'No tags associated with this campaign.' ;
-	              			echo ( count( $provider_list_name ) > 1 ) ? $first_tag . ' & ' . $tooltip_html : $first_tag;
-	              		} else {
-	              			if( is_array( $provider_list_name ) ) {
-	              				echo 'No list.';
-	              			} else {
-	              				echo esc_attr( $provider_list_name );
-	              			}	              			
-	              		}
-              		} else {
-              			echo esc_attr( $provider_list_name );
+                    $str = array();
+                    if( count( $provider_list_name ) > 0 && is_array( $provider_list_name ) ) {
+                      foreach( $provider_list_name as $list_names ) {
+                        $str[] = $list_names;
+                      }
+                      $first_tag = array_shift( $provider_list_name );
+                      $tooltip = implode( ', ', $provider_list_name );
+                      $tooltip_html = '<span data-position="top" class="cp-tooltip-icon has-tip" title="' . $tooltip . '"><a style="cursor: help;" href="javascript:void(0);">' . count( $provider_list_name ) . ' More</a></span>';
+                      $first_tag = ( $first_tag != -1 ) ? $first_tag : 'No tags associated with this campaign.' ;
+                      echo ( count( $provider_list_name ) > 1 ) ? $first_tag . ' & ' . $tooltip_html : $first_tag;
+                    } else {
+                      if( is_array( $provider_list_name ) ) {
+                        echo 'No list.';
+                      } else {
+                        echo esc_attr( $provider_list_name );
+                      }                     
+                    }
               		}
               		
               	} else {
-              		echo esc_attr( $provider_list_name );
+                  if( $provider == 'ontraport' ) {
+                    echo ( $list['list'] != '-1' ) ? esc_attr( $provider_list_name ) : 'No tags associated with this campaign.';
+                  } else {
+                   echo esc_attr( $provider_list_name );
+                  }
               	} ?>
               </td>
               <td scope="col" class="manage-column column-contacts"><?php echo esc_attr( $contacts ); ?></td>

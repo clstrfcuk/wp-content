@@ -71,7 +71,7 @@ class WP_Clean_Slate {
 			add_action( 'wp_clean_slate_head', array( $this, 'addViewport' ) );
 
 		// Override Theme
-		add_filter( 'template_include', array( $this, 'injectTemplate' ) );
+		add_filter( 'template_include', array( $this, 'injectTemplate' ), 999999 );
 
 
 		// Remove ALL actions to strip 3rd party plugins and unwanted WP functions

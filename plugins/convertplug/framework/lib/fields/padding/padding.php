@@ -7,9 +7,8 @@ if ( function_exists('smile_add_input_type'))
 
 add_action( 'admin_enqueue_scripts', 'enqueue_padding_param_scripts' );
 function enqueue_padding_param_scripts( $hook ){
-	$screen = get_current_screen();
-	$screen_id = $screen->base;
-	$cp_page = strpos( $screen_id, 'plug_page');
+	$cp_page = strpos( $hook, 'plug_page');
+  $data  =  get_option( 'convert_plug_debug' );
 
 	if( $cp_page == 7 && isset( $_GET['style-view'] ) && $_GET['style-view'] == "edit" ){
 		wp_enqueue_script( 'jquery' );
@@ -17,7 +16,7 @@ function enqueue_padding_param_scripts( $hook ){
 		wp_enqueue_script( 'padding-script', plugins_url( 'js/padding.js', __FILE__ ), array('jquery') );
 		
 		wp_enqueue_style( 'jquery-ui' );
-		if( isset( $_GET['developer'] ) ){
+		if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 			wp_enqueue_style( 'padding-style', plugins_url( 'css/padding.css', __FILE__ ) );
 		}
 	}

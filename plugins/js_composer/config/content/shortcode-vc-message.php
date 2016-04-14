@@ -150,6 +150,7 @@ return array(
 				__( 'Entypo', 'js_composer' ) => 'entypo',
 				__( 'Linecons', 'js_composer' ) => 'linecons',
 				__( 'Pixel', 'js_composer' ) => 'pixelicons',
+				__( 'Mono Social', 'js_composer' ) => 'monosocial',
 			),
 			'param_name' => 'icon_type',
 			'description' => __( 'Select icon library.', 'js_composer' ),
@@ -251,6 +252,22 @@ return array(
 			'dependency' => array(
 				'element' => 'icon_type',
 				'value' => 'pixelicons',
+			),
+			'description' => __( 'Select icon from library.', 'js_composer' ),
+		),
+		array(
+			'type' => 'iconpicker',
+			'heading' => __( 'Icon', 'js_composer' ),
+			'param_name' => 'icon_monosocial',
+			'value' => 'vc-mono vc-mono-fivehundredpx', // default value to backend editor admin_label
+			'settings' => array(
+				'emptyIcon' => false, // default true, display an "EMPTY" icon?
+				'type' => 'monosocial',
+				'iconsPerPage' => 4000, // default 100, how many icons per/page to display
+			),
+			'dependency' => array(
+				'element' => 'icon_type',
+				'value' => 'monosocial',
 			),
 			'description' => __( 'Select icon from library.', 'js_composer' ),
 		),

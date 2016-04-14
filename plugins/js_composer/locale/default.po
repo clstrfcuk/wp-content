@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Visual Composer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-07 13:44+0200\n"
-"PO-Revision-Date: 2015-12-07 13:44+0200\n"
+"POT-Creation-Date: 2016-02-09 11:07+0200\n"
+"PO-Revision-Date: 2016-02-09 11:07+0200\n"
 "Last-Translator: Michael M <hello@wpbakery.com>\n"
 "Language-Team: WPBakery\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: ./config/.\n"
 "X-Poedit-SearchPath-1: ./include/.\n"
 
-#: config/./lean-map.php:104 include/./helpers/helpers_api.php:546
+#: config/./lean-map.php:104 include/./helpers/helpers_api.php:545
 msgid "CSS Animation"
 msgstr ""
 
@@ -24,31 +24,31 @@ msgstr ""
 #: include/./autoload/vendors/gravity_forms.php:52
 #: include/./autoload/vendors/gravity_forms.php:67
 #: include/./autoload/vendors/gravity_forms.php:82
-#: include/./helpers/helpers_api.php:550
+#: include/./helpers/helpers_api.php:549
 msgid "No"
 msgstr ""
 
-#: config/./lean-map.php:109 include/./helpers/helpers_api.php:551
+#: config/./lean-map.php:109 include/./helpers/helpers_api.php:550
 msgid "Top to bottom"
 msgstr ""
 
-#: config/./lean-map.php:110 include/./helpers/helpers_api.php:552
+#: config/./lean-map.php:110 include/./helpers/helpers_api.php:551
 msgid "Bottom to top"
 msgstr ""
 
-#: config/./lean-map.php:111 include/./helpers/helpers_api.php:553
+#: config/./lean-map.php:111 include/./helpers/helpers_api.php:552
 msgid "Left to right"
 msgstr ""
 
-#: config/./lean-map.php:112 include/./helpers/helpers_api.php:554
+#: config/./lean-map.php:112 include/./helpers/helpers_api.php:553
 msgid "Right to left"
 msgstr ""
 
-#: config/./lean-map.php:113 include/./helpers/helpers_api.php:555
+#: config/./lean-map.php:113 include/./helpers/helpers_api.php:554
 msgid "Appear from center"
 msgstr ""
 
-#: config/./lean-map.php:115 include/./helpers/helpers_api.php:557
+#: config/./lean-map.php:115 include/./helpers/helpers_api.php:556
 msgid ""
 "Select type of animation for element to be animated when it \"enters\" the "
 "browsers viewport (Note: works only in modern browsers)."
@@ -276,16 +276,14 @@ msgstr ""
 msgid "Mini"
 msgstr ""
 
-#: config/./lean-map.php:208 config/./shortcode-vc-icon-element.php:135
-#: config/./vc-grids-common.php:392 config/./vc-grids-common.php:447
-#: config/./containers/shortcode-vc-row.php:109
+#: config/./lean-map.php:208 config/./containers/shortcode-vc-row.php:109
 #: config/./containers/shortcode-vc-row.php:124
 #: config/./content/shortcode-vc-gallery.php:107
 #: config/./content/shortcode-vc-images-carousel.php:35
 #: config/./content/shortcode-vc-single-image.php:167
 #: config/./content/vc-icon-element.php:127
-#: config/./grids/vc-grids-common.php:441
-#: config/./grids/vc-grids-common.php:498
+#: config/./grids/vc-grids-common.php:442
+#: config/./grids/vc-grids-common.php:499
 #: config/./social/shortcode-vc-googleplus.php:30
 #: config/./tta/shortcode-vc-tta-accordion.php:66
 #: config/./tta/shortcode-vc-tta-accordion.php:86
@@ -304,7 +302,8 @@ msgstr ""
 #: include/./autoload/vc-image-filters.php:56
 #: include/./params/animation_style/animation_style.php:40
 #: include/./params/css_editor/css_editor.php:134
-#: include/./params/vc_grid_item/shortcodes.php:16
+#: include/./params/vc_grid_item/shortcodes.php:15
+#: include/./params/vc_grid_item/shortcodes.php:461
 msgid "None"
 msgstr ""
 
@@ -434,1056 +433,6 @@ msgstr ""
 
 #: config/./lean-map.php:240
 msgid "Video icon"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:28 config/./buttons/shortcode-vc-btn.php:25
-#: config/./content/shortcode-vc-message.php:152
-msgid "Pixel"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:41 config/./shortcode-vc-btn.php:83
-#: config/./buttons/shortcode-vc-btn.php:37
-#: config/./buttons/shortcode-vc-btn.php:79
-#: config/./buttons/shortcode-vc-cta.php:181
-#: config/./content/shortcode-vc-column-text.php:12
-#: config/./content/vc-custom-heading-element.php:24
-#: config/./deprecated/shortcode-vc-button.php:15
-#: config/./deprecated/shortcode-vc-button2.php:20
-#: config/./deprecated/shortcode-vc-carousel.php:52
-#: config/./deprecated/shortcode-vc-cta-button.php:16
-#: config/./deprecated/shortcode-vc-cta-button2.php:54
-#: config/./deprecated/shortcode-vc-posts-grid.php:60
-#: config/./wp/shortcode-vc-wp-text.php:3
-#: config/./wp/shortcode-vc-wp-text.php:20
-#: include/./classes/shortcodes/example.php:112
-#: include/./params/sorted_list/sorted_list.php:89
-#: include/./params/sorted_list/sorted_list.php:93
-#: include/./templates/teaser.html.php:57
-msgid "Text"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:44 config/./buttons/shortcode-vc-btn.php:40
-#: config/./deprecated/shortcode-vc-button.php:19
-#: config/./deprecated/shortcode-vc-button2.php:24
-#: config/./deprecated/shortcode-vc-cta-button.php:23
-#: config/./deprecated/shortcode-vc-cta-button.php:25
-#: config/./deprecated/shortcode-vc-cta-button2.php:66
-#: config/./deprecated/shortcode-vc-cta-button2.php:68
-msgid "Text on the button"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:48 config/./shortcode-vc-icon-element.php:189
-#: config/./buttons/shortcode-vc-btn.php:44
-#: config/./content/vc-custom-heading-element.php:36
-#: config/./content/vc-icon-element.php:181
-#: config/./deprecated/shortcode-vc-button.php:24
-#: config/./deprecated/shortcode-vc-button2.php:14
-#: config/./deprecated/shortcode-vc-cta-button.php:30
-#: config/./deprecated/shortcode-vc-cta-button2.php:60
-#: include/./params/vc_grid_item/shortcodes.php:28
-#: include/./params/vc_grid_item/shortcodes.php:60
-#: include/./params/vc_grid_item/shortcodes.php:422
-#: include/./params/vc_grid_item/shortcodes.php:709
-#: include/./params/vc_grid_item/shortcodes.php:720
-msgid "URL (Link)"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:50 config/./buttons/shortcode-vc-btn.php:46
-#: config/./deprecated/shortcode-vc-button2.php:16
-msgid "Add link to button."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:55 config/./vc-grids-common.php:323
-#: config/./buttons/shortcode-vc-btn.php:51
-#: config/./buttons/shortcode-vc-cta.php:132
-#: config/./content/shortcode-vc-line-chart.php:30
-#: config/./content/shortcode-vc-message.php:117
-#: config/./content/shortcode-vc-round-chart.php:29
-#: config/./content/shortcode-vc-separator.php:42
-#: config/./content/shortcode-vc-text-separator.php:95
-#: config/./content/shortcode-vc-toggle.php:29
-#: config/./grids/vc-grids-common.php:372
-#: config/./tta/shortcode-vc-tta-accordion.php:33
-#: config/./tta/shortcode-vc-tta-tabs.php:33
-#: config/./tta/shortcode-vc-tta-tour.php:33
-msgid "Style"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:56 config/./buttons/shortcode-vc-btn.php:52
-msgid "Select button display style."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:60 config/./buttons/shortcode-vc-btn.php:56
-#: config/./content/shortcode-vc-line-chart.php:35
-#: config/./content/shortcode-vc-round-chart.php:34
-#: config/./tta/shortcode-vc-tta-accordion.php:29
-#: config/./tta/shortcode-vc-tta-tabs.php:29
-#: config/./tta/shortcode-vc-tta-tour.php:29
-msgid "Modern"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:61 config/./buttons/shortcode-vc-btn.php:57
-#: config/./buttons/shortcode-vc-cta.php:135
-#: config/./buttons/shortcode-vc-cta.php:170
-#: config/./tta/shortcode-vc-tta-accordion.php:28
-#: config/./tta/shortcode-vc-tta-tabs.php:28
-#: config/./tta/shortcode-vc-tta-tour.php:28
-msgid "Classic"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:62 config/./buttons/shortcode-vc-btn.php:58
-#: config/./buttons/shortcode-vc-cta.php:136
-#: config/./content/shortcode-vc-line-chart.php:34
-#: config/./content/shortcode-vc-round-chart.php:33
-#: config/./tta/shortcode-vc-tta-accordion.php:30
-#: config/./tta/shortcode-vc-tta-tabs.php:30
-#: config/./tta/shortcode-vc-tta-tour.php:30
-msgid "Flat"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:63 config/./buttons/shortcode-vc-btn.php:59
-#: config/./buttons/shortcode-vc-cta.php:137
-#: config/./tta/shortcode-vc-tta-accordion.php:31
-#: config/./tta/shortcode-vc-tta-tabs.php:31
-#: config/./tta/shortcode-vc-tta-tour.php:31
-msgid "Outline"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:64 config/./buttons/shortcode-vc-btn.php:60
-#: config/./buttons/shortcode-vc-cta.php:138
-msgid "3d"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:65 config/./buttons/shortcode-vc-btn.php:61
-#: config/./buttons/shortcode-vc-cta.php:139
-#: config/./content/shortcode-vc-line-chart.php:36
-#: config/./content/shortcode-vc-message.php:31
-#: config/./content/shortcode-vc-pie.php:42
-#: config/./content/shortcode-vc-round-chart.php:35
-#: config/./content/shortcode-vc-round-chart.php:58
-#: include/./classes/shortcodes/vc-row.php:47
-#: include/./params/sorted_list/sorted_list.php:95
-#: include/./params/sorted_list/sorted_list.php:97
-#: include/./params/vc_grid_item/shortcodes.php:20
-#: include/./params/vc_grid_item/shortcodes.php:236
-#: include/./templates/teaser.html.php:35
-#: include/./templates/teaser.html.php:59
-#: include/./templates/pages/partials/vc-roles-parts/_post_types.tpl.php:15
-#: include/./templates/pages/partials/vc-roles-parts/_settings.tpl.php:18
-#: include/./templates/pages/partials/vc-roles-parts/_shortcodes.tpl.php:33
-msgid "Custom"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:66 config/./buttons/shortcode-vc-btn.php:62
-msgid "Outline custom"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:71 config/./buttons/shortcode-vc-btn.php:67
-#: include/./params/css_editor/css_editor.php:99
-msgid "Background"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:73 config/./buttons/shortcode-vc-btn.php:69
-msgid "Select custom background color for your element."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:85 config/./buttons/shortcode-vc-btn.php:81
-msgid "Select custom text color for your element."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:95 config/./buttons/shortcode-vc-btn.php:91
-msgid "Outline and Text"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:97 config/./buttons/shortcode-vc-btn.php:93
-msgid "Select outline and text color for your element."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:107 config/./buttons/shortcode-vc-btn.php:103
-msgid "Hover background"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:109 config/./buttons/shortcode-vc-btn.php:105
-msgid "Select hover background color for your element."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:119 config/./buttons/shortcode-vc-btn.php:115
-msgid "Hover text"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:121 config/./buttons/shortcode-vc-btn.php:117
-msgid "Select hover text color for your element."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:131 config/./buttons/shortcode-vc-btn.php:127
-#: config/./buttons/shortcode-vc-cta.php:120
-#: config/./content/shortcode-vc-message.php:124
-#: config/./deprecated/shortcode-vc-button2.php:41
-#: config/./deprecated/shortcode-vc-cta-button2.php:27
-#: config/./deprecated/shortcode-vc-cta-button2.php:73
-#: config/./tta/shortcode-vc-tta-accordion.php:44
-#: config/./tta/shortcode-vc-tta-tabs.php:44
-#: config/./tta/shortcode-vc-tta-tour.php:44
-msgid "Shape"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:132 config/./buttons/shortcode-vc-btn.php:128
-msgid "Select button shape."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:136
-#: config/./shortcode-vc-icon-element.php:138 config/./vc-grids-common.php:326
-#: config/./vc-grids-common.php:399 config/./buttons/shortcode-vc-btn.php:132
-#: config/./buttons/shortcode-vc-cta.php:125
-#: config/./content/shortcode-vc-message.php:130
-#: config/./content/vc-icon-element.php:130
-#: config/./grids/vc-grids-common.php:375
-#: config/./grids/vc-grids-common.php:448
-#: config/./tta/shortcode-vc-tta-accordion.php:40
-#: config/./tta/shortcode-vc-tta-tabs.php:40
-#: config/./tta/shortcode-vc-tta-tour.php:40
-msgid "Rounded"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:137
-#: config/./shortcode-vc-icon-element.php:137
-#: config/./buttons/shortcode-vc-btn.php:133
-#: config/./buttons/shortcode-vc-cta.php:124
-#: config/./content/shortcode-vc-message.php:129
-#: config/./content/vc-icon-element.php:129
-#: config/./tta/shortcode-vc-tta-accordion.php:41
-#: config/./tta/shortcode-vc-tta-tabs.php:41
-#: config/./tta/shortcode-vc-tta-tour.php:41
-msgid "Square"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:138 config/./buttons/shortcode-vc-btn.php:134
-#: config/./buttons/shortcode-vc-cta.php:126
-#: config/./content/shortcode-vc-message.php:131
-#: config/./tta/shortcode-vc-tta-accordion.php:42
-#: config/./tta/shortcode-vc-tta-tabs.php:42
-#: config/./tta/shortcode-vc-tta-tour.php:42
-msgid "Round"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:143 config/./vc-grids-common.php:360
-#: config/./buttons/shortcode-vc-btn.php:139
-#: config/./buttons/shortcode-vc-cta.php:168
-#: config/./content/shortcode-vc-line-chart.php:97
-#: config/./content/shortcode-vc-message.php:137
-#: config/./content/shortcode-vc-pie.php:40
-#: config/./content/shortcode-vc-progress-bar.php:51
-#: config/./content/shortcode-vc-progress-bar.php:100
-#: config/./content/shortcode-vc-round-chart.php:125
-#: config/./content/shortcode-vc-separator.php:12
-#: config/./content/shortcode-vc-text-separator.php:76
-#: config/./deprecated/shortcode-vc-button.php:41
-#: config/./deprecated/shortcode-vc-button2.php:48
-#: config/./deprecated/shortcode-vc-cta-button.php:47
-#: config/./deprecated/shortcode-vc-cta-button2.php:80
-#: config/./grids/vc-grids-common.php:409
-#: config/./tta/shortcode-vc-tta-accordion.php:52
-#: config/./tta/shortcode-vc-tta-tabs.php:50
-#: config/./tta/shortcode-vc-tta-tour.php:50
-msgid "Color"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:145 config/./shortcode-vc-media-grid.php:72
-#: config/./vc-grids-common.php:593 config/./buttons/shortcode-vc-btn.php:141
-#: config/./deprecated/shortcode-vc-button.php:44
-#: config/./deprecated/shortcode-vc-button2.php:51
-#: config/./deprecated/shortcode-vc-cta-button.php:50
-#: config/./deprecated/shortcode-vc-cta-button2.php:83
-#: config/./grids/vc-grids-common.php:647
-#: config/./grids/vc-grids-common.php:729
-msgid "Select button color."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:150 config/./buttons/shortcode-vc-btn.php:146
-#: config/./content/shortcode-vc-progress-bar.php:56
-#: config/./content/shortcode-vc-progress-bar.php:103
-msgid "Classic Grey"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:151 config/./buttons/shortcode-vc-btn.php:147
-#: config/./content/shortcode-vc-progress-bar.php:57
-#: config/./content/shortcode-vc-progress-bar.php:104
-msgid "Classic Blue"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:152 config/./buttons/shortcode-vc-btn.php:148
-#: config/./content/shortcode-vc-progress-bar.php:58
-#: config/./content/shortcode-vc-progress-bar.php:105
-msgid "Classic Turquoise"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:153 config/./buttons/shortcode-vc-btn.php:149
-#: config/./content/shortcode-vc-progress-bar.php:59
-#: config/./content/shortcode-vc-progress-bar.php:106
-msgid "Classic Green"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:154 config/./buttons/shortcode-vc-btn.php:150
-#: config/./content/shortcode-vc-progress-bar.php:60
-#: config/./content/shortcode-vc-progress-bar.php:107
-msgid "Classic Orange"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:155 config/./buttons/shortcode-vc-btn.php:151
-#: config/./content/shortcode-vc-progress-bar.php:61
-#: config/./content/shortcode-vc-progress-bar.php:108
-msgid "Classic Red"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:156 config/./buttons/shortcode-vc-btn.php:152
-#: config/./content/shortcode-vc-progress-bar.php:62
-#: config/./content/shortcode-vc-progress-bar.php:109
-msgid "Classic Black"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:168
-#: config/./shortcode-vc-icon-element.php:170
-#: config/./buttons/shortcode-vc-btn.php:167
-#: config/./content/shortcode-vc-toggle.php:44
-#: config/./content/vc-icon-element.php:162
-#: config/./deprecated/shortcode-vc-button.php:56
-#: config/./deprecated/shortcode-vc-button2.php:56
-#: config/./deprecated/shortcode-vc-cta-button.php:62
-#: config/./deprecated/shortcode-vc-cta-button2.php:88
-msgid "Size"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:170 config/./buttons/shortcode-vc-btn.php:169
-msgid "Select button display size."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:177 config/./vc-grids-common.php:344
-#: config/./buttons/shortcode-vc-btn.php:176
-#: config/./content/shortcode-vc-separator.php:21
-#: config/./deprecated/shortcode-vc-button2.php:29
-#: config/./grids/vc-grids-common.php:393
-#: config/./tta/shortcode-vc-tta-accordion.php:110
-#: config/./tta/shortcode-vc-tta-tabs.php:121
-#: config/./tta/shortcode-vc-tta-tour.php:121
-#: include/./params/vc_grid_item/shortcodes.php:527
-msgid "Alignment"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:179 config/./buttons/shortcode-vc-btn.php:178
-#: config/./deprecated/shortcode-vc-button2.php:37
-#: config/./deprecated/shortcode-vc-cta-button.php:76
-#: config/./deprecated/shortcode-vc-cta-button2.php:103
-msgid "Select button alignment."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:182 config/./buttons/shortcode-vc-btn.php:181
-#: config/./deprecated/shortcode-vc-button2.php:32
-#: config/./social/shortcode-vc-googleplus.php:29
-msgid "Inline"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:184 config/./shortcode-vc-btn.php:210
-#: config/./shortcode-vc-icon-element.php:181 config/./vc-grids-common.php:348
-#: config/./buttons/shortcode-vc-btn.php:183
-#: config/./buttons/shortcode-vc-btn.php:209
-#: config/./buttons/shortcode-vc-cta.php:208
-#: config/./buttons/shortcode-vc-cta.php:227
-#: config/./content/shortcode-vc-separator.php:25
-#: config/./content/shortcode-vc-single-image.php:96
-#: config/./content/shortcode-vc-text-separator.php:58
-#: config/./content/shortcode-vc-text-separator.php:69
-#: config/./content/vc-icon-element.php:173
-#: config/./deprecated/shortcode-vc-button2.php:33
-#: config/./deprecated/shortcode-vc-cta-button.php:73
-#: config/./deprecated/shortcode-vc-cta-button2.php:100
-#: config/./grids/vc-grids-common.php:397
-#: config/./tta/shortcode-vc-tta-accordion.php:106
-#: config/./tta/shortcode-vc-tta-accordion.php:158
-#: config/./tta/shortcode-vc-tta-tabs.php:117
-#: config/./tta/shortcode-vc-tta-tour.php:107
-#: config/./tta/shortcode-vc-tta-tour.php:117
-#: include/./classes/shortcodes/vc-gitem-col.php:21
-#: include/./params/vc_grid_item/shortcodes.php:441
-#: include/./params/vc_grid_item/shortcodes.php:530
-#: include/./params/vc_grid_item/shortcodes.php:625
-msgid "Left"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:186 config/./shortcode-vc-btn.php:212
-#: config/./shortcode-vc-icon-element.php:182 config/./vc-grids-common.php:349
-#: config/./buttons/shortcode-vc-btn.php:185
-#: config/./buttons/shortcode-vc-btn.php:211
-#: config/./buttons/shortcode-vc-cta.php:209
-#: config/./buttons/shortcode-vc-cta.php:228
-#: config/./content/shortcode-vc-separator.php:26
-#: config/./content/shortcode-vc-single-image.php:97
-#: config/./content/shortcode-vc-text-separator.php:59
-#: config/./content/shortcode-vc-text-separator.php:70
-#: config/./content/vc-icon-element.php:174
-#: config/./deprecated/shortcode-vc-button2.php:35
-#: config/./deprecated/shortcode-vc-cta-button.php:72
-#: config/./deprecated/shortcode-vc-cta-button2.php:99
-#: config/./grids/vc-grids-common.php:398
-#: config/./tta/shortcode-vc-tta-accordion.php:107
-#: config/./tta/shortcode-vc-tta-accordion.php:159
-#: config/./tta/shortcode-vc-tta-tabs.php:118
-#: config/./tta/shortcode-vc-tta-tour.php:108
-#: config/./tta/shortcode-vc-tta-tour.php:118
-#: include/./classes/shortcodes/vc-gitem-col.php:23
-#: include/./params/vc_grid_item/shortcodes.php:442
-#: include/./params/vc_grid_item/shortcodes.php:531
-#: include/./params/vc_grid_item/shortcodes.php:626
-msgid "Right"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:187
-#: config/./shortcode-vc-icon-element.php:183 config/./vc-grids-common.php:347
-#: config/./buttons/shortcode-vc-btn.php:186
-#: config/./content/shortcode-vc-separator.php:24
-#: config/./content/shortcode-vc-single-image.php:98
-#: config/./content/shortcode-vc-text-separator.php:57
-#: config/./content/shortcode-vc-text-separator.php:68
-#: config/./content/vc-icon-element.php:175
-#: config/./deprecated/shortcode-vc-button2.php:34
-#: config/./grids/vc-grids-common.php:396
-#: config/./tta/shortcode-vc-tta-accordion.php:108
-#: config/./tta/shortcode-vc-tta-tabs.php:119
-#: config/./tta/shortcode-vc-tta-tour.php:119
-#: include/./classes/shortcodes/vc-gitem-col.php:22
-#: include/./params/vc_grid_item/shortcodes.php:443
-#: include/./params/vc_grid_item/shortcodes.php:532
-#: include/./params/vc_grid_item/shortcodes.php:627
-msgid "Center"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:192 config/./buttons/shortcode-vc-btn.php:191
-msgid "Set full width button?"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:201 config/./buttons/shortcode-vc-btn.php:200
-#: config/./buttons/shortcode-vc-cta.php:220
-#: config/./content/shortcode-vc-text-separator.php:48
-#: config/./tta/shortcode-vc-tta-section.php:15
-msgid "Add icon?"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:206 config/./buttons/shortcode-vc-btn.php:205
-msgid "Icon Alignment"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:207
-#: config/./shortcode-vc-icon-element.php:185
-#: config/./buttons/shortcode-vc-btn.php:206
-#: config/./content/vc-icon-element.php:177
-msgid "Select icon alignment."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:224 config/./shortcode-vc-icon-element.php:12
-#: config/./shortcode-vc-icon-element.php:34
-#: config/./shortcode-vc-icon-element.php:51
-#: config/./shortcode-vc-icon-element.php:67
-#: config/./shortcode-vc-icon-element.php:83
-#: config/./shortcode-vc-icon-element.php:98
-#: config/./buttons/shortcode-vc-btn.php:221
-#: config/./buttons/shortcode-vc-cta.php:236
-#: config/./buttons/shortcode-vc-cta.php:242
-#: config/./content/shortcode-vc-message.php:159
-#: config/./content/shortcode-vc-message.php:176
-#: config/./content/shortcode-vc-message.php:193
-#: config/./content/shortcode-vc-message.php:210
-#: config/./content/shortcode-vc-message.php:226
-#: config/./content/shortcode-vc-message.php:243
-#: config/./content/shortcode-vc-text-separator.php:6
-#: config/./content/vc-icon-element.php:4
-#: config/./content/vc-icon-element.php:26
-#: config/./content/vc-icon-element.php:43
-#: config/./content/vc-icon-element.php:59
-#: config/./content/vc-icon-element.php:75
-#: config/./content/vc-icon-element.php:90
-#: config/./deprecated/shortcode-vc-button.php:49
-#: config/./tta/shortcode-vc-tta-accordion.php:151
-msgid "Icon"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:237 config/./shortcode-vc-icon-element.php:47
-#: config/./shortcode-vc-icon-element.php:63
-#: config/./shortcode-vc-icon-element.php:79
-#: config/./shortcode-vc-icon-element.php:110
-#: config/./buttons/shortcode-vc-btn.php:234
-#: config/./content/shortcode-vc-message.php:172
-#: config/./content/shortcode-vc-message.php:189
-#: config/./content/shortcode-vc-message.php:206
-#: config/./content/shortcode-vc-message.php:239
-#: config/./content/shortcode-vc-message.php:255
-#: config/./content/vc-icon-element.php:39
-#: config/./content/vc-icon-element.php:55
-#: config/./content/vc-icon-element.php:71
-#: config/./content/vc-icon-element.php:102
-msgid "Select icon from library."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:244
-#: config/./shortcode-vc-icon-element.php:196 config/./vc-grids-common.php:557
-#: config/./buttons/shortcode-vc-btn.php:240
-#: config/./buttons/shortcode-vc-cta.php:255
-#: config/./containers/shortcode-vc-column-inner.php:19
-#: config/./containers/shortcode-vc-column.php:14
-#: config/./containers/shortcode-vc-row-inner.php:60
-#: config/./containers/shortcode-vc-row.php:153
-#: config/./content/shortcode-vc-column-text.php:19
-#: config/./content/shortcode-vc-empty-space.php:20
-#: config/./content/shortcode-vc-flickr.php:62
-#: config/./content/shortcode-vc-gallery.php:141
-#: config/./content/shortcode-vc-gmaps.php:32
-#: config/./content/shortcode-vc-images-carousel.php:122
-#: config/./content/shortcode-vc-line-chart.php:124
-#: config/./content/shortcode-vc-message.php:268
-#: config/./content/shortcode-vc-pie.php:60
-#: config/./content/shortcode-vc-posts-slider.php:149
-#: config/./content/shortcode-vc-progress-bar.php:148
-#: config/./content/shortcode-vc-round-chart.php:152
-#: config/./content/shortcode-vc-separator.php:63
-#: config/./content/shortcode-vc-single-image.php:199
-#: config/./content/shortcode-vc-text-separator.php:116
-#: config/./content/shortcode-vc-toggle.php:72
-#: config/./content/shortcode-vc-video.php:25
-#: config/./content/vc-custom-heading-element.php:84
-#: config/./content/vc-icon-element.php:188
-#: config/./deprecated/shortcode-vc-accordion.php:41
-#: config/./deprecated/shortcode-vc-button.php:63
-#: config/./deprecated/shortcode-vc-button2.php:64
-#: config/./deprecated/shortcode-vc-carousel.php:144
-#: config/./deprecated/shortcode-vc-cta-button.php:81
-#: config/./deprecated/shortcode-vc-cta-button2.php:108
-#: config/./deprecated/shortcode-vc-posts-grid.php:104
-#: config/./deprecated/shortcode-vc-tabs.php:34
-#: config/./deprecated/shortcode-vc-tour.php:36
-#: config/./grids/vc-grids-common.php:611
-#: config/./structure/shortcode-vc-raw-html.php:20
-#: config/./structure/shortcode-vc-raw-js.php:20
-#: config/./structure/shortcode-vc-widget-sidebar.php:24
-#: config/./tta/shortcode-vc-tta-accordion.php:178
-#: config/./tta/shortcode-vc-tta-pageable.php:98
-#: config/./tta/shortcode-vc-tta-section.php:63
-#: config/./tta/shortcode-vc-tta-tabs.php:181
-#: config/./tta/shortcode-vc-tta-tour.php:195
-#: config/./wp/shortcode-vc-wp-archives.php:30
-#: config/./wp/shortcode-vc-wp-calendar.php:19
-#: config/./wp/shortcode-vc-wp-categories.php:31
-#: config/./wp/shortcode-vc-wp-custommenu.php:40
-#: config/./wp/shortcode-vc-wp-links.php:63
-#: config/./wp/shortcode-vc-wp-meta.php:20
-#: config/./wp/shortcode-vc-wp-pages.php:39
-#: config/./wp/shortcode-vc-wp-posts.php:35
-#: config/./wp/shortcode-vc-wp-recentcomments.php:28
-#: config/./wp/shortcode-vc-wp-rss.php:67
-#: config/./wp/shortcode-vc-wp-search.php:19
-#: config/./wp/shortcode-vc-wp-tagcloud.php:42
-#: config/./wp/shortcode-vc-wp-text.php:25
-#: include/./classes/vendors/plugins/class-vc-vendor-layerslider.php:138
-#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:79
-#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:147
-#: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:71
-#: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:94
-#: include/./params/vc_grid_item/shortcodes.php:51
-#: include/./params/vc_grid_item/shortcodes.php:170
-#: include/./params/vc_grid_item/shortcodes.php:286
-#: include/./params/vc_grid_item/shortcodes.php:308
-#: include/./params/vc_grid_item/shortcodes.php:350
-#: include/./params/vc_grid_item/shortcodes.php:389
-#: include/./params/vc_grid_item/shortcodes.php:405
-#: include/./params/vc_grid_item/shortcodes.php:475
-#: include/./params/vc_grid_item/shortcodes.php:497
-#: include/./params/vc_grid_item/shortcodes.php:539
-#: include/./params/vc_grid_item/shortcodes.php:653
-msgid "Extra class name"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:246
-#: config/./shortcode-vc-icon-element.php:198 config/./vc-grids-common.php:559
-#: config/./buttons/shortcode-vc-btn.php:242
-#: config/./buttons/shortcode-vc-cta.php:257
-#: config/./containers/shortcode-vc-column-inner.php:22
-#: config/./containers/shortcode-vc-column.php:16
-#: config/./containers/shortcode-vc-row-inner.php:62
-#: config/./containers/shortcode-vc-row.php:155
-#: config/./content/shortcode-vc-column-text.php:21
-#: config/./content/shortcode-vc-empty-space.php:22
-#: config/./content/shortcode-vc-flickr.php:64
-#: config/./content/shortcode-vc-gallery.php:143
-#: config/./content/shortcode-vc-gmaps.php:34
-#: config/./content/shortcode-vc-images-carousel.php:124
-#: config/./content/shortcode-vc-line-chart.php:126
-#: config/./content/shortcode-vc-message.php:270
-#: config/./content/shortcode-vc-pie.php:62
-#: config/./content/shortcode-vc-posts-slider.php:151
-#: config/./content/shortcode-vc-progress-bar.php:150
-#: config/./content/shortcode-vc-round-chart.php:154
-#: config/./content/shortcode-vc-separator.php:65
-#: config/./content/shortcode-vc-single-image.php:201
-#: config/./content/shortcode-vc-text-separator.php:118
-#: config/./content/shortcode-vc-toggle.php:74
-#: config/./content/shortcode-vc-video.php:27
-#: config/./content/vc-custom-heading-element.php:86
-#: config/./content/vc-icon-element.php:190
-#: config/./deprecated/shortcode-vc-accordion.php:43
-#: config/./deprecated/shortcode-vc-button.php:65
-#: config/./deprecated/shortcode-vc-button2.php:66
-#: config/./deprecated/shortcode-vc-carousel.php:146
-#: config/./deprecated/shortcode-vc-cta-button.php:83
-#: config/./deprecated/shortcode-vc-cta-button2.php:110
-#: config/./deprecated/shortcode-vc-posts-grid.php:106
-#: config/./deprecated/shortcode-vc-tabs.php:36
-#: config/./deprecated/shortcode-vc-tour.php:38
-#: config/./grids/vc-grids-common.php:613
-#: config/./structure/shortcode-vc-raw-html.php:22
-#: config/./structure/shortcode-vc-raw-js.php:22
-#: config/./structure/shortcode-vc-widget-sidebar.php:26
-#: config/./wp/shortcode-vc-wp-archives.php:32
-#: config/./wp/shortcode-vc-wp-calendar.php:21
-#: config/./wp/shortcode-vc-wp-categories.php:33
-#: config/./wp/shortcode-vc-wp-custommenu.php:42
-#: config/./wp/shortcode-vc-wp-links.php:65
-#: config/./wp/shortcode-vc-wp-meta.php:22
-#: config/./wp/shortcode-vc-wp-pages.php:41
-#: config/./wp/shortcode-vc-wp-posts.php:37
-#: config/./wp/shortcode-vc-wp-recentcomments.php:30
-#: config/./wp/shortcode-vc-wp-rss.php:69
-#: config/./wp/shortcode-vc-wp-search.php:21
-#: config/./wp/shortcode-vc-wp-tagcloud.php:44
-#: config/./wp/shortcode-vc-wp-text.php:27
-#: include/./classes/vendors/plugins/class-vc-vendor-layerslider.php:140
-#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:81
-#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:149
-#: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:73
-#: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:96
-#: include/./params/vc_grid_item/shortcodes.php:53
-#: include/./params/vc_grid_item/shortcodes.php:172
-#: include/./params/vc_grid_item/shortcodes.php:288
-#: include/./params/vc_grid_item/shortcodes.php:310
-#: include/./params/vc_grid_item/shortcodes.php:352
-#: include/./params/vc_grid_item/shortcodes.php:391
-#: include/./params/vc_grid_item/shortcodes.php:407
-#: include/./params/vc_grid_item/shortcodes.php:477
-#: include/./params/vc_grid_item/shortcodes.php:499
-#: include/./params/vc_grid_item/shortcodes.php:541
-#: include/./params/vc_grid_item/shortcodes.php:655
-msgid ""
-"Style particular content element differently - add a class name and refer to "
-"it in custom CSS."
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:250
-#: config/./shortcode-vc-icon-element.php:202
-#: config/./shortcode-vc-media-grid.php:42 config/./vc-grids-common.php:563
-#: config/./buttons/shortcode-vc-btn.php:246
-#: config/./buttons/shortcode-vc-cta.php:261
-#: config/./containers/shortcode-vc-column-inner.php:26
-#: config/./containers/shortcode-vc-column.php:20
-#: config/./containers/shortcode-vc-row-inner.php:66
-#: config/./containers/shortcode-vc-row.php:159
-#: config/./content/shortcode-vc-column-text.php:25
-#: config/./content/shortcode-vc-empty-space.php:26
-#: config/./content/shortcode-vc-flickr.php:68
-#: config/./content/shortcode-vc-gallery.php:147
-#: config/./content/shortcode-vc-gmaps.php:38
-#: config/./content/shortcode-vc-images-carousel.php:128
-#: config/./content/shortcode-vc-line-chart.php:130
-#: config/./content/shortcode-vc-message.php:274
-#: config/./content/shortcode-vc-pie.php:66
-#: config/./content/shortcode-vc-posts-slider.php:155
-#: config/./content/shortcode-vc-progress-bar.php:154
-#: config/./content/shortcode-vc-round-chart.php:158
-#: config/./content/shortcode-vc-separator.php:69
-#: config/./content/shortcode-vc-single-image.php:205
-#: config/./content/shortcode-vc-text-separator.php:127
-#: config/./content/shortcode-vc-toggle.php:78
-#: config/./content/shortcode-vc-video.php:31
-#: config/./content/vc-custom-heading-element.php:90
-#: config/./content/vc-icon-element.php:194
-#: config/./grids/vc-grids-common.php:617
-#: config/./grids/vc-grids-common.php:699
-#: config/./social/shortcode-vc-facebook.php:23
-#: config/./social/shortcode-vc-googleplus.php:47
-#: config/./social/shortcode-vc-pinterest.php:23
-#: config/./social/shortcode-vc-tweetmeme.php:25
-#: config/./structure/shortcode-vc-raw-html.php:26
-#: config/./tta/shortcode-vc-tta-accordion.php:184
-#: config/./tta/shortcode-vc-tta-pageable.php:104
-#: config/./tta/shortcode-vc-tta-tabs.php:187
-#: config/./tta/shortcode-vc-tta-tour.php:201
-#: include/./params/vc_grid_item/shortcodes.php:45
-#: include/./params/vc_grid_item/shortcodes.php:70
-#: include/./params/vc_grid_item/shortcodes.php:165
-#: include/./params/vc_grid_item/shortcodes.php:281
-#: include/./params/vc_grid_item/shortcodes.php:344
-#: include/./params/vc_grid_item/shortcodes.php:481
-#: include/./params/vc_grid_item/shortcodes.php:659
-msgid "CSS box"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:252
-#: config/./shortcode-vc-icon-element.php:204
-#: config/./shortcode-vc-media-grid.php:44 config/./vc-grids-common.php:565
-#: config/./buttons/shortcode-vc-btn.php:248
-#: config/./buttons/shortcode-vc-cta.php:263
-#: config/./containers/shortcode-vc-column-inner.php:28
-#: config/./containers/shortcode-vc-column.php:22
-#: config/./containers/shortcode-vc-row-inner.php:68
-#: config/./containers/shortcode-vc-row.php:161
-#: config/./content/shortcode-vc-column-text.php:27
-#: config/./content/shortcode-vc-empty-space.php:28
-#: config/./content/shortcode-vc-flickr.php:70
-#: config/./content/shortcode-vc-gallery.php:149
-#: config/./content/shortcode-vc-gmaps.php:40
-#: config/./content/shortcode-vc-images-carousel.php:130
-#: config/./content/shortcode-vc-line-chart.php:132
-#: config/./content/shortcode-vc-message.php:276
-#: config/./content/shortcode-vc-pie.php:68
-#: config/./content/shortcode-vc-posts-slider.php:157
-#: config/./content/shortcode-vc-progress-bar.php:156
-#: config/./content/shortcode-vc-round-chart.php:160
-#: config/./content/shortcode-vc-separator.php:71
-#: config/./content/shortcode-vc-single-image.php:207
-#: config/./content/shortcode-vc-text-separator.php:129
-#: config/./content/shortcode-vc-toggle.php:80
-#: config/./content/shortcode-vc-video.php:33
-#: config/./content/vc-custom-heading-element.php:92
-#: config/./content/vc-icon-element.php:196
-#: config/./grids/vc-grids-common.php:619
-#: config/./grids/vc-grids-common.php:701
-#: config/./social/shortcode-vc-facebook.php:25
-#: config/./social/shortcode-vc-googleplus.php:49
-#: config/./social/shortcode-vc-pinterest.php:25
-#: config/./social/shortcode-vc-tweetmeme.php:27
-#: config/./structure/shortcode-vc-raw-html.php:28
-#: config/./tta/shortcode-vc-tta-accordion.php:186
-#: config/./tta/shortcode-vc-tta-pageable.php:106
-#: config/./tta/shortcode-vc-tta-tabs.php:189
-#: config/./tta/shortcode-vc-tta-tour.php:203
-#: include/./classes/settings/class-vc-settings.php:127
-#: include/./params/vc_grid_item/shortcodes.php:47
-#: include/./params/vc_grid_item/shortcodes.php:72
-#: include/./params/vc_grid_item/shortcodes.php:346
-#: include/./params/vc_grid_item/shortcodes.php:483
-#: include/./params/vc_grid_item/shortcodes.php:661
-msgid "Design Options"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:260 config/./buttons/shortcode-vc-btn.php:255
-#: config/./buttons/shortcode-vc-cta.php:212
-#: config/./deprecated/shortcode-vc-button.php:6
-#: config/./deprecated/shortcode-vc-button2.php:3
-msgid "Button"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:264 config/./shortcode-vc-icon-element.php:15
-#: config/./shortcode-vc-media-grid.php:93
-#: config/./buttons/shortcode-vc-btn.php:259
-#: config/./buttons/shortcode-vc-cta.php:270
-#: config/./containers/shortcode-vc-row.php:7
-#: config/./content/shortcode-vc-column-text.php:6
-#: config/./content/shortcode-vc-empty-space.php:7
-#: config/./content/shortcode-vc-flickr.php:6
-#: config/./content/shortcode-vc-gallery.php:6
-#: config/./content/shortcode-vc-gmaps.php:6
-#: config/./content/shortcode-vc-images-carousel.php:6
-#: config/./content/shortcode-vc-line-chart.php:7
-#: config/./content/shortcode-vc-message.php:20
-#: config/./content/shortcode-vc-pie.php:7
-#: config/./content/shortcode-vc-posts-slider.php:6
-#: config/./content/shortcode-vc-progress-bar.php:6
-#: config/./content/shortcode-vc-round-chart.php:7
-#: config/./content/shortcode-vc-separator.php:7
-#: config/./content/shortcode-vc-single-image.php:6
-#: config/./content/shortcode-vc-text-separator.php:35
-#: config/./content/shortcode-vc-toggle.php:6
-#: config/./content/shortcode-vc-video.php:6
-#: config/./content/vc-custom-heading-element.php:8
-#: config/./content/vc-icon-element.php:7
-#: config/./deprecated/shortcode-vc-accordion.php:9
-#: config/./deprecated/shortcode-vc-button.php:9
-#: config/./deprecated/shortcode-vc-button2.php:8
-#: config/./deprecated/shortcode-vc-carousel.php:10
-#: config/./deprecated/shortcode-vc-cta-button.php:10
-#: config/./deprecated/shortcode-vc-cta-button2.php:7
-#: config/./deprecated/shortcode-vc-tabs.php:8
-#: config/./deprecated/shortcode-vc-tour.php:10
-#: config/./grids/shortcode-vc-basic-grid.php:10
-#: config/./grids/shortcode-vc-masonry-grid.php:13
-#: config/./grids/shortcode-vc-masonry-media-grid.php:15
-#: config/./grids/shortcode-vc-media-grid.php:7
-#: config/./tta/shortcode-vc-tta-accordion.php:15
-#: config/./tta/shortcode-vc-tta-pageable.php:15
-#: config/./tta/shortcode-vc-tta-section.php:79
-#: config/./tta/shortcode-vc-tta-tabs.php:15
-#: config/./tta/shortcode-vc-tta-tour.php:15
-#: include/./autoload/vendors/gravity_forms.php:35
-#: include/./classes/settings/class-vc-automapper.php:348
-#: include/./classes/vendors/plugins/class-vc-vendor-contact-form7.php:55
-#: include/./classes/vendors/plugins/class-vc-vendor-layerslider.php:118
-#: include/./classes/vendors/plugins/class-vc-vendor-ninja-forms.php:39
-#: include/./classes/vendors/plugins/class-vc-vendor-ninja-forms.php:83
-#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:59
-#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:127
-#: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:35
-#: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:11
-#: include/./params/vc_grid_item/shortcodes.php:160
-#: include/./params/vc_grid_item/shortcodes.php:185
-#: include/./params/vc_grid_item/shortcodes.php:206
-#: include/./params/vc_grid_item/shortcodes.php:220
-#: include/./params/vc_grid_item/shortcodes.php:260
-#: include/./params/vc_grid_item/shortcodes.php:274
-#: include/./params/vc_grid_item/shortcodes.php:303
-#: include/./params/vc_grid_item/shortcodes.php:572
-msgid "Content"
-msgstr ""
-
-#: config/./shortcode-vc-btn.php:266 config/./buttons/shortcode-vc-btn.php:261
-#: config/./deprecated/shortcode-vc-button.php:11
-#: config/./deprecated/shortcode-vc-button2.php:10
-msgid "Eye catching button"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:16
-#: config/./content/vc-icon-element.php:8
-msgid "Eye catching icons from libraries"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:20
-#: config/./content/shortcode-vc-message.php:145
-#: config/./content/vc-icon-element.php:12
-msgid "Icon library"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:22
-#: config/./content/shortcode-vc-message.php:147
-#: config/./content/vc-icon-element.php:14
-msgid "Font Awesome"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:23
-#: config/./content/shortcode-vc-message.php:148
-#: config/./content/vc-icon-element.php:15
-msgid "Open Iconic"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:24
-#: config/./content/shortcode-vc-message.php:149
-#: config/./content/vc-icon-element.php:16
-msgid "Typicons"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:25
-#: config/./content/shortcode-vc-message.php:150
-#: config/./content/vc-icon-element.php:17
-msgid "Entypo"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:26
-#: config/./content/shortcode-vc-message.php:151
-#: config/./content/vc-icon-element.php:18
-msgid "Linecons"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:30
-#: config/./content/shortcode-vc-message.php:155
-#: config/./content/vc-icon-element.php:22
-msgid "Select icon library."
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:114
-#: config/./content/shortcode-vc-toggle.php:36
-#: config/./content/vc-icon-element.php:106
-msgid "Icon color"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:116
-#: config/./shortcode-vc-icon-element.php:122
-#: config/./shortcode-vc-icon-element.php:149
-#: config/./content/shortcode-vc-line-chart.php:105
-#: config/./content/shortcode-vc-pie.php:50
-#: config/./content/shortcode-vc-progress-bar.php:72
-#: config/./content/shortcode-vc-round-chart.php:133
-#: config/./content/shortcode-vc-separator.php:14
-#: config/./content/shortcode-vc-text-separator.php:78
-#: config/./content/vc-icon-element.php:108
-#: config/./content/vc-icon-element.php:114
-#: config/./content/vc-icon-element.php:141
-msgid "Custom color"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:117
-#: config/./content/shortcode-vc-toggle.php:39
-#: config/./content/vc-icon-element.php:109
-msgid "Select icon color."
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:124
-#: config/./content/vc-icon-element.php:116
-msgid "Select custom icon color."
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:132
-#: config/./content/vc-icon-element.php:124
-msgid "Background shape"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:136
-#: config/./content/vc-icon-element.php:128
-msgid "Circle"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:139
-#: config/./content/vc-icon-element.php:131
-msgid "Outline Circle"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:140
-#: config/./content/vc-icon-element.php:132
-msgid "Outline Square"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:141
-#: config/./content/vc-icon-element.php:133
-msgid "Outline Rounded"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:143
-#: config/./content/vc-icon-element.php:135
-msgid "Select background shape and style for icon."
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:147
-#: config/./buttons/shortcode-vc-cta.php:146
-#: config/./content/vc-icon-element.php:139
-#: config/./deprecated/shortcode-vc-cta-button2.php:48
-msgid "Background color"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:151
-#: config/./content/vc-icon-element.php:143
-msgid "Select background color for icon."
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:160
-#: config/./content/vc-icon-element.php:152
-msgid "Custom background color"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:162
-#: config/./content/vc-icon-element.php:154
-msgid "Select custom icon background color."
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:174
-#: config/./content/vc-icon-element.php:166
-msgid "Icon size."
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:178
-#: config/./content/vc-icon-element.php:170
-msgid "Icon alignment"
-msgstr ""
-
-#: config/./shortcode-vc-icon-element.php:191
-#: config/./content/vc-icon-element.php:183
-msgid "Add link to icon."
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:8
-#: config/./content/shortcode-vc-gallery.php:61
-#: config/./content/shortcode-vc-images-carousel.php:17
-#: config/./grids/vc-grids-common.php:666
-msgid "Images"
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:10
-#: config/./content/shortcode-vc-gallery.php:64
-#: config/./content/shortcode-vc-images-carousel.php:20
-#: config/./grids/vc-grids-common.php:668
-msgid "Select images from media library."
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:29 config/./vc-grids-common.php:544
-#: config/./grids/vc-grids-common.php:599
-#: config/./grids/vc-grids-common.php:687
-msgid "Grid element template"
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:31 config/./vc-grids-common.php:546
-#: config/./grids/vc-grids-common.php:601
-#: config/./grids/vc-grids-common.php:689
-#, php-format
-msgid ""
-"%sCreate new%s template or %smodify selected%s. Predefined templates will be "
-"cloned."
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:33 config/./vc-grids-common.php:548
-#: config/./grids/vc-grids-common.php:602
-#: config/./grids/vc-grids-common.php:690
-msgid "Item Design"
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:50 config/./vc-grids-common.php:571
-#: config/./grids/vc-grids-common.php:625
-#: config/./grids/vc-grids-common.php:707
-msgid "Button style"
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:54
-#: config/./shortcode-vc-media-grid.php:67
-#: config/./shortcode-vc-media-grid.php:80 config/./vc-grids-common.php:39
-#: config/./vc-grids-common.php:575 config/./vc-grids-common.php:588
-#: config/./vc-grids-common.php:601 config/./grids/vc-grids-common.php:61
-#: config/./grids/vc-grids-common.php:629
-#: config/./grids/vc-grids-common.php:642
-#: config/./grids/vc-grids-common.php:655
-#: config/./grids/vc-grids-common.php:711
-#: config/./grids/vc-grids-common.php:724
-#: config/./grids/vc-grids-common.php:737
-msgid "Load More Button"
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:59 config/./vc-grids-common.php:580
-#: config/./grids/vc-grids-common.php:634
-#: config/./grids/vc-grids-common.php:716
-msgid "Select button style."
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:63 config/./vc-grids-common.php:584
-#: config/./grids/vc-grids-common.php:638
-#: config/./grids/vc-grids-common.php:720
-msgid "Button color"
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:76 config/./vc-grids-common.php:597
-#: config/./grids/vc-grids-common.php:651
-#: config/./grids/vc-grids-common.php:733
-#: config/./social/shortcode-vc-googleplus.php:11
-msgid "Button size"
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:79 config/./vc-grids-common.php:600
-#: config/./deprecated/shortcode-vc-button.php:59
-#: config/./deprecated/shortcode-vc-button2.php:60
-#: config/./deprecated/shortcode-vc-cta-button.php:65
-#: config/./deprecated/shortcode-vc-cta-button2.php:92
-#: config/./grids/vc-grids-common.php:654
-#: config/./grids/vc-grids-common.php:736
-#: config/./social/shortcode-vc-googleplus.php:20
-msgid "Select button size."
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:90
-#: config/./grids/shortcode-vc-media-grid.php:4
-msgid "Media Grid"
-msgstr ""
-
-#: config/./shortcode-vc-media-grid.php:94
-#: config/./grids/shortcode-vc-media-grid.php:8
-msgid "Media grid from Media Library"
 msgstr ""
 
 #: config/./templates.php:13
@@ -1742,657 +691,789 @@ msgstr ""
 msgid "Video promo"
 msgstr ""
 
-#: config/./vc-grids-common.php:15 config/./vc-grids-common.php:85
-#: config/./grids/vc-grids-common.php:18
-#: config/./grids/vc-grids-common.php:108
-msgid "Custom query"
+#: config/./buttons/shortcode-vc-btn.php:25
+#: config/./content/shortcode-vc-message.php:152
+msgid "Pixel"
 msgstr ""
 
-#: config/./vc-grids-common.php:16 config/./grids/vc-grids-common.php:22
-msgid "List of IDs"
+#: config/./buttons/shortcode-vc-btn.php:37
+#: config/./buttons/shortcode-vc-btn.php:79
+#: config/./buttons/shortcode-vc-cta.php:181
+#: config/./content/shortcode-vc-column-text.php:12
+#: config/./content/vc-custom-heading-element.php:24
+#: config/./deprecated/shortcode-vc-button.php:15
+#: config/./deprecated/shortcode-vc-button2.php:20
+#: config/./deprecated/shortcode-vc-carousel.php:52
+#: config/./deprecated/shortcode-vc-cta-button.php:16
+#: config/./deprecated/shortcode-vc-cta-button2.php:54
+#: config/./deprecated/shortcode-vc-posts-grid.php:60
+#: config/./wp/shortcode-vc-wp-text.php:3
+#: config/./wp/shortcode-vc-wp-text.php:20
+#: include/./classes/shortcodes/example.php:112
+#: include/./params/sorted_list/sorted_list.php:89
+#: include/./params/sorted_list/sorted_list.php:93
+#: include/./templates/teaser.html.php:57
+msgid "Text"
 msgstr ""
 
-#: config/./vc-grids-common.php:50 config/./grids/vc-grids-common.php:74
-#: include/./classes/shortcodes/vc-basic-grid.php:86
-#: include/./classes/shortcodes/paginator/class-vc-pageable.php:56
-msgid "Load more"
+#: config/./buttons/shortcode-vc-btn.php:40
+#: config/./deprecated/shortcode-vc-button.php:19
+#: config/./deprecated/shortcode-vc-button2.php:24
+#: config/./deprecated/shortcode-vc-cta-button.php:23
+#: config/./deprecated/shortcode-vc-cta-button.php:25
+#: config/./deprecated/shortcode-vc-cta-button2.php:66
+#: config/./deprecated/shortcode-vc-cta-button2.php:68
+msgid "Text on the button"
 msgstr ""
 
-#: config/./vc-grids-common.php:61 config/./grids/vc-grids-common.php:84
-msgid "Data source"
+#: config/./buttons/shortcode-vc-btn.php:44
+#: config/./content/vc-custom-heading-element.php:36
+#: config/./content/vc-icon-element.php:181
+#: config/./deprecated/shortcode-vc-button.php:24
+#: config/./deprecated/shortcode-vc-button2.php:14
+#: config/./deprecated/shortcode-vc-cta-button.php:30
+#: config/./deprecated/shortcode-vc-cta-button2.php:60
+#: include/./params/vc_grid_item/shortcodes.php:28
+#: include/./params/vc_grid_item/shortcodes.php:60
+#: include/./params/vc_grid_item/shortcodes.php:517
+#: include/./params/vc_grid_item/shortcodes.php:804
+#: include/./params/vc_grid_item/shortcodes.php:815
+msgid "URL (Link)"
 msgstr ""
 
-#: config/./vc-grids-common.php:65 config/./grids/vc-grids-common.php:88
-msgid "Select content type for your grid."
+#: config/./buttons/shortcode-vc-btn.php:46
+#: config/./deprecated/shortcode-vc-button2.php:16
+msgid "Add link to button."
 msgstr ""
 
-#: config/./vc-grids-common.php:69 config/./grids/vc-grids-common.php:92
-msgid "Include only"
+#: config/./buttons/shortcode-vc-btn.php:51
+#: config/./buttons/shortcode-vc-cta.php:132
+#: config/./content/shortcode-vc-line-chart.php:30
+#: config/./content/shortcode-vc-message.php:117
+#: config/./content/shortcode-vc-round-chart.php:29
+#: config/./content/shortcode-vc-separator.php:42
+#: config/./content/shortcode-vc-text-separator.php:95
+#: config/./content/shortcode-vc-toggle.php:29
+#: config/./grids/vc-grids-common.php:373
+#: config/./tta/shortcode-vc-tta-accordion.php:33
+#: config/./tta/shortcode-vc-tta-tabs.php:33
+#: config/./tta/shortcode-vc-tta-tour.php:33
+#: include/./params/vc_grid_item/shortcodes.php:458
+msgid "Style"
 msgstr ""
 
-#: config/./vc-grids-common.php:71 config/./grids/vc-grids-common.php:94
-msgid "Add posts, pages, etc. by title."
+#: config/./buttons/shortcode-vc-btn.php:52
+msgid "Select button display style."
 msgstr ""
 
-#: config/./vc-grids-common.php:87 config/./grids/vc-grids-common.php:110
+#: config/./buttons/shortcode-vc-btn.php:56
+#: config/./content/shortcode-vc-line-chart.php:35
+#: config/./content/shortcode-vc-round-chart.php:34
+#: config/./tta/shortcode-vc-tta-accordion.php:29
+#: config/./tta/shortcode-vc-tta-tabs.php:29
+#: config/./tta/shortcode-vc-tta-tour.php:29
+msgid "Modern"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:57
+#: config/./buttons/shortcode-vc-cta.php:135
+#: config/./buttons/shortcode-vc-cta.php:170
+#: config/./tta/shortcode-vc-tta-accordion.php:28
+#: config/./tta/shortcode-vc-tta-tabs.php:28
+#: config/./tta/shortcode-vc-tta-tour.php:28
+msgid "Classic"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:58
+#: config/./buttons/shortcode-vc-cta.php:136
+#: config/./content/shortcode-vc-line-chart.php:34
+#: config/./content/shortcode-vc-round-chart.php:33
+#: config/./tta/shortcode-vc-tta-accordion.php:30
+#: config/./tta/shortcode-vc-tta-tabs.php:30
+#: config/./tta/shortcode-vc-tta-tour.php:30
+msgid "Flat"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:59
+#: config/./buttons/shortcode-vc-cta.php:137
+#: config/./tta/shortcode-vc-tta-accordion.php:31
+#: config/./tta/shortcode-vc-tta-tabs.php:31
+#: config/./tta/shortcode-vc-tta-tour.php:31
+msgid "Outline"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:60
+#: config/./buttons/shortcode-vc-cta.php:138
+msgid "3d"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:61
+#: config/./buttons/shortcode-vc-cta.php:139
+#: config/./content/shortcode-vc-line-chart.php:36
+#: config/./content/shortcode-vc-message.php:31
+#: config/./content/shortcode-vc-pie.php:42
+#: config/./content/shortcode-vc-round-chart.php:35
+#: config/./content/shortcode-vc-round-chart.php:58
+#: include/./classes/shortcodes/vc-row.php:47
+#: include/./params/sorted_list/sorted_list.php:95
+#: include/./params/sorted_list/sorted_list.php:97
+#: include/./params/vc_grid_item/shortcodes.php:20
+#: include/./params/vc_grid_item/shortcodes.php:236
+#: include/./templates/teaser.html.php:35
+#: include/./templates/teaser.html.php:59
+#: include/./templates/pages/partials/vc-roles-parts/_post_types.tpl.php:15
+#: include/./templates/pages/partials/vc-roles-parts/_settings.tpl.php:18
+#: include/./templates/pages/partials/vc-roles-parts/_shortcodes.tpl.php:33
+msgid "Custom"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:62
+msgid "Outline custom"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:67
+#: include/./params/css_editor/css_editor.php:99
+msgid "Background"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:69
+msgid "Select custom background color for your element."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:81
+msgid "Select custom text color for your element."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:91
+msgid "Outline and Text"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:93
+msgid "Select outline and text color for your element."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:103
+msgid "Hover background"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:105
+msgid "Select hover background color for your element."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:115
+msgid "Hover text"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:117
+msgid "Select hover text color for your element."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:127
+#: config/./buttons/shortcode-vc-cta.php:120
+#: config/./content/shortcode-vc-message.php:124
+#: config/./deprecated/shortcode-vc-button2.php:41
+#: config/./deprecated/shortcode-vc-cta-button2.php:27
+#: config/./deprecated/shortcode-vc-cta-button2.php:73
+#: config/./tta/shortcode-vc-tta-accordion.php:44
+#: config/./tta/shortcode-vc-tta-tabs.php:44
+#: config/./tta/shortcode-vc-tta-tour.php:44
+msgid "Shape"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:128
+msgid "Select button shape."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:132
+#: config/./buttons/shortcode-vc-cta.php:125
+#: config/./content/shortcode-vc-message.php:130
+#: config/./content/vc-icon-element.php:130
+#: config/./grids/vc-grids-common.php:376
+#: config/./grids/vc-grids-common.php:449
+#: config/./tta/shortcode-vc-tta-accordion.php:40
+#: config/./tta/shortcode-vc-tta-tabs.php:40
+#: config/./tta/shortcode-vc-tta-tour.php:40
+#: include/./params/vc_grid_item/shortcodes.php:463
+msgid "Rounded"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:133
+#: config/./buttons/shortcode-vc-cta.php:124
+#: config/./content/shortcode-vc-message.php:129
+#: config/./content/vc-icon-element.php:129
+#: config/./tta/shortcode-vc-tta-accordion.php:41
+#: config/./tta/shortcode-vc-tta-tabs.php:41
+#: config/./tta/shortcode-vc-tta-tour.php:41
+msgid "Square"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:134
+#: config/./buttons/shortcode-vc-cta.php:126
+#: config/./content/shortcode-vc-message.php:131
+#: config/./tta/shortcode-vc-tta-accordion.php:42
+#: config/./tta/shortcode-vc-tta-tabs.php:42
+#: config/./tta/shortcode-vc-tta-tour.php:42
+msgid "Round"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:139
+#: config/./buttons/shortcode-vc-cta.php:168
+#: config/./content/shortcode-vc-line-chart.php:97
+#: config/./content/shortcode-vc-message.php:137
+#: config/./content/shortcode-vc-pie.php:40
+#: config/./content/shortcode-vc-progress-bar.php:51
+#: config/./content/shortcode-vc-progress-bar.php:100
+#: config/./content/shortcode-vc-round-chart.php:125
+#: config/./content/shortcode-vc-separator.php:12
+#: config/./content/shortcode-vc-text-separator.php:76
+#: config/./deprecated/shortcode-vc-button.php:41
+#: config/./deprecated/shortcode-vc-button2.php:48
+#: config/./deprecated/shortcode-vc-cta-button.php:47
+#: config/./deprecated/shortcode-vc-cta-button2.php:80
+#: config/./grids/vc-grids-common.php:410
+#: config/./tta/shortcode-vc-tta-accordion.php:52
+#: config/./tta/shortcode-vc-tta-tabs.php:50
+#: config/./tta/shortcode-vc-tta-tour.php:50
+#: include/./params/vc_grid_item/shortcodes.php:473
+msgid "Color"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:141
+#: config/./deprecated/shortcode-vc-button.php:44
+#: config/./deprecated/shortcode-vc-button2.php:51
+#: config/./deprecated/shortcode-vc-cta-button.php:50
+#: config/./deprecated/shortcode-vc-cta-button2.php:83
+#: config/./grids/vc-grids-common.php:648
+#: config/./grids/vc-grids-common.php:730
+msgid "Select button color."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:146
+#: config/./content/shortcode-vc-progress-bar.php:56
+#: config/./content/shortcode-vc-progress-bar.php:103
+msgid "Classic Grey"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:147
+#: config/./content/shortcode-vc-progress-bar.php:57
+#: config/./content/shortcode-vc-progress-bar.php:104
+msgid "Classic Blue"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:148
+#: config/./content/shortcode-vc-progress-bar.php:58
+#: config/./content/shortcode-vc-progress-bar.php:105
+msgid "Classic Turquoise"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:149
+#: config/./content/shortcode-vc-progress-bar.php:59
+#: config/./content/shortcode-vc-progress-bar.php:106
+msgid "Classic Green"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:150
+#: config/./content/shortcode-vc-progress-bar.php:60
+#: config/./content/shortcode-vc-progress-bar.php:107
+msgid "Classic Orange"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:151
+#: config/./content/shortcode-vc-progress-bar.php:61
+#: config/./content/shortcode-vc-progress-bar.php:108
+msgid "Classic Red"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:152
+#: config/./content/shortcode-vc-progress-bar.php:62
+#: config/./content/shortcode-vc-progress-bar.php:109
+msgid "Classic Black"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:167
+#: config/./content/shortcode-vc-toggle.php:44
+#: config/./content/vc-icon-element.php:162
+#: config/./deprecated/shortcode-vc-button.php:56
+#: config/./deprecated/shortcode-vc-button2.php:56
+#: config/./deprecated/shortcode-vc-cta-button.php:62
+#: config/./deprecated/shortcode-vc-cta-button2.php:88
+msgid "Size"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:169
+msgid "Select button display size."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:176
+#: config/./content/shortcode-vc-separator.php:21
+#: config/./content/shortcode-vc-video.php:54
+#: config/./deprecated/shortcode-vc-button2.php:29
+#: config/./grids/vc-grids-common.php:394
+#: config/./tta/shortcode-vc-tta-accordion.php:110
+#: config/./tta/shortcode-vc-tta-tabs.php:121
+#: config/./tta/shortcode-vc-tta-tour.php:121
+#: include/./params/vc_grid_item/shortcodes.php:622
+msgid "Alignment"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:178
+#: config/./deprecated/shortcode-vc-button2.php:37
+#: config/./deprecated/shortcode-vc-cta-button.php:76
+#: config/./deprecated/shortcode-vc-cta-button2.php:103
+msgid "Select button alignment."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:181
+#: config/./deprecated/shortcode-vc-button2.php:32
+#: config/./social/shortcode-vc-googleplus.php:29
+msgid "Inline"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:183
+#: config/./buttons/shortcode-vc-btn.php:209
+#: config/./buttons/shortcode-vc-cta.php:208
+#: config/./buttons/shortcode-vc-cta.php:227
+#: config/./content/shortcode-vc-separator.php:25
+#: config/./content/shortcode-vc-single-image.php:96
+#: config/./content/shortcode-vc-text-separator.php:58
+#: config/./content/shortcode-vc-text-separator.php:69
+#: config/./content/shortcode-vc-video.php:58
+#: config/./content/vc-icon-element.php:173
+#: config/./deprecated/shortcode-vc-button2.php:33
+#: config/./deprecated/shortcode-vc-cta-button.php:73
+#: config/./deprecated/shortcode-vc-cta-button2.php:100
+#: config/./grids/vc-grids-common.php:398
+#: config/./tta/shortcode-vc-tta-accordion.php:106
+#: config/./tta/shortcode-vc-tta-accordion.php:158
+#: config/./tta/shortcode-vc-tta-tabs.php:117
+#: config/./tta/shortcode-vc-tta-tour.php:107
+#: config/./tta/shortcode-vc-tta-tour.php:117
+#: include/./classes/shortcodes/vc-gitem-col.php:21
+#: include/./params/vc_grid_item/shortcodes.php:536
+#: include/./params/vc_grid_item/shortcodes.php:625
+#: include/./params/vc_grid_item/shortcodes.php:720
+msgid "Left"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:185
+#: config/./buttons/shortcode-vc-btn.php:211
+#: config/./buttons/shortcode-vc-cta.php:209
+#: config/./buttons/shortcode-vc-cta.php:228
+#: config/./content/shortcode-vc-separator.php:26
+#: config/./content/shortcode-vc-single-image.php:97
+#: config/./content/shortcode-vc-text-separator.php:59
+#: config/./content/shortcode-vc-text-separator.php:70
+#: config/./content/shortcode-vc-video.php:59
+#: config/./content/vc-icon-element.php:174
+#: config/./deprecated/shortcode-vc-button2.php:35
+#: config/./deprecated/shortcode-vc-cta-button.php:72
+#: config/./deprecated/shortcode-vc-cta-button2.php:99
+#: config/./grids/vc-grids-common.php:399
+#: config/./tta/shortcode-vc-tta-accordion.php:107
+#: config/./tta/shortcode-vc-tta-accordion.php:159
+#: config/./tta/shortcode-vc-tta-tabs.php:118
+#: config/./tta/shortcode-vc-tta-tour.php:108
+#: config/./tta/shortcode-vc-tta-tour.php:118
+#: include/./classes/shortcodes/vc-gitem-col.php:23
+#: include/./params/vc_grid_item/shortcodes.php:537
+#: include/./params/vc_grid_item/shortcodes.php:626
+#: include/./params/vc_grid_item/shortcodes.php:721
+msgid "Right"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:186
+#: config/./content/shortcode-vc-separator.php:24
+#: config/./content/shortcode-vc-single-image.php:98
+#: config/./content/shortcode-vc-text-separator.php:57
+#: config/./content/shortcode-vc-text-separator.php:68
+#: config/./content/shortcode-vc-video.php:60
+#: config/./content/vc-icon-element.php:175
+#: config/./deprecated/shortcode-vc-button2.php:34
+#: config/./grids/vc-grids-common.php:397
+#: config/./tta/shortcode-vc-tta-accordion.php:108
+#: config/./tta/shortcode-vc-tta-tabs.php:119
+#: config/./tta/shortcode-vc-tta-tour.php:119
+#: include/./classes/shortcodes/vc-gitem-col.php:22
+#: include/./params/vc_grid_item/shortcodes.php:538
+#: include/./params/vc_grid_item/shortcodes.php:627
+#: include/./params/vc_grid_item/shortcodes.php:722
+msgid "Center"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:191
+msgid "Set full width button?"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:200
+#: config/./buttons/shortcode-vc-cta.php:220
+#: config/./content/shortcode-vc-text-separator.php:48
+#: config/./tta/shortcode-vc-tta-section.php:15
+msgid "Add icon?"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:205
+msgid "Icon Alignment"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:206
+#: config/./content/vc-icon-element.php:177
+msgid "Select icon alignment."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:221
+#: config/./buttons/shortcode-vc-cta.php:236
+#: config/./buttons/shortcode-vc-cta.php:242
+#: config/./content/shortcode-vc-message.php:159
+#: config/./content/shortcode-vc-message.php:176
+#: config/./content/shortcode-vc-message.php:193
+#: config/./content/shortcode-vc-message.php:210
+#: config/./content/shortcode-vc-message.php:226
+#: config/./content/shortcode-vc-message.php:243
+#: config/./content/shortcode-vc-text-separator.php:6
+#: config/./content/vc-icon-element.php:4
+#: config/./content/vc-icon-element.php:26
+#: config/./content/vc-icon-element.php:43
+#: config/./content/vc-icon-element.php:59
+#: config/./content/vc-icon-element.php:75
+#: config/./content/vc-icon-element.php:90
+#: config/./deprecated/shortcode-vc-button.php:49
+#: config/./tta/shortcode-vc-tta-accordion.php:151
+msgid "Icon"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:234
+#: config/./content/shortcode-vc-message.php:172
+#: config/./content/shortcode-vc-message.php:189
+#: config/./content/shortcode-vc-message.php:206
+#: config/./content/shortcode-vc-message.php:239
+#: config/./content/shortcode-vc-message.php:255
+#: config/./content/vc-icon-element.php:39
+#: config/./content/vc-icon-element.php:55
+#: config/./content/vc-icon-element.php:71
+#: config/./content/vc-icon-element.php:102
+msgid "Select icon from library."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:240
+#: config/./buttons/shortcode-vc-cta.php:255
+#: config/./containers/shortcode-vc-column-inner.php:19
+#: config/./containers/shortcode-vc-column.php:14
+#: config/./containers/shortcode-vc-row-inner.php:60
+#: config/./containers/shortcode-vc-row.php:175
+#: config/./content/shortcode-vc-column-text.php:19
+#: config/./content/shortcode-vc-empty-space.php:20
+#: config/./content/shortcode-vc-flickr.php:62
+#: config/./content/shortcode-vc-gallery.php:141
+#: config/./content/shortcode-vc-gmaps.php:32
+#: config/./content/shortcode-vc-images-carousel.php:122
+#: config/./content/shortcode-vc-line-chart.php:124
+#: config/./content/shortcode-vc-message.php:268
+#: config/./content/shortcode-vc-pie.php:60
+#: config/./content/shortcode-vc-posts-slider.php:149
+#: config/./content/shortcode-vc-progress-bar.php:148
+#: config/./content/shortcode-vc-round-chart.php:152
+#: config/./content/shortcode-vc-separator.php:63
+#: config/./content/shortcode-vc-single-image.php:199
+#: config/./content/shortcode-vc-text-separator.php:116
+#: config/./content/shortcode-vc-toggle.php:72
+#: config/./content/shortcode-vc-video.php:65
+#: config/./content/vc-custom-heading-element.php:84
+#: config/./content/vc-icon-element.php:188
+#: config/./deprecated/shortcode-vc-accordion.php:41
+#: config/./deprecated/shortcode-vc-button.php:63
+#: config/./deprecated/shortcode-vc-button2.php:64
+#: config/./deprecated/shortcode-vc-carousel.php:144
+#: config/./deprecated/shortcode-vc-cta-button.php:81
+#: config/./deprecated/shortcode-vc-cta-button2.php:108
+#: config/./deprecated/shortcode-vc-posts-grid.php:104
+#: config/./deprecated/shortcode-vc-tabs.php:34
+#: config/./deprecated/shortcode-vc-tour.php:36
+#: config/./grids/vc-grids-common.php:612
+#: config/./structure/shortcode-vc-raw-html.php:20
+#: config/./structure/shortcode-vc-raw-js.php:20
+#: config/./structure/shortcode-vc-widget-sidebar.php:24
+#: config/./tta/shortcode-vc-tta-accordion.php:178
+#: config/./tta/shortcode-vc-tta-pageable.php:98
+#: config/./tta/shortcode-vc-tta-section.php:63
+#: config/./tta/shortcode-vc-tta-tabs.php:181
+#: config/./tta/shortcode-vc-tta-tour.php:195
+#: config/./wp/shortcode-vc-wp-archives.php:30
+#: config/./wp/shortcode-vc-wp-calendar.php:19
+#: config/./wp/shortcode-vc-wp-categories.php:31
+#: config/./wp/shortcode-vc-wp-custommenu.php:40
+#: config/./wp/shortcode-vc-wp-links.php:63
+#: config/./wp/shortcode-vc-wp-meta.php:20
+#: config/./wp/shortcode-vc-wp-pages.php:39
+#: config/./wp/shortcode-vc-wp-posts.php:35
+#: config/./wp/shortcode-vc-wp-recentcomments.php:28
+#: config/./wp/shortcode-vc-wp-rss.php:67
+#: config/./wp/shortcode-vc-wp-search.php:19
+#: config/./wp/shortcode-vc-wp-tagcloud.php:42
+#: config/./wp/shortcode-vc-wp-text.php:25
+#: include/./classes/vendors/plugins/class-vc-vendor-layerslider.php:138
+#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:79
+#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:147
+#: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:71
+#: include/./classes/vendors/plugins/acf/shortcode.php:67
+#: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:94
+#: include/./params/vc_grid_item/shortcodes.php:51
+#: include/./params/vc_grid_item/shortcodes.php:170
+#: include/./params/vc_grid_item/shortcodes.php:286
+#: include/./params/vc_grid_item/shortcodes.php:308
+#: include/./params/vc_grid_item/shortcodes.php:350
+#: include/./params/vc_grid_item/shortcodes.php:389
+#: include/./params/vc_grid_item/shortcodes.php:405
+#: include/./params/vc_grid_item/shortcodes.php:435
+#: include/./params/vc_grid_item/shortcodes.php:494
+#: include/./params/vc_grid_item/shortcodes.php:570
+#: include/./params/vc_grid_item/shortcodes.php:592
+#: include/./params/vc_grid_item/shortcodes.php:634
+#: include/./params/vc_grid_item/shortcodes.php:748
+msgid "Extra class name"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:242
+#: config/./buttons/shortcode-vc-cta.php:257
+#: config/./containers/shortcode-vc-column-inner.php:22
+#: config/./containers/shortcode-vc-column.php:16
+#: config/./containers/shortcode-vc-row-inner.php:62
+#: config/./containers/shortcode-vc-row.php:177
+#: config/./content/shortcode-vc-column-text.php:21
+#: config/./content/shortcode-vc-empty-space.php:22
+#: config/./content/shortcode-vc-flickr.php:64
+#: config/./content/shortcode-vc-gallery.php:143
+#: config/./content/shortcode-vc-gmaps.php:34
+#: config/./content/shortcode-vc-images-carousel.php:124
+#: config/./content/shortcode-vc-line-chart.php:126
+#: config/./content/shortcode-vc-message.php:270
+#: config/./content/shortcode-vc-pie.php:62
+#: config/./content/shortcode-vc-posts-slider.php:151
+#: config/./content/shortcode-vc-progress-bar.php:150
+#: config/./content/shortcode-vc-round-chart.php:154
+#: config/./content/shortcode-vc-separator.php:65
+#: config/./content/shortcode-vc-single-image.php:201
+#: config/./content/shortcode-vc-text-separator.php:118
+#: config/./content/shortcode-vc-toggle.php:74
+#: config/./content/shortcode-vc-video.php:67
+#: config/./content/vc-custom-heading-element.php:86
+#: config/./content/vc-icon-element.php:190
+#: config/./deprecated/shortcode-vc-accordion.php:43
+#: config/./deprecated/shortcode-vc-button.php:65
+#: config/./deprecated/shortcode-vc-button2.php:66
+#: config/./deprecated/shortcode-vc-carousel.php:146
+#: config/./deprecated/shortcode-vc-cta-button.php:83
+#: config/./deprecated/shortcode-vc-cta-button2.php:110
+#: config/./deprecated/shortcode-vc-posts-grid.php:106
+#: config/./deprecated/shortcode-vc-tabs.php:36
+#: config/./deprecated/shortcode-vc-tour.php:38
+#: config/./grids/vc-grids-common.php:614
+#: config/./structure/shortcode-vc-raw-html.php:22
+#: config/./structure/shortcode-vc-raw-js.php:22
+#: config/./structure/shortcode-vc-widget-sidebar.php:26
+#: config/./wp/shortcode-vc-wp-archives.php:32
+#: config/./wp/shortcode-vc-wp-calendar.php:21
+#: config/./wp/shortcode-vc-wp-categories.php:33
+#: config/./wp/shortcode-vc-wp-custommenu.php:42
+#: config/./wp/shortcode-vc-wp-links.php:65
+#: config/./wp/shortcode-vc-wp-meta.php:22
+#: config/./wp/shortcode-vc-wp-pages.php:41
+#: config/./wp/shortcode-vc-wp-posts.php:37
+#: config/./wp/shortcode-vc-wp-recentcomments.php:30
+#: config/./wp/shortcode-vc-wp-rss.php:69
+#: config/./wp/shortcode-vc-wp-search.php:21
+#: config/./wp/shortcode-vc-wp-tagcloud.php:44
+#: config/./wp/shortcode-vc-wp-text.php:27
+#: include/./classes/vendors/plugins/class-vc-vendor-layerslider.php:140
+#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:81
+#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:149
+#: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:73
+#: include/./classes/vendors/plugins/acf/shortcode.php:69
+#: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:96
+#: include/./params/vc_grid_item/shortcodes.php:53
+#: include/./params/vc_grid_item/shortcodes.php:172
+#: include/./params/vc_grid_item/shortcodes.php:288
+#: include/./params/vc_grid_item/shortcodes.php:310
+#: include/./params/vc_grid_item/shortcodes.php:352
+#: include/./params/vc_grid_item/shortcodes.php:391
+#: include/./params/vc_grid_item/shortcodes.php:407
+#: include/./params/vc_grid_item/shortcodes.php:437
+#: include/./params/vc_grid_item/shortcodes.php:496
+#: include/./params/vc_grid_item/shortcodes.php:572
+#: include/./params/vc_grid_item/shortcodes.php:594
+#: include/./params/vc_grid_item/shortcodes.php:636
+#: include/./params/vc_grid_item/shortcodes.php:750
 msgid ""
-"Build custom query according to <a href=\"http://codex.wordpress.org/"
-"Function_Reference/query_posts\">WordPress Codex</a>."
-msgstr ""
-
-#: config/./vc-grids-common.php:95 config/./grids/vc-grids-common.php:118
-msgid "Narrow data source"
-msgstr ""
-
-#: config/./vc-grids-common.php:112 config/./grids/vc-grids-common.php:135
-msgid "Enter categories, tags or custom taxonomies."
-msgstr ""
-
-#: config/./vc-grids-common.php:120 config/./grids/vc-grids-common.php:146
-msgid "Total items"
-msgstr ""
-
-#: config/./vc-grids-common.php:124 config/./grids/vc-grids-common.php:151
-msgid ""
-"Set max limit for items in grid or enter -1 to display all (limited to 1000)."
-msgstr ""
-
-#: config/./vc-grids-common.php:132 config/./grids/vc-grids-common.php:162
-msgid "Display Style"
-msgstr ""
-
-#: config/./vc-grids-common.php:135 config/./grids/vc-grids-common.php:165
-msgid "Show all"
-msgstr ""
-
-#: config/./vc-grids-common.php:136 config/./grids/vc-grids-common.php:166
-msgid "Load more button"
-msgstr ""
-
-#: config/./vc-grids-common.php:137 config/./grids/vc-grids-common.php:167
-msgid "Lazy loading"
-msgstr ""
-
-#: config/./vc-grids-common.php:138 config/./vc-grids-common.php:407
-#: config/./vc-grids-common.php:422 config/./vc-grids-common.php:435
-#: config/./vc-grids-common.php:469 config/./vc-grids-common.php:483
-#: config/./vc-grids-common.php:496 config/./vc-grids-common.php:508
-#: config/./vc-grids-common.php:518 config/./vc-grids-common.php:532
-#: config/./grids/shortcode-vc-masonry-grid.php:7
-#: config/./grids/shortcode-vc-masonry-media-grid.php:9
-#: config/./grids/vc-grids-common.php:168
-#: config/./grids/vc-grids-common.php:456
-#: config/./grids/vc-grids-common.php:471
-#: config/./grids/vc-grids-common.php:485
-#: config/./grids/vc-grids-common.php:520
-#: config/./grids/vc-grids-common.php:534
-#: config/./grids/vc-grids-common.php:548
-#: config/./grids/vc-grids-common.php:560
-#: config/./grids/vc-grids-common.php:570
-#: config/./grids/vc-grids-common.php:587
-msgid "Pagination"
-msgstr ""
-
-#: config/./vc-grids-common.php:145 config/./grids/vc-grids-common.php:175
-msgid "Select display style for grid."
-msgstr ""
-
-#: config/./vc-grids-common.php:149 config/./grids/vc-grids-common.php:179
-msgid "Items per page"
-msgstr ""
-
-#: config/./vc-grids-common.php:151 config/./grids/vc-grids-common.php:181
-msgid "Number of items to show per page."
-msgstr ""
-
-#: config/./vc-grids-common.php:161
-#: config/./deprecated/shortcode-vc-posts-grid.php:80
-#: config/./grids/vc-grids-common.php:195
-msgid "Show filter"
-msgstr ""
-
-#: config/./vc-grids-common.php:163 config/./vc-grids-common.php:495
-#: config/./containers/shortcode-vc-row-inner.php:23
-#: config/./containers/shortcode-vc-row.php:48
-#: config/./containers/shortcode-vc-row.php:71
-#: config/./containers/shortcode-vc-row.php:90
-#: config/./content/shortcode-vc-images-carousel.php:90
-#: config/./content/shortcode-vc-images-carousel.php:97
-#: config/./content/shortcode-vc-images-carousel.php:104
-#: config/./content/shortcode-vc-images-carousel.php:111
-#: config/./content/shortcode-vc-images-carousel.php:118
-#: config/./content/shortcode-vc-line-chart.php:47
-#: config/./content/shortcode-vc-line-chart.php:55
-#: config/./content/shortcode-vc-posts-slider.php:72
-#: config/./content/shortcode-vc-round-chart.php:82
-#: config/./content/shortcode-vc-round-chart.php:90
-#: config/./content/shortcode-vc-single-image.php:85
-#: config/./content/vc-custom-heading-element.php:64
-#: config/./deprecated/shortcode-vc-accordion.php:30
-#: config/./deprecated/shortcode-vc-accordion.php:37
-#: config/./deprecated/shortcode-vc-carousel.php:112
-#: config/./deprecated/shortcode-vc-carousel.php:119
-#: config/./deprecated/shortcode-vc-carousel.php:126
-#: config/./deprecated/shortcode-vc-carousel.php:133
-#: config/./deprecated/shortcode-vc-carousel.php:140
-#: config/./deprecated/shortcode-vc-posts-grid.php:82
-#: config/./grids/vc-grids-common.php:197
-#: config/./grids/vc-grids-common.php:547
-#: config/./wp/shortcode-vc-wp-posts.php:30
-#: include/./autoload/vendors/gravity_forms.php:53
-#: include/./autoload/vendors/gravity_forms.php:68
-#: include/./autoload/vendors/gravity_forms.php:83
-#: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:54
-#: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:75
-#: include/./params/default_params.php:95
-#: include/./params/vc_grid_item/shortcodes.php:40
-#: include/./params/vc_grid_item/shortcodes.php:96
-#: include/./params/vc_grid_item/shortcodes.php:125
-#: include/./params/vc_grid_item/shortcodes.php:339
-msgid "Yes"
-msgstr ""
-
-#: config/./vc-grids-common.php:164 config/./grids/vc-grids-common.php:198
-msgid "Append filter to grid."
-msgstr ""
-
-#: config/./vc-grids-common.php:168 config/./grids/vc-grids-common.php:202
-msgid "Grid elements per row"
-msgstr ""
-
-#: config/./vc-grids-common.php:173 config/./grids/vc-grids-common.php:207
-msgid "Select number of single grid elements per row."
-msgstr ""
-
-#: config/./vc-grids-common.php:177
-#: config/./content/shortcode-vc-round-chart.php:43
-#: config/./grids/vc-grids-common.php:211
-#: config/./tta/shortcode-vc-tta-accordion.php:99
-#: config/./tta/shortcode-vc-tta-tabs.php:100
-#: config/./tta/shortcode-vc-tta-tour.php:100
-msgid "Gap"
-msgstr ""
-
-#: config/./vc-grids-common.php:194 config/./grids/vc-grids-common.php:228
-msgid "Select gap between grid elements."
-msgstr ""
-
-#: config/./vc-grids-common.php:200
-#: config/./content/shortcode-vc-posts-slider.php:122
-#: config/./grids/vc-grids-common.php:234
-#: config/./wp/shortcode-vc-wp-links.php:35
-#: config/./wp/shortcode-vc-wp-pages.php:20
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:214
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:266
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:331
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:499
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:540
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:617
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:703
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:762
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:855
-#: include/./params/loop/loop.php:307
-msgid "Order by"
-msgstr ""
-
-#: config/./vc-grids-common.php:203
-#: config/./content/shortcode-vc-posts-slider.php:126
-#: config/./grids/vc-grids-common.php:237
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:88
-#: include/./params/loop/loop.php:423
-msgid "Date"
-msgstr ""
-
-#: config/./vc-grids-common.php:204 config/./grids/vc-grids-common.php:238
-msgid "Order by post ID"
-msgstr ""
-
-#: config/./vc-grids-common.php:205
-#: config/./content/shortcode-vc-posts-slider.php:128
-#: config/./grids/vc-grids-common.php:239
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:90
-#: include/./params/loop/loop.php:310 include/./params/loop/loop.php:425
-msgid "Author"
-msgstr ""
-
-#: config/./vc-grids-common.php:206
-#: config/./content/shortcode-vc-line-chart.php:84
-#: config/./content/shortcode-vc-posts-slider.php:129
-#: config/./content/shortcode-vc-round-chart.php:112
-#: config/./content/shortcode-vc-text-separator.php:40
-#: config/./content/shortcode-vc-text-separator.php:43
-#: config/./deprecated/shortcode-vc-accordion-tab.php:12
-#: config/./deprecated/shortcode-vc-carousel.php:47
-#: config/./deprecated/shortcode-vc-posts-grid.php:55
-#: config/./deprecated/shortcode-vc-tab.php:12
-#: config/./grids/vc-grids-common.php:240
-#: config/./tta/shortcode-vc-tta-section.php:48
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:91
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1221
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1254
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1317
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1431
-#: include/./params/loop/loop.php:426
-#: include/./params/sorted_list/sorted_list.php:91
-#: include/./params/vc_link/vc_link.php:18
-msgid "Title"
-msgstr ""
-
-#: config/./vc-grids-common.php:207 config/./grids/vc-grids-common.php:241
-msgid "Last modified date"
-msgstr ""
-
-#: config/./vc-grids-common.php:208 config/./grids/vc-grids-common.php:242
-msgid "Post/page parent ID"
-msgstr ""
-
-#: config/./vc-grids-common.php:209 config/./grids/vc-grids-common.php:243
-#: config/./wp/shortcode-vc-wp-recentcomments.php:20
-msgid "Number of comments"
-msgstr ""
-
-#: config/./vc-grids-common.php:210 config/./grids/vc-grids-common.php:244
-msgid "Menu order/Page Order"
-msgstr ""
-
-#: config/./vc-grids-common.php:211 config/./grids/vc-grids-common.php:245
-msgid "Meta value"
-msgstr ""
-
-#: config/./vc-grids-common.php:212 config/./grids/vc-grids-common.php:246
-msgid "Meta value number"
-msgstr ""
-
-#: config/./vc-grids-common.php:213 config/./grids/vc-grids-common.php:247
-msgid "Random order"
-msgstr ""
-
-#: config/./vc-grids-common.php:215 config/./grids/vc-grids-common.php:249
-msgid ""
-"Select order type. If \"Meta value\" or \"Meta value Number\" is chosen then "
-"meta key is required."
-msgstr ""
-
-#: config/./vc-grids-common.php:216 config/./vc-grids-common.php:227
-#: config/./vc-grids-common.php:244 config/./vc-grids-common.php:256
-#: config/./vc-grids-common.php:268 config/./grids/vc-grids-common.php:250
-#: config/./grids/vc-grids-common.php:264
-#: config/./grids/vc-grids-common.php:284
-#: config/./grids/vc-grids-common.php:299
-#: config/./grids/vc-grids-common.php:314
-msgid "Data Settings"
-msgstr ""
-
-#: config/./vc-grids-common.php:225
-#: config/./content/shortcode-vc-posts-slider.php:139
-#: config/./grids/vc-grids-common.php:262
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:222
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:274
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:340
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:507
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:548
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:625
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:711
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:770
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:863
-#: include/./params/loop/loop.php:308
-msgid "Sort order"
-msgstr ""
-
-#: config/./vc-grids-common.php:229
-#: config/./content/shortcode-vc-posts-slider.php:142
-#: config/./grids/vc-grids-common.php:266
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:100
-#: include/./params/loop/loop.php:443
-msgid "Descending"
-msgstr ""
-
-#: config/./vc-grids-common.php:230
-#: config/./content/shortcode-vc-posts-slider.php:143
-#: config/./grids/vc-grids-common.php:267
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:101
-#: include/./params/loop/loop.php:442
-msgid "Ascending"
-msgstr ""
-
-#: config/./vc-grids-common.php:233 config/./grids/vc-grids-common.php:270
-msgid "Select sorting order."
-msgstr ""
-
-#: config/./vc-grids-common.php:241 config/./grids/vc-grids-common.php:281
-msgid "Meta key"
-msgstr ""
-
-#: config/./vc-grids-common.php:243 config/./grids/vc-grids-common.php:283
-msgid "Input meta key for grid ordering."
-msgstr ""
-
-#: config/./vc-grids-common.php:253 config/./grids/vc-grids-common.php:296
-#: include/./templates/params/column_offset/template.tpl.php:23
-msgid "Offset"
-msgstr ""
-
-#: config/./vc-grids-common.php:255 config/./grids/vc-grids-common.php:298
-msgid "Number of grid elements to displace or pass over."
-msgstr ""
-
-#: config/./vc-grids-common.php:265 config/./grids/vc-grids-common.php:311
-#: config/./wp/shortcode-vc-wp-pages.php:32
-msgid "Exclude"
-msgstr ""
-
-#: config/./vc-grids-common.php:267 config/./grids/vc-grids-common.php:313
-msgid "Exclude posts, pages, etc. by title."
-msgstr ""
-
-#: config/./vc-grids-common.php:282 config/./grids/vc-grids-common.php:331
-msgid "Filter by"
-msgstr ""
-
-#: config/./vc-grids-common.php:285 config/./vc-grids-common.php:319
-#: config/./vc-grids-common.php:339 config/./vc-grids-common.php:355
-#: config/./vc-grids-common.php:369 config/./vc-grids-common.php:383
-#: config/./grids/vc-grids-common.php:334
-#: config/./grids/vc-grids-common.php:368
-#: config/./grids/vc-grids-common.php:388
-#: config/./grids/vc-grids-common.php:404
-#: config/./grids/vc-grids-common.php:418
-#: config/./grids/vc-grids-common.php:432
-#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:786
-msgid "Filter"
-msgstr ""
-
-#: config/./vc-grids-common.php:291 config/./grids/vc-grids-common.php:340
-msgid "Select filter source."
-msgstr ""
-
-#: config/./vc-grids-common.php:295 config/./grids/vc-grids-common.php:344
-msgid "Exclude from filter list"
-msgstr ""
-
-#: config/./vc-grids-common.php:313 config/./grids/vc-grids-common.php:362
-msgid "Enter categories, tags won't be shown in the filters list"
-msgstr ""
-
-#: config/./vc-grids-common.php:327 config/./grids/vc-grids-common.php:376
-msgid "Less Rounded"
-msgstr ""
-
-#: config/./vc-grids-common.php:328 config/./grids/vc-grids-common.php:377
-msgid "Border"
-msgstr ""
-
-#: config/./vc-grids-common.php:329 config/./grids/vc-grids-common.php:378
-msgid "Rounded Border"
-msgstr ""
-
-#: config/./vc-grids-common.php:330 config/./grids/vc-grids-common.php:379
-msgid "Less Rounded Border"
-msgstr ""
-
-#: config/./vc-grids-common.php:331 config/./grids/vc-grids-common.php:380
-msgid "Filled"
-msgstr ""
-
-#: config/./vc-grids-common.php:332 config/./grids/vc-grids-common.php:381
-msgid "Rounded Filled"
-msgstr ""
-
-#: config/./vc-grids-common.php:333 config/./grids/vc-grids-common.php:382
-#: config/./wp/shortcode-vc-wp-archives.php:23
-#: config/./wp/shortcode-vc-wp-categories.php:23
-#: include/./classes/settings/class-vc-automapper.php:381
-msgid "Dropdown"
-msgstr ""
-
-#: config/./vc-grids-common.php:340 config/./grids/vc-grids-common.php:389
-msgid "Select filter display style."
-msgstr ""
-
-#: config/./vc-grids-common.php:356 config/./grids/vc-grids-common.php:405
-msgid "Select filter alignment."
-msgstr ""
-
-#: config/./vc-grids-common.php:370 config/./grids/vc-grids-common.php:419
-msgid "Select filter color."
-msgstr ""
-
-#: config/./vc-grids-common.php:374 config/./grids/vc-grids-common.php:423
-msgid "Filter size"
-msgstr ""
-
-#: config/./vc-grids-common.php:378 config/./grids/vc-grids-common.php:427
-msgid "Select filter size."
-msgstr ""
-
-#: config/./vc-grids-common.php:389 config/./grids/vc-grids-common.php:438
-msgid "Arrows design"
-msgstr ""
-
-#: config/./vc-grids-common.php:393
-#: config/./containers/shortcode-vc-row.php:110
-#: config/./containers/shortcode-vc-row.php:125
-#: config/./grids/vc-grids-common.php:442
-msgid "Simple"
-msgstr ""
-
-#: config/./vc-grids-common.php:394 config/./grids/vc-grids-common.php:443
-msgid "Simple Circle Border"
-msgstr ""
-
-#: config/./vc-grids-common.php:395 config/./grids/vc-grids-common.php:444
-msgid "Simple Circle"
-msgstr ""
-
-#: config/./vc-grids-common.php:396 config/./grids/vc-grids-common.php:445
-msgid "Simple Square"
-msgstr ""
-
-#: config/./vc-grids-common.php:397 config/./grids/vc-grids-common.php:446
-msgid "Simple Square Rounded"
-msgstr ""
-
-#: config/./vc-grids-common.php:398 config/./grids/vc-grids-common.php:447
-msgid "Simple Rounded"
-msgstr ""
-
-#: config/./vc-grids-common.php:400 config/./grids/vc-grids-common.php:449
-msgid "Rounded Circle Border"
-msgstr ""
-
-#: config/./vc-grids-common.php:401 config/./grids/vc-grids-common.php:450
-msgid "Rounded Circle"
-msgstr ""
-
-#: config/./vc-grids-common.php:402 config/./grids/vc-grids-common.php:451
-msgid "Rounded Square"
-msgstr ""
-
-#: config/./vc-grids-common.php:403 config/./grids/vc-grids-common.php:452
-msgid "Simple Arrow"
-msgstr ""
-
-#: config/./vc-grids-common.php:404 config/./grids/vc-grids-common.php:453
-msgid "Simple Rounded Arrow"
-msgstr ""
-
-#: config/./vc-grids-common.php:412 config/./grids/vc-grids-common.php:461
-msgid "Select design for arrows."
-msgstr ""
-
-#: config/./vc-grids-common.php:416 config/./grids/vc-grids-common.php:465
-msgid "Arrows position"
-msgstr ""
-
-#: config/./vc-grids-common.php:419 config/./grids/vc-grids-common.php:468
-msgid "Inside Wrapper"
-msgstr ""
-
-#: config/./vc-grids-common.php:420 config/./grids/vc-grids-common.php:469
-msgid "Outside Wrapper"
-msgstr ""
-
-#: config/./vc-grids-common.php:427 config/./grids/vc-grids-common.php:477
-msgid "Arrows will be displayed inside or outside grid."
-msgstr ""
-
-#: config/./vc-grids-common.php:431 config/./grids/vc-grids-common.php:481
-msgid "Arrows color"
-msgstr ""
-
-#: config/./vc-grids-common.php:440 config/./grids/vc-grids-common.php:491
-msgid "Select color for arrows."
-msgstr ""
-
-#: config/./vc-grids-common.php:444 config/./grids/vc-grids-common.php:495
-#: config/./tta/shortcode-vc-tta-pageable.php:68
-#: config/./tta/shortcode-vc-tta-tabs.php:163
-#: config/./tta/shortcode-vc-tta-tour.php:177
-msgid "Pagination style"
-msgstr ""
-
-#: config/./vc-grids-common.php:448 config/./grids/vc-grids-common.php:499
-#: config/./tta/shortcode-vc-tta-pageable.php:62
-#: config/./tta/shortcode-vc-tta-tabs.php:157
-#: config/./tta/shortcode-vc-tta-tour.php:171
-msgid "Square Dots"
-msgstr ""
-
-#: config/./vc-grids-common.php:449 config/./grids/vc-grids-common.php:500
-#: config/./tta/shortcode-vc-tta-pageable.php:63
-#: config/./tta/shortcode-vc-tta-tabs.php:158
-#: config/./tta/shortcode-vc-tta-tour.php:172
-msgid "Radio Dots"
-msgstr ""
-
-#: config/./vc-grids-common.php:450 config/./grids/vc-grids-common.php:501
-#: config/./tta/shortcode-vc-tta-pageable.php:64
-#: config/./tta/shortcode-vc-tta-tabs.php:159
-#: config/./tta/shortcode-vc-tta-tour.php:173
-msgid "Point Dots"
-msgstr ""
-
-#: config/./vc-grids-common.php:451 config/./grids/vc-grids-common.php:502
-#: config/./tta/shortcode-vc-tta-pageable.php:65
-#: config/./tta/shortcode-vc-tta-tabs.php:160
-#: config/./tta/shortcode-vc-tta-tour.php:174
-msgid "Fill Square Dots"
-msgstr ""
-
-#: config/./vc-grids-common.php:452 config/./grids/vc-grids-common.php:503
-#: config/./tta/shortcode-vc-tta-pageable.php:66
-#: config/./tta/shortcode-vc-tta-tabs.php:161
-#: config/./tta/shortcode-vc-tta-tour.php:175
-msgid "Rounded Fill Square Dots"
-msgstr ""
-
-#: config/./vc-grids-common.php:453 config/./grids/vc-grids-common.php:504
-msgid "Pagination Default"
-msgstr ""
-
-#: config/./vc-grids-common.php:454 config/./grids/vc-grids-common.php:505
-msgid "Outline Default Dark"
-msgstr ""
-
-#: config/./vc-grids-common.php:455 config/./grids/vc-grids-common.php:506
-msgid "Outline Default Light"
-msgstr ""
-
-#: config/./vc-grids-common.php:456 config/./grids/vc-grids-common.php:507
-msgid "Pagination Rounded"
-msgstr ""
-
-#: config/./vc-grids-common.php:457 config/./grids/vc-grids-common.php:508
-msgid "Outline Rounded Dark"
-msgstr ""
-
-#: config/./vc-grids-common.php:458 config/./grids/vc-grids-common.php:509
-msgid "Outline Rounded Light"
-msgstr ""
-
-#: config/./vc-grids-common.php:459 config/./grids/vc-grids-common.php:510
-msgid "Pagination Square"
-msgstr ""
-
-#: config/./vc-grids-common.php:460 config/./grids/vc-grids-common.php:511
-msgid "Outline Square Dark"
-msgstr ""
-
-#: config/./vc-grids-common.php:461 config/./grids/vc-grids-common.php:512
-msgid "Outline Square Light"
-msgstr ""
-
-#: config/./vc-grids-common.php:462 config/./grids/vc-grids-common.php:513
-msgid "Pagination Rounded Square"
-msgstr ""
-
-#: config/./vc-grids-common.php:463 config/./grids/vc-grids-common.php:514
-msgid "Outline Rounded Square Dark"
-msgstr ""
-
-#: config/./vc-grids-common.php:464 config/./grids/vc-grids-common.php:515
-msgid "Outline Rounded Square Light"
-msgstr ""
-
-#: config/./vc-grids-common.php:465 config/./grids/vc-grids-common.php:516
-msgid "Stripes Dark"
-msgstr ""
-
-#: config/./vc-grids-common.php:466 config/./grids/vc-grids-common.php:517
-msgid "Stripes Light"
-msgstr ""
-
-#: config/./vc-grids-common.php:474 config/./grids/vc-grids-common.php:525
-#: config/./tta/shortcode-vc-tta-pageable.php:69
-#: config/./tta/shortcode-vc-tta-tabs.php:164
-#: config/./tta/shortcode-vc-tta-tour.php:178
-msgid "Select pagination style."
-msgstr ""
-
-#: config/./vc-grids-common.php:478 config/./grids/vc-grids-common.php:529
-#: config/./tta/shortcode-vc-tta-pageable.php:76
-#: config/./tta/shortcode-vc-tta-tabs.php:170
-#: config/./tta/shortcode-vc-tta-tour.php:184
-msgid "Pagination color"
-msgstr ""
-
-#: config/./vc-grids-common.php:488 config/./grids/vc-grids-common.php:540
-#: config/./tta/shortcode-vc-tta-pageable.php:77
-#: config/./tta/shortcode-vc-tta-tabs.php:171
-#: config/./tta/shortcode-vc-tta-tour.php:185
-msgid "Select pagination color."
-msgstr ""
-
-#: config/./vc-grids-common.php:492 config/./grids/vc-grids-common.php:544
-msgid "Loop pages?"
-msgstr ""
-
-#: config/./vc-grids-common.php:494 config/./grids/vc-grids-common.php:546
-msgid "Allow items to be repeated in infinite loop (carousel)."
-msgstr ""
-
-#: config/./vc-grids-common.php:504 config/./grids/vc-grids-common.php:556
-msgid "Autoplay delay"
-msgstr ""
-
-#: config/./vc-grids-common.php:507 config/./grids/vc-grids-common.php:559
-msgid "Enter value in seconds. Set -1 to disable autoplay."
-msgstr ""
-
-#: config/./vc-grids-common.php:516 config/./grids/vc-grids-common.php:568
-msgid "Animation In"
-msgstr ""
-
-#: config/./vc-grids-common.php:526 config/./grids/vc-grids-common.php:581
-msgid "Select \"animation in\" for page transition."
-msgstr ""
-
-#: config/./vc-grids-common.php:530 config/./grids/vc-grids-common.php:585
-msgid "Animation Out"
-msgstr ""
-
-#: config/./vc-grids-common.php:540 config/./grids/vc-grids-common.php:595
-msgid "Select \"animation out\" for page transition."
+"Style particular content element differently - add a class name and refer to "
+"it in custom CSS."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:246
+#: config/./buttons/shortcode-vc-cta.php:261
+#: config/./containers/shortcode-vc-column-inner.php:26
+#: config/./containers/shortcode-vc-column.php:20
+#: config/./containers/shortcode-vc-row-inner.php:66
+#: config/./containers/shortcode-vc-row.php:181
+#: config/./content/shortcode-vc-column-text.php:25
+#: config/./content/shortcode-vc-empty-space.php:26
+#: config/./content/shortcode-vc-flickr.php:68
+#: config/./content/shortcode-vc-gallery.php:147
+#: config/./content/shortcode-vc-gmaps.php:38
+#: config/./content/shortcode-vc-images-carousel.php:128
+#: config/./content/shortcode-vc-line-chart.php:130
+#: config/./content/shortcode-vc-message.php:274
+#: config/./content/shortcode-vc-pie.php:66
+#: config/./content/shortcode-vc-posts-slider.php:155
+#: config/./content/shortcode-vc-progress-bar.php:154
+#: config/./content/shortcode-vc-round-chart.php:158
+#: config/./content/shortcode-vc-separator.php:69
+#: config/./content/shortcode-vc-single-image.php:205
+#: config/./content/shortcode-vc-text-separator.php:127
+#: config/./content/shortcode-vc-toggle.php:78
+#: config/./content/shortcode-vc-video.php:71
+#: config/./content/vc-custom-heading-element.php:90
+#: config/./content/vc-icon-element.php:194
+#: config/./grids/vc-grids-common.php:618
+#: config/./grids/vc-grids-common.php:700
+#: config/./social/shortcode-vc-facebook.php:23
+#: config/./social/shortcode-vc-googleplus.php:47
+#: config/./social/shortcode-vc-pinterest.php:23
+#: config/./social/shortcode-vc-tweetmeme.php:316
+#: config/./structure/shortcode-vc-raw-html.php:26
+#: config/./tta/shortcode-vc-tta-accordion.php:184
+#: config/./tta/shortcode-vc-tta-pageable.php:104
+#: config/./tta/shortcode-vc-tta-tabs.php:187
+#: config/./tta/shortcode-vc-tta-tour.php:201
+#: include/./params/vc_grid_item/shortcodes.php:45
+#: include/./params/vc_grid_item/shortcodes.php:70
+#: include/./params/vc_grid_item/shortcodes.php:165
+#: include/./params/vc_grid_item/shortcodes.php:281
+#: include/./params/vc_grid_item/shortcodes.php:344
+#: include/./params/vc_grid_item/shortcodes.php:428
+#: include/./params/vc_grid_item/shortcodes.php:500
+#: include/./params/vc_grid_item/shortcodes.php:576
+#: include/./params/vc_grid_item/shortcodes.php:754
+msgid "CSS box"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:248
+#: config/./buttons/shortcode-vc-cta.php:263
+#: config/./containers/shortcode-vc-column-inner.php:28
+#: config/./containers/shortcode-vc-column.php:22
+#: config/./containers/shortcode-vc-row-inner.php:68
+#: config/./containers/shortcode-vc-row.php:183
+#: config/./content/shortcode-vc-column-text.php:27
+#: config/./content/shortcode-vc-empty-space.php:28
+#: config/./content/shortcode-vc-flickr.php:70
+#: config/./content/shortcode-vc-gallery.php:149
+#: config/./content/shortcode-vc-gmaps.php:40
+#: config/./content/shortcode-vc-images-carousel.php:130
+#: config/./content/shortcode-vc-line-chart.php:132
+#: config/./content/shortcode-vc-message.php:276
+#: config/./content/shortcode-vc-pie.php:68
+#: config/./content/shortcode-vc-posts-slider.php:157
+#: config/./content/shortcode-vc-progress-bar.php:156
+#: config/./content/shortcode-vc-round-chart.php:160
+#: config/./content/shortcode-vc-separator.php:71
+#: config/./content/shortcode-vc-single-image.php:207
+#: config/./content/shortcode-vc-text-separator.php:129
+#: config/./content/shortcode-vc-toggle.php:80
+#: config/./content/shortcode-vc-video.php:73
+#: config/./content/vc-custom-heading-element.php:92
+#: config/./content/vc-icon-element.php:196
+#: config/./grids/vc-grids-common.php:620
+#: config/./grids/vc-grids-common.php:702
+#: config/./social/shortcode-vc-facebook.php:25
+#: config/./social/shortcode-vc-googleplus.php:49
+#: config/./social/shortcode-vc-pinterest.php:25
+#: config/./social/shortcode-vc-tweetmeme.php:318
+#: config/./structure/shortcode-vc-raw-html.php:28
+#: config/./tta/shortcode-vc-tta-accordion.php:186
+#: config/./tta/shortcode-vc-tta-pageable.php:106
+#: config/./tta/shortcode-vc-tta-tabs.php:189
+#: config/./tta/shortcode-vc-tta-tour.php:203
+#: include/./classes/settings/class-vc-settings.php:127
+#: include/./params/vc_grid_item/shortcodes.php:47
+#: include/./params/vc_grid_item/shortcodes.php:72
+#: include/./params/vc_grid_item/shortcodes.php:346
+#: include/./params/vc_grid_item/shortcodes.php:430
+#: include/./params/vc_grid_item/shortcodes.php:502
+#: include/./params/vc_grid_item/shortcodes.php:578
+#: include/./params/vc_grid_item/shortcodes.php:756
+msgid "Design Options"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:255
+#: config/./buttons/shortcode-vc-cta.php:212
+#: config/./deprecated/shortcode-vc-button.php:6
+#: config/./deprecated/shortcode-vc-button2.php:3
+msgid "Button"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:259
+#: config/./buttons/shortcode-vc-cta.php:270
+#: config/./containers/shortcode-vc-row.php:7
+#: config/./content/shortcode-vc-column-text.php:6
+#: config/./content/shortcode-vc-empty-space.php:7
+#: config/./content/shortcode-vc-flickr.php:6
+#: config/./content/shortcode-vc-gallery.php:6
+#: config/./content/shortcode-vc-gmaps.php:6
+#: config/./content/shortcode-vc-images-carousel.php:6
+#: config/./content/shortcode-vc-line-chart.php:7
+#: config/./content/shortcode-vc-message.php:20
+#: config/./content/shortcode-vc-pie.php:7
+#: config/./content/shortcode-vc-posts-slider.php:6
+#: config/./content/shortcode-vc-progress-bar.php:6
+#: config/./content/shortcode-vc-round-chart.php:7
+#: config/./content/shortcode-vc-separator.php:7
+#: config/./content/shortcode-vc-single-image.php:6
+#: config/./content/shortcode-vc-text-separator.php:35
+#: config/./content/shortcode-vc-toggle.php:6
+#: config/./content/shortcode-vc-video.php:6
+#: config/./content/vc-custom-heading-element.php:8
+#: config/./content/vc-icon-element.php:7
+#: config/./deprecated/shortcode-vc-accordion.php:9
+#: config/./deprecated/shortcode-vc-button.php:9
+#: config/./deprecated/shortcode-vc-button2.php:8
+#: config/./deprecated/shortcode-vc-carousel.php:10
+#: config/./deprecated/shortcode-vc-cta-button.php:10
+#: config/./deprecated/shortcode-vc-cta-button2.php:7
+#: config/./deprecated/shortcode-vc-tabs.php:8
+#: config/./deprecated/shortcode-vc-tour.php:10
+#: config/./grids/shortcode-vc-basic-grid.php:10
+#: config/./grids/shortcode-vc-masonry-grid.php:13
+#: config/./grids/shortcode-vc-masonry-media-grid.php:15
+#: config/./grids/shortcode-vc-media-grid.php:7
+#: config/./tta/shortcode-vc-tta-accordion.php:15
+#: config/./tta/shortcode-vc-tta-pageable.php:15
+#: config/./tta/shortcode-vc-tta-section.php:79
+#: config/./tta/shortcode-vc-tta-tabs.php:15
+#: config/./tta/shortcode-vc-tta-tour.php:15
+#: include/./autoload/vendors/gravity_forms.php:35
+#: include/./classes/settings/class-vc-automapper.php:348
+#: include/./classes/vendors/plugins/class-vc-vendor-contact-form7.php:55
+#: include/./classes/vendors/plugins/class-vc-vendor-layerslider.php:118
+#: include/./classes/vendors/plugins/class-vc-vendor-ninja-forms.php:39
+#: include/./classes/vendors/plugins/class-vc-vendor-ninja-forms.php:83
+#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:59
+#: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:127
+#: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:35
+#: include/./classes/vendors/plugins/acf/shortcode.php:34
+#: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:11
+#: include/./params/vc_grid_item/shortcodes.php:160
+#: include/./params/vc_grid_item/shortcodes.php:185
+#: include/./params/vc_grid_item/shortcodes.php:206
+#: include/./params/vc_grid_item/shortcodes.php:220
+#: include/./params/vc_grid_item/shortcodes.php:260
+#: include/./params/vc_grid_item/shortcodes.php:274
+#: include/./params/vc_grid_item/shortcodes.php:303
+#: include/./params/vc_grid_item/shortcodes.php:667
+msgid "Content"
+msgstr ""
+
+#: config/./buttons/shortcode-vc-btn.php:261
+#: config/./deprecated/shortcode-vc-button.php:11
+#: config/./deprecated/shortcode-vc-button2.php:10
+msgid "Eye catching button"
 msgstr ""
 
 #: config/./buttons/shortcode-vc-cta.php:9
@@ -2453,6 +1534,12 @@ msgstr ""
 
 #: config/./buttons/shortcode-vc-cta.php:142
 msgid "Select call to action display style."
+msgstr ""
+
+#: config/./buttons/shortcode-vc-cta.php:146
+#: config/./content/vc-icon-element.php:139
+#: config/./deprecated/shortcode-vc-cta-button2.php:48
+msgid "Background color"
 msgstr ""
 
 #: config/./buttons/shortcode-vc-cta.php:148
@@ -2671,7 +1758,7 @@ msgid "Place content elements inside the inner row"
 msgstr ""
 
 #: config/./containers/shortcode-vc-row-inner.php:14
-#: config/./containers/shortcode-vc-row.php:147
+#: config/./containers/shortcode-vc-row.php:169
 msgid "Row ID"
 msgstr ""
 
@@ -2697,6 +1784,53 @@ msgstr ""
 #: config/./containers/shortcode-vc-row-inner.php:22
 #: config/./containers/shortcode-vc-row.php:70
 msgid "If checked columns will be set to equal height."
+msgstr ""
+
+#: config/./containers/shortcode-vc-row-inner.php:23
+#: config/./containers/shortcode-vc-row.php:48
+#: config/./containers/shortcode-vc-row.php:71
+#: config/./containers/shortcode-vc-row.php:90
+#: config/./content/shortcode-vc-images-carousel.php:90
+#: config/./content/shortcode-vc-images-carousel.php:97
+#: config/./content/shortcode-vc-images-carousel.php:104
+#: config/./content/shortcode-vc-images-carousel.php:111
+#: config/./content/shortcode-vc-images-carousel.php:118
+#: config/./content/shortcode-vc-line-chart.php:47
+#: config/./content/shortcode-vc-line-chart.php:55
+#: config/./content/shortcode-vc-posts-slider.php:72
+#: config/./content/shortcode-vc-round-chart.php:82
+#: config/./content/shortcode-vc-round-chart.php:90
+#: config/./content/shortcode-vc-single-image.php:85
+#: config/./content/vc-custom-heading-element.php:64
+#: config/./deprecated/shortcode-vc-accordion.php:30
+#: config/./deprecated/shortcode-vc-accordion.php:37
+#: config/./deprecated/shortcode-vc-carousel.php:112
+#: config/./deprecated/shortcode-vc-carousel.php:119
+#: config/./deprecated/shortcode-vc-carousel.php:126
+#: config/./deprecated/shortcode-vc-carousel.php:133
+#: config/./deprecated/shortcode-vc-carousel.php:140
+#: config/./deprecated/shortcode-vc-posts-grid.php:82
+#: config/./grids/vc-grids-common.php:198
+#: config/./grids/vc-grids-common.php:548
+#: config/./social/shortcode-vc-tweetmeme.php:28
+#: config/./social/shortcode-vc-tweetmeme.php:51
+#: config/./social/shortcode-vc-tweetmeme.php:116
+#: config/./social/shortcode-vc-tweetmeme.php:150
+#: config/./social/shortcode-vc-tweetmeme.php:193
+#: config/./social/shortcode-vc-tweetmeme.php:227
+#: config/./wp/shortcode-vc-wp-posts.php:30
+#: include/./autoload/vendors/gravity_forms.php:53
+#: include/./autoload/vendors/gravity_forms.php:68
+#: include/./autoload/vendors/gravity_forms.php:83
+#: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:54
+#: include/./classes/vendors/plugins/acf/shortcode.php:50
+#: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:75
+#: include/./params/default_params.php:95
+#: include/./params/vc_grid_item/shortcodes.php:40
+#: include/./params/vc_grid_item/shortcodes.php:96
+#: include/./params/vc_grid_item/shortcodes.php:125
+#: include/./params/vc_grid_item/shortcodes.php:339
+msgid "Yes"
 msgstr ""
 
 #: config/./containers/shortcode-vc-row-inner.php:27
@@ -2806,6 +1940,12 @@ msgstr ""
 msgid "Parallax"
 msgstr ""
 
+#: config/./containers/shortcode-vc-row.php:110
+#: config/./containers/shortcode-vc-row.php:125
+#: config/./grids/vc-grids-common.php:443
+msgid "Simple"
+msgstr ""
+
 #: config/./containers/shortcode-vc-row.php:111
 #: config/./containers/shortcode-vc-row.php:126
 msgid "With fade"
@@ -2824,17 +1964,27 @@ msgstr ""
 #: config/./containers/shortcode-vc-row.php:136
 #: config/./content/shortcode-vc-single-image.php:29
 #: include/./params/sorted_list/sorted_list.php:90
-#: include/./params/vc_grid_item/shortcodes.php:594
+#: include/./params/vc_grid_item/shortcodes.php:689
 msgid "Image"
 msgstr ""
 
 #: config/./containers/shortcode-vc-row.php:139
 #: config/./content/shortcode-vc-single-image.php:32
-#: include/./params/vc_grid_item/shortcodes.php:597
+#: include/./params/vc_grid_item/shortcodes.php:692
 msgid "Select image from media library."
 msgstr ""
 
-#: config/./containers/shortcode-vc-row.php:149
+#: config/./containers/shortcode-vc-row.php:147
+#: config/./containers/shortcode-vc-row.php:158
+msgid "Parallax speed"
+msgstr ""
+
+#: config/./containers/shortcode-vc-row.php:150
+#: config/./containers/shortcode-vc-row.php:161
+msgid "Enter parallax speed ratio (Note: Default value is 1.5, min value is 1)"
+msgstr ""
+
+#: config/./containers/shortcode-vc-row.php:171
 #, php-format
 msgid ""
 "Enter row ID (Note: make sure it is unique and valid according to <a href="
@@ -2917,7 +2067,7 @@ msgstr ""
 #: include/./classes/vendors/plugins/class-vc-vendor-layerslider.php:123
 #: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:64
 #: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:132
-#: include/./params/vc_grid_item/shortcodes.php:577
+#: include/./params/vc_grid_item/shortcodes.php:672
 msgid "Widget title"
 msgstr ""
 
@@ -2945,7 +2095,7 @@ msgstr ""
 #: include/./classes/vendors/plugins/class-vc-vendor-layerslider.php:125
 #: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:66
 #: include/./classes/vendors/plugins/class-vc-vendor-revslider.php:134
-#: include/./params/vc_grid_item/shortcodes.php:579
+#: include/./params/vc_grid_item/shortcodes.php:674
 msgid "Enter text used as widget title (Note: located above content element)."
 msgstr ""
 
@@ -3059,13 +2209,13 @@ msgstr ""
 
 #: config/./content/shortcode-vc-gallery.php:50
 #: config/./content/shortcode-vc-single-image.php:17
-#: include/./params/vc_grid_item/shortcodes.php:583
+#: include/./params/vc_grid_item/shortcodes.php:678
 msgid "Image source"
 msgstr ""
 
 #: config/./content/shortcode-vc-gallery.php:53
 #: config/./content/shortcode-vc-single-image.php:20
-#: include/./params/vc_grid_item/shortcodes.php:586
+#: include/./params/vc_grid_item/shortcodes.php:681
 msgid "Media library"
 msgstr ""
 
@@ -3076,8 +2226,20 @@ msgstr ""
 
 #: config/./content/shortcode-vc-gallery.php:57
 #: config/./content/shortcode-vc-single-image.php:25
-#: include/./params/vc_grid_item/shortcodes.php:590
+#: include/./params/vc_grid_item/shortcodes.php:685
 msgid "Select image source."
+msgstr ""
+
+#: config/./content/shortcode-vc-gallery.php:61
+#: config/./content/shortcode-vc-images-carousel.php:17
+#: config/./grids/vc-grids-common.php:667
+msgid "Images"
+msgstr ""
+
+#: config/./content/shortcode-vc-gallery.php:64
+#: config/./content/shortcode-vc-images-carousel.php:20
+#: config/./grids/vc-grids-common.php:669
+msgid "Select images from media library."
 msgstr ""
 
 #: config/./content/shortcode-vc-gallery.php:74
@@ -3090,8 +2252,8 @@ msgstr ""
 #: config/./content/shortcode-vc-gallery.php:93
 #: config/./content/shortcode-vc-single-image.php:50
 #: config/./content/shortcode-vc-single-image.php:61
-#: include/./params/vc_grid_item/shortcodes.php:432
-#: include/./params/vc_grid_item/shortcodes.php:616
+#: include/./params/vc_grid_item/shortcodes.php:527
+#: include/./params/vc_grid_item/shortcodes.php:711
 msgid "Image size"
 msgstr ""
 
@@ -3387,6 +2549,28 @@ msgstr ""
 msgid "Two"
 msgstr ""
 
+#: config/./content/shortcode-vc-line-chart.php:84
+#: config/./content/shortcode-vc-posts-slider.php:129
+#: config/./content/shortcode-vc-round-chart.php:112
+#: config/./content/shortcode-vc-text-separator.php:40
+#: config/./content/shortcode-vc-text-separator.php:43
+#: config/./deprecated/shortcode-vc-accordion-tab.php:12
+#: config/./deprecated/shortcode-vc-carousel.php:47
+#: config/./deprecated/shortcode-vc-posts-grid.php:55
+#: config/./deprecated/shortcode-vc-tab.php:12
+#: config/./grids/vc-grids-common.php:241
+#: config/./tta/shortcode-vc-tta-section.php:48
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:91
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1221
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1254
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1317
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1431
+#: include/./params/loop/loop.php:426
+#: include/./params/sorted_list/sorted_list.php:91
+#: include/./params/vc_link/vc_link.php:18
+msgid "Title"
+msgstr ""
+
 #: config/./content/shortcode-vc-line-chart.php:86
 msgid "Enter title for chart dataset."
 msgstr ""
@@ -3397,6 +2581,18 @@ msgstr ""
 
 #: config/./content/shortcode-vc-line-chart.php:100
 msgid "Select chart color."
+msgstr ""
+
+#: config/./content/shortcode-vc-line-chart.php:105
+#: config/./content/shortcode-vc-pie.php:50
+#: config/./content/shortcode-vc-progress-bar.php:72
+#: config/./content/shortcode-vc-round-chart.php:133
+#: config/./content/shortcode-vc-separator.php:14
+#: config/./content/shortcode-vc-text-separator.php:78
+#: config/./content/vc-icon-element.php:108
+#: config/./content/vc-icon-element.php:114
+#: config/./content/vc-icon-element.php:141
+msgid "Custom color"
 msgstr ""
 
 #: config/./content/shortcode-vc-line-chart.php:107
@@ -3481,6 +2677,41 @@ msgstr ""
 
 #: config/./content/shortcode-vc-message.php:140
 msgid "Select message box color."
+msgstr ""
+
+#: config/./content/shortcode-vc-message.php:145
+#: config/./content/vc-icon-element.php:12
+msgid "Icon library"
+msgstr ""
+
+#: config/./content/shortcode-vc-message.php:147
+#: config/./content/vc-icon-element.php:14
+msgid "Font Awesome"
+msgstr ""
+
+#: config/./content/shortcode-vc-message.php:148
+#: config/./content/vc-icon-element.php:15
+msgid "Open Iconic"
+msgstr ""
+
+#: config/./content/shortcode-vc-message.php:149
+#: config/./content/vc-icon-element.php:16
+msgid "Typicons"
+msgstr ""
+
+#: config/./content/shortcode-vc-message.php:150
+#: config/./content/vc-icon-element.php:17
+msgid "Entypo"
+msgstr ""
+
+#: config/./content/shortcode-vc-message.php:151
+#: config/./content/vc-icon-element.php:18
+msgid "Linecons"
+msgstr ""
+
+#: config/./content/shortcode-vc-message.php:155
+#: config/./content/vc-icon-element.php:22
+msgid "Select icon library."
 msgstr ""
 
 #: config/./content/shortcode-vc-message.php:261
@@ -3654,11 +2885,42 @@ msgid ""
 "will be displayed, divide categories with linebreak (Enter))."
 msgstr ""
 
+#: config/./content/shortcode-vc-posts-slider.php:122
+#: config/./grids/vc-grids-common.php:235
+#: config/./wp/shortcode-vc-wp-links.php:35
+#: config/./wp/shortcode-vc-wp-pages.php:20
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:214
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:266
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:331
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:499
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:540
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:617
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:703
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:762
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:855
+#: include/./params/loop/loop.php:307
+msgid "Order by"
+msgstr ""
+
+#: config/./content/shortcode-vc-posts-slider.php:126
+#: config/./grids/vc-grids-common.php:238
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:88
+#: include/./params/loop/loop.php:423
+msgid "Date"
+msgstr ""
+
 #: config/./content/shortcode-vc-posts-slider.php:127
 #: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:89
 #: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1446
 #: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:1471
 msgid "ID"
+msgstr ""
+
+#: config/./content/shortcode-vc-posts-slider.php:128
+#: config/./grids/vc-grids-common.php:240
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:90
+#: include/./params/loop/loop.php:310 include/./params/loop/loop.php:425
+msgid "Author"
 msgstr ""
 
 #: config/./content/shortcode-vc-posts-slider.php:130
@@ -3682,6 +2944,35 @@ msgstr ""
 #: config/./content/shortcode-vc-posts-slider.php:135
 #, php-format
 msgid "Select how to sort retrieved posts. More at %s."
+msgstr ""
+
+#: config/./content/shortcode-vc-posts-slider.php:139
+#: config/./grids/vc-grids-common.php:263
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:222
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:274
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:340
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:507
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:548
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:625
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:711
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:770
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:863
+#: include/./params/loop/loop.php:308
+msgid "Sort order"
+msgstr ""
+
+#: config/./content/shortcode-vc-posts-slider.php:142
+#: config/./grids/vc-grids-common.php:267
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:100
+#: include/./params/loop/loop.php:443
+msgid "Descending"
+msgstr ""
+
+#: config/./content/shortcode-vc-posts-slider.php:143
+#: config/./grids/vc-grids-common.php:268
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:101
+#: include/./params/loop/loop.php:442
+msgid "Ascending"
 msgstr ""
 
 #: config/./content/shortcode-vc-posts-slider.php:145
@@ -3710,7 +3001,7 @@ msgid "Marketing"
 msgstr ""
 
 #: config/./content/shortcode-vc-progress-bar.php:37
-#: include/./params/vc_grid_item/shortcodes.php:521
+#: include/./params/vc_grid_item/shortcodes.php:616
 msgid "Label"
 msgstr ""
 
@@ -3792,6 +3083,14 @@ msgstr ""
 
 #: config/./content/shortcode-vc-round-chart.php:23
 msgid "Doughnut"
+msgstr ""
+
+#: config/./content/shortcode-vc-round-chart.php:43
+#: config/./grids/vc-grids-common.php:212
+#: config/./tta/shortcode-vc-tta-accordion.php:99
+#: config/./tta/shortcode-vc-tta-tabs.php:100
+#: config/./tta/shortcode-vc-tta-tour.php:100
+msgid "Gap"
 msgstr ""
 
 #: config/./content/shortcode-vc-round-chart.php:51
@@ -3881,19 +3180,19 @@ msgid "Select separator width (percentage)."
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:3
-#: include/./params/vc_grid_item/shortcodes.php:569
+#: include/./params/vc_grid_item/shortcodes.php:664
 msgid "Single Image"
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:7
-#: include/./params/vc_grid_item/shortcodes.php:573
+#: include/./params/vc_grid_item/shortcodes.php:668
 msgid "Simple image with CSS animation"
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:21
 #: config/./content/shortcode-vc-single-image.php:40
-#: include/./params/vc_grid_item/shortcodes.php:587
-#: include/./params/vc_grid_item/shortcodes.php:605
+#: include/./params/vc_grid_item/shortcodes.php:682
+#: include/./params/vc_grid_item/shortcodes.php:700
 msgid "External link"
 msgstr ""
 
@@ -3902,7 +3201,7 @@ msgid "Featured Image"
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:42
-#: include/./params/vc_grid_item/shortcodes.php:607
+#: include/./params/vc_grid_item/shortcodes.php:702
 msgid "Select external link."
 msgstr ""
 
@@ -3930,43 +3229,43 @@ msgid "Add image caption."
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:93
-#: include/./params/vc_grid_item/shortcodes.php:438
-#: include/./params/vc_grid_item/shortcodes.php:622
+#: include/./params/vc_grid_item/shortcodes.php:533
+#: include/./params/vc_grid_item/shortcodes.php:717
 msgid "Image alignment"
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:100
-#: include/./params/vc_grid_item/shortcodes.php:445
-#: include/./params/vc_grid_item/shortcodes.php:629
+#: include/./params/vc_grid_item/shortcodes.php:540
+#: include/./params/vc_grid_item/shortcodes.php:724
 msgid "Select image alignment."
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:104
 #: config/./content/shortcode-vc-single-image.php:115
-#: include/./params/vc_grid_item/shortcodes.php:449
-#: include/./params/vc_grid_item/shortcodes.php:633
+#: include/./params/vc_grid_item/shortcodes.php:544
+#: include/./params/vc_grid_item/shortcodes.php:728
 msgid "Image style"
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:107
 #: config/./content/shortcode-vc-single-image.php:118
-#: include/./params/vc_grid_item/shortcodes.php:452
-#: include/./params/vc_grid_item/shortcodes.php:636
+#: include/./params/vc_grid_item/shortcodes.php:547
+#: include/./params/vc_grid_item/shortcodes.php:731
 msgid "Select image display style."
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:126
 #: config/./content/shortcode-vc-single-image.php:146
 #: include/./params/css_editor/css_editor.php:93
-#: include/./params/vc_grid_item/shortcodes.php:456
-#: include/./params/vc_grid_item/shortcodes.php:640
+#: include/./params/vc_grid_item/shortcodes.php:551
+#: include/./params/vc_grid_item/shortcodes.php:735
 msgid "Border color"
 msgstr ""
 
 #: config/./content/shortcode-vc-single-image.php:141
 #: config/./content/shortcode-vc-single-image.php:159
-#: include/./params/vc_grid_item/shortcodes.php:469
-#: include/./params/vc_grid_item/shortcodes.php:648
+#: include/./params/vc_grid_item/shortcodes.php:564
+#: include/./params/vc_grid_item/shortcodes.php:743
 msgid "Border color."
 msgstr ""
 
@@ -4021,7 +3320,7 @@ msgid "Separator element width in percents."
 msgstr ""
 
 #: config/./content/shortcode-vc-toggle.php:3
-#: include/./autoload/vc-pages/welcome-screen.php:99
+#: include/./autoload/vc-pages/welcome-screen.php:100
 msgid "FAQ"
 msgstr ""
 
@@ -4052,6 +3351,16 @@ msgstr ""
 
 #: config/./content/shortcode-vc-toggle.php:32
 msgid "Select toggle design style."
+msgstr ""
+
+#: config/./content/shortcode-vc-toggle.php:36
+#: config/./content/vc-icon-element.php:106
+msgid "Icon color"
+msgstr ""
+
+#: config/./content/shortcode-vc-toggle.php:39
+#: config/./content/vc-icon-element.php:109
+msgid "Select icon color."
 msgstr ""
 
 #: config/./content/shortcode-vc-toggle.php:48
@@ -4102,6 +3411,26 @@ msgstr ""
 msgid ""
 "Enter link to video (Note: read more about available formats at WordPress <a "
 "href=\"%s\" target=\"_blank\">codex page</a>)."
+msgstr ""
+
+#: config/./content/shortcode-vc-video.php:25
+msgid "Video width"
+msgstr ""
+
+#: config/./content/shortcode-vc-video.php:39
+msgid "Select video width (percentage)."
+msgstr ""
+
+#: config/./content/shortcode-vc-video.php:43
+msgid "Video aspect ration"
+msgstr ""
+
+#: config/./content/shortcode-vc-video.php:50
+msgid "Select video aspect ratio."
+msgstr ""
+
+#: config/./content/shortcode-vc-video.php:56
+msgid "Select video alignment."
 msgstr ""
 
 #: config/./content/vc-custom-heading-element.php:4
@@ -4188,6 +3517,62 @@ msgstr ""
 msgid "Select font styling."
 msgstr ""
 
+#: config/./content/vc-icon-element.php:8
+msgid "Eye catching icons from libraries"
+msgstr ""
+
+#: config/./content/vc-icon-element.php:116
+msgid "Select custom icon color."
+msgstr ""
+
+#: config/./content/vc-icon-element.php:124
+msgid "Background shape"
+msgstr ""
+
+#: config/./content/vc-icon-element.php:128
+msgid "Circle"
+msgstr ""
+
+#: config/./content/vc-icon-element.php:131
+msgid "Outline Circle"
+msgstr ""
+
+#: config/./content/vc-icon-element.php:132
+msgid "Outline Square"
+msgstr ""
+
+#: config/./content/vc-icon-element.php:133
+msgid "Outline Rounded"
+msgstr ""
+
+#: config/./content/vc-icon-element.php:135
+msgid "Select background shape and style for icon."
+msgstr ""
+
+#: config/./content/vc-icon-element.php:143
+msgid "Select background color for icon."
+msgstr ""
+
+#: config/./content/vc-icon-element.php:152
+msgid "Custom background color"
+msgstr ""
+
+#: config/./content/vc-icon-element.php:154
+msgid "Select custom icon background color."
+msgstr ""
+
+#: config/./content/vc-icon-element.php:166
+msgid "Icon size."
+msgstr ""
+
+#: config/./content/vc-icon-element.php:170
+msgid "Icon alignment"
+msgstr ""
+
+#: config/./content/vc-icon-element.php:183
+msgid "Add link to icon."
+msgstr ""
+
 #: config/./deprecated/shortcode-vc-accordion-tab.php:3
 #: config/./deprecated/shortcode-vc-accordion-tab.php:14
 #: config/./tta/shortcode-vc-tta-accordion.php:208
@@ -4196,8 +3581,8 @@ msgstr ""
 #: config/./tta/shortcode-vc-tta-section.php:70
 #: config/./tta/shortcode-vc-tta-tour.php:221
 #: config/./tta/shortcode-vc-tta-tour.php:222
+#: include/./classes/core/class-vc-base.php:872
 #: include/./classes/core/class-vc-base.php:875
-#: include/./classes/core/class-vc-base.php:878
 msgid "Section"
 msgstr ""
 
@@ -4283,6 +3668,16 @@ msgstr ""
 #: config/./deprecated/shortcode-vc-button.php:52
 #: config/./deprecated/shortcode-vc-cta-button.php:58
 msgid "Select icon to display on button."
+msgstr ""
+
+#: config/./deprecated/shortcode-vc-button.php:59
+#: config/./deprecated/shortcode-vc-button2.php:60
+#: config/./deprecated/shortcode-vc-cta-button.php:65
+#: config/./deprecated/shortcode-vc-cta-button2.php:92
+#: config/./grids/vc-grids-common.php:655
+#: config/./grids/vc-grids-common.php:737
+#: config/./social/shortcode-vc-googleplus.php:20
+msgid "Select button size."
 msgstr ""
 
 #: config/./deprecated/shortcode-vc-button2.php:44
@@ -4417,6 +3812,11 @@ msgstr ""
 msgid "Select columns count."
 msgstr ""
 
+#: config/./deprecated/shortcode-vc-posts-grid.php:80
+#: config/./grids/vc-grids-common.php:196
+msgid "Show filter"
+msgstr ""
+
 #: config/./deprecated/shortcode-vc-posts-grid.php:83
 msgid "Select to add animated category filter to your posts grid."
 msgstr ""
@@ -4440,7 +3840,7 @@ msgstr ""
 #: config/./deprecated/shortcode-vc-tab.php:3
 #: config/./tta/shortcode-vc-tta-tabs.php:207
 #: config/./tta/shortcode-vc-tta-tabs.php:208
-#: include/./classes/core/class-vc-base.php:874
+#: include/./classes/core/class-vc-base.php:871
 #: include/./classes/shortcodes/vc-tab.php:6
 msgid "Tab"
 msgstr ""
@@ -4499,6 +3899,21 @@ msgstr ""
 msgid "Posts, pages or custom posts in grid"
 msgstr ""
 
+#: config/./grids/shortcode-vc-masonry-grid.php:7
+#: config/./grids/shortcode-vc-masonry-media-grid.php:9
+#: config/./grids/vc-grids-common.php:169
+#: config/./grids/vc-grids-common.php:457
+#: config/./grids/vc-grids-common.php:472
+#: config/./grids/vc-grids-common.php:486
+#: config/./grids/vc-grids-common.php:521
+#: config/./grids/vc-grids-common.php:535
+#: config/./grids/vc-grids-common.php:549
+#: config/./grids/vc-grids-common.php:561
+#: config/./grids/vc-grids-common.php:571
+#: config/./grids/vc-grids-common.php:588
+msgid "Pagination"
+msgstr ""
+
 #: config/./grids/shortcode-vc-masonry-grid.php:10
 msgid "Post Masonry Grid"
 msgstr ""
@@ -4515,6 +3930,542 @@ msgstr ""
 msgid "Masonry media grid from Media Library"
 msgstr ""
 
+#: config/./grids/shortcode-vc-media-grid.php:4
+msgid "Media Grid"
+msgstr ""
+
+#: config/./grids/shortcode-vc-media-grid.php:8
+msgid "Media grid from Media Library"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:19
+#: config/./grids/vc-grids-common.php:109
+msgid "Custom query"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:23
+msgid "List of IDs"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:62
+#: config/./grids/vc-grids-common.php:630
+#: config/./grids/vc-grids-common.php:643
+#: config/./grids/vc-grids-common.php:656
+#: config/./grids/vc-grids-common.php:712
+#: config/./grids/vc-grids-common.php:725
+#: config/./grids/vc-grids-common.php:738
+msgid "Load More Button"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:75
+#: include/./classes/shortcodes/vc-basic-grid.php:86
+#: include/./classes/shortcodes/paginator/class-vc-pageable.php:56
+msgid "Load more"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:85
+msgid "Data source"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:89
+msgid "Select content type for your grid."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:93
+msgid "Include only"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:95
+msgid "Add posts, pages, etc. by title."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:111
+msgid ""
+"Build custom query according to <a href=\"http://codex.wordpress.org/"
+"Function_Reference/query_posts\">WordPress Codex</a>."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:119
+msgid "Narrow data source"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:136
+msgid "Enter categories, tags or custom taxonomies."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:147
+msgid "Total items"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:152
+msgid ""
+"Set max limit for items in grid or enter -1 to display all (limited to 1000)."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:163
+msgid "Display Style"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:166
+msgid "Show all"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:167
+msgid "Load more button"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:168
+msgid "Lazy loading"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:176
+msgid "Select display style for grid."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:180
+msgid "Items per page"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:182
+msgid "Number of items to show per page."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:199
+msgid "Append filter to grid."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:203
+msgid "Grid elements per row"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:208
+msgid "Select number of single grid elements per row."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:229
+msgid "Select gap between grid elements."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:239
+msgid "Order by post ID"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:242
+msgid "Last modified date"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:243
+msgid "Post/page parent ID"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:244
+#: config/./wp/shortcode-vc-wp-recentcomments.php:20
+msgid "Number of comments"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:245
+msgid "Menu order/Page Order"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:246
+msgid "Meta value"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:247
+msgid "Meta value number"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:248
+msgid "Random order"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:250
+msgid ""
+"Select order type. If \"Meta value\" or \"Meta value Number\" is chosen then "
+"meta key is required."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:251
+#: config/./grids/vc-grids-common.php:265
+#: config/./grids/vc-grids-common.php:285
+#: config/./grids/vc-grids-common.php:300
+#: config/./grids/vc-grids-common.php:315
+msgid "Data Settings"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:271
+msgid "Select sorting order."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:282
+msgid "Meta key"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:284
+msgid "Input meta key for grid ordering."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:297
+#: include/./templates/params/column_offset/template.tpl.php:23
+msgid "Offset"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:299
+msgid "Number of grid elements to displace or pass over."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:312
+#: config/./wp/shortcode-vc-wp-pages.php:32
+msgid "Exclude"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:314
+msgid "Exclude posts, pages, etc. by title."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:332
+msgid "Filter by"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:335
+#: config/./grids/vc-grids-common.php:369
+#: config/./grids/vc-grids-common.php:389
+#: config/./grids/vc-grids-common.php:405
+#: config/./grids/vc-grids-common.php:419
+#: config/./grids/vc-grids-common.php:433
+#: include/./classes/vendors/plugins/class-vc-vendor-woocommerce.php:786
+msgid "Filter"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:341
+msgid "Select filter source."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:345
+msgid "Exclude from filter list"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:363
+msgid "Enter categories, tags won't be shown in the filters list"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:377
+#: include/./params/vc_grid_item/shortcodes.php:464
+msgid "Less Rounded"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:378
+#: include/./params/vc_grid_item/shortcodes.php:465
+msgid "Border"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:379
+#: include/./params/vc_grid_item/shortcodes.php:466
+msgid "Rounded Border"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:380
+#: include/./params/vc_grid_item/shortcodes.php:467
+msgid "Less Rounded Border"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:381
+msgid "Filled"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:382
+msgid "Rounded Filled"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:383
+#: config/./wp/shortcode-vc-wp-archives.php:23
+#: config/./wp/shortcode-vc-wp-categories.php:23
+#: include/./classes/settings/class-vc-automapper.php:381
+msgid "Dropdown"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:390
+msgid "Select filter display style."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:406
+msgid "Select filter alignment."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:420
+msgid "Select filter color."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:424
+msgid "Filter size"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:428
+msgid "Select filter size."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:439
+msgid "Arrows design"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:444
+msgid "Simple Circle Border"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:445
+msgid "Simple Circle"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:446
+msgid "Simple Square"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:447
+msgid "Simple Square Rounded"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:448
+msgid "Simple Rounded"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:450
+msgid "Rounded Circle Border"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:451
+msgid "Rounded Circle"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:452
+msgid "Rounded Square"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:453
+msgid "Simple Arrow"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:454
+msgid "Simple Rounded Arrow"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:462
+msgid "Select design for arrows."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:466
+msgid "Arrows position"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:469
+msgid "Inside Wrapper"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:470
+msgid "Outside Wrapper"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:478
+msgid "Arrows will be displayed inside or outside grid."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:482
+msgid "Arrows color"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:492
+msgid "Select color for arrows."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:496
+#: config/./tta/shortcode-vc-tta-pageable.php:68
+#: config/./tta/shortcode-vc-tta-tabs.php:163
+#: config/./tta/shortcode-vc-tta-tour.php:177
+msgid "Pagination style"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:500
+#: config/./tta/shortcode-vc-tta-pageable.php:62
+#: config/./tta/shortcode-vc-tta-tabs.php:157
+#: config/./tta/shortcode-vc-tta-tour.php:171
+msgid "Square Dots"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:501
+#: config/./tta/shortcode-vc-tta-pageable.php:63
+#: config/./tta/shortcode-vc-tta-tabs.php:158
+#: config/./tta/shortcode-vc-tta-tour.php:172
+msgid "Radio Dots"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:502
+#: config/./tta/shortcode-vc-tta-pageable.php:64
+#: config/./tta/shortcode-vc-tta-tabs.php:159
+#: config/./tta/shortcode-vc-tta-tour.php:173
+msgid "Point Dots"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:503
+#: config/./tta/shortcode-vc-tta-pageable.php:65
+#: config/./tta/shortcode-vc-tta-tabs.php:160
+#: config/./tta/shortcode-vc-tta-tour.php:174
+msgid "Fill Square Dots"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:504
+#: config/./tta/shortcode-vc-tta-pageable.php:66
+#: config/./tta/shortcode-vc-tta-tabs.php:161
+#: config/./tta/shortcode-vc-tta-tour.php:175
+msgid "Rounded Fill Square Dots"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:505
+msgid "Pagination Default"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:506
+msgid "Outline Default Dark"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:507
+msgid "Outline Default Light"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:508
+msgid "Pagination Rounded"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:509
+msgid "Outline Rounded Dark"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:510
+msgid "Outline Rounded Light"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:511
+msgid "Pagination Square"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:512
+msgid "Outline Square Dark"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:513
+msgid "Outline Square Light"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:514
+msgid "Pagination Rounded Square"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:515
+msgid "Outline Rounded Square Dark"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:516
+msgid "Outline Rounded Square Light"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:517
+msgid "Stripes Dark"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:518
+msgid "Stripes Light"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:526
+#: config/./tta/shortcode-vc-tta-pageable.php:69
+#: config/./tta/shortcode-vc-tta-tabs.php:164
+#: config/./tta/shortcode-vc-tta-tour.php:178
+msgid "Select pagination style."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:530
+#: config/./tta/shortcode-vc-tta-pageable.php:76
+#: config/./tta/shortcode-vc-tta-tabs.php:170
+#: config/./tta/shortcode-vc-tta-tour.php:184
+msgid "Pagination color"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:541
+#: config/./tta/shortcode-vc-tta-pageable.php:77
+#: config/./tta/shortcode-vc-tta-tabs.php:171
+#: config/./tta/shortcode-vc-tta-tour.php:185
+msgid "Select pagination color."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:545
+msgid "Loop pages?"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:547
+msgid "Allow items to be repeated in infinite loop (carousel)."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:557
+msgid "Autoplay delay"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:560
+msgid "Enter value in seconds. Set -1 to disable autoplay."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:569
+msgid "Animation In"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:582
+msgid "Select \"animation in\" for page transition."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:586
+msgid "Animation Out"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:596
+msgid "Select \"animation out\" for page transition."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:600
+#: config/./grids/vc-grids-common.php:688
+msgid "Grid element template"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:602
+#: config/./grids/vc-grids-common.php:690
+#, php-format
+msgid ""
+"%sCreate new%s template or %smodify selected%s. Predefined templates will be "
+"cloned."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:603
+#: config/./grids/vc-grids-common.php:691
+msgid "Item Design"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:626
+#: config/./grids/vc-grids-common.php:708
+msgid "Button style"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:635
+#: config/./grids/vc-grids-common.php:717
+msgid "Select button style."
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:639
+#: config/./grids/vc-grids-common.php:721
+msgid "Button color"
+msgstr ""
+
+#: config/./grids/vc-grids-common.php:652
+#: config/./grids/vc-grids-common.php:734
+#: config/./social/shortcode-vc-googleplus.php:11
+msgid "Button size"
+msgstr ""
+
 #: config/./social/shortcode-vc-facebook.php:3
 msgid "Facebook Like"
 msgstr ""
@@ -4522,7 +4473,7 @@ msgstr ""
 #: config/./social/shortcode-vc-facebook.php:6
 #: config/./social/shortcode-vc-googleplus.php:6
 #: config/./social/shortcode-vc-pinterest.php:6
-#: config/./social/shortcode-vc-tweetmeme.php:7
+#: config/./social/shortcode-vc-tweetmeme.php:6
 msgid "Social"
 msgstr ""
 
@@ -4607,8 +4558,114 @@ msgstr ""
 msgid "Tweetmeme Button"
 msgstr ""
 
-#: config/./social/shortcode-vc-tweetmeme.php:8
+#: config/./social/shortcode-vc-tweetmeme.php:7
 msgid "\"Tweet\" button"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:12
+msgid "Choose a button"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:14
+msgid "Share a link"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:15
+#: include/./templates/shortcodes/vc_tweetmeme.php:21
+msgid "Follow"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:16
+msgid "Hashtag"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:17
+msgid "Mention"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:19
+msgid ""
+"Add buttons to your website to help your visitors share content and connect "
+"on Twitter."
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:25
+msgid "Share url: page URL"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:38
+msgid "Share url: custom URL"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:48
+msgid "Tweet text: page title"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:61
+msgid "Tweet text: custom text"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:71
+msgid "Via @"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:81
+#: config/./social/shortcode-vc-tweetmeme.php:170
+#: config/./social/shortcode-vc-tweetmeme.php:180
+#: config/./social/shortcode-vc-tweetmeme.php:247
+#: config/./social/shortcode-vc-tweetmeme.php:257
+msgid "Recommend @"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:91
+#: config/./social/shortcode-vc-tweetmeme.php:137
+msgid "Hashtag #"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:103
+msgid "User @"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:113
+msgid "Show username"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:126
+msgid "Show followers count"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:147
+#: config/./social/shortcode-vc-tweetmeme.php:224
+msgid "Tweet text: No default text"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:160
+#: config/./social/shortcode-vc-tweetmeme.php:237
+msgid "Tweet text: custom"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:190
+msgid "Tweet url: No URL"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:203
+msgid "Tweet url: custom"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:214
+msgid "Tweet to @"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:268
+msgid "Use large button"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:274
+msgid "Opt-out of tailoring Twitter"
+msgstr ""
+
+#: config/./social/shortcode-vc-tweetmeme.php:280
+msgid "Language"
 msgstr ""
 
 #: config/./structure/shortcode-vc-raw-html.php:3
@@ -5436,7 +5493,7 @@ msgstr ""
 
 #: include/./autoload/vc-pages/pages.php:60
 #: include/./autoload/vc-pages/pages.php:75
-#: include/./classes/core/class-vc-base.php:864
+#: include/./classes/core/class-vc-base.php:861
 #: include/./classes/editors/class-vc-backend-editor.php:83
 #: include/./classes/editors/navbar/class-vc-navbar.php:93
 #: include/./classes/editors/navbar/class-vc-navbar.php:95
@@ -5448,11 +5505,11 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: include/./autoload/vc-pages/welcome-screen.php:98
+#: include/./autoload/vc-pages/welcome-screen.php:99
 msgid "What's New"
 msgstr ""
 
-#: include/./autoload/vc-pages/welcome-screen.php:100
+#: include/./autoload/vc-pages/welcome-screen.php:101
 #: include/./templates/pages/vc-welcome/vc-resources.php:9
 msgid "Resources"
 msgstr ""
@@ -5515,248 +5572,248 @@ msgid ""
 "blank if you're not sure what this is."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:693
+#: include/./classes/core/class-vc-base.php:690
 #: include/./templates/pages/vc-settings/index.php:7
 msgid "Visual Composer Settings"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:700
+#: include/./classes/core/class-vc-base.php:697
 msgid "About Visual Composer"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:859
+#: include/./classes/core/class-vc-base.php:856
 msgid "Add/remove picture"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:860
+#: include/./classes/core/class-vc-base.php:857
 msgid "Finish Adding Images"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:861
+#: include/./classes/core/class-vc-base.php:858
 msgid "Add Image"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:862
+#: include/./classes/core/class-vc-base.php:859
 msgid "Add Images"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:863
+#: include/./classes/core/class-vc-base.php:860
 #: include/./templates/pages/vc-welcome/index.php:23
 msgid "Settings"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:865
+#: include/./classes/core/class-vc-base.php:862
 msgid "BACKEND EDITOR"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:866
+#: include/./classes/core/class-vc-base.php:863
 msgid "FRONTEND EDITOR"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:867
+#: include/./classes/core/class-vc-base.php:864
 msgid "CLASSIC MODE"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:868
+#: include/./classes/core/class-vc-base.php:865
 msgid "Enter template name you want to save."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:869
+#: include/./classes/core/class-vc-base.php:866
 msgid ""
 "Confirm deleting \"{template_name}\" template, press Cancel to leave. This "
 "action cannot be undone."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:870
+#: include/./classes/core/class-vc-base.php:867
 msgid "Press OK to delete section, Cancel to leave"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:871
+#: include/./classes/core/class-vc-base.php:868
 msgid "Drag and drop me in the column"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:872
+#: include/./classes/core/class-vc-base.php:869
 msgid "Press OK to delete \"{tab_name}\" tab, Cancel to leave"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:873
+#: include/./classes/core/class-vc-base.php:870
 #: include/./classes/shortcodes/vc-tour.php:8
 msgid "Slide"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:876
+#: include/./classes/core/class-vc-base.php:873
 msgid "Please enter new tab title"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:877
+#: include/./classes/core/class-vc-base.php:874
 msgid "Press OK to delete \"{tab_name}\" section, Cancel to leave"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:879
+#: include/./classes/core/class-vc-base.php:876
 msgid "Please enter new section title"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:880
+#: include/./classes/core/class-vc-base.php:877
 msgid "Error. Please try again."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:881
+#: include/./classes/core/class-vc-base.php:878
 msgid ""
 "If you close this window all shortcode settings will be lost. Close this "
 "window?"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:882
+#: include/./classes/core/class-vc-base.php:879
 msgid "Select element type"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:883
+#: include/./classes/core/class-vc-base.php:880
 msgid "Media gallery"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:884
+#: include/./classes/core/class-vc-base.php:881
 msgid "Element settings"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:885
+#: include/./classes/core/class-vc-base.php:882
 msgid "Add tab"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:886
+#: include/./classes/core/class-vc-base.php:883
 msgid "Are you sure you want to convert to new version?"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:887
+#: include/./classes/core/class-vc-base.php:884
 msgid "Loading..."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:889
+#: include/./classes/core/class-vc-base.php:886
 msgid "Set Image"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:890
+#: include/./classes/core/class-vc-base.php:887
 msgid "Are you sure that you want to remove all your data?"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:891
+#: include/./classes/core/class-vc-base.php:888
 msgid "Loop settings"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:892
+#: include/./classes/core/class-vc-base.php:889
 msgid "Custom row layout"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:893
+#: include/./classes/core/class-vc-base.php:890
 msgid "Wrong row layout format! Example: 1/2 + 1/2 or span6 + span6."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:894
+#: include/./classes/core/class-vc-base.php:891
 msgid "Row background color"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:895
+#: include/./classes/core/class-vc-base.php:892
 msgid "Row background image"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:896
+#: include/./classes/core/class-vc-base.php:893
 msgid "Column background color"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:897
+#: include/./classes/core/class-vc-base.php:894
 msgid "Column background image"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:898
+#: include/./classes/core/class-vc-base.php:895
 #: include/./classes/editors/navbar/class-vc-navbar-frontend.php:44
 msgid "Guides ON"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:899
+#: include/./classes/core/class-vc-base.php:896
 msgid "Guides OFF"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:900
+#: include/./classes/core/class-vc-base.php:897
 msgid "New template successfully saved."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:901
+#: include/./classes/core/class-vc-base.php:898
 msgid "Template added to the page."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:902
+#: include/./classes/core/class-vc-base.php:899
 msgid ""
 "Template added to the page. Template has ID attributes, make sure that they "
 "are not used more than once on the same page."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:903
+#: include/./classes/core/class-vc-base.php:900
 msgid "Template successfully removed."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:904
+#: include/./classes/core/class-vc-base.php:901
 msgid "Template is empty: There is no content to be saved as a template."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:905
+#: include/./classes/core/class-vc-base.php:902
 msgid "Error while saving template."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:906
+#: include/./classes/core/class-vc-base.php:903
 msgid "Page settings updated!"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:907
+#: include/./classes/core/class-vc-base.php:904
 msgid "Update all"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:908
+#: include/./classes/core/class-vc-base.php:905
 msgid "The changes you made will be lost if you navigate away from this page."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:909
+#: include/./classes/core/class-vc-base.php:906
 #, php-format
 msgid "%s saved!"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:910
+#: include/./classes/core/class-vc-base.php:907
 #, php-format
 msgid "%s deleted!"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:911
+#: include/./classes/core/class-vc-base.php:908
 #, php-format
 msgid ""
 "%s cloned. <a href=\"#\" class=\"vc_edit-cloned\" data-model-id=\"%s\">Edit "
 "now?</a>"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:912
+#: include/./classes/core/class-vc-base.php:909
 msgid "Loading Google Font failed"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:913
+#: include/./classes/core/class-vc-base.php:910
 msgid "Loading Font..."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:914
+#: include/./classes/core/class-vc-base.php:911
 msgid "Unable to load Google Fonts"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:915
+#: include/./classes/core/class-vc-base.php:912
 msgid "no title"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:916
+#: include/./classes/core/class-vc-base.php:913
 msgid ""
 "Error while applying filter to the image. Check your server and memory "
 "settings."
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:917
+#: include/./classes/core/class-vc-base.php:914
 msgid "Saved!"
 msgstr ""
 
-#: include/./classes/core/class-vc-base.php:918
+#: include/./classes/core/class-vc-base.php:915
 msgid "You are about to delete this preset. This action can not be undone."
 msgstr ""
 
@@ -5859,7 +5916,7 @@ msgstr ""
 
 #: include/./classes/editors/class-vc-frontend-editor.php:484
 #: include/./classes/editors/class-vc-frontend-editor.php:499
-#: include/./classes/editors/class-vc-frontend-editor.php:531
+#: include/./classes/editors/class-vc-frontend-editor.php:536
 msgid "Edit with Visual Composer"
 msgstr ""
 
@@ -6010,27 +6067,27 @@ msgstr ""
 msgid "Save layout and reuse it on different sections of this site."
 msgstr ""
 
-#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:453
+#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:455
 msgid "Error: wrong template id."
 msgstr ""
 
-#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:564
+#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:567
 msgid "My Templates"
 msgstr ""
 
-#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:565
+#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:568
 msgid "Append previously saved template to the current layout."
 msgstr ""
 
-#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:589
+#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:592
 msgid "Default Templates"
 msgstr ""
 
-#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:590
+#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:593
 msgid "Append default template to the current layout."
 msgstr ""
 
-#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:858
+#: include/./classes/editors/popups/class-vc-templates-panel-editor.php:861
 msgid "No title"
 msgstr ""
 
@@ -6227,10 +6284,10 @@ msgstr ""
 msgid "Invalid license key"
 msgstr ""
 
-#: include/./classes/settings/class-vc-license.php:500
+#: include/./classes/settings/class-vc-license.php:505
 #, php-format
 msgid ""
-"Hola! Please <a href=\" % s\">activate your copy</a> of Visual Composer to "
+"Hola! Please <a href=\"%s\">activate your copy</a> of Visual Composer to "
 "receive automatic updates."
 msgstr ""
 
@@ -6479,60 +6536,56 @@ msgid ""
 "specific \"content block\" related color is set."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:844
-msgid "Please activate your license in Product License tab!"
-msgstr ""
-
-#: include/./classes/settings/class-vc-settings.php:1009
+#: include/./classes/settings/class-vc-settings.php:999
 msgid "Invalid Margin value."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1023
+#: include/./classes/settings/class-vc-settings.php:1013
 msgid "Invalid Gutter value."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1036
+#: include/./classes/settings/class-vc-settings.php:1026
 msgid "Invalid \"Responsive max\" value."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1138
+#: include/./classes/settings/class-vc-settings.php:1128
 msgid ""
 "Something went wrong: js_composer_front_custom.css could not be created."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1140
+#: include/./classes/settings/class-vc-settings.php:1130
 msgid "js_composer_front_custom.css could not be created. Connection error."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1142
+#: include/./classes/settings/class-vc-settings.php:1132
 #, php-format
 msgid ""
 "js_composer_front_custom.css could not be created. Cannot write custom css "
 "to \"%s\"."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1144
+#: include/./classes/settings/class-vc-settings.php:1134
 msgid "js_composer_front_custom.css could not be created. Problem with access."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1182
+#: include/./classes/settings/class-vc-settings.php:1172
 msgid "Something went wrong: custom.css could not be created."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1184
+#: include/./classes/settings/class-vc-settings.php:1174
 msgid "custom.css could not be created. Connection error."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1186
+#: include/./classes/settings/class-vc-settings.php:1176
 msgid "custom.css could not be created. Cannot write custom css to \""
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1188
+#: include/./classes/settings/class-vc-settings.php:1178
 msgid "custom.css could not be created. Problem with access."
 msgstr ""
 
-#: include/./classes/settings/class-vc-settings.php:1252
-#: include/./classes/settings/class-vc-settings.php:1258
+#: include/./classes/settings/class-vc-settings.php:1242
+#: include/./classes/settings/class-vc-settings.php:1248
 msgid "This is required to enable file writing for js_composer"
 msgstr ""
 
@@ -6623,32 +6676,32 @@ msgstr ""
 msgid "Delete %s"
 msgstr ""
 
-#: include/./classes/shortcodes/shortcodes.php:1144
+#: include/./classes/shortcodes/shortcodes.php:1148
 #, php-format
 msgid "Append to this %s"
 msgstr ""
 
-#: include/./classes/shortcodes/shortcodes.php:1146
+#: include/./classes/shortcodes/shortcodes.php:1150
 #, php-format
 msgid "Prepend to this %s"
 msgstr ""
 
-#: include/./classes/shortcodes/shortcodes.php:1149
+#: include/./classes/shortcodes/shortcodes.php:1153
 #, php-format
 msgid "Move this %s"
 msgstr ""
 
-#: include/./classes/shortcodes/shortcodes.php:1151
+#: include/./classes/shortcodes/shortcodes.php:1155
 #, php-format
 msgid "Edit this %s"
 msgstr ""
 
-#: include/./classes/shortcodes/shortcodes.php:1152
+#: include/./classes/shortcodes/shortcodes.php:1156
 #, php-format
 msgid "Clone this %s"
 msgstr ""
 
-#: include/./classes/shortcodes/shortcodes.php:1153
+#: include/./classes/shortcodes/shortcodes.php:1157
 #, php-format
 msgid "Delete this %s"
 msgstr ""
@@ -6793,47 +6846,55 @@ msgid "Add image"
 msgstr ""
 
 #: include/./classes/updaters/class-vc-updater.php:125
-#: include/./classes/updaters/class-vc-updater.php:190
+#: include/./classes/updaters/class-vc-updater.php:192
 msgid "Error! Can't connect to filesystem"
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updater.php:131
-#: include/./classes/updaters/class-vc-updater.php:196
+#: include/./classes/updaters/class-vc-updater.php:133
+#: include/./classes/updaters/class-vc-updater.php:198
 msgid ""
 "To receive automatic updates license activation is required. Please visit <a "
 "href=\""
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updater.php:134
+#: include/./classes/updaters/class-vc-updater.php:133
+#: include/./classes/updaters/class-vc-updating-manager.php:176
+msgid "Got Visual Composer in theme?"
+msgstr ""
+
+#: include/./classes/updaters/class-vc-updater.php:136
 msgid "Getting download link..."
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updater.php:140
+#: include/./classes/updaters/class-vc-updater.php:142
 msgid "Download link could not be retrieved"
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updater.php:147
+#: include/./classes/updaters/class-vc-updater.php:149
 msgid "Downloading package..."
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updater.php:185
+#: include/./classes/updaters/class-vc-updater.php:187
 msgid "Downloading package from envato market..."
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updater.php:201
+#: include/./classes/updaters/class-vc-updater.php:203
 msgid "Error! Envato API error"
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updater.php:217
+#: include/./classes/updaters/class-vc-updater.php:219
 msgid "Error on unzipping package"
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updating-manager.php:179
-msgid "Download new version from CodeCanyon."
+#: include/./classes/updaters/class-vc-updating-manager.php:173
+msgid "settings"
 msgstr ""
 
-#: include/./classes/updaters/class-vc-updating-manager.php:182
-msgid "Update Visual Composer now."
+#: include/./classes/updaters/class-vc-updating-manager.php:175
+#, php-format
+msgid ""
+"To receive automatic updates license activation is required. Please visit %s "
+"to activate your Visual Composer."
 msgstr ""
 
 #: include/./classes/vendors/plugins/class-vc-vendor-contact-form7.php:48
@@ -7369,69 +7430,83 @@ msgid "Customer API"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:18
+#: include/./classes/vendors/plugins/acf/shortcode.php:18
 msgid "Field name"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:22
+#: include/./classes/vendors/plugins/acf/shortcode.php:22
 msgid "Select field from group."
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:32
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:36
+#: include/./classes/vendors/plugins/acf/shortcode.php:31
+#: include/./classes/vendors/plugins/acf/shortcode.php:35
 msgid "Advanced Custom Field"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:42
+#: include/./classes/vendors/plugins/acf/shortcode.php:39
 msgid "Field group"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:46
+#: include/./classes/vendors/plugins/acf/shortcode.php:43
 msgid "Select field group."
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:52
+#: include/./classes/vendors/plugins/acf/shortcode.php:48
 #: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:73
 msgid "Show label"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:55
+#: include/./classes/vendors/plugins/acf/shortcode.php:51
 #: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:77
-#: include/./params/vc_grid_item/shortcodes.php:523
+#: include/./params/vc_grid_item/shortcodes.php:618
 msgid "Enter label to display before key value."
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:59
+#: include/./classes/vendors/plugins/acf/shortcode.php:55
 #: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:81
 msgid "Align"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:62
+#: include/./classes/vendors/plugins/acf/shortcode.php:58
 #: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:84
 #: include/./params/font_container/font_container.php:91
 msgid "left"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:63
+#: include/./classes/vendors/plugins/acf/shortcode.php:59
 #: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:85
 #: include/./params/font_container/font_container.php:92
 msgid "right"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:64
+#: include/./classes/vendors/plugins/acf/shortcode.php:60
 #: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:86
 #: include/./params/font_container/font_container.php:93
 msgid "center"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:65
+#: include/./classes/vendors/plugins/acf/shortcode.php:61
 #: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:87
 #: include/./params/font_container/font_container.php:94
 msgid "justify"
 msgstr ""
 
 #: include/./classes/vendors/plugins/acf/grid-item-shortcodes.php:67
+#: include/./classes/vendors/plugins/acf/shortcode.php:63
 #: include/./classes/vendors/plugins/woocommerce/grid-item-shortcodes.php:90
-#: include/./params/vc_grid_item/shortcodes.php:535
+#: include/./params/vc_grid_item/shortcodes.php:630
 msgid "Select alignment."
 msgstr ""
 
@@ -8036,12 +8111,18 @@ msgstr ""
 msgid "Drag to reorder"
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:13
+#: include/./params/vc_grid_item/shortcodes.php:12
+#: include/./params/vc_grid_item/shortcodes.php:421
+#: include/./params/vc_grid_item/shortcodes.php:451
 msgid "Add link"
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:17
+#: include/./params/vc_grid_item/shortcodes.php:16
 msgid "Post link"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:17
+msgid "Post author"
 msgstr ""
 
 #: include/./params/vc_grid_item/shortcodes.php:18
@@ -8058,9 +8139,9 @@ msgstr ""
 
 #: include/./params/vc_grid_item/shortcodes.php:34
 #: include/./params/vc_grid_item/shortcodes.php:66
-#: include/./params/vc_grid_item/shortcodes.php:428
-#: include/./params/vc_grid_item/shortcodes.php:715
-#: include/./params/vc_grid_item/shortcodes.php:726
+#: include/./params/vc_grid_item/shortcodes.php:523
+#: include/./params/vc_grid_item/shortcodes.php:810
+#: include/./params/vc_grid_item/shortcodes.php:821
 msgid "Add custom link."
 msgstr ""
 
@@ -8152,7 +8233,9 @@ msgstr ""
 #: include/./params/vc_grid_item/shortcodes.php:384
 #: include/./params/vc_grid_item/shortcodes.php:400
 #: include/./params/vc_grid_item/shortcodes.php:416
-#: include/./params/vc_grid_item/shortcodes.php:492
+#: include/./params/vc_grid_item/shortcodes.php:446
+#: include/./params/vc_grid_item/shortcodes.php:511
+#: include/./params/vc_grid_item/shortcodes.php:587
 msgid "Post"
 msgstr ""
 
@@ -8169,15 +8252,59 @@ msgid "Excerpt or manual excerpt"
 msgstr ""
 
 #: include/./params/vc_grid_item/shortcodes.php:413
-msgid "Post Image"
+msgid "Post Author"
 msgstr ""
 
 #: include/./params/vc_grid_item/shortcodes.php:417
+msgid "Author of current post"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:424
+msgid "Add link to author?"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:443
+msgid "Post Categories"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:447
+msgid "Categories of current post"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:454
+msgid "Add link to category?"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:462
+msgid "Comma"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:469
+msgid "Select category display style."
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:482
+msgid "Select category color."
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:486
+msgid "Category size"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:490
+msgid "Select category size."
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:508
+msgid "Post Image"
+msgstr ""
+
+#: include/./params/vc_grid_item/shortcodes.php:512
 msgid "Featured image"
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:434
-#: include/./params/vc_grid_item/shortcodes.php:618
+#: include/./params/vc_grid_item/shortcodes.php:529
+#: include/./params/vc_grid_item/shortcodes.php:713
 msgid ""
 "Enter image size (Example: \"thumbnail\", \"medium\", \"large\", \"full\" or "
 "other sizes defined by theme). Alternatively enter size in pixels (Example: "
@@ -8185,37 +8312,37 @@ msgid ""
 "default."
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:489
+#: include/./params/vc_grid_item/shortcodes.php:584
 msgid "Post Date"
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:493
+#: include/./params/vc_grid_item/shortcodes.php:588
 msgid "Post publish date"
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:505
+#: include/./params/vc_grid_item/shortcodes.php:600
 msgid "Custom Field"
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:509
+#: include/./params/vc_grid_item/shortcodes.php:604
 #: include/./templates/pages/partials/vc-roles-parts/_shortcodes.tpl.php:35
 #: include/./templates/pages/partials/vc-roles-parts/_shortcodes.tpl.php:36
 msgid "Elements"
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:511
+#: include/./params/vc_grid_item/shortcodes.php:606
 msgid "Custom fields data from meta values of the post."
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:515
+#: include/./params/vc_grid_item/shortcodes.php:610
 msgid "Field key name"
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:517
+#: include/./params/vc_grid_item/shortcodes.php:612
 msgid "Enter custom field name to retrieve meta data value."
 msgstr ""
 
-#: include/./params/vc_grid_item/shortcodes.php:533
+#: include/./params/vc_grid_item/shortcodes.php:628
 msgid "Justify"
 msgstr ""
 
@@ -8438,12 +8565,12 @@ msgid ""
 "sure you want to add template?"
 msgstr ""
 
-#: include/./params/vc_grid_item/editor/class-vc-grid-item-preview.php:106
+#: include/./params/vc_grid_item/editor/class-vc-grid-item-preview.php:107
 msgid "Post title"
 msgstr ""
 
-#: include/./params/vc_grid_item/editor/class-vc-grid-item-preview.php:107
 #: include/./params/vc_grid_item/editor/class-vc-grid-item-preview.php:108
+#: include/./params/vc_grid_item/editor/class-vc-grid-item-preview.php:109
 msgid ""
 "The WordPress Excerpt is an optional summary or description of a post; in "
 "short, a post summary."
@@ -8458,8 +8585,12 @@ msgstr ""
 msgid "%s/12 width"
 msgstr ""
 
-#: include/./params/vc_grid_item/editor/popups/class-vc-templates-editor-grid-item.php:121
+#: include/./params/vc_grid_item/editor/popups/class-vc-templates-editor-grid-item.php:139
 msgid "Grid Templates"
+msgstr ""
+
+#: include/./params/vc_grid_item/editor/popups/class-vc-templates-editor-grid-item.php:157
+msgid "Custom Grid Templates"
 msgstr ""
 
 #: include/./params/vc_link/vc_link.php:18
@@ -8993,52 +9124,52 @@ msgid ""
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:11
-msgid "Now Faster Than Ever"
+msgid "New Elements and Options"
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:13
 msgid ""
-"Visual Composer 4.9 offers significant improvements in terms of performance. "
-"Detailed code refactor and smart loading of components results in fastest "
-"Visual Composer ever with more than 30% performance improvements. Now you "
-"can build your WordPress pages even faster and Visual Composer will assist "
-"you there."
+"Visual Composer 4.10 offers new and enhanced elements to improve your page "
+"building process. You will discover new options that will help you build "
+"even better layouts and use unlimited options of page building plugin."
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:14
 msgid ""
-"The most amazing thing is that the more content you have and the more addons "
-"you use - the more improvements in performance you will experience."
+"We have been constantly following your feature requests and latest update "
+"contains all the best of what you have been looking for. We are aiming to "
+"offer you most flexible tools and options with everything you will ever need "
+"to creating a website."
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:22
-msgid "Equal Height"
+msgid "ACF Support"
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:24
 msgid ""
-"Control column height by setting all columns within row to be equal height. "
-"Create new modern layouts you have dreamed of."
+"Combine power of Visual Composer and ACF - add any custom field of ACF to "
+"your page, post and even custom post type."
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:29
-msgid "Column Gap"
+msgid "Categories and Authors"
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:31
 msgid ""
-"Set gaps between columns or merge columns together by setting gap to 0. Use "
-"with familiar grid gap control mechanism."
+"Visual Composer Grid Builder has 2 more content elements allowing you to add "
+"data about categories and authors to your post grid."
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:36
-msgid "Column, Content Position"
+msgid "Parallax Speed"
 msgstr ""
 
 #: include/./templates/pages/vc-welcome/vc-welcome.php:38
 msgid ""
-"Control vertical alignment of columns and content within columns by setting "
-"it to top, middle or bottom."
+"Control speed of Visual Composer parallax to align this effect with your "
+"overall website mood by simply adjusting speed parameter."
 msgstr ""
 
 #: include/./templates/params/column_offset/template.tpl.php:10
@@ -9071,6 +9202,11 @@ msgstr ""
 
 #: include/./templates/params/google_fonts/template.php:43
 msgid "Grumpy wizards make toxic brew for the evil Queen and Jack."
+msgstr ""
+
+#: include/./templates/params/vc_grid_item/attributes/post_categories.php:29
+#, php-format
+msgid "View all posts in %s"
 msgstr ""
 
 #: include/./templates/params/vc_grid_item/editor/vc_grid_item_editor.tpl.php:20
@@ -9106,6 +9242,11 @@ msgstr ""
 msgid "Next tab"
 msgstr ""
 
-#: include/./templates/shortcodes/vc_tweetmeme.php:22
+#: include/./templates/shortcodes/vc_tweetmeme.php:25
+msgid "Tweet to"
+msgstr ""
+
+#: include/./templates/shortcodes/vc_tweetmeme.php:30
+#: include/./templates/shortcodes/vc_tweetmeme.php:34
 msgid "Tweet"
 msgstr ""

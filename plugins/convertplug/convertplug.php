@@ -1,15 +1,15 @@
 <?php
 /*
 Plugin Name: ConvertPlug
-Plugin URI: http://convertplug.in/
+Plugin URI: http://convertplug.com/
 Author: Brainstorm Force
 Author URI: https://www.brainstormforce.com
-Version: 1.1.1
+Version: 2.1.0
 Description: Welcome to ConvertPlug - the easiest WordPress plugin to convert website traffic into leads. ConvertPlug will help you build email lists, drive traffic, promote videos, offer coupons and much more!
 Text Domain: smile
 */
 if( !defined( 'CP_VERSION' ) ) {
-	define( 'CP_VERSION', '1.1.1');
+	define( 'CP_VERSION', '2.1.0');
 }
 
 if( !defined( 'CP_BASE_DIR' ) ) {
@@ -27,7 +27,22 @@ register_activation_hook( __FILE__, 'on_cp_activate' );
 * @Since 1.0
 */
 function on_cp_activate() {
+
 	update_option( 'convert_plug_redirect', true );
+	update_option( 'bsf_force_check_extensions', true );
+	update_option( "dismiss-cp-update-notice", false );
+
+	$cp_previous_version = get_option( 'cp_previous_version' );
+
+	if( !$cp_previous_version ) {
+		update_option( 'cp_is_new_user', true );	
+	} else {
+		update_option( 'cp_is_new_user', false );
+	}
+
+	// save previous version of plugin in option
+	update_option( "cp_previous_version", CP_VERSION );
+
 	global $wp_version;
 	$wp = '3.5';
 	$php = '5.3.2';
@@ -42,7 +57,9 @@ function on_cp_activate() {
     $version = 'PHP' == $flag ? $php : $wp;
     deactivate_plugins( basename( __FILE__ ) );
     wp_die('<p><strong>ConvertPlug </strong> requires <strong>'.$flag.'</strong> version <strong>'.$version.'</strong> or greater. Please contact your host.</p>','Plugin Activation Error',  array( 'response'=>200, 'back_link'=> TRUE ) );
+
 }
+
 
 if(!class_exists( 'Convert_Plug' )){
 	// include Smile_Framework class
@@ -53,27 +70,339 @@ if(!class_exists( 'Convert_Plug' )){
 		var $paths = array();
 		function __construct(){
 
+			//	Fall back support for multi fields
+			add_action( 'init', array( $this,'fallback_support_for_multifield' ) );
+
 			$this->paths = wp_upload_dir();
 			$this->paths['fonts'] 	= 'smile_fonts';
 			$this->paths['fonturl'] = set_url_scheme( trailingslashit( $this->paths['baseurl'] ).$this->paths['fonts'] );
+
 			add_action( 'admin_menu', array( $this,'add_admin_menu' ), 99 );
 			add_action( 'admin_menu', array( $this,'add_admin_menu_rename' ), 9999 );
 			add_filter( 'custom_menu_order', array($this,'cp_submenu_order') );
-			add_action( 'wp_enqueue_scripts', array( $this,'enqueue_front_scripts' ), 100);
+			add_action( 'wp_enqueue_scripts', array( $this,'enqueue_front_scripts' ), 10);
 			add_action( 'admin_print_scripts', array( $this, 'cp_admin_css' ) );
-			add_action( 'admin_footer', array( $this, 'smile_get_shortcodes' ) );
 			add_action( 'admin_enqueue_scripts', array( $this,'cp_admin_scripts' ), 100);
-			add_action( 'admin_enqueue_scripts', array( $this,'convert_admin_styles' ), 100);
 			add_filter( 'bsf_core_style_screens', array( $this, 'cp_add_core_styles' ));
+			add_action( 'admin_head', array( $this, 'cp_custom_css' ));
 			add_action( 'admin_init', array($this,'cp_redirect_on_activation'));
 			add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( $this, 'cp_action_links' ), 10, 5);
 			add_action( 'wp_ajax_cp_display_preview_modal', array( $this, 'cp_display_preview_modal' ) );
 			add_action( 'wp_ajax_cp_display_preview_info_bar', array( $this, 'cp_display_preview_info_bar' ) );
 			add_action( 'wp_ajax_cp_display_preview_slide_in', array( $this, 'cp_display_preview_slide_in' ) );
 			add_action( 'plugins_loaded', array( $this, 'cp_load_textdomain' ) );
-			add_action( 'the_content', array( $this, 'addContent' ) );
-			require_once( 'mailers/config.php' );
+			add_filter( 'the_content', array( $this, 'cp_add_content' ) );
 			require_once( 'admin/ajax-actions.php' );
+			require_once( 'framework/cp-widgets.php' );
+			add_action( 'widgets_init', 'Load_Convertplug_Widget' );
+				
+			if( get_option("dismiss-cp-update-notice") == false ) {
+				add_action( 'admin_notices', 'cp_update_admin_notice' );
+			}
+
+		}
+		function fallback_support_for_multifield() {
+			$op = get_option('cp_multifield_support', 'no');
+			if( $op == 'no' ) {
+				$this->update_modules( 'smile_modal_styles' );
+				$this->update_modules( 'smile_info_bar_styles' );
+				$this->update_modules( 'smile_slide_in_styles' );
+				update_option( 'cp_multifield_support', 'yes' );
+			}
+		}
+		function update_modules( $module ) {
+
+			$all_modules = get_option( $module );
+			add_option( $module . '_backup', $all_modules );	//	Take a backup of current module
+
+			$updated = '';
+
+			if(is_array($all_modules) && !empty($all_modules)){
+				foreach( $all_modules as $key => $style ){
+
+				    //  Unserialize
+				    $s = unserialize($style['style_settings']);
+
+					//  Add only name field or Email & name
+					$email_placeholder  = ( isset($s['placeholder_text']) && $s['placeholder_text'] != '' ) ? $s['placeholder_text'] : 'Enter Your Email Address';
+					$name_placeholder 	= ( isset($s['name_text']) && $s['name_text'] != '' ) ? $s['name_text'] : 'Enter Your Name';
+
+					$with_name = 	'order->0|input_type->textfield|input_label->Name|input_name->name|input_placeholder->'.$name_placeholder.'|input_require->true;order->1|input_type->email|input_label->Email|input_name->email|input_placeholder->'.$email_placeholder.'|input_require->true';
+				    $only_email = 	'order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->'.$email_placeholder.'|input_require->true';
+
+				    //	Get module slug
+				  	$slug = $s['style'];
+				    switch( $slug ) {
+
+				    	//	modal
+						case 'every_design':
+    					case 'special_offer':
+						case 'flat_discount':
+						case 'instant_coupon':
+						case 'locked_content':
+						case 'optin_to_win':
+						case 'webinar':
+						case 'YouTube':
+						case 'direct_download':
+						case 'first_order':
+						case 'first_order_2':
+						case 'free_ebook':
+												$s['form_input_font_size'] = 15;
+												$s['form_input_padding_tb'] = 10;
+												$s['form_input_padding_lr'] = 15;
+												$s['submit_button_tb_padding'] = 10;
+												$s['submit_button_lr_padding'] = 15;
+							break;
+
+						//	slide in
+						case 'optin':
+												$s['form_input_font_size'] = 16;
+												$s['form_input_padding_tb'] = 10;
+												$s['form_input_padding_lr'] = 15;
+												$s['submit_button_tb_padding'] = 12;
+												$s['submit_button_lr_padding'] = 15;
+							break;
+    					case 'optin_widget':
+												$s['form_input_font_size'] = 13;
+												$s['form_input_padding_tb'] = 6;
+												$s['form_input_padding_lr'] = 10;
+												$s['submit_button_tb_padding'] = 6;
+												$s['submit_button_lr_padding'] = 15;
+							break;
+
+						//	info bar
+						case 'free_trial':
+					    case 'get_this_deal':
+					    case 'image_preview':
+					    case 'newsletter':
+					    case 'weekly_article':
+												$s['form_input_font_size'] = 13;
+												$s['form_input_padding_tb'] = 6;
+												$s['form_input_padding_lr'] = 10;
+												$s['submit_button_tb_padding'] = 6;
+												$s['submit_button_lr_padding'] = 15;
+							break;
+			    	}
+
+			    	/**
+			    	 * Button Width & Input Alignments
+			    	 */
+			    	//  Add fields -  form_input_align, form_submit_align, form_fields if not exist
+			    	$s['form_input_align']  = "left";
+				    $s['form_submit_align'] = "cp-submit-wrap-full";
+				    $s['form_grid_structure'] = "cp-form-grid-structure-2";
+
+			    	switch( $slug ) {
+
+				    	//	modal
+						case 'direct_download':
+													$s['form_submit_align'] = "cp-submit-wrap-left";
+									break;
+						case 'instant_coupon':
+						case 'locked_content':
+    					case 'special_offer':
+						case 'flat_discount':		$s['form_input_align']  = "center";
+									break;
+
+						//	slide in
+    					case 'optin_widget':		$s['form_input_align']  = "center";
+							break;
+
+						//	info bar
+					    case 'get_this_deal':
+					    							$s['form_input_align']  = "center";
+					    	break;
+
+						case 'free_trial':
+					    case 'image_preview':
+					    case 'newsletter':
+					    case 'weekly_article':		$s['form_submit_align'] = "cp-submit-wrap-left";
+							break;
+			    	}
+
+				    //  Update if OLD exist & !NEW exist
+				    $s['form_input_color']        = ( isset( $s['placeholder_color'] ) ) ? $s['placeholder_color'] : '';
+				    $s['form_input_font']         = ( isset( $s['placeholder_font'] ) ) ? $s['placeholder_font'] : '';
+				    $s['form_input_bg_color']     = ( isset( $s['input_bg_color'] ) ) ? $s['input_bg_color'] : '';
+				    $s['form_input_border_color'] = ( isset( $s['input_border_color'] ) ) ? $s['input_border_color'] : '';
+
+				    //  layout 3 - If Name is enable
+				    if( isset($s['namefield']) && $s['namefield'] == 1 ) {
+
+				       	//	Add name field in multi form
+				    	$s['form_fields'] = $with_name;
+
+				    	switch( $slug ) {
+
+					    	//	modal
+							case 'every_design':
+        					case 'special_offer':
+				        								$s['form_layout'] = 'cp-form-layout-1';
+								break;
+
+							case 'flat_discount':
+							case 'instant_coupon':
+							case 'locked_content':
+							case 'optin_to_win':
+														$s['form_layout'] = 'cp-form-layout-2';
+								break;
+
+							//	modal
+							case 'webinar':
+							case 'YouTube':
+														$s['form_layout'] = 'cp-form-layout-3';
+								break;
+
+							case 'direct_download':
+							case 'first_order':
+							case 'first_order_2':
+							case 'free_ebook':
+														$s['form_layout'] = 'cp-form-layout-4';
+								break;
+
+							//	slide in
+        					case 'optin_widget':
+				        								$s['form_layout'] = 'cp-form-layout-1';
+								break;
+							case 'optin':
+														$s['form_layout'] = 'cp-form-layout-3';
+								break;
+
+							//	info bar
+							case 'free_trial':
+						    case 'newsletter':
+						    case 'weekly_article':
+														$s['form_layout'] = 'cp-form-layout-3';
+								break;
+				    	}
+
+
+				    } else if( isset($s['btn_disp_next_line']) && $s['btn_disp_next_line'] == 1 ) {
+
+				    	//	Modal
+				    	switch( $slug ) {
+
+				    		//	modal
+							case 'every_design':
+							case 'flat_discount':
+							case 'instant_coupon':
+							case 'locked_content':
+							case 'optin_to_win':
+							case 'special_offer':
+							case 'webinar':
+							case 'YouTube':			$s['form_layout'] = 'cp-form-layout-1';
+											    	$s['form_fields'] = $only_email;
+								break;
+
+							case 'direct_download':
+							case 'first_order':
+							case 'first_order_2':
+							case 'free_ebook':
+													$s['form_layout'] = 'cp-form-layout-4';
+													$s['form_fields'] = '';
+								break;
+
+							//	slide in
+							case 'optin_widget':
+							case 'optin':			$s['form_layout'] = 'cp-form-layout-1';
+											    	$s['form_fields'] = $only_email;
+								break;
+
+							//	info bar
+							case 'free_trial':
+						    case 'newsletter':
+						    case 'weekly_article':
+													$s['form_layout'] = 'cp-form-layout-3';
+													$s['form_fields'] = $only_email;
+								break;
+				    	}
+
+				    } else {
+
+				    	switch( $slug ) {
+
+				    		//	modal
+							case 'every_design':
+							case 'flat_discount':
+							case 'instant_coupon':
+							case 'locked_content':
+							case 'optin_to_win':
+        					case 'special_offer':
+							case 'webinar':
+							case 'YouTube':
+														$s['form_layout'] = 'cp-form-layout-3';
+														$s['form_fields'] = $only_email;
+								break;
+							case 'direct_download':
+							case 'first_order':
+							case 'first_order_2':
+							case 'free_ebook':
+														$s['form_layout'] = 'cp-form-layout-4';
+								break;
+
+							//	slide in
+							case 'optin_widget':
+														$s['form_layout'] = 'cp-form-layout-1';
+														$s['form_fields'] = $only_email;
+								break;
+							case 'optin':
+														$s['form_layout'] = 'cp-form-layout-3';
+														$s['form_fields'] = $only_email;
+								break;
+
+							//	info bar
+							case 'free_trial':
+						    case 'newsletter':
+						    case 'weekly_article':
+														$s['form_layout'] = 'cp-form-layout-3';
+														$s['form_fields'] = $only_email;
+								break;
+						    case 'get_this_deal':
+						    case 'image_preview':
+						    							$s['form_layout'] = 'cp-form-layout-4';
+								break;
+				    	}
+				    }
+
+				    /**
+			    	 * Specially for - YouTube
+			    	 */
+			    	if( $s['style'] == 'YouTube' ) {
+
+    					$s['form_input_align'] = 'left';
+    					$s['form_input_color'] = 'rgb(153, 153, 153)';
+    					$s['form_input_bg_color'] = 'rgb(255, 255, 255)';
+    					$s['form_input_border_color'] = 'rgb(191, 190, 190)';
+    					$s['form_input_font_size'] = '15';
+    					$s['form_input_padding_tb'] = '10';
+    					$s['form_input_padding_lr'] = '15';
+    					$s['submit_button_tb_padding'] = '12';
+    					$s['submit_button_lr_padding'] = '42';
+
+			    		if( isset($s['cta_type']) && $s['cta_type'] != '' ) {
+
+			    			switch( $s['cta_type'] ) {
+								case 'button': 		$s['form_layout'] = 'cp-form-layout-4';
+							    					$s['form_submit_align'] = 'cp-submit-wrap-center';
+							    					$s['form_fields'] = '';
+									break;
+								case 'form': 		$s['form_lable_color'] = 'rgb(153, 153, 153)';
+													$s['form_lable_font_size'] = '15';
+									break;
+							}
+			    		}
+			    	}
+
+				    /*  update values 	*/
+				    $style['style_settings'] = serialize($s);
+
+				    /*  store the new options 	*/
+				    $updated[] = $style;
+				}
+
+				//  Update the style
+				update_option( $module, $updated );
+			}
 		}
 
 		/**
@@ -81,22 +410,24 @@ if(!class_exists( 'Convert_Plug' )){
 		 *
 		 * @since 1.0.3
 		 */
-		function addContent( $content ) {
+		function cp_add_content( $content ) {
 			if( is_single() || is_page() ){
+				$content_str_array = cp_display_style_inline();
 				$content .= '<span class="cp-load-after-post"></span>';
+				$content = $content_str_array[0].$content;
+				$content .= $content_str_array[1];
 			}
 			return $content;
 		}
 
 		/**
-		 * Load plugin textdomain.
+		 * Load plugin text domain.
 		 *
 		 * @since 1.0.0
 		 */
 		function cp_load_textdomain() {
 		  load_plugin_textdomain( 'smile', false, plugin_basename( dirname( __FILE__ ) ) . '/lang' );
 		}
-
 
 		/**
 		 * Handle style preview ajax request for modal
@@ -146,32 +477,6 @@ if(!class_exists( 'Convert_Plug' )){
 			return $actions;
 		}
 
-		/* smile_get_shortcodes
-		 * Creates shortcode object
-		 */
-		function smile_get_shortcodes() {
-
-			$screen = get_current_screen();
-			$screen_id = $screen->base;
-
-			if( $screen_id == 'post-new' || $screen_id == 'post' ){
-				echo '<script type="text/javascript">
-				var shortcodes_buttons = new Object();';
-
-				$shortcode_button_tags = array();
-
-				$shortcode_button_tags = apply_filters('smile_shortcode_buttons', $shortcode_button_tags);
-
-				if ( !empty($shortcode_button_tags) ) {
-					foreach ( $shortcode_button_tags as $tag => $code ) {
-						$code = implode(",",$code);
-						echo "shortcodes_buttons['{$tag}'] = '{$code}';";
-					}
-				}
-				echo '</script>';
-			}
-		}
-
 		/*
 		* Enqueue scripts and styles for insert shortcode popup
 		* @Since 1.0
@@ -180,33 +485,48 @@ if(!class_exists( 'Convert_Plug' )){
 
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_style( 'wp-color-picker' );
-			$screen = get_current_screen();
-			$screen_id = $screen->base;
 
-			if ( strpos( $screen_id , 'convertplug' ) !== false ) {
+			$data  =  get_option( 'convert_plug_debug' );
+
+			if ( strpos( $hook , 'convertplug' ) !== false ) {
 				wp_enqueue_style( 'cp-connects-icon', plugins_url('modules/assets/css/connects-icon.css',__FILE__) );
+				wp_enqueue_style( 'cp-social-icon', plugins_url('modules/assets/css/social-icon-css.css',__FILE__) );
+			}
+
+			if( isset( $_GET['hidemenubar'] ) ) {
+
+				//	Common File for ConvertPlug
+				wp_enqueue_script( 'cp-ckeditor', plugins_url( 'modules/assets/js/ckeditor/ckeditor.js', __FILE__) );
+				wp_enqueue_script( 'cp-contact-form', plugins_url( 'modules/assets/js/convertplug.js', __FILE__ ), array( 'jquery', 'cp-ckeditor' ) );
+
+				if( !is_user_logged_in() || ( defined( "LOGGED_IN_COOKIE" ) && empty( $_COOKIE[LOGGED_IN_COOKIE] ) ) ){
+					wp_clear_auth_cookie();
+					wp_logout();
+					auth_redirect();
+				}
+
+				wp_enqueue_script( 'cp-perfect-scroll-js', plugins_url( 'admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
 			}
 
 			if( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == 'variant' ) ) {
 				wp_enqueue_script( 'cp-perfect-scroll-js', plugins_url( 'admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
 				wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
 				wp_enqueue_style( 'cp-animate', plugins_url( 'modules/assets/css/animate.css', __FILE__ ) );
+				wp_enqueue_style( 'cp-social-style', plugins_url( 'modules/assets/css/cp-social-media-style.css', __FILE__ ) );
 
 				// ace editor files
-				wp_enqueue_script( 'cp-ace', plugins_url( 'admin/assets/js/ace.js', __FILE__ ) , array( "jquery" ) );
-				wp_enqueue_script( 'cp-ace-mode-css', plugins_url( 'admin/assets/js/mode-css.js', __FILE__ ) , array( "jquery" ) );
-				wp_enqueue_script( 'cp-ace-mode-xml', plugins_url( 'admin/assets/js/mode-xml.js', __FILE__ ) , array( "jquery" ) );
-				wp_enqueue_script( 'cp-ace-worker-css', plugins_url( 'admin/assets/js/worker-css.js', __FILE__ ) , array( "jquery" ) );
-				wp_enqueue_script( 'cp-ace-worker-xml', plugins_url( 'admin/assets/js/worker-xml.js', __FILE__ ) , array( "jquery" ) );
+				if( !isset( $_GET['hidemenubar'] ) ) {
+					wp_enqueue_script( 'cp-ace', plugins_url( 'admin/assets/js/ace.js', __FILE__ ) , array( "jquery" ) );
+					wp_enqueue_script( 'cp-ace-mode-css', plugins_url( 'admin/assets/js/mode-css.js', __FILE__ ) , array( "jquery" ) );
+					wp_enqueue_script( 'cp-ace-mode-xml', plugins_url( 'admin/assets/js/mode-xml.js', __FILE__ ) , array( "jquery" ) );
+					wp_enqueue_script( 'cp-ace-worker-css', plugins_url( 'admin/assets/js/worker-css.js', __FILE__ ) , array( "jquery" ) );
+					wp_enqueue_script( 'cp-ace-worker-xml', plugins_url( 'admin/assets/js/worker-xml.js', __FILE__ ) , array( "jquery" ) );
+				}
 			}
-			if( $screen_id == 'convertplug_page_contact-manager' ) {
+
+			if( $hook == 'convertplug_page_contact-manager' ) {
 				wp_enqueue_style( 'cp-contacts', plugins_url('admin/contacts/css/cp-contacts.css',__FILE__) );
-				if(isset($_GET['view']) && $_GET['view'] == 'analytics' ) {
-
-					wp_enqueue_style( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/css/bootstrap-datetimepicker.min.css',__FILE__) );
-
-					wp_enqueue_script( 'smile-moment-with-locales', plugins_url( 'modules/assets/js/moment-with-locales.js', __FILE__), false, false, true );
-					wp_enqueue_script( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/js/bootstrap-datetimepicker.js',__FILE__), false, false, true );
+				if( isset($_GET['view']) && $_GET['view'] == 'analytics' ) {
 
 					wp_enqueue_script( 'bsf-charts-js', plugins_url('admin/assets/js/chart.js',__FILE__), false, false, true );
 					wp_enqueue_script( 'bsf-charts-bar-js', plugins_url('admin/assets/js/chart.bar.js',__FILE__), false, false, true );
@@ -226,6 +546,39 @@ if(!class_exists( 'Convert_Plug' )){
 				wp_enqueue_script( 'cp-swal-js', plugins_url('admin/assets/js/sweetalert.min.js',__FILE__), false, false, true );
 				wp_enqueue_style( 'cp-swal-style', plugins_url('admin/assets/css/sweetalert.css',__FILE__) );
 			}
+
+			if( !isset( $_GET['hidemenubar'] ) && strpos( $hook , 'convertplug' ) !== false ) {
+				
+				wp_enqueue_style( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/css/bootstrap-datetimepicker.min.css',__FILE__) );
+
+				wp_enqueue_script( 'smile-moment-with-locales', plugins_url( 'modules/assets/js/moment-with-locales.js', __FILE__), false, false, true );
+				wp_enqueue_script( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/js/bootstrap-datetimepicker.js',__FILE__), false, false, true );
+			}
+
+			// count down style scripts
+			if( isset($_GET['theme']) && $_GET['theme'] == 'countdown' ) {
+				wp_register_style( 'cp-countdown-style', plugins_url('modules/assets/css/jquery.countdown.css',__FILE__) );
+				wp_register_script( 'cp-counter-plugin-js', plugins_url( 'modules/assets/js/jquery.plugin.min.js', __FILE__), array( 'jquery' ), null, null, true );
+				wp_register_script( 'cp-countdown-js', plugins_url( 'modules/assets/js/jquery.countdown.js', __FILE__), array( 'jquery' ), null, null, true );
+				wp_register_script( 'cp-countdown-script', plugins_url( 'modules/assets/js/jquery.countdown.script.js', __FILE__), array( 'jquery' ), null, null, true );
+			}
+
+			if ( strpos( $hook , 'convertplug' ) !== false ) {
+				// developer mode
+				if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
+					wp_enqueue_style( 'css-tootip', plugins_url('admin/assets/css/frosty.css',__FILE__) );
+					wp_enqueue_style( 'convert-admin', plugins_url('admin/assets/css/admin.css',__FILE__) );
+					wp_enqueue_style( 'convert-about', plugins_url('admin/assets/css/about.css',__FILE__) );
+					wp_enqueue_style( 'convert-preview-style', plugins_url('admin/assets/css/preview-style.css',__FILE__) );
+					wp_enqueue_style( 'jquery-ui-accordion', plugins_url('admin/assets/css/accordion.css',__FILE__) );
+					wp_enqueue_style( 'css-select2', plugins_url('admin/assets/select2/select2.min.css',__FILE__) );
+					wp_enqueue_style( 'cp-contacts', plugins_url('admin/contacts/css/cp-contacts.css',__FILE__) );
+					wp_enqueue_style( 'cp-swal-style', plugins_url('admin/assets/css/sweetalert.css',__FILE__) );
+				} else {
+					wp_enqueue_style( 'convert-admin-css', plugins_url('admin/assets/css/admin.min.css',__FILE__));
+				}
+			}
+
 		}
 
 		/*
@@ -241,32 +594,6 @@ if(!class_exists( 'Convert_Plug' )){
 		* @Since 1.0
 		*/
 		function enqueue_front_scripts(){
-			// $fonts = get_option('smile_fonts');
-			// if(is_array($fonts))
-			// {
-			// 	foreach($fonts as $font => $info)
-			// 	{
-			// 		$style_url = $info['style'];
-			// 		if(strpos($style_url, 'http://' ) !== false) {
-			// 			wp_enqueue_style( 'bsf-'.$font,$info['style'] );
-			// 		} else {
-			// 			wp_enqueue_style( 'bsf-'.$font,trailingslashit($this->paths['fonturl']).$info['style'] );
-			// 		}
-			// 	}
-			// }
-
-			// nano scroll
-			if(isset($_GET['hidemenubar'])){
-
-				if( !is_user_logged_in() || ( defined( "LOGGED_IN_COOKIE" ) && empty( $_COOKIE[LOGGED_IN_COOKIE] ) ) ){
-					wp_clear_auth_cookie();
-					wp_logout();
-					auth_redirect();
-				}
-
-				wp_enqueue_script( 'cp-nicescroll-js', plugins_url( 'admin/assets/js/jquery.nicescroll.min.js', __FILE__ ), array( "jquery" ) );
-				wp_enqueue_script( 'cp-perfect-scroll-js', plugins_url( 'admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
-			}
 
 			wp_register_script( 'cp-detect-device', plugins_url( 'modules/assets/js/mdetect.js', __FILE__), array( 'jquery' ), null, null, true );
 		}
@@ -321,6 +648,17 @@ if(!class_exists( 'Convert_Plug' )){
 			);
 			add_action( 'admin_footer-'. $resources_page, array($this,'cp_admin_footer') );
 
+			$cust_page = add_submenu_page(
+			        'contacts_manager',
+			        'Hidden!',
+			        'Hidden!',
+			        'administrator',
+			        'cp_customizer',
+			        array($this, 'cp_customizer_render_hidden_page')
+			    );
+
+			add_action( 'admin_footer-'. $cust_page, array($this,'cp_customizer_render_hidden_page') );
+
 
 			// section wise menu
 			global $bsf_section_menu;
@@ -329,17 +667,6 @@ if(!class_exists( 'Convert_Plug' )){
 				'is_down_arrow' => true
 			);
 			$bsf_section_menu[] = $section_menu;
-
-			// $icon_manager = add_submenu_page(
-			// 	"convertplug",
-			// 	__("Icon Manager","smile"),
-			// 	__("Icon Manager","smile"),
-			// 	"administrator",
-			// 	"bsf-font-icon-manager",
-			// 	array($this, 'cp_icon_manager')
-			// );
-			// $AIO_Icon_Manager = new AIO_Icon_Manager;
-			// add_action( 'admin_print_scripts-' . $icon_manager, array($AIO_Icon_Manager,'admin_scripts'));
 
 			$google_manager = add_submenu_page(
 				"convertplug",
@@ -352,6 +679,10 @@ if(!class_exists( 'Convert_Plug' )){
 			$Ultimate_Google_Font_Manager = new Ultimate_Google_Font_Manager;
 			add_action( 'admin_print_scripts-' . $google_manager, array($Ultimate_Google_Font_Manager,'admin_google_font_scripts'));
             add_action( 'admin_footer-'. $google_manager, array($this,'cp_admin_footer') );
+		}
+
+		function cp_customizer_render_hidden_page() {
+			require_once( plugin_dir_path(__FILE__).'preview.php' );
 		}
 
 		function cp_font_manager() {
@@ -380,7 +711,7 @@ if(!class_exists( 'Convert_Plug' )){
 		    if(!isset($submenu['convertplug']))
 		    	return false;
 
-		    $temp_resource = $temp_connect = $temp_google_font_manager = $temp_font_icon_manager = array();
+		    $temp_resource = $temp_connect = $temp_google_font_manager = $temp_font_icon_manager = $temp_in_sync = array();
 		    foreach ($submenu['convertplug'] as $key => $cp_submenu) {
 		    	if($cp_submenu[2] === 'cp-resources') {
 		    		$temp_resource = $submenu['convertplug'][$key];
@@ -394,10 +725,31 @@ if(!class_exists( 'Convert_Plug' )){
 		    		$temp_font_icon_manager = $submenu['convertplug'][$key];
 		    		unset($submenu['convertplug'][$key]);
 		    	}
+		    	if($cp_submenu[2] === 'bsf-extensions-14058953') {
+		    		$temp_addons = $submenu['convertplug'][$key];
+		    		unset($submenu['convertplug'][$key]);
+		    	}
 		    	if($cp_submenu[2] === 'bsf-google-font-manager') {
 		    		$temp_google_font_manager = $submenu['convertplug'][$key];
 		    		unset($submenu['convertplug'][$key]);
 		    	}
+		    	if($cp_submenu[2] === 'cp-wp-comment-form') {
+		    		$temp_wp_comment_form = $submenu['convertplug'][$key];
+		    		unset($submenu['convertplug'][$key]);
+		    	}
+		    	if($cp_submenu[2] === 'cp-wp-registration-form') {
+		    		$temp_wp_registration_form = $submenu['convertplug'][$key];
+		    		unset($submenu['convertplug'][$key]);
+		    	}
+		    	if($cp_submenu[2] === 'cp-woocheckout-form') {
+		    		$temp_woocheckout_form = $submenu['convertplug'][$key];
+		    		unset($submenu['convertplug'][$key]);
+		    	}
+		    	if($cp_submenu[2] === 'cp-contact-form7') {
+		    		$temp_contact_form7 = $submenu['convertplug'][$key];
+		    		unset($submenu['convertplug'][$key]);
+		    	}
+
 		    }
 
 		    array_filter($submenu['convertplug']);
@@ -408,11 +760,26 @@ if(!class_exists( 'Convert_Plug' )){
 	    	if(!empty($temp_connect)) {
 	    		array_push($submenu['convertplug'], $temp_connect);
 	    	}
+	    	if(!empty($temp_addons)) {
+	    		array_push($submenu['convertplug'], $temp_addons);
+	    	}
 	    	if(!empty($temp_google_font_manager)) {
 	    		array_push($submenu['convertplug'], $temp_google_font_manager);
 	    	}
 	    	if(!empty($temp_font_icon_manager)) {
 	    		array_push($submenu['convertplug'], $temp_font_icon_manager);
+	    	}
+	    	if(!empty($temp_wp_comment_form)) {
+	    		array_push($submenu['convertplug'], $temp_wp_comment_form);
+	    	}
+	    	if(!empty($temp_wp_registration_form)) {
+	    		array_push($submenu['convertplug'], $temp_wp_registration_form);
+	    	}
+	    	if(!empty($temp_woocheckout_form)) {
+	    		array_push($submenu['convertplug'], $temp_woocheckout_form);
+	    	}
+	    	if(!empty($temp_contact_form7)) {
+	    		array_push($submenu['convertplug'], $temp_contact_form7);
 	    	}
 
 		    return $menu_ord;
@@ -423,95 +790,67 @@ if(!class_exists( 'Convert_Plug' )){
 		}
 
 		/*
-		Load admin styles on convert plug page only
-		* @since 1.0
-		*/
-		function convert_admin_styles() {
-
-			$screen = get_current_screen();
-			$screen_id = $screen->base;
-
-			if( isset( $_GET['style-view'] ) && $_GET['style-view'] == "new" && $screen_id == 'convertplug_page_smile-modal-designer') {
-				wp_enqueue_style( 'smile-modal-css', plugins_url( 'modules/modal/assets/css/modal.min.css', __FILE__) );
-			}
-			if( isset( $_GET['style-view'] ) && $_GET['style-view'] == "new" && $screen_id == "convertplug_page_smile-info_bar-designer" ) {
-				wp_enqueue_style( 'smile-info-bar-min', plugins_url( 'modules/info_bar/assets/css/info_bar.min.css', __FILE__) );
-			}
-			if( isset( $_GET['style-view'] ) && $_GET['style-view'] == "new" && $screen_id == "convertplug_page_smile-slide_in-designer" ) {
-				wp_enqueue_style( 'smile-slide-in-min', plugins_url( 'modules/slide_in/assets/css/slide_in.min.css', __FILE__) );
-			}
-
-			if ( strpos( $screen_id , 'convertplug' ) !== false ) {
-				if( isset( $_GET['developer'] ) ) {
-					wp_enqueue_style( 'css-tootip', plugins_url('admin/assets/css/frosty.css',__FILE__) );
-					wp_enqueue_style( 'convert-admin', plugins_url('admin/assets/css/admin.css',__FILE__) );
-					wp_enqueue_style( 'convert-about', plugins_url('admin/assets/css/about.css',__FILE__) );
-					wp_enqueue_style( 'jquery-ui-accordion', plugins_url('admin/assets/css/accordion.css',__FILE__) );
-					wp_enqueue_style( 'css-select2', plugins_url('admin/assets/select2/select2.min.css',__FILE__) );
-					wp_enqueue_style( 'cp-contacts', plugins_url('admin/contacts/css/cp-contacts.css',__FILE__) );
-				} else {
-					wp_enqueue_style( 'convert-admin-css', plugins_url('admin/assets/css/admin.min.css',__FILE__));
-				}
-			}
-		}
-
-		/*
 		* Load scripts and styles on admin area of convertPlug
 		* @Since 1.0
 		*/
-		function convert_admin_scripts(){
+		function convert_admin_scripts() {
+
 			wp_enqueue_script( 'jQuery' );
 			wp_enqueue_style( 'thickbox' );
-			if( isset( $_GET['developer'] ) ) {
+
+			$data  =  get_option( 'convert_plug_debug' );
+
+			// developer mode
+			if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
+
+				// tool tip library script
 				wp_enqueue_script( 'convert-tooltip', plugins_url('admin/assets/js/frosty.js',__FILE__),array( 'jquery' ),'',true);
+
+				// accordion
 				wp_enqueue_script( 'convert-accordion-widget', plugins_url('admin/assets/js/jquery.widget.min.js',__FILE__) );
 				wp_enqueue_script( 'convert-accordion', plugins_url('admin/assets/js/accordion.js',__FILE__));
+
 				wp_enqueue_script( 'convert-admin', plugins_url('admin/assets/js/admin.js',__FILE__));
+
+				// shuffle js scripts
 				wp_enqueue_script( 'smile-jquery-modernizer', plugins_url('modules/modal/assets/js/jquery.shuffle.modernizr.js',__FILE__),'','',true);
 				wp_enqueue_script( 'smile-jquery-shuffle', plugins_url('modules/modal/assets/js/jquery.shuffle.min.js',__FILE__),'','',true);
 				wp_enqueue_script( 'smile-jquery-shuffle-custom', plugins_url('modules/modal/assets/js/shuffle-script.js',__FILE__),'','',true);
+
+				// sweet alert
+				wp_enqueue_script( 'cp-swal-js', plugins_url('admin/assets/js/sweetalert.min.js',__FILE__), false, false, true );
+
 			} else {
 				wp_enqueue_script( 'convert-admin-js', plugins_url('admin/assets/js/admin.min.js',__FILE__),'','',true);
 			}
+
 			if( ( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant" ) ) || !isset( $_GET['style-view'] ) ) {
 				wp_enqueue_script( 'convert-select2', plugins_url('admin/assets/select2/select2.min.js',__FILE__));
 			}
+
 			// REMOVE WP EMOJI
 			remove_action('wp_head', 'print_emoji_detection_script', 7);
 			remove_action('wp_print_styles', 'print_emoji_styles');
 
 			remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 			remove_action( 'admin_print_styles', 'print_emoji_styles' );
-			// $fonts = get_option('smile_fonts');
-			// if(is_array($fonts))
-			// {
-			// 	foreach($fonts as $font => $info)
-			// 	{
-			// 		$style_url = $info['style'];
-			// 		if(strpos($style_url, 'http://' ) !== false) {
-			// 			wp_enqueue_style( 'bsf-'.$font,$info['style'] );
-			// 		} else {
-			// 			wp_enqueue_style( 'bsf-'.$font,trailingslashit($this->paths['fonturl']).$info['style'] );
-			// 		}
-			// 	}
-			// }
 
 		}
+
 		/*
 		*Add footer link for dashboar
 		*Since 1.0.1
 		*/
-		function cp_admin_footer(){
+		function cp_admin_footer() {
 			echo'<div id="wpfooter" role="contentinfo" class="cp_admin_footer">
 				        <p id="footer-left" class="alignleft">
-				        <span id="footer-thankyou">Thank you for using <a href="https://www.convertplug.com/" target="_blank" >Convertplug</a>.</span>   </p>
+				        <span id="footer-thankyou">Thank you for using <a href="https://www.convertplug.com/" target="_blank" >ConvertPlug</a>.</span>   </p>
 				    <p id="footer-upgrade" class="alignright">';
 				       _e( "Version", "smile" ); echo ' '.CP_VERSION;
 				        ;echo  '</p>
 				    <div class="clear"></div>
 				</div>';
 		}
-
 
 		/*
 		* Load convertPlug dashboard
@@ -592,6 +931,41 @@ if(!class_exists( 'Convert_Plug' )){
 				endif;
 			}
 		}
+
+		/*
+		* Add custom css for customizer admin page
+		*
+		* @Since 2.0.1
+		*/
+		function cp_custom_css($hook) {
+			if( isset( $_GET['page'] ) && $_GET['page'] == 'cp_customizer' ) {
+
+			  echo '<style>
+			    #adminmenuwrap,
+			    #adminmenuback,
+			    #wpadminbar,
+			    #wpfooter,
+			    .media-upload-form .notice,
+			    .media-upload-form div.error,
+			    .update-nag,
+			    .updated,
+			    .wrap .notice,
+			    .wrap div.error,
+			    .wrap div.updated,
+			    .notice-warning,
+			    #wpbody-content .error,
+			    #wpbody-content .notice {
+			  		display: none !important;
+				}
+			  </style>';
+
+			   //Remove WooCommerce's annoying update message
+			   remove_action( 'admin_notices', 'woothemes_updater_notice' );
+
+			   //Remove admin notices
+			   remove_action( 'admin_notices', 'update_nag', 3 );
+			}
+		}
 	}
 
 
@@ -629,9 +1003,6 @@ if(!class_exists( 'Convert_Plug' )){
 }
 new Smile_Framework;
 new Convert_Plug;
-
-// load icon manager class
-// require_once('framework/Ultimate_Icon_Manager.php');
 
 // load google fonts class
 require_once('framework/Ultimate_Font_Manager.php');
@@ -689,6 +1060,23 @@ function cp_bsf_core_style_hooks($hooks) {
 	array_push($hooks, $resources_page_hook);
 	return $hooks;
 }
+
+function cp_bsf_extensions_menu( $reg_menu ) {
+
+	$bsf_cp_id = bsf_extract_product_id( CP_BASE_DIR );
+
+	$reg_menu['ConvertPlug'] = array(
+			'parent_slug'	=>	'convertplug',
+			'page_title'	=>	__('Addons','smile'),
+			'menu_title' 	=>	__('Addons','smile'),
+			'product_id' 	=>	$bsf_cp_id,
+		);
+
+	return $reg_menu;
+}
+
+add_filter( 'bsf_installer_menu', 'cp_bsf_extensions_menu' );
+
 // BSF CORE commom functions
 if(!function_exists('bsf_get_option')) {
 	function bsf_get_option($request = false) {
@@ -758,6 +1146,56 @@ if(!function_exists('bsf_core_admin_notice')) {
 
 if(isset($_GET['hide-bsf-core-notice']) && $_GET['hide-bsf-core-notice'] === 're-enable') {
 	$x = bsf_update_option('hide-bsf-core-notice', false);
+}
+
+/*
+ * Function to display admin notice after updating plugin 
+*/
+function cp_update_admin_notice() {
+    ?>
+    <script type="text/javascript" >
+    	(function($){
+			$(document).ready(function(){
+				$(document).on( "click", ".cp-update-notice .notice-dismiss", function() {
+					var cp_notice_name = $(this).closest('div').attr("data-cp-notice");
+				    $.ajax({
+				        url: ajaxurl,
+				        method: 'POST',
+				        data: {
+				            action: "cp_dismiss_notice",
+				            notice: cp_notice_name
+				        },
+				        success: function(response) {
+				        	console.log(response);
+				        }
+				    })
+				})
+			});
+		})(jQuery);
+    </script>
+    <div class="notice cp-update-notice notice-success is-dismissible" data-cp-notice="dismiss-cp-update-notice">
+    	<?php
+    	$is_new_user = get_option( 'cp_is_new_user' );
+    	if( $is_new_user ) { 
+    	?>
+	        <p><?php _e( "You've just installed ConvertPlug 2.1.0 As we've made important changes in this version, you are strongly advised to read the changelog <a target='_blank' href='https://changelog.brainstormforce.com/convertplug/author/brainstormforce/'>here</a>.", 'smile' ); ?></p>
+	    <?php 
+    	} else {
+    	?>
+    		<p><?php _e( "You've just updated ConvertPlug 2.1.0 As we've made important changes in this version, you are strongly advised to read the changelog <a target='_blank' href='https://changelog.brainstormforce.com/convertplug/author/brainstormforce/'>here</a>.", 'smile' ); ?></p>
+    	<?php } ?>
+    </div>
+    <?php
+}
+
+add_action( 'wp_ajax_cp_dismiss_notice', 'cp_dismiss_notice');
+if(!function_exists('cp_dismiss_notice')) {
+	function cp_dismiss_notice() {
+		$notice = $_POST['notice'];
+		$x = update_option($notice, true);
+		echo ($x) ? true : false;
+		die();
+	}
 }
 
 // end of common functions

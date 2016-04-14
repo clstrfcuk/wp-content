@@ -4,8 +4,6 @@
 .cp-newsletter.cp-info-bar-inline .cp-submit,
 .cp-newsletter.cp-info-bar .cp-submit {
     margin: 0;
-    /*margin-bottom: 0;
-     padding: 8px 10px; */
     line-height: normal;
 }
 .cp-newsletter .cp-msg-container {
@@ -24,7 +22,6 @@
 
     .cp-newsletter.cp-info-bar-inline .cp-submit,
     .cp-newsletter.cp-info-bar .cp-submit {
-        padding: 4px 8px;
         line-height: 1.25em;
     }
 

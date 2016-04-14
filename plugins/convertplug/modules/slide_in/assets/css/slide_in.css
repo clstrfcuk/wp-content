@@ -92,6 +92,7 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
 .cp-slidein-inline .cp-slidein {
     opacity: 1;
     visibility: visible;
+    display: block !important;
 }
 
 .slidein-overlay.si-open,
@@ -130,7 +131,7 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
     
 }
 .cp-slidein-inline .cp-slidein {
-    position: relative;
+    position: static;
 }
 .cp-slidein.slidein-bottom-right,
 .cp-toggle-container.slidein-bottom-right {
@@ -347,6 +348,7 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
     font-size: 13px;
     line-height: 1.64em;
     z-index: 99999;
+   /*  border-radius: inherit; */
 }
 
 @media(max-width:768px) {
@@ -557,10 +559,10 @@ h2.cp-title {
         height: auto;
         position: relative;
         top: 50%;
-       /* -webkit-transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
         -moz-transform: translateY(-50%);
         -ms-transform: translateY(-50%);
-        transform: translateY(-50%);*/
+        transform: translateY(-50%);
         vertical-align: middle;
         -webkit-transition: all .75s ease;
         -moz-transition: all .75s ease;
@@ -677,45 +679,7 @@ div#cke_content_editor,
     transition: all 0.1s ease-in-out;
 }
 
-.cp-form input[type="text"],
-.cp-form input[name="name"],
-.cp-form input[type="email"],
-.cp-form input[name="email"],
-button.cp-submit {
-    box-shadow: none;
-    margin: 0 0 25px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -ms-appearance: none;
-    appearance: none;
-}
-
-.cp-form .cp-form-name input[type="text"],
-.cp-form .cp-form-name input[name="name"],
-.cp-form .cp-form-email input[type="email"],
-.cp-form .cp-form-email input[name="email"] {
-    margin: 0 0 10px;
-}
-
-.cp-slidein .cp-submit,
-.cp-slidein .cp-submit:hover,
-.cp-slidein .cp-submit:active,
-.cp-slidein .cp-submit:focus {
-    background-color: rgb(68, 68, 68);
-    background-image: none;
-    color: #fff;
-    text-align: center;
-    margin-bottom: 0;
-    text-transform: none;
-}
-
 @media(max-width:768px) {
-    .cp-slidein-popup-container button,
-    .cp-slidein-popup-container input,
-    .cp-slidein-popup-container select,
-    .cp-slidein-popup-container textarea {
-        padding: 7px 10px !important;
-    }
 
     .cp-form input[type="text"],
     .cp-form input[name="name"],
@@ -723,7 +687,6 @@ button.cp-submit {
     .cp-form input[name="email"],
     .cp-submit {
         margin: 0 0 10px !important;
-        font-size: 0.85em !important;
     }
 
     /* Placeholder */
@@ -920,8 +883,10 @@ span.cp-tooltip-icon {
 }
 
 .cp-form-processing-wrap {
+    overflow: hidden;
     display: none;
     position: absolute;
+    overflow: hidden;
     top: 0;
     left: 0;
     bottom: 0;

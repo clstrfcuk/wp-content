@@ -59,6 +59,21 @@ if ( isset( $_GET['activated'] ) ) {
   add_action( 'admin_init', 'x_woocommerce_image_dimensions', 1 );
 }
 
+//
+// Modify variation images to use the X entry size like single simple products to avoid display issues
+//
+
+function x_woocommerce_modify_variable_image_size( $child_id, $instance, $variation ) {
+	$attachment_id = get_post_thumbnail_id( $variation->get_variation_id() );
+	$attachment = wp_get_attachment_image_src( $attachment_id, 'entry' );
+	$image_src = $attachment ? current( $attachment) : '';
+	$child_id['image_src'] = $image_src;
+
+	return $child_id;
+}
+
+add_filter( 'woocommerce_available_variation', 'x_woocommerce_modify_variable_image_size', 10, 3);
+
 
 //
 // Remove plugin settings.

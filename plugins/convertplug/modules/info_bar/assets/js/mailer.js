@@ -39,9 +39,30 @@
 		return null;
 	}
 
+    function validate_it( current_ele, value ) {
+        if( !value.trim() ) {
+            return true;
+        } else if( current_ele.hasClass('cp-email') ) {
+            if( !isValidEmailAddress( value ) ) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        } else if( current_ele.hasClass('cp-textfeild') ) {
+            if( /^[a-zA-Z0-9- ]*$/.test( value ) == false ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
+    }
+
 	function ib_process_cp_form(t) {
 
-		var form 						= jQuery(t).parents(".ib-form-container").find("#smile-ib-optin-form"),
+		var form 						= jQuery(t),
 			data 						= form.serialize(),
 			info_container  			= jQuery(t).parents(".global_info_bar_container").find('.cp-msg-on-submit'),
 			form_container  			= jQuery(t).parents(".global_info_bar_container").find('.cp-form-container'),
@@ -57,62 +78,82 @@
 		var cookieName 					= info_bar.data('info_bar-id');
 		var redirectdata 				= jQuery(t).parents(".global_info_bar_container").data("redirect-lead-data");
 
-		//	check it is required or not
-		var email = form.find('.cp-email').attr('required') ? true : false;
-		var name = form.find('.cp-name').attr('required') ? true : false;
-		var status_email = true;
-		var status_name = true;
+		// Check for required fields are not empty
+		// And create query strings to send to redirect URL after form submission
+        var query_string = '';
+        var submit_status = true;
+        form.find('.cp-input').each( function(index) {
+            var $this = jQuery(this);
+            
+            if( ! $this.hasClass('cp-submit-button')) { // Check condition for Submit Button
+                var    input_name = $this.attr('name'),
+                    input_value = $this.val();
 
-		//to pass data with redirect URL
-		var query_string ='';
-		var string_email = escape(form.find('.cp-email').val());
-		var string_name = escape(form.find('.cp-name').val() || '');
-		if(string_name!=''){
-			query_string = "username="+string_name+"&email="+string_email ;
-		}else{
-			query_string = "email="+string_email ;
-		}
+                var res = input_name.replace(/param/gi, function myFunction(x){return ''; });
+                res = res.replace('[','');
+                res = res.replace(']','');
 
-		// Email - is required?
-		if( email ) {
-			var ev = form.find('.cp-email').val();
+                query_string += ( index != 0 ) ? "&" : '';
+                query_string += res+"="+input_value ;
 
-			if( !isValidEmailAddress( ev ) ) {
-				status_email = false;
-				form.find('.cp-email').addClass('cp-error');
-			} else {
-				form.find('.cp-email').removeClass('cp-error');
-				status_email = true;
-			}
-		}
+                var input_required = $this.attr('required') ? true : false;
 
-		// Name - is required?
-		if( name ) {
-			var ev = form.find('.cp-name').val() || '';
+                if( input_required ) {    
+                    if( validate_it( $this, input_value ) ) {
+                        submit_status = false;
+                        $this.addClass('cp-input-error');
+                    } else {
+                        $this.removeClass('cp-input-error');
+                    }
+                }
+            }
+        });
 
-			if( ev === '' ) {
-				status_name = false;
-				form.find('.cp-name').addClass('cp-error');
-			} else if(/^[a-zA-Z0-9- ]*$/.test(ev) == false) {
-			    status_name = false;
-				form.find('.cp-name').addClass('cp-error');
-			} else {
-				form.find('.cp-name').removeClass('cp-error');
-				status_name = true;
-			}
-		}
+		//	All form fields Validation
+        var fail = false;
+        var fail_log = '';
+        form.find( 'select, textarea, input' ).each(function(i, el ){
+            if( jQuery( el ).prop( 'required' )){
 
-		if( status_email && status_name ) {
-			//form_container.hide();				//	Hide form
+                if ( ! jQuery( el ).val() ) {
+                    fail = true;
+                    jQuery( el ).addClass('cp-error');
+                    name = jQuery( el ).attr( 'name' );
+                    fail_log += name + " is required \n";
+                } else {
+                	//	Client side email Validation
+                	//	If not empty value, Then validate email
+                	if( jQuery( el ).hasClass('cp-email') ) {
+		    			var email = jQuery( el ).val();
+
+		    			if( isValidEmailAddress( email ) ) {
+			    			jQuery( el ).removeClass('cp-error');
+			    			fail = false;
+			    		} else {
+			    			jQuery( el ).addClass('cp-error');
+			    			fail = true;
+			    			var name = jQuery( el ).attr( 'name' ) || '';
+			    			console.log( name + " is required \n" );
+			    		}
+		    		} else {
+                		jQuery( el ).removeClass('cp-error');
+		    		}
+                }
+            }
+        });
+
+        //submit if fail never got set to true
+        if ( fail ) {
+            console.log( fail_log );
+        } else {
+
 			cp_form_processing_wrap.show();
 
-			//info_container.fadeOut(100);		//	Hide error/success message
 			info_container.fadeOut(120, function() {
 			    jQuery(this).show().css({visibility: "hidden"});
 			    close_div.show().css({visibility: "hidden"});
 			});
 
-			//spinner.fadeIn(100);				//	Show processing spinner
 			spinner.hide().css({visibility: "visible"}).fadeIn(100);
 
 			jQuery.ajax({
@@ -122,7 +163,6 @@
 				dataType: 'HTML',
 				success: function(result){
 
-					jQuery(document).trigger("cp_conversion_done",[this]);
 					if(cookieTime) {
 						createCookie(cookieName,true,cookieTime);
 					}
@@ -159,35 +199,30 @@
 						info_container.hide().css({visibility: "visible"}).fadeIn(120);
 						close_div.hide().css({visibility:  "visible"}).fadeIn(120);
 
-
 						if( cls === 'success' ) {
-
-							//	Complete the Conversion.
-							jQuery(document).trigger("ib_conversion_done",[this]);
 
 							//hide tooltip
 							jQuery('head').append('<style class="cp-tooltip-css">.tip.'+cp_tooltip+'{display:none }</style>');
 
 							// 	Redirect if status is [success]
-							if(obj.action === 'redirect' ) {
+							if( obj.action === 'redirect' ) {
 								cp_form_processing_wrap.hide();
 								info_bar.hide();
 								var url =obj.url;
 								var urlstring ='';
 								if (url.indexOf("?") > -1) {
 								    urlstring = '&';
-								}else{
+								} else {
 									urlstring = '?';
 								}
 
 								var redirect_url = url + urlstring + decodeURI(query_string);
-								if(redirectdata == 1){
+								if( redirectdata == 1){
 									window.location = redirect_url;
-								}else{
+								} else{
 									window.location = obj.url;
-
 								}
-							} else{
+							} else {
 
 								cp_form_processing_wrap.show();
 								
@@ -220,21 +255,30 @@
 
 	jQuery(document).ready(function(){
 
-		jQuery('#smile-ib-optin-form').each(function(index, el) {
+		jQuery('.cp-info-bar-container').find('#smile-optin-form').each(function(index, el) {
 
 			// enter key press
 			jQuery(el).find("input").keypress(function(event) {
 			    if (event.which == 13) {
 			        event.preventDefault();
-			        ib_process_cp_form(this);
+			        ib_process_cp_form( el );
 			    }
 			});
 
 		    // submit add subscriber request
-		    jQuery('.ib-subscribe').click(function(e){
+		    jQuery(el).find('.btn-subscribe').click(function(e){
 				e.preventDefault;
 				if( !jQuery(this).hasClass('disabled') ){
-					ib_process_cp_form(this);
+					ib_process_cp_form( el );
+					//	Complete the Conversion.
+					jQuery(document).trigger("ib_conversion_done",[this]);
+
+					//	Redirect after conversion
+					var redirect_link 			= jQuery(this).attr('data-redirect-link') || '';
+					var redirect_link_target	= jQuery(this).attr('data-redirect-link-target') || '_blank';
+					if( redirect_link != 'undefined' && redirect_link != '' ) {
+						window.open( redirect_link , redirect_link_target );
+					}
 				}
 				e.preventDefault();
 			});
@@ -252,7 +296,6 @@
 			jQuery(this).removeClass('cp-form-submit-error');
 			cp_msg_on_submit.html('');
 			cp_msg_on_submit.removeAttr("style");
-			// cp_form_processing.reset();
 			
 			//show tooltip
 			jQuery('head').append('<style class="cp-tooltip-css">.tip.'+cp_tooltip+'{display:block }</style>');

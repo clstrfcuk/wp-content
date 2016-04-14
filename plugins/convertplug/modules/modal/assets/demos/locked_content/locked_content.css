@@ -1,4 +1,4 @@
-/*------------exclusive offer-----------------*/
+/*------------Locked content-----------------*/
 .cp-modal-body.cp-locked-content,
 .cp-locked-content .cp-modal-body {
     background-color: transparent;
@@ -26,7 +26,7 @@
 }
 
 .cp-locked-content .cp-title,
-.cp-locked-content h1.cp-title {
+.cp-locked-content h2.cp-title {
     margin: 0;
     font-size: 34px;
     font-family: "Bitter", Arial, sans-serif;
@@ -47,7 +47,7 @@
     color: #333;
 }
 
-.cp-locked-content .cp-description span {
+.cp-locked-content .cp-description {
     color: #6A0101;
 }
 
@@ -80,11 +80,13 @@
     font-size: 25px;
     line-height: 1.38em;
     outline: none;
-    padding: 10px;
     border-radius: 10px;
-    display: inline-block;
     margin-right: 0px;
-    width: 100%;
+}
+
+.cp-locked-content .cp-form-layout-3 .cp-submit {
+    font-size: 15px;
+    line-height: 1.45em;
 }
 
 .cp-locked-content .cp-submit,
@@ -98,28 +100,19 @@
 }
 
 .cp-modal .cp-locked-content .cp-submit {
-    padding: 10px;
     border-radius: 10px;
-    display: inline-block;
     margin: 0px;
-    width: 100%;
 }
-
-.cp-modal .cp-locked-content .cp-submit_new {
-    padding: 10px;
-    border-radius: 2px;
-    display: inline-block;
-}
-
 .cp-locked-content .cp-form-container {
     max-width: 90%;
-    display: inline-block;
     margin: 0 auto;
     float: none;
     background-color: #E6E5E5;
     padding-top: 30px;
     padding-bottom: 30px;
     border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
     border: 1px solid rgb(202, 196, 196);
 }
 
@@ -131,23 +124,25 @@
 .cp-locked-content .cp-image-container {
     margin-bottom: 10px;
 }
-.cp-locked-content input.cp-email,
-.cp-locked-content input.cp_name,
-.cp-locked-content input.cp-name {
-    padding: 10px 25px;
-    font-size: 15px;
-    line-height: 1.45em;
-    text-align: left;
-    margin-bottom: 15px;   /*  border-radius:5px; */
+.cp-locked-content .cp-form-container .cp-form-field button,
+.cp-locked-content .cp-form-container .cp-form-field button:active,
+.cp-locked-content .cp-form-container .cp-form-field button:hover,
+.cp-locked-content .cp-form-container .cp-form-field button:focus,
+.cp-locked-content .cp-form-container .cp-form-field input,
+.cp-locked-content .cp-form-container .cp-form-field input:active,
+.cp-locked-content .cp-form-container .cp-form-field input:hover,
+.cp-locked-content .cp-form-container .cp-form-field input:focus,
+.cp-locked-content .cp-form-container .cp-form-field select,
+.cp-locked-content .cp-form-container .cp-form-field select:active,
+.cp-locked-content .cp-form-container .cp-form-field select:hover,
+.cp-locked-content .cp-form-container .cp-form-field select:focus,
+.cp-locked-content .cp-form-container .cp-form-field textarea,
+.cp-locked-content .cp-form-container .cp-form-field textarea:active,
+.cp-locked-content .cp-form-container .cp-form-field textarea:hover,
+.cp-locked-content .cp-form-container .cp-form-field textarea:focus {
     -webkit-box-shadow:  inset 1px 2px 3px 0px #ccc;
     -moz-box-shadow:  inset 1px 2px 3px 0px #ccc;
-    box-shadow:  inset 1px 2px 3px 0px #ccc;
-}
-
-.cp-locked-content .form-main.cp-formwith-name {
-
-    /* padding-left: 0;
-    padding-right: 0; */
+    box-shadow: inset 1px 2px 3px 0px #ccc;
 }
 
 .cp-locked-content .cp-form-container {
@@ -165,10 +160,6 @@
 }
 
 /*--- form ---*/
-.cp-locked-content .cp-row.cp-submit-form {
-    padding: 0 15px;
-}
-
 .cp-locked-content .cp-name-btn {
     display: inline-block;
     margin-top: 10px;
@@ -205,12 +196,6 @@
     color: rgb(68, 68, 68);
 }
 
-.cp-locked-content .cp-button-on-same-line,
-.cp-locked-content .form-button.cp-button-on-same-line .btn-subscribe {
-    font-size: 15px;
-    line-height: 1.45em;
-}
-
 .cp-locked-content .form-with-btn-on-same {
     padding-top: 30px;
     padding-bottom: 20px;
@@ -238,16 +223,6 @@
     background: rgb(102, 0, 0) !important;
 }
 
-@media (max-width:990px) {
-
-    /* .cp-locked-content .cp-button-on-same-line , */
-    .cp-locked-content .form-button.cp-button-on-same-line .btn-subscribe {
-        font-size: 40px;
-        line-height: 1.38em;
-    }
-
-}
-
 @media (max-width:768px) {
     .cp-modal-body.cp-locked-content {
         text-align: center;
@@ -267,10 +242,6 @@
     }
 
     .cp-locked-content .cp-formwith-name .form-button {
-        width: 100%;
-    }
-
-    .cp-modal .cp-locked-content .cp-submit {
         width: 100%;
     }
 
@@ -300,8 +271,7 @@
         width: 100%;
     }
 
-    .cp-locked-content .cp-button-on-same-line,
-    .cp-locked-content .form-button.cp-button-on-same-line .btn-subscribe {
+    .cp-locked-content .cp-form-layout-3 .cp-submit {
         font-size: 40px;
         line-height: 1.38em;
     }
@@ -317,7 +287,6 @@
     .cp-locked-content .cp-submit {
         font-size: 15px;
         line-height: 1.38em;
-        padding: 15px 20px;
     }
 
     .cp-locked-content .cp-desc-container,
@@ -348,8 +317,7 @@
         max-width: 100%;
     }
 
-    .cp-locked-content .cp-button-on-same-line,
-    .cp-locked-content .form-button.cp-button-on-same-line .btn-subscribe {
+    .cp-locked-content .cp-form-layout-3 .cp-submit {
         font-size: 15px;
         line-height: 1.45em;
     }

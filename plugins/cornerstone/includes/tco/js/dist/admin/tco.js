@@ -233,6 +233,7 @@ window.tco = window.tco || {};
     var fail = ( 'function' === typeof options.fail ) ? options.fail : ( function() { } );
     delete options.done;
     delete options.fail;
+    options._tco_nonce = tcoCommon._tco_nonce;
 
     wp.ajax.post( options ).done( done ).fail( function( response ) {
 

@@ -154,9 +154,8 @@ if ( ! function_exists( 'vc_set_as_theme' ) ) {
 	 *
 	 * @since 4.2
 	 */
-	function vc_set_as_theme( $disable_updater = false ) {
+	function vc_set_as_theme() {
 		vc_manager()->setIsAsTheme( true );
-		$disable_updater && vc_manager()->disableUpdater();
 	}
 }
 if ( ! function_exists( 'vc_is_as_theme' ) ) {

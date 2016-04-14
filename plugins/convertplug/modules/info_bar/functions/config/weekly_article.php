@@ -8,6 +8,7 @@ if(function_exists("smile_framework_add_options")){
 		array(
 			"style_name" 		=> "Weekly Article",
 			"demo_url"			=> plugins_url("../../assets/demos/weekly_article/weekly_article.html",__FILE__),
+			"demo_dir"			=> plugin_dir_path( __FILE__ )."../../assets/demos/weekly_article/weekly_article.html",
 			"img_url"			=> plugins_url("../../assets/demos/weekly_article/weekly_article.png",__FILE__),
 			"customizer_js"		=> plugins_url("../../assets/demos/weekly_article/customizer.js",__FILE__),
 			"category"          => "All,Optins",

@@ -23,7 +23,7 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 		add_filter( 'body_class', array( $this, 'addBodyClass' ), 10002 );
 
 		add_filter( 'the_content', array( $this, 'cs_content_before_shortcodes' ), 10 );
-
+		add_shortcode( 'cs_content', array( $this, 'cs_content_shortcode' ) );
 	}
 
 	/**
@@ -187,6 +187,11 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 
 		return $content;
 
+	}
+
+	public function cs_content_shortcode( $atts, $content ) {
+		$content = do_shortcode( $content );
+		return "<div id=\"cs-content\" class=\"cs-content\">$content</div>";
 	}
 
 }

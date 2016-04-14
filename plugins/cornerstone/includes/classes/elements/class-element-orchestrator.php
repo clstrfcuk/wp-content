@@ -47,6 +47,7 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 		$this->magic_hooks->setup( $actions, $filters );
 
 		$this->load_shortcodes();
+		$this->load_mk1_elements();
 		do_action( 'cornerstone_register_elements' );
 
 		foreach ( $this->elements as $element ) {
@@ -145,6 +146,56 @@ class Cornerstone_Element_Orchestrator extends Cornerstone_Plugin_Component {
 			$this->add( $class_name, $name, $folder );
 
 		}
+
+	}
+
+	public function load_mk1_elements() {
+
+		$path = $this->path( 'includes/elements/_alternate/' );
+
+		foreach ( glob("$path*.php") as $filename ) {
+
+			if ( !file_exists( $filename) )
+				continue;
+
+			$words = explode('-', str_replace('.php', '', basename($filename) ) );
+			if ( strpos($words[0], '_') === 0 ) continue;
+
+			require_once( $filename );
+
+			foreach ($words as $key => $value) {
+				$words[$key] = ucfirst($value);
+			}
+
+			$class_name = 'CS_' . implode('_', $words);
+
+			$element = $this->add_mk1_element( $class_name );
+			$element->native = true;
+
+		}
+
+	}
+
+	public function add_mk1_element( $class_name ) {
+
+		if ( !class_exists( $class_name ) )
+			return false;
+
+		$element = new $class_name();
+
+		$error = $element->is_valid();
+		if ( is_wp_error( $error ) ) {
+			unset($element);
+			trigger_error( 'Cornerstone_Legacy_Elements::add | Failed to add element: ' . $class_name . ' | ' . $error->get_error_message(), E_USER_WARNING );
+			return false;
+		}
+
+		$data = $element->data();
+		$name = ( isset( $data['name'] ) ) ? $data['name'] : '';
+
+		$element = $this->add( $class_name, $name );
+
+		return $element;
 
 	}
 

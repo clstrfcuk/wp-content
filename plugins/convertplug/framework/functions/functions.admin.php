@@ -20,20 +20,17 @@ function framework_update_preview_data(){
 		foreach( $settings as $style => $options ){
 			if( $style == $demo_id ){
 				$demo_html = $options['demo_url'];
+				$demo_dir = $options['demo_dir'];
 				$customizer_js = $options['customizer_js'];
 			}
 		}
 
-		$post_content_url = $demo_html;
-		$post_content = wp_remote_get( plugins_url().'/'.CP_DIR_NAME.'/modules/'.$module.'/assets/demos/'.$demo_id.'/'.$demo_id.'.html' );
-		$post_content = $post_content['body'];
-		$current_post = get_post( $preview_page, 'ARRAY_A' );
-		$content = urldecode( $post_content );
-		$content .= '<script src="' . $customizer_js . '"></script>' ;
-		$current_post['post_content'] = $content;
-		if(wp_update_post( $current_post )){
-			echo 'Ok';
-		}
+		$handle = fopen($demo_dir, "r");
+		$post_content = fread($handle, filesize($demo_dir));
+
+		print_r($post_content);
+		die();
+
 	} else {
 		echo 'Not Ok';
 	}
@@ -61,40 +58,6 @@ function framework_update_options($data) {
 	  	}
 	}
 	die();
-}
-
-// Create dummy page for preview panel
-add_action('admin_init','smile_set_preview_page');
-if(!function_exists('smile_set_preview_page')){
-	function smile_set_preview_page(){
-		$preview_page = get_option( 'smile-preview-page' );
-		$is_page = get_post( $preview_page );
-		if( !$is_page ){
-			global $user_ID;
-			$new_post = array(
-				'post_title' => __( "ConvertPlug Preview", "smile" ),
-				'post_content' => __( "<h1>Do not delete / publish this page</h1>", "smile" ),
-				'post_status' => 'draft',
-				'visibility' => 'public',
-				'post_date' => date('Y-m-d H:i:s'),
-				'post_author' => $user_ID,
-				'post_type' => 'page',
-				'post_category' => array(0),
-				'comment_status' => 'closed'
-			);
-			$post_id = wp_insert_post( $new_post );
-			update_option( 'smile-preview-page',$post_id );
-		} else {
-			$post_status = get_post_status( $preview_page );
-			if( $post_status !== 'draft' && get_post( $preview_page ) ) {
-				$current_post = get_post( $preview_page, 'ARRAY_A' );
-				$current_post['post_status'] = 'draft';
-				$current_post['visibility'] = 'public';
-				wp_update_post( $current_post );
-			}
-		}
-
-	}
 }
 
 if(!function_exists('smile_framework_create_dependency')){
@@ -157,7 +120,6 @@ if( !function_exists( "cp_import_upload_prefilter" ) ){
 			if ( $ext !== "zip" ) {
 				$file['error'] = "The uploaded ". $ext ." file is not supported. Please upload the exported text file. e.g. .zip";
 			}
-
 		}
 
 		return $file;

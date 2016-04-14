@@ -23,9 +23,11 @@ class X_Theme_Updater {
 
   public function __construct() {
 
-    if ( empty( $_GET['action'] ) || ! in_array( $_GET['action'], array( 'do-core-reinstall', 'do-core-upgrade' ), true ) ) {
-      add_filter( 'pre_set_site_transient_update_themes', array( $this, 'pre_set_site_transient_update_themes' ) );
+    if ( is_admin() && isset( $_GET['force-check'] ) ) {
+      delete_site_transient( 'update_plugins' );
     }
+
+    add_filter( 'pre_set_site_transient_update_themes', array( $this, 'pre_set_site_transient_update_themes' ) );
 
     if ( ! is_multisite() ) {
       add_filter( 'wp_prepare_themes_for_js', array( $this, 'customize_theme_update_html' ) );
@@ -40,15 +42,6 @@ class X_Theme_Updater {
 
   public function pre_set_site_transient_update_themes( $data ) {
 
-    //
-    // Only run after other themes are checked.
-    //
-
-    if ( empty( $data->checked ) ) {
-      return $data;
-    }
-
-    x_tco()->updates()->refresh();
     $update_cache = x_tco()->updates()->get_update_cache();
 
     if ( !isset( $update_cache['themes'] ) || !isset( $update_cache['themes']['x'] ) ) {

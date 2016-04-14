@@ -5,13 +5,18 @@
 .smile-radio-image-holder.selected img {
 	border: 2px solid #54C13F;
 }
+.smile-radio-image-holder img {
+	border: 2px solid transparent;
+	border-radius: 4px;
+    overflow: hidden;
+}
 .smile-radio-image-holder .smile-radio-image {
-	opacity: 0;
+	top: 0;
 	width: 0;
 	margin: 0;
-	position: absolute;
-	top: 0;
+	opacity: 0;
 	left: -30px;
+	position: absolute;
 }
 .smile-radio-image-wrapper {
 	margin: 10px 0;

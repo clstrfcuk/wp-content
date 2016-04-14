@@ -82,6 +82,7 @@ if ( ! class_exists( 'TCO_1_0' ) ) :
       wp_localize_script( $handle, 'tcoCommon', array(
         'debug' => ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ),
         'logo'  => $this->get_themeco_logo(),
+        '_tco_nonce' => wp_create_nonce( 'tco-common' ),
         'strings' => apply_filters( 'tco_localize_' . $handle, array(
             'details' => 'Details',
             'back'    => 'Back',
@@ -338,6 +339,22 @@ if ( ! class_exists( 'TCO_1_0' ) ) :
 
     public function get_site_url() {
       return esc_attr( trailingslashit( network_home_url() ) );
+    }
+
+    public function check_ajax_referer( $die = true ) {
+
+      if ( ! isset( $_REQUEST['_tco_nonce'] ) ) {
+        return false;
+      }
+
+      $check = ( false !== wp_verify_nonce( $_REQUEST['_tco_nonce'], 'tco-common' ) );
+
+      if ( ! $check && $die ) {
+        wp_send_json_error();
+      }
+
+      return $check;
+
     }
 
   }

@@ -16,7 +16,7 @@ class Vc_Templates_Editor_Grid_Item extends Vc_Templates_Panel_Editor {
 	}
 
 	public function renderTemplateBlock( $category ) {
-		if ( 'grid_templates' === $category['category'] ) {
+		if ( 'grid_templates' === $category['category'] || 'grid_templates_custom' === $category['category'] ) {
 			$category['output'] = '<div class="vc_col-md-12">';
 			if ( isset( $category['category_name'] ) ) {
 				$category['output'] .= '<h3>' . esc_html( $category['category_name'] ) . '</h3>';
@@ -51,7 +51,7 @@ class Vc_Templates_Editor_Grid_Item extends Vc_Templates_Panel_Editor {
 	 * @return string
 	 */
 	public function renderTemplateWindowGrid( $template_name, $template_data ) {
-		if ( 'grid_templates' === $template_data['type'] ) {
+		if ( 'grid_templates' === $template_data['type'] || 'grid_templates_custom' === $template_data['type'] ) {
 			return $this->renderTemplateWindowGridTemplate( $template_name, $template_data );
 		}
 
@@ -111,6 +111,24 @@ HTML;
 			echo trim( $predefined_template['template'] );
 		}
 	}
+
+	public function loadCustomTemplate( $template_id = false ) {
+		if ( ! $template_id ) {
+			$template_id = vc_post_param( 'template_unique_id' );
+		}
+		if ( ! isset( $template_id ) || '' === $template_id ) {
+			echo 'Error: TPL-02';
+			die();
+		}
+
+		$post = get_post( $template_id );
+
+		if ( $post && Vc_Grid_Item_Editor::postType() == $post->post_type ) {
+			return $post->post_content;
+		}
+		return '';
+	}
+
 	public function getAllTemplates() {
 		$data = array();
 		$grid_templates = $this->getGridTemplates();
@@ -132,9 +150,43 @@ HTML;
 			$arr_category['templates'] = $category_templates;
 			$data[] = $arr_category;
 		}
+		$custom_grid_templates = $this->getCustomTemplateList();
+		if ( ! empty( $custom_grid_templates ) ) {
+			$arr_category = array(
+				'category' => 'grid_templates_custom',
+				'category_name' => __( 'Custom Grid Templates', 'js_composer' ),
+				'category_weight' => 10,
+			);
+			$category_templates = array();
+			foreach ( $custom_grid_templates as $template_name => $template_id ) {
+				$category_templates[] = array(
+					'unique_id' => $template_id,
+					'name' => $template_name,
+					'type' => 'grid_templates_custom',
+					// for rendering in backend/frontend with ajax);
+				);
+			}
+			$arr_category['templates'] = $category_templates;
+			$data[] = $arr_category;
+		}
+
 
 		// To get any other 3rd "Custom template" - do this by hook filter 'vc_get_all_templates'
 		return apply_filters( 'vc_get_all_templates', $data );
+	}
+
+	protected function getCustomTemplateList() {
+		$list = array();
+		$templates = get_posts( array(
+			'post_type' => Vc_Grid_Item_Editor::postType(),
+			'numberposts' => - 1
+		) );
+		foreach ( $templates as $template ) {
+			$id = $template->ID;
+			$list[ $template->post_title ] = $id;
+		}
+
+		return $list;
 	}
 
 	public function getGridTemplates() {

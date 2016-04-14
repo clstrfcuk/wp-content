@@ -10,6 +10,7 @@
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
 //   01. Remove Meta Boxes
+//   02. Remove Notices
 //   02. Get Slider Meta
 //   03. Add Slider Meta
 // =============================================================================
@@ -32,6 +33,18 @@ if ( ! function_exists( 'x_revolution_slider_remove_meta_boxes' ) ) :
   add_action( 'do_meta_boxes', 'x_revolution_slider_remove_meta_boxes' );
 
 endif;
+
+
+
+// Remove Notices
+// =============================================================================
+
+function x_revolution_slider_remove_plugin_row_notices() {
+  remove_action( 'after_plugin_row_revslider/revslider.php', array('RevSliderAdmin', 'show_purchase_notice') );
+  remove_action( 'after_plugin_row_revslider/revslider.php', array('RevSliderAdmin', 'show_update_notice') );
+}
+
+add_action( 'admin_notices', 'x_revolution_slider_remove_plugin_row_notices' );
 
 
 

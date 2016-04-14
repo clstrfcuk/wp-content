@@ -105,7 +105,7 @@ class Vc_Navbar implements Vc_Render {
 			return '';
 		}
 
-		return '<li class="vc_pull-right"><a id="vc_post-settings-button" class="vc_icon-btn vc_post-settings" title="'
+		return '<li class="vc_pull-right"><a id="vc_post-settings-button" href="javascript:;" class="vc_icon-btn vc_post-settings" title="'
 		       . __( 'Page settings', 'js_composer' ) . '">'
 		       . '<span id="vc_post-css-badge" class="vc_badge vc_badge-custom-css" style="display: none;">' . __( 'CSS', 'js_composer' ) . '</span></a>'
 		       . '</li>';

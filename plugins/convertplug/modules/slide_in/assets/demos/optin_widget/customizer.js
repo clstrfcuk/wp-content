@@ -135,24 +135,8 @@ jQuery(document).ready(function(){
 			jQuery(".cp-row.cp-blank-title").css('display','block');
 		}	
 
-		// slidein background image
+		// slide in background image
 		cp_bg_image(data);
-
-		//input form field			
-		
-		if( namefield == 1 ){
-			form_without_name.css({"display":"none"});
-			form_with_name.css({"display":"block"});
-			cp_submit_container.removeClass("cp_simple_submit");
-			cp_submit_container.addClass('cp_name_submit');
-			cp_email_form.removeClass('cp-email-wth-btn-onnext');
-
-		} else {
-			form_without_name.css({"display":"block"});
-			form_with_name.css({"display":"none"});
-			cp_submit_container.removeClass("cp_name_submit");		
-			cp_submit_container.addClass('cp_simple_submit');
-		}
 		
 		jQuery(".cp-name-form").removeClass('cp_big_name');	
 
@@ -173,7 +157,7 @@ jQuery(document).ready(function(){
 		});
 
 		jQuery(document).ready(function(e) {
-			calwidth();//function for reponsive form
+			calwidth();//function for responsive form
 		});	
 
 		function calwidth(){

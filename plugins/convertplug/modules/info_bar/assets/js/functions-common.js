@@ -84,7 +84,7 @@ var darkerColor = function(color, ratio) {
 jQuery(window).load(function(){
 	parent.customizerLoaded();
 	jQuery("head").append('<style id="cp_input_css"></style>');
-	jQuery(".cp-info-bar-container").appendTo("body");
+	//jQuery(".cp-info-bar-container").appendTo("body");
 	cp_color_for_list_tag();
 });
 
@@ -131,6 +131,13 @@ jQuery(document).ready(function(){
 			parent.updateHTML(htmlEntities(data),'smile_infobar_title');
 			cp_color_for_list_tag();
 		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.title_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
 	}
 
 	if(jQuery("#description_editor").length !== 0) {
@@ -144,21 +151,14 @@ jQuery(document).ready(function(){
 			parent.updateHTML(htmlEntities(data),'smile_infobar_description');
 			cp_color_for_list_tag();
 		} );
-	}
 
-	if(jQuery("#button_editor").length !== 0) {
-		// Turn off automatic editor creation first.
-		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
-		CKEDITOR.inline( 'button_editor' );
-		CKEDITOR.instances.button_editor.config.toolbar = 'Small';
-		CKEDITOR.instances.button_editor.on( 'change', function() {
-			var data = CKEDITOR.instances.button_editor.getData();
-			parent.updateHTML(htmlEntities(data),'smile_button_title');
-			cp_color_for_list_tag();
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.description_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
-
 
 	if(jQuery("#ib_content_editor").length !== 0) {
 		// Turn off automatic editor creation first.
@@ -171,19 +171,25 @@ jQuery(document).ready(function(){
 			parent.updateHTML(htmlEntities(data),'smile_info_bar_content');
 			cp_color_for_list_tag();
 		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.ib_content_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
 	}
 
-	//close infobar on click of toggle button
+	//close info bar on click of toggle button
 	jQuery("body").on("click", ".cp-ifb-toggle-btn", show_ifb ); 
 
-	//close modal on click of button
-	//jQuery("body").on("click", ".ib-close", function(e){
+	//close info bar on click of button
 	jQuery("body").on("click", ".ib-close", close_ifb );
 
 	jQuery("body").on("click", ".cp-ifb-toggle-btn", function(e){ parent.setFocusElement('toggle_button_title'); e.stopPropagation(); });
 
 	//another submit button
-	if(jQuery("#sec_button_editor").length !== 0) {
+	if( jQuery("#sec_button_editor").length !== 0 ) {
 		// Turn off automatic editor creation first.
 		CKEDITOR.disableAutoInline = true;
 		CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
@@ -194,16 +200,20 @@ jQuery(document).ready(function(){
 			parent.updateHTML(htmlEntities(data),'smile_ifb_button_title');
 			cp_color_for_list_tag();
 		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.sec_button_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
 	}
 
-
+	//  Highlight MultiField
+	jQuery("body").on("click", ".cp-submit", function(e){ parent.setFocusElement('btn_style'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-image", function(e){ parent.setFocusElement('infobar_image'); e.stopPropagation(); });
-	jQuery("body").on("click", ".cp-email", function(e){ parent.setFocusElement('placeholder_text'); e.stopPropagation(); });
-	jQuery("body").on("click", ".cp_name", function(e){ parent.setFocusElement('name_text'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-info-bar", function(e){ parent.setFocusElement('bg_color'); });
 	jQuery("body").on("click", "#button_editor", function(e){ parent.setFocusElement('button_bg_color'); e.stopPropagation(); });
-	jQuery("body").on("click", ".cp-name-field input", function(e){ parent.setFocusElement('name_text'); e.stopPropagation(); });
-	jQuery("body").on("click", ".cp-email-field input", function(e){ parent.setFocusElement('placeholder_text'); e.stopPropagation(); });
 	jQuery("body").on("click", ".ib-close", function(e){ parent.setFocusElement('close_img'); e.stopPropagation(); });
 	jQuery("body").on("click", "#sec_button_editor", function(e){ parent.setFocusElement('ifb_button_bg_color'); e.stopPropagation(); });
 
@@ -212,17 +222,12 @@ jQuery(document).ready(function(){
 		jQuery(".cp-info-bar-container").find(".blinking-cursor").remove();
 	}); 
 
-	// Preventing links and form navigation in an iframe
-	jQuery('a').click(function(e){
-		e.preventDefault();
-	});
 	jQuery('button').click(function(e){
 		e.preventDefault();
 	});
 	jQuery(this).on('submit','form',function(e){
 		e.preventDefault();
 	});
-
 
 	jQuery('#title_editor').attrchange({
         callback: function (e) {
@@ -284,14 +289,13 @@ function cp_remove_empty_class(element) {
 //for editor setup
 function cp_editor_setup(data) {
 	var style 						= data.style;
-	var cp_submit 					= jQuery("#button_editor"),
-		cp_title 					= jQuery("#title_editor"),
+	var cp_title 					= jQuery("#title_editor"),
 		description 				= data.infobar_description,
 		ib_content_editor 			= jQuery("#ib_content_editor"),
 		cp_info_bar_desc			= jQuery(".cp-info-bar-desc"),
 		content						= data.info_bar_content,
 	 	title						= data.infobar_title,
-		button_title				= data.button_title,
+		// button_title				= data.button_title,
 		cp_second_submit_btn		= jQuery(".cp-second-submit-btn"),
 		ifb_button_title			= data.ifb_button_title,
 		style_id 					= data.style_id,
@@ -317,13 +321,6 @@ function cp_editor_setup(data) {
 	cp_info_bar_desc.html(description);
 	if(jQuery("#description_editor").length !== 0) {
 		CKEDITOR.instances.description_editor.setData(description);
-	}
-
-	//button
-	button_title = htmlEntities(button_title);
-	cp_submit.html(button_title);
-	if(jQuery("#button_editor").length !== 0) {
-		CKEDITOR.instances.button_editor.setData(button_title);
 	}
 
 	//content
@@ -394,59 +391,66 @@ function cp_info_bar_close_img_settings(data){
 	}
 }
 
-//for infobar  animation
+//for info bar  animation
 function cp_info_bar_animation_setup(data){
 
-	var cp_animate		= jQuery(".cp-info-bar"),
-		exit_animation	= data.exit_animation,
-		entry_animation	= data.entry_animation,
-		toggle_btn 		= data.toggle_btn;
+	var cp_animate			= jQuery(".cp-info-bar"),
+		exit_animation		= data.exit_animation,
+		entry_animation		= data.entry_animation,
+		toggle_btn 			= data.toggle_btn,
+		toggle_btn_visible  = data.toggle_btn_visible;
 
 	var entry_anim = ( typeof cp_animate.attr("data-entry-animation") !== "undefined" ) ? cp_animate.attr("data-entry-animation") : '';
 	var exit_anim = ( typeof cp_animate.attr("data-exit-animation") !== "undefined" ) ? cp_animate.attr("data-exit-animation") : '';
 
 	cp_animate.removeClass('smile-animated');
 
-	if( !cp_animate.hasClass(exit_animation) && exit_animation !== exit_anim ){
-		cp_animate.attr('data-exit-animation', exit_animation );
-		setTimeout(function(){
-			if( exit_animation !== "none" ) {
-				cp_animate.removeClass(exit_anim);
-				cp_animate.removeClass(entry_anim);
-				// cp_animate.removeClass (function (index, css) {
-				//     return (css.match (/\bsmile-\S+/g) || []).join(' ');
-				// });
-				cp_animate.addClass('smile-animated '+exit_animation);
-				cp_animate.attr('data-entry-animation', entry_animation );
-			}
-			setTimeout( function(){
-				cp_animate.removeClass(exit_anim);
-				cp_animate.removeClass(exit_animation);
-				cp_animate.removeClass(entry_anim);
-				// cp_animate.removeClass (function (index, css) {
-				//     return (css.match (/\bsmile-\S+/g) || []).join(' ');
-				// });
-				cp_animate.addClass('smile-animated '+entry_anim);
-			}, 1000 );
-		},500);
-	}
+	if( toggle_btn == '1' && toggle_btn_visible == '1' ) { 
+		// do not apply animations to info bar 
+	} else {	
 
-	if( !cp_animate.hasClass(entry_animation) && entry_animation !== entry_anim ){
-		cp_animate.attr('data-entry-animation', entry_animation );
-		setTimeout(function(){
-			if( entry_animation !== "none" ) {
-				cp_animate.removeClass(exit_anim);
-				cp_animate.removeClass(entry_anim);
-				cp_animate.removeClass (function (index, css) {
-				    return (css.match (/\bsmile-\S+/g) || []).join(' ');
-				});
-				cp_animate.addClass('smile-animated '+entry_animation);
-			}
-		},500);
+		if( !cp_animate.hasClass(exit_animation) && exit_animation !== exit_anim ){
+			cp_animate.attr('data-exit-animation', exit_animation );
+			setTimeout(function(){
+				if( exit_animation !== "none" ) {					
+					cp_animate.removeClass(exit_anim);
+					cp_animate.removeClass(entry_anim);
+					cp_animate.removeClass (function (index, css) {
+					    return (css.match (/\bsmile-\S+/g) || []).join(' ');
+					});
+					cp_animate.addClass('smile-animated ' + exit_animation);
+					cp_animate.attr('data-entry-animation', entry_animation );
+				}
+				setTimeout( function(){					
+					cp_animate.removeClass(exit_anim);
+					cp_animate.removeClass(exit_animation);
+					cp_animate.removeClass(entry_anim);
+					cp_animate.removeClass (function (index, css) {
+					    return (css.match (/\bsmile-\S+/g) || []).join(' ');
+					});
+					cp_animate.addClass('smile-animated '+entry_animation);
+				}, 1000 );
+			},500);
+		}
+
+		if( !cp_animate.hasClass(entry_animation) && entry_animation !== entry_anim ){
+			setTimeout(function(){
+				if( entry_animation !== "none" ) {					
+					cp_animate.removeClass(exit_anim);
+					cp_animate.removeClass(entry_anim);
+					cp_animate.removeClass (function (index, css) {
+					    return (css.match (/\bsmile-\S+/g) || []).join(' ');
+					});
+					cp_animate.addClass('smile-animated ' 	+ entry_animation);
+					cp_animate.attr('data-entry-animation', entry_animation );
+				}
+			},500);
+		}
 	}
+	
 }
 
-//infobar position -top/bottom/fixed
+//info bar position -top/bottom/fixed
 function cp_info_bar_position_setup(data){
 
 	var style 						= data.style;
@@ -511,7 +515,7 @@ function cp_ifb_form_setup(data){
 		cp_info_bar					= jQuery(".cp-info-bar"),
 		cp_name 					= jQuery(".cp-name"),
 		cp_email 					= jQuery(".cp-email"),
-		cp_submit 					= jQuery("#button_editor"),
+		cp_submit 					= jQuery(".cp-submit"),
 		cp_name_input				= jQuery(".cp-name-field input"),
 		cp_name_wrap				= jQuery(".cp-name-field");
 		cp_mail_input				= jQuery(".cp-email-field input"),
@@ -544,7 +548,7 @@ function cp_ifb_form_setup(data){
 		btn_shadow 					= data.btn_shadow,
 		button_txt_hover_color 		= data.button_txt_hover_color,
 
-		button_title				= data.button_title,
+		// button_title				= data.button_title,
 		button_bg_color				= data.button_bg_color,
 		button_border_color			= data.button_border_color,
 		placeholder_text			= data.placeholder_text,
@@ -580,7 +584,8 @@ function cp_ifb_form_setup(data){
 		html_form_container 		= jQuery(".custom-html-form"),
 		form_container 				= jQuery(".ib-form-container"),
 		custom_html_form 			= data.custom_html_form,
-		mailer 						= data.mailer;
+		mailer 						= data.mailer,
+		button_animation 			= data.button_animation;
 
 	//	Add the custom form HTML code
 	html_form_container.html(custom_html_form);
@@ -601,11 +606,8 @@ function cp_ifb_form_setup(data){
 	//	Append all CSS
 	jQuery('head').append('<div id="cp-temporary-inline-css"></div>');
 	var ib_style = '';
-		cp_form_container.css({'min-height':height+'px'});
-		jQuery('.cp-ib-container').css({'width':width+'px'});
-		cp_submit.attr('class','cp-button cp-submit cke_editable cke_editable_inline cke_contents_ltr cke_show_borders smile-animated '+button_animation);
-		cp_submit.css({"background":button_bg_color,"border":"1px solid "+button_border_color});
-
+	jQuery('.cp-ib-container').css({'width':width+'px'});
+		
 	//for input field setup
 	namefield = parseInt( namefield );
 
@@ -621,20 +623,6 @@ function cp_ifb_form_setup(data){
 	if(placeholder_font=='undefined'){
 		placeholder_font='inherit';
 	}
-	var input_css = '.cp-info-bar input, .cp-info-bar input::-webkit-input-placeholder {\
-					   color: '+placeholder_color+';font-family:'+placeholder_font+'\
-					}\
-					.cp-info-bar input:-moz-placeholder { /* Firefox 18- */\
-					   color: '+placeholder_color+';font-family:'+placeholder_font+'\
-					}\
-					.cp-info-bar input::-moz-placeholder {  /* Firefox 19+ */\
-					   color: '+placeholder_color+';font-family:'+placeholder_font+'\
-					}\
-					.cp-info-bar input:-ms-input-placeholder {  \
-					   color: '+placeholder_color+';font-family:'+placeholder_font+'\
-					}';
-	jQuery("#cp_input_css").html(input_css);
-
 
 	/**
 	 * 	Submit - (Flat, Outline, 3D, Gradient)
@@ -654,7 +642,15 @@ function cp_ifb_form_setup(data){
 		jQuery('#smile_btn_darken', window.parent.document ).val( c_hover );
 	}
 
-	cp_submit.css('background', c_normal);
+	if( cp_submit.length > 0 ) {
+		cp_submit.attr('class',cp_submit.attr('class').replace( /(\s)*(smile-.*?)(?=\s)/g, ''));
+
+		if(button_animation!='' && button_animation!=='undefined'){
+			cp_submit.addClass("smile-animated "+button_animation);
+		}	
+		cp_submit.css('background', c_normal);
+	}
+
 	//	Apply box shadow to submit button - If its set & equals to - 1
 	var shadow = radius = '';
 	if( typeof btn_shadow != 'undefined' && btn_shadow == 1 ) {
@@ -820,11 +816,8 @@ function cp_infobar_infobar_image(data){
 	var modal_img_default = infobar_image;
 
 	if( image_displayon_mobile == 1 ){	
-		//cp_img_container.find(".cp-image").addClass('cp_ifb_hide_img');
 		cp_hide_img = 'cp_ifb_hide_img';
-	} else {
-		//cp_img_container.find(".cp-image").removeClass('cp_ifb_hide_img');
-	}
+	} 
 
 	if( modal_img_default.indexOf('http') === -1 )
 	 {
@@ -888,7 +881,8 @@ function cp_color_for_list_tag(){
 	jQuery(".cp-info-bar").each(function(t) {
 		var moadal_style    = 'cp-info-bar'; 
 				
-		jQuery(this).find("li").each(function() {               
+		jQuery(this).find("li").each(function() {     
+			if(jQuery(this).parents(".cp_social_networks").length == 0){          
             var parent_li   = jQuery(this).parents("div").attr('class').split(' ')[0];
                  
             var  cnt         = jQuery(this).index()+1,  
@@ -930,16 +924,18 @@ function cp_color_for_list_tag(){
             if( color ){
               jQuery('head').append('<style class="cp-li-color-css'+cnt+'">.'+moadal_style+' .'+parent_li+' li:nth-child('+cnt+'){ color: '+color+';}</style>');
             }     
+        	}
 
           });
 	});
 
 }
-
-function cp_toggle_button(data , e){	
+var count = ['0'];
+function cp_toggle_button( data , e ) {	
 	var toggle_btn 						= data.toggle_btn,
 	    close_info_bar 					= data.close_info_bar,
 	    toggle_button_title 			= data.toggle_button_title,
+	    toggle_btn_visible              = data.toggle_btn_visible,
 	    toggle_button_text_color 		= data.toggle_button_text_color, 
 	    toggle_btn_gradient 			= data.toggle_btn_gradient, 
 	    toggle_button_bg_color 			= data.toggle_button_bg_color,
@@ -955,10 +951,11 @@ function cp_toggle_button(data , e){
 		if( close_info_bar === 'do_not_close' ) {
 			toggle_btn = 0;
 		}
-
-	    if(toggle_btn == 1){	    	
+		
+	    if( toggle_btn == 1 ){	    	
 	      	cp_info_bar_container.addClass('cp-ifb-with-toggle');
-	    }else{
+	      	count.push('1');
+	    } else {
 	    	cp_info_bar_container.removeClass('cp-ifb-with-toggle');
 	    	cp_info_bar_container.removeClass('cp-ifb-click');
 	    }
@@ -977,66 +974,62 @@ function cp_toggle_button(data , e){
 				is_cookie =  c.substring(nameEQ.length, c.length);
 			}
 	  	}
-	  	var ifclick = cp_info_bar_container.hasClass('cp-ifb-click');
+	
+  		if( toggle_btn == 1 && toggle_btn_visible == 1 ) {
+  		 	if( jQuery(".cp-info-bar-container").hasClass('cp-ifb-with-toggle') ) {
 
-	  	if(is_cookie && !ifclick){
-	  		 if(toggle_btn == 1){
-	  		 	//close_ifb(e);
-	  		 	if(jQuery(".cp-info-bar-container").hasClass('cp-ifb-with-toggle')){
-					var btn_animation 					= 'smile-slideInDown',
-					    exit_animation 				 	= cp_info_bar_container.data("exit-animation"),
-					    entry_animation 			    = cp_info_bar_container.data("entry-animation");
+				var btn_animation 					= 'smile-slideInDown',
+				    exit_animation 				 	= ( typeof cp_info_bar_container.data("exit-animation") !== 'undefined' ) ? cp_info_bar_container.data("exit-animation") : '',
+				    entry_animation 			    = ( typeof cp_info_bar_container.data("entry-animation") !== 'undefined' ) ? cp_info_bar_container.data("entry-animation") : '';
 
-					    if(cp_info_bar_container.hasClass('cp-pos-bottom')){
-							btn_animation = 'smile-slideInUp';
-						}
-						cp_info_bar_body.removeClass('cp-flex');		    
-					    cp_info_bar_container.removeClass(entry_animation);
+				    if(cp_info_bar_container.hasClass('cp-pos-bottom')){
+						btn_animation = 'smile-slideInUp';
+					}
+					cp_info_bar_body.removeClass('cp-flex');		    
+				    cp_info_bar_container.removeClass(entry_animation);
 
-					var  cp_info_bar_class 				= cp_info_bar_container.attr('class');					     
-					     cp_info_bar_container.attr('class', cp_info_bar_class + ' ' + exit_animation);
+				cp_info_bar_container.removeClass('smile-animated');
 
-					    setTimeout(function() {	
-					    	cp_ifb_toggle_btn.removeClass('cp-ifb-hide'),
-					    	cp_ifb_toggle_btn.addClass('cp-ifb-show smile-animated '+btn_animation +'');
-					   		cp_info_bar_container.removeClass('smile-animated');
-					   		cp_info_bar_container.addClass('cp-ifb-hide');
-					   	}, 500);
+				var  cp_info_bar_class 				= cp_info_bar_container.attr('class');					     
+				     cp_info_bar_container.attr('class', cp_info_bar_class + ' ' + exit_animation);
 
-					   }else{
-							e.preventDefault();
-					   }
-	  		 }else{
-				  		var  btn_animation 	= 'smile-slideInDown';
-					    exit_animation 		= cp_info_bar_container.data("exit-animation"),
-					    entry_animation 	= cp_info_bar_container.data("entry-animation");
+			    setTimeout(function() {	
+			    	cp_ifb_toggle_btn.removeClass('cp-ifb-hide'),
+			    	cp_ifb_toggle_btn.addClass('cp-ifb-show smile-animated '+btn_animation +'');
+			   		cp_info_bar_container.removeClass('smile-animated');
+			   		cp_info_bar_container.addClass('cp-ifb-hide');
+			   	}, 500);
 
-						cp_info_bar_container.removeClass('cp-ifb-hide');
-						cp_info_bar_container.removeClass('smile-animated');
-						cp_info_bar_container.removeClass(entry_animation);
-						cp_info_bar_container.removeClass(exit_animation);
-						if(cp_info_bar_container.hasClass('cp-pos-bottom')){
-							btn_animation = 'smile-slideInUp';
-						}
+			} else {
+				e.preventDefault();
+			}
+  		} else if( toggle_btn == 0 && count.length > 1 ){
+  			
+	  		var  btn_animation 	= 'smile-slideInDown';
+		    exit_animation 		= ( typeof cp_info_bar_container.data("exit-animation") !== 'undefined' ) ? cp_info_bar_container.data("exit-animation") : '',
+		    entry_animation 	= ( typeof cp_info_bar_container.data("entry-animation") !== 'undefined' ) ? cp_info_bar_container.data("entry-animation") : '',
 
-					var  cp_info_bar_class 				= cp_info_bar_container.attr('class');
-					    
-					    cp_ifb_toggle_btn.removeClass('cp-ifb-show smile-animated '+ btn_animation +'');
+			cp_info_bar_container.removeClass('cp-ifb-hide');
+			cp_info_bar_container.removeClass('smile-animated');
+			cp_info_bar_container.removeClass(entry_animation);
+			cp_info_bar_container.removeClass(exit_animation);
+			if( cp_info_bar_container.hasClass('cp-pos-bottom') ) {
+				btn_animation = 'smile-slideInUp';
+			}
 
-					    cp_info_bar_container.attr('class',cp_info_bar_class);
-					   	cp_info_bar_container.attr('class', cp_info_bar_class + ' smile-animated ' + entry_animation);
+			var  cp_info_bar_class 	= cp_info_bar_container.attr('class');
+			cp_ifb_toggle_btn.removeClass('cp-ifb-show smile-animated '+ btn_animation +'');
+			cp_info_bar_container.attr('class', cp_info_bar_class + ' smile-animated ' + entry_animation);
 
-					    setTimeout(function() {
-					    	cp_ifb_toggle_btn.addClass('cp-ifb-hide');
-					   		cp_info_bar_body.addClass('cp-flex');	
-					   	}, 10);
-				}
-	  	}
+			setTimeout(function() {
+		    	cp_ifb_toggle_btn.addClass('cp-ifb-hide');
+		   		cp_info_bar_body.addClass('cp-flex');	
+		   	}, 10);
+		}
 	   
-
 	    // button animation
 	    var button_class = cp_ifb_toggle_btn.attr('class');
-	    cp_ifb_toggle_btn.attr('class',button_class);
+	    cp_ifb_toggle_btn.attr( 'class', button_class );
 
 	    //	button style
 		var slideclassList = ['cp-btn-flat', 'cp-btn-3d', 'cp-btn-outline', 'cp-btn-gradient'];
@@ -1045,9 +1038,9 @@ function cp_toggle_button(data , e){
 	    });
 
 		toggle_btn_style = '';
-		if( toggle_btn_gradient == 1){
+		if( toggle_btn_gradient == 1 ){
 			toggle_btn_style = 'cp-btn-gradient';			
-		}else{	
+		} else {	
 			toggle_btn_style = 'cp-btn-flat';	
 		}
 		cp_ifb_toggle_btn.addClass( toggle_btn_style );
@@ -1093,39 +1086,40 @@ function cp_toggle_button(data , e){
 }
 
 function show_ifb(e){
-		var cp_ifb_toggle_btn 				= jQuery(".cp-ifb-toggle-btn"), 
-		    cp_info_bar_body 				= jQuery(".cp-info-bar-body"),
-		    cp_info_bar_container			= jQuery(".cp-info-bar-container"),
-		    btn_animation 					= 'smile-slideInDown';
-		    exit_animation 				 	= cp_info_bar_container.data("exit-animation"),
-		    entry_animation 				= cp_info_bar_container.data("entry-animation");
+	var cp_ifb_toggle_btn 				= jQuery(".cp-ifb-toggle-btn"), 
+	    cp_info_bar_body 				= jQuery(".cp-info-bar-body"),
+	    cp_info_bar_container			= jQuery(".cp-info-bar-container"),
+	    btn_animation 					= 'smile-slideInDown';
+	    exit_animation 				 	= cp_info_bar_container.data("exit-animation"),
+	    entry_animation 				= cp_info_bar_container.data("entry-animation");
 
-			cp_info_bar_container.removeClass('cp-ifb-hide');
-			cp_info_bar_container.removeClass('smile-animated');
-			cp_info_bar_container.removeClass(entry_animation);
-			cp_info_bar_container.removeClass(exit_animation);
-			if(cp_info_bar_container.hasClass('cp-pos-bottom')){
-				btn_animation = 'smile-slideInUp';
-			}
+		cp_info_bar_container.removeClass('cp-ifb-hide');
+		cp_info_bar_container.removeClass(entry_animation);
+		cp_info_bar_container.removeClass(exit_animation);
+		if(cp_info_bar_container.hasClass('cp-pos-bottom')){
+			btn_animation = 'smile-slideInUp';
+		}
 
-			cp_info_bar_container.addClass('cp-ifb-click');
+		cp_info_bar_container.addClass('cp-ifb-click');
 
-		var  cp_info_bar_class 				= cp_info_bar_container.attr('class');
-		    
-		    cp_ifb_toggle_btn.removeClass('cp-ifb-show smile-animated '+ btn_animation +'');
+	var  cp_info_bar_class 				= cp_info_bar_container.attr('class');
 
-		    cp_info_bar_container.attr('class',cp_info_bar_class);
-		   	cp_info_bar_container.attr('class', cp_info_bar_class + ' smile-animated ' + entry_animation);
+	    cp_ifb_toggle_btn.removeClass('cp-ifb-show smile-animated '+ btn_animation +'');
 
-		    setTimeout(function() {
-		    	cp_ifb_toggle_btn.addClass('cp-ifb-hide');
-		   		cp_info_bar_body.addClass('cp-flex');	
-		   	}, 10);
+	   	cp_info_bar_container.attr('class', cp_info_bar_class + ' smile-animated ' + entry_animation);
+
+
+	    setTimeout(function() {
+	    	cp_ifb_toggle_btn.addClass('cp-ifb-hide');
+	   		cp_info_bar_body.addClass('cp-flex');	
+	   	}, 10);
 }
 
 
 function close_ifb(e){
-		if(jQuery(".cp-info-bar-container").hasClass('cp-ifb-with-toggle')){
+		
+	if( jQuery(".cp-info-bar-container").hasClass('cp-ifb-with-toggle') ) {
+
 		var cp_ifb_toggle_btn 				= jQuery(".cp-ifb-toggle-btn"), 
 		    cp_info_bar_body 				= jQuery(".cp-info-bar-body"),
 		    cp_info_bar_container			= jQuery(".cp-info-bar-container"),
@@ -1138,12 +1132,10 @@ function close_ifb(e){
 			}
 
 			cp_info_bar_container.removeClass('cp-ifb-click');
-
 		    cp_info_bar_container.removeClass(entry_animation);
 
-		var  cp_info_bar_class 				= cp_info_bar_container.attr('class');
-		     
-		     cp_info_bar_container.attr('class', cp_info_bar_class + ' ' + exit_animation);
+		var  cp_info_bar_class 	= cp_info_bar_container.attr('class');		     
+		     cp_info_bar_container.attr('class', cp_info_bar_class + ' smile-animated ' + exit_animation);
 
 		    setTimeout(function() {	
 		    	cp_ifb_toggle_btn.removeClass('cp-ifb-hide');
@@ -1154,9 +1146,9 @@ function close_ifb(e){
 
 		   	}, 500);
 
-		   }else{
-				e.preventDefault();
-		   }
+	} else {
+		e.preventDefault();
+	}
 }
 
 
@@ -1180,7 +1172,6 @@ function cp_next_submit_btn(data){
 
 		cp_second_submit_btn.removeAttr('class');
 		cp_second_submit_btn.attr('class','cp-button cp-second-submit-btn cke_editable cke_editable_inline cke_contents_ltr cke_show_borders smile-animated '+button_animation);
-		
 
 		/**
 		 * 	Submit - (Flat, Outline, 3D, Gradient)
@@ -1200,7 +1191,6 @@ function cp_next_submit_btn(data){
 			jQuery('#smile_ifb_btn_darken', window.parent.document ).val( c_hover );
 			//store button lighten color option
 			jQuery('#smile_ifb_btn_gradiant', window.parent.document ).val( light ); 
-			//console.log(c_hover);
 		}
 
 		cp_second_submit_btn.css('background', c_normal);
@@ -1214,7 +1204,6 @@ function cp_next_submit_btn(data){
 			radius += 'border-radius: ' + ifb_btn_border_radius + 'px;';
 		}
 
-		
 		var ib_style = '';
 
 		jQuery('head').append('<div id="cp-btn-inline-css"></div>');
@@ -1250,5 +1239,3 @@ function cp_next_submit_btn(data){
 		jQuery('#cp-btn-inline-css').html('<style>' + ib_style + '</style>');	
 
 }
-
-

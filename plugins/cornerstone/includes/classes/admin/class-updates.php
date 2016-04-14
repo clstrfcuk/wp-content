@@ -11,11 +11,12 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 		add_filter( 'themeco_update_api', array( $this, 'register' ), -100 );
     add_filter( 'themeco_update_cache', array( $this, 'cache_updates' ), 10, 2 );
 
-		add_action( 'plugins_api', array( $this, 'plugins_api' ), 100, 3 );
-
-		if ( empty( $_GET['action'] ) || ! in_array( $_GET['action'], array( 'do-core-reinstall', 'do-core-upgrade' ), true ) ) {
-			add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'pre_set_site_transient_update_plugins' ) );
+		if ( isset( $_GET['force-check'] ) ) {
+			delete_site_transient( 'update_plugins' );
 		}
+
+		add_action( 'plugins_api', array( $this, 'plugins_api' ), 100, 3 );
+		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'pre_set_site_transient_update_plugins' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_script_data' ), -100 );
 
@@ -26,6 +27,10 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 	}
 
   public function ajax_update_check() {
+
+  	if ( ! current_user_can( 'update_plugins' ) ) {
+      wp_send_json_error();
+    }
 
     delete_site_transient( 'update_plugins' );
     cs_tco()->updates()->refresh();
@@ -78,7 +83,7 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 
   }
 
-	public function plugins_api( $res = false, $action, $args ) {
+	public function plugins_api( $res, $action, $args ) {
 
 		if ( ! isset( $args->slug ) || 'cornerstone' !== $args->slug ) {
 			return $res;
@@ -106,14 +111,6 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 
 	public function pre_set_site_transient_update_plugins( $data ) {
 
-		//
-		// Only run after other plugins are checked.
-		//
-
-		if ( empty( $data->checked ) ) {
-			return $data;
-		}
-
 		cs_tco()->updates()->refresh();
 		$remote = $this->get_plugin_data();
 
@@ -135,7 +132,7 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 		if ( version_compare( $remote['new_version'], $local['Version'], '>' ) ) {
 
 			if ( ! $remote['package'] ) {
-				$remote['upgrade_notice'] = X_Addons_Updates::get_validation_html_plugin_updates();
+				$remote['upgrade_notice'] = sprintf( __( '<a href="%s">Validate to enable automatic updates</a>', 'cornerstone' ), $this->plugin->component( 'Admin' )->home_page_url() );
 			}
 
 			$data->response[ $this->plugin_file ] = (object) $remote;

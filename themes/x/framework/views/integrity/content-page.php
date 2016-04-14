@@ -11,9 +11,11 @@ $disable_page_title = get_post_meta( get_the_ID(), '_x_entry_disable_page_title'
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<?php if ( has_post_thumbnail() ) : ?>
   <div class="entry-featured">
     <?php x_featured_image(); ?>
   </div>
+<?php endif; ?>
   <div class="entry-wrap">
     <?php if ( is_singular() ) : ?>
       <?php if ( $disable_page_title != 'on' ) : ?>

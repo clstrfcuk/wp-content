@@ -1,11 +1,20 @@
 <?php
-   require_once CP_BASE_DIR.'admin/contacts/views/cp-paginator.php';
+    require_once CP_BASE_DIR.'admin/contacts/views/cp-paginator.php';
 
-   $prev_styles = get_option('smile_info_bar_styles');
-   $variant_tests = get_option('info_bar_variant_tests');
-   $analyticsData = get_option('smile_style_analytics');
-	
-   if(is_array($prev_styles)) {
+    //  Remove All Styles
+    $remove_styles = ( isset( $_GET['remove-styles'] ) ) ? $_GET['remove-styles'] : 'false';
+    if( $remove_styles == 'true' ) {
+        delete_option('smile_info_bar_styles');
+        delete_option('info_bar_variant_tests');
+        delete_option('smile_style_analytics');
+        echo '<div style="background: #2F9DD2;color: #FFF;padding: 16px;margin-top: 20px;margin-right: 20px;text-align: center;font-size: 16px;border-radius: 4px;">Removed All Styles..!</div>';
+    }
+
+    $prev_styles = get_option('smile_info_bar_styles');
+    $variant_tests = get_option('info_bar_variant_tests');
+    $analyticsData = get_option('smile_style_analytics');
+    
+    if(is_array($prev_styles)) {
       foreach($prev_styles as $key => $style){
         $impressions = 0;
         $multivariant = false;
@@ -274,14 +283,14 @@
             ?>
             <tr id="<?php echo $key; ?>" class="ui-sortable-handle <?php if($hasVariants) { echo 'cp-variant-exist'; } ?>">
                <?php if( $multivariant || $hasVariants ) { ?>  
-                  <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( $style_name ); ?>&theme=<?php echo urlencode( $theme ); ?>"> <?php echo "Variants of ".urldecode($style_name); ?> </a></td>
+                  <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( $style_name ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><?php echo "Variants of ".urldecode($style_name); ?> </a></td>
                <?php  } else { ?>    
-                  <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>"> <?php echo urldecode($style_name); ?> </a></td>
+                  <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><?php echo urldecode($style_name); ?> </a></td>
                   <?php } ?>  
                   <td class="column-impressions"><?php echo $impressions; ?></td>
                   <td class="column-status"><?php echo $status; ?></td>
                   <td class="actions column-actions">
-                   <a class="action-list" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_info_bar_styles" href="?page=smile-info_bar-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( stripslashes($style_name ) ); ?>&theme=<?php echo urlencode( $theme ); ?>"><i class="connects-icon-share"></i><span class="action-tooltip">
+                   <a class="action-list" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_info_bar_styles" href="?page=smile-info_bar-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( stripslashes($style_name ) ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><i class="connects-icon-share"></i><span class="action-tooltip">
                    <?php if($hasVariants) { ?>
                       <?php _e( "See Variants", "smile" ); ?>
                    <?php } else { ?>   
@@ -316,7 +325,7 @@
                    <?php _e( "Export Settings", "smile" ); ?>
                     <?php 
                     if( !$multivariant && !$hasVariants ) { 
-                        echo apply_filters( 'cp_after_delete_action', $style_settings , 'info_bar' ); 
+                        echo apply_filters( 'cp_before_delete_action', $style_settings , 'info_bar' ); 
                     }
                    ?> 
                    </span></a> <a class="action-list trash-style-icon" data-delete="hard" data-variantoption="info_bar_variant_tests" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_info_bar_styles" style="margin-left: 25px;" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip">

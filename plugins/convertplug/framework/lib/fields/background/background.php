@@ -51,7 +51,7 @@ function background_settings_field($name, $settings, $value)
 	// Background Repeat
 	$output .= '<strong><label for="smile_bg_repeat">'.__( "Background Repeat", "smile" ).'</label></strong>';
 	$input_name = 'bg_rpt';
-	$output .= '<p><select id="smile_' . $input_name . '">';
+	$output .= '<p><select id="smile_' . $input_name . '" class="smile_' . $input_name . '" >';
 	foreach( $background_repeat as $title => $val ) {
 		$selected = ( $val == $repeat_val ) ? "selected='selected'" : "";
 		$output .= '<option value="'.$val.'" '.$selected.'>'.$title.'</option>';
@@ -61,7 +61,7 @@ function background_settings_field($name, $settings, $value)
 	// Background Position
 	$output .= '<strong><label for="smile_' . $input_name . '">'.__( "Background Position", "smile" ).'</label></strong>';
 	$input_name = 'bg_pos';
-	$output .= '<p><select id="smile_' . $input_name . '">';
+	$output .= '<p><select id="smile_' . $input_name . '" class="smile_' . $input_name . '">';
 	foreach( $background_position as $title => $val ) {
 		$selected = ( $val == $pos_val ) ? "selected='selected'" : "";
 		$output .= '<option value="'.$val.'" '.$selected.'>'.$title.'</option>';
@@ -71,7 +71,7 @@ function background_settings_field($name, $settings, $value)
 	// Background Size
 	$output .= '<strong><label for="smile_' . $input_name . '">'.__( "Background Size", "smile" ).'</label></strong>';
 	$input_name = 'bg_size';
-	$output .= '<p><select id="smile_' . $input_name . '">';
+	$output .= '<p><select id="smile_' . $input_name . '" class="smile_' . $input_name . '" >';
 	foreach( $background_size as $title => $val ) {
 		$selected = ( $val == $size_val ) ? "selected='selected'" : "";
 		$output .= '<option value="'.$val.'" '.$selected.'>'.$title.'</option>';
@@ -87,10 +87,13 @@ ob_start();
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function(){
-	var bg_repeat = jQuery("#smile_bg_rpt");
-	var bg_pos = jQuery("#smile_bg_pos");
-	var bg_size = jQuery("#smile_bg_size");
 	var input = jQuery("#smile_<?php echo $name; ?>");
+	var parent = input.closest(".smile-element-container");
+
+	var bg_repeat = parent.find(".smile_bg_rpt");
+	var bg_pos = parent.find(".smile_bg_pos");
+	var bg_size = parent.find(".smile_bg_size");
+	
 	var value = "";
 	value = bg_repeat.val()+"|"+bg_pos.val()+"|"+bg_size.val();
 	input.val(value);

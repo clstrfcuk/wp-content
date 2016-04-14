@@ -23,10 +23,13 @@ class X_Plugin_Updater {
 
   public function __construct() {
 
-    if ( current_user_can( 'update_plugins' ) ) {
-      add_action( 'admin_init', array( $this, 'replace_default_wp_update_message' ), 999 );
-      add_filter( 'plugins_api', array( $this, 'plugins_api' ), 99, 3 );
+
+    if ( is_admin() && isset( $_GET['force-check'] ) ) {
+      delete_site_transient( 'update_plugins' );
     }
+
+    add_action( 'admin_init', array( $this, 'replace_default_wp_update_message' ), 999 );
+    add_filter( 'plugins_api', array( $this, 'plugins_api' ), 99, 3 );
 
     add_filter( 'extra_plugin_headers', array( $this, 'add_plugin_headers' ) );
 
@@ -69,14 +72,6 @@ class X_Plugin_Updater {
   //
 
   public function pre_set_site_transient_update_plugins( $data ) {
-
-    //
-    // Only run after other plugins are checked.
-    //
-
-    if ( empty( $data->checked ) ) {
-      return $data;
-    }
 
     x_tco()->updates()->refresh();
     $update_cache = x_tco()->updates()->get_update_cache();

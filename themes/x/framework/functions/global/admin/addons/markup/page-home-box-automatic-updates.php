@@ -33,14 +33,14 @@
             <?php x_tco()->admin_icon( 'dl-laptop', 'tco-box-feature-icon' ); ?>
             <div class="tco-box-feature-info">
               <h4 class="tco-box-content-title"><?php _e( 'Installed Version', '__x__' ); ?></h4>
-              <span class="tco-box-content-text"><?php echo X_VERSION; ?> <a class="tco-automatic-updates-changelog" href="https://theme.co/changelog/" target="_blank">Changelog</a></span>
+              <span class="tco-box-content-text"><?php echo X_VERSION; ?> <a class="tco-automatic-updates-changelog" href="https://theme.co/changelog/" target="_blank"><?php _e( 'Changelog', '__x__' ); ?></a></span>
             </div>
           </li>
           <li>
             <?php x_tco()->admin_icon( 'bullhorn', 'tco-box-feature-icon' ); ?>
             <div class="tco-box-feature-info">
               <h4 class="tco-box-content-title"><?php _e( 'Latest Version Available', '__x__' ); ?></h4>
-              <span class="tco-box-content-text"><span data-tco-module-target="latest-available"><?php echo X_VERSION; ?></span> <a class="tco-automatic-updates-changelog" href="https://theme.co/changelog/" target="_blank">Changelog</a></span>
+              <span class="tco-box-content-text"><span data-tco-module-target="latest-available"><?php echo X_VERSION; ?></span> <a class="tco-automatic-updates-changelog" href="https://theme.co/changelog/" target="_blank"><?php _e( 'Changelog', '__x__' ); ?></a></span>
             </div>
           </li>
           <li>

@@ -22,3 +22,10 @@
     font-weight: normal;
     line-height: 1em;
 }
+.cp-info-bar-inline.cp-get-this-deal .cp-ib-container {
+    padding: 5px 10px;
+}
+
+.cp-info-bar-inline .form-main.cp-form-layout-3 {
+    padding: 5px 0 0;
+}

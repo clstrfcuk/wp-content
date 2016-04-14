@@ -18,11 +18,11 @@ jQuery(document).ready(function(){
 			//for infobar position
 			cp_info_bar_position_setup(data);
 
-			//form setup
-			cp_ifb_form_setup(data);	
-
 			// setup all editors
 			 cp_editor_setup(data);
+
+			//form setup
+			cp_ifb_form_setup(data);	
 
 			//infobar image 
 			cp_infobar_infobar_image(data);

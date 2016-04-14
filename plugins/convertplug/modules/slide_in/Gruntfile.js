@@ -6,8 +6,8 @@ module.exports = function(grunt) {
 				files: {
 					'assets/js/slide_in.min.js': [
 						'!assets/js/admin.min.js',
-						'../assets/js/convertplug.js',
 						'assets/js/idle-timer.min.js',
+						'assets/js/slide_in.common.js',
 						'assets/js/slide_in.js',
 						'assets/js/mailer.js',
 						'../../admin/assets/js/frosty.js',	
@@ -23,6 +23,8 @@ module.exports = function(grunt) {
 						'assets/css/slide_in.css',
 						'assets/css/slide_in-grid.css',
 						'../assets/css/animate.css',
+						'../assets/css/cp-social-media-style.css',
+						'../assets/css/social-icon-css.css',
 						'../assets/css/convertplug.css',
 						'../../admin/assets/css/frosty.css',
 					]

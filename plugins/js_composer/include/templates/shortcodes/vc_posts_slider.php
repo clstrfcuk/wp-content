@@ -131,7 +131,7 @@ $query_args['order'] = $order;
 // Run query
 $my_query = new WP_Query( $query_args );
 
-$pretty_rel_random = ' rel="prettyPhoto[rel-' . get_the_ID() . '-' . rand() . ']"';
+$pretty_rel_random = ' data-rel="prettyPhoto[rel-' . get_the_ID() . '-' . rand() . ']"';
 if ( 'custom_link' === $link ) {
 	$custom_links = explode( ',', $custom_links );
 }

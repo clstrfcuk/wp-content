@@ -12,7 +12,7 @@
             flex-grow: 1;
 }
 .cp-blank-info-bar .cp-info-bar-body {
-    font-family: varela round;
+    font-family: 'Varela Round', sans-serif;
 }
 @media (max-width: 768px) {
 	.cp-blank-info-bar .cp-content-container,

@@ -42,6 +42,11 @@
 									<input type="text" id="bsf-cnlist-list-name" name="list-name" autofocus="autofocus"/>
 									<span class="cp-validation-error"></span>
 								</div>
+
+								<?php
+								if( !empty( $cp_addon_list ) ) {
+								?>
+								<!-- ********************************************************** -->
 								<div class="bsf-cnlist-form-row bsf-cnlist-list-provider" >
 										<label for="bsf-cnlist-list-provider" >
 										  <?php _e( "Do you want to sync connects with any third party software?", "smile" ); ?>
@@ -49,19 +54,21 @@
 										<select id="bsf-cnlist-list-provider" class="bsf-cnlist-select" name="list-provider">
 										  	<option value="Convert Plug">No</option>
 											<?php
-											if( !empty( $cp_addon_list ) ) {
 												foreach( $cp_addon_list as $slug => $setting ){
 													echo '<option value="' . $slug . '">' . $setting['name'] . '</option>';
 												}
-											}
 											?>
 										</select>
 										<div class="bsf-cnlist-list-provider-spinner"></div>
 								</div>
+								<!-- ********************************************************** -->
+								<?php
+								}
+								?>
 
 					            <div class="bsf-cnlist-form-row short-description" >
 					              <p class="description">
-					                <?php _e( "Your connects can be synced to CRM & Mailer softwares like HubSpot, MailChimp, etc. if you choose any from above.", "smile" ); ?>
+					                <?php _e( 'Your connects can be synced to CRM & Mailer softwares like HubSpot, MailChimp, etc.<br><br><strong>Important Note</strong> - If you need to integrate with third party CRM & Mailer software like MailChimp, Infusionsoft, etc. please install the respective addon from <a href="'. bsf_exension_installer_url('14058953') .'">here</a>.', 'smile' ); ?>
 					              </p>
 					            </div>
 					        </div><!-- .steps-section -->
@@ -115,7 +122,9 @@
 <script type="text/javascript">
 var provider = jQuery("#bsf-cnlist-list-provider");
 jQuery(document).ready(function(){
-	var val = provider.val().toLowerCase();
+
+	var val = provider.length ? provider.val().toLowerCase() : 'convert plug' ;
+	<?php if( !empty( $cp_addon_list ) ) { ?>
 	jQuery("#save-btn").attr('data-provider',val);
 	provider.change(function(e){
 		if( jQuery(this).val() == 'Convert Plug' ) {
@@ -128,6 +137,7 @@ jQuery(document).ready(function(){
 			jQuery(".bsf-cnlist-next-btn").show();
 		}
 	});
+	<?php } ?>
 });
 
 jQuery(document).on( "click", ".update-mailer", function(){
@@ -175,12 +185,16 @@ jQuery("#save-btn").click(function(e){
 		return false;
 	}
 
-	var data = jQuery("#bsf-cnlist-contact-form").serialize();
+	<?php if( !empty( $cp_addon_list ) ) { ?>
+		var data = jQuery("#bsf-cnlist-contact-form").serialize();
+	<?php } else{ ?>
+		var data = jQuery("#bsf-cnlist-contact-form").serialize() + '&list-provider=Convert+Plug';
+	<?php } ?>
 	var provider = jQuery(this).data('provider');
-
+	
 	if( provider == "madmimi" ) {
-		var mailer_list_name = 	jQuery("#madmimi-list option:selected").text();
-		var mailer_list_id = jQuery("#madmimi-list option:selected").text();
+		var mailer_list_name = 	jQuery("#"+provider+"-list option:selected").text();
+		var mailer_list_id = jQuery("#"+provider+"-list option:selected").text();
 		data += "&list="+mailer_list_id+"&provider_list="+mailer_list_name;
 	} else if( provider == "sendy" ){
 		var mailer_list_name = 	jQuery( '#sendy_list_ids' ).val();
@@ -209,6 +223,10 @@ jQuery("#save-btn").click(function(e){
 		
 		var infusionsoft_action_id = jQuery('#infusionsoft_action_id').val();
 		data += "&list="+mailer_list_id+"&provider_list="+mailer_list_name+"&infusionsoft_action_id="+infusionsoft_action_id;
+	} else if( provider == "ontraport" ) {
+		var mailer_list_id = jQuery("#"+provider+"-list option:selected").val();
+		var mailer_list_name = 	jQuery("#"+provider+"-list option:selected").text();
+		data += "&list="+mailer_list_id+"&provider_list="+mailer_list_name;
 	} else {
 		var mailer_list_id = jQuery("#"+provider+"-list ").val();
 		var mailer_list_name = 	jQuery("#"+provider+"-list option:selected").text();
@@ -265,413 +283,7 @@ jQuery("#save-btn").click(function(e){
 	});
 });
 
-// disconnect mailer
-jQuery(document).on( "click", ".disconnect-mailer", function(){
-
-	var mailerName = jQuery(this).data("mailerslug");
-	if(confirm("<?php _e( "Are you sure? If you disconnect, your previous campaigns syncing with", "smile" ); ?> "+mailerName+" <?php _e( "will be disconnected as well.", "smile" ); ?>")) {
-
-		var mailer = jQuery(this).data('mailer');
-		var action = 'disconnect_'+mailer;
-		var data = {action:action};
-		jQuery(".smile-absolute-loader").css('visibility','visible');
-		jQuery.ajax({
-			url: ajaxurl,
-			data: data,
-			type: 'POST',
-			dataType: 'JSON',
-			success: function(result){
-
-				jQuery("#save-btn").attr('disabled','true');
-				if(result.message == "disconnected" && mailer == "mailchimp" ){
-					jQuery("#mailchimp_api_key").val('');
-					jQuery(".mailchimp-list").html('');
-					//jQuery("#disconnect-mailchimp").addClass('button-secondary').html("<?php _e( "Authenticate MailChimp", "smile" ); ?>").removeClass('disconnect-mailer').attr('id','auth-mailchimp');
-					jQuery("#disconnect-mailchimp").replaceWith('<button id="auth-mailchimp" class="button button-secondary auth-button" disabled="true"><?php _e( "Authenticate MailChimp", "smile" ); ?></button><span class="spinner" style="float: none;"></span>');
-					jQuery("#auth-mailchimp").attr('disabled','true');
-				} else if(result.message == "disconnected" && mailer == "aweber" ){
-					jQuery(".aweber-list").html('');
-					jQuery(".aweber-auth").show();
-					jQuery("#authentication_token").val('');
-					jQuery(".disconnect-mailer").addClass('button-secondary get_aweber_data').removeClass('reset_aweber_data').html('Connect to Aweber');
-					jQuery('.get_aweber_data').show();
-					jQuery(".disconnect-mailer").removeClass('disconnect-mailer');
-					jQuery(".get_aweber_data").attr('disabled','true');
-				} else if(result.message == "disconnected" && mailer == "madmimi" ){
-					jQuery("#madmimi_api_key").val('');
-					jQuery('#madmimi_email').val('');
-					jQuery(".madmimi-list").html('');
-					jQuery("#disconnect-madmimi").replaceWith('<button id="auth-madmimi" class="button button-secondary auth-button" disabled="true"><?php _e( "Authenticate MadMimi", "smile" ); ?></button><span class="spinner" style="float: none;"></span>');
-					//jQuery("#disconnect-madmimi").addClass('button-secondary').removeClass('disconnect-mailer').html("Authenticate Madmimi").attr('id','auth-madmimi');
-					jQuery("#auth-madmimi").attr('disabled','true');
-				} else if(result.message == "disconnected" && mailer == "campaignmonitor" ){
-					jQuery("#campaignmonitor_api_key").val('');
-					jQuery('#campaignmonitor_client_id').val('');
-					jQuery(".campaignmonitor-list").html('');
-					//jQuery("#disconnect-campaignmonitor").addClass('button-secondary').html("<?php _e( "Authenticate campaignmonitor", "smile" ); ?>").removeClass('disconnect-mailer').attr('id','auth-campaignmonitor');
-					jQuery("#disconnect-campaignmonitor").replaceWith('<button id="auth-campaignmonitor" class="button button-secondary auth-button" disabled="true"><?php _e( "Authenticate Campaign Monitor", "smile" ); ?></button><span class="spinner" style="float: none;"></span>');
-					jQuery("#auth-campaignmonitor").attr('disabled','true');
-				} else if(result.message == "disconnected" && mailer == "activecampaign" ){
-					jQuery("#activecampaign_api_key").val('');
-					jQuery('#activecampaign_url').val('');
-					jQuery('.activecampaign-list').html('');
-					//jQuery("#disconnect-activecampaign").addClass('button-secondary').html("<?php _e( "Authenticate activecampaign", "smile" ); ?>").removeClass('disconnect-mailer').attr('id','auth-activecampaign');
-					jQuery("#disconnect-activecampaign").replaceWith('<button id="auth-activecampaign" class="button button-secondary auth-button" disabled="true"><?php _e( "Authenticate Active Campaign", "smile" ); ?></button><span class="spinner" style="float: none;"></span>');
-					jQuery("#auth-activecampaign").attr('disabled','true');
-				} else if(result.message == "disconnected" && mailer == "icontact" ){
-					jQuery("#icontact_app_id").val('');
-					jQuery('#icontact_email').val('');
-					jQuery('#icontact_pass').val('');
-					jQuery(".icontact-list").html('');
-					//jQuery("#disconnect-icontact").addClass('button-secondary').html("<?php _e( "Authenticate icontact", "smile" ); ?>").removeClass('disconnect-mailer').attr('id','auth-icontact');
-					jQuery("#disconnect-icontact").replaceWith('<button id="auth-icontact" class="button button-secondary auth-button" disabled="true"><?php _e( "Authenticate iContact", "smile" ); ?></button><span class="spinner" style="float: none;"></span>');
-					jQuery("#auth-icontact").attr('disabled','true');
-				} else if(result.message == "disconnected" && mailer == "emma" ){
-					jQuery("#emma_pub_api").val('');
-					jQuery('#emma_priv_api').val('');
-					jQuery('#emma_acc_id').val('');
-					jQuery(".emma-list").html('');
-					//jQuery("#disconnect-emma").addClass('button-secondary').html("<?php _e( "Authenticate MyEmma", "smile" ); ?>").removeClass('disconnect-mailer').attr('id','auth-emma');
-					jQuery("#disconnect-emma").replaceWith('<button id="auth-emma" class="button button-secondary auth-button" disabled="true"><?php _e( "Authenticate MyEmma", "smile" ); ?></button><span class="spinner" style="float: none;"></span>');
-					jQuery("#auth-emma").attr('disabled','true');
-				} else if(result.message == "disconnected" && mailer == "hubspot" ){
-					jQuery("#hubspot_api_key").val('');
-					jQuery(".hubspot-list").html('');
-					//jQuery("#disconnect-hubspot").addClass('button-secondary').html("<?php _e( "Authenticate HubSpot", "smile" ); ?>").removeClass('disconnect-mailer').attr('id','auth-hubspot');
-					jQuery("#disconnect-hubspot").replaceWith('<button id="auth-hubspot" class="button button-secondary auth-button" disabled="true"><?php _e( "Authenticate HubSpot", "smile" ); ?></button><span class="spinner" style="float: none;"></span>');
-					jQuery("#auth-hubspot").attr('disabled','true');
-				}
-
-				jQuery('.bsf-cnlist-form-row').fadeIn('300');
-				jQuery(".bsf-cnlist-mailer-help").show();
-				jQuery(".smile-absolute-loader").css('visibility','hidden');
-			}
-		});
-	}
-	else {
-		return false;
-	}
-});
-
-
-// mailchimp authentication
-jQuery(document).on( "click", "#auth-mailchimp", function(e){
-	e.preventDefault();
-	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var auth_token = jQuery("#mailchimp_api_key").val();
-	var action = 'update_mailchimp_authentication';
-	var data = {action:action,authentication_token:auth_token};
-	jQuery.ajax({
-		url: ajaxurl,
-		data: data,
-		type: 'POST',
-		dataType: 'JSON',
-		success: function(result){
-			if(result.status == "success" ){
-				jQuery(".bsf-cnlist-mailer-help").hide();
-				jQuery("#save-btn").removeAttr('disabled');
-				jQuery("#mailchimp_api_key").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#auth-mailchimp").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".mailchimp-list").html(result.message);
-			} else {
-				jQuery(".mailchimp-list").html('<span class="bsf-mailer-error">'+result.message+'</span>');
-			}
-			jQuery(".smile-absolute-loader").css('visibility','hidden');
-		}
-	});
-	e.preventDefault();
-});
-
-jQuery(document).on("click", ".auth-aweber" , function(e){
-	e.preventDefault();
-	return false;
-});
-
-// aweber authentication
-jQuery(document).on("click", ".get_aweber_data", function(e){
-	e.preventDefault();
-	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var auth_token = jQuery("#authentication_token").val();
-	var action = 'update_aweber_authentication';
-	var data = {action:action,authentication_token:auth_token};
-	jQuery.ajax({
-		url: ajaxurl,
-		data: data,
-		type: 'POST',
-		dataType: 'JSON',
-		success: function(result){
-			if(result.status == "success" ){
-				jQuery("#save-btn").removeAttr('disabled');
-				jQuery(".get_aweber_data").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".bsf-cnlist-mailer-help").hide();
-				jQuery(".button-secondary.auth-aweber").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#authentication_token").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".aweber-list").html(result.message);
-			} else {
-				jQuery(".aweber-list").html('<span class="bsf-mailer-error">'+result.message+'</span>');
-			}
-			jQuery(".smile-absolute-loader").css('visibility','hidden');
-		}
-	});
-	e.preventDefault();
-});
-
-// madmimi authentication
-jQuery(document).on( "click", "#auth-madmimi", function(e){
-	e.preventDefault();
-	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var email = jQuery('#madmimi_email').val();
-	var auth_token = jQuery("#madmimi_api_key").val();
-	var action = 'update_madmimi_authentication';
-	var data = {action:action,email:email,authentication_token:auth_token};
-	jQuery.ajax({
-		url: ajaxurl,
-		data: data,
-		type: 'POST',
-		dataType: 'JSON',
-		success: function(result){
-			if(result.status == "success" ){
-				jQuery(".bsf-cnlist-mailer-help").hide();
-				jQuery("#save-btn").removeAttr('disabled');
-				jQuery("#madmimi_email").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#madmimi_api_key").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#auth-madmimi").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".madmimi-list").html(result.message);
-			} else {
-				jQuery(".madmimi-list").html('<span class="bsf-mailer-error">'+result.message+'</span>');
-			}
-			jQuery(".smile-absolute-loader").css('visibility','hidden');
-		}
-	});
-	e.preventDefault();
-});
-
-
-// Campaign Monitor authentication
-jQuery(document).on( "click", "#auth-campaignmonitor", function(e){
-
-	e.preventDefault();
-	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var campaignmonitor_api_key = jQuery("#campaignmonitor_api_key").val();
-	var campaignmonitor_client_id = jQuery('#campaignmonitor_client_id').val();
-	var action = 'update_campaignmonitor_authentication';
-	var data = {action:action,campaignmonitor_client_id:campaignmonitor_client_id,campaignmonitor_api_key:campaignmonitor_api_key};
-	jQuery.ajax({
-		url: ajaxurl,
-		data: data,
-		type: 'POST',
-		dataType: 'JSON',
-		success: function(result){
-			if(result.status == "success" ){
-				jQuery(".bsf-cnlist-mailer-help").hide();
-				jQuery("#save-btn").removeAttr('disabled');
-				jQuery("#campaignmonitor_client_id").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#campaignmonitor_api_key").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#auth-campaignmonitor").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".campaignmonitor-list").html(result.message);
-			} else {
-				jQuery(".campaignmonitor-list").html('<span class="bsf-mailer-error">'+result.message+'</span>');
-			}
-			jQuery(".smile-absolute-loader").css('visibility','hidden');
-		}
-	});
-	e.preventDefault();
-});
-
-
-// Active Campaign authentication
-jQuery(document).on( "click", "#auth-activecampaign", function(e){
-
-	e.preventDefault();
-	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var auth_token = jQuery("#activecampaign_api_key").val();
-	var campaingURL = jQuery('#activecampaign_url').val();
-	var action = 'update_activecampaign_authentication';
-	var data = {action:action,campaingURL:campaingURL,authentication_token:auth_token};
-	jQuery.ajax({
-		url: ajaxurl,
-		data: data,
-		type: 'POST',
-		dataType: 'JSON',
-		success: function(result){
-			if(result.status == "success" ){
-				jQuery(".bsf-cnlist-mailer-help").hide();
-				jQuery("#save-btn").removeAttr('disabled');
-				jQuery("#activecampaign_url").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#activecampaign_api_key").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#auth-activecampaign").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".activecampaign-list").html(result.message);
-			} else {
-				jQuery(".activecampaign-list").html('<span class="bsf-mailer-error">'+result.message+'</span>');
-			}
-			jQuery(".smile-absolute-loader").css('visibility','hidden');
-		}
-	});
-	e.preventDefault();
-});
-
-// iContact authentication
-jQuery(document).on( "click", "#auth-icontact", function(e){
-
-	e.preventDefault();
-	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var appID = jQuery("#icontact_app_id").val();
-	var appUser = jQuery('#icontact_email').val();
-	var appPass = jQuery('#icontact_pass').val();
-	var action = 'update_icontact_authentication';
-	var data = {action:action,appID:appID,appUser:appUser,appPass:appPass};
-	jQuery.ajax({
-		url: ajaxurl,
-		data: data,
-		type: 'POST',
-		dataType: 'JSON',
-		success: function(result){
-			if(result.status == "success" ){
-				jQuery(".bsf-cnlist-mailer-help").hide();
-				jQuery("#save-btn").removeAttr('disabled');
-				jQuery("#icontact_app_id").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#icontact_email").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#icontact_pass").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#auth-icontact").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".icontact-list").html(result.message);
-			} else {
-				jQuery(".icontact-list").html('<span class="bsf-mailer-error">'+result.message+'</span>');
-			}
-			jQuery(".smile-absolute-loader").css('visibility','hidden');
-		}
-	});
-	e.preventDefault();
-});
-
-
-// MyEmma authentication
-jQuery(document).on( "click", "#auth-emma", function(e){
-
-	e.preventDefault();
-	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var public_key = jQuery("#emma_pub_api").val();
-	var priv_key = jQuery('#emma_priv_api').val();
-	var accID = jQuery('#emma_acc_id').val();
-	var action = 'update_emma_authentication';
-	var data = {action:action,public_key:public_key,priv_key:priv_key,accID:accID};
-	jQuery.ajax({
-		url: ajaxurl,
-		data: data,
-		type: 'POST',
-		dataType: 'JSON',
-		success: function(result){
-			if(result.status == "success" ){
-				jQuery(".bsf-cnlist-mailer-help").hide();
-				jQuery("#save-btn").removeAttr('disabled');
-				jQuery("#emma_pub_api").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#emma_priv_api").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#emma_acc_id").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#auth-emma").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".emma-list").html(result.message);
-			} else {
-				jQuery(".emma-list").html('<span class="bsf-mailer-error">'+result.message+'</span>');
-			}
-			jQuery(".smile-absolute-loader").css('visibility','hidden');
-		}
-	});
-	e.preventDefault();
-});
-
-
-// Hubspot authentication
-jQuery(document).on( "click", "#auth-hubspot", function(e){
-
-	e.preventDefault();
-	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var api_key = jQuery("#hubspot_api_key").val();
-	var action = 'update_hubspot_authentication';
-	var data = {action:action,api_key:api_key};
-	jQuery.ajax({
-		url: ajaxurl,
-		data: data,
-		type: 'POST',
-		dataType: 'JSON',
-		success: function(result){
-			if(result.status == "success" ){
-				jQuery(".bsf-cnlist-mailer-help").hide();
-				jQuery("#save-btn").removeAttr('disabled');
-				jQuery("#hubspot_api_key").closest('.bsf-cnlist-form-row').hide();
-				jQuery("#auth-hubspot").closest('.bsf-cnlist-form-row').hide();
-				jQuery(".hubspot-list").html(result.message);
-			} else {
-				jQuery(".hubspot-list").html('<span class="bsf-mailer-error">'+result.message+'</span>');
-			}
-			jQuery(".smile-absolute-loader").css('visibility','hidden');
-		}
-	});
-	e.preventDefault();
-});
-
 /************** JQuery change events *************/
-
-jQuery(document).on("change keyup paste keydown","#mailchimp_api_key", function(e) {
-		var val = jQuery(this).val();
-		if( val !== "" )
-			jQuery("#auth-mailchimp").removeAttr('disabled');
-		else
-			jQuery("#auth-mailchimp").attr('disabled','true');
-});
-
-jQuery(document).on("change keyup paste keydown","#madmimi_api_key", function(e) {
-	var val = jQuery(this).val();
-	if( val !== "" )
-		jQuery("#auth-madmimi").removeAttr('disabled');
-	else
-		jQuery("#auth-madmimi").attr('disabled','true');
-});
-
-jQuery(document).on("change keyup paste keydown","#campaignmonitor_api_key", function(e) {
-	var val = jQuery(this).val();
-	if( val !== "" )
-		jQuery("#auth-campaignmonitor").removeAttr('disabled');
-	else
-		jQuery("#auth-campaignmonitor").attr('disabled','true');
-});
-
-jQuery(document).on("change keyup paste keydown","#activecampaign_api_key", function(e) {
-	var val = jQuery(this).val();
-	if( val !== "" )
-		jQuery("#auth-activecampaign").removeAttr('disabled');
-	else
-		jQuery("#auth-activecampaign").attr('disabled','true');
-});
-
-jQuery(document).on("change keyup paste keydown","#icontact_app_id", function(e) {
-	var val = jQuery(this).val();
-	if( val !== "" )
-		jQuery("#auth-icontact").removeAttr('disabled');
-	else
-		jQuery("#auth-icontact").attr('disabled','true');
-});
-
-jQuery(document).on("change keyup paste keydown","#emma_pub_api", function(e) {
-	var val = jQuery(this).val();
-	if( val !== "" )
-		jQuery("#auth-emma").removeAttr('disabled');
-	else
-		jQuery("#auth-emma").attr('disabled','true');
-});
-
-jQuery(document).on("change keyup paste keydown","#hubspot_api_key", function(e) {
-	var val = jQuery(this).val();
-	if( val !== "" )
-		jQuery("#auth-hubspot").removeAttr('disabled');
-	else
-		jQuery("#auth-hubspot").attr('disabled','true');
-});
-
-jQuery(document).on("change keyup paste keydown","#authentication_token", function(e) {
-	var val = jQuery(this).val();
-	if( val !== "" )
-		jQuery(".get_aweber_data").removeAttr('disabled');
-	else
-		jQuery(".get_aweber_data").attr('disabled','true');
-});
 
 jQuery(document).on('click', '.wizard-next', function(e){
 

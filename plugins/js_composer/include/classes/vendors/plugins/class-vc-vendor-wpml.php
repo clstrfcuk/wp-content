@@ -21,7 +21,11 @@ class Vc_Vendor_WPML implements Vc_Vendor_Interface {
 			&$this,
 			'appendLangToUrl',
 		) );
-		add_filter( 'admin_url', array(
+		add_filter( 'vc_grid_request_url', array(
+			&$this,
+			'appendLangToUrl',
+		) );
+		add_filter( 'vc_admin_url', array(
 			&$this,
 			'appendLangToUrl',
 		) );
@@ -34,6 +38,7 @@ class Vc_Vendor_WPML implements Vc_Vendor_Interface {
 	}
 
 	public function appendLangToUrl( $link ) {
+		$args = func_get_args();
 		global $sitepress;
 		if ( is_object( $sitepress ) ) {
 			if ( is_string( $link ) && strpos( $link, 'lang' ) === false && ( strpos( $link, 'vc_inline' ) !== false || strpos( $link, 'vc_editable' ) !== false || strpos( $link, 'admin-ajax' ) !== false ) ) {

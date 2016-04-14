@@ -1,73 +1,78 @@
 <?php
 if( function_exists( "smile_update_settings" ) ){
 
+	/* Get ConvertPlug Form Option Array */
+	global $cp_form;
+
 	//get style id
-	$style_id_for_slideincustomcss ='';
+	$style_id_for_slideincustomcss = '';
 	if( isset( $_GET['variant-style'])){
 		$style_id_for_slideincustomcss = $_GET['variant-style'];
-	}else{	
+		$style = $_GET['variant-style'];
+	} else {	
 		if( isset( $_GET['style'] ) ){	
 	    	$style_id_for_slideincustomcss = $_GET['style'];
 		}
 	}
 
-/*---------- Animation-----------*/
-$animation_array = array(
-	"No Effect"			  	=> 'smile-none',
-	"3D Slit"           	=> 'smile-3DSlit',
-	"3D Sign"           	=> 'smile-3DSign',
-	"3D Rotate Bottom"      => 'smile-3DRotateBottom',
-	"3D Rotate In Left"     => 'smile-3DRotateInLeft',
-	"3D Flip Vertical"      => 'smile-3DFlipVertical',
-	"3D Flip Horizontal"    => 'smile-3DFlipHorizontal',
-	"Bounce" 			  	=> 'smile-bounce',
-	"Bounce In"           	=> 'smile-bounceIn',
-	"Bounce In Down"      	=> 'smile-bounceInDown',
-	"Bounce In Left"      	=> 'smile-bounceInLeft',
-	"Bounce In Right"     	=> 'smile-bounceInRight',
-	"Bounce In Up"        	=> 'smile-bounceInUp',
-	"Fade In"               => 'smile-fadeIn',
-	"Fade In & Scale"       => 'smile-fadeInScale',
-	"Fade In Down"          => 'smile-fadeInDown',
-	"Fade In Down Big"      => 'smile-fadeInDownBig',
-	"Fade In Left"          => 'smile-fadeInLeft',
-	"Fade In Left Big"      => 'smile-fadeInLeftBig',
-	"Fade In Right"         => 'smile-fadeInRight',
-	"Fade In Right Big"     => 'smile-fadeInRightBig',
-	"Fade In Up"            => 'smile-fadeInUp',
-	"Fade In Up Big"        => 'smile-fadeInUpBig',
-	"Fall"           		=> 'smile-fall',
-	"Flash"   			  	=> 'smile-flash',
-	"Flip In X"             => 'smile-flipInX',
-	"Flip In Y"             => 'smile-flipInY',
-	"Jello"               	=> 'smile-jello',
-	"Light Speed In"        => 'smile-lightSpeedIn',
-	"Newspaper"           	=> 'smile-newsPaper',
-	"Pulse"         	  	=> 'smile-pulse',
-	"Roll In"               => 'smile-rollIn',
-	"Rotate In"             => 'smile-rotateIn',
-	"Rotate In Down Left"   => 'smile-rotateInDownLeft',
-	"Rotate In Down Right"  => 'smile-rotateInDownRight',
-	"Rotate In Up Left"     => 'smile-rotateInUpLeft',
-	"Rotate In Up Right"    => 'smile-rotateInUpRight',
-	"Rubber Band"   	  	=> 'smile-rubberBand',
-	"Shake"         	  	=> 'smile-shake',
-	"Side Fall"           	=> 'smile-sideFall',
-	"Slide In Bottom"     	=> 'smile-slideInBottom',
-	"Slide In Down"         => 'smile-slideInDown',
-	"Slide In Left"         => 'smile-slideInLeft',
-	"Slide In Right"        => 'smile-slideInRight',
-	"Slide In Up"           => 'smile-slideInUp',
-	"Super Scaled"          => 'smile-superScaled',
-	"Swing"               	=> 'smile-swing',
-	"Tada"                	=> 'smile-tada',
-	"Wobble"              	=> 'smile-wobble',
-	"Zoom In"               => 'smile-zoomIn',
-	"Zoom In Down"          => 'smile-zoomInDown',
-	"Zoom In Left"          => 'smile-zoomInLeft',
-	"Zoom In Right"         => 'smile-zoomInRight',
-	"Zoom In Up"            => 'smile-zoomInUp'
-);
+	/*---------- Animation-----------*/
+	$animation_array = array(
+		"No Effect"			  	=> 'smile-none',
+		"3D Slit"           	=> 'smile-3DSlit',
+		"3D Sign"           	=> 'smile-3DSign',
+		"3D Rotate Bottom"      => 'smile-3DRotateBottom',
+		"3D Rotate In Left"     => 'smile-3DRotateInLeft',
+		"3D Flip Vertical"      => 'smile-3DFlipVertical',
+		"3D Flip Horizontal"    => 'smile-3DFlipHorizontal',
+		"Bounce" 			  	=> 'smile-bounce',
+		"Bounce In"           	=> 'smile-bounceIn',
+		"Bounce In Down"      	=> 'smile-bounceInDown',
+		"Bounce In Left"      	=> 'smile-bounceInLeft',
+		"Bounce In Right"     	=> 'smile-bounceInRight',
+		"Bounce In Up"        	=> 'smile-bounceInUp',
+		"Fade In"               => 'smile-fadeIn',
+		"Fade In & Scale"       => 'smile-fadeInScale',
+		"Fade In Down"          => 'smile-fadeInDown',
+		"Fade In Down Big"      => 'smile-fadeInDownBig',
+		"Fade In Left"          => 'smile-fadeInLeft',
+		"Fade In Left Big"      => 'smile-fadeInLeftBig',
+		"Fade In Right"         => 'smile-fadeInRight',
+		"Fade In Right Big"     => 'smile-fadeInRightBig',
+		"Fade In Up"            => 'smile-fadeInUp',
+		"Fade In Up Big"        => 'smile-fadeInUpBig',
+		"Fall"           		=> 'smile-fall',
+		"Flash"   			  	=> 'smile-flash',
+		"Flip In X"             => 'smile-flipInX',
+		"Flip In Y"             => 'smile-flipInY',
+		"Jello"               	=> 'smile-jello',
+		"Light Speed In"        => 'smile-lightSpeedIn',
+		"Newspaper"           	=> 'smile-newsPaper',
+		"Pulse"         	  	=> 'smile-pulse',
+		"Roll In"               => 'smile-rollIn',
+		"Rotate In"             => 'smile-rotateIn',
+		"Rotate In Down Left"   => 'smile-rotateInDownLeft',
+		"Rotate In Down Right"  => 'smile-rotateInDownRight',
+		"Rotate In Up Left"     => 'smile-rotateInUpLeft',
+		"Rotate In Up Right"    => 'smile-rotateInUpRight',
+		"Rubber Band"   	  	=> 'smile-rubberBand',
+		"Shake"         	  	=> 'smile-shake',
+		"Side Fall"           	=> 'smile-sideFall',
+		"Slide In Bottom"     	=> 'smile-slideInBottom',
+		"Slide In Down"         => 'smile-slideInDown',
+		"Slide In Left"         => 'smile-slideInLeft',
+		"Slide In Right"        => 'smile-slideInRight',
+		"Slide In Up"           => 'smile-slideInUp',
+		"Super Scaled"          => 'smile-superScaled',
+		"Swing"               	=> 'smile-swing',
+		"Tada"                	=> 'smile-tada',
+		"Wobble"              	=> 'smile-wobble',
+		"Zoom In"               => 'smile-zoomIn',
+		"Zoom In Down"          => 'smile-zoomInDown',
+		"Zoom In Left"          => 'smile-zoomInLeft',
+		"Zoom In Right"         => 'smile-zoomInRight',
+		"Zoom In Up"            => 'smile-zoomInUp'
+	);
+
 	/*** Array contains name options ***/
 	$name = array (
 		array(
@@ -284,36 +289,6 @@ $animation_array = array(
 			"section_icon" => "connects-icon-image",
 			"dependency" => array('name' => 'slidein_bg_image', 'operator' => '!==', 'value' => '', 'type' => 'media'),
 		),
-		// array(
-		// 	"type" 		=> "section",
-		// 	"class" 	=> "",
-		// 	"name" 		=> "slide_in_size_section",
-		// 	"opts"		=> array(
-		// 		"title" 		=> __( "Size", "smile" ),
-		// 		"value" 		=> "",
-		// 	),
-
-		// 	"section" => "Design",
-		// 	"panel" => "Background",
-		// 	"section_icon" => "connects-icon-image",
-		// ),
-		// array(
-		// 	"type" 			=> "slider",
-		// 	"class" 		=> "",
-		// 	"name" 			=> "slide_in_height",
-		// 	"opts"			=> array(
-		// 		"title" 		=> __( "Height", "smile" ),
-		// 		"value" 		=> 50,
-		// 		"min" 			=> 30,
-		// 		"max" 			=> 700,
-		// 		"step" 			=> 1,
-		// 		"suffix" 		=> "px",
-		// 		"description" 	=> __( "Set the height for info bar? (value in px).", "smile" ),
-		// 	),
-		// 	"section" 	 => "Design",
-		// 	"panel" => "Background",
-		// 	"section_icon" => "connects-icon-image",
-		// )
 	);
 
 
@@ -325,7 +300,6 @@ $animation_array = array(
 			"name" 		=> "slidein_image",
 			"opts"		=> array(
 				"title" 		=> __( "Upload Image", "smile" ),
-				//"value" 		=>"",
 				"value" 		=> plugins_url('../assets/img/default-image.png', __FILE__ ),
 				"description" 	=> __( "Upload an image that will be displayed inside the content area.Image size will not bigger than its container.", "smile" ),
 			),
@@ -394,7 +368,6 @@ $animation_array = array(
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 		),
-
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -443,23 +416,6 @@ $animation_array = array(
 			"section_icon" => "connects-icon-disc",
 			"dependency" => array('name' => 'close_slidein', 'operator' => '==', 'value' => 'close_icon'),
 		),
-		// array(
-		// 	"type" 		=> "dropdown",
-		// 	"class" 	=> "",
-		// 	"name" 		=> "close_position",
-		// 	"opts" 		=> array(
-		// 		"title" 	=> __( "Position","smile"),
-		// 		"value" 	=> "adj_slidein",
-		// 		"options" 	=> array(
-		// 				__( "On Slide In Edge", "smile" ) 	=> "adj_slidein",
-		// 				__( "Inside Slide In", "smile" )   => "inside_slidein"
-		// 			)
-		// 		),
-		// 	"panel" => "Close Link",
-		// 	"section" => "Design",
-		// 	"section_icon" => "connects-icon-disc",
-		// 	"dependency" => array('name' => 'close_slidein', 'operator' => '==', 'value' => 'close_img'),
-		// ),
 		array(
 			"type" 		=> "textfield",
 			"class" 	=> "",
@@ -609,7 +565,7 @@ $animation_array = array(
 			"name" 		=> "toggle_btn",
 			"opts"		=> array(
 				"title" 	=> __( "Enable Toggle Button", "smile" ),
-				"description" 	=> __( "Enable toggle button that will show or hide Info Bar on click event.", "smile" ),
+				"description" 	=> __( "Enable toggle button that will show or hide Slide In on click event.", "smile" ),
 				"value" 	=> false,
 				"on" 		=> __( "YES", "smile" ),
 				"off"		=> __( "NO", "smile" ),
@@ -619,7 +575,22 @@ $animation_array = array(
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 		),
- 		
+ 		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "toggle_btn_visible",
+			"opts"		=> array(
+				"title" 	=> __( "Initially Display Toggle Button", "smile" ),
+				"description" 	=> __( "Display toggle button by default.", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+			),
+			"panel" 	=> "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'toggle_btn', 'operator' => '==', 'value' => true ),
+		),
  		array(
 			"type" 		=> "textfield",
 			"class" 	=> "",
@@ -673,7 +644,7 @@ $animation_array = array(
 			"panel" => "Close Link",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
-		),		
+		),
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -689,7 +660,7 @@ $animation_array = array(
 			"section_icon" => "connects-icon-image",
 			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
 		),
-		
+
 		//	store button darken on hover
 		array(
 		    "type"         => "textfield",
@@ -1023,7 +994,7 @@ $animation_array = array(
 	/*** Array contains advance design options ***/
 	$adv_design_options_widget = array (
 
-		
+
 		array(
 			"type" 		=> "dropdown",
 			"class" 		=> "",
@@ -1286,54 +1257,6 @@ $animation_array = array(
 			"section_icon" => "connects-icon-disc"
 		),
 		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "placeholder_color",
-			"opts"		=> array(
-				"title" 		=> __( "Placeholder Text Color", "smile" ),
-				"value" 		=> "rgb(153, 153, 153)",
-			),
-			"panel" 	=> "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc"
-		),
-		array(
-		    "type"         => "google_fonts",
-		    "name"         => "placeholder_font",
-		    "opts"         => array(
-		        "title"     => __( "Placeholder Font", "smile" ),
-		        "value"     => "",
-		        "use_in"      => "panel"
-		    ),
-			"panel" => "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "input_bg_color",
-			"opts"		=> array(
-				"title" 		=> __( "Input Box Background Color", "smile" ),
-				"value" 		=> "rgb(255, 255, 255)",
-			),
-			"panel" 	=> "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc"
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "input_border_color",
-			"opts"		=> array(
-				"title" 		=> __( "Input Box Border Color", "smile" ),
-				"value" 		=> "rgb(191, 190, 190)",
-			),
-			"panel" 	=> "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc"
-		),
-		array(
 			"type" 		=> "section",
 			"class" 	=> "",
 			"name" 		=> "button_options_title",
@@ -1358,110 +1281,6 @@ $animation_array = array(
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
 			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-		),
-
-		//	Submit Button Options
-		array(
-			"type" 		=> "dropdown",
-			"class" 	=> "",
-			"name" 		=> "btn_style",
-			"opts" 		=> array(
-				"title" 	=> __( "Button Style","smile"),
-				"value" 	=> "cp-btn-flat",
-				"description"=> __( "Provide custom size of your choice or make this Slide In cover entire screen area.", "smile" ),
-				"options" 	=> array(
-					__( "Flat", "smile" )		=> 'cp-btn-flat',
-					__( "3D", "smile" )			=> 'cp-btn-3d',
-					__( "Outline", "smile" )	=> 'cp-btn-outline',
-					__( "Gradient", "smile" )	=> 'cp-btn-gradient',
-				)
-			),
-			"panel" 	 => "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "button_bg_color",
-			"opts"		=> array(
-				"title" 		=> __( "Submit Button Background Color", "smile" ),
-				"value" 		=> "rgb(255, 153, 0)",
-				//"description" 	=> __( "Select the button background color.", "smile" ),
-			),
-			"panel" 	=> "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		//	This option is to store the default initial color of button text
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "button_txt_hover_color",
-			"opts"		=> array(
-				"title" 		=> __( "Submit Button Text Hover Color", "smile" ),
-				"value" 		=> "#ffffff",
-			),
-		    "dependency" => array('name' => 'btn_style', 'operator' => '==', 'value' => 'cp-btn-outline'),
-			"panel" 	=> "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		//	store button darken on hover
-		array(
-		    "type"         => "textfield",
-		    "name"         => "button_bg_hover_color",
-		    "opts"         => array(
-		        "title"     => __( "Button BG Hover Color", "smile" ),
-		        "value"     => "",
-		    ),
-		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" 	=> "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		//	store button lighten gradient
-		array(
-		    "type"         => "textfield",
-		    "name"         => "button_bg_gradient_color",
-		    "opts"         => array(
-		        "title"     => __( "Button Gradient Color", "smile" ),
-		        "value"     => "",
-		    ),
-		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" 	=> "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		array(
-			"type" 			=> "slider",
-			"class" 		=> "",
-			"name" 			=> "btn_border_radius",
-			"opts"			=> array(
-				"title" 		=> __( "Border Radius", "smile" ),
-				"value" 		=> 3,
-				"min" 			=> 0,
-				"max" 			=> 40,
-				"step" 			=> 1,
-			),
-			"panel" 	 => "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		array(
-			"type" 		=> "switch",
-			"class" 	=> "",
-			"name" 		=> "btn_shadow",
-			"opts"		=> array(
-				"title" 	=> __( "Button Shadow", "smile" ),
-				"value" 	=> false,
-				"on" 		=> __( "YES", "smile" ),
-				"off"		=> __( "NO", "smile" ),
-			),
-			"panel" 	 => "Optin Form",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-			"dependency" => array('name' => 'btn_style', 'operator' => '!=', 'value' => 'cp-btn-3d'),
 		),
 		//	Note - Button Options
 		array(
@@ -1586,12 +1405,48 @@ $animation_array = array(
 				"value" 	=> false,
 				"on" 		=> __( "YES", "smile" ),
 				"off"		=> __( "NO", "smile" ),
-				"description" 	=> __( "Info Bar will be triggered when user scrolls to the end of post.", "smile" ),
+				"description" 	=> __( "Slide In will be triggered when user scrolls to the end of post.", "smile" ),
 			),
 			"panel" 	=> "Smart Launch",
 			"section" => "Behavior",
 			"section_icon" => "connects-icon-toggle",
 		),
+
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "enable_display_inline",
+			"opts"		=> array(
+				"title" 	=> __( "Display Inline", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "If enabled, module will display inline as a part of page / post content.", "smile" ),
+			),
+			"panel" 	=> "Smart Launch",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+		array(
+            "type"      => "dropdown",
+            "class"     => "",
+            "name"      => "inline_position",
+            "opts"      => array(
+                "title" 	=> __( "Display Inline Position", "smile" ),
+                "value"     => "none",
+                "description" => __( "Select the position, where you want to display module inline.", "smile" ),
+                "options"   => array(
+                        __( "Before Post", "smile" ) => "before_post",
+                        __( "After Post", "smile" )  => "after_post",                       
+                        __( "Both", "smile" )        => "both"
+                    )
+                ),
+            "panel" => "Smart Launch",
+            "section" => "Behavior",
+            "section_icon" => "connects-icon-toggle",
+            "dependency" => array('name' => 'enable_display_inline', 'operator' => '==', 'value' => 'true')
+        ),
+
 		array(
 			"type" 		=> "txt-link",
 			"class" 	=> "",
@@ -1629,7 +1484,7 @@ $animation_array = array(
 			"opts"		=> array(
 				"title" 		=> __( "Launch With CSS Class", "smile" ),
 				"value" 		=> "",
-				"description" 	=> __( "<br>Slide In can be triggered on click of any UI element. Just provide the unique CSS class of that element here and modal will be trigger when you click on that element.<br> If you have multiple classes, separate them with comma. Example - widget-title, site-description<br>", "smile" ),
+				"description" 	=> __( "<br>Slide In can be triggered on click of any UI element. Just provide the unique CSS class of that element here and Slide In will be trigger when you click on that element.<br> If you have multiple classes, separate them with comma. Example - widget-title, site-description<br>", "smile" ),
 			),
 			"panel" 	=> "Manual Display",
 			"section" => "Behavior",
@@ -1659,7 +1514,7 @@ $animation_array = array(
 				"class" 		=> "cp-shortcode",
 				"value" 		=> "",
 				"title" 		=> __( "Display Inline", "smile" ),
-				"description" 	=> __( "Use this shortcode to display modal popup inline as a part of page content / Widget.", "smile" ),
+				"description" 	=> __( "Use this shortcode to display Slide In inline as a part of page content / Widget.", "smile" ),
 			),
 			"panel" 	=> "Manual Display",
 			"section" => "Behavior",
@@ -1737,6 +1592,7 @@ $animation_array = array(
 			"name" 		=> "exclusive_on",
 			"opts"		=> array(
 				"title" 	=> __( "Enable Only On", "smile" ),
+				"description" => __("Enable Slide In on selected pages, posts, custom posts, special pages.", "smile" ),
 				"value" 	=> '',
 			),
 			"panel" 	=> "Target Pages",
@@ -1750,6 +1606,7 @@ $animation_array = array(
 			"name" 		=> "exclusive_post_type",
 			"opts"		=> array(
 				"title" 	=> __( "", "smile" ),
+				"description" => __("Enable Slide In on all single posts of particular custom post types, taxonomies.", "smile" ),
 				"value" 	=> '',
 			),
 			"panel" 	=> "Target Pages",
@@ -1777,6 +1634,7 @@ $animation_array = array(
 			"name" 		=> "exclude_from",
 			"opts"		=> array(
 				"title" 	=> __( "Exceptionally, Disable On", "smile" ),
+				"description" => __( 'Exceptionally disable Slide In on selected pages, posts, custom posts, special pages.', 'smile' ),
 				"value" 	=> '',
 			),
 			"panel" 	=> "Target Pages",
@@ -1790,6 +1648,7 @@ $animation_array = array(
 			"name" 		=> "exclude_post_type",
 			"opts"		=> array(
 				"title" 	=> __( "", "smile" ),
+				"description" => __("Exceptionally disable Slide In on all single posts of particular custom post types, taxonomies.", "smile" ),
 				"value" 	=> '',
 			),
 			"panel" 	=> "Target Pages",
@@ -1867,6 +1726,47 @@ $animation_array = array(
 				"value" 		=> "",
 				"title" 		=> "",
 			),
+			"panel" 	=> "Target Visitors",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "enable_referrer",
+			"opts"		=> array(
+				"title" 	=> __( "Referrer Detection", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "Display To", "smile" ),
+				"off"		=> __( "Hide From", "smile" ),
+				"description" 	=> __( "Slide In can be displayed when the user is came from a website you would like to track. Eg. If you set to track google.com, all users coming from google will see this popup.", "smile" ),
+			),
+			"panel" 	=> "Target Visitors",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+		array(
+			"type" 		=> "tags",
+			"class" 	=> "",
+			"name" 		=> "display_to",
+			"opts"		=> array(
+				"title" 		=> __( "Display only to -", "smile" ),
+				"value" 		=> "",
+			),
+			"dependency" => array('name' => 'enable_referrer', 'operator' => '==', 'value' => 'true'),
+			"panel" 	=> "Target Visitors",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+		array(
+			"type" 		=> "tags",
+			"class" 	=> "",
+			"name" 		=> "hide_from",
+			"opts"		=> array(
+				"title" 		=> __( "Hide only from -", "smile" ),
+				"value" 		=> "",
+			),
+			"dependency" => array('name' => 'enable_referrer', 'operator' => '==', 'value' => '0'),
 			"panel" 	=> "Target Visitors",
 			"section" => "Behavior",
 			"section_icon" => "connects-icon-toggle",
@@ -1969,7 +1869,7 @@ $animation_array = array(
 			"opts"		=> array(
 				"title" 		=> __( "Redirect URL", "smile" ),
 				"value" 		=> "",
-				"description" 	=> __( "Enter the url where you would like to redirect the user after successfully added to the list.", "smile" ),
+				"description" 	=> __( "Enter the URL where you would like to redirect the user after successfully added to the list.<br/><br/> Please add http / https prefix to URL. e.g. http://convertplug.com", "smile" ),
 			),
 			"panel" 	=> "Form Setup",
 			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'redirect'),
@@ -2112,7 +2012,6 @@ $form_bg_color = array (
 			"panel" 	=> "Toggle Button",
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
-			//"dependency" => array('name' => 'side_btn_style', 'operator' => '!=', 'value' => 'cp-btn-3d'),
 		),
  		array(
 			"type" 		=> "dropdown",
@@ -2125,7 +2024,6 @@ $form_bg_color = array (
 				"options" 		=> $animation_array
 			),
 			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-		   // "dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
 			"panel" 	=> "Toggle Button",
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc"
@@ -2159,30 +2057,6 @@ $form_bg_color = array (
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
 		),
- 		/*array(
-			"type" 		=> "dropdown",
-			"class" 		=> "",
-			"name" 		=> "slidein_btn_position",
-			"opts" 		=> array(
-				"title" 	=> __( "Position","smile"),
-				"value" 	=> "bottom-right",
-				"options" 	=> array(
-						__( "Right", "smile" )	        => "right",
-						__( "Left", "smile" )	        => "left",
-						__( "Center", "smile" )	        => "center",
-						__( "Top", "smile" )	        => "top",
-						__( "Bottom", "smile" )	        => "bottom",
-						__( "Bottom Right", "smile" )	=> "bottom-right",
-						__( "Bottom Left", "smile" )	=> "bottom-left",
-						__( "Top Right", "smile" )	    => "top-right",
-						__( "Top Left", "smile" )		=> "top-left",
-					)
-				),
-			"panel" 	=> "Toggle Button",
-			"section"	 	=> "Design",
-			"section_icon"	=> "connects-icon-disc",
-			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-		),*/
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -2197,27 +2071,7 @@ $form_bg_color = array (
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
 			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
-		),
-		/*array(
-			"type" 		=> "dropdown",
-			"class" 	=> "",
-			"name" 		=> "side_btn_style",
-			"opts" 		=> array(
-				"title" 	=> __( "Button Style","smile"),
-				"value" 	=> "cp-btn-flat",
-				"description"=> __( "Provide custom size of your choice or make this Slide In cover entire screen area.", "smile" ),
-				"options" 	=> array(
-					__( "Flat", "smile" )		=> 'cp-btn-flat',
-					//__( "3D", "smile" )			=> 'cp-btn-3d',
-					//__( "Outline", "smile" )	=> 'cp-btn-outline',
-					__( "Gradient", "smile" )	=> 'cp-btn-gradient',
-				)
-			),
-			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
-			"panel" 	=> "Toggle Button",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),*/
+		),		
 		array(
 			"type" 		=> "colorpicker",
 			"class" 	=> "",
@@ -2231,21 +2085,7 @@ $form_bg_color = array (
 			"panel" 	=> "Toggle Button",
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
-		),
-		//	This option is to store the default initial color of button text
-		/*	array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "side_button_txt_hover_color",
-			"opts"		=> array(
-				"title" 		=> __( " Button Text Hover Color", "smile" ),
-				"value" 		=> "#ffffff",
-			),
-		    "dependency" => array('name' => 'side_btn_style', 'operator' => '==', 'value' => 'cp-btn-outline'),
-			"panel" 	=> "Toggle Button",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),*/
+		),		
 		//	store button darken on hover
 		array(
 		    "type"         => "textfield",
@@ -2272,39 +2112,6 @@ $form_bg_color = array (
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
 		),
-		/*array(
-			"type" 			=> "slider",
-			"class" 		=> "",
-			"name" 			=> "side_btn_border_radius",
-			"opts"			=> array(
-				"title" 		=> __( "Border Radius", "smile" ),
-				"value" 		=> 0,
-				"min" 			=> 0,
-				"max" 			=> 40,
-				"step" 			=> 1,
-			),
-			"panel" 	=> "Toggle Button",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			//"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
-		),*/
-		/*array(
-			"type" 		=> "switch",
-			"class" 	=> "",
-			"name" 		=> "side_btn_shadow",
-			"opts"		=> array(
-				"title" 	=> __( "Button Shadow", "smile" ),
-				"value" 	=> false,
-				"on" 		=> __( "YES", "smile" ),
-				"off"		=> __( "NO", "smile" ),
-			),
-			"panel" 	=> "Toggle Button",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			//"dependency" => array('name' => 'side_btn_style', 'operator' => '!=', 'value' => 'cp-btn-3d'),
-		),*/
  	);
 
 	//optin widget border color
@@ -2358,8 +2165,9 @@ $form_bg_color = array (
 	smile_update_options( "Smile_Slide_Ins", "optin",
 		array_merge(
 			$name,
+			$cp_form,
 			$background,
-			$optin_form,
+			//$optin_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2372,8 +2180,8 @@ $form_bg_color = array (
 	smile_update_options( "Smile_Slide_Ins", "optin_widget",
 		array_merge(
 			$name,
+			$cp_form,
 			$background,
-			$optin_form,
 			$optin_border,
 			$animations,
 			$adv_design_options_widget,
@@ -2386,71 +2194,89 @@ $form_bg_color = array (
 // update default values of optin
 if( function_exists( "smile_update_default" ) ){
 	$optin_default = array(
-		"slidein_short_desc1"  => '<span style="">Get email marketing pro tips delivered straight to your inbox! </span>',
-		"slidein_title1"		 => "Stay Connected!",
-		"slidein_confidential" => "",
-		"slidein_bg_color"     => "#ffffff",
-		"button_title"       => "SUBSCRIBE",
-		"button_bg_color"    => "#ff8201",
-		"button_border_color"=> "#ff8201",
-		"cp_slidein_width"     => "480",
-		"cp_close_image_width" => 26,
-		"border" 			 => "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:#ff8201|bw_all:5|bw_t:5|bw_l:0|bw_r:0|bw_b:0",
-		"btn_disp_next_line" => false,
-		"close_position"     => "adj_slidein",
-		"slidein_title_color" => "#000000",
-		"slidein_desc_color" => "#000000",
-		"tip_color"          => "#000000",
-		"placeholder_text"   => "Enter Your Email Here",
-		"name_text"  		 => "Enter Your Name",
-		"placeholder_font"   => "Raleway",
-		"overlay_effect" 	 => "smile-slideInUp",
-		"exit_animation"     => "smile-slideOutDown",
-		"close_slidein" 	 => "close_img",
-		"close_text_color"	 => "#898989",
+		"form_fields" 				=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			 	=> "cp-form-layout-3",
+		"form_input_align"		 	=> "left",
+		"form_submit_align" 	 	=> "cp-submit-wrap-full",
+		"form_grid_structure"		=> "cp-form-grid-structure-2",
+		"form_lable_font_size"		=> 14,
+		"form_input_font_size"		=> 14,
+		"submit_button_tb_padding" 	=> 13,
+		"submit_button_lr_padding" 	=> 20,
+		"form_input_padding_tb"		=> 11,
+		"form_input_padding_lr"		=> 20,
+		"slidein_short_desc1"  		=> '<span style="">Get email marketing pro tips delivered straight to your inbox! </span>',
+		"slidein_title1"		 	=> "Stay Connected!",
+		"slidein_confidential" 		=> "",
+		"slidein_bg_color"     		=> "#ffffff",
+		"button_title"       		=> "SUBSCRIBE",
+		"button_bg_color"    		=> "#ff8201",
+		"button_border_color"		=> "#ff8201",
+		"cp_slidein_width"     		=> "480",
+		"cp_close_image_width" 		=> 26,
+		"border" 			 		=> "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:#ff8201|bw_all:5|bw_t:5|bw_l:0|bw_r:0|bw_b:0",
+		"btn_disp_next_line" 		=> false,
+		"close_position"     		=> "adj_slidein",
+		"slidein_title_color" 		=> "#000000",
+		"slidein_desc_color" 		=> "#000000",
+		"tip_color"          		=> "#000000",
+		"placeholder_text"   		=> "Enter Your Email Here",
+		"name_text"  		 		=> "Enter Your Name",
+		"placeholder_font"   		=> "Raleway",
+		"overlay_effect" 	 		=> "smile-slideInUp",
+		"exit_animation"     		=> "smile-slideOutDown",
+		"close_slidein" 	 		=> "close_img",
+		"close_text_color"	 		=> "#898989",
 	);
-
 	foreach( $optin_default as $option => $value ){
 		smile_update_default( "Smile_Slide_Ins", "optin", $option, $value );
 	}
 
 	//	Optin Widget
 	$optin_default = array(
-		"slidein_short_desc1"    => 'Sign-up to get the latest news straight to your inbox.',
-		"slidein_title1"		 => "Subscribe to our newsletter",
-		"close_slidein"          => "do_not_close",
-		"slidein_confidential"   => "Give it a try, you can unsubscribe anytime.",
-		"slidein_bg_color"     	 => "#414042",
-		"button_title"           => "SUBSCRIBE!",
-		"button_bg_color"        => "#ff8204",
-		"button_border_color"    => "#ff8204",
-		"border" 			     => "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:rgb(255,255,255)|bw_all:1|bw_t:1|bw_l:1|bw_r:1|bw_b:1",
-		"btn_disp_next_line"     => false,
-		"close_position"         => "adj_slidein",
-		"slidein_title_color"    => "rgb(250, 250, 255)",
-		"slidein_desc_color" 	 => "rgb(250, 250, 250)",
-		"tip_color"              => "rgb(250, 250, 250)",
-		"placeholder_text"       => "Email Address",
-		"name_text"  		     => "Name",
-		"placeholder_font"       => "Verdana",
-		"overlay_effect" 		 => "smile-slideInUp",
-		"exit_animation"     	 => "smile-slideOutDown",
-		"namefield" 			 => true,
-		"cp_slidein_width"		 => 320
+		"form_fields" 				=> "order->0|input_type->textfield|input_label->Name|input_name->name|input_placeholder->Enter Your Name|input_require->true;order->1|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			 	=> "cp-form-layout-1",
+		"form_input_align"		 	=> "center",
+		"form_submit_align" 	 	=> "cp-submit-wrap-full",
+		"form_lable_font_size"		=> 13,
+		"form_input_font_size"		=> 13,
+		"submit_button_tb_padding" 	=> 5,
+		"submit_button_lr_padding" 	=> 20,
+		"form_input_padding_tb"		=> 5,
+		"form_input_padding_lr"		=> 20,
+		"slidein_short_desc1"    	=> 'Sign-up to get the latest news straight to your inbox.',
+		"slidein_title1"		 	=> "Subscribe to our newsletter",
+		"close_slidein"          	=> "do_not_close",
+		"slidein_confidential"   	=> "Give it a try, you can unsubscribe anytime.",
+		"slidein_bg_color"     	 	=> "#414042",
+		"button_title"           	=> "SUBSCRIBE!",
+		"button_bg_color"        	=> "#ff8204",
+		"button_border_color"    	=> "#ff8204",
+		"border" 			     	=> "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:rgb(255,255,255)|bw_all:1|bw_t:1|bw_l:1|bw_r:1|bw_b:1",
+		"btn_disp_next_line"     	=> false,
+		"close_position"         	=> "adj_slidein",
+		"slidein_title_color"    	=> "rgb(250, 250, 255)",
+		"slidein_desc_color" 	 	=> "rgb(250, 250, 250)",
+		"tip_color"              	=> "rgb(250, 250, 250)",
+		"placeholder_text"       	=> "Email Address",
+		"name_text"  		     	=> "Name",
+		"placeholder_font"       	=> "Verdana",
+		"overlay_effect" 		 	=> "smile-slideInUp",
+		"exit_animation"     	    => "smile-slideOutDown",
+		"namefield" 			 	=> true,
+		"cp_slidein_width"		 	=> 320,
+		"submit_button_tb_padding" 	=> 7,
 	);
-
 	foreach( $optin_default as $option => $value ){
 		smile_update_default( "Smile_Slide_Ins", "optin_widget", $option, $value );
 	}
 
 	//	Blank
 	$blank_default = array(
-		"slidein_title1"		 => "BLANK style is purely built for customization. This style supports text, images, shortcodes, HTML etc. Use Source button from Rich Text Editor toolbar & customize your Slide In effectively.",
-		"overlay_effect" 	 => "smile-slideInUp",
-		"exit_animation"     => "smile-slideOutDown"
-
+		"slidein_title1"	=> "BLANK style is purely built for customization. This style supports text, images, shortcodes, HTML etc. Use Source button from Rich Text Editor toolbar & customize your Slide In effectively.",
+		"overlay_effect" 	=> "smile-slideInUp",
+		"exit_animation"    => "smile-slideOutDown"
 	);
-
 	foreach( $blank_default as $option => $value ){
 		smile_update_default( "Smile_Slide_Ins", "blank", $option, $value );
 	}

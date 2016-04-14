@@ -8,6 +8,7 @@ if(function_exists("smile_framework_add_options")){
 		array(
 			"style_name" 		=> "Newsletter",
 			"demo_url"			=> plugins_url("../../assets/demos/newsletter/newsletter.html",__FILE__),
+			"demo_dir"			=> plugin_dir_path( __FILE__ )."../../assets/demos/newsletter/newsletter.html",
 			"img_url"			=> plugins_url("../../assets/demos/newsletter/newsletter.png",__FILE__),
 			"customizer_js"		=> plugins_url("../../assets/demos/newsletter/customizer.js",__FILE__),
 			"category"          => "All,Optins",

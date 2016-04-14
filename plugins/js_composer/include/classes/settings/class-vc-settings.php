@@ -99,7 +99,7 @@ class Vc_Settings {
 	 */
 	public function isEditorEnabled() {
 		global $current_user;
-		get_currentuserinfo();
+		wp_get_current_user();
 
 		/** @var $settings - get use group access rules */
 		$settings = $this->get( 'groups_access_rules' );
@@ -835,16 +835,6 @@ class Vc_Settings {
 				<p>
 					<?php _e( 'Here you can tweak default Visual Composer content elements visual appearance. By default Visual Composer is using neutral light-grey theme. Changing "Main accent color" will affect all content elements if no specific "content block" related color is set.', 'js_composer' ) ?>
 				</p>
-			</div>
-		<?php elseif ( 'wpb_js_composer_settings_updater' === $tab['id'] ) : ?>
-			<div class="tab_intro">
-				<?php if ( vc_is_as_theme() ) : ?>
-					<div class="updated inline">
-						<p>
-							<?php _e( 'Please activate your license in Product License tab!', 'js_composer' ) ?>
-						</p>
-					</div>
-				<?php endif ?>
 			</div>
 		<?php endif;
 	}

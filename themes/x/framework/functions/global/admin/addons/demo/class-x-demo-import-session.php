@@ -34,6 +34,14 @@ class X_Demo_Import_Session {
    */
   public function ajaxHandler() {
 
+    x_tco()->check_ajax_referer();
+
+    if ( ! current_user_can( 'manage_options' ) ) {
+      wp_send_json_error( array(
+        'message' => __( 'We&apos;re sorry, the demo failed to finish importing.', '__x__' )
+      ) );
+    }
+
     // Uncomment to simulate a timeout
     // header("HTTP/1.0 408 Request Timeout"); die();
 

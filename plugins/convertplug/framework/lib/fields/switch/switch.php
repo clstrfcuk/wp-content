@@ -6,16 +6,13 @@ if ( function_exists('smile_add_input_type'))
 }
 
 add_action('admin_enqueue_scripts','smile_switch_image_scripts');
-function smile_switch_image_scripts(){
-	$screen = get_current_screen();
-	$screen_id = $screen->base;
-	$cp_page = strpos( $screen_id, 'plug_page');
+function smile_switch_image_scripts($hook){
+	$cp_page = strpos( $hook, 'plug_page');
+	$data  =  get_option( 'convert_plug_debug' );
 
-	if( $cp_page == 7 || isset( $_GET['view'] )){
-		if( isset( $_GET['developer'] ) ){
+	if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 			wp_enqueue_style('smile-switch',plugins_url('switch.css',__FILE__));
 			wp_enqueue_script('smile-switch',plugins_url('switch.js',__FILE__),array(),'1.0.0',true);
-		}
 	}
 }
 

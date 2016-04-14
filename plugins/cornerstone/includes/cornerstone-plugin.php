@@ -66,7 +66,7 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 
 	public function update( $prior ) {
 
-		delete_option( 'cs_legacy_ajax' );
+		//delete_option( 'cs_legacy_ajax' );
 
 		/**
 		 * Run if coming from a version prior to Before 1.0.7

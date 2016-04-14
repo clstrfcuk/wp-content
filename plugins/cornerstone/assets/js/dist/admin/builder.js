@@ -89,7 +89,6 @@ Cornerstone.Vendor.HTMLHint = require( '../vendor/htmlhint' ).HTMLHint;
 require( './utility/jquery.shadow-height' );
 require( './utility/string-replace-all' );
 
-
 /**
  * Fire it up
  */
@@ -794,6 +793,8 @@ module.exports = Cornerstone.Component.extend({
 			return ( name == control.name );
 		} ) );
 
+		cs.events.trigger( 'expand:control:open' );
+
 	},
 
 	expansionClose: function() {
@@ -1247,12 +1248,11 @@ module.exports = Cornerstone.Component.extend({
 		this.listenTo( cs.events, 'action:save', this.save );
 		this.listenTo( cs.data, 'save:success', this.saveSuccess );
 		this.listenTo( cs.data, 'save:error', this.saveError );
-
-		if ( cs.global.request( 'editor:ready' ) ) {
-			this.trackChanges();
-		} else {
-			this.listenTo( cs.global, 'editor:ready', this.trackChanges );
-		}
+		this.listenTo( cs.global, 'preview:primed', function() {
+			this.listenTo( cs.channel, 'page:unsaved', function() {
+				cs.changed = true;
+			} );
+		} );
 
     cs.data.reply( 'saved:last', null );
 
@@ -1300,18 +1300,6 @@ module.exports = Cornerstone.Component.extend({
 				Cornerstone.Vendor.NProgress.done();
 			}
 		} );
-
-	},
-
-	trackChanges: function() {
-
-		// Ignore changes for a few seconds while we boot up.
-		this.stopListening( cs.channel, 'page:unsaved' );
-		_.delay( _.bind( function() {
-			this.listenTo( cs.channel, 'page:unsaved', function() {
-				cs.changed = true;
-			});
-		}, this ), 5000 );
 
 	}
 
@@ -1651,7 +1639,7 @@ module.exports = Cornerstone.Component.extend({
 			type: type || 'block',
 			title: title || 'Untitled'
 		} );
-		console.log("SAVING!!!");
+
 		cs.ajax( 'cs_save_template', data, {
 			success: _.bind( function( response ) {
 				this.templates.add( response.template );
@@ -2694,6 +2682,7 @@ module.exports = CS.Mn.CompositeView.extend({
 	},
 
   expandControl: function() {
+
     this.triggerMethod( 'before:expand' );
     this.$el.addClass( 'cs-control-expanded' );
     cs.events.trigger( 'expand:control', this.proxy.getSource(), this.model.get('name'), this );
@@ -3351,6 +3340,10 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
 
   onBeforeExpand: function() {
     switchEditors.go( this.editorID, 'html' );
+  },
+
+  onExpandedOpen: function() {
+
   }
 
 });
@@ -3393,7 +3386,7 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     template: 'controls/icon-choose-item'
   }),
 
-  events: {
+  controlEvents: {
     'keyup .cs-search-input': 'search',
     'search .cs-search-input': 'search'
   },
@@ -3526,9 +3519,36 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
       this.$('ul.cs-choose').append( cs.template('controls/icon-choose-item')({ code: code, choice: words[0], choices: words.join(' ') }) );
     }, this );
 
+    if ( this.expanded ) {
+
+    	var $outer = this.$( '.cs-icons-outer' );
+    	$outer.removeClass( 'cs-expandable' ).addClass('cs-expanded');
+
+    	var outerHeight = $outer.outerHeight();
+    	var outerWidth = $outer.outerWidth();
+
+  		$outer.css( {
+  			'max-width': outerWidth - ( outerWidth % 50 ) + 2,
+  			'max-height': outerHeight - ( ( outerHeight - 70 ) % 50 )
+  		} );
+
+
+
+    }
+
     this.$('.cs-icons-inner').perfectScrollbar('update');
     this.trigger('deferred:render');
-  }
+
+  },
+
+  onExpandedOpen: function() {
+  	this.expanded = true;
+
+		_.delay( _.bind( function(){
+			this.$('.cs-search-input').focus();
+		}, this ), 25 );
+
+  },
 
 });
 },{}],45:[function(require,module,exports){
@@ -4082,13 +4102,11 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
   },
 
   onConfirmAccept: function() {
-  	console.log('ACCEPT SAVE')
     cs.templates.trigger( 'save', 'page', this.proxy.get( 'title' ) );
     this.close();
   },
 
   onConfirmDecline: function() {
-  	console.log('DECLINE SAVE')
     cs.templates.trigger( 'save', 'block', this.proxy.get( 'title' ) );
     this.close();
   },
@@ -4724,7 +4742,12 @@ module.exports =  Cornerstone.ControlViews.Base.extend({
     		}
     	}, this ) );
     }
+  },
+
+  onExpandedOpen: function() {
+
   }
+
 });
 },{}],70:[function(require,module,exports){
 module.exports =  Cornerstone.ControlViews.Base.extend({
@@ -4936,7 +4959,7 @@ module.exports = CS.Mn.ItemView.extend({
   initialize: function( options ) {
     this.listenTo( cs.extra, 'set:collapse', this.collape );
     this.linkedView = null;
-    this.listenTo( cs.events, 'expand:control', this.open );
+    this.listenTo( cs.events, 'expand:control:open', this.open );
   },
 
   onRender: function() {
@@ -4947,18 +4970,23 @@ module.exports = CS.Mn.ItemView.extend({
 
   open: function() {
 
-    this.$el.addClass('active');
+		this.controlView.render();
 
-    // Enlarge any textarea.
-    _.defer( _.bind ( function(){
+		_.defer( _.bind ( function(){
+
+			this.$el.addClass('active');
+
+			this.controlView.children.each(function(view){
+				view.triggerMethod( 'expanded:open' );
+			} );
+
     	var $textarea = this.$('textarea');
+    	console.log( $textarea );
     	$textarea.height( this.$el.height() * .60 );
     	_.delay( function(){
 	    	$textarea.focusEnd();
 	    }, 100 );
-    }, this ) )
-
-
+    }, this ) );
 
   },
 
@@ -8466,9 +8494,13 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
  //builder/controls/icon-choose ;
-__p += '\n<div class="cs-icons-outer">\n	<div class="cs-search-section">\n		<div class="cs-search">\n			<input class="cs-search-input" type="search" placeholder="Search Icons">\n			<i class="cs-icon" data-cs-icon="' +
+__p += '\n<div class="cs-icons-outer';
+ if (options.expandable) { print(' cs-expandable') } ;
+__p += '">\n	<div class="cs-search-section">\n		<div class="cs-search">\n			<input class="cs-search-input" type="search" placeholder="Search Icons">\n			<i class="cs-icon" data-cs-icon="' +
 ((__t = ( fontIcon('search'))) == null ? '' : __t) +
-'"></i>\n		</div>\n	</div>\n	<div class="cs-icons-inner">\n	<ul class="cs-choose cols-5 single"></ul>\n	</div>\n</div>';
+'"></i>\n		</div>\n	</div>\n	<div class="cs-icons-inner">\n	<ul class="cs-choose single"></ul>\n	</div>\n	';
+ if (options.expandable) { print(render( 'controls/expand-control-button' )) } ;
+__p += '\n</div>\n';
 
 }
 return __p
@@ -8774,7 +8806,7 @@ __p += '\n<p class="saved-last ' +
 ((__t = ( dashboardEditUrl )) == null ? '' : __t) +
 '">\n          <i class="cs-icon" data-cs-icon="&#xf19a;"></i>\n          <span>' +
 ((__t = ( l18n('home-dashboard') )) == null ? '' : __t) +
-'</span>\n        </a>\n      </li>\n      <li class="action templates">\n        <a href="' +
+'</span>\n        </a>\n      </li>\n      <li class="action view-site">\n        <a href="' +
 ((__t = ( frontEndUrl )) == null ? '' : __t) +
 '">\n          <i class="cs-icon" data-cs-icon="&#xf14c;"></i>\n          <span>' +
 ((__t = ( l18n('home-view-site') )) == null ? '' : __t) +
@@ -9125,6 +9157,23 @@ __p += '<div class="cs-skeleton-content-inner">\n	<div class="cs-skeleton-items"
 
 }
 return __p
+};templates['utility/htmlhint']=function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<p>' +
+((__t = ( l18n('htmlhint-intro') )) == null ? '' : __t) +
+'</p>\n<ul>';
+ _.each( errors, function(item) { ;
+__p += '\n  <li>' +
+((__t = ( l18n('htmlhint-' + item ) )) == null ? '' : __t) +
+'</li>\n';
+ }); ;
+__p += '</ul>';
+
+}
+return __p
 };templates['settings/actions']=function (obj) {
 obj || (obj = {});
 var __t, __p = '';
@@ -9159,23 +9208,6 @@ with (obj) {
 __p += '<h3 class="cs-pane-section-toggle">' +
 ((__t = ( _section_title )) == null ? '' : __t) +
 '</h3>\n<div class="cs-pane-section">\n	<ul class="cs-controls"></ul>\n</div>';
-
-}
-return __p
-};templates['utility/htmlhint']=function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-__p += '<p>' +
-((__t = ( l18n('htmlhint-intro') )) == null ? '' : __t) +
-'</p>\n<ul>';
- _.each( errors, function(item) { ;
-__p += '\n  <li>' +
-((__t = ( l18n('htmlhint-' + item ) )) == null ? '' : __t) +
-'</li>\n';
- }); ;
-__p += '</ul>';
 
 }
 return __p
@@ -9944,7 +9976,7 @@ function getCoord (coord, e) {
 
 module.exports = dragula;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,window || {})
 
 },{"./classes":121,"contra/emitter":130,"crossvent":134}],123:[function(require,module,exports){
 /*!
@@ -10582,7 +10614,7 @@ function CustomEvent (type, params) {
   return e;
 }
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,window || {})
 
 },{}],134:[function(require,module,exports){
 (function (global){
@@ -10688,7 +10720,7 @@ function find (el, type, fn) {
   }
 }
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,window || {})
 
 },{"./eventmap":135,"custom-event":133}],135:[function(require,module,exports){
 (function (global){
@@ -10706,7 +10738,7 @@ for (eventname in global) {
 
 module.exports = eventmap;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,window || {})
 
 },{}],136:[function(require,module,exports){
 /*global define:false */

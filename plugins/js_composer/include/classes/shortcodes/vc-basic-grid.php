@@ -14,6 +14,7 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 	public $post_id = false;
 	protected $filter_terms;
 	public $attributes_defaults = array(
+		'initial_loading_animation' => 'zoomIn',
 		'full_width' => '',
 		'layout' => '',
 		'element_width' => '4',
@@ -21,6 +22,7 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 		'gap' => '',
 		'style' => 'all',
 		'show_filter' => '',
+		'filter_default_title' => 'all',
 		'exclude_filter' => '',
 		'filter_style' => '',
 		'filter_size' => 'md',
@@ -311,7 +313,7 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 			$shortcode = $this->findPostShortcodeByHash( $vc_request_param['page_id'], $hash );
 		}
 		if ( ! is_array( $shortcode ) ) {
-			return "{'status':'Nothing found'}"; // Nothing found
+			return "{'status':'Nothing found - ".$id."'}"; // Nothing found
 		}
 		visual_composer()->registerAdminCss();
 		visual_composer()->registerAdminJavascript();
@@ -380,8 +382,6 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 			// used in basic grid for initialization
 			'style' => $this->atts['style'],
 			'action' => 'vc_get_vc_grid_data',
-			// animation_in used everywhere.. (in filter)
-			'animation_in' => 'zoomIn',
 		);
 		// used in ajax request for items
 		if ( isset( $this->atts['shortcode_id'] ) && ! empty( $this->atts['shortcode_id'] ) ) {
@@ -435,7 +435,10 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 				'offset' => $atts['query_offset'],
 				'orderby' => $atts['orderby'],
 				'order' => $atts['order'],
-				'meta_key' => 'meta_key' === $atts['orderby'] ? $atts['meta_key'] : '',
+				'meta_key' => in_array( $atts['orderby'], array(
+					'meta_value',
+					'meta_value_num',
+				) ) ? $atts['meta_key'] : '',
 				'post_type' => $atts['post_type'],
 				'exclude' => $atts['exclude'],
 			);
@@ -466,15 +469,10 @@ class WPBakeryShortCode_VC_Basic_Grid extends WPBakeryShortCode_Vc_Pageable {
 			if ( empty( $atts['include'] ) ) {
 				$atts['include'] = - 1;
 			} elseif ( ! empty( $atts['exclude'] ) ) {
-				$atts['include'] = preg_replace(
-					'/(('
-					. preg_replace(
-						array( '/^\,\*/', '/\,\s*$/', '/\s*\,\s*/' ),
-						array( '', '', '|' ),
-						$atts['exclude']
-					)
-					. ')\,*\s*)/', '', $atts['include']
-				);
+				$include = array_map( 'trim', explode( ',', $atts['include'] ) );
+				$exclude = array_map( 'trim', explode( ',', $atts['exclude'] ) );
+				$diff = array_diff( $include, $exclude );
+				$atts['include'] = implode( ', ', $diff );
 			}
 			$settings = array(
 				'include' => $atts['include'],

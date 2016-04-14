@@ -6,36 +6,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="vc_welcome-tab changelog">
 	<div class="vc_feature-section-teaser">
 		<div>
-			<img class="vc-featured-img" src="<?php echo vc_asset_url( 'vc/vc-welcome/screenshot49.png' ); ?>"/>
+			<img class="vc-featured-img" src="<?php echo vc_asset_url( 'vc/vc-welcome/screenshot.png' ); ?>"/>
 
-			<h3><?php _e( 'Now Faster Than Ever', 'js_composer' ); ?></h3>
+			<h3><?php _e( 'Awesome Styles, Icons and More', 'js_composer' ); ?></h3>
 
-			<p><?php _e( 'Visual Composer 4.9 offers significant improvements in terms of performance. Detailed code refactor and smart loading of components results in fastest Visual Composer ever with more than 30% performance improvements. Now you can build your WordPress pages even faster and Visual Composer will assist you there.', 'js_composer' ); ?></p>
-			<p><?php _e( 'The most amazing thing is that the more content you have and the more addons you use - the more improvements in performance you will experience.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Visual Composer 4.11 offers fresh update to create and control even the smallest pieces of your WordPress site. Follow latest design trends by applying new buttons, get your hands on new predefined templates and various social icons.', 'js_composer' ); ?></p>
+			<p><?php _e( 'With new version of Visual Composer you now how even more control over your grid elements, including grid loading and paging settings.', 'js_composer' ); ?></p>
 		</div>
 	</div>
 
 	<div class="vc_welcome-feature feature-section vc_row">
 		<div class="vc_col-xs-4">
 			<img class="vc-img-center"
-			     src="<?php echo vc_asset_url( 'vc/vc-welcome/01_49.png' ); ?>"/>
-			<h4><?php _e( 'Equal Height', 'js_composer' ); ?></h4>
+			     src="<?php echo vc_asset_url( 'vc/vc-welcome/01.png' ); ?>"/>
+			<h4><?php _e( 'Grid Loading', 'js_composer' ); ?></h4>
 
-			<p><?php _e( 'Control column height by setting all columns within row to be equal height. Create new modern layouts you have dreamed of.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Control or disable initial loading and pagination animation of Visual Composer grid content elements with one click only.', 'js_composer' ); ?></p>
 		</div>
 		<div class="vc_col-xs-4">
 			<img class="vc-img-center"
-			     src="<?php echo vc_asset_url( 'vc/vc-welcome/02_49.png' ); ?>"/>
-			<h4><?php _e( 'Column Gap', 'js_composer' ); ?></h4>
+			     src="<?php echo vc_asset_url( 'vc/vc-welcome/02.png' ); ?>"/>
+			<h4><?php _e( 'Gradient Buttons', 'js_composer' ); ?></h4>
 
-			<p><?php _e( 'Set gaps between columns or merge columns together by setting gap to 0. Use with familiar grid gap control mechanism.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Choose trendy gradient button design with smooth hover transition. Specify gradient colors from default or choose your own custom colors.', 'js_composer' ); ?></p>
 		</div>
 		<div class="vc_col-xs-4">
 			<img class="vc-img-center"
-			     src="<?php echo vc_asset_url( 'vc/vc-welcome/03_49.png' ); ?>"/>
-			<h4><?php _e( 'Column, Content Position', 'js_composer' ); ?></h4>
+			     src="<?php echo vc_asset_url( 'vc/vc-welcome/03.png' ); ?>"/>
+			<h4><?php _e( 'Social Icons', 'js_composer' ); ?></h4>
 
-			<p><?php _e( 'Control vertical alignment of columns and content within columns by setting it to top, middle or bottom.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Get your hands on "Mono Social" icons added to icon library with most popular social icons included.', 'js_composer' ); ?></p>
 		</div>
 	</div>
 

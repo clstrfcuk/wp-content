@@ -51,7 +51,6 @@ function cornerstone_register_element( $class_name, $name, $path ) {
  */
 function cornerstone_remove_element( $name ) {
 	CS()->component( 'Element_Orchestrator' )->remove( $name );
-	CS()->component( 'Legacy_Elements' )->remove( $name );
 }
 
 /**
@@ -81,5 +80,5 @@ function cornerstone_unregister_integration( $name ) {
  * Deprecated
  */
 function cornerstone_add_element( $class_name ) {
-	CS()->component( 'Legacy_Elements' )->add( $class_name );
+	CS()->component( 'Element_Orchestrator' )->add_mk1_element( $class_name );
 }

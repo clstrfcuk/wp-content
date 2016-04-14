@@ -29,9 +29,6 @@ jQuery(document).ready(function(){
 			//toggle_functionality
 			cp_toggle_button(data);
 
-			//modal image 
-			// cp_infobar_modal_image(data);
-
 			// add cp-empty class to empty containers
 			jQuery.each( cp_empty_classes , function( key, value) {
 				if( jQuery(value).length !== 0 ) {

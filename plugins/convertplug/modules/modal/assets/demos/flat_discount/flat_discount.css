@@ -11,15 +11,17 @@
     height: 100%;
     display: block;
 }
-.cp-flat-discount .cp-email-form.col-md-12 {
-    padding-right: 0px;
-}
 .cp-flat-discount .cp_responsive.cp_font {
     line-height: normal;
 }
+
 .cp-flat-discount .cp-title-container {
     margin: 0;
     color: #ccc;
+}
+.cp-flat-discount .cp-modal-content ,
+.cp-flat-discount-container .cp-modal-content{
+    border-style: none!important;
 }
 .cp-flat-discount .cp-title {
     color: #333333;
@@ -39,19 +41,12 @@
     line-height: 1.35em;
     font-weight: 500;
     margin: 0px 0px;
-    font-family: montserrat;
-}
-.cp-flat-discount .cp-email {
-    padding: 10px 25px;
-    font-size: 15px;
-    line-height: 1.45em;
-    text-align: left;
+    font-family: 'Montserrat', sans-serif;
 }
 .cp-flat-discount .cp-name {
     padding: 10px 25px;
     font-size: 15px;
     line-height: 1.45em;
-    text-align: left;
     font-family: 'Roboto', sans-serif;
 }
 .cp-flat-discount .cp-text-container {
@@ -61,7 +56,6 @@
 .cp-flat-discount .btn-subscribe:focus,
 .cp-flat-discount .btn-subscribe:active,
 .cp-flat-discount .btn-subscribe {
-    padding: 12px 15px;
     border: none;
     border-radius: 3px;
     line-height: 1.35em;
@@ -93,22 +87,11 @@
     padding: 5px;
     margin: 0px;
 }
-.cp-flat-discount .col-md-6.cp-name-form,
-.cp-flat-discount .col-md-6.cp-form-name {
-    padding-left: 0px;
-}
 .cp-modal .cp-flat-discount .cp-submit {
-    padding: 10px 25px;
     border-radius: 3px;
-    margin: 0px;
-    font-family: neuton;
+    font-family: 'Neuton', sans-serif;
     font-size: 18px;
     line-height: normal;
-}
-.cp-flat-discount .cp-form-with-name .cp-email-form {
-    padding-right: 0px;
-    padding-left: 0px;
-    float: left;
 }
 .cp-flat-discount .cp-email-form {
     padding-left: 0px;
@@ -119,13 +102,8 @@
 .cp-flat-discount .cp-form-email {
     padding-left: 0px;
 }
-.cp-flat-discount .cp-submit-container {
-    padding-left: 0px;
-    padding-right: 0px;
-    float: left;
-}
-.cp-flat-discount input.cp-name,
-.cp-flat-discount input.cp-email {
+
+.cp-flat-discount input {
     padding: 10px 25px;
     font-size: 15px;
     line-height: 1.45em;
@@ -133,7 +111,7 @@
 .cp-flat-discount .cp-info-container {
     margin-bottom: 5px;
     color: rgb(68, 68, 68);
-     font-family: roboto;
+    font-family: 'Roboto', sans-serif;
 }
 .cp-flat-discount .cp-form-container .cp-row {
     padding: 0px;
@@ -141,63 +119,4 @@
 .cp-flat-discount .form-main {
     padding: 0;
     margin: 0;
-}
-.cp-flat-discount input.cp-email {
-    margin-bottom: 10px;
-}
-.cp-flat-discount .cp-submit-btn {
-    padding-right: 0px;
-    padding-left: 0px;
-    float: left;
-}
-.cp-flat-discount .cp-email-form,
-.cp-flat-discount .cp-name-form {
-    padding-right: 0px;
-    padding-left: 0px;
-}
-
-@media(max-width:768px) {
-
-    .cp-flat-discount .cp-submit-container {
-        padding-right: 0px;
-    }
-    .cp-flat-discount .cp-email,
-    .cp-flat-discount .cp-name {
-        text-align: center;
-    }
-    .cp-flat-discount .cp-form-with-name .cp-email-form,
-    .cp-flat-discount .cp-form-with-name .cp-name-form,
-    .cp-flat-discount .cp-form-name {
-        padding-right: 0px;
-    }
-}
-
-@media(min-width:768px) {
-    
-    .cp-flat-discount input.cp-email {
-        text-align: left;
-    }
-    .cp-flat-discount .cp-email.cp-text-center {
-        text-align: center;
-    }
-    .cp-flat-discount .cp-email-form,
-    .cp-flat-discount .cp-name-form {
-        padding-right: 15px;
-        padding-left: 0px;
-    }
-}
-
-@media(max-width:990px) {
-    
-    .cp-flat-discount .col-md-6.cp-name-form,
-    .cp-flat-discount .cp-form-name {
-        padding-right: 0px;
-    }
-    .cp-flat-discount .cp-form-with-name .cp-email-form {
-        padding-left: 0px;
-    }
-    .cp-flat-discount input.cp-name,
-    .cp-flat-discount input.cp-email {
-        text-align: center;
-    }
 }

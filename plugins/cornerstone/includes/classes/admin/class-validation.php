@@ -40,7 +40,7 @@ class Cornerstone_Validation extends Cornerstone_Plugin_Component {
 
 	public function ajax_validation() {
 
-		if ( ! isset( $_POST['code'] ) || ! $_POST['code'] ) {
+		if ( ! current_user_can( 'manage_options' ) || ! isset( $_POST['code'] ) || ! $_POST['code'] ) {
 			wp_send_json_error( array( 'message' => 'No purchase code specified.' ) );
 		}
 
@@ -124,8 +124,14 @@ class Cornerstone_Validation extends Cornerstone_Plugin_Component {
   }
 
   public function ajax_revoke() {
+
+  	if ( ! current_user_can( 'manage_options' ) ) {
+  		wp_send_json_error();
+  	}
+
     $this->update_validation( false );
     wp_send_json_success();
+
   }
 
   public function update_validation( $code ) {

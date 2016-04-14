@@ -1,4 +1,4 @@
-(function($) {
+    (function($) {
     "use strict";
 
     /**
@@ -50,6 +50,78 @@
             }
         });
         return info_bar;
+    }
+
+    function stripTrailingSlash( url ) {
+        if( url.substr(-1) === '/') {
+            return url.substr(0, url.length - 1);
+        }
+        return url;
+    }
+
+    // Referrer detection
+    jQuery.fn.isReferrer = function( referrer, doc_ref, ref_check ){
+        var display = true;
+        // referrer    = stripTrailingSlash( referrer.replace(/.*?:\/\//g, "") );
+        doc_ref     = stripTrailingSlash( doc_ref.replace(/.*?:\/\//g, "") );
+
+        var referrers = referrer.split( ",");
+
+        jQuery.each( referrers, function(i, url ){
+
+            url     = stripTrailingSlash( url );
+
+            doc_ref = doc_ref.replace("www.","");
+            var dr_arr = doc_ref.split(".");
+            var ucount = url.match(/./igm).length;
+            var dr_domain = dr_arr[0];
+
+            url = stripTrailingSlash( url.replace(/.*?:\/\//g, "") );
+            url = url.replace("www.","");
+            var url_arr = url.split("*");
+
+            var _domain = url_arr[0];
+            _domain = stripTrailingSlash( _domain );
+
+            if( ref_check =="display" ) {
+                if( url.indexOf('*') !== -1 ) {
+                    if( _domain == doc_ref ){
+                        display = true;
+                        return false;
+                    } else if( doc_ref.indexOf( _domain ) !== -1 ){
+                        display = true;
+                        return false;
+                    } else {
+                        display = false;
+                        return false;
+                    }
+                } else if( url == doc_ref ){
+                    display = true;
+                    return false;
+                } else {
+                    display = false;
+                }
+            } else if( ref_check == "hide" ) {
+                if( url.indexOf('*') !== -1 ) {
+                    if( _domain == doc_ref ){
+                        display = false;
+                        return false;
+                    } else if( doc_ref.indexOf( _domain ) !== -1 ){
+                        display = false;
+                        return false;
+                    } else {
+                        display = true;
+                        return false;
+                    }
+                } else if( url == doc_ref ){
+                    display = false;
+                    return false;
+                } else {
+                    display = true;
+                }
+            }
+        });
+        return display;
     }
 
     // detect mobile devices
@@ -116,7 +188,7 @@
                 || ( jQuery.browser.msie );
         },
     };
-    
+
 
    function hideOnDevice(devices){
         if( typeof devices !== "undefined" ) {
@@ -127,10 +199,9 @@
             isTablet    = false,
             isMobile    = false;
 
-            //isDesktop   = isOs.Any();
             isTablet    = DetectTierTablet();
             isMobile    = DetectTierIphone();
-            //console.log(devices);
+
             jQuery.each(devices, function(){
                 var device = jQuery(this).selector;
                 if( ( device == "desktop"   && (!isMobile) && (!isTablet) )
@@ -139,10 +210,9 @@
                     returns = true;
                 }
             });
-        }else{
+        } else {
               returns =false;
         }
-        //console.log(returns);
         return returns;
     }
 
@@ -303,18 +373,29 @@
         if( cp_info_bar.hasClass("cp-pos-top") ) {
             cp_info_bar.css('top','0');
         } else {
+             
             if( cp_info_bar.hasClass("ib-fixed") ){
                 cp_info_bar.css('top','auto');
             } else {
-                cp_info_bar.css('top',jQuery("body").parent("html").height()+'px');
+                var toggle = cp_info_bar.data("toggle");
+                var body_ht = jQuery("body").parent("html").height();
+                var toggle_ht = cp_info_bar.find('.cp-ifb-toggle-btn').outerHeight();
                 var cp_height  = cp_info_bar.find(".cp-info-bar-body").outerHeight();
+                if( toggle == 1 ) {
+                     body_ht = body_ht - cp_height + toggle_ht;
+                }
+                if( !cp_info_bar.hasClass('cp-info-bar-inline') ) {
+                    cp_info_bar.css('top',body_ht+'px');
+                }
                 cp_info_bar.css("min-height",cp_height+"px");
             }
         }
         if( jQuery("body").hasClass("admin-bar") ){
             if( cp_info_bar.hasClass("cp-pos-top")){
                 var ab_height = jQuery("#wpadminbar").outerHeight();
-                cp_info_bar.css("top", ab_height+"px");
+                if( !cp_info_bar.hasClass('cp-info-bar-inline') ) {
+                    cp_info_bar.css("top", ab_height+"px");
+                }
             }
         }
     }
@@ -334,7 +415,7 @@
             removeCookie(temp_cookie);
             cp_set_ifb_ht( this );
             cp_ifb_color_for_list_tag(this);
-           
+
         });
     });
 
@@ -342,19 +423,15 @@
 
         jQuery(".cp-info-bar").each(function(t) {
             infoBarPos(jQuery( this ) );
-            //cp_ifb_color_for_list_tag(this);
-            // cp_set_ifb_ht( this );
         });
 
-        jQuery(".cp-info-bar").each(function(t) {
-            // cp_set_ifb_ht(this);
-        });
     });
 
     // Display info_bar on page load after x seconds
     jQuery(window).load(function() {
         var styleArray = Array();
-        jQuery(".cp-info-bar").each(function(t) {
+        jQuery(".cp-ib-onload").each(function(t) {
+            var $this = jQuery(this);
             var exit                = jQuery(this).data("exit-intent");
             var dev_mode            = jQuery(this).data("dev-mode");
             var cookieName          = jQuery(this).data('info_bar-id');
@@ -377,6 +454,7 @@
 
             var scrollPercent       = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
             var scrollTill          = jQuery(this).data("onscroll-value");
+            var toggle_visible      = jQuery(this).data('toggle-visible');
 
             infoBarPos( info_bar );
 
@@ -419,14 +497,33 @@
                  ib_height = infobar_container.outerHeight();
             }, 100 );
 
-            if(!cookie && delay && display && scheduled){
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = info_bar.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if(!cookie && delay && display && scheduled && referred ){
                 setTimeout(function() {
                     if( jQuery(".ib-display").length <= 0 ) {
-                        styleArray.push(style);
+                       
                         info_bar.show();
-                        if(styleArray.length !== 0 ) {
-                            update_impressions(styleArray);
+
+                        if( !info_bar.hasClass('impression_counted') ) {
+                            styleArray.push(style);
+                            if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
+                                update_impressions(styleArray);
+                                
+                                jQuery("[data-info_bar-style="+style+"]").each(function(e) {
+                                    jQuery(this).addClass('impression_counted');
+                                });
+                            }
                         }
+
                         if( info_bar.hasClass("cp-pos-top")){
                             if( jQuery("body").hasClass("admin-bar") ){
                                 var ab_height = jQuery("#wpadminbar").outerHeight();
@@ -436,7 +533,6 @@
                             var cp_height  = info_bar.find(".cp-info-bar-body").outerHeight();
                             info_bar.css("min-height",cp_height+"px");
                         }
-
 
                         apply_push_page_down(info_bar);
 
@@ -460,11 +556,15 @@
     // Display info_bar on page scroll after x percentage
     jQuery(document).scroll(function(e){
 
+        // count inline impressions
+        count_inline_impressions(); 
+
         // calculate the percentage the user has scrolled down the page
         var scrollPercent = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
         var scrolled = scrollPercent.toFixed(0);
         var styleArray = Array();
-        jQuery(".cp-info-bar").each(function(t) {
+        jQuery(".cp-ib-onload").each(function(t) {
+            var $this = jQuery(this);
             var exit                = jQuery(this).data("exit-intent");
             var class_id            = jQuery(this).data("class");
             var dev_mode            = jQuery(this).data("dev-mode");
@@ -483,6 +583,8 @@
 
             var hide_on_browser     = jQuery(this).data('hide-on-browser');
             var hide_from_browser   = hideOnBrowser(hide_on_browser);
+
+            var toggle_visible      = jQuery(this).data('toggle-visible');
 
             var data                = {action:'smile_update_impressions',impression:true,style_id:style,option:opt};
             if( dev_mode == "enabled" ){
@@ -506,11 +608,32 @@
             page_down = parseInt( page_down );
             var ib_height = jQuery(this).outerHeight();
 
-            if(!cookie && scrollTill && scheduled){
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = info_bar.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if( !cookie && scrollTill && scheduled && referred ){
                 if( jQuery(".ib-display").length <= 0 ){
                     if( scrolled >= scrollTill  ){
 
                         apply_push_page_down(info_bar);
+
+                        if( !info_bar.hasClass('impression_counted') ) {
+                            styleArray.push(style);
+                            if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
+                                update_impressions(styleArray);
+                                
+                                jQuery("[data-info_bar-style="+style+"]").each(function(e) {
+                                    jQuery(this).addClass('impression_counted');
+                                });
+                            }
+                        }                        
 
                         info_bar.show();
                         if( info_bar.hasClass("cp-pos-top")){
@@ -527,26 +650,20 @@
                             var anim = info_bar.find(".cp-button").data("animation");
                             info_bar.find(".cp-button").addClass(anim);
                         }, 2000 );
-                        styleArray.push(style);
                     }
                 }
             }
         });
 
-        if(styleArray.length !== 0 ) {
-            update_impressions(styleArray);
-        }
     });
 
     // Display info_bar on page scroll after post content
     jQuery(document).scroll(function(e){
 
-        // calculate the percentage the user has scrolled down the page
-        //var scrollPercent = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
-        //var scrolled = scrollPercent.toFixed(0);
         var scrolled = jQuery(window).scrollTop();
         var styleArray = Array();
         jQuery(".ib-after-post").each(function(t) {
+            var $this = jQuery(this);
             var exit                = jQuery(this).data("exit-intent");
             var class_id            = jQuery(this).data("class");
             var dev_mode            = jQuery(this).data("dev-mode");
@@ -556,7 +673,7 @@
             var opt                 = jQuery(this).data('option');
             var style               = jQuery(this).data('info_bar-style');
             var info_bar            = jQuery(this);
-            var scrollTill          = jQuery(".cp-load-after-post").offset().top;
+            var scrollTill          = jQuery(".cp-load-after-post").offset().top - 30;
 
             var hide_on_device      = jQuery(this).data('hide-on-devices');
             var hide_from_device    = hideOnDevice(hide_on_device);
@@ -566,6 +683,8 @@
 
             var hide_on_browser     = jQuery(this).data('hide-on-browser');
             var hide_from_browser   = hideOnBrowser(hide_on_browser);
+
+            var toggle_visible      = jQuery(this).data('toggle-visible');
 
             var data                = {action:'smile_update_impressions',impression:true,style_id:style,option:opt};
             if( dev_mode == "enabled" ){
@@ -590,7 +709,21 @@
             page_down = parseInt( page_down );
             var ib_height = jQuery(this).outerHeight();
 
-            if(!cookie && scrollTill && scheduled){
+            var page_down = jQuery(this).data('push-down');
+            page_down = parseInt( page_down );
+            var ib_height = jQuery(this).outerHeight();
+
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = info_bar.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if( !cookie && scrollTill && scheduled && referred ){
                 if( jQuery(".ib-display").length <= 0 ){
                     if( scrolled >= scrollTill  ){
 
@@ -607,19 +740,26 @@
                             info_bar.css("min-height",cp_height+"px");
                         }
                         info_bar.addClass('ib-display');
+
+                        if( !info_bar.hasClass('impression_counted') ) {
+                            styleArray.push(style);
+                            if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
+                                update_impressions(styleArray);
+                                
+                                jQuery("[data-info_bar-style="+style+"]").each(function(e) {
+                                    jQuery(this).addClass('impression_counted');
+                                });
+                            }
+                        }
+
                         setTimeout( function(){
                             var anim = info_bar.find(".ib-subscribe").data("animation");
                             info_bar.find(".ib-subscribe").addClass(anim);
                         }, 2000 );
-                        styleArray.push(style);
                     }
                 }
             }
         });
-
-        if(styleArray.length !== 0 ) {
-            update_impressions(styleArray);
-        }
     });
 
 
@@ -627,7 +767,7 @@
     jQuery(document).on('mouseleave', function(e){
         var styleArray = Array();
         var getPriorityIB = getPriorityInfoBar();
-        jQuery(".cp-info-bar").each(function(t) {
+        jQuery(".cp-ib-onload").each(function(t) {
             var $this = jQuery(this);
             if( getPriorityIB !== "none" ){
                 var info_bar = getPriorityIB;
@@ -651,6 +791,8 @@
 
             var hide_on_browser     = $this.data('hide-on-browser');
             var hide_from_browser   = hideOnBrowser(hide_on_browser);
+
+            var toggle_visible      = jQuery(this).data('toggle-visible');
 
             var data                = {action:'smile_update_impressions',impression:true,style_id:style,option:opt};
             if( dev_mode == "enabled" ){
@@ -680,7 +822,17 @@
                 exit = scheduled = false;
             }
 
-            if(!cookie){
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = info_bar.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if( !cookie && referred ){
                 if( exit == 'enabled' && scheduled ){
                     if ( e.clientY <= 0 ){
                         if( jQuery(".ib-display").length <= 0 ){
@@ -701,21 +853,28 @@
                             jQuery(document).trigger('playYoutube');
 
                             info_bar.addClass('ib-display');
+
+                            if( !info_bar.hasClass('impression_counted') ) {
+                                styleArray.push(style);
+                                if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
+                                    update_impressions(styleArray);
+                                    
+                                    jQuery("[data-info_bar-style="+style+"]").each(function(e) {
+                                        jQuery(this).addClass('impression_counted');
+                                    });
+                                }
+                            }    
+
                             setTimeout( function(){
                                 var anim = info_bar.find(".cp-button").data("animation");
                                 info_bar.find(".cp-button").addClass(anim);
                             }, 2000 );
-                            styleArray.push(style);
 
                         }
                     }
                 }
             }
         });
-
-        if(styleArray.length !== 0 ) {
-            update_impressions(styleArray);
-        }
     });
 
     // Load the user activity handler
@@ -725,10 +884,14 @@
 
         cp_ifb_toggle();
 
+        // count inline impressions
+        count_inline_impressions(); 
+
         jQuery(".cp-info-bar").each(function(t) {
             if( jQuery("body").hasClass("admin-bar") ){
-                if( jQuery(this).hasClass("cp-pos-top")){
-                    jQuery(this).css("top", "32px");
+                var admin_bar_ht = jQuery("#wpadminbar").outerHeight();
+                if( jQuery(this).hasClass("cp-pos-top") && !jQuery(this).hasClass("cp-info-bar-inline") ) {
+                    jQuery(this).css("top", admin_bar_ht + 'px' );
                 }
             }
             var inactive_time = jQuery(this).data('inactive-time');
@@ -757,6 +920,7 @@
         var cookieName        = info_bar.data('info_bar-id');
         var animate_push_page = info_bar.data('animate-push-page');
         var temp_cookie     = "temp_"+cookieName;
+        var page_push_down = info_bar.data('push-down') || null;
 
         //  If not has 'cp-ifb-with-toggle' class for smooth toggle
         if( !info_bar.hasClass('cp-ifb-with-toggle') ){
@@ -764,21 +928,41 @@
             info_bar.addClass(exit_anim);
         }
 
-        jQuery("body").css('overflow-x','hidden');
         if( info_bar.hasClass("cp-pos-top")){
 
-        	var cp_top_offset_container = jQuery("#cp-top-offset-container").val();
-        	var org_offet_margin_top = jQuery("#cp-top-offset-container").data('org-offset-margin-top');
-            if( animate_push_page == 1 ) {
-            	if( cp_top_offset_container == '' ) 
-                	jQuery("body").stop().animate({'marginTop':0}, 800 );
-                else
-                	jQuery(cp_top_offset_container).stop().animate({'marginTop': org_offet_margin_top }, 800 );
-            } else {
-            	if( cp_top_offset_container == '' ) 
-                	jQuery("body").css( 'margin-top', org_offet_margin_top );
-                else
-                	jQuery(cp_top_offset_container).css( 'margin-top', org_offet_margin_top );
+            if( page_push_down ) {
+            	var cp_top_offset_container = jQuery("#cp-top-offset-container").val();
+            	var offset_def_settings = jQuery("#cp-top-offset-container").data('offset_def_settings');
+                var mTop = offset_def_settings.margin_top;
+                var top = offset_def_settings.top;
+
+                if( animate_push_page == 1 ) {
+                	if( cp_top_offset_container == '' ) {
+                        jQuery('body').animate({
+                            'marginTop' : mTop,
+                            'top'       : top
+                        });
+                    }
+                    else {
+                        jQuery(cp_top_offset_container).animate({
+                            'margin-top' : mTop,
+                            'top'        : top
+                        });
+                    }
+                } else {
+                	if( cp_top_offset_container == '' ) {
+                        jQuery('body').css({
+                            'margin-top' : mTop,
+                            'top'        : top
+                        });
+                    }
+                    else {
+                        jQuery(cp_top_offset_container).css({
+                            'margin-top' : mTop,
+                            'top'        : top
+                        });
+                    }
+                }
             }
             if( jQuery(".ib-display").length == 1 ) {
                 var admin_bar_height = jQuery('#wpadminbar').outerHeight();
@@ -815,20 +999,24 @@
                 jQuery("html").css("overflow-x","auto");
             }, 2500);
         } else {
-            if(!info_bar.hasClass('cp-ifb-with-toggle')){
-                info_bar.hide();
-                info_bar.removeClass("ib-display");
-                //  If not has 'cp-ifb-with-toggle' class for smooth toggle
-                info_bar.removeClass(exit_anim);
-                info_bar.addClass(entry_anim);
-            }
-            jQuery("html").css("overflow-x","auto");
+            setTimeout( function(){
+                if(!info_bar.hasClass('cp-ifb-with-toggle')){
+                    info_bar.hide();
+                    info_bar.removeClass("ib-display");
+                    //  If not has 'cp-ifb-with-toggle' class for smooth toggle
+                    exit_anim = "cp-overlay-none";
+                    info_bar.removeClass(exit_anim);
+                    info_bar.addClass(entry_anim);
+                }
+                jQuery("html").css("overflow-x","auto");
+              }, 100);
         }
+
     });
     jQuery(document).on( "idle.idleTimer", function(event, elem, obj){
         var styleArray = Array();
         var getPriorityIB = getPriorityInfoBar();
-        jQuery(".cp-info-bar").each(function(t) {
+        jQuery(".cp-ib-onload").each(function(t) {
             var $this = jQuery(this);
             if( getPriorityIB !== "none" ){
                 var info_bar = getPriorityIB;
@@ -850,6 +1038,8 @@
 
             var hide_on_browser     = $this.data('hide-on-browser');
             var hide_from_browser   = hideOnBrowser(hide_on_browser);
+
+            var toggle_visible      = jQuery(this).data('toggle-visible');
 
             var data                = {action:'smile_update_impressions',impression:true,style_id:style,option:opt};
             if( dev_mode == "enabled" ){
@@ -877,7 +1067,17 @@
                 display = false;
             }
 
-            if(!cookie && display){
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = info_bar.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if( !cookie && display && referred ){
                 if( jQuery(".ib-display").length <= 0 ){
 
                    apply_push_page_down(info_bar);
@@ -894,18 +1094,26 @@
                     }
 
                     info_bar.addClass('ib-display');
+
+                    if( !info_bar.hasClass('impression_counted') ) {
+                        styleArray.push(style);
+                        if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
+                            update_impressions(styleArray);
+                            
+                            jQuery("[data-info_bar-style="+style+"]").each(function(e) {
+                                jQuery(this).addClass('impression_counted');
+                            });
+                        }
+                    }
+
                     setTimeout( function(){
                         var anim = info_bar.find(".cp-button").data("animation");
                         info_bar.find(".cp-button").addClass(anim);
                     }, 2000 );
-                    styleArray.push(style);
+
                 }
             }
         });
-
-        if(styleArray.length !== 0 ) {
-            update_impressions(styleArray);
-        }
     });
 
     // Display info bar on click of custom class
@@ -925,13 +1133,12 @@
             }
         });
 
-        jQuery.each(cls, function(i,v){            
+        jQuery.each(cls, function(i,v){
             if( '' != i && 'undefined' != i && null != i ) {
                 jQuery("."+i).click(function(e){
 
-                    //e.preventDefault();
                     var target      = v;
-                    console.log(v);
+                    var styleArray = Array();
 
                     if( !target.hasClass('cp-form-submit-success') ) {
 
@@ -962,6 +1169,18 @@
                                 info_bar.css("min-height",cp_height+"px");
                             }
                             info_bar.addClass('ib-display');
+                            
+                            if( !info_bar.hasClass('impression_counted') ) {
+                                styleArray.push(style);
+                                if( styleArray.length !== 0 ) {
+                                    update_impressions(styleArray);
+
+                                    jQuery("[data-info_bar-style="+style+"]").each(function(e) {
+                                        jQuery(this).addClass('impression_counted');
+                                    });
+                                }
+                            }
+
                             setTimeout( function(){
                                 var anim = info_bar.find(".ib-subscribe").data("animation");
                                 info_bar.find(".ib-subscribe").addClass(anim);
@@ -996,26 +1215,40 @@
     }
 
     // calculate margin top for push down functionality
-    function cal_top_margin_push_down(info_bar,animate_push_page) {
+    function cal_top_margin_push_down(info_bar,animate_push_page, toggle ) {
 
-    	var cp_push_down_support_container = jQuery("#cp-push-down-support").val(); // Retrieve class / ID which user enter in &author setting
+        var cp_push_down_support_container = jQuery("#cp-push-down-support").val(); // Retrieve class / ID which user enter in &author setting
         var cp_top_offset_container = jQuery("#cp-top-offset-container").val();
         var wpadminbar = jQuery("#wpadminbar").outerHeight(); // Calculate WP admin Bar Height
         var ib_height = info_bar.outerHeight(); // Calculate Info Bar Height
 
         if( cp_top_offset_container == '' ) {
-        	var siteOffset = jQuery("body").offset().top; // Calculate top offset of body
+            var site_offset = jQuery('body').offset().top;
+        	var offset_def_settings = {
+                    margin_top: jQuery('body').css('margin-top'),
+                    top:  jQuery('body').css('top'),
+            };
         } else {
-        	var siteOffset = jQuery(cp_top_offset_container).offset().top; // Calculate top offset of body
+            var site_offset = jQuery(cp_top_offset_container).offset().top;
+            var offset_def_settings = {
+                    margin_top: jQuery(cp_top_offset_container).css('margin-top'),
+                    top:  jQuery(cp_top_offset_container).css('top'),
+            };
         }
 
-        jQuery("#cp-top-offset-container").data( 'org-offset-margin-top', siteOffset  + 'px' );
+        jQuery("#cp-top-offset-container").attr("data-offset_def_settings", offset_def_settings  );
 
-        var push_down_top = (ib_height + siteOffset) - wpadminbar;
-        var push_down_top_support = ib_height + siteOffset;
+        var push_down_top = (ib_height + site_offset) - wpadminbar;
+        var push_down_top_support = ib_height + site_offset;
 
         var cp_push_down_support_ht = jQuery(cp_push_down_support_container).outerHeight(); // Calculate height of user entered fixed class / ID
         var cp_push_down_support_htop = push_down_top_support - cp_push_down_support_ht;
+
+        if(toggle) {
+            cp_push_down_support_htop = wpadminbar + ib_height;
+            push_down_top = ib_height;
+        }
+
         if( animate_push_page == 1 ) {
             jQuery(cp_push_down_support_container).stop().animate({ 'top': cp_push_down_support_htop + 'px' }, 1200 );
         } else {
@@ -1051,7 +1284,7 @@
             } else {
                 jQuery( t ).find('.cp-info-bar-body').css({ 'height': 'auto' });
             }
-            
+
         }
     }
 
@@ -1059,6 +1292,7 @@
           var moadal_style    = jQuery(t).data('class');
 
         jQuery(t).find("li").each(function() {
+            if(jQuery(this).parents(".cp_social_networks").length == 0){
                var parent_li   = jQuery(this).parents("div").attr('class').split(' ')[0];
 
                var  cnt         = jQuery(this).index()+1,
@@ -1100,6 +1334,7 @@
             if(color){
               jQuery('head').append('<style class="cp-li-color-css'+cnt+'">.'+moadal_style+' .'+parent_li+' li:nth-child('+cnt+'){ color: '+color+';}</style>');
             }
+        }
 
         });
     }
@@ -1108,32 +1343,33 @@
     function apply_push_page_down(info_bar) {
 
         setTimeout(function() {
-            
+
             var has_toggle_btn  = info_bar.data('toggle');
-    
-            push_page_down(info_bar);
+            var toggle = false;
+            push_page_down( info_bar, toggle);
 
         }, 300);
     }
-    function push_page_down(info_bar) {
+    function push_page_down(info_bar, toggle) {
         var page_down = info_bar.data('push-down') || null;
         var animate_push_page = info_bar.data('animate-push-page');
         var cp_top_offset_container = jQuery("#cp-top-offset-container").val();
+
         if( page_down ) {
-            if( info_bar.hasClass("cp-pos-top") ){  
-                var push_margin = cal_top_margin_push_down(info_bar,animate_push_page);
+            if( info_bar.hasClass("cp-pos-top") ){
+                var push_margin = cal_top_margin_push_down(info_bar,animate_push_page, toggle);
                 if( animate_push_page == 1 )  {
                 	if( cp_top_offset_container == '' ) {
                     	jQuery("body").stop().animate({'marginTop':push_margin+'px'}, 900 );
                 	} else {
-                		jQuery(cp_top_offset_container).stop().animate({'marginTop':push_margin+'px'}, 900 );
+                		jQuery(cp_top_offset_container).stop().animate({'marginTop': push_margin+'px'}, 900 );
                 	}
                 } else {
-                	if( cp_top_offset_container == '' ) {
-                    	jQuery("body").css( 'margin-top', push_margin+'px' );
+                    if( cp_top_offset_container == '' ) {
+                        jQuery("body").css( 'margin-top', push_margin+'px' );
                     } else {
                     	jQuery(cp_top_offset_container).css( 'margin-top', push_margin+'px' );
-                    }	
+                    }
                 }
             }
         } else {
@@ -1141,48 +1377,61 @@
         }
     }
 
-    //for open and close infobar on click of button
+    //for open and close info bar on click of button
     function cp_ifb_toggle(){
 
         jQuery(".cp-info-bar").each(function(index, el) {
 
             var info_bar = jQuery( el );
-           
-            info_bar.find( ".cp-ifb-toggle-btn" ).click(function() { 
+
+            info_bar.find( ".cp-ifb-toggle-btn" ).click(function() {
 
                 var cp_ifb_toggle_btn   = jQuery(this),
-                    cp_info_bar         = jQuery(this).parents(".cp-info-bar"),
+                    cp_info_bar         = jQuery(this).closest('.cp-info-bar'),
                     btn_animation       = 'smile-slideInDown',
                     exit_animation      = cp_info_bar.data("exit-animation"),
                     entry_animation     = cp_info_bar.data("entry-animation"),
-                    cp_info_bar_body    = cp_info_bar.find(".cp-info-bar-body");
+                    cp_info_bar_body    = cp_info_bar.find(".cp-info-bar-body"),
+                    toggle_visibility   = cp_info_bar.data('toggle-visible'),
+                    is_imp_added       = cp_info_bar.data('impression-added'),   
+                    style_id           = cp_info_bar.data('info_bar-id');
+
+                if( toggle_visibility == true ) {
+                    if( typeof is_imp_added == 'undefined' ) {
+                        var styleArray = [style_id];
+                        update_impressions( styleArray );
+                        cp_info_bar.data('impression-added','true');
+                    }
+                }
 
                 cp_info_bar.removeClass( entry_animation );
                 cp_info_bar.removeClass( exit_animation );
 
-                if(cp_info_bar.hasClass('cp-pos-bottom')){
+                if( cp_info_bar.hasClass('cp-pos-bottom') ) {
                     btn_animation = 'smile-slideInUp';
                 }
 
-
                 var  cp_info_bar_class    = cp_info_bar.attr('class');
-               
+
                 cp_ifb_toggle_btn.removeClass('cp-ifb-show smile-animated '+ btn_animation +'');
                 cp_info_bar.attr('class',cp_info_bar_class);
                 cp_info_bar.attr('class', cp_info_bar_class + ' smile-animated ' + entry_animation);
                 cp_info_bar.removeClass('cp-ifb-hide');
-                
+
                 cp_ifb_toggle_btn.addClass('cp-ifb-hide');
                 cp_info_bar_body.addClass('cp-flex');
                 cp_info_bar.find( ".ib-close" ).css({
                     'visibility': 'visible'
                 });
-                push_page_down( info_bar );
-                
+
+                var toggle = true;
+
+                push_page_down( info_bar, toggle );
+
             });
 
             //click of close button
-            info_bar.find( ".ib-close" ).click(function() { 
+            info_bar.find( ".ib-close" ).click(function() {
 
                 var cp_info_bar     =   jQuery(this).parents(".cp-info-bar"),
                 cp_ifb_toggle_btn   =   cp_info_bar.find(".cp-ifb-toggle-btn"),
@@ -1191,19 +1440,17 @@
                 exit_animation      =   cp_info_bar.data("exit-animation"),
                 entry_animation     =   cp_info_bar.data("entry-animation"),
                 data_toggle         =   cp_info_bar.data("toggle"),
-                form                =   cp_info_bar.find('.cp-ib-form').attr('class');
+                form                =   cp_info_bar.find('.form-main').attr('class');
 
                 if(data_toggle == 1){
-                    
+
                     //  Toggle button animation class
                     if(cp_info_bar.hasClass('cp-pos-bottom')){
                        btn_animation = 'smile-slideInUp';
                     }
 
-                    //  
                     cp_info_bar.removeClass(entry_animation);
                     var  cp_info_bar_class   = cp_info_bar.attr('class');
-                    console.log('cp_info_bar_class: ' + cp_info_bar_class);
                     cp_info_bar.attr('class', cp_info_bar_class + ' ' + exit_animation);
 
                     setTimeout(function() {
@@ -1211,21 +1458,19 @@
                         cp_ifb_toggle_btn.removeClass('cp-ifb-hide');
                         cp_ifb_toggle_btn.addClass('cp-ifb-show smile-animated '+btn_animation +'');
                         cp_info_bar.removeClass('smile-animated');
-
-                       console.log('entry_animation: ' + entry_animation );
-                       console.log('exit_animation: ' + exit_animation );
-
+                        cp_info_bar.removeClass(exit_animation);                        
                         cp_info_bar.addClass('cp-ifb-hide');
                         cp_info_bar_body.removeClass('cp-flex');
                         cp_info_bar.find( ".ib-close" ).css({
                             'visibility': 'hidden'
                         });
                         if(typeof form !== 'undefined'){
-                            cp_info_bar.find('#smile-ib-optin-form')[0].reset();
+                            cp_info_bar.find('#smile-optin-form')[0].reset();
                             cp_info_bar.find(".cp-form-processing-wrap").css('display', 'none');
                             cp_info_bar.find(".cp-form-processing").removeAttr('style');
                             cp_info_bar.find(".cp-msg-on-submit").removeAttr('style');
-                            cp_info_bar.find(".cp-msg-on-submit").html();
+                            cp_info_bar.find(".cp-m-success").remove();
+                            cp_info_bar.find(".cp-m-error").remove();
                         }
                     }, 1500 );
                 }
@@ -1240,5 +1485,38 @@
             jQuery($this).addClass('disabled');
         }
     });
+
+    // check if element is visible in view port
+    function isScrolledIntoStyleView(elem) {
+        var $elem = elem;
+        var $window = $(window);
+
+        var docViewTop = $window.scrollTop();
+        var docViewBottom = docViewTop + $window.height();
+
+        var elemTop = $elem.offset().top;
+        var elemBottom = elemTop + $elem.height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+
+    function count_inline_impressions()  {
+        jQuery(".cp-info_bar-inline-end").each(function(e) {
+            var elem = jQuery(this); 
+            var is_visible = isScrolledIntoStyleView(elem); 
+            var style_id = jQuery(this).data('style');
+
+            if( is_visible ) {
+                var styleArray = Array();
+                if( !jQuery("[data-info_bar-style="+style_id+"]").hasClass('impression_counted') ) {
+                    styleArray.push(style_id);
+                    update_impressions(styleArray); 
+                }
+                jQuery("[data-info_bar-style="+style_id+"]").each(function() {
+                    jQuery(this).addClass('impression_counted');
+                });
+            }           
+        }); 
+    }
 
 })(jQuery);

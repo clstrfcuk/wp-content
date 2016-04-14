@@ -6,12 +6,9 @@ module.exports = function(grunt) {
 				files: {
 					'assets/js/info_bar.min.js': [
 						'!assets/js/admin.min.js',
-						'../assets/js/convertplug.js',
 						'assets/js/idle-timer.min.js',
 						'assets/js/info_bar.js',
 						'assets/js/mailer.js',
-						//'assets/js/moment.min.js',
-						//'assets/js/timezone.js',
 						'../../admin/assets/js/frosty.js',
 					]
 				}
@@ -23,9 +20,11 @@ module.exports = function(grunt) {
 					'assets/css/info_bar.min.css': [
 						'!assets/css/info_bar.min.css',
 						'assets/css/info_bar.css',
+						'assets/css/info_bar-grid.css',
 						'../assets/css/animate.css',
 						'../assets/css/convertplug.css',
-						// '../../admin/contacts/css/connects-icon.css',
+						'../assets/css/cp-social-media-style.css',
+						'../assets/css/social-icon-css.css',
 					]
 				}
 			}

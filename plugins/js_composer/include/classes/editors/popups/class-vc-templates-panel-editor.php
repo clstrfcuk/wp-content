@@ -449,7 +449,7 @@ HTML;
 		$template_id = vc_request_param( 'template_unique_id' );
 		$template_type = vc_request_param( 'template_type' );
 		global $current_user;
-		get_currentuserinfo();
+		wp_get_current_user();
 
 		if ( ! isset( $template_id, $template_type ) || '' === $template_id || '' === $template_type ) {
 			die( __( 'Error: wrong template id.', 'js_composer' ) );
@@ -729,7 +729,7 @@ HTML;
 	 */
 	public function sortTemplatesByCategories( array $data ) {
 		$buffer = $data;
-		usort( $buffer, array( &$this, 'cmpCategory' ) );
+		uasort( $buffer, array( &$this, 'cmpCategory' ) );
 
 		return $buffer;
 	}
@@ -743,7 +743,7 @@ HTML;
 	 */
 	public function sortTemplatesByNameWeight( array $data ) {
 		$buffer = $data;
-		usort( $buffer, array( &$this, 'cmpNameWeight' ) );
+		uasort( $buffer, array( &$this, 'cmpNameWeight' ) );
 
 		return $buffer;
 	}

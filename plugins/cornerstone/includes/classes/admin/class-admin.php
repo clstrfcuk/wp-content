@@ -48,10 +48,13 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 	}
 
 	public function ajax_override() {
-		if ( isset( $_POST['post_id'] ) ) {
+
+		if ( isset( $_POST['post_id'] ) && current_user_can( $this->plugin->common()->get_post_capability( $_POST['post_id'], 'edit_post' ), $_POST['post_id'] ) ) {
 			update_post_meta( $_POST['post_id'], '_cornerstone_override', true );
 		}
+
 		cs_send_json_success();
+
 	}
 
 	public function ajax_dismiss_validation_notice() {
@@ -95,10 +98,11 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 		$post = $this->plugin->common()->locatePost();
 		$post_id = ( $post ) ? $post->ID : 'new';
 		$commonData = array(
-			'homeURL' => home_url(),
-			'editURL' => $this->plugin->common()->getEditURL(),
-			'post_id' => $post_id,
-			'strings' => $this->plugin->config( 'admin/strings-admin' ),
+			'homeURL'   => home_url(),
+			'editURL'   => $this->plugin->common()->getEditURL(),
+			'post_id'   => $post_id,
+			'_cs_nonce' => wp_create_nonce( 'cornerstone_nonce' ),
+			'strings'   => $this->plugin->config( 'admin/strings-admin' ),
 		);
 
 		if ( false !== strpos( $hook, 'cornerstone-home' ) ) {
@@ -179,32 +183,6 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
 	public function render_home_page() {
 
-
-		// Temp begin
-		if ( apply_filters( '_cornerstone_pre_validation', false ) ) {
-
-			$status_request = cs_memoize( 'cornerstone_validation_status', 'wp_remote_get', 5 * MINUTE_IN_SECONDS, 'https://community.theme.co/static/status/' );
-			$status = json_decode( wp_remote_retrieve_body( $status_request ), true );
-
-
-			if ( ! isset( $status['cornerstone_validation'] ) || $status['cornerstone_validation'] ) {
-				remove_all_filters( '_cornerstone_pre_validation' );
-			} else {
-
-				if ( ! has_action( '_cornerstone_validation_overlay' ) ) {
-					add_action( '_cornerstone_validation_overlay', array( $this, 'temp_validation_overlay' ) );
-				}
-
-				if ( ! has_action( '_cornerstone_home_not_validated' ) ) {
-					add_action( '_cornerstone_home_not_validated', array( $this, 'temp_validation_message' ) );
-				}
-
-				add_filter( '_cornerstone_integration_remove_purchase_link', '__return_true' );
-			}
-
-		}
-		// Temp end
-
 		if ( ! has_action( '_cornerstone_home_not_validated' ) ) {
 			add_action( '_cornerstone_home_not_validated', array( $this, 'render_not_validated' ) );
 		}
@@ -218,10 +196,6 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
 		do_action( '_cornerstone_home_after' );
 
-	}
-
-	public function temp_validation_message() {
-		$this->view( 'admin/home-pre-standalone-validation' );
 	}
 
 	public function render_not_validated() {
@@ -306,12 +280,4 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 		return admin_url( 'admin.php?page=cornerstone-home' );
 	}
 
-	public function temp_validation_overlay() {
-
-		?>
-			<h4 class="tco-box-content-title"><?php _e( 'How do I unlock this feature?', 'cornerstone' ); ?></h4>
-			<p><?php _e( 'This is unlocked through product validaiton. As mentioned above, this is not quite ready, but you can check back in a few hours.', 'cornerstone' ); ?></p>
-		<?php
-
-	}
 }

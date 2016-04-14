@@ -24,6 +24,8 @@ extract( shortcode_atts( array(
 $id    = ( $id    != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
 $class = ( $class != '' ) ? 'x-column x-sm vc ' . esc_attr( $class ) : 'x-column x-sm vc';
 $style = ( $style != '' ) ? $style : '';
+$fade_duration         = ( $fade_duration         != ''     ) ? $fade_duration : '750';
+
 switch ( $width ) {
   case '1/1' :
     $width = ' x-1-1';
@@ -52,38 +54,37 @@ switch ( $width ) {
 }
 
 if ( $fade == 'true' ) {
+  
   $fade = 'data-fade="true"';
 
-  $js_params = array(
-    'fade'      => true,
-    'animation' => $fade_animation
-  );
-
-  $data = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'column', $js_params ) : '';
+  $data = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'column', array( 'fade' => true ) ) : '';
 
   switch ( $fade_animation ) {
-    case 'in' :
-      $fade_animation_offset = '';
-      break;
-    case 'in-from-top' :
-      $fade_animation_offset = ' top: -' . $fade_animation_offset . ';';
-      break;
-    case 'in-from-left' :
-      $fade_animation_offset = ' left: -' . $fade_animation_offset . ';';
-      break;
-    case 'in-from-right' :
-      $fade_animation_offset = ' right: -' . $fade_animation_offset . ';';
-      break;
-    case 'in-from-bottom' :
-      $fade_animation_offset = ' bottom: -' . $fade_animation_offset . ';';
-      break;
-  }
+      case 'in' :
+        $fade_animation_offset = '';
+        break;
+      case 'in-from-top' :
+        $fade_animation_offset = ' transform: translate(0, -' . $fade_animation_offset . '); ';
+        break;
+      case 'in-from-left' :
+        $fade_animation_offset = ' transform: translate(-' . $fade_animation_offset . ', 0); ';
+        break;
+      case 'in-from-right' :
+        $fade_animation_offset = ' transform: translate(' . $fade_animation_offset . ', 0); ';
+        break;
+      case 'in-from-bottom' :
+        $fade_animation_offset = ' transform: translate(0, ' . $fade_animation_offset . '); ';
+        break;
+    }
+
+  $fade_animation_style = 'opacity: 0;' . $fade_animation_offset . 'transition-duration: ' . $fade_duration . 'ms;';
+  
 } else {
-  $data                  = '';
-  $fade                  = '';
-  $fade_animation_offset = '';
+  $data                 = '';
+    $fade                 = '';
+    $fade_animation_style = '';
 }
 
-$output = "<div {$id} class=\"{$class}{$width}{$last}\" style=\"{$style}{$fade_animation_offset}\" {$data} {$fade}>" . do_shortcode( $content ) . "</div>";
+$output = "<div {$id} class=\"{$class}{$width}{$last}\" style=\"{$style}{$fade_animation_style}{$bg_color}\" {$data}{$fade}>" . do_shortcode( $content ) . "</div>";
 
 echo $output;

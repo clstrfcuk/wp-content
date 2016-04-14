@@ -19,11 +19,17 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 		$this->orchestrator = $this->plugin->component( 'Element_Orchestrator' );
 		$this->orchestrator->load_elements();
 
-		$this->mk1 = new Cornerstone_Legacy_Renderer( $this->plugin->component('Legacy_Elements') );
+		$this->mk1 = $this->plugin->loadComponent( 'Legacy_Renderer' );
 
 		global $post;
-		if ( !isset( $data['post_id'] ) || !$post = get_post( (int) $data['post_id'] ) )
-      cs_send_json_error( array('message' => 'post_id not set' ) );
+		if ( !isset( $data['post_id'] ) || ! $post = get_post( (int) $data['post_id'] ) ) {
+      cs_send_json_error( array( 'message' => 'post_id not set' ) );
+		}
+
+    $cap = $this->plugin->common()->get_post_capability( $post, 'edit_post' );
+		if ( ! current_user_can( $cap, $data['post_id'] ) ) {
+			cs_send_json_error( array( 'message' => sprintf( '%s capability required.', $cap ) ) );
+		}
 
     setup_postdata( $post );
 

@@ -6,6 +6,7 @@ add_action( 'wp_ajax_update_variant_test_settings', 'update_variant_test_setting
 add_action( 'wp_ajax_smile_duplicate_style', 'smile_duplicate_style' );
 add_action( 'wp_ajax_smile_rename_style', 'smile_rename_style' );
 add_action( 'wp_ajax_smile_delete_style', 'smile_delete_style' );
+add_action( 'wp_ajax_cp_reset_analytics_action', 'cp_reset_analytics_action' );
 add_action( 'wp_ajax_smile_update_modules', 'smile_update_modules' );
 add_action( 'wp_ajax_smile_update_global', 'smile_update_global' );
 add_action( 'wp_ajax_smile_update_status', 'smile_update_status' );
@@ -196,7 +197,8 @@ function smile_duplicate_style(){
 	$smile_variant_tests = array();
 	$smile_variant_tests = get_option( $option );
 	$modal_arrays = $smile_variant_tests;
-	
+
+	// if On variant screen 
 	if( $styleScreen == 'multivariant' ) {
 		$new_variant_tests = array();
 		if( isset( $smile_variant_tests[ $variant_id ] ) ) {
@@ -205,9 +207,14 @@ function smile_duplicate_style(){
 			$new_variant_tests = $smile_variant_tests[ $variant_id ] = array();
 		}
 		$modal_arrays = $smile_variant_tests;
+
+		// Duplicating variant 
 		if( !empty( $new_variant_tests ) ){
+
 			$match = false;
 			foreach( $new_variant_tests as $vkey => $array ){
+
+				// while duplicating variant on variant screen   
 				if( $array['style_id'] == $style_id ){
 					$dynamic_style_id = 'cp_id_'.$rand;
 					$new_style_id = $dynamic_style_id;		
@@ -219,6 +226,7 @@ function smile_duplicate_style(){
 					$settings = unserialize($new_style['style_settings']);
 					$settings['live'] = 0;
 					$settings['style_id'] = $new_style_id;
+					$settings['variant-style'] = $new_style_id;
 					$new_style['style_settings'] = serialize($settings);
 					array_push( $new_variant_tests,$new_style);
 					$modal_arrays[$variant_id] = $new_variant_tests;
@@ -227,6 +235,8 @@ function smile_duplicate_style(){
 				}
 			}
 			if( !$match ){
+
+				// duplicating main style on variant screen 
 				$new_style = $prev_styles[$key];
 				$style_settings = unserialize($new_style['style_settings']);
 				$style_settings['live'] = 0;
@@ -237,11 +247,14 @@ function smile_duplicate_style(){
 				$newStyleName = smile_duplicate_styleName($new_variant_tests,$style_name);
 				$new_style['style_name'] = $newStyleName;
 				$new_style['style_id'] = $new_style_id;
+				$style_settings['variant-style'] = $new_style_id;
 				$new_style['style_settings'] = serialize($style_settings);
 				array_push($new_variant_tests,$new_style);
 				$modal_arrays[$variant_id] = $new_variant_tests;
 			}
 		} else {
+
+			// if duplicating main style on variant screen if modal has no variants 
 			$smile_variant_tests[ $variant_id ] = array();
 			$new_style = $prev_styles[$key];
 			$style_settings = unserialize($new_style['style_settings']);
@@ -253,11 +266,14 @@ function smile_duplicate_style(){
 			$newStyleName = smile_duplicate_styleName($prev_styles,$style_name);
 			$new_style['style_name'] = $newStyleName;
 			$new_style['style_id'] = $new_style_id;
+			$style_settings['variant-style'] = $new_style_id;
 			$new_style['style_settings'] = serialize($style_settings);
 			array_push($smile_variant_tests[ $variant_id ],$new_style);
 			$modal_arrays = $smile_variant_tests;
 		}
 	} else {
+
+		// if on modal list screen  
 		$new_style = $prev_styles[$key];
 		$style_settings = unserialize($new_style['style_settings']);
 		$style_settings['live'] = 0;
@@ -268,6 +284,7 @@ function smile_duplicate_style(){
 		$newStyleName = smile_duplicate_styleName($prev_styles,$style_name);
 		$new_style['style_name'] = $newStyleName;
 		$new_style['style_id'] = $new_style_id;
+		$style_settings['style_id'] = $new_style_id;
 		$new_style['style_settings'] = serialize($style_settings);
 		array_push($prev_styles,$new_style);
 		$modal_arrays = $prev_styles;
@@ -348,31 +365,31 @@ function smile_update_status(){
 if( !function_exists( "smile_update_impressions" ) ){	
 function smile_update_impressions(){
  
- global $cp_analytics_end_time;
- $user_role = '';
- $condition = true;
- $cp_settings = get_option('convert_plug_settings');
- 
- if(is_array($cp_settings)) {
- 	$banneduser = explode(",",$cp_settings['cp-user-role']);
- }
+	global $cp_analytics_end_time;
+	$user_role = '';
+	$condition = true;
+	$cp_settings = get_option('convert_plug_settings');
 
- if(is_user_logged_in()) {
- 	$current_user = new WP_User(wp_get_current_user());
- 	$user_roles = $current_user->roles;
- 	$user_role = $user_roles[0];
-  }	
+	if(is_array($cp_settings)) {
+		$banneduser = explode(",",$cp_settings['cp-user-role']);
+	}
 
-  if(!empty($cp_settings)){
-	$condition = !is_user_logged_in() || (is_user_logged_in() && (!in_array($user_role, $banneduser)));
-  } else {
- 	$condition = !is_user_logged_in() || (is_user_logged_in() && ( $user_role != 'administrator' ));
-  }
+	if(is_user_logged_in()) {
+		$current_user = new WP_User(wp_get_current_user());
+		$user_roles = $current_user->roles;
+		$user_role = $user_roles[0];
+	}	
 
-  if( $condition ){
+	if(!empty($cp_settings)){
+		$condition = !is_user_logged_in() || (is_user_logged_in() && (!in_array($user_role, $banneduser)));
+	} else {
+		$condition = !is_user_logged_in() || (is_user_logged_in() && ( $user_role != 'administrator' ));
+	}
+
+	if( $condition ){
 
 		$styles = $_POST['styles'];
- 
+
 		foreach( $styles as $style ) {
 			
 			$style_id = $style;
@@ -493,6 +510,9 @@ function smile_delete_style(){
 
 		$result = update_option($option,$modal_arrays);
 	} 
+
+	// reset analytics data for style
+	cp_reset_analytics($style_id);
 
 	if($result){
 		print_r(json_encode(array(
@@ -655,12 +675,13 @@ if( !function_exists( "isCampaignExists" ) ){
 */
 if( !function_exists( "cp_add_subscriber" ) ){
 function cp_add_subscriber(){
-	$data = $_POST;
-	$list_id = isset( $data['list_id'] ) ? $data['list_id'] : '';
-	$name = isset( $data['name'] ) ? $data['name'] : '';
-	$email = isset( $data['email'] ) ? $data['email'] : '';
-	$date = isset( $data['date'] ) ? $data['date'] : '';
-	$only_conversion = isset( $data['only_conversion'] ) ? true : false;
+
+	$data 				= $_POST;
+	$param 				= $_POST['param'];
+	$email 				= isset( $_POST['param']['email'] ) ? $_POST['param']['email'] : '';
+	$list_id 			= isset( $data['list_id'] ) ? $data['list_id'] : '';
+	$only_conversion 	= isset( $data['only_conversion'] ) ? true : false;
+	
 	if( isset( $data['message'] ) ) {
 		$on_success = 'message';
 	} else if( isset( $data['redirect'] ) ){
@@ -672,14 +693,14 @@ function cp_add_subscriber(){
 	$msg = ( isset( $data['message'] ) && $data['message'] !== '' ) ? $data['message'] : __( 'Thank you.', 'smile' );
 
 	if( $on_success == 'message' ) {
-		$action	= 'message';
-		$url	= 'none';
+		$action		= 	'message';
+		$url		= 	'none';
 	} else if( $on_success == "redirect" ) {
-		$action	= 'redirect';
-		$url	= $data['redirect'];
+		$action		= 	'redirect';
+		$url		= 	$data['redirect'];
 	} else {
-		$action	= 'close';
-		$url	= '#';
+		$action		= 	'close';
+		$url		= 	'#';
 	}
 
 	$contact = array();
@@ -688,29 +709,47 @@ function cp_add_subscriber(){
 	$prev_contacts = get_option($option);
 
 	//	Check Email in MX records
-	if( !$only_conversion ){
-		$email_status = apply_filters('cp_valid_mx_email', $email );
-	} else {
-		$email_status = false;
+	$email_status = true;
+	if( !$only_conversion ) {
+
+		//	Check MX Record setting globally enabled / disabled?
+		if( !empty($email) && ( apply_filters( 'cp_enabled_mx_record', $email) ) ) {
+
+			if( filter_var($email, FILTER_VALIDATE_EMAIL) ) {
+				$email_status = apply_filters('cp_valid_mx_email', $email );
+			} else {
+				$email_status = false;
+			}
+		}
 	}
-	
+
 	if( $email_status ) {
 
 		$status = 'success';
-		$contact['name'] = $name;
-		$contact['email'] = strtolower($email);
-		$contact['date'] = $date;
+
+		$contact = $param;
 		$updated = false;
 		$index = false;
 
-		if($prev_contacts) {
+		if( !empty($email) && $prev_contacts) {
 			$index = cp_check_in_array($email, $prev_contacts, 'email');
-		} 	
-			
+		}
+
+
 		if ( $index !== false ) { 
-			unset($prev_contacts[$index]);
-			$prev_contacts[] = $contact;
+			// print_r($contact);
+			$contact['user_id'] = $prev_contacts[$index]['user_id'];
+			$prev_contacts[$index] = $contact;
 			$updated = true;
+
+			//	Show message for already subscribed users
+			$data					=	get_option( 'convert_plug_settings' );
+			$default_msg_status		=	isset($data['cp-default-messages']) ? $data['cp-default-messages'] : 1;
+			$already_subscribed 	=	isset($data['cp-already-subscribed']) ? $data['cp-already-subscribed'] : __( 'Already Subscribed...!', 'smile' );
+			if( $default_msg_status ) {
+				$msg = stripslashes($already_subscribed);
+			}
+
 		} else {
 			$prev_contacts[] = $contact;
 		}
@@ -719,7 +758,9 @@ function cp_add_subscriber(){
 			$prev_contacts =  array_map( "unserialize", array_unique( array_map( "serialize", $prev_contacts ) ) );
 		}
 
-		update_option($option,$prev_contacts);
+		if( !$only_conversion ){
+		  update_option($option,$prev_contacts);
+		}
 
 		if( !$updated ) {
 			if( !is_user_logged_in( ) ){
@@ -762,7 +803,7 @@ if( !function_exists( "cp_add_subscriber_contact" ) ) {
 		$index = false;
 		$updated = false;
 
-		$email = strtolower($subscriber['email']);
+		$email = isset( $subscriber['email'] ) ? strtolower($subscriber['email']) : '';
 		if($data) {
 			$index = cp_check_in_array($email, $data, 'email');
 		} 	
@@ -807,9 +848,11 @@ if( !function_exists( "cp_add_subscriber_contact" ) ) {
 if( !function_exists('cp_check_in_array')){
 	function cp_check_in_array($value, $array, $key){
 		foreach($array as $index => $item){
-	    	if(strtolower($item[$key]) == $value) {
-	     		return $index;
-	    	}
+			if( isset( $item[$key] ) ) {
+		    	if(strtolower($item[$key]) == $value) {
+		     		return $index;
+		    	}
+			}
 	   	}
 		return false;
 	}
@@ -1279,6 +1322,8 @@ if( !function_exists('get_style_analytics_data')){
 
 		if( is_array($_POST['styleid'])  ) {
 			$style_ids = $_POST['styleid'];
+			
+			
 			if(count($_POST['styleid']) > 1)
 				$style = 'multiple';
 			else 
@@ -1302,8 +1347,15 @@ if( !function_exists('get_style_analytics_data')){
 		   		}
 		   	}
 			$style = 'multiple';
-		}
+		} else {
+		   	$style_ids[] = $style_ids;
 
+		   	if( $compFactor == 'impVsconv' ) {
+			   	$style = 'single';
+			} else {
+				$style = 'multiple';
+			}
+		}
 		if( $startDate == '' && $endDate == '' ) {
 	    	$startDate = $cp_analytics_start_time;
 	    	$endDate = $cp_analytics_end_time;
@@ -1320,8 +1372,7 @@ if( !function_exists('get_style_analytics_data')){
 	    		if( $styleName !== null ) {
 
 	    			if( isset( $analtics_Data[$style_id] ) ) {
-						foreach ( $analtics_Data[$style_id] as $key => $value ) {
-				    		
+						foreach ( $analtics_Data[$style_id] as $key => $value ) {				    		
 				    		
 						    	$date = strtotime($key);
 						    	$key = date($dateFormat,strtotime($key));
@@ -1774,6 +1825,10 @@ if( !function_exists( "cp_is_list_assigned" ) ){
 			}
 		}
 
+		$assigned_to = apply_filters( 'is_list_assign_check', $assigned_to, $list_id );
+
+		$is_assigned = ( count( $assigned_to ) > 0 ) ? true : false;
+
 		if( $is_assigned ){
 			$styleCount = count($assigned_to);
 			print_r(json_encode(array(
@@ -2012,19 +2067,33 @@ function get_quick_behavior_settings($data,$module) {
 
 
 // Function to add behavior settings icon after delete button
-function cp_after_delete_action_init( $settings, $module ) {
+function cp_before_delete_action_init( $settings, $module ) {
 	ob_start();
 	// Retrieve behavior related settings
     $behavior_settings = get_quick_behavior_settings( $settings , $module );
+    if( !isset($settings['variant-style']) ) {
+	    $style_id = $settings['style_id'];
+    } else {
+    	$style_id = $settings['variant-style'];
+	} 
+
+    $analyticsData = get_option( 'smile_style_analytics' );
+
 	?>
 	<a class="action-list cp-behavior-settings" data-position="left" style="margin-left: 25px;" data-settings="<?php echo $behavior_settings; ?>">           
        <span class="action-tooltip">Behavior Quick View</span><i class="connects-icon-paper"></i> 
     </a>
-    <?php
+    <?php if( isset( $analyticsData[$style_id] ) ) { ?> 
+	    <a class="action-list cp-reset-analytics" data-style="<?php echo esc_attr( $style_id ); ?>" data-position="left" style="margin-left: 25px;cursor:pointer;">           
+	       <span class="action-tooltip">Reset Analytics</span><i class="connects-icon-reload"></i> 
+	    </a>
+    <?php } ?>
+
+    <?php 
     return ob_get_clean();	
 }
 
-add_filter( 'cp_after_delete_action', 'cp_after_delete_action_init', 10 , 2 );
+add_filter( 'cp_before_delete_action', 'cp_before_delete_action_init', 10 , 2 );
 
 
 
@@ -2084,5 +2153,30 @@ function cp_get_taxonomy_by_id($tax_id) {
 	}
 
 	return false;
+}
 
+
+/*
+* Function to reset analytics data for style
+* @since 1.1.1
+*/
+if( !function_exists( "cp_reset_analytics" ) ){
+	function cp_reset_analytics($style_id) {
+		$analyticsData = get_option( 'smile_style_analytics' );
+		if( isset( $analyticsData[$style_id]) ) {
+			unset($analyticsData[$style_id]);
+		}
+
+		$result = update_option( "smile_style_analytics", $analyticsData ); 
+		return $result;
+	}
+}
+
+if( !function_exists( "cp_reset_analytics_action" ) ){ 
+	function cp_reset_analytics_action() {		
+		$style_id = $_POST['style_id'];
+		$result = cp_reset_analytics($style_id);
+		echo 'reset';
+		die();
+	}
 }

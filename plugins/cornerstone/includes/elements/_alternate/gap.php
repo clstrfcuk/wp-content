@@ -23,7 +23,10 @@ class CS_Gap extends Cornerstone_Element_Base {
       'text',
       __( 'Size', 'cornerstone' ),
       __( 'Enter in the size of your gap. Pixels, ems, and percentages are all valid units of measurement.', 'cornerstone' ),
-      '50px'
+      '50px',
+      array(
+        'placeholder' => __( '50px (accepts CSS units)', 'cornerstone' )
+      )
     );
 
   }

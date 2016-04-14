@@ -3,7 +3,7 @@
 
 .cs-indicator,
 .cs-empty-element {
-  margin-bottom: <?php echo $cs_base_margin; ?>;
+  margin-bottom: <?php echo $cs_v1_base_margin; ?>;
 }
 
 body.x-integrity-light .cs-indicator,

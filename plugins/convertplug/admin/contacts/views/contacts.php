@@ -1,4 +1,5 @@
 <?php
+
    $smile_lists = get_option('smile_lists');
    $provider = '';
    $list_name = '';
@@ -24,6 +25,7 @@
       $listOption = "cp_connects_".$listName;
       $contacts = get_option($listOption);
    }
+
 
    if($contacts) {
       $totalContacts  = count($contacts);
@@ -147,11 +149,12 @@
     if( !empty( $contacts ) ){
       foreach( $contacts as $key => $list ){
         $name = ( isset( $list['name'] ) && $list['name'] !== "" ) ? $list['name'] : 'NA';
-        $email = $list['email'];
+        $email = ( isset( $list['email'] ) && !empty( $list['email'] ) ) ? $list['email'] : 'NA';
+        $user_id = ( isset( $list['user_id'] ) && !empty( $list['user_id'] ) ) ? $list['user_id'] : '';
         $date = date("j M Y",strtotime($list['date']));        
         $url = plugins_url( '../images/default-gravtar.png',  __FILE__ );
         ?>
-            <tr>
+            <tr data-href="<?php echo admin_url(); ?>admin.php?page=contact-manager&view=contact-details&list=<?php echo $_GET['list']; ?>&id=<?php echo esc_attr( $user_id ); ?>&email=<?php echo $email; ?>">
               <td scope="col" class="manage-column column-name"><span class="connect-list-gravtar-img"><?php echo get_avatar($email,'96','https://support.brainstormforce.com/wp-content/uploads/2015/07/default-gravtar.png' ); ?></span><?php echo esc_attr( $name ); ?></td>
               <td scope="col" class="manage-column column-email"><?php echo esc_attr( $email ); ?></td>
               <td scope="col" class="manage-column column-date"><?php echo esc_attr( $date ); ?></td>
@@ -218,6 +221,12 @@
   });
 
   jQuery( document ).ready(function() {
+      
+      jQuery('table tbody tr').click(function(){
+          window.location = jQuery(this).data('href');
+          return false;
+      });
+
       if( jQuery('.bsf-contact-list-top-search').hasClass('bsf-cntlist-top-search-act') )  {
         jQuery('.bsf-cntlst-top-search-input').focus().trigger('click');
       }

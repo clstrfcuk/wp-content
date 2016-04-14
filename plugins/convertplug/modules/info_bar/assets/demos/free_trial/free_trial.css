@@ -5,7 +5,6 @@
 .cp-free-trial.cp-info-bar-inline .cp-submit,
 .cp-free-trial.cp-info-bar .cp-submit {
     margin: 0;
-    /* padding: 8px 10px; */
     line-height: normal;
 }
 
@@ -76,7 +75,6 @@
 
     .cp-free-trial.cp-info-bar-inline .cp-submit,
     .cp-free-trial.cp-info-bar .cp-submit {
-        padding: 4px 8px;
         line-height: 1.25em;
     }
 

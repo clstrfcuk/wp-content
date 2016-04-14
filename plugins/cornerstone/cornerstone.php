@@ -5,7 +5,7 @@ Plugin URI: http://theme.co/cornerstone
 Description: The WordPress Page Builder
 Author: Themeco
 Author URI: http://theme.co/
-Version: 1.2.2
+Version: 1.2.4
 Text Domain: cornerstone
 Domain Path: lang
 */
@@ -19,8 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Load plugin class
 require_once 'includes/utility/plugin-base.php';
 require_once 'includes/cornerstone-plugin.php';
-
-add_filter( '_cornerstone_pre_validation', '__return_true' );
 
 // Fire it up
 Cornerstone_Plugin::run( __FILE__ );

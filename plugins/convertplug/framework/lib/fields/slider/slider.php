@@ -6,16 +6,15 @@ if ( function_exists('smile_add_input_type'))
 }
 
 add_action('admin_enqueue_scripts','smile_slider_admin_scripts');
-function smile_slider_admin_scripts(){
-	$screen = get_current_screen();
-	$screen_id = $screen->base;
-	$cp_page = strpos( $screen_id, 'plug_page');
-
+function smile_slider_admin_scripts($hook){
+	$cp_page = strpos( $hook, 'plug_page');
+	$data  =  get_option( 'convert_plug_debug' );
+	
 	if( $cp_page == 7 ){
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-slider' );
-		if( isset( $_GET['developer'] ) ){
+		if( $cp_page == 7 && isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ){
 			wp_enqueue_script( 'smile-slider', plugins_url('slider.js',__FILE__),array(),'1.0.0',true );
 			wp_enqueue_style( 'smile-jquery-ui', plugins_url('jquery-ui.css',__FILE__) );
 			wp_enqueue_style( 'smile-slider', plugins_url('slider.css',__FILE__) );

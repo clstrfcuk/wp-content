@@ -1452,7 +1452,9 @@ table.cp-list-optins.cp-variants-list tr th {
 	padding: 30px 15px;
 	margin: 20px 0 0 0 !important;
 }
-
+table.bsf-connect-optins-list tr {
+	cursor: pointer;
+}
 table.bsf-connect-optins .bsf-connect-column-empty .add-new-h2,
 table.cp-list-optins .cp-list-empty .add-new-h2 {
 	width: auto;
@@ -2634,8 +2636,9 @@ vertical-align: top !important;
 
 /* Hide Nags */
 .convertplug_page_smile-modal-designer .updated,
-.cp-add-new-style .updated {
-	display: none;
+.cp-add-new-style .updated,
+[class*="convertplug_page"] .message {
+    display: none !important;
 }
 
 /* Customizer Search */
@@ -2710,6 +2713,11 @@ vertical-align: top !important;
 .panel-free_ebook  [data-element ="btn_disp_next_line"] +.smile-element-container {
 	margin-top: -30px;
 }
+
+.smile-element-container[data-element ="social_min_count"] .slider-label{
+	display: none!important;
+}
+
 
 /***************************** Brainstorm Default Dashboard *****************************/
 
@@ -3459,10 +3467,69 @@ vertical-align: top !important;
 .smile-style-category ul.filter-options li.active a {
     box-shadow: none;
 }
+
+
+/*datepicker */
+.cp-datetime-picker .input-group.date {
+    position: relative;
+}
+
+.cp-datetime-picker .input-group-addon {
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    z-index: 99;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+        background: transparent;
+    border: none;
+}
+.smile-element-container .cp-datetime-picker {
+    margin: 10px 0;
+}
+
 div#wpfooter.cp_admin_footer {
     display: block!important;
 }
 
 div#wpfooter {
     display: none;
+}
+
+
+[data-element="form_builder_section"]{
+	margin-top: -30px;
+}
+.panel-YouTube [data-element=form_builder_section] {
+    margin-top: 0;
+}
+
+.panel-count_down .smile-element-container.cp-set-focus {
+    margin-bottom: 30px;
+}
+
+.cp-vertical-nav-bottom.cp-hidden-variant-style a{
+ width:25%
+}
+.cp-vertical-nav-bottom.cp-hidden-variant-style a.cp-section.cp-themes {
+    display: none;
+}
+
+/* Fix for param textarea visibility */
+
+#box-shadow-code,
+#border-code {
+	display: none !important;
+}
+
+#convert_plug_settings  span.cp-close-tooltip,
+#convert_plug_settings  span.cp-custom-tooltip,
+#convert_plug_settings span.cp-inside-tip,
+#convert_plug_settings span.cp-tooltip-icon {
+    display: inline-block;
+}
+
+.panel-jugaad .hide-cp-media-sizes{
+	display: none!important;
 }

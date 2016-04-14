@@ -69,6 +69,11 @@ function vc_gitem_create_link( $atts, $default_class = '', $title = '' ) {
 			if ( ! strlen( $title ) ) {
 				$title = '{{ post_title }}';
 			}
+		} elseif ( 'post_author' === $atts['link'] ) {
+			$link = 'a href="{{ post_author_href }}" class="' . esc_attr( $css_class ) . '"';
+			if ( ! strlen( $title ) ) {
+				$title = '{{ post_author }}';
+			}
 		} elseif ( 'image' === $atts['link'] ) {
 			$link = 'a{{ post_image_url_href }} class="' . esc_attr( $css_class ) . '"';
 		} elseif ( 'image_lightbox' === $atts['link'] ) {

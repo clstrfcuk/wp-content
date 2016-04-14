@@ -15,8 +15,13 @@
     padding: 5px;
 }
 
+.cp-special-offer .cp-form-container .cp-form-layout-1 .cp-form-field {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
 .cp-special-offer .cp-title,
-.cp-special-offer h1.cp-title {
+.cp-special-offer h2.cp-title {
     color: #333;
     font-size: 80px;
     font-weight: 600;
@@ -25,9 +30,11 @@
     margin: 3px 0 0;
     padding: 0;
 }
+
 .cp-special-offer .cp_responsive.cp_font {
     line-height: normal;
 }
+
 .cp-special-offer .cp-desc-container {
     margin: 0;
     font-size: 20px;
@@ -48,7 +55,7 @@
     font-weight: normal;
     color: #333;
     padding: 10px 10px;
-    padding-top: 0; 
+    padding-top: 0;
 }
 
 .cp-special-offer .cp-form-container {
@@ -56,8 +63,8 @@
     font-size: 15px;
     line-height: 1.64em;
     color: #333;
-    max-width: 700px;
-    padding: 0 7%;
+    margin: 0 auto;
+    max-width: 85%;
 }
 
 .cp-special-offer .cp-info-container,
@@ -77,11 +84,11 @@
     font-size: 40px;
     line-height: 1.38em;
     outline: none;
-    padding: 10px 20px;
     border-radius: 10px;
-    display: inline-block;
-    margin: 0px;
-    width: 100%;
+}
+
+.cp-special-offer .cp-form-layout-3 .cp-submit {
+    font-size: 15px;
 }
 
 .cp-special-offer .cp-submit,
@@ -92,11 +99,6 @@
     background-image: none;
     color: #fff;
     border: none;
-}
-
-.cp-special-offer .cp-form-container.form-with-btn-on-same-line {
-    margin-bottom: -5px;
-    padding: 0 3%;
 }
 
 .cp-special-offer #cp_button_editor span.cp_responsive.cp_font {
@@ -120,42 +122,6 @@
     max-width: 85%;
 }
 
-.cp-special-offer .cp-form-container {
-    padding-top: 0px;   /*  max-width: 90%; */
-    display: inline-block;
-    margin: 0 auto;
-    float: none;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.cp-special-offer .cp-btn-same {
-    padding-right: 0;
-    padding-left: 0;
-}
-
-.cp-special-offer .cp-form-without-name,
-.cp-special-offer .cp-form-with-name {
-    max-width: 85%;
-    margin: 0 auto;
-}
-
-.cp-special-offer .cp-btn-same form#smile-optin-form {
-    max-width: 90%;
-}
-
-.cp-special-offer input.cp-email,
-.cp-special-offer input.cp_name,
-.cp-special-offer input.cp-name {
-    padding: 10px 25px;
-    font-size: 15px;
-    line-height: 1.45em;
-    text-align: left;
-    margin: 0 0 15px;   /*  min-height:43px; */
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
-}
-
 .cp-special-offer .cp-desc-container.cp-empty .cp-description:after {
     width: 0;
     background: transparent;
@@ -165,10 +131,6 @@
 .cp-special-offer .cp-desc-container.cp-empty .cp-description {
     border-top-color: transparent !important;
     background: transparent !important;
-}
-
-.cp-special-offer .cp-form-container.cp-no-padding {
-    padding-top: 10px;
 }
 
 .cp-special-offer .cp-modal-window-size .cp-modal-body,
@@ -200,19 +162,11 @@
 }
 
 .cp-special-offer .cp-submit.cp-button-on-same-line {
-    font-size: 15px;
-    line-height: 1.45em;
-    /* border-radius: 3px ; */
+    line-height: 1.45em;    /* border-radius: 3px ; */
 }
 
 .cp-special-offer .cp-button-on-same-line button.cp-submit.btn-modal.btn.btn-subscribe {
-    font-size: 15px;
-    line-height: 1.45em;
-   /*  border-radius: 3px; */
-}
-
-.cp-special-offer .cp-email-form.col-md-8 {
-    padding: 0;
+    line-height: 1.45em;   /*  border-radius: 3px; */
 }
 
 /*--- form ---*/
@@ -222,17 +176,6 @@
 
 .cp-special-offer .cp-row.cp-submit-form {
     padding: 0 15px;
-}
-
-.cp-special-offer .cp-name-btn {
-    display: inline-block;
-    margin-top: 5px;
-}
-
-.cp-special-offer form#smile-optin-form {
-    margin-bottom: 0;
-    max-width: 85%;
-    margin: 0 auto;    /*  margin-top: 10px; */
 }
 
 .cp-special-offer .form-main.cp-form-simple {
@@ -262,7 +205,6 @@
     border-color: #333;
 }
 
-
 .cp-special-offer .cp-info-container {
     margin-top: 0px;
     margin-bottom: 15px;
@@ -278,16 +220,12 @@
     left: 40% !important;
 }
 
-.cp-special-offer input.cp-email.cp-input.cp-text-align-left,
-.cp-special-offer input.cp-email.cp-text-align-left {
-    text-align: left;
-}
 .cp-special-offer .cp-title-container {
     padding: 0;
     margin: 3px 0 0;
 }
-/*--for live preview---*/
 
+/*--for live preview---*/
 .cp-live-preview .cp-modal .cp-special-offer .cp-btn-gradient.cp-submit {
     border: none;
     border-radius: 10px;
@@ -296,17 +234,18 @@
     background: -moz-linear-gradient(rgb(255, 184, 89), rgb(237, 107, 12));
     background: linear-gradient(rgb(255, 184, 89), rgb(237, 107, 12));
 }
+
 .cp-live-preview .cp-modal .cp-special-offer .cp-btn-gradient.cp-submit:hover {
     background: rgb(237, 107, 12);
 }
 
-
 @media (max-width:990px) {
-     .cp-special-offer .cp-button-on-same-line button.cp-submit.btn-modal.btn.btn-subscribe {
+    .cp-special-offer .cp-button-on-same-line button.cp-submit.btn-modal.btn.btn-subscribe {
+
         /* border-radius: 10px ; */
         font-size: 14px;
         line-height: 1.38em;
-    } 
+    }
 
 }
 
@@ -315,10 +254,6 @@
         text-align: center;
     }
 
-    .cp-special-offer input.cp-email,
-    .cp-special-offer input.cp_name  {
-        text-align: center;
-    }
     .cp-special-offer .cp-modal-window-size .cp-modal-body,
     .cp-modal-window-size .cp-modal-body.cp-special-offer {
         max-width: 100%;
@@ -327,9 +262,6 @@
     .cp-special-offer .cp-formwith-name .form-button {
         width: 100%;
         margin-top: 0;
-    }
-    .cp-modal .cp-special-offer .cp-submit {
-        width: 100%;
     }
 
     .cp-special-offer .cp-form-simple .form-button {
@@ -349,7 +281,6 @@
         float: left;
     }
 
-    
     .cp-special-offer .cp-form-name input[name="name"] {
         text-align: center;
     }
@@ -365,25 +296,20 @@
     }
 
     .cp-special-offer .cp-submit.cp-button-on-same-line {
-        border-radius: 10px ;
+        border-radius: 10px;
         font-size: 40px;
         line-height: 1.38em;
     }
-    
+
     .cp-special-offer .cp-info-container,
     .cp-special-offer .cp-info-container p {
         font-size: 12px;
         padding-top: 0;
     }
+
 }
 
 @media (max-width:610px) {
-    .cp-special-offer .cp-submit {
-        font-size: 15px;
-        line-height: 1.38em;
-        padding: 15px 20px;
-    }
-
     .cp-special-offer .cp-desc-container,
     .cp-special-offer .cp-description {
         padding: 5px 10px;
@@ -394,32 +320,13 @@
     }
 
     .cp-special-offer .cp-title,
-    .cp-special-offer h1.cp-title {
+    .cp-special-offer h2.cp-title {
         font-size: 15px;
     }
 
     .cp-special-offer .cp-title-container {
         margin-bottom: 10px;
         padding: 0px 20px;
-    }
-
-
-
-    .cp-special-offer form#smile-optin-form {
-        max-width: 100%;
-    }
-
-    .cp-special-offer .form-main {
-        padding: 0;
-    }
-
-    .cp-special-offer .cp-button-on-same-line button.cp-submit.btn-modal.btn.btn-subscribe,
-    .cp-special-offer .cp-submit.cp-button-on-same-line {
-        font-size: 12px;
-       /*  border-radius: 3px; */
-    }
-    .cp-special-offer .cp-form-container {
-        margin: 0;
     }
 
 }

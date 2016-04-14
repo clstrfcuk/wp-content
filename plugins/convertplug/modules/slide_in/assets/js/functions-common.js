@@ -61,6 +61,13 @@ jQuery(document).ready(function(){
 			var data = CKEDITOR.instances.main_title_editor.getData();
 			parent.updateHTML(htmlEntities(data),'smile_slidein_title1');
 		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.main_title_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
 	}
 
 	if( jQuery("#info_editor").length ) {
@@ -93,6 +100,13 @@ jQuery(document).ready(function(){
 			cp_set_no_responsive( sel_info_editor, data );
 
 		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.info_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
+		} );
 	}
 
 	if( jQuery("#sec_title_editor").length !== 0 ) {
@@ -112,6 +126,13 @@ jQuery(document).ready(function(){
 
 			var data = CKEDITOR.instances.sec_title_editor.getData();
 			parent.updateHTML(htmlEntities(data),'smile_slidein_sec_title');
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.sec_title_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
 
@@ -135,42 +156,14 @@ jQuery(document).ready(function(){
 			var data = CKEDITOR.instances.desc_editor.getData();
 			parent.updateHTML(data,'smile_slidein_short_desc1');
 		} );
-	}
 
-	if( jQuery("#cp_button_editor").length ) {
-
-		var sel_cp_button_editor = jQuery("#cp_button_editor");
-
-		// Turn off automatic editor creation first.
-		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.inline( 'cp_button_editor' );	
-		CKEDITOR.instances.cp_button_editor.config.toolbar = 'Small';
-
-		//	1. Add class 'cp-no-responsive' to manage the line height of cp-highlight
-		CKEDITOR.instances.cp_button_editor.on('instanceReady',function(){
-		   	var data = CKEDITOR.instances.cp_button_editor.getData();
-			cp_set_no_responsive( sel_cp_button_editor, data );
-		});
-
-		CKEDITOR.instances.cp_button_editor.on( 'change', function() {
-
-			//	Set class - `cp-modal-exceed`
-			CP_slide_in_height();
-
-			//set color for li tags 
-        	cp_color_for_list_tag();
-
-			var data = CKEDITOR.instances.cp_button_editor.getData();
-			parent.updateHTML(data,'smile_button_title');
-			var test = jQuery("#cp_button_editor").html();			
-			jQuery(document).trigger('button_transform' , [test]);
-
-			//	2. Add class 'cp-no-responsive' to manage the line height of cp-highlight
-			cp_set_no_responsive( sel_cp_button_editor, data );
-
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.desc_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
-
 
 	if(jQuery("#short_desc_editor").length !== 0) {
 		// Turn off automatic editor creation first.
@@ -190,6 +183,13 @@ jQuery(document).ready(function(){
 
 			var data = CKEDITOR.instances.short_desc_editor.getData();
 			parent.updateHTML(data,'smile_slidein_content');
+		} );
+
+		// Use below code to 'reinitialize' CKEditor
+		// IN ANY CASE IF CKEDITOR IS NOT INITIALIZED THEN USE BELOW CODE
+		CKEDITOR.instances.short_desc_editor.on( 'instanceReady', function( ev ) {
+			var editor = ev.editor;
+	     		editor.setReadOnly( false );
 		} );
 	}
 	
@@ -250,7 +250,6 @@ jQuery(document).ready(function(){
 	jQuery("body").on("click", ".cp-image", function(e){ parent.setFocusElement('slidein_image'); e.stopPropagation(); });	
 	jQuery("body").on("click", ".cp-submit", function(e){ parent.setFocusElement('button_bg_color'); e.stopPropagation(); });	
 	jQuery("body").on("click", ".cp-slidein-body", function(e){ parent.setFocusElement('slidein_bg_color'); e.stopPropagation(); });
-	jQuery("body").on("click", ".cp-email", function(e){ parent.setFocusElement('placeholder_text'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-name", function(e){ parent.setFocusElement('name_text'); e.stopPropagation(); });
 	jQuery("body").on("click", ".slidein-overlay-close", function(e){ parent.setFocusElement('close_slidein'); e.stopPropagation(); });
 
@@ -259,13 +258,6 @@ jQuery(document).ready(function(){
 		jQuery(".cp-slidein-body").find(".blinking-cursor").remove();
 	}); 
 
-	// Preventing links and form navigation in an iframe
-	jQuery('a').click(function(e){
-		e.preventDefault();
-	});
-	jQuery('button').click(function(e){
-		e.preventDefault();
-	});
 	jQuery(this).on('submit','form',function(e){
 		e.preventDefault();
 	});
@@ -284,7 +276,6 @@ function cp_get_clean_string(string) {
 	return cleanString;
 }
 		
-
 // Add cp-empty class
 function cp_add_empty_class(element,container) {
 
@@ -298,7 +289,6 @@ function cp_add_empty_class(element,container) {
 		jQuery(container).removeClass('cp-empty');
 	}
 }
-
 
 // removes cp-empty class from container
 function cp_remove_empty_class(element) {
@@ -520,7 +510,9 @@ function cp_apply_animations(data) {
 		exit_animation			= data.exit_animation,
 		cp_animate	   			= jQuery(".cp-animate-container"),
 		slidein_overlay 		= jQuery(".slidein-overlay"),
-        vw 						= jQuery(window).width();
+        vw 						= jQuery(window).width(),
+        toggle_btn 			= data.toggle_btn,
+		toggle_btn_visible  = data.toggle_btn_visible;
      
 
 	if(slidein_overlay.find('.cp-slidein-toggle').length > 0){     	
@@ -536,40 +528,45 @@ function cp_apply_animations(data) {
 	} else {
 		cp_animate.removeClass('slidein-overlay-none');
 	}
-	// console.log(hide_animation_width); console.log(overlay_effect);
 
 	var entry_anim = ( typeof cp_animate.attr("data-entry-animation") !== "undefined" ) ? cp_animate.attr("data-entry-animation") : '';
 	var exit_anim = ( typeof cp_animate.attr("data-exit-animation") !== "undefined" ) ? cp_animate.attr("data-exit-animation") : '';
+
+	cp_animate.attr('data-exit-animation', exit_animation );
+	cp_animate.attr("data-entry-animation", overlay_effect );
 		
-	cp_animate.removeClass('smile-animated');
+	if( toggle_btn == '1' && toggle_btn_visible == '1' ) { 
+		// do not apply animations to info bar 
+	} else {
 		
-	if( !cp_animate.hasClass(exit_animation) && exit_animation !== exit_anim ){
-		cp_animate.attr('data-exit-animation', exit_animation );
-		setTimeout(function(){
-			if( exit_animation !== "none" ) {	
-				cp_animate.removeClass(exit_anim);
-				cp_animate.removeClass(entry_anim);
-				cp_animate.addClass('smile-animated '+exit_animation);
-				cp_animate.attr('data-entry-animation', overlay_effect );
-			}
-			setTimeout( function(){
-				cp_animate.removeClass(exit_anim);
-				cp_animate.removeClass(exit_animation);
-				cp_animate.removeClass(entry_anim);
-				cp_animate.addClass('smile-animated '+entry_anim);
-			}, 1000 );
-		},500);		
-	}
-	
-	if( !cp_animate.hasClass(overlay_effect) && overlay_effect !== entry_anim ){
-		setTimeout(function(){
-			if( overlay_effect !== "none" ) {
-				cp_animate.removeClass(exit_anim);
-				cp_animate.removeClass(entry_anim);
-				cp_animate.addClass('smile-animated '+overlay_effect);
-				cp_animate.attr('data-entry-animation', overlay_effect );
-			}
-		},500);		
+		if( !cp_animate.hasClass(exit_animation) && exit_animation !== exit_anim ){
+			
+			setTimeout(function(){
+				if( exit_animation !== "none" ) {	
+					cp_animate.removeClass(exit_anim);
+					cp_animate.removeClass(entry_anim);
+					cp_animate.addClass('smile-animated '+exit_animation);
+					cp_animate.attr('data-entry-animation', overlay_effect );
+				}
+				setTimeout( function(){
+					cp_animate.removeClass(exit_anim);
+					cp_animate.removeClass(exit_animation);
+					cp_animate.removeClass(entry_anim);
+					cp_animate.addClass('smile-animated '+entry_anim);
+				}, 1000 );
+			},500);		
+		}
+		
+		if( !cp_animate.hasClass(overlay_effect) && overlay_effect !== entry_anim ){
+			setTimeout(function(){
+				if( overlay_effect !== "none" ) {
+					cp_animate.removeClass(exit_anim);
+					cp_animate.removeClass(entry_anim);
+					cp_animate.addClass('smile-animated '+overlay_effect);
+					cp_animate.attr('data-entry-animation', overlay_effect );
+				}
+			},500);		
+		}
 	}
 }
 
@@ -858,12 +855,6 @@ function cp_editor_setup(data) {
 		}
 	}
 
-	//submit button editor
-	button_title = htmlEntities(button_title);
-	cp_submit.html(button_title);
-	if( button_title !== "" && typeof button_title !== "undefined" && jQuery("#cp_button_editor").length !== 0 ){
-		CKEDITOR.instances.cp_button_editor.setData(button_title);
-	}
 	jQuery(".cp-info-container").css('color',tip_color);
 
 	//description bottom
@@ -1038,9 +1029,10 @@ function slide_button_setting(data){
 	    slide_button_text_color 		= data.slide_button_text_color,
 	    side_btn_gradient 				= data.side_btn_gradient,
 	    toggle_btn						= data.toggle_btn,
+	    toggle_btn_visible  			= data.toggle_btn_visible,
 
 	    //	Toggle Button
-		toggle_button_font 			= data.toggle_button_font;
+		toggle_button_font 				= data.toggle_button_font;
 
 
 	/**
@@ -1108,42 +1100,38 @@ function slide_button_setting(data){
 	cp_slide_edit_btn.attr('class','cp-slide-edit-btn smile-animated '+button_animation +' ');
 	cp_toggle_container.addClass(hide_button_class);
 
-	var slidein_click = slidein_overlay.hasClass('cp-slidein-click');
-	if( is_cookie && !slidein_click ) {
-		if( toggle_btn == 1 ) {
-			if( !jQuery(".slidein-overlay").hasClass('cp-slide-without-toggle') ) {
-			var cp_toggle_container    = jQuery(".cp-toggle-container"),
-				exitanimation 		 = jQuery(".cp-animate-container").data("exit-animation"),
-				cp_animate_container = jQuery(".cp-animate-container");
-		 
-			cp_animate_container.attr('class', 'cp-animate-container');                                      
-	        cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+exitanimation);
-	        cp_animate_container.addClass("cp-hide-slide");
-			cp_toggle_container.removeClass("cp-slide-hide-btn");
-			cp_animate_container.removeClass('exitanimation');
-			} else {
-				e.stopPropagation();
-			}
+	if( toggle_btn == 1 && toggle_btn_visible == 1 ) {
+		if( !jQuery(".slidein-overlay").hasClass('cp-slide-without-toggle') ) {
+		var cp_toggle_container    = jQuery(".cp-toggle-container"),
+			exitanimation 		 = jQuery(".cp-animate-container").data("exit-animation"),
+			cp_animate_container = jQuery(".cp-animate-container");
+	 
+		cp_animate_container.attr('class', 'cp-animate-container');                                      
+        cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+exitanimation);
+        cp_animate_container.addClass("cp-hide-slide");
+		cp_toggle_container.removeClass("cp-slide-hide-btn");
+		cp_animate_container.removeClass('exitanimation');
 		} else {
-			if( !jQuery(".cp-toggle-container").hasClass('cp-slide-hide-btn') ) {
-			jQuery(".cp-toggle-container").addClass("cp-slide-hide-btn");
-			parent.setFocusElement('slide_button_title'); 
-			var	cp_animate_container = jQuery(".cp-animate-container"),
-				entryanimation       = cp_animate_container.data("entry-animation");
+			e.stopPropagation();
+		}
+	} else {
+		if( !jQuery(".cp-toggle-container").hasClass('cp-slide-hide-btn') ) {
+		jQuery(".cp-toggle-container").addClass("cp-slide-hide-btn");
+		parent.setFocusElement('slide_button_title'); 
+		var	cp_animate_container = jQuery(".cp-animate-container"),
+			entryanimation       = cp_animate_container.data("entry-animation");
 
-				cp_animate_container.attr('class', 'cp-animate-container cp-hide-slide smile-animated');
-			
-				setTimeout(function() {	
-				 cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+entryanimation);	
-				}, 10);
-			}
+			cp_animate_container.attr('class', 'cp-animate-container cp-hide-slide smile-animated');
+		
+			setTimeout(function() {	
+			 cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+entryanimation);	
+			}, 10);
 		}
 	}
 
-
-	if(side_btn_gradient == 1){
+	if( side_btn_gradient == 1 ) {
     	side_btn_style = 'cp-btn-gradient';
-    }else{
+    } else {
     	side_btn_style = 'cp-btn-flat';
     }
 
@@ -1157,7 +1145,6 @@ function slide_button_setting(data){
     });
   
     cp_slide_edit_btn.addClass(side_btn_style);	
-
 
 	// button position
 	var positionclassList = ['slidein-top-left','slidein-top-center','slidein-top-right','slidein-bottom-left','slidein-bottom-center','slidein-bottom-right','slidein-center-left','slidein-center-right'];
@@ -1216,8 +1203,6 @@ function slide_button_setting(data){
 	jQuery('#smile_side_button_bg_hover_color', window.parent.document).val( c_hover );
 	jQuery('#smile_side_button_bg_gradient_color', window.parent.document).val( light );
 
-	//	Append ALL CSS
-	//jQuery('#cp-slide-button-inline-css').html('<style>' + slide_in_style + '</style>');
 }
 
 // Add class to body for Slide In position 

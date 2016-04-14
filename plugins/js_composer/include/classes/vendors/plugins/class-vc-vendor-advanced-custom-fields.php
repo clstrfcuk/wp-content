@@ -37,6 +37,11 @@ class Vc_Vendor_AdvancedCustomFields implements Vc_Vendor_Interface {
 			&$this,
 			'mapGridItemShortcodes',
 		) );
+
+		add_action( 'vc_after_mapping', array(
+			&$this,
+			'mapEditorsShortcodes',
+		) );
 	}
 
 	/**
@@ -56,5 +61,10 @@ class Vc_Vendor_AdvancedCustomFields implements Vc_Vendor_Interface {
 		$wc_shortcodes = include vc_path_dir( 'VENDORS_DIR', 'plugins/acf/grid-item-shortcodes.php' );
 
 		return $shortcodes + $wc_shortcodes;
+	}
+
+	public function mapEditorsShortcodes() {
+		require_once vc_path_dir( 'VENDORS_DIR', 'plugins/acf/class-vc-acf-shortcode.php' );
+		vc_lean_map( 'vc_acf', null, vc_path_dir( 'VENDORS_DIR', 'plugins/acf/shortcode.php' ) );
 	}
 }

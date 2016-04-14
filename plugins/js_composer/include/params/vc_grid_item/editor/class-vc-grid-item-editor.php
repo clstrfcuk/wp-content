@@ -28,7 +28,7 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 		) );
 		add_action( 'vc_templates_render_backend_template', array(
 			&$this,
-			'loadPredefinedTemplate',
+			'loadTemplate',
 		), 10, 2 );
 /*		add_action( 'vc_ui-template-preview', array(
 			&$this,
@@ -234,11 +234,17 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 	}
 
 	public function loadPredefinedTemplate( $template_id, $template_type ) {
-		if ( 'grid_templates' === $template_type ) {
-			ob_start();
-			$this->templatesEditor()->load( $template_id );
+		ob_start();
+		$this->templatesEditor()->load( $template_id );
 
-			return ob_get_clean();
+		return ob_get_clean();
+
+	}
+	public function loadTemplate( $template_id, $template_type ) {
+		if ( 'grid_templates' === $template_type ) {
+			return $this->loadPredefinedTemplate($template_id, $template_type);
+		} else if ( 'grid_templates_custom' === $template_type ) {
+			return $this->templatesEditor()->loadCustomTemplate( $template_id );
 		}
 
 		return $template_id;
@@ -260,7 +266,7 @@ class Vc_Grid_Item_Editor extends Vc_Backend_Editor {
 
 		add_action( 'vc_templates_render_backend_template_preview', array(
 			&$this,
-			'loadPredefinedTemplate',
+			'loadTemplate',
 		), 10, 2 );
 		add_filter( 'vc_render_template_preview_include_template', array(
 			&$this,

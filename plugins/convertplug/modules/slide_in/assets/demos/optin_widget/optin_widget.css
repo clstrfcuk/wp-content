@@ -1,4 +1,4 @@
-/* = Optin
+/* = Optin widget
  *-------------------------------------------------- */
 .cp-slidein-body .cp-optin-widget,
 .cp-optin-widget .cp-slidein-body {
@@ -28,7 +28,7 @@
 }
 
 .cp-optin-widget .cp-title,
-.cp-optin-widget h1.cp-title {
+.cp-optin-widget h2.cp-title {
     margin: 0;
     font-size: 16px;
     font-family: 'Verdana', sans-serif;
@@ -45,26 +45,31 @@
     color: #ffffff;
     margin-bottom: 0px;
 }
+
 .cp-optin-widget .cp-description {
     font-size: 14px;
     line-height: 24px;
 }
+
 .cp-optin-widget .cp-desc-container,
-.cp-optin-widget .cp-title-container{
+.cp-optin-widget .cp-title-container {
     margin-bottom: 0px;
-	padding-left: 15px;
+    padding-left: 15px;
     padding-right: 15px;
 }
+
 .cp-optin-widget .cp-info-container {
     font-family: 'Verdana', sans-serif;
     font-size: 12px;
     line-height: 1em;
     color: #ffffff;
-    padding: 0px 15px;
+    padding: 0;
     margin-top: -5px;
     margin-bottom: 20px;
-    text-align: center;
+    text-align: left;
+    padding: 10px 0 0 15px;
 }
+
 .cp-optin-widget .cp-desc-timetable,
 .cp-optin-widget .cp-mid-desc-container {
     font-family: 'Verdana', sans-serif;
@@ -78,9 +83,11 @@
     margin: 0 0 10px;
     padding: 10px 0;
 }
-.cp-optin-widget .cp-mid-desc-container{
+
+.cp-optin-widget .cp-mid-desc-container {
     padding-bottom: 0;
 }
+
 .cp-optin-widget .cp-submit {
     background-color: rgb(68, 68, 68);
     color: #FFF;
@@ -89,10 +96,9 @@
     line-height: 1.5em;
     border-radius: 3px;
     outline: none;
-    padding: 10px 15px;
     margin: 0;
-    width: 100%;
 }
+
 .cp-optin-widget .cp-submit,
 .cp-optin-widget .cp-submit:hover,
 .cp-optin-widget .cp-submit:active,
@@ -103,29 +109,23 @@
     border: none;
     margin-bottom: 10px;
 }
+
 .cp-slidein .cp-optin-widget .cp-submit {
-    padding: 5px 15px;
     border-radius: 3px;
-    display: inline-block; 
-    word-wrap: break-word;  
+    display: inline-block;
+    word-wrap: break-word;
 }
 
 .cp-optin-widget input.cp-email,
 .cp-optin-widget input.cp_name,
 .cp-optin-widget input.cp-name {
-    padding: 6px 20px;
-    font-size: 13px;
     line-height: 1.3em;
-    text-align: center;
     margin: 0 0 10px;
 }
-.cp-optin-widget .form-main {
-    padding: 0;
-    margin: 0;
-}
 
-.cp-optin-widget .form-main {
-    padding-bottom: 15px;
+.cp-optin-widget .form-main.cp-form-layout-3 {
+    margin: 0;
+    padding: 0px 15px 0px 25px;
 }
 
 .cp-optin-widget .form-main.cp-form-simple {
@@ -143,13 +143,8 @@
 }
 
 /*--- form ---*/
-
 .cp-optin-widget .col-md-6.cp-email-form {
     padding-right: 0;
-}
-
-.cp-optin-widget .cp-row.cp-submit-form {
-    padding: 0 15px;
 }
 
 .cp-optin-widget .cp-formwith-name>div,
@@ -164,7 +159,7 @@
 }
 
 .cp-optin-widget .cp-name-btn {
-    display: inline-block;   
+    display: inline-block;
 }
 
 .cp-optin-widget .cp-formwith-name .cp-form {
@@ -196,7 +191,7 @@
     margin-left: 0;
     padding-top: 25px;
     text-align: center;
-    float: left;   
+    float: left;
 }
 
 .cp-optin-widget .cp-name-form,
@@ -207,8 +202,6 @@
 
 .cp-optin-widget .cp-form-container {
     display: block;
-    padding-bottom: 10px;
-    margin-top: 5px;
 }
 
 .cp-optin-widget .form-main.cp-formwith-name {
@@ -222,26 +215,29 @@
 .cp-optin-widget #cp_button_editor span.cp_responsive.cp_font {
     line-height: 1em;
 }
-.cp-optin-widget .cp-short-desc-font{
+
+.cp-optin-widget .cp-short-desc-font {
     font-style: italic;
 }
+
 .cp-optin-widget .cp-email-form .cp_big_email {
     padding-right: 0;
 }
+
 .cp-optin-widget .cp-email-form.cp-email-wth-btn-onnext {
     padding-right: 0;
 }
 
-.cp-optin-widget .cp-submit-container{
+.cp-optin-widget .cp-submit-container {
     padding-left: 0px;
 }
 
-.cp-optin-widget .cp-form-name{
+.cp-optin-widget .cp-form-name {
     padding-right: 15px;
     padding-left: 15px;
 }
 
-.cp-optin-widget .cp-form-name{
+.cp-optin-widget .cp-form-name {
     padding-right: 0px;
     padding-left: 0px;
 }
@@ -258,20 +254,22 @@
     float: left;
 }
 
-.cp-optin-widget .cp-formwith-name .cp-form-email.form-content{
+.cp-optin-widget .cp-formwith-name .cp-form-email.form-content {
     padding-left: 0;
     padding-right: 0;
 }
 
-
-
-.cp-optin-widget .cp-slidein-head .cp-title-container{
+.cp-optin-widget .cp-slidein-head .cp-title-container {
     float: left;
     padding: 5px 15px;
     width: 85%;
 }
 
-.cp-optin-widget .cp-slidein-head .cp-slidein-toggle{
+.cp-slidein-inline .cp-optin-widget .cp-slidein-head .cp-title-container {
+    width: 100%;
+}
+
+.cp-optin-widget .cp-slidein-head .cp-slidein-toggle {
     text-align: right;
     float: right;
     position: absolute;
@@ -285,10 +283,10 @@
     -ms-transition: -ms-transform 800ms;
     transition: transform 800ms;
     -webkit-transform: translateY(-50%);
-       -moz-transform: translateY(-50%);
-        -ms-transform: translateY(-50%);
-         -o-transform: translateY(-50%);
-            transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 .cp-optin-widget .cp-slidein-head .cp-slidein-toggle.cp-widget-open {
@@ -298,11 +296,7 @@
     transform: translateY(-50%) rotate(180deg);
 }
 
-/* .cp-optin-widget .cp-slidein-head .cp-slidein-toggle span{
-    font-size: 24px;
-    font-family: 'dashicons';    
-} */
-.cp-optin-widget .cp-slidein-head{
+.cp-optin-widget .cp-slidein-head {
     float: left;
     display: inline-block;
     width: 100%;
@@ -310,28 +304,26 @@
     border-bottom: 1px solid #999;
 }
 
-.cp-optin-widget.cp-slidein-body{
+.cp-optin-widget.cp-slidein-body {
     padding: 0;
 }
 
-.cp-optin-widget-container .cp-slidein.slidein-bottom-left{
+.cp-optin-widget-container .cp-slidein.slidein-bottom-left {
     left: 25px;
 }
 
 /*-----icon-----*/
- .cp-optin-toggle-icon {
-    display:inline-block;
+.cp-optin-toggle-icon {
+    display: inline-block;
     width: 100%;
     height: 100%;
     position: relative;
-    padding: 8px; 
+    padding: 8px;
     font-size: 15px;
-    line-height: 1em; 
+    line-height: 1em;
 }
 
-
-.cp-optin-toggle-icon:before
- {
+.cp-optin-toggle-icon:before {
     border-style: solid;
     border-width: .25em .25em 0 0;
     content: '';
@@ -349,16 +341,17 @@
     top: 0;
 }
 
-.cp-optin-toggle-icon:before {   
-    top: 0;      
+.cp-optin-toggle-icon:before {
+    top: 0;
 }
 
-.cp-optin-widget  .cp-center-align-text input[name=email], 
-.cp-optin-widget  .cp-center-align-text input[name=name], 
-.cp-optin-widget  .cp-center-align-text input[type=email], 
+.cp-optin-widget  .cp-center-align-text input[name=email],
+.cp-optin-widget  .cp-center-align-text input[name=name],
+.cp-optin-widget  .cp-center-align-text input[type=email],
 .cp-optin-widget  .cp-center-align-text input[type=text] {
-    text-align: center!important;
+    text-align: center !important;
 }
+
 
 @media (max-width:1355px) {
     .cp-optin-widget .cp_name_submit {
@@ -370,6 +363,7 @@
     .cp-optin-widget .cp-name-form {
         padding-right: 15px;
     }
+
 }
 
 @media (max-width:768px) {
@@ -399,8 +393,8 @@
     .cp-optin-widget .cp-right-contain {
         float: left;
     }
-    
-    .cp-optin-widget .cp-submit-container{
+
+    .cp-optin-widget .cp-submit-container {
         padding-left: 15px;
     }
 
@@ -411,10 +405,11 @@
     .cp-optin-widget .cp-form-email.form-content {
         float: left;
     }
-    .cp-optin-widget .cp-desc-timetable, 
+
+    .cp-optin-widget .cp-desc-timetable,
     .cp-optin-widget .cp-mid-desc-container,
-    .cp-optin-widget .cp-info-container{
-        font-size:12px;
+    .cp-optin-widget .cp-info-container {
+        font-size: 12px;
     }
 
     .cp-optin-widget .cp-email-form,
@@ -423,43 +418,31 @@
         padding-right: 15px;
     }
 
-    .cp-optin-widget .cp-email-form.cp-email-wth-btn-onnext{
+    .cp-optin-widget .cp-email-form.cp-email-wth-btn-onnext {
         padding-right: 15px;
     }
 
 }
 
-@media (max-width:667px) {
-       .cp-optin-widget .cp-info-container {
-        margin-top: 10px;
-    }
-
-    .cp-optin-widget .form-button-nxt-line {
-        display: block;
-        width: 100%;
-        float: left;
-    }   
-}
-
-@media (min-width: 768px) {
+@media (min-width:768px) {
     .cp-optin-widget .cp-form-without-name .cp-email-form {
         padding-left: 15px;
         padding-right: 15px;
     }
 
-    .cp-optin-widget .cp_name_submit{
+    .cp-optin-widget .cp_name_submit {
         padding-left: 15px;
     }
 
-    .cp-optin-widget .cp-submit-container{
+    .cp-optin-widget .cp-submit-container {
         padding-left: 15px;
     }
 
-    .cp-optin-widget .cp-email-form.cp-email-wth-btn-onnext{
+    .cp-optin-widget .cp-email-form.cp-email-wth-btn-onnext {
         padding-right: 15px;
     }
 
-    .cp-optin-widget .cp-form-name{
+    .cp-optin-widget .cp-form-name {
         padding-right: 0px;
         padding-left: 0px;
     }
@@ -469,7 +452,8 @@
         float: left;
     }
 
-    .cp-optin-widget .cp-form-simple .form-button{
+    .cp-optin-widget .cp-form-simple .form-button {
         padding-left: 0px;
     }
+
 }

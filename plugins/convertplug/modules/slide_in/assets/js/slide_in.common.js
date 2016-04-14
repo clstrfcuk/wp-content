@@ -95,9 +95,16 @@
         // box shadow for all form style 
         apply_boxshaddow();
 
-        
-        if(jQuery(".slidein-overlay").length > 0){              
-         Ps.initialize(document.getElementById("slide-in-animate"));
+        // function to call CP_slide_in_height() when text area resize
+        apply_resize_on_textarea();
+         
+        if(jQuery(".slidein-overlay").length > 0){     
+            jQuery(".slidein-overlay").each(function(index, el) {
+                if(!jQuery(this).find(".cp-slidein-content").hasClass('ps-container')){
+                    var id= jQuery(this).find(".cp-slidein-content").attr('id');                
+                    Ps.initialize(document.getElementById(id)); 
+                }
+            });     
         }
 
     });
@@ -113,10 +120,6 @@
 
         CP_slide_in_height();
 
-        //set color for li tags 
-       // cp_color_for_list_tag();
-
-       // set_optin_widget_bottom();
     });
 
     /**
@@ -247,6 +250,7 @@ function cp_color_for_list_tag(){
 		var is_responsive_cls = jQuery(this).parents(".cp_responsive").length;
 		if( is_responsive_cls ) {
         jQuery(this).find("li").each(function() { 
+            if(jQuery(this).parents(".cp_social_networks").length == 0){      
                 var parent_li   = jQuery(this).parents(".cp_responsive").attr('class').split(' ')[0],
                     cnt         = jQuery(this).index()+1,  
                     font_size   = jQuery(this).find(".cp_font").css("font-size"),                           
@@ -285,11 +289,12 @@ function cp_color_for_list_tag(){
                 if(color){
                   jQuery('head').append('<style class="cp-li-color-css'+cnt+'">.'+moadal_style+' .'+parent_li+' li:nth-child('+cnt+'){ color: '+color+';}</style>');
                 }      
+            }
           });
+
 		}
     });
 }
-
 
 //function for box shadow for form field
 
@@ -407,4 +412,20 @@ function set_optin_widget_bottom(){
             }
         });
     }, 200);
+}
+
+function apply_resize_on_textarea(){
+     jQuery(".slidein-overlay").each(function() { 
+        
+        jQuery(this).find(".cp-textarea").each(function(){
+
+            var textareas =jQuery(this);
+            //console.log(textareas);
+            textareas.mouseup(function () {
+                    CP_slide_in_height();
+            });
+        }); 
+
+     });
+      
 }

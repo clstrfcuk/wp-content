@@ -72,11 +72,7 @@ class Vc_Updating_Manager {
 	 * @return object $ transient
 	 */
 	public function check_update( $transient ) {
-
-		if ( empty( $transient->checked ) ) {
-			return $transient;
-		}
-
+		
 		// Get the remote version
 		$remote_version = $this->getRemote_version();
 
@@ -86,7 +82,7 @@ class Vc_Updating_Manager {
 			$obj->slug = $this->slug;
 			$obj->new_version = $remote_version;
 			$obj->url = '';
-			$obj->package = '';
+			$obj->package = vc_license()->isActivated();
 			$obj->name = vc_updater()->title;
 			$transient->response[ $this->plugin_slug ] = $obj;
 		}
@@ -171,15 +167,13 @@ class Vc_Updating_Manager {
 	 * Shows message on Wp plugins page with a link for updating from envato.
 	 */
 	public function addUpgradeMessageLink() {
-		$username = vc_settings()->get( 'envato_username' );
-		$api_key = vc_settings()->get( 'envato_api_key' );
-		$purchase_code = vc_license()->getLicenseKey();
-		echo '<style type="text/css" media="all">tr#wpbakery-visual-composer + tr.plugin-update-tr a.thickbox + em { display: none; }</style>';
-		if ( empty( $username ) || empty( $api_key ) || empty( $purchase_code ) ) {
-			echo ' <a href="' . $this->url . '">' . __( 'Download new version from CodeCanyon.', 'js_composer' ) . '</a>';
-		} else {
-			// update.php?action=upgrade-plugin&plugin=testimonials-widget%2Ftestimonials-widget.php&_wpnonce=6178d48b6e
-			echo '<a href="' . wp_nonce_url( admin_url( 'update.php?action=upgrade-plugin&plugin=' . vc_plugin_name() ), 'upgrade-plugin_' . vc_plugin_name() ) . '">' . __( 'Update Visual Composer now.', 'js_composer' ) . '</a>';
+		$is_activated = vc_license()->isActivated();
+		if ( ! $is_activated ) {
+			$url = esc_url( ( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) ) );
+			$redirect = sprintf( '<a href="%s" target="_blank">%s</a>', $url, __( 'settings', 'js_composer' ) );
+
+			echo sprintf( ' ' . __( 'To receive automatic updates license activation is required. Please visit %s to activate your Visual Composer.', 'js_composer' ), $redirect ) .
+			     sprintf( ' <a href="http://go.wpbakery.com/faq-update-in-theme" target="_blank">%s</a>', __( 'Got Visual Composer in theme?', 'js_composer' ) );
 		}
 	}
 }

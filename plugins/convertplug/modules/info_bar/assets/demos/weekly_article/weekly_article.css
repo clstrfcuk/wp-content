@@ -5,8 +5,7 @@
 .cp-weekly-article.cp-info-bar-inline .cp-submit,
 .cp-weekly-article.cp-info-bar .cp-submit {
     margin: 0;
-    padding: 7px 10px;    
-    font-size:18px;
+    font-size: 16px;
     font-family: inherit;
     line-height: 1em;
 }
@@ -29,15 +28,18 @@
     font-family: inherit;
     line-height: 1em;
 }
-
-
 @media (max-width:1200px) {
     .cp-weekly-article .cp-ib-container {
         padding: 5px;
     }
-
 }
-
+.cp-weekly-article .cp-form-container {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    width: auto;
+}
 @media (max-width:768px) {
     .cp-weekly-article .cp-ib-form {
         -webkit-flex-basis: 100%;
@@ -47,7 +49,6 @@
 
     .cp-weekly-article.cp-info-bar-inline .cp-submit,
     .cp-weekly-article.cp-info-bar .cp-submit {
-        padding: 4px 8px;
         font-size: 12px;
         line-height: 1.25em;
     }
@@ -87,5 +88,4 @@
     .cp-weekly-article .cp-info-bar-msg {
         font-size: 12px;
     }
-
 }

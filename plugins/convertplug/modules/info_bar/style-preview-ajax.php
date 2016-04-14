@@ -38,6 +38,7 @@ jQuery(document).ready(function(e) {
 	jQuery("#TB_ajaxContent").appendTo("body");
     jQuery(".cp-info-bar-container").css({"position":"fixed","z-index":9999999});
 	jQuery("body").on("click",".ib-close, .cp-overlay", function(){
+		console.log('clicked');
 		jQuery(".cp-info-bar").removeClass("ib-display");
 		jQuery("#TB_ajaxContent").remove();
 		jQuery("#TB_overlay").trigger("click");

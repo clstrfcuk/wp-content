@@ -1,8 +1,51 @@
+16.03.2016 - ver 4.11.1
+   - Fixed: WPML + Image selection is working again
+   - Fixed: vc_remove_param() + Custom WP Theme Front-end editor broke Text block
+
+10.03.2016 - ver 4.11
+   - Added: New predefined templates added
+   - Added: Mono Social icons added to icon library list
+   - Added: 'All' text in grid element filters can be modified in param window
+   - Added: Gradient button style for buttons
+   - Added: Grid element initial loading controls (including 'Disable' option)
+   - Added: TweetMe Button content element params description added
+   - Update: WordPress 4.5 compatibility added
+   - Update: Additional element description in Backend editor
+   - Update: Video background autoplay on mobile devices
+   - Update: Refactor grid params array system
+   - Update: In some cases relative path to admin-ajax.php returned 404, replaced with full path
+   - Fixed: Russian language adds new content tab
+   - Fixed: Content display on video background in IE10
+   - Fixed: wp_get_attachment_url work with arg
+   - Fixed: php7 array slice indexes
+   - Fixed: '_self' attribute fix in CTA and button
+   - Fixed: get_currentuserinfo() updated
+   - Fixed: Full height row and iteration issue
+   - Fixed: ACF foreach warning fixed
+   - Fixed: Link stripping from images added from "Add Media"
+
+5.02.2016 - ver 4.10
+	- Added: Compatibility with option to add ACF to page
+	- Added: Video width and alignment controls
+	- Added: Parallax speed parameter added
+	- Added: Category and Author elements added to Grid Builder
+	- Added: Link to author in Grid Builder
+	- Update: License tab available with 'set as theme’
+	- Update: TweetMe button updated to support new styles
+	- Update: Fontawesome library updated
+	- Update: Grid Builder templates include user templates
+	- Fixed: Add Media image sorting in WYSIWYG
+	- Fixed: Single image preview in Grid Builder
+	- Fixed: WP Theme 2016 underline fix
+	- Fixed: Tabs outline style fix
+	- Fixed: Iconpicker icons rendering on category change
+	- Fixed: ACF fields rendering in Grid Builder
+
 12.01.2016 - ver 4.9.2
    - Fixed: "Editing an existing Post Grid, page IDs are displayed instead of titles."
    - Fixed: Extra CSS class name for single image in post grid
    - Fixed: Third elements not working in templates
-   - Fixed: Visual Composer button is now added even if post doesn't support title
+   - Fixed: Visual Composer button is now added even if psot doesn't support title
    - Fixed: Yoast + single image without default value
    - Fixed: Grid builder on multisite
    - Fixed: 404 error on WP multisite

@@ -44,6 +44,7 @@ class Cornerstone_Core_Scripts extends Cornerstone_Plugin_Component {
 			'elementDefinitions' => $definitions,
 			'isRTL' => is_rtl(),
 			'strings' => array( 'test' => 'test' ),
+			'_cs_nonce' => wp_create_nonce( 'cornerstone_nonce' ),
 			'unfilteredHTML' => current_user_can( 'unfiltered_html' ),
 			'iconMaps' => $icon_maps
 		) ) );

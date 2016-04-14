@@ -7,13 +7,14 @@ if(function_exists("smile_framework_add_options")){
 		array(
 			"style_name" 		=> "Webinar",
 			"demo_url"			=> plugins_url("../../assets/demos/webinar/webinar.html",__FILE__),
+			"demo_dir"			=> plugin_dir_path( __FILE__ )."../../assets/demos/webinar/webinar.html",
 			"img_url"			=> plugins_url("../../assets/demos/webinar/webinar.png",__FILE__),
 			"customizer_js"		=> plugins_url("../../assets/demos/webinar/customizer.js",__FILE__),
 			"category"          => "All,Optins,Updates",
 			"tags"              => "Hangout,Webinar,Update,Training,Optin,Email,Subscribe",
-			"options"			=> array(				
-			
-			//field to set ckeditor for middle description 
+			"options"			=> array(
+
+			//field to set ckeditor for middle description
 			array(
 				"type" 		=> "textarea",
 				"class" 	=> "",

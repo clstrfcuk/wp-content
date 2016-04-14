@@ -40,9 +40,7 @@ if(!class_exists('Ultimate_Google_Font_Manager'))
 		function __construct()
 		{
 			add_option('ultimate_google_fonts',array());
-			//delete_option('ultimate_google_fonts');
 			add_option('ultimate_selected_google_fonts',array());
-			//add_action('admin_menu',array($this, 'google_font_manager_menu'));
 			add_action('wp_ajax_ultimate_google_fonts_refresh', array($this, 'refresh_google_fonts_list'));
 			add_action('wp_ajax_get_google_fonts', array($this, 'get_google_fonts_list'));
 			add_action('wp_ajax_add_google_font', array($this, 'add_selected_google_font'));

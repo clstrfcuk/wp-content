@@ -1,9 +1,3 @@
-// jQuery.fn.center = function () {
-// 	var $this = this.find('.cp-modal-content');
-// 	this.css("top", ( ( window.outerHeight - $this.height() ) / 2 ) + jQuery(window).scrollTop() + "px");
-// 	return this;
-// }
-
 jQuery(document).ready(function(){
 
 	//	Add CSS file of this style
@@ -31,7 +25,6 @@ jQuery(document).ready(function(){
 		// style dependent variables  	
 		var modal_size					= data.modal_size,
 			cp_modal_width				= data.cp_modal_width,
-			cp_modal_height				= 'auto',
 			modal_title 				= data.modal_title1,
 			bg_color					= data.modal_bg_color,
 			overlay_bg_color			= data.modal_overlay_bg_color,
@@ -63,13 +56,14 @@ jQuery(document).ready(function(){
  		 *--------------------------------------------------------*/
 		cp_get_gfonts(cp_google_fonts);	
 
+
 		// add custom css 
 		cp_add_custom_css(data);	
 
 		// apply animations to modal
 		cp_apply_animations(data);
 
-		// affilate settings 
+		// affiliate settings 
 		cp_affilate_settings(data);
 		cp_affilate_reinitialize(data);
 
@@ -185,7 +179,7 @@ jQuery(document).ready(function(){
 				image_resp_width 		= "768",
 				cp_img_container		= jQuery(".cp-image-container"),
 				image_position 			= data.image_position;
-				//console.log(vw);
+				
 			if( image_displayon_mobile == 1 ) {	
 				if( vw <= image_resp_width ) {		
 					cp_img_container.addClass('cp-hide-image');					
@@ -196,8 +190,6 @@ jQuery(document).ready(function(){
 				cp_img_container.removeClass('cp-hide-image');
 			}
 		}
-
-		//cp_modal.center();
 
 		// add cp-empty class to empty containers
 		jQuery.each( cp_empty_classes, function( key, value) {

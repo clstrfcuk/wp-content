@@ -46,7 +46,6 @@ if(!class_exists('AIO_Icon_Manager'))
 			//font file extract by ajax function
 			add_action('wp_ajax_smile_ajax_add_zipped_font', array($this, 'add_zipped_font'));
 			add_action('wp_ajax_smile_ajax_remove_zipped_font', array($this, 'remove_zipped_font'));
-			//add_action('admin_menu',array($this,'icon_manager_menu'));
 			$defaults = get_option('smile_fonts');
 			if(!$defaults){
 				add_action('admin_init',array($this,'AIO_move_fonts'));
@@ -63,7 +62,6 @@ if(!class_exists('AIO_Icon_Manager'))
 					wp_enqueue_style('smile-'.$font,trailingslashit($this->paths['fonturl']).$info['style']);
 				}
 			}
-
 		}
 		
 		// Icon font manager

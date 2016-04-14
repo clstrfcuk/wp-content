@@ -91,7 +91,7 @@ if(!function_exists('bsf_register_product_callback')) {
 				'timeout' => '30',
 				'sslverify' => false
 			)
-		);
+		);		
 
 		if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200)
 		{
@@ -413,26 +413,33 @@ if(!function_exists('bsf_update_all_product_version')) {
 				}
 			endforeach;
 		endif;
-
+		
 		if(!empty($brainstrom_bundled_products)) :
-			foreach($brainstrom_bundled_products as $key => $bp) :
-				$version = $bp->version;
-				$current_version = bsf_get_current_version($bp->init, $bp->type);
-				if($current_version !== '' || $current_version !== false) {
-				if(version_compare($version, $current_version) === -1 || version_compare($version, $current_version) === 1)
-					{
-						$brainstrom_bundled_products[$key]->version = $current_version;
-						$bundled_product_updated = true;
+			foreach($brainstrom_bundled_products as $keys => $bps) :
+				foreach ($bps as $key => $bp) {
+					$version = $bp->version;
+					$current_version = bsf_get_current_version($bp->init, $bp->type);
+
+					if($current_version !== '' && $current_version !== false) {
+						
+						if( version_compare($version, $current_version) === -1 || version_compare($version, $current_version) === 1 ) {			
+							$single_bp = $brainstrom_bundled_products->$keys;							
+							$single_bp[$key]->version = $current_version;
+							$bundled_product_updated = true;
+							$brainstrom_bundled_products->$keys = $single_bp;
+						}
 					}
-				}
-			endforeach;
-		endif;
+				}			
+				
+				endforeach;
+			endif;			
 
 		//if($product_updated)
 		update_option('brainstrom_products', $brainstrom_products);
 
-		if($bundled_product_updated)
+		if($bundled_product_updated){
 			update_option('brainstrom_bundled_products', $brainstrom_bundled_products);
+		}
 	}
 }
 if(!function_exists('bsf_get_current_version')) {
@@ -491,8 +498,11 @@ if(!function_exists('bsf_notices')) {
 			$brainstrom_bundled_products_keys = array();
 
 			if(!empty($brainstrom_bundled_products)) :
-				foreach($brainstrom_bundled_products as $bp)
-					array_push($brainstrom_bundled_products_keys, $bp->id);
+				foreach($brainstrom_bundled_products as $bps) {
+					foreach ($bps as $key => $bp) {
+						array_push($brainstrom_bundled_products_keys, $bp->id);
+					}					
+				}
 			endif;
 
 			$mix = array();
@@ -607,24 +617,25 @@ if(!function_exists('upgrade_bsf_product')) {
 		foreach($mix as $key => $product)
 		{
 			$pid = $product['id'];
-			if($pid === $product_details_id)
-			{
-				$purchase_key = $product['purchase_key'];
+			if($pid === $product_details_id) {
+				$purchase_key = isset( $product['purchase_key'] ) ? $product['purchase_key'] : NULL;
 				$type = $product['type'];
 				$template = $product['template'];
 				$name = $product['product_name'];
-				$found_in_bsf_products = true;
+				$found_in_bsf_products = true;				
 				break;
 			}
 		}
 
 		if($bundled_id !== false) {
 			if(!empty($brainstrom_bundled_products)) {
-				foreach($brainstrom_bundled_products as $bp) {
-					if($bp->id === $request_product_id) {
-						$type = $bp->type;
-						$template = $bp->init;
-						$name = $bp->name;
+				foreach($brainstrom_bundled_products as $bps) {
+					foreach ($bps as $key => $bp) {						
+						if($bp->id === $request_product_id) {
+							$type = $bp->type;
+							$template = $bp->init;
+							$name = $bp->name;
+						}
 					}
 				}
 			}
@@ -920,11 +931,25 @@ if(!function_exists('bsf_update_counter')) {
 
 			$bundled_key = '';
 			if(!empty($brainstrom_bundled_products)) {
-				foreach($brainstrom_bundled_products as $bkey => $bp) {
-					if($id === $bp->id) {
-						$is_bundled = true;
-						$bundled_key = $bkey;
-						break;
+				foreach($brainstrom_bundled_products as $bkeys => $bps) {
+					foreach ($bps as $bkey => $bp) {						
+						if($id === $bp->id) {
+							$is_bundled = true;
+							$bprd = $brainstrom_bundled_products->$bkeys;
+							$version =  isset( $bprd[$bkey]->version ) ? $bprd[$bkey]->version : '';
+							$remote = isset( $bprd[$bkey]->remote ) ? $bprd[$bkey]->remote : '';
+							$template = isset( $bprd[$bkey]->init ) ? $bprd[$bkey]->init : '';							
+							$type = isset( $bprd[$bkey]->type ) ? $bprd[$bkey]->type : '';							
+							$bundled_key = $bkey;
+							if( version_compare( $remote, $version, '>' ) ) {
+								$temp = (array)$bprd[$bundled_key];
+								$temp['bundled'] = true;
+								array_push($temp_bundled, $temp['id']);
+								array_push($update_ready, $temp);
+							}
+
+							break;
+						}
 					}
 				}
 			}
@@ -932,9 +957,9 @@ if(!function_exists('bsf_update_counter')) {
 			if($is_bundled)
 			{
 				//echo '['.$bundled_key.']';
-				$version = (isset($brainstrom_bundled_products[$bundled_key]->version)) ? $brainstrom_bundled_products[$bundled_key]->version : '';
-				$remote = (isset($brainstrom_bundled_products[$bundled_key]->remote)) ? $brainstrom_bundled_products[$bundled_key]->remote : '';
-				$template = (isset($brainstrom_bundled_products[$bundled_key]->init)) ? $brainstrom_bundled_products[$bundled_key]->init : '';
+				// $version = (isset($brainstrom_bundled_products[$bundled_key]->version)) ? $brainstrom_bundled_products[$bundled_key]->version : '';
+				// $remote = (isset($brainstrom_bundled_products[$bundled_key]->remote)) ? $brainstrom_bundled_products[$bundled_key]->remote : '';
+				// $template = (isset($brainstrom_bundled_products[$bundled_key]->init)) ? $brainstrom_bundled_products[$bundled_key]->init : '';
 			}
 			else
 			{
@@ -951,10 +976,10 @@ if(!function_exists('bsf_update_counter')) {
 			if(version_compare($remote, $version, '>')):
 				if($is_bundled)
 				{
-					$temp = (array)$brainstrom_bundled_products[$bundled_key];
-					$temp['bundled'] = true;
-					array_push($temp_bundled, $temp['id']);
-					array_push($update_ready, $temp);
+					// $temp = (array)$brainstrom_bundled_products[$bundled_key];
+					// $temp['bundled'] = true;
+					// array_push($temp_bundled, $temp['id']);
+					// array_push($update_ready, $temp);
 				}
 				else
 				{
@@ -964,23 +989,25 @@ if(!function_exists('bsf_update_counter')) {
 			endif;
 		}
 
-		foreach($brainstrom_bundled_products as $bkey => $bp)
-		{
-			$plugin_abs_path = WP_PLUGIN_DIR.'/'.$bp->init;
+		foreach($brainstrom_bundled_products as $bkey => $bp) {
+			foreach ($bps as $bkey => $bp) {
+				$plugin_abs_path = WP_PLUGIN_DIR.'/'.$bp->init;
 
-			if(!is_file($plugin_abs_path))
-				continue;
+				if(!is_file($plugin_abs_path))
+					continue;
 
-			$temp = array();
-			if(!in_array($bp->id, $temp_bundled)) {
-				if(!isset($bp->remote))
-					break;
-				if(version_compare($bp->remote, $bp->version, '>')):
-					$temp = (array)$bp;
+				$temp = array();
+				if(!in_array($bp->id, $temp_bundled)) {
+					if(!isset($bp->remote))
+						break;
+					if(version_compare($bp->remote, $bp->version, '>')):
+						$temp = (array)$bp;
 					$temp['bundled'] = true;
 					array_push($update_ready, $temp);
-				endif;
+					endif;
+				}
 			}
+
 		}
 
 		// for theme check
@@ -997,9 +1024,7 @@ if(!function_exists('bsf_update_counter')) {
 
 		$update_ready_counter = count($update_ready);
 
-		/*echo '<pre style="margin-left:350px">';
-		print_r($update_ready);
-		echo '</pre>';*/
+		$update_ready = bsf_array_unique( $update_ready );
 		?>
         	<script type="text/javascript">
             	(function($) {
@@ -1020,7 +1045,7 @@ if(!function_exists('bsf_update_counter')) {
 
 							if ( 'plugins.php' === $pagenow ) :
 								foreach($update_ready as $ur) : ?>
-								<?php
+								<?php								
 									$message_changelog = '';
 
 									$template = (isset($ur['bundled']) && ($ur['bundled'] === true)) ? $ur["init"] : $ur['template'];
@@ -1032,13 +1057,23 @@ if(!function_exists('bsf_update_counter')) {
 									if($changelog_url !== '') {
 										$message_changelog = 'or view <a href="'.$changelog_url.'" target="_blank">Changelog here</a>';
 									}
+
 									if($ur['bundled'])
 									{
 										$id = str_replace(' ','-', strtolower($plugin_main_name));
+										$id = str_replace('---','-', strtolower($id));
 										$name = $ur['name'];
 										$parent_name = '';
-										foreach($bsf_product_themes as $key => $bsf_p) {
-											if($bsf_p['id'] === $ur['parent']) {
+
+										foreach( $bsf_product_themes as $key => $bsf_p ) {
+											if( $bsf_p['id'] === $ur['parent'] ) {
+												$parent_name = $bsf_p['product_name'];
+												break;
+											}
+										}
+
+										foreach( $mix_products as $key => $bsf_p ) {
+											if( $bsf_p['id'] === $ur['parent'] ) {
 												$parent_name = $bsf_p['product_name'];
 												break;
 											}
@@ -1052,6 +1087,8 @@ if(!function_exists('bsf_update_counter')) {
 										$name = $ur['product_name'];
 										$message = 'There is a new version of '.$name.'.';
 									}
+
+
 								?>
 								if($("#<?php echo $id ?>").find('.plugin-update-tr') !== true) {
 									$("#<?php echo $id ?>").addClass("update");
@@ -1239,8 +1276,10 @@ if(!function_exists('bsf_server_update_client_license')) {
 add_action('switch_theme', 'bsf_theme_deactivation');
 if(!function_exists('bsf_theme_deactivation')) {
 	function bsf_theme_deactivation() {
-		delete_option('brainstrom_bundled_products');
-		delete_site_transient('bsf_get_bundled_products');
+		delete_option( 'brainstrom_bundled_products' );
+		delete_site_transient( 'bsf_get_bundled_products' );
+
+		update_option( 'bsf_force_check_extensions', false );
 	}
 }
 // check custom css and js
@@ -1337,8 +1376,10 @@ if(!function_exists('bsf_upgrade_callback')) {
 
 		$response = upgrade_bsf_product($product_id, $bundled);
 
-		if(isset($response['status']) && $response['status']) {
+		if(isset($response['status']) && $response['status']) {			
 			echo '|bsf-product-upgraded|';
+		} else {
+			echo $response;		
 		}
 
 		die();

@@ -24,6 +24,7 @@ return array(
 			),
 			'std' => 'bar',
 			'description' => __( 'Select type of chart.', 'js_composer' ),
+			'admin_label' => true,
 		),
 		array(
 			'type' => 'dropdown',

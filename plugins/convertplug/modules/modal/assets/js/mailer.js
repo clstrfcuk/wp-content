@@ -39,69 +39,113 @@
 		return null;
 	}
 
+    function validate_it( current_ele, value ) {
+        if( !value.trim() ) {
+            return true;
+        } else if( current_ele.hasClass('cp-email') ) {
+            if( !isValidEmailAddress( value ) ) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        } else if( current_ele.hasClass('cp-textfeild') ) {
+            if( /^[a-zA-Z0-9- ]*$/.test( value ) == false ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
+    }
+
 	function modal_process_cp_form(t) {
 
-		var form 			= jQuery(t).parents(".cp-modal-body").find("#smile-optin-form"),
-			data 			= form.serialize(),
-			info_container  = jQuery(t).parents(".cp-animate-container").find('.cp-msg-on-submit'),
-			form_container  = jQuery(t).parents(".cp-modal-body").find('.cp-form-container'),
-			spinner  		= jQuery(t).parents(".cp-animate-container").find('.cp-form-processing'),
-			modal 			= jQuery(t).parents(".cp-overlay"),
+		var form 					= jQuery(t).parents(".cp-modal-body").find("#smile-optin-form"),
+			data 					= form.serialize(),
+			info_container  		= jQuery(t).parents(".cp-animate-container").find('.cp-msg-on-submit'),
+			form_container  		= jQuery(t).parents(".cp-modal-body").find('.cp-form-container'),
+			spinner  				= jQuery(t).parents(".cp-animate-container").find('.cp-form-processing'),
+			modal 					= jQuery(t).parents(".cp-overlay"),
 			cp_form_processing_wrap = jQuery(t).parents(".cp-animate-container").find('.cp-form-processing-wrap'),
 			cp_animate_container    = jQuery(t).parents(".cp-animate-container"),
-			cp_tooltip    			=  modal.find(".cp-tooltip-icon").data('classes');
+			cp_tooltip    			= modal.find(".cp-tooltip-icon").data('classes');
 
-		var cookieTime 		= modal.data('conversion-cookie-time');
-		var cookieName 		= modal.data('modal-id');
-		var dont_close 		= jQuery(t).parents(".cp-overlay").hasClass("do_not_close");
-		var redirectdata 	= jQuery(t).parents(".cp-overlay").data("redirect-lead-data");
+		var cookieTime 				= modal.data('conversion-cookie-time');
+		var cookieName 				= modal.data('modal-id');
+		var dont_close 				= jQuery(t).parents(".cp-overlay").hasClass("do_not_close");
+		var redirectdata 			= jQuery(t).parents(".cp-overlay").data("redirect-lead-data");
 
-		//	check it is required or not
-		var email = form.find('.cp-email').attr('required') ? true : false;
-		var name = form.find('.cp-name').attr('required') ? true : false;
-		var status_email = true;
-		var status_name = true;
+		// Check for required fields are not empty
+		// And create query strings to send to redirect URL after form submission
+        var query_string = '';
+        var submit_status = true;
+        form.find('.cp-input').each( function(index) {
+            var $this = jQuery(this);
+            
+            if( ! $this.hasClass('cp-submit-button')) { // Check condition for Submit Button
+                var    input_name = $this.attr('name'),
+                    input_value = $this.val();
 
-		//to pass data with redirect URL
-		var query_string ='';
-		var string_email = escape(form.find('.cp-email').val());
-		var string_name = escape(form.find('.cp-name').val() || '');
-		if( string_name != '' ){
-			query_string = "username="+string_name+"&email="+string_email ;
-		} else {
-			query_string = "email="+string_email ;
-		}
+                var res = input_name.replace(/param/gi, function myFunction(x){return ''; });
+                res = res.replace('[','');
+                res = res.replace(']','');
 
-		// Email - is required?
-		if( email ) {
-			var ev = form.find('.cp-email').val();
+                query_string += ( index != 0 ) ? "&" : '';
+                query_string += res+"="+input_value ;
 
-			if( !isValidEmailAddress( ev ) ) {
-				status_email = false;
-				form.find('.cp-email').addClass('cp-error');
-			} else {
-				form.find('.cp-email').removeClass('cp-error');
-				status_email = true;
-			}
-		}
+                var input_required = $this.attr('required') ? true : false;
 
-		// Name - is required?
-		if( name ) {
-			var ev = form.find('.cp-name').val() || '';
+                if( input_required ) {    
+                    if( validate_it( $this, input_value ) ) {
+                        submit_status = false;
+                        $this.addClass('cp-input-error');
+                    } else {
+                        $this.removeClass('cp-input-error');
+                    }
+                }
+            }
+        });
 
-			if( ev === '' ) {
-				status_name = false;
-				form.find('.cp-name').addClass('cp-error');
-			} else if(/^[a-zA-Z0-9- ]*$/.test(ev) == false) {
-			    status_name = false;
-				form.find('.cp-name').addClass('cp-error');
-			} else {
-				form.find('.cp-name').removeClass('cp-error');
-				status_name = true;
-			}
-		}
+		//	All form fields Validation
+        var fail = false;
+        var fail_log = '';
+        form.find( 'select, textarea, input' ).each(function(i, el ){
+            if( jQuery( el ).prop( 'required' )){
 
-		if( status_email && status_name ) {
+                if ( ! jQuery( el ).val() ) {
+                    fail = true;
+                    jQuery( el ).addClass('cp-error');
+                    name = jQuery( el ).attr( 'name' );
+                    fail_log += name + " is required \n";
+                } else {
+                	//	Client side email Validation
+                	//	If not empty value, Then validate email
+                	if( jQuery( el ).hasClass('cp-email') ) {
+		    			var email = jQuery( el ).val();
+
+		    			if( isValidEmailAddress( email ) ) {
+			    			jQuery( el ).removeClass('cp-error');
+			    			fail = false;
+			    		} else {
+			    			jQuery( el ).addClass('cp-error');
+			    			fail = true;
+			    			var name = jQuery( el ).attr( 'name' ) || '';
+			    			console.log( name + " is required \n" );
+			    		}
+		    		} else {
+                		jQuery( el ).removeClass('cp-error');
+		    		}
+                }
+            }
+        });
+
+        //submit if fail never got set to true
+        if ( fail ) {
+            console.log( fail_log );
+        } else {
+
 			cp_form_processing_wrap.show();
 
 			info_container.fadeOut(120, function() {
@@ -116,6 +160,8 @@
 				type: 'POST',
 				dataType: 'HTML',
 				success: function(result){
+
+					console.log('result: ' + result );
 
 					if(cookieTime) {
 						createCookie(cookieName,true,cookieTime);
@@ -150,7 +196,7 @@
 
 						info_container.hide().css({visibility: "visible"}).fadeIn(120);
 
-						if(cls === 'success') {
+						if( cls === 'success') {
 
 							// Hide tool tip
 							jQuery('head').append('<style class="cp-tooltip-css">.tip.'+cp_tooltip+'{display:none }</style>');
@@ -167,13 +213,14 @@
 									urlstring = '?';
 								}
 
-								var redirect_url = url+urlstring+decodeURI(query_string);
+								var redirect_url = url + urlstring + decodeURI(query_string);
 								if( redirectdata == 1 ){
 									window.location = redirect_url;
 								} else {
 									window.location = obj.url;
 								}
 							} else {
+
 								cp_form_processing_wrap.show();
 
 								// if button contains anchor tag then redirect to that url 
@@ -212,8 +259,7 @@
 
 	jQuery(document).ready(function(){
 		
-		jQuery('.cp-modal-body #smile-optin-form').each(function(index, el) {
-
+		jQuery('.cp-modal-popup-container').find('#smile-optin-form').each(function(index, el) {
 
 			// enter key press
 			jQuery(el).find("input").keypress(function(event) {
@@ -230,11 +276,18 @@
 			});
 
 		    // submit add subscriber request
-		    jQuery('.cp-modal-body').find('.btn-subscribe').click(function(e){
+		    jQuery(el).find('.btn-subscribe').click(function(e){
 				e.preventDefault;
 				if( !jQuery(this).hasClass('disabled') ){
 					modal_process_cp_form(this);
 					jQuery(document).trigger("cp_conversion_done",[this]);
+
+					//	Redirect after conversion
+					var redirect_link 			= jQuery(this).attr('data-redirect-link') || '';
+					var redirect_link_target	= jQuery(this).attr('data-redirect-link-target') || '_blank';
+					if( redirect_link != 'undefined' && redirect_link != '' ) {
+						window.open( redirect_link , redirect_link_target );
+					}
 				}
 				e.preventDefault();
 			});

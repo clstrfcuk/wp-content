@@ -1,28 +1,9 @@
-// jQuery.fn.center = function () {
-// 	var $this = this.find('.cp-modal-content');
-// 	this.css("top", ( ( window.outerHeight - $this.height() ) / 2 ) + jQuery(window).scrollTop() + "px");
-// 	return this;
-// }
-
-
-
 jQuery(document).ready(function(){
 
 	//	Add CSS file of this style
 	var css_file = '/locked_content/locked_content.min.css';
 	jQuery('head').append('<link rel="stylesheet" href="' + cp.demo_dir + css_file + '" type="text/css" />');
 
-	/*if(jQuery("#short_desc_editor").length !== 0) {
-		// Turn off automatic editor creation first.
-		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.inline( 'short_desc_editor' );	
-		CKEDITOR.instances.short_desc_editor.config.toolbar = 'Small';
-		CKEDITOR.instances.short_desc_editor.on( 'change', function() {
-			var data = CKEDITOR.instances.short_desc_editor.getData();
-			parent.updateHTML(data,'smile_modal_content');
-		} );
-	}
-*/
 	jQuery("body").on("click", ".cp-form-container", function(e){ parent.setFocusElement('form_bg_color'); e.stopPropagation(); });	
 
 	// do the stuff to customize the element upon the action "smile_data_received"
@@ -51,7 +32,6 @@ jQuery(document).ready(function(){
 		// style dependent variables  	
 		var modal_size					= data.modal_size,
 			cp_modal_width				= data.cp_modal_width,
-			cp_modal_height				= 'auto',
 			modal_title 				= data.modal_title1,
 			bg_color					= data.modal_bg_color,
 			overlay_bg_color			= data.modal_overlay_bg_color,

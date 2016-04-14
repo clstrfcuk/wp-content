@@ -1,4 +1,3 @@
-
 jQuery(document).ready(function(){
 
 	//	Add CSS file of this style

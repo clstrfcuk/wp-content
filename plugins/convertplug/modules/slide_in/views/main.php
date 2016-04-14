@@ -288,7 +288,7 @@
                   <?php } ?>  
                   <td class="column-impressions"><?php echo $impressions; ?></td>
                   <td class="column-status"><?php echo $status; ?></td>
-                  <td class="actions column-actions"><?php /* <a class="action-list" href="#"><i class="connects-icon-open"></i><span class="action-tooltip"><?php _e( "Edit Style", "smile" ); ?></span></a> */ ?>
+                  <td class="actions column-actions">
                    <a class="action-list" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_slide_in_styles" href="?page=smile-slide_in-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( stripslashes($style_name ) ); ?>&theme=<?php echo urlencode( $theme ); ?>"><i class="connects-icon-share"></i><span class="action-tooltip">
                    <?php if($hasVariants) { ?>
                       <?php _e( "See Variants", "smile" ); ?>
@@ -324,7 +324,7 @@
                    </span></a>
                    <?php 
                     if( !$multivariant && !$hasVariants ) {
-                        echo apply_filters( 'cp_after_delete_action', $style_settings, 'slide_in' );                 
+                        echo apply_filters( 'cp_before_delete_action', $style_settings, 'slide_in' );                 
                     }
                     ?>
                    <a class="action-list trash-style-icon" data-delete="hard" data-variantoption="slide_in_variant_tests" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_slide_in_styles" style="margin-left: 25px;" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip">
@@ -422,10 +422,9 @@
           $timezone="wordpress";
       }
 
-
-        $date = current_time( 'm/d/Y h:i A'); 
-        echo' <input type="hidden" id="cp_timezone_name" class="form-control cp_timezone" value="'.esc_attr($timezone).'" />';
-        echo' <input type="hidden" id="cp_currenttime" class="form-control cp_currenttime" value="'.esc_attr($date).'" />';
+      $date = current_time( 'm/d/Y h:i A'); 
+      echo' <input type="hidden" id="cp_timezone_name" class="form-control cp_timezone" value="'.esc_attr($timezone).'" />';
+      echo' <input type="hidden" id="cp_currenttime" class="form-control cp_currenttime" value="'.esc_attr($date).'" />';
 
 ?>
 <!-- scheduler popup -->

@@ -18,6 +18,7 @@
 
 function x_demo_content_setup_ajax_callback() {
 
+
   // Uncomment to simulate a timeout
   // header("HTTP/1.0 408 Request Timeout"); die();
 
@@ -27,8 +28,13 @@ function x_demo_content_setup_ajax_callback() {
 
   $errorMessage = __( 'We&apos;re sorry, the demo failed to finish importing.', '__x__' );
 
-  if ( !isset( $_POST['demo'] ) )
+  if ( ! x_tco()->check_ajax_referer( false ) || ! current_user_can( 'manage_options' ) ) {
+    wp_send_json_error( array( 'message' => $errorMessage ) );
+  }
+
+  if ( !isset( $_POST['demo'] ) ) {
     wp_send_json_error( array( 'message' => $errorMessage, 'debug_message' => 'POST data missing demo.' ) );
+  }
 
   $request = wp_remote_get( $_POST['demo'] );
 

@@ -10,12 +10,6 @@
         echo '<div style="background: #2F9DD2;color: #FFF;padding: 16px;margin-top: 20px;margin-right: 20px;text-align: center;font-size: 16px;border-radius: 4px;">Removed All Styles..!</div>';
     }
 
-    // Reset Impression and conversion counter 
-    if( isset($_GET['flush_anlytics']) && $_GET['flush_anlytics'] == true ) {
-       delete_option( 'smile_style_analytics' );
-    }
-
-
     $prev_styles = get_option('smile_modal_styles');
     $variant_tests = get_option('modal_variant_tests');
     $analyticsData = get_option('smile_style_analytics');
@@ -335,7 +329,7 @@
                     </span></a>
                     <?php 
                     if( !$multivariant && !$hasVariants ) {
-                        echo apply_filters( 'cp_after_delete_action', $style_settings, 'modal' );                 
+                        echo apply_filters( 'cp_before_delete_action', $style_settings, 'modal' );                 
                     }
                     ?>                  
                      <a class="action-list trash-style-icon" data-delete="hard" data-variantoption="modal_variant_tests" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_modal_styles" style="margin-left: 25px;" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip">

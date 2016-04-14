@@ -161,7 +161,7 @@ function vc_gitem_template_attribute_post_image_url_attr_prettyphoto( $value, $d
 		'data' => '',
 	), $data ) );
 	$href = vc_gitem_template_attribute_post_image_url_href( $value, array( 'post' => $post, 'data' => '' ) );
-	$rel = ' rel="' . esc_attr( 'prettyPhoto[rel-' . md5( vc_request_param( 'shortcode_id' ) ) . ']' ) . '"';
+	$rel = ' data-rel="' . esc_attr( 'prettyPhoto[rel-' . md5( vc_request_param( 'shortcode_id' ) ) . ']' ) . '"';
 	return $href . $rel . ' class="' . esc_attr( $data . ( strlen( $href ) ? ' prettyphoto' : '' ) )
 	       . '" title="' . esc_attr(
 		   apply_filters( 'vc_gitem_template_attribute_post_title', $post->post_title, $data_default ) ) . '"';
@@ -359,6 +359,49 @@ function vc_gitem_template_attribute_post_title( $value, $data ) {
 	return the_title( '', '', false );
 }
 
+function vc_gitem_template_attribute_post_author( $value, $data ) {
+	/**
+	 * @var null|Wp_Post $post ;
+	 * @var string $data ;
+	 */
+	extract( array_merge( array(
+		'post' => null,
+		'data' => '',
+	), $data ) );
+
+	return get_the_author();
+}
+
+function vc_gitem_template_attribute_post_author_href( $value, $data ) {
+	/**
+	 * @var null|Wp_Post $post ;
+	 * @var string $data ;
+	 */
+	extract( array_merge( array(
+		'post' => null,
+		'data' => '',
+	), $data ) );
+
+	return get_author_posts_url( get_the_author_meta( 'ID' ), get_the_author_meta( 'user_nicename' ) );
+}
+function vc_gitem_template_attribute_post_categories( $value, $data ) {
+	/**
+	 * @var null|Wp_Post $post ;
+	 * @var string $data ;
+	 */
+	extract( array_merge( array(
+		'post' => null,
+		'data' => '',
+	), $data ) );
+	$atts_extended = array();
+	parse_str( $data, $atts_extended );
+
+	return vc_include_template( 'params/vc_grid_item/attributes/post_categories.php', array(
+		'post' => $post,
+		'atts' => $atts_extended['atts'],
+	) );
+}
+
 /**
  * Adding filters to parse grid template.
  */
@@ -376,5 +419,8 @@ add_filter( 'vc_gitem_template_attribute_post_data', 'vc_gitem_template_attribut
 add_filter( 'vc_gitem_template_attribute_post_image_background_image_css', 'vc_gitem_template_attribute_post_image_background_image_css', 10, 2 );
 add_filter( 'vc_gitem_template_attribute_post_excerpt', 'vc_gitem_template_attribute_post_excerpt', 10, 2 );
 add_filter( 'vc_gitem_template_attribute_post_title', 'vc_gitem_template_attribute_post_title', 10, 2 );
+add_filter( 'vc_gitem_template_attribute_post_author', 'vc_gitem_template_attribute_post_author', 10, 2 );
+add_filter( 'vc_gitem_template_attribute_post_author_href', 'vc_gitem_template_attribute_post_author_href', 10, 2 );
+add_filter( 'vc_gitem_template_attribute_post_categories', 'vc_gitem_template_attribute_post_categories', 10, 2 );
 add_filter( 'vc_gitem_template_attribute_featured_image', 'vc_gitem_template_attribute_featured_image', 10, 2 );
 add_filter( 'vc_gitem_template_attribute_vc_btn', 'vc_gitem_template_attribute_vc_btn', 10, 2 );

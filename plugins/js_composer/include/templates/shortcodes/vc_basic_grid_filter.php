@@ -16,6 +16,11 @@ if ( 'yes' === $atts['show_filter'] && ! empty( $filter_terms ) ) :
 	$terms = count( $terms_ids ) > 0 ? get_terms( $atts['filter_source'], array(
 		'include' => implode( ',', $terms_ids ),
 	) ) : array();
+
+    $filter_default = $atts['filter_default_title'];
+    if ( empty( $filter_default ) ) {
+        $filter_default = __( 'All', 'js_composer' );
+    }
 	if ( 'dropdown' !== $atts['filter_style'] ) {
 		echo '<ul class="vc_grid-filter vc_clearfix vc_grid-filter-'
 			. esc_attr( $atts['filter_style'] )
@@ -28,7 +33,7 @@ if ( 'yes' === $atts['show_filter'] && ! empty( $filter_terms ) ) :
 			. '" data-vc-grid-filter="'
 			. esc_attr( $atts['filter_source'] )
 			. '"><li class="vc_active vc_grid-filter-item"><span data-vc-grid-filter-value="*">';
-		_e( 'All', 'js_composer' );
+		echo esc_attr( $filter_default );;
 		echo '</span></li>';
 		foreach ( $terms as $term ) {
 			echo '<li class="vc_grid-filter-item"><span'
@@ -46,7 +51,7 @@ if ( 'yes' === $atts['show_filter'] && ! empty( $filter_terms ) ) :
 	<!-- for responsive vc_responsive !-->
 	<div class="<?php echo 'dropdown' === $atts['filter_style'] ? 'vc_grid-filter-dropdown' : 'vc_grid-filter-select'; ?> vc_grid-filter-<?php echo esc_attr( $atts['filter_align'] ); ?> vc_grid-filter-color-<?php echo esc_attr( $atts['filter_color'] ); ?>" data-vc-grid-filter-select="<?php echo esc_attr( $atts['filter_source'] ) ?>">
 		<div class="vc_grid-styled-select"><select data-filter="<?php echo esc_attr( $atts['filter_source'] ) ?>">
-				<option class="vc_active" value="*"><?php _e( 'All', 'js_composer' ) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+				<option class="vc_active" value="*"><?php echo esc_attr( $filter_default ); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 				<?php foreach ( $terms as $term ) :
 					echo '<option value=".vc_grid-term-'
 						. esc_attr( $term->term_id )

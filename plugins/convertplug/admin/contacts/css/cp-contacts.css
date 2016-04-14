@@ -200,38 +200,6 @@ table.bsf-connect-optins td.column-provider.convertplug:after {
 	background-image: url("../../images/convertplug.png");
 }
 
-table.bsf-connect-optins td.column-provider.mailchimp:after {
-	background-image: url("../../images/mailchimp.png");
-}
-
-table.bsf-connect-optins td.column-provider.aweber:after {
-	background-image: url("../../images/aweber.png");
-}
-
-table.bsf-connect-optins td.column-provider.madmimi:after {
-	background-image: url("../../images/madmini.png");
-}
-
-table.bsf-connect-optins td.column-provider.campaignmonitor:after {
-	background-image: url("../../images/campaignmonitor.png");
-}
-
-table.bsf-connect-optins td.column-provider.icontact:after {
-	background-image: url("../../images/icontact.png");
-}
-
-table.bsf-connect-optins td.column-provider.emma:after {
-	background-image: url("../../images/myemma.png");
-}
-
-table.bsf-connect-optins td.column-provider.activecampaign:after {
-	background-image: url("../../images/activecampaign.png");
-}
-
-table.bsf-connect-optins td.column-provider.hubspot:after {
-	background-image: url("../../images/hubspot.png");
-}
-
 /* Table Heading - Dashicons */
 table.bsf-connect-optins th.manage-column [class^="connects-icon-"],
 table.bsf-connect-optins th.manage-column [class*=" connects-icon-"] {
@@ -359,38 +327,6 @@ table.bsf-connect-optins tr .column-actions {
 
 .bend-heading-section.bsf-connect-list-header .bend-head-logo.convertplug:before {
 	background-image: url("../../images/convertplug.png");
-}
-
-.bend-heading-section.bsf-connect-list-header .bend-head-logo.mailchimp:before {
-	background-image: url("../../images/mailchimp.png");
-}
-
-.bend-heading-section.bsf-connect-list-header .bend-head-logo.aweber:before {
-	background-image: url("../../images/aweber.png");
-}
-
-.bend-heading-section.bsf-connect-list-header .bend-head-logo.madmimi:before {
-	background-image: url("../../images/madmini.png");
-}
-
-.bend-heading-section.bsf-connect-list-header .bend-head-logo.campaignmonitor:before {
-	background-image: url("../../images/campaignmonitor.png");
-}
-
-.bend-heading-section.bsf-connect-list-header .bend-head-logo.icontact:before {
-	background-image: url("../../images/icontact.png");
-}
-
-.bend-heading-section.bsf-connect-list-header .bend-head-logo.emma:before {
-	background-image: url("../../images/myemma.png");
-}
-
-.bend-heading-section.bsf-connect-list-header .bend-head-logo.activecampaign:before {
-	background-image: url("../../images/activecampaign.png");
-}
-
-.bend-heading-section.bsf-connect-list-header .bend-head-logo.hubspot:before {
-	background-image: url("../../images/hubspot.png");
 }
 
 /* Add New Contact List */

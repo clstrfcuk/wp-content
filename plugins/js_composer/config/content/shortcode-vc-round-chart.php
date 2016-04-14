@@ -23,6 +23,7 @@ return array(
 				__( 'Doughnut', 'js_composer' ) => 'doughnut',
 			),
 			'description' => __( 'Select type of chart.', 'js_composer' ),
+			'admin_label' => true,
 		),
 		array(
 			'type' => 'dropdown',

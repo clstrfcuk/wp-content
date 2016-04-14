@@ -6,12 +6,11 @@ if ( function_exists('smile_add_input_type'))
 }
 add_action( 'admin_enqueue_scripts', 'framework_color_picker_admin_styles' );
 
-function framework_color_picker_admin_styles(){
-	$screen = get_current_screen();
-	$screen_id = $screen->base;
-	$cp_page = strpos( $screen_id, 'plug_page');
+function framework_color_picker_admin_styles($hook){
+	$cp_page = strpos( $hook, 'plug_page');
+	$data  =  get_option( 'convert_plug_debug' );
 
-	if( $cp_page == 7 && isset( $_GET['developer'] ) ){
+	if( $cp_page == 7 && ( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) ) {
 		wp_enqueue_script( 'smile-colorpicker-script', SMILE_FRAMEWORK_URI . '/lib/fields/colorpicker/cp-color-picker.min.js', array(), '1.0.0', true );
 		wp_enqueue_style( 'smile-colorpicker-style', SMILE_FRAMEWORK_URI . '/lib/fields/colorpicker/cp-color-picker.min.css');
 	}
@@ -29,6 +28,6 @@ function color_picker_settings_field($name, $settings, $value)
 	$input_name = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
-	$output = '<p><input type="text" id="smile_'.$input_name.'" data-default-color="'.$value.'" class="cs-wp-color-picker smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$value.'" /></p>';
+	$output = '<p><input type="text" id="smile_'.$input_name.'" data-default-color="'.$settings['value'].'" class="cs-wp-color-picker smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$value.'" /></p>';
 	return $output;
 }

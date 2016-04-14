@@ -89,7 +89,7 @@ class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 
 		$before = '';
 		$conditional = isset( $obj->extra['conditional'] ) ? $obj->extra['conditional'] : '';
-		$has_conditional_data = $conditional && $this->get_data( $handle, 'data' );
+		$has_conditional_data = $conditional && $scripts->get_data( $handle, 'data' );
 
 		if ( $has_conditional_data ) {
 			$before .= "<!--[if {$conditional}]>\n";

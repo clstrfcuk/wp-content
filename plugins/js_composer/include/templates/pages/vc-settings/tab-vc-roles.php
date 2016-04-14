@@ -7,7 +7,7 @@ $editable_roles = get_editable_roles();
 require_once vc_path_dir( 'SETTINGS_DIR', 'class-vc-roles.php' );
 $vc_role = new Vc_Roles();
 ?>
-<form action="<?php echo admin_url( 'admin-ajax.php', 'relative' ); ?>" method="post"
+<form action="<?php echo admin_url( 'admin-ajax.php' ); ?>" method="post"
       id="vc_settings-<?php echo $tab ?>"
       class="vc_settings-tab-content vc_settings-tab-content-active"<?php echo apply_filters( 'vc_setting-tab-form-' . $tab, '' ) ?>
       data-vc-roles="form">

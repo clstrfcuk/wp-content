@@ -313,4 +313,13 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 		return ( get_option( 'cs_product_validation_key', false ) !== false );
 	}
 
+	public function get_post_capability( $post_id = false, $cap ) {
+
+		$post = $this->locatePost( $post_id );
+		$post_type_object = get_post_type_object( $post->post_type );
+		$caps = (array) $post_type_object->cap;
+		return $caps[ $cap ];
+
+	}
+
 }

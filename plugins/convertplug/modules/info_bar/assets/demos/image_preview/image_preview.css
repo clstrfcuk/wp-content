@@ -39,7 +39,6 @@
 
 .cp-image-preview-bar .cp-submit {
     margin-bottom: 0;
-    padding: 12px 15px;
 }
 .cp-image-preview-bar span.cp_responsive.cp_font {
     line-height: 1em;
@@ -100,9 +99,6 @@
     }
      .cp-image-preview-bar .cp-info-bar-body {
         padding: 15px 20px;
-    }
-    .cp-image-preview-bar .cp-submit {
-        padding: 8px 10px;
     }
 
     .cp-image-preview-bar .cp-msg-container, 

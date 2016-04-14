@@ -59,29 +59,35 @@ class Paginator {
 			if($this->order == 'asc')  {
 		 		uasort($data, function($a, $b){ 
 
-		 			// If type of data is integer
-		 			if( gettype($a[$this->orderby]) == 'integer' ) {		 				
-						return $this->cp_int_cmp( $a[$this->orderby], $b[$this->orderby] );		 				
-		 			}
+		 			if( isset( $a[$this->orderby] ) && isset( $b[$this->orderby] ) ) {
+			 			
+			 			// If type of data is integer
+			 			if( gettype($a[$this->orderby]) == 'integer' ) {		 				
+							return $this->cp_int_cmp( $a[$this->orderby], $b[$this->orderby] );		 				
+			 			}
 
-		 			if($this->orderby == 'date'){ 
-		 				return strcmp(strtotime($a[$this->orderby]),strtotime($b[$this->orderby])); 
-		 			} else { 
-		 				return strcmp(strtolower($a[$this->orderby]),strtolower($b[$this->orderby])); 
-		 			}
+			 			if($this->orderby == 'date'){ 
+			 				return strcmp(strtotime($a[$this->orderby]),strtotime($b[$this->orderby])); 
+			 			} else { 
+			 				return strcmp(strtolower($a[$this->orderby]),strtolower($b[$this->orderby])); 
+			 			}
+			 		}
 		 		});
 		 	} else { 	 		
 		 		uasort($data, function($b, $a){ 
 
-		 			// If type of data is integer
-		 			if( gettype($a[$this->orderby]) == 'integer' ) {
-						return $this->cp_int_cmp( $a[$this->orderby], $b[$this->orderby] );		 				
-		 			}
+		 			if( isset( $a[$this->orderby] ) && isset( $b[$this->orderby] ) ) {
 
-		 			if($this->orderby == 'date') 
-		 				return strcmp(strtotime($a[$this->orderby]),strtotime($b[$this->orderby])); 
-		 			else 
-		 				return strcmp(strtolower($a[$this->orderby]),strtolower($b[$this->orderby])); 
+			 			// If type of data is integer
+			 			if( gettype($a[$this->orderby]) == 'integer' ) {
+							return $this->cp_int_cmp( $a[$this->orderby], $b[$this->orderby] );		 				
+			 			}
+
+			 			if($this->orderby == 'date') 
+			 				return strcmp(strtotime($a[$this->orderby]),strtotime($b[$this->orderby])); 
+			 			else 
+			 				return strcmp(strtolower($a[$this->orderby]),strtolower($b[$this->orderby])); 
+			 		}
 		 		});
 		 	}
 

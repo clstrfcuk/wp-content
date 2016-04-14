@@ -16,6 +16,7 @@ abstract class Cornerstone_Element_Base {
 	private $control_group;
 
 	protected $loaded = false;
+	public $native = false;
 
 	/**
 	 * Instantiate element with supplied data
@@ -39,10 +40,6 @@ abstract class Cornerstone_Element_Base {
 			'can_preview' => true,
 			'active'      => $this->is_active(),
 		) );
-
-		if ( !isset( $this->data['icon'] ) ) {
-			$this->data['icon'] = 'elements/' . $this->data['name'];
-		}
 
 	}
 
@@ -79,6 +76,16 @@ abstract class Cornerstone_Element_Base {
 
 		if ( isset( $this->data['helpText'] ) ) {
 			$ui['helpText']	= $this->data['helpText'];
+		}
+
+		if ( ! isset( $this->data['icon'] ) ) {
+
+			if ( $this->native ) {
+				$this->data['icon'] = 'elements/' . $this->data['name'];
+			} else {
+				$this->data['icon'] = 'elements/default';
+			}
+
 		}
 
 		return array(

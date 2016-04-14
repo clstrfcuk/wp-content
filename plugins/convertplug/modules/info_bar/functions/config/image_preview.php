@@ -8,6 +8,7 @@ if(function_exists("smile_framework_add_options")){
 		array(
 			"style_name" 		=> "Image Preview",
 			"demo_url"			=> plugins_url("../../assets/demos/image_preview/image_preview.html",__FILE__),
+			"demo_dir"			=> plugin_dir_path( __FILE__ )."../../assets/demos/image_preview/image_preview.html",
 			"img_url"			=> plugins_url("../../assets/demos/image_preview/image_preview.png",__FILE__),
 			"customizer_js"		=> plugins_url("../../assets/demos/image_preview/customizer.js",__FILE__),
 			"category"          => "All,Offers",

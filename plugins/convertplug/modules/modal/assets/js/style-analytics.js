@@ -1,6 +1,6 @@
 function renderChart() {
     jQuery(".smile-absolute-loader").css("visibility", "visible");
-    var e = "undefined" != typeof getUrlVars().sd ? getUrlVars().sd : "", t = "undefined" != typeof getUrlVars().ed ? getUrlVars().ed : "", a = "undefined" != typeof getUrlVars().style ? decodeURIComponent(getUrlVars().style) : "all", l = "undefined" != typeof getUrlVars().cType ? getUrlVars().cType : "line", s = "undefined" != typeof getUrlVars().compFactor ? getUrlVars().compFactor : "imp";
+    var e = "undefined" != typeof cpcpGetUrlVars().sd ? cpcpGetUrlVars().sd : "", t = "undefined" != typeof cpcpGetUrlVars().ed ? cpcpGetUrlVars().ed : "", a = "undefined" != typeof cpcpGetUrlVars().style ? decodeURIComponent(cpcpGetUrlVars().style) : "all", l = "undefined" != typeof cpcpGetUrlVars().cType ? cpcpGetUrlVars().cType : "line", s = "undefined" != typeof cpcpGetUrlVars().compFactor ? cpcpGetUrlVars().compFactor : "imp";
     a = a.split("||");
     var r = "get_style_analytics_data", o = {
         action: r,
@@ -83,7 +83,7 @@ function renderChart() {
     }, 1800);
 }
 
-function getUrlVars() {
+function cpcpGetUrlVars() {
     var e = {};
     return window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(t, a, l) {
         e[a] = l;
@@ -91,11 +91,12 @@ function getUrlVars() {
 }
 
 jQuery(document).ready(function() {
+
     function e() {
         var e = jQuery("#style-dropdown").val();
         null !== e && (jQuery.inArray("all", e) > -1 || "all" == e || e.length > 1 ? (jQuery("#cp-chart-comp-type").find("option[value='impVsconv']").remove(), 
         jQuery("#cp-chart-comp-type").prop("disabled", !1)) : (void 0 === jQuery("#cp-chart-comp-type option[value='impVsconv']").val() && jQuery("#cp-chart-comp-type").prepend("<option value='impVsconv'>Impression Vs Conversion</option>").val("impVsconv"), 
-        jQuery("#cp-chart-comp-type").val("impVsconv"), jQuery("#cp-chart-comp-type").prop("disabled", !0)));
+        jQuery("#cp-chart-comp-type").val("impVsconv"), jQuery("#cp-chart-comp-type").prop("disabled", !1)));
     }
     e(), jQuery("#style-dropdown").select2();
     var t = jQuery("#style-dropdown");
@@ -129,7 +130,13 @@ jQuery(document).ready(function() {
     }).on("dp.change", function(e) {
         jQuery("#cp-startDate").data("DateTimePicker").maxDate(e.date);
     });
-    var l = getUrlVars().style;
+    jQuery('#cp-startDate').click(function(event){      
+       jQuery('#cp-startDate').data("DateTimePicker").show();
+    });
+    jQuery('#cp-endDate').click(function(event){      
+       jQuery('#cp-endDate').data("DateTimePicker").show();
+    });
+    var l = cpcpGetUrlVars().style;
     "undefined" == typeof campaign && (l = Array("all")), renderChart();
 });
 

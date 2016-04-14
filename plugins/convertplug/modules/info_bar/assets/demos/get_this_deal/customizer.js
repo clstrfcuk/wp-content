@@ -17,14 +17,14 @@ jQuery(document).ready(function(){
 			//animation setup
 			cp_info_bar_animation_setup(data);
 
-			//for infobar position
+			//for info bar position
 			cp_info_bar_position_setup(data);
-
+	
 			//form setup
 			cp_ifb_form_setup(data);	
 
 			// setup all editors
-			 cp_editor_setup(data);
+			cp_editor_setup(data);
 
 			//toggle_functionality
 			cp_toggle_button(data);

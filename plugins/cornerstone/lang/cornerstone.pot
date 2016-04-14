@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Cornerstone package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Cornerstone 1.2.0\n"
+"Project-Id-Version: Cornerstone 1.2.4\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/cornerstone\n"
-"POT-Creation-Date: 2016-03-29 13:44:41+00:00\n"
+"POT-Creation-Date: 2016-04-13 15:55:07+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,78 +12,71 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: includes/classes/admin/class-admin.php:118
+#: includes/classes/admin/class-admin.php:122
 #: includes/views/admin/settings-sidebar.php:10
 msgid "Update"
 msgstr ""
 
-#: includes/classes/admin/class-admin.php:119
+#: includes/classes/admin/class-admin.php:123
 msgid "Updating&hellip;"
 msgstr ""
 
-#: includes/classes/admin/class-admin.php:120
+#: includes/classes/admin/class-admin.php:124
 msgid "Settings Saved!"
 msgstr ""
 
-#: includes/classes/admin/class-admin.php:121
+#: includes/classes/admin/class-admin.php:125
 msgid "Sorry! Unable to Save"
 msgstr ""
 
-#: includes/classes/admin/class-admin.php:174
+#: includes/classes/admin/class-admin.php:178
 msgid "Home"
 msgstr ""
 
-#: includes/classes/admin/class-admin.php:175
+#: includes/classes/admin/class-admin.php:179
 #: includes/classes/builder/class-legacy-setting-section.php:39
 #: includes/config/builder/strings-builder.php:134
-#: includes/views/admin/settings.php:11
+#: includes/views/admin/settings.php:13
 msgid "Settings"
 msgstr ""
 
-#: includes/classes/admin/class-admin.php:252
-#: includes/classes/admin/class-admin.php:272
+#: includes/classes/admin/class-admin.php:226
+#: includes/classes/admin/class-admin.php:246
 #: includes/config/admin/strings-admin.php:11
 #: includes/config/admin/tco-admin.php:8 includes/views/admin/editor-tab.php:14
 msgid "Edit with Cornerstone"
 msgstr ""
 
-#: includes/classes/admin/class-admin.php:292
+#: includes/classes/admin/class-admin.php:266
 msgid ""
 "This Cornerstone license is ​<strong>not validated</strong>​. <a href=\"%s"
 "\">Fix</a>."
 msgstr ""
 
-#: includes/classes/admin/class-admin.php:312
-#: includes/views/admin/home-validate-overlay.php:14
-msgid "How do I unlock this feature?"
-msgstr ""
-
-#: includes/classes/admin/class-admin.php:313
-msgid ""
-"This is unlocked through product validaiton. As mentioned above, this is not "
-"quite ready, but you can check back in a few hours."
-msgstr ""
-
-#: includes/classes/admin/class-updates.php:43
+#: includes/classes/admin/class-updates.php:51
 msgid "Nothing to report."
 msgstr ""
 
-#: includes/classes/admin/class-updates.php:44
+#: includes/classes/admin/class-updates.php:52
 msgid "New version available!"
 msgstr ""
 
-#: includes/classes/admin/class-updates.php:45
+#: includes/classes/admin/class-updates.php:53
 msgid "Unable to check for updates. Try again later."
 msgstr ""
 
-#: includes/classes/admin/class-updates.php:46
+#: includes/classes/admin/class-updates.php:54
 msgid "Checking&hellip;"
 msgstr ""
 
-#: includes/classes/admin/class-updates.php:92
+#: includes/classes/admin/class-updates.php:100
 msgid ""
 "Visit the <a href=\"http://theme.co/changelog/#cornerstone\">Themeco "
 "Changelog</a> for more information."
+msgstr ""
+
+#: includes/classes/admin/class-updates.php:135
+msgid "<a href=\"%s\">Validate to enable automatic updates</a>"
 msgstr ""
 
 #: includes/classes/admin/class-validation.php:20
@@ -400,7 +393,7 @@ msgstr ""
 #: includes/elements/_alternate/blockquote.php:50
 #: includes/elements/_alternate/button.php:160
 #: includes/elements/_alternate/callout.php:75
-#: includes/elements/_alternate/feature-box.php:264
+#: includes/elements/_alternate/feature-box.php:261
 #: includes/elements/_alternate/feature-list.php:96
 #: includes/elements/_alternate/image.php:128
 #: includes/elements/_alternate/prompt.php:76
@@ -413,7 +406,7 @@ msgstr ""
 #: includes/config/controls/mixins.php:83
 #: includes/elements/_alternate/blockquote.php:51
 #: includes/elements/_alternate/callout.php:76
-#: includes/elements/_alternate/feature-box.php:265
+#: includes/elements/_alternate/feature-box.php:262
 msgid "Center"
 msgstr ""
 
@@ -426,7 +419,7 @@ msgstr ""
 #: includes/elements/_alternate/blockquote.php:52
 #: includes/elements/_alternate/button.php:158
 #: includes/elements/_alternate/callout.php:77
-#: includes/elements/_alternate/feature-box.php:266
+#: includes/elements/_alternate/feature-box.php:263
 #: includes/elements/_alternate/feature-list.php:97
 #: includes/elements/_alternate/image.php:126
 #: includes/elements/_alternate/prompt.php:77
@@ -1161,12 +1154,10 @@ msgstr ""
 #: includes/elements/_alternate/card.php:75
 #: includes/elements/_alternate/card.php:236
 #: includes/elements/_alternate/code.php:23
-#: includes/elements/_alternate/feature-box.php:36
 #: includes/elements/_alternate/feature-list-item.php:34
-#: includes/elements/_alternate/feature-list-item.php:38
 #: includes/elements/_alternate/promo.php:24
 #: includes/elements/_alternate/prompt.php:37
-#: includes/elements/_alternate/protect.php:25
+#: includes/elements/_alternate/protect.php:36
 #: includes/elements/_alternate/raw-content.php:25
 #: includes/elements/_alternate/slide.php:30
 #: includes/elements/_alternate/tab.php:30
@@ -1200,8 +1191,8 @@ msgstr ""
 #: includes/elements/_alternate/card.php:193
 #: includes/elements/_alternate/creative-cta.php:54
 #: includes/elements/_alternate/creative-cta.php:88
-#: includes/elements/_alternate/feature-box.php:70
-#: includes/elements/_alternate/feature-list-item.php:79
+#: includes/elements/_alternate/feature-box.php:67
+#: includes/elements/_alternate/feature-list-item.php:76
 #: includes/elements/_alternate/feature-list.php:69
 #: includes/elements/_alternate/google-map-marker.php:61
 #: includes/elements/_alternate/image.php:8
@@ -2158,9 +2149,9 @@ msgstr ""
 #: includes/elements/_alternate/card.php:149
 #: includes/elements/_alternate/creative-cta.php:53
 #: includes/elements/_alternate/creative-cta.php:62
-#: includes/elements/_alternate/feature-box.php:69
+#: includes/elements/_alternate/feature-box.php:66
 #: includes/elements/_alternate/feature-headline.php:73
-#: includes/elements/_alternate/feature-list-item.php:66
+#: includes/elements/_alternate/feature-list-item.php:63
 #: includes/elements/_alternate/feature-list.php:68
 #: includes/elements/_alternate/icon.php:8
 #: includes/elements/_alternate/icon.php:20
@@ -2344,7 +2335,7 @@ msgid ""
 "any."
 msgstr ""
 
-#. #-#-#-#-#  cornerstone.pot (Cornerstone 1.2.0)  #-#-#-#-#
+#. #-#-#-#-#  cornerstone.pot (Cornerstone 1.2.4)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: includes/classes/common/class-common.php:42
 #: includes/classes/customizer/class-customizer-manager.php:193
@@ -2380,15 +2371,15 @@ msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:125
 #: includes/elements/_alternate/button.php:55
-#: includes/elements/_alternate/feature-box.php:153
-#: includes/elements/_alternate/feature-list-item.php:123
+#: includes/elements/_alternate/feature-box.php:150
+#: includes/elements/_alternate/feature-list-item.php:120
 msgid "Square"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:126
 #: includes/elements/_alternate/button.php:56
-#: includes/elements/_alternate/feature-box.php:154
-#: includes/elements/_alternate/feature-list-item.php:124
+#: includes/elements/_alternate/feature-box.php:151
+#: includes/elements/_alternate/feature-list-item.php:121
 #: includes/elements/_alternate/image.php:28
 msgid "Rounded"
 msgstr ""
@@ -2447,8 +2438,8 @@ msgid "Container Max Width"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:157
-#: includes/elements/_alternate/feature-box.php:246
-#: includes/elements/_alternate/feature-list-item.php:186
+#: includes/elements/_alternate/feature-box.php:243
+#: includes/elements/_alternate/feature-list-item.php:183
 msgid "Link Color"
 msgstr ""
 
@@ -2522,16 +2513,16 @@ msgid ""
 "example)."
 msgstr ""
 
-#: includes/classes/elements/class-element-base.php:27
-#: includes/classes/elements/class-element-base.php:29
+#: includes/classes/elements/class-element-base.php:28
+#: includes/classes/elements/class-element-base.php:30
 msgid "Generic Element"
 msgstr ""
 
-#: includes/classes/layouts/class-layout-manager.php:138
+#: includes/classes/layouts/class-layout-manager.php:142
 msgid "Untitled"
 msgstr ""
 
-#: includes/classes/layouts/class-layout-manager.php:145
+#: includes/classes/layouts/class-layout-manager.php:149
 msgid "%s (%d)"
 msgstr ""
 
@@ -2938,7 +2929,7 @@ msgstr ""
 #: includes/config/builder/strings-builder.php:112
 #: includes/elements/_alternate/_column.php:61
 #: includes/elements/_alternate/button.php:157
-#: includes/elements/_alternate/feature-box.php:279
+#: includes/elements/_alternate/feature-box.php:276
 #: includes/elements/_alternate/feature-list.php:110
 #: includes/elements/_alternate/image.php:125
 #: includes/elements/_alternate/tabs.php:44
@@ -3116,7 +3107,7 @@ msgid "Are you sure you wish to delete this %s?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:179
-msgid "Are you sure you wish to delete this %s, along with it&apos;s contents?"
+msgid "Are you sure you wish to delete this %s, along with its contents?"
 msgstr ""
 
 #: includes/config/builder/strings-builder.php:182
@@ -4479,13 +4470,13 @@ msgid "Specify the size of your text."
 msgstr ""
 
 #: includes/elements/_alternate/creative-cta.php:47
-#: includes/elements/_alternate/feature-box.php:64
+#: includes/elements/_alternate/feature-box.php:61
 #: includes/elements/_alternate/feature-list.php:63
 msgid "Graphic"
 msgstr ""
 
 #: includes/elements/_alternate/creative-cta.php:48
-#: includes/elements/_alternate/feature-box.php:65
+#: includes/elements/_alternate/feature-box.php:62
 msgid "Choose between an icon and a custom image for your graphic."
 msgstr ""
 
@@ -4713,131 +4704,131 @@ msgid ""
 "keep it short and sweet."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:43
-#: includes/elements/_alternate/feature-list-item.php:45
+#: includes/elements/_alternate/feature-box.php:40
+#: includes/elements/_alternate/feature-list-item.php:42
 msgid "Title &amp; Content Colors"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:44
-#: includes/elements/_alternate/feature-list-item.php:46
+#: includes/elements/_alternate/feature-box.php:41
+#: includes/elements/_alternate/feature-list-item.php:43
 msgid "Optionally specify colors for your title and content."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:114
+#: includes/elements/_alternate/feature-box.php:111
 #: includes/elements/_alternate/feature-list.php:78
 msgid "Graphic Size"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:115
+#: includes/elements/_alternate/feature-box.php:112
 #: includes/elements/_alternate/feature-list.php:79
 msgid "Specify the size of your graphic."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:127
-#: includes/elements/_alternate/feature-list-item.php:97
+#: includes/elements/_alternate/feature-box.php:124
+#: includes/elements/_alternate/feature-list-item.php:94
 msgid "Graphic Color &amp; Background Color"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:128
-#: includes/elements/_alternate/feature-list-item.php:98
+#: includes/elements/_alternate/feature-box.php:125
+#: includes/elements/_alternate/feature-list-item.php:95
 msgid "Specify the color and background color of your graphic."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:148
-#: includes/elements/_alternate/feature-list-item.php:118
+#: includes/elements/_alternate/feature-box.php:145
+#: includes/elements/_alternate/feature-list-item.php:115
 msgid "Graphic Shape"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:149
+#: includes/elements/_alternate/feature-box.php:146
 msgid "Choose a shape for your Feature Box graphic."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:155
-#: includes/elements/_alternate/feature-list-item.php:125
+#: includes/elements/_alternate/feature-box.php:152
+#: includes/elements/_alternate/feature-list-item.php:122
 #: includes/elements/_alternate/image.php:29
 msgid "Circle"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:156
+#: includes/elements/_alternate/feature-box.php:153
 msgid "Hexagon (Icon Only)"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:157
+#: includes/elements/_alternate/feature-box.php:154
 msgid "Badge (Icon Only)"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:170
-#: includes/elements/_alternate/feature-list-item.php:140
+#: includes/elements/_alternate/feature-box.php:167
+#: includes/elements/_alternate/feature-list-item.php:137
 msgid "Graphic Border"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:206
+#: includes/elements/_alternate/feature-box.php:203
 #: includes/elements/_alternate/feature-list.php:176
 msgid "Graphic Animation"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:210
+#: includes/elements/_alternate/feature-box.php:207
 msgid "Graphic Animation Offset (%)"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:219
+#: includes/elements/_alternate/feature-box.php:216
 msgid "Graphic Animation Delay (ms)"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:236
-#: includes/elements/_alternate/feature-list-item.php:176
+#: includes/elements/_alternate/feature-box.php:233
+#: includes/elements/_alternate/feature-list-item.php:173
 msgid "Link Text"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:237
+#: includes/elements/_alternate/feature-box.php:234
 msgid "Enter the text for your Feature Box link. Leave blank to remove."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:247
+#: includes/elements/_alternate/feature-box.php:244
 msgid "Specify a custom color for your Feature Box link."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:259
+#: includes/elements/_alternate/feature-box.php:256
 #: includes/elements/_alternate/feature-list.php:91
 msgid "Horizontal Alignment"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:260
+#: includes/elements/_alternate/feature-box.php:257
 msgid "Select the horizontal alignment of the Feature Box."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:274
+#: includes/elements/_alternate/feature-box.php:271
 #: includes/elements/_alternate/feature-list.php:105
 msgid "Vertical Alignment"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:275
+#: includes/elements/_alternate/feature-box.php:272
 msgid "Select the vertical alignment of the Feature Box."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:280
+#: includes/elements/_alternate/feature-box.php:277
 #: includes/elements/_alternate/feature-list.php:111
 msgid "Middle"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:291
+#: includes/elements/_alternate/feature-box.php:288
 #: includes/elements/_alternate/feature-list.php:119
 msgid "Graphic Spacing"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:292
+#: includes/elements/_alternate/feature-box.php:289
 #: includes/elements/_alternate/feature-list.php:120
 msgid ""
 "Specify an amount of spacing you want between your side graphic and the "
 "content."
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:304
+#: includes/elements/_alternate/feature-box.php:301
 #: includes/elements/_alternate/feature-list.php:127
 msgid "Max Width"
 msgstr ""
 
-#: includes/elements/_alternate/feature-box.php:305
+#: includes/elements/_alternate/feature-box.php:302
 msgid ""
 "Enter in a max width for your Feature Box if desired. This will keep your "
 "Feature Box from stretching out too far on smaller breakpoints."
@@ -4883,31 +4874,31 @@ msgid ""
 "to keep it short and sweet."
 msgstr ""
 
-#: includes/elements/_alternate/feature-list-item.php:67
+#: includes/elements/_alternate/feature-list-item.php:64
 msgid "Specify the icon you would like to use for your Feature List Item."
 msgstr ""
 
-#: includes/elements/_alternate/feature-list-item.php:80
+#: includes/elements/_alternate/feature-list-item.php:77
 msgid "Specify the image you would like to use for your Feature List Item."
 msgstr ""
 
-#: includes/elements/_alternate/feature-list-item.php:119
+#: includes/elements/_alternate/feature-list-item.php:116
 msgid "Choose a shape for your Feature List Item graphic."
 msgstr ""
 
-#: includes/elements/_alternate/feature-list-item.php:126
+#: includes/elements/_alternate/feature-list-item.php:123
 msgid "Hexagon (Icon and Numbers Only)"
 msgstr ""
 
-#: includes/elements/_alternate/feature-list-item.php:127
+#: includes/elements/_alternate/feature-list-item.php:124
 msgid "Badge (Icon and Numbers Only)"
 msgstr ""
 
-#: includes/elements/_alternate/feature-list-item.php:177
+#: includes/elements/_alternate/feature-list-item.php:174
 msgid "Enter the text for your Feature List Item link. Leave blank to remove."
 msgstr ""
 
-#: includes/elements/_alternate/feature-list-item.php:187
+#: includes/elements/_alternate/feature-list-item.php:184
 msgid "Specify a custom color for your Feature List Item link."
 msgstr ""
 
@@ -4989,6 +4980,10 @@ msgstr ""
 
 #: includes/elements/_alternate/gap.php:10
 msgid "Gap description."
+msgstr ""
+
+#: includes/elements/_alternate/gap.php:28
+msgid "50px (accepts CSS units)"
 msgstr ""
 
 #: includes/elements/_alternate/google-map-marker.php:10
@@ -5276,7 +5271,20 @@ msgid ""
 "users will be prompted to login before viewing the content."
 msgstr ""
 
+#: includes/elements/_alternate/protect.php:25
+msgid "Login Heading"
+msgstr ""
+
 #: includes/elements/_alternate/protect.php:26
+msgid "Edit the heading promting users to login."
+msgstr ""
+
+#: includes/elements/_alternate/protect.php:29
+#: includes/shortcodes/protect.php:23
+msgid "Restricted Content Login"
+msgstr ""
+
+#: includes/elements/_alternate/protect.php:37
 msgid ""
 "Enter the text to go inside your Protect shortcode. This will only be "
 "visible to users who are logged in."
@@ -5411,6 +5419,7 @@ msgid "Enable audio player's autoplay."
 msgstr ""
 
 #: includes/elements/_alternate/self-hosted-audio.php:80
+#: includes/elements/_alternate/self-hosted-video.php:129
 #: includes/elements/_alternate/text-type.php:143
 msgid "Loop"
 msgstr ""
@@ -5457,6 +5466,10 @@ msgstr ""
 
 #: includes/elements/_alternate/self-hosted-video.php:122
 msgid "Mute video player's audio."
+msgstr ""
+
+#: includes/elements/_alternate/self-hosted-video.php:130
+msgid "Enable looping of video playback."
 msgstr ""
 
 #: includes/elements/_alternate/skill-bar.php:10
@@ -6350,19 +6363,15 @@ msgstr ""
 msgid "Audio source missing"
 msgstr ""
 
-#: includes/shortcodes/protect.php:24
-msgid "Restricted Content Login"
-msgstr ""
-
-#: includes/shortcodes/protect.php:25
+#: includes/shortcodes/protect.php:27
 msgid "Username"
 msgstr ""
 
-#: includes/shortcodes/protect.php:26
+#: includes/shortcodes/protect.php:28
 msgid "Password"
 msgstr ""
 
-#: includes/shortcodes/protect.php:27
+#: includes/shortcodes/protect.php:29
 msgid "Login"
 msgstr ""
 
@@ -6545,19 +6554,6 @@ msgstr ""
 msgid "Unlock Templates"
 msgstr ""
 
-#: includes/views/admin/home-pre-standalone-validation.php:11
-msgid "Almost ready&hellip;"
-msgstr ""
-
-#: includes/views/admin/home-pre-standalone-validation.php:12
-msgid ""
-"Wow! You must have acted fast. Looks like you are one of the first people to "
-"use Cornerstone outside of X. Normally this is where you would validate "
-"Cornerstone, but because we just launched, there are a few dots left to "
-"connect. Try checking back in a few hours. When it&apos;s ready a form will "
-"appear in place of this message."
-msgstr ""
-
 #: includes/views/admin/home-sidebar.php:7
 msgid ""
 "<strong>NOTE:</strong> A separate license is required for each site using "
@@ -6572,6 +6568,10 @@ msgstr ""
 msgid ""
 "Your site is validated. <a href=\"#\" data-tco-module-target=\"revoke"
 "\">Revoke validation</a>."
+msgstr ""
+
+#: includes/views/admin/home-validate-overlay.php:14
+msgid "How do I unlock this feature?"
 msgstr ""
 
 #: includes/views/admin/home-validate-overlay.php:15
@@ -6619,217 +6619,6 @@ msgstr ""
 
 #: includes/views/builder/preloader.php:4
 msgid "Powered by Themeco"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:42
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:72
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:80
-msgid "There was an error when reading this WXR file"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:43
-msgid ""
-"Details are shown above. The importer will now try again with a different "
-"parser..."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:84
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:89
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:279
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/parsers.php:468
-msgid ""
-"This does not appear to be a WXR file, missing/invalid WXR version number"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:134
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:143
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:194
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:198
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:207
-msgid "Sorry, there has been an error."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:135
-msgid "The file does not exist, please try again."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:178
-msgid "All done."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:178
-msgid "Have fun!"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:179
-msgid "Remember to update the passwords and roles of imported users."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:199
-msgid ""
-"The export file could not be found at <code>%s</code>. It is likely that "
-"this was caused by a permissions problem."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:215
-msgid ""
-"This WXR file (version %s) may not be supported by this version of the "
-"importer. Please consider updating."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:240
-msgid ""
-"Failed to import author %s. Their posts will be attributed to the current "
-"user."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:266
-msgid "Assign Authors"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:267
-msgid ""
-"To make it easier for you to edit and save the imported content, you may "
-"want to reassign the author of the imported item to an existing user of this "
-"site. For example, you may want to import all the entries as <code>admin</"
-"code>s entries."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:269
-msgid ""
-"If a new user is created by WordPress, a new password will be randomly "
-"generated and the new user&#8217;s role will be set as %s. Manually changing "
-"the new user&#8217;s details will be necessary."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:279
-msgid "Import Attachments"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:282
-msgid "Download and import file attachments"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:286
-msgid "Submit"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:299
-msgid "Import author:"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:310
-msgid "or create new user with login name:"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:313
-msgid "as a new user:"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:321
-msgid "assign posts to an existing user:"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:323
-msgid "or assign posts to an existing user:"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:324
-msgid "- Select -"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:374
-msgid ""
-"Failed to create new user for %s. Their posts will be attributed to the "
-"current user."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:425
-msgid "Failed to import category %s"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:465
-msgid "Failed to import post tag %s"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:511
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:652
-msgid "Failed to import %s %s"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:537
-msgid "Failed to import &#8220;%s&#8221;: Invalid post type %s"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:559
-msgid "%s &#8220;%s&#8221; already exists."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:618
-msgid "Failed to import %s &#8220;%s&#8221;"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:783
-msgid "Menu item skipped due to missing menu slug"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:790
-msgid "Menu item skipped due to invalid menu slug: %s"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:853
-msgid "Fetching attachments is not enabled"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:866
-msgid "Invalid file type"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:910
-msgid "Remote server did not respond"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:916
-msgid "Remote server returned error response %1$d %2$s"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:923
-msgid "Remote file is incorrect size"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:928
-msgid "Zero size file downloaded"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:934
-msgid "Remote file is too large, limit is %s"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1033
-msgid "Import WordPress"
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1040
-msgid ""
-"A new version of this importer is available. Please update to version %s to "
-"ensure compatibility with newer export files."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1055
-msgid ""
-"Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import "
-"the posts, pages, comments, custom fields, categories, and tags into this "
-"site."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1056
-msgid "Choose a WXR (.xml) file to upload, then click Upload file and import."
-msgstr ""
-
-#: vendor/lucatume/wp-browser/src/data/plugins/wordpress-importer/wordpress-importer.php:1130
-msgid ""
-"Import <strong>posts, pages, comments, custom fields, categories, and tags</"
-"strong> from a WordPress export file."
 msgstr ""
 
 #. Plugin URI of the plugin/theme

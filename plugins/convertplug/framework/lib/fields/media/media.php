@@ -8,14 +8,14 @@ if ( function_exists('smile_add_input_type'))
 
 add_action( 'admin_enqueue_scripts', 'framework_media_admin_styles' );
 
-function framework_media_admin_styles(){
-	$screen = get_current_screen();
-	$screen_id = $screen->base;
-	$cp_page = strpos( $screen_id, 'plug_page');
+function framework_media_admin_styles($hook){
+	$cp_page = strpos( $hook, 'plug_page');
+	$data  =  get_option( 'convert_plug_debug' );
+	
 	wp_enqueue_script( 'media-upload' );
 	if( $cp_page == 7 && isset( $_GET['style-view'] ) && $_GET['style-view'] == "edit" ){
 		wp_enqueue_media();
-		if( isset( $_GET['developer'] ) ){
+		if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 			wp_enqueue_script( 'smile-media-script', plugins_url('media.js',__FILE__), array(), '1.0.0', true );
 			wp_enqueue_style( 'smile-media-style', plugins_url('media.css',__FILE__));
 		}

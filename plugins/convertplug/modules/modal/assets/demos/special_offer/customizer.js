@@ -41,7 +41,6 @@ jQuery(document).ready(function(){
 		// style dependent variables  	
 		var modal_size					= data.modal_size,
 			cp_modal_width				= data.cp_modal_width,
-			cp_modal_height				= 'auto',
 			modal_title 				= data.modal_title1,
 			bg_color					= data.modal_bg_color,
 			overlay_bg_color			= data.modal_overlay_bg_color,

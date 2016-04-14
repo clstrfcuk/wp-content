@@ -119,6 +119,10 @@ class Cornerstone_Settings_Handler extends Cornerstone_Plugin_Component {
 
 	public function ajax_save( $data ) {
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			cs_send_json_error();
+		}
+
 		$this->setup_controls();
 		$data = $this->controls->sanitize( $data );
 

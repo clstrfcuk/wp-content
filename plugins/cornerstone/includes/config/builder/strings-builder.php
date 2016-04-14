@@ -176,7 +176,7 @@ return array(
 	'confirm-back'                    => __( 'Back', 'cornerstone' ),
 
 	'confirm-element-delete'          => __( 'Are you sure you wish to delete this %s?', 'cornerstone' ),
-	'confirm-element-delete-contents' => __( 'Are you sure you wish to delete this %s, along with it&apos;s contents?', 'cornerstone' ),
+	'confirm-element-delete-contents' => __( 'Are you sure you wish to delete this %s, along with its contents?', 'cornerstone' ),
 
 	//Save Complete
 	'save-error'             => __( 'Unable to save page.', 'cornerstone' ),

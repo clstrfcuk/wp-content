@@ -187,7 +187,7 @@ class CS_Settings_General {
 		}
 
 		if ( isset( $data['allow_comments'] ) ) {
-			$update['comment_status'] = ( 'true' === $data['allow_comments'] ) ? 'open' : 'closed';
+			$update['comment_status'] = ( true === $data['allow_comments'] ) ? 'open' : 'closed';
 		}
 
 		if ( post_type_supports( $post->post_type, 'excerpt' ) && isset( $data['manual_excerpt'] ) ) {

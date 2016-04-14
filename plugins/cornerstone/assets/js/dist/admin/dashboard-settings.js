@@ -70,6 +70,7 @@ module.exports = function( $this, targets, data ) {
 
       action: 'cs_dashboard_save_settings',
       data: getData(),
+      _cs_nonce: csDashboardSettingsData._cs_nonce,
 
       done: function( response ) {
 

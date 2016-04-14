@@ -269,7 +269,7 @@ class Vc_License {
 	public function generateActivationUrl() {
 		$token = sha1( $this->newLicenseKeyToken() );
 		$url = esc_url( site_url() );
-		$redirect = esc_url( get_admin_url() . 'admin.php?page=vc-updater' );
+		$redirect = esc_url( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
 
 		return sprintf( '%s/activate-license?token=%s&url=%s&redirect=%s', self::$support_host, $token, $url, $redirect );
 	}
@@ -283,7 +283,7 @@ class Vc_License {
 		$license_key = $this->getLicenseKey();
 		$token = sha1( $this->newLicenseKeyToken() );
 		$url = esc_url( site_url() );
-		$redirect = esc_url( get_admin_url() . 'admin.php?page=vc-updater' );
+		$redirect = esc_url( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
 
 		return sprintf( '%s/deactivate-license?license_key=%s&token=%s&url=%s&redirect=%s', self::$support_host, $license_key, $token, $url, $redirect );
 	}
@@ -456,7 +456,11 @@ class Vc_License {
 			return;
 		}
 
-		if ( ! $this->isActivated() && empty( $_COOKIE['vchideactivationmsg'] ) && ! vc_is_network_plugin() && ! vc_is_as_theme() ) {
+		if ( ! $this->isActivated()
+		     && empty( $_COOKIE['vchideactivationmsg'] )
+		     && ! ( vc_is_network_plugin() && is_network_admin() )
+		     && ! vc_is_as_theme()
+		) {
 			add_action( 'admin_notices', array( &$this, 'adminNoticeLicenseActivation', ) );
 		}
 	}
@@ -497,7 +501,8 @@ class Vc_License {
 
 	public function adminNoticeLicenseActivation() {
 		update_option( 'wpb_js_composer_license_activation_notified', 'yes' );
-		echo '<div class="updated vc_license - activation - notice"><p>' . sprintf( __( 'Hola! Please <a href=" % s">activate your copy</a> of Visual Composer to receive automatic updates.', 'js_composer' ), wp_nonce_url( admin_url( 'admin.php?page=vc-updater' ) ) ) . '</p></div>';
+		$redirect = esc_url( ( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) ) );
+		echo '<div class="updated vc_license - activation - notice"><p>' . sprintf( __( 'Hola! Please <a href="%s">activate your copy</a> of Visual Composer to receive automatic updates.', 'js_composer' ), wp_nonce_url( $redirect ) ) . '</p></div>';
 	}
 
 	/**

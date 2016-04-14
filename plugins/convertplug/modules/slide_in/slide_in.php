@@ -6,8 +6,9 @@ if(!class_exists('Smile_Slide_Ins')){
 		public static $options = array();
 		function __construct(){
 			add_action( 'wp_enqueue_scripts',array($this,'enqueue_front_scripts' ), 100);
+			add_action( 'admin_enqueue_scripts',array($this,'enqueue_admin_scripts' ) );
 			add_action( 'admin_menu',array($this,'add_admin_menu_page' ), 999);
-			add_action( 'wp_head',array($this,'load_customizer_scripts' ) );
+			add_action( 'admin_head',array($this,'load_customizer_scripts' ) );
 			add_action( 'wp_footer', array( $this, 'load_slide_in_globally' ) );
 			add_action( 'init', array( $this, 'register_theme_templates') );
 			add_filter( 'admin_body_class', array( $this, 'cp_admin_body_class') );
@@ -46,21 +47,14 @@ if(!class_exists('Smile_Slide_Ins')){
 
 		function slide_in_admin_scripts(){
 			if( ( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant" ) ) || !isset( $_GET['style-view'] ) ) {
-				wp_enqueue_style( 'smile-bootstrap-datetimepicker',	plugins_url( '../assets/css/bootstrap-datetimepicker.min.css', __FILE__ ) );
+				
 				wp_enqueue_script( 'smile-slide_in-receiver', 			plugins_url( 'assets/js/receiver.js',__FILE__) );
-				wp_enqueue_script( 'smile-moment-with-locales', 	plugins_url( '../assets/js/moment-with-locales.js',__FILE__) );
-				wp_enqueue_script( 'smile-bootstrap-datetimepicker',plugins_url( '../assets/js/bootstrap-datetimepicker.js', __FILE__ ) );
 				wp_enqueue_style( 'cp-contacts', 					plugins_url( '../../admin/contacts/css/cp-contacts.css', __FILE__ ) );
 				wp_enqueue_media();
-				wp_enqueue_script( 'smile-slide_in-importer', 			plugins_url( '../assets/js/admin-media.js',__FILE__),array( 'jquery' ),'',true);
-
-
+				wp_enqueue_script( 'smile-slide_in-importer', plugins_url( '../assets/js/admin-media.js',__FILE__),array( 'jquery' ),'',true);
 			}
 
 			if( isset($_GET['style-view']) && $_GET['style-view'] == 'analytics' ) {
-				wp_enqueue_style( 'smile-bootstrap-datetimepicker',	plugins_url( '../assets/css/bootstrap-datetimepicker.min.css', __FILE__ ) );
-				wp_enqueue_script( 'smile-moment-with-locales',		plugins_url( '../assets/js/moment-with-locales.js', __FILE__ ) );
-				wp_enqueue_script( 'smile-bootstrap-datetimepicker',plugins_url( '../assets/js/bootstrap-datetimepicker.js', __FILE__ ) );
 				wp_enqueue_style( 'css-select2',					plugins_url( '../../admin/assets/select2/select2.min.css', __FILE__ ) );
 				wp_enqueue_script( 'convert-select2',				plugins_url( '../../admin/assets/select2/select2.min.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-js',					plugins_url( '../../admin/assets/js/chart.js', __FILE__ ) );
@@ -118,10 +112,11 @@ if(!class_exists('Smile_Slide_Ins')){
 		function load_slide_in_globally(){
 
 			if(!isset($_GET['hidemenubar'])){
-
 				?>
-	            <script type="text/javascript" id="test">
-				jQuery('body').attr('onload','startclock()');
+	            <script type="text/javascript" id="slidein">
+				jQuery(window).load( function(){
+					startclock();
+				});
 				function stopclock (){
 				  if(timerRunning) clearTimeout(timerID);
 				  timerRunning = false;
@@ -150,18 +145,14 @@ if(!class_exists('Smile_Slide_Ins')){
 				</script>
 	            <?php
 				$slide_in_style = $slide_in_style_delay = $slide_in_cookie_delay = '';
-				$live_styles = smile_get_live_slide_ins();
+				$live_styles = cp_get_live_styles('slide_in');
 				$prev_styles = get_option('smile_slide_in_styles');
 				$smile_variant_tests = get_option('slide_in_variant_tests');
 
-				if(is_array($live_styles)){
+				if( is_array($live_styles) && !empty( $live_styles ) ) {
+
 					global $post;
 					$slide_in_arrays = $live_styles;
-					$post_id = ( !is_404() && !is_search() && !is_archive() && !is_home() ) ? @$post->ID : '';
-					$category = get_queried_object_id();
-					$cat_ids = wp_get_post_categories( $post_id );
-
-					$post_type = get_post_type( $post );
 					$taxonomies = get_post_taxonomies( $post );
 
 					foreach( $slide_in_arrays as $key => $slide_in_array ){
@@ -174,278 +165,71 @@ if(!class_exists('Smile_Slide_Ins')){
 						foreach($settings_array as $key => $setting){
 							$style_settings[$key] = apply_filters( 'smile_render_setting',$setting );
 						}
-						if(is_array($style_settings) && !empty($style_settings)){
-							$slide_in_style = $style_settings[ 'style' ];
 
+						$style_id = $slide_in_array[ 'style_id' ];
+						$slide_in_style = $style_settings[ 'style' ];
+
+						if( is_array($style_settings) && !empty($style_settings) ) {
+							
 							$settings = unserialize( $slide_in_array[ 'style_settings' ] );
-							$style_id = $slide_in_array[ 'style_id' ];
+							$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';	
 
-							$global_display		= isset($settings['global']) ? apply_filters('smile_render_setting', $settings['global']) : '';
-
-							$exclude_from 		= isset($settings['exclude_from']) ? apply_filters('smile_render_setting', $settings['exclude_from']) : '';
-							$exclude_from		= str_replace( "post-", "", $exclude_from );
-							$exclude_from		= str_replace( "tax-", "", $exclude_from );
-							$exclude_from		= str_replace( "special-", "", $exclude_from );
-							$exclude_from 		= ( !$exclude_from == "" ) ? explode( ",", $exclude_from ) : '';
-
-							$exclusive_on 		= isset($settings[ 'exclusive_on' ]) ? apply_filters('smile_render_setting', $settings[ 'exclusive_on' ]) : '';
-							$exclusive_on		= str_replace( "post-", "", $exclusive_on );
-							$exclusive_on		= str_replace( "tax-", "", $exclusive_on );
-							$exclusive_on		= str_replace( "special-", "", $exclusive_on );
-							$exclusive_on 		= ( !$exclusive_on == "" ) ? explode( ",", $exclusive_on ) : '';
-
-
-							$exclude_cpt 		= isset($settings[ 'exclude_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclude_post_type' ]) : '';
-							$exclude_cpt		= str_replace( "post-", "", $exclude_cpt );
-							$exclude_cpt		= str_replace( "tax-", "", $exclude_cpt );
-							$exclude_cpt		= str_replace( "special-", "", $exclude_cpt );
-							$exclude_cpt 		= ( !$exclude_cpt == "" ) ? explode( ",", $exclude_cpt ) : '';
-
-							$exclusive_cpt 		= isset($settings[ 'exclusive_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclusive_post_type' ]) : '';
-							$exclusive_cpt		= str_replace( "post-", "", $exclusive_cpt );
-							$exclusive_cpt		= str_replace( "tax-", "", $exclusive_cpt );
-							$exclusive_cpt		= str_replace( "special-", "", $exclusive_cpt );
-							$exclusive_cpt 		= ( !$exclusive_cpt == "" ) ? explode( ",", $exclusive_cpt ) : '';
-
-
-							$exclude_post_type 	= isset($settings[ 'exclude_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclude_post_type' ]) : '';
-							$exclude_post_type	= str_replace( "post-", "", $exclude_post_type );
-							$exclude_post_type	= str_replace( "tax-", "", $exclude_post_type );
-							$exclude_post_type	= str_replace( "special-", "", $exclude_post_type );
-							$exclude_post_type 	= ( !$exclude_post_type == "" ) ? explode( ",", $exclude_post_type ) : '';
-
-							$exclusive_tax 		= isset($settings[ 'exclusive_tax' ]) ? apply_filters('smile_render_setting', $settings[ 'exclusive_tax' ]) : '';
-							$exclusive_tax		= str_replace( "post-", "", $exclusive_tax );
-							$exclusive_tax		= str_replace( "tax-", "", $exclusive_tax );
-							$exclusive_tax		= str_replace( "special-", "", $exclusive_tax );
-							$exclusive_tax 		= ( !$exclusive_tax == "" ) ? explode( ",", $exclusive_tax ) : '';
-
-							$exclusive_cats 	= isset($settings[ 'exclusive_cats' ]) ? apply_filters('smile_render_setting', $settings[ 'exclusive_cats' ]) : '';
-							$exclusive_cats		= str_replace( "post-", "", $exclusive_cats );
-							$exclusive_cats		= str_replace( "tax-", "", $exclusive_cats );
-							$exclusive_cats		= str_replace( "special-", "", $exclusive_cats );
-							$exclusive_cats 	= ( !$exclusive_cats == "" ) ? explode( ",", $exclusive_cats ) : '';
-
-							$exclude_tax 		= isset($settings[ 'exclude_tax' ]) ? apply_filters('smile_render_setting', $settings[ 'exclude_tax' ]) : '';
-							$exclude_tax		= str_replace( "post-", "", $exclude_tax );
-							$exclude_tax		= str_replace( "tax-", "", $exclude_tax );
-							$exclude_tax		= str_replace( "special-", "", $exclude_tax );
-							$exclude_tax 		= ( !$exclude_tax == "" ) ? explode( ",", $exclude_tax ) : '';
-
-							if( !$global_display ){
-								if( !$settings['enable_custom_class'] ) {
-									$settings['custom_class'] = 'priority_slidein';
-									$settings['enable_custom_class'] = true;
-								} else {
-									$settings['custom_class'] = $settings['custom_class'].',priority_slidein';
-								}
-							}
-
-							$show_for_logged_in = isset($settings['show_for_logged_in'] ) ? $settings['show_for_logged_in'] : '';
-
-							$all_users = isset($settings['all_users'] ) ? $settings['all_users'] : '';
-							$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';
-
+							$display = cp_is_style_visible($settings);
 							$settings = serialize( $settings );
 							$settings_encoded 	= base64_encode( $settings );
+						}							
 
-							if( $all_users ){
-								$show_for_logged_in = 0;
-							}
-						}
+						if( $display ) {
 
-						if( $global_display ) {
-							$display = true;
-							if( is_404() ){
-								if( is_array( $exclude_from ) && in_array( '404', $exclude_from ) ){
-									$display = false;
-								}
-							}
-							if( is_search() ){
-								if( is_array( $exclude_from ) && in_array( 'search', $exclude_from ) ){
-									$display = false;
-								}
-							}
-							if( is_front_page() ){
-								if( is_array( $exclude_from ) && in_array( 'front_page', $exclude_from ) ){
-									$display = false;
-								}
-							}
-							if( is_home() ){
-								if( is_array( $exclude_from ) && in_array( 'blog', $exclude_from ) ){
-									$display = false;
-								}
-							}
-							if( is_author() ){
-								if( is_array( $exclude_from ) && in_array( 'author', $exclude_from ) ){
-									$display = false;
-								}
-							}
-							if( is_archive() ){
-								$obj = get_queried_object();
-								$term_id = $obj->term_id;
-								if( in_array( $term_id, $exclude_from ) ){
-									$display = false;
-								} elseif( is_array( $exclude_from ) && in_array( 'archive', $exclude_from ) ){
-									$display = false;
-								}
-							}
-							if( $post_id ) {
-								if( is_array( $exclude_from ) && in_array( $post_id, $exclude_from ) ){
-									$display = false;
-								}
-							}
-							if( !empty( $cat_ids ) ) {
-								foreach( $cat_ids as $cat_id ){
-									if( is_array( $exclude_from ) && in_array( $cat_id, $exclude_from ) ){
-										$display = false;
-									}
-								}
-							}
-							if( $post_type ) {
-								if( is_array( $exclude_cpt ) && in_array( $post_type, $exclude_cpt ) ){
-									foreach( $exclude_cpt as $cpt ){
-										switch( $cpt ){
-											case 'post':
-												if( !is_archive() && !is_home() ){
-													$display = false;
-												}
-												break;
-											default:
-												$display = false;
-												break;
-										}
-									}
-								}
-							}
-							if( !empty( $exclude_tax ) && is_array( $exclude_tax ) ){
-								foreach( $exclude_tax as $taxonomy ) {
-									$taxonomy = str_replace( "cp-", "", $taxonomy );
-									//if( is_array( $taxonomies ) && in_array( $taxonomy, $taxonomies ) ){
-									switch( $taxonomy ){
-										case 'category':
-											if( is_category() ){
-												$display = false;
-											}
-											break;
-										case 'post_tag':
-											if( is_tag() ){
-												$display = false;
-											}
-											break;
-										default:
-											if( is_archive( $taxonomy ) ){
-												$display = false;
-											}
-											break;
-									}
-								}
-							}
-						} else {
-							$display = false;
+							$data  =  get_option( 'convert_plug_debug' ); 
+					
+							// developer mode
+							if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 
-							if( is_array( $exclusive_on ) && !empty( $exclusive_on ) ){
-								foreach( $exclusive_on as $page ){
-									if( is_page( $page ) ){
-										$display = true;
-									}
-								}
-							}
-							if( is_404() ){
-								if( is_array( $exclusive_on ) && in_array( '404', $exclusive_on ) ){
-									$display = true;
-								}
-							}
-							if( is_search() ){
-								if( is_array( $exclusive_on ) && in_array( 'search', $exclusive_on ) ){
-									$display = true;
-								}
-							}
-							if( is_front_page() ){
-								if( is_array( $exclusive_on ) && in_array( 'front_page', $exclusive_on ) ){
-									$display = true;
-								}
-							}
-							if( is_home() ){
-								if( is_array( $exclusive_on ) && in_array( 'blog', $exclusive_on ) ){
-									$display = true;
-								}
-							}
-							if( is_author() ){
-								if( is_array( $exclusive_on ) && in_array( 'author', $exclusive_on ) ){
-									$display = true;
-								}
-							}
-							if( is_archive() ){
-								if( is_archive() ){
-									$obj = get_queried_object();
-									$term_id = $obj->term_id;
-									if( in_array( $term_id, $exclusive_on ) ){
-										$display = true;
-									} elseif( is_array( $exclusive_on ) && in_array( 'archive', $exclusive_on ) ){
-										$display = true;
-									}
-								}
-							}
-							if( $post_id ) {
-								if( is_array( $exclusive_on ) && in_array( $post_id, $exclusive_on ) ){
-									$display = true;
-								}
-							}
-							if( !empty( $cat_ids ) ) {
-								foreach( $cat_ids as $cat_id ){
-									if( is_array( $exclusive_on ) && in_array( $cat_id, $exclusive_on ) ){
-										$display = true;
-									}
-								}
-							}
-							if( $post_type ) {
-								if( is_array( $exclusive_cpt) && in_array( $post_type, $exclusive_cpt ) ){
-									foreach( $exclusive_cpt as $cpt ){
-										switch( $cpt ){
-											case 'post':
-												if( !is_archive() && !is_home() ){
-													$display = true;
-												}
-												break;
-											default:
-												$display = true;
-												break;
-										}
-									}
-								}
-							}
-							if( !empty( $exclusive_tax ) ){
-								foreach( $exclusive_tax as $taxonomy ) {
-									$taxonomy = str_replace( "cp-", "", $taxonomy );
-									//if( in_array( $taxonomy, $taxonomies ) ){
-									switch( $taxonomy ){
-										case 'category':
-											if( is_category() ){
-												$display = true;
-											}
-											break;
-										case 'post_tag':
-											if( is_tag() ){
-												$display = true;
-											}
-											break;
-										default:
-											if( is_archive( $taxonomy ) ){
-												$display = true;
-											}
-											break;
-									}
-								}
-							}
-						}
+								$style_handlers = array(
+									'smile-slide-in-style',
+									'smile-slide-in-grid-style',
+									'cp-animate-style',
+									'cp-social-media-style',
+									'cp-social-icon-style',
+									'convertplug-style',
+									'cp-frosty-style'
+								);
 
-						if( !$show_for_logged_in ){
-							if( is_user_logged_in() )
-								$display = false;
-						}
+								$script_handlers = array(
+									'smile-slide-in-common',
+									'smile-slide-in-script',
+									'cp-ideal-timer-script',
+									'cp-slide-in-mailer-script',
+									'cp-frosty-script'
+								);
 
-						if($display){
+	   							$list = 'enqueued';
+
+	   							foreach( $script_handlers as $handler ) {
+	   								if ( !wp_script_is( $handler, $list ) ) {							  
+								       wp_enqueue_script( $handler );
+								    }
+	   							}
+
+	   							foreach( $style_handlers as $handler ) {
+	   								if ( !wp_style_is( $handler, $list ) ) {							      
+								       wp_enqueue_style( $handler );
+								    }
+	   							}
+	   						} else {
+
+								if ( !wp_script_is( 'smile-slide-in-script', 'enqueued' ) ) {						      
+								    wp_enqueue_script( 'smile-slide-in-script' );
+								}
+
+								if ( !wp_style_is( 'smile-slide-in-style', 'enqueued' ) ) {							      
+								       wp_enqueue_style( 'smile-slide-in-style' );
+								}
+	   						}
+
+							wp_enqueue_script( 'cp-perfect-scroll-js-back', plugins_url( '../../admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
+
 							//	Generate style ID
 							$id = $slide_in_style . '-' . $style_id;
 
@@ -468,57 +252,97 @@ if(!class_exists('Smile_Slide_Ins')){
 
 		function load_customizer_scripts(){
 
-			if( isset( $_GET['hidemenubar'] ) && isset( $_GET['module'] ) && $_GET['module'] == "slide_in" ){
-				wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('../../admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
+			if( ( isset( $_GET['hidemenubar'] ) && isset( $_GET['module'] ) && $_GET['module'] == "slide_in" ) ) {
+
+				wp_register_script( 'cp-frosty-script', plugins_url( '../../admin/assets/js/frosty.js', __FILE__), array( 'jquery' ), null, null, true );
+				wp_enqueue_script( 'cp-frosty-script');	
 				wp_enqueue_script( 'cp-perfect-scroll-js-back', plugins_url( '../../admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
 				wp_enqueue_script( 'cp-common-functions-js' );
 				wp_enqueue_script( 'cp-admin-customizer-js', plugins_url( 'assets/js/admin.customizer.js', __FILE__ ) );
 				wp_enqueue_script( 'smile-slide_in-editor', plugins_url( '../assets/js/ckeditor/ckeditor.js', __FILE__), array('smile-customizer-js') );
 
+				require_once( 'functions/functions.options.php' );
+				$demo_html = $customizer_js = '';
+				$settings = $this::$options;
+				foreach( $settings as $style => $options ){
+					if( $style == $_GET['theme'] ){
+						$customizer_js = $options['customizer_js'];
+					}
+				}
+				if( $customizer_js !== "" ){
+					wp_enqueue_script( 'cp-style-customizer-js', $customizer_js , "", true );
+				}
 			}
 
 		}
+
+		function enqueue_admin_scripts($hook) {
+
+			if( ( isset( $_GET['hidemenubar'] ) && $_GET['module'] == 'slide_in' )
+			     || (isset($_GET['style-view']) && $_GET['style-view'] == 'new' && $hook == "convertplug_page_smile-slide_in-designer" ) ) {
+
+				wp_enqueue_style( 'smile-slide_in', plugins_url( 'assets/css/slide_in.min.css', __FILE__ ) );	
+			    wp_localize_script( 'jquery', 'slide_in', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ) );
+				wp_register_script( 'smile-slide_in-common', plugins_url( 'assets/js/slide_in.common.js', __FILE__), array( 'jquery' ), null, true );
+				wp_register_script( 'cp-common-functions-js', plugins_url( 'assets/js/functions-common.js', __FILE__ ), 'smile-slide_in-common', null, true );
+				wp_enqueue_script( 'smile-slide_in-common' );
+
+				//	Add 'Theme Name' as a class to <html> tag
+				//	To provide theme compatibility
+				$theme_name = wp_get_theme();
+				$theme_name = $theme_name->get( "Name" );
+				$theme_name = strtolower( preg_replace("/[\s_]/", "-", $theme_name ) );
+
+				wp_localize_script( 'jquery', 'cp_active_theme', array( 'slug' => $theme_name ) );
+				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+			}
+		}	
 
 		function enqueue_front_scripts(){
-
-			//	Add 'Theme Name' as a class to <html> tag
-			//	To provide theme compatibility
-			$theme_name = wp_get_theme();
-			$theme_name = $theme_name->get( "Name" );
-			$theme_name = strtolower( preg_replace("/[\s_]/", "-", $theme_name ) );
-
-			wp_localize_script( 'jquery', 'cp_active_theme', array( 'slug' => $theme_name ) );
+			
 			wp_localize_script( 'jquery', 'slide_in', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ) );
 
-			if( isset( $_GET['module'] ) && $_GET['module'] == "slide_in" ) {
-				wp_register_script( 'smile-slide_in-common', plugins_url( 'assets/js/slide_in.common.js', __FILE__), array( 'jquery' ), null, true );
-				wp_register_script( 'cp-common-functions-js', plugins_url( 'assets/js/functions-common.js', __FILE__ ), 'smile-slide_in-common', null, true );
+			$live_styles = cp_get_live_styles('slide_in');
+
+			// if any style is live or modal is in live preview mode then only enqueue scripts and styles
+			if( $live_styles && count($live_styles) > 0 ) {
+
+				wp_enqueue_script( 'smile-tooltip-min', plugins_url('../../admin/assets/js/frosty.js',__FILE__), array( 'jquery' ), '', true );	
+
+					$data  =  get_option( 'convert_plug_debug' ); 
+
+					if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
+
+						// register styles 
+						wp_register_style( 'smile-slide-in-style', plugins_url( 'assets/css/slide_in.css', __FILE__ ) );
+						wp_register_style( 'smile-slide-in-grid-style', plugins_url( 'assets/css/slide_in-grid.css', __FILE__ ) );
+						wp_register_style( 'cp-animate-style', plugins_url( '../assets/css/animate.css', __FILE__ ) );
+						wp_register_style( 'cp-social-media-style', plugins_url( '../assets/css/cp-social-media-style.css', __FILE__ ) );
+						wp_register_style( 'cp-social-icon-style', plugins_url( '../assets/css/social-icon-css.css', __FILE__ ) );
+						wp_register_style( 'convertplug-style', plugins_url( '../assets/css/convertplug.css', __FILE__ ) );
+						wp_register_style( 'cp-frosty-style', plugins_url( '../../admin/assets/css/frosty.css', __FILE__ ) );
+
+						// register scripts
+						wp_register_script( 'smile-slide-in-common', plugins_url( 'assets/js/slide_in.common.js', __FILE__), null , null, true );
+						wp_register_script( 'smile-slide-in-script', plugins_url( 'assets/js/slide_in.js', __FILE__), array( 'jquery' ), null, null, true );	
+						wp_register_script( 'cp-ideal-timer-script', plugins_url( 'assets/js/idle-timer.min.js', __FILE__), array( 'jquery' ), null, null, true );
+						wp_register_script( 'cp-slide-in-mailer-script', plugins_url( 'assets/js/mailer.js', __FILE__), array( 'jquery' ), null, 
+								null, true );
+						wp_register_script( 'cp-frosty-script', plugins_url( '../../admin/assets/js/frosty.js', __FILE__), array( 'jquery' ), null, null, true );
+
+					} else {
+						wp_register_script( 'smile-slide-in-script', plugins_url( 'assets/js/slide_in.min.js', __FILE__), array( 'jquery' ), null, null, true );
+						wp_register_style( 'smile-slide-in-style', plugins_url( 'assets/css/slide_in.min.css', __FILE__) );
+					}
+			
+				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 			}
-
-			$live_styles = smile_get_live_slide_ins();
-
-			// if any style is live or slide_in is in live preview mode then only enqueue scripts and styles
-			if( ( $live_styles && count($live_styles) > 0 ) || isset($_GET['hidemenubar']) ) {
-				wp_enqueue_script( 'smile-tooltip-min', plugins_url('../../admin/assets/js/frosty.js',__FILE__) ,array( 'jquery' ),'',true);
-				wp_enqueue_style( 'smile-slide_in', plugins_url( 'assets/css/slide_in.min.css', __FILE__) );
-			}
-
-			if( !isset( $_GET['hidemenubar'] ) && ( $live_styles && count($live_styles) > 0 ) ) {
-
-				wp_register_script( 'smile-slide_in-common', plugins_url( 'assets/js/slide_in.common.js', __FILE__), array( 'jquery' ), null, true );
-				wp_register_script( 'cp-common-functions-js', plugins_url( 'assets/js/functions-common.js', __FILE__ ), 'smile-slide_in-common', null, true );
-				wp_enqueue_script( 'smile-slide_in', plugins_url( 'assets/js/slide_in.min.js', __FILE__), array( 'jquery' ), null, null, true );
-				wp_localize_script( 'smile-slide_in', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
-			}
-
-			wp_enqueue_script( 'smile-slide_in-common' );
-			wp_localize_script( 'smile-slide_in-common', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
-
+				
 			wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('../../admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
-			wp_enqueue_script( 'cp-perfect-scroll-js-back', plugins_url( '../../admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
+			
 		}
-
 	}
+
 	$Smile_Slide_Ins = new Smile_Slide_Ins;
 }
 
@@ -548,10 +372,16 @@ if (!function_exists('cp_slide_in_custom')) {
 			'id' 				=> '',
 			'display'			=> '',
 		), $atts));
-		$live_styles = smile_get_live_slide_ins();
+		$live_styles = cp_get_live_styles('slide_in');
 		$live_array = $settings = '';
 		foreach( $live_styles as $key => $slide_in_array ){
 			$style_id = $slide_in_array[ 'style_id' ];
+			
+			$settings = unserialize( $slide_in_array[ 'style_settings' ] );			
+			if(isset($settings['variant_style_id']) && $id == $settings['style_id']){
+				$id = $settings['variant_style_id'];
+			}	
+
 			if( $id == $style_id )
 			{
 				$live_array = $slide_in_array;
@@ -569,19 +399,21 @@ if (!function_exists('cp_slide_in_custom')) {
 				}
 				$style_settings[ 'display' ] = $display;
 				$style_settings['custom_class'] .= isset( $style_settings['custom_class']) ? $style_settings['custom_class'].',cp-trigger-'.$style_id : 'cp-trigger-'.$style_id;
+				
+				$display = cp_is_style_visible($settings);
+
 				$encode_settings = serialize( $style_settings );
 				$settings_encoded = base64_encode( $encode_settings );
 
-				//	Individual Style Path
-				$file_name = '/assets/demos/'. $slide_in_style . '/' . $slide_in_style . '.min.css';
-				$url = plugins_url( $file_name , __FILE__ );
-
-				//	Check file exist or not - and append to the head
-				echo '<link rel="stylesheet" id="'.$id.'" href="' . $url .'" type="text/css" media="all" />';
-
 				echo '<span class="cp-trigger-shortcode cp-trigger-'.$style_id.' cp-'.$style_id.'">'.do_shortcode( $content ).'</span>';
-				if( !$global ){
-					echo do_shortcode('[smile_slide_in style_id = '.$style_id.' style="'.$slide_in_style.'" settings_encoded="' . $settings_encoded . ' "][/smile_slide_in]');
+				if( $display ) {
+
+					//	Individual Style Path
+					$file_name = '/assets/demos/'. $slide_in_style . '/' . $slide_in_style . '.min.css';
+					$url = plugins_url( $file_name , __FILE__ );
+
+					echo '<link rel="stylesheet" id="'.$id.'" href="' . $url .'" type="text/css" media="all" />';
+					echo do_shortcode('[smile_slide_in manual="true" style_id = '.$style_id.' style="'.$slide_in_style.'" settings_encoded="' . $settings_encoded . ' "][/smile_slide_in]');
 					$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';
 					apply_filters('cp_custom_css',$style_id, $css);
 				}

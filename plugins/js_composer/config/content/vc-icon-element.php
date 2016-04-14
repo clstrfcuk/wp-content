@@ -16,6 +16,7 @@ function vc_icon_element_params() {
 					__( 'Typicons', 'js_composer' ) => 'typicons',
 					__( 'Entypo', 'js_composer' ) => 'entypo',
 					__( 'Linecons', 'js_composer' ) => 'linecons',
+					__( 'Mono Social', 'js_composer' ) => 'monosocial',
 				),
 				'admin_label' => true,
 				'param_name' => 'type',
@@ -98,6 +99,22 @@ function vc_icon_element_params() {
 				'dependency' => array(
 					'element' => 'type',
 					'value' => 'linecons',
+				),
+				'description' => __( 'Select icon from library.', 'js_composer' ),
+			),
+			array(
+				'type' => 'iconpicker',
+				'heading' => __( 'Icon', 'js_composer' ),
+				'param_name' => 'icon_monosocial',
+				'value' => 'vc-mono vc-mono-fivehundredpx', // default value to backend editor admin_label
+				'settings' => array(
+					'emptyIcon' => false, // default true, display an "EMPTY" icon?
+					'type' => 'monosocial',
+					'iconsPerPage' => 4000, // default 100, how many icons per/page to display
+				),
+				'dependency' => array(
+					'element' => 'type',
+					'value' => 'monosocial',
 				),
 				'description' => __( 'Select icon from library.', 'js_composer' ),
 			),

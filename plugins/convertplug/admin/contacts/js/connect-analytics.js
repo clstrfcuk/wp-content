@@ -41,7 +41,7 @@ jQuery(document).ready(function(){
     	jQuery('#cp-startDate').data("DateTimePicker").maxDate(e.date);
     });
 
-    var campaign = getUrlVars()["campaign"];
+    var campaign = cpcpGetUrlVars()["campaign"];
     if( typeof campaign == 'undefined' ) {
     	campaign = Array('all');
     }
@@ -84,10 +84,10 @@ jQuery(document).on('click','#submit-query', function(e) {
 function renderChart() {
 
 	jQuery(".smile-absolute-loader").css('visibility','visible');
-	var startDate = (typeof getUrlVars()["sd"] !== 'undefined') ? getUrlVars()["sd"] :'';
-	var endDate = (typeof getUrlVars()["ed"] !== 'undefined') ? getUrlVars()["ed"] :'';
-	var campaign = (typeof getUrlVars()["campaign"] !== 'undefined') ?decodeURIComponent(getUrlVars()["campaign"]) : 'all';
-	var chartType = (typeof getUrlVars()["cType"] !== 'undefined') ? getUrlVars()["cType"] :'line';
+	var startDate = (typeof cpcpGetUrlVars()["sd"] !== 'undefined') ? cpcpGetUrlVars()["sd"] :'';
+	var endDate = (typeof cpcpGetUrlVars()["ed"] !== 'undefined') ? cpcpGetUrlVars()["ed"] :'';
+	var campaign = (typeof cpcpGetUrlVars()["campaign"] !== 'undefined') ?decodeURIComponent(cpcpGetUrlVars()["campaign"]) : 'all';
+	var chartType = (typeof cpcpGetUrlVars()["cType"] !== 'undefined') ? cpcpGetUrlVars()["cType"] :'line';
 
 	campaign = campaign.split('||');
 
@@ -293,7 +293,7 @@ function renderChart() {
 
 }
 
-function getUrlVars() {
+function cpcpGetUrlVars() {
 	var vars = {};
 	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
 	vars[key] = value;

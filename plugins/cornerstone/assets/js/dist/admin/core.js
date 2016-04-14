@@ -626,6 +626,8 @@ module.exports = Proxyable.extend({
 		// Notify our collection when an attribute changes
 		this.on( 'change', function( model, options ) {
 
+			this.pageDirty();
+
 			if ( this.collection ) {
 				this.collection.trigger( 'model:change', model, options );
 			}
@@ -697,6 +699,10 @@ module.exports = Proxyable.extend({
 	atFloor: function() {
 		var flags = this.definition.get( 'flags' );
 		return ( flags.elements && flags.elements.floor && this.elements.length <= flags.elements.floor );
+	},
+
+	pageDirty: function() {
+		cs.channel.trigger( 'page:unsaved' );
 	}
 
 } );
@@ -903,10 +909,12 @@ module.exports = Backbone.Model.extend({
  */
 
 var legacy = false;
+var noPhpInput = false;
 
 module.exports = function( action, data, opts ) {
 
 	var opts = opts || {};
+	var _nonce = cs.config( '_cs_nonce' );
 	legacy = legacy || cs.config( 'useLegacyAjax' );
 
 	return Backbone.$.Deferred( function( deferred ) {
@@ -945,6 +953,12 @@ module.exports = function( action, data, opts ) {
 
 			if ( response.responseJSON.debug )
 				errorBubbling( response.responseJSON.debug );
+
+			if ( ! noPhpInput && response.responseJSON.failed_php_input ) {
+				noPhpInput = true;
+				submitRequest();
+				return;
+			}
 
 			var args = [response.responseJSON.data || {}, response ];
 
@@ -998,7 +1012,7 @@ module.exports = function( action, data, opts ) {
 				Backbone.$.ajax( {
 					type:    'POST',
 					url:     cs.config( 'fallbackAjaxUrl' ) + '?action=cs_legacy_ajax',
-					data: { enable: true },
+					data: { enable: true, _cs_nonce: _nonce },
 					complete: function() {
 						legacy = true;
 						submitRequest();
@@ -1020,12 +1034,14 @@ module.exports = function( action, data, opts ) {
 		function submitRequest() {
 
 			var json = JSON.stringify( data || {} );
-			var postData = ( legacy ) ? { data: Cornerstone.Vendor.Base64.encode( json ) } : json;
+			var postData = ( legacy || noPhpInput ) ? { data: Cornerstone.Vendor.Base64.encode( json ) } : json;
 			var urlBase = ( legacy ) ? 'fallbackAjaxUrl' : 'ajaxUrl';
 
 			// Remove any query parameters so they can be moved to the end.
 			var ajaxUrl = cs.config( urlBase ).split( '?' );
 			var extra = ( ajaxUrl[1] ) ? '&' + ajaxUrl[1] : '';
+
+			postData._cs_nonce = _nonce;
 
 			var options = _.defaults( _.omit( opts, ['success', 'error', 'always' ] ), {
 				type:    'POST',
@@ -8814,7 +8830,7 @@ process.umask = function() { return 0; };
 }).call(this);
 
 
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,require('_process'),window || {})
 
 },{"_process":45}],47:[function(require,module,exports){
 /**

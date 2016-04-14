@@ -52,7 +52,9 @@ if( $data_style !== "" ) {
 				$modal_image = isset( $style_settings['modal_image'] ) ? $style_settings['modal_image'] : '' ;
 				$close_image = isset( $style_settings['close_img'] ) ? $style_settings['close_img'] : '' ;
 				$bg_image = isset( $style_settings['modal_bg_image'] ) ? $style_settings['modal_bg_image'] : '';
-
+				$content_bg_image = isset( $style_settings['content_bg_image'] ) ? $style_settings['content_bg_image'] : '';
+				$form_bg_image = isset( $style_settings['form_bg_image'] ) ? $style_settings['form_bg_image'] : '';
+				
 				if( $hasVariants ) {
 					foreach($variant_tests[$data_style] as $variant) {
 						$export['variants'][] = $variant; 
@@ -128,11 +130,51 @@ if( $data_style !== "" ) {
 		$media['modal_bg_image'] = $dir.'/'.$bg_image_name;
 		
 	}
+
+	if( $content_bg_image !== "" )
+	{
+		$content_bg_image = str_replace( "%7C", "|", $content_bg_image );
+		if (strpos($content_bg_image,'http') !== false) {
+			$content_bg_image = explode( '|', $content_bg_image );
+			$content_bg_image = $content_bg_image[0];
+			$content_bg_image = urldecode( $content_bg_image );
+		} else {
+			$content_bg_image = explode("|", $content_bg_image);
+			$content_bg_image = wp_get_attachment_image_src($content_bg_image[0],$content_bg_image[1]);
+			$content_bg_image = $content_bg_image[0];
+		}
+		
+		$content_bg_image_name = basename( $content_bg_image );
+		copy( $content_bg_image, $dir.'/'.$content_bg_image_name );
+		
+		$media['content_bg_image'] = $dir.'/'.$content_bg_image;
+	}
+
+	if( $form_bg_image !== "" )
+	{
+		$form_bg_image = str_replace( "%7C", "|", $form_bg_image );
+		if (strpos($form_bg_image,'http') !== false) {
+			$form_bg_image = explode( '|', $form_bg_image );
+			$form_bg_image = $form_bg_image[0];
+			$form_bg_image = urldecode( $form_bg_image );
+		} else {
+			$form_bg_image = explode("|", $form_bg_image);
+			$form_bg_image = wp_get_attachment_image_src($form_bg_image[0],$form_bg_image[1]);
+			$form_bg_image = $form_bg_image[0];
+		}
+		
+		$form_bg_image_name = basename( $form_bg_image );
+		copy( $form_bg_image, $dir.'/'.$form_bg_image_name );
+		
+		$media['form_bg_image'] = $dir.'/'.$form_bg_image;
+	}
 	
 	if( !empty( $media ) ){
 		$export['media'] = $media;
 	}
 	
+	$export['module'] = 'modal';
+
 	$export_data = json_encode( $export );
 	
 	$content = $export_data;

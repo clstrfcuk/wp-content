@@ -22,8 +22,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<a href="<?php echo esc_attr( admin_url( 'admin.php?page=vc-general' ) ) ?>"
 			class="button button-primary"><?php _e( 'Settings', 'js_composer' ) ?></a><?php endif; ?>
 		<a href="https://twitter.com/share" class="twitter-share-button"
-			data-text="Take full control over your WordPress site with Visual Composer page builder by @WPBakery"
-			data-url="http://vc.wpbakery.com" data-size="large">Tweet</a>
+			data-via="wpbakery"
+			data-text="Take full control over your #WordPress site with Visual Composer page builder"
+			data-url="https://vc.wpbakery.com" data-size="large">Tweet</a>
 		<script>! function ( d, s, id ) {
 				var js, fjs = d.getElementsByTagName( s )[ 0 ], p = /^http:/.test( d.location ) ? 'http' : 'https';
 				if ( ! d.getElementById( id ) ) {

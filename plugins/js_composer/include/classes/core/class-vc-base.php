@@ -398,10 +398,7 @@ class Vc_Base {
 	 * @since 4.2
 	 */
 	public function createShortCodes() {
-		remove_all_shortcodes();
-		foreach ( WPBMap::getShortCodes() as $sc_base => $el ) {
-			$this->shortcodes[ $sc_base ] = new WPBakeryShortCodeFishBones( $el );
-		}
+		_deprecated_function( 'Vc_Base::createShortCodes', '4.2' );
 	}
 
 	/**

@@ -7,6 +7,7 @@ if(function_exists("smile_framework_add_options")){
 		array(
 			"style_name" 		=> "Free Ebook",
 			"demo_url"			=> plugins_url("../../assets/demos/free_ebook/free_ebook.html",__FILE__),
+			"demo_dir"			=> plugin_dir_path( __FILE__ )."../../assets/demos/free_ebook/free_ebook.html",
 			"img_url"			=> plugins_url("../../assets/demos/free_ebook/free_ebook.png",__FILE__),
 			"customizer_js"		=> plugins_url("../../assets/demos/free_ebook/customizer.js",__FILE__),
 			"category"          => "All,Exit Intent",

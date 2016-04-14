@@ -12,16 +12,6 @@ jQuery(document).ready(function(){
 
 	jQuery("body").on("click", ".cp-webinar-form", function(e){ parent.setFocusElement('form_bg_color'); e.stopPropagation(); });	
 
-	//for middle description
-	if( jQuery("#mid_desc_editor").length !== 0 ) {	
-		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.inline( 'mid_desc_editor' );			
-		CKEDITOR.instances.mid_desc_editor.on( 'change', function() {
-			var data = CKEDITOR.instances.mid_desc_editor.getData();
-			parent.updateHTML(data,'smile_modal_middle_desc');
-		} );
-	}
-
 	// do the stuff to customize the element upon the action "smile_data_received"
 	jQuery(this).on('smile_data_received',function(e,data){
 		// data - this is an object that stores all your input information in a format - input:value
@@ -49,7 +39,6 @@ jQuery(document).ready(function(){
 		// style dependent variables  	
 		var modal_size					= data.modal_size,
 			cp_modal_width				= data.cp_modal_width,
-			cp_modal_height				= 'auto',
 			modal_title 				= data.modal_title1,
 			bg_color					= data.modal_bg_color,
 			overlay_bg_color			= data.modal_overlay_bg_color,
@@ -142,14 +131,6 @@ jQuery(document).ready(function(){
 			cp_modal.attr('class', 'cp-modal cp-modal-exceed '+modal_size);
 		}
 		
-		
-		//extra middle editor 
-		modal_middle_desc = htmlEntities(modal_middle_desc);
-		cp_mid_desc.html(modal_middle_desc);
-		if(jQuery("#mid_desc_editor").length !== 0) {
-			CKEDITOR.instances.mid_desc_editor.setData(modal_middle_desc);
-		}
-
 		if( modal_title == "" ){
 			jQuery(".cp-row.cp-blank-title").css('display','none');
 		} else {
@@ -159,37 +140,8 @@ jQuery(document).ready(function(){
 		// modal background image
 		cp_bg_image(data);
 
-		//input form field			
-	
-		//console.log(btn_disp_next_line);
-		
-			if( namefield == 1 ){
-				form_without_name.css({"display":"none"});
-				form_with_name.css({"display":"block"});
-				cp_submit.removeClass("cp_simple_submit");
-				cp_submit.removeClass("col-md-4 col-sm-4 col-lg-4").addClass('col-md-4 col-sm-4 col-lg-4 cp_name_submit');
-				cp_email_form.removeClass('cp-email-wth-btn-onnext');
-
-			} else {
-				form_without_name.css({"display":"block"});
-				form_with_name.css({"display":"none"});
-				cp_submit.removeClass("cp_name_submit");				
-				if(btn_disp_next_line == '1' ){
-					cp_email_form.removeClass('col-md-8 col-sm-8 col-lg-8').addClass('col-md-12 col-lg-12 col-sm-12 cp-email-wth-btn-onnext');
-					cp_submit.removeClass("col-md-4 col-sm-4 col-lg-4").addClass('col-md-12 col-lg-12 col-sm-12 cp_simple_submit');
-				}else{
-					cp_email_form.removeClass('col-md-12 col-lg-12 col-sm-12 cp-email-wth-btn-onnext').addClass('col-md-8 col-sm-8 col-lg-8');
-					cp_submit.removeClass("col-md-12 col-lg-12 col-sm-12 ").addClass('col-md-4 col-sm-4 col-lg-4 cp_simple_submit');
-				}
-			}
-		
-
-		jQuery(".cp-name-form").removeClass('cp_big_name');	
-
 		//form border color
 		cp_webinar_form.css({'border-top-color':form_border_color , 'background-color':form_bg_color});
-
-	
 
 		jQuery(window).resize(function(e) {						
 			cp_affilate_reinitialize(data);
@@ -210,10 +162,8 @@ jQuery(document).ready(function(){
 			//console.log(vw);
 			if( vw >= 768 ){
 				cp_name_form.addClass('cp_big_name');
-				//cp_email_form.addClass('cp_big_email');
 			} else {
 				cp_name_form.removeClass('cp_big_name');
-				//cp_email_form.removeClass('cp_big_email');
 				if(namefield !== '1'){				
 					if(btn_disp_next_line == 1 ){
 						cp_email_form.addClass('cp_big_email');
@@ -225,8 +175,6 @@ jQuery(document).ready(function(){
 				}
 			}	
 		}
-		
-		//cp_modal.center();
 
 		// add cp-empty class to empty containers
 		jQuery.each( cp_empty_classes, function( key, value) {

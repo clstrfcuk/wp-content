@@ -1,10 +1,3 @@
-// jQuery.fn.center = function () {
-// 	var $this = this.find('.cp-modal-content');
-// 	this.css("top", ( ( window.outerHeight - $this.height() ) / 2 ) + jQuery(window).scrollTop() + "px");
-// 	return this;
-// }
-
-
 jQuery(document).ready(function(){
 
 	//	Add CSS file of this style
@@ -18,7 +11,7 @@ jQuery(document).ready(function(){
 	jQuery(this).on('smile_data_received',function(e,data){
 		// data - this is an object that stores all your input information in a format - input:value
 
-		// Common variables 
+		// Common variable	s 
 		var style 				= data.style,
 			cp_submit 			= jQuery(".cp-submit"),
 			cp_form_button      = jQuery(".form-button"),
@@ -36,7 +29,6 @@ jQuery(document).ready(function(){
 		// style dependent variables  	
 		var modal_size					= data.modal_size,
 			cp_modal_width				= data.cp_modal_width,
-			cp_modal_height				= 'auto',
 			modal_title 				= data.modal_title1,
 			bg_color					= data.modal_bg_color,
 			overlay_bg_color			= data.modal_overlay_bg_color,
@@ -168,11 +160,6 @@ jQuery(document).ready(function(){
 
 		// modal background image
 		cp_bg_image(data);
-
-		/*cp_submit.css({
-			'border-bottom-style':'double',
-			
-		});*/
 	
 		cp_short_desc_container.css({'background': modal_desc_bg_color });
 
@@ -197,7 +184,7 @@ function cp_image_hide(data) {
 		image_resp_width 		= "768",
 		cp_img_container		= jQuery(".cp-image-container"),
 		image_position 			= data.image_position;
-		//console.log(vw);
+		
 	if( image_displayon_mobile == 1 ) {	
 		if( vw <= image_resp_width ) {		
 			cp_img_container.addClass('cp-hide-image');					

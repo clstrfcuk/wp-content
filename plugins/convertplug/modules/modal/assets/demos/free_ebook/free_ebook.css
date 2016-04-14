@@ -1,4 +1,9 @@
-/* ----------Style - cp-free-ebook--------- */
+
+/** Hide unwanted things from LIVE PREVIEW */
+.cp-live-preview .cp-free-ebook .cp-all-inputs-wrap {
+    display: none;
+}
+
 .cp-modal-body.cp-free-ebook,
 .cp-free-ebook .cp-modal-body {
     background-color: transparent;
@@ -17,9 +22,7 @@
 }
 .cp-free-ebook  ol ,.cp-free-ebook  ul{
     list-style: none;
-
 }
-
 .cp-free-ebook .cp-submit-container {
     padding-left: 0px;
 }
@@ -42,8 +45,7 @@
     background: transparent !important;
 }
 
-.cp-free-ebook .cp-title,
-.cp-free-ebook h1.cp-title {
+.cp-free-ebook .cp-title{
     margin: 0;
     font-size: 40px;
     font-family: 'Montserrat', sans-serif;
@@ -118,95 +120,14 @@
 }
 
 .cp-modal .cp-free-ebook .cp-submit {
-    padding: 10px 25px;
     border-radius: 0px;
-    display: inline-block;
     margin-right: 0px;
-    width: 100%;
 }
-
-.cp-modal .cp-free-ebook .cp-submit_new {
-    padding: 10px;
-    border-radius: 2px;
-    display: inline-block;
-}
-
-.cp-free-ebook .cp-email-form {
-    padding-left: 0;
-}
-
-.cp-free-ebook input.cp-email,
-.cp-free-ebook input.cp-name,
-.cp-free-ebook input.cp-name {
-    padding: 10px 25px;
-    font-size: 15px;
-    line-height: 1.45em;
-    text-align: left;
-}
-
-.cp-form-container.cp-no-padding {
-    padding-top: 0px;
-}
-
-.cp-free-ebook .form-main,
-.cp-free-ebook .form-content {
-    padding: 0;
-    margin: 0;
-}
-
-.cp-free-ebook .form-button {
-    padding-right: 0;
-}
-
 .cp-free-ebook .cp-modal-window-size .cp-modal-body,
 .cp-modal-window-size .cp-modal-body.cp-free-ebook {
     max-width: 90%;
     margin: 0 auto;
 }
-
-/*--- form ---*/
-.cp-free-ebook .col-md-6.cp-name-form,
-.cp-free-ebook .cp-form-name {
-    padding-left: 0px;
-    float: left;
-}
-
-.cp-free-ebook .cp-email-form {
-    padding-right: 15px;
-    float: left;
-}
-
-.cp-free-ebook .cp-row.cp-submit-form {
-    padding: 0 15px;
-}
-
-.cp-free-ebook .cp-formwith-name>div,
-.cp-free-ebook .cp-form-simple .form-button {
-    padding-left: 0;
-}
-
-.cp-free-ebook .cp-name-btn {
-    display: inline-block;
-    margin-top: 10px;
-}
-
-.cp-free-ebook .cp-formwith-name .cp-form {
-    margin-bottom: 10px;
-}
-
-.cp-free-ebook form#smile-optin-form {
-    margin-bottom: 0;
-}
-
-/* .cp-free-ebook .cp_simple_submit {
-
-margin-right:0px;
-} */
-.cp-free-ebook .cp-name-form,
-.cp-free-ebook .cp-name-form.cp_big_name {
-    padding-right: 10px;
-}
-
 .cp-free-ebook .cp-info-container .error,
 .cp-free-ebook .cp-info-container .success {
     width: 100%;
@@ -226,14 +147,12 @@ margin-right:0px;
 .cp-free-ebook div#info_editor {
     padding: 20px 0px 0;
 }
-
-.cp-free-ebook .cp-submit-container {
+.cp-free-ebook-container .cp-form-layout-4 .cp-submit-wrap-center {
     float: none;
     display: block;
     width: 80%;
     margin: 0 auto;    /* margin-top: -30px; */
 }
-
 .cp-free-ebook  .cp-submit  a {
     color: inherit !important;
     text-decoration: none;
@@ -299,17 +218,9 @@ margin-right:0px;
         max-width: 100%;
     }
 
-    .cp-free-ebook .cp-formwith-name .form-button {
-        width: 100%;
-    }
-
     .cp-free-ebook .cp-formwith-name>div {
         padding-left: 0;
         padding-right: 0;
-    }
-
-    .cp-modal .cp-free-ebook .cp-submit {
-        width: 100%;
     }
 
     .cp-free-ebook .cp-email-form,
@@ -368,10 +279,62 @@ margin-right:0px;
     }
 
 }
-
 @media (max-width:667px) {
     .cp-free-ebook .cp-image-container img {
         max-width: 75%;
     }
+}
 
+
+/* Dynamic Form */
+.cp-free-ebook .cp-form-container .cp-all-inputs-wrap,
+.cp-free-ebook .cp-form-container .cp-form-layout-1 .cp-all-inputs-wrap,
+.cp-free-ebook .cp-form-container .cp-form-layout-2 .cp-all-inputs-wrap,
+.cp-free-ebook .cp-form-container .cp-form-layout-4 .cp-submit-wrap {
+    padding: 0 0 25px 0;
+}
+.cp-free-ebook-container .cp-all-inputs-wrap {
+    background: #28353E;
+    float: left;
+    padding: 0 15px 20px 14px;
+    margin: 0 auto;
+}
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 {
+    margin: 0;
+}
+.cp-free-ebook-container .cp-form-container {
+    margin: 0;
+}
+.cp-free-ebook-container .cp-form-container .cp-submit-wrap {
+    margin-top: -20px;
+}
+.cp-free-ebook-container .cp-form-container .cp-form-layout-4 .cp-submit-wrap {
+    margin-top: 0;
+}
+
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 .cp-all-inputs-wrap {
+    width: 100%;
+    margin: 0;
+    padding: 0px 0px 25px 0px;
+}
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 .cp-form-field {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 .cp-submit-wrap {
+    margin-top: -10px;
+    width: 100%;
+    padding: 0 20px;
+}
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 .cp-form-field:first-child {
+    padding-left: 15px;
+}
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 .cp-form-field input,
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 .cp-form-field select,
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 .cp-form-field button {
+    margin-bottom: 10px;
+}
+.cp-free-ebook-container .cp-form-container .cp-form-layout-3 .cp-form-field:last-child input {
+    margin-bottom: 0px;
 }

@@ -1,7 +1,7 @@
 var smile_panel = '',
 	data_id = '';
 jQuery.extend({
-  getUrlVars: function(){
+  cpcpGetUrlVars: function(){
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
     for(var i = 0; i < hashes.length; i++)
@@ -12,11 +12,11 @@ jQuery.extend({
     }
     return vars;
   },
-  getUrlVar: function(name){
-    return jQuery.getUrlVars()[name];
+  cpGetUrlVar: function(name){
+    return jQuery.cpcpGetUrlVars()[name];
   }
 });
-$.fn.bgColorFade = function(userOptions) {
+jQuery.fn.bgColorFade = function(userOptions) {
     // starting color, ending color, duration in ms
     var options = $.extend({
         start: "#fff79f",
@@ -43,7 +43,7 @@ function hideLoading(ID){
 		jQuery(".edit-screen-overlay").fadeOut();
 		jQuery("#smile_design_iframe").css("visibility","visible");
 		jQuery(".design-area-loading").hide();
-		jQuery('#button-save-'+smile_panel+' > span').trigger('click');
+		//jQuery('#button-save-'+smile_panel+' > span').trigger('click');
 	},500);
 }
 
@@ -110,6 +110,16 @@ function smileHandleDependencies(){
 			var value = el_id.val();
 			var displayProp = el_id.closest('.smile-element-container').css('display');
 			$this.hide();
+
+			//	We check the #smile_EL_NAME value for dependency
+			//	In [Radio Buttons] it does not works, Because It has different ID's
+			//	So, We change the selector for radio button
+			if(typeof value === 'undefined'){
+				var el_id = jQuery(this).parents(".content").find("input[type='radio'][name='"+el_name+"']:checked");
+				var value = el_id.val();
+				var displayProp = el_id.closest('.smile-element-container').css('display');
+				$this.hide();
+			}
 
 			switch(el_operator){
 				case '=':
@@ -184,7 +194,7 @@ function smileHandleDependencies(){
 }
 
 jQuery(document).ready(function(){
-	var theme			= jQuery.getUrlVar('theme');
+	var theme			= jQuery.cpGetUrlVar('theme');
 	var btn 			= jQuery('.customize');
 	var collapse 		= jQuery('.customizer-collapse');
 	var cls 			= jQuery('.close-button');
@@ -285,8 +295,6 @@ jQuery(document).ready(function(){
 		var $this = jQuery(this);
 		var closeOncancel = false;
 		var showLoaderOnConfirm = true;
-
-		console.log(cookie);
 
 		var live 			= jQuery("#smile_live").val();
 		var module = jQuery(".customize").data("module");
@@ -586,6 +594,8 @@ jQuery(document).ready(function(){
 	});
 
 	btn.click(function(e){
+
+		//console.log('clicked');
 		e.preventDefault();
 		e.stopPropagation();
 		var view = jQuery(this).data('view');
@@ -593,7 +603,7 @@ jQuery(document).ready(function(){
 		if( view == "new" ){
 			var url = jQuery(this).attr('href');
 			if( style_name !== "" ){
-				var variantStyle = jQuery.getUrlVar('variant-style');
+				var variantStyle = jQuery.cpGetUrlVar('variant-style');
 				if( typeof variantStyle !== 'undefined' ) {
 					url += '&style-name='+style_name;
 				}
@@ -634,19 +644,24 @@ jQuery(document).ready(function(){
 			var x = '';
 			var data = '';
 			var	data = {action:'framework_update_preview_data',demo_id:demo_id,module:module,cls:cls};
-				jQuery.ajax({
-					url: ajaxurl,
-					data: data,
-					type: 'POST',
-					dataType: 'HTML',
-					data: data,
-					success:function(result){
-						var iframe = '<div class="design-area-loading"><div class="smile-absolute-loader" style="visibility: visible;"> <div class="smile-loader"><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div></div></div></div><iframe id="smile_design_iframe" src="'+frame_url+'" data-js="'+js_url+'" onload="hideLoading(data_id);"></iframe>';
-						design_area.html(iframe);
-					}
-				});
+			var save_btn = jQuery('#button-save-'+smile_panel);
+			
+			jQuery.ajax({
+				url: ajaxurl,
+				data: data,
+				type: 'POST',
+				dataType: 'HTML',
+				data: data,
+				success:function(result){
+					
+					var iframe = '<div class="design-area-loading"><div class="smile-absolute-loader" style="visibility: visible;"> <div class="smile-loader"><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div></div></div></div><iframe id="smile_design_iframe" src="'+frame_url+'" data-js="'+js_url+'" onload="hideLoading(data_id);">'+result+'</iframe>';
+					design_area.html(iframe);
+				}
+			});
 
 			jQuery(document).trigger("smile_panel_loaded",[smile_panel,ID]);
+
+			
 
 		//	Handling dependencies
 			smileHandleDependencies();
@@ -845,8 +860,67 @@ jQuery(document).ready(function(){
 	});
 
 });
+
+// A function to handle sending messages.
+function smileSendMessage(e) {
+
+	// Prevent any default browser behavior.
+	e.preventDefault();
+	e.stopPropagation();
+
+	var save_btn = jQuery('#button-save-'+smile_panel);
+	save_btn.addClass('cp-save-loader');
+
+	var form_id 		= 'form-'+jQuery(this).data('style');
+	var url_string 		= jQuery("#"+form_id).serialize().replace(/\+/g,'%20');
+	var action			= jQuery("#"+form_id).data('action');
+	var data 			= JSON.stringify(url_string);
+	var container 		= jQuery(this).parents('.customizer-wrapper');
+	var frame 			= container.find('.design-content');
+	var frame_url 		= frame.data('iframe-url');
+	var new_frame_url 	= frame_url+'&'+url_string;
+	var receiver 		= document.getElementById('smile_design_iframe').contentWindow;
+
+	// Send the data
+	receiver.postMessage(data, frame_url);
+
+	jQuery.ajax({
+		url:ajaxurl,
+		data:{action:action,style_settings:url_string},
+		type:'POST',
+		dataType:'HTML',
+		success:function(result){
+			var new_style 	= jQuery('#new_style');
+			var style_id 	= jQuery('#style-title');
+			var value 		= style_id.val();
+			if(value == ""){
+				new_style.val(result);
+				style_id.val(result);
+				style_id.attr('disabled','true');
+			}
+			save_btn.removeClass('cp-save-loader');
+			var cookie = getCookie("cp-unsaved-changes");
+			if(cookie) {
+				swal({
+					title: "Settings Saved!",
+					text: "",
+					type: "success",
+					timer: 2000,
+					showConfirmButton: false
+				});
+			}
+			// remove unsaved cookie
+			removeCookie('cp-unsaved-changes');
+		},
+		error:function(err){
+			console.log(err);
+		}
+	});
+
+}
+
 window.onload = function() {
-	var theme		= jQuery.getUrlVar('theme');
+	var theme		= jQuery.cpGetUrlVar('theme');
 	var smile_panel = jQuery(".customize").data('style');
 	var btn 		= jQuery('.customize');
 	if( typeof theme !== "undefined" ){
@@ -855,72 +929,15 @@ window.onload = function() {
 				btn.trigger('click');
 			}
 		},500);
-	}
-
-	// A function to handle sending messages.
-	function smileSendMessage(e) {
-		// Prevent any default browser behaviour.
-		e.preventDefault();
-		e.stopPropagation();
-
-		var save_btn = jQuery('#button-save-'+smile_panel);
-		save_btn.addClass('cp-save-loader');
-
-		var form_id 		= 'form-'+jQuery(this).data('style');
-		var url_string 		= jQuery("#"+form_id).serialize().replace(/\+/g,'%20');
-		var action			= jQuery("#"+form_id).data('action');
-		var data 			= JSON.stringify(url_string);
-		var container 		= jQuery(this).parents('.customizer-wrapper');
-		var frame 			= container.find('.design-content');
-		var frame_url 		= frame.data('iframe-url');
-		var new_frame_url 	= frame_url+'&'+url_string;
-		var receiver 		= document.getElementById('smile_design_iframe').contentWindow;
-
-		// Send the data
-		receiver.postMessage(data, frame_url);
-
-		jQuery.ajax({
-			url:ajaxurl,
-			data:{action:action,style_settings:url_string},
-			type:'POST',
-			dataType:'HTML',
-			success:function(result){
-				var new_style 	= jQuery('#new_style');
-				var style_id 	= jQuery('#style-title');
-				var value 		= style_id.val();
-				if(value == ""){
-					new_style.val(result);
-					style_id.val(result);
-					style_id.attr('disabled','true');
-				}
-				save_btn.removeClass('cp-save-loader');
-				var cookie = getCookie("cp-unsaved-changes");
-				if(cookie) {
-					swal({
-						title: "Settings Saved!",
-						text: "",
-						type: "success",
-						timer: 2000,
-						showConfirmButton: false
-					});
-				}
-				// remove unsaved cookie
-				removeCookie('cp-unsaved-changes');
-			},
-			error:function(err){
-				console.log(err);
-			}
-		});
-
-
-	}
+	}	
 
 	// A function to handle sending messages for live preview.
 	function smileLiveData(e) {
+
 		// Handle dependencies
 		smileHandleDependencies();
 
-		// Prevent any default browser behaviour.
+		// Prevent any default browser behavior.
 		e.preventDefault();
 
 		var save_btn = jQuery('#button-save-'+smile_panel);
@@ -938,11 +955,11 @@ window.onload = function() {
 			// Send the data
 			iframe.postMessage(data, frame_url);
 
-			// create cookie for unsaved changes
+			// 	// create cookie for unsaved changes
 			var cookieName = 'cp-unsaved-changes';
 			createCookie(cookieName,true,1);
 		}
-
+		
 	}
 
 	jQuery(document).on('smile_panel_loaded',function(e,smile_panel,id){
@@ -962,7 +979,7 @@ window.onload = function() {
 			save_btn.addEventListener('click', smileSendMessage);
 	});
 
-	jQuery(document).on('click','.cp-vertical-nav a',function(){
+	jQuery(document).on('click','.cp-vertical-nav a:not(".cp-save")',function(){
 		var href = jQuery(this).attr('href');
 		jQuery('.cp-vertical-nav a').removeClass('active');
 		jQuery(this).addClass('active');
@@ -1014,10 +1031,9 @@ jQuery(document).ready(function(){
 
 jQuery(document).on("customize_loaded", function(){
 	var smile_panel = jQuery(".customize").data('style');
-	jQuery('#button-save-'+smile_panel+' > span').trigger('click');
+	//jQuery('#button-save-'+smile_panel+' > span').trigger('click');
 	jQuery('#button-save-'+smile_panel).trigger('click');
 });
-
 
 
 jQuery(document).on( 'click', '.cp-behavior-settings' , function(){
@@ -1033,11 +1049,34 @@ jQuery(document).on( 'click', '.cp-behavior-settings' , function(){
 	});
 });
 
+jQuery(document).on( 'click', '.cp-reset-analytics' , function(e){
+	e.preventDefault();
+	var $this = jQuery(this);
+	swal({
+		title: "Are you sure?",
+		text: "This action will delete impression & conversion count of your style. You will be not able to recover this data.",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#DD6B55",
+		confirmButtonText: "Yes, reset it!",
+		cancelButtonText: "No, cancel it!",
+		closeOnConfirm: false,
+		closeOnCancel: true,
+		showLoaderOnConfirm: true
+	},
+	function(isConfirm){
+		if (isConfirm) {
+			jQuery(document).trigger('resetAnalytics',[$this,true]);
+		}
+	});	
+});
+
+
 //prevent action on escape key
 jQuery(document).keyup(function(e){ 
 
      if (e.keyCode == 27) { 
-     	var styleView = jQuery.getUrlVar('style-view');   
+     	var styleView = jQuery.cpGetUrlVar('style-view');   
      	if( styleView == 'edit' ) { 	
      		e.preventDefault();
      		var cookieName = 'cp-unsaved-changes';
@@ -1045,4 +1084,46 @@ jQuery(document).keyup(function(e){
      		window.location='#';     	
      	}
      }
+});
+
+jQuery(document).on("resetAnalytics", function(e,$this,$reload){
+	var style_id 	= $this.data('style');
+	var action 		= 'cp_reset_analytics_action';
+	var data 		= {action:action,style_id:style_id};
+
+	jQuery.ajax({
+		url: ajaxurl,
+		type: 'POST',
+		data: data,
+		success:function(result){
+			if( result == 'reset' ){
+				swal({
+					title: "Success!",
+					text: "Analytics data for selected style has been reset.",
+					type: "success",
+					timer: 2000,
+					showConfirmButton: false
+				});
+				if( $reload ) {
+					setTimeout(function(){
+						window.location = window.location;
+					},500);
+				}
+			}
+		}
+	});
+});
+
+//dependancy for jugad style layout
+jQuery(document).on("change_radio_image", function(e,$this){
+	
+	var this_class = $this.find('input.smile-radio-image').parents(".panel-jugaad");
+	if(this_class.length > 0){
+		var modal_image_style = this_class.find(".modal_image").parents(".smile-element-container").css("display");
+		if(modal_image_style == 'none'){
+			this_class.find(".cp-media-sizes").addClass('hide-cp-media-sizes');
+		}else{
+			this_class.find(".cp-media-sizes").removeClass('hide-cp-media-sizes');
+		}
+	}
 });

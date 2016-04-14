@@ -26,7 +26,7 @@
     </header>
 
     <div class="tco-box-content tco-pan tco-ta-center">
-      <p class="tco-extensions-info"><?php _e( 'Once installed, each can be activated or deactivated on the <a href="' . admin_url( 'plugins.php' ) . '">Plugins</a> page.', '__x__' ); ?></p>
+      <p class="tco-extensions-info"><?php printf( __( 'Once installed, each can be activated or deactivated on the <a href="%s">Plugins</a> page.', '__x__' ), admin_url( 'plugins.php' ) ); ?></p>
       <div class="tco-extensions">
 
         <?php

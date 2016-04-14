@@ -7,6 +7,7 @@ if(function_exists("smile_framework_add_options")){
 		array(
 			"style_name" 		=> "First Order",
 			"demo_url"			=> plugins_url("../../assets/demos/first_order/first_order.html",__FILE__),
+			"demo_dir"			=> plugin_dir_path( __FILE__ )."../../assets/demos/first_order/first_order.html",
 			"img_url"			=> plugins_url("../../assets/demos/first_order/first_order.png",__FILE__),
 			"customizer_js"		=> plugins_url("../../assets/demos/first_order/customizer.js",__FILE__),
 			"category"          => "All,Offers,Exit Intent",

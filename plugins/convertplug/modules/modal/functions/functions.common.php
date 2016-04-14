@@ -2,16 +2,23 @@
 if( function_exists( "smile_update_settings" ) ){
 	//get style id
 	$style_id_for_customcss ='';
-	if( isset( $_GET['variant-style'])){
-		$style_id_for_customcss = $_GET['variant-style'];
-	}else{	
-		if( isset( $_GET['style'] ) ){	
+	if( isset( $_GET['variant-style'] ) ) {
+		$style_id_for_customcss = $_GET['variant-style'];		
+		$style = $_GET['variant-style'];
+		 
+	} else {
+		if( isset( $_GET['style'] ) ) {
 	    	$style_id_for_customcss = $_GET['style'];
 		}
 	}
 
+	/* Get ConvertPlug Form Option Array */
+	global $cp_form;
+	global $cp_social;
+	global $cp_count_down;
 
 	/*** Array contains name options ***/
+
 	$name = array (
 		array(
 		    "type"         => "google_fonts",
@@ -61,6 +68,19 @@ if( function_exists( "smile_update_settings" ) ){
 				"title" 		=> __( "Notice / Tip Under Form", "smile" ),
 				"value" 		=> __( "Written by John Doe, well versed writer at Brainstorm Publication.", "smile" ),
 				"description" 	=> __( "Enter the notice / tip that displays under the subscription form.", "smile" ),
+			),
+			"panel" 	 => "Name",
+			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-disc"
+		),
+		array(
+			"type" 		=> "textarea",
+			"class" 	=> "",
+			"name" 		=> "count_down_title",
+			"opts"		=> array(
+				"title" 		=> __( "Count Down Title", "smile" ),
+				"value" 		=> __( "Written by John Doe, well versed writer at Brainstorm Publication.", "smile" ),
 			),
 			"panel" 	 => "Name",
 			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
@@ -968,137 +988,6 @@ if( function_exists( "smile_update_settings" ) ){
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc"
 		),
-		array(
-			"type" 		=> "textfield",
-			"class" 	=> "",
-			"name" 		=> "button_title",
-			"opts"		=> array(
-				"title" 		=> __( "Button Title", "smile" ),
-				"value" 		=> __( "DOWNLOAD", "smile" ),
-				"description" 	=> __( "Enter the button title.", "smile" ),
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-		),
-
-		//	Submit Button Options
-		array(
-			"type" 		=> "dropdown",
-			"class" 	=> "",
-			"name" 		=> "btn_style",
-			"opts" 		=> array(
-				"title" 	=> __( "Button Style","smile"),
-				"value" 	=> "cp-btn-flat",
-				"description"=> __( "Provide custom size of your choice or make this modal cover entire screen area.", "smile" ),
-				"options" 	=> array(
-					__( "Flat", "smile" )		=> 'cp-btn-flat',
-					__( "3D", "smile" )			=> 'cp-btn-3d',
-					__( "Outline", "smile" )	=> 'cp-btn-outline',
-					__( "Gradient", "smile" )	=> 'cp-btn-gradient',
-				)
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "button_bg_color",
-			"opts"		=> array(
-				"title" 		=> __( "Submit Button Background Color", "smile" ),
-				"value" 		=> "rgb(255, 153, 0)",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		//	This option is to store the default initial color of button text
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "button_txt_hover_color",
-			"opts"		=> array(
-				"title" 		=> __( "Submit Button Text Hover Color", "smile" ),
-				"value" 		=> "#ffffff",
-			),
-		    "dependency" => array('name' => 'btn_style', 'operator' => '==', 'value' => 'cp-btn-outline'),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		//	store button darken on hover
-		array(
-		    "type"         => "textfield",
-		    "name"         => "button_bg_hover_color",
-		    "opts"         => array(
-		        "title"     => __( "Button BG Hover Color", "smile" ),
-		        "value"     => "",
-		    ),
-		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		//	store button lighten gradient
-		array(
-		    "type"         => "textfield",
-		    "name"         => "button_bg_gradient_color",
-		    "opts"         => array(
-		        "title"     => __( "Button Gradient Color", "smile" ),
-		        "value"     => "",
-		    ),
-		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		array(
-			"type" 			=> "slider",
-			"class" 		=> "",
-			"name" 			=> "btn_border_radius",
-			"opts"			=> array(
-				"title" 		=> __( "Border Radius", "smile" ),
-				"value" 		=> 3,
-				"min" 			=> 0,
-				"max" 			=> 40,
-				"step" 			=> 1,
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
-		array(
-			"type" 		=> "switch",
-			"class" 	=> "",
-			"name" 		=> "btn_shadow",
-			"opts"		=> array(
-				"title" 	=> __( "Button Shadow", "smile" ),
-				"value" 	=> false,
-				"on" 		=> __( "YES", "smile" ),
-				"off"		=> __( "NO", "smile" ),
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-			"dependency" => array('name' => 'btn_style', 'operator' => '!=', 'value' => 'cp-btn-3d'),
-		),
-		//	Note - Button Options
-		array(
-			"type" 		=> "txt-link",
-			"class" 	=> "",
-			"name" 		=> "note_button_options",
-			"opts"		=> array(
-				"link" 		=> __( "Note - Above settings apply to only Built-In Forms. These won't be effective with Custom Forms.", "smile" ),
-				"value" 		=> "",
-				"title" 		=> "",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-		),
 	);
 
 	/*** Array contains behavior options ***/
@@ -1228,7 +1117,42 @@ if( function_exists( "smile_update_settings" ) ){
 			"section" => "Behavior",
 			"section_icon" => "connects-icon-toggle",
 		),
-	
+
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "enable_display_inline",
+			"opts"		=> array(
+				"title" 	=> __( "Display Inline", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "If enabled, module will display inline as a part of page / post content.", "smile" ),
+			),
+			"panel" 	=> "Smart Launch",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+		array(
+            "type"      => "dropdown",
+            "class"     => "",
+            "name"      => "inline_position",
+            "opts"      => array(
+                "title" 	=> __( "Display Inline Position", "smile" ),
+                "value"     => "none",
+                "description" => __( "Select the position, where you want to display module inline.", "smile" ),
+                "options"   => array(
+                        __( "Before Post", "smile" ) => "before_post",
+                        __( "After Post", "smile" )  => "after_post",                       
+                        __( "Both", "smile" )        => "both"
+                    )
+                ),
+            "panel" => "Smart Launch",
+            "section" => "Behavior",
+            "section_icon" => "connects-icon-toggle",
+            "dependency" => array('name' => 'enable_display_inline', 'operator' => '==', 'value' => 'true')
+        ),
+
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -1288,7 +1212,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"section" => "Behavior",
 			"section_icon" => "connects-icon-cog",
 		),
-		
+
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -1362,6 +1286,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "exclusive_on",
 			"opts"		=> array(
 				"title" 	=> __( "Enable Only On", "smile" ),
+				"description" => __("Enable module on selected pages, posts, custom posts, special pages.", "smile" ),
 				"value" 	=> '',
 			),
 			"panel" 	=> "Target Pages",
@@ -1375,39 +1300,14 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "exclusive_post_type",
 			"opts"		=> array(
 				"title" 	=> __( "", "smile" ),
+				"description" => __("Enable module on all single posts of particular custom post types, taxonomies.", "smile" ),
 				"value" 	=> '',
 			),
 			"panel" 	=> "Target Pages",
 			"section" => "Behavior",
 			"section_icon" => "connects-icon-cog",
 			"dependency" => array('name' => 'global', 'operator' => '==', 'value' => '0'),
-		),
-		//	array(
-		//		"type" 		=> "categories",
-		//		"class" 	=> "",
-		//		"name" 		=> "exclusive_cats",
-		//		"opts"		=> array(
-		//			"title" 	=> "",
-		//			"value" 	=> '',
-		//		),
-		//		"panel" 	=> "Target Pages",
-		//		"section" => "Behavior",
-		//		"section_icon" => "connects-icon-cog",
-		//		"dependency" => array('name' => 'global', 'operator' => '==', 'value' => '0')
-		//	),
-		//	array(
-		//		"type" 		=> "taxonomies",
-		//		"class" 	=> "",
-		//		"name" 		=> "exclusive_tax",
-		//		"opts"		=> array(
-		//			"title" 	=> __( "", "smile" ),
-		//			"value" 	=> '',
-		//		),
-		//		"panel" 	=> "Target Pages",
-		//		"section" => "Behavior",
-		//		"section_icon" => "connects-icon-cog",
-		//		"dependency" => array('name' => 'global', 'operator' => '==', 'value' => '0'),
-		//	),
+		),		
 		array(
 			"type" 		=> "txt-link",
 			"class" 	=> "",
@@ -1428,6 +1328,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "exclude_from",
 			"opts"		=> array(
 				"title" 	=> __( "Exceptionally, Disable On", "smile" ),
+				"description" => __( 'Exceptionally disable module on selected pages, posts, custom posts, special pages.', 'smile' ),
 				"value" 	=> '',
 			),
 			"panel" 	=> "Target Pages",
@@ -1441,6 +1342,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "exclude_post_type",
 			"opts"		=> array(
 				"title" 	=> __( "", "smile" ),
+				"description" => __("Exceptionally disable module on all single posts of particular custom post types, taxonomies.", "smile" ),
 				"value" 	=> '',
 			),
 			"panel" 	=> "Target Pages",
@@ -1448,32 +1350,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-cog",
 			"dependency" => array('name' => 'global', 'operator' => '==', 'value' => '1'),
 		),
-		//	array(
-		//		"type" 		=> "categories",
-		//		"class" 	=> "",
-		//		"name" 		=> "cats_to_exclude",
-		//		"opts"		=> array(
-		//			"title" 	=> "",
-		//			"value" 	=> '',
-		//		),
-		//		"panel" 	=> "Target Pages",
-		//		"section" => "Behavior",
-		//		"section_icon" => "connects-icon-cog",
-		//		"dependency" => array('name' => 'global', 'operator' => '==', 'value' => '1'),
-		//	),
-		//	array(
-		//		"type" 		=> "taxonomies",
-		//		"class" 	=> "",
-		//		"name" 		=> "exclude_tax",
-		//		"opts"		=> array(
-		//			"title" 	=> __( "", "smile" ),
-		//			"value" 	=> '',
-		//		),
-		//		"panel" 	=> "Target Pages",
-		//		"section" => "Behavior",
-		//		"section_icon" => "connects-icon-cog",
-		//		"dependency" => array('name' => 'global', 'operator' => '==', 'value' => '1'),
-		//	),
+		
 		array(
 			"type" 		=> "txt-link",
 			"class" 	=> "",
@@ -1519,6 +1396,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"section" => "Behavior",
 			"section_icon" => "connects-icon-cog"
 		),
+		
 		array(
 			"type" 		=> "checkbox",
 			"class" 	=> "",
@@ -1548,6 +1426,47 @@ if( function_exists( "smile_update_settings" ) ){
 			"panel" 	=> "Target Visitors",
 			"section" => "Behavior",
 			"section_icon" => "connects-icon-cog",
+		),
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "enable_referrer",
+			"opts"		=> array(
+				"title" 	=> __( "Referrer Detection", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "Display To", "smile" ),
+				"off"		=> __( "Hide From", "smile" ),
+				"description" 	=> __( "Modal can be displayed when the user is came from a website you would like to track. Eg. If you set to track google.com, all users coming from google will see this popup.", "smile" ),
+			),
+			"panel" 	=> "Target Visitors",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+		array(
+			"type" 		=> "tags",
+			"class" 	=> "",
+			"name" 		=> "display_to",
+			"opts"		=> array(
+				"title" 		=> __( "Display only to -", "smile" ),
+				"value" 		=> "",
+			),
+			"dependency" => array('name' => 'enable_referrer', 'operator' => '==', 'value' => 'true'),
+			"panel" 	=> "Target Visitors",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+		array(
+			"type" 		=> "tags",
+			"class" 	=> "",
+			"name" 		=> "hide_from",
+			"opts"		=> array(
+				"title" 		=> __( "Hide only from -", "smile" ),
+				"value" 		=> "",
+			),
+			"dependency" => array('name' => 'enable_referrer', 'operator' => '==', 'value' => '0'),
+			"panel" 	=> "Target Visitors",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
 		),
 		array(
 			"type" 		=> "switch",
@@ -1647,7 +1566,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"opts"		=> array(
 				"title" 		=> __( "Redirect URL", "smile" ),
 				"value" 		=> "",
-				"description" 	=> __( "Enter the url where you would like to redirect the user after successfully added to the list.", "smile" ),
+				"description" 	=> __( "Enter the URL where you would like to redirect the user after successfully added to the list.<br/><br/> Please add http / https prefix to URL. e.g. http://convertplug.com", "smile" ),
 			),
 			"panel" 	=> "Form Setup",
 			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'redirect'),
@@ -1707,22 +1626,10 @@ $form_bg_color = array (
 				"class" 	=> "",
 				"name" 		=> "form_bg_option",
 				"opts"		=> array(
-					"title" 		=> __( "CTA Area", "smile" ),
+					"title" 		=> __( "Form Background Styling", "smile" ),
 					"value" 		=> "",
 				),
-				"panel" 	=> "Call to Action",
-				"section" => "Design",
-				"section_icon" => "connects-icon-disc"
-			),
-			array(
-				"type" 		=> "colorpicker",
-				"class" 	=> "",
-				"name" 		=> "form_border_color",
-				"opts"		=> array(
-					"title" 		=> __( "CTA Border Color", "smile" ),
-					"value" 		=> "#fff",
-				),
-				"panel" 	=> "Call to Action",
+				"panel" => "Form Designer",
 				"section" => "Design",
 				"section_icon" => "connects-icon-disc",
 			),
@@ -1731,10 +1638,22 @@ $form_bg_color = array (
 				"class" 	=> "",
 				"name" 		=> "form_bg_color",
 				"opts"		=> array(
-					"title" 		=> __( "CTA Background Color", "smile" ),
+					"title" 		=> __( "Form Background Color", "smile" ),
 					"value" 		=> "rgba(46, 46, 46, 0.41)",
 				),
-				"panel" 	=> "Call to Action",
+				"panel" => "Form Designer",
+				"section" => "Design",
+				"section_icon" => "connects-icon-disc",
+			),
+			array(
+				"type" 		=> "colorpicker",
+				"class" 	=> "",
+				"name" 		=> "form_border_color",
+				"opts"		=> array(
+					"title" 		=> __( "Form Border Color", "smile" ),
+					"value" 		=> "#fff",
+				),
+				"panel" => "Form Designer",
 				"section" => "Design",
 				"section_icon" => "connects-icon-disc",
 			),
@@ -1857,48 +1776,18 @@ $form_bg_color = array (
 	//	'CTA' for YouTube
 	$cta = array(
 		array(
-			"type" 		=> "textfield",
+			"type" 		=> "switch",
 			"class" 	=> "",
-			"name" 		=> "youtube_submit",
+			"name" 		=> "cta_switch",
 			"opts"		=> array(
-				"title" 		=> __( "YouTube Submit Button", "smile" ),
-				"value" 		=> __( "Subscribe", "smile" ),
+				"title" 	=> __( "Enable Form", "smile" ),
+				"value" 	=> true,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
 			),
+			"panel" => "Form Designer",
 			"section" => "Design",
-			"panel" 	=> "Call to Action",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-		),
-		array(
-			"type" 		=> "textarea",
-			"class" 	=> "",
-			"name" 		=> "cp_youtube_button",
-			"opts"		=> array(
-				"title" 		=> __( "Short Description", "smile" ),
-				"value" 		=> __( "Sign Up",  "smile" ),
-				"description" 	=> __( "Enter the short description that displays under the main title.", "smile" ),
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-		),
-		array(
-			"type" 		=> "dropdown",
-			"class" 	=> "",
-			"name" 		=> "cta_type",
-			"opts" 		=> array(
-				"title" 	=> __( "Type","smile" ),
-				"value" 	=> "form",
-				"options" 	=> array(
-					"No CTA"	=> "none",
-					"Button"	=> "button",
-					"Form"		=> "form",
-				)
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
+			"section_icon" => "connects-icon-disc",
 		),
 		array(
 			"type" 			=> "slider",
@@ -1913,329 +1802,430 @@ $form_bg_color = array (
 				"step" 			=> 1,
 				"suffix" 		=> "s",
 			),
-			"panel" 	=> "Call to Action",
+			"panel" => "Form Designer",
 			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '!=', 'value' => 'none'),
+			"section_icon" => "connects-icon-disc",
+			"dependency" => array('name' => 'cta_switch', 'operator' => '==', 'value' => true ),
 		),
 
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "cta_bg_color",
-			"opts"		=> array(
-				"title" 		=> __( "CTA Background Color", "smile" ),
-				"value" 		=> "rgb(249, 249, 249)",
-				"description" 	=> __( "Choose the background color for modal box area.", "smile" ),
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '!=', 'value' => 'none'),
-		),
+	);
 
-		//	form other options
-		array(
-			"type" 		=> "section",
-			"class" 	=> "",
-			"name" 		=> "form_options_title",
-			"opts"		=> array(
-				"title" 		=> __( "Form Options", "smile" ),
-				"value" 		=> "",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '==', 'value' => 'form'),
-		),
+	$style_height = array(
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
-			"name" 		=> "namefield",
+			"name" 		=> "cp_custom_height",
 			"opts"		=> array(
-				"title" 	=> __( "Enable Name Field", "smile" ),
+				"title" 	=> __( "Modal Height", "smile" ),
 				"value" 	=> false,
-				"on" 		=> __( "YES", "smile" ),
-				"off"		=> __( "NO", "smile" ),
+				"on" 		=> __( "CUSTOM", "smile" ),
+				"off"		=> __( "AUTO", "smile" ),
+				"description"=> __( "Provide custom height of your choice to this modal .", "smile" ),
 			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '==', 'value' => 'form'),
-
-		),
-		array(
-			"type" 		=> "switch",
-			"class" 	=> "",
-			"name" 		=> "btn_disp_next_line",
-			"opts"		=> array(
-				"title" 	=> __( "Display Button On Next Line", "smile" ),
-				"value" 	=> true,
-				"on" 		=> __( "YES", "smile" ),
-				"off"		=> __( "NO", "smile" ),
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'namefield', 'operator' => '==', 'value' => '0'),
-		),
-		array(
-			"type" 		=> "textfield",
-			"class" 	=> "",
-			"name" 		=> "name_text",
-			"opts"		=> array(
-				"title" 		=> __( "Placeholder Text for Name", "smile" ),
-				"value" 		=> "Enter Your Name",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency"	=> array("name" => "namefield", "operator" => "==", "value" => "true"),
-		),
-		array(
-			"type" 		=> "textfield",
-			"class" 	=> "",
-			"name" 		=> "placeholder_text",
-			"opts"		=> array(
-				"title" 		=> __( "Placeholder Text for Email", "smile" ),
-				"value" 		=> "you@mail.com",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '==', 'value' => 'form'),
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "placeholder_color",
-			"opts"		=> array(
-				"title" 		=> __( "Placeholder Text Color", "smile" ),
-				"value" 		=> "rgb(153, 153, 153)",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '==', 'value' => 'form'),
-		),
-		array(
-		    "type"         => "google_fonts",
-		    "name"         => "placeholder_font",
-		    "opts"         => array(
-		        "title"     => __( "Placeholder Font", "smile" ),
-		        "value"     => "",
-		        "use_in"      => "panel"
-		    ),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '==', 'value' => 'form'),
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "input_bg_color",
-			"opts"		=> array(
-				"title" 		=> __( "Input Box Background Color", "smile" ),
-				"value" 		=> "rgb(255, 255, 255)",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '==', 'value' => 'form'),
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "input_border_color",
-			"opts"		=> array(
-				"title" 		=> __( "Input Box Border Color", "smile" ),
-				"value" 		=> "rgb(191, 190, 190)",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '==', 'value' => 'form'),
-		),
-
-		//	Submit Button Options
-		array(
-			"type" 		=> "section",
-			"class" 	=> "",
-			"name" 		=> "button_options_title",
-			"opts"		=> array(
-				"title" 		=> __( "Button Options", "smile" ),
-				"value" 		=> "",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '!=', 'value' => 'none'),
-		),
-		array(
-			"type" 		=> "textfield",
-			"class" 	=> "",
-			"name" 		=> "button_title",
-			"opts"		=> array(
-				"title" 		=> __( "Button Title", "smile" ),
-				"value" 		=> "AVAIL NOW",
-				"description" 	=> __( "Enter the button title.", "smile" ),
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-		),
-		array(
-			"type" 		=> "dropdown",
-			"class" 	=> "",
-			"name" 		=> "btn_style",
-			"opts" 		=> array(
-				"title" 	=> __( "Button Style","smile"),
-				"value" 	=> "cp-btn-flat",
-				"description"=> __( "Style your button with nice effects.", "smile" ),
-				"options" 	=> array(
-					__( "Flat", "smile" )		=> 'cp-btn-flat',
-					__( "3D", "smile" )			=> 'cp-btn-3d',
-					__( "Outline", "smile" )	=> 'cp-btn-outline',
-					__( "Gradient", "smile" )	=> 'cp-btn-gradient',
-				),
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '!=', 'value' => 'none'),
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "button_bg_color",
-			"opts"		=> array(
-				"title" 		=> __( "Submit Button Background Color", "smile" ),
-				"value" 		=> "rgb(255, 153, 0)",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '!=', 'value' => 'none'),
-		),
-		//	This option is to store the default initial color of button text
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "button_txt_hover_color",
-			"opts"		=> array(
-				"title" 		=> __( "Submit Button Text Hover Color", "smile" ),
-				"value" 		=> "#ffffff",
-			),
-		    "dependency" => array('name' => 'btn_style', 'operator' => '==', 'value' => 'cp-btn-outline'),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-		),
-		//	store button darken on hover
-		array(
-		    "type"         => "textfield",
-		    "name"         => "button_bg_hover_color",
-		    "opts"         => array(
-		        "title"     => __( "Button BG Hover Color", "smile" ),
-		        "value"     => "",
-		    ),
-		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-		),
-		//	store button lighten gradient
-		array(
-		    "type"         => "textfield",
-		    "name"         => "button_bg_gradient_color",
-		    "opts"         => array(
-		        "title"     => __( "Button Gradient Color", "smile" ),
-		        "value"     => "",
-		    ),
-		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" 	=> "Call to Action",
+			"panel" 	=> "Advance Design Options",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 		),
 		array(
 			"type" 			=> "slider",
 			"class" 		=> "",
-			"name" 			=> "btn_border_radius",
+			"name" 			=> "cp_modal_height",
 			"opts"			=> array(
-				"title" 		=> __( "Border Radius", "smile" ),
-				"value" 		=> 3,
-				"min" 			=> 0,
-				"max" 			=> 20,
+				"title" 		=> __( "Change Height", "smile" ),
+				"value" 		=> 300,
+				"min" 			=> 100,
+				"max" 			=> 3000,
 				"step" 			=> 1,
+				"suffix" 		=> "px",
 			),
-			"panel" 	=> "Call to Action",
+			"panel" 		=> "Advance Design Options",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '!=', 'value' => 'none'),
-		),
-		array(
-			"type" 		=> "switch",
-			"class" 	=> "",
-			"name" 		=> "btn_shadow",
-			"opts"		=> array(
-				"title" 	=> __( "Button Shadow", "smile" ),
-				"value" 	=> false,
-				"on" 		=> __( "YES", "smile" ),
-				"off"		=> __( "NO", "smile" ),
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'btn_style', 'operator' => '!=', 'value' => 'cp-btn-3d'),
-		),
-		array(
-			"type" 		=> "colorpicker",
-			"class" 	=> "",
-			"name" 		=> "btn_shadow_color",
-			"opts"		=> array(
-				"title" => __( "Submit Button Shadow Color", "smile" ),
-				"value" => "rgba(86, 86, 131, 0.6)",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'btn_shadow', 'operator' => '==', 'value' => '1'),
-		),
+			"dependency" => array('name' => 'cp_custom_height', 'operator' => '==', 'value' => 'true'),
 
-		//	Note - Button Options
-		array(
-			"type" 		=> "txt-link",
-			"class" 	=> "",
-			"name" 		=> "note_button_options",
-			"opts"		=> array(
-				"link" 		=> __( "Note - Above settings apply to only Built-In Forms. These won't be effective with Custom Forms.", "smile" ),
-				"value" 		=> "",
-				"title" 		=> "",
-			),
-			"panel" 	=> "Call to Action",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'cta_type', 'operator' => '!=', 'value' => 'none'),
 		),
 	);
 
-	$advanced_setting = array(
+
+ //background color for countdown 	
+ $cont_down_bg = array(
 		array(
-			"type" 		=> "mailer",
+				"type" 		=> "colorpicker",
+				"class" 	=> "",
+				"name" 		=> "counter_container_bg_color",
+				"opts"		=> array(
+					"title" 		=> __( "Description Background Color", "smile" ),
+					"value" 		=> "#24859C",
+				),
+				"panel" 	=> "Background",
+				"section" => "Design",
+				"section_icon" => "connects-icon-image"
+			)
+	);
+
+
+$modal_layout = array(
+        array(
+            "type"  =>  "radio-image",
+            "name"  =>  "modal_layout",
+            "opts"  =>  array(
+                "title" => __( "", "smile" ),
+                "value" => 'form_left',
+                "width" => '80px',
+                "options" => array(
+                    "form_left"             => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout01.jpg', __FILE__ ),
+                    "form_right"            => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout02.jpg', __FILE__ ),
+                    "form_left_img_top"     => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout03.jpg', __FILE__ ),
+                    "form_right_img_top"    => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout04.jpg', __FILE__ ),
+                    "img_left_form_bottom"  => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout05.jpg', __FILE__ ),
+                    "img_right_form_bottom" => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout06.jpg', __FILE__ ),
+                    "form_bottom_img_top"   => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout07.jpg', __FILE__ ),
+                    "form_bottom"           => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout08.jpg', __FILE__ ),
+                ),
+				"imagetitle" => array(
+					__( "title-0", "smile" ) 	=> "Form At Left Without Image",
+					__( "title-1", "smile" ) 	=> "Form At Right Without Image",
+					__( "title-2", "smile" ) 	=> "Form At Left With Image At Right",
+					__( "title-3", "smile" ) 	=> "Form At Right With Image At Left",
+					__( "title-4", "smile" ) 	=> "Form At Bottom With Image At Left",
+					__( "title-5", "smile" ) 	=> "Form At Bottom With Image At Right",
+					__( "title-6", "smile" ) 	=> "Form At Bottom With Image At top",					
+					__( "title-7", "smile" ) 	=> "Form At Bottom Without Image"					
+				),
+            ),
+            "panel" => "Modal Layout",
+            "section" => "Design",
+            "section_icon" => "connects-icon-disc",
+        ),
+		array(
+            "type"      => "switch",
+            "class"     => "",
+            "name"      => "modal_col_width",
+            "opts"      => array(
+                "title"     => __( "Form Column Width", "smile" ),
+                "value"     => true,
+                "on"        => __( "1/3", "smile" ),
+                "off"       => __( "1/2", "smile" ),
+                "description"   => __( "Select column width", "smile" ),
+            ),
+            "panel"      => "Modal Layout",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "media",
+            "class"     => "",
+            "name"      => "modal_image",
+            "opts"      => array(
+                "title"         => __( "Upload Image", "smile" ),
+                "value"         =>  plugins_url('config/img/default-image.png', __FILE__ ),
+                "description"   => __( "Upload an image that will be displayed inside the content area.", "smile" ),
+            ),
+            "panel"      => "Modal Layout",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image",
+        ),
+        array(
+            "type"      => "slider",
+            "class"     => "",
+            "name"      => "image_size",
+            "opts"          => array(
+                "title"         => __( "Resize Image", "smile" ),
+                "value"         => 298,
+                "min"           => 1,
+                "max"           => 1000,
+                "step"          => 1,
+                "suffix"        => "px",
+            ),
+            "panel"      => "Modal Layout",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image",
+        ),  
+        array(
+            "type"      => "slider",
+            "class"     => "",
+            "name"      => "image_horizontal_position",
+            "opts"          => array(
+                "title"         => __( "Horizontal Position", "smile" ),
+                "value"         => 0,
+                "min"           => -250,
+                "max"           => 250,
+                "step"          => 1,
+            ),
+            "panel"      => "Modal Layout",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image",
+        ),
+        array(
+            "type"      => "slider",
+            "class"     => "",
+            "name"      => "image_vertical_position",
+            "opts"          => array(
+                "title"         => __( "Vertical Position", "smile" ),
+                "value"         => 0,
+                "min"           => -250,
+                "max"           => 250,
+                "step"          => 1,
+            ),
+            "panel"      => "Modal Layout",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        
+        array(
+            "type"      => "switch",
+            "class"     => "",
+            "name"      => "image_displayon_mobile",
+            "opts"      => array(
+                "title"     => __( "Hide Image on Small Screens", "smile" ),
+                "value"     => true,
+                "on"        => __( "YES", "smile" ),
+                "off"       => __( "NO", "smile" ),
+                "description"   => __( "On smaller screens like mobile, smaller modals look more beautiful. To reduce the size of the modal, you may hide the image with this setting.", "smile" ),
+            ),
+            "panel"      => "Modal Layout",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+			"type" 		=> "textfield",
 			"class" 	=> "",
-			"name" 		=> "mailer",
+			"name" 		=> "modal_short_title",
 			"opts"		=> array(
-				"title" 	=> __( "Collect Leads Using -", "smile" ),
-				"value" 	=> '0',
+				"title" 		=> __( "Short Title", "smile" ),
+				"value" 		=> __( "Subscribe", "smile" ),
+				"description" 	=> __( "Enter the main short title.", "smile" ),
 			),
-			"panel" 	=> "Modal Status",
-			"section" => "Behavior",
-			"section_icon" => "connects-icon-cog",
+			"panel" 	 => "Name",
 			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-disc",
 		),
-	);
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "modal_note_1",
+			"opts"		=> array(
+				"title" 		=> __( "Short note", "smile" ),
+				"value" 		=> __( "We respect your privacy.", "smile" ),
+				"description" 	=> __( "Enter the note.", "smile" ),
+			),
+			"panel" 	 => "Name",
+			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-disc",
+		),
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "modal_note_2",
+			"opts"		=> array(
+				"title" 		=> __( "Short note 2", "smile" ),
+				"value" 		=> __( "<super>*</super>Terms and conditions apply.", "smile" ),
+				"description" 	=> __( "Enter the note 2.", "smile" ),
+			),
+			"panel" 	 => "Name",
+			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-disc",
+		),
+    );  
+ 
+    $form_separator = array(
+        array(
+            "type"      => "dropdown",
+            "class"     => "",
+            "name"      => "form_separator",
+            "opts"      => array(
+                "title"     => __( "Form Separator","smile"),
+                "value"     => "none",
+                "options"   => array(
+                        __( "None", "smile" )               => "none",
+                        __( "Triangle", "smile" )           => "triangle",                       
+                        __( "Clouds", "smile" )             => "clouds",
+                        __( "Round Split", "smile" )        => "round_split"
+                    )
+                ),
+            "panel" => "Form Separator",
+            "section" => "Design",
+            "section_icon" => "connects-icon-disc"
+        ),
+        array(
+            "type"      => "switch",
+            "class"     => "",
+            "name"      => "form_sep_part_of",
+            "opts"      => array(
+                "title"     => __( "Part Of", "smile" ),
+                "value"     => true,
+                "on"        => "FORM",
+                "off"       => "CONTENT",
+            ),
+            "dependency" => array('name' => 'form_separator', 'operator' => '!==', 'value' => 'none'),
+            "panel"      => "Form Separator",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image",
+        )
+    );  
+
+    $jugaad_background = array(
+        array(
+            "type"      => "colorpicker",
+            "class"     => "",
+            "name"      => "modal_title_color",
+            "opts"      => array(
+                "title"         => __( "Modal Title Color", "smile" ),
+                "value"         => "#333333",
+                "description"   => __( "Select the title text color.", "smile" ),
+            ),
+            "panel"     => "Background",
+            "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "colorpicker",
+            "class"     => "",
+            "name"      => "modal_desc_color",
+            "opts"      => array(
+                "title"         => __( "Description Color", "smile" ),
+                "value"         => "#333333",
+                "description"   => __( "Select the description text color.", "smile" ),
+            ),
+            "panel"     => "Background",
+            "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "colorpicker",
+            "class"     => "",
+            "name"      => "tip_color",
+            "opts"      => array(
+                "title"         => __( "Notice / Tip Color", "smile" ),
+                "value"         => "rgb(250,250,250)",
+                "description"   => __( "Select the text color for Notice / Tip under the form.", "smile" ),
+            ),
+            "panel"     => "Background",
+            "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "colorpicker",
+            "class"     => "",
+            "name"      => "modal_overlay_bg_color",
+            "opts"      => array(
+                "title"         => __( "Overlay Color", "smile" ),
+                "value"         => "rgba(0, 0, 0, 0.71)",
+                "description"   => __( "Provide the overlay color that appears behind modal box area.", "smile" ),
+            ),
+            "panel"     => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "section",
+            "class"     => "",
+            "name"      => "form_background_section_title",
+            "opts"      => array(
+                "title"         => __( "Form Background", "smile" ),
+                "value"         => ""
+            ),
+            "panel"     => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "colorpicker",
+            "class"     => "",
+            "name"      => "form_bg_color",
+            "opts"      => array(
+                "title"         => __( "Background Color", "smile" ),
+                "value"         => "rgb(225, 225, 225)",
+                "description"   => __( "Choose the background color for form", "smile" ),
+            ),
+            "panel"     => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "media",
+            "class"     => "",
+            "name"      => "form_bg_image",
+            "opts"      => array(
+                "title"         => __( "Background Image", "smile" ),
+                "value"         => "",
+                "description"   => __( "You can provide an image that would be appear behind the form in the modal box area. For this setting to work, the background color you've chosen must be transparent.", "smile" ),
+            ),
+            "panel"      => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "background",
+            "class"     => "",
+            "name"      => "form_opt_bg",
+            "opts"      => array(
+                "title"         => "",
+                "value"         => "no-repeat|center|cover"
+            ),
+            "panel" => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image",
+            "dependency" => array('name' => 'form_bg_image', 'operator' => '!==', 'value' => '', 'type' => 'media'),
+        ),
+        array(
+            "type"      => "section",
+            "class"     => "",
+            "name"      => "content_background_section_title",
+            "opts"      => array(
+                "title"         => __( "Content Background", "smile" ),
+                "value"         => "",
+            ),
+            "panel"     => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "colorpicker",
+            "class"     => "",
+            "name"      => "content_bg_color",
+            "opts"      => array(
+                "title"         => __( "Background Color", "smile" ),
+                "value"         => "rgb(255, 255, 255)",
+                "description"   => __( "Choose the background color for content", "smile" ),
+            ),
+            "panel"     => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "media",
+            "class"     => "",
+            "name"      => "content_bg_image",
+            "opts"      => array(
+                "title"         => __( "Background Image", "smile" ),
+                "value"         => "",
+                "description"   => __( "You can provide an image that would be appear behind the content in the modal box area. For this setting to work, the background color you've chosen must be transparent.", "smile" ),
+            ),
+            "panel"      => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image"
+        ),
+        array(
+            "type"      => "background",
+            "class"     => "",
+            "name"      => "content_opt_bg",
+            "opts"      => array(
+                "title"         => "",
+                "value"         => "no-repeat|center|cover"
+            ),
+            "panel" => "Background",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image",
+            "dependency" => array('name' => 'content_bg_image', 'operator' => '!==', 'value' => '', 'type' => 'media'),
+        )
+    );
 
 	/**
 	 * Setup the option array for `customizer` for individual modal popup
@@ -2248,9 +2238,10 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$secondary_title,
-			$background,
+			$background,			
 			$close_link,
 			$animations,
+			$style_height,
 			$adv_design_options,
 			$behavior
 		)
@@ -2262,8 +2253,8 @@ $form_bg_color = array (
 			$name,
 			$secondary_title,
 			$background,
+			$cp_form,
 			$modal_img,
-			$optin_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2272,13 +2263,13 @@ $form_bg_color = array (
 		)
 	);
 
-	//webinar
+	// webinar
 	smile_update_options( "Smile_Modals", "webinar",
 		array_merge(
 			$name,
 			$background,
+			$cp_form,
 			$form_bg_color,
-			$optin_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2294,6 +2285,7 @@ $form_bg_color = array (
 			$video,
 			$background,
 			$cta,
+			$cp_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2307,7 +2299,7 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$background,
-			$optin_form,
+			$cp_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2321,7 +2313,7 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$background,
-			$optin_form,
+			$cp_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2336,7 +2328,7 @@ $form_bg_color = array (
 			$name,
 			$title_bg_color,
 			$background,
-			$optin_form,
+			$cp_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2350,13 +2342,13 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$background,
+			$cp_form,
 			$modal_img,
-			$optin_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
 			$behavior,
-			$advanced_setting
+			$submission
 		)
 	);
 
@@ -2365,9 +2357,9 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$background,
+			$cp_form,
 			$modal_img,
 			$form_bg_color,
-			$optin_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2381,12 +2373,12 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$background,
-			$optin_form,
+			$cp_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
 			$behavior,
-			$advanced_setting
+			$submission
 		)
 	);
 
@@ -2395,13 +2387,13 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$background,
+			$cp_form,
 			$modal_img,
-			$optin_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
 			$behavior,
-			$advanced_setting
+			$submission
 		)
 	);
 
@@ -2411,7 +2403,7 @@ $form_bg_color = array (
 			$name,
 			$title_bg_color,
 			$background,
-			$optin_form,
+			$cp_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2425,16 +2417,64 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$background,
+			$cp_form,
 			$desc_bg_color,
 			$modal_img,
-			$optin_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
 			$behavior,
-			$advanced_setting
+			$submission
 		)
 	);
+
+
+	// countdown
+	smile_update_options( "Smile_Modals", "countdown",
+		array_merge(
+			$name,
+			$background,			
+			$cont_down_bg,
+			$cp_count_down,
+			$form_bg_color,
+			$cp_form,
+			$close_link,
+			$animations,
+			$adv_design_options,
+			$behavior,
+			$submission
+		)
+	);
+
+	// social media theme
+	smile_update_options( "Smile_Modals", "social_media",
+		array_merge(
+			$name,
+			$secondary_title,
+			$background,
+			$cp_social,
+			$close_link,
+			$animations,
+			$style_height,
+			$adv_design_options,
+			$behavior
+		)
+	);
+
+	smile_update_options( "Smile_Modals", "jugaad", 
+            array_merge( 
+                $name,
+                $modal_layout,
+                $jugaad_background,
+                $cp_form, 
+                $form_separator,                 
+                $close_link,
+                $animations,
+                $adv_design_options,                
+                $behavior,
+                $submission
+            )
+    );
 }
 
 
@@ -2460,6 +2500,10 @@ if( function_exists( "smile_update_default" ) ){
 
 	// YouTube
 	$optin_default = array(
+		"form_fields" 			=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			=> "cp-form-layout-3",
+		"form_input_align"		=> "left",
+		"form_submit_align" 	 => "cp-submit-wrap-full",
 		'cp_modal_width' 		=> '700',
 		'button_title'      	=> 'Sign Up',
 		'placeholder_text' 		=> __( "Enter Your Email Address", "smile" ),
@@ -2471,39 +2515,52 @@ if( function_exists( "smile_update_default" ) ){
 		smile_update_default( "Smile_Modals", "YouTube", $option, $value );
 	}
 
+	//	Optin to Win
 	$optin_to_win_defaults = array(
-			'btn_disp_next_line'	=> false,
-			'image_size'            => 220,
-			'cp_modal_width'        => '750',
-			'border'                => 'br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(255,255, 255)|bw_all:5|bw_t:5|bw_l:5|bw_r:5|bw_b:5'
+		"form_fields" 			=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			=> "cp-form-layout-3",
+		"form_input_align"		=> "left",
+		"form_submit_align" 	 => "cp-submit-wrap-full",
+		"form_grid_structure"	=> "cp-form-grid-structure-2",
+		"submit_button_tb_padding" => 12,
+		'btn_disp_next_line'	=> false,
+		'image_size'            => 220,
+		'cp_modal_width'        => '750',
+		'border'                => 'br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(255,255, 255)|bw_all:5|bw_t:5|bw_l:5|bw_r:5|bw_b:5'
 	);
-
 	foreach( $optin_to_win_defaults as $option => $value ){
 		smile_update_default( "Smile_Modals", "optin_to_win", $option, $value );
 	}
 
 	// Webinar
 	$webinar_default = array(
-		"overlay_effect" 	 => "smile-3DRotateBottom",
-		"modal_short_desc1"  => '<span style=" font-style:italic">'.__( "Register for a FREE Webinar!" , "smile" ).'</span>',
-		"modal_title1"		 => __( "Learn Art of Conversion Optimization and Science Behind It.", "smile" ),
-		"modal_confidential" => "",
-		"modal_content" 	 => __( "TODAY – 8.00 PM to 8.35 PM (EST)", "smile" ),
-		"modal_bg_color"     => "rgb(52, 73, 94)",
-		"modal_overlay_bg_color" => "rgba(0, 0, 0, 0.7)",
-		"button_title"       => __( "JOIN US TONIGHT!", "smile" ),
-		"button_bg_color"    => "rgb(243, 156, 18)",
-		"button_border_color"=> "rgba(243, 156, 18, 0)",
-		"cp_modal_width"     => "650",
-		"border" 			 => "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:rgb(255,255,255)|bw_all:1|bw_t:1|bw_l:1|bw_r:1|bw_b:1",
-		"btn_disp_next_line" => false,
-		"close_position"     => "out_modal",
-		"modal_title_color"  => "rgb(250, 250, 255)",
-		"modal_desc_color" 	 => "rgb(250, 250, 250)",
-		"tip_color"          => "rgb(250, 250, 250)",
-		"placeholder_text"   => __( "Enter Your Email Here", "smile" ),
-		"name_text"  		 => __( "Enter Your Name", "smile" ),
-		"placeholder_font"   => "Lato",
+		"form_fields" 				=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"				=> "cp-form-layout-3",
+		"form_input_align"			=> "left",
+		"submit_button_tb_padding" 	=> 10,
+		"submit_button_lr_padding" 	=> 15,
+		"form_submit_align" 		=> "cp-submit-wrap-full",
+		"form_grid_structure"		=> "cp-form-grid-structure-2",
+		"overlay_effect" 	 		=> "smile-3DRotateBottom",
+		"modal_short_desc1"  		=> '<span style=" font-style:italic">'.__( "Register for a FREE Webinar!" , "smile" ).'</span>',
+		"modal_title1"		 		=> __( "Learn Art of Conversion Optimization and Science Behind It.", "smile" ),
+		"modal_confidential" 		=> "",
+		"modal_content" 	 		=> __( "TODAY – 8.00 PM to 8.35 PM (EST)", "smile" ),
+		"modal_bg_color"     		=> "rgb(52, 73, 94)",
+		"modal_overlay_bg_color" 	=> "rgba(0, 0, 0, 0.7)",
+		"button_title"       		=> __( "JOIN US TONIGHT!", "smile" ),
+		"button_bg_color"    		=> "rgb(243, 156, 18)",
+		"button_border_color"		=> "rgba(243, 156, 18, 0)",
+		"cp_modal_width"     		=> "670",
+		"border" 			 		=> "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:rgb(255,255,255)|bw_all:1|bw_t:1|bw_l:1|bw_r:1|bw_b:1",
+		"btn_disp_next_line" 		=> false,
+		"close_position"     		=> "out_modal",
+		"modal_title_color"  		=> "rgb(250, 250, 255)",
+		"modal_desc_color" 	 		=> "rgb(250, 250, 250)",
+		"tip_color"          		=> "rgb(250, 250, 250)",
+		"placeholder_text"   		=> __( "Enter Your Email Here", "smile" ),
+		"name_text"  		 		=> __( "Enter Your Name", "smile" ),
+		"placeholder_font"   		=> "Lato",
 	);
 	foreach( $webinar_default as $option => $value ){
 		smile_update_default( "Smile_Modals", "webinar", $option, $value );
@@ -2511,6 +2568,11 @@ if( function_exists( "smile_update_default" ) ){
 
 	//	Every Design
 	$every_design_default = array(
+		"form_fields" 			=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			=> "cp-form-layout-3",
+		"form_input_align"		=> "left",
+		"form_submit_align" 	=> "cp-submit-wrap-full",
+		"form_grid_structure"	=> "cp-form-grid-structure-2",
 		"modal_title1"   		=> __( "Subscribe To Newsletter", "smile" ),
 		"modal_content"			=> __( "DON&rsquo;T MISS OUT!", "smile" ),
 		"modal_confidential" 	=> __( "Give it a try, you can unsubscribe anytime.", "smile" ),
@@ -2519,7 +2581,7 @@ if( function_exists( "smile_update_default" ) ){
 		"button_title"			=> __( "Stay Updated", "smile" ),
 		"button_bg_color" 		=> "rgb(79, 197, 166)",
 		"button_border_color"	=> "rgb(52, 152, 219)",
-		"cp_modal_width" 		=> "700",
+		"cp_modal_width" 		=> "670",
 		"border" 				=> "br_all:10|br_tl:10|br_tr:10|br_br:10|br_bl:10|style:none|color:rgb(0, 0, 0)|bw_all:3|bw_t:3|bw_l:3|bw_r:3|bw_b:3",
 		"overlay_effect" 		=> "smile-3DRotateBottom",
 		"modal_overlay_bg_color"=> "rgba(0, 0, 0, 0.71)",
@@ -2537,8 +2599,13 @@ if( function_exists( "smile_update_default" ) ){
 		smile_update_default( "Smile_Modals", "every_design", $option, $value );
 	}
 
-	// Discount Style
+	// Flat Discount
 	$flat_discount_default = array(
+		"form_fields" 			=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			=> "cp-form-layout-3",
+		"form_input_align"		=> "left",
+		"form_submit_align" 	=> "cp-submit-wrap-full",
+		"form_grid_structure"	=> "cp-form-grid-structure-2",
 		"modal_bg_color"   		=> "rgb(255, 255, 255)",
 		"modal_title1"      	=> __( "Flat 20% Off Today!", "smile" ),
 		"modal_confidential" 	=> __( "Hurry up! Offer valid till stocks last.", "smile" ),
@@ -2564,28 +2631,32 @@ if( function_exists( "smile_update_default" ) ){
 
 	// Special Offer
 	$special_offer_default = array(
+		"form_fields" 			=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			=> "cp-form-layout-1",
+		"form_input_align"		=> "center",
+		"form_submit_align" 	=> "cp-submit-wrap-full",
 		"modal_short_desc1"  	 => __( "We&rsquo;ve a Special Offer today!", "smile" ),
-		"modal_content" 	 => __( "on all electronic & mobile devices.", "smile" ),
-		"modal_confidential" => __( "Hurry up! Offer valid till stock last.", "smile" ),
-		"modal_title1"  	 => __( "FLAT 50% OFF", "smile" ),
-		"modal_bg_color"     => "rgb(255, 255, 255)",
-		"button_title"       => __( "GET COUPON", "smile" ),
-		"button_bg_color"    => "rgb(237, 107, 12)",
-		"button_border_color" => "rgb(237, 107, 12)",
-		"modal_overlay_bg_color" => "rgba(0, 0, 0, 0.7)",
-		"affiliate_title"	 => __( "Powered by ConvertPlug<sup>&trade;</sup>", "smile" ),
-		"cp_modal_width"     => "750",
-		"border"             => "br_type:0|br_all:10|br_tl:10|br_tr:10|br_br:10|br_bl:10|style:none|color:rgb(255, 255, 255)|bw_type:0|bw_all:3|bw_t:3|bw_l:3|bw_r:3|bw_b:3",
-		"overlay_effect"     => "smile-3DRotateBottom",
-		"close_text_color" 	 => "rgb(68, 68, 68)",
-		"input_border_color" => "rgb(0, 0, 0)",
-		"modal_title_color"  => "rgb(51, 51, 51)",
-		"modal_desc_color" 	 => "rgb(51, 51, 51)",
-		"tip_color"          => "rgb(51, 51, 51)",
-		"font_family"		 => "Roboto",
-		"placeholder_text"   => __( "Enter Your Email Address", "smile" ),
-		"btn_style" 		 => "cp-btn-gradient",
-		"btn_border_radius"  => 10,
+		"modal_content" 	 	 => __( "on all electronic & mobile devices.", "smile" ),
+		"modal_confidential" 	 => __( "Hurry up! Offer valid till stock last.", "smile" ),
+		"modal_title1"  	 	 => __( "FLAT 50% OFF", "smile" ),
+		"modal_bg_color"     	 => "rgb(255, 255, 255)",
+		"button_title"       	 => __( "GET COUPON", "smile" ),
+		"button_bg_color"    	 => "rgb(237, 107, 12)",
+		"button_border_color" 	 => "rgb(237, 107, 12)",
+		"modal_overlay_bg_color" 	 => "rgba(0, 0, 0, 0.7)",
+		"affiliate_title"	 	 => __( "Powered by ConvertPlug<sup>&trade;</sup>", "smile" ),
+		"cp_modal_width"     	 => "750",
+		"border"             	 => "br_type:0|br_all:10|br_tl:10|br_tr:10|br_br:10|br_bl:10|style:none|color:rgb(255, 255, 255)|bw_type:0|bw_all:3|bw_t:3|bw_l:3|bw_r:3|bw_b:3",
+		"overlay_effect"     	 => "smile-3DRotateBottom",
+		"close_text_color" 	 	 => "rgb(68, 68, 68)",
+		"input_border_color" 	 => "rgb(0, 0, 0)",
+		"modal_title_color"  	 => "rgb(51, 51, 51)",
+		"modal_desc_color" 	 	 => "rgb(51, 51, 51)",
+		"tip_color"          	 => "rgb(51, 51, 51)",
+		"font_family"		 	 => "Roboto",
+		"placeholder_text"   	 => __( "Enter Your Email Address", "smile" ),
+		"btn_style" 		 	 => "cp-btn-gradient",
+		"btn_border_radius"  	 => 10,
 
 	);
 	foreach( $special_offer_default as $option => $value ){
@@ -2594,6 +2665,14 @@ if( function_exists( "smile_update_default" ) ){
 
 	// First Order
 	$first_order_default = array(
+		"form_fields" 			=> "order->0|input_type->textfield|input_label->Name|input_name->name|input_placeholder->Enter Your Name|input_require->true;order->1|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			=> "cp-form-layout-4",
+		"form_input_align"		=> "left",
+		"form_submit_align" 	=> "cp-submit-wrap-full",
+		"submit_button_tb_padding" => 10,
+		"submit_button_lr_padding" => 15,
+		"form_input_align"		 => "left",
+		"form_submit_align" 	 => "cp-submit-wrap-full",
 		"modal_title1"  	 => __( "FLAT 30% OFF", "smile" ),
 		"modal_content" 	 => __( "Coupon Code - GET30", "smile" ),
 		"modal_confidential" => __( "* Terms & Conditions Apply", "smile" ),
@@ -2619,6 +2698,12 @@ if( function_exists( "smile_update_default" ) ){
 
 	// Locked Content
 	$locked_content_default = array(
+		"form_fields" 			=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			=> "cp-form-layout-1",
+		"form_input_align"		=> "center",
+		"submit_button_tb_padding" => 10,
+		"submit_button_lr_padding" => 10,
+		"form_submit_align" 	=> "cp-submit-wrap-full",
 		"modal_title1"  	 	 => __( "Premium Content Locked!", "smile" ),
 		"modal_confidential" 	 => "",
 		"modal_short_desc1"  	 => __( "Enter Your Email Below to Unlock Your Exclusive Content", "smile" ),
@@ -2652,6 +2737,12 @@ if( function_exists( "smile_update_default" ) ){
 
 	// First Order 2
 	$first_order_2_default = array(
+		"form_fields" 			=> "order->0|input_type->textfield|input_label->Name|input_name->name|input_placeholder->Enter Your Name|input_require->true;order->1|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			=> "cp-form-layout-4",
+		"form_input_align"		=> "left",
+		"form_submit_align" 	=> "cp-submit-wrap-full",
+		"submit_button_tb_padding" => 15,
+		"submit_button_lr_padding" => 15,
 		"modal_short_desc1"   => __( "Independence Day Sale", "smile" ),
 		"modal_content" 	  => __( "Coupon Code - GET30", "smile" ),
 		"modal_confidential"  => __( "* Terms & Conditions Apply", "smile" ),
@@ -2674,24 +2765,28 @@ if( function_exists( "smile_update_default" ) ){
 
 	// Direct Download
 	$direct_download_default = array(
-		"modal_title1"  	  => __( "How to Convert Traffic into Leads with ConvertPlug", "smile" ),
-		"modal_content" 	  => __( "Seperate CRO facts from fiction & stop wasting your time on outdated strategies that do not work.", "smile" ),
-		"modal_confidential"  => "",
-		"modal_short_desc1"   => __( "FEATURED DOWNLOAD -", "smile" ),
-		"modal_bg_color"      => "rgb(255, 255, 255)",
-		"button_title"        => __( "DOWNLOAD NOW", "smile" ),
-		"button_bg_color"     => "rgb(44, 62, 80)",
-		"button_border_color" => "rgb(255, 255, 255)",
-		"cp_modal_width"      => "750",
-		"border"              => "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(0,0, 0)|bw_all:10|bw_t:10|bw_l:10|bw_r:10|bw_b:10",
-		"overlay_effect"      => "smile-3DRotateBottom",
-		"modal_title_color"   => "rgb(44, 62, 80)",
-		"modal_desc_color" 	  => "rgb(44, 62, 80)",
-		"tip_color"           => "rgb(44, 62, 80)",
-		"modal_image"		  => plugins_url('config/img/CP_Product_Box_Mockup.png', __FILE__ ),
-		"image_position" 	  => false,
-		"image_size"		  => "210",
-		"btn_style" 		  => "cp-btn-outline",
+		"form_fields" 				=> "order->0|input_type->textfield|input_label->Name|input_name->name|input_placeholder->Enter Your Name|input_require->true;order->1|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			 	=> "cp-form-layout-4",
+		"form_input_align"		 	=> "left",
+		"form_submit_align" 	 	=> "cp-submit-wrap-left",
+		"modal_title1"  	  		=> __( "How to Convert Traffic into Leads with ConvertPlug", "smile" ),
+		"modal_content" 	  		=> __( "Seperate CRO facts from fiction & stop wasting your time on outdated strategies that do not work.", "smile" ),
+		"modal_confidential"  		=> "",
+		"modal_short_desc1"   		=> __( "FEATURED DOWNLOAD -", "smile" ),
+		"modal_bg_color"      		=> "rgb(255, 255, 255)",
+		"button_title"        		=> __( "DOWNLOAD NOW", "smile" ),
+		"button_bg_color"     		=> "rgb(44, 62, 80)",
+		"button_border_color" 		=> "rgb(255, 255, 255)",
+		"cp_modal_width"      		=> "750",
+		"border"              		=> "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(0,0, 0)|bw_all:10|bw_t:10|bw_l:10|bw_r:10|bw_b:10",
+		"overlay_effect"      		=> "smile-3DRotateBottom",
+		"modal_title_color"   		=> "rgb(44, 62, 80)",
+		"modal_desc_color" 	  		=> "rgb(44, 62, 80)",
+		"tip_color"           		=> "rgb(44, 62, 80)",
+		"modal_image"		  		=> plugins_url('config/img/CP_Product_Box_Mockup.png', __FILE__ ),
+		"image_position" 	  		=> false,
+		"image_size"		  		=> "210",
+		"btn_style" 		  		=> "cp-btn-outline",
 	);
 	foreach( $direct_download_default as $option => $value ){
 		smile_update_default( "Smile_Modals", "direct_download", $option, $value );
@@ -2699,6 +2794,12 @@ if( function_exists( "smile_update_default" ) ){
 
 	//	Instant Coupon
 	$instant_coupon_default = array(
+		"form_fields" 			 => "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			 => "cp-form-layout-1",
+		"form_input_align"		 => "center",
+		"form_submit_align" 	 => "cp-submit-wrap-full",
+		"submit_button_tb_padding" => 10,
+		"submit_button_lr_padding" => 15,
 		"overlay_effect"         => "smile-3DRotateBottom",
 		"modal_short_desc1"      => __( "Last Minute Vacations Package","smile" ),
 		"modal_content" 	     => __( "Enter Your Email To Find Discount On Your Dream Vacations!", "smile" ),
@@ -2728,6 +2829,10 @@ if( function_exists( "smile_update_default" ) ){
 
 	// Free EBook
 	$free_ebook_default = array(
+		"form_fields" 			=> "order->0|input_type->textfield|input_label->Name|input_name->name|input_placeholder->Enter Your Name|input_require->true;order->1|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			 => "cp-form-layout-4",
+		"form_input_align"		 => "left",
+		"form_submit_align" 	 => "cp-submit-wrap-center",
 		"modal_title1"  	   => '<span style="color: #85C624;">'.__( "Convert", "smile" ).'</span>'.__( "Traffic", "smile" ),
 		"modal_content" 	   => __( "1. How to add powerful call to actions<br>2. Secrets of industry experts<br>3. A/B Testing & Optimization Methods", "smile" ),
 		"modal_confidential"   => "",
@@ -2751,6 +2856,81 @@ if( function_exists( "smile_update_default" ) ){
 	foreach( $free_ebook_default as $option => $value ){
 		smile_update_default( "Smile_Modals", "free_ebook", $option, $value );
 	}
+
+	// countdown
+	$count_down_default = array(
+		"modal_title1"  	  => __( "SPECIAL OFFER!", "smile" ),
+		"modal_content" 	  => __( "Apply Coupon Code BOGO & Upto 50% Off!", "smile" ),
+		"modal_confidential"  => "",
+		"count_down_title"	  => __( "Offer Expires In:", "smile" ),
+		"modal_short_desc1"   => __( "This Offer is Limited! Grab your Discount!", "smile" ),
+		"modal_bg_color"      => "#1bce7c",
+		"button_title"        => __( "GET MY OFFER!", "smile" ),
+		"button_bg_color"     => "#f25b3b",
+		"button_border_color" => "#f25b3b",
+		"cp_modal_width"      => "600",
+		"border"              => "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(0,0, 0)|bw_all:10|bw_t:10|bw_l:10|bw_r:10|bw_b:10",
+		"overlay_effect"      => "smile-3DRotateBottom",
+		"modal_title_color"   => "rgb(255, 255, 255)",
+		"modal_desc_color" 	  => "rgb(255, 255, 255)",
+		"tip_color"           => "rgb(44, 62, 80)",
+		"btn_style" 		  => "cp-btn-flat",
+		"form_bg_color"	 	  => "rgb(255, 255, 255)",
+		"form_fields" 		  => "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"		  => "cp-form-layout-1",
+		"counter_container_bg_color" => "#312f37",
+	);
+	foreach( $count_down_default as $option => $value ){
+		smile_update_default( "Smile_Modals", "countdown", $option, $value );
+	}
+
+	// social_media
+	$cp_social_default = array(
+		'box_shadow' 			  => '',
+		"modal_short_desc1"       => __( "Share this post with your friends", "smile" ),
+		'modal_title1'     		  => __( "Sharing is Awesome, Do It!" , "smile" ),
+		'border'				  => "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(0,0,0)|bw_all:5|bw_t:5|bw_l:5|bw_r:5|bw_b:5",
+		"cp_modal_width"    	  => "650",
+		"modal_bg_color"    	  => "rgb(255, 255, 255)",
+		"modal_title_color"    	  => "rgb(0, 0, 0)",
+		"modal_desc_color" 	  	  => "rgb(0, 0, 0)",
+		"cp_modal_height" 		  =>"310",
+		"cp_custom_height" 		  =>false,
+		"cp_social_icon_column"   => "2",
+		"social_container_border" => "5",
+		"cp_social_icon_shape" 	  => "circle",
+		"cp_social_icon_effect"   => "flat",
+		"cp_social_icon" 		  => "order:0|input_type:Facebook|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:1|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Twitter|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:3|input_type:Blogger|network_name:|input_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:",
+		"close_img" 			  => plugins_url('config/img/cross-new.png', __FILE__ ),
+		"cp_close_image_width"	  => "32",
+	);
+	foreach( $cp_social_default as $option => $value ) {
+		smile_update_default( "Smile_Modals", "social_media", $option, $value );
+	}
+
+	//	Jugaad
+	$jugaad_default = array(
+		"form_fields" 		  => "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"		  => "cp-form-layout-1",
+		"form_input_align"	  => "left",
+		"button_title"        => "SUBSCRIBE NOW",
+		"form_submit_align"   => "cp-submit-wrap-center",
+		'modal_image'         => plugins_url('config/img/newsletter-icon.png', __FILE__ ),
+        'cp_modal_width'      => '700',
+        'image_size'          => '150',
+        'form_bg_color'       => '#25394A',
+        'content_bg_color'    => '#F6F7F1',
+        "button_bg_color" 	  => "#EA773D",
+        "form_input_padding_tb" => 10,
+        "submit_button_tb_padding" => 5,
+        "modal_title1"        => "Join Our Newsletter Today On The Writers Cookbook",
+        "modal_short_desc1"   => "Stay updated with all latest updates,upcoming events & much more.",
+        "form_submit_align"   => "cp-submit-wrap-full",
+        'border'              => 'br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(255,255, 255)|bw_all:0|bw_t:0|bw_l:0|bw_r:0|bw_b:0'
+    );
+    foreach( $jugaad_default as $option => $value ){
+        smile_update_default( "Smile_Modals", "jugaad", $option, $value );
+    }
 }
 
 /**
@@ -2759,12 +2939,11 @@ if( function_exists( "smile_update_default" ) ){
  * @since 0.2.1
  */
 
-// Remove any option from style YouTube
+// Remove any option from style 
 if( function_exists( "smile_remove_option" ) ){
 
 	//	YouTube
 	smile_remove_option( "Smile_Modals", "YouTube", array(
-		'modal_bg_color',
 		'content_padding',
 		'modal_bg_image',
 		'opt_bg' )
@@ -2828,4 +3007,24 @@ if( function_exists( "smile_remove_option" ) ){
 		'form_options_title',
 		'placeholder_font' )
 	);
+
+	//countdown
+	smile_remove_option( "Smile_Modals", "countdown", array(
+		'input_bg_color',
+		'placeholder_color' ,
+		'placeholder_text' ,
+		'name_text' ,
+		'namefield' ,
+		'input_bg_color' ,
+		'input_border_color' ,
+		'form_options_title' ,
+		'placeholder_font',
+		'form_border_color' )
+	);
+ 
+    smile_remove_option( "Smile_Modals", "jugaad", array(
+        'content_padding',
+         )
+    );
+
 }

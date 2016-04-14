@@ -1,47 +1,4 @@
 <?php
-/*
-* Global functions for Slide In
-*/
-if( !function_exists( "smile_get_live_slide_ins" )){
-	function smile_get_live_slide_ins(){
-		$styles = get_option( 'smile_slide_in_styles' );
-		$slide_in_variant_tests = get_option( 'slide_in_variant_tests' );
-		$live_array = array();
-		if( !empty( $styles ) ) {
-			foreach( $styles as $key => $style ){
-				$settings = unserialize( $style[ 'style_settings' ] );
-
-				$split_tests = isset( $slide_in_variant_tests[$style['style_id']] ) ? $slide_in_variant_tests[$style['style_id']] : '';
-				if( is_array( $split_tests ) && !empty( $split_tests ) ) {
-					$split_array = array();
-					$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
-					if( $live ){
-						array_push( $split_array, $styles[ $key ] );
-					}
-					foreach( $split_tests as $key => $test ) {
-						$settings = unserialize( $test[ 'style_settings' ] );
-						$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
-						if( $live ){
-							array_push( $split_array, $test );
-						}
-					}
-					if( !empty( $split_array ) ) {
-						$key 	= array_rand( $split_array, 1 );
-						$array 	= $split_array[$key];
-						array_push( $live_array, $array );
-					}
-				} else {
-					$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
-					if( $live ){
-						array_push( $live_array, $styles[ $key ] );
-					}
-				}
-			}
-		}
-
-		return $live_array;
-	}
-}
 
 /**
  * Global Settings - Modal
@@ -155,11 +112,11 @@ if( !function_exists( "slidein_generate_style_css" ) ) {
 				break;
 		}
 
+
 		$style .= $a['custom_css'];
 		/* CP - SlideIn Styling */
 		echo '<style type="text/css" id="">'.$style.'</style>';
 
-		//apply_filters( 'custom_css' , $style );
 	}
 }
 
@@ -242,30 +199,6 @@ if( !function_exists( 'generateBoxShadow' )) {
 	}
 }
 
-
-/**
- *	Filter 'cp_valid_mx_email' for MX - Email validation
- *
- * @since 0.1.0
- */
-add_filter( 'cp_valid_mx_email', 'cp_valid_mx_email_init' );
-if( !function_exists( "cp_valid_mx_email_init" ) ){
-	function cp_valid_mx_email_init($email) {
-		if(cp_is_valid_mx_email($email)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-}
-
-if( !function_exists( "cp_is_valid_mx_email" ) ){
-	function cp_is_valid_mx_email($email,$record = 'MX') {
-		list($user,$domain) = explode('@',$email);
-		return checkdnsrr($domain,$record);
-	}
-}
-
 /**
  *	= Enqueue Selected - Google Fonts
  *
@@ -309,9 +242,13 @@ if( !function_exists( "cp_is_valid_mx_email" ) ){
 			$GFonts = $fonts;
 		}
 
+		//	Check the google fonts is enabled from BackEnd.
+		$data         = get_option( 'convert_plug_settings' );
+		$is_GF_Enable = isset($data['cp-google-fonts']) ? $data['cp-google-fonts'] : 1;
+
 		//	Register & Enqueue selected - Google Fonts
-		if( !empty( $GFonts ) ) {
-			wp_register_style('cp-google-fonts' , 'https://fonts.googleapis.com/css?family='.$GFonts);
+		if( !empty( $GFonts ) && $is_GF_Enable ) {
+			wp_register_style('cp-google-fonts' , 'https://fonts.googleapis.com/css?family='.$GFonts, null, null, null);
 			wp_enqueue_style('cp-google-fonts' );
 		}
 	}
@@ -428,12 +365,7 @@ add_filter( 'cp_get_wp_image_url', 'cp_get_wp_image_url_init' );
 add_filter( 'cp_get_custom_class', 'cp_get_custom_class_init' );
 if( !function_exists( "cp_get_custom_class_init" ) ) {
 	function cp_get_custom_class_init( $enable_custom_class = 0, $custom_class, $style_id ) {
-		/*if( $enable_custom_class == 1 ){
-			$custom_class = $custom_class;
-		} else {
-			$custom_class = '';
-		}*/
-
+	
 		$custom_class = $custom_class;
 		$custom_class  = str_replace( " ", "", trim( $custom_class ) );
 		$custom_class  = str_replace( ",", " ", trim( $custom_class ) );
@@ -472,7 +404,7 @@ add_filter( 'cp_has_redirect', 'cp_has_redirect_init' );
 if( !function_exists( "cp_has_overaly_setting_init" ) ){
 	function cp_has_overaly_setting_init( $overlay_effect, $disable_overlay_effect, $hide_animation_width ) {
 		$op = ' data-overlay-animation = "'.$overlay_effect.'" ';
-		if($disable_overlay_effect == 1){
+		if( $disable_overlay_effect == 1 ) {
 			$op .= ' data-disable-animationwidth="'.$hide_animation_width.'" ';
 		}
 		return $op;
@@ -528,9 +460,9 @@ if( !function_exists( "cp_get_affiliate_link_init" ) ){
 		if($affiliate_setting == 1){
 			if($affiliate_username ==''){
 				$affiliate_username = 'BrainstormForce';
-				$op = "http://themeforest.net/user/brainstormforce/portfolio?ref=BrainstormForce";
+				$op = "https://www.convertplug.com/buy?ref=BrainstormForce";
 			} else {
-				$op = "http://themeforest.net/user/brainstormforce/portfolio?ref=".$affiliate_username."";
+				$op = "https://www.convertplug.com/buy?ref=".$affiliate_username."";
 			}
 			return $op;
 		}
@@ -618,8 +550,18 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 
 		//	Enqueue detect device
 		if( $a['hide_on_device'] ) {
-
 			cp_enqueue_detect_device( $a['hide_on_device'] );
+		}
+
+		// check referrer detection
+		$referrer_check = ( isset( $a['enable_referrer'] ) && (int)$a['enable_referrer'] ) ? 'display' : 'hide';
+		$referrer_domain = ( $referrer_check == 'display' ) ? $a['display_to'] : $a['hide_from'];
+
+		if( $referrer_check !== '' ){
+			$referrer_data = 'data-referrer-domain="'.$referrer_domain.'"';
+			$referrer_data .= ' data-referrer-check="'.$referrer_check.'"';
+		} else {
+			$referrer_data = "";
 		}
 
 		//	Enqueue Google Fonts
@@ -672,12 +614,10 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 		if( isset( $a['slidein_bg_image'] ) && !empty( $a['slidein_bg_image'] ) ) {
 			$slidein_bg_image = apply_filters('cp_get_wp_image_url', $a['slidein_bg_image'] );
 		}
-
-			//	Variables
-		$uid 					= uniqid();
-
-		//$customcss .= cp_add_css('background-color', $slidein_bg_color );
-
+	
+		//	Variables
+		$uid = ( isset($a['uid']) && '' != $a['uid'] ) ? $a['uid'] : '';
+		
 		/**
 		 * 	Background - (Background Color / Gradient)
 		 *
@@ -725,7 +665,8 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 			$css_style .= generateBorderCss($a['border']);
 		}
 
-		$slidein_size_style .= cp_add_css('height', $a['cp_slidein_height']);
+		$slide_in_ht = isset( $a['cp_slidein_height'] ) ? $a['cp_slidein_height'] : '';
+		$slidein_size_style .= cp_add_css('height', $slide_in_ht );
 		$slidein_size_style .= cp_add_css('max-width', $a['cp_slidein_width'], 'px');
 		//$slidein_size_style .= cp_add_css('width', '100', '%');
 		$windowcss = '';
@@ -778,10 +719,11 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 		}
 
 		//	Variables
-		//$uid 					= uniqid();
 		$global_class 			= 'global_slidein_container';
 		//	Functions
-		$isScheduled 			= cp_is_slidein_scheduled($a['schedule'], $a['live']);
+
+		$schedule 				= isset($a['schedule']) ? $a['schedule'] : '';
+		$isScheduled 			= cp_is_slidein_scheduled( $schedule, $a['live'] );
 		//	Filters & Actions
 		$data_redirect = '';
 		if( isset($a['on_success']) && isset($a['redirect_url']) && isset($a['redirect_data']) ) {
@@ -797,8 +739,10 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 			$hide_image 	 	= cp_hide_image_on_mobile_init( $a['image_displayon_mobile'], $a['image_resp_width'] );
 		}
 
-		$overaly_setting 		= cp_has_overaly_setting_init( $overlay_effect , $a['disable_overlay_effect'], $a['hide_animation_width'] );
-		//$afl_setting 	 		= apply_filters( 'cp_get_affiliate_setting', $a['affiliate_setting'] );
+		$disable_overlay_effect = isset( $a['disable_overlay_effect'] ) ? $a['disable_overlay_effect'] : '';
+		$hide_animation_width   = isset( $a['hide_animation_width'] ) ? $a['hide_animation_width'] : '';
+
+		$overaly_setting 		= cp_has_overaly_setting_init( $overlay_effect , $disable_overlay_effect, $hide_animation_width );
 		$style_id 				= ( isset( $a['style_id'] ) ) ? $a['style_id'] : '';
 		$style_class 			= ( isset( $a['style_class'] ) ) ? $a['style_class'] : '';
 		$placeholder_font 		= '';
@@ -820,7 +764,6 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 		}
 
 		$image_position			= ( isset( $a['image_position'] ) ) ? $a['image_position'] : '';
-
 		$exit_animation			= isset( $a['exit_animation'] ) ? $a['exit_animation'] : 'slidein-overlay-none';
 
 		//Slide In button css
@@ -849,33 +792,32 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 					$a['side_btn_style'] = 'cp-btn-flat';
 				}
 
-
 				switch( $a['side_btn_style'] ) {
-				case 'cp-btn-flat':
-						$side_btn_style	    .= '.slidein-overlay.content-'.$uid.' .' . $a['side_btn_style'] . '.cp-slide-edit-btn{ background: '.$slidec_normal.'!important;' .$slideshadow .';'. $slideradius . '; color:'.$slidetext_color.'; } '
-												.'.slidein-overlay.content-'.$uid.'  .'.$a['side_btn_style'] . '.cp-slide-edit-btn:hover { background: '.$slidec_hover.'!important; } ';
-					break;
+					case 'cp-btn-flat':
+							$side_btn_style	    .= '.slidein-overlay.content-'.$uid.' .' . $a['side_btn_style'] . '.cp-slide-edit-btn{ background: '.$slidec_normal.'!important;' .$slideshadow .';'. $slideradius . '; color:'.$slidetext_color.'; } '
+													.'.slidein-overlay.content-'.$uid.'  .'.$a['side_btn_style'] . '.cp-slide-edit-btn:hover { background: '.$slidec_hover.'!important; } ';
+						break;
 
-				case 'cp-btn-gradient': 	//	Apply box $shadow to submit button - If its set & equals to - 1
-						$side_btn_style  .= '.slidein-overlay.content-'.$uid.' .'. $a['side_btn_style'] . '.cp-slide-edit-btn {'
-													. '     border: none ;'
-													. 		$slideshadow . $slideradius
-													. '     background: -webkit-linear-gradient(' . $slidelight . ', ' . $slidec_normal . ') !important;'
-													. '     background: -o-linear-gradient(' . $slidelight . ', ' . $slidec_normal . ') !important;'
-													. '     background: -moz-linear-gradient(' . $slidelight . ', ' . $slidec_normal . ') !important;'
-													. '     background: linear-gradient(' . $slidelight . ', ' . $slidec_normal . ') !important;'
-													. '     color:'.$slidetext_color.'; }'
-													. '.slidein-overlay.content-'.$uid.' .' . $side_btn_style . 'cp-slide-edit-btn:hover {'
-													. '     background: ' . $slidec_normal . ' !important;'
-													. '}';
-					break;
-			}
+					case 'cp-btn-gradient': 	//	Apply box $shadow to submit button - If its set & equals to - 1
+							$side_btn_style  .= '.slidein-overlay.content-'.$uid.' .'. $a['side_btn_style'] . '.cp-slide-edit-btn {'
+														. '     border: none ;'
+														. 		$slideshadow . $slideradius
+														. '     background: -webkit-linear-gradient(' . $slidelight . ', ' . $slidec_normal . ') !important;'
+														. '     background: -o-linear-gradient(' . $slidelight . ', ' . $slidec_normal . ') !important;'
+														. '     background: -moz-linear-gradient(' . $slidelight . ', ' . $slidec_normal . ') !important;'
+														. '     background: linear-gradient(' . $slidelight . ', ' . $slidec_normal . ') !important;'
+														. '     color:'.$slidetext_color.'; }'
+														. '.slidein-overlay.content-'.$uid.' .' . $side_btn_style . 'cp-slide-edit-btn:hover {'
+														. '     background: ' . $slidec_normal . ' !important;'
+														. '}';
+						break;
+				}
 
 		}
 
 		//	Append - Slide In - Toggle CSS
 		$font = 'sans-serif';
-		if( $a['toggle_button_font'] ) {
+		if( isset( $a['toggle_button_font'] ) && $a['toggle_button_font'] == '1' ) {
 			$font = $a['toggle_button_font'] . ',' . $font;
 		}
 		$side_btn_style .=  '.cp-slide-edit-btn {
@@ -884,19 +826,23 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 
 		echo '<style class="cp-slidebtn-submit" type="text/css">'.$side_btn_style.'</style>';
 
-		//toggle button setting
-		$toggleclass = $slide_toggle_class = '';
-		if( $a['toggle_btn'] == 1 && $a['close_slidein'] != 'do_not_close' ){
-			$toggleclass = '';
-		}else{
-			$slide_toggle_class = 'cp-slide-without-toggle';
-		}
-
 		// check if inline display is set
 		$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
+
+		//toggle button setting
+		$toggleclass = $slide_toggle_class = '';
+		if( ( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == 1 ) && $a['close_slidein'] != 'do_not_close' &&  $a['toggle_btn_visible'] == '1' && !$isInline ) {
+			$toggleclass = 'cp-hide-slide';
+		}
+
+		if( ( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == 0 ) && ( isset( $a['close_slidein'] )  && $a['close_slidein'] != 'do_not_close' ) ) {
+			$slide_toggle_class = 'cp-slide-without-toggle';	
+		}
+
 		if( $isInline ){
-			$global_class .= ' cp-slidein-inline';
-			//$global_class .= ' si-open';
+			$custom_class .= ' cp-slidein-inline';
+		} else {
+			$custom_class .= ' cp-slidein-global';
 		}
 
 		// check if modal should be triggered after post
@@ -909,16 +855,23 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 		$after_content_scroll = isset( $cp_settings['after_content_scroll'] ) ? $cp_settings['after_content_scroll'] : '50';
 		$after_content_data = 'data-after-content-value="'. $after_content_scroll .'"';
 
+		if ( isset( $a['manual'] ) && $a['manual'] == 'true' )
+        	$si_onload = '';
+        else
+        	$si_onload = 'si-onload';
+
+        $alwaysVisible = ( ( isset($a['toggle_btn']) && $a['toggle_btn'] == '1' ) && ( isset($a['toggle_btn_visible']) && $a['toggle_btn_visible']  == '1' ) ) ? 'data-toggle-visible=true' : '';
+
 		ob_start();
 		if( !$isInline ){
 	?>
-<div data-class-id="content-<?php echo $uid; ?>" <?php echo $after_content_data; ?> class="si-onload overlay-show <?php echo esc_attr( $custom_class ); ?>" data-overlay-class="overlay-zoomin" data-onload-delay="<?php echo esc_attr( $load_on_duration ); ?>" data-onscroll-value="<?php echo esc_attr( $load_after_scroll ); ?>" data-exit-intent="<?php echo esc_attr($slidein_exit_intent); ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" <?php echo $inactive_data; ?> <?php echo $cp_slidein_visibility; ?>></div>
+<div data-class-id="content-<?php echo $uid; ?>" <?php echo $referrer_data; ?> <?php echo $after_content_data; ?> class="<?php echo $si_onload; ?> overlay-show <?php echo esc_attr( $custom_class ); ?>" data-overlay-class="overlay-zoomin" data-onload-delay="<?php echo esc_attr( $load_on_duration ); ?>" data-onscroll-value="<?php echo esc_attr( $load_after_scroll ); ?>" data-exit-intent="<?php echo esc_attr($slidein_exit_intent); ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" <?php echo $inactive_data; ?> <?php echo $cp_slidein_visibility; ?> <?php echo $alwaysVisible; ?>></div>
 <?php } ?>
 		<div class="cp-slidein-popup-container <?php echo esc_attr( $style_id ); ?> <?php echo $style_class. '-container'; ?>">
-			<div class="slidein-overlay <?php echo esc_attr( $slide_toggle_class ); echo ' content-'.$uid;?> <?php echo ' ' . $global_class . ' ' . $close_class ; ?>" data-placeholder-font="<?php echo $placeholder_font; ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" data-timezoneformat="<?php echo esc_attr($timezoneformat);?>" data-placeholder-color="<?php echo $placeholder_color; ?>" data-image-position="<?php echo $image_position ;?>" <?php echo $hide_image; ?>  <?php echo $overaly_setting;?> <?php echo $data_redirect;?>>
-				<div class="cp-slidein <?php echo esc_attr( $a['slidein_size'] ) . ' slidein-' . esc_attr( $a['slidein_position'] ); ?>" style="<?php echo esc_attr( $slidein_size_style ); ?>">
+			<div class="slidein-overlay <?php echo ( $isInline ) ? "cp-slidein-inline  " : "" ; ?><?php echo esc_attr( $slide_toggle_class ); echo ' content-'.$uid;?> <?php echo ' ' . $close_class ; ?>" data-placeholder-font="<?php echo $placeholder_font; ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" data-timezoneformat="<?php echo esc_attr($timezoneformat);?>" data-placeholder-color="<?php echo $placeholder_color; ?>" data-image-position="<?php echo $image_position ;?>" <?php echo $hide_image; ?>  <?php echo $overaly_setting;?> <?php echo $data_redirect;?>>
+				<div class="cp-slidein slidein-<?php echo esc_attr( $a['slidein_position'] ); ?>" style="<?php echo esc_attr( $slidein_size_style ); ?>">
 					<div class="cp-animate-container <?php echo esc_attr( $toggleclass );?>" <?php echo $overaly_setting;?> data-exit-animation="<?php echo esc_attr( $exit_animation ); ?>">
-						<div class="cp-slidein-content" id="slide-in-animate" style="<?php echo esc_attr( $css_style ); ?>;<?php echo esc_attr( $windowcss );?>">
+						<div class="cp-slidein-content" id="slide-in-animate-<?php echo esc_attr( $style_id ); ?>" style="<?php echo esc_attr( $css_style ); ?>;<?php echo esc_attr( $windowcss );?>">
 							<div class="cp-slidein-body <?php echo $style_class . ' ' . esc_attr( $el_class ); ?>" style="<?php echo esc_attr( $customcss );?>">
 							  <div class="cp-slidein-body-overlay cp_cs_overlay" style="<?php echo esc_attr( $inset ) ?>;"></div>
 	<?php
@@ -934,6 +887,8 @@ add_filter( 'cp_slidein_global_before', 'cp_slidein_global_before_init' );
  */
 if( !function_exists( "cp_slidein_global_after_init" ) ){
 	function cp_slidein_global_after_init( $a ) {
+
+		$style_id 	= ( isset( $a['style_id'] ) ) ? $a['style_id'] : '';
 
 		if( isset( $a['close_slidein'] ) && $a['close_slidein'] !== 'close_txt' )
 			$cp_close_image_width = $a['cp_close_image_width']."px";
@@ -1001,24 +956,35 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 
 		// check if inline display is set
 		$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
+
+		if( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == '1' &&  $a['toggle_btn_visible'] == '1' && !$isInline ) {
+			$slide_in_btn_class = '';
+		} else {
+			$slide_in_btn_class = 'cp-slide-hide-btn';
+		}
+		
 		?>
 							</div><!-- .cp-slidein-body -->
 							</div><!-- .cp-slidein-content -->
-							<div class="cp-form-processing-wrap" style="<?php echo esc_attr($formProcessCss); ?>;">
-								<div class="cp-form-after-submit">
-									<div class ="cp-form-processing" style="">
-										<div class="smile-absolute-loader" style="visibility: visible;">
-											<div class="smile-loader">
-												<div class="smile-loading-bar"></div>
-												<div class="smile-loading-bar"></div>
-												<div class="smile-loading-bar"></div>
-												<div class="smile-loading-bar"></div>
+
+							<?php if( isset( $a['form_layout'] ) &&  $a['form_layout'] != 'cp-form-layout-4' ) { ?>
+
+								<div class="cp-form-processing-wrap" style="<?php echo esc_attr($formProcessCss); ?>;">
+									<div class="cp-form-after-submit">
+										<div class ="cp-form-processing" style="">
+											<div class="smile-absolute-loader" style="visibility: visible;">
+												<div class="smile-loader">
+													<div class="smile-loading-bar"></div>
+													<div class="smile-loading-bar"></div>
+													<div class="smile-loading-bar"></div>
+													<div class="smile-loading-bar"></div>
+												</div>
 											</div>
 										</div>
+										<div class ="cp-msg-on-submit"></div>
 									</div>
-									<div class ="cp-msg-on-submit"></div>
 								</div>
-							</div>
+							<?php } ?>
 
 							<?php
 							$close_overlay_class = 'cp-inside-close';
@@ -1035,35 +1001,36 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 							</div><!-- .cp-animate-container -->
 					</div><!-- .cp-slidein -->
 
+					 <?php if( $isInline ) { ?>
+						<span class="cp-slide_in-inline-end" data-style="<?php echo $style_id; ?>"></span>
+					<?php } ?>
 
-					<?php if( $a['toggle_btn'] == 1 ) {
-						if( $a['side_btn_gradient'] == '1'){
+
+					<?php if( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == 1 ) {
+						if( $a['side_btn_gradient'] == '1' ) {
 							$slidebutton_class = 'cp-btn-gradient';
-						}else{
+						} else {
 							$slidebutton_class = 'cp-btn-flat';
 						}
 
 						$slide_btn_animation = '';
 
-						if( $a['slidein_position'] == 'center-right' ){
-						   $slide_btn_animation = 'smile-slideInUp';
-						}else if(  $a['slidein_position'] == 'center-left' ){
+						if( $a['slidein_position'] == 'center-left' ||  $a['slidein_position'] == 'top-left' ||  $a['slidein_position'] == 'top-center' ||  $a['slidein_position'] == 'top-right' ){
 							$slide_btn_animation = 'smile-slideInDown';
-						}else if(  $a['slidein_position'] == 'top-left' ||  $a['slidein_position'] == 'top-center' ||  $a['slidein_position'] == 'top-right' ){
-							$slide_btn_animation = 'smile-slideInDown';
-						}else if(  $a['slidein_position'] == 'bottom-left' ||  $a['slidein_position'] == 'bottom-center' ||  $a['slidein_position'] == 'bottom-right' ){
+						}
+						if( $a['slidein_position'] == 'center-right' || $a['slidein_position'] == 'bottom-left' ||  $a['slidein_position'] == 'bottom-center' ||  $a['slidein_position'] == 'bottom-right' ){
 							$slide_btn_animation = 'smile-slideInUp';
 						}
 
 						$a['side_btn_style'] = '';
-						if( $a['side_btn_gradient'] == '1'){
+						if( $a['side_btn_gradient'] == '1') {
 							$a['side_btn_style'] = 'cp-btn-gradient';
-						}else{
-							$a['side_btn_style'] = 'cp-btn-flat';
+						} else {	
+							$a['side_btn_style'] = 'cp-btn-flat';						
 						}
 
 						?>
-						<div class="cp-toggle-container <?php echo esc_attr( $slidebutton_class ); ?> slidein-<?php echo esc_attr( $a['slidein_position'] ); ?> cp-slide-hide-btn">
+						<div class="cp-toggle-container <?php echo esc_attr( $slidebutton_class ); ?> slidein-<?php echo esc_attr( $a['slidein_position'] ); ?> <?php echo $slide_in_btn_class; ?>">
 							<div class="<?php echo esc_attr( $a['side_btn_style'] ) ?> cp-slide-edit-btn smile-animated  <?php echo esc_attr( $slide_btn_animation ); ?> ;" ><?php echo  html_entity_decode( $a['slide_button_title'] ) ; ?></div>
 						</div>
 					<?php  } ?>

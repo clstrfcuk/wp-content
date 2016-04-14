@@ -346,6 +346,7 @@ class Vc_Frontend_Editor implements Vc_Editor_Interface {
 	 *
 	 */
 	function setPost() {
+        global $post;
 		$this->post = get_post(); // fixes #1342 if no get/post params set
 		$this->post_id = vc_get_param( 'post_id' );
 		if ( vc_post_param( 'post_id' ) ) {
@@ -384,7 +385,7 @@ class Vc_Frontend_Editor implements Vc_Editor_Interface {
 	 */
 	function renderEditor() {
 		global $current_user;
-		get_currentuserinfo();
+		wp_get_current_user();
 		$this->current_user = $current_user;
 		$this->post_url = vc_str_remove_protocol( get_permalink( $this->post_id ) );
 

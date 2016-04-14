@@ -28,13 +28,18 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 			cs_send_json_error( array( 'message' => 'post_id not set' ) );
 		}
 
+		$cap = $this->plugin->common()->get_post_capability( $post, 'edit_post' );
+		if ( ! current_user_can( $cap, $data['post_id'] ) ) {
+			cs_send_json_error( array( 'message' => sprintf( '%s capability required.', $cap ) ) );
+		}
+
 		setup_postdata( $post );
 
 		$this->append = array();
 
 		$this->post_id = $data['post_id'];
 
-		$this->legacy = new Cornerstone_Legacy_Renderer( $this->plugin->component( 'Legacy_Elements' ) );
+		$this->legacy = $this->plugin->loadComponent( 'Legacy_Renderer' );
 
 		$settings = $this->save_settings( $data['settings'] );
 

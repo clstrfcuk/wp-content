@@ -128,7 +128,9 @@ class Vc_Updater {
 		$license_key = vc_license()->getLicenseKey();
 
 		if ( ! $license_key || ! vc_license()->isActivated() ) {
-			return new WP_Error( 'no_credentials', __( 'To receive automatic updates license activation is required. Please visit <a href="' . admin_url( 'admin.php?page=vc-updater' ) . '' . '" target="_blank">Settings</a> to activate your Visual Composer.', 'js_composer' ) );
+			$url = esc_url( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
+
+			return new WP_Error( 'no_credentials', __( 'To receive automatic updates license activation is required. Please visit <a href="' . $url . '' . '" target="_blank">Settings</a> to activate your Visual Composer.', 'js_composer' ) . ' ' . sprintf( ' <a href="http://go.wpbakery.com/faq-update-in-theme" target="_blank">%s</a>', __( 'Got Visual Composer in theme?', 'js_composer' ) ) );
 		}
 
 		$updater->strings['downloading_package_url'] = __( 'Getting download link...', 'js_composer' );

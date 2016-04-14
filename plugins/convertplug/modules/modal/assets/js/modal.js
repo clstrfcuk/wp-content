@@ -11,7 +11,6 @@
         jQuery(".cp_responsive[data-font-size-init]").each(function(index, el) {
 
             var p = jQuery(el);
-
             var data = jQuery( this ).html();
 
             if ( data.toLowerCase().indexOf("cp_font") >= 0 && data.match("^<span") && data.match("</span>$") ) {
@@ -19,9 +18,7 @@
             } else {
                 p.removeClass('cp-no-responsive');
             }
-
         });
-
     }
 
     //  Style - YouTube - CTA
@@ -63,28 +60,97 @@
                     returns = true;
                 }
             });
-		}else{
+		} else {
               returns =false;
         }
 
-        return returns;
-	}
-
-    jQuery(document).on('smile_data_received',function(e,data){
-        CPResponsiveTypoInit();
-    });
+       return returns;
+    }
 
     function getPrioritized(){
         var modal = 'none';
         jQuery(".cp-onload").each(function(t,v) {
             var class_id = jQuery(this).data("class-id");
             var hasClass = jQuery(this).hasClass("priority_modal");
+
             if( hasClass ){
                 modal = jQuery('.'+class_id);
                 return modal;
             }
         });
         return modal;
+    }
+
+    function stripTrailingSlash( url ) {
+        if( url.substr(-1) === '/') {
+            return url.substr(0, url.length - 1);
+        }
+        return url;
+    }
+
+    // Referrer detection
+    jQuery.fn.isReferrer = function( referrer, doc_ref, ref_check ){
+        var display = true;
+        doc_ref     = stripTrailingSlash( doc_ref.replace(/.*?:\/\//g, "") );
+
+        var referrers = referrer.split( ",");
+
+        jQuery.each( referrers, function(i, url ){
+
+            url     = stripTrailingSlash( url );
+
+            doc_ref = doc_ref.replace("www.","");
+            var dr_arr = doc_ref.split(".");
+            var ucount = url.match(/./igm).length;
+            var dr_domain = dr_arr[0];
+
+            url = stripTrailingSlash( url.replace(/.*?:\/\//g, "") );
+            url = url.replace("www.","");
+            var url_arr = url.split("*");
+
+            var _domain = url_arr[0];
+            _domain = stripTrailingSlash( _domain );
+
+            if( ref_check =="display" ) {
+                if( url.indexOf('*') !== -1 ) {
+                    //if( _domain == dr_domain ){
+                    if( _domain == doc_ref ){
+                        display = true;
+                        return false;
+                    } else if( doc_ref.indexOf( _domain ) !== -1 ){
+                        display = true;
+                        return false;
+                    } else {
+                        display = false;
+                        return false;
+                    }
+                } else if( url == doc_ref ){
+                    display = true;
+                    return false;
+                } else {
+                    display = false;
+                }
+            } else if( ref_check == "hide" ) {
+                if( url.indexOf('*') !== -1 ) {
+                    if( _domain == doc_ref ){
+                        display = false;
+                        return false;
+                    } else if( doc_ref.indexOf( _domain ) !== -1 ){
+                        display = false;
+                        return false;
+                    } else {
+                        display = true;
+                        return false;
+                    }
+                } else if( url == doc_ref ){
+                    display = false;
+                    return false;
+                } else {
+                    display = true;
+                }
+            }
+        });
+        return display;
     }
 
     jQuery.fn.isScheduled = function(){
@@ -200,6 +266,7 @@
 
          var styleArray = Array();
         jQuery(".cp-onload").each(function(t) {
+            var $this = jQuery(this);
             var class_id            = jQuery(this).data("class-id");
             var dev_mode            = jQuery(this).data("dev-mode");
             var cookieName          = jQuery('.'+class_id).data('modal-id');
@@ -258,13 +325,18 @@
                 cookie = false;
             }
 
-            if( !cookie && delay && display && scheduled){
-                if( jQuery(".cp-open").length <= 0 ){
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = modal.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
 
-                    if( !modal.hasClass( 'impression_counted' ) ){
-                        styleArray.push( style );
-                        modal.addClass( 'impression_counted' );
-                    }
+            if( !cookie && delay && display && scheduled && referred ){
+                if( jQuery(".cp-open").length <= 0 ){                    
 
                     setTimeout(function() {
                         cookie = getCookie(cookieName);
@@ -290,6 +362,7 @@
                         } else {
                             display = false;
                         }
+
                         if( display ) {
                             jQuery(window).trigger('modalOpen',[modal]);
                             modal.show();
@@ -299,6 +372,14 @@
                                 cpExecuteVideoAPI(modal,'play');
                             }
                             modal.addClass('cp-open');
+
+                            if( !modal.hasClass( 'impression_counted' ) ){
+                                styleArray.push( style );
+                                modal.addClass( 'impression_counted' );
+                                if(styleArray.length !== 0 ) {
+                                    update_impressions(styleArray);
+                                }
+                            }
 
                             //  Show YouTube CTA form
                             youtube_show_cta(modal);
@@ -311,29 +392,21 @@
             if( dev_mode == "enabled" ){
                 removeCookie(cookieName);
             }
-        });
-
-        if(styleArray.length !== 0 ) {
-            update_impressions(styleArray);
-        }
+        });        
 
     });
-
-
 
     //  Contact Form 7 - Height Issue fixed
     // jQuery(".wpcf7").on('wpcf7:submit', function(event){
     jQuery(".wpcf7").on('wpcf7:invalid', function(event){
-        cp_column_equilize();
-        // var h = jQuery('.cp-modal-body-overlay').outerHeight();
-        // h = h + 40; //  Add additional 40px;
-        // jQuery('.cp-columns-equalized').css('height', h + 'px');
+        cp_column_equilize();       
     });
 
     // Display modal on page scroll after x percentage
     jQuery(document).scroll(function(e){
 
-        CPModelHeight();
+        // count impressions for inline modal style 
+        count_inline_impressions();
 
         /*  = Responsive Typography
          *-----------------------------------------------------------*/
@@ -344,6 +417,7 @@
         var scrolled = scrollPercent.toFixed(0);
         var styleArray = Array();
         jQuery(".cp-onload").each(function(t) {
+            var $this = jQuery(this);
             var exit        = jQuery(this).data("exit-intent");
             var class_id    = jQuery(this).data("class-id");
             var dev_mode    = jQuery(this).data("dev-mode");
@@ -371,7 +445,17 @@
             }
             var scheduled = modal.isScheduled();
 
-            if( !cookie && scrollTill && scheduled ){
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = modal.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if( !cookie && scrollTill && scheduled && referred ){
                 if( jQuery(".cp-open").length <= 0 ){
                     if( scrolled >= scrollTill  ){
                         jQuery(window).trigger('modalOpen',[modal]);
@@ -387,20 +471,18 @@
                         //  Show YouTube CTA form
                         youtube_show_cta(modal);
 
-                        if( !modal.hasClass( 'impression_counted' ) ){
+                        if( !modal.hasClass( 'impression_counted' ) ) {
                             styleArray.push( style );
                             modal.addClass( 'impression_counted' );
+                            if( styleArray.length !== 0 ) {
+                                update_impressions(styleArray);
+                            }
                         }
-                        return false;
                     }
                 }
             }
 
         });
-
-        if(styleArray.length !== 0 ) {
-            update_impressions(styleArray);
-        }
 
     });
 
@@ -408,19 +490,14 @@
 	// Display modal on page scroll after post content
     jQuery(document).scroll(function(e){
 
-        CPModelHeight();
-
         // calculate the percentage the user has scrolled down the page
         // var scrollPercent = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
         // var scrolled = scrollPercent.toFixed(0);
 
-        if( jQuery(".cp-load-after-post").length == 0 ){
-            return false;
-        }
-
 		var scrolled = jQuery(window).scrollTop();
         var styleArray = Array();
         jQuery(".cp-after-post").each(function(t) {
+            var $this = jQuery(this);
             var exit        = jQuery(this).data("exit-intent");
             var class_id    = jQuery(this).data("class-id");
             var dev_mode    = jQuery(this).data("dev-mode");
@@ -430,7 +507,9 @@
             var opt         = jQuery('.'+class_id).data('option');
             var style       = jQuery('.'+class_id).data('modal-style');
             var modal       = jQuery('.'+class_id);
-            var scrollTill  = jQuery(".cp-load-after-post").offset().top;
+            var scrollTilllength  = jQuery(".cp-load-after-post").length;
+            if( scrollTilllength > 0 ){
+            var scrollTill  = jQuery(".cp-load-after-post").offset().top - 30;
 
             var hide_on_device = jQuery(this).data('hide-on-devices');
             var hide_from_device = hideOnDevice(hide_on_device);
@@ -451,13 +530,24 @@
                modal.windowSize();
             }
             var scheduled = modal.isScheduled();
+
 			scrollTill = scrollTill - ( ( jQuery(window).height() * scrollValue ) / 100 );
 
-            if( hide_from_device ) {
-                cookie = scrollTill = scheduled = false;
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = modal.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
             }
 
-            if( !cookie && scrollTill && scheduled ){
+            if( hide_from_device ) {
+                cookie = scrollTill = scheduled = referred = false;
+            }
+
+            if( !cookie && scrollTill && scheduled && referred ){
                 if( jQuery(".cp-open").length <= 0 ){
                     if( scrolled >= scrollTill  ){
                         jQuery(window).trigger('modalOpen',[modal]);
@@ -476,17 +566,16 @@
                         if( !modal.hasClass( 'impression_counted' ) ){
                             styleArray.push( style );
                             modal.addClass( 'impression_counted' );
+
+                            if(styleArray.length !== 0 ) {
+                                update_impressions(styleArray);
+                            }
                         }
-                        return false;
                     }
                 }
             }
-
-        });
-
-        if(styleArray.length !== 0 ) {
-            update_impressions(styleArray);
         }
+        });
 
     });
 
@@ -496,11 +585,13 @@
         var getPriorityModal = getPrioritized();
         jQuery(".cp-onload").each(function(t) {
             var $this = jQuery(this);
+
             if( getPriorityModal !== "none" ){
                 var modal = getPriorityModal;
                 var modal_id = modal.data("modal-id");
-                $this = jQuery(".cp-"+modal_id);
+                $this = jQuery(".cp-onload.cp-"+modal_id);
             }
+
             var exit        = $this.data("exit-intent");
             var class_id    = $this.data("class-id");
             var dev_mode    = $this.data("dev-mode");
@@ -531,7 +622,17 @@
 				exit = scheduled = false;
 			}
 
-            if( !cookie ){
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = modal.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if( !cookie && referred ){
                 if( exit == 'enabled' && scheduled ){
                     if ( e.clientY <= 0 ){
                         if(jQuery(".cp-open").length <= 0 ){
@@ -553,20 +654,26 @@
                             if( !modal.hasClass( 'impression_counted' ) ){
                                 styleArray.push( style );
                                 modal.addClass( 'impression_counted' );
+
+                                if(styleArray.length !== 0 ) {
+                                    update_impressions(styleArray);
+                                }
                             }
                         }
                     }
                 }
             }
         });
-
-        if(styleArray.length !== 0 ) {
-            update_impressions(styleArray);
-        }
+        
     });
 
     // Load the user activity handler
     jQuery(document).ready(function(){
+
+        var cls = new Array();
+        var styleArray = Array();
+
+        count_inline_impressions();       
 
         jQuery('.blinking-cursor').remove();
 
@@ -610,9 +717,6 @@
             });
         });
 
-        var cls = new Array();
-        var styleArray = Array();
-
         // Display modal on click of custom class
         jQuery.each(jQuery('.cp-overlay'),function(){
             var modal_custom_class = jQuery(this).data('custom-class');
@@ -623,14 +727,15 @@
                 });
             }
         });
-
+        
         jQuery.each(cls, function(i,v){
             jQuery("."+v).click(function(e){
+                
                 e.preventDefault();
-                //var target        = jQuery('div[data-custom-class="'+v+'"]');
-                var target      = jQuery('.cp-onload.'+v);
+                var target      = jQuery('.cp-modal-global.'+v);
 
                 if( !target.siblings('.cp-modal-popup-container').find('.cp-animate-container').hasClass('cp-form-submit-success') ) {
+
                     var exit        = target.data("exit-intent");
                     var class_id    = target.data("class-id");
                     var cookieName  = jQuery('.'+class_id).data('modal-id');
@@ -641,11 +746,8 @@
                     if( modal.hasClass('cp-window-size') ){
                         modal.windowSize();
                     }
+
                     if(jQuery(".cp-open").length <= 0){
-
-
-                        jQuery(window).trigger('modalOpen',[modal]);
-                        modal.show();
 
                         if( modal.hasClass('cp-window-size') ){
                             modal.windowSize();
@@ -657,6 +759,9 @@
                         }
 
                         modal.addClass('cp-open');
+
+                        jQuery(window).trigger('modalOpen',[modal]);
+                        modal.show();
 
                         //  Show YouTube CTA form
                         youtube_show_cta(modal);
@@ -682,13 +787,10 @@
             });
         });
 
-        // Placeholder css
-        add_placeholdercolor_css();
-
         // Affiliate settings
         set_affiliate_link();
 
-        // Initialise tooltip
+        // Initialize tool tip
         close_button_tootip();
 
     });
@@ -703,7 +805,7 @@
         var entry_anim  = modal.data('overlay-animation');
         var exit_anim   = cp_animate.data('exit-animation');
         var temp_cookie     = "temp_"+cookieName;
-        jQuery('html').removeClass('cp-exceed-vieport');
+        jQuery('html').removeClass('cp-exceed-vieport cp-window-viewport');
         createCookie(temp_cookie,true,1);
         var cookie      = getCookie(cookieName);
         cpExecuteVideoAPI(modal,'pause');
@@ -763,7 +865,7 @@
             if( getPriorityModal !== "none" ){
                 var modal = getPriorityModal;
                 var modal_id = modal.data("modal-id");
-                $this = jQuery(".cp-"+modal_id);
+                $this = jQuery(".cp-onload.cp-"+modal_id);
             }
             var exit        = $this.data("exit-intent");
             var class_id    = $this.data("class-id");
@@ -799,7 +901,17 @@
                 display = false;
             }
 
-            if( !cookie && display ){
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = modal.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if( !cookie && display && referred ){
                 if( jQuery(".cp-open").length <= 0 ){
                     jQuery(window).trigger('modalOpen',[modal]);
                     modal.show();
@@ -876,35 +988,17 @@
         });
     }
 
-    // This function will add placeholder css to head
-    function add_placeholdercolor_css(){
-
-        jQuery(".cp-overlay").each(function() {
-            var placeholder_color = jQuery(this).data("placeholder-color");
-            var placeholder_font = jQuery(this).data("placeholder-font");
-            var uid = jQuery(this).data("class");
-            var defaultColor = placeholder_color;
-            var styleContent = '.'+uid+' input { font-family: '+placeholder_font+' } .'+uid +' ::-webkit-input-placeholder {color: ' + defaultColor + '!important; font-family: '+ placeholder_font +'; } .'+uid+' :-moz-placeholder {color: ' + defaultColor + '!important; font-family: '+ placeholder_font +';} .'+uid+' ::-moz-placeholder {color: ' + defaultColor + '!important; font-family: '+ placeholder_font +'; }';
-            jQuery("<style id="+uid+" type='text/css'>"+styleContent+"</style>").appendTo("head");
-        });
-
-        jQuery(".cp-modal-inline").each(function() {
-            var placeholder_color = jQuery(this).data("placeholder-color");
-            var placeholder_font = jQuery(this).data("placeholder-font");
-            var uid = jQuery(this).data("class");
-            var defaultColor = placeholder_color;
-            var styleContent = '.'+uid+' input { font-family: '+placeholder_font+' } .'+uid +' ::-webkit-input-placeholder {color: ' + defaultColor + '!important; font-family: '+ placeholder_font +'; } .'+uid+' :-moz-placeholder {color: ' + defaultColor + '!important; font-family: '+ placeholder_font +';} .'+uid+' ::-moz-placeholder {color: ' + defaultColor + '!important; font-family: '+ placeholder_font +'; }';
-            jQuery("<style id="+uid+" type='text/css'>"+styleContent+"</style>").appendTo("head");
-        });
-    }
-
     jQuery(window).on("modalOpen", function(e,data) {
 
         // set columns equalized
         cp_column_equilize();
 
         //  Model height
-        CPModelHeight();
+        CPModelHeight(); 
+
+        cp_form_sep_top();
+
+        cp_set_width_svg(); 
 
         var cp_animate = data.find('.cp-animate-container');
         var animationclass = cp_animate.data('overlay-animation');
@@ -915,6 +1009,18 @@
         }
 
         jQuery("#cp-tooltip-close-css").remove();
+
+        // remove scroller if modal is window size 
+        jQuery('.cp-modal-popup-container').each(function(index, element) {
+           var t        = jQuery(element),
+            modal       = t.find('.cp-modal');
+            if( !modal.hasClass("cp-modal-exceed") ){
+                if( modal.hasClass('cp-modal-window-size') ){                           
+                    jQuery('html').addClass('cp-window-viewport');
+                 }
+                }
+        });
+
     });
 
 
@@ -926,6 +1032,8 @@
             var tbgcolor = jQuery(this).find(".has-tip").data("bgcolor");
             var modalht = jQuery(this).find(".cp-modal-content").height();
             var vw = jQuery(window).width();
+            var id = jQuery(this).data("modal-id");
+            
 
             if( jQuery(this).find(".cp-overlay-close").hasClass('cp-inside-close') || jQuery(this).find(".cp-overlay-close").hasClass('cp-adjacent-close') ){
                 if( jQuery(this).find(".cp-modal").hasClass('cp-modal-custom-size') ){
@@ -968,7 +1076,7 @@
                    offsetval = 20;
             }
 
-            //initialise
+            //initialize
             var innerclass ='';
             if( jQuery(this).find('.cp-modal').hasClass('cp-modal-window-size') ){
                 if( jQuery(this).find('.cp-overlay-close').hasClass('cp-inside-close') ){
@@ -981,16 +1089,16 @@
                     offset: offsetval,
                     position : position,
             });
-
-            jQuery(".cp-tooltip-css").remove();
-            jQuery('head').append('<style class="cp-tooltip-css">.tip.'+classname+'{color: '+tcolor+';background-color:'+tbgcolor+';border-color:'+tbgcolor+' }</style>');
+            
+            jQuery("."+classname).remove();
+            jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.tip.'+classname+'{color: '+tcolor+';background-color:'+tbgcolor+';border-color:'+tbgcolor+' }</style>');
             if( position == 'left' ){
-                jQuery('head').append('<style class="cp-tooltip-css">.customize-support .'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before {border-left-color: '+tbgcolor+' ;border-top-color:transperant}</style>');
+                jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before {border-left-color: '+tbgcolor+' ;border-top-color:transperant}</style>');
             } else {
-                jQuery('head').append('<style class="cp-tooltip-css">.customize-support .'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before{border-top-color: '+tbgcolor+';border-left-color:transperant }</style>');
+                jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before{border-top-color: '+tbgcolor+';border-left-color:transperant }</style>');
             }
         });
-    }
+}
 
     // Close modal on click of close button
     jQuery(document).on("click", ".cp-form-submit-error", function(e){
@@ -1005,7 +1113,7 @@
         cp_msg_on_submit.html('');
         cp_msg_on_submit.removeAttr("style");
 
-        //show tooltip
+        //show tool tip
         jQuery('head').append('<style class="cp-tooltip-css">.tip.'+cp_tooltip+'{display:block }</style>');
 
     });
@@ -1013,6 +1121,7 @@
     jQuery(document).ready(function(){
 
         check_responsive_font_sizes();
+           
         jQuery(document).bind('keydown', function(e) {
             if (e.which == 27) {
                 var cp_overlay = jQuery(".cp-open");
@@ -1036,5 +1145,38 @@
         // do your stuff
         jQuery($this).addClass('disabled');
     });
+
+    // check if element is visible in view port
+    function isScrolledIntoStyleView(elem) {
+        var $elem = elem;
+        var $window = $(window);
+
+        var docViewTop = $window.scrollTop();
+        var docViewBottom = docViewTop + $window.height();
+
+        var elemTop = $elem.offset().top;
+        var elemBottom = elemTop + $elem.height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+
+    function count_inline_impressions()  {
+        jQuery(".cp-modal-inline-end").each(function(e) {
+            var elem = jQuery(this); 
+            var is_visible = isScrolledIntoStyleView(elem); 
+            var style_id = jQuery(this).data('style');
+
+            if( is_visible ) {
+                var styleArray = Array();
+                if( !jQuery(".cp-overlay[data-modal-style="+style_id+"]").hasClass('impression_counted') ) {
+                    styleArray.push(style_id);
+                    update_impressions(styleArray); 
+                }
+                jQuery(".cp-overlay[data-modal-style="+style_id+"]").each(function() {
+                    jQuery(this).addClass('impression_counted');
+                });
+            }           
+        }); 
+    }
 
 })(jQuery);

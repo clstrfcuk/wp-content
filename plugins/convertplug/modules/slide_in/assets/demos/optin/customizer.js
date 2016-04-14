@@ -87,10 +87,7 @@ jQuery(document).ready(function(){
 		// add custom css 
 		cp_add_custom_css(data);	
 
-	  	//if( toggle_btn == 0 ) {
-			// apply animations to slide in
-			cp_apply_animations(data);
-		//}
+		cp_apply_animations(data);
 
 		cp_tooltip_settings(data); // close button and tool tip related settings 
 		cp_tooltip_reinitialize(data); // reinitialize tool tip on slide in resize
@@ -127,13 +124,7 @@ jQuery(document).ready(function(){
 
 		cp_form_style(data);	
 
-		slidein_overlay.css('background',overlay_bg_color);
-
-		// if( !cp_slidein.hasClass("cp-slidein-exceed") ){
-		// 	cp_slidein.attr('class', 'cp-slidein slidein-'+slidein_position);
-		// } else {
-		// 	cp_slidein.attr('class', 'cp-slidein slidein-'+slidein_position+' cp-slidein-exceed');
-		// }	
+		slidein_overlay.css('background',overlay_bg_color);	
 
 		cp_slidein.removeClass('slidein-top-center slidein-bottom-center slidein-center-left slidein-center-right slidein-top-left slidein-bottom-right slidein-bottom-left slidein-top-right').addClass('slidein-'+slidein_position);	
 		
@@ -155,26 +146,7 @@ jQuery(document).ready(function(){
 
 		//Slide In button settings
 		slide_button_setting(data);
-		
-		if( namefield == 1 ) {
-			form_without_name.css({"display":"none"});
-			form_with_name.css({"display":"block"});
-			cp_submit_container.removeClass("cp_simple_submit");
-			cp_submit_container.removeClass("col-md-4 col-sm-4 col-lg-4").addClass('col-md-4 col-sm-4 col-lg-4 cp_name_submit');
-			cp_email_form.removeClass('cp-email-wth-btn-onnext');
-
-		} else {
-			form_without_name.css({"display":"block"});
-			form_with_name.css({"display":"none"});
-			cp_submit_container.removeClass("cp_name_submit");				
-			if( btn_disp_next_line == '1' ){
-				cp_email_form.removeClass('col-md-8 col-sm-8 col-lg-8').addClass('col-md-12 col-lg-12 col-sm-12 cp-email-wth-btn-onnext');
-				cp_submit_container.removeClass("col-md-4 col-sm-4 col-lg-4").addClass('col-md-12 col-lg-12 col-sm-12 cp_simple_submit');
-			} else {
-				cp_email_form.removeClass('col-md-12 col-lg-12 col-sm-12 cp-email-wth-btn-onnext').addClass('col-md-8 col-sm-8 col-lg-8');
-				cp_submit_container.removeClass("col-md-12 col-lg-12 col-sm-12 ").addClass('col-md-4 col-sm-4 col-lg-4 cp_simple_submit');
-			}
-		}
+	
 		
 		jQuery(".cp-name-form").removeClass('cp_big_name');	
 

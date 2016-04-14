@@ -32,7 +32,7 @@ function x_shortcode_text_type( $atts ) {
   $looks_like = ( $looks_like != '' ) ? ' ' . $looks_like : '';
 
   $js_params = array(
-    'strings'     => ( $strings     != ''     ) ? explode( '|', cs_decode_shortcode_attribute( $strings ) ) : '',
+    'strings'     => ( $strings     != ''     ) ? explode( '|', esc_attr( cs_decode_shortcode_attribute( $strings ) ) ) : '',
     'type_speed'  => ( $type_speed  != ''     ) ? intval( $type_speed ) : 50,
     'start_delay' => ( $start_delay != ''     ) ? intval( $start_delay ) : 0,
     'back_speed'  => ( $back_speed  != ''     ) ? intval( $back_speed ) : 50,

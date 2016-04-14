@@ -188,7 +188,7 @@ class WPBakeryShortCode_VC_Row extends WPBakeryShortCode {
 
 		$has_image = false;
 		$style = '';
-		if ( (int) $bg_image > 0 && false !== ( $image_url = wp_get_attachment_url( $bg_image, 'large' ) ) ) {
+		if ( (int) $bg_image > 0 && false !== ( $image_url = wp_get_attachment_url( $bg_image ) ) ) {
 			$has_image = true;
 			$style .= 'background-image: url(' . $image_url . ');';
 		}

@@ -36,7 +36,7 @@ if( $data_style !== "" ) {
 				foreach( $style_settings as $title => $value ){
 				    if( !is_array( $value ) ){
 				     	$value = urldecode($value);
-						$exp_settings[$title] = htmlentities(stripslashes(utf8_encode($value)), ENT_QUOTES);//esc_attr(str_replace('"','&quot;',$value));
+						$exp_settings[$title] = htmlentities(stripslashes(utf8_encode($value)), ENT_QUOTES);
 					} else {
 						$val = array();
 						foreach( $value as $ex_title => $ex_val ) {
@@ -111,6 +111,8 @@ if( $data_style !== "" ) {
 	if( !empty( $media ) ){
 		$export['media'] = $media;
 	}
+
+	$export['module'] = 'slide_in';
 	
 	$export_data = json_encode( $export );
 	
