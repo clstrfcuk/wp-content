@@ -79,7 +79,7 @@ class AIOWPSecurity_List_Login_Failed_Attempts extends AIOWPSecurity_List_Table 
                 if(!isset($_REQUEST['item']))
                 {
                     $error_msg = '<div id="message" class="error"><p><strong>';
-                    $error_msg .= __('Please select some records using the checkboxes','aiowpsecurity');
+                    $error_msg .= __('Please select some records using the checkboxes','all-in-one-wp-security-and-firewall');
                     $error_msg .= '</strong></p></div>';
                     _e($error_msg);
                 } else{
@@ -104,13 +104,14 @@ class AIOWPSecurity_List_Login_Failed_Attempts extends AIOWPSecurity_List_Table 
             if (isset($_REQUEST['_wp_http_referer']))
             {
                 //Delete multiple records
+                $entries = array_filter($entries, 'is_numeric'); //discard non-numeric ID values
                 $id_list = "(" .implode(",",$entries) .")"; //Create comma separate list for DB operation
                 $delete_command = "DELETE FROM ".$failed_login_table." WHERE ID IN ".$id_list;
                 $result = $wpdb->query($delete_command);
                 if($result != NULL)
                 {
                     $success_msg = '<div id="message" class="updated fade"><p><strong>';
-                    $success_msg .= __('The selected entries were deleted successfully!','aiowpsecurity');
+                    $success_msg .= __('The selected entries were deleted successfully!','all-in-one-wp-security-and-firewall');
                     $success_msg .= '</strong></p></div>';
                     _e($success_msg);
                 }
@@ -122,7 +123,7 @@ class AIOWPSecurity_List_Login_Failed_Attempts extends AIOWPSecurity_List_Table 
             if (!isset($nonce) ||!wp_verify_nonce($nonce, 'delete_failed_login_rec'))
             {
                 $aio_wp_security->debug_logger->log_debug("Nonce check failed for delete failed login record operation!",4);
-                die(__('Nonce check failed for delete failed login record operation!','aiowpsecurity'));
+                die(__('Nonce check failed for delete failed login record operation!','all-in-one-wp-security-and-firewall'));
             }
             //Delete single record
             $delete_command = "DELETE FROM ".$failed_login_table." WHERE ID = '".absint($entries)."'";
@@ -130,7 +131,7 @@ class AIOWPSecurity_List_Login_Failed_Attempts extends AIOWPSecurity_List_Table 
             if($result != NULL)
             {
                 $success_msg = '<div id="message" class="updated fade"><p><strong>';
-                $success_msg .= __('The selected entry was deleted successfully!','aiowpsecurity');
+                $success_msg .= __('The selected entry was deleted successfully!','all-in-one-wp-security-and-firewall');
                 $success_msg .= '</strong></p></div>';
                 _e($success_msg);
             }

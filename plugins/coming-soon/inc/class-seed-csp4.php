@@ -189,23 +189,27 @@ class SEED_CSP4{
         }
 
         // render template tags
-
-        $template = $this->get_default_template();
-        require_once( SEED_CSP4_PLUGIN_PATH.'/themes/default/functions.php' );
-        $template_tags = array(
-            '{Title}' => seed_csp4_title(),
-            '{MetaDescription}' => seed_csp4_metadescription(),
-            '{Privacy}' => seed_csp4_privacy(),
-            '{Favicon}' => seed_csp4_favicon(),
-            '{CustomCSS}' => seed_csp4_customcss(),
-            '{Head}' => seed_csp4_head(),
-            '{Footer}' => seed_csp4_footer(),
-            '{Logo}' => seed_csp4_logo(),
-            '{Headline}' => seed_csp4_headline(),
-            '{Description}' => seed_csp4_description(),
-            '{Credit}' => seed_csp4_credit(),
-            );
-		echo strtr($template, $template_tags);
+        if(empty($html)){
+            $template = $this->get_default_template();
+            require_once( SEED_CSP4_PLUGIN_PATH.'/themes/default/functions.php' );
+            $template_tags = array(
+                '{Title}' => seed_csp4_title(),
+                '{MetaDescription}' => seed_csp4_metadescription(),
+                '{Privacy}' => seed_csp4_privacy(),
+                '{Favicon}' => seed_csp4_favicon(),
+                '{CustomCSS}' => seed_csp4_customcss(),
+                '{Head}' => seed_csp4_head(),
+                '{Footer}' => seed_csp4_footer(),
+                '{Logo}' => seed_csp4_logo(),
+                '{Headline}' => seed_csp4_headline(),
+                '{Description}' => seed_csp4_description(),
+                '{Credit}' => seed_csp4_credit(),
+                '{Append_HTML}' => seed_csp4_append_html(),
+                );
+    		echo strtr($template, $template_tags);
+        }else{
+            echo $html;
+        }
         exit();
 
     }

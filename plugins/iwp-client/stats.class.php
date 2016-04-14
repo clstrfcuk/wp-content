@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
-
+if(basename($_SERVER['SCRIPT_FILENAME']) == "stats.class.php"):
+    exit;
+endif;
 
 class IWP_MMB_Stats extends IWP_MMB_Core
 {
@@ -286,6 +288,14 @@ class IWP_MMB_Stats extends IWP_MMB_Core
                 $upgrades                    = false;
             }
         }
+          if (isset($options['translations']) && $options['translations']) {
+            $this->get_installer_instance();
+            $upgrades = $this->installer_instance->get_upgradable_translations();
+             if (!empty($upgrades)) {
+                 $stats['upgradable_translations'] = $upgrades;
+                 $upgrades                         = false;
+            }
+        }
         
         return $stats;
     }
@@ -424,15 +434,16 @@ class IWP_MMB_Stats extends IWP_MMB_Core
 		$use_cookie=1;		
 		
         $stats['client_version']        = IWP_MMB_CLIENT_VERSION;
-		$stats['client_new_version']    = $r->new_version;
-		$stats['client_new_package']   	= $r->package;
+        $stats['client_new_version']    = $r->new_version;
+        $stats['client_new_package']    = $r->package;
         $stats['wordpress_version']     = $wp_version;
         $stats['wordpress_locale_pckg'] = $wp_local_package;
         $stats['php_version']           = phpversion();
         $stats['mysql_version']         = $wpdb->db_version();
         $stats['wp_multisite']          = $this->iwp_mmb_multisite;
         $stats['network_install']       = $this->network_admin_install;
-		$stats['use_cookie'] 			= $use_cookie;
+        $stats['use_cookie']            = $use_cookie;
+        $stats['maintenance_mode']      = get_option('iwp_mmb_maintenance_mode');
         
         if ( !function_exists('get_filesystem_method') )
             include_once(ABSPATH . 'wp-admin/includes/file.php');

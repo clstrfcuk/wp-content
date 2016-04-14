@@ -110,6 +110,11 @@ function seed_csp4_head() {
 				background: transparent;
 			<?php endif; ?>
 	}
+	<?php if ( !empty( $bg_overlay ) ): ;?>
+		.seed-csp4 body{
+			background-color: rgba(0,0,0,0.5);
+		}
+	<?php endif ?>
 
 	<?php if ( !empty( $max_width ) ):?>
 	#seed-csp4-content{
@@ -270,6 +275,19 @@ function seed_csp4_description() {
 
 	if ( !empty( $description ) ) {
 		$output .= '<div id="seed-csp4-description">'.shortcode_unautop(wpautop(convert_chars(wptexturize($description)))).'</div>';
+	}
+
+	return  $output;
+}
+
+function seed_csp4_append_html() {
+	$o = seed_csp4_get_settings();
+	extract( $o );
+
+	$output = '';
+
+	if ( !empty( $append_html) ) {
+		$output .= '<div id="coming-soon-custom-html">'.shortcode_unautop(wpautop(convert_chars(wptexturize($append_html)))).'</div>';
 	}
 
 	return  $output;

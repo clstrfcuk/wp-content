@@ -21,7 +21,7 @@ if(!function_exists('iwp_mmb_create_webmasters_redirect_table')){
                     `redirectLink` varchar(255) NOT NULL,
                     PRIMARY KEY (`id`),
                     UNIQUE KEY `oldLink` (`oldLink`)
-                    ) ENGINE=InnoDB  ;
+                    );
                 ";
 
                 require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

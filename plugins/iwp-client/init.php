@@ -4,7 +4,7 @@ Plugin Name: InfiniteWP - Client
 Plugin URI: http://infinitewp.com/
 Description: This is the client plugin of InfiniteWP that communicates with the InfiniteWP Admin panel.
 Author: Revmakx
-Version: 1.3.16
+Version: 1.5.1.1
 Author URI: http://www.revmakx.com
 */
 /************************************************************
@@ -24,9 +24,11 @@ Author URI: http://www.revmakx.com
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
-
+if(basename($_SERVER['SCRIPT_FILENAME']) == "init.php"):
+    exit;
+endif;
 if(!defined('IWP_MMB_CLIENT_VERSION'))
-	define('IWP_MMB_CLIENT_VERSION', '1.3.16');
+	define('IWP_MMB_CLIENT_VERSION', '1.5.1.1');
 	
 
 
@@ -89,14 +91,19 @@ if( !function_exists ( 'iwp_mmb_filter_params' )) {
 if( !function_exists ('iwp_mmb_parse_request')) {
 	function iwp_mmb_parse_request()
 	{
-		if (!isset($HTTP_RAW_POST_DATA)) {
-			$HTTP_RAW_POST_DATA = file_get_contents('php://input');
+		global $HTTP_RAW_POST_DATA;
+		$HTTP_RAW_POST_DATA_LOCAL = NULL;
+		$HTTP_RAW_POST_DATA_LOCAL = file_get_contents('php://input');
+		if(empty($HTTP_RAW_POST_DATA_LOCAL)){
+			if (isset($HTTP_RAW_POST_DATA)) {
+				$HTTP_RAW_POST_DATA_LOCAL = $HTTP_RAW_POST_DATA;
+			}
 		}
 		
 		ob_start();
 		
 		global $current_user, $iwp_mmb_core, $new_actions, $wp_db_version, $wpmu_version, $_wp_using_ext_object_cache;
-		$data = base64_decode($HTTP_RAW_POST_DATA);
+		$data = base64_decode($HTTP_RAW_POST_DATA_LOCAL);
 		if ($data){
 			//$num = @extract(unserialize($data));
 			$unserialized_data = @unserialize($data);
@@ -153,11 +160,14 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 				if(isset($params['username']) && !is_user_logged_in()){
 					$user = function_exists('get_user_by') ? get_user_by('login', $params['username']) : get_userdatabylogin( $params['username'] );
 					wp_set_current_user($user->ID);
-					//For WPE
-					if(@getenv('IS_WPE'))
-					wp_set_auth_cookie($user->ID);
+					//For WPE or Reload Data
+					//if(@getenv('IS_WPE') || $iwp_action == 'get_stats')
+					$SET_14_DAYS_VALIDITY = true;
+					wp_set_auth_cookie($user->ID, $SET_14_DAYS_VALIDITY);
 				}
-				
+				if ($action == 'get_cookie') {
+					iwp_mmb_response(true, true);
+				}
 				/* in case database upgrade required, do database backup and perform upgrade ( wordpress wp_upgrade() function ) */
 				if( strlen(trim($wp_db_version)) && !defined('ACX_PLUGIN_DIR') ){
 					if ( get_option('db_version') != $wp_db_version ) {
@@ -203,7 +213,8 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 			}
 		} else {
 			//IWP_MMB_Stats::set_hit_count();
-                    $GLOBALS['HTTP_RAW_POST_DATA'] =  $HTTP_RAW_POST_DATA;
+            // $GLOBALS['HTTP_RAW_POST_DATA'] =  $HTTP_RAW_POST_DATA_LOCAL;
+            $HTTP_RAW_POST_DATA =  $HTTP_RAW_POST_DATA_LOCAL;
 		}
 		ob_end_clean();
 	}
@@ -251,7 +262,7 @@ if( !function_exists('iwp_mmb_convert_wperror_obj_to_arr')){
 if( !function_exists ( 'iwp_mmb_response' )) {
 
 	function iwp_mmb_response($response = false, $success = true)
-	{
+	{	
 		$return = array();
 
 		$response = iwp_mmb_convert_wperror_obj_to_arr($response,'initial');
@@ -1683,60 +1694,124 @@ if(!function_exists('iwp_mmb_convert_data')){
 	}
 }
 
-
+if(!function_exists('iwp_mmb_alter_backup_table')){
+	function iwp_mmb_alter_backup_table(){
+		$IWP_MMB_BACKUP_TABLE_VERSION =	get_site_option('iwp_backup_table_version');
+		
+		if(version_compare($IWP_MMB_BACKUP_TABLE_VERSION, '1.1.2') != -1){
+			return true;
+		}
+		global $wpdb;
+		if(method_exists($wpdb, 'get_charset_collate')){
+			$charset_collate = $wpdb->get_charset_collate();
+		}
+		
+		$table_name = $wpdb->base_prefix . "iwp_backup_status";
+		
+		if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+			if (!empty($charset_collate)){
+			    $cachecollation_table = $charset_collate;
+				$cachecollation = str_ireplace('DEFAULT ', '', $charset_collate);
+			}
+			else{
+				$cachecollation = ' CHARACTER SET utf8 COLLATE utf8_general_ci ';
+				$cachecollation_table = $cachecollation;
+			}
+	
+			$sql = array();
+			
+			$sql[] = "alter table " . $table_name . " change `taskName` `taskName` VARBINARY(255);";
+			$sql[] = "alter table " . $table_name . " change `taskName` `taskName` VARCHAR(255) $cachecollation not null;";
+				
+			$sql[] = "alter table " . $table_name . " change action action VARBINARY(50);";
+			$sql[] = "alter table " . $table_name . " change action action VARCHAR(50) $cachecollation not null ;";
+			
+			$sql[] = "alter table " . $table_name . " change type type VARBINARY(50);";
+			$sql[] = "alter table " . $table_name . " change type type VARCHAR(50) $cachecollation not null ;";
+			
+			$sql[] = "alter table " . $table_name . " change category category VARBINARY(50);";
+			$sql[] = "alter table " . $table_name . " change category category VARCHAR(50) $cachecollation not null ;";
+			
+			$sql[] = "alter table " . $table_name . " change stage stage VARBINARY(255);";
+			$sql[] = "alter table " . $table_name . " change stage stage VARCHAR(255) $cachecollation not null ;";
+			
+			$sql[] = "alter table " . $table_name . " change status status VARBINARY(255);";
+			$sql[] = "alter table " . $table_name . " change status status VARCHAR(255) $cachecollation not null ;";
+			
+			$sql[] = "alter table " . $table_name . " change finalStatus finalStatus VARBINARY(50);";
+			$sql[] = "alter table " . $table_name . " change finalStatus finalStatus VARCHAR(50) $cachecollation default null ;";
+			
+			$sql[] = "alter table " . $table_name . " change statusMsg statusMsg VARBINARY(255);";
+			$sql[] = "alter table " . $table_name . " change statusMsg statusMsg VARCHAR(255) $cachecollation not null ;";
+			
+			$sql[] = "alter table " . $table_name . " change requestParams requestParams BLOB;";
+			$sql[] = "alter table " . $table_name . " change requestParams requestParams TEXT $cachecollation not null;";
+			
+			$sql[] = "alter table " . $table_name . " change responseParams responseParams LONGBLOB;";
+			$sql[] = "alter table " . $table_name . " change responseParams responseParams LONGTEXT $cachecollation ;";
+			
+			$sql[] = "alter table " . $table_name . " change taskResults taskResults BLOB;";
+			$sql[] = "alter table " . $table_name . " change taskResults taskResults TEXT $cachecollation ;";
+			
+			$sql[] = "ALTER TABLE " . $table_name . " $cachecollation_table ;";
+			$this_reurn = array();
+			foreach($sql as $v){
+				//global $wpdb;
+				$this_reurn[] = $wpdb->query($v);
+			}
+			update_option( "iwp_backup_table_version", '1.1.2');
+		}
+	}
+}
 
 if(!function_exists('iwp_mmb_create_backup_table')){
 	function iwp_mmb_create_backup_table(){
 		global $wpdb;
+		if(method_exists($wpdb, 'get_charset_collate')){
+			$charset_collate = $wpdb->get_charset_collate();
+		}
 			
-		$IWP_MMB_BACKUP_TABLE_VERSION =	get_site_option( 'iwp_backup_table_version' );
+		$IWP_MMB_BACKUP_TABLE_VERSION =	get_site_option('iwp_backup_table_version');
 		$table_name = $wpdb->base_prefix . "iwp_backup_status"; 
 		
-		if(version_compare($IWP_MMB_BACKUP_TABLE_VERSION, '1.1') == -1){
-			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-						
-				$sql = "
-						CREATE TABLE IF NOT EXISTS $table_name (
-						  `ID` int(11) NOT NULL AUTO_INCREMENT,
-						  `historyID` int(11) NOT NULL,
-						  `taskName` varchar(255) NOT NULL,
-						  `action` varchar(50) NOT NULL,
-						  `type` varchar(50) NOT NULL,
-						  `category` varchar(50) NOT NULL,
-						  `stage` varchar(255) NOT NULL,
-						  `status` varchar(255) NOT NULL,
-						  `finalStatus` varchar(50) DEFAULT NULL,
-						  `statusMsg` varchar(255) NOT NULL,
-						  `requestParams` text NOT NULL,
-						  `responseParams` longtext,
-						  `taskResults` text,
-						  `startTime` int(11) DEFAULT NULL,
-						  `endTime` int(11) NOT NULL,
-						  PRIMARY KEY (`ID`)
-						) ENGINE=InnoDB;
-						";
-					
-				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-				dbDelta( $sql );
-				
-				if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-					//echo "table creation failed";
-					$table_created = false;
-				}
-				else{
+		if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name){
+			if (!empty($charset_collate)){
+				$cachecollation = $charset_collate;
+			}
+			else{
+				$cachecollation = ' DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci ';
+			}
 			
-					iwp_mmb_convert_data();
-					$_NEW_IWP_MMB_BACKUP_TABLE_VERSION = '1.1';
-				}
+			$sql = "
+				CREATE TABLE IF NOT EXISTS $table_name (
+				  `ID` int(11) NOT NULL AUTO_INCREMENT,
+				  `historyID` int(11) NOT NULL,
+				  `taskName` varchar(255) NOT NULL,
+				  `action` varchar(50) NOT NULL,
+				  `type` varchar(50) NOT NULL,
+				  `category` varchar(50) NOT NULL,
+				  `stage` varchar(255) NOT NULL,
+				  `status` varchar(255) NOT NULL,
+				  `finalStatus` varchar(50) DEFAULT NULL,
+				  `statusMsg` varchar(255) NOT NULL,
+				  `requestParams` text NOT NULL,
+				  `responseParams` longtext,
+				  `taskResults` text,
+				  `startTime` int(11) DEFAULT NULL,
+				  `endTime` int(11) NOT NULL,
+				  PRIMARY KEY (`ID`)
+				)".$cachecollation." ;
+			";
 				
-			}else{
-				$table_created = true;
-				$_NEW_IWP_MMB_BACKUP_TABLE_VERSION = '1.1';
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			dbDelta( $sql );
+			
+			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+				update_option( "iwp_backup_table_version", '1.1.1');
 			}
 		}
-		
-		if(!empty($_NEW_IWP_MMB_BACKUP_TABLE_VERSION)){
-			add_option( "iwp_backup_table_version", $_NEW_IWP_MMB_BACKUP_TABLE_VERSION);
+		else if(version_compare($IWP_MMB_BACKUP_TABLE_VERSION, '1.1.1') == -1){
+			iwp_mmb_alter_backup_table();
 		}
 	}
 }

@@ -475,20 +475,20 @@ class IWP_MMB_Post extends IWP_MMB_Core
 		
 		if(!empty($filter_posts))
  		{ 
-  			$where.=" AND post_title LIKE '%".mysql_real_escape_string($filter_posts)."%'";
+  			$where.=" AND post_title LIKE '%".esc_sql($filter_posts)."%'";
 	 	}
  
 		if(!empty($iwp_get_posts_date_from) && !empty($iwp_get_posts_date_to))
 		{
-			$where.=" AND post_date BETWEEN '".mysql_real_escape_string($iwp_get_posts_date_from)."' AND '".mysql_real_escape_string($iwp_get_posts_date_to)."'";
+			$where.=" AND post_date BETWEEN '".esc_sql($iwp_get_posts_date_from)."' AND '".esc_sql($iwp_get_posts_date_to)."'";
 		}
 		else if(!empty($iwp_get_posts_date_from) && empty($iwp_get_posts_date_to))
 		{
-			$where.=" AND post_date >= '".mysql_real_escape_string($iwp_get_posts_date_from)."'";
+			$where.=" AND post_date >= '".esc_sql($iwp_get_posts_date_from)."'";
 		}
 		else if(empty($iwp_get_posts_date_from) && !empty($iwp_get_posts_date_to))
 		{
-			$where.=" AND post_date <= '".mysql_real_escape_string($iwp_get_posts_date_to)."'";
+			$where.=" AND post_date <= '".esc_sql($iwp_get_posts_date_to)."'";
 		}
 		$post_array=array();
 		$post_statuses = array('publish', 'pending', 'private', 'future', 'draft', 'trash');
@@ -503,7 +503,7 @@ class IWP_MMB_Post extends IWP_MMB_Core
 			$where.=" AND post_status IN (".implode(",",$post_array).")";
 		}
 		
-		$limit = ($iwp_get_posts_range) ? ' LIMIT ' . mysql_real_escape_string($iwp_get_posts_range) : ' LIMIT 500';
+		$limit = ($iwp_get_posts_range) ? ' LIMIT ' . esc_sql($iwp_get_posts_range) : ' LIMIT 500';
 		
 		$sql_query = "$wpdb->posts  WHERE post_status!='auto-draft' AND post_status!='inherit' AND post_type='post' ".$where." ORDER BY post_date DESC";
 		
@@ -516,10 +516,11 @@ class IWP_MMB_Post extends IWP_MMB_Core
 		$total['total_num']=count($posts_info);
 		
 		if($iwp_get_posts_range && !empty($iwp_get_posts_date_from) && !empty($iwp_get_posts_date_to) && $total['total_num'] < $iwp_get_posts_range) {
+    	  
 			$sql_query = "$wpdb->posts 
-				WHERE post_status!='auto-draft' AND post_status!='inherit' AND post_type='post'  AND post_date <= '".mysql_real_escape_string($iwp_get_posts_date_to)."' 
+                WHERE post_status!='auto-draft' AND post_status!='inherit' AND post_type='post'  AND post_date <= '".esc_sql($iwp_get_posts_date_to)."' 
 				ORDER BY post_date DESC
-				LIMIT " . mysql_real_escape_string($iwp_get_posts_range);
+                LIMIT " . esc_sql($iwp_get_posts_range);
 			
 			$posts_info = $wpdb->get_results("SELECT * FROM ".$sql_query);
 			$total = array();
@@ -530,9 +531,11 @@ class IWP_MMB_Post extends IWP_MMB_Core
 		{
 			
 			$cats=array();
-			foreach($post_cats[$post_info->ID] as $cat_array => $cat_array_val)
-			{
-				$cats[] = array('name' => $cat_array_val);
+			if(!empty($post_cats)){
+                foreach($post_cats[$post_info->ID] as $cat_array => $cat_array_val)
+    			{
+    				$cats[] = array('name' => $cat_array_val);
+    			}
 			}
 			
 			$tags=array();
@@ -642,19 +645,25 @@ class IWP_MMB_Post extends IWP_MMB_Core
 		
 		if(!empty($filter_pages))
  		{ 
- 			$where.=" AND post_title LIKE '%".mysql_real_escape_string($filter_pages)."%'";
+        
+        	$where.=" AND post_title LIKE '%".esc_sql($filter_pages)."%'";
+        	
 	 	}
 		if(!empty($iwp_get_pages_date_from) && !empty($iwp_get_pages_date_to))
 		{
-			$where.=" AND post_date BETWEEN '".mysql_real_escape_string($iwp_get_pages_date_from)."' AND '".mysql_real_escape_string($iwp_get_pages_date_to)."'";
+            $where.=" AND post_date BETWEEN '".esc_sql($iwp_get_pages_date_from)."' AND '".esc_sql($iwp_get_pages_date_to)."'";
+            
+        
 		}
 		else if(!empty($iwp_get_pages_date_from) && empty($iwp_get_pages_date_to))
 		{
-			$where.=" AND post_date >= '".mysql_real_escape_string($iwp_get_pages_date_from)."'";
+               $where.=" AND post_date >= '".esc_sql($iwp_get_pages_date_from)."'";
+           
+			
 		}
 		else if(empty($iwp_get_pages_date_from) && !empty($iwp_get_pages_date_to))
 		{
-			$where.=" AND post_date <= '".mysql_real_escape_string($iwp_get_pages_date_to)."'";
+               $where.=" AND post_date <= '".esc_sql($iwp_get_pages_date_to)."'";
 		}
 		
 		$post_array=array();
@@ -670,7 +679,8 @@ class IWP_MMB_Post extends IWP_MMB_Core
 			$where.=" AND post_status IN (".implode(",",$post_array).")";
 		}
 		
-		$limit = ($iwp_get_pages_range) ? ' LIMIT ' . mysql_real_escape_string($iwp_get_pages_range) : ' LIMIT 500';
+            $limit = ($iwp_get_pages_range) ? ' LIMIT ' . esc_sql($iwp_get_pages_range) : ' LIMIT 500';
+         
 		
 		$sql_query = "$wpdb->posts  WHERE post_status!='auto-draft' AND post_status!='inherit' AND post_type='page' ".$where.' ORDER BY post_date DESC';
 		
@@ -682,9 +692,12 @@ class IWP_MMB_Post extends IWP_MMB_Core
 		
 		if($iwp_get_pages_range && !empty($iwp_get_pages_date_from) && !empty($iwp_get_pages_date_to) && $total['total_num'] < $iwp_get_pages_range) {
 			$sql_query = "$wpdb->posts 
-				WHERE post_status!='auto-draft' AND post_status!='inherit' AND post_type='post'  AND post_date <= '".mysql_real_escape_string($iwp_get_pages_date_to)."' 
+                WHERE post_status!='auto-draft' AND post_status!='inherit' AND post_type='post'  AND post_date <= '".esc_sql($iwp_get_pages_date_to)."' 
 				ORDER BY post_date DESC
-				LIMIT " . mysql_real_escape_string($iwp_get_pages_range);
+                LIMIT " . esc_sql($iwp_get_pages_range);
+            
+           
+           
 			
 			$posts_info = $wpdb->get_results("SELECT * FROM ".$sql_query);
 			$total = array();

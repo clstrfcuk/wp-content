@@ -3,9 +3,9 @@
 Plugin Name: Transient Cleaner
 Plugin URI: https://wordpress.org/plugins/artiss-transient-cleaner/
 Description: Clean expired transients from your options table
-Version: 1.3.1
-Author: David Artiss
-Author URI: http://www.artiss.co.uk
+Version: 1.4.1
+Author: Coded Art
+Author URI: http://codedart.co
 Text Domain: artiss-transient-cleaner
 Domain Path: /languages
 */
@@ -18,7 +18,7 @@ Domain Path: /languages
 * @since	1.2
 */
 
-function atc_plugin_init() {
+function tc_plugin_init() {
 
 	$language_dir = plugin_basename( dirname( __FILE__ ) ) . '/languages/';
 
@@ -26,7 +26,7 @@ function atc_plugin_init() {
 
 }
 
-add_action( 'init', 'atc_plugin_init' );
+add_action( 'init', 'tc_plugin_init' );
 
 /**
 * Artiss Transient Cleaner
@@ -37,7 +37,7 @@ add_action( 'init', 'atc_plugin_init' );
 * @since	1.2
 */
 
-$functions_dir = WP_PLUGIN_DIR . '/artiss-transient-cleaner/includes/';
+$functions_dir = plugin_dir_path( __FILE__ ) . 'includes/';
 
 // Include all the various functions
 

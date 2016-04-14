@@ -14,6 +14,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
+if(basename($_SERVER['SCRIPT_FILENAME']) == "api.php"):
+    exit;
+endif;
 if( !function_exists('iwp_mmb_add_action')) :
 	function iwp_mmb_add_action($action = false, $callback = false)
 	{

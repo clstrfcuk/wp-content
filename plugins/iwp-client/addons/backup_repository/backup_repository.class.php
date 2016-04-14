@@ -1,4 +1,7 @@
 <?php 
+if(basename($_SERVER['SCRIPT_FILENAME']) == "backup_repository.class.php"):
+    exit;
+endif;
 class IWP_MMB_Backup_Repository extends IWP_MMB_Backup_Singlecall
 {
 	/*var $site_name;

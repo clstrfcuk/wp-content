@@ -191,8 +191,9 @@ class IWP_Dropbox {
 		curl_setopt($ch, CURLOPT_SSLVERSION,1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-		if (is_file(dirname(__FILE__).'/amazon_s3/lib/requestcore/cacert.pem'))
-			curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__).'/amazon_s3/lib/requestcore/cacert.pem');
+		if (is_file(dirname(__FILE__).'/cacert.pem')){
+			curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__).'/cacert.pem');
+		}
 		curl_setopt($ch, CURLOPT_AUTOREFERER , true);
 		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -223,8 +224,9 @@ class IWP_Dropbox {
 		curl_setopt($ch, CURLOPT_SSLVERSION,1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-		if (is_file(dirname(__FILE__).'/amazon_s3/lib/requestcore/cacert.pem'))
-			curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__).'/amazon_s3/lib/requestcore/cacert.pem');
+		if (is_file(dirname(__FILE__).'/cacert.pem')){
+			curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__).'/cacert.pem');
+		}
 		curl_setopt($ch, CURLOPT_AUTOREFERER , true);
 		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -281,8 +283,9 @@ class IWP_Dropbox {
 		curl_setopt($ch, CURLOPT_SSLVERSION,1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-		if (is_file(dirname(__FILE__).'/amazon_s3/lib/requestcore/cacert.pem'))
-			curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__).'/amazon_s3/lib/requestcore/cacert.pem');
+		if (is_file(dirname(__FILE__).'/cacert.pem')){
+			curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__).'/cacert.pem');
+		}
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		if (!empty($this->ProgressFunction) and function_exists($this->ProgressFunction) and defined('CURLOPT_PROGRESSFUNCTION') and $method == 'PUT') {
@@ -340,4 +343,3 @@ class IWP_Dropbox {
 
 class IWP_DropboxException extends Exception {
 }
-?>

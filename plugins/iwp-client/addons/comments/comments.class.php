@@ -51,7 +51,7 @@ class IWP_MMB_Comment extends IWP_MMB_Core
 		
 		if(!empty($filter_comments))
 		{
-			$where.=" AND (c.comment_author LIKE '%".mysql_real_escape_string($filter_comments)."%' OR c.comment_content LIKE '%".mysql_real_escape_string($filter_comments)."%')";
+			$where.=" AND (c.comment_author LIKE '%".esc_sql($filter_comments)."%' OR c.comment_content LIKE '%".esc_sql($filter_comments)."%')";
 		}
 		$comment_array = array();
 		$comment_statuses = array('approved', 'pending', 'spam', 'trash');

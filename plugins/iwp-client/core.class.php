@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
- 
+ if(basename($_SERVER['SCRIPT_FILENAME']) == "core.class.php"):
+    exit;
+endif;
 class IWP_MMB_Core extends IWP_MMB_Helper
 {
     var $name;
@@ -186,6 +188,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		);
 		
 		add_action('rightnow_end', array( &$this, 'add_right_now_info' ));       
+		add_action('admin_menu', array($this,'iwp_admin_menu_actions'), 999, 1);
 		add_action('admin_init', array(&$this,'admin_actions'));   
 		add_action('init', array( &$this, 'iwp_mmb_remote_action'), 9999);
 		add_action('setup_theme', 'iwp_mmb_parse_request');
@@ -256,9 +259,9 @@ class IWP_MMB_Core extends IWP_MMB_Helper
        /* IWP */
 		if(defined('MULTISITE') && MULTISITE == true){	
 			global $blog_id;			
-			$user_id_from_email = get_user_id_from_string( get_blog_option($blog_id, 'admin_email'));
-			$details = get_userdata($user_id_from_email);
-			$username = $details->user_login;			
+			$details = get_user_by( 'email',get_blog_option($blog_id, 'admin_email'));
+			//$details = get_userdata($user_id_from_email->ID);
+			$username = $details->user_login;				
 		}
 		else{
 			$current_user = wp_get_current_user(); 
@@ -280,7 +283,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		$notice_display_URL = rtrim($notice_display_URL, '/').'/';
 		
 		
-		echo '<div class="updated" style="text-align: center;"><p style="color: green; font-size: 14px; font-weight: bold;">Add this site to IWP Admin panel</p><p>
+		echo '<div class="updated" style="text-align: center; display:block !important; "><p style="color: green; font-size: 14px; font-weight: bold;">Add this site to IWP Admin panel</p><p>
 		<table border="0" align="center" cellpadding="5">';
 		if(!empty($iwp_client_activate_key)){
 			echo '<tr><td align="right">WP-ADMIN URL:</td><td align="left"><strong>'.$notice_display_URL.'</strong></td></tr>
@@ -915,13 +918,114 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 	}
 		
     function admin_actions(){
-    	add_filter('all_plugins', array($this, 'client_replace'));
+    	$replace = get_option("iwp_client_brand");
+		if(!empty($replace)){
+			if(!empty($replace['hideUpdatesCPB'])){
+				//define('DISALLOW_FILE_MODS',true);				//for hiding updates old method
+			}
+			if(!empty($replace['hideFWPCPB'])){
+				//define('DISALLOW_FILE_EDIT',true);				//for hiding file writing permissions old method
+			}
+			if(!empty($replace['doChangesCPB']) || ( !isset($replace['doChangesCPB']) && (!empty($replace['name']) || !empty($replace['desc']) || !empty($replace['author']) || !empty($replace['author_url'])))){
+				add_filter('plugin_row_meta', array($this, 'iwp_client_replace_row_meta'), 10, 2);		//for hiding the view details alone.
+				add_filter('site_transient_update_plugins', array($this, 'iwp_site_transient_update_plugins'), 10, 2);   //for hiding the infiniteWP update details.
+				add_filter('admin_url', array($this, 'iwp_user_admin_url'), 10, 2);				//for modifying the link available in plugin's view version details link.
+			}
+			add_filter('all_plugins', array($this, 'client_replace'));			//for replacing name and all.
+		}
+    }
+	
+	function iwp_remove_core_updates($value){
+		if(isset($value->response)){
+			$old_response = $value->response;
+		unset($value->response);
+		}
+		if(isset($value->updates)){
+			unset($value->updates);
+		}
+		return $value;
+	}
+	
+	function iwp_admin_menu_actions($args){
+		//to hide all updates
+		$replace = get_option("iwp_client_brand");
+		if(!empty($replace)){
+			if(!empty($replace['hideUpdatesCPB'])){
+				//add_filter('wp_get_update_data', array($this, 'iwp_wp_get_update_data'), 10, 2);
+				$page = remove_submenu_page( 'index.php', 'update-core.php' );
+				add_filter('site_transient_update_core', array($this, 'iwp_remove_core_updates'), 10, 1);
+				add_filter('site_transient_update_plugins', array($this, 'iwp_remove_core_updates'), 10, 1);
+				add_filter('site_transient_update_themes', array($this, 'iwp_remove_core_updates'), 10, 1);
+			}
+			if(!empty($replace['hideFWPCPB'])){
+				remove_submenu_page('themes.php','theme-editor.php');
+				remove_submenu_page('plugins.php','plugin-editor.php');
+				add_filter('plugin_action_links', array($this, 'iwp_client_replace_action_links'), 10, 2);
+			}
+		}
+    }
+	
+	function iwp_user_admin_url($args, $args2){
+		//for modifying the link available in plugin's view version details link.
+		if(strpos($args2, 'plugin-install.php?tab=plugin-information&plugin') !== false){
+			$replace = get_option("iwp_client_brand");
+			if(!empty($replace) && is_array($replace)){
+				if(!empty($replace['name'])){
+					$search_str = 'plugin-install.php?tab=plugin-information&plugin='.$replace['name'].'&section=changelog';
+					if(strpos($args2, $search_str) !== false){
+						$return_var = plugins_url( '/iwp-client/readme.txt' ) . 'TB_iframe=true&width=600&height=550';
+						return  $return_var;
+					}
+				}
+			}
+		}
+		return $args;
+	}
+	
+	function iwp_site_transient_update_plugins($value){
+		if(!empty($value->response['iwp-client/init.php'])){
+			$replace = get_option("iwp_client_brand");
+			if(!empty($replace) && is_array($replace)){
+				if(!empty($replace['name'])){
+					$file_traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+					$called_by_file = array_pop($file_traces);
+					$called_by_file = basename($called_by_file['file']);
+					if($called_by_file == "update-core.php"){
+						unset($value->response['iwp-client/init.php']);   		//for hiding the updates available in updates dashboard section
+					}
+					else if($called_by_file == "plugins.php"){
+						$value->response['iwp-client/init.php']->slug = $replace['name'];    ////for hiding the updates available in plugins section
+						$value->response['iwp-client/init.php']->Name = $replace['name'];
+						//unset($value->response['iwp-client/init.php']);
+					}
+				}
+			}
+		}
+		return $value;
+	}
+	
+	function iwp_client_replace_action_links($links, $file){
+		//for hiding edit on plugins page.
+		if(!empty($links['edit'])){
+			unset($links['edit']);
+		}
+		return $links;
+	}
+	
+	function iwp_client_replace_row_meta($links, $file) {
+		//for hiding the view details alone.
+		if($file == 'iwp-client/init.php'){
+			if(!empty($links[2])){
+			unset($links[2]);
+		}
+		}
+		return $links;
     }
     
     function client_replace($all_plugins){
     	$replace = get_option("iwp_client_brand");
     	if(is_array($replace)){
-    		if($replace['name'] || $replace['desc'] || $replace['author'] || $replace['author_url']){
+    		if(!empty($replace['doChangesCPB']) || (!isset($replace['doChangesCPB']) && (!empty($replace['name']) || !empty($replace['desc']) || !empty($replace['author']) || !empty($replace['author_url'])))){
     			$all_plugins['iwp-client/init.php']['Name'] = $replace['name'];
     			$all_plugins['iwp-client/init.php']['Title'] = $replace['name'];
     			$all_plugins['iwp-client/init.php']['Description'] = $replace['desc'];
@@ -931,15 +1035,17 @@ class IWP_MMB_Core extends IWP_MMB_Helper
     			$all_plugins['iwp-client/init.php']['PluginURI'] = '';
     		}
     		
-    		if($replace['hide']){
-    			if (!function_exists('get_plugins')) {
-            include_once(ABSPATH . 'wp-admin/includes/plugin.php');
-        	}
-          $activated_plugins = get_option('active_plugins');
-          if (!$activated_plugins)
-                $activated_plugins = array();
-          if(in_array('iwp-client/init.php',$activated_plugins))
-           	unset($all_plugins['iwp-client/init.php']);   	
+    		if(!empty($replace['hide'])){
+				if (!function_exists('get_plugins')){
+					include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+				}
+				$activated_plugins = get_option('active_plugins');
+				if (!$activated_plugins){
+					$activated_plugins = array();
+				}
+				if(in_array('iwp-client/init.php',$activated_plugins)){
+					unset($all_plugins['iwp-client/init.php']);
+				}
     		}
     	}
 		    	  	

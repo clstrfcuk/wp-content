@@ -3,8 +3,8 @@
 if (!class_exists('AIO_WP_Security')){
 
 class AIO_WP_Security{
-    var $version = '3.9.9';
-    var $db_version = '1.6';
+    var $version = '4.0.7';
+    var $db_version = '1.8';
     var $plugin_url;
     var $plugin_path;
     var $configs;
@@ -51,7 +51,9 @@ class AIO_WP_Security{
     {
         define('AIO_WP_SECURITY_VERSION', $this->version);
         define('AIO_WP_SECURITY_DB_VERSION', $this->db_version);
-        define('AIOWPSEC_WP_URL', site_url());
+        define('AIOWPSEC_WP_HOME_URL', home_url());
+        define('AIOWPSEC_WP_SITE_URL', site_url());
+        define('AIOWPSEC_WP_URL', AIOWPSEC_WP_SITE_URL); // for backwards compatibility
         define('AIO_WP_SECURITY_URL', $this->plugin_url());
         define('AIO_WP_SECURITY_PATH', $this->plugin_path());
         define('AIO_WP_SECURITY_BACKUPS_DIR_NAME', 'aiowps_backups');
@@ -83,6 +85,7 @@ class AIO_WP_Security{
         define('AIOWPSEC_TBL_USER_LOGIN_ACTIVITY', $wpdb->prefix . 'aiowps_login_activity');
         define('AIOWPSEC_TBL_GLOBAL_META_DATA', $wpdb->prefix . 'aiowps_global_meta');
         define('AIOWPSEC_TBL_EVENTS', $wpdb->prefix . 'aiowps_events');
+        define('AIOWPSEC_TBL_PERM_BLOCK', $wpdb->prefix . 'aiowps_permanent_block');
 
     }
 
@@ -106,6 +109,7 @@ class AIO_WP_Security{
         include_once('classes/grade-system/wp-security-feature-item.php');
         include_once('classes/grade-system/wp-security-feature-item-manager.php');
         include_once('classes/wp-security-wp-footer-content.php');
+        include_once('classes/wp-security-blocking.php');
         
         if (is_admin()){ //Load admin side only files
             include_once('classes/wp-security-configure-settings.php');
@@ -178,9 +182,9 @@ class AIO_WP_Security{
     function wp_security_plugin_init()
     {
         //Set up localisation. First loaded overrides strings present in later loaded file
-        $locale = apply_filters( 'plugin_locale', get_locale(), 'aiowpsecurity' );
-        load_textdomain( 'aiowpsecurity', WP_LANG_DIR . "/aiowpsecurity-$locale.mo" );
-	load_plugin_textdomain('aiowpsecurity', false, dirname(plugin_basename(__FILE__ )) . '/languages/');
+        $locale = apply_filters( 'plugin_locale', get_locale(), 'all-in-one-wp-security-and-firewall' );
+        load_textdomain( 'all-in-one-wp-security-and-firewall', WP_LANG_DIR . "/all-in-one-wp-security-and-firewall-$locale.mo" );
+	load_plugin_textdomain('all-in-one-wp-security-and-firewall', false, dirname(plugin_basename(__FILE__ )) . '/languages/');
 
         //Actions, filters, shortcodes goes here       
         $this->user_login_obj = new AIOWPSecurity_User_Login();//Do the user login operation tasks
@@ -215,6 +219,7 @@ class AIO_WP_Security{
     
     function do_additional_plugins_loaded_tasks()
     {
+        global $aio_wp_security;
         if(isset($_GET['aiowpsec_do_log_out']))
         {
             wp_logout();
@@ -227,10 +232,22 @@ class AIO_WP_Security{
             if(isset($additional_data))
             {
                 $login_url = '';
+                //Check if rename login feature enabled
+                if($aio_wp_security->configs->get_value('aiowps_enable_rename_login_page')=='1'){
+                    if (get_option('permalink_structure')){
+                        $home_url = trailingslashit(home_url());
+                    }else{
+                        $home_url = trailingslashit(home_url()) . '?';
+                    }
+                    $login_url = $home_url.$aio_wp_security->configs->get_value('aiowps_login_page_slug');
+                }else{
+                    $login_url = wp_login_url();
+                }
+
                 //Inspect the payload and do redirect to login page with a msg and redirect url
                 $logout_payload = (AIOWPSecurity_Utility::is_multisite_install() ? get_site_transient('aiowps_logout_payload') : get_transient('aiowps_logout_payload'));
                 if(!empty($logout_payload['redirect_to'])){
-                    $login_url = AIOWPSecurity_Utility::add_query_data_to_url(wp_login_url(),'redirect_to',$logout_payload['redirect_to']);
+                    $login_url = AIOWPSecurity_Utility::add_query_data_to_url($login_url,'redirect_to',$logout_payload['redirect_to']);
                 }
                 if(!empty($logout_payload['msg'])){
                     $login_url .= '&'.$logout_payload['msg'];

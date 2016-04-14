@@ -53,7 +53,7 @@ function seed_csp4_get_options(){
             '1' => __( 'Enable Coming Soon Mode', 'coming-soon' ),
             '2' => __( 'Enable Maintenance Mode', 'coming-soon' )
         ),
-        "desc" => __( "When you are logged in you'll see your normal website. Logged out visitors will see the Coming Soon or Maintenance page. Coming Soon Mode will be available to search engines if your site is not private. Maintenance Mode will notify search engines that the site is unavailable.", 'coming-soon' ),
+        "desc" => __( "When you are logged in you'll see your normal website. Logged out visitors will see the Coming Soon or Maintenance page. Coming Soon Mode will be available to search engines if your site is not private. Maintenance Mode will notify search engines that the site is unavailable. <a href='https://www.seedprod.com/coming-soon-vs-maintenance-mode/' target='_blank'>Learn the difference between Coming Soon and Maintenance Mode</a>", 'coming-soon' ),
         "default_value" => "0"
     );
 
@@ -184,7 +184,7 @@ function seed_csp4_get_options(){
     $seed_csp4_options[ ] = array(
         "type" => "upload",
         "id" => "bg_image",
-        "desc" => "<a href='http://demo.seedprod.com/coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=link&utm_campaign=Free%20Backgrounds' target='_blank'>Looking for FREE backgrounds?</a>",
+        "desc" => "<a href='http://demo.seedprod.com/coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=link&utm_campaign=Free%20Backgrounds' target='_blank'>Looking for FREE backgrounds?</a> Make sure to select the full size image to prevent a blurry or pixelated image.",
         "label" => __( "Background Image", 'coming-soon' ),
     );
 
@@ -193,6 +193,17 @@ function seed_csp4_get_options(){
         "id" => "bg_cover",
         "label" => __( "Responsive Background", 'coming-soon' ),
         "desc" => __("Scale the background image to be as large as possible so that the background area is completely covered by the background image. Some parts of the background image may not be in view within the background positioning area.", 'coming-soon'),
+        "option_values" => array(
+             '1' => __( 'Yes', 'coming-soon' ),
+        ),
+        "default" => "1",
+    );
+
+    $seed_csp4_options[ ] = array(
+        "type" => "checkbox",
+        "id" => "bg_overlay",
+        "label" => __( "Dim Background", 'coming-soon' ),
+        "desc" => __("This will add an overlay over your image dimming it.", 'coming-soon'),
         "option_values" => array(
              '1' => __( 'Yes', 'coming-soon' ),
         ),
@@ -384,6 +395,22 @@ function seed_csp4_get_options(){
         "id" => "footer_scripts",
         "label" => __( "Footer Scripts", 'coming-soon' ),
         "desc" => __('Enter any custom scripts. This will be rendered before the closing body tag.', 'coming-soon'),
+        "class" => "large-text"
+    );
+
+    $seed_csp4_options[ ] = array(
+        "type" => "textarea",
+        "id" => "html",
+        "label" => __( "Custom HTML", 'coming-soon' ),
+        "desc" => __("The will replace the plugin's entire template with your custom html. Make sure to include the html, head and body tags when replacing the html.", 'coming-soon'),
+        "class" => "large-text"
+    );
+
+    $seed_csp4_options[ ] = array(
+        "type" => "textarea",
+        "id" => "append_html",
+        "label" => __( "Append HTML", 'coming-soon' ),
+        "desc" => __("The will append html to the bottom of the template using the current styles.", 'coming-soon'),
         "class" => "large-text"
     );
 

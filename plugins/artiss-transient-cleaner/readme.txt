@@ -1,10 +1,9 @@
 === Transient Cleaner ===
-Contributors: dartiss
-Donate link: http://artiss.co.uk/donate
+Contributors: codedart
 Tags: cache, clean, database, housekeep, options, table, tidy, transient, update, upgrade
 Requires at least: 3.3
-Tested up to: 4.3.1
-Stable tag: 1.3.1
+Tested up to: 4.4.2
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,15 +13,22 @@ Housekeep expired transients from your options table
 
 "Transients are a simple and standardized way of storing cached data in the WordPress database temporarily by giving it a custom name and a timeframe after which it will expire and be deleted."
 
-Unfortunately, expired entries will only be deleted if you attempt to access the transient again. If you don't access the transient then, even though it's expired, WordPress will not remove it. This is [a known "issue"](http://core.trac.wordpress.org/ticket/20316 "Ticket #20316") but due to reason, which are explained in the FAQ, have not been resolved.
+Unfortunately, expired transients only get deleted when you attempt to access them. If you don't access the transient then, even though it's expired, WordPress will not remove it. This is [a known "issue"](http://core.trac.wordpress.org/ticket/20316 "Ticket #20316") but due to reasons, which are explained in the FAQ, this has not been adequately resolved.
 
 Why is this a problem? Transients are often used by plugins to "cache" data (my own plugins included). Because of the housekeeping problems this means that expired data can be left and build up, resulting in a bloated database table.
 
-Meantime, this plugin is the solution, using the same proposed method as the WordPress core change will use. Simply activate the plugin, sit back and enjoy a much cleaner, smaller options table. It also adds the additional recommendation that after a database upgrade all transients will be cleared down.
+Meantime, this plugin is the hero that you've been waiting for. Simply activate the plugin, sit back and enjoy a much cleaner, smaller options table. It also adds the additional recommendation that after a database upgrade all transients will be cleared down.
 
-Within `Administration` -> `Tools` -> `Transients` an options screen exists allowing you to tweak which of the various housekeeping you'd like to happen, including the ability to perform an ad-hoc run. You can also request an optimization of the options table to give your system a real "pep"!
+Within `Administration` -> `Tools` -> `Transients` an options screen exists allowing you to tweak which of the various housekeeping you'd like to happen, including the ability to perform an ad-hoc run, and when you'd like the to be automatically scheduled. You can even request an optimization of the options table to give your system a real "pep"!
 
 We'd like to thank WordPress Developer Andrew Nacin for his early discussion on this. Also, we'd like to acknowledge [the useful article at Everybody Staze](http://www.staze.org/wordpress-_transient-buildup/ "WordPress _transient buildup") for ensuring the proposed solution wasn't totally mad, and [W-Shadow.com](http://w-shadow.com/blog/2012/04/17/delete-stale-transients/ "Cleaning Up Stale Transients") for the cleaning code.
+
+== Using hooks ==
+
+If you're the type of odd person who likes to code for WordPress (really?) then we've added a couple of hooks so you can call our rather spiffy housekeeping functions...
+
+`housekeep_transients` - this will clear down any expired transients
+`clear_all_transients` - this will remove any and all transients, expired or otherwise
 
 == Installation ==
 
@@ -44,23 +50,39 @@ If you have one of these badly written plugins, yes. However, we've yet to come 
 
 = Have WordPress not done anything, then? =
 
-Yes, they implemented the clearing down of all transients upon a database upgrade. However, they don't optimise the table after, which this plugin does. So we have retained our version of this funcionality. This could mean that the WordPress may run and ours as well but, well, if it's already been cleared then the second run isn't going to do anything so it doesn't add any overheads - it just ensures the optimisation occurs, no matter what.
+Yes, they implemented the clearing down of all transients upon a database upgrade. If you have a multisite installation. And you're on the main site. They don't optimise the table after either, which this plugin does.
+
+This could mean that the WordPress may run and ours as well but, well, if it's already been cleared then the second run isn't going to do anything so it doesn't add any overheads - it just ensures the optimisation occurs, no matter what.
 
 = How often will expired transients be cleared down? =
 
-It runs alongside the existing trash deletion, which is timed to run once a day. However, it will also run whenever you activate the plugin, ensuring that you can immediately test the results.
+Once a day and, by default, at midnight. However, the hour at which is runs can be changed in the settings screen.
 
-= Even after performing the scheduled housekeeping there are still expired transients left =
+It should be noted too that this will only run once the appropriate hour has passed AND somebody has been onto your site (with anybody visiting, the scheduler will not run).
 
-This can happen when transients become "orphaned". Each transient consists of 2 record - one holds the expiry time and the other the actual data. If one is removed without the other then this will then cause problems for the scheduled housekeeping.
+= In the administration screen it sometimes refers to the number of transients and other times the number of records. What's the difference? =
 
-In this situation the Database Upgrade run, which removes all transients even if they're orphaned, will be the solution.
+A transient may consist of one or more records (normally a timed transient - the type that expires - has two) and without checking and matching them all up it can sometimes be hard to work out. So, where possible, we'll tell you the number of transients but, where we can't, we'll refer to the number of records on the database.
 
 == Screenshots ==
 
 1. Administration screen showing contextual help screen
 
 == Changelog ==
+
+= 1.4.1 =
+* Bug: Awww... biscuits. I was being smart by including a call to a function to check something without realising you have to have WordPress 4.4 for it to work. Thankfully, it's not critical so I've removed it for now and will add a "proper" solution in future
+
+= 1.4 =
+* Enhancement: Re-written core code to work better with multisite installations
+* Enhancement: Administration screen re-written to be more "in keeping" with the WordPress standard layout. More statistics about cleared transients are also shown
+* Enhancement: Instead of piggy-backing the housekeeping schedule (which some people turn off) I've instead implemented my own - it defaults to midnight but, via the administration screen, you can change it to whatever hour floats your boat
+* Enhancement: For those nerdy enough that they want to code links to our amazing cleaning functions, we've added some super whizzy hooks. Check the instructions about for further details
+* Maintenance: This is now a Code Art production, so the author name has been updated and the donation link (including matching plugin meta) ripped out. I for one welcome our new overlords.
+* Maintenance: Renamed the functions that began with atc_ to tc_
+* Maintenance: I admit it, I've been naughty. I've been hard-coding the plugin folder in INCLUDES. Yes, I know. But I've fixed that now
+* Maintenance: I've validated, sanitized, escaped and licked the data that's sent around the options screen. Okay, I didn't do that last one
+* Bug: Some PHP errors were vanquished
 
 = 1.3.1 =
 * Maintenance: Added a text domain and domain path
@@ -101,6 +123,12 @@ In this situation the Database Upgrade run, which removes all transients even if
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.4.1 =
+* Urgent update to fix a bug that will affect those running WordPress before version 4.4
+
+= 1.4 =
+* Lots of improved goodness, including a modifiable scheduler and better compatibility with multisite installations
 
 = 1.3.1 =
 * Minor update to add a text domain and path

@@ -19,6 +19,7 @@
 	{Description}
 </div><!-- / #seed-csp4-content -->
 </div></div>
+{Append_HTML}
 {Credit}
 
 {Footer}

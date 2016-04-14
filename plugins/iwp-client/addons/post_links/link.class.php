@@ -89,7 +89,7 @@ class IWP_MMB_Link extends IWP_MMB_Core
 		
 		if(!empty($filter_links))
 		{
-			$where.=" AND (link_name LIKE '%".mysql_real_escape_string($filter_links)."%' OR link_url LIKE '%".mysql_real_escape_string($filter_links)."%')";
+           	 $where.=" AND (link_name LIKE '%".esc_sql($filter_links)."%' OR link_url LIKE '%".esc_sql($filter_links)."%')";
 		}
 		
 		$linkcats = $this->getLinkCats();
@@ -104,9 +104,11 @@ class IWP_MMB_Link extends IWP_MMB_Core
 		{
 			$link_cat = $linkcats[$link_info->link_id];
 			$cats = array();
-			foreach($link_cat as $catkey=>$catval)
-			{
-				$cats[] = $catval;
+			if (!empty($link_cat)) {
+				foreach($link_cat as $catkey=>$catval)
+				{
+					$cats[] = $catval;
+				}
 			}
 			
 			$links[$link_info->link_id] = array(

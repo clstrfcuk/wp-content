@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
-
+if(basename($_SERVER['SCRIPT_FILENAME']) == "search.php"):
+    exit;
+endif;
 	iwp_mmb_add_action('iwp_mmb_search_posts_by_term', 'iwp_mmb_search_posts_by_term');
 	
     function iwp_mmb_search_posts_by_term($params = false){
@@ -50,8 +52,8 @@
     	case 'theme':
     		$theme = strtolower(get_option('stylesheet'));
     		$tm = ABSPATH . 'wp-content/themes/'. $theme . '/style.css' ;
-    		$tm_extended = get_theme_data($tm);
-    		$tm_name = $tm_extended['Name'];
+    		$tm_extended = wp_get_theme($tm);
+            $tm_name = $tm_extended->get('Name');
     		$have_theme = array();
     		if(strpos(strtolower($tm_name), $search_term)>-1){
     				$have_theme[] = $tm_name; 

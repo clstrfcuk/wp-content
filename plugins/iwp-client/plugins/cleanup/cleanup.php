@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
-
+if(basename($_SERVER['SCRIPT_FILENAME']) == "cleanup.php"):
+    exit;
+endif;
 add_filter('iwp_mmb_stats_filter', 'iwp_mmb_get_extended_info');
 
 

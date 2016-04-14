@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
-
+if(basename($_SERVER['SCRIPT_FILENAME']) == "installer.class.php"):
+    exit;
+endif;
 class IWP_MMB_Installer extends IWP_MMB_Core
 {
     function __construct()
@@ -176,13 +178,12 @@ class IWP_MMB_Installer extends IWP_MMB_Core
         $core_upgrade    = isset($params['wp_upgrade']) ? $params['wp_upgrade'] : array();
         $upgrade_plugins = isset($params['upgrade_plugins']) ? $params['upgrade_plugins'] : array();
         $upgrade_themes  = isset($params['upgrade_themes']) ? $params['upgrade_themes'] : array();
-        
+        $upgrade_translations = isset($params['upgrade_translations']) ? $params['upgrade_translations'] : array();
         $upgrades         = array();
         $premium_upgrades = array();
         if (!empty($core_upgrade)) {
             $upgrades['core'] = $this->upgrade_core($core_upgrade);
         }
-        
         if (!empty($upgrade_plugins)) {
             $plugin_files = array();
             foreach ($upgrade_plugins as $plugin) {
@@ -224,6 +225,9 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                 }
             }
         }
+        if (!empty($upgrade_translations)) {
+            $upgrades['translations'] = $this->upgrade_translations($upgrade_translations);
+        }
         ob_clean();
         $this->iwp_mmb_maintenance_mode(false);
         return $upgrades;
@@ -233,6 +237,33 @@ class IWP_MMB_Installer extends IWP_MMB_Core
      * Upgrades WordPress locally
      *
      */
+
+
+
+    function upgrade_translations($current){
+        include_once(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php');
+        $upgrader = new Language_Pack_Upgrader( new Language_Pack_Upgrader_Skin( compact( 'url', 'nonce', 'title', 'context' ) ) );
+        $result = $upgrader->bulk_upgrade();
+        $upgradeFailed = false;
+        if (!empty($result)) {
+            foreach ($result as $translate_tmp => $translate_info) {
+                if (is_wp_error($translate_info) || empty($translate_info)) {
+                    $upgradeFailed = true;
+                    $return = array('error' => $this->iwp_mmb_get_error($translate_info), 'error_code' => 'upgrade_translations_wp_error');
+                    break;
+                }
+            }
+            if(!$upgradeFailed){
+                $return = 'updated';
+            }
+            return array('upgraded' => $return);
+        } else {
+            return array(
+                'error' => 'Upgrade failed.', 'error_code' => 'unable_to_update_translations_files'
+            );
+        }
+    }
+
     function upgrade_core($current)
     {
         ob_start();
@@ -251,7 +282,7 @@ class IWP_MMB_Installer extends IWP_MMB_Core
             $updated = $core->updates[0];
             if (!isset($updated->response) || $updated->response == 'latest')
                 return array(
-                    'upgraded' => ' updated'
+                    'upgraded' => 'updated'
                 );
             
             if ($updated->response == "development" && $current->response == "upgrade") {
@@ -297,7 +328,7 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                     );
                 } else
                     return array(
-                        'upgraded' => ' updated'
+                        'upgraded' => 'updated'
                     );
                 
             } else {
@@ -311,7 +342,7 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                             );
                         } else
                             return array(
-                                'upgraded' => ' updated'
+                                'upgraded' => 'updated'
                             );
                     }
                 }
@@ -325,7 +356,7 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                     // Is an update available?
                     if (!isset($current_update->response) || $current_update->response == 'latest')
                         return array(
-                            'upgraded' => ' updated'
+                            'upgraded' => 'updated'
                         );
                     
                     $res = $upgrader->fs_connect(array(
@@ -622,7 +653,7 @@ class IWP_MMB_Installer extends IWP_MMB_Core
             return $pr_update;
         } else {
             foreach ($premium as $pr) {
-                $result[$pr['type'] . 's']['upgraded'][md5($pr['name'])] = array('error' => 'This premium update is not registered.', 'error_code' => 'premium_update_not_registered');
+                $result[$pr['type'] . 's']['upgraded'][md5($pr['name'])] = array('error' => 'This premium plugin/theme update is not registered with the InfiniteWP update mechanism. Please contact the plugin/theme developer to get this issue fixed.', 'error_code' => 'premium_update_not_registered');
             }
             return $result;
         }
@@ -655,6 +686,22 @@ class IWP_MMB_Installer extends IWP_MMB_Core
             return $upgradable_plugins;
         } else
             return array();
+    }
+  function get_upgradable_translations()  {
+         if (!function_exists('wp_get_translation_updates')){
+            include_once(ABSPATH . 'wp-includes/update.php');
+         }
+         
+        if (function_exists('wp_get_translation_updates')) {
+            $translations_object = wp_get_translation_updates();
+            $translations_object = array_filter($translations_object);
+         } 
+
+        if (isset($translations_object) && !empty($translations_object)){
+            return true;
+        } else{
+            return false;
+        }
     }
     
     function get_upgradable_themes($filter = array()) {

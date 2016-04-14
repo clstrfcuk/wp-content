@@ -100,7 +100,7 @@ class SEED_CSP4_ADMIN
         wp_enqueue_style( 'media-upload' );
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_style( 'seed_csp4-framework-css', SEED_CSP4_PLUGIN_URL . 'framework/settings-style.css', false, $this->plugin_version );
-        wp_enqueue_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css', false, $this->plugin_version );
+        wp_enqueue_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css', false, $this->plugin_version );
     }
 
     /**
@@ -113,8 +113,8 @@ class SEED_CSP4_ADMIN
     function create_menus( )
     {
       $this->plugin_screen_hook_suffix = add_options_page(
-            __( "Coming Soon", 'coming-soon' ),
-            __( "Coming Soon", 'coming-soon' ),
+            __( "Coming Soon Page & Maintenance Mode", 'coming-soon' ),
+            __( "Coming Soon Page & Maintenance Mode", 'coming-soon' ),
             'manage_options',
             'seed_csp4',
             array( &$this , 'option_page' )
@@ -170,13 +170,23 @@ class SEED_CSP4_ADMIN
                         } elseif ( $c == 1 ) {
                             $active = 'nav-tab-active';
                         }
-                        echo '<a class="nav-tab ' . $active . '" href="?page=' . $menu_slug . '&tab=' . $v[ 'id' ] . '">' . $v[ 'label' ] . '</a>';
+                        echo '<a class="nav-tab ' . $active . '" href="?page=' . $menu_slug . '&tab=' . $v[ 'id' ] . '">';  
+                        if($v[ 'id' ] == 'seed_csp4_setting'){
+                            echo '<i class="fa fa-edit"></i> ';
+                        }
+                        if($v[ 'id' ] == 'seed_csp4_design'){
+                            echo '<i class="fa fa-image"></i> ';
+                        }
+                         if($v[ 'id' ] == 'seed_csp4_advanced'){
+                            echo '<i class="fa fa-code"></i> ';
+                        }
+                        echo $v[ 'label' ] . '</a>';
                         $c++;
                     }
             }
-            echo '<a class="nav-tab seed_csp4-preview thickbox-preview" href="'.home_url().'?cs_preview=true&TB_iframe=true&width=640&height=632" title="'.__('&larr; Close Window','coming-soon').'">'.__('Live Preview','coming-soon').'</a>';
+            echo '<a class="nav-tab seed_csp4-preview thickbox-preview" target="_blank" href="'.home_url().'?cs_preview=true&TB_iframe=true&width=640&height=632" title="'.__('&larr; Close Window','coming-soon').'"><i class="fa fa-external-link"></i> '.__('Live Preview','coming-soon').'</a>';
             if(defined('SEED_CSP_API_KEY') === false){
-                echo '<a class="nav-tab seed_csp4-support" style="background-color: #fcf8e3;" href="http://www.seedprod.com/features/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin" target="_blank"><i class="fa fa-star"></i> '.__('Upgrade to Pro for more Professional Features','coming-soon').'</a>';
+                echo '<a class="nav-tab seed_csp4-support" style="background-color: #444;color: #fff" href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin" target="_blank"><i class="fa fa-star"></i> '.__('Upgrade to Pro for more Professional Features','coming-soon').'</a>';
             }
             echo '</h2>';
 
@@ -292,54 +302,25 @@ class SEED_CSP4_ADMIN
                     <div id="postbox-container-1" class="postbox-container">
                         <div id="side-sortables" class="meta-box-sortables ui-sortable">
 
-                            <div class="postbox rss-postbox" style="background-color: #fcf8e3">
-									<div class="handlediv" title="Click to toggle"><br /></div>
-									<form action="https://www.getdrip.com/forms/2650489/submissions" method="post" target="_blank" data-drip-embedded-form="2650489">
-	  <h3 class="hndle" data-drip-attribute="headline"><span>How to launch a site that&#x27;s successful on Day One</span></h3>
-						<div class="inside">
-
-
-							<p data-drip-attribute="description">There&#x27;s nothing more disappointing than launching a new site and not get enough visitors to support it. Find out how to build an audience before you launch in this free 5-part course.</p>
-							<div>
-								<label for="fields[email]">Email Address</label><br />
-								<input class="regular-text" style="width:100%" type="email" name="fields[email]" value="<?php echo get_option( 'admin_email' ); ?>" />
-							</div>
-
-							<div style="margin-top:10px">
-								<label for="fields[first_name]">First Name</label><br />
-								<input class="regular-text" style="width:100%" type="text" name="fields[first_name]" value="" />
-							</div>
-
-						<div style="margin-top:10px">
-							<input type="submit" name="submit" value="Subscribe Now" style="background-color:red; border-color:firebrick;" data-drip-attribute="sign-up-button" class="button-primary" />
-						</div>
-
-
-										<!-- <div class="rss-widget">
-											<?php
-											wp_widget_rss_output(array(
-												'url' => 'http://seedprod.com/feed/',
-												'title' => 'SeedProd Blog',
-												'items' => 3,
-												'show_summary' => 0,
-												'show_author' => 0,
-												'show_date' => 1,
-												));
-												?>
-												<ul>
-													<li>&raquo; <a href="http://seedprod.com/subscribe/"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
-												</ul>
-											</div> -->
-										</div>
-									</form>
-
-
-									</div>
-                            <!-- <a href="http://www.seedprod.com/plugins/wordpress-coming-soon-pro-plugin/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank"><img src="http://static.seedprod.com/ads/coming-soon-pro-sidebar.png" /></a>
-                            <br><br> -->
-                            <div class="postbox support-postbox" style="background-color:#d9edf7">
+                             <div class="postbox ">
                                 <div class="handlediv" title="Click to toggle"><br /></div>
-                                <h3 class="hndle"><span><?php _e('Plugin Support', 'coming-soon') ?></span></h3>
+                                <h3 class="hndle"><span><i class="fa fa-rocket"></i>&nbsp;&nbsp;<?php _e('Getting Started Video - 60 sec', 'coming-soon') ?></span></h3>
+                                <div class="inside">
+                                    <div class="">
+                                        <iframe width="250" height="188" src="https://www.youtube.com/embed/hcY0M0IYcAE" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            
+
+                           
+                            <a href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank"><img src="http://static.seedprod.com/ads/coming-soon-pro-sidebar.png" /></a>
+                            <br><br>
+                            <div class="postbox ">
+                                <div class="handlediv" title="Click to toggle"><br /></div>
+                                <h3 class="hndle"><span><i class="fa fa-question-circle"></i>&nbsp;&nbsp;<?php _e('Plugin Support', 'coming-soon') ?></span></h3>
                                 <div class="inside">
                                     <div class="support-widget">
                                         <p>
@@ -353,10 +334,10 @@ class SEED_CSP4_ADMIN
                                     </div>
                                 </div>
                             </div>
-                            <?php if($this->plugin_type != 'pro'){ ?>
-                                <div class="postbox like-postbox" style="background-color:#d9edf7">
+                           
+                                <div class="postbox like-postbox">
                                     <div class="handlediv" title="Click to toggle"><br /></div>
-                                    <h3 class="hndle"><span><?php _e('Show Some Love', 'coming-soon') ?></span></h3>
+                                    <h3 class="hndle"><span><i class="fa fa-heart"></i>&nbsp;&nbsp;<?php _e('Show Some Love', 'coming-soon') ?></span></h3>
                                     <div class="inside">
                                         <div class="like-widget">
                                             <p><?php _e('Like this plugin? Show your support by:', 'coming-soon')?></p>
@@ -365,19 +346,16 @@ class SEED_CSP4_ADMIN
 
                                                 <li>&raquo; <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/coming-soon?rate=5#postform"><?php _e('Rate It', 'coming-soon') ?></a></li>
                                                 <li>&raquo; <a target="_blank" href="<?php echo "http://twitter.com/share?url=https%3A%2F%2Fwordpress.org%2Fplugins%2Fultimate-coming-soon-page%2F&text=Check out this awesome %23WordPress Plugin I'm using, Coming Soon Page and Maintenance Mode by SeedProd"; ?>"><?php _e('Tweet It', 'coming-soon') ?></a></li>
-
-                                                <li>&raquo; <a href="https://www.seedprod.com/submit-site/"><?php _e('Submit your site to the Showcase', 'coming-soon') ?></a></li>
-
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <?php } ?>
+                            
 
 
-                                <div class="postbox rss-postbox" style="background-color:#d9edf7">
+                                <div class="postbox rss-postbox">
     											<div class="handlediv" title="Click to toggle"><br /></div>
-    											<h3 class="hndle"><span><?php _e('SeedProd Blog', 'ultimate-coming-soon-page') ?></span></h3>
+    											<h3 class="hndle"><span><i class="fa fa-wordpress"></i>&nbsp;&nbsp;<?php _e('SeedProd Blog', 'ultimate-coming-soon-page') ?></span></h3>
     											<div class="inside">
 
     												<div class="rss-widget">
@@ -392,8 +370,7 @@ class SEED_CSP4_ADMIN
     												));
     												?>
     												<ul>
-    													<br>
-    												<li>&raquo; <a href="https://www.getdrip.com/forms/9414625/submissions/new"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
+
     											</ul>
     										</div>
     									</div>

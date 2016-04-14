@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
-
+if(basename($_SERVER['SCRIPT_FILENAME']) == "helper.class.php"):
+    exit;
+endif;
 if(!defined('MMB_WORKER_VERSION'))
 	define('MMB_WORKER_VERSION', '0');
 

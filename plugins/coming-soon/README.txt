@@ -1,10 +1,11 @@
 === Plugin Name ===
-Contributors: seedprod, johnnytee
+Contributors: seedprod
 Donate link: http://www.seedprod.com
-Tags: wordpress coming soon, wordpress under construction, wordpress maintenance mode, maintenance mode, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, newsletter, coming soon page, landing page
+Tags: maintenance mode, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, coming soon page, under construction page, landing page
 Requires at least: 3.5.1
-Tested up to: 4.3.0
-Stable tag: 4.1.4
+Tested up to: 4.5.0
+Stable tag: 5.0.2
+Text Domain: coming-soon
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -113,6 +114,21 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 4. Design Page
 
 == Changelog ==
+= 5.0.2 =
+* More tweaks to the append html section.
+
+= 5.0.1 =
+* Added option to append to the html in addition of just replacing.
+
+= 5.0.0 =
+* Added the ability to add custom html, dim background and help video.
+
+= 4.2.1 =
+* Fixed undefined notice
+
+= 4.2.0 =
+* Language Packs
+
 = 4.1.4 =
 * Added Danish Translation
 
@@ -144,6 +160,18 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 * Initial Commit
 
 == Upgrade Notice ==
+= 5.0.2 =
+* More tweaks to the append html section.
+
+= 5.0.1 =
+* Added option to append to the html in addition of just replacing.
+
+= 5.0.0 =
+* Added the ability to add custom html, dim background and help video.
+
+= 4.2.0 =
+* Language Packs
+
 = 4.1.4 =
 * Added Danish Translation
 
