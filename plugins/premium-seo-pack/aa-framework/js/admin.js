@@ -176,6 +176,8 @@ pspFreamwork = (function ($) {
 	}
 	
 	function importSEOData_loop($btn, step, nbrows) {
+	    
+	    var step_increase = 10; // DEBUG
 
 		var theForm 		= $btn.parents('form').eq(0),
 			value 			= $btn.val(),
@@ -187,7 +189,9 @@ pspFreamwork = (function ($) {
 
 			// replace the save button value with default message
 			$btn.val( value ).removeClass('gray').addClass('blue');
-
+            
+            //return false; // DEBUG!
+			
 			setTimeout(function(){
 				window.location.reload();
 			}, 3000);
@@ -200,7 +204,7 @@ pspFreamwork = (function ($) {
 			'options' 	: theForm.serialize(),
 			'from'		: theForm.find('#from').val(),
 			'step'		: step,
-			'rowsperstep'	: 10
+			'rowsperstep'	: step_increase
 		};
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		$.post(ajaxurl, data, function(response) {
@@ -213,7 +217,7 @@ pspFreamwork = (function ($) {
 				statusBoxHtml.removeClass('psp-success').addClass('psp-error').html(__newResHtml).fadeIn();
 			}
 				
-			importSEOData_loop($btn, step + 10, nbrows);
+			importSEOData_loop($btn, step + step_increase, nbrows);
 		}, 'json');
 	}
 	
@@ -276,12 +280,32 @@ pspFreamwork = (function ($) {
 		$btn.val('saving setings ...').removeClass('green').addClass('gray');
 
 		multiselect_left2right(true);
+		
+		var options       = theForm.serializeArray();
+		// Because serializeArray() ignores unset checkboxes and radio buttons, also empty selects
+		var el            = { inputs: null, selects: null };
+        el.inputs         = theForm.find('input[type=checkbox]:not(:checked)');
+        el.selects        = theForm.find('select:not(:selected)');
+        el.selects_m      = theForm.find('select[multiple]:not(:selected)');
+        //for (var kk = 0, arr = ['inputs', 'selects'], len = arr.length; kk < len; kk++) {
+        //    var vv = arr[kk], $vv = el[vv];
+  
+        for (var kk in el) {
+            if ( $.inArray(kk, ['selects_m']) > -1 ) {
+                options = options.concat(el[kk].map(
+                    function() {
+                        return {"name": this.name, "value": this.value}
+                    }).get()
+                );
+            }
+        }
+        //console.log( options ); return false; 
 
 		if(theForm.length > 0) {
 			// serialiaze the form and send to saving data
 			var data = {
 				'action' 		: 'pspSaveOptions',
-				'options' 		: theForm.serialize(),
+				'options' 		: $.param( options ), //theForm.serialize(),
 				'opt_nosave'	: ['last_status', 'profile_last_status']
 			};
 			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php

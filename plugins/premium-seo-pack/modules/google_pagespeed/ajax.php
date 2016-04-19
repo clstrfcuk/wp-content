@@ -88,6 +88,11 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 					
 					$cc = 0;
 					foreach ($speed_scores as $key_device => $value_device) {
+							
+						if ( !isset($value_device['pageStats']) || !isset($value_device['score']) ) {
+							continue 1;
+						}
+						
 						// normalize some vars 
 						$stats = $value_device['pageStats'];
 						
@@ -132,7 +137,12 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 					
 					$html[] = '<div class="psp-pagespeed-page-content">';
 					$cc = 0;
-					foreach ($speed_scores as $key_device => $value_device) {
+					foreach ($speed_scores as $key_device => $value_device) { // foreach content
+					
+						if ( !isset($value_device['pageStats']) || !isset($value_device['score']) ) {
+							continue 1;
+						}
+
 						$img = '';
 						if(is_file( $upload_dir['path'] . $this->file_cache_directory . '/' . $page_id . '-' . ( $key_device ) . '.jpg' )){
 							$img = $upload_dir['url'] . $this->file_cache_directory . '/' . $page_id . '-' . ( $key_device ) . '.jpg';
@@ -331,23 +341,23 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 						$html[] = 					'</tr>';
 						$html[] = 					'<tr>';
 						$html[] = 						'<td>Number of Hosts</td>';
-						$html[] = 						'<td>' . ( $stats['numberHosts'] ) . '</td>';
+						$html[] = 						'<td>' . ( isset($stats['numberHosts']) ? $stats['numberHosts'] : 0 ) . '</td>';
 						$html[] = 					'</tr>';
 						$html[] = 					'<tr>';
 						$html[] = 						'<td>Total Request Bytes</td>';
-						$html[] = 						'<td>' . ( $this->formatBytes( $stats['totalRequestBytes'] ) ) . '</td>';
+						$html[] = 						'<td>' . ( $this->formatBytes( isset($stats['totalRequestBytes']) ? $stats['totalRequestBytes'] : 0 ) ) . '</td>';
 						$html[] = 					'</tr>';
 						$html[] = 					'<tr>';
 						$html[] = 						'<td>Total Resources</td>';
-						$html[] = 						'<td>' . ( $stats['numberResources'] ) . '</td>';
+						$html[] = 						'<td>' . ( isset($stats['numberResources']) ? $stats['numberResources'] : 0 ) . '</td>';
 						$html[] = 					'</tr>';
 						$html[] = 					'<tr>';
 						$html[] = 						'<td>JavaScript Resources</td>';
-						$html[] = 						'<td>' . ( $stats['numberJsResources'] ) . '</td>';
+						$html[] = 						'<td>' . ( isset($stats['numberJsResources']) ? $stats['numberJsResources'] : 0 ) . '</td>';
 						$html[] = 					'</tr>';
 						$html[] = 					'<tr>';
 						$html[] = 						'<td>CSS Resources</td>';
-						$html[] = 						'<td>' . ( $stats['numberCssResources'] ) . '</td>';
+						$html[] = 						'<td>' . ( isset($stats['numberCssResources']) ? $stats['numberCssResources'] : 0 ) . '</td>';
 						$html[] = 					'</tr>';
 						$html[] = 				'</table>';
 						$html[] = 			'</div>';
@@ -367,23 +377,23 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 							<script>
 								data = [];
 								data[0] = {
-									label: "HTML - ' . ( $this->formatBytes( $stats['htmlResponseBytes'] ) ) . '",
+									label: "HTML - ' . ( $this->formatBytes( isset($stats['htmlResponseBytes']) ? $stats['htmlResponseBytes'] : 0 ) ) . '",
 									data: ' . ( isset($stats['htmlResponseBytes']) ? $stats['htmlResponseBytes'] : 0 ) . '
 								};
 								data[1] = {
-									label: "CSS - ' . ( $this->formatBytes( $stats['cssResponseBytes'] ) ) . '",
+									label: "CSS - ' . ( $this->formatBytes( isset($stats['cssResponseBytes']) ? $stats['cssResponseBytes'] : 0 ) ) . '",
 									data: ' . ( isset($stats['cssResponseBytes']) ? $stats['cssResponseBytes'] : 0 ) . '
 								};
 								data[2] = {
-									label: "Images - ' . ( $this->formatBytes( $stats['imageResponseBytes'] ) ) . '",
+									label: "Images - ' . ( $this->formatBytes( isset($stats['imageResponseBytes']) ? $stats['imageResponseBytes'] : 0 ) ) . '",
 									data: ' . ( isset($stats['imageResponseBytes']) ? $stats['imageResponseBytes'] : 0 ) . '
 								};
 								data[3] = {
-									label: "JavaScript - ' . ( $this->formatBytes( $stats['javascriptResponseBytes'] ) ) . '",
+									label: "JavaScript - ' . ( $this->formatBytes( isset($stats['javascriptResponseBytes']) ? $stats['javascriptResponseBytes'] : 0 ) ) . '",
 									data: ' . ( isset($stats['javascriptResponseBytes']) ? $stats['javascriptResponseBytes'] : 0 ) . '
 								};
 								data[4] = {
-									label: "Others - ' . ( $this->formatBytes( $stats['otherResponseBytes'] ) ) . '",
+									label: "Others - ' . ( $this->formatBytes( isset($stats['otherResponseBytes']) ? $stats['otherResponseBytes'] : 0 ) ) . '",
 									data: ' . ( isset($stats['otherResponseBytes']) ? $stats['otherResponseBytes'] : 0 ) . '
 								};
 								
@@ -406,7 +416,7 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 						$html[] = '</div>';
 						
 						$cc++;
-					}
+					} // end foreach content
 					$html[] = '</div>';
 				}
 

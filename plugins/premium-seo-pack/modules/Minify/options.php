@@ -257,6 +257,9 @@ function __pspMinifyOptions_excludingAssets($assetsType) {
     }
     
     foreach ( $_assetsList as $aKey => $aValue ) {
+        if ( is_a($aValue, '_WP_Dependency') ) {
+            $aValue = isset($aValue->src) ? $aValue->src : '';       
+        }
         $ret["$aKey"] = $aKey . ( !empty($aValue) ? ' : '.$aValue.'' : '' );
     }
 

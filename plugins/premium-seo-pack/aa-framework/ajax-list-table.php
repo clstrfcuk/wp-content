@@ -63,12 +63,6 @@ if(class_exists('pspAjaxListTable') != true) {
         {
         	$this->the_plugin = $parent;
 			add_action('wp_ajax_pspAjaxList', array( $this, 'request' ));
-
-            $session_id = isset($_COOKIE["PHPSESSID"]) ? session_id($_COOKIE["PHPSESSID"]) : session_id();
-            if(!$session_id) {
-			    // session isn't started
-			    session_start();
-			}
         }
 
 		/**
@@ -457,11 +451,13 @@ if(class_exists('pspAjaxListTable') != true) {
 			if( is_array($this->opt['list_post_types']) && count($this->opt['list_post_types']) > 0 ) return $this->opt['list_post_types'];
 
 			// all case
-			$_builtin = get_post_types(array('show_ui' => TRUE, 'show_in_nav_menus' => TRUE, '_builtin' => TRUE), 'objects');
+			//$_builtin = get_post_types(array('show_ui' => TRUE, 'show_in_nav_menus' => TRUE, '_builtin' => TRUE), 'objects');
+            $_builtin = get_post_types(array('show_ui' => TRUE, '_builtin' => TRUE), 'objects');
 			if ( !is_array($_builtin) || count($_builtin)<0 )
 				$_builtin = array();
 
-			$_notBuiltin = get_post_types(array('show_ui' => TRUE, 'show_in_nav_menus' => TRUE, '_builtin' => FALSE), 'objects');
+			//$_notBuiltin = get_post_types(array('show_ui' => TRUE, 'show_in_nav_menus' => TRUE, '_builtin' => FALSE), 'objects');
+            $_notBuiltin = get_post_types(array('show_ui' => TRUE, '_builtin' => FALSE), 'objects');
 			if ( !is_array($_notBuiltin) || count($_notBuiltin)<0 )
 				$_notBuiltin = array();
 				
@@ -1696,8 +1692,9 @@ if(class_exists('pspAjaxListTable') != true) {
 			$fql .= "link_stat WHERE url = '{$website_url}'";
 			$apiQuery = "https://api.facebook.com/method/fql.query?format=json&query=" . urlencode($fql);
 			$fb_data = $this->getRemote( $apiQuery );
+ 
 			$fb_data = isset($fb_data[0]) ? $fb_data[0] : array();
-			
+
 			// Twitter
 			$apiQuery = "http://urls.api.twitter.com/1/urls/count.json?url=" . $website_url;
 			$tw_data = (array) $this->getRemote( $apiQuery );

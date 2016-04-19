@@ -49,6 +49,11 @@ pspGoogleAnalytics = (function ($) {
 			//getAudience
 			if( response.getAudience.status == 'valid' ){
 				make_getAudience( response.getAudience.data );
+			} else {
+			    $("#psp-audience-visits-graph").html( response.getAudience.reason );
+
+                // remove the loading
+                $("#psp-audience-visits-graph").css('background-image', 'none');
 			}
 			
 			//getAudienceDemographics

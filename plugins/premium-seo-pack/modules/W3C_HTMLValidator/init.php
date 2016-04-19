@@ -284,7 +284,7 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 			sleep(2);
 
 			$checkUrl = 'http://validator.w3.org/check?uri=' . get_permalink($id);
-			$browserRequest = wp_remote_get( $checkUrl );
+			$browserRequest = $this->the_plugin->remote_get( $checkUrl, 'default', array('timeout' => 10) );
 			if ( is_wp_error( $browserRequest ) ) { // If there's error
 				$body = false;
 				$err = htmlspecialchars( implode(';', $browserRequest->get_error_messages()) );
@@ -298,23 +298,30 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 				$body = wp_remote_retrieve_body( $browserRequest );
 			}
 
-			$status = array(
+			/*$status = array(
 				'status' => isset($browserRequest['headers']["x-w3c-validator-status"]) ? $browserRequest['headers']["x-w3c-validator-status"] : '',
 				'nr_of_errors' => isset($browserRequest['headers']["x-w3c-validator-errors"]) ? $browserRequest['headers']["x-w3c-validator-errors"] : '',
 				'nr_of_warning' => isset($browserRequest['headers']["x-w3c-validator-warnings"]) ? $browserRequest['headers']["x-w3c-validator-warnings"] : '',
 				'recursion' => isset($browserRequest['headers']["x-w3c-validator-recursion"]) ? $browserRequest['headers']["x-w3c-validator-recursion"] : ''
-			);
+			);*/
+			if ( trim($body) == '' ) {
+				die(json_encode(array(
+					'status' => 'invalid',
+					'msg'	 => 'empty content retrieved!',
+				)));
+			}
+			$status = $this->parse_response( $body );
 
-			if( isset($status) && count($status) != "" ){
+			if( isset($status['status']) ){
 				$status['last_check_at'] = date('Y-m-d H:i:s');
 				update_post_meta($id, 'psp_w3c_validation', $status);
 
-				if ( $status['status'] == "" && $status['recursion'] == "" ){
+				/*if ( $status['status'] == "" && $status['recursion'] == "" ){
 					die(json_encode(array(
 						'status' => 'invalid',
 						'msg'	 => $body
 					)));
-				}
+				}*/
 
 				die(json_encode(array(
 					'status' => 'valid',
@@ -324,8 +331,53 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 
 			die(json_encode(array(
 				'status' => 'invalid',
-				'url'	 => $checkUrl
+				'msg'	 => 'unknown error occured!',
+				//'url'	 => $checkUrl
 			)));
+		}
+
+		// 2015, october 10 - update
+		// API http://validator.w3.org/check? don't return necessary headers (regarding number of errors, warning ...) in response 
+		private function parse_response( $the_content ) {
+			$status = array(
+				'status' 		=> 'Invalid',
+				'nr_of_errors' 	=> 0,
+				'nr_of_warning' => 0,
+				'nr_of_info'	=> 0,
+				//'recursion' 	=> '',
+				'msg'			=> '',
+			);
+			
+			//if ( trim($the_content) == "" ) return array_merge($status, array('msg' => 'empty content'));
+ 
+ 			// php query class
+			require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/php-query/php-query.php' );  
+
+			if ( !empty($this->the_plugin->charset) )
+				$doc = pspphpQuery::newDocument( $the_content, $this->the_plugin->charset );
+			else
+				$doc = pspphpQuery::newDocument( $the_content );
+
+			foreach( pspPQ('#results li') as $li ) {
+				// cache the object
+				$li = pspPQ($li);
+				$css_class = $li->attr('class');
+				
+				if ( 'info' == $css_class ) {
+					$status['nr_of_info']++;
+				}
+				else if ( 'info warning' == $css_class ) {
+					$status['nr_of_warning']++;
+				}
+				else if ( 'error' == $css_class ) {
+					$status['nr_of_errors']++;
+				}
+			}
+			
+			if ( empty($status['nr_of_warning']) && empty($status['nr_of_errors']) ) {
+				$status['status'] = 'Valid';
+			}
+			return $status;
 		}
     }
 }

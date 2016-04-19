@@ -41,9 +41,12 @@ class pspSeoSitemap
     
     const EXT = '.xml';
     private static $SCHEMA = array(
-       'xmlns'                           => 'http://www.sitemaps.org/schemas/sitemap/0.9',
-       'xmlns:xsi'                       => 'http://www.w3.org/2001/XMLSchema-instance',
-       'xmlns:schemaLocation'            => 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd',
+        'xmlns'                           => 'http://www.sitemaps.org/schemas/sitemap/0.9',
+        'xmlns:xsi'                       => 'http://www.w3.org/2001/XMLSchema-instance',
+        'xmlns:schemaLocation'            => array(
+            'url' => 'http://www.sitemaps.org/schemas/sitemap/0.9',
+            'xsd' => 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'
+        ),
     );
     const SCHEMA_IMG = 'http://www.google.com/schemas/sitemap-image/1.1';
     const SCHEMA_VIDEO = 'http://www.google.com/schemas/sitemap-video/1.1';
@@ -204,6 +207,13 @@ class pspSeoSitemap
                 ) {
                     self::$do_compress = false;
                 }
+                
+                $ob_level = ob_get_level();
+                if ( !empty($ob_level) ) {
+                    for ($i=0; $i<$ob_level; $i++) {
+                        ob_end_clean();
+                    }
+                }
 
                 //ob_clean();
                 if ( self::$do_compress ) {
@@ -218,12 +228,16 @@ class pspSeoSitemap
     }
     
     private function detect_if_sitemap_page() {
-        $siteurl = get_option('siteurl');
+        $siteurl = get_option('home'); // siteurl | home
+        //$siteurl = $this->get_home_url();
+
         $parts = parse_url($siteurl);
         $path = isset($parts['path']) ? $parts['path'] : ''; //uncomment this if the sitemap is not generated
  
         $uri = $_SERVER['REQUEST_URI'];
         $path_len = strlen($path);
+        //var_dump('<pre>', $siteurl, $uri, $path, '</pre>'); die('debug...');
+
         if(strlen($uri) > $path_len && substr($uri, 0, $path_len) == $path) {
 
             $request = substr($uri,$path_len);
@@ -244,6 +258,8 @@ class pspSeoSitemap
 
     private function detect_sitemap_page()
     {
+		$this->the_plugin->load_woocommerce_taxonomies();
+
         $retModules = $this->detect_if_sitemap_page();
         if( self::$is_sitemap_url && !empty($retModules) ) {
             // begin sitemap
@@ -275,7 +291,7 @@ class pspSeoSitemap
                 //ob_end_flush();
             //}
             $xml_source = ob_get_clean();
- 
+
             if ( self::$has_stylesheet ) {
 
                 // Load the XML source
@@ -299,7 +315,7 @@ class pspSeoSitemap
             } else {
                 echo $xml_source;           
             }
-            echo PHP_EOL;
+            //echo PHP_EOL;
             
             remove_all_actions( 'wp_footer' );
             die; 
@@ -784,7 +800,7 @@ class pspSeoSitemap
 
         if ( $this->is_url_relative( $src ) === true ) {
             if ( $src[0] !== '/' ) {
-                continue 1;
+                //continue 1;
             } else {
                 // URL is relative => make it absolute
                 $src = $this->home_url . $src;
@@ -1168,7 +1184,8 @@ class pspSeoSitemap
 
                 if ( isset($val->meta_value) ) {
                     $meta_value = $val->meta_value;
-                    $meta_value = unserialize( $meta_value );
+					if ( !empty($meta_value) )
+                    	$meta_value = unserialize( $meta_value );
 
                     if ( isset($meta_value['resp']) )
                         unset( $meta_value['resp'] );
@@ -1280,6 +1297,7 @@ class pspSeoSitemap
                     if ( !empty($vid_meta) ) {
 
                         $vid_meta = array_merge( $vid_meta, $this->video_info_check( $vid_meta ) );
+						$key = 0;
                         $ret[ "$k" ][ "$key" ] = $vid_meta;
                     }
                 }
@@ -1620,6 +1638,17 @@ class pspSeoSitemap
 
         $this->getWriter()->startElement($parent_tag);
         foreach (self::$SCHEMA as $schema_key => $schema_value) {
+            if ( is_array($schema_value) ) {
+                if ( !isset($this->settings['use_xmlns_schemalocation_xsd'])
+                    || (isset($this->settings['use_xmlns_schemalocation_xsd']) && $this->settings['use_xmlns_schemalocation_xsd'] == 'no')
+                ) {
+                    unset($schema_value['xsd']);
+                }
+                $schema_value = implode(' ', $schema_value);
+            }
+            if ( $parent_tag == 'sitemapindex' && $schema_key == 'xmlns:schemaLocation' ) {
+                $schema_value = str_replace('sitemap.xsd', 'siteindex.xsd', $schema_value);
+            }
             $this->getWriter()->writeAttribute($schema_key, $schema_value);            
         }
 
@@ -1686,7 +1715,7 @@ class pspSeoSitemap
 
         } else {
             if ( $sitemap_type['mod'] == 'posttype' ) {
-                if ( $general_sitemap_settings['include_img']=='yes' ) {
+                if ( isset($general_sitemap_settings['include_img']) && $general_sitemap_settings['include_img']=='yes' ) {
                     $images = $this->get_images( $post_type );
                     $images = $this->filter_images( $images );
                     $media = array('images' => $images);
@@ -2089,23 +2118,33 @@ class pspSeoSitemap
 
     private function get_sitemap_posttypes() {
         $general_sitemap_settings = $this->settings;
-        
-        $standard_content = (array) $general_sitemap_settings['standard_content'];
-        $custom_posttypes = (array) $general_sitemap_settings['post_types'];
+ 
+        $standard_content = isset($general_sitemap_settings['standard_content'])
+			? (array) $general_sitemap_settings['standard_content']
+			: array('site', 'post', 'page', 'category', 'post_tag', 'archive', 'author');
+        $custom_posttypes = isset($general_sitemap_settings['post_types'])
+        	? (array) $general_sitemap_settings['post_types']
+			: array();
 
         $post_type = (array) array_intersect( array('post', 'page'), $standard_content );       
         $post_type = array_merge( $post_type, $custom_posttypes );
+		$post_type = array_filter( array_unique( $post_type ) );
         return $post_type;
     }
     
     private function get_sitemap_taxonomies() {
         $general_sitemap_settings = $this->settings;
         
-        $standard_content = (array) $general_sitemap_settings['standard_content'];
-        $custom_taxonomies = (array) $general_sitemap_settings['taxonomies'];
-
+        $standard_content = isset($general_sitemap_settings['standard_content'])
+			? (array) $general_sitemap_settings['standard_content']
+			: array('site', 'post', 'page', 'category', 'post_tag', 'archive', 'author');
+        $custom_taxonomies = isset($general_sitemap_settings['taxonomies'])
+        	? (array) $general_sitemap_settings['taxonomies']
+			: array();
+ 
         $taxonomies = (array) array_intersect( array('category', 'post_tag'), $standard_content );       
         $taxonomies = array_merge( $taxonomies, $custom_taxonomies );
+		$taxonomies = array_filter( array_unique( $taxonomies ) );
         return $taxonomies;
     }
     
@@ -2129,8 +2168,10 @@ class pspSeoSitemap
         if( $post_type == 'page' || $post_type == 'post' ) {
             $permalink = get_permalink( $post->ID );
         } else {  
-            $permalink = get_post_permalink( $post->ID ); 
+            $permalink = get_post_permalink( $post->ID );
             $permalink = explode('=', $permalink);
+			if ( !isset($permalink[1]) ) return $permalink[0];
+
             $permalink = $permalink[1];
             $permalink = explode('&', $permalink);
             $permalink_modified = $permalink[0];
@@ -2138,9 +2179,11 @@ class pspSeoSitemap
             $permalink_original = get_permalink( $post->ID );
             $permalink_original = explode('/', $permalink_original);
             $permalink_original = array_filter($permalink_original);
-            end($permalink_original);
+            //end($permalink_original);
                     
-            $custom_post_type_permalink = untrailingslashit($this->home_url).'/'.$permalink[0].'/'.end($permalink_original);
+            $custom_post_type_permalink = untrailingslashit($this->home_url)
+				. '/' . $permalink_modified
+				. '/' . end($permalink_original);
                     
             $permalink = trailingslashit( $custom_post_type_permalink );
             
@@ -2399,7 +2442,7 @@ class pspSeoSitemap
 
                 if ( $val->posts_found <=0 ) continue 1;
                 
-                if ( $archive->month == date("n") && $archive->year == date("Y") ) {
+                if ( $val->month == date("n") && $val->year == date("Y") ) {
                     // archive is the current month one!
                 }
                 
@@ -2431,7 +2474,7 @@ class pspSeoSitemap
 
     private function get_items_taxonomy( $sitemap_type ) {
         global $wpdb;
-        
+   
         $s = $this->settings;
         $taxonomy = $sitemap_type['submod'];
         $taxonomies_zero_posts = isset($s['taxonomies_zero_posts']) && $s['taxonomies_zero_posts'] == 'yes' ? true : false;
@@ -2445,7 +2488,7 @@ class pspSeoSitemap
         // post types (including post | page)
         $post_types = $this->get_sitemap_posttypes();
         $post_type = implode(',', $post_types);
-        
+   
         // used to filter terms which relate to valid posts
         $sql_posts = "
             SELECT
@@ -2492,9 +2535,10 @@ class pspSeoSitemap
             
         $sql_terms = sprintf($sql_terms, $taxonomy);
         //var_dump('<pre>',$sql_terms,'</pre>'); die;
-            
+    
         $res = $wpdb->get_results($sql_terms);
         if (empty($res)) return array();
+		//var_dump('<pre>', $res, '</pre>'); die('debug...');  
         
         // all fine => build an array with term_id as key
         $terms = array();
@@ -2523,7 +2567,7 @@ class pspSeoSitemap
             
             $term_id = $val->term_id;
             $term_slug = $val->slug;
-   
+
             // excluded categories
             if ( in_array($term_id, $exclude_categories) ) {
                 unset($res["$key"]);
@@ -2535,7 +2579,7 @@ class pspSeoSitemap
                 continue 1;
             }
 
-            $res["$key"] = (object) array_merge( (array) $res["$key"], array(
+            $res[$key] = (object) array_merge( (array) $res[$key], array(
                 '__permalink'               => $this->get_term_link($val, $term2ancestry["$term_id"]),
                 //'__lastmod'                 => '',
                 //'__priority'                => '',
@@ -2586,7 +2630,7 @@ class pspSeoSitemap
         global $wpdb;
  
         if ( empty($terms) ) return array();
-        
+  
         $_term = array();
         foreach ($terms as $term) {
 
@@ -2595,11 +2639,19 @@ class pspSeoSitemap
 
             !isset($_term["$term_id"]) ? $_term["$term_id"] = array() : ''; 
 
-            $parent = isset($term->parent) ? $term->parent : 0;
+            $parent = isset($term->parent) && property_exists($term, 'parent') ? $term->parent : 0;
             {
                 while ( $parent > 0 ) {
-                    $_term["$term_id"][] = $terms["$parent"]->slug;
-                    $parent = isset($terms["$parent"], $terms["$parent"]->parent) ? $terms["$parent"]->parent : 0;
+                	if ( isset($terms["$parent"]) ) {
+                  		$_term["$term_id"][] = $terms["$parent"]->slug;
+					}
+                    //$parent = isset($terms["$parent"], $terms["$parent"]->parent) ? $terms["$parent"]->parent : 0;
+                    if ( isset($terms["$parent"]) && is_object($terms["$parent"]) && property_exists($terms["$parent"], 'parent') ) {
+						$parent = $terms["$parent"]->parent;
+					}
+					else {
+						$parent = 0;
+					}
                 }
             }
         }
@@ -2609,7 +2661,7 @@ class pspSeoSitemap
 
     private function get_term_link( $termObj, $ancestry=array() ) {
         $term_link = get_term_link($termObj, $termObj->taxonomy);
-        
+		
         //if ( $termObj->taxonomy == 'product_cat' ) return $term_link;
 
         $url_parts = $this->get_url_parts($term_link);
@@ -2617,7 +2669,7 @@ class pspSeoSitemap
 
         parse_str($url_parts['query'], $qp);
         if ( !isset($qp['term']) || !isset($qp['taxonomy']) || $qp['term'] != $termObj->slug ) return $term_link; // invalid link?
-
+   
         $home_url = untrailingslashit($this->home_url);
         $_term_link = array();
         $_term_link[] = $home_url;

@@ -1,6 +1,6 @@
 <?php
 $aa_tunnel_config = array(
-	"key" => "501d0292aca8270d539662a5a9aad855",
-	"url" => "http://dev.premiumseopack.com/wp-content/plugins/premium-seo-pack/modules/remote_support/remote_tunnel.php",
-	"path"=> "/home/aateam30/public_html/premiumseopack.com/dev/"
+	"key" => "b45f0fec10a7481fae4b28251144220c",
+	"url" => "http://dev.aa-team.com/wp-plugins/WooZone/wp-content/plugins/premium-seo-pack/modules/remote_support/remote_tunnel.php",
+	"path"=> "/var/www/wp-plugins/WooZone/"
 );

@@ -30,6 +30,8 @@ if (class_exists('pspSocialSharing') != true) {
 		private $shareInfo;
 		
 		private static $isTest = false;
+        
+        public static $utils = array();
 
 
 		/*
@@ -43,6 +45,9 @@ if (class_exists('pspSocialSharing') != true) {
 			$this->module_folder = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/Social_Stats/';
 			$this->module_folder_path = $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'modules/Social_Stats/';
 
+            // get utils
+            self::$utils = $this->the_plugin->get_client_utils();
+                
 			$this->socialNetworks();
 			
 			$this->init();
@@ -652,6 +657,20 @@ if (class_exists('pspSocialSharing') != true) {
 				'isContent'				=> false,
 				'isEnabled'				=> false
 			);
+
+            extract(self::$utils);
+
+            // per Mobile
+            if ( isset($this->plugin_settings['users_devices'])
+                && $this->plugin_settings['users_devices'] != 'both' ) {
+
+                if ( $this->plugin_settings['users_devices'] == 'mobile' ) {
+                    if ( !$isMobile ) return $ret;
+
+                } else if ( $this->plugin_settings['users_devices'] == 'desktop' ) {
+                    if ( $isMobile ) return $ret;
+                }
+            }
 			
 			$isEnabled = false; $isFloating = false; $isContent = false;
 			foreach ($this->toolbarTypes as $k=>$v) {

@@ -356,7 +356,7 @@ msgstr ""
 #: aa-framework/framework.class.php:1093
 #@ psp
 msgid "Premium SEO Pack - Dashboard"
-msgstr "Test"
+msgstr ""
 
 #: aa-framework/framework.class.php:1094
 #@ psp
@@ -456,7 +456,7 @@ msgstr ""
 #: modules/on_page_optimization/init.php:540
 #@ psp
 msgid "Dashboard"
-msgstr "Test"
+msgstr ""
 
 #: aa-framework/menu.php:85
 #@ psp

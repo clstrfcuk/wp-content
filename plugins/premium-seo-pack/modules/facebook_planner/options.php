@@ -169,7 +169,7 @@ if ( !function_exists( 'psp_wplanner_fb_options' ) ) {
 			
 			'auth' => array(
 				"desc" => __( "Facebook Application authorization for cron job.", 'psp' ),
-				"type" => "authorization_button",
+				"type" => "authorization_button", //authorization_button | authorization_button_fbv4
 				'size' 	=> 'large',
 				'value' =>  __( "Authorization facebook app", 'psp' )
 			),

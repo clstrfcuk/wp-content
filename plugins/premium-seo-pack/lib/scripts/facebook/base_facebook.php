@@ -59,8 +59,9 @@ class psp_FacebookApiException extends Exception
     } else {
       $msg = 'Unknown Error. Check getResult()';
     }
+	$msg = substr($msg, 0, 150);
 
-    parent::__construct($msg, $code);
+	parent::__construct($msg, $code);
   }
 
   /**
@@ -105,7 +106,7 @@ class psp_FacebookApiException extends Exception
     if ($this->code != 0) {
       $str .= $this->code . ': ';
     }
-    return $str . $this->message;
+    return substr(($str . $this->message), 0, 150);
   }
 }
 

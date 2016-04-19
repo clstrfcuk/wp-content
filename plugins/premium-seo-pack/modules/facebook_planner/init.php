@@ -12,6 +12,11 @@ if (class_exists('pspFacebook_Planner') != true) {
         * Some required plugin information
         */
         const VERSION = '1.0';
+		
+		// 4 = use new facebook api (only authorization in method '__fbAuth' is implemented )
+		// 1 = use old facebook api
+		const FACEBOOK_API_VERSION = 1;
+		
 
         /*
         * Store some helpers config
@@ -61,8 +66,19 @@ if (class_exists('pspFacebook_Planner') != true) {
 		        "CUSTOM" => __('Private (only me)', 'psp')
 		    );
 			
-			// load the facebook SDK
-			require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook/facebook.php' );
+			if ( self::FACEBOOK_API_VERSION == 4 ) {
+				// load the facebook SDK
+				if ( !defined('FACEBOOK_SDK_V4_SRC_DIR') ) {
+					define( 'FACEBOOK_SDK_V4_SRC_DIR', $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook-v4-5.0.0/' );
+				}
+	
+				// load the facebook SDK
+				require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook-v4-5.0.0/autoload.php' );
+			}
+			else {
+				require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook/facebook.php' );
+			}
+
 			$this->fb_details = $this->the_plugin->getAllSettings('array', 'facebook_planner');
 
 			if( (isset($this->fb_details['app_id']) && trim($this->fb_details['app_id']) != '') && ( isset($this->fb_details['app_secret']) && trim($this->fb_details['app_secret']) != '') ) {
@@ -625,6 +641,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 			return $wpdb->get_var( "SELECT `" . ( $field ) . "` FROM `" . ( $wpdb->prefix . 'psp_post_planner_cron' ) . "` WHERE 1=1 AND id_post=" . $post->ID );
 		}
 		
+		// :: Facebook Authorization STEP 2
 		public function fbAuth()
 		{
 			$facebook = new psp_Facebook(array(
@@ -636,34 +653,334 @@ if (class_exists('pspFacebook_Planner') != true) {
 			// check if redirect from facebook to page
 			$token = $facebook->getAccessToken();  
 
-			if(trim($token) != "" && trim($state) != ""){  
+			if (trim($token) != "" && trim($state) != ""){
+				$validAuth = false;
+
 				// saving offline session into DB
 				update_option('psp_fb_planner_token', $token);
 				
-				// get user profile
-				$user_accounts = $facebook->api('me/accounts'); 
-
 				$userPages = array();
-				foreach ($user_accounts['data'] as $key => $value){
-					if($value['category'] != 'Application'){
-						$__key = (string) $value['id'];
-						$userPages['pages'][ "$__key" ] = $value;
+
+				// get user pages				
+				try {
+					$user_accounts = $facebook->api('me/accounts'); 
+												
+					if(count($user_accounts) > 0 && isset($user_accounts['data'])){
+						$validAuth = true;
+						
+						foreach ($user_accounts['data'] as $key => $value){
+							if($value['category'] != 'Application'){
+								$__key = (string) $value['id'];
+								$userPages['pages'][ "$__key" ] = $value;
+							}
+						}
+									
+						$this->the_plugin->facebook_planner_last_status(array(
+							'status' 	=> 'success',
+							'step' 		=> 'auth /fbAuth',
+							'msg' 		=> $user_accounts,
+						));
+					} else {
+
+						//$this->the_plugin->facebook_planner_last_status(array(
+						//	'status' 	=> 'error',
+						//	'step' 		=> 'auth /fbAuth',
+						//	'msg' 		=> $user_accounts,
+						//));
 					}
+												
+				} catch (psp_FacebookApiException $e) {
+											
+					$validAuth = 0;	
+					// clean token
+					//update_option('psp_fb_planner_token', $token);
+								
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $e,
+					));
 				}
-				
-				// get user profile
-				$user_groups = $facebook->api('me/groups');
-				foreach ($user_groups['data'] as $key => $value){
-					$__key = (string) $value['id'];
-					$userPages['groups'][ "$__key" ] = $value;
+
+				// get user groups
+				try {
+					$user_groups = $facebook->api('me/groups');
+												
+					if(count($user_groups) > 0 && isset($user_groups['data'])){
+						$validAuth = true;
+						
+						foreach ($user_groups['data'] as $key => $value){
+							$__key = (string) $value['id'];
+							$userPages['groups'][ "$__key" ] = $value;
+						}
+									
+						$this->the_plugin->facebook_planner_last_status(array(
+							'status' 	=> 'success',
+							'step' 		=> 'auth /fbAuth',
+							'msg' 		=> $user_groups,
+						));
+					} else {
+
+						//$this->the_plugin->facebook_planner_last_status(array(
+						//	'status' 	=> 'error',
+						//	'step' 		=> 'auth /fbAuth',
+						//	'msg' 		=> $user_groups,
+						//));
+					}
+												
+				} catch (psp_FacebookApiException $e) {
+											
+					$validAuth = 0;	
+					// clean token
+					//update_option('psp_fb_planner_token', $token);
+								
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $e,
+					));
 				}
-				
+			
 				if(count($userPages) > 0){
 					update_option('psp_fb_planner_user_pages', json_encode($userPages));
 					
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'success',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $userPages,
+					));
+
 					header( 'location: ' . admin_url('admin.php?page=psp#facebook_planner') );
 					exit();
 				}
+			} else {
+				$this->the_plugin->facebook_planner_last_status(array(
+					'status' 	=> 'error',
+					'step' 		=> 'auth /fbAuth',
+					'msg' 		=> array('token' => $token, 'state' => $state),
+				));
+			}
+		}
+
+		public function __fbAuth()
+		{
+			$plugin_url = admin_url('admin.php?page=psp#facebook_planner');
+			$plugin_url_ = '<a href="'.$plugin_url.'" class="psp-button blue">Go Back to the plugin facebook planner module.</a><br />';
+
+			$facebook = new Facebook\Facebook([
+				'app_id' 					=> $this->fb_details['app_id'],
+				'app_secret' 				=> $this->fb_details['app_secret'],
+				'default_graph_version' 	=> 'v2.4',
+				'persistent_data_handler'	=> 'session'
+			]);
+			
+			if( isset($facebook) ) {
+				$fb_helper = $facebook->getRedirectLoginHelper();
+			}
+ 
+			try {
+				$accessToken = $fb_helper->getAccessToken();
+			} catch(Facebook\Exceptions\FacebookResponseException $e) {
+				$this->the_plugin->facebook_planner_last_status(array(
+					'status' 	=> 'error',
+					'step' 		=> 'auth /fbAuth',
+					'msg' 		=> $e,
+				));
+
+				// When Graph returns an error
+				echo $plugin_url_;
+				echo 'Graph returned an error: ' . $e->getMessage();
+				exit;
+			} catch(Facebook\Exceptions\FacebookSDKException $e) {
+				$this->the_plugin->facebook_planner_last_status(array(
+					'status' 	=> 'error',
+					'step' 		=> 'auth /fbAuth',
+					'msg' 		=> $e,
+				));
+
+				// When validation fails or other local issues
+				echo $plugin_url_;
+				echo 'Facebook SDK returned an error: ' . $e->getMessage();
+				exit;
+			}
+
+			if ( !isset($accessToken) ) {
+				$is_error = $fb_helper->getError() || $fb_helper->getErrorCode();
+				if ($is_error) {
+					$error_details = array(
+						'error'				=> $fb_helper->getError(),
+						'error_code'		=> $fb_helper->getErrorCode(),
+						'error_reason'		=> $fb_helper->getErrorReason(),
+						'error_desc'		=> $fb_helper->getErrorDescription() || (isset($_GET['error_message']) ? $_GET['error_message']  : null),
+					);
+					$error_details = array_filter($error_details);
+
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $error_details,
+					));
+
+					header('HTTP/1.0 401 Unauthorized');
+					
+					echo $plugin_url_;
+					var_dump('<pre>',$error_details,'</pre>'); 
+				} else {
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> 'Bad request',
+					));
+
+					header('HTTP/1.0 400 Bad Request');
+					
+					echo $plugin_url_;
+					echo 'Bad request';
+				}
+				exit;
+			}
+   
+			// Logged in
+			//echo '<h3>Access Token</h3>';
+			//var_dump($accessToken->getValue());
+			
+			// The OAuth 2.0 client handler helps us manage access tokens
+			$oAuth2Client = $facebook->getOAuth2Client();
+			
+			// Get the access token metadata from /debug_token
+			$tokenMetadata = $oAuth2Client->debugToken( $accessToken );
+			//echo '<h3>Metadata</h3>';
+			//var_dump('<pre>',$accessToken,$tokenMetadata,'</pre>');
+			  
+			// Validation (these will throw FacebookSDKException's when they fail)
+			$tokenMetadata->validateAppId( $this->fb_details['app_id']);
+			// If you know the user ID this access token belongs to, you can validate it here
+			//$tokenMetadata->validateUserId('123');
+			//$tokenMetadata->validateExpiration();
+ 
+			if ( !$accessToken->isLongLived() ) {
+				// Exchanges a short-lived access token for a long-lived one
+				try {
+					$accessToken = $oAuth2Client->getLongLivedAccessToken( $accessToken );
+				} catch (Facebook\Exceptions\FacebookSDKException $e) {
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $e,
+					));
+
+					echo $plugin_url_;
+					echo "<p>Error getting long-lived access token: " . $helper->getMessage() . "</p>\n\n";
+					exit;
+				}
+				//echo '<h3>Long-lived</h3>';
+				//var_dump($accessToken->getValue());
+			}
+			
+			// User is logged in with a long-lived access token.
+			// You can redirect them to a members-only page.
+			{
+				// saving offline session into DB
+				update_option('psp_fb_planner_token', $accessToken);
+				$facebook->setDefaultAccessToken($accessToken);
+
+				$userPages = array();
+  
+				// get user pages
+				try {
+					// Returns a `Facebook\FacebookResponse` object
+					$response = $facebook->get('/me/accounts');
+				} catch(Facebook\Exceptions\FacebookResponseException $e) {
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $e,
+					));
+
+					echo $plugin_url_;
+					echo 'User Pages: Graph returned an error: ' . $e->getMessage();
+					exit;
+				} catch(Facebook\Exceptions\FacebookSDKException $e) {
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $e,
+					));
+
+					echo $plugin_url_;
+					echo 'User Pages: Facebook SDK returned an error: ' . $e->getMessage();
+					exit;
+				}
+ 
+				$feedEdge = $response->getGraphEdge(); // Page 1
+				$cc = 0;
+				do {
+					foreach ($feedEdge as $status) {
+						$status = $status->asArray();
+						if ( 1//'app page' == strtolower($status['category'])
+							&& (isset($status['perms']) && in_array('CREATE_CONTENT', $status['perms'])) ){
+							$userPages['pages'][] = $status;
+						}
+					}
+
+					$feedEdge = $facebook->next($feedEdge); // Next Page
+					$cc++;
+				}
+				while( $feedEdge );
+				
+				// get user groups
+				try {
+					// Returns a `Facebook\FacebookResponse` object
+					$response = $facebook->get('/me/groups');
+				} catch(Facebook\Exceptions\FacebookResponseException $e) {
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $e,
+					));
+
+					echo $plugin_url_;
+					echo 'User Groups: Graph returned an error: ' . $e->getMessage();
+					exit;
+				} catch(Facebook\Exceptions\FacebookSDKException $e) {
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $e,
+					));
+					
+					echo $plugin_url_;
+					echo 'User Groups: Facebook SDK returned an error: ' . $e->getMessage();
+					exit;
+				}
+
+				$feedEdge = $response->getGraphEdge(); // Page 1
+				$cc = 0;
+				do {
+					foreach ($feedEdge as $status) {
+						$status = $status->asArray();
+						if ( 1 ){
+							$userPages['groups'][] = $status;
+						}
+					}
+
+					$feedEdge = $facebook->next($feedEdge); // Next Page
+					$cc++;
+				}
+				while( $feedEdge );
+
+				//if (count($userPages) > 0) {
+					update_option('psp_fb_planner_user_pages', json_encode($userPages));
+					
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'success',
+						'step' 		=> 'auth /fbAuth',
+						'msg' 		=> $userPages,
+					));
+					
+					header( 'location: ' . admin_url('admin.php?page=psp#facebook_planner') );
+					exit();
+				//}
 			}
 		}
 		
@@ -818,13 +1135,14 @@ if (class_exists('pspFacebook_Planner') != true) {
 			$privacy 	= $_POST['privacy'];
 			
 			$postData = array(
-				'name' 			=> $_POST['psp_wplannerfb_title'],
-				'link' 			=> ( trim($_POST['psp_wplannerfb_permalink']) == 'custom_link' ? trim($_POST['psp_wplannerfb_permalink_value']) : get_permalink($id) ),
-				'description' 	=> $_POST['psp_wplannerfb_description'],
-				'caption' 		=> $_POST['psp_wplannerfb_caption'],
-				'message' 		=> $_POST['psp_wplannerfb_message'],
-				'picture'	 	=> $_POST['psp_wplannerfb_image'],
-				'use_picture' 	=> $_POST['psp_wplannerfb_useimage']
+				'name' 			=> isset($_POST['psp_wplannerfb_title']) ? $_POST['psp_wplannerfb_title'] : '',
+				'link' 			=> isset($_POST['psp_wplannerfb_permalink']) && trim($_POST['psp_wplannerfb_permalink'])
+					== 'custom_link' ? trim($_POST['psp_wplannerfb_permalink_value']) : get_permalink($id),
+				'description' 	=> isset($_POST['psp_wplannerfb_description']) ? $_POST['psp_wplannerfb_description'] : '',
+				'caption' 		=> isset($_POST['psp_wplannerfb_caption']) ? $_POST['psp_wplannerfb_caption'] : '',
+				'message' 		=> isset($_POST['psp_wplannerfb_message']) ? $_POST['psp_wplannerfb_message'] : '',
+				'picture'	 	=> isset($_POST['psp_wplannerfb_image']) ? $_POST['psp_wplannerfb_image'] : '',
+				'use_picture' 	=> isset($_POST['psp_wplannerfb_useimage']) ? $_POST['psp_wplannerfb_useimage'] : ''
 			);
 
 			// Plugin facebook utils load
@@ -1332,9 +1650,11 @@ if (class_exists('pspFacebook_Planner') != true) {
 			));
 			}
   
+            // publish_actions instead of publish_stream | offline_access - deprecated
+            $fb_permissions = 'email,publish_actions,manage_pages,user_groups'; // optional
 			$loginUrl = $this->fb->getLoginUrl(
 				array(
-					'scope' => 'email,publish_stream,user_groups,manage_pages,offline_access',
+					'scope' => $fb_permissions,
 					'redirect_uri' => $arr_params['redirect_uri']
 				)
 			);
@@ -1385,14 +1705,18 @@ if (class_exists('pspFacebook_Planner') != true) {
 								if(count($user_profile) > 0){
 									$validAuth = true;
 									
-									$last_status = array('last_status' => array('status' => 'success', 'step' => 'profile', 'data' => date("Y-m-d H:i:s"), 'msg' => $user_profile));
-									$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-									$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status, (array) array('auth_foruser_link' => $user_profile['link'], 'auth_foruser_name' => $user_profile['name']) ) );
+									$this->the_plugin->facebook_planner_last_status(array(
+										'status' 	=> 'success',
+										'step' 		=> 'profile',
+										'msg' 		=> $user_profile,
+									));
 								} else {
 								
-									$last_status = array('last_status' => array('status' => 'error', 'step' => 'profile', 'data' => date("Y-m-d H:i:s"), 'msg' => $user_profile));
-									$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-									$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status ) );
+									$this->the_plugin->facebook_planner_last_status(array(
+										'status' 	=> 'error',
+										'step' 		=> 'profile',
+										'msg' 		=> $user_profile,
+									));
 								}
 												
 							} catch (psp_FacebookApiException $e) {
@@ -1401,17 +1725,21 @@ if (class_exists('pspFacebook_Planner') != true) {
 								// clean token
 								//update_option('psp_fb_planner_token', $token);
 								
-								$last_status = array('last_status' => array('status' => 'error', 'step' => 'profile', 'data' => date("Y-m-d H:i:s"), 'msg' => $e));
-								$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-								$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status ) );
+								$this->the_plugin->facebook_planner_last_status(array(
+									'status' 	=> 'error',
+									'step' 		=> 'profile',
+									'msg' 		=> $e,
+								));
 							}
 						}
 								
 						if( $validAuth === false ) {
 
-							$last_status = array('last_status' => array('status' => 'error', 'step' => 'auth', 'data' => date("Y-m-d H:i:s"), 'msg' => 'no db token'));
-							$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-							$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status ) );
+							$this->the_plugin->facebook_planner_last_status(array(
+								'status' 	=> 'error',
+								'step' 		=> 'auth',
+								'msg' 		=> 'no db token',
+							));
 						}
 					}
 
@@ -1426,9 +1754,11 @@ if (class_exists('pspFacebook_Planner') != true) {
 					</script>;');
 
 				} else {
-					$last_status = array('last_status' => array('status' => 'error', 'step' => 'code', 'data' => date("Y-m-d H:i:s"), 'msg' => $code));
-					$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-					$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status ) );
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'code',
+						'msg' 		=> $code,
+					));
 				}
 			}
 		}
@@ -1460,14 +1790,18 @@ if (class_exists('pspFacebook_Planner') != true) {
 						if(count($user_profile) > 0){
 							$validAuth = true;
 									
-							$last_status = array('last_status' => array('status' => 'success', 'step' => 'profile', 'data' => date("Y-m-d H:i:s"), 'msg' => $user_profile));
-							$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-							$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status, (array) array('auth_foruser_link' => $user_profile['link'], 'auth_foruser_name' => $user_profile['name']) ) );
+							$this->the_plugin->facebook_planner_last_status(array(
+								'status' 	=> 'success',
+								'step' 		=> 'profile',
+								'msg' 		=> $user_profile,
+							));
 						} else {
 								
-							$last_status = array('last_status' => array('status' => 'error', 'step' => 'profile', 'data' => date("Y-m-d H:i:s"), 'msg' => $user_profile));
-							$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-							$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status ) );
+							$this->the_plugin->facebook_planner_last_status(array(
+								'status' 	=> 'error',
+								'step' 		=> 'profile',
+								'msg' 		=> $user_profile,
+							));
 						}
 												
 					} catch (psp_FacebookApiException $e) {
@@ -1476,17 +1810,21 @@ if (class_exists('pspFacebook_Planner') != true) {
 						// clean token
 						//update_option('psp_fb_planner_token', $token);
 								
-						$last_status = array('last_status' => array('status' => 'error', 'step' => 'profile', 'data' => date("Y-m-d H:i:s"), 'msg' => $e));
-						$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-						$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status ) );
+						$this->the_plugin->facebook_planner_last_status(array(
+							'status' 	=> 'error',
+							'step' 		=> 'profile',
+							'msg' 		=> $e,
+						));
 					}
 				}
 								
 				if( $validAuth === false ) {
 
-					$last_status = array('last_status' => array('status' => 'error', 'step' => 'auth', 'data' => date("Y-m-d H:i:s"), 'msg' => 'no db token'));
-					$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner_last_status', $last_status );
-					$this->the_plugin->save_theoption( $this->the_plugin->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status ) );
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'step' 		=> 'auth',
+						'msg' 		=> 'no db token',
+					));
 				}
 			}
 

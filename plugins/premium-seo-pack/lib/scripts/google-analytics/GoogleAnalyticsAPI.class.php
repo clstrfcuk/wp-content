@@ -377,7 +377,7 @@ class GoogleAnalyticsAPI {
 
 
 	protected function _query($params=array()){
-
+ 
 		if (!$this->accessToken || !$this->accountId) {
 			throw new Exception('You must provide the accessToken and an accountId');
 		}

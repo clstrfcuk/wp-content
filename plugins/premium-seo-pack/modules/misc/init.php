@@ -97,7 +97,7 @@ if (class_exists('pspMisc') != true) {
 	       	$separator = ' ';
   
         	//slug ($_POST['post_name']) is manually edited or we are on post edit action!
-
+  
         	//@slug must be cleaned only on new posts!
         	if ( isset($_POST['post_name']) && !empty($_POST['post_name']))
         		return $slug;
@@ -112,13 +112,13 @@ if (class_exists('pspMisc') != true) {
         	
         	$stop_words = $this->settings['slug_stop_words'];
         	$stop_words = array_map('trim', explode(',', $stop_words));
-
+ 
         	$slug = call_user_func( self::$strtolower, stripslashes( $slug ) );
         	$original_slug = $slug;
         	$slug = explode($separator, $slug);
         	$slug = array_filter($slug, array( $this, 'slug_filter_parts' )); //filter smaller slug parts
         	$slug = array_diff($slug, $stop_words); //filter stop words
-  
+   
         	if ( empty($slug) ) {
         		return $original_slug;
         	}

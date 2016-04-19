@@ -116,7 +116,7 @@ pspBacklinkBuilder = (function ($) {
 		mainloading.fadeIn('fast');
 
 		jQuery.post(ajaxurl, {
-			'action' 		: 'pspGetPageBuilderRequest',
+			'action' 		: 'pspPageBuilderRequest',
 			'sub_action'	: 'removeDirectories',
 			'id'			: ids,
 			'debug'	: debug

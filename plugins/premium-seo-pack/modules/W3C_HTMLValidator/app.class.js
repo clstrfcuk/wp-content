@@ -43,6 +43,9 @@ pspHTMLValidation = (function ($) {
 				row.find('i.nr_of_errors').text( response.arr.nr_of_errors );
 				row.find('i.nr_of_warning').text( response.arr.nr_of_warning );
 				row.find('i.last_check_at').text( response.arr.last_check_at );
+			} else {
+			    row.find('strong.status').text( response.msg );
+			    row.find('strong.status').css('color', 'red');
 			}
 
 			row_loading(row, 'hide');

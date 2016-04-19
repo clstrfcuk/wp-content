@@ -353,7 +353,7 @@ $__psp_mfo =
 				// tabs
 				'tabs'	=> array(
 					'__tab1'	=> array(__('Format Tags List', 'psp'), 'help_format_tags'),
-					'__tab2'	=> array(__('Title Format', 'psp'), 'home_title,post_title,page_title,product_title,category_title,tag_title,taxonomy_title,archive_title,author_title,search_title,404_title,pagination_title,use_pagination_title'),
+					'__tab2'	=> array(__('Title Format', 'psp'), 'force_title,home_title,post_title,page_title,product_title,category_title,tag_title,taxonomy_title,archive_title,author_title,search_title,404_title,pagination_title,use_pagination_title'),
 					'__tab3'	=> array(__('Meta Description', 'psp'), 'home_desc,post_desc,page_desc,product_desc,category_desc,tag_desc,taxonomy_desc,archive_desc,author_desc,pagination_desc,use_pagination_desc'),
 					'__tab4'	=> array(__('Meta Keywords', 'psp'), 'home_kw,post_kw,page_kw,product_kw,category_kw,tag_kw,taxonomy_kw,archive_kw,author_kw,pagination_kw,use_pagination_kw'),
 					'__tab5'	=> array(__('Meta Robots', 'psp'), 'home_robots,post_robots,page_robots,product_robots,category_robots,tag_robots,taxonomy_robots,archive_robots,author_robots,search_robots,404_robots,pagination_robots,use_pagination_robots'),
@@ -396,6 +396,21 @@ $__psp_mfo =
 				
 				// create the box elements array
 				'elements'	=> array(
+
+                    //=============================================================
+                    //== General options
+                    'force_title' => array(
+                        'type'      => 'select',
+                        'std'       => 'yes',
+                        'size'      => 'large',
+                        'force_width'=> '220',
+                        'title'     => __('Force Title Meta tag: ', 'psp'),
+                        'desc'      => __('force title meta tag (in some cases where you don\'t see the meta title you\'ve setted for you post, page, you need to try and see which one of this 2 options works)', 'psp'),
+                        'options'   => array(
+                            'yes'   => __('parse page content and replace', 'psp'),
+                            'no'    => __('use wp_title wordpress hook', 'psp')
+                        )
+                    ),
 
 					//=============================================================
 					//== help

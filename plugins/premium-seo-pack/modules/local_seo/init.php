@@ -50,19 +50,14 @@ if (class_exists('pspLocalSEO') != true) {
 
 			if ( !$this->the_plugin->verify_module_status( 'local_seo' ) ) ; //module is inactive
 			else {
+				$this->register_postType();
 				if ( $this->the_plugin->is_admin === true ) {
-					$this->init();
+					$this->init_postType();
 				}
 			}
         }
         
-        public function init() {
-
-        	$this->init_postType();
-        }
-        
-		public function init_postType() 
-		{
+        public function register_postType() {
 		    // get label
 		    $labels = array(
 		        'name' 					=> __('PSP Locations', 'psp'),
@@ -95,7 +90,10 @@ if (class_exists('pspLocalSEO') != true) {
 		    );
 		
 		    register_post_type('psp_locations', $args);
-			
+        }
+        
+		public function init_postType() 
+		{
 			add_action( 'admin_head', array( $this, 'add_32px_icon' ) );
 			
 			// add meta boxes to "locations" post type
@@ -475,7 +473,7 @@ if (class_exists('pspLocalSEO') != true) {
 								'title' 	=> __('Google Map Latitude:', 'psp'),
 								//'force_width' => '150',
 								'std'		=> '',
-								'readonly'	=> true,
+								'readonly'	=> false,
 								'desc' 		=> 'retrieved automatically based on your business address',
 							)
 							
@@ -485,7 +483,7 @@ if (class_exists('pspLocalSEO') != true) {
 								'title' 	=> __('Google Map Longitude:', 'psp'),
 								//'force_width' => '150',
 								'std'		=> '',
-								'readonly'	=> true,
+								'readonly'	=> false,
 								'desc' 		=> 'retrieved automatically based on your business address',
 							)
 							

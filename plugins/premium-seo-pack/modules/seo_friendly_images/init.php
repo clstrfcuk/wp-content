@@ -74,7 +74,8 @@ if (class_exists('pspSEOImages') != true) {
 			    	$url = $img->attr('src');
 					$image_name = '';
 					if( trim($url) != "" ){
-						$image_name = explode( '.', end( explode( '/', $url ) ) );
+						$image_name = explode( '/', $url );
+						$image_name = explode( '.', end( $image_name ) );
 						$image_name = $image_name[0]; 
 					}
 					

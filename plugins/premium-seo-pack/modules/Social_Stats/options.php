@@ -177,6 +177,20 @@ echo json_encode(
 						'title' 		=> __('Twitter Account ID:', 'psp'),
 						'desc' 		=> __('Twitter Account ID', 'psp')
 					),
+					
+                    'users_devices' => array(
+                        'type'      => 'select',
+                        'std'       => 'both',
+                        'size'      => 'large',
+                        'force_width'=> '200',
+                        'title'     => __('Display on only users device:', 'psp'),
+                        'desc'      => 'Display on only users device.',
+                        'options'   => array(
+                            'both'          => __('Mobile & Desktop', $psp->localizationName),
+                            'mobile'        => __('Mobile', $psp->localizationName),
+                            'desktop'       => __('Desktop', $psp->localizationName)
+                        ),
+                    ),
 
 					/*'toolbar_enabled_html' => array(
 						'type' 		=> 'html',

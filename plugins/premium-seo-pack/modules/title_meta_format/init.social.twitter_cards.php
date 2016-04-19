@@ -164,7 +164,7 @@ if (class_exists('pspSocialTwitterCards') != true) {
 			}
 				
 			$img_alias = 'twitter:image';
-			if ($metatags[ 'twitter:card' ] == 'summary_large_image') {
+			if ( isset($metatags[ 'twitter:card' ]) && $metatags[ 'twitter:card' ] == 'summary_large_image' ) {
 				$img_alias = 'twitter:image:src'; 
 			}
   

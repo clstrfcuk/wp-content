@@ -1,8 +1,8 @@
 //psp_local_seo_tc_button, psp_rich_snippets
 (function($) {
-	var pluginCmd = 'aafPopup',
+	var pluginCmd = 'xyzaafPopup',
 	pluginPopupUrl = aafShortcodes.plugin_url + "tinymce.popup.php?{elemId}&{width}&{height}";
-
+ 
 	var misc = {
 
 		arrayHasOwnIndex: function(array, prop) {
@@ -20,11 +20,11 @@
     tinymce.PluginManager.add('aafShortcodes', function( editor, url ) {
     	// add command
     	if ( 1 ) {
-			editor.addCommand(pluginCmd, function ( ui, atts ) {
- 
+			editor.addCommand(pluginCmd, function ( ui, v ) {
+			    var atts = v;
 				var title = atts.moduleTitle || 'default module title',
 				elemId = 'module=' + atts.module + '&shortcode=' + atts.shortcode;
-			
+ 
 				// load popup window!
 				var popupUrl = pluginPopupUrl;
 				popupUrl = popupUrl.replace('{elemId}', elemId);
@@ -46,7 +46,7 @@
 				return null;
 
 			var that = this, button, btnMenuRoot = [];
-				
+  
 			for (var module in aafShortcodes.modules) {
 
 				var btnName = palias+'_'+module, btnDetails = aafShortcodes.modules[module];
@@ -56,7 +56,7 @@
 				for (var key in shc) {
 					var shortcode = shc[key];
 					
-					atts = {
+					var atts = {
 						'moduleTitle'	: btnDetails.button.title,
 						'title'			: shortcode.title,
 						'module'		: module,
@@ -66,8 +66,8 @@
 						text		: shortcode.title,
 						value		: atts,
 						onclick		: function(e) {
-							var $this = this, atts = e.control._value; //$this.text()
-
+							var $this = this, atts = this.value(); //e.control._value; //$this.text();
+ 
 							editor.execCommand(pluginCmd, false, atts);
 						}
 					});

@@ -38,7 +38,7 @@ if (class_exists('aaModulesManger') != true) {
 		/**
 	    * Singleton pattern
 	    *
-	    * @return pspLinkRedirect Singleton instance
+	    * @return Singleton instance
 	    */
 		static public function getInstance()
 		{

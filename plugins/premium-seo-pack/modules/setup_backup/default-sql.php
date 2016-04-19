@@ -119,4 +119,4 @@ if (class_exists('pspSetupBackup') != true) {
 }
 
 // Initialize the pspSetupBackup class
-$pspSetupBackup = new pspSetupBackup($this->cfg);
+$pspSetupBackup = new pspSetupBackup();

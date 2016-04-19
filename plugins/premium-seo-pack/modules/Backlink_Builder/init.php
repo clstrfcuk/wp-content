@@ -500,11 +500,11 @@ if (class_exists('pssBacklinkBuilder') != true) {
 				'html'			=> ''
 			);
 
-			$response = $this->the_plugin->remote_get( $file_url, 'noproxy' );
+			$response = $this->the_plugin->remote_get( $file_url, 'default' );
 			if ( $response['status'] != 'valid' ) {
 				return array_merge($ret, array('html' => $response['msg']));
 			}
-  
+
 			// valid file request
 			$file_content = $response['body'];
 			$rows = json_decode($file_content);

@@ -309,6 +309,17 @@
 </codes>
 </locale>
 <locale>
+<englishName>Spanish (Chile)</englishName>
+<codes>
+<code>
+<standard>
+<name>FB</name>
+<representation>es_CL</representation>
+</standard>
+</code>
+</codes>
+</locale>
+<locale>
 <englishName>Spanish (Colombia)</englishName>
 <codes>
 <code>
@@ -337,6 +348,28 @@
 <standard>
 <name>FB</name>
 <representation>es_LA</representation>
+</standard>
+</code>
+</codes>
+</locale>
+<locale>
+<englishName>Spanish (Mexico)</englishName>
+<codes>
+<code>
+<standard>
+<name>FB</name>
+<representation>es_MX</representation>
+</standard>
+</code>
+</codes>
+</locale>
+<locale>
+<englishName>Spanish (Venezuela)</englishName>
+<codes>
+<code>
+<standard>
+<name>FB</name>
+<representation>es_VE</representation>
 </standard>
 </code>
 </codes>
@@ -551,6 +584,17 @@
 </codes>
 </locale>
 <locale>
+<englishName>Haitian Creole</englishName>
+<codes>
+<code>
+<standard>
+<name>FB</name>
+<representation>ht_HT</representation>
+</standard>
+</code>
+</codes>
+</locale>
+<locale>
 <englishName>Hungarian</englishName>
 <codes>
 <code>
@@ -716,6 +760,17 @@
 </codes>
 </locale>
 <locale>
+<englishName>Kyrgyz</englishName>
+<codes>
+<code>
+<standard>
+<name>FB</name>
+<representation>ky_KG</representation>
+</standard>
+</code>
+</codes>
+</locale>
+<locale>
 <englishName>Latin</englishName>
 <codes>
 <code>
@@ -799,6 +854,17 @@
 <standard>
 <name>FB</name>
 <representation>mg_MG</representation>
+</standard>
+</code>
+</codes>
+</locale>
+<locale>
+<englishName>Māori</englishName>
+<codes>
+<code>
+<standard>
+<name>FB</name>
+<representation>mi_NZ</representation>
 </standard>
 </code>
 </codes>

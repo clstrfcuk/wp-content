@@ -117,6 +117,19 @@ echo json_encode(
 						', 'psp'),
 					),
 					
+					'google_anonymize_ip' 	=> array(
+						'type' 		=> 'select',
+						'std' 		=> 'no',
+						'size' 		=> 'large',
+						'force_width'=> '120',
+						'title' 	=> __('Anonymize Analytics IP: ', 'psp'),
+						'desc' 		=> __('If you choose YES => The Google Analytics script which tracks your visitors views, we\'ll use Google Analytics _anonymizeIp function that anonymizes the last digits of the user\'s IP.', 'psp'),
+						'options'	=> array(
+							'yes' 	=> __('YES', 'psp'),
+							'no' 	=> __('NO', 'psp')
+						)
+					),
+					
 					'google_analytics_id' 	=> array(
 						'type' 		=> 'text',
 						'std' 		=> '',

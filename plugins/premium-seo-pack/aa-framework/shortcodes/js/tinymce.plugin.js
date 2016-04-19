@@ -30,7 +30,7 @@
 		init : function(ed, url) {
   
 			ed.addCommand(pluginCmd, function ( ui, atts ) {
-
+  
 				var title = atts.moduleTitle || 'default module title',
 				elemId = 'module=' + atts.module + '&shortcode=' + atts.shortcode;
 			

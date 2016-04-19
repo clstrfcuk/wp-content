@@ -147,8 +147,10 @@ if (class_exists('pspSocialTags') != true) {
 				$metatags[ 'og:url' ] = $this->the_url();
 
 				//type
-				if ( isset($opt['social_opengraph_default']) && !empty($opt['social_opengraph_default']) )
+				if ( isset($opt['social_opengraph_default']) && !empty($opt['social_opengraph_default'])
+					&& isset($opt['social_opengraph_default']["{$post->post_type}"]) ) {
 					$ogdef  = $opt['social_opengraph_default']["{$post->post_type}"];
+				}
 				if ( isset($ogdef) && !empty($ogdef) )
 					$metatags[ 'og:type' ] = $ogdef;
 				if ( isset($pm['facebook_opengraph_type']) && !empty($pm['facebook_opengraph_type']) )

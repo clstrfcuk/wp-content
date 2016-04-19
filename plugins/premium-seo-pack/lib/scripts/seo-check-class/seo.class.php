@@ -244,6 +244,8 @@ class pspSeoCheck
 	*/
 	public function gen_meta_keywords( $str='', $return_nr=10, $uniqueWords=true )
 	{
+		$optimizeSettings = $this->the_plugin->get_theoption('psp_on_page_optimization');
+
 		$str =  $this->strip_shortcode( $str );
 		
 		$base = '';
@@ -252,7 +254,8 @@ class pspSeoCheck
 
 		// get custom user stop words list
 		$stopwords = array("a", "you", "if");
-		$stopwords_db = $optimizeSettings['meta_keywords_stop_words'];  
+		$stopwords_db = isset($optimizeSettings['meta_keywords_stop_words']) ?
+			$optimizeSettings['meta_keywords_stop_words'] : '';  
 		
 		if( isset($stopwords_db) && trim($stopwords_db) != '' ) {
 			$stopwords_db = explode(',', $stopwords_db);

@@ -16,10 +16,11 @@
 				'title' => __('Setup / Backup', 'psp')
 				,'icon' => 'assets/menu_icon.png'
 			),
-			'description' => __("Using this module you can install a default configuration for the plugin, and as well to back up settins!", 'psp'),
-			'load_in' => array(
-				'frontend' => false
+			'in_dashboard' => array(
+				'icon' 	=> 'assets/menu_icon.png',
+				'url'	=> admin_url("admin.php?page=psp#setup_backup")
 			),
+			'description' => __("Using this module you can install a default configuration for the plugin, and as well to back up settins!", 'psp'),
       	  	'help' => array(
 				'type' => 'remote',
 				'url' => 'http://docs.aa-team.com/premium-seo-pack/documentation/setup-backup-2/'

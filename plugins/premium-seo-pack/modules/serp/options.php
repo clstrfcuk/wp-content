@@ -50,6 +50,7 @@ $__google_locations = array(
 	'com.hk' => 'Hong Kong',
 	'co.hu' => 'Hungary',
 	'co.in' => 'India',
+	'google.co.id' => 'Indonezia',
 	'ie' => 'Ireland',
 	'co.im' => 'Isle of Man',
 	'co.il' => 'Israel',

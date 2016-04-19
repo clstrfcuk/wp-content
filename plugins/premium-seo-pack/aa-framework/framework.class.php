@@ -77,7 +77,7 @@ if(class_exists('psp') != true) {
 		public $charset = '';
 		
 		public $pluginDepedencies = null;
-		public $pluginName = 'PSP';
+		public $pluginName = 'Premium SEO Pack';
 		
 		public $buddypress_utils = null;
         
@@ -87,7 +87,7 @@ if(class_exists('psp') != true) {
 		/**
 		 * The constructor
 		 */
-		function __construct($here = __FILE__)
+		public function __construct($here = __FILE__)
 		{
 			$this->is_admin = is_admin() === true ? true : false;
 			
@@ -235,6 +235,7 @@ if(class_exists('psp') != true) {
 			
 			// Run the plugins initialization method
 			add_action('init', array( &$this, 'initThePlugin' ), 5);
+			add_action('init', array( $this, 'session_start' ), 1);
 
             if ( $this->is_admin ) {
 
@@ -307,11 +308,6 @@ if(class_exists('psp') != true) {
 			// fix bugs
 			$this->fix_backlinkbuilder_linklist();
 			
-			$is_installed = get_option( $this->alias . "_is_installed" );
-			if( $this->is_admin && $is_installed === false ) {
-				add_action( 'admin_print_styles', array( $this, 'admin_notice_install_styles' ) );
-			}
-
 			if ( !$this->is_admin ) {
 				if ( isset($_POST['ispspreq']) && in_array( $_POST['ispspreq'], array('tax', 'post') ) ) {
 					if ( $_POST['ispspreq'] == 'post' )
@@ -323,8 +319,26 @@ if(class_exists('psp') != true) {
 					add_action( 'wp', array( $this, 'clean_header' ) );
 				}
 			}
+
+			$is_installed = get_option( $this->alias . "_is_installed" );
+			if( $this->is_admin && $is_installed === false ) {
+				add_action( 'admin_print_styles', array( $this, 'admin_notice_install_styles' ) );
+			}
 		}
 
+		public function session_start() {
+            $session_id = isset($_COOKIE['PHPSESSID']) ? session_id($_COOKIE['PHPSESSID']) : ( isset($_REQUEST['PHPSESSID']) ? $_REQUEST['PHPSESSID'] : session_id() );
+            if(!$session_id) {
+                // session isn't started
+                session_start();
+            }
+			//!isset($_SESSION['aateam_sess_dbg']) ? $_SESSION['aateam_sess_dbg'] = 0 : $_SESSION['aateam_sess_dbg']++;
+			//var_dump('<pre>',$_SESSION['aateam_sess_dbg'],'</pre>');  			
+		}
+        public function session_close() {
+            session_write_close(); // close the session
+        }
+		
 		public function lang_init() 
 		{ 
 		    //load_plugin_textdomain( $this->alias, false, $this->cfg['paths']["plugin_dir_path"] . '/languages/');
@@ -468,8 +482,10 @@ if(class_exists('psp') != true) {
 		?>
 		<div id="message" class="updated aaFrm-message_activate wc-connect">
 			<div class="squeezer">
-				<h4><?php _e( '<strong>Premium SEO Pack</strong> &#8211; You\'re almost ready :)', $this->localizationName ); ?></h4>
+				<h4><?php _e( sprintf( '<strong>%s</strong> &#8211; You\'re almost ready :)', $this->pluginName ), $this->localizationName ); ?></h4>
 				<p class="submit"><a href="<?php echo admin_url( 'admin.php?page=' . $this->alias ); ?>#setup_backup" class="button-primary"><?php _e( 'Install Default Config', $this->localizationName ); ?></a></p>
+				
+				<a href="<?php echo admin_url("admin.php?page=psp&disable_activation");?>" class="aaFrm-dismiss"><?php _e('Dismiss This Message', $this->localizationName); ?></a>
 			</div>
 		</div>
 		<?php	
@@ -487,7 +503,19 @@ if(class_exists('psp') != true) {
 		}
 
 		public function plugin_redirect() {
-			if (get_option('psp_do_activation_redirect', false)) {
+			
+			$req = array(
+				'disable_activation'		=> isset($_REQUEST['disable_activation']) ? 1 : 0, 
+				'page'						=> isset($_REQUEST['page']) ? (string) $_REQUEST['page'] : '',
+			);
+			extract($req);
+
+			if ( $disable_activation && $this->alias == $page ) {
+            	update_option( $this->alias . "_is_installed", true );
+            	wp_redirect( get_admin_url() . 'admin.php?page=psp' );
+            }
+
+			if ( get_option('psp_do_activation_redirect', false) ) {
 				delete_option('psp_do_activation_redirect');
 				wp_redirect( get_admin_url() . 'admin.php?page=psp' );
 			}
@@ -680,7 +708,7 @@ if(class_exists('psp') != true) {
 			// If the user can manage options, let the fun begin!
 			$page = isset($_REQUEST['page']) ? $_REQUEST['page'] : ''; 
 			if ( $is_admin /*&& current_user_can( 'manage_options' )*/ ) {
-				if( (stripos($page,'codestyling') === false) ){
+				if ( (stripos($page,'codestyling') === false) ) {
 					// Adds actions to hook in the required css and javascript
 					add_action( "admin_print_styles", array( &$this, 'admin_load_styles') );
 					add_action( "admin_print_scripts", array( &$this, 'admin_load_scripts') );
@@ -709,13 +737,18 @@ if(class_exists('psp') != true) {
 			}
 		}
 
-		public function fixPlusParseStr ( $input=array(), $type='string' )
+		public function fixPlusParseStr ( $input=array(), $type='string', $sign='' )
 		{
+			$ret = '';
 			if($type == 'array'){
 				if(count($input) > 0){
 					$ret_arr = array();
 					foreach ($input as $key => $value){
-						$ret_arr[$key] = str_replace("###", '+', $value);
+						$ret = str_replace("###", '+', $value);
+						if ('&' == $sign) {
+							$ret = str_replace("#1#", '&', $value);
+						}
+						$ret_arr[$key] = $ret;
 					}
 
 					return $ret_arr;
@@ -723,7 +756,11 @@ if(class_exists('psp') != true) {
 
 				return $input;
 			}else{
-				return str_replace('+', '###', $input);
+				$ret = str_replace('+', '###', $input);
+				if ('&' == $sign) {
+					$ret = str_replace("%26", '#1#', $input);
+				}
+				return $ret;
 			}
 		}
 
@@ -734,14 +771,18 @@ if(class_exists('psp') != true) {
 			unset($_REQUEST['action']);
   
 			// unserialize the request options
-			$serializedData = $this->fixPlusParseStr(urldecode($_REQUEST['options']));
-
+			$serializedData = $_REQUEST['options'];
+			$serializedData = $this->fixPlusParseStr($serializedData, 'string', '&');
+			$serializedData = urldecode($serializedData);
+			$serializedData = $this->fixPlusParseStr($serializedData, 'string');
+ 
 			$savingOptionsArr = array();
 
 			parse_str($serializedData, $savingOptionsArr);
 
 			$savingOptionsArr = $this->fixPlusParseStr( $savingOptionsArr, 'array');
-
+			$savingOptionsArr = $this->fixPlusParseStr( $savingOptionsArr, 'array', '&');
+ 
 			// create save_id and remote the box_id from array
 			$save_id = $savingOptionsArr['box_id'];
 			unset($savingOptionsArr['box_id']);
@@ -775,7 +816,9 @@ if(class_exists('psp') != true) {
                 $__old_saving = maybe_unserialize($__old_saving);
                 $__old_saving = (array) $__old_saving;
                 
-                $savingOptionsArr["cache"] = $__old_saving["cache"];
+				if ( isset($__old_saving["cache"]) ) {
+                	$savingOptionsArr["cache"] = $__old_saving["cache"];
+				}
             }
 			
 			// options NOT saved to db from options panel!
@@ -794,6 +837,7 @@ if(class_exists('psp') != true) {
 			
 			// prepare the data for DB update
 			$savingOptionsArr = stripslashes_deep($savingOptionsArr);
+ 
 			$saveIntoDb = serialize( $savingOptionsArr );
 
 			// Use the function update_option() to update a named option/value pair to the options database table. The option_name value is escaped with $wpdb->escape before the INSERT statement.
@@ -945,7 +989,7 @@ if(class_exists('psp') != true) {
 			$request = array(
 				'id' 			=> isset($_REQUEST['id']) && !empty($_REQUEST['id']) ? trim($_REQUEST['id']) : ''
 			);
-
+ 
 			if (trim($request['id'])!='') {
 				$__rq2 = array();
 				$__rq = explode(',', $request['id']);
@@ -1338,6 +1382,7 @@ if(class_exists('psp') != true) {
 					if($value['option_value'] == 'true'){
 						$return[$value['option_name']] = true;
 					}else{
+						//$return[$value['option_name']] = @unserialize(@unserialize($value['option_value']));
 						$return[$value['option_name']] = maybe_unserialize($value['option_value']);
 						$return[$value['option_name']] = maybe_unserialize($return[$value['option_name']]);
 					}
@@ -2199,6 +2244,9 @@ if(class_exists('psp') != true) {
 					'user-agent' => $this->fakeUserAgent(),
 					'timeout' => 20
 				);
+				if ( isset($headers) && !empty($headers) ) {
+					$args = array_merge($args, $headers);
+				}
 				$resp = wp_remote_get( $url, $args );
 				if ( is_wp_error( $resp ) ) { // If there's error
 					$body = false;
@@ -2508,14 +2556,7 @@ if(class_exists('psp') != true) {
 			list($usec, $sec) = explode(" ", microtime());
 			return ((float)$usec + (float)$sec);
 		}
-		
-		public function prepareForInList($v) {
-			return "'".$v."'";
-		}
-		public function prepareForDbClean($v) {
-			return trim($v);
-		}
-		
+
 		public function formatBytes($bytes, $precision = 2) {
 			$units = array('B', 'KB', 'MB', 'GB', 'TB');
 
@@ -2528,6 +2569,13 @@ if(class_exists('psp') != true) {
 			$bytes /= (1 << (10 * $pow));
 
 			return round($bytes, $precision) . ' ' . $units[$pow];
+		}
+
+		public function prepareForInList($v) {
+			return "'".$v."'";
+		}
+		public function prepareForDbClean($v) {
+			return trim($v);
 		}
 		
 		public function is_plugin_active( $plugin ) {
@@ -2773,6 +2821,7 @@ if(class_exists('psp') != true) {
                 'htaccess'                  => false,
                 'post'                      => false,
                 'postfields'                => array(),
+                'httpheader'				=> false,
                 'verbose'                   => false,
                 'ssl_verifypeer'            => false,
                 'ssl_verifyhost'            => false,
@@ -2816,6 +2865,10 @@ if(class_exists('psp') != true) {
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $postfields);
             }
+			
+			if ( !empty($httpheader) ) {
+				curl_setopt($curl, CURLOPT_HTTPHEADER, $httpheader);
+			}
             
             curl_setopt($curl, CURLOPT_VERBOSE, $verbose);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, $ssl_verifypeer);
@@ -2915,7 +2968,159 @@ if(class_exists('psp') != true) {
             }
             return $ret;
         }
-    }
+    
+    
+        /**
+         * Client Utils
+         */
+        public function get_client_ip() {
+            $ipaddress = '';
+
+            if ($_SERVER['REMOTE_ADDR'])
+                $ipaddress = $_SERVER['REMOTE_ADDR'];
+            else if ($_SERVER['HTTP_CLIENT_IP'])
+                $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+            else if ($_SERVER['HTTP_X_FORWARDED'])
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+            else if ($_SERVER['HTTP_FORWARDED_FOR'])
+                $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+            else if( $_SERVER['HTTP_FORWARDED'])
+                $ipaddress = $_SERVER['HTTP_FORWARDED'];
+            else if ($_SERVER['HTTP_X_FORWARDED_FOR'])
+                $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+
+            return $ipaddress;
+        }
+
+        public function get_current_page_url() {
+            $url = (!empty($_SERVER['HTTPS']))
+                ?
+                "https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']
+                :
+                "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']
+            ;
+            return $url;
+        }
+        
+        public function get_client_country() {
+            $get_user_location = wp_remote_get( 'http://api.hostip.info/get_json.php?ip=' . $this->get_client_ip() );
+
+            if ( is_wp_error( $get_user_location ) ) { // If there's error
+                $body = false;
+                // $err = htmlspecialchars( implode(';', $get_user_location->get_error_messages()) );
+            } else {
+                $body = wp_remote_retrieve_body( $get_user_location );
+            }
+            if (is_null($body) || !$body || trim($body)=='') { //status is Invalid!
+                return false;
+            } else {
+                $body = json_decode($body);
+                $user_country = array(
+                    'name'      => $body->country_name,
+                    'code'      => $body->country_code
+                );
+            }
+
+            return $user_country;
+        }
+        
+        public function get_client_utils() {
+            $utils = array();
+
+            $client_ip = $this->get_client_ip();
+            $current_url = $this->get_current_page_url();
+            // $current_date = $_SERVER['REQUEST_TIME']; // Available since PHP 5.1.0
+            $current_date = strtotime( date('Y-m-d H:i') );
+            //$get_current_country = $this->get_client_country();
+            //if ( !empty($get_current_country) && isset($get_current_country['name']) ) {
+            //    $current_country = $get_current_country['name'];
+            //    $current_country_code = $get_current_country['code'];
+            //} else {
+            //    $current_country = '';
+            //    $current_country_code = '';
+            //}
+            $current_country = '';
+            $current_country_code = '';
+
+            $utils = compact('client_ip', 'current_url', 'current_date', 'current_country', 'current_country_code');
+  
+            // mobile
+            require_once( $this->cfg['paths']["scripts_dir_path"] . '/mobile-detect/Mobile_Detect.php' );
+            $mobileDetect = new aaMobile_Detect();
+
+            $utils['isMobile'] = $mobileDetect->isMobile();
+            $utils['device_type'] = $mobileDetect->type();
+            if ( $utils['device_type'] == 'tablet') $utils['device_type'] = 'mobile';
+            
+            return $utils;
+        }
+    
+		/**
+		 * pms = array(
+		 * 		status		: (string) success | error
+		 * 		step		: (string)
+		 * 		msg			: (string)
+		 * )
+		 */
+		public function facebook_planner_last_status( $pms=array() ) {
+			extract($pms);
+
+			$fb_details = $this->getAllSettings('array', 'facebook_planner');
+		
+			$msg_ = $msg;
+			if ( is_object($msg) ) {
+				$msg_ = (array) $msg;
+			}
+			if ( is_array($msg) ) {
+				$msg_ = serialize( $msg );
+			}
+			$msg_ = substr($msg_, 0, 150);
+			$msg_ = serialize( $msg_ );	
+			$last_status = array('last_status' => array('status' => $status, 'step' => $step, 'data' => date("Y-m-d H:i:s"), 'msg' => $msg_));
+			$this->save_theoption( $this->alias . '_facebook_planner_last_status', $last_status );
+
+			$extra_info = array();
+			if ( isset($msg) && is_array($msg) ) {
+
+				if ( isset($msg['link'], $msg['name']) ) {
+					$extra_info = array(
+						'auth_foruser_link' 	=> $msg['link'],
+						'auth_foruser_name' 	=> $msg['name']
+					);
+				}
+			}
+			$this->save_theoption( $this->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status, $extra_info ) );
+			
+			return 'success' == $status ? 'valid' : 'invalid';
+		}
+	
+        public function is_woocommerce_installed() {
+            if ( in_array( 'envato-wordpress-toolkit/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) || in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) || is_multisite() )
+            {
+                return true;
+            } else {
+                $active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
+                if ( !empty($active_plugins) && is_array($active_plugins) ) {
+                    foreach ( $active_plugins as $key => $val ) {
+                        if ( ($status = preg_match('/^woocommerce[^\/]*\/woocommerce\.php$/imu', $val))!==false && $status > 0 ) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+		
+		public function load_woocommerce_taxonomies() {
+			if ( !$this->is_woocommerce_installed() ) return;
+
+			$wc_path = WC()->plugin_path();
+			$wc_path_full = $wc_path . '/includes/class-wc-post-types.php';
+			require_once( $wc_path_full );
+			WC_Post_types::register_taxonomies();
+			WC_Post_types::register_post_types();
+		}
+	}
 }
 
 if ( !function_exists('array_replace_recursive') ) {

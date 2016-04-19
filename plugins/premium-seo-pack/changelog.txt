@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.9.1.3]
+- added "Close button" to the 'Install default config' message
+- solved bug "SEO Insert Code > Insert code in <head>, <wp footer> sections, any codes after the & character (including the & itself) is chopped away."
+- solved some issues with woocommerce permalinks regarding sitemap module
+
+## [1.9.1.2]
+- solved the bug "shortcodes don't work anymore in tinymce per post/page editor"
+
+## 03.11.2015
+- added option to anonymize IP for google analytics script (required by some countries)!
+
+## 21.10.2015 /version 1.9.1
+- solved "Mass Optimization pagination" bug
+- solved "Shortcodes not working Tinymce editor" bug
+- solved "W3C validator module - rows information not updated" bug
+- solved "backlink module not importing rows" bug
+
 ## 13.05.2015
 [ADDED] NEW Module "Tiny Compress" which uses the TinyPNG.com API service to compress images (PNG & Jpegs) - a replacement for the Old "Smushit" Module
 

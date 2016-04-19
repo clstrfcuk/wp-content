@@ -28,7 +28,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 		static protected $tplChar = '{%s}';
 		protected $pageTypes = array();
 		
-		static private $titleForce = true;
+		//static private $titleForce = true;
 		
 		private $post = null; // retrieve info for a specific post!
 		
@@ -107,7 +107,10 @@ if (class_exists('pspTitleMetaFormat') != true) {
 			add_action( 'premiumseo_head', array( &$this, 'the_meta_keywords' ), 11 );
 			add_action( 'premiumseo_head', array( &$this, 'the_canonical' ), 19 );
 			
-			if ( self::$titleForce ) {
+			//if ( self::$titleForce ) {
+			$titleForce = !isset($this->plugin_settings['force_title']) ||
+                ( isset($this->plugin_settings['force_title']) && $this->plugin_settings['force_title'] == 'yes' ) ? true : false;
+			if ( $titleForce ) {
 				add_action('template_redirect', array(&$this, 'head_before'), 0);
 				add_action('wp_head', array(&$this, 'head_after'), 9999);
 			} else {

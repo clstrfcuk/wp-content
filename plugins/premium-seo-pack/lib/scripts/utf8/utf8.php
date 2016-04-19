@@ -81,7 +81,7 @@ class pspUtf8
 		$pattern = $caseSensitive
 			? '~(?:'. preg_quote($substr) .')~u'
 			: '~(?:'. preg_quote($substr) .')~ui';
-		preg_match_all($pattern, $str, $matches);
+		@preg_match_all($pattern, $str, $matches);
 
 		return isset($matches[0]) ? count($matches[0]) : 0;
 	}
@@ -166,13 +166,34 @@ class pspUtf8
 		count( preg_split('~[\p{Z}\p{P}]+~u', $str, null, PREG_SPLIT_NO_EMPTY) );
 	}*/
 	
-	public function strtolower($string) {
+    public function __not_used__strtolower($string) {
 
-		$result = $string;
-		//if ( seems_utf8($string) )  $result = utf8_decode($string);
-		$result = strtolower($result);
-		//$result = utf8_encode($result);
-		return $result;
-	}
+        $result = $string;
+        //if ( seems_utf8($string) ) {
+        //    $result = utf8_decode($string);
+        //}
+        $result = strtolower($result);
+        //$result = utf8_encode($result);
+        return $result;
+    }
+    // the strtolower version to support most amount of languages including russian, french and so on
+    public function strtolower($string){ 
+      $convert_to = array( 
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", 
+        "v", "w", "x", "y", "z", "à", "á", "â", "ã", "ä", "å", "æ", "ç", "è", "é", "ê", "ë", "ì", "í", "î", "ï", 
+        "ð", "ñ", "ò", "ó", "ô", "õ", "ö", "ø", "ù", "ú", "û", "ü", "ý", "а", "б", "в", "г", "д", "е", "ё", "ж", 
+        "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", 
+        "ь", "э", "ю", "я" 
+      ); 
+      $convert_from = array( 
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", 
+        "V", "W", "X", "Y", "Z", "À", "Á", "Â", "Ã", "Ä", "Å", "Æ", "Ç", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", 
+        "Ð", "Ñ", "Ò", "Ó", "Ô", "Õ", "Ö", "Ø", "Ù", "Ú", "Û", "Ü", "Ý", "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", 
+        "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ъ", 
+        "Ь", "Э", "Ю", "Я" 
+      ); 
+    
+      return str_replace($convert_from, $convert_to, $string); 
+    }
 }
 $utf8 = new pspUtf8();

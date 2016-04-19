@@ -68,7 +68,8 @@ if (class_exists('pspGoogleAnalytics') != true) {
 			$settings = $this->the_plugin->get_theoption( $this->the_plugin->alias . '_google_analytics' );
 			
 			// analytics tracking script
-			$trackingScript = $this->tracking_script( $settings['google_analytics_id'] );
+			$anonymize_ip = isset($settings['google_anonymize_ip']) && $settings['google_anonymize_ip'] == 'yes' ? true : false;
+			$trackingScript = $this->tracking_script( $settings['google_analytics_id'], $anonymize_ip );
 			if ( !empty($trackingScript) )
 				echo $trackingScript;
 
@@ -85,7 +86,7 @@ if (class_exists('pspGoogleAnalytics') != true) {
 			}
         }
         
-        private function tracking_script( $account_id='' ) {
+        private function tracking_script( $account_id='', $anonymize_ip=false ) {
         	if ( empty($account_id) ) return '';
 
         	ob_start();
@@ -93,6 +94,11 @@ if (class_exists('pspGoogleAnalytics') != true) {
 <script type="text/javascript">
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '<?php echo $account_id ?>']);
+<?php
+if ($anonymize_ip) {
+	echo "_gaq.push (['_gat._anonymizeIp']);".PHP_EOL;
+}
+?>
 _gaq.push(['_trackPageview']);
 (function() {
 	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -457,7 +463,7 @@ _gaq.push(['_trackPageview']);
 			// provide the accountId and client secret
 			$analytics_settings = $this->the_plugin->get_theoption( $this->the_plugin->alias . '_google_analytics' );
 			$this->ga->setAccountId( $analytics_settings['profile_id']);
-			
+ 
 			$isauth = $this->makeoAuthLogin();
 			if (!$isauth) { //invalid auth
 	        		$ret['__access']['status'] 	= 'invalid';
@@ -470,7 +476,7 @@ _gaq.push(['_trackPageview']);
 			}
 
 	        $ret['__access']['status'] 	= 'valid';
-
+ 
 	        //getAudience
 			if( in_array('getAudience', $request['sub_action']) ){
 				$params = array(
@@ -479,38 +485,39 @@ _gaq.push(['_trackPageview']);
 					'start-date' 	=> isset($_REQUEST['from_date']) ? $_REQUEST['from_date'] : '',
 					'end-date' 		=> isset($_REQUEST['to_date']) ? $_REQUEST['to_date'] : '',
 				);
-				$data = $this->ga->query($params);				
+				$data = $this->ga->query($params);
 	        	
 	        	if (!isset($data['totalsForAllResults'])) {
 		        	$ret['getAudience']['status'] = 'invalid';
 					$ret['__access']['isalert'] = 'yes';
 					$ret['getAudience']['reason'] = __('No records found for interval:', 'psp') . $params['start-date'] . ' - ' . $params['start-date'];
-	        	}
+	        	} else {
 				
-				// refformating data
-				$returnData = array();
-				if( count($data['rows']) > 0 ){
-					foreach ($data['rows'] as $key => $value){
-						// fix for jquery plot date
-						//$data['rows'][] = array( (strtotime($value[0]) * 1000), $value[1] );
-						$time = (strtotime($value[0]) * 1000);
-						
-						$returnData['newVisits'][] = array( $time, $value[1] );
-						$returnData['visits'][] = array( $time, $value[2] );
-						$returnData['avgTimeOnPage'][] = array( $time, $value[3] );
-						$returnData['visitBounceRate'][] = array( $time, $value[4] );
-						$returnData['pageviewsPerVisit'][] = array( $time, $value[5] );
-						$returnData['pageviews'][] = array( $time, $value[6] );
-						$returnData['uniquePageviews'][] = array( $time, $value[7] );
-					}
-				} 
-
-	        	$ret['getAudience']['status'] 	= 'valid';
-				$ret['getAudience']['data'] 	= array(
-					'profileInfo' 			=> $data['profileInfo'],
-					'totalsForAllResults' 	=> $data['totalsForAllResults'],
-					'rows'					=> $returnData
-				);
+    				// refformating data
+    				$returnData = array();
+    				if( count($data['rows']) > 0 ){
+    					foreach ($data['rows'] as $key => $value){
+    						// fix for jquery plot date
+    						//$data['rows'][] = array( (strtotime($value[0]) * 1000), $value[1] );
+    						$time = (strtotime($value[0]) * 1000);
+    						
+    						$returnData['newVisits'][] = array( $time, $value[1] );
+    						$returnData['visits'][] = array( $time, $value[2] );
+    						$returnData['avgTimeOnPage'][] = array( $time, $value[3] );
+    						$returnData['visitBounceRate'][] = array( $time, $value[4] );
+    						$returnData['pageviewsPerVisit'][] = array( $time, $value[5] );
+    						$returnData['pageviews'][] = array( $time, $value[6] );
+    						$returnData['uniquePageviews'][] = array( $time, $value[7] );
+    					}
+    				}
+    
+    	        	$ret['getAudience']['status'] 	= 'valid';
+    				$ret['getAudience']['data'] 	= array(
+    					'profileInfo' 			=> $data['profileInfo'],
+    					'totalsForAllResults' 	=> $data['totalsForAllResults'],
+    					'rows'					=> $returnData
+    				);
+				}
 			}
 			
 			//getAudienceDemographics
@@ -791,7 +798,12 @@ _gaq.push(['_trackPageview']);
 			// check in the server request uri if the keyword psp_seo_oauth exists!
 			if( preg_match("/psp_seo_oauth/i", $_SERVER["REQUEST_URI"] ) ){
    
-				$code = isset($_GET['code']) ? $_GET['code'] : '';
+                $code = isset($_GET['code']) ? $_GET['code'] : '';
+                if ( empty($code) ) {
+                    $found = preg_match('~^/psp_seo_oauth\?code\=([^&]+)&?(.*)$~', $_SERVER['REQUEST_URI'], $m);
+                    if ( $found !== false ) {}
+                    $code = $m[1];
+                }
   
 				$analytics_settings = $this->the_plugin->get_theoption( $this->the_plugin->alias . '_google_analytics' );
 

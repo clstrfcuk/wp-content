@@ -310,7 +310,7 @@ echo json_encode(
 				
                 // tabs
                 'tabs'  => array(
-                    '__tab1'    => array(__('General', 'psp'), 'help_general, xmlsitemap_html, notify, notify_virtual_robots, global_items_per_page, stylesheet, lastmod_use_gmt, base_url, include_img'),
+                    '__tab1'    => array(__('General', 'psp'), 'help_general, xmlsitemap_html, notify, notify_virtual_robots, global_items_per_page, stylesheet, lastmod_use_gmt, use_xmlns_schemalocation_xsd, base_url, include_img'),
                     '__tab2'    => array(__('Execution variables', 'psp'), 'help_execution_variables, memory_limit, execution_time_limit, compress'),
                     '__tab3'    => array(__('Notify search engines', 'psp'), 'help_notify_search_engines, notify_google, notify_bing'),
                     '__tab4'    => array(__('Including', 'psp'), 'help_include, standard_content, post_types, taxonomies'),
@@ -430,6 +430,19 @@ echo json_encode(
                         'force_width'=> '70',
                         'title'     => 'Last modified is GMT:',
                         'desc'      => 'if you choose NO => local timezone setting from Settings > General will be used',
+                        'options'   => array(
+                            'yes'   => __('YES', 'psp'),
+                            'no'    => __('NO', 'psp')
+                        )
+                    ),
+                    
+                    'use_xmlns_schemalocation_xsd'    => array(
+                        'type'      => 'select',
+                        'std'       => 'no',
+                        'size'      => 'large',
+                        'force_width'=> '70',
+                        'title'     => 'Use xmlns:schemaLocation sitemap.xsd validation:',
+                        'desc'      => 'use xmlns:schemaLocation sitemap.xsd validation',
                         'options'   => array(
                             'yes'   => __('YES', 'psp'),
                             'no'    => __('NO', 'psp')

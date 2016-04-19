@@ -138,8 +138,8 @@ class psp_fbPlannerUtils
 
 				$arrFbData = array(
 					'link'			=> $post_link,
-					'name' 		=> stripslashes($postData['name']),
-					'description' 		=> stripslashes($postData['description'])
+					'name' 			=> stripslashes($postData['name']),
+					'description' 	=> stripslashes($postData['description'])
 				);
 				
 				if ( is_array(self::$utils['inputs_available']) && !empty(self::$utils['inputs_available']) ) {
