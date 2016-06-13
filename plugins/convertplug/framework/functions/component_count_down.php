@@ -103,6 +103,9 @@ $cp_count_down = array(
 			"opts"		=> array(
 				"title" 		=> __( "Digit Color", "smile" ),
 				"value" 		=> "rgb(255, 255, 255)",
+				'css_selector' => '#cp_defaultCountdown , #cp_defaultCountdown .cp_countdown-amount',
+            	'css_property' => 'color',	
+            	'css_preview' => true,
 			),
 			"dependency"	=> array("name" => "disable_datepicker", "operator" => "==", "value" => "true"),
 			"section" 	 => "Design",
@@ -117,6 +120,9 @@ $cp_count_down = array(
 			"opts"		=> array(
 				"title" 		=> __( "Digit Border Color", "smile" ),
 				"value" 		=> "#1bce7c",
+				'css_selector' => '#cp_defaultCountdown .cp_countdown-amount',
+            	'css_property' => 'border-color',
+            	'css_preview' => true,
 			),
 			"dependency"	=> array("name" => "datepicker_advance_option", "operator" => "!==", "value" => "style_1"),
 			"section" 	 => "Design",
@@ -134,6 +140,9 @@ $cp_count_down = array(
 				"max" 			=> 100,
 				"step" 			=> 1,
 				"suffix" 		=> "px",
+				'css_selector' => '.cp-count-down #cp_defaultCountdown , .cp-count-down #cp_defaultCountdown .cp_countdown-amount',
+            	'css_property' => 'font-size',
+            	'css_preview' => true,
 			),
 			"dependency"	=> array("name" => "disable_datepicker", "operator" => "==", "value" => "true"),
 			"section" 	 => "Design",
@@ -147,6 +156,9 @@ $cp_count_down = array(
 			"opts"		=> array(
 				"title" 		=> __( "Time Unit Color", "smile" ),
 				"value" 		=> "#fff",
+				'css_selector' => '#cp_defaultCountdown .cp_countdown-period',
+            	'css_property' => 'color',
+            	'css_preview' => true,
 			),
 			"dependency"	=> array("name" => "datepicker_advance_option", "operator" => "!==", "value" => "style_1"),
 			"section" 	 => "Design",
@@ -164,6 +176,9 @@ $cp_count_down = array(
 				"max" 			=> 40,				
 				"step" 			=> 1,
 				"suffix" 		=> "px",
+				'css_selector' => '#cp_defaultCountdown .cp_countdown-period',
+            	'css_property' => 'font-size',
+            	'css_preview' => true,
 			),
 			"dependency"	=> array("name" => "datepicker_advance_option", "operator" => "!==", "value" => "style_1"),			"section" 	 => "Design",
 			"panel" => "Countdown Timer",
@@ -261,6 +276,7 @@ function cp_count_down_css_init( $a ) {
 			$counter_digit .= 'background: ' . $a['counter_bg_color'] . ';';
 			echo '<style class="cp-counter">.content-'.$uid.' .cp-count-down #cp_defaultCountdown  .cp_countdown-amount {  '. $counter_digit .'; }
 			.content-'.$uid.' #cp_defaultCountdown  .cp_countdown-period { ' . $timer_digit .'; } 
+			.content-'.$uid.' .cp-count-down #cp_defaultCountdown {font-size: ' . $a['counter_digit_text_size'] . 'px;}
 		    </style>';
 		} else {
 			$counter_digit .= 'background: transparent;';

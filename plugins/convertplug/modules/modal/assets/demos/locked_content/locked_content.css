@@ -24,7 +24,9 @@
     margin-bottom: 10px;
     padding: 0;
 }
-
+.cp-locked-content-container .cp-overlay-close span{
+        font-family: "Roboto",serif;
+}
 .cp-locked-content .cp-title,
 .cp-locked-content h2.cp-title {
     margin: 0;
@@ -80,7 +82,7 @@
     font-size: 25px;
     line-height: 1.38em;
     outline: none;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     margin-right: 0px;
 }
 
@@ -107,7 +109,7 @@
     max-width: 90%;
     margin: 0 auto;
     float: none;
-    background-color: #E6E5E5;
+   /*  background-color: #E6E5E5; */
     padding-top: 30px;
     padding-bottom: 30px;
     border-radius: 10px;
@@ -183,7 +185,7 @@
 }
 
 .cp-locked-content div#info_editor {
-    padding: 10px 0px;
+   /*  padding: 10px 0px; */
     font-size: 15px;
 }
 

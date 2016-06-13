@@ -36,7 +36,11 @@ function cp_border_settings_field($name, $settings, $value)
 	$input_name = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
-	$output = '<p><textarea id="border-code" class="content form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" rows="6" cols="6">'.$value.'</textarea></p>';
+
+  //  Apply partials
+  $partials = generate_partial_atts( $settings );
+
+	$output = '<p><textarea id="border-code" class="content form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" "'.$partials.'" rows="6" cols="6">'.$value.'</textarea></p>';
 
 $pairs = explode("|", $value );
 $settings = array();
@@ -47,22 +51,22 @@ if( is_array( $pairs ) && !empty( $pairs ) && count( $pairs ) > 1 ) {
 	}
 }
 
-$allCorners 	= isset( $settings['br_all'] ) 	? $settings['br_all'] 	: 10;
-$topLeft 		  = isset( $settings['br_tl'] ) 		  ? $settings['br_tl'] 	  : 10;
-$topRight 		= isset( $settings['br_tr'] ) 		? $settings['br_tr'] 	  : 10;
-$bottomLeft 	= isset( $settings['br_bl'] ) 	? $settings['br_bl'] 	: 10;
-$bottomRight 	= isset( $settings['br_br'] ) 	? $settings['br_br'] : 10;
-$borderStyle 	= isset( $settings['style'] ) 	? $settings['style'] : 'solid';
-$borderColor 	= isset( $settings['color'] ) 	? $settings['color'] : 'rgb(68,68,68)';
-$br_type         = isset( $settings['br_type'] )  ? $settings['br_type'] : 0;
-$allsides     = isset( $settings['bw_all'] )   ? $settings['bw_all']  : 0;
-$top          = isset( $settings['bw_t'] )        ? $settings['bw_t']       : 0;
-$left         = isset( $settings['bw_l'] )       ? $settings['bw_l']      : 0;
-$right        = isset( $settings['bw_r'] )      ? $settings['bw_r']     : 0;
-$bottom       = isset( $settings['bw_b'] )     ? $settings['bw_b']    : 0;
-$bw_type         = isset( $settings['bw_type'] )  ? $settings['bw_type'] : 0;
-$br_switch_checked      = ($br_type) ? 'checked="checked"' : '';
-$bw_switch_checked      = ($bw_type) ? 'checked="checked"' : '';
+$allCorners 	= isset( $settings['br_all'] ) 	? $settings['br_all']        : 10;
+$topLeft 		  = isset( $settings['br_tl'] ) 	? $settings['br_tl']         : 10;
+$topRight 		= isset( $settings['br_tr'] ) 	? $settings['br_tr']         : 10;
+$bottomLeft 	= isset( $settings['br_bl'] ) 	? $settings['br_bl']         : 10;
+$bottomRight 	= isset( $settings['br_br'] ) 	? $settings['br_br']         : 10;
+$borderStyle 	= isset( $settings['style'] ) 	? $settings['style']         : 'solid';
+$borderColor 	= isset( $settings['color'] ) 	? $settings['color']         : 'rgb(68,68,68)';
+$br_type      = isset( $settings['br_type'] ) ? $settings['br_type']       : 0;
+$allsides     = isset( $settings['bw_all'] )  ? $settings['bw_all']        : 0;
+$top          = isset( $settings['bw_t'] )    ? $settings['bw_t']          : 0;
+$left         = isset( $settings['bw_l'] )    ? $settings['bw_l']          : 0;
+$right        = isset( $settings['bw_r'] )    ? $settings['bw_r']          : 0;
+$bottom       = isset( $settings['bw_b'] )    ? $settings['bw_b']          : 0;
+$bw_type         = isset( $settings['bw_type'] )  ? $settings['bw_type']   : 0;
+$br_switch_checked      = ($br_type) ? 'checked="checked"'                 : '';
+$bw_switch_checked      = ($bw_type) ? 'checked="checked"'                 : '';
 
 $borders = array(
     __( "Solid", "smile" ) 		=> "solid",
@@ -88,13 +92,13 @@ echo $output;
         <div class="row">
           <strong><label for="vertical-length"><?php _e( "Border Style", "smile" ); ?></label></strong>
           <div class="text-1 border-selector">
-            <select id="select-border">
+            <select id="select-border" class="smile-input">
               <?php
-          foreach( $borders as $title => $border) {
-            $selected = ( $borderStyle == $border ) ? 'selected="selected"' : '';
-            echo '<option value="'.$border.'" '.$selected.'>'.$title.'</option>';
-          }
-        ?>
+                foreach( $borders as $title => $border) {
+                  $selected = ( $borderStyle == $border ) ? 'selected="selected"' : '';
+                  echo '<option value="'.$border.'" '.$selected.'>'.$title.'</option>';
+                }
+              ?>
             </select>
           </div>
         </div>

@@ -100,6 +100,7 @@ if( !function_exists( "cpgetDate" ) ){
             input.trigger('change');
             input.trigger('keyup');
             //input.data('default-date',strTime);
+             jQuery(document).trigger('smile-datepicker-change',[input , strTime] );
 
           });
           

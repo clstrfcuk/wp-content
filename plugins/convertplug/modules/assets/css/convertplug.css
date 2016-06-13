@@ -374,27 +374,6 @@
     max-width: 100%;
 }
 
-/*    InfoBar -   Inputs      */
-/*.cp-info-bar .cp-form-container .cp-form-field select,
-.cp-info-bar .cp-form-container .cp-form-field button,
-.cp-info-bar .cp-form-container .cp-form-field input,
-.cp-info-bar .cp-form-container .cp-form-field textarea {
-    border: 1px solid #dddddd;
-    letter-spacing: normal;
-    box-shadow: none;
-    font-size: 14px;
-    line-height: normal;
-    border-radius: 3px;
-    font-family: inherit;
-    padding: 7px 10px;
-    outline: none;
-    display: block;
-    width: 100%;
-    height: auto;
-    min-height: auto;
-    max-width: 100%;
-    font-weight: normal;
-}*/
 /*    Modal -   Inputs      */
 .cp-modal-popup-container .cp-form-field button:focus,
 .cp-modal-popup-container .cp-form-field input:focus,
@@ -421,13 +400,6 @@
          -o-transition: all .2s ease-in-out;
             transition: all .2s ease-in-out;
 }
-
-/*@media(max-width:768px) {
-  .cp-form-container .cp-submit,
-  .cp-form-container .cp-submit-wrap {
-    clear: both;
-  }
-}*/
 
 @media(max-width:768px) {
     /* Placeholder */
@@ -461,6 +433,9 @@
 .cp-form-container .cp-submit-wrap-right {
     text-align: right;
 }
+.cp-form-container .cp-form-layout-3 label {
+    display: none!important;
+}
 /* CSS FIXES */
 .cp-form-container .cp-form-layout-3 .cp-all-inputs-wrap {
     padding: 0;
@@ -477,7 +452,7 @@
 @media (min-width: 768px) {
 
     /* Layout - 2 */
-    .cp-form-layout-2 .cp-form-field:nth-child(odd) {
+    .cp-form-layout-2 .cp-form-field:nth-child(odd):not(.odd-field-fallback) {
         padding-right: 5px;
         clear: both;
     }
@@ -521,6 +496,7 @@
 .cp-form-container.cp-vertical-form-container .cp-form-layout-1 .cp-form-field,
 .cp-form-container.cp-vertical-form-container .cp-form-layout-2 .cp-form-field:nth-child(odd) {
     padding-left: 0;
+    padding-right: 0;
 }
 .cp-form-container.cp-vertical-form-container .cp-form-layout-1 .cp-form-field,
 .cp-form-container.cp-vertical-form-container .cp-form-layout-2 .cp-form-field:nth-child(even) {
@@ -571,3 +547,48 @@ html body div#ui-datepicker-div[style] {
 .cp-form-field select.cp-dropdown {
     height: auto;
 }
+@media (max-width: 768px) {
+  .cp-form-container.cp-vertical-form-container .cp-form-layout-1 .cp-form-field,
+  .cp-form-container.cp-vertical-form-container .cp-form-layout-2 .cp-form-field:nth-child(even) {
+      padding-left: 0;
+  }
+}
+
+/* Message after form submission */
+
+.cp-detailed-message{
+  color: red;
+  margin-top: 15px;
+  font-size: 15px;
+}
+
+.cp-admin-error-notice {
+  font-size: 15px;
+  margin-top: 13px;
+  margin-bottom: 10px;
+  color: #101010;
+}
+
+.cp-error-msg {
+  margin-bottom: 15px;
+}
+
+.cp-m-error h5{
+  font-weight: normal;
+}
+
+.cp-only-admin-msg {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    background: rgba(128, 128, 128, 0.46);
+    padding: 10px;
+}
+.cp-form-container input:-webkit-autofill {
+     -webkit-box-shadow: 0 0 0px 1000px white inset!important;
+}
+
+.cp-form-container input[type="number"]{
+  height:auto;
+} 

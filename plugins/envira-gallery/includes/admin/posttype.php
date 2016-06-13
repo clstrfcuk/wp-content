@@ -37,15 +37,6 @@ class Envira_Gallery_Posttype_Admin {
     public $base;
 
     /**
-     * Holds the base class object.
-     *
-     * @since 1.3.2.1
-     *
-     * @var object
-     */
-    public $metaboxes;
-
-    /**
      * Primary class constructor.
      *
      * @since 1.0.0
@@ -53,12 +44,8 @@ class Envira_Gallery_Posttype_Admin {
     public function __construct() {
 
         // Load the base class object.
-        $this->base = Envira_Gallery::get_instance();
+        $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
         $this->metabox = Envira_Gallery_Metaboxes::get_instance();
-
-        // Manage post type columns.
-        add_filter( 'manage_edit-envira_columns', array( $this, 'envira_columns' ) );
-        add_filter( 'manage_envira_posts_custom_column', array( $this, 'envira_custom_columns' ), 10, 2 );
 
         // Update post type messages.
         add_filter( 'post_updated_messages', array( $this, 'messages' ) );
@@ -66,83 +53,28 @@ class Envira_Gallery_Posttype_Admin {
         // Force the menu icon to be scaled to proper size (for Retina displays).
         add_action( 'admin_head', array( $this, 'menu_icon' ) );
 
-    }
-
-    /**
-     * Customize the post columns for the Envira post type.
-     *
-     * @since 1.0.0
-     *
-     * @param array $columns  The default columns.
-     * @return array $columns Amended columns.
-     */
-    public function envira_columns( $columns ) {
-
-        $columns = array(
-            'cb'        => '<input type="checkbox" />',
-            'title'     => __( 'Title', 'envira-gallery' ),
-            'shortcode' => __( 'Shortcode', 'envira-gallery' ),
-            'template'  => __( 'Function', 'envira-gallery' ),
-            'images'    => __( 'Number of Images', 'envira-gallery' ),
-            'posts'     => __( 'Posts', 'envira-gallery' ),
-            'modified'  => __( 'Last Modified', 'envira-gallery' ),
-            'date'      => __( 'Date', 'envira-gallery' )
-        );
-
-        return $columns;
+        // Add the Universal Header.
+        add_action( 'in_admin_header', array( $this, 'admin_header' ), 100 );
 
     }
 
     /**
-     * Add data to the custom columns added to the Envira post type.
+     * Outputs the Envira Gallery Header.
      *
-     * @since 1.0.0
-     *
-     * @global object $post  The current post object
-     * @param string $column The name of the custom column
-     * @param int $post_id   The current post ID
+     * @since 1.5.0
      */
-    public function envira_custom_columns( $column, $post_id ) {
-
-        global $post;
-        $post_id = absint( $post_id );
-
-        switch ( $column ) {
-            case 'shortcode' :
-                echo '<code>[envira-gallery id="' . $post_id . '"]</code>';
-
-                // Hidden fields are for Quick Edit
-                // class is used by assets/js/admin.js to remove these fields when a search is about to be submitted, so we dont' get long URLs
-                echo '<input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[columns]" value="' . $this->metabox->get_config( 'columns' ) . '" />
-                <input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[gallery_theme]" value="' . $this->metabox->get_config( 'gallery_theme' ) . '" />
-                <input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[gutter]" value="' . $this->metabox->get_config( 'gutter' ) . '" />
-                <input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[margin]" value="' . $this->metabox->get_config( 'margin' ) . '" />
-                <input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[crop_width]" value="' . $this->metabox->get_config( 'crop_width' ) . '" />
-                <input class="envira-quick-edit" type="hidden" name="_envira_gallery_' . $post_id . '[crop_height]" value="' . $this->metabox->get_config( 'crop_height' ) . '" />';
-                break;
-
-            case 'template' :
-                echo '<code>if ( function_exists( \'envira_gallery\' ) ) { envira_gallery( \'' . $post_id . '\' ); }</code>';
-                break;
-
-            case 'images' :
-                $gallery_data = get_post_meta( $post_id, '_eg_gallery_data', true );
-                echo ( ! empty( $gallery_data['gallery'] ) ? count( $gallery_data['gallery'] ) : 0 );
-                break;
-
-            case 'posts':
-                $posts = get_post_meta( $post_id, '_eg_in_posts', true );
-                if ( is_array( $posts ) ) {
-                    foreach ( $posts as $in_post_id ) {
-                        echo '<a href="' . get_permalink( $in_post_id ) . '" target="_blank">' . get_the_title( $in_post_id ).'</a><br />';
-                    }
-                }
-                break;
-
-            case 'modified' :
-                the_modified_date();
-                break;
+    public function admin_header() {
+        
+        // Get the current screen, and check whether we're viewing the Envira or Envira Album Post Types.
+        $screen = get_current_screen(); 
+        if ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type ) {
+            return;
         }
+
+        // If here, we're on an Envira Gallery or Album screen, so output the header.
+        $this->base->load_admin_partial( 'header', array(
+            'logo' => plugins_url( 'assets/images/envira-logo.png', $this->base->file ),
+        ) );
 
     }
 
@@ -208,6 +140,8 @@ class Envira_Gallery_Posttype_Admin {
         return self::$instance;
 
     }
+
+
 
 }
 

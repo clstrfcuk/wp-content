@@ -42,11 +42,11 @@ if ( isset( $_POST['x_white_label_form_submitted'] ) ) {
       'style'  => array(),
     );
 
-    $x_white_label_options['x_white_label_enable']                 = ( isset( $_POST['x_white_label_enable'] ) ) ? strip_tags( $_POST['x_white_label_enable'] ) : '';
-    $x_white_label_options['x_white_label_login_image']            = strip_tags( $_POST['x_white_label_login_image'] );
-    $x_white_label_options['x_white_label_addons_home_heading']    = strip_tags( $_POST['x_white_label_addons_home_heading'] );
-    $x_white_label_options['x_white_label_addons_home_subheading'] = strip_tags( $_POST['x_white_label_addons_home_subheading'] );
-    $x_white_label_options['x_white_label_addons_home_content']    = stripslashes( wp_kses( $_POST['x_white_label_addons_home_content'], $kses_allowed_tags ) );
+    $x_white_label_options['x_white_label_enable']               = ( isset( $_POST['x_white_label_enable'] ) ) ? strip_tags( $_POST['x_white_label_enable'] ) : '';
+    $x_white_label_options['x_white_label_login_image']          = strip_tags( $_POST['x_white_label_login_image'] );
+    $x_white_label_options['x_white_label_addons_home_heading']  = strip_tags( $_POST['x_white_label_addons_home_heading'] );
+    $x_white_label_options['x_white_label_addons_home_content']  = stripslashes( wp_kses( $_POST['x_white_label_addons_home_content'], $kses_allowed_tags ) );
+    $x_white_label_options['x_white_label_addons_home_position'] = strip_tags( $_POST['x_white_label_addons_home_position'] );
     
     update_option( 'x_white_label', $x_white_label_options );
 
@@ -62,10 +62,10 @@ $x_white_label_options = apply_filters( 'x_white_label_options', get_option( 'x_
 
 if ( $x_white_label_options != '' ) {
 
-  $x_white_label_enable                 = $x_white_label_options['x_white_label_enable'];
-  $x_white_label_login_image            = $x_white_label_options['x_white_label_login_image'];
-  $x_white_label_addons_home_heading    = $x_white_label_options['x_white_label_addons_home_heading'];
-  $x_white_label_addons_home_subheading = $x_white_label_options['x_white_label_addons_home_subheading'];
-  $x_white_label_addons_home_content    = $x_white_label_options['x_white_label_addons_home_content'];
+  $x_white_label_enable               = $x_white_label_options['x_white_label_enable'];
+  $x_white_label_login_image          = $x_white_label_options['x_white_label_login_image'];
+  $x_white_label_addons_home_heading  = $x_white_label_options['x_white_label_addons_home_heading'];
+  $x_white_label_addons_home_content  = $x_white_label_options['x_white_label_addons_home_content'];
+  $x_white_label_addons_home_position = $x_white_label_options['x_white_label_addons_home_position'];
 
 }

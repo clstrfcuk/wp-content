@@ -8,116 +8,55 @@
  * trigger modal selection windows and receive the corresponding
  * selected data objects.
  *
- * Using this file requires three actions for the 3rd party plugin.
+ * Using this file requires two actions for the 3rd party plugin.
  *
- * 1. The media modal HTML output needs to be inserted directly
- *    after the option/dropdown/button that is to be used to
- *    trigger the modal. This can be done by placing the following
- *    code after the output (first to return, latter to echo):
+ * 1. This file should be enqueued on the page where the field resides.
  *
- *    Envira_Gallery_Editor::get_instance()->gallery_selection_modal();
+ * 2. You must add the class ".envira-gallery-modal-trigger" to the
+ *    option/dropdown/button that will trigger the modal.
  *
- * 2. This file should be enqueued on the page where the field resides.
- *    You should add the class ".envira-gallery-modal-trigger" to the
- *    option/dropdown/button that will trigger the modal. This will
- *    be used as a reference point for showing, hiding and passing data
- *    between the modal and your plugin.
+ * 3. You must add the data-action="gallery" or data-action="album" attribute
+ *    to the option/dropdown/button that will trigger the modal.
  *
- * 3. Attaching to a global event that is fired once the data for the
+ * 4. Attaching to a global event that is fired once the data for the
  *    selection has been retrieved. You should listen on the document
  *    object for the "enviraGalleryModalData" event, like this:
  *
- *    $(document).on("enviraGalleryModalData", function(e){
- *        console.log(e.gallery);
- *    });
+ *    jQuery( document ).on( 'enviraGalleryModalData', function( e ) { 
+ *        console.log( e.action );            // 'gallery' or 'album'
+ *        console.log( e.multiple );          // Whether the user could select multiple Galleries / Albums (true|false)
+ *        console.log( e.items );             // An array of Galleries or Albums
+ *        console.log( e.insert_options );    // An object of the Insert Options the user chose
+ *    } );
  *
- *    This will give you access to the entire array of gallery data that
- *    the user has selected, including ID, title, slug and settings.
- * ==========================================================
- * Copyright 2013 Thomas Griffin.
+ *    This will give you access to the entire array of galleries or albums that
+ *    the user has selected, including ID, title and slug.
  *
- * Licensed under the GPL License, Version 2.0 or later (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/gpl-2.0.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ========================================================== */
-;(function($){
-    $(function(){
-        // Close the modal window on user action.
-        var envira_trigger_target  = envira_editor_frame = false;
-        var envira_append_and_hide = function(e){
-            e.preventDefault();
-            $('.envira-gallery-default-ui .selected').removeClass('details selected');
-            $('.envira-gallery-default-ui').appendTo('.envira-gallery-default-ui-wrapper').hide();
-            envira_trigger_target = envira_editor_frame = false;
-        };
+ *    Please note that Envira Gallery 1.5.0 and Envira Albums 1.3.0 introduced
+ *    support for selecting multiple Galleries / Albums in the Backbone modal.
+ */ 
+jQuery( document ).ready( function( $ ) {
 
-        $(document).on('click', '.envira-gallery-choose-gallery, .envira-gallery-modal-trigger', function(e){
-            e.preventDefault();
+    // Open the "Add Gallery" / "Add Album" modal
+    $( document ).on( 'click', 'a.envira-gallery-choose-gallery, a.envira-albums-choose-album, .envira-gallery-modal-trigger', function( e ) {
 
-            // Store the trigger target.
-            envira_trigger_target = e.target;
+        // Prevent default action
+        e.preventDefault();
 
-            // Show the modal.
-            envira_editor_frame = true;
-            $('.envira-gallery-default-ui').appendTo('body').show();
+        // Get the action
+        var action = $( this ).data( 'action' );
 
-            $(document).on('click', '.media-modal-close, .media-modal-backdrop, .envira-gallery-cancel-insertion', envira_append_and_hide);
-            $(document).on('keydown', function(e){
-                if ( 27 == e.keyCode && envira_editor_frame ) {
-                    envira_append_and_hide(e);
-                }
-            });
-        });
+        // Define the modal's view
+        EnviraGalleryModalWindow.content( new EnviraGallerySelectionView( {
+            action:             action, // gallery|album
+            multiple:           true,   // Allow multiple Galleries / Albums to be selected
+            modal_title:        envira_gallery_editor.modal_title,
+            insert_button_label:envira_gallery_editor.insert_button_label
+        } ) );
 
-        $(document).on('click', '.envira-gallery-default-ui .thumbnail, .envira-gallery-default-ui .check, .envira-gallery-default-ui .media-modal-icon', function(e){
-            e.preventDefault();
-            if ( $(this).parent().parent().hasClass('selected') ) {
-                $(this).parent().parent().removeClass('details selected');
-                $('.envira-gallery-insert-gallery').attr('disabled', 'disabled');
-            } else {
-                $(this).parent().parent().parent().find('.selected').removeClass('details selected');
-                $(this).parent().parent().addClass('details selected');
-                $('.envira-gallery-insert-gallery').removeAttr('disabled');
-            }
-        });
+        // Open the modal window
+        EnviraGalleryModalWindow.open();
 
-        $(document).on('click', '.envira-gallery-default-ui .check', function(e){
-            e.preventDefault();
-            $(this).parent().parent().removeClass('details selected');
-            $('.envira-gallery-insert-gallery').attr('disabled', 'disabled');
-        });
+    } );
 
-        $(document).on('click', '.envira-gallery-default-ui .envira-gallery-insert-gallery', function(e){
-            e.preventDefault();
-
-            // Either insert into an editor or make an ajax request.
-            if ( $(envira_trigger_target).hasClass('envira-gallery-choose-gallery') ) {
-                wp.media.editor.insert('[envira-gallery id="' + $('.envira-gallery-default-ui .selected').data('envira-gallery-id') + '"]');
-            } else {
-                // Make the ajax request.
-                var req_data = {
-                    action:  'envira_gallery_load_gallery_data',
-                    post_id: $('.envira-gallery-default-ui:first .selected').data('envira-gallery-id')
-                };
-                $.post(ajaxurl, req_data, function(res){
-                    // Trigger the event.
-                    $(document).trigger({ type: 'enviraGalleryModalData', gallery: res });
-
-                    // Close the modal.
-                    envira_append_and_hide(e);
-                }, 'json');
-            }
-
-            // Hide the modal.
-            envira_append_and_hide(e);
-        });
-    });
-}(jQuery));
+} );

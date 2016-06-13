@@ -22,6 +22,10 @@
     font-size: 15px;
 }
 
+.cp-slidein .cp-text-container{
+    color: #444;
+}
+
 @media (max-width:768px) {
     .cp-slidein-body.cp-slidein {
         text-align: center;

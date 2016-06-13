@@ -1,4 +1,3 @@
-
 (function($){
 	//	CP Avoid CONCATINATE strings
 	function avoid_cp_concate_chars( t ) {
@@ -8,10 +7,8 @@
 
 	    t.val( v );
 	}
-	$('.cp_mb_input').bind('blur',function(){
-		var t = $(this);
-		avoid_cp_concate_chars( t );
-	});
+
+
 
 	//	Avoid string which contain letters
 	//	'capital'
@@ -35,7 +32,15 @@
 
 	$(document).ready(function(){
 
+		$('.cp_mb_input').bind('blur',function(){
+			var t = $(this);
+			avoid_cp_concate_chars( t );
+			refresh_multi_box();
+		});
+
 		refresh_multi_box();
+
+		prevent_keypress();
 
 		// on change events
 		$(document).on('change','.cp_mb_select, .cp_mb_input, .cp_mb_checkbox', function(){
@@ -118,7 +123,6 @@
 			});
 			string = string.slice(0, -1); // remove ; from end of string
 
-
 			//	Update email name
 			//	Add name field for EMAIL
 			//  Extract ALL - field
@@ -128,7 +132,7 @@
 	        var i = 0;
 	        $.each( all , function( index, val ) {
 
-	            //  Empty Fields
+	        	//  Empty Fields
 	            var name = '';
 	            var type = '';
 	            //  Extract SINGLE - all
@@ -136,15 +140,16 @@
 	            $.each( single , function( i, v ) {
 	                var s = v.split("->");
 	                switch( s[0] ) {
-	                    case 'input_name':          name = s[1];
+	                    case 'input_name':  name = s[1];
 	                        break;
-	                    case 'input_type':          type = s[1];
+	                    case 'input_type':   type = s[1];
 	                        break;
 	                }
 	            });
 
-	            //  For ONLY email field
+	             //  For ONLY email field
 	            if( type == 'email' ) {
+
 	                var email_name = 'email';
 	                if( i >= 1 ) {
 	                	email_name = email_name + '_' + i;
@@ -155,7 +160,6 @@
 	        });
 
 	  		var $input = $('#multi-box-input-'+pre_id);
-			// console.log('string: ' + string);
 			$input.val(new_string);
 			$input.trigger('change');
 			$(document).trigger('multiBoxUpdated',[new_string, pre_id]);
@@ -175,14 +179,13 @@
 			};
 
 			$.post(ajaxurl, buildData, function(response) {
-				console.log(response);
 				$icon.removeClass('rotating');
 				var result = JSON.parse(response);
 				if(result.type === 'undefined') {
 					result.log('Incorrect response');
-					console.log(response);
 					return false;
 				}
+
 				if(result.type === 'error') {
 					console.log(result.message);
 					return false;
@@ -250,6 +253,7 @@
 
 			 	//	Update input values
 			 	refresh_multi_box();
+			 	prevent_keypress();
 
 			},150);
 		});
@@ -319,6 +323,11 @@
 					'input[name=input_require]',
 					'input[name=input_label]'
 				];
+				if( val === 'textarea' ) { // placeholder
+					dependant_array_to_show.push('input[name=row_value]');
+				}else{
+					dependant_array_to_hide.push('input[name=row_value]');
+				}
 
 				if( val === 'textarea' || val === 'textfield' || val === 'email' || val === 'number') { // placeholder
 					dependant_array_to_show.push('input[name=input_placeholder]');
@@ -367,6 +376,14 @@
 			e.preventDefault();
 			$(".sweet-overlay, .sweet-alert").fadeOut('slow').remove();
 		});
-
 	});
+
+function prevent_keypress(){
+	$('input[type=text]').keypress(function(event) {
+	    if (event.keyCode == 13) {
+	        event.preventDefault();
+	    }
+	});
+}
+
 })(jQuery);

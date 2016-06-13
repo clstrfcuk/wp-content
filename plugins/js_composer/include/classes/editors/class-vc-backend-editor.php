@@ -150,14 +150,6 @@ class Vc_Backend_Editor implements Vc_Editor_Interface {
 	 */
 	public function printScriptsMessages() {
 		if ( ! vc_is_frontend_editor() && $this->isValidPostType( get_post_type() ) ) {
-			if ( vc_user_access()
-				->wpAny( 'manage_options' )
-				->part( 'settings' )
-				->can( 'vc-updater-tab' )
-				->get()
-			) {
-				vc_license()->setupReminder();
-			}
 			$this->enqueueEditorScripts();
 		}
 	}

@@ -4,13 +4,16 @@ if( function_exists( "smile_update_settings" ) ){
 	/* Get ConvertPlug Form Option Array */
 	global $cp_form;
 
+	/* Get ConvertPlug Form social media Array */
+	global $cp_social;
+
 	//get style id
 	$style_id_for_slideincustomcss = '';
 	if( isset( $_GET['variant-style'])){
 		$style_id_for_slideincustomcss = $_GET['variant-style'];
 		$style = $_GET['variant-style'];
-	} else {	
-		if( isset( $_GET['style'] ) ){	
+	} else {
+		if( isset( $_GET['style'] ) ){
 	    	$style_id_for_slideincustomcss = $_GET['style'];
 		}
 	}
@@ -227,7 +230,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"opts"		=> array(
 				"title" 		=> __( "Background Color", "smile" ),
 				"value" 		=> "rgb(255, 255, 255)",
-				"description" 	=> __( "Choose the background color for Slide In box area.", "smile" ),
+				"description" 	=> __( "Choose the background color for Slide In box area.", "smile" )
 			),
 			"panel" 	=> "Background",
 			"section" => "Design",
@@ -264,9 +267,40 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-image",
 		),
 		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "slide_in_bg_image_src",
+			"opts" 		=> array(
+				"title" 	=> __( "Background Image source","smile"),
+				"value" 	=> "upload_img",
+				"options" 	=> array(
+						__( "Custom URL", "smile" ) 	 => "custom_url",
+						__( "Upload Image", "smile" ) 	 => "upload_img",
+						__( "None", "smile" ) 	 		 => "none",
+					)
+				),
+			"panel" => "Background",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
+		),
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "slide_in_bg_image_custom_url",
+			"opts"		=> array(
+				"title" 		=> __( "Custom URL", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter custom URL for your image.", "smile" ),
+			),
+			"panel" 	=> "Background",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'slide_in_bg_image_src', 'operator' => '==', 'value' => 'custom_url')
+		),
+		array(
 			"type" 		=> "media",
 			"class" 	=> "",
-			"name" 		=> "slidein_bg_image",
+			"name" 		=> "slide_in_bg_image",
 			"opts"		=> array(
 				"title" 		=> __( "Background Image", "smile" ),
 				"value" 		=> "",
@@ -274,7 +308,8 @@ if( function_exists( "smile_update_settings" ) ){
 			),
 			"panel" 	 => "Background",
 			"section" => "Design",
-			"section_icon" => "connects-icon-image"
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'slide_in_bg_image_src', 'operator' => '==', 'value' => 'upload_img')
 		),
 		array(
 			"type" 		=> "background",
@@ -287,102 +322,35 @@ if( function_exists( "smile_update_settings" ) ){
 			"panel" => "Background",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'slidein_bg_image', 'operator' => '!==', 'value' => '', 'type' => 'media'),
+			// "dependency" => array('name' => 'slide_in_bg_image_src', 'operator' => '!==', 'value' => 'none')
 		),
-	);
 
-
-	/*** Array contains Slide In image options ***/
-	$slidein_img = array(
+		//	store button darken on hover
 		array(
-			"type" 		=> "media",
-			"class" 	=> "",
-			"name" 		=> "slidein_image",
-			"opts"		=> array(
-				"title" 		=> __( "Upload Image", "smile" ),
-				"value" 		=> plugins_url('../assets/img/default-image.png', __FILE__ ),
-				"description" 	=> __( "Upload an image that will be displayed inside the content area.Image size will not bigger than its container.", "smile" ),
-			),
-			"panel" 	 => "Slide In Image",
+		    "type"         => "textfield",
+		    "name"         => "side_button_bg_hover_color",
+		    "opts"         => array(
+		        "title"     => __( "Button BG Hover Color", "smile" ),
+		        "value"     => "",
+		    ),
+		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+			"panel" => "Background",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 		),
+		//	store button lighten gradient
 		array(
-			"type" 		=> "slider",
-			"class" 	=> "",
-			"name" 		=> "image_size",
-			"opts"			=> array(
-				"title" 		=> __( "Resize Image", "smile" ),
-				"value" 		=> 298,
-				"min" 			=> 1,
-				"max" 			=> 1000,
-				"step" 			=> 1,
-				"suffix" 		=> "px",
-				"description" 	=> __( "Image size will not bigger than its container.", "smile" ),
-			),
-			"panel" 	 => "Slide In Image",
+		    "type"         => "textfield",
+		    "name"         => "side_button_bg_gradient_color",
+		    "opts"         => array(
+		        "title"     => __( "Button Gradient Color", "smile" ),
+		        "value"     => "",
+		    ),
+		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
+			"panel" => "Background",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 		),
-		array(
-			"type" 		=> "switch",
-			"class" 	=> "",
-			"name" 		=> "image_position",
-			"opts"		=> array(
-				"title" 	=> __( "Image Position", "smile" ),
-				"value" 	=> true,
-				"on" 		=> "RIGHT",
-				"off"		=> "LEFT",
-			),
-			"panel" 	 => "Slide In Image",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-		),
-		array(
-			"type" 		=> "slider",
-			"class" 	=> "",
-			"name" 		=> "image_horizontal_position",
-			"opts"			=> array(
-				"title" 		=> __( "Horizontal Position", "smile" ),
-				"value" 		=> 0,
-				"min" 			=> -250,
-				"max" 			=> 250,
-				"step" 			=> 1,
-			),
-			"panel" 	 => "Slide In Image",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-		),
-		array(
-			"type" 		=> "slider",
-			"class" 	=> "",
-			"name" 		=> "image_vertical_position",
-			"opts"			=> array(
-				"title" 		=> __( "Vertical Position", "smile" ),
-				"value" 		=> 0,
-				"min" 			=> -250,
-				"max" 			=> 250,
-				"step" 			=> 1,
-			),
-			"panel" 	 => "Slide In Image",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-		),
-		array(
-			"type" 		=> "switch",
-			"class" 	=> "",
-			"name" 		=> "image_displayon_mobile",
-			"opts"		=> array(
-				"title" 	=> __( "Hide Image on Small Screens", "smile" ),
-				"value" 	=> true,
-				"on" 		=> __( "YES", "smile" ),
-				"off"		=> __( "NO", "smile" ),
-				"description" 	=> __( "On smaller screens like mobile, smaller Slide Ins look more beautiful. To reduce the size of the Slide In, you may hide the image with this setting.", "smile" ),
-			),
-			"panel" 	 => "Slide In Image",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-		)
 	);
 
 	/*** Array contains close link options ***/
@@ -405,16 +373,69 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-disc"
 		),
 		array(
-		    "type"         => "icon-picker",
-		    "name"         => "close_icon",
-		    "opts"         => array(
-		        "title"     => __( "Close Icon", "smile" ),
-		        "value"     => "Defaults-close",
-		    ),
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "close_si_image_src",
+			"opts" 		=> array(
+				"title" 	=> __( "Image source","smile"),
+				"value" 	=> "upload_img",
+				"options" 	=> array(
+						__( "Custom URL", "smile" ) 	 => "custom_url",
+						__( "Upload Image", "smile" ) 	 => "upload_img",
+						__( "Predefined Icons", "smile" ) => "pre_icons",
+						//__( "None", "smile" ) 	 		 => "none",
+					)
+				),
 			"panel" => "Close Link",
 			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-			"dependency" => array('name' => 'close_slidein', 'operator' => '==', 'value' => 'close_icon'),
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'close_slidein', 'operator' => '==', 'value' => 'close_img'),
+		),
+		array(
+            "type"  =>  "radio-image",
+            "name"  =>  "close_icon",
+            "opts"  =>  array(
+                "title" => __( "", "smile" ),
+                "value" => 'default',
+                "width" => '80px',
+                "options" => array(
+                    "black"         => plugins_url( '../../assets/images/black.png', __FILE__ ),
+                    "blue_final"    => plugins_url( '../../assets/images/blue_final.png', __FILE__ ),
+                    "circle_final"  => plugins_url( '../../assets/images/circle_final.png', __FILE__ ),
+                    "default"    	=> plugins_url( '../../assets/images/default.png', __FILE__ ),
+                    "grey_close"  	=> plugins_url( '../../assets/images/grey_close.png', __FILE__ ),
+                    "red02" 		=> plugins_url( '../../assets/images/red02.png', __FILE__ ),
+                    "red2_close"    => plugins_url( '../../assets/images/red2_close.png', __FILE__ ),
+                    "white20"       => plugins_url( '../../assets/images/white20_bb.png', __FILE__ ),
+                ),
+				"imagetitle" => array(
+					__( "title-0", "smile" ) 	=> "Black",
+					__( "title-1", "smile" ) 	=> "Blue",
+					__( "title-2", "smile" ) 	=> "Circle",
+					__( "title-3", "smile" ) 	=> "Default",
+					__( "title-4", "smile" ) 	=> "Grey",
+					__( "title-5", "smile" ) 	=> "Red",
+					__( "title-6", "smile" ) 	=> "Red",
+					__( "title-7", "smile" ) 	=> "White"
+				),
+            ),
+            "panel" => "Close Link",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image",
+            "dependency" => array('name' => 'close_si_image_src', 'operator' => '==', 'value' => 'pre_icons')
+        ),
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "slide_in_close_img_custom_url",
+			"opts"		=> array(
+				"title" 		=> __( "Custom URL", "smile" ),
+				"value" 		=> "",
+			),
+			"panel" 	=> "Close Link",
+			"dependency" => array('name' => 'close_si_image_src', 'operator' => '==', 'value' => 'custom_url'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
 		),
 		array(
 			"type" 		=> "textfield",
@@ -451,7 +472,7 @@ if( function_exists( "smile_update_settings" ) ){
 				"value" 		=> plugins_url('../assets/img/cross.png', __FILE__ ),
 			),
 			"panel" 	=> "Close Link",
-			"dependency" => array('name' => 'close_slidein', 'operator' => '==', 'value' => 'close_img'),
+			"dependency" => array('name' => 'close_si_image_src', 'operator' => '==', 'value' => 'upload_img'),
 			"section" => "Design",
 			"section_icon" => "connects-icon-image"
 		),
@@ -591,7 +612,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-image",
 			"dependency" => array('name' => 'toggle_btn', 'operator' => '==', 'value' => true ),
 		),
- 		array(
+		array(
 			"type" 		=> "textfield",
 			"class" 	=> "",
 			"name" 		=> "slide_button_title",
@@ -611,7 +632,9 @@ if( function_exists( "smile_update_settings" ) ){
 		    "opts"         => array(
 		        "title"     => __( "Font Name", "smile" ),
 		        "value"     => "",
-		        "use_in"    => "panel"
+		        "use_in"    => "panel",
+		        "css_property" => "font-family",
+				"css_selector" => ".slidein-overlay .cp-slide-edit-btn",
 		    ),
 			"panel" 	=> "Close Link",
 			"section" => "Design",
@@ -625,6 +648,8 @@ if( function_exists( "smile_update_settings" ) ){
 			"opts"		=> array(
 				"title" 		=> __( "Text Color", "smile" ),
 				"value" 		=> "rgb(255, 255, 255)",
+				"css_property" => "color",
+				"css_selector" => ".slidein-overlay .cp-slide-edit-btn",
 			),
 			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
 			"panel" => "Close Link",
@@ -634,11 +659,12 @@ if( function_exists( "smile_update_settings" ) ){
 		array(
 			"type" 		=> "colorpicker",
 			"class" 	=> "",
-			"name" 		=> "side_button_bg_color",
+			"name" 		=> "slide_button_bg_color",
 			"opts"		=> array(
 				"title" 		=> __( "Background Color", "smile" ),
 				"value" 		=> "rgb(0, 0, 0)",
-				//"description" 	=> __( "Select the button background color.", "smile" ),
+				"css_property" => "background-color",
+				"css_selector" => ".slidein-overlay .cp-slide-edit-btn",
 			),
 		    "dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
 			"panel" => "Close Link",
@@ -648,7 +674,7 @@ if( function_exists( "smile_update_settings" ) ){
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
-			"name" 		=> "side_btn_gradient",
+			"name" 		=> "slide_btn_gradient",
 			"opts"		=> array(
 				"title" 	=> __( "Enable Gradient Background", "smile" ),
 				"value" 	=> false,
@@ -659,33 +685,6 @@ if( function_exists( "smile_update_settings" ) ){
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
-		),
-
-		//	store button darken on hover
-		array(
-		    "type"         => "textfield",
-		    "name"         => "side_button_bg_hover_color",
-		    "opts"         => array(
-		        "title"     => __( "Button BG Hover Color", "smile" ),
-		        "value"     => "",
-		    ),
-		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" => "Close Link",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
-		),
-		//	store button lighten gradient
-		array(
-		    "type"         => "textfield",
-		    "name"         => "side_button_bg_gradient_color",
-		    "opts"         => array(
-		        "title"     => __( "Button Gradient Color", "smile" ),
-		        "value"     => "",
-		    ),
-		    "dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" => "Close Link",
-			"section" => "Design",
-			"section_icon" => "connects-icon-image",
 		),
 	);
 
@@ -877,8 +876,10 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 			=> "cp_slidein_width",
 			"opts"			=> array(
 				"title" 		=> __( "Slide In Width", "smile" ),
+				"css_property"  => "max-width",
+				"css_selector"  => ".cp-slidein",
 				"value" 		=> 520,
-				"min" 			=> 100,
+				"min" 			=> 50,
 				"max" 			=> 3000,
 				"step" 			=> 1,
 			),
@@ -919,6 +920,8 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "border",
 			"opts"		=> array(
 				"title" 	=> "",
+				"css_selector" => ".cp-slidein-content",
+				"css_property" => "border",
 				"value" 	=> 'br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:rgb(255,255, 255)|bw_all:5|bw_t:5|bw_l:5|bw_r:5|bw_b:5',
 				"description" 	=> __( "Using very customizable settings below, you can apply a border around the Slide In box.", "smile" ),
 			),
@@ -944,6 +947,8 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "box_shadow",
 			"opts"		=> array(
 				"title" 	=> "",
+				"css_selector" => ".cp-slidein-body-overlay",
+				"css_property" => "box-shadow",
 				"value" 	=> 'type:outset|horizontal:0|vertical:0|blur:5|spread:0|color:rgba(86,86,131,0.6)',
 			),
 			"panel" 	=> "Advance Design Options",
@@ -1017,6 +1022,8 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 			=> "cp_slidein_width",
 			"opts"			=> array(
 				"title" 		=> __( "Slide In Width", "smile" ),
+				"css_property"  => "max-width",
+				"css_selector"  => ".cp-slidein",
 				"value" 		=> 300,
 				"min" 			=> 100,
 				"max" 			=> 500,
@@ -1059,6 +1066,8 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "border",
 			"opts"		=> array(
 				"title" 	=> "",
+				"css_selector" => ".cp-slidein-content",
+				"css_property" => "border",
 				"value" 	=> 'br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:rgb(255,255, 255)|bw_all:5|bw_t:5|bw_l:5|bw_r:5|bw_b:5',
 				"description" 	=> __( "Using very customizable settings below, you can apply a border around the Slide In box.", "smile" ),
 			),
@@ -1084,6 +1093,8 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "box_shadow",
 			"opts"		=> array(
 				"title" 	=> "",
+				"css_selector" => ".cp-slidein-body-overlay",
+				"css_property" => "box-shadow",
 				"value" 	=> 'type:outset|horizontal:0|vertical:0|blur:5|spread:0|color:rgba(86,86,131,0.6)',
 			),
 			"panel" 	=> "Advance Design Options",
@@ -1437,7 +1448,7 @@ if( function_exists( "smile_update_settings" ) ){
                 "description" => __( "Select the position, where you want to display module inline.", "smile" ),
                 "options"   => array(
                         __( "Before Post", "smile" ) => "before_post",
-                        __( "After Post", "smile" )  => "after_post",                       
+                        __( "After Post", "smile" )  => "after_post",
                         __( "Both", "smile" )        => "both"
                     )
                 ),
@@ -1996,6 +2007,7 @@ $form_bg_color = array (
 		),
 	);
 
+
 	//Slide In button
  	$slidein_btn = array(
  	//	Slide Button Options
@@ -2014,22 +2026,6 @@ $form_bg_color = array (
 			"section_icon" => "connects-icon-disc",
 		),
  		array(
-			"type" 		=> "dropdown",
-			"class" 	=> "",
-			"name" 		=> "button_animation",
-			"opts"		=> array(
-				"title" 		=> __( "Button Animation", "smile" ),
-				"description" 	=> __( "Select the exit level animation for Slide In submit button .", "smile" ),
-				"value"			=> "smile-slideInUp",
-				"options" 		=> $animation_array
-			),
-			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
-			"panel" 	=> "Toggle Button",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc"
-		),
-
- 		array(
 			"type" 		=> "textfield",
 			"class" 	=> "",
 			"name" 		=> "slide_button_title",
@@ -2041,7 +2037,6 @@ $form_bg_color = array (
 			"panel" 	=> "Toggle Button",
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
-			//"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
 			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
 		),
 		array(
@@ -2057,21 +2052,7 @@ $form_bg_color = array (
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
 		),
-		array(
-			"type" 		=> "switch",
-			"class" 	=> "",
-			"name" 		=> "side_btn_gradient",
-			"opts"		=> array(
-				"title" 	=> __( "Enable gradient", "smile" ),
-				"value" 	=> false,
-				"on" 		=> __( "YES", "smile" ),
-				"off"		=> __( "NO", "smile" ),
-			),
-			"panel" 	=> "Toggle Button",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
-		),		
+
 		array(
 			"type" 		=> "colorpicker",
 			"class" 	=> "",
@@ -2085,7 +2066,7 @@ $form_bg_color = array (
 			"panel" 	=> "Toggle Button",
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
-		),		
+		),
 		//	store button darken on hover
 		array(
 		    "type"         => "textfield",
@@ -2114,8 +2095,8 @@ $form_bg_color = array (
 		),
  	);
 
-	//optin widget border color
-	$optin_border =array(
+	// optin widget border color
+	$optin_border = array(
 		array(
 			"type" 		=> "colorpicker",
 			"class" 	=> "",
@@ -2123,7 +2104,8 @@ $form_bg_color = array (
 			"opts"		=> array(
 				"title" 		=> __( "Form Border Color", "smile" ),
 				"value" 		=> "#999999",
-				//"description" 	=> __( "Select the button background color.", "smile" ),
+				"css_property" => "border-bottom-color",
+				"css_selector" => ".cp-optin-widget .cp-slidein-head",
 			),
 			"panel" 	=> "Optin Form",
 			"section" => "Design",
@@ -2140,10 +2122,61 @@ $form_bg_color = array (
 				"max" 			=> 40,
 				"step" 			=> 1,
 				"suffix" 		=> "px",
+				"css_property" => "border-bottom-width",
+				"css_selector" => ".cp-optin-widget .cp-slidein-head",
 			),
 			"panel" 	 => "Optin Form",
 			"section" => "Design",
 			"section_icon" => "connects-icon-disc",
+		),
+	);
+
+	// optin widget border color
+	$social_optin_border = array(
+		array(
+				"type" 		=> "section",
+				"class" 	=> "",
+				"name" 		=> "widget_media_layout",
+				"opts"		=> array(
+					"title"  => "Seperator Border",
+					"link" => "",
+					"value"  => "",
+				),
+				"panel" 	=> "Background",
+				"section" => "Design",
+				"section_icon" => "connects-icon-image"
+			),
+		array(
+			"type" 		=> "colorpicker",
+			"class" 	=> "",
+			"name" 		=> "optin_border_color",
+			"opts"		=> array(
+				"title" 		=> __( "Border Color", "smile" ),
+				"value" 		=> "#999999",
+				"css_property" => "border-bottom-color",
+				"css_selector" => ".cp-optin-widget .cp-slidein-head",
+			),
+			"panel" 	=> "Background",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "optin_border_width",
+			"opts"			=> array(
+				"title" 		=> __( "Border Size", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0,
+				"max" 			=> 40,
+				"step" 			=> 1,
+				"suffix" 		=> "px",
+				"css_property" => "border-bottom-width",
+				"css_selector" => ".cp-optin-widget .cp-slidein-head",
+			),
+			"panel" 	=> "Background",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
 		),
 	);
 
@@ -2167,7 +2200,6 @@ $form_bg_color = array (
 			$name,
 			$cp_form,
 			$background,
-			//$optin_form,
 			$close_link,
 			$animations,
 			$adv_design_options,
@@ -2189,6 +2221,44 @@ $form_bg_color = array (
 			$submission
 		)
 	);
+
+    // social media theme
+	smile_update_options( "Smile_Slide_Ins", "social_fly_in",
+		array_merge(
+			$name,
+			$secondary_title,
+			$background,
+			$cp_social,
+			$close_link,
+			$animations,
+			$adv_design_options,
+			$behavior
+		)
+	);
+
+	 // floating_social_bar  theme
+	smile_update_options( "Smile_Slide_Ins", "floating_social_bar",
+		array_merge(
+			$name,
+			$cp_social,
+			$adv_design_options,
+			$behavior
+		)
+	);
+
+	//social_widget_box
+	smile_update_options( "Smile_Slide_Ins", "social_widget_box",
+		array_merge(
+			$name,
+			$background,
+			$cp_social,
+			$social_optin_border,
+			$animations,
+			$adv_design_options_widget,
+			$behavior
+		)
+	);
+
 }
 
 // update default values of optin
@@ -2214,7 +2284,7 @@ if( function_exists( "smile_update_default" ) ){
 		"button_border_color"		=> "#ff8201",
 		"cp_slidein_width"     		=> "480",
 		"cp_close_image_width" 		=> 26,
-		"border" 			 		=> "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:#ff8201|bw_all:5|bw_t:5|bw_l:0|bw_r:0|bw_b:0",
+		"border" 			 		=> "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:#ff8201|bw_type:1|bw_all:5|bw_t:5|bw_l:0|bw_r:0|bw_b:0",
 		"btn_disp_next_line" 		=> false,
 		"close_position"     		=> "adj_slidein",
 		"slidein_title_color" 		=> "#000000",
@@ -2280,14 +2350,116 @@ if( function_exists( "smile_update_default" ) ){
 	foreach( $blank_default as $option => $value ){
 		smile_update_default( "Smile_Slide_Ins", "blank", $option, $value );
 	}
+
+	//	social_fly_in
+	$social_fly_in_default = array(
+		"slidein_title1"		  => "STAY IN TOUCH",
+		"slidein_short_desc1"     => '',
+		"overlay_effect" 		  => "smile-slideInUp",
+		"exit_animation"    	  => "smile-slideOutDown",
+		"cp_slidein_width"		  => 390,
+		"cp_social_icon_column"   => "2",
+		"social_container_border" => "4",
+		"cp_social_icon_shape" 	  => "flat",
+		"cp_social_icon_effect"   => "gradient",
+		"cp_social_icon" 		  => "order:0|input_type:Facebook|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:1|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Twitter|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:3|input_type:Blogger|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:4|input_type:LinkedIn|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:5|input_type:StumbleUpon|network_name:|input_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:",
+		"border" 			      => "br_all:3|br_tl:3|br_tr:3|br_br:3|br_bl:3|style:none|color:rgb(255,255,255)|bw_all:1|bw_t:1|bw_l:1|bw_r:1|bw_b:1",
+
+	);
+	foreach( $social_fly_in_default as $option => $value ){
+		smile_update_default( "Smile_Slide_Ins", "social_fly_in", $option, $value );
+	}
+
+	//	floating_social_bar
+	$floating_social_bar_default = array(
+		//"slidein_title1"		  => "STAY IN TOUCH",
+		"overlay_effect" 		  => "smile-slideInLeft",
+		"exit_animation"    	  => "smile-slideOutLeft",
+		"slidein_bg_color"     	  => "rgba(239,239,239,0.01)",
+		"cp_slidein_width"		  => 80,
+		"cp_social_icon_column"   => "1",
+		"social_container_border" => "0",
+		"cp_social_icon_shape" 	  => "square",
+		"cp_social_icon_effect"   => "gradient",
+		"close_slidein" 		  => "do_not_close",
+		"content_padding"		  => true,
+		"cp_social_share_count"   => false,
+		"cp_display_nw_name" 	  => false,
+		"slidein_position" 		  => "center-left",
+		"cp_social_icon_style" 	  => "cp-icon-style-top",
+		"cp_social_remove_icon_spacing" => true,
+		"box_shadow"			  =>"type:none|horizontal:0|vertical:0|blur:5|spread:0|color:rgba(86,86,131,0.6)",
+		"cp_social_icon" 		  => "order:0|input_type:Facebook|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:1|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Twitter|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:3|input_type:Blogger|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:4|input_type:Pinterest|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:nput_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:",
+		"border" 			      => "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(255,255,255)|bw_all:1|bw_t:1|bw_l:1|bw_r:1|bw_b:1",
+
+	);
+	foreach( $floating_social_bar_default as $option => $value ){
+		smile_update_default( "Smile_Slide_Ins", "floating_social_bar", $option, $value );
+	}
+
+	//	social_widget_box Widget
+	$social_widget_box_default = array(
+		"slidein_short_desc1"    	=> 'Share this with your friends now.',
+		"slidein_title1"		 	=> "STAY IN TOUCH",
+		"close_slidein"          	=> "do_not_close",
+		"slidein_confidential"   	=> "Give it a try, you can unsubscribe anytime.",
+		"slidein_bg_color"     	 	=> "#fafafa",
+		"border" 			     	=> "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(186,186,186)|bw_all:1|bw_t:1|bw_l:1|bw_r:1|bw_b:1",
+		"close_position"         	=> "adj_slidein",
+		"slidein_title_color"    	=> "rgb(0, 0, 0)",
+		"slidein_desc_color" 	 	=> "rgb(0, 0, 0)",
+		"tip_color"              	=> "rgb(0, 0, 0)",
+		"overlay_effect" 		 	=> "smile-slideInUp",
+		"exit_animation"     	    => "smile-slideOutDown",
+		"optin_border_color"		=> "rgba(153,153,153,0.46)",
+		"cp_slidein_width"		 	=> 320,
+		"cp_display_nw_name" 		=> false,
+		"cp_social_icon_effect" 	=> "flat",
+		"cp_social_icon_align"  	=> "center",
+		"cp_social_icon" 			=> "order:0|input_type:Facebook|network_name:|input_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:;order:1|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Blogger|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:3|input_type:LinkedIn|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:",
+	);
+	foreach( $social_widget_box_default as $option => $value ){
+		smile_update_default( "Smile_Slide_Ins", "social_widget_box", $option, $value );
+	}
+
+
 }
 
 //Remove option
 if( function_exists( "smile_remove_option" ) ){
-
 	//	Blank
 	smile_remove_option( "Smile_Slide_Ins", "blank", array( 'input_bg_color' ) );
 
-	// 	free_ebook
-	smile_remove_option( "Smile_Slide_Ins", "optin_widget", array( 'btn_disp_next_line' , 'hide_animation_width' ,'disable_overlay_effect' , 'exit_animation' ,'overlay_effect') );
+	// floating_social_bar
+	smile_remove_option( "Smile_Slide_Ins", "floating_social_bar", array('box_shadow','border', 'border_sub_title','box_shadow_sub_title', 'cp_social_icon_effect','cp_display_nw_name' , 'cp_social_icon_column' ,'cp_social_icon_style','content_padding' ,'cp_slidein_width') );
+
+	// optin widget
+	smile_remove_option( "Smile_Slide_Ins", "optin_widget", array( 'btn_disp_next_line' , 'hide_animation_width' ,'disable_overlay_effect' , 'exit_animation' ,'overlay_effect','content_padding') );
+
+	// social_widget_box
+	smile_remove_option( "Smile_Slide_Ins", "social_widget_box", array( 'btn_disp_next_line' , 'hide_animation_width' ,'disable_overlay_effect' , 'exit_animation' ,'overlay_effect','content_padding') );
+
+}
+
+/**
+ * Partial Refresh - Update values
+ */
+if( function_exists('smile_update_partial') ) {
+
+
+	// social_widget
+	$social_widget_box_partial = array(
+	    'optin_border_color' => array(
+	        'css_selector' => '.cp-social-widget .cp-slidein-head',
+	        'css_property' => 'border-bottom-color',
+	    ),
+	    'optin_border_width' => array(
+	        'css_selector' => '.cp-social-widget .cp-slidein-head',
+	        'css_property' => 'border-bottom-width',
+	    ),
+	);
+	foreach( $social_widget_box_partial as $option => $parse_array ){
+	    smile_update_partial( "Smile_Slide_Ins", "social_widget_box", $option, $parse_array );
+	}
+
 }

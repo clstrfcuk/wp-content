@@ -12,6 +12,7 @@
 //   03. Shortcodes
 //   04. Forms
 //   05. Isotope
+//   06. WooCommerce
 // =============================================================================
 
 // Typography
@@ -261,5 +262,25 @@
         -ms-transition-property: right, top, -ms-transform, opacity;
          -o-transition-property: right, top, -o-transform, opacity;
             transition-property: right, top, transform, opacity;
+  }
+}
+
+
+
+// WooCommerce
+// =============================================================================
+
+.rtl {
+  .woocommerce-MyAccount-navigation {
+    ul {
+      margin-right: 0 !important;
+    }
+  }
+
+  .woocommerce-MyAccount-navigation-link {
+    a {
+      margin-left: 3px;
+      margin-right: 0;
+    }
   }
 }

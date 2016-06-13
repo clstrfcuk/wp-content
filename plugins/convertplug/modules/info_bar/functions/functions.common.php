@@ -15,7 +15,7 @@ if( function_exists( "smile_update_settings" ) ) {
 	/* Get ConvertPlug Form Option Array */
 	global $cp_form;
 	global $cp_social;
-	
+
 	$name = array(
 		array(
 		    "type"         => "google_fonts",
@@ -29,7 +29,7 @@ if( function_exists( "smile_update_settings" ) ) {
 			"panel" => "Name",
 			"section_icon" => "connects-icon-image",
 		),
-		
+
 		array(
 			"type" 		=> "textarea",
 			"class" 	=> "",
@@ -58,7 +58,7 @@ if( function_exists( "smile_update_settings" ) ) {
 			"panel" => "Name",
 			"section_icon" => "connects-icon-image",
 		),
-		
+
 	);
 
 	/******* Background *****/
@@ -71,6 +71,9 @@ if( function_exists( "smile_update_settings" ) ) {
 				"title" 		=> __( "Background Color", "smile" ),
 				"value" 		=> "#dddddd",
 				"description" 	=> __( "Select the background color for info bar.", "smile" ),
+				"css_property" => "background-color",
+				"css_selector" => ".cp-info-bar-body-overlay",
+				"css_preview" => true,
 			),
 			"panel" 	 		=> "Background",
 			"section" 			=> "Design",
@@ -136,19 +139,53 @@ if( function_exists( "smile_update_settings" ) ) {
 		    "panel" => "Background",
 		    "section_icon" => "connects-icon-image",
 		),
-
+		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "info_bar_bg_image_src",
+			"opts" 		=> array(
+				"title" 	=> __( "Background Image source","smile"),
+				"value" 	=> "upload_img",
+				"options" 	=> array(
+						__( "Custom URL", "smile" ) 	 => "custom_url",
+						__( "Upload Image", "smile" ) 	 => "upload_img",
+						__( "None", "smile" ) 	 		 => "none",
+					)
+				),
+			"panel" => "Background",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
+		),
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "info_bar_bg_image_custom_url",
+			"opts"		=> array(
+				"title" 		=> __( "Custom URL", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter custom URL for your image.", "smile" ),
+			),
+			"panel" 	=> "Background",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'info_bar_bg_image_src', 'operator' => '==', 'value' => 'custom_url')
+		),
 		array(
 			"type" 		=> "media",
 			"class" 	=> "",
-			"name" 		=> "infobar_bg_image",
+			"name" 		=> "info_bar_bg_image",
 			"opts"		=> array(
 				"title" 		=> __( "Background Image", "smile" ),
 				"value" 		=> "",
+				 "css_selector"	=> ".cp-info-bar-body",
+				 "css_property"	=> "background-image",
+				 "css_preview"	=> true,
 				"description" 	=> __( "You can provide an image that would be appear behind the content in the Info Bar area. For this setting to work, the background color you've chosen must be transparent.", "smile" ),
 			),
 			"panel" 	 		=> "Background",
 			"section" 			=> "Design",
 			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'info_bar_bg_image_src', 'operator' => '==', 'value' => 'upload_img')
 		),
 		array(
 			"type" 		=> "background",
@@ -161,7 +198,7 @@ if( function_exists( "smile_update_settings" ) ) {
 			"panel" => "Background",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'infobar_bg_image', 'operator' => '!==', 'value' => '', 'type' => 'media'),
+			// "dependency" => array('name' => 'info_bar_bg_image_src', 'operator' => '!==', 'value' => 'none')
 		),
 		array(
 			"type" 		=> "section",
@@ -188,6 +225,8 @@ if( function_exists( "smile_update_settings" ) ) {
 				"step" 			=> 1,
 				"suffix" 		=> "px",
 				"description" 	=> __( "Set the height for info bar? (value in px).", "smile" ),
+				"css_property"  => "min-height",
+				"css_selector" => ".cp-info-bar-body",
 			),
 			"section" 	 => "Design",
 			"panel" => "Background",
@@ -205,6 +244,8 @@ if( function_exists( "smile_update_settings" ) ) {
 				"step" 			=> 1,
 				"suffix" 		=> "px",
 				"description" 	=> __( "Set the width for info bar? (value in px).", "smile" ),
+				"css_property" => "width",
+				"css_selector" => ".cp-ib-container",
 			),
 			"section" 	 => "Design",
 			"panel" => "Background",
@@ -330,7 +371,9 @@ if( function_exists( "smile_update_settings" ) ) {
 			"name" 		=> "border_darken",
 			"opts"		=> array(
 				"title" 		=> __( "Border Color", "smile" ),
-				"value" 		=> __( "", "smile" ),
+				"value" 		=> "#2c8dd7",
+				"css_property"  => "border-color",
+				"css_selector" => ".cp-info-bar",
 			),
 			"dependency" => array('name' => 'enable_border', 'operator' => '==', 'value' => true),
 			"section" 	 => "Design",
@@ -558,7 +601,7 @@ if( function_exists( "smile_update_settings" ) ) {
                 "description" => __( "Select the position, where you want to display module inline.", "smile" ),
                 "options"   => array(
                         __( "Before Post", "smile" ) => "before_post",
-                        __( "After Post", "smile" )  => "after_post",                       
+                        __( "After Post", "smile" )  => "after_post",
                         __( "Both", "smile" )        => "both"
                     )
                 ),
@@ -568,7 +611,7 @@ if( function_exists( "smile_update_settings" ) ) {
             "dependency" => array('name' => 'enable_display_inline', 'operator' => '==', 'value' => 'true')
         ),
 
-		
+
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -1224,6 +1267,71 @@ $animation = array(
 			"section_icon" => "connects-icon-disc"
 		),
 		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "close_ib_image_src",
+			"opts" 		=> array(
+				"title" 	=> __( "Image source","smile"),
+				"value" 	=> "upload_img",
+				"options" 	=> array(
+						__( "Custom URL", "smile" ) 	 => "custom_url",
+						__( "Upload Image", "smile" ) 	 => "upload_img",
+						__( "Predefined Icons", "smile" ) => "pre_icons",
+						//__( "None", "smile" ) 	 		 => "none",
+					)
+				),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'close_info_bar', 'operator' => '==', 'value' => 'close_img'),
+		),
+		array(
+            "type"  =>  "radio-image",
+            "name"  =>  "close_icon",
+            "opts"  =>  array(
+                "title" => __( "", "smile" ),
+                "value" => 'default',
+                "width" => '80px',
+                "options" => array(
+                    "black"         => plugins_url( '../../assets/images/black.png', __FILE__ ),
+                    "blue_final"    => plugins_url( '../../assets/images/blue_final.png', __FILE__ ),
+                    "circle_final"  => plugins_url( '../../assets/images/circle_final.png', __FILE__ ),
+                    "default"    	=> plugins_url( '../../assets/images/default.png', __FILE__ ),
+                    "grey_close"  	=> plugins_url( '../../assets/images/grey_close.png', __FILE__ ),
+                    "red02" 		=> plugins_url( '../../assets/images/red02.png', __FILE__ ),
+                    "red2_close"    => plugins_url( '../../assets/images/red2_close.png', __FILE__ ),
+                    "white20"       => plugins_url( '../../assets/images/white20_bb.png', __FILE__ ),
+                ),
+				"imagetitle" => array(
+					__( "title-0", "smile" ) 	=> "Black",
+					__( "title-1", "smile" ) 	=> "Blue",
+					__( "title-2", "smile" ) 	=> "Circle",
+					__( "title-3", "smile" ) 	=> "Default",
+					__( "title-4", "smile" ) 	=> "Grey",
+					__( "title-5", "smile" ) 	=> "Red",
+					__( "title-6", "smile" ) 	=> "Red",
+					__( "title-7", "smile" ) 	=> "White"
+				),
+            ),
+            "panel" => "Close Link",
+            "section" => "Design",
+            "section_icon" => "connects-icon-image",
+            "dependency" => array('name' => 'close_ib_image_src', 'operator' => '==', 'value' => 'pre_icons')
+        ),
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "info_bar_close_img_custom_url",
+			"opts"		=> array(
+				"title" 		=> __( "Custom URL", "smile" ),
+				"value" 		=> "",
+			),
+			"panel" 	=> "Close Link",
+			"dependency" => array('name' => 'close_ib_image_src', 'operator' => '==', 'value' => 'custom_url'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
+		),
+		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
 			"name" 		=> "close_info_bar_pos",
@@ -1239,18 +1347,7 @@ $animation = array(
 			"section_icon" => "connects-icon-disc",
 			"dependency" => array('name' => 'hidden', 'operator' => '==', 'value' => 'hide'),
 		),
-		array(
-		    "type"         => "icon-picker",
-		    "name"         => "close_icon",
-		    "opts"         => array(
-		        "title"     => __( "Close Icon", "smile" ),
-		        "value"     => "Defaults-close",
-		    ),
-			"panel" => "Close Link",
-			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
-			"dependency" => array('name' => 'close_info_bar', 'operator' => '==', 'value' => 'close_icon'),
-		),
+
 		array(
 			"type" 		=> "textfield",
 			"class" 	=> "",
@@ -1286,7 +1383,7 @@ $animation = array(
 				"value" 		=> plugins_url('config/img/cross.png', __FILE__ ),
 			),
 			"panel" 	=> "Close Link",
-			"dependency" => array('name' => 'close_info_bar', 'operator' => '==', 'value' => 'close_img'),
+			"dependency" => array('name' => 'close_ib_image_src', 'operator' => '==', 'value' => 'upload_img'),
 			"section" => "Design",
 			"section_icon" => "connects-icon-image"
 		),
@@ -1301,9 +1398,11 @@ $animation = array(
 				"max" 			=> 128,
 				"step" 			=> 1,
 				"suffix" 		=> "px",
+				"css_selector" => ".ib-img-close",
+				"css_property" => "width",
 			),
 			"panel" 		=> "Close Link",
-			"dependency" => array('name' => 'close_info_bar', 'operator' => '==', 'value' => 'close_img'),
+			"dependency" => array('name' => 'close_info_bar', 'operator' => '==', 'value' => 'close_img' , 'name' => 'close_ib_image_src','operator' => '!=', 'value' => 'none'),
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 		),
@@ -1320,7 +1419,7 @@ $animation = array(
 			"panel" 	=> "Close Link",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'close_info_bar', 'operator' => '!=', 'value' => 'do_not_close'),
+			"dependency" => array('name' => 'close_info_bar', 'operator' => '!=', 'value' => 'do_not_close', 'name' => 'close_ib_image_src','operator' => '!=', 'value' => 'none'),
 		),
  		array(
 			"type" 		=> "switch",
@@ -1336,7 +1435,7 @@ $animation = array(
 			"panel" 	=> "Close Link",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
-			"dependency" => array('name' => 'close_info_bar', 'operator' => '!=', 'value' => 'do_not_close'),
+			"dependency" => array('name' => 'close_info_bar', 'operator' => '!=', 'value' => 'do_not_close', 'name' => 'close_ib_image_src','operator' => '!=', 'value' => 'none'),
 		),
 		array(
 			"type" 		=> "switch",
@@ -1387,6 +1486,8 @@ $animation = array(
 			"opts"		=> array(
 				"title" 		=> __( "Text Color", "smile" ),
 				"value" 		=> "rgb(255, 255, 255)",
+				"css_property" 	=> "color",
+				"css_selector" 	=> ".cp-ifb-toggle-btn",
 			),
 			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
 			"panel" 	=> "Close Link",
@@ -1400,6 +1501,8 @@ $animation = array(
 			"opts"		=> array(
 				"title" 		=> __( "Background Color", "smile" ),
 				"value" 		=> "rgb(0, 0, 0)",
+				"css_property" 	=> "background",
+				"css_selector" 	=> ".cp-ifb-toggle-btn",
 			),
 		    "dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
 			"panel" 	=> "Close Link",
@@ -1487,10 +1590,42 @@ $animation = array(
 
 	/*** Array contains Info Bar image options ***/
 	$ifb_img = array(
+
+		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "info_bar_img_src",
+			"opts" 		=> array(
+				"title" 	=> __( "Image source","smile"),
+				"value" 	=> "upload_img",
+				"options" 	=> array(
+						__( "Custom URL", "smile" ) 	 => "custom_url",
+						__( "Upload Image", "smile" ) 	 => "upload_img",
+						__( "None", "smile" ) 	 		 => "none",
+					)
+				),
+			"panel" => "Image",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
+		),
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "info_bar_img_custom_url",
+			"opts"		=> array(
+				"title" 		=> __( "Custom URL", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter custom URL for your image.", "smile" ),
+			),
+			"panel" 	=> "Image",
+			"dependency" => array('name' => 'info_bar_img_src', 'operator' => '==', 'value' => 'custom_url'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
+		),
 		array(
 			"type" 		=> "media",
 			"class" 	=> "",
-			"name" 		=> "infobar_image",
+			"name" 		=> "info_bar_image",
 			"opts"		=> array(
 				"title" 		=> __( "Upload Image", "smile" ),
 				"value" 		=> plugins_url('config/img/logo.png', __FILE__ ),
@@ -1499,6 +1634,7 @@ $animation = array(
 			"panel" 	 => "Image",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'info_bar_img_src', 'operator' => '==', 'value' => 'upload_img')
 		),
 		array(
 			"type" 		=> "slider",
@@ -1511,11 +1647,14 @@ $animation = array(
 				"max" 			=> 1000,
 				"step" 			=> 1,
 				"suffix" 		=> "px",
+				"css_property" => "max-width",
+				"css_selector" => ".cp-info-bar .cp-image-container img",
 				"description" 	=> __( "The maximum size of an image is limited to the size of its container.", "smile" ),
 			),
 			"panel" 	 => "Image",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'info_bar_img_src', 'operator' => '!=', 'value' => 'none')
 		),
 		array(
 			"type" 		=> "switch",
@@ -1753,7 +1892,7 @@ $submit_btn = array(
 			$behavior
 		)
 	);
-	
+
 	// Style - newsletter
 	smile_update_options( "Smile_Info_Bars", "newsletter", array_merge(
 			$name,
@@ -1821,6 +1960,19 @@ $submit_btn = array(
 			$advance_options
 		)
 	);
+
+	// Style - Social_media info bar
+	smile_update_options( "Smile_Info_Bars", "social_info_bar", array_merge(
+			$name,
+			$ib_content,
+			$background,
+			$cp_social,
+			$close_link,
+			$animation,
+			$advance_options,
+			$behavior
+		)
+	);
 }
 
 /**
@@ -1882,8 +2034,8 @@ if( function_exists( "smile_update_default" ) ){
 		"bg_color"	    			=> "#db6d2c",
 		"infobar_height"			=> 50,
 		"btn_border_radius"			=> 25,
-		"enable_border"				=> 1,
-		"infobar_title"  	    	=> '<span style="font-weight: bold;font-size:20px;">'.__( "$25 Off ", "smile" ).'</span>'.__( " when you complete your order today.", "smile" ),
+		"enable_border"			=> 1,
+		"infobar_title"  	    		=> '<span style="font-weight: bold;font-size:20px;">'.__( "$25 Off ", "smile" ).'</span>'.__( " when you complete your order today.", "smile" ),
 		"button_title"				=> "Apply Coupon",
 		"button_bg_color"			=> "#333332",
 		"button_border_color"		=> "#333332",
@@ -1892,8 +2044,8 @@ if( function_exists( "smile_update_default" ) ){
 		"bg_gradient"				=> false,
 		"toggle_button_title"		=> "GET DEAL",
 		"toggle_button_font" 		=> "Bitter",
-		"toggle_button_bg_color"	=> "#db6d2c",
-		"border_darken"				=> "#ffffff",
+		"toggle_button_bg_color"		=> "#db6d2c",
+		"border_darken"			=> "#ffffff",
 	);
 	foreach( $get_this_deal_default as $option => $value ){
 		smile_update_default( "Smile_Info_Bars", "get_this_deal", $option, $value );
@@ -1912,7 +2064,7 @@ if( function_exists( "smile_update_default" ) ){
 		"bg_color"	    		 	=> "#ffffff",
 		"infobar_height"		 	=> 80,
 		'border'					=> 'br_type:0|br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:#f2f2f2|bw_type:1|bw_all:5|bw_t:0|bw_l:0|bw_r:0|bw_b:2',
-		"infobar_title"		  	 	=> __( 'Merry Christmas! Enjoy all time low prices and discount this festival season.', "smile" ),
+		"infobar_title"		  	=> __( 'Merry Christmas! Enjoy all time low prices and discount this festival season.', "smile" ),
 		"image_size"			 	=> 165,
 		"button_title"			 	=> "Shop Now",
 		"button_bg_color"		 	=> "#db6d2c",
@@ -1939,7 +2091,7 @@ if( function_exists( "smile_update_default" ) ){
 		"infobar_height"		 	=> 100,
 		"infobar_title" 	     	=> __( "GROW YOUR BUSINESS!", "smile" ),
 		"infobar_description"	 	=> __( "ConvertPlug&trade; is all-in-one software to generate more leads & drive more sales with onsite targeting. ", "smile" ),
-		"bg_color"			     	=> "#2c8dd7",
+		"bg_color"			     => "#2c8dd7",
 		"bg_gradient"			 	=> true,
 		"button_title"			 	=> "Book Free Trial",
 		"button_bg_color"		 	=> "#1a2730",
@@ -1947,15 +2099,16 @@ if( function_exists( "smile_update_default" ) ){
 		"btn_border_radius" 	 	=> 4,
 		"ifb_btn_shadow"		 	=> true,
 		"placeholder_font"		 	=> "Lato",
-		"name_text"				 	=> __( "Your Name", "smile" ),
+		"name_text"				=> __( "Your Name", "smile" ),
 		"placeholder_text"		 	=> __( "Your Email", "smile" ),
 		"image_size"			 	=> 120,
 		"image_displayon_mobile" 	=> true,
-		"infobar_image" 		 	=> plugins_url('../assets/img/CP_Product_Box_Mockup.png', __FILE__ ),
+		"info_bar_image" 		 	=> plugins_url('../assets/img/CP_Product_Box_Mockup.png', __FILE__ ),
 		"infobar_position" 		 	=> "cp-pos-bottom",
 		"close_info_bar"		 	=> "do_not_close",
 		"entry_animation"		 	=> "smile-slideInUp",
-		"exit_animation"		 	=> "smile-slideOutDown"
+		"exit_animation"		 	=> "smile-slideOutDown",
+		"border_darken"				=> "#d1d1d1",
 	);
 
 	foreach( $free_trial_default as $option => $value ){
@@ -1986,11 +2139,31 @@ if( function_exists( "smile_update_default" ) ){
 		"infobar_width"				=> "1600",
 		"bg_gradient"				=> false,
 		"namefield"					=> true,
-		"infobar_image" 			=> plugins_url('../assets/img/hellobar.png', __FILE__ ),
+		"info_bar_image" 			=> plugins_url('../assets/img/hellobar.png', __FILE__ ),
 		"image_size" 				=> "50",
 	);
 	foreach( $weekly_article_optin_default as $option => $value ){
 		smile_update_default( "Smile_Info_Bars", "weekly_article", $option, $value );
+	}
+
+	//	social media
+	$social_info_bar_default = array(
+		'bg_color' 				=> '#ffffff',
+		"infobar_height"		=> 70,
+		"enable_shadow"         => false,
+		"border_darken"			=> '#ededed',
+		"infobar_width"			=> '1600',
+		"enable_border"         => true,
+		'border'				=> 'br_type:0|br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:solid|color:#d03631|bw_type:1|bw_all:5|bw_t:0|bw_l:0|bw_r:0|bw_b:2',
+		"infobar_title"			=> __( "Share this Awesome Stuff with your Friends!", "smile" ),
+		"cp_display_nw_name" 	=> false,
+		"cp_social_icon_effect" => "flat",
+		"cp_social_icon_align"  => "left",
+		"cp_social_icon" 		=> "order:0|input_type:Facebook|network_name:|input_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:;order:1|input_type:StumbleUpon|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:3|input_type:Blogger|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:4|input_type:LinkedIn|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:",
+	);
+
+	foreach( $social_info_bar_default as $option => $value ){
+		smile_update_default( "Smile_Info_Bars", "social_info_bar", $option, $value );
 	}
 }
 
@@ -2013,4 +2186,8 @@ if( function_exists( "smile_remove_option" ) ){
 
 	//	weekly_article
 	smile_remove_option( "Smile_Info_Bars", "weekly_article", array( 'image_position','new_line_optin','image_vertical_position','image_horizontal_position') );
+
+		//	social media
+	smile_remove_option( "Smile_Info_Bars", "social_info_bar", array( 'button_animation','placeholder_font') );
+
 }

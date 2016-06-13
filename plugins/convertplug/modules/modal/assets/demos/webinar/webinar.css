@@ -1,10 +1,11 @@
 /* = Webinar
  *-------------------------------------------------- */
-.cp-modal-body .cp-webinar,
+.cp-modal-body.cp-webinar,
 .cp-webinar .cp-modal-body {
     background-color: transparent;
     text-align: center;
     padding-bottom: 0;
+    border-radius: inherit;
 }
 
 .cp-webinar .cp-text-container {
@@ -40,7 +41,9 @@
     color: #ffffff;
     line-height: 1.5em;
 }
-
+.cp-webinar-container .cp-overlay-close span{
+        font-family: "Montserrat",serif;
+}
 .cp-webinar .cp-form-container,
 .cp-webinar .cp-desc-container,
 .cp-webinar .cp-description {
@@ -90,7 +93,7 @@
     font-weight: 600;
     font-size: 15px;
     line-height: 1.5em;
-    border-radius: 3px;
+  /*   border-radius: 3px; */
     outline: none;
     margin-right: 0px;
     margin-bottom: 10px;
@@ -108,7 +111,7 @@
 }
 
 .cp-modal .cp-webinar .cp-submit {
-    border-radius: 3px;
+    /* border-radius: 3px; */
     margin-top: 0px;
 }
 
@@ -230,6 +233,18 @@
 .cp-webinar .cp-email-form.cp-email-wth-btn-onnext {
     padding-right: 0;
 }
+
+.cp-webinar .cp-modal-body-overlay.cp_cs_overlay {
+    z-index: 99;
+}
+.cp-webinar .cp-text-container {
+    z-index: 9999;
+}
+.cp-webinar .cp-webinar-form {
+    z-index: 9999;
+}
+
+
 
 @media (max-width:1355px) {
     .cp-webinar .cp_name_submit {

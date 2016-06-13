@@ -19,7 +19,7 @@
 */
 jQuery( document ).ready( function( $ ) {
 
-	$( 'body' ).on( 'click', 'div.envirabox-title a[href*=#]:not([href=#])', function( e ) {
+	$( 'body' ).on( 'click', 'div.envirabox-title a[href*="#"]:not([href="#"])', function( e ) {
 
 		if ( location.pathname.replace( /^\//, '' ) == this.pathname.replace( /^\//, '' ) && location.hostname == this.hostname ) {
       		$.envirabox.close();

@@ -104,14 +104,8 @@ if ( ! function_exists( 'x_ethos_entry_meta' ) ) :
       $title  = apply_filters( 'x_entry_meta_comments_title', get_the_title() );
       $link   = apply_filters( 'x_entry_meta_comments_link', get_comments_link() );
       $number = apply_filters( 'x_entry_meta_comments_number', get_comments_number() );
-
-      if ( $number == 0 ) {
-        $text = __( 'Leave a Comment' , '__x__' );
-      } else if ( $number == 1 ) {
-        $text = $number . ' ' . __( 'Comment' , '__x__' );
-      } else {
-        $text = $number . ' ' . __( 'Comments' , '__x__' );
-      }
+      
+      $text = ( 0 === $number ) ? 'Leave a Comment' : sprintf( _n( '%s Comment', '%s Comments', $number, '__x__' ), $number );
 
       $comments = sprintf( '<span><a href="%1$s" title="%2$s" class="meta-comments">%3$s</a></span>',
         esc_url( $link ),

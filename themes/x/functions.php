@@ -137,3 +137,7 @@ if ( X_WOOCOMMERCE_IS_ACTIVE ) {
 if ( X_WPML_IS_ACTIVE ) {
   require_once( $plgn_path . '/wpml.php' );
 }
+
+if ( X_UBERMENU_IS_ACTIVE ) {
+  require_once( $plgn_path . '/ubermenu.php' );
+}

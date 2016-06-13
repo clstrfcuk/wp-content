@@ -30,13 +30,14 @@ class Paginator {
 	 	$this->maintainKeys = $maintainKeys;
 
 	 	$data = $this->contacts;
-
+	 	//var_dump($this->serachInParams);
 	 	if( $searchKey !== '' ) {
 		 			
 	 		$data = array_filter($data, function ($item) use ($searchKey) {
 	 			
 	 			$found = false;
 	 			foreach($this->serachInParams as $param) {
+
 				    if ( stripos( strtolower( urldecode( $item[$param] ) ), $searchKey) !== false ) {
 				        $found = true;
 				    }			   

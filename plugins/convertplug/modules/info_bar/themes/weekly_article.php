@@ -15,7 +15,7 @@ if( !function_exists( "info_bar_theme_weekly_article" ) ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);
 		}
 
-		unset($style_settings['style_id']); 
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid 		= uniqid();
@@ -24,7 +24,7 @@ if( !function_exists( "info_bar_theme_weekly_article" ) ) {
 		//	Individual style variables
 		$individual_vars = array(
 			'uid'				=> $uid,
-			'uid_class'			=> $uid_class,	
+			'uid_class'			=> $uid_class,
 			'style_class' 		=> 'cp-weekly-article'
 		);
 
@@ -63,8 +63,8 @@ if( !function_exists( "info_bar_theme_weekly_article" ) ) {
 
 		$button_css = "background:".$a['button_bg_color'].";";
 
-		//modal image
-		$infobar_image 		= apply_filters( 'cp_get_modal_image_url', $a['infobar_image'] );
+		//info bar image
+		$info_bar_image 		= apply_filters( 'cp_get_info_bar_image_url', $a );
 
 		$imageStyle		    = cp_add_css( 'max-width', $a['image_size'], 'px');
 		$imageStyle		   .= cp_add_css( 'width', $a['image_size'], 'px');
@@ -81,7 +81,7 @@ if( !function_exists( "info_bar_theme_weekly_article" ) ) {
 		?>
 
 			<div class="cp-image-container">
-				<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $infobar_image ); ?>" class="cp-image <?php echo esc_attr( $img_class );?>">
+				<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $info_bar_image ); ?>" class="cp-image <?php echo esc_attr( $img_class );?>">
 	        </div>
 	        <div class="cp-msg-container <?php echo ( trim( $a['infobar_title'] ) == "" ? "cp-empty" : '' );  ?>">
 	            <span class="cp-info-bar-msg"><?php echo do_shortcode( html_entity_decode( stripcslashes( $a['infobar_title'] ) ) ); ?></span>

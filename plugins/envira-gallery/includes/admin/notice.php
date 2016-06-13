@@ -114,69 +114,57 @@ class Envira_Gallery_Notice_Admin {
     }
 
     /**
-     * Displays a global style notice using WordPress HTML markup
+     * Displays an inline notice with some Envira styling.
      *
      * @since 1.3.5
      *
-     * @param string $notice        Programmatic Notice Name
-     * @param string $message       Message
-     * @param bool $is_dismissible  User can Dismiss Message
-     */
-    public function display_notice( $notice, $message, $is_dismissible = true ) {
+     * @param string    $notice             Programmatic Notice Name
+     * @param string    $title              Title
+     * @param string    $message            Message
+     * @param string    $type               Message Type (updated|warning|error) - green, yellow/orange and red respectively.
+     * @param string    $button_text        Button Text (optional)
+     * @param string    $button_url         Button URL (optional)
+     * @param bool      $is_dismissible     User can Dismiss Message (default: true)
+     */ 
+    public function display_inline_notice( $notice, $title, $message, $type = 'success', $button_text = '', $button_url = '', $is_dismissible = true ) {
 
-        // Check if the notice has been dismissed
-        if ( $this->is_dismissed( $notice ) ) {
-            return;
-        }
-
-        // Display notice
-        ?>
-        <div class="notice error<?php echo ( $is_dismissible ? ' is-dismissible' : '' ); ?>" data-notice="<?php echo $notice; ?>">
-            <p><?php echo $message; ?></p>
-        </div>
-        <?php
-
-    }
-
-    /**
-     * Displays an inline, Envira style notice
-     *
-     * @since 1.3.5
-     *
-     * @param string $notice        Programmatic Notice Name
-     * @param string $title         Title
-     * @param string $message       Message
-     * @param bool $is_dismissible  User can Dismiss Message
-     */
-    public function display_inline_notice( $notice, $title, $message, $is_dismissible = true ) {
-
-        // Check if the notice has been dismissed
-        if ( $this->is_dismissed( $notice ) ) {
+        // Check if the notice is dismissible, and if so has been dismissed.
+        if ( $is_dismissible && $this->is_dismissed( $notice ) ) {
+            // Nothing to show here, return!
             return;
         }
 
         // Display inline notice
         ?>
-        <div class="envira-alert envira-clear<?php echo ( $is_dismissible ? ' is-dismissible' : '' ); ?>" data-notice="<?php echo $notice; ?>">
+        <div class="envira-notice <?php echo $type . ( $is_dismissible ? ' is-dismissible' : '' ); ?>" data-notice="<?php echo $notice; ?>">
             <?php
             // Title
             if ( ! empty ( $title ) ) {
                 ?>
-                <em><?php echo $title; ?></em><br />
+                <p class="envira-intro"><?php echo $title; ?></p>
                 <?php
             }
 
             // Message
-            ?>
-            <p><?php echo $message; ?></p>
+            if ( ! empty( $message ) ) {
+                ?>
+                <p><?php echo $message; ?></p>
+                <?php
+            }
+            
+            // Button
+            if ( ! empty( $button_text ) && ! empty( $button_url ) ) {
+                ?>
+                <a href="<?php echo $button_url; ?>" target="_blank" class="button button-primary"><?php echo $button_text; ?></a>
+                <?php
+            }
 
-            <?php
             // Dismiss Button
             if ( $is_dismissible ) {
                 ?>
                 <button type="button" class="notice-dismiss">
                     <span class="screen-reader-text">
-                        <?php _e( 'Dismiss this notice' ); ?>
+                        <?php _e( 'Dismiss this notice', 'envira-gallery' ); ?>
                     </span>
                 </button>
                 <?php

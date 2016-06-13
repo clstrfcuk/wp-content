@@ -607,12 +607,15 @@ class RevSliderBase {
 	 * prints out debug text if constant TP_DEBUG is defined and true
  	 * @since: 5.2.4
 	 */
-	public static function debug($value , $where = "console"){
+	public static function debug($value , $message, $where = "console"){
 		if( defined('TP_DEBUG') && TP_DEBUG ){
 			if($where=="console"){
 				echo '<script>
 					jQuery(document).ready(function(){
-						if(window.console) console.log("'.json_encode($value).'");
+						if(window.console) {
+							console.log("'.$message.'");
+							console.log('.json_encode($value).');
+						}
 					});
 				</script>
 				';
@@ -625,7 +628,34 @@ class RevSliderBase {
 			return false;
 		}
 	}
-
+	
+	
+	
+	public static function public_folder_unzip(){
+		$opt = get_option('rs_public_version', '1');
+		
+		//check if public folder is unzipped
+		if(!file_exists(RS_PLUGIN_PATH . 'public/assets/info.cfg') || version_compare($opt, RevSliderGlobals::SLIDER_REVISION, '<')){
+			require_once(ABSPATH . 'wp-admin/includes/file.php');
+		
+			WP_Filesystem();
+			
+			$unzipfile = unzip_file( RS_PLUGIN_PATH . 'public/assets/assets.zip', RS_PLUGIN_PATH . 'public/assets/');
+			if($unzipfile === true){
+				update_option('rs_public_version', RevSliderGlobals::SLIDER_REVISION);
+			}else{
+				add_action('admin_notices', array('RevSliderBase', 'copy_notice'));
+			}
+		}
+	}
+	
+	public static function copy_notice(){
+		?>
+		<div class="error below-h2 rs-update-notice-wrap" id="message" style="clear:both;display: block;position:relative;margin:35px 20px 25px 0px"><div style="display:table;width:100%;"><div style="vertical-align:middle;display:table-cell;min-width:100%;padding-right:15px;">
+			<p><?php _e('Slider Revolution error: could not unzip into the revslider/public/assets/ folder, please make sure that this folder is writable', 'revslider'); ?></p>
+		</div></div></div>
+		<?php
+	}
 }
 
 /**

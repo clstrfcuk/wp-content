@@ -18,8 +18,8 @@ if( !function_exists( "modal_theme_optin_to_win" ) ) {
 		foreach( $style_settings as $key => $setting ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);;
 		}
-		
-		unset($style_settings['style_id']); 
+
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -29,7 +29,7 @@ if( !function_exists( "modal_theme_optin_to_win" ) ) {
 			"uid"       	=> $uid,
 			"uid_class" 	=> $uid_class,
 			"style_class"	=> "cp-optin-to-win"
-		);		
+		);
 
 		/**
 		 * Merge short code variables arrays
@@ -62,11 +62,11 @@ if( !function_exists( "modal_theme_optin_to_win" ) ) {
 		$imageStyle		 	= cp_add_css( 'left', $a['image_horizontal_position'], 'px');
 		$imageStyle		   .= cp_add_css( 'top', $a['image_vertical_position'], 'px');
 		$imageStyle		   .= cp_add_css( 'max-width', $a['image_size'], 'px');
-		
-		//	Filters & Actions
-		$modal_image 			= apply_filters( 'cp_get_modal_image_url', $a['modal_image'] );
 
-		
+		//	Filters & Actions
+		$modal_image 			= apply_filters( 'cp_get_modal_image_url', $a );
+
+
 		/** = Before filter
 		 *-----------------------------------------------------------*/
 		apply_filters_ref_array( 'cp_modal_global_before', array( $a ) );
@@ -97,8 +97,8 @@ if( !function_exists( "modal_theme_optin_to_win" ) ) {
                 </div>
             </div><!-- .cp-text-container -->
 		  	<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 cp-column-equalized-center">
-		    	<div class="cp-image-container"> 
-		        	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image"> 
+		    	<div class="cp-image-container">
+		        	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image">
 		      	</div>
 		   	</div><!-- .col-lg-5 -->
 		</div>

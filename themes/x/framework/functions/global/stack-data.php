@@ -129,7 +129,7 @@ endif;
 // Define Constants
 // =============================================================================
 
-define( 'X_VERSION', '4.4.2' );
+define( 'X_VERSION', '4.5.2' );
 define( 'X_TEMPLATE_PATH', get_template_directory() );
 define( 'X_TEMPLATE_URL', get_template_directory_uri() );
 define( 'X_BBPRESS_IS_ACTIVE', class_exists( 'bbPress' ) );
@@ -145,6 +145,7 @@ define( 'X_SOLILOQUY_IS_ACTIVE', class_exists( 'Soliloquy' ) );
 define( 'X_VISUAL_COMOPSER_IS_ACTIVE', defined( 'WPB_VC_VERSION' ) );
 define( 'X_WOOCOMMERCE_IS_ACTIVE', class_exists( 'WC_API' ) );
 define( 'X_WPML_IS_ACTIVE', defined( 'ICL_SITEPRESS_VERSION' ) );
+define( 'X_UBERMENU_IS_ACTIVE', class_exists( 'UberMenu' ) );
 
 
 

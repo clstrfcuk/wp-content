@@ -15,7 +15,7 @@ wp.media.view.EnviraGalleryError = wp.Backbone.View.extend( {
 
 	// The outer tag and class name to use. The item is wrapped in this
     tagName   : 'div',
-    className : 'envira-gallery-error',
+    className : 'notice error envira-gallery-error',
 
     render: function() {
 
@@ -320,7 +320,6 @@ wp.media.view.EnviraGalleryView = wp.media.View.extend( {
 		// Display the error message, if it's provided
 		if ( typeof response !== 'undefined' ) {
 			this.$el.find( 'div.media-toolbar' ).after( this.renderError( response ) );
-			this.$el.find( 'ul.attachments.envira-gallery-attachments' ).css( 'margin-top', this.$el.find( 'div.envira-gallery-error' ).height() + 20 );
 		}
 
 		// Update toolbar
@@ -512,37 +511,6 @@ wp.media.view.EnviraGalleryView = wp.media.View.extend( {
 	}
 
 } );
-
-/**
-* Controller
-*/
-wp.media.controller.EnviraGalleryController2 = wp.media.controller.State.extend( {
-
-	/**
-	* Defines the registered WordPress AJAX action to call when inserting images into the Gallery
-	* This must be defined by the Addon e.g:
-	* 	new wp.media.view.EnviraGalleryController( {
-	*		insert_action: 'envira_google_drive_importer_insert_images',
-	*		...
-    * 	} );
-    *
-    * @var string
-    */
-    insert_action: '',
-
-	/**
-	* Init
-	*/
-    initialize: function( options ) {
-
-        this.props = new Backbone.Collection();
-
-        // Store actions
-        this.insert_action = options.insert_action;
-
-    },
-
-});
 
 /**
 * Controller

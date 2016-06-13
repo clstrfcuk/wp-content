@@ -55,8 +55,8 @@ if( !function_exists( "modal_theme_YouTube" ) ) {
 		foreach( $style_settings as $key => $setting ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);;
 		}
-		
-		unset($style_settings['style_id']); 
+
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -66,7 +66,7 @@ if( !function_exists( "modal_theme_YouTube" ) ) {
 			"uid"       	=> $uid,
 			"uid_class" 	=> $uid_class,
 			"style_class"	=> "cp-youtube"
-		);		
+		);
 
 		/**
 		 * Merge short code variables arrays
@@ -85,7 +85,7 @@ if( !function_exists( "modal_theme_YouTube" ) ) {
 
 
 		global $cp_form_vars;
-        
+
         $all = array_merge(
             $individual_vars,
             $cp_form_vars,
@@ -134,15 +134,24 @@ if( !function_exists( "modal_theme_YouTube" ) ) {
 			</div>
 		<?php } ?>
 		</div><!-- .row-youtube-iframe -->
+		<?php
+			$a['cta_delay'] = isset($a['cta_delay']) ? $a['cta_delay'] : '';
+			$a['cta_bg_color'] = isset($a['cta_bg_color']) ? $a['cta_bg_color'] : '';
+		if($a['cta_switch']){
+		?>
 
-		<div class="cp-row cp-form-container" data-cta-delay="<?php echo esc_attr( $a['cta_delay'] ); ?>" style="<?php echo 'background: ' . $a['cta_bg_color']; ?>;" >
+		<div class="cp-row cp-form-container" data-cta-delay="<?php echo esc_attr( $a['cta_delay'] ); ?>" style="<?php echo 'background: ' . $a['modal_bg_color']; ?>;" >
 			<?php
          		/**
 				 * Embed CP Form
 				 */
-				apply_filters_ref_array('cp_get_form', array( $a ) );
+         		
+					apply_filters_ref_array('cp_get_form', array( $a ) );
+			
 			?>
 		</div>
+		<?php 
+	}?>
 
 <?php
 		/** = After filter

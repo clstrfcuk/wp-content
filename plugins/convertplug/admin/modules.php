@@ -42,12 +42,17 @@
 	    <h2 class="nav-tab-wrapper">
             <a class="nav-tab" href="?page=convertplug" title="<?php _e( "About", "smile"); ?>"><?php echo __("About", "smile" ); ?></a>
             <a class="nav-tab nav-tab-active" href="?page=convertplug&view=modules" title="<?php _e( "Modules", "smile" ); ?>"><?php echo __( "Modules", "smile" ); ?></a>
+
+            <!-- <a class="nav-tab" href="?page=convertplug&view=cp_import" title="<?php _e( "Import", "smile" ); ?>"><?php echo __( "Import", "smile" ); ?></a> -->
+
             <?php if($reg_menu_hide !== true) : ?>
             <a class="nav-tab" href="?page=convertplug&view=registration" title="<?php _e( "Registration", "smile"); ?>"><?php echo __("Registration", "smile" ); ?></a>
             <?php endif; ?>
+
             <?php if( isset( $_GET['author'] ) ){ ?>
             <a class="nav-tab" href="?page=convertplug&view=debug&author=true" title="<?php _e( "Debug", "smile" ); ?>"><?php echo __( "Debug", "smile" ); ?></a>
             <?php } ?>
+
 	      </h2>
     <div id="smile-module-settings">
         <?php
@@ -88,6 +93,7 @@
         </form>
         <button type="button" class="button button-primary button-hero button-update-modules"><?php _e("Save Modules", "smile"); ?></button>
         <a class="button button-secondary button-hero advance-cp-setting" href="?page=convertplug&view=settings" title="<?php _e( "Advanced Settings", "smile" ); ?>"><?php echo __("Advanced Settings", "smile" ); ?></a>
+
     </div>
 </div>
 </div>
@@ -117,4 +123,5 @@ jQuery(document).ready(function(){
 		});
 	});
 });
+
 </script>

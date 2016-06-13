@@ -36,7 +36,7 @@ if( $data_style !== "" ) {
 				foreach( $style_settings as $title => $value ){
 				    if( !is_array( $value ) ){
 				     	$value = urldecode($value);
-						$exp_settings[$title] = htmlentities(stripslashes(utf8_encode($value)), ENT_QUOTES);//esc_attr(str_replace('"','&quot;',$value));
+						$exp_settings[$title] = htmlentities(stripslashes(utf8_encode($value)), ENT_QUOTES, "UTF-8" );//esc_attr(str_replace('"','&quot;',$value));
 					} else {
 						$val = array();
 						foreach( $value as $ex_title => $ex_val ) {
@@ -48,9 +48,9 @@ if( $data_style !== "" ) {
 				$export = $style;
 				$export['style_settings'] = $exp_settings;
 
-				$info_bar_image = isset( $style_settings['infobar_image'] ) ? $style_settings['infobar_image'] : '' ;
+				$info_bar_image = isset( $style_settings['info_bar_image'] ) ? $style_settings['info_bar_image'] : '' ;
 				$close_image = isset( $style_settings['close_img'] ) ? $style_settings['close_img'] : '' ;
-				$bg_image = isset( $style_settings['infobar_bg_image'] ) ? $style_settings['infobar_bg_image'] : '';
+				$bg_image = isset( $style_settings['info_bar_bg_image'] ) ? $style_settings['info_bar_bg_image'] : '';
 
 				if( $hasVariants ) {
 					foreach($variant_tests[$data_style] as $variant) {
@@ -61,7 +61,6 @@ if( $data_style !== "" ) {
 		}
 	}
 	$dir = 'info_bar_'.$data_style_name;
-	//$dir = 'info_bar_'.$data_style;
 	if( !is_dir( $dir ) ) {
 		mkdir( $dir, 0777 );
 	}
@@ -84,47 +83,55 @@ if( $data_style !== "" ) {
 		$info_bar_image_name = basename( $info_bar_image );
 		copy( $info_bar_image, $dir.'/'.$info_bar_image_name );
 
-		$media['infobar_image'] = $dir.'/'.$info_bar_image_name;
+		$media['info_bar_image'] = $dir.'/'.$info_bar_image_name;
 
 	}
 
 	if( $close_image !== "" )
 	{
-		$close_image = str_replace( "%7C", "|", $close_image );
-		if (strpos($close_image,'http') !== false) {
-			$close_image = explode( '|', $close_image );
-			$close_image = $close_image[0];
-			$close_image = urldecode( $close_image );
-		} else {
-			$close_image = explode("|", $close_image);
-			$close_image = wp_get_attachment_image_src($close_image[0],$close_image[1]);
-			$close_image = $close_image[0];
+		if ( ( isset( $style_settings['close_ib_image_src'] ) && $style_settings['close_ib_image_src'] == 'upload_img'  )
+			|| !isset( $style_settings['close_ib_image_src'] ) )  {
+
+			$close_image = str_replace( "%7C", "|", $close_image );
+			if (strpos($close_image,'http') !== false) {
+				$close_image = explode( '|', $close_image );
+				$close_image = $close_image[0];
+				$close_image = urldecode( $close_image );
+			} else {
+				$close_image = explode("|", $close_image);
+				$close_image = wp_get_attachment_image_src($close_image[0],$close_image[1]);
+				$close_image = $close_image[0];
+			}
+
+			$close_image_name = basename( $close_image );
+			copy( $close_image, $dir.'/'.$close_image_name );
+
+			$media['close_image'] = $dir.'/'.$close_image_name;
 		}
-
-		$close_image_name = basename( $close_image );
-		copy( $close_image, $dir.'/'.$close_image_name );
-
-		$media['close_image'] = $dir.'/'.$close_image_name;
 
 	}
 
 	if( $bg_image !== "" )
 	{
-		$bg_image = str_replace( "%7C", "|", $bg_image );
-		if (strpos($bg_image,'http') !== false) {
-			$bg_image = explode( '|', $bg_image );
-			$bg_image = $bg_image[0];
-			$bg_image = urldecode( $bg_image );
-		} else {
-			$bg_image = explode("|", $bg_image);
-			$bg_image = wp_get_attachment_image_src($bg_image[0],$bg_image[1]);
-			$bg_image = $bg_image[0];
+		if ( ( isset( $style_settings['info_bar_bg_image_src'] ) && $style_settings['info_bar_bg_image_src'] == 'upload_img'  )
+			|| !isset( $style_settings['info_bar_bg_image_src'] ) )  {
+
+			$bg_image = str_replace( "%7C", "|", $bg_image );
+			if (strpos($bg_image,'http') !== false) {
+				$bg_image = explode( '|', $bg_image );
+				$bg_image = $bg_image[0];
+				$bg_image = urldecode( $bg_image );
+			} else {
+				$bg_image = explode("|", $bg_image);
+				$bg_image = wp_get_attachment_image_src($bg_image[0],$bg_image[1]);
+				$bg_image = $bg_image[0];
+			}
+
+			$bg_image_name = basename( $bg_image );
+			copy( $bg_image, $dir.'/'.$bg_image_name );
+
+			$media['info_bar_bg_image'] = $dir.'/'.$bg_image_name;
 		}
-
-		$bg_image_name = basename( $bg_image );
-		copy( $bg_image, $dir.'/'.$bg_image_name );
-
-		$media['infobar_bg_image'] = $dir.'/'.$bg_image_name;
 
 	}
 

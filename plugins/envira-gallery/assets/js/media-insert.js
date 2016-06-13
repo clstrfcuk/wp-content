@@ -4,7 +4,7 @@
  */
 jQuery( document ).ready( function( $ ) {
 
-    // Add Images
+    // Select Files from Other Sources
     $( 'a.envira-media-library' ).on( 'click', function( e ) {
 
         // Prevent default action
@@ -53,7 +53,8 @@ jQuery( document ).ready( function( $ ) {
                 // Change the image link parameter based on the "Link To" setting the user chose in the media view
                 switch ( display.link ) {
                     case 'none':
-                        attachment.set( 'link', '' );
+                        // Because users cry when their images aren't linked, we need to actually set this to the attachment URL
+                        attachment.set( 'link', attachment.get( 'url' ) );
                         break;
                     case 'file':
                         attachment.set( 'link', attachment.get( 'url' ) );
@@ -96,12 +97,6 @@ jQuery( document ).ready( function( $ ) {
 
         // Open the media frame
         wp.media.frames.envira.open();
-
-        // Remove the 'Create Gallery' left hand menu item in the modal, as we don't
-        // want users inserting galleries!
-        //$( 'div.media-menu a.media-menu-item:nth-child(2)' ).addClass( 'hidden' );
-        //$( 'div.media-menu a.media-menu-item:nth-child(6)' ).addClass( 'hidden' );
-        
 
         return;
 

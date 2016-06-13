@@ -53,7 +53,7 @@ class Envira_Gallery_Common_Admin {
     public function __construct() {
 
         // Load the base class object.
-        $this->base = Envira_Gallery::get_instance();
+        $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
 
         // Handle any necessary DB upgrades.
         add_action( 'admin_init', array( $this, 'db_upgrade' ) );
@@ -61,14 +61,6 @@ class Envira_Gallery_Common_Admin {
         // Load admin assets.
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
-        
-        
-        // Quick and Bulk Editing support
-        add_action( 'quick_edit_custom_box', array( $this, 'quick_edit_custom_box' ), 10, 2 ); // Single Item
-        // quick edit save routine is the save_post action - see metaboxes.php::save()
-
-        add_action( 'bulk_edit_custom_box', array( $this, 'bulk_edit_custom_box' ), 10, 2 ); // Multiple Items
-        add_action( 'post_updated', array( $this, 'bulk_edit_save' ) );
         
         // Delete any gallery association on attachment deletion. Also delete any extra cropped images.
         add_action( 'delete_attachment', array( $this, 'delete_gallery_association' ) );
@@ -93,7 +85,7 @@ class Envira_Gallery_Common_Admin {
         // Upgrade to allow captions (v1.1.6).
         $captions = get_option( 'envira_gallery_116' );
         if ( ! $captions ) {
-            $galleries = Envira_Gallery::get_instance()->_get_galleries();
+            $galleries = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance()->_get_galleries() : Envira_Gallery_Lite::get_instance()->_get_galleries() );
             if ( $galleries ) {
                 foreach ( $galleries as $gallery ) {
                     foreach ( (array) $gallery['gallery'] as $id => $item ) {
@@ -110,121 +102,146 @@ class Envira_Gallery_Common_Admin {
         // 1.2.1: Convert all non-Envira Post Type galleries into Envira CPT galleries.
         $cptGalleries = get_option( 'envira_gallery_121' );
         if ( ! $cptGalleries ) {
-	        // Get Post Types, excluding our own
-	        // We don't use post_status => 'any', as this doesn't include CPTs where exclude_from_search = true.
-	        $postTypes = get_post_types( array( 
-		        'public' => true,
-	        ) );
-	        $excludedPostTypes = array( 'envira', 'envira_album', 'attachment' );
-	        foreach ( $postTypes as $key=>$postType ) {
-		        if ( in_array( $postType, $excludedPostTypes ) ) {
-			        unset( $postTypes[ $key ] );
-		        }
-	        }
-	        
-	    	// Get all Posts that have _eg_gallery_data set
-	        $inPostGalleries = new WP_Query( array(
-	        	'post_type' 	=> $postTypes,
-	        	'post_status' 	=> 'any',
-	        	'posts_per_page'=> -1,
-	        	'meta_query' 	=> array(
-	        		array(
-	        			'key' 		=> '_eg_gallery_data',
-	        			'compare'	=> 'EXISTS',
-	        		),
-	        	)
-	        ) );
-	        
-	        // Check if any Posts with galleries exist
-	        if ( count( $inPostGalleries->posts ) > 0 ) {
-		        // Iterate through Posts with Galleries
-		        foreach ( $inPostGalleries->posts as $post ) {
-			        // Check if this is an Envira or Envira Album CPT
-			        // If so, skip it
-			        if ( $post->post_type == 'envira' || $post->post_type == 'envira_album' ) {
-				        continue;
-			        }
-			        
-			        // Get metadata
-			        $data = get_post_meta( $post->ID, '_eg_gallery_data', true);
-			        $in = get_post_meta( $post->ID, '_eg_in_gallery', true);
+            // Get Post Types, excluding our own
+            // We don't use post_status => 'any', as this doesn't include CPTs where exclude_from_search = true.
+            $postTypes = get_post_types( array( 
+                'public' => true,
+            ) );
+            $excludedPostTypes = array( 'envira', 'envira_album', 'attachment' );
+            foreach ( $postTypes as $key=>$postType ) {
+                if ( in_array( $postType, $excludedPostTypes ) ) {
+                    unset( $postTypes[ $key ] );
+                }
+            }
+            
+            // Get all Posts that have _eg_gallery_data set
+            $inPostGalleries = new WP_Query( array(
+                'post_type'     => $postTypes,
+                'post_status'   => 'any',
+                'posts_per_page'=> -1,
+                'meta_query'    => array(
+                    array(
+                        'key'       => '_eg_gallery_data',
+                        'compare'   => 'EXISTS',
+                    ),
+                )
+            ) );
+            
+            // Check if any Posts with galleries exist
+            if ( count( $inPostGalleries->posts ) > 0 ) {
+                $migrated_galleries = 0;
 
-			        // Check if there is at least one image in the gallery
-			        // Some Posts save Envira config data but don't have images - we don't want to migrate those,
-			        // as we would end up with blank Envira CPT galleries
-			        if ( ! isset( $data['gallery'] ) || ! is_array( $data['gallery']) ) {
-				        continue;
-			        }
+                // Iterate through Posts with Galleries
+                foreach ( $inPostGalleries->posts as $post ) {
+                    // Check if this is an Envira or Envira Album CPT
+                    // If so, skip it
+                    if ( $post->post_type == 'envira' || $post->post_type == 'envira_album' ) {
+                        continue;
+                    }
+                    
+                    // Get metadata
+                    $data = get_post_meta( $post->ID, '_eg_gallery_data', true);
+                    $in = get_post_meta( $post->ID, '_eg_in_gallery', true);
 
-			        // If here, we need to create a new Envira CPT
-			        $cpt_args = array(
-			        	'post_title' 	=> ( !empty( $data['config']['title'] ) ? $data['config']['title'] : $post->post_title ),
-			        	'post_status' 	=> $post->post_status,
-			        	'post_type' 	=> 'envira',
-			        	'post_author' 	=> $post->post_author,
-			        );
-			        if ( ! empty( $data['config']['slug'] ) ) {
-				        $cpt_args['post_name'] = $data['config']['slug'];
-			        }
-			        $enviraGalleryID = wp_insert_post( $cpt_args );
+                    // Check if there is at least one image in the gallery
+                    // Some Posts save Envira config data but don't have images - we don't want to migrate those,
+                    // as we would end up with blank Envira CPT galleries
+                    if ( ! isset( $data['gallery'] ) || ! is_array( $data['gallery']) ) {
+                        continue;
+                    }
 
-			        // Check gallery creation was successful
-			        if ( is_wp_error( $enviraGalleryID ) ) {
-				        // @TODO how to handle errors?
-				        continue;
-			        }
+                    // If here, we need to create a new Envira CPT
+                    $cpt_args = array(
+                        'post_title'    => ( !empty( $data['config']['title'] ) ? $data['config']['title'] : $post->post_title ),
+                        'post_status'   => $post->post_status,
+                        'post_type'     => 'envira',
+                        'post_author'   => $post->post_author,
+                    );
+                    if ( ! empty( $data['config']['slug'] ) ) {
+                        $cpt_args['post_name'] = $data['config']['slug'];
+                    }
+                    $enviraGalleryID = wp_insert_post( $cpt_args );
 
-			        // Get Envira Gallery Post
-			        $enviraPost = get_post( $enviraGalleryID );
+                    // Check gallery creation was successful
+                    if ( is_wp_error( $enviraGalleryID ) ) {
+                        // @TODO how to handle errors?
+                        continue;
+                    }
 
-			        // Map the title and slug of the post object to the custom fields if no value exists yet.
-					$data['config']['title'] = trim( strip_tags( $enviraPost->post_title ) );
-			        $data['config']['slug']  = sanitize_text_field( $enviraPost->post_name );
+                    // Get Envira Gallery Post
+                    $enviraPost = get_post( $enviraGalleryID );
 
-			        // Store post metadata
-			        update_post_meta( $enviraGalleryID, '_eg_gallery_data', $data );
-			        update_post_meta( $enviraGalleryID, '_eg_in_gallery', $in );
-			        update_post_meta( $enviraGalleryID, '_eg_gallery_old', $post->ID );
-			        if ( ! empty( $data['config']['slug'] ) ) {
-			        	update_post_meta( $enviraGalleryID, '_eg_gallery_old_slug', $data['config']['slug'] );
-			        }
+                    // Map the title and slug of the post object to the custom fields if no value exists yet.
+                    $data['config']['title'] = trim( strip_tags( $enviraPost->post_title ) );
+                    $data['config']['slug']  = sanitize_text_field( $enviraPost->post_name );
 
-			        // Remove post metadata from the original Post
-			        delete_post_meta( $post->ID, '_eg_gallery_data' );
-			        delete_post_meta( $post->ID, '_eg_in_gallery' );
+                    // Store post metadata
+                    update_post_meta( $enviraGalleryID, '_eg_gallery_data', $data );
+                    update_post_meta( $enviraGalleryID, '_eg_in_gallery', $in );
+                    update_post_meta( $enviraGalleryID, '_eg_gallery_old', $post->ID );
+                    if ( ! empty( $data['config']['slug'] ) ) {
+                        update_post_meta( $enviraGalleryID, '_eg_gallery_old_slug', $data['config']['slug'] );
+                    }
 
-			        // Search for the envira shortcode in the Post content, and change its ID to the new Envira Gallery ID
-			        if ( has_shortcode ( $post->post_content, 'envira-gallery' ) ) {
-				        $pattern = get_shortcode_regex();
-				        if ( preg_match_all( '/'. $pattern .'/s', $post->post_content, $matches ) ) {
-					    	foreach ( $matches[2] as $key => $shortcode ) {
-						    	if ( $shortcode == 'envira-gallery' ) {
-							    	// Found an envira-gallery shortcode
-							    	// Change the ID
-							    	$originalShortcode = $matches[0][ $key ];
-							    	$replacementShortcode = str_replace( 'id="' . $post->ID . '"', 'id="' . $enviraGalleryID . '"', $originalShortcode );
-							    	$post->post_content = str_replace( $originalShortcode, $replacementShortcode, $post->post_content );
-							    	wp_update_post( $post );
-						    	}
-					    	}
-				        }
-			        }
+                    // Remove post metadata from the original Post
+                    delete_post_meta( $post->ID, '_eg_gallery_data' );
+                    delete_post_meta( $post->ID, '_eg_in_gallery' );
 
-			        // Store a relationship between the gallery and this Post
-			        update_post_meta( $post->ID, '_eg_gallery_id', $enviraGalleryID );
-		        }
-	        }
+                    // Search for the envira shortcode in the Post content, and change its ID to the new Envira Gallery ID
+                    if ( has_shortcode ( $post->post_content, 'envira-gallery' ) ) {
+                        $pattern = get_shortcode_regex();
+                        if ( preg_match_all( '/'. $pattern .'/s', $post->post_content, $matches ) ) {
+                            foreach ( $matches[2] as $key => $shortcode ) {
+                                if ( $shortcode == 'envira-gallery' ) {
+                                    // Found an envira-gallery shortcode
+                                    // Change the ID
+                                    $originalShortcode = $matches[0][ $key ];
+                                    $replacementShortcode = str_replace( 'id="' . $post->ID . '"', 'id="' . $enviraGalleryID . '"', $originalShortcode );
+                                    $post->post_content = str_replace( $originalShortcode, $replacementShortcode, $post->post_content );
+                                    wp_update_post( $post );
+                                }
+                            }
+                        }
+                    }
 
-	        // Force the tags addon to convert any tags to the new CPT system for any galleries that have been converted to Envira post type.
-	        delete_option( 'envira_tags_taxonomy_migrated' );
+                    // Store a relationship between the gallery and this Post
+                    update_post_meta( $post->ID, '_eg_gallery_id', $enviraGalleryID );
 
-	        // Mark upgrade as complete
-	        update_option( 'envira_gallery_121', true );
-	    }
+                    // Increment the counter
+                    $migrated_galleries++;
+                }
+
+                // Display a one time admin notice so the user knows their in-page galleries were migrated.
+                if ( $migrated_galleries > 0 ) {
+                    add_action( 'admin_notices', array( $this, 'notice_galleries_migrated' ) );
+                }
+            }
+
+            // Force the tags addon to convert any tags to the new CPT system for any galleries that have been converted to Envira post type.
+            delete_option( 'envira_tags_taxonomy_migrated' );
+
+            // Mark upgrade as complete
+            update_option( 'envira_gallery_121', true );
+        }
+    }
+    /**
+     * Displays a notice on screen when a user upgrades from Lite to Pro or Lite to Lite 1.5.x,
+     * telling them that their in-page galleries have been migrated.
+     *
+     * @since 1.5.0
+     */
+    public function notice_galleries_migrated() {
+
+        ?>
+        <div class="notice updated">
+            <p><?php _e( '<strong>Envira Gallery:</strong> Your existing in-page Galleries can now be found by clicking on Envira Gallery in the WordPress Admin menu.', 'envira-gallery' ); ?></p>
+        </div>
+        <?php
+
     }
     
     /**
-     * Loads styles for our admin tables.
+     * Loads styles for all Envira-based Administration Screens.
      *
      * @since 1.3.1
      *
@@ -232,7 +249,11 @@ class Envira_Gallery_Common_Admin {
      */
     public function admin_styles() {
 
-        if ( 'envira' !== get_current_screen()->post_type ) {
+        // Get current screen.
+        $screen = get_current_screen();
+        
+        // Bail if we're not on the Envira Post Type screen.
+        if ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type ) {
             return;
         }
 
@@ -246,7 +267,7 @@ class Envira_Gallery_Common_Admin {
     }
 
     /**
-     * Loads scripts for our admin tables.
+     * Loads scripts for all Envira-based Administration Screens.
      *
      * @since 1.3.5
      *
@@ -254,7 +275,11 @@ class Envira_Gallery_Common_Admin {
      */
     public function admin_scripts() {
 
-        if ( 'envira' !== get_current_screen()->post_type ) {
+        // Get current screen.
+        $screen = get_current_screen();
+        
+        // Bail if we're not on the Envira Post Type screen.
+        if ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type ) {
             return;
         }
 
@@ -274,232 +299,7 @@ class Envira_Gallery_Common_Admin {
         do_action( 'envira_gallery_admin_scripts' );
 
     }
-    
-    /**
-	 * Adds Envira fields to the quick editing and bulk editing screens
-	 *
-	 * @since 1.3.1
-	 *
-	 * @param string $column_name Column Name
-	 * @param string $post_type Post Type
-	 * @return HTML
-	 */
-    public function quick_edit_custom_box( $column_name, $post_type ) {
-
-		// Check post type is Envira
-		if ( 'envira' !== $post_type ) {
-			return;
-		}
-
-        // Only apply to shortcode column
-        if ( 'shortcode' !== $column_name ) {
-            return;
-        }
-        
-		// Get metabox instance
-		$this->metabox = Envira_Gallery_Metaboxes::get_instance();
-
-        switch ( $column_name ) {
-            case 'shortcode':
-                ?>
-                <fieldset class="inline-edit-col-left inline-edit-envira-gallery">
-                    <div class="inline-edit-col inline-edit-<?php echo $column_name ?>">
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Number of Columns', 'envira-gallery'); ?></span>
-                            <select name="_envira_gallery[columns]">
-                                <?php foreach ( (array) $this->metabox->get_columns() as $i => $data ) : ?>
-                                    <option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </label>
-
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Gallery Theme', 'envira-gallery'); ?></span>
-                            <select name="_envira_gallery[gallery_theme]">
-                                <?php foreach ( (array) $this->metabox->get_gallery_themes() as $i => $data ) : ?>
-                                    <option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </label>
-
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Column Gutter Width', 'envira-gallery'); ?></span>
-                            <input type="number" name="_envira_gallery[gutter]" value="" />
-                        </label>
-
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Margin Below Each Image', 'envira-gallery'); ?></span>
-                            <input type="number" name="_envira_gallery[margin]" value="" />
-                        </label>
-
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Image Dimensions', 'envira-gallery'); ?></span>
-                            <input type="number" name="_envira_gallery[crop_width]" value="" />
-                            x
-                            <input type="number" name="_envira_gallery[crop_height]" value="" />
-                            px
-                        </label>
-                    </div>
-                </fieldset>
-                <?php
-                break;
-        }
-			
-		wp_nonce_field( 'envira-gallery', 'envira-gallery' );
-		
-    }
-
-    /**
-     * Adds Envira fields to the  bulk editing screens
-     *
-     * @since 1.3.1
-     *
-     * @param string $column_name Column Name
-     * @param string $post_type Post Type
-     * @return HTML
-     */
-    public function bulk_edit_custom_box( $column_name, $post_type ) {
-
-        // Check post type is Envira
-        if ( 'envira' !== $post_type ) {
-            return;
-        }
-
-        // Only apply to shortcode column
-        if ( 'shortcode' !== $column_name ) {
-            return;
-        }
-        
-        // Get metabox instance
-        $this->metabox = Envira_Gallery_Metaboxes::get_instance();
-
-        switch ( $column_name ) {
-            case 'shortcode':
-                ?>
-                <fieldset class="inline-edit-col-left inline-edit-envira-gallery">
-                    <div class="inline-edit-col inline-edit-<?php echo $column_name ?>">
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Number of Columns', 'envira-gallery'); ?></span>
-                            <select name="_envira_gallery[columns]">
-                                <option value="-1" selected><?php _e( '— No Change —', 'envira-gallery' ); ?></option>
-                                
-                                <?php foreach ( (array) $this->metabox->get_columns() as $i => $data ) : ?>
-                                    <option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </label>
-
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Gallery Theme', 'envira-gallery'); ?></span>
-                            <select name="_envira_gallery[gallery_theme]">
-                                <option value="-1" selected><?php _e( '— No Change —', 'envira-gallery' ); ?></option>
-                                
-                                <?php foreach ( (array) $this->metabox->get_gallery_themes() as $i => $data ) : ?>
-                                    <option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </label>
-
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Column Gutter Width', 'envira-gallery'); ?></span>
-                            <input type="number" name="_envira_gallery[gutter]" value="" placeholder="<?php _e( '— No Change —', 'envira-gallery' ); ?>" />
-                        </label>
-
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Margin Below Each Image', 'envira-gallery'); ?></span>
-                            <input type="number" name="_envira_gallery[margin]" value="" placeholder="<?php _e( '— No Change —', 'envira-gallery' ); ?>" />
-                        </label>
-
-                        <label class="inline-edit-group">
-                            <span class="title"><?php _e( 'Image Dimensions', 'envira-gallery'); ?></span>
-                            <input type="number" name="_envira_gallery[crop_width]" value="" placeholder="<?php _e( '— No Change —', 'envira-gallery' ); ?>" />
-                            x
-                            <input type="number" name="_envira_gallery[crop_height]" value="" placeholder="<?php _e( '— No Change —', 'envira-gallery' ); ?>" />
-                            px
-                        </label>
-                    </div>
-                </fieldset>
-                <?php
-                break;
-        }
-            
-        wp_nonce_field( 'envira-gallery', 'envira-gallery' );
-        
-    }
-    
-    /**
-	* Called every time a WordPress Post is updated
-	*
-	* Checks to see if the request came from submitting the Bulk Editor form,
-	* and if so applies the updates.  This is because there is no direct action
-	* or filter fired for bulk saving
-	*
-	* @since 1.3.1
-	*
-	* @param int $post_ID Post ID
-	*/
-    public function bulk_edit_save( $post_ID ) {
-	    
-	    // Check we are performing a Bulk Edit
-	    if ( !isset( $_REQUEST['bulk_edit'] ) ) {
-		    return;
-	    }
-	    
-	    // Bail out if we fail a security check.
-        if ( ! isset( $_REQUEST['envira-gallery'] ) || ! wp_verify_nonce( $_REQUEST['envira-gallery'], 'envira-gallery' ) || ! isset( $_REQUEST['_envira_gallery'] ) ) {
-            return;
-        }
-        
-        // Check Post IDs have been submitted
-        $post_ids = ( ! empty( $_REQUEST[ 'post' ] ) ) ? $_REQUEST[ 'post' ] : array();
-		if ( empty( $post_ids ) || !is_array( $post_ids ) ) {
-			return;
-		}
-		
-		// Get metabox instance
-		$this->metabox = Envira_Gallery_Metaboxes::get_instance();
-	
-		// Iterate through post IDs, updating settings
-		foreach ( $post_ids as $post_id ) {
-			// Get settings
-	        $settings = get_post_meta( $post_id, '_eg_gallery_data', true );
-	        if ( empty( $settings ) ) {
-		        continue;
-	        }
-	        
-	        // Update Settings, if they have values
-	        if ( ! empty( $_REQUEST['_envira_gallery']['columns'] ) && $_REQUEST['_envira_gallery']['columns'] != -1 ) {
-		        $settings['config']['columns']             = preg_replace( '#[^a-z0-9-_]#', '', $_REQUEST['_envira_gallery']['columns'] );
-	        }
-            if ( ! empty( $_REQUEST['_envira_gallery']['gallery_theme'] ) && $_REQUEST['_envira_gallery']['gallery_theme'] != -1 ) {
-                $settings['config']['gallery_theme']       = preg_replace( '#[^a-z0-9-_]#', '', $_REQUEST['_envira_gallery']['gallery_theme'] );
-            }
-            if ( ! empty( $_REQUEST['_envira_gallery']['gutter'] ) ) {
-                $settings['config']['gutter']       = absint( $_REQUEST['_envira_gallery']['gutter'] );
-            }
-            if ( ! empty( $_REQUEST['_envira_gallery']['margin'] ) ) {
-                $settings['config']['margin']       = absint( $_REQUEST['_envira_gallery']['margin'] );
-            }
-            if ( ! empty( $_REQUEST['_envira_gallery']['crop_width'] ) ) {
-                $settings['config']['crop_width']       = absint( $_REQUEST['_envira_gallery']['crop_width'] );
-            }
-            if ( ! empty( $_REQUEST['_envira_gallery']['crop_height'] ) ) {
-                $settings['config']['crop_height']       = absint( $_REQUEST['_envira_gallery']['crop_height'] );
-            }
-	        
-	        // Provide a filter to override settings.
-			$settings = apply_filters( 'envira_gallery_bulk_edit_save_settings', $settings, $post_id );
-			
-			// Update the post meta.
-			update_post_meta( $post_id, '_eg_gallery_data', $settings );
-			
-			// Finally, flush all gallery caches to ensure everything is up to date.
-			$this->metabox->flush_gallery_caches( $post_id, $settings['config']['slug'] );
-
-		}
-	    
-    }
-
+ 
     /**
      * Deletes the Envira gallery association for the image being deleted.
      *
@@ -693,6 +493,58 @@ class Envira_Gallery_Common_Admin {
         foreach ( $media as $image ) {
             wp_delete_attachment( $image->ID );
         }
+
+    }
+
+    /**
+     * Called whenever an upgrade button / link is displayed in Lite, this function will
+     * check if there's a shareasale ID specified.
+     *
+     * There are three ways to specify an ID, ordered by highest to lowest priority
+     * - add_filter( 'envira_gallery_shareasale_id', function() { return 1234; } );
+     * - define( 'ENVIRA_GALLERY_SHAREASALE_ID', 1234 );
+     * - get_option( 'envira_gallery_shareasale_id' ); (with the option being in the wp_options table)
+     *
+     * If an ID is present, returns the ShareASale link with the affiliate ID, and tells
+     * ShareASale to then redirect to enviragallery.com/lite
+     *
+     * If no ID is present, just returns the enviragallery.com/lite URL with UTM tracking.
+     *
+     * @since 1.5.0
+     */
+    public function get_upgrade_link() {
+
+        if ( class_exists( 'Envira_Gallery' ) ) {
+            // User is using Envira Gallery, so just take them to the Pricing page.
+            // Note: On the Addons screen, if the user has a license, we won't hit this function,
+            // as the API will tell us the direct URL to send the user to based on their license key,
+            // so they see pro-rata pricing.
+            return 'http://enviragallery.com/pricing/?utm_source=proplugin&utm_medium=link&utm_campaign=WordPress';
+        }
+
+        // Check if there's a constant.
+        $shareasale_id = '';
+        if ( defined( 'ENVIRA_GALLERY_SHAREASALE_ID' ) ) {
+            $shareasale_id = ENVIRA_GALLERY_SHAREASALE_ID;
+        }
+
+        // If there's no constant, check if there's an option.
+        if ( empty( $shareasale_id ) ) {
+            $shareasale_id = get_option( 'envira_gallery_shareasale_id', '' );
+        }
+
+        // Whether we have an ID or not, filter the ID.
+        $shareasale_id = apply_filters( 'envira_gallery_shareasale_id', $shareasale_id );
+        
+        // If at this point we still don't have an ID, we really don't have one!
+        // Just return the standard upgrade URL.
+        if ( empty( $shareasale_id ) ) {
+            return 'http://enviragallery.com/lite/?utm_source=liteplugin&utm_medium=link&utm_campaign=WordPress';
+        }
+
+        // If here, we have a ShareASale ID
+        // Return ShareASale URL with redirect.
+        return 'http://www.shareasale.com/r.cfm?u=' . $shareasale_id . '&b=566240&m=51693&afftrack=&urllink=enviragallery%2Ecom%2Flite%2F';
 
     }
 

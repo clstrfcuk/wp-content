@@ -10,6 +10,7 @@
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
 //   01. Add Missing Navigation Class
+//	 02. Add template override to force WPML to use the correct templates
 // =============================================================================
 
 // Add Missing Navigation Class
@@ -24,3 +25,18 @@ function x_wpml_add_classes_for_language_switcher( $menu_items ) {
 }
 
 add_filter( 'wp_nav_menu_items', 'x_wpml_add_classes_for_language_switcher' );
+
+// Add template override to force WPML to use the correct search & archive templates
+// ======================================================================================
+
+add_filter( 'template_include', 'x_force_template_override', 99 );
+
+function x_force_template_override( $template ) {
+
+  if( is_search() || is_archive() ) {
+    $p = pathinfo($template);
+    return $p['dirname'].'/index.php';
+  }
+
+  return $template;
+}

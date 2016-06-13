@@ -44,7 +44,7 @@ class Envira_Gallery_Media {
     public function __construct() {
 
         // Load the base class object.
-        $this->base = Envira_Gallery::get_instance();
+        $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
 
         add_filter( 'wp_handle_upload', array( $this, 'fix_image_orientation' ) );
 
@@ -271,35 +271,6 @@ class Envira_Gallery_Media {
 
         return false;
         
-    }
-
-    /**
-     * Prepares a custom media upload form that allows multiple forms on one page.
-     *
-     * @since 1.0.0
-     *
-     * @param int $post_id Post ID
-     * @return null Return early if the form cannot be output.
-     */
-    public function media_upload_form( $post_id ) {
-
-        ?>
-        <!-- Errors -->
-        <div id="envira-gallery-upload-error"></div>
-
-        <!-- WP Media Upload Form -->
-        <?php media_upload_form(); ?>
-        <script type="text/javascript">
-            var post_id = <?php echo $post_id; ?>, shortform = 3;
-        </script>
-        <input type="hidden" name="post_id" id="post_id" value="<?php echo $post_id; ?>" />
-
-        <!-- Add from Media Library -->
-        <a href="#" class="envira-media-library button button-primary"  title="<?php _e( 'Click Here to Insert from Other Image Sources', 'envira-gallery' ); ?>" style="vertical-align: baseline;">
-            <?php _e( 'Click Here to Insert from Other Image Sources', 'envira-gallery' ); ?>
-        </a>
-        <?php
-
     }
 
     /**

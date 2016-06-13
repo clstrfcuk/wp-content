@@ -31,7 +31,7 @@
     padding: 10px 30px;
     border: 1px solid #efefef;
     margin-bottom: 15px;
-} 
+}
 </style>
 <div class="wrap about-wrap about-cp bend">
   <div class="wrap-container">
@@ -53,6 +53,7 @@
         <?php if($reg_menu_hide !== true) : ?>
         <a class="nav-tab" href="?page=convertplug&view=registration" title="<?php _e( "Registration", "smile"); ?>"><?php echo __("Registration", "smile" ); ?></a>
         <?php endif; ?>
+        <!-- <a class="nav-tab" href="?page=convertplug&view=cp_import" title="<?php _e( "Import", "smile" ); ?>"><?php echo __( "Import", "smile" ); ?></a> -->
         <?php if( isset( $_GET['author'] ) ){ ?>
         <a class="nav-tab nav-tab-active" href="?page=convertplug&view=debug&author=true" title="<?php _e( "Debug", "smile" ); ?>"><?php echo __( "Debug", "smile" ); ?></a>
         <?php } ?>
@@ -109,7 +110,7 @@
           </div><!-- .debug-section -->
 
           <!-- Contact Form 7 - Styles -->
-            
+
             <div class="debug-section">
               <?php
                 $data         =  get_option( 'convert_plug_debug' );
@@ -150,7 +151,7 @@
             </div><!-- .debug-section -->
 
             <div class="debug-section">
-              <p>                
+              <p>
                 <label for="hide-options" style="width:320px; display: inline-block;"><strong><?php _e( "Hide Admin Bar Using", "smile" ); ?></strong>
                   <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Depending on your selection, the WordPress admin bar will be hidden for you in customizer.", "smile" ); ?>">
                     <i class="dashicons dashicons-editor-help"></i>
@@ -159,6 +160,25 @@
                 <select id="hide-options" name="cp-hide-bar">
                   <option value="css" <?php echo esc_attr( $selected_css ); ?>><?php _e( "CSS", "smile" ); ?></option>
                   <option value="wordpress" <?php echo esc_attr( $selected_wp ); ?>><?php _e( "WordPress Filter", "smile" ); ?></option>
+                </select>
+              </p>
+            </div><!-- .debug-section -->
+            <?php
+                $sub_def_action = isset( $data['cp-post-sub-action'] ) ? $data['cp-post-sub-action'] : 'process_success';
+                $selected_already_sbuscribed = ( $sub_def_action == "already_sub_msg" ) ? "selected" : "";
+                $selected_msg_success = ( $sub_def_action == "process_success" ) ? "selected" : "";
+
+            ?>
+             <div class="debug-section">
+              <p>
+                <label for="post-sub-action" style="width:320px; display: inline-block;"><strong><?php _e( "Default Action - when user is already subscribed", "smile" ); ?></strong>
+                  <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Depending on your selection, action will be taken if user is already subscribed.", "smile" ); ?>">
+                    <i class="dashicons dashicons-editor-help"></i>
+                  </span>
+                </label>
+                <select id="post-sub-action" name="cp-post-sub-action">
+                  <option value="already_sub_msg" <?php echo esc_attr( $selected_already_sbuscribed ); ?>><?php _e( "Show message as already subscribed", "smile" ); ?></option>
+                  <option value="process_success" <?php echo esc_attr( $selected_msg_success ); ?>><?php _e( "Update and process as success", "smile" ); ?></option>
                 </select>
               </p>
             </div><!-- .debug-section -->
@@ -173,31 +193,31 @@
 
 jQuery(document).ready(function($){
 
-    
+
   jQuery('.has-tip').frosty();
-	var form = jQuery("#convert_plug_debug");
-	var btn = jQuery(".button-update-settings");
-	var msg = jQuery(".msg");
-	btn.click(function(){
+  var form = jQuery("#convert_plug_debug");
+  var btn = jQuery(".button-update-settings");
+  var msg = jQuery(".msg");
+  btn.click(function(){
     var data = form.serialize();
-		jQuery.ajax({
-			url: ajaxurl,
-			data: data,
-			dataType: 'JSON',
-			type: 'POST',
-			success: function(result){
-				console.log(result);
-				if( result.message == "Settings Updated!" ) {
-					swal("<?php _e( "Updated!", "smile" ); ?>", result.message, "success");
-					setTimeout(function(){
-						window.location = window.location;
-					},500);
-				} else {
-					swal("<?php _e( "Error!", "smile" ); ?>", result.message, "error");
-				}
-			}
-		});
-	});
+    jQuery.ajax({
+      url: ajaxurl,
+      data: data,
+      dataType: 'JSON',
+      type: 'POST',
+      success: function(result){
+        console.log(result);
+        if( result.message == "Settings Updated!" ) {
+          swal("<?php _e( "Updated!", "smile" ); ?>", result.message, "success");
+          setTimeout(function(){
+            window.location = window.location;
+          },500);
+        } else {
+          swal("<?php _e( "Error!", "smile" ); ?>", result.message, "error");
+        }
+      }
+    });
+  });
 });
 
 

@@ -30,6 +30,7 @@
     background: transparent;
     padding: 15px;
     position: relative;
+    margin-top: -1px;
 }
 
 .cp-count-down .cp-title-container,
@@ -42,7 +43,7 @@
     position: relative;
 }
 
-.cp-count-down .cp-modal-body-overlay,
+.cp-count-down .cp-modal-body-overlay.cp_cs_overlay,
 .cp-count-down .count-down-shadow {
     background: transparent !important;
     z-index: 99;
@@ -76,6 +77,9 @@
     color: #2c3e50;
     font-weight: bold;
     line-height: 1.15em;
+}
+.cp-count-down-container .cp-overlay-close span{
+        font-family: "Montserrat",serif;
 }
 
 .cp-count-down .cp-form-container,
@@ -120,7 +124,7 @@
     font-weight: 600;
     font-size: 28px;
     line-height: 1em;
-    border-radius: 3px;
+    /* border-radius: 3px; */
     outline: none;
 }
 

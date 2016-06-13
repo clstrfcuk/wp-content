@@ -250,7 +250,9 @@
             var offset = (typeof $tip.attr('data-offset') != 'undefined') ? $tip.attr('data-offset') : 10;
             var position = (typeof $tip.attr('data-position') != 'undefined') ? $tip.attr('data-position') : 'top';
             var trigger = (typeof $tip.attr('data-trigger')) ? $tip.attr('data-trigger') : 'hover,focus';
+            var className = (typeof $tip.attr('data-classes') != 'undefined') ? 'tip '+$tip.attr('data-classes') : 'tip';
             $tip.frosty({
+                className : className,
                 attribute: attribute,
                 offset: offset,
                 position: position,

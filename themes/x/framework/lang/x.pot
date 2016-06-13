@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License v2.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: X 4.4.2\n"
+"Project-Id-Version: X 4.5.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/theme/x\n"
-"POT-Creation-Date: 2016-04-13 15:55:09+00:00\n"
+"POT-Creation-Date: 2016-06-03 15:57:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -81,7 +81,7 @@ msgid ""
 "and attributes:"
 msgstr ""
 
-#: bbpress/form-reply.php:75
+#: bbpress/form-reply.php:75 framework/views/renew/_content-post-footer.php:13
 msgid "Tags:"
 msgstr ""
 
@@ -734,8 +734,7 @@ msgid "Updates"
 msgstr ""
 
 #: buddypress/activity/index.php:84 buddypress/members/single/activity.php:28
-#: framework/functions/ethos.php:113 framework/functions/integrity.php:104
-#: framework/functions/renew.php:104 framework/views/ethos/wp-comments.php:36
+#: framework/views/ethos/wp-comments.php:36
 #: framework/views/icon/wp-comments.php:30
 #: framework/views/integrity/wp-comments.php:30
 msgid "Comments"
@@ -1126,7 +1125,7 @@ msgid "Promote to Admin"
 msgstr ""
 
 #: buddypress/groups/single/admin.php:247
-#: framework/functions/global/stack-data.php:354
+#: framework/functions/global/stack-data.php:355
 msgid "Members"
 msgstr ""
 
@@ -1615,76 +1614,73 @@ msgstr ""
 msgid "In"
 msgstr ""
 
-#: framework/functions/ethos.php:109 framework/functions/integrity.php:100
+#: framework/functions/ethos.php:108 framework/functions/integrity.php:99
 #: framework/functions/renew.php:100
-msgid "Leave a Comment"
-msgstr ""
+msgid "%s Comment"
+msgid_plural "%s Comments"
+msgstr[0] ""
+msgstr[1] ""
 
-#: framework/functions/ethos.php:111 framework/functions/integrity.php:102
-#: framework/functions/renew.php:102
-msgid "Comment"
-msgstr ""
-
-#: framework/functions/ethos.php:118 framework/functions/icon.php:155
-#: framework/functions/integrity.php:109 framework/functions/renew.php:109
+#: framework/functions/ethos.php:112 framework/functions/icon.php:155
+#: framework/functions/integrity.php:103 framework/functions/renew.php:105
 msgid "Leave a comment on: &ldquo;%s&rdquo;"
 msgstr ""
 
-#: framework/functions/ethos.php:213
+#: framework/functions/ethos.php:207
 msgid "See All Posts"
 msgstr ""
 
-#: framework/functions/ethos.php:248 framework/functions/ethos.php:250
+#: framework/functions/ethos.php:242 framework/functions/ethos.php:244
 #: framework/views/ethos/_index-featured.php:20
 #: framework/views/ethos/_index-featured.php:22
 #: framework/views/ethos/_post-slider.php:77
 msgid "View Post"
 msgstr ""
 
-#: framework/functions/ethos.php:339 framework/functions/icon.php:78
-#: framework/functions/integrity.php:176 framework/functions/renew.php:176
+#: framework/functions/ethos.php:333 framework/functions/icon.php:78
+#: framework/functions/integrity.php:170 framework/functions/renew.php:172
 msgid "Pingback:"
 msgstr ""
 
-#: framework/functions/ethos.php:339
+#: framework/functions/ethos.php:333
 #: framework/functions/global/plugins/bbpress.php:424
-#: framework/functions/icon.php:78 framework/functions/integrity.php:176
-#: framework/functions/renew.php:176
+#: framework/functions/icon.php:78 framework/functions/integrity.php:170
+#: framework/functions/renew.php:172
 msgid "(Edit)"
 msgstr ""
 
-#: framework/functions/ethos.php:353
+#: framework/functions/ethos.php:347
 #: framework/functions/global/plugins/visual-composer.php:3491
 msgid "Author"
 msgstr ""
 
-#: framework/functions/ethos.php:363 framework/functions/icon.php:87
+#: framework/functions/ethos.php:357 framework/functions/icon.php:87
 msgid "%1$s"
 msgstr ""
 
-#: framework/functions/ethos.php:369 framework/functions/integrity.php:225
-#: framework/functions/renew.php:199
+#: framework/functions/ethos.php:363 framework/functions/integrity.php:219
+#: framework/functions/renew.php:195
 msgid ""
 "Reply <span class=\"comment-reply-link-after\"><i class=\"x-icon-reply\" "
 "data-x-icon=\"&#xf112;\"></i></span>"
 msgstr ""
 
-#: framework/functions/ethos.php:371
+#: framework/functions/ethos.php:365
 msgid "Edit <i class=\"x-icon-edit\" data-x-icon=\"&#xf044;\"></i>"
 msgstr ""
 
-#: framework/functions/ethos.php:380 framework/functions/icon.php:109
-#: framework/functions/integrity.php:211 framework/functions/renew.php:210
+#: framework/functions/ethos.php:374 framework/functions/icon.php:109
+#: framework/functions/integrity.php:205 framework/functions/renew.php:206
 msgid "Rated %d out of 5"
 msgstr ""
 
-#: framework/functions/ethos.php:381 framework/functions/icon.php:110
-#: framework/functions/integrity.php:212 framework/functions/renew.php:211
+#: framework/functions/ethos.php:375 framework/functions/icon.php:110
+#: framework/functions/integrity.php:206 framework/functions/renew.php:207
 msgid "out of 5"
 msgstr ""
 
-#: framework/functions/ethos.php:387 framework/functions/icon.php:123
-#: framework/functions/integrity.php:218 framework/functions/renew.php:227
+#: framework/functions/ethos.php:381 framework/functions/icon.php:123
+#: framework/functions/integrity.php:212 framework/functions/renew.php:223
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
@@ -2131,37 +2127,37 @@ msgstr ""
 msgid "Checking&hellip;"
 msgstr ""
 
-#: framework/functions/global/admin/addons/modules/class-addons-updates.php:184
+#: framework/functions/global/admin/addons/modules/class-addons-updates.php:190
 msgid "API Key Successfuly Validated!"
 msgstr ""
 
-#: framework/functions/global/admin/addons/modules/class-addons-updates.php:203
-#: framework/functions/global/admin/addons/modules/class-addons-updates.php:207
+#: framework/functions/global/admin/addons/modules/class-addons-updates.php:209
+#: framework/functions/global/admin/addons/modules/class-addons-updates.php:213
 msgid "<a href=\"%s\">Validate X to enable automatic updates</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/modules/class-addons-updates.php:211
+#: framework/functions/global/admin/addons/modules/class-addons-updates.php:217
 msgid ""
 "X is not validated. <a href=\"%s\">Validate X to enable automatic updates</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/modules/class-addons-updates.php:215
+#: framework/functions/global/admin/addons/modules/class-addons-updates.php:221
 msgid "<a href=\"%s\">Validate X to enable automatic updates</a>."
 msgstr ""
 
-#: framework/functions/global/admin/addons/modules/class-addons-updates.php:219
+#: framework/functions/global/admin/addons/modules/class-addons-updates.php:225
 msgid ""
 "<a href=\"%s\">Validate X to enable automatic updates (go to \"Addons\" &gt; "
 "\"Home\" to learn more.)</a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/modules/class-addons-updates.php:223
+#: framework/functions/global/admin/addons/modules/class-addons-updates.php:229
 msgid ""
 "X is not validated. <a href=\"%s\">Validate X to enable automatic updates.</"
 "a>"
 msgstr ""
 
-#: framework/functions/global/admin/addons/modules/class-addons-updates.php:240
+#: framework/functions/global/admin/addons/modules/class-addons-updates.php:246
 msgid ""
 "Could not retrieve extensions list. For assistance, please start by "
 "reviewing our article on troubleshooting <a href=\"https://community.theme."
@@ -6870,93 +6866,93 @@ msgstr ""
 msgid "Share via Email"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:167
-#: framework/functions/global/stack-data.php:184
+#: framework/functions/global/stack-data.php:168
+#: framework/functions/global/stack-data.php:185
 msgid "The Blog"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:168
+#: framework/functions/global/stack-data.php:169
 msgid ""
 "Welcome to our little corner of the Internet. Kick your feet up and stay a "
 "while."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:169
+#: framework/functions/global/stack-data.php:170
 msgid "Sort Portfolio"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:172
-#: framework/functions/global/stack-data.php:189
-#: framework/functions/global/stack-data.php:212
-#: framework/functions/global/stack-data.php:235
+#: framework/functions/global/stack-data.php:173
+#: framework/functions/global/stack-data.php:190
+#: framework/functions/global/stack-data.php:213
+#: framework/functions/global/stack-data.php:236
 msgid "The Shop"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:173
+#: framework/functions/global/stack-data.php:174
 msgid ""
 "Welcome to our online store. Take some time to browse through our items."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:335
+#: framework/functions/global/stack-data.php:336
 msgid "Skills"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:336
+#: framework/functions/global/stack-data.php:337
 msgid "Launch Project"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:337
+#: framework/functions/global/stack-data.php:338
 msgid "See it Live!"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:338
+#: framework/functions/global/stack-data.php:339
 msgid "Share this Project"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:351
+#: framework/functions/global/stack-data.php:352
 msgid "Activity"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:352
+#: framework/functions/global/stack-data.php:353
 msgid "Groups"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:353
+#: framework/functions/global/stack-data.php:354
 msgid "Sites"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:355
+#: framework/functions/global/stack-data.php:356
 msgid "Create An Account"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:356
+#: framework/functions/global/stack-data.php:357
 msgid "Activate Your Account"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:357
+#: framework/functions/global/stack-data.php:358
 msgid "Meet new people, get involved, and stay connected."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:358
+#: framework/functions/global/stack-data.php:359
 msgid "Find others with similar interests and get plugged in."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:359
+#: framework/functions/global/stack-data.php:360
 msgid ""
 "See what others are writing about. Learn something new and exciting today!"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:360
+#: framework/functions/global/stack-data.php:361
 msgid "Meet your new online community. Kick up your feet and stay awhile."
 msgstr ""
 
-#: framework/functions/global/stack-data.php:361
+#: framework/functions/global/stack-data.php:362
 msgid ""
 "Just fill in the fields below and we'll get a new account set up for you in "
 "no time!"
 msgstr ""
 
-#: framework/functions/global/stack-data.php:362
+#: framework/functions/global/stack-data.php:363
 msgid ""
 "You're almost there! Simply enter your activation code below and we'll take "
 "care of the rest."
@@ -6977,8 +6973,8 @@ msgid ""
 "connection-issues/\">connection issues.</a>"
 msgstr ""
 
-#: framework/functions/icon.php:89 framework/functions/integrity.php:202
-#: framework/functions/renew.php:218
+#: framework/functions/icon.php:89 framework/functions/integrity.php:196
+#: framework/functions/renew.php:214
 msgid "%1$s at %2$s"
 msgstr ""
 
@@ -6988,12 +6984,12 @@ msgid ""
 "x-icon=\"&#xf112;\"></i></span>"
 msgstr ""
 
-#: framework/functions/icon.php:97 framework/functions/integrity.php:190
+#: framework/functions/icon.php:97 framework/functions/integrity.php:184
 msgid "Post<br>Author"
 msgstr ""
 
-#: framework/functions/icon.php:119 framework/functions/integrity.php:207
-#: framework/functions/renew.php:223
+#: framework/functions/icon.php:119 framework/functions/integrity.php:201
+#: framework/functions/renew.php:219
 msgid "<i class=\"x-icon-edit\" data-x-icon=\"&#xf044;\"></i> Edit"
 msgstr ""
 
@@ -7136,7 +7132,7 @@ msgstr ""
 msgid "Toggle the Widgetbar"
 msgstr ""
 
-#: framework/views/global/_nav-primary.php:13
+#: framework/views/global/_nav-primary.php:15
 msgid "Navigation"
 msgstr ""
 

@@ -9,22 +9,57 @@
 
         if ( typeof uploader !== 'undefined' ) {
 
+            // Change "Select Files" button in the pluploader to "Select Files from Your Computer"
+            $( 'input#plupload-browse-button' ).val( envira_gallery_metabox.uploader_files_computer );
+
             // Set a custom progress bar
-            $('#envira-gallery .drag-drop-inside').append( '<div class="envira-progress-bar"><div></div></div>' );
-            var envira_bar      = $('#envira-gallery .envira-progress-bar'),
-                envira_progress = $('#envira-gallery .envira-progress-bar div'),
-                envira_output   = $('#envira-gallery-output');
+            var envira_bar      = $( '#envira-gallery .envira-progress-bar' ),
+                envira_progress = $( '#envira-gallery .envira-progress-bar div.envira-progress-bar-inner' ),
+                envira_status   = $( '#envira-gallery .envira-progress-bar div.envira-progress-bar-status' ),
+                envira_output   = $( '#envira-gallery-output' ),
+                envira_error    = $( '#envira-gallery-upload-error' ),
+                envira_file_count = 0;
+
+            // Uploader has initialized
+            uploader.bind( 'Init', function( up ) {
+
+                // Fade in the uploader, as it's hidden with CSS so the user doesn't see elements reposition on screen and look messy.
+                $( '#drag-drop-area' ).fadeIn();
+                $( 'a.envira-media-library.button' ).fadeIn();
+
+            } );
 
             // Files Added for Uploading
             uploader.bind( 'FilesAdded', function ( up, files ) {
+
+                // Hide any existing errors
+                $( envira_error ).html( '' );
+
+                // Get the number of files to be uploaded
+                envira_file_count = files.length;
+
+                // Set the status text, to tell the user what's happening
+                $( '.uploading .current', $( envira_status ) ).text( '1' );
+                $( '.uploading .total', $( envira_status ) ).text( envira_file_count );
+                $( '.uploading', $( envira_status ) ).show();
+                $( '.done', $( envira_status ) ).hide();
+
+                // Fade in the upload progress bar
                 $( envira_bar ).fadeIn();
-            });
+
+            } );
 
             // File Uploading - show progress bar
             uploader.bind( 'UploadProgress', function( up, file ) {
+
+                // Update the status text
+                $( '.uploading .current', $( envira_status ) ).text( ( envira_file_count - up.total.queued ) + 1 );
+
+                // Update the progress bar
                 $( envira_progress ).css({
                     'width': up.total.percent + '%'
                 });
+
             });
 
             // File Uploaded - AJAX call to process image and add to screen.
@@ -63,8 +98,14 @@
             // Files Uploaded
             uploader.bind( 'UploadComplete', function() {
 
+                // Update status
+                $( '.uploading', $( envira_status ) ).hide();
+                $( '.done', $( envira_status ) ).show();
+
                 // Hide Progress Bar
-                $( envira_bar ).fadeOut();
+                setTimeout( function() {
+                    $( envira_bar ).fadeOut();
+                }, 1000 );
 
             });
 

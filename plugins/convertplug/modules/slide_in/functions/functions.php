@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Global Settings - Modal
  *
@@ -24,96 +23,9 @@ if( !function_exists( "slidein_generate_style_css" ) ) {
 
 		/** = Submit Button - CSS
 		 *-----------------------------------------------------------*/
-		$shadow = $style = '';
+	$shadow = $style = '';
 
-		$c_hover  	= esc_attr( $a['button_bg_hover_color'] );
-		$c_normal 	= esc_attr( $a['button_bg_color'] );
-		$light 		= esc_attr( $a["button_bg_gradient_color"] );
-		$h_color 	= esc_attr( $a["button_txt_hover_color"] );
-
-		$class = $a['btn_style'];
-		//	Apply box shadow to submit button - If its set & equals to - 1
-		if( $a["btn_shadow"] == 1 ) {
-			$shadow .= "box-shadow: 1px 1px 2px 0px rgba(66, 66, 66, 0.6);";
-		}
-
-		$radius = '';
-		if( $a["btn_border_radius"] != '' ) {
-			$radius = 'border-radius:' . esc_attr( $a["btn_border_radius"] ) . 'px;';
-		}
-
-		//echo $class;
-
-		switch( $class ) {
-
-			case 'cp-btn-flat': 	//	Normal
-									$style .= ".cp-slidein .cp-submit." 	. $class . " { "
-											. " 	background: " 		. $c_normal . "!important;"
-											. 		$radius . $shadow
-											. "}"
-
-									//	Hover
-											. ".cp-slidein .cp-submit." 	. $class . ":hover { "
-											. " 	background: " 		. $c_hover	. "!important;"
-											. "}";
-				break;
-			case 'cp-btn-3d': 		//	Normal
-									$style  .= ".cp-slidein .cp-submit." 	. $class . " { "
-											 . " 	background: " 		. $c_normal . " !important;"
-											 . " 	box-shadow: 0 6px " . $c_hover . ";"
-											 . " 	position: relative;"
-											 . 		$radius
-											 . "}"
-
-									//	Hover
-											. ".cp-slidein .cp-submit." 	. $class . ":hover { "
-											. " 	box-shadow: 0 4px " . $c_hover . ";"
-											. " 	top: 2px;"
-											. "}"
-
-									//	Active
-											. ".cp-slidein .cp-submit." 	. $class . ":active { "
-											. " 	top: 6px;"
-											. "		box-shadow: 0 0px " . $c_hover . ";"
-											. "}";
-				break;
-			case 'cp-btn-outline': 	//	Normal
-									$style .= ".cp-slidein .cp-submit." . $class . " { "
-											. " 	background: transparent;"
-											. " 	border: 2px solid " . $c_normal . ";"
-											. " 	color: inherit;"
-											.		$shadow . $radius
-											. "}"
-
-									//	Hover
-											. ".cp-slidein .cp-submit." 	. $class . ":hover { "
-											. " 	background: " 		. $c_hover	. ";"
-											. " 	border: 2px solid " . $c_hover . ";"
-											. " 	color: ". $h_color
-											. "}"
-
-									//	Inner span color inherit to apply hover color
-											. ".cp-slidein .cp-submit." 	. $class . ":hover span { color: inherit !important ; } ";
-				break;
-			case 'cp-btn-gradient': 	//	Normal
-										$style  .= ".cp-slidein .cp-submit." . $class . " { "
-												. 		$shadow . $radius
-												. " 	border: none;"
-												. "		background: -webkit-linear-gradient(" . $light . ", " . $c_normal . ");"
-												. "		background: -o-linear-gradient(" . $light . ", " . $c_normal . ");"
-												. "		background: -moz-linear-gradient(" . $light . ", " . $c_normal . ");"
-												. "		background: linear-gradient(" . $light . ", " . $c_normal . ");"
-												. "}"
-
-										//	Hover
-												. ".cp-slidein .cp-submit." 	. $class . ":hover { "
-												. " 	background: " 		. $c_normal	. ";"
-												. "}";
-				break;
-		}
-
-
-		$style .= $a['custom_css'];
+		$style .= isset( $a['custom_css'] ) ? $a['custom_css'] : '';
 		/* CP - SlideIn Styling */
 		echo '<style type="text/css" id="">'.$style.'</style>';
 
@@ -130,8 +42,13 @@ if( !function_exists( 'generateBorderCss' ) ){
 		}
 
 		$cssCode1 = '';
-		$cssCode1 .= $result['br_tl'] . 'px ' . $result['br_tr'] . 'px ' . $result['br_br'] . 'px ';
-		$cssCode1 .= $result['br_bl'] . 'px';
+		if($result['br_type'] == 1){
+			$cssCode1 .= $result['br_tl'] . 'px ' . $result['br_tr'] . 'px ' . $result['br_br'] . 'px ';
+			$cssCode1 .= $result['br_bl'] . 'px';
+		}else{
+			$cssCode1 .= $result['br_all'] . 'px';
+		}
+
 		$result['border_width']=' ';
 		$text = '';
 		$text .= 'border-radius: ' . $cssCode1 .';';
@@ -140,10 +57,15 @@ if( !function_exists( 'generateBorderCss' ) ){
 		$text .= 'border-style: ' . $result['style'] . ';';
 		$text .= 'border-color: ' . $result['color'] . ';';
 		$text .= 'border-width: ' . $result['border_width'] . 'px;';
-		$text .= 'border-top-width:'. $result['bw_t'] .'px;';
-	    $text .= 'border-left-width:'. $result['bw_l'] .'px;';
-	    $text .= 'border-right-width:'. $result['bw_r'] .'px;';
-	    $text .= 'border-bottom-width:'. $result['bw_b'] .'px;';
+
+		if( $result['bw_type'] == 1 ) {
+			$text .= 'border-top-width:'. $result['bw_t'] .'px;';
+		    $text .= 'border-left-width:'. $result['bw_l'] .'px;';
+		    $text .= 'border-right-width:'. $result['bw_r'] .'px;';
+		    $text .= 'border-bottom-width:'. $result['bw_b'] .'px;';
+		} else {
+			$text .= 'border-width:'. $result['bw_all'] .'px;';
+		}
 
 		return $text;
 	}
@@ -328,14 +250,20 @@ if( !function_exists( "cp_add_css" ) ){
  * @since 0.1.5
  */
 if( !function_exists( "cp_get_slidein_image_url_init" ) ){
-	function cp_get_slidein_image_url_init( $slidein_image = '' ) {
-		if (strpos($slidein_image,'http') !== false) {
-			$slidein_image = explode( '|', $slidein_image );
-			$slidein_image = $slidein_image[0];
+	function cp_get_slidein_image_url_init( $a = '' ) {
+		if( $a['slidein_img_src'] == 'custom_url' ) {
+			$slidein_image = $a['slidein_img_custom_url'];
+		} else if( $a['slidein_img_src'] == 'upload_img' ) {
+			if ( strpos($a['slidein_image'],'http') !== false ) {
+				$slidein_image = explode( '|', $a['slidein_image'] );
+				$slidein_image = $slidein_image[0];
+			} else {
+				$slidein_image = apply_filters('cp_get_wp_image_url', $a['slidein_image'] );
+		   	}
 		} else {
-			$slidein_image = apply_filters('cp_get_wp_image_url', $slidein_image );
+			$slidein_image = '';
 		}
-		return $slidein_image;
+	   	return $slidein_image;
 	}
 }
 add_filter( 'cp_get_slidein_image_url', 'cp_get_slidein_image_url_init' );
@@ -365,7 +293,7 @@ add_filter( 'cp_get_wp_image_url', 'cp_get_wp_image_url_init' );
 add_filter( 'cp_get_custom_class', 'cp_get_custom_class_init' );
 if( !function_exists( "cp_get_custom_class_init" ) ) {
 	function cp_get_custom_class_init( $enable_custom_class = 0, $custom_class, $style_id ) {
-	
+
 		$custom_class = $custom_class;
 		$custom_class  = str_replace( " ", "", trim( $custom_class ) );
 		$custom_class  = str_replace( ",", " ", trim( $custom_class ) );
@@ -549,13 +477,15 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 		$a['image_resp_width'] = '768';
 
 		//	Enqueue detect device
-		if( $a['hide_on_device'] ) {
+		if( isset( $a['hide_on_device'] ) && $a['hide_on_device'] ) {
 			cp_enqueue_detect_device( $a['hide_on_device'] );
 		}
 
+		$hide_from = isset( $a['hide_from'] ) ? $a['hide_from'] : '';
+
 		// check referrer detection
 		$referrer_check = ( isset( $a['enable_referrer'] ) && (int)$a['enable_referrer'] ) ? 'display' : 'hide';
-		$referrer_domain = ( $referrer_check == 'display' ) ? $a['display_to'] : $a['hide_from'];
+		$referrer_domain = ( $referrer_check == 'display' ) ? $a['display_to'] : $hide_from;
 
 		if( $referrer_check !== '' ){
 			$referrer_data = 'data-referrer-domain="'.$referrer_domain.'"';
@@ -564,20 +494,20 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 			$referrer_data = "";
 		}
 
-		//	Enqueue Google Fonts
-		cp_enqueue_google_fonts( $a['cp_google_fonts'] );
+		//	Enqueue Google Fonts\
+		if( isset( $a['cp_google_fonts'] ) ){
+			cp_enqueue_google_fonts( $a['cp_google_fonts'] );
+		}
 
 		$bg_repeat = $bg_pos = $bg_size = $bg_setting = "";
-		if( strpos( $a['opt_bg'], "|" ) !== false ){
+		if( isset($a['opt_bg']) && strpos( $a['opt_bg'], "|" ) !== false ){
 			$opt_bg      = explode( "|", $a['opt_bg'] );
 			$bg_repeat   = $opt_bg[0];
 			$bg_pos      = $opt_bg[1];
 			$bg_size     = $opt_bg[2];
-			if( $a['slidein_bg_image'] !== '' ){
-				$bg_setting .= 'background-repeat: '.$bg_repeat.';';
-				$bg_setting .= 'background-position: '.$bg_pos.';';
-				$bg_setting .= 'background-size: '.$bg_size.';';
-			}
+			$bg_setting .= 'background-repeat: '.$bg_repeat.';';
+			$bg_setting .= 'background-position: '.$bg_pos.';';
+			$bg_setting .= 'background-size: '.$bg_size.';';
 		}
 
 		//	Time Zone
@@ -603,88 +533,107 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 
 		//	SlideIn - Padding
 		$el_class = '';
+		if( isset($a['style'])&& $a['style'] =='floating_social_bar' ){
+			$a['content_padding'] = 1 ;
+			if( $a['slidein_position'] == 'center-left' ){
+				$a['overlay_effect'] = 'smile-slideInLeft';
+				$a['exit_animation'] = 'smile-slideOutLeft';
+			}else{
+				$a['overlay_effect'] = 'smile-slideInRight';
+				$a['exit_animation'] = 'smile-slideOutRight';
+			}
+		}
+
 		if( isset( $a['content_padding'] ) && !empty( $a['content_padding'] ) ) {
 			$el_class .= ' no-padding ';
 		}
 
 		//	SlideIn - Background Image & Background Color
-		$slidein_bg_image = $customcss  = $windowcss = $inset = $css_style = '';
+		$slide_in_bg_image = $customcss  = $windowcss = $inset = $css_style = '';
 		$slidein_bg_color = ( isset( $a['slidein_bg_color'] ) ) ? $a['slidein_bg_color'] : '';
 
-		if( isset( $a['slidein_bg_image'] ) && !empty( $a['slidein_bg_image'] ) ) {
-			$slidein_bg_image = apply_filters('cp_get_wp_image_url', $a['slidein_bg_image'] );
+		if( !isset( $a['slide_in_bg_image_src']) ) {
+			$a['slide_in_bg_image_src'] = 'upload_img';
 		}
-	
+
+		if( $a['slide_in_bg_image_src'] == 'upload_img' ) {
+			if( isset( $a['slide_in_bg_image'] ) && !empty( $a['slide_in_bg_image'] ) ) {
+				$slide_in_bg_image = apply_filters('cp_get_wp_image_url', $a['slide_in_bg_image'] );
+			}
+		} else if( $a['slide_in_bg_image_src'] == 'custom_url' ) {
+			$slide_in_bg_image = $a['slide_in_bg_image_custom_url'];
+		}
+
 		//	Variables
 		$uid = ( isset($a['uid']) && '' != $a['uid'] ) ? $a['uid'] : '';
-		
+
 		/**
 		 * 	Background - (Background Color / Gradient)
 		 *
 		 */
 		$slide_bg_style = '';
-		if( $a['slidein_bg_gradient'] != '' && $a['slidein_bg_gradient'] == '1' ) {
-
+		$slidein_bg_color = isset( $a['slidein_bg_color'] ) ? $a['slidein_bg_color'] : '';
+		if( isset( $a['slidein_bg_gradient'] ) && $a['slidein_bg_gradient'] != '' && $a['slidein_bg_gradient'] == '1' ) {
 			$slide_bg_style .= '.slidein-overlay.content-'.$uid.' .cp-slidein-body-overlay {
-						     background: -webkit-linear-gradient(' . $a['slidein_bg_gradient_lighten'] . ', ' . $a['slidein_bg_color'] . ');
-						     background: -o-linear-gradient(' . $a['slidein_bg_gradient_lighten'] . ', ' . $a['slidein_bg_color'] . ');
-						     background: -moz-linear-gradient(' . $a['slidein_bg_gradient_lighten'] . ', ' . $a['slidein_bg_color'] . ');
-						     background: linear-gradient(' . $a['slidein_bg_gradient_lighten'] . ', ' . $a['slidein_bg_color'] . ');
+						     background: -webkit-linear-gradient(' . $a['slidein_bg_gradient_lighten'] . ', ' . $slidein_bg_color . ');
+						     background: -o-linear-gradient(' . $a['slidein_bg_gradient_lighten'] . ', ' . $slidein_bg_color . ');
+						     background: -moz-linear-gradient(' . $a['slidein_bg_gradient_lighten'] . ', ' . $slidein_bg_color . ');
+						     background: linear-gradient(' . $a['slidein_bg_gradient_lighten'] . ', ' . $slidein_bg_color . ');
 						}';
 		} else {
-
+			if(isset($a['slidein_bg_color'] )){
 			$slide_bg_style .= '.slidein-overlay.content-'.$uid.' .cp-slidein-body-overlay {
-							background: ' . $a['slidein_bg_color'] . ';
+							background: ' . $slidein_bg_color . ';
 						}';
+			}
 		}
 
 		echo '<style class="cp-slidebg-color" type="text/css">'.$slide_bg_style.'</style>';
 
 
-		$windowcss .= 'background-image:url(' . $slidein_bg_image . ');' .$bg_setting .';';
+		$windowcss .= 'background-image:url(' . $slide_in_bg_image . ');' .$bg_setting .';';
 
-		if( $slidein_bg_image !== '' ){
-			$customcss .= 'background-image:url(' . $slidein_bg_image . ');' .$bg_setting .';';
-			$windowcss .= 'background-image:url(' . $slidein_bg_image . ');' .$bg_setting .';';
+		if( $slide_in_bg_image !== '' ){
+			$customcss .= 'background-image:url(' . $slide_in_bg_image . ');' .$bg_setting .';';
+			$windowcss .= 'background-image:url(' . $slide_in_bg_image . ');' .$bg_setting .';';
 		}
 
 		//	SlideIn - Box Shadow
-		$box_shadow_str = generateBoxShadow($a['box_shadow']);
-		if ( strpos( $box_shadow_str,'inset' ) !== false ) {
-			$inset 	.= $box_shadow_str.';';
-			$inset 	.= "opacity:1";
-		} else {
-			$css_style 	.= $box_shadow_str;
+		if( isset($a['box_shadow']) && $a['box_shadow'] !='' ) {
+			$box_shadow_str = generateBoxShadow($a['box_shadow']);
+			if ( strpos( $box_shadow_str,'inset' ) !== false ) {
+				$inset 	.= $box_shadow_str.';';
+				$inset 	.= "opacity:1";
+			} else {
+				$css_style 	.= $box_shadow_str;
+			}
 		}
-
 		$close_html = $slidein_size_style = $close_class = '';
 
 		//	Check 'has_content_border' is set for that style and add border to slidein content (optional)
 		//	This option is style dependent - Developer will disable it by adding this variable
 		if( !isset( $a['has_content_border'] ) || ( isset( $a['has_content_border'] ) && $a['has_content_border'] ) ) {
-			$css_style .= generateBorderCss($a['border']);
+			if( isset($a['border']) && $a['border'] !=''){
+				$css_style .= generateBorderCss($a['border']);
+			}
 		}
 
 		$slide_in_ht = isset( $a['cp_slidein_height'] ) ? $a['cp_slidein_height'] : '';
 		$slidein_size_style .= cp_add_css('height', $slide_in_ht );
-		$slidein_size_style .= cp_add_css('max-width', $a['cp_slidein_width'], 'px');
+
+		if( isset($a['cp_slidein_width']) ){
+			$slidein_size_style .= cp_add_css('max-width', $a['cp_slidein_width'], 'px');
+		}
 		//$slidein_size_style .= cp_add_css('width', '100', '%');
+
 		$windowcss = '';
 
 		//	{START} - SAME FOR BEFORE & AFTER NEED TO CREATE FUNCTION IT's TEMP
 		$close_img_class = $close_img = '';
-		if( isset($a['close_img'] ) && !empty($a['close_img']) ) {
-			if (strpos($a['close_img'],'http') !== false) {
-				$close_img = $a['close_img'];
-				if ( strpos($close_img, '|') !== FALSE ) {
-					$close_img = explode( '|', $close_img );
-					$close_img = $close_img[0];
-				}
-				$close_img_class = 'cp-default-close';
-			} else {
-				$close_img = apply_filters('cp_get_wp_image_url', $a['close_img'] );
-			}
-		}
+		$close_img_prop = cp_si_close_image_setup( $a );
+
+		$close_img = $close_img_prop['close_img'];
+		$close_img_class = $close_img_prop['close_img_class'];
 
 		if( isset($a['close_slidein']) && $a['close_slidein'] == "close_txt" ) {
 			$close_html = '<span style="color:'.$a['close_text_color'].'">'.$a['close_txt'].'</span>';
@@ -776,17 +725,22 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 			if( isset( $a['side_btn_border_radius'] ) && $a['side_btn_border_radius'] != '' ) {
 				$slideradius .= 'border-radius: ' . $a['side_btn_border_radius'] .'px;';
 			}
-			//side_btn_gradient
+			//slide_btn_gradient
 			$side_btn_style = $slidelight = $slidebutton_class = '';
 
-			if( isset( $a['side_button_bg_color'] ) && $a['side_button_bg_color'] !== '' ) {
-				$slidec_normal 	= $a['side_button_bg_color'];
+			if( isset( $a['slide_button_bg_color'] ) && $a['slide_button_bg_color'] !== '' ) {
+				$slidec_normal 	= $a['slide_button_bg_color'];
 				$slidec_hover  	= $a['side_button_bg_hover_color'];
 				$slidelight 	= $a['side_button_bg_gradient_color'];
+
 				$slidetext_color = $a['slide_button_text_color'];
+				if(isset($a['side_btn_gradient'])){
+					$a['slide_btn_gradient'] = $a['side_btn_gradient'];
+				}
 
 				$a['side_btn_style'] = '';
-				if( $a['side_btn_gradient'] == '1'){
+
+				if( isset( $a['slide_btn_gradient'] ) && $a['slide_btn_gradient'] == '1' ) {
 					$a['side_btn_style'] = 'cp-btn-gradient';
 				}else{
 					$a['side_btn_style'] = 'cp-btn-flat';
@@ -817,7 +771,7 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 
 		//	Append - Slide In - Toggle CSS
 		$font = 'sans-serif';
-		if( isset( $a['toggle_button_font'] ) && $a['toggle_button_font'] == '1' ) {
+		if( isset( $a['toggle_button_font'] ) ) {
 			$font = $a['toggle_button_font'] . ',' . $font;
 		}
 		$side_btn_style .=  '.cp-slide-edit-btn {
@@ -836,7 +790,7 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 		}
 
 		if( ( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == 0 ) && ( isset( $a['close_slidein'] )  && $a['close_slidein'] != 'do_not_close' ) ) {
-			$slide_toggle_class = 'cp-slide-without-toggle';	
+			$slide_toggle_class = 'cp-slide-without-toggle';
 		}
 
 		if( $isInline ){
@@ -862,6 +816,11 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 
         $alwaysVisible = ( ( isset($a['toggle_btn']) && $a['toggle_btn'] == '1' ) && ( isset($a['toggle_btn_visible']) && $a['toggle_btn_visible']  == '1' ) ) ? 'data-toggle-visible=true' : '';
 
+        $slide_position ='';
+        if( !$isInline ) {
+        	$slide_position ='slidein-'.$a['slidein_position'];
+        }
+
 		ob_start();
 		if( !$isInline ){
 	?>
@@ -869,7 +828,7 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 <?php } ?>
 		<div class="cp-slidein-popup-container <?php echo esc_attr( $style_id ); ?> <?php echo $style_class. '-container'; ?>">
 			<div class="slidein-overlay <?php echo ( $isInline ) ? "cp-slidein-inline  " : "" ; ?><?php echo esc_attr( $slide_toggle_class ); echo ' content-'.$uid;?> <?php echo ' ' . $close_class ; ?>" data-placeholder-font="<?php echo $placeholder_font; ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" data-timezoneformat="<?php echo esc_attr($timezoneformat);?>" data-placeholder-color="<?php echo $placeholder_color; ?>" data-image-position="<?php echo $image_position ;?>" <?php echo $hide_image; ?>  <?php echo $overaly_setting;?> <?php echo $data_redirect;?>>
-				<div class="cp-slidein slidein-<?php echo esc_attr( $a['slidein_position'] ); ?>" style="<?php echo esc_attr( $slidein_size_style ); ?>">
+				<div class="cp-slidein <?php echo $slide_position; ?>" style="<?php echo esc_attr( $slidein_size_style ); ?>">
 					<div class="cp-animate-container <?php echo esc_attr( $toggleclass );?>" <?php echo $overaly_setting;?> data-exit-animation="<?php echo esc_attr( $exit_animation ); ?>">
 						<div class="cp-slidein-content" id="slide-in-animate-<?php echo esc_attr( $style_id ); ?>" style="<?php echo esc_attr( $css_style ); ?>;<?php echo esc_attr( $windowcss );?>">
 							<div class="cp-slidein-body <?php echo $style_class . ' ' . esc_attr( $el_class ); ?>" style="<?php echo esc_attr( $customcss );?>">
@@ -897,26 +856,22 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 
 		//	{START} - SAME FOR BEFORE & AFTER NEED TO CREATE FUNCTION IT's TEMP
 		$close_img_class = '';
-		if (  isset( $a['close_slidein'] ) && strpos( $a['close_img'], 'http' ) !== false ) {
-			$close_img = $a['close_img'];
-			if ( strpos($close_img, '|') !== FALSE ) {
-					$close_img = explode( '|', $close_img );
-					$close_img = $close_img[0];
-			}
-			$close_img_class = 'cp-default-close';
-		} else if( isset( $a['close_slidein'] ) ) {
-			$close_img = apply_filters('cp_get_wp_image_url', $a['close_img'] );
-		}
+
+		$close_img_prop = cp_si_close_image_setup( $a );
+
+		$close_img = $close_img_prop['close_img'];
+		$close_img_class = $close_img_prop['close_img_class'];
 
 		$close_html = $el_class = $slidein_size_style = $close_class = '';
-		if( $a['content_padding'] ) {
+
+		if( isset( $a['content_padding'] ) && $a['content_padding'] ) {
 			$el_class .= 'no-padding ';
 		}
 		$close_tooltip= $close_tooltip_end ='';
 		if( isset( $a['close_slidein'] ) && $a['close_slidein'] == "close_txt" ) {
 			$close_class .= 'cp-text-close';
 			if( $a['close_slidein_tooltip'] == 1 ) {
-				$close_tooltip ='<span class=" cp-close-tooltip cp-tooltip-icon has-tip cp-tipcontent-'.$a['style_id'].'data-classes="close-tip-content-'.$a['style_id'].'" data-position="left"  title="'. $a['tooltip_title'].'"  data-color="'.$a['tooltip_title_color'] .'" data-bgcolor="'.$a['tooltip_background'].'" data-closeid ="cp-tipcontent-'.$a['style_id'].'">';
+				$close_tooltip ='<span class=" cp-close-tooltip cp-tooltip-icon has-tip cp-tipcontent-'.$a['style_id'].'data-classes="close-tip-content-'.$a['style_id'].'" data-position="left"  title="'. $a['tooltip_title'].'"  data-color="'.$a['tooltip_title_color'] .'" data-bgcolor="'.$a['tooltip_background'].'" data-closeid ="cp-tipcontent-'.$a['style_id'].'" data-position="left" >';
 				$close_tooltip_end ='</span>';
 			}
 			$close_html = '<span style="color:'.$a['close_text_color'].'">'.$a['close_txt'].'</span>';
@@ -929,7 +884,7 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 		//	{END} - SAME FOR BEFORE & AFTER NEED TO CREATE FUNCTION IT's TEMP
 
 		/*-- tool tip -----*/
-		$tooltip_position = 'top';
+		$tooltip_position = 'left';
 
 		$tooltip_class = $tooltip_style = '';
 		if( isset( $a['close_slidein_tooltip'] ) && $a['close_slidein_tooltip'] == 1 ) {
@@ -938,21 +893,23 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 		}
 
 		/// Generate border radius for form processing
-		$pairs = explode( '|', $a['border'] );
-		$result = array();
-		foreach( $pairs as $pair ){
-			$pair = explode( ':', $pair );
-			$result[ $pair[0] ] = $pair[1];
-		}
+		$cssCode1 = '';	$formProcessCss = '';
+		if(isset( $a['border']) &&  $a['border']!=''){
+			$pairs = explode( '|', $a['border'] );
+			$result = array();
+			foreach( $pairs as $pair ){
+				$pair = explode( ':', $pair );
+				$result[ $pair[0] ] = $pair[1];
+			}
 
-		$cssCode1 = '';
-		$cssCode1 .= $result['br_tl'] . 'px ' . $result['br_tr'] . 'px ' . $result['br_br'] . 'px ';
-		$cssCode1 .= $result['br_bl'] . 'px';
-		$result['border_width'] = ' ';
-		$formProcessCss = '';
-		$formProcessCss .= 'border-radius: ' . $cssCode1 .';';
-		$formProcessCss .= '-moz-border-radius: ' . $cssCode1 .';';
-		$formProcessCss .= '-webkit-border-radius: ' . $cssCode1 .';';
+
+			$cssCode1 .= $result['br_tl'] . 'px ' . $result['br_tr'] . 'px ' . $result['br_br'] . 'px ';
+			$cssCode1 .= $result['br_bl'] . 'px';
+			$result['border_width'] = ' ';
+			$formProcessCss .= 'border-radius: ' . $cssCode1 .';';
+			$formProcessCss .= '-moz-border-radius: ' . $cssCode1 .';';
+			$formProcessCss .= '-webkit-border-radius: ' . $cssCode1 .';';
+		}
 
 		// check if inline display is set
 		$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
@@ -962,13 +919,12 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 		} else {
 			$slide_in_btn_class = 'cp-slide-hide-btn';
 		}
-		
+
 		?>
 							</div><!-- .cp-slidein-body -->
 							</div><!-- .cp-slidein-content -->
 
 							<?php if( isset( $a['form_layout'] ) &&  $a['form_layout'] != 'cp-form-layout-4' ) { ?>
-
 								<div class="cp-form-processing-wrap" style="<?php echo esc_attr($formProcessCss); ?>;">
 									<div class="cp-form-after-submit">
 										<div class ="cp-form-processing" style="">
@@ -1007,7 +963,7 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 
 
 					<?php if( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == 1 ) {
-						if( $a['side_btn_gradient'] == '1' ) {
+						if( $a['slide_btn_gradient'] == '1' ) {
 							$slidebutton_class = 'cp-btn-gradient';
 						} else {
 							$slidebutton_class = 'cp-btn-flat';
@@ -1023,10 +979,10 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 						}
 
 						$a['side_btn_style'] = '';
-						if( $a['side_btn_gradient'] == '1') {
+						if( $a['slide_btn_gradient'] == '1') {
 							$a['side_btn_style'] = 'cp-btn-gradient';
-						} else {	
-							$a['side_btn_style'] = 'cp-btn-flat';						
+						} else {
+							$a['side_btn_style'] = 'cp-btn-flat';
 						}
 
 						?>
@@ -1041,3 +997,44 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 	}
 }
 add_filter( 'cp_slidein_global_after', 'cp_slidein_global_after_init' );
+
+if( !function_exists('cp_si_close_image_setup') ) {
+
+	function cp_si_close_image_setup( $a ) {
+		$close_img = $close_img_class = '';
+
+		if ( !isset( $a['close_si_image_src'] ) ) {
+			$a['close_si_image_src'] = 'upload_img';
+		}
+
+		if ( isset( $a['close_si_image_src'] ) &&  $a['close_si_image_src'] == 'upload_img' ) {
+
+			if( isset($a['close_img'] ) && !empty($a['close_img']) ) {
+				if ( strpos($a['close_img'],'http') !== false ) {
+				    $close_img = $a['close_img'];
+				    if ( strpos($close_img, '|') !== FALSE ) {
+						$close_img = explode( '|', $close_img );
+						$close_img = $close_img[0];
+					}
+				    $close_img_class = 'cp-default-close';
+				} else {
+					$close_img = apply_filters('cp_get_wp_image_url', $a['close_img'] );
+				}
+			}
+		} else if ( isset( $a['close_si_image_src'] ) && $a['close_si_image_src'] == 'custom_url' ) {
+			$close_img = $a['slide_in_close_img_custom_url'];
+		}else if( $a['close_si_image_src'] == 'pre_icons' ) {
+			$icon_url = plugins_url( "../../assets/images",  __FILE__) . "/" .$a['close_icon']. ".png";
+			$close_img = $icon_url;
+		}
+
+
+		$close_img_prop = array (
+			"close_img" => $close_img,
+			"close_img_class" => $close_img_class
+			);
+
+		return $close_img_prop;
+
+	}
+}

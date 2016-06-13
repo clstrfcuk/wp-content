@@ -13,7 +13,7 @@
     $prev_styles = get_option('smile_info_bar_styles');
     $variant_tests = get_option('info_bar_variant_tests');
     $analyticsData = get_option('smile_style_analytics');
-    
+
     if(is_array($prev_styles)) {
       foreach($prev_styles as $key => $style){
         $impressions = 0;
@@ -24,8 +24,8 @@
         if(isset($style['multivariant'])) {
             $multivariant = true;
         }
-        
-        if( $variant_tests ) {  
+
+        if( $variant_tests ) {
           if ( array_key_exists($style_id,$variant_tests) && !empty($variant_tests[$style_id]) ) {
             $hasVariants = true;
           }
@@ -34,13 +34,13 @@
         $variants = array();
         $live = '0';
 
-        if($hasVariants) {            
+        if($hasVariants) {
             foreach ($variant_tests[$style_id] as $value) {
               $settings = unserialize($value['style_settings']);
               if( $settings['live'] == '1' )  {
                   $live = '1';
               }
-              $variants[] = $value['style_id'];     
+              $variants[] = $value['style_id'];
             }
 
             foreach ($variants as $value) {
@@ -50,16 +50,16 @@
                   }
                }
             }
-        } 
-          
+        }
+
         if(!$multivariant) {
           if(isset($analyticsData[$style_id])) {
             foreach ($analyticsData[$style_id] as $key1 => $value2) {
               $impressions = $impressions + $value2['impressions'];
             }
-          } 
-        }     
-        
+          }
+        }
+
         $style_settings = unserialize($prev_styles[$key]['style_settings']);
         if( isset( $style_settings['live'] ) && $style_settings['live'] == '1' )
             $live = '1';
@@ -69,13 +69,13 @@
         } else {
           $info_barStatus = ( isset( $style_settings['live'] ) ) ? $style_settings['live'] : '';
         }
-       
-        if( $info_barStatus == '2' )   
+
+        if( $info_barStatus == '2' )
           $status = '1';
-        else if( $info_barStatus == '1' ) 
+        else if( $info_barStatus == '1' )
           $status = '2';
-        else 
-          $status = '0'; 
+        else
+          $status = '0';
 
         $prev_styles[$key]['info_barStatus'] = intval($info_barStatus);
         $prev_styles[$key]['status'] = intval($status);
@@ -89,8 +89,8 @@
    $links      = ( isset( $_GET['links'] ) ) ? $_GET['links'] : 1;
    $orderby    = ( isset( $_GET['orderby'] ) ) ? $_GET['orderby'] : false;
    $order      = ( isset( $_GET['order'] ) ) ? $_GET['order'] : false;
-   $total      = count($prev_styles);   
-   $maintainKeys = false;  
+   $total      = count($prev_styles);
+   $maintainKeys = false;
 
    if( isset( $_POST['sq'] ) ) {
       $searchKey =  esc_attr($_POST['sq']);
@@ -98,33 +98,33 @@
       echo "<script>
       window.location.href= '$redirectString';
       </script>";
-   } else { 
+   } else {
       $searchKey = '';
-   } 
+   }
 
-    if ( isset( $_GET['order'] )  && $_GET['order']  == 'asc' ) 
+    if ( isset( $_GET['order'] )  && $_GET['order']  == 'asc' )
       $orderLink = "order=desc";
-    else 
-      $orderLink = "order=asc"; 
+    else
+      $orderLink = "order=asc";
 
-    $sortingStyleNameClass = $sortinglistImpClass =  $sortingStatusClass = "sorting"; 
+    $sortingStyleNameClass = $sortinglistImpClass =  $sortingStatusClass = "sorting";
 
-    // define sorting class 
+    // define sorting class
     if ( isset( $_GET['orderby'] ) ) {
       switch( $_GET['orderby'] ) {
-        case "style_name" : 
+        case "style_name" :
           $sortingStyleNameClass  = 'sorting-'.$_GET['order'];
-        break; 
-        case "impressions" : 
+        break;
+        case "impressions" :
           $sortinglistImpClass = 'sorting-'.$_GET['order'];
-        break; 
-        case "status" : 
+        break;
+        case "status" :
           $sortingStatusClass = 'sorting-'.$_GET['order'];
         break;
       }
-    } 
+    }
 
-   if( isset($_GET['sq']) && !empty($_GET['sq']) ) 
+   if( isset($_GET['sq']) && !empty($_GET['sq']) )
       $sq = $_GET['sq'];
    else
       $sq = $searchKey;
@@ -132,12 +132,12 @@
    if( isset( $_POST['sq'] ) && $_POST['sq'] == '' )
        $sq = '';
 
-   $searchInParams = array('style_name');
+   $searchInParams = array('style_name','style_id');
 
-   if ($prev_styles) {      
+   if ($prev_styles) {
       $Paginator = new Paginator( $prev_styles );
       $result = $Paginator->getData( $limit , $page ,$orderby, $order , $sq, $searchInParams, $maintainKeys );
-      $prev_styles = $result->data;   
+      $prev_styles = $result->data;
    }
 
 ?>
@@ -169,7 +169,7 @@
       <div class="message"></div>
    </div>
    <!-- bend-heading-section -->
-  
+
    <div class="bend-content-wrap" style="margin-top: 40px;">
       <hr class="bsf-extensions-lists-separator" style="margin: 22px 0px 30px 0px;">
       </hr>
@@ -188,13 +188,13 @@
                    <?php _e( "Impressions", "smile" ); ?></a></th>
                  <th scope="col" id="status" class="manage-column column-status <?php echo $sortingStatusClass; ?>"><a href="?page=smile-info_bar-designer&orderby=status&<?php echo $orderLink; ?>&sq=<?php echo $searchKey; ?>&cont-page=<?php echo $page; ?>">
                  <span class="connects-icon-toggle"></span>
-                   <?php _e( "Status", "smile" ); ?></a></th>   
+                   <?php _e( "Status", "smile" ); ?></a></th>
                  <th scope="col" id="actions" class="manage-column column-actions" style="min-width: 300px;"><span class="connects-icon-cog"></span>
                    <?php _e( "Actions", "smile" ); ?></th>
                </tr>
             </thead>
             <tbody id="the-list" class="smile-style-data">
-            <?php 
+            <?php
 
             if(is_array($prev_styles) && !empty($prev_styles)){
                foreach($prev_styles as $key => $style){
@@ -203,11 +203,11 @@
                   $impressions = $style['impressions'];
                   $variants = array();
                   $hasVariants = false;
-                  if( $variant_tests ) {  
+                  if( $variant_tests ) {
                      if ( array_key_exists($style_id,$variant_tests) && !empty($variant_tests[$style_id]) ) {
                         $hasVariants = true;
-                        foreach ($variant_tests[$style_id] as $value) {                         
-                          $variants[] = $value['style_id'];     
+                        foreach ($variant_tests[$style_id] as $value) {
+                          $variants[] = $value['style_id'];
                         }
                      }
                   }
@@ -227,46 +227,32 @@
       			      }
   			         $export = $style;
   			         $export['style_settings'] = $exp_settings;
-			
+
                   $theme = $style_settings['style'];
                   $multivariant = isset($style['multivariant']) ? true : false;
                   $live = isset( $style['info_barStatus'] ) ? (int)$style['info_barStatus'] : '';
                   $isScheduled = false;
                   $status = '';
 
-                  if($hasVariants) {
+                  if( $hasVariants ) {
                     $status .= "<a href=?page=smile-info_bar-designer&style-view=variant&variant-style=".urlencode( $style_id )."&style=".urlencode( stripslashes($style_name ) )."&theme=".urlencode( $theme ).">";
                   } else {
                     $status .= '<span class="change-status">';
                   }
 
-                  if( $live == 1) {                        
+                  if( $live == 1) {
                      $status .=  '<span data-live="1" class="cp-status cp-main-variant-status"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></span>';
                   } elseif( $live == 0 ){
                      $status .= '<span data-live="0" class="cp-status cp-main-variant-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
                   } else {
-                     $scheduleData = unserialize($style['style_settings']);
-                     if( isset($scheduleData['schedule']) ) {
-                        $scheduledArray = $scheduleData['schedule'];
-                        if( is_array($scheduledArray) ) {
-                           $startDate = date("j M Y ",strtotime($scheduledArray['start']));
-                           $endDate = date("j M Y ",strtotime($scheduledArray['end']));
-                           $first = date('j-M-Y (h:i A) ', strtotime($scheduledArray['start']));
-                           $second = date('j-M-Y (h:i A) ', strtotime($scheduledArray['end']));
-                           $title = "Scheduled From ".$first." To ".$second;
-                        }    
-                     } else {
-                        $title = '';  
-                     }
-
-                     $status .= '<span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span title="'.$title.'">'.__( "Scheduled", "smile" ).'</span></span>';
+                     $status .= cp_generate_scheduled_info($style['style_settings']);
                   }
 
                   if($hasVariants) {
                     $status .= "</a>";
                   }
 
-                  if(!$hasVariants) {           
+                  if(!$hasVariants) {
                     $status .= '<ul class="manage-column-menu">';
             				  if( $live !== 1 && $live !== "1" ) {
                         $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-live="1" data-option="smile_info_bar_styles"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></a></li>';
@@ -282,60 +268,60 @@
                   $status .= '</span>';
             ?>
             <tr id="<?php echo $key; ?>" class="ui-sortable-handle <?php if($hasVariants) { echo 'cp-variant-exist'; } ?>">
-               <?php if( $multivariant || $hasVariants ) { ?>  
+               <?php if( $multivariant || $hasVariants ) { ?>
                   <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( $style_name ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><?php echo "Variants of ".urldecode($style_name); ?> </a></td>
-               <?php  } else { ?>    
+               <?php  } else { ?>
                   <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><?php echo urldecode($style_name); ?> </a></td>
-                  <?php } ?>  
+                  <?php } ?>
                   <td class="column-impressions"><?php echo $impressions; ?></td>
                   <td class="column-status"><?php echo $status; ?></td>
                   <td class="actions column-actions">
                    <a class="action-list" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_info_bar_styles" href="?page=smile-info_bar-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( stripslashes($style_name ) ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><i class="connects-icon-share"></i><span class="action-tooltip">
                    <?php if($hasVariants) { ?>
                       <?php _e( "See Variants", "smile" ); ?>
-                   <?php } else { ?>   
+                   <?php } else { ?>
                       <?php _e( "Create Variant", "smile" ); ?>
-                   <?php } ?>   
-                   </span></a> 
+                   <?php } ?>
+                   </span></a>
                    <?php if(!$hasVariants) { ?>
                      <a class="action-list copy-style-icon" data-style="<?php echo urlencode( $style_id ); ?>" data-module="info_bar" data-option="smile_info_bar_styles" style="margin-left: 25px;" href="#"><i class="connects-icon-paper-stack" style="font-size: 20px;"></i><span class="action-tooltip">
                      <?php _e( "Duplicate Info bar", "smile" ); ?>
                      </span></a>
                    <?php } ?>
-                   <?php 
+                   <?php
                     if($hasVariants)  {
-                        $styleForAnalytics = implode("||",$variants); 
+                        $styleForAnalytics = implode("||",$variants);
                         if(!$multivariant) {
                           $styleForAnalytics .= "||".$style_id;
-                        }  
+                        }
                         $styleArr = explode("||",$styleForAnalytics);
                         if( count($styleArr) > 1 )
                             $compFactor = 'imp';
                         else
-                            $compFactor = 'impVsconv';   
-                    }  else { 
-                       $styleForAnalytics = $style_id; 
+                            $compFactor = 'impVsconv';
+                    }  else {
+                       $styleForAnalytics = $style_id;
                        $compFactor = 'impVsconv';
-                    }   
+                    }
                     ?>
                     <a class="action-list" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_info_bar_styles" style="margin-left: 25px;" href="?page=smile-info_bar-designer&style-view=analytics&compFactor=<?php echo $compFactor; ?>&style=<?php echo urlencode( $styleForAnalytics ); ?>"><i class="connects-icon-bar-graph-2"></i><span class="action-tooltip">
                    <?php _e( "View Analytics", "smile" ); ?>
-                   </span></a>                  
+                   </span></a>
                    <a class="action-list cp-export" style="margin-left: 25px;" href="<?php echo plugins_url('download.php?style_id='.urlencode( $style_id ).'&style_name='.urldecode( $style_name ),__FILE__); ?>" target="_top" data="text/txt;charset=utf-8,<?php echo esc_attr( json_encode( $export ) ); ?>" data-download="<?php echo 'cp_info_bar_style-'.esc_attr( $style_name ); ?>.txt"><i class="connects-icon-download"></i><span class="action-tooltip">
                    <?php _e( "Export Settings", "smile" ); ?>
-                    <?php 
-                    if( !$multivariant && !$hasVariants ) { 
-                        echo apply_filters( 'cp_before_delete_action', $style_settings , 'info_bar' ); 
+                    <?php
+                    if( !$multivariant && !$hasVariants ) {
+                        echo apply_filters( 'cp_before_delete_action', $style_settings , 'info_bar' );
                     }
-                   ?> 
+                   ?>
                    </span></a> <a class="action-list trash-style-icon" data-delete="hard" data-variantoption="info_bar_variant_tests" data-style="<?php echo urlencode( $style_id ); ?>" data-option="smile_info_bar_styles" style="margin-left: 25px;" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip">
                    <?php _e( "Delete Info Bar", "smile" ); ?>
-                   </span></a>                               
+                   </span></a>
                    </td>
             </tr>
-            <?php 
+            <?php
 
-          } 
+          }
         } else {
           ?>
             <tr>
@@ -344,12 +330,12 @@
                   <?php _e( "Back to Info Bar list", "smile" ); ?>
                   </a>
                 </th>
-              <?php } else { ?> 
+              <?php } else { ?>
                 <th scope="col" colspan="4" class="manage-column cp-list-empty cp-empty-graphic"><?php echo __( 'First time being here?', 'smile' ); ?><br> <a class="add-new-h2" href="?page=smile-info_bar-designer&style-view=new" title="<?php _e( "Create New Info Bar", "smile" ); ?>">
                   <?php _e( "Awesome! Let's start with your first info bar", "smile" ); ?>
                   </a>
                 </th>
-              <?php } ?>  
+              <?php } ?>
             </tr>
             <?php
         }
@@ -363,26 +349,26 @@
             <div class="col-sm-6">
               <a class="button-primary cp-add-new-style-bottom" href="?page=smile-info_bar-designer&style-view=new" title="<?php _e( "Create New Info Bar", "smile" ); ?>">
                 <?php _e( "Create New Info Bar", "smile" ); ?>
-              </a> 
+              </a>
               <a class="button-primary cp-style-analytics-bottom" href="?page=smile-info_bar-designer&style-view=analytics" title="<?php _e( "Analytics", "smile" ); ?>">
                 <?php _e( "Analytics", "smile" ); ?>
-              </a> 
+              </a>
             </div><!-- .col-sm-6 -->
             <div class="col-sm-6">
-              <?php 
+              <?php
                   if( $total > $limit ) {
                     $basePageLink = '?page=smile-info_bar-designer';
-                    echo $Paginator->createLinks( $links, 'pagination bsf-cnt-pagi', '' , $sq, $basePageLink ); 
-                  }  
+                    echo $Paginator->createLinks( $links, 'pagination bsf-cnt-pagi', '' , $sq, $basePageLink );
+                  }
               ?>
             </div><!-- .col-sm-6 -->
           </div><!-- .container -->
         </div><!-- .row -->
 
       </div>
-      <!-- #smile-stored-styles --> 
+      <!-- #smile-stored-styles -->
     </div>
-    <!-- .container --> 
+    <!-- .container -->
 
     <!-- Pagination & Search -->
     <div class="row">
@@ -394,21 +380,21 @@
               <label class="screen-reader-text" for="post-search-input"><?php _e( "Search Contacts", "smile" ); ?>:</label>
               <input type="search" id="post-search-input" name="sq" value="<?php echo esc_attr($sq ); ?>">
               <input type="submit" id="search-submit" class="button" value="Search">
-            </form> 
+            </form>
           </p>
           <?php } ?>
         </div><!-- .col-sm-6 -->
         <div class="col-sm-6">
-          
+
         </div><!-- .col-sm-6 -->
       </div><!-- .container -->
     </div><!-- .row -->
 
   </div>
-  <!-- .bend-content-wrap --> 
+  <!-- .bend-content-wrap -->
 </div>
 <!-- .wrap-container -->
-<?php  
+<?php
     $timezone = '';
     $timezone_settings = get_option('convert_plug_settings');
 
@@ -421,7 +407,7 @@
         $timezone = "wordpress";
     }
 
-    $date = current_time( 'm/d/Y h:i A'); 
+    $date = current_time( 'm/d/Y h:i A');
     echo' <input type="hidden" id="cp_timezone_name" class="form-control cp_timezone" value="'.esc_attr($timezone).'" />';
     echo' <input type="hidden" id="cp_currenttime" class="form-control cp_currenttime" value="'.esc_attr($date).'" />';
 
@@ -450,7 +436,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <div class="input-group date">
-                <input type="text" id="cp_start_time" class="form-control cp_start" value="" /> 
+                <input type="text" id="cp_start_time" class="form-control cp_start" value="" />
                 <span class="input-group-addon"><span class="connects-icon-clock"></span></span> </div>
             </div>
           </div>
@@ -467,12 +453,12 @@
                 <input type="text" id="cp_end_time" class="form-control cp_end" value=" "/>
                 <span class="input-group-addon"><span class="connects-icon-clock"></span></span> </div>
             </div>
-            <!-- form-group --> 
+            <!-- form-group -->
           </div>
         </div>
-        <!-- cp-end-time --> 
+        <!-- cp-end-time -->
       </div>
-      <!-- scheduler-container --> 
+      <!-- scheduler-container -->
     </div>
     <!-- cp-row -->
     <div class="cp-row">
@@ -487,7 +473,7 @@
         </div>
       </div>
     </div>
-    <!-- cp-row --> 
+    <!-- cp-row -->
   </div>
   <!-- .cp-schedular-popup -->
 </div>
@@ -544,9 +530,9 @@
 <script type="text/javascript">
 
    jQuery(document).ready(function(){
-     
+
       var colImpressions = jQuery('.column-impressions').outerHeight();
-     
+
       jQuery("span.change-status").css({
          'height' : colImpressions+"px",
          'line-height' : colImpressions+"px"
@@ -554,16 +540,16 @@
 
       var timestring = '';
       timestring = jQuery(".cp_timezone").val();
-     
+
       var currenttime = '';
-      if( timestring == 'system' ){      
+      if( timestring == 'system' ){
          currenttime = new Date();
-      }else {        
+      }else {
          currenttime = jQuery(".cp_currenttime").val();
       }
       //convert date to jquery date format
-       var date2 = new Date(currenttime);   
-           date2 = new Date(date2.getTime() + 1*60000);  
+       var date2 = new Date(currenttime);
+           date2 = new Date(date2.getTime() + 1*60000);
 
       jQuery('#cp_start_time').datetimepicker({
              sideBySide: true,
@@ -578,11 +564,11 @@
                today: 'dashicons dashicons-screenoptions',
                clear: 'dashicons dashicons-trash',
              },
-      }); 
-      jQuery("#cp_start_time").on("dp.change", function (e) {          
+      });
+      jQuery("#cp_start_time").on("dp.change", function (e) {
           jQuery('#cp_end_time').data("DateTimePicker").minDate(e.date);
         });
-     
+
       jQuery('#cp_end_time').datetimepicker({
              sideBySide: true,
              minDate: currenttime,
@@ -600,8 +586,8 @@
 
       if( jQuery('.bsf-contact-list-top-search').hasClass('bsf-cntlist-top-search-act') )  {
          jQuery('.bsf-cntlst-top-search-input').focus().trigger('click');
-      }   
-     
+      }
+
    });
 
    jQuery(document).on("focus",'.bsf-cntlst-top-search-input', function(){

@@ -5,15 +5,13 @@
 require_once('functions/functions.options.php');
 
 $style = $_GET['style'];
+$settings_method = $_GET['method'];
+$template_name = $_GET['temp_name'];
+
 $options = Smile_Info_Bars::$options;
 $style_options = $options[$style]['options'];
-$settings = array();
-$settings['style'] = 'preview';
-foreach( $style_options as $key => $value ) {
-	$settings[$value['name']] = $value['opts']['value'];
-}
-$settings['affiliate_setting'] = false;
-$settings_encoded = base64_encode( serialize( $settings ) );
+
+$settings_encoded = cp_get_live_preview_settings( 'info_bar', $settings_method, $style_options, $template_name );
 
 echo '<style type="text/css">
 	.cp-overlay {
@@ -38,7 +36,6 @@ jQuery(document).ready(function(e) {
 	jQuery("#TB_ajaxContent").appendTo("body");
     jQuery(".cp-info-bar-container").css({"position":"fixed","z-index":9999999});
 	jQuery("body").on("click",".ib-close, .cp-overlay", function(){
-		console.log('clicked');
 		jQuery(".cp-info-bar").removeClass("ib-display");
 		jQuery("#TB_ajaxContent").remove();
 		jQuery("#TB_overlay").trigger("click");
@@ -50,7 +47,7 @@ jQuery(document).ready(function(e) {
 	});
 });
 jQuery(document).ready(function(){
-	jQuery(document).bind('keydown', function(e) { 
+	jQuery(document).bind('keydown', function(e) {
 		if (e.which == 27) {
 			var cp_overlay = jQuery(".ib-display");
 			var info_bar = cp_overlay;

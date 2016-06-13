@@ -45,8 +45,8 @@ CKEDITOR.editorConfig = function( config ) {
     config.shiftEnterMode           =   CKEDITOR.ENTER_BR;
     config.allowedContent           =   true;
     config.extraAllowedContent      =   'div(*)';
-    //config.extraPlugins           =   'pastetext,youtube,convertplug'; //   Other s- imageresize, dragresize
-    config.extraPlugins             =   'youtube,sourcedialog,cp_line_height'; //   Other s- imageresize, dragresize
+    //config.extraPlugins           =   'youtube,pastetext,youtube,convertplug'; //   Other s- imageresize, dragresize
+    config.extraPlugins             =   'sourcedialog,cp_line_height'; //   Other s- imageresize, dragresize
 
     //  Remove Magic Line
     // config.magicline_everywhere = false;
@@ -76,8 +76,9 @@ CKEDITOR.editorConfig = function( config ) {
 
     // Problem with apostrophe ( ' ) symbol
     // https://www.drupal.org/node/803562#comment-2988196
-    config.htmlEncodeOutput = false;
+    config.htmlEncodeOutput = true;
     config.entities = false;
+    config.fillEmptyBlocks = false;
 
     /** = Skin
      *-----------------------------------------------------------*/

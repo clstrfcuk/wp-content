@@ -61,7 +61,9 @@
     color: #fff;
     line-height: 1.25em;
 }
-
+.cp-instant-coupon-container .cp-overlay-close span{
+        font-family: "Roboto",serif;
+}
 .cp-instant-coupon .cp-short-description {
     display: block;
     width: 100%;
@@ -118,7 +120,7 @@
     line-height: 1em;
     outline: none;
     margin-top: 5px;
-    border-radius: 0px;
+    /* border-radius: 0px; */
     margin-right: 0px;
 }
 

@@ -28,6 +28,11 @@ function color_picker_settings_field($name, $settings, $value)
 	$input_name = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
-	$output = '<p><input type="text" id="smile_'.$input_name.'" data-default-color="'.$settings['value'].'" class="cs-wp-color-picker smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$value.'" /></p>';
+
+	//	Apply partials
+	$partials =	generate_partial_atts( $settings );
+
+	$output = '<p><input type="text" id="smile_'.$input_name.'" data-default-color="'.$value.'" class="cs-wp-color-picker smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$value.'" '.$partials .' /></p>';
+
 	return $output;
 }

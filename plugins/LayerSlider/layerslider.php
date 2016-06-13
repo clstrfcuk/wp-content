@@ -4,9 +4,9 @@
 Plugin Name: LayerSlider WP
 Plugin URI: http://codecanyon.net/user/kreatura/
 Description: LayerSlider is the most advanced responsive WordPress slider plugin with the famous Parallax Effect and over 200 2D & 3D transitions.
-Version: 5.6.2
+Version: 5.6.8
 Author: Kreatura Media
-Author URI: http://kreaturamedia.com/
+Author URI: https://kreaturamedia.com/
 Text Domain: LayerSlider
 */
 
@@ -31,7 +31,7 @@ if(!defined('ABSPATH')) {
 
 	// Basic configuration
 	define('LS_DB_TABLE', 'layerslider');
-	define('LS_PLUGIN_VERSION', '5.6.2');
+	define('LS_PLUGIN_VERSION', '5.6.8');
 
 	// Path info
 	define('LS_ROOT_FILE', __FILE__);
@@ -43,7 +43,7 @@ if(!defined('ABSPATH')) {
 	define('LS_PLUGIN_BASE', plugin_basename(__FILE__));
 	define('LS_MARKETPLACE_ID', '1362246');
 	define('LS_TEXTDOMAIN', 'LayerSlider');
-	define('LS_REPO_BASE_URL', 'http://repository.kreaturamedia.com/v3/');
+	define('LS_REPO_BASE_URL', 'https://repository.kreaturamedia.com/v3/');
 
 	if(!defined('NL')) { define("NL", "\r\n"); }
 	if(!defined('TAB')) { define("TAB", "\t"); }
@@ -124,19 +124,17 @@ function layerslider_load_lang() {
 /********************************************************/
 /*          WPML Layer's String Translation             */
 /********************************************************/
-function layerslider_register_wpml_strings($slider_id, $data) {
+function layerslider_register_wpml_strings($sliderID, $data) {
 
+	if(!empty($data['layers']) && is_array($data['layers'])) {
+		foreach($data['layers'] as $slideIndex => $slide) {
 
-	global $wpdb;
-	$table_name = $wpdb->prefix . "layerslider";
-
-	$slider = $wpdb->get_row("SELECT * FROM $table_name WHERE id = ".(int)$slider_id." ORDER BY date_c DESC LIMIT 1" , ARRAY_A);
-	$slider = json_decode($slider['data'], true);
-
-	foreach($data['layers'] as $layerkey => $layer) {
-		foreach($layer['sublayers'] as $sublayerkey => $sublayer) {
-			if($sublayer['type'] != 'img') {
-				icl_register_string('LayerSlider WP', '<'.$sublayer['type'].':'.substr(sha1($sublayer['html']), 0, 10).'> layer on slide #'.($layerkey+1).' in slider #'.$slider_id.'', $sublayer['html']);
+			if(!empty($slide['sublayers']) && is_array($slide['sublayers'])) {
+				foreach($slide['sublayers'] as $layerIndex => $layer) {
+					if($layer['type'] != 'img') {
+						icl_register_string('LayerSlider WP', '<'.$layer['type'].':'.substr(sha1($layer['html']), 0, 10).'> layer on slide #'.($slideIndex+1).' in slider #'.$sliderID.'', $layer['html']);
+					}
+				}
 			}
 		}
 	}

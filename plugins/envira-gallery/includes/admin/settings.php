@@ -53,17 +53,19 @@ class Envira_Gallery_Settings {
     public function __construct() {
 
         // Load the base class object.
-        $this->base = Envira_Gallery::get_instance();
+        $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
 
-        // Add custom settings submenu.
-        add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+        // Only load the Settings submenu item and admin page if we're running Envira Gallery, and not Envira Gallery Lite.
+        if ( class_exists( 'Envira_Gallery' ) ) {
+            // Add custom settings submenu.
+            add_action( 'admin_menu', array( $this, 'admin_menu' ), 11 );
 
-        // Add callbacks for settings tabs.
-        add_action( 'envira_gallery_tab_settings_general', array( $this, 'settings_general_tab' ) );
-        add_action( 'envira_gallery_tab_settings_addons', array( $this, 'settings_addons_tab' ) );
+            // Add callbacks for settings tabs.
+            add_action( 'envira_gallery_tab_settings_general', array( $this, 'settings_general_tab' ) );
 
-        // Add the settings menu item to the Plugins table.
-        add_filter( 'plugin_action_links_' . plugin_basename( plugin_dir_path( dirname( dirname( __FILE__ ) ) ) . 'envira-gallery.php' ), array( $this, 'settings_link' ) );
+            // Add the settings menu item to the Plugins table.
+            add_filter( 'plugin_action_links_' . plugin_basename( plugin_dir_path( dirname( dirname( __FILE__ ) ) ) . 'envira-gallery.php' ), array( $this, 'settings_link' ) );
+        }
 
     }
 
@@ -86,36 +88,10 @@ class Envira_Gallery_Settings {
 
         // If successful, load admin assets only on that page and check for addons refresh.
         if ( $this->hook ) {
-            add_action( 'load-' . $this->hook, array( $this, 'maybe_refresh_addons' ) );
             add_action( 'load-' . $this->hook, array( $this, 'maybe_fix_migration' ) );
             add_action( 'load-' . $this->hook, array( $this, 'update_image_settings' ) );
             add_action( 'load-' . $this->hook, array( $this, 'settings_page_assets' ) );
         }
-
-    }
-
-    /**
-     * Maybe refreshes the addons page.
-     *
-     * @since 1.0.0
-     *
-     * @return null Return early if not refreshing the addons.
-     */
-    public function maybe_refresh_addons() {
-
-        if ( ! $this->is_refreshing_addons() ) {
-            return;
-        }
-
-        if ( ! $this->refresh_addons_action() ) {
-            return;
-        }
-
-        if ( ! $this->base->get_license_key() ) {
-            return;
-        }
-
-        $this->get_addons_data( $this->base->get_license_key() );
 
     }
 
@@ -234,7 +210,7 @@ class Envira_Gallery_Settings {
         }
         
         // Output an admin notice so the user knows what happened
-        add_action( 'admin_notices', array( $this, 'fixed_migration' ) );
+        add_action( 'envira_gallery_settings_general_tab_notice', array( $this, 'fixed_migration' ) );
         
     }
 
@@ -248,7 +224,7 @@ class Envira_Gallery_Settings {
         global $fixedGalleries;
         
         ?>
-        <div class="updated">
+        <div class="notice updated below-h2">
             <p><strong><?php echo $fixedGalleries . __( ' galleries(s) fixed successfully.', 'envira-gallery' ); ?></strong></p>
         </div>
         <?php
@@ -280,7 +256,7 @@ class Envira_Gallery_Settings {
         $this->update_setting( 'media_delete', $_POST['envira_media_delete'] );
 
         // Output an admin notice so the user knows what happened
-        add_action( 'admin_notices', array( $this, 'updated_settings' ) );
+        add_action( 'envira_gallery_settings_general_tab_notice', array( $this, 'updated_settings' ) );
 
     }
 
@@ -382,7 +358,7 @@ class Envira_Gallery_Settings {
     public function updated_settings() {
         
         ?>
-        <div class="updated">
+        <div class="notice updated below-h2">
             <p><strong><?php _e( 'Settings saved successfully.', 'envira-gallery' ); ?></strong></p>
         </div>
         <?php
@@ -423,6 +399,11 @@ class Envira_Gallery_Settings {
      */
     public function enqueue_admin_scripts() {
 
+        // Tabs
+        wp_register_script( $this->base->plugin_slug . '-tabs-script', plugins_url( 'assets/js/tabs.js', $this->base->file ), array( 'jquery' ), $this->base->version, true );
+        wp_enqueue_script( $this->base->plugin_slug . '-tabs-script' );
+
+        // Settings
         wp_register_script( $this->base->plugin_slug . '-settings-script', plugins_url( 'assets/js/settings.js', $this->base->file ), array( 'jquery', 'jquery-ui-tabs' ), $this->base->version, true );
         wp_enqueue_script( $this->base->plugin_slug . '-settings-script' );
         wp_localize_script(
@@ -457,24 +438,45 @@ class Envira_Gallery_Settings {
      */
     public function settings_page() {
 
+        do_action('envira_head');
+
         ?>
+
+        <!-- Tabs -->
+        <h1 id="envira-tabs-nav" class="envira-tabs-nav" data-container="#envira-gallery-settings" data-update-hashbang="1">
+            <?php 
+            $i = 0; 
+            foreach ( (array) $this->get_envira_settings_tab_nav() as $id => $title ) {
+                $class = ( 0 === $i ? 'envira-active' : '' ); 
+                ?>
+                <a class="nav-tab <?php echo $class; ?>" href="#envira-tab-<?php echo $id; ?>" title="<?php echo $title; ?>"><?php echo $title; ?></a>
+                <?php 
+                $i++; 
+            }
+            ?>
+        </h1>
+
+        <!-- Tab Panels -->
         <div id="envira-gallery-settings" class="wrap">
-            <h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
+            <h1 class="envira-hideme"></h1>
             <div class="envira-gallery envira-clear">
-                <div id="envira-tabs" class="envira-clear">
-                    <h2 id="envira-tabs-nav" class="envira-clear nav-tab-wrapper">
-                    <?php $i = 0; foreach ( (array) $this->get_envira_settings_tab_nav() as $id => $title ) : $class = 0 === $i ? 'envira-active nav-tab-active' : ''; ?>
-                        <a class="nav-tab <?php echo $class; ?>" href="#envira-tab-<?php echo $id; ?>" title="<?php echo $title; ?>"><?php echo $title; ?></a>
-                    <?php $i++; endforeach; ?>
-                    </h2>
-                    <?php $i = 0; foreach ( (array) $this->get_envira_settings_tab_nav() as $id => $title ) : $class = 0 === $i ? 'envira-active' : ''; ?>
-                    <div id="envira-tab-<?php echo $id; ?>" class="envira-tab envira-clear <?php echo $class; ?>">
-                        <?php do_action( 'envira_gallery_tab_settings_' . $id ); ?>
-                    </div>
-                    <?php $i++; endforeach; ?>
+                <div id="envira-tabs" class="envira-clear" data-navigation="#envira-tabs-nav">
+                    <?php 
+                    $i = 0; 
+                    foreach ( (array) $this->get_envira_settings_tab_nav() as $id => $title ) {
+                        $class = ( 0 === $i ? 'envira-active' : '' ); 
+                        ?>
+                        <div id="envira-tab-<?php echo $id; ?>" class="envira-tab envira-clear <?php echo $class; ?>">
+                            <?php do_action( 'envira_gallery_tab_settings_' . $id ); ?>
+                        </div>
+                        <?php
+                        $i++;
+                    }
+                    ?>
                 </div>
             </div>
         </div>
+
         <?php
 
     }
@@ -490,7 +492,6 @@ class Envira_Gallery_Settings {
 
         $tabs = array(
             'general' => __( 'General', 'envira-gallery' ), // This tab is required. DO NOT REMOVE VIA FILTERING.
-            'addons'  => __( 'Addons', 'envira-gallery' ),
         );
         $tabs = apply_filters( 'envira_gallery_settings_tab_nav', $tabs );
 
@@ -511,6 +512,11 @@ class Envira_Gallery_Settings {
         $media_delete = $this->get_setting( 'media_delete' );
         ?>
         <div id="envira-settings-general">
+            <?php 
+            // Output any notices now
+            do_action( 'envira_gallery_settings_general_tab_notice' );
+            ?>
+
             <table class="form-table">
                 <tbody>
                     <tr id="envira-settings-key-box">
@@ -553,14 +559,14 @@ class Envira_Gallery_Settings {
                             <form id="envira-serialization" method="post">
                                 <?php wp_nonce_field( 'envira-serialization-nonce', 'envira-serialization-nonce' ); ?>
                                 <?php submit_button( __( 'Fix', 'envira-gallery' ), 'primary', 'envira-serialization-submit', false ); ?>
-                                <p class="description"><?php _e( 'If you have changed the URL of your WordPress web site, and manually executed a search/replace query on URLs in your WordPress database, your galleries will probably no longer show any images.  <strong>If this is the case</strong>, click the button above to fix this. We recommend using a migration plugin or script next time :)', 'envira-gallery' ); ?></p>
+                                <p class="description"><?php _e( 'If you have changed the URL of your WordPress web site, and manually executed a search/replace query on URLs in your WordPress database, your galleries will probably no longer show any images.  If this is the case, click the button above to fix this. We recommend using a migration plugin or script next time :)', 'envira-gallery' ); ?></p>
                             </form>
                         </td>
                     </tr>
                 </tbody>
             </table>
 
-            <hr />
+            <!-- <hr /> -->
 
             <!-- Settings Form -->
             <form id="envira-media-delete" method="post">
@@ -592,9 +598,10 @@ class Envira_Gallery_Settings {
                                         <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $image_delete ); ?>><?php echo $data['name']; ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <p class="description"><?php _e( 'When deleting an <strong>Image from a Gallery</strong>, choose whether to delete all media associated with that image. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
+                                <p class="description"><?php _e( 'When deleting an Image from a Gallery, choose whether to delete all media associated with that image. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
                             </td>
                         </tr>
+                        
                         <tr id="envira-media-delete-box">
                             <th scope="row">
                                 <label for="envira-media-delete"><?php _e( 'Delete Images on Gallery Deletion', 'envira-gallery' ); ?></label>
@@ -605,7 +612,7 @@ class Envira_Gallery_Settings {
                                         <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $media_delete ); ?>><?php echo $data['name']; ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <p class="description"><?php _e( 'When deleting a <strong>Gallery</strong>, choose whether to delete all media associated with the gallery. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
+                                <p class="description"><?php _e( 'When deleting a Gallery, choose whether to delete all media associated with the gallery. Note: If image(s) in the Media Library are attached to other Posts, they will not be deleted.', 'envira-gallery' ); ?></p>
                             </td>
                         </tr>
 
@@ -614,180 +621,14 @@ class Envira_Gallery_Settings {
                 </table>
 
                 <?php wp_nonce_field( 'envira-gallery-settings-nonce', 'envira-gallery-settings-nonce' ); ?>
-                <?php submit_button( __( 'Save Image Settings', 'envira-gallery' ), 'primary', 'envira-gallery-settings-submit', false ); ?>
+                <?php submit_button( __( 'Save Settings', 'envira-gallery' ), 'primary', 'envira-gallery-settings-submit', false ); ?>
             </form>
         </div>
         <?php
 
     }
 
-    /**
-     * Callback for displaying the UI for addons settings tab.
-     *
-     * @since 1.0.0
-     */
-    public function settings_addons_tab() {
-
-        // Go ahead and grab the type of license. It will be necessary for displaying Addons.
-        $type = $this->base->get_license_key_type();
-
-        // Only display the Addons information if no license key errors are present.
-        if ( ! $this->base->get_license_key_errors() ) :
-        ?>
-        <div id="envira-settings-addons">
-            <?php if ( empty( $type ) ) : ?>
-                <div class="error below-h2"><p><?php _e( 'In order to get access to Addons, you need to verify your license key for Envira Gallery.', 'envira-gallery' ); ?></p></div>
-            <?php else : ?>
-                <?php $addons = $this->get_addons(); if ( $addons ) : ?>
-                    <form id="envira-settings-refresh-addons-form" method="post">
-                        <p><?php _e( 'Missing addons that you think you should be able to see? Try clicking the button below to refresh the addon data.', 'envira-gallery' ); ?></p>
-                        <?php wp_nonce_field( 'envira-gallery-refresh-addons', 'envira-gallery-refresh-addons' ); ?>
-                        <?php submit_button( __( 'Refresh Addons', 'envira-gallery' ), 'primary', 'envira-gallery-refresh-addons-submit', false ); ?>
-                    </form>
-                    <div id="envira-addons-area" class="envira-clear">
-                        <?php
-                        // Let's begin outputting the addons.
-                        $i = 0;
-                        foreach ( (array) $addons as $i => $addon ) {
-                            // Attempt to get the plugin basename if it is installed or active.
-                            $plugin_basename   = $this->get_plugin_basename_from_slug( $addon->slug );
-                            $installed_plugins = get_plugins();
-                            $last              = ( 2 == $i%3 ) ? 'last' : '';
-
-                            echo '<div class="envira-addon ' . $last . '">';
-                                echo '<img class="envira-addon-thumb" src="' . esc_url( $addon->image ) . '" width="300px" height="250px" alt="' . esc_attr( $addon->title ) . '" />';
-                                echo '<h3 class="envira-addon-title">' . esc_html( $addon->title ) . '</h3>';
-
-                                // If the plugin is active, display an active message and deactivate button.
-                                if ( is_plugin_active( $plugin_basename ) ) {
-                                    echo '<div class="envira-addon-active envira-addon-message">';
-                                        echo '<span class="addon-status">' . __( 'Status: Active', 'envira-gallery' ) . '</span>';
-                                        echo '<div class="envira-addon-action">';
-                                            echo '<a class="button button-primary envira-addon-action-button envira-deactivate-addon" href="#" rel="' . esc_attr( $plugin_basename ) . '">' . __( 'Deactivate', 'envira-gallery' ) . '</a><span class="spinner envira-gallery-spinner"></span>';
-                                        echo '</div>';
-                                    echo '</div>';
-                                }
-
-                                // If the plugin is not installed, display an install message and install button.
-                                if ( ! isset( $installed_plugins[$plugin_basename] ) ) {
-                                    echo '<div class="envira-addon-not-installed envira-addon-message">';
-                                        echo '<span class="addon-status">' . __( 'Status: Not Installed', 'envira-gallery' ) . '</span>';
-                                        echo '<div class="envira-addon-action">';
-                                            echo '<a class="button button-primary envira-addon-action-button envira-install-addon" href="#" rel="' . esc_url( $addon->url ) . '">' . __( 'Install Addon', 'envira-gallery' ) . '</a><span class="spinner envira-gallery-spinner"></span>';
-                                        echo '</div>';
-                                    echo '</div>';
-                                }
-                                // If the plugin is installed but not active, display an activate message and activate button.
-                                elseif ( is_plugin_inactive( $plugin_basename ) ) {
-                                    echo '<div class="envira-addon-inactive envira-addon-message">';
-                                        echo '<span class="addon-status">' . __( 'Status: Inactive', 'envira-gallery' ) . '</span>';
-                                        echo '<div class="envira-addon-action">';
-                                            echo '<a class="button button-primary envira-addon-action-button envira-activate-addon" href="#" rel="' . esc_attr( $plugin_basename ) . '">' . __( 'Activate', 'envira-gallery' ) . '</a><span class="spinner envira-gallery-spinner"></span>';
-                                        echo '</div>';
-                                    echo '</div>';
-                                }
-
-                                echo '<p class="envira-addon-excerpt">' . esc_html( $addon->excerpt ) . '</p>';
-                            echo '</div>';
-                            $i++;
-                        }
-                        ?>
-                    </div>
-                <?php else : ?>
-                    <form id="envira-settings-refresh-addons-form" method="post">
-                        <p><?php _e( 'There was an issue retrieving the addons for this site. Please click on the button below the refresh the addons data.', 'envira-gallery' ); ?></p>
-                        <?php wp_nonce_field( 'envira-gallery-refresh-addons', 'envira-gallery-refresh-addons' ); ?>
-                        <?php submit_button( __( 'Refresh Addons', 'envira-gallery' ), 'primary', 'envira-gallery-refresh-addons-submit', false ); ?>
-                    </form>
-                <?php endif; ?>
-            <?php endif; ?>
-        </div>
-        <?php else : ?>
-            <div class="error below-h2"><p><?php _e( 'In order to get access to Addons, you need to resolve your license key errors.', 'envira-gallery' ); ?></p></div>
-        <?php
-        endif;
-
-    }
-
-    /**
-     * Retrieves addons from the stored transient or remote server.
-     *
-     * @since 1.0.0
-     *
-     * @return bool|array False if no key or failure, array of addon data otherwise.
-     */
-    public function get_addons() {
-
-        $key = $this->base->get_license_key();
-        if ( ! $key ) {
-            return false;
-        }
-
-        if ( false === ( $addons = get_transient( '_eg_addons' ) ) ) {
-            $addons = $this->get_addons_data( $key );
-        } else {
-            return $addons;
-        }
-
-    }
-
-    /**
-     * Pings the remote server for addons data.
-     *
-     * @since 1.0.0
-     *
-     * @param string $key The user license key.
-     * @return bool|array False if no key or failure, array of addon data otherwise.
-     */
-    public function get_addons_data( $key ) {
-
-        $addons = Envira_Gallery_License::get_instance()->perform_remote_request( 'get-addons-data', array( 'tgm-updater-key' => $key ) );
-
-        // If there was an API error, set transient for only 10 minutes.
-        if ( ! $addons ) {
-            set_transient( '_eg_addons', false, 10 * MINUTE_IN_SECONDS );
-            return false;
-        }
-
-        // If there was an error retrieving the addons, set the error.
-        if ( isset( $addons->error ) ) {
-            set_transient( '_eg_addons', false, 10 * MINUTE_IN_SECONDS );
-            return false;
-        }
-
-        // Otherwise, our request worked. Save the data and return it.
-        set_transient( '_eg_addons', $addons, DAY_IN_SECONDS );
-        return $addons;
-
-    }
-
-    /**
-     * Flag to determine if addons are being refreshed.
-     *
-     * @since 1.0.0
-     *
-     * @return bool True if being refreshed, false otherwise.
-     */
-    public function is_refreshing_addons() {
-
-        return isset( $_POST['envira-gallery-refresh-addons-submit'] );
-
-    }
-
-    /**
-     * Verifies nonces that allow addon refreshing.
-     *
-     * @since 1.0.0
-     *
-     * @return bool True if nonces check out, false otherwise.
-     */
-    public function refresh_addons_action() {
-
-        return isset( $_POST['envira-gallery-refresh-addons-submit'] ) && wp_verify_nonce( $_POST['envira-gallery-refresh-addons'], 'envira-gallery-refresh-addons' );
-
-    }
-
-    /**
+   /**
      * Retrieve the plugin basename from the plugin slug.
      *
      * @since 1.0.0

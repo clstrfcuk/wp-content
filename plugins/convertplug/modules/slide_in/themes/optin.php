@@ -20,7 +20,7 @@ if( !function_exists( "slide_in_theme_optin" ) ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);
 		}
 
-		unset($style_settings['style_id']); 	
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -57,11 +57,20 @@ if( !function_exists( "slide_in_theme_optin" ) ) {
 
 		$a = shortcode_atts( $all , $style_settings );
 
+		//	Merge arrays - 'shortcode atts' & 'style options'
+		$a = array_merge( $a, $atts );
+
 		/** = Style - individual options
 		 *-----------------------------------------------------------*/
 		//	Variables
 		$imgclass 			= '';
-		$on_success_action 	= ($a['on_success'] == "redirect") ? $a['redirect_url'] : $a['success_message'] ;
+		$on_success_action  = '';
+
+		if( isset( $a['on_success'] ) && $a['on_success'] == "redirect" ) {
+			$on_success_action =  isset( $a['redirect_url'] ) ? $a['redirect_url'] : '';
+		} else {
+			$on_success_action  = isset( $a['success_message'] ) ? $a['success_message'] : '';
+		}
 
 
 		/** = Before filter
@@ -71,7 +80,7 @@ if( !function_exists( "slide_in_theme_optin" ) ) {
 ?>
 	  	<div class="cp-row">
 	    	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cp-text-container <?php echo esc_attr($imgclass); ?>" >
-	       		
+
 	      		<div class="cp-title-container <?php if( trim( $a['slidein_title1'] ) == '' ) { echo 'cp-empty'; } ?>">
 	       			<h2 class="cp-title cp_responsive"><?php echo do_shortcode( html_entity_decode( stripcslashes( $a['slidein_title1'] ) ) ); ?></h2>
 	      		</div>

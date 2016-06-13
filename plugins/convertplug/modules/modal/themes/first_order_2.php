@@ -18,8 +18,8 @@ if( !function_exists( "modal_theme_first_order_2" ) ) {
 		foreach( $style_settings as $key => $setting ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);;
 		}
-		
-		unset($style_settings['style_id']); 
+
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -29,7 +29,7 @@ if( !function_exists( "modal_theme_first_order_2" ) ) {
 			"uid"       	=> $uid,
 			"uid_class" 	=> $uid_class,
 			"style_class"	=> "cp-first-order-2"
-		);		
+		);
 
 		/**
 		 * Merge short code variables arrays
@@ -40,7 +40,7 @@ if( !function_exists( "modal_theme_first_order_2" ) ) {
 		 * @array 	$atts					short-code attributes
 		 */
 		$all = array_merge(
-			$individual_vars,			
+			$individual_vars,
 			$cp_form_vars,
 			$style_settings,
 			$atts
@@ -68,9 +68,16 @@ if( !function_exists( "modal_theme_first_order_2" ) ) {
           		<div class="cp-title-container <?php if( trim( $a['modal_title1'] ) == '' ) { echo 'cp-empty'; } ?>">
            			<h2 class="cp-title cp_responsive" ><?php echo do_shortcode( html_entity_decode( stripcslashes( $a['modal_title1'] ) ) ); ?></h2>
            		</div>
-          		<div class="cp-short-desc-container cp-clear  <?php if( trim( $a['modal_content'] ) == '' ) { echo 'cp-empty'; } ?>">
-          			<div class="cp-short-description cp_responsive cp-clear " ><?php echo do_shortcode( html_entity_decode( stripcslashes(  $a['modal_content'] ) ) ); ?></div>
+           		<?php
+           		$modal_short_desc = isset( $a['modal_content'] ) ? $a['modal_content'] : '';
+
+           		if( $modal_short_desc !== '' ) {
+           		?>
+          		<div class="cp-short-desc-container cp-clear  <?php if( trim( $modal_short_desc ) == '' ) { echo 'cp-empty'; } ?>">
+          			<div class="cp-short-description cp_responsive cp-clear " ><?php echo do_shortcode( html_entity_decode( stripcslashes(  $modal_short_desc ) ) ); ?></div>
              	</div>
+             	<?php } ?>
+
              	<div class="cp-form-container">
 					<?php
 	             		/**

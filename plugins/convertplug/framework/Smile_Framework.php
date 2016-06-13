@@ -37,7 +37,9 @@ if(!class_exists("Smile_Framework")){
 		
 		function load_compatible_scripts(){
 			if(isset($_GET['hidemenubar'])){
-				wp_register_script('smile-customizer-js',plugins_url('assets/js/customizer.js',__FILE__));
+				wp_register_script('cp-helper-js',plugins_url('assets/js/cp-helper.js',__FILE__));
+				wp_enqueue_script('cp-helper-js');
+				wp_register_script('smile-customizer-js',plugins_url('assets/js/customizer.js',__FILE__), array('cp-helper-js') );
 				wp_enqueue_script('smile-customizer-js');
 			}
 		}
@@ -52,6 +54,9 @@ if(!class_exists("Smile_Framework")){
 			
 			// load style framework loader
 			require_once('classes/class.style-framework.php');
+
+			// load style framework loader
+			require_once('classes/class.cpImport.php');
 
 			// load required admin fuctions
 			require_once('functions/functions.php');
@@ -114,7 +119,7 @@ if(!class_exists("Smile_Framework")){
 			}
 			return $result;
 		}
-		
+
 		/*
 		* Retrieve settings array and remove option provided from settings
 		* @Since 1.0		
@@ -134,7 +139,33 @@ if(!class_exists("Smile_Framework")){
 			}
 			return $result;
 		}
-		
+
+		/*
+		* Retrieve and update default value in stored data into the static variable $options		
+		* @Since 1.0		
+		*/
+		public static function smile_update_partial_refresh( $class, $style, $name, $parse_array ){
+			$result = false;
+			$new_settings = '';
+			if($name !== "" ){
+				$settings = $class::$options[$style]['options'];
+				foreach( $settings as $key => $setting ) {
+					$opt_name = $setting['name'];
+					if( $opt_name == $name && !empty( $parse_array ) ) {
+						if( isset( $parse_array['css_selector'] ) ) {
+							$settings[$key]['opts']['css_selector'] = $parse_array['css_selector'];
+						}
+						if( isset( $parse_array['css_property'] ) ) {
+							$settings[$key]['opts']['css_property'] = $parse_array['css_property'];
+						}
+					}
+				}
+				$class::$options[$style]['options'] = $settings;
+				$result = true;
+			}
+			return $result;
+		}
+
 		/*
 		* Add mailer addon to convertplug
 		* @Since 1.0		
@@ -146,6 +177,6 @@ if(!class_exists("Smile_Framework")){
 				$result = true;
 			}
 			return $result;
-		}	
+		}
 	}
 }

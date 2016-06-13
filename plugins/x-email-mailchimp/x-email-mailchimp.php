@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Email Forms (MailChimp)
 Plugin URI: http://theme.co/x/
 Description: Creating custom opt-in forms has never been this easy...or fun! Carefully craft every detail of your forms using this plugin and subscribe users to a MailChimp email list.
-Version: 1.1.1
+Version: 1.1.2
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -25,7 +25,6 @@ X Plugin: x-email-mailchimp
 
 define( 'X_EMAIL_MAILCHIMP_VERSION', '1.1.1' );
 define( 'X_EMAIL_MAILCHIMP_ROOT_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
-
 
 
 // Initialize

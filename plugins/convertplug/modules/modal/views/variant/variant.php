@@ -108,16 +108,16 @@ if( count($variants) > 0 ) {
                       }
                     }
 
-                    $style_settings = unserialize($style['style_settings']);        
+                    $style_settings = unserialize($style['style_settings']);
                     $theme = $style_settings['style'];
                     $live = (int)$style_settings['live'];
                     $status = '';
                     if( $live == 1) {
-                      $status .= '<span class="change-status"><span data-live="1" class="cp-status"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></span>';
+                        $status .= '<span class="change-status"><span data-live="1" class="cp-status"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></span>';
                     } elseif( $live == 0 ){
-                      $status .= '<span class="change-status"><span data-live="0" class="cp-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
+                        $status .= '<span class="change-status"><span data-live="0" class="cp-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
                     } else {
-                      $status .= '<span class="change-status"><span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span>'.__( "Scheduled", "smile" ).'</span></span>';
+                        $status .= cp_generate_scheduled_info($style['style_settings']);
                     }
                     $status .= '<ul class="manage-column-menu">';
           			    if( $live !== 1 && $live !== "1" ) {
@@ -147,7 +147,7 @@ if( count($variants) > 0 ) {
                             <?php echo apply_filters( 'cp_before_delete_action', $style_settings, 'modal' ); ?>
                             <a class="action-list trash-style-icon" data-delete="soft" data-variantoption="modal_variant_tests" data-style="<?php echo $style_id; ?>" data-option="smile_modal_styles" style="margin-left: 25px;" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip">
                             <?php _e( "Delete Modal", "smile" ); ?>
-                            </span></a>                            
+                            </span></a>
                           </td>
                         </tr>
                     <?php } ?>
@@ -173,6 +173,7 @@ if( count($variants) > 0 ) {
             }
 
             $style_settings = unserialize($variant_test['style_settings']);
+
             $theme = $style_settings['style'];
             $live = $style_settings['live'];
             $status = '';
@@ -180,18 +181,13 @@ if( count($variants) > 0 ) {
   				    $status .= '<span class="change-status"><span data-live="1" class="cp-status"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></span>';
   			    } elseif( $live == 0 ){
     				  $status .= '<span class="change-status"><span data-live="0" class="cp-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
-  			    } else {
-  				    $status .= '<span class="change-status"><span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span>'.__( "Scheduled", "smile" ).'</span></span>';
-      			}
+  			    }
             $status .= '<ul class="manage-column-menu">';
       		  if( $live !== 1 && $live !== "1" ) {
       			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="modal_variant_tests" data-live="1" data-option="modal_variant_tests"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></a></li>';
       		  }
       		  if( $live !== 0 && $live !== "" && $live !== "0" ) {
       			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="modal_variant_tests" data-live="0" data-option="modal_variant_tests"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></a></li>';
-      		  }
-      		  if( $live !== 2 && $live !== "2" ) {
-      			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="modal_variant_tests" data-live="2" data-option="modal_variant_tests" data-schedule="1"><i class="connects-icon-clock"></i><span>'.__( "Schedule", "smile" ).'</span></a></li>';
       		  }
       		  $status .= '</ul>';
             $status .= '</span>';
@@ -210,7 +206,7 @@ if( count($variants) > 0 ) {
                   <?php echo apply_filters( 'cp_before_delete_action', $style_settings, 'modal' ); ?>
                   <a class="action-list trash-style-icon" data-delete="hard" data-variantoption="modal_variant_tests" data-style="<?php echo $style_id; ?>" data-option="modal_variant_tests" style="margin-left: 25px;" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip">
                   <?php _e( "Delete Modal", "smile" ); ?>
-                  </span></a>                 
+                  </span></a>
                 </td>
               </tr>
               <?php

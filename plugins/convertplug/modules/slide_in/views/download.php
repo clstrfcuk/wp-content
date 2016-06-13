@@ -18,25 +18,25 @@ $data_style_name = $data_style_name .'_'. $data_style;
 if( $data_style !== "" ) {
 	if(is_array($prev_styles) && !empty($prev_styles)){
 		foreach($prev_styles as $key => $style){
-			
-			$hasVariants = false;	
+
+			$hasVariants = false;
 			$style_name = $style['style_name'];
 			$style_id = $style['style_id'];
 
 			if( $data_style == $style_id ) {
 
-			    if( $variant_tests ) {  
+			    if( $variant_tests ) {
 			        if ( array_key_exists($data_style,$variant_tests) && !empty($variant_tests[$data_style]) ) {
 			            $hasVariants = true;
 			        }
-			    } 
+			    }
 
 				$style_settings = unserialize($style['style_settings']);
 				$exp_settings = array();
 				foreach( $style_settings as $title => $value ){
 				    if( !is_array( $value ) ){
 				     	$value = urldecode($value);
-						$exp_settings[$title] = htmlentities(stripslashes(utf8_encode($value)), ENT_QUOTES);
+						$exp_settings[$title] = htmlentities(stripslashes(utf8_encode($value)), ENT_QUOTES, "UTF-8" );
 					} else {
 						$val = array();
 						foreach( $value as $ex_title => $ex_val ) {
@@ -47,88 +47,95 @@ if( $data_style !== "" ) {
 				}
 				$export = $style;
 				$export['style_settings'] = $exp_settings;
-				
+
 				$close_image = isset( $style_settings['close_img'] ) ? $style_settings['close_img'] : '' ;
-				$bg_image = isset( $style_settings['slidein_bg_image'] ) ? $style_settings['slidein_bg_image'] : '';
+				$bg_image = isset( $style_settings['slide_in_bg_image'] ) ? $style_settings['slide_in_bg_image'] : '';
 
 				if( $hasVariants ) {
 					foreach($variant_tests[$data_style] as $variant) {
-						$export['variants'][] = $variant; 
+						$export['variants'][] = $variant;
 					}
 				}
 			}
 		}
 	}
-	
+
 	$dir = 'slide_in_'.$data_style_name;
 	if( !is_dir( $dir ) ) {
 		mkdir( $dir, 0777 );
 	}
-	
+
 	// Get images attached to the style through settings, copy them in export directory and store them in media array
 	$media = array();
 
 	if( $close_image !== "" )
 	{
-		$close_image = str_replace( "%7C", "|", $close_image );
-		if (strpos($close_image,'http') !== false) {
-			$close_image = explode( '|', $close_image );
-			$close_image = $close_image[0];
-			$close_image = urldecode( $close_image );
-		} else {
-			$close_image = explode("|", $close_image);
-			$close_image = wp_get_attachment_image_src($close_image[0],$close_image[1]);
-			$close_image = $close_image[0];
+		if ( ( isset( $style_settings['close_si_image_src'] ) && $style_settings['close_si_image_src'] == 'upload_img'  )
+			|| !isset( $style_settings['close_si_image_src'] ) )  {
+
+			$close_image = str_replace( "%7C", "|", $close_image );
+			if (strpos($close_image,'http') !== false) {
+				$close_image = explode( '|', $close_image );
+				$close_image = $close_image[0];
+				$close_image = urldecode( $close_image );
+			} else {
+				$close_image = explode("|", $close_image);
+				$close_image = wp_get_attachment_image_src($close_image[0],$close_image[1]);
+				$close_image = $close_image[0];
+			}
+
+			$close_image_name = basename( $close_image );
+			copy( $close_image, $dir.'/'.$close_image_name );
+
+			$media['close_image'] = $dir.'/'.$close_image_name;
 		}
-		
-		$close_image_name = basename( $close_image );
-		copy( $close_image, $dir.'/'.$close_image_name );
-		
-		$media['close_image'] = $dir.'/'.$close_image_name;
-		
 	}
-	
+
 	if( $bg_image !== "" )
 	{
-		$bg_image = str_replace( "%7C", "|", $bg_image );
-		if (strpos($bg_image,'http') !== false) {
-			$bg_image = explode( '|', $bg_image );
-			$bg_image = $bg_image[0];
-			$bg_image = urldecode( $bg_image );
-		} else {
-			$bg_image = explode("|", $bg_image);
-			$bg_image = wp_get_attachment_image_src($bg_image[0],$bg_image[1]);
-			$bg_image = $bg_image[0];
+		if ( ( isset( $style_settings['slide_in_bg_image_src'] ) && $style_settings['slide_in_bg_image_src'] == 'upload_img'  )
+			|| !isset( $style_settings['slide_in_bg_image_src'] ) )  {
+
+			$bg_image = str_replace( "%7C", "|", $bg_image );
+			if (strpos($bg_image,'http') !== false) {
+				$bg_image = explode( '|', $bg_image );
+				$bg_image = $bg_image[0];
+				$bg_image = urldecode( $bg_image );
+			} else {
+				$bg_image = explode("|", $bg_image);
+				$bg_image = wp_get_attachment_image_src($bg_image[0],$bg_image[1]);
+				$bg_image = $bg_image[0];
+			}
+
+			$bg_image_name = basename( $bg_image );
+			copy( $bg_image, $dir.'/'.$bg_image_name );
+
+			$media['slide_in_bg_image'] = $dir.'/'.$bg_image_name;
 		}
-		
-		$bg_image_name = basename( $bg_image );
-		copy( $bg_image, $dir.'/'.$bg_image_name );
-		
-		$media['slidein_bg_image'] = $dir.'/'.$bg_image_name;
-		
+
 	}
-	
+
 	if( !empty( $media ) ){
 		$export['media'] = $media;
 	}
 
 	$export['module'] = 'slide_in';
-	
+
 	$export_data = json_encode( $export );
-	
+
 	$content = $export_data;
-		
+
 	$file_name = $path.'/'.$dir.'/slide_in_'.$data_style_name.'.txt';
 	$file_url = plugins_url($dir.'/slide_in_'.$data_style_name.'.txt', __FILE__ );
 	$handle = fopen($file_name, "w");
 	fwrite($handle, $content);
 	fclose($handle);
-	
+
 	$files = glob( "{$dir}/*" );
 	$export_file = $dir.'.zip';
-	
+
 	$result = smile_create_export_zip( $files, $export_file , true );
-	
+
 	header('Pragma: public'); 	// required
 	header('Expires: 0');		// no cache
 	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -188,10 +195,10 @@ function smile_create_export_zip($files = array(),$destination = '',$overwrite =
 		foreach($valid_files as $file) {
 			$zip->addFile($file,$file);
 		}
-		
+
 		//close the zip -- done!
 		$zip->close();
-		
+
 		//check to make sure the file exists
 		return file_exists($destination);
 	}

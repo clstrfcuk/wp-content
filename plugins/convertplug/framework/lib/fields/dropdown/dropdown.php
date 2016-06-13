@@ -3,6 +3,16 @@
 if ( function_exists('smile_add_input_type'))
 {
 	smile_add_input_type('dropdown' , 'dropdown_settings_field' );
+	add_action( 'admin_enqueue_scripts', 'framework_dropdown_admin_styles' );
+}
+
+
+function framework_dropdown_admin_styles($hook){
+	$cp_page = strpos( $hook, 'plug_page');
+
+	if( $cp_page == 7 && isset( $_GET['developer'] ) ){
+		wp_enqueue_script( 'smile-dropdown-script', SMILE_FRAMEWORK_URI . '/lib/fields/dropdown/dropdown.js', array(), '1.0.0', true );
+	}
 }
 
 /**
@@ -18,7 +28,11 @@ function dropdown_settings_field($name, $settings, $value)
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
 	$options = isset($settings['options']) ? $settings['options'] : '';
-	$output = '<p><select name="' . $input_name . '" id="smile_'.$input_name.'" class="form-control smile-input smile-select ' . $input_name . ' ' . $type . '">';
+	
+	//	Apply partials
+	$partials =	generate_partial_atts( $settings );
+
+	$output = '<p><select name="' . $input_name . '" id="smile_'.$input_name.'" class="form-control smile-input smile-select ' . $input_name . ' ' . $type . '" '.$partials.'>';
 	foreach ( $options as $text_val => $val ) {
 		if ( is_numeric( $text_val ) && ( is_string( $val ) || is_numeric( $val ) ) ) {
 			$text_val = $val;

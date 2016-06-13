@@ -108,7 +108,7 @@ $cp_form = array(
 				__( "title-0", "smile" ) 	=> "Vertical - 1 Column Form Layout",
 				__( "title-1", "smile" ) 	=> "Vertical - 2 Column Form Layout",
 				__( "title-2", "smile" ) 	=> "Horizontal Form Layout",
-				__( "title-3", "smile" ) 	=> "Only Submit Button Layout"			
+				__( "title-3", "smile" ) 	=> "Only Submit Button Layout"
 			),
 		),
 		"panel" => "Form Designer",
@@ -182,7 +182,7 @@ $cp_form = array(
 			"imagetitle" => array(
 				__( "title-0", "smile" ) 	=> "50% Submit Button Area",
 				__( "title-1", "smile" ) 	=> "33.33% Submit Button Area",
-				__( "title-2", "smile" ) 	=> "25% Submit Button Area",						
+				__( "title-2", "smile" ) 	=> "25% Submit Button Area",
 			),
 		),
 		"panel" => "Form Designer",
@@ -215,6 +215,9 @@ $cp_form = array(
 		"opts" 		=> array(
 			"title" 	=> __( "Form Text Alignment", "smile"),
 			"value" 	=> "",
+			"css_property" => "text-align",
+			"css_selector" => ".cp-form-container .cp-form-field button, .cp-form-container .cp-form-field input, .cp-form-container .cp-form-field select, .cp-form-container .cp-form-field textarea, .cp-form-container label",
+			"css_preview" => true,
 			"options" 	=> array(
 				__( "Left", "smile" ) 	=> "left",
 				__( "Right", "smile" ) 	=> "right",
@@ -233,6 +236,9 @@ $cp_form = array(
 		"opts"		=> array(
 			"title" 		=> __( "Input Box Text Color", "smile" ),
 			"value" 		=> "rgb(153, 153, 153)",
+			"css_property" => "color",
+			"css_selector" => ".cp-form-container .cp-form-field button, .cp-form-container .cp-form-field input, .cp-form-container .cp-form-field select, .cp-form-container .cp-form-field textarea",
+			"css_preview"	=> true,
 		),
 		"panel" => "Form Designer",
 		"section" => "Design",
@@ -246,6 +252,9 @@ $cp_form = array(
 		"opts"		=> array(
 			"title" 		=> __( "Input Box Background Color", "smile" ),
 			"value" 		=> "rgb(255, 255, 255)",
+			"css_property" => "background-color",
+			"css_selector" => ".cp-form-container .cp-form-field button, .cp-form-container .cp-form-field input, .cp-form-container .cp-form-field select, .cp-form-container .cp-form-field textarea",
+			"css_preview"	=> true,
 		),
 		"panel" => "Form Designer",
 		"section" => "Design",
@@ -254,11 +263,14 @@ $cp_form = array(
 	),
 	array(
 		"type" 		=> "colorpicker",
-		"class" 	=> "",
+		"class" 	=> 	"",
 		"name" 		=> "form_input_border_color",
 		"opts"		=> array(
 			"title" 		=> __( "Input Box Border Color", "smile" ),
 			"value" 		=> "rgb(191, 190, 190)",
+			"css_property" => "border-color",
+			"css_selector" => ".cp-form-container .cp-form-field button, .cp-form-container .cp-form-field input, .cp-form-container .cp-form-field select, .cp-form-container .cp-form-field textarea",
+			"css_preview"	=> true,
 		),
 		"panel" => "Form Designer",
 		"section" => "Design",
@@ -266,12 +278,47 @@ $cp_form = array(
 		"dependency" => array('name' => 'form_layout', 'operator' => '!==', 'value' => 'cp-form-layout-4'),
 	),
 	array(
+		"type" 		=> "switch",
+		"class" 	=> "",
+		"name" 		=> "input_shadow",
+		"opts"		=> array(
+			"title" 	=> __( "Input Field Shadow", "smile" ),
+			"value" 	=> false,
+			"on" 		=> __( "YES", "smile" ),
+			"off"		=> __( "NO", "smile" ),
+		),
+		"panel" => "Form Designer",
+		"section" => "Design",
+		"section_icon" => "connects-icon-disc",
+		"dependency" => array('name' => 'form_layout', 'operator' => '!=', 'value' => 'cp-form-layout-4'),
+	),
+	//	Store the default initial color of button text
+	array(
+		"type" 		=> "colorpicker",
+		"class" 	=> "",
+		"name" 		=> "input_shadow_color",
+		"opts"		=> array(
+			"title" 		=> __( "Shadow Color", "smile" ),
+			"value" 		=> "rgba(66, 66, 66, 0.6)",
+			//"css_property" 	=> "border-radius",
+			//"css_selector" 	=> ".cp-submit:hover",
+			// "css_preview" 	=> true,
+		),
+	    "dependency" => array('name' => 'input_shadow', 'operator' => '==', 'value' => true),
+		"panel" => "Form Designer",
+		"section" => "Design",
+		"section_icon" => "connects-icon-disc",
+	),
+	array(
 	    "type"         => "google_fonts",
 	    "name"         => "form_input_font",
 	    "opts"         => array(
-	        "title"     => __( "Input Box Font Name", "smile" ),
-	        "value"     => "",
-	        "use_in"      => "panel"
+	        "title"	=> __( "Input Box Font Name", "smile" ),
+	        "value"	=> "",
+	        "use_in"	=> "panel",
+	        "css_property" => "font-family",
+	        "css_selector" => ".cp-form-container .cp-form-field button, .cp-form-container .cp-form-field input, .cp-form-container .cp-form-field select, .cp-form-container .cp-form-field textarea",
+	        "css_preview"	=> true,
 	    ),
 		"panel" => "Form Designer",
 		"section" => "Design",
@@ -284,6 +331,9 @@ $cp_form = array(
 		"name" 			=> "form_input_font_size",
 		"opts"			=> array(
 			"title" 		=> __( "Input Box Font Size", "smile" ),
+			"css_property" => "font-size",
+			"css_selector" => ".cp-form-container .cp-form-field button, .cp-form-container .cp-form-field input, .cp-form-container .cp-form-field select, .cp-form-container .cp-form-field textarea",
+			"css_preview"  => true,
 			"value" 		=> '15',
 			"min" 			=> 0,
 			"max" 			=> 100,
@@ -303,6 +353,9 @@ $cp_form = array(
 		"name" 			=> "form_input_padding_tb",
 		"opts"			=> array(
 			"title" 		=> __( "Input Box Vertical Padding", "smile" ),
+			"css_property" => "padding-tb",
+			"css_selector" => ".cp-form-container .cp-form-field button, .cp-form-container .cp-form-field input, .cp-form-container .cp-form-field select, .cp-form-container .cp-form-field textarea",
+			"css_preview"	=> true,
 			"value" 		=> 10,
 			"min" 			=> 0,
 			"max" 			=> 100,
@@ -320,6 +373,9 @@ $cp_form = array(
 		"name" 			=> "form_input_padding_lr",
 		"opts"			=> array(
 			"title" 		=> __( "Input Box Horizontal Padding", "smile" ),
+			"css_property" => "padding-lr",
+			"css_selector" => ".cp-form-container .cp-form-field button, .cp-form-container .cp-form-field input, .cp-form-container .cp-form-field select, .cp-form-container .cp-form-field textarea",
+			"css_preview"	=> true,
 			"value" 		=> 15,
 			"min" 			=> 0,
 			"max" 			=> 100,
@@ -346,7 +402,7 @@ $cp_form = array(
 		"panel" => "Form Designer",
 		"section" => "Design",
 		"section_icon" => "connects-icon-disc",
-		"dependency" => array('name' => 'form_layout', 'operator' => '!==', 'value' => 'cp-form-layout-4'),
+		"dependency" => array('name' => 'form_layout', 'operator' => '!==', 'value' => 'cp-form-layout-4' ,'name' => 'form_layout', 'operator' => '!==', 'value' => 'cp-form-layout-3'),
 	),
 	array(
 		"type" 		=> "colorpicker",
@@ -355,6 +411,9 @@ $cp_form = array(
 		"opts"		=> array(
 			"title" 		=> __( "Label Color", "smile" ),
 			"value" 		=> "rgb(153, 153, 153)",
+			"css_property" => "color",
+			"css_selector" => ".cp-form-container label",
+			"css_preview"  => true,
 		),
 		"panel" => "Form Designer",
 		"section" => "Design",
@@ -367,7 +426,9 @@ $cp_form = array(
 	    "opts"         => array(
 	        "title"     => __( "Label Font Font Name", "smile" ),
 	        "value"     => "",
-	        "use_in"      => "panel"
+	        "use_in"      => "panel",
+	        "css_property" => "font-family",
+	        "css_selector" => ".cp-form-container label",
 	    ),
 		"panel" => "Form Designer",
 		"section" => "Design",
@@ -380,6 +441,8 @@ $cp_form = array(
 		"name" 			=> "form_lable_font_size",
 		"opts"			=> array(
 			"title" 		=> __( "Label Font Size", "smile" ),
+			"css_selector"	=> ".cp-form-container label",
+			"css_property" 	=> "font-size",
 			"value" 		=> 15,
 			"min" 			=> 0,
 			"max" 			=> 100,
@@ -432,6 +495,9 @@ $cp_form = array(
 		"opts"		=> array(
 			"title" 		=> __( "Button Background Color", "smile" ),
 			"value" 		=> "rgb(255, 153, 0)",
+			"css_property" => "background",
+			"css_selector" => ".cp-submit",
+			"css_preview"  => true,
 		),
 		"panel" => "Form Designer",
 		"section" => "Design",
@@ -443,6 +509,9 @@ $cp_form = array(
 		"name" 	=> "btn_border_radius",
 		"opts"	=> array(
 			"title" 		=> __( "Border Radius", "smile" ),
+			"css_property" 	=> "border-radius",
+			"css_selector" 	=> ".cp-submit",
+			//"css_preview" 	=> true,
 			"value" 		=> 3,
 			"min" 			=> 0,
 			"max" 			=> 40,
@@ -475,6 +544,9 @@ $cp_form = array(
 		"opts"		=> array(
 			"title" 		=> __( "Submit Button Text Hover Color", "smile" ),
 			"value" 		=> "#ffffff",
+			"css_property" 	=> "border-color",
+			"css_selector" 	=> ".cp-submit:hover",
+			// "css_preview" 	=> true,
 		),
 	    "dependency" => array('name' => 'btn_style', 'operator' => '==', 'value' => 'cp-btn-outline'),
 		"panel" => "Form Designer",
@@ -521,6 +593,7 @@ $cp_form = array(
 				__( "Full", "smile" ) 	=> "cp-submit-wrap-full",
 			),
 		),
+		"dependency" => array('name' => 'form_layout', 'operator' => '!==', 'value' => 'cp-form-layout-3'),
 		"panel" => "Form Designer",
 		"section" => "Design",
 		"section_icon" => "connects-icon-disc",
@@ -533,6 +606,8 @@ $cp_form = array(
 		"name" 			=> "submit_button_tb_padding",
 		"opts"			=> array(
 			"title" 		=> __( "Button Vertical Padding", "smile" ),
+			"css_property" 	=> "padding-tb",
+			"css_selector" 	=> ".cp-submit",
 			"value" 		=> 10,
 			"min" 			=> 0,
 			"max" 			=> 100,
@@ -549,6 +624,8 @@ $cp_form = array(
 		"name" 			=> "submit_button_lr_padding",
 		"opts"			=> array(
 			"title" 		=> __( "Button Horizontal Padding", "smile" ),
+			"css_property" 	=> "padding-lr",
+			"css_selector" 	=> ".cp-submit",
 			"value" 		=> 15,
 			"min" 			=> 0,
 			"max" 			=> 100,
@@ -612,9 +689,12 @@ if( !function_exists('cp_get_form_init') ) {
 			$class_inputs 				= '';		//	Class for - 'All Inputs'
 			$class_input_name			= '';		//	Class for - 'Input - Name'
 			$class_input_email			= '';		//	Class for - 'Input - Email'
+			$class_row_value			= '';	    //	Class for - 'textarea - rows'
+			$class_shadow  				= '';		//	Class for - 'shadow - input'
 
 			//	Submit button alignment
 			$class_submit .= ( isset($a['form_submit_align']) && '' != $a['form_submit_align'] ) ? ' ' . $a['form_submit_align'] : '';
+			$class_shadow .= ( isset($a['input_shadow']) && '' != $a['input_shadow'] ) ? '' . 'enable_input_shadow' : '';
 
 			if( isset( $a['form_layout'] ) ) {
 
@@ -690,7 +770,7 @@ if( !function_exists('cp_get_form_init') ) {
 
 			<div class="form-main <?php echo $class_wrap; ?>">
 
-		        <form id="smile-optin-form" class="cp-form <?php echo $class_form;?>">
+		        <form id="smile-optin-form" class="cp-form <?php echo $class_form;?> <?php echo $class_shadow;?>">
 
 					<?php
 
@@ -708,6 +788,8 @@ if( !function_exists('cp_get_form_init') ) {
 						$only_button_link_target	=	( isset( $a['only_button_link_target'] ) ) 	? ' data-redirect-link-target="'. $a['only_button_link_target'] . '" ' 	: '';
 					}
 
+					$submit_anamtion_class = $data_anamtion = '';
+
 					//	Show all hidden fields & input fields
 					if( $a['form_layout'] != 'cp-form-layout-4' ) { ?>
 
@@ -715,19 +797,35 @@ if( !function_exists('cp_get_form_init') ) {
 
 						<?php
 
-						$HIDDEN_FIELDS = $name = $placeholder = $require = $type = $dropdown_options = $hidden_value = '';
+						$DATA_FIELDS = $HIDDEN_FIELDS = $name = $placeholder = $require = $type = $dropdown_options = $hidden_value = $rows = '';
 
 						//	Conversion for only - Form Inputs
 						if( $a['form_layout'] !== 'cp-form-layout-4' ) {
 
 							if( !empty( $a['form_fields'] ) ) {
 								$all = explode(';', $a['form_fields'] );
+								$parent_last = end($all);
+								$data_value = array();
+								
+								foreach ($all as $parent_key => $parent_value ) {
+									$single = explode('|', $parent_value );
+									if (!strpos($single[1], 'hidden') !== false) {
+									    //echo $single[0];
+									    $data_value['order'] = $single[0];
+									}
+									
+								}
+								$last_value = explode('->', $data_value['order'] );
+								if($last_value !== null){
+									$last_value = $last_value[1];
+									$parent_last = $all[$last_value];
+								}
 
 								//	Add after 'CP_FIELD_$i' to generate names dynamically
 								//	In case if user was not add the NAME field.
 								$i = 0;
-								foreach ($all as $key => $value) {
-									$single = explode('|', $value );
+								foreach ($all as $parent_key => $parent_value ) {
+									$single = explode('|', $parent_value );
 
 									foreach ($single as $key => $value) {
 
@@ -736,7 +834,7 @@ if( !function_exists('cp_get_form_init') ) {
 										// remove all slashes from string
 										$s[1] = stripslashes_deep($s[1]);
 
-										// Sanitize string 
+										// Sanitize string
 										// avoided drop down values from sanitize
 										if( $s[0] != 'dropdown_options' ) {
 											$s[1] = sanitize_text_field($s[1]);
@@ -757,14 +855,29 @@ if( !function_exists('cp_get_form_init') ) {
 						                        break;
 						                  	case 'dropdown_options':    $dropdown_options = $s[1];
                         						break;
+                        					case 'row_value':    $rows = 'rows="'.$s[1].'"';
+                        						break;
 						                }
 									}
 
+
+									//  If last child then add '.col-md-12' for last child
+									//  Avoided '.cp-form-layout-3'
+									if( ( $a['form_layout'] !== 'cp-form-layout-3' ) && ( $parent_value == $parent_last ) && $i%2 == 0 ) {
+					                    //	Increase the NAME counter
+						                    $class_fields = ' col-md-12 col-lg-12 col-sm-12 col-xs-12 odd-field-fallback';
+					                }
+
 									//	Increase the NAME counter
-						           	$i++;
+									if( $type !== 'hidden' ) {
+						           		$i++;
+						           	}
+
+						           //echo "<pre>parent_last".$parent_last .'</pre>';
+						           	//echo'<pre>parent_value'.$parent_value.'</pre>';
 
 						           	//  Store all Hidden fields
-						           	if( $type == 'hidden' ) {	           		
+						           	if( $type == 'hidden' ) {
 						                $HIDDEN_FIELDS .= '<input class="cp-input cp-' . $type . '"'
 						                    . ' type="' . $type . '"'
 						                    . ' name="param[' . $name . ']"'
@@ -784,7 +897,7 @@ if( !function_exists('cp_get_form_init') ) {
 								                                            . ' name="param[' . $name . ']"'
 								                                            . ' placeholder="' . $placeholder . '" ' . $require . ' />';
 													break;
-												case 'email': 			//  Email 	-	ADDED DEFAULT NAME FOR EMAIL																		
+												case 'email': 			//  Email 	-	ADDED DEFAULT NAME FOR EMAIL
 								                                        echo '<input class="cp-input cp-' . $type . '"'
 								                                            . ' type="' . $type . '"'
 								                                            . ' name="param['.$name.']"'
@@ -792,7 +905,7 @@ if( !function_exists('cp_get_form_init') ) {
 													break;
 								                case 'textarea':        //  Textarea
 								                                        echo '<textarea class="cp-input cp-' . $type . '"' . $require
-								                                            . ' name="param[' . $name . ']" placeholder="' . $placeholder . '"></textarea>';
+								                                            . ' name="param[' . $name . ']" placeholder="' . $placeholder . '" '. $rows.'></textarea>';
 								                    break;
 								                case 'number': 			//	Number
 								                                        echo '<input type="number" min="" max="" step="" value="" class="cp-input cp-' . $type . '"'
@@ -819,8 +932,13 @@ if( !function_exists('cp_get_form_init') ) {
 
 				            	echo $HIDDEN_FIELDS;
 							}
-						} 
-						
+						}
+
+						if(isset($a['button_animation'])){
+							$submit_anamtion_class .= 'smile-animated ';
+							$data_anamtion  ='data-animation ="'.$a['button_animation'].'";';
+						}
+
 						?>
 
 					</div>
@@ -828,20 +946,14 @@ if( !function_exists('cp_get_form_init') ) {
 					<?php } ?>
 
 			        <div class="cp-submit-wrap <?php echo $class_submit; ?>">
-			        	<?php 
-			        	$button_animation_class = '';
-						if(isset($a['button_animation']) && $a['button_animation'] !==''){
-							$button_animation_class .= 'smile-animated '.$a['button_animation'];
-						}
-						?>
-		            	<div class="cp-submit btn-subscribe cp_responsive <?php echo $a['btn_style']; ?> <?php echo $button_animation_class;?>" <?php echo $only_button_link . $only_button_link_target; ?> >
+		            	<div class="cp-submit btn-subscribe cp_responsive <?php echo $a['btn_style'] ; ?> <?php echo $submit_anamtion_class; ?> " <?php echo $only_button_link . $only_button_link_target; ?>  <?php echo $data_anamtion;?>>
 			                <?php echo do_shortcode( html_entity_decode( $a['button_title'] ) ); ?>
 			            </div>
 			        </div><!-- .cp-submit-wrap -->
 		        </form><!-- #smile-optin-form -->
 		    </div>
-		<?php 
-		} 
+		<?php
+		}
 	}
 }
 
@@ -856,14 +968,14 @@ function cp_form_css_init( $a ) {
 	$shadow = $style = '';
 	$option  = ( isset( $a['option'] ) ) ? esc_attr( $a['option'] ) : '';
 	$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
-	//print_r($a); 
-	if($option == 'smile_info_bar_styles' && $isInline ){	
+	//print_r($a);
+	if($option == 'smile_info_bar_styles' && $isInline ){
 		$StyleID 					= ( isset( $a['style_id'] ) ) ? esc_attr( $a['style_id'] ) : '';
 		$StyleID ='content-'.$StyleID;
 	}else if($option == 'info_bar_variant_tests' && isset( $a['variant_style_id'] ) && $isInline ){
 		$StyleID 					= ( isset( $a['style_id'] ) ) ? esc_attr( $a['style_id'] ) : '';
 		$StyleID ='content-'.$StyleID;
-	}else{		
+	}else{
 	    $StyleID 					= ( isset( $a['uid_class'] ) ) ? esc_attr( $a['uid_class'] ) : '';
 	}
 
@@ -879,11 +991,19 @@ function cp_form_css_init( $a ) {
 	$form_input_padding_lr 		= ( isset($a['form_input_padding_lr']) && '' != $a['form_input_padding_lr'] ) ? $a['form_input_padding_lr'] : '';
 	$submit_button_tb_padding 	= ( isset($a['submit_button_tb_padding']) && '' != $a['submit_button_tb_padding'] ) ? $a['submit_button_tb_padding'] : '';
 	$submit_button_lr_padding 	= ( isset($a['submit_button_lr_padding']) && '' != $a['submit_button_lr_padding'] ) ? $a['submit_button_lr_padding'] : '';
+	$input_shadow 				= ( isset($a['input_shadow']) && '' != $a['input_shadow'] ) ? $a['input_shadow'] : '';
+	$input_shadow_color 		= ( isset($a['input_shadow_color']) && '' != $a['input_shadow_color'] ) ? $a['input_shadow_color'] : '';
+	$form_layout 				= ( isset($a['form_layout']) && '' != $a['form_layout'] ) ? $a['form_layout'] : '';
 
 	//  Hide Labels?
-    if( $a['form_lable_visible'] == '' || ( $a['form_lable_visible'] == '0' ) ) {
+
+    if( $a['form_lable_visible'] == '' || ( $a['form_lable_visible'] == '0' ) || $form_layout =='cp-form-layout-3') {
         $style	.=	"." . $StyleID . " .cp-form-container label { ";
         $style	.=  "   display:none;";
+        $style	.=  "}";
+    }else if( $a['form_lable_visible'] == '1'){
+    	$style	.=	"." . $StyleID . " .cp-form-container label { ";
+        $style	.=  "   display:block!important;";
         $style	.=  "}";
     }
 
@@ -895,13 +1015,21 @@ function cp_form_css_init( $a ) {
 	$style	.=	" 	text-align: " . $form_input_align . ";";
 	$style	.=	"} ";
 
+	$text_align = '';
+	if($form_input_align == 'right'){
+		$text_align = 'rtl';
+	}else if($form_input_align == 'left'){
+		$text_align = 'ltr';
+	}
+
 	//  CSS - Select align using 'direction: rtl;'
     //  Cause, Text align for select not working.
-    $style   .=  ".cp-form-container .cp-form-field select { ";
-    $style   .=  "   text-align-last: " . $form_input_align . ";";
-    $style   .=  "}";
+    $style	 .=	"." . $StyleID . " .cp-form-container .cp-form-field select { ";
+    $style   .= "   text-align-last: " . $form_input_align . ";";
+    $style   .= "   direction: " . $text_align . ";";
+    $style   .= "}";
 
-	//	CSS - Inputs
+   	//	CSS - Inputs
 	$style	.=	"." . $StyleID . " .cp-form-container .cp-form-field button, ";
 	$style	.=	"." . $StyleID . " .cp-form-container .cp-form-field input, ";
 	$style	.=	"." . $StyleID . " .cp-form-container .cp-form-field select, ";
@@ -917,6 +1045,16 @@ function cp_form_css_init( $a ) {
 	$style	.=	" 	padding-left: " . $form_input_padding_lr . "px;";
 	$style	.=	" 	padding-right: " . $form_input_padding_lr . "px;";
 	$style	.=	"}";
+
+	//Shadow to input
+	if( $input_shadow == '1'){
+	    $style	 .=	"." . $StyleID . " .enable_input_shadow .cp-input ,.enable_input_shadow input.cp-number ,.enable_input_shadow select.cp-dropdown { ";
+	    $style   .= "  -webkit-box-shadow: inset 1px 1px 2px 0px " . $input_shadow_color . "!important;";
+	  	$style   .= "  -moz-box-shadow: inset 1px 1px 2px 0px " . $input_shadow_color . "!important;";
+	    $style   .= "  box-shadow: inset 1px 1px 2px 0px " . $input_shadow_color . "!important;";
+
+	    $style   .= "}";
+	}
 
 	//	CSS - Submit
 	$style	.=	"." . $StyleID . " .cp-form-container .cp-submit { ";

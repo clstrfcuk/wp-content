@@ -45,7 +45,7 @@ switch ( $cols ) {
       'tax_query'      => array(
         array(
           'taxonomy' => 'portfolio-category',
-          'field'    => 'id',
+          'field'    => 'term_id',
           'terms'    => $filters
         )
       )

@@ -66,7 +66,7 @@ function layerslider_unauthorized_update_notice() {
 				<p>
 					<?php echo sprintf(__('You have version %1$s. The latest version is %2$s.', 'LayerSlider'), LS_PLUGIN_VERSION, $latest); ?><br>
 					<i><?php _e('New releases contain new features, bug fixes and various improvements across the entire plugin.', 'LayerSlider') ?></i>
-					<i><?php _e("Set up auto-updates to upgrade to this new version, or request it from the author of your theme if you've received LayerSlider from them.", "LayerSlider") ?> <a href="http://support.kreaturamedia.com/docs/layersliderwp/documentation.html#updating" target="_blank"><? _e('Click here', 'LayerSlider') ?></a> <?php _e('to learn more', 'LayerSlider') ?></a>.</i>
+					<i><?php _e("Set up auto-updates to upgrade to this new version, or request it from the author of your theme if you've received LayerSlider from them.", "LayerSlider") ?> <a href="https://support.kreaturamedia.com/docs/layersliderwp/documentation.html#updating" target="_blank"><? _e('Click here', 'LayerSlider') ?></a> <?php _e('to learn more', 'LayerSlider') ?></a>.</i>
 					<a href="<?php echo wp_nonce_url('?page=layerslider&action=hide-update-notice', 'hide-update-notice') ?>" class="button button-extra"><?php _e('Hide this message', 'LayerSlider') ?></a>
 				</p>
 				<div class="clear"></div>

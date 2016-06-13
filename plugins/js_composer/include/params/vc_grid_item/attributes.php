@@ -21,9 +21,9 @@ function vc_gitem_template_attribute_filter_terms_css_classes( $value, $data ) {
 	extract( array_merge( array(
 		'post' => null,
 	), $data ) );
-	if ( isset( $post->filter_terms ) ) {
+	if ( isset( $post->filter_terms ) && is_array( $post->filter_terms ) ) {
 		foreach ( $post->filter_terms as $t ) {
-			$output .= ' vc_grid-term-' . $t;
+			$output .= ' vc_grid-term-' . $t; // @todo fix #106154391786878 $t is array
 		}
 	}
 

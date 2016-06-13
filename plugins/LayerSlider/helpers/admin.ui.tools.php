@@ -25,7 +25,7 @@ function lsGetInput($default, $current, $attrs = array()) {
 
 	// Override the default
 	if(isset($current[$name]) && $current[$name] !== '') {
-		$el->val(stripslashes($current[$name]));
+		$el->val(htmlspecialchars(stripslashes($current[$name])));
 	}
 
 	echo $el;

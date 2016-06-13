@@ -3,9 +3,9 @@
  * Plugin Name: Envira Gallery
  * Plugin URI:  http://enviragallery.com
  * Description: Envira Gallery is best responsive WordPress gallery plugin.
- * Author:      Thomas Griffin
- * Author URI:  http://thomasgriffinmedia.com
- * Version:     1.4.3.0
+ * Author:      Envira Gallery Team
+ * Author URI:  http://enviragallery.com
+ * Version:     1.5.0.6
  * Text Domain: envira-gallery
  * Domain Path: languages
  *
@@ -56,7 +56,7 @@ class Envira_Gallery {
 	 *
 	 * @var string
 	 */
-	public $version = '1.4.3.0';
+	public $version = '1.5.0.6';
 
 	/**
 	 * The name of the plugin.
@@ -179,7 +179,7 @@ class Envira_Gallery {
 
 		?>
         <div class="error">
-            <p><?php esc_html( 'Please <a href="plugins.php">deactivate</a> the Envira Lite Plugin. Your premium version of Envira Gallery may not work as expected until the Lite version is deactivated.', 'envira-gallery' ); ?></p>
+            <p><?php _e( 'Please <a href="plugins.php">deactivate</a> the Envira Lite Plugin. Your premium version of Envira Gallery may not work as expected until the Lite version is deactivated.', 'envira-gallery' ); ?></p>
         </div>
         <?php
 
@@ -220,7 +220,31 @@ class Envira_Gallery {
 		require plugin_dir_path( __FILE__ ) . 'includes/admin/notice.php';
 		require plugin_dir_path( __FILE__ ) . 'includes/admin/posttype.php';
 		require plugin_dir_path( __FILE__ ) . 'includes/admin/settings.php';
+		require plugin_dir_path( __FILE__ ) . 'includes/admin/table.php';
+		require plugin_dir_path( __FILE__ ) . 'includes/admin/addons.php';
 
+	}
+
+	/**
+	 * Loads a partial view for the Administration screen
+	 * 
+	 * @since 1.5.0
+	 *
+	 * @param 	string 	$template 	PHP file at includes/admin/partials, excluding file extension
+	 * @param 	array 	$data 		Any data to pass to the view
+	 * @return 	void
+	 */
+	public function load_admin_partial( $template, $data = array() ){
+	
+		$dir = trailingslashit( plugin_dir_path( __FILE__ ) . 'includes/admin/partials' );
+	
+		if ( file_exists( $dir . $template . '.php' ) ) {
+			require_once(  $dir . $template . '.php' );
+			return true;
+		}
+					
+		return false;
+			
 	}
 
 	/**
@@ -402,8 +426,8 @@ class Envira_Gallery {
 			),
 			'posts_per_page' => 1,
 		) );
-		if ( $galleries ) {
-			return get_post_meta( $galleries[0], '_eg_gallery_data', true );
+		if ( $galleries->posts ) {
+			return get_post_meta( $galleries->posts[0], '_eg_gallery_data', true );
 		}
 
 		// No galleries found.
@@ -416,17 +440,20 @@ class Envira_Gallery {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param bool $skip_empty 		Skip empty sliders.
-	 * @param bool $ignore_cache 	Ignore Transient cache.
+	 * @param 	bool 		$skip_empty 		Skip empty sliders.
+	 * @param 	bool 		$ignore_cache 		Ignore Transient cache.
+	 * @param 	string 		$search_terms 		Search for specified Galleries by Title
 	 *
-	 * @return array|bool 			Array of gallery data or false if none found.
+	 * @return array|bool 					Array of gallery data or false if none found.
 	 */
-	public function get_galleries( $skip_empty = true, $ignore_cache = false ) {
+	public function get_galleries( $skip_empty = true, $ignore_cache = false, $search_terms = '' ) {
 
 		// Attempt to return the transient first, otherwise generate the new query to retrieve the data.
-		if ( $ignore_cache || false === ( $galleries = get_transient( '_eg_cache_all' ) ) ) {
-			$galleries = $this->_get_galleries( $skip_empty );
-			if ( $galleries ) {
+		if ( $ignore_cache || ! empty( $search_terms ) || false === ( $galleries = get_transient( '_eg_cache_all' ) ) ) {
+			$galleries = $this->_get_galleries( $skip_empty, $search_terms );
+
+			// Cache the results if we're not performing a search and we have some results
+			if ( $galleries && empty( $search_terms ) ) {
 				$expiration = Envira_Gallery_Common::get_instance()->get_transient_expiration_time();
 				set_transient( '_eg_cache_all', $galleries, $expiration );
 			}
@@ -442,26 +469,34 @@ class Envira_Gallery {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param bool $skip_empty 	Skip Empty Galleries.
-	 * @return mixed 			Array of gallery data or false if none found.
+	 * @param bool 		$skip_empty 	Skip Empty Galleries.
+	 * @param string 	$search_terms 	Search for specified Galleries by Title
+	 * @return mixed 					Array of gallery data or false if none found.
 	 */
-	public function _get_galleries( $skip_empty = true ) {
+	public function _get_galleries( $skip_empty = true, $search_terms = '' ) {
 
-		$galleries = new WP_Query(
-			array(
-				'post_type'     => 'envira',
-				'post_status'   => 'publish',
-				'posts_per_page' => 99,
-				'no_found_rows' => true,
-				'fields'        => 'ids',
-				'meta_query'    => array(
-					array(
-						'key'   => '_eg_gallery_data',
-						'compare' => 'EXISTS',
-					),
+		// Build WP_Query arguments.
+		$args = array(
+			'post_type'     => 'envira',
+			'post_status'   => 'publish',
+			'posts_per_page'=> 99,
+			'no_found_rows' => true,
+			'fields'        => 'ids',
+			'meta_query'    => array(
+				array(
+					'key'   => '_eg_gallery_data',
+					'compare' => 'EXISTS',
 				),
-			)
+			),
 		);
+
+		// If search terms exist, add a search parameter to the arguments.
+		if ( ! empty( $search_terms ) ) {
+			$args['s'] = $search_terms;
+		}
+
+		// Run WP_Query.
+		$galleries = new WP_Query( $args );
 		if ( ! isset( $galleries->posts ) || empty( $galleries->posts ) ) {
 			return false;
 		}

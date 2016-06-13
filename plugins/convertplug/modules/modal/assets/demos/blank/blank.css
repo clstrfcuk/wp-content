@@ -41,7 +41,13 @@
 
 }
 .cp-blank.no-padding .cp-row-equalized-center {
-    padding:0
+    padding:0 10px;
+}
+.cp-blank .cp-row {
+    margin: 0;
+}
+.cp-blank-container .cp-overlay-close span{
+        font-family: "Open sans",serif;
 }
 
 @media (max-width:768px) {

@@ -342,8 +342,23 @@ class Envira_Gallery_Import {
                 // Now update the attachment reference checker.
                 $this->update_gallery_checker( $attach_id, $post_id );
 
+                // Get the imported image URL
+                $image_url = wp_get_attachment_image_src( $attach_id, 'full' );
+
+                // Update the image's src, to reflects its new URL
+                // Maybe update the image's link, if the original image's link is an image
+                // This ensures that links to pages, videos etc do not get 'lost' in the import
+                // process.
+                if ( $item['src'] == $item['link'] ) {
+                    $item['src'] = $image_url[0];
+                    $item['link'] = $image_url[0];
+                } else {
+                    // Just update the src
+                    $item['src'] = $image_url[0];
+                }
+
                 // Add the new attachment to the gallery.
-                $data = $this->update_attachment_meta( $data, $attach_id );
+                $data = $this->update_attachment_meta( $data, $attach_id, $item );
             }
         }
 
@@ -402,13 +417,14 @@ class Envira_Gallery_Import {
      *
      * @since 1.0.0
      *
-     * @param array $data    The data to use for importing the remote image.
-     * @param int $attach_id The image attachment ID to target.
-     * @return array $data   Data with updated meta information.
+     * @param array     $data       The data to use for importing the remote image.
+     * @param int       $attach_id  The image attachment ID to target.
+     * @param array     $item       The original image item with metadata.
+     * @return array    $data       Data with updated meta information.
      */
-    public function update_attachment_meta( $data, $attach_id ) {
+    public function update_attachment_meta( $data, $attach_id, $item ) {
 
-        return envira_gallery_ajax_prepare_gallery_data( $data, $attach_id );
+        return envira_gallery_ajax_prepare_gallery_data( $data, $attach_id, $item );
 
     }
 

@@ -36,6 +36,80 @@ function envira_gallery_ajax_change_type() {
 
 }
 
+add_action( 'wp_ajax_envira_gallery_change_preview', 'envira_gallery_ajax_change_preview' );
+/**
+ * Returns the output for the Preview Metabox for the given Gallery Type.
+ *
+ * @since 1.5.0
+ */
+function envira_gallery_ajax_change_preview() {
+
+    // Run a security check first.
+    check_ajax_referer( 'envira-gallery-change-preview', 'nonce' );
+
+    // Prepare variables.
+    $post_id = absint( $_POST['post_id'] );
+    $type    = stripslashes( $_POST['type'] );
+
+    // Get the saved Gallery configuration.
+    $data    = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance()->get_gallery( $post_id ) : Envira_Gallery_Lite::get_instance()->get_gallery( $post_id ) );
+
+    // Iterate through the POSTed Gallery configuration (which comprises of index based fields),
+    // overwriting the above with the supplied values.  This gives us the most up to date, 
+    // unsaved configuration.
+    foreach ( $_POST['data'] as $index => $field ) {
+
+        // Skip if this isnt' a configuration field.
+        if ( strpos( $field['name'], '_envira_gallery[' ) === false ) {
+            continue;
+        }
+
+        // Extract the key from the field name.
+        preg_match_all( "/\[([^\]]*)\]/", $field['name'], $matches );
+        if ( ! isset( $matches[1] ) || count( $matches[1] ) == 0 ) {
+            continue;
+        }
+        
+        // Add this field key/value pair to the configuration
+        $data['config'][ $matches[1][0] ] = $field['value'];
+
+    }
+
+    // Retrieve the preview for the type selected, using the now up-to-date gallery configuration.
+    ob_start();
+    do_action( 'envira_gallery_preview_' . $type, $data );
+    $html = ob_get_clean();
+
+    // Send back the response.
+    echo json_encode( $html );
+    die;
+
+}
+
+add_action( 'wp_ajax_envira_gallery_set_user_setting', 'envira_gallery_ajax_set_user_setting' );
+/**
+ * Stores a user setting for the logged in WordPress User
+ *
+ * @since 1.5.0
+ */
+function envira_gallery_ajax_set_user_setting() {
+
+    // Run a security check first.
+    check_ajax_referer( 'envira-gallery-set-user-setting', 'nonce' );
+
+    // Prepare variables.
+    $name    = stripslashes( $_POST['name'] );
+    $value   = stripslashes( $_POST['value'] );
+
+    // Set user setting.
+    set_user_setting( $name, $value );
+
+    // Send back the response.
+    wp_send_json_success();
+    die();
+
+}
+
 add_action( 'wp_ajax_envira_gallery_load_image', 'envira_gallery_ajax_load_image' );
 /**
  * Loads an image into a gallery.
@@ -415,23 +489,23 @@ function envira_gallery_ajax_save_bulk_meta() {
         }
 
         // Update image metadata.
-        if ( isset( $meta['title'] ) ) {
+        if ( isset( $meta['title'] ) && ! empty( $meta['title'] ) ) {
             $gallery_data['gallery'][ $image_id ]['title'] = trim( $meta['title'] );
         }
 
-        if ( isset( $meta['alt'] ) ) {
+        if ( isset( $meta['alt'] ) && ! empty( $meta['alt'] )  ) {
             $gallery_data['gallery'][ $image_id ]['alt'] = trim( esc_html( $meta['alt'] ) );
         }
 
-        if ( isset( $meta['link'] ) ) {
+        if ( isset( $meta['link'] ) && ! empty( $meta['link'] )  ) {
             $gallery_data['gallery'][ $image_id ]['link'] = esc_url( $meta['link'] );
         }
 
-        if ( isset( $meta['link_new_window'] ) ) {
+        if ( isset( $meta['link_new_window'] ) && ! empty( $meta['link_new_window'] )  ) {
             $gallery_data['gallery'][ $image_id ]['link_new_window'] = trim( $meta['link_new_window'] );
         }
         
-        if ( isset( $meta['caption'] ) ) {
+        if ( isset( $meta['caption'] ) && ! empty( $meta['caption'] )  ) {
             $gallery_data['gallery'][ $image_id ]['caption'] = trim( $meta['caption'] );
         }
 
@@ -638,7 +712,7 @@ function envira_gallery_ajax_prepare_gallery_data( $gallery_data, $id, $image = 
     if ( ! $image ) {
         $url        = wp_get_attachment_image_src( $id, 'full' );
         $alt_text   = get_post_meta( $id, '_wp_attachment_image_alt', true );
-        $image = array(
+        $new_image = array(
             'status'  => 'active',
             'src'     => isset( $url[0] ) ? esc_url( $url[0] ) : '',
             'title'   => get_the_title( $id ),
@@ -648,9 +722,9 @@ function envira_gallery_ajax_prepare_gallery_data( $gallery_data, $id, $image = 
             'thumb'   => ''
         );
     } else {
-        $image = array(
+        $new_image = array(
             'status'  => 'active',
-            'src'     => $image['url'],
+            'src'     => ( isset( $image['src'] ) ? $image['src'] : $image['url'] ),
             'title'   => $image['title'],
             'link'    => $image['link'],
             'alt'     => $image['alt'],
@@ -658,6 +732,9 @@ function envira_gallery_ajax_prepare_gallery_data( $gallery_data, $id, $image = 
             'thumb'   => '',
         );
     }
+
+    // Allow Addons to possibly add metadata now
+    $image = apply_filters( 'envira_gallery_ajax_prepare_gallery_data_item', $new_image, $image, $id, $gallery_data );
 
     // If gallery data is not an array (i.e. we have no images), just add the image to the array
     if ( ! isset( $gallery_data['gallery'] ) || ! is_array( $gallery_data['gallery'] ) ) {
@@ -744,5 +821,138 @@ function envira_gallery_get_attachment_links() {
         'media_link'      => wp_get_attachment_url( $attachment_id ),
         'attachment_page' => get_attachment_link( $attachment_id ),
     ) );
+
+}
+
+/**
+ * Returns Galleries, with an optional search term
+ *
+ * @since 1.5.0
+ */
+add_action( 'wp_ajax_envira_gallery_editor_get_galleries', 'envira_gallery_editor_get_galleries' );
+function envira_gallery_editor_get_galleries() {
+
+    // Check nonce
+    check_ajax_referer( 'envira-gallery-editor-get-galleries', 'nonce' );
+
+    // Get POSTed fields
+    $search         = (bool) $_POST['search'];
+    $search_terms   = sanitize_text_field( $_POST['search_terms'] );
+    $prepend_ids    = stripslashes_deep( $_POST['prepend_ids'] );
+
+    // Get galleries
+    $instance = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
+    $galleries = $instance->get_galleries( false, true, ( $search ? $search_terms : '' ) );
+
+    // Build array of just the data we need.
+    foreach ( ( array ) $galleries as $gallery ) {
+        // Get the thumbnail of the first image
+        if ( isset( $gallery['gallery'] ) && ! empty( $gallery['gallery'] ) ) {
+            // Get the first image
+            reset( $gallery['gallery'] );
+            $key = key( $gallery['gallery'] );
+            $thumbnail = wp_get_attachment_image_src( $key, 'thumbnail' );
+        }
+
+        // Add gallery to results
+        $results[] = array(
+            'id'        => $gallery['id'],
+            'slug'      => $gallery['config']['slug'],
+            'title'     => $gallery['config']['title'],
+            'thumbnail' => ( ( isset( $thumbnail ) && is_array( $thumbnail ) ) ? $thumbnail[0] : '' ),
+            'action'    => 'gallery', // Tells the editor modal whether this is a Gallery or Album for the shortcode output
+        );
+    }
+ 
+    // If any prepended Gallery IDs were specified, get them now
+    // These will typically be a Defaults Gallery, which wouldn't be included in the above get_galleries() call
+    if ( is_array( $prepend_ids ) && count( $prepend_ids ) > 0 ) {
+        $prepend_results = array();
+        
+        // Get each Gallery
+        foreach ( $prepend_ids as $gallery_id ) {
+            // Get gallery
+            $gallery = get_post_meta( $gallery_id, '_eg_gallery_data', true );
+
+            // Get gallery first image
+            if ( isset( $gallery['gallery'] ) && ! empty( $gallery['gallery'] ) ) {
+                // Get the first image
+                reset( $gallery['gallery'] );
+                $key = key( $gallery['gallery'] );
+                $thumbnail = wp_get_attachment_image_src( $key, 'thumbnail' );
+            }
+
+            // Add gallery to results
+            $prepend_results[] = array(
+                'id'        => $gallery['id'],
+                'slug'      => $gallery['config']['slug'],
+                'title'     => $gallery['config']['title'],
+                'thumbnail' => ( ( isset( $thumbnail ) && is_array( $thumbnail ) ) ? $thumbnail[0] : '' ),
+                'action'    => 'gallery', // Tells the editor modal whether this is a Gallery or Album for the shortcode output
+            );
+        }
+
+        // Add to results
+        if ( is_array( $prepend_results ) && count( $prepend_results ) > 0 ) {
+            $results = array_merge( $prepend_results, $results );
+        }
+    }
+
+    // Return galleries
+    wp_send_json_success( $results );
+
+}
+
+/**
+ * Moves media (images) from one Gallery to another
+ *
+ * @since 1.5.0.3
+ */
+add_action( 'wp_ajax_envira_gallery_move_media', 'envira_gallery_move_media' );
+function envira_gallery_move_media() {
+
+    // Check nonce
+    check_ajax_referer( 'envira-gallery-move-media', 'nonce' );
+
+    // Get POSTed fields
+    $from_gallery_id    = absint( $_POST['from_gallery_id'] );
+    $to_gallery_id      = absint( $_POST['to_gallery_id'] );
+    $image_ids          = $_POST['image_ids'];
+
+    if ( ! $from_gallery_id ) {
+        wp_send_json_error( __( 'The From Gallery ID has not been specified.', 'envira-gallery' ) );
+    }
+    if ( ! $to_gallery_id ) {
+        wp_send_json_error( __( 'The From Gallery ID has not been specified.', 'envira-gallery' ) );
+    }
+    if ( count( $image_ids ) == 0 ) {
+        wp_send_json_error( __( 'No images were selected to be moved between Galleries.', 'envira-gallery' ) );
+    }
+
+    // Get from and to Galleries
+    $from_gallery   = Envira_Gallery::get_instance()->get_gallery( $from_gallery_id );
+    $to_gallery     = Envira_Gallery::get_instance()->get_gallery( $to_gallery_id );
+    
+    // Iterate through each image ID, adding the image to $to_gallery, then removing from $from_gallery
+    foreach ( $image_ids as $image_id ) {
+        // Check the image exists in $from_gallery
+        // If not, skip this image
+        if ( ! isset( $from_gallery['gallery'][ $image_id ] ) ) {
+            continue;
+        }
+
+        // Copy the image to $to_gallery
+        $to_gallery['gallery'][ $image_id ] = $from_gallery['gallery'][ $image_id ];
+
+        // Remove the image from $from_gallery
+        unset( $from_gallery['gallery'][ $image_id ] );
+    }
+
+    // Save both Galleries
+    update_post_meta( $from_gallery_id, '_eg_gallery_data', $from_gallery );
+    update_post_meta( $to_gallery_id, '_eg_gallery_data', $to_gallery );
+
+    // Return success
+    wp_send_json_success();
 
 }

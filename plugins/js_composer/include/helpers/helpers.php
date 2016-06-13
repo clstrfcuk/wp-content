@@ -261,7 +261,7 @@ if ( ! function_exists( 'shortcode_exists' ) ) {
 	}
 }
 
-/* Helper function which returs list of site attached images,
+/* Helper function which returns list of site attached images,
    and if image is attached to the current post it adds class
    'added'
 ---------------------------------------------------------- */
@@ -273,19 +273,43 @@ if ( ! function_exists( 'siteAttachedImages' ) ) {
 	 * @return string
 	 */
 	function siteAttachedImages( $att_ids = array() ) {
+		_deprecated_function( 'siteAttachedImages',
+			'4.11',
+			'vc_siteAttachedImages' );
+
+		return vc_siteAttachedImages( $att_ids );
+	}
+}
+
+/* Helper function which returns list of site attached images,
+   and if image is attached to the current post it adds class
+   'added'
+---------------------------------------------------------- */
+if ( ! function_exists( 'vc_siteAttachedImages' ) ) {
+	/**
+	 * @param array $att_ids
+	 *
+	 * @since 4.11
+	 * @return string
+	 */
+	function vc_siteAttachedImages( $att_ids = array() ) {
 		$output = '';
 
-		global $wpdb;
-		$media_images = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE post_type = 'attachment' order by ID desc" );
+		$limit = (int) apply_filters( 'vc_site_attached_images_query_limit',
+			- 1 );
+		$media_images = get_posts( 'post_type=attachment&orderby=ID&numberposts=' . $limit );
 		foreach ( $media_images as $image_post ) {
-			$thumb_src = wp_get_attachment_image_src( $image_post->ID, 'thumbnail' );
+			$thumb_src = wp_get_attachment_image_src( $image_post->ID,
+				'thumbnail' );
 			$thumb_src = $thumb_src[0];
 
-			$class = ( in_array( $image_post->ID, $att_ids ) ) ? ' class="added"' : '';
+			$class = ( in_array( $image_post->ID,
+				$att_ids ) ) ? ' class="added"' : '';
 
 			$output .= '<li' . $class . '>
-						<img rel="' . $image_post->ID . '" src="' . $thumb_src . '" />
-						<span class="img-added">' . __( 'Added', 'js_composer' ) . '</span>
+						<img rel="' . esc_attr( $image_post->ID ) . '" src="' . esc_url( $thumb_src ) . '" />
+						<span class="img-added">' . __( 'Added',
+					'js_composer' ) . '</span>
 					</li>';
 		}
 
@@ -317,7 +341,7 @@ function fieldAttachedImages( $images = array() ) {
 		if ( $thumb_src ) {
 			$output .= '
 			<li class="added">
-				<img rel="' . $image . '" src="' . $thumb_src . '" />
+				<img rel="' . esc_attr( $image ) . '" src="' . esc_url( $thumb_src ) . '" />
 				<a href="#" class="vc_icon-remove"></a>
 			</li>';
 		}
@@ -610,7 +634,7 @@ function vc_convert_inner_shortcode( $m ) {
 		if ( preg_match( '/first/', $el_position ) ) {
 			$result .= '[vc_row_inner]';
 		}
-		$result .= "\n" . '[vc_column_inner width="' . $width . '" el_position="' . $el_position . '"]';
+		$result .= "\n" . '[vc_column_inner width="' . esc_attr( $width ) . '" el_position="' . esc_attr( $el_position ) . '"]';
 		$attr = '';
 		foreach ( shortcode_parse_atts( $attr_string ) as $key => $value ) {
 			if ( 'width' === $key ) {

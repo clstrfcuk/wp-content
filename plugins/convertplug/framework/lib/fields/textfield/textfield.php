@@ -15,7 +15,7 @@ if ( function_exists('smile_add_input_type'))
 function textfield_settings_field($name, $settings, $value)
 {
 	$input_name = $name;
-	$value = htmlentities( $value );
+	$value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
 	$output = '<p><input type="text" id="smile_'.$input_name.'" class="form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$value.'" /></p>';

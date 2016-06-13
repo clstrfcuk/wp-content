@@ -21,6 +21,9 @@
     padding-right: 0px;
     float: left;
 }
+.cp-optin-to-win-container .cp-overlay-close span{
+        font-family: "Roboto",serif;
+}
 
 @media (max-width:768px) {
     .cp-optin-to-win .cp-text-container,
@@ -72,7 +75,7 @@
     font-weight: 600;
     font-size: 14px;
     line-height: normal;    /* line-height: 1.38em; */
-    border-radius: 3px;
+    /* border-radius: 3px; */
     outline: none;
 }
 
@@ -87,7 +90,7 @@
 }
 
 .cp-modal .cp-optin-to-win .cp-submit {
-    border-radius: 3px;
+  /*   border-radius: 3px; */
     margin: 0px;
 }
 

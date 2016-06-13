@@ -104,7 +104,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 				if ( is_array( $vcTaxonomiesTypes ) && ! empty( $vcTaxonomiesTypes ) ) {
 					foreach ( $vcTaxonomiesTypes as $t => $data ) {
 						if ( 'post_format' !== $t && is_object( $data ) ) {
-							$taxonomiesForFilter[ $data->labels->name ] = $t;
+							$taxonomiesForFilter[ $data->labels->name . '(' . $t . ')' ] = $t;
 						}
 					}
 				}
@@ -1154,9 +1154,10 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 				'param_name' => 'initial_loading_animation',
 				'value' => array(
 					__( 'None', 'js_composer' ) => 'none',
-					__( 'Default', 'js_composer' ) => 'default',
+					__( 'Default', 'js_composer' ) => 'zoomIn',
 					__( 'Fade In', 'js_composer' ) => 'fadeIn',
 				),
+				'std' => 'zoomIn',
 				'settings' => array(
 					'type' => array(
 						'in',

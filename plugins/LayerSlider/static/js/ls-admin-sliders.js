@@ -14,7 +14,7 @@ jQuery(function($) {
 			});
 
 			// Search
-			$('.ls-font-search button').click(function(e) {
+			$('.ls-font-search > button').click(function(e) {
 				e.preventDefault();
 				var input = $(this).prev()[0];
 				LS_GoogleFontsAPI.timeout = setTimeout(function() {
@@ -30,6 +30,17 @@ jQuery(function($) {
 						LS_GoogleFontsAPI.search(input);
 					}, 500);
 				}
+			});
+
+			// Form save
+			$('form.ls-google-fonts').submit(function() {
+				$('ul.ls-font-list li', this).each(function(idx) {
+					$('input', this).each(function() {
+						$(this).attr('name', 'fontsData['+idx+']['+$(this).data('name')+']');
+					});
+				});
+
+				return true;
 			});
 
 			// Select font
@@ -241,8 +252,7 @@ jQuery(function($) {
 
 			// Append list item
 			var item = $('ul.ls-font-list li.ls-hidden').clone();
-				item.children('input:text').val(url).attr('name', 'urlParams[]');
-				item.children('input:checkbox').attr('name', 'onlyOnAdmin[]');
+				item.children('input:text').val(url);
 				item.appendTo('ul.ls-font-list').attr('class', '');
 
 			// Reset search field

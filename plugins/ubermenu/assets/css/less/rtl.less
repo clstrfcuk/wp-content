@@ -1,0 +1,48 @@
+/* Text RTL */
+.rtl .ubermenu,
+.rtl .ubermenu .ubermenu-item{
+     text-align:right;
+}
+/* Left Aligned top level items */
+.rtl .ubermenu-items-align-left.ubermenu-horizontal{
+    text-align:left;
+}
+.rtl .ubermenu-items-align-left.ubermenu-horizontal .ubermenu-item.ubermenu-item-level-0{
+    float:none;
+}
+/* Center Aligned top level items */
+.rtl .ubermenu-items-align-center.ubermenu-horizontal{
+    text-align:center;
+}
+.rtl .ubermenu-items-align-left.ubermenu-horizontal .ubermenu-item.ubermenu-item-level-0{
+    float:none;
+}
+/* Left-most item top level */
+.rtl .ubermenu.ubermenu-horizontal .ubermenu-item-level-0:last-child > .ubermenu-target{
+    border-left:none;
+    box-shadow:none;
+}
+/* Columns RTL */
+.rtl .ubermenu .ubermenu-submenu-type-mega > .ubermenu-column:not(.ubermenu-tabs-group),
+.rtl .ubermenu .ubermenu-submenu-type-tab-content-panel > .ubermenu-column:not(.ubermenu-tabs-group) {
+     float:right;
+}
+/* Reverse icon padding */
+.rtl .ubermenu .ubermenu-item-layout-icon_left>.ubermenu-target-title{
+    margin-left:0;
+    margin-right:.6em;
+}
+/* Move arrows to left */
+.rtl .ubermenu-sub-indicators .ubermenu-item-level-0.ubermenu-has-submenu-drop > .ubermenu-target{
+    padding-right:20px;
+    padding-left:25px;
+}
+.rtl .ubermenu-sub-indicators .ubermenu-item-level-0.ubermenu-has-submenu-drop > .ubermenu-target:after{
+    right:auto;
+    left:10px;
+}
+/* Disabling padding, but keep indicator on left for sub indicator */
+.rtl .ubermenu.ubermenu-sub-indicators .ubermenu-item.ubermenu-disable-padding.ubermenu-has-submenu-drop > .ubermenu-target{
+	padding-left:30px;
+	padding-right:0;
+}

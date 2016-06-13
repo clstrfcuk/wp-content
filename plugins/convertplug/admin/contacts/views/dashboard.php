@@ -1,4 +1,4 @@
-<?php	
+<?php
 	$total        = 0;
     $limit        = ( isset( $_GET['limit'] ) ) ? $_GET['limit'] : 10;
     $page         = ( isset( $_GET['cont-page'] ) ) ? $_GET['cont-page'] : 1;
@@ -7,18 +7,29 @@
     $order        = ( isset( $_GET['order'] ) ) ? $_GET['order'] : 'desc';
     $maintainKeys = true;
     $smile_lists = get_option('smile_lists');
-
+    $uninstalled_addons = array();
     // to unset deactivated / inactive mailer addons
     if( is_array($smile_lists) ) {
     	foreach( $smile_lists as $key => $list ){
     		$provider = $list['list-provider'];
     		if( $provider !== 'Convert Plug' ) {
 	    		if( !isset( Smile_Framework::$addon_list[$provider] ) && !isset( Smile_Framework::$addon_list[strtolower($provider)] ) ) {
+
+            $uninstalled_addons[] =  $provider;
 	    			unset( $smile_lists[$key] );
 	    		}
 	    	}
     	}
     }
+
+    if ( count($uninstalled_addons) > 0 ) {
+
+      $msg = "It seems you recently upgraded to the 2.0 version. Read the changelog <a target='_blank' href='https://changelog.brainstormforce.com/convertplug/author/brainstormforce/'>here</a>. To see your previous campaigns (".ucfirst(implode(",",$uninstalled_addons))."), you will need to install the free addon from <a target='_blank' href='".admin_url('admin.php?page=bsf-extensions-14058953')."'>this</a> page.";
+
+      echo "<div class='cp-notification'><h4>".$msg."</h4></div>";
+
+    }
+
     // push contact count to smile_lists array
     if( is_array($smile_lists) ) {
 	    foreach( $smile_lists as $key => $list ){
@@ -32,45 +43,45 @@
 			} else {
 				$listOption = "cp_connects_".$listName;
 				$list_contacts = get_option($listOption);
-			}	
-			$contacts = !empty( $list_contacts ) ? count( $list_contacts ) : 0;	
+			}
+			$contacts = !empty( $list_contacts ) ? count( $list_contacts ) : 0;
 			$smile_lists[$key]['contacts'] = $contacts;
 		}
 	}
 
 	if( is_array($smile_lists) ) {
-		$total      = count($smile_lists);	
+		$total      = count($smile_lists);
 	}
 	require_once 'cp-paginator.php';
 
 	// redirect to first page for search results
     if( isset( $_POST['sq'] ) ) {
       $searchKey =  esc_attr($_POST['sq']);
-      $redirectString = '?page=contact-manager&limit='.$limit.'&sq='.$searchKey.'&cont-page=1';      
+      $redirectString = '?page=contact-manager&limit='.$limit.'&sq='.$searchKey.'&cont-page=1';
       echo "<script>
       window.location.href= '$redirectString';
       </script>";
-    } else { 
+    } else {
       $searchKey = '';
     }
 
-    if ( isset( $_GET['order'] )  && $_GET['order']  == 'asc' ) 
+    if ( isset( $_GET['order'] )  && $_GET['order']  == 'asc' )
       $orderLink = "order=desc";
-    else 
-      $orderLink = "order=asc"; 
+    else
+      $orderLink = "order=asc";
 
-  	$sortingListClass = $sortinglistNameClass = $sortingProviderClass = $sortingContactsClass = "sorting"; 
+  	$sortingListClass = $sortinglistNameClass = $sortingProviderClass = $sortingContactsClass = "sorting";
 
-  	// define sorting class 
+  	// define sorting class
     if ( isset( $_GET['orderby'] ) ) {
       switch( $_GET['orderby'] ) {
-        case "list" : 
+        case "list" :
           $sortingListClass  = 'sorting-'.$_GET['order'];
-        break; 
-        case "list-name" : 
+        break;
+        case "list-name" :
           $sortinglistNameClass = 'sorting-'.$_GET['order'];
-        break; 
-        case "list-provider" : 
+        break;
+        case "list-provider" :
           $sortingProviderClass  = 'sorting-'.$_GET['order'];
         break;
         case "contacts":
@@ -79,7 +90,7 @@
       }
     }
 
-    if( isset($_GET['sq']) && !empty($_GET['sq']) ) 
+    if( isset($_GET['sq']) && !empty($_GET['sq']) )
       $sq = $_GET['sq'];
     else
       $sq = $searchKey;
@@ -90,10 +101,10 @@
    	// define parameters for search
     $searchInParams = array('list-name','list-provider','provider_list');
 
-    if ($smile_lists) {      
+    if ($smile_lists) {
       $Paginator = new Paginator( $smile_lists );
       $result = $Paginator->getData( $limit , $page ,$orderby, $order , $sq, $searchInParams, $maintainKeys );
-      $smile_lists = $result->data;   
+      $smile_lists = $result->data;
     }
 ?>
 
@@ -122,7 +133,7 @@
         </div>
       </div>
     </div><!-- bend-heading section -->
-    
+
     <div class="bend-content-wrap" style="margin-top: 30px;">
       <hr class="bsf-extensions-lists-separator" style="margin: 22px 0px 30px 0px;"></hr>
       <div class="container bsf-connect-content">
@@ -143,7 +154,7 @@
               	<a href="?page=contact-manager&orderby=list&<?php echo $orderLink; ?>&sq=<?php echo $searchKey; ?>&cont-page=<?php echo $page; ?>">
               		<span class="connects-icon-align-justify"></span> <?php _e( "List", "smile" ); ?>
               	</a>
-              </th>	
+              </th>
               <th scope="col" id="contacts" class="manage-column column-contacts <?php echo $sortingContactsClass; ?>">
               	<a href="?page=contact-manager&orderby=contacts&<?php echo $orderLink; ?>&sq=<?php echo $searchKey; ?>&cont-page=<?php echo $page; ?>">
               		<span class="connects-icon-head"></span> <?php _e( "Contacts", "smile" ); ?>
@@ -161,7 +172,7 @@
 				  	$provider = $list['list-provider'];
 						$list_name = $list['list-name'];
 						$list_id = $list['list'];
-						
+
 						$mailer = str_replace(" ","_",strtolower( trim( $provider ) ) );
 						$contacts = $list['contacts'];
 						$provider_list_name = $list['provider_list'];
@@ -175,7 +186,7 @@
 							$provider_list_name = 'Default';
 							$providerName = 'ConvertPlug';
 						} else {
-							$providerName = Smile_Framework::$addon_list[strtolower($provider)]['name'];		
+							$providerName = Smile_Framework::$addon_list[strtolower($provider)]['name'];
 						}
 					  ?>
             <tr>
@@ -213,10 +224,10 @@
                         echo 'No list.';
                       } else {
                         echo esc_attr( $provider_list_name );
-                      }                     
+                      }
                     }
               		}
-              		
+
               	} else {
                   if( $provider == 'ontraport' ) {
                     echo ( $list['list'] != '-1' ) ? esc_attr( $provider_list_name ) : 'No tags associated with this campaign.';
@@ -227,7 +238,7 @@
               </td>
               <td scope="col" class="manage-column column-contacts"><?php echo esc_attr( $contacts ); ?></td>
               <td class="actions column-actions" style="vertical-align: inherit;">
-                <a class="action-list" href="<?php echo plugins_url( 'download.php?list_id='.$key, __FILE__ ); ?>"<?php echo $onclick; ?> target="_top"><i style="font-size: 17px;top: -1px;position: relative;" class="connects-icon-download"></i><span class="action-tooltip"><?php _e( "Export", "smile" ); ?></span></a>             
+                <a class="action-list" href="<?php echo plugins_url( 'download.php?list_id='.$key, __FILE__ ); ?>"<?php echo $onclick; ?> target="_top"><i style="font-size: 17px;top: -1px;position: relative;" class="connects-icon-download"></i><span class="action-tooltip"><?php _e( "Export", "smile" ); ?></span></a>
               	<a class="action-list list-analytics" style="margin-left: 6px;" data-list-id="<?php echo $key; ?>"<?php echo $onclick; ?> href="?page=contact-manager&view=analytics&campaign=<?php echo $key; ?>"><i class="connects-icon-bar-graph-2"></i><span class="action-tooltip"><?php _e( "Analytics", "smile" ); ?></span></a>
               	<a class="action-list delete-list" style="margin-left: 6px;" data-list-id="<?php echo $key; ?>" data-list-mailer="<?php echo $mailer; ?>" href="#"><i class="connects-icon-trash"></i><span class="action-tooltip"><?php _e( "Delete", "smile" ); ?></span></a>
               </td>
@@ -241,7 +252,7 @@
                 	<th scope="col" class="manage-column bsf-connect-column-empty" colspan="5"><?php _e( "No results available. ", "smile" ); ?><a class="add-new-h2" style="position:relative;top:-2px;" href="?page=contact-manager" title="<?php _e( "back to campaign list", "smile" ); ?>"><?php _e( "back to campaign list", "smile" ); ?></a></th>
                 <?php } else { ?>
   					<th scope="col" class="manage-column bsf-connect-column-empty cp-empty-graphic" colspan="5"><?php _e( "First time being here?", "smile" ); ?> <br><a class="add-new-h2" href="?page=contact-manager&view=new-list" title="<?php _e( "Create new campaign", "smile" ); ?>"><?php _e( "Awesome! Let's start with your first campaign", "smile" ); ?></a></th>
-  				<?php } ?>  	              		
+  				<?php } ?>
             </tr>
             <?php
 			  }
@@ -257,11 +268,11 @@
         			<a class="button-primary bsf-connect-campaign-analytics" href="?page=contact-manager&view=analytics" title="<?php _e( "Analytics", "smile" ); ?>"><?php _e( "Analytics", "smile" ); ?></a>
 	          </div><!-- .col-sm-6 -->
 	          <div class="col-sm-6">
-	            <?php 
+	            <?php
 	            if( $total > $limit ) {
 	              $basePageLink = '?page=contact-manager';
-	              echo $Paginator->createLinks( $links, 'pagination bsf-cnt-pagi', '' , $sq, $basePageLink ); 
-	            }  
+	              echo $Paginator->createLinks( $links, 'pagination bsf-cnt-pagi', '' , $sq, $basePageLink );
+	            }
 	            ?>
 	          </div><!-- .col-sm-6 -->
 	        </div><!-- .container -->
@@ -280,23 +291,23 @@
 	                <label class="screen-reader-text" for="post-search-input"><?php _e( "Search Contacts:", "smile" ); ?></label>
 	                <input type="search" id="post-search-input" name="sq" value="<?php echo esc_attr($sq ); ?>">
 	                <input type="submit" id="search-submit" class="button" value="Search">
-	              </form> 
+	              </form>
 	            </p>
 	            <?php } ?>
 	          </div><!-- .col-sm-6 -->
 	          <div class="col-sm-6">
-	            
+
 	          </div><!-- .col-sm-6 -->
 	        </div><!-- .container -->
 	      </div><!-- .row -->
 	    <!-- End Search -->
 
     </div>
-    <!-- bend-content-wrap --> 
+    <!-- bend-content-wrap -->
   </div>
-  <!-- wrap-container --> 
+  <!-- wrap-container -->
 </div>
-<!-- bend --> 
+<!-- bend -->
 <script type="text/javascript">
 
 jQuery(".delete-list").click(function(e){
@@ -316,8 +327,8 @@ jQuery(".delete-list").click(function(e){
 			method: "POST",
 			dataType: "JSON",
 			success: function(result){
-				
-				if( result.message == 'no' ) {	 
+
+				if( result.message == 'no' ) {
 					swal({
 						title: "<?php _e( "Are you sure?", "smile" ); ?>",
 						text: "<?php _e( "You will not be able to recover this list!", "smile" ); ?>",
@@ -329,7 +340,7 @@ jQuery(".delete-list").click(function(e){
 						closeOnConfirm: false,
 						closeOnCancel: false,
 						showLoaderOnConfirm: true
-					}, 
+					},
 					function(isConfirm){
 						if (isConfirm) {
 							jQuery(document).trigger('trashStyle',[$this]);
@@ -343,9 +354,9 @@ jQuery(".delete-list").click(function(e){
 					var styleCount       = result.style_count;
 					var ulString = '<ul>';
 					jQuery.each( assigned_to_list, function( index, value ) {
-						if( index > 2 ) { 
+						if( index > 2 ) {
 							return false;
-						}	
+						}
 					  	jQuery.each( value , function( style, link ) {
 					  		ulString += "<li><a target='_blank' href='"+link+"'>"+style+"</a></li>";
 					  	});
@@ -370,7 +381,7 @@ jQuery(".delete-list").click(function(e){
 					});
 					return false;
 				}
-				
+
 			},
 			error: function(error){
 				console.log(error);
@@ -399,7 +410,7 @@ jQuery(document).on("trashStyle", function(e,$this){
 						text: "<?php _e( "The campaign list you have selected is removed.", "smile" ); ?>",
 						type: "success",
 						timer: 2000,
-						showConfirmButton: false 
+						showConfirmButton: false
 					});
 				} else {
 					swal({
@@ -407,13 +418,13 @@ jQuery(document).on("trashStyle", function(e,$this){
 						text: "<?php _e( "Something went wrong! Please try again.", "smile" ); ?>",
 						type: "error",
 						timer: 2000,
-						showConfirmButton: false 
+						showConfirmButton: false
 					});
 				}
 				setTimeout(function(){
 						document.location = document.location;
 				},800);
-				
+
 			},
 			error: function(error){
 				console.log(error);

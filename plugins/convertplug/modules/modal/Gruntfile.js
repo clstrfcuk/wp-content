@@ -6,11 +6,9 @@ module.exports = function(grunt) {
 				files: {
 					'assets/js/modal.min.js': [
 						'!assets/js/admin.min.js',
-						'assets/js/idle-timer.min.js',
 						'assets/js/modal.common.js',
 						'assets/js/modal.js',
 						'assets/js/mailer.js',
-						'../../admin/assets/js/frosty.js',	
 					]
 				}
 			}
@@ -26,7 +24,6 @@ module.exports = function(grunt) {
 						'../assets/css/cp-social-media-style.css',
 						'../assets/css/social-icon-css.css',
 						'../assets/css/convertplug.css',
-						'../../admin/assets/css/frosty.css',
 					]
 				}
 			}

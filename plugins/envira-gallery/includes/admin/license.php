@@ -71,24 +71,27 @@ class Envira_Gallery_License {
     public function __construct() {
 
         // Load the base class object.
-        $this->base = Envira_Gallery::get_instance();
+        $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
 
-        // Possibly verify the key.
-        $this->maybe_verify_key();
+        // Only attempt license verification, deactivation, refresh etc. if we're running Envira Gallery.
+        if ( class_exists( 'Envira_Gallery' ) ) {
+            // Possibly verify the key.
+            $this->maybe_verify_key();
 
-        // Add potential admin notices for actions around the admin.
-        add_action( 'admin_notices', array( $this, 'notices' ) );
+            // Add potential admin notices for actions around the admin.
+            add_action( 'admin_notices', array( $this, 'notices' ) );
 
-        // Grab the license key. If it is not set (even after verification), return early.
-        $this->key = $this->base->get_license_key();
-        if ( ! $this->key ) {
-            return;
+            // Grab the license key. If it is not set (even after verification), return early.
+            $this->key = $this->base->get_license_key();
+            if ( ! $this->key ) {
+                return;
+            }
+
+            // Possibly handle validating, deactivating and refreshing license keys.
+            $this->maybe_validate_key();
+            $this->maybe_deactivate_key();
+            $this->maybe_refresh_key();
         }
-
-        // Possibly handle validating, deactivating and refreshing license keys.
-        $this->maybe_validate_key();
-        $this->maybe_deactivate_key();
-        $this->maybe_refresh_key();
 
     }
 
@@ -505,7 +508,7 @@ class Envira_Gallery_License {
         );
 
         // Perform the query and retrieve the response.
-        $response      = wp_remote_post( 'http://enviragallery.com/', $post );
+        $response      = wp_remote_post( 'http://enviragallery.com', $post );
         $response_code = wp_remote_retrieve_response_code( $response );
         $response_body = wp_remote_retrieve_body( $response );
 

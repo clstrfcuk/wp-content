@@ -87,6 +87,10 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
     */
     initialize: function( args ) {
 
+        // Define loading and loaded events, which update the UI with what's happening.
+        this.on( 'loading', this.loading, this );
+        this.on( 'loaded',  this.loaded, this );
+
         // Set some flags
         this.is_loading = false;
         this.collection = args.collection;
@@ -150,6 +154,26 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
     },
 
     /**
+    * Renders an error using
+    * wp.media.view.EnviraGalleryError
+    */
+    renderError: function( error ) {
+
+        // Define model
+        var model = {};
+        model.error = error;
+
+        // Define view
+        var view = new wp.media.view.EnviraGalleryError( {
+            model: model
+        } );
+
+        // Return rendered view
+        return view.render().el;
+
+    },
+
+    /**
     * Tells the view we're loading by displaying a spinner
     */
     loading: function() {
@@ -175,7 +199,7 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
 
         // Display the error message, if it's provided
         if ( typeof response !== 'undefined' ) {
-            alert( response );
+            this.$el.find( 'ul.attachments' ).before( this.renderError( response ) );
         }
 
     },
@@ -207,12 +231,14 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
     */
     saveItem: function() {
 
+        // Tell the View we're loading
+        this.trigger( 'loading' );
+
     	// Build an array of image IDs
     	var image_ids = [];
     	this.collection.forEach( function( model ) {
 			image_ids.push( model.id );
         }, this );
-
 
         // Make an AJAX request to save the image metadata for the collection's images
         wp.media.ajax( 'envira_gallery_save_bulk_meta', {
@@ -225,15 +251,34 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
             },
             success: function( response ) {
 
+                // For each image, update the model based on the edited information before inserting it as JSON
+                // into the underlying image.
+                this.collection.forEach( function( model ) {
+
+                    for ( var key in this.model.attributes ) {
+                        value = this.model.attributes[ key ];
+
+                        // If the value is not blank, assign the value to the image model
+                        if ( value.length > 0 ) {
+                            model.set( key, value );
+                        }   
+                    }
+
+                    // Assign the model to the underlying image item in the DOM
+                    var item = JSON.stringify( model.attributes );
+                    jQuery( 'ul#envira-gallery-output li#' + model.get( 'id' ) ).attr( 'data-envira-gallery-image-model', item );
+                    jQuery( 'ul#envira-gallery-output li#' + model.get( 'id' ) + ' div.title' ).text( model.get( 'title' ) );
+
+                }, this );
+
+                // Deselect all images by triggering the change event on the 'Select All' checkbox
+                jQuery( 'nav.envira-tab-options input[type=checkbox]' ).prop( 'checked', false ).trigger( 'change' );
+
                 // Tell the view we've finished successfully
                 this.trigger( 'loaded loaded:success' );
 
-                // Assign the model's JSON string back to the underlying item
-                //var item = JSON.stringify( this.model.attributes );
-                //jQuery( 'ul#envira-gallery-output li#' + this.model.get( 'id' ) ).attr( 'data-envira-gallery-image-model', item );
-
                 // Close the modal
-                // @TODO
+                EnviraGalleryModalWindow.close();
 
             },
             error: function( error_message ) {
@@ -295,7 +340,7 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
 jQuery( document ).ready( function( $ ) {
 	
 	// Edit Images
-    $( '#envira-gallery' ).on( 'click', '.envira-gallery-images-edit', function( e ) {
+    $( '#envira-gallery-main' ).on( 'click', 'a.envira-gallery-images-edit', function( e ) {
 
         // Prevent default action
         e.preventDefault();

@@ -1,6 +1,6 @@
 /**
  * Description: Modal Element Basic CSS
- * Version: 2.1.0
+ * Version: 2.3.0
  * Author: Brainstorm Force
  */
 
@@ -267,9 +267,9 @@ html.cp-exceed-vieport .cp-overlay.ps-container {
     position: relative;
 }
 
-.cp-modal-body.no-padding {
+/* .cp-modal-body.no-padding {
     padding: 0;
-}
+} */
 
 .cp-modal-body p {
     margin-bottom: 1em
@@ -347,7 +347,7 @@ img.cp-image.cp_default_img {
 
     .cp-image-container img {
         left: auto !important;
-        top: auto !important;        /* max-width: 100%!important;  */
+        top: auto !important;
         width: 75%;
     }
 
@@ -603,7 +603,6 @@ div#cke_content_editor,
     .cp-modal-popup-container input::-moz-placeholder,
     .cp-modal-popup-container input:-ms-input-placeholder {
         line-height: normal;
-        /* font-size: 0.85em !important; */
     }
 
 }
@@ -1230,14 +1229,8 @@ i.cp-icon[class^="Defaults-"] {
     margin-bottom: 10px;
 }
 
-.cp-modal-inline .cp-column-equalized-center {
-    -webkit-transform: translate(0%, 0%) !important;
-    -moz-transform: translate(0%, 0%) !important;
-    -ms-transform: translate(0%, 0%) !important;
-    transform: translate(0%, 0%) !important;
-}
 .cp-modal-inline .cp-columns-equalized{
-    height: auto !important;
+   /*  height: auto !important; */
 }
 .cp-modal-inline .cp-title {
     margin-top: auto;
@@ -1253,14 +1246,14 @@ i.cp-icon[class^="Defaults-"] {
     color:#4D4D4D;
 }
 /* Clickable component fix */
-.cp-overlay.global_modal_container {
+/*.cp-overlay.global_modal_container {
     width: 0;
     height: 0;
 }
 .cp-overlay.global_modal_container.cp-open {
     width: auto;
     height: auto;
-}
+}*/
 .cp-modal-inline .cp-modal-window-size .cp-modal-body {
     -webkit-transform: translateY(0%);
     -moz-transform: translateY(0%);
@@ -1271,6 +1264,44 @@ i.cp-icon[class^="Defaults-"] {
     min-height: auto !important;
 }
 
+
+/*--equalise row-----*/
+.cp-row-center {
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+}
+.cp-row-equalized-center {
+    position: relative;
+    top:50%;
+    -webkit-transform: translateY(-50%);
+       -moz-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+         -o-transform: translateY(-50%);
+            transform: translateY(-50%);
+}
+
+.cp-row-center.cp-big-content {
+    position: relative;
+}
+.cp-big-content .cp-row-equalized-center {
+    position: relative;
+    top:auto;
+    -webkit-transform: none;
+       -moz-transform: none;
+        -ms-transform: none;
+         -o-transform: none;
+            transform: none;
+}
+
 .cp-window-viewport{
     overflow: hidden;
 }
+
+/* .cp-overlay.cp-window-overlay{
+ background: transparent!important;
+} */
+

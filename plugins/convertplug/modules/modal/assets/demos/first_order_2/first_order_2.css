@@ -9,7 +9,9 @@
     text-align: center;
     font-family: 'Montserrat', sans-serif;
 }
-
+.cp-first-order-2-container .cp-overlay-close span{
+        font-family: "Montserrat",serif;
+}
 .cp-first-order-2 .cp-title {
     color: #333;
     font-size: 45px;
@@ -88,7 +90,7 @@
     font-size: 22px;
     line-height: 1.38em;
     outline: none;
-    border-radius: 0px;
+   /*  border-radius: 0px; */
 }
 
 .cp-first-order-2 .cp-submit,

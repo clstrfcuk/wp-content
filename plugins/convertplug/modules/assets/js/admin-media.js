@@ -7,7 +7,7 @@
   jQuery('.cp-import-style').on('click', function( event ){
 
     event.preventDefault();
-	
+
 	var module = jQuery(this).data("module");
 
     // If the media frame already exists, reopen it.
@@ -22,8 +22,8 @@
       button: {
         text: jQuery( this ).data( 'uploader_button_text' ),
       },
-	  library: { 
-		  type: 'application/zip' 
+	  library: {
+		  type: 'application/zip'
 	  },
       multiple: false  // Set to true to allow multiple files to be selected
     });

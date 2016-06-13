@@ -9,10 +9,11 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Output
+//   01. Require Options
+//   02. Output
 // =============================================================================
 
-// Output
+// Require Options
 // =============================================================================
 
 function x_custom_404_filter_template( $template ) {
@@ -42,6 +43,7 @@ function x_custom_404_filter_template( $template ) {
   $wp_query->max_num_pages     = 0;
   $wp_query->is_404            = false;
   $wp_query->is_page           = true;
+  $wp_query->is_singular	     = true;
 
   return get_page_template();
 

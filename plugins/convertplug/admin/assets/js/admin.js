@@ -1,5 +1,6 @@
 var smile_panel = '',
 	data_id = '';
+
 jQuery.extend({
   cpcpGetUrlVars: function(){
     var vars = [], hash;
@@ -16,6 +17,7 @@ jQuery.extend({
     return jQuery.cpcpGetUrlVars()[name];
   }
 });
+
 jQuery.fn.bgColorFade = function(userOptions) {
     // starting color, ending color, duration in ms
     var options = $.extend({
@@ -30,12 +32,14 @@ jQuery.fn.bgColorFade = function(userOptions) {
     }, options.time);
     return this;
 };
+
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
+
 function hideLoading(ID){
 	jQuery(document).trigger("iframe_load",[ID]);
 	var smile_panel = jQuery(".customize").data('style');
@@ -43,10 +47,8 @@ function hideLoading(ID){
 		jQuery(".edit-screen-overlay").fadeOut();
 		jQuery("#smile_design_iframe").css("visibility","visible");
 		jQuery(".design-area-loading").hide();
-		//jQuery('#button-save-'+smile_panel+' > span').trigger('click');
 	},500);
 }
-
 
 // Sets cookies.
 window.createCookie = function(name, value, days){
@@ -207,7 +209,7 @@ jQuery(document).ready(function(){
 	jQuery('body').on('keyup', '#style-title', function(e) {
 		jQuery(this).removeAttr('style');
 	});
-	
+
 	// custom html editor
 
 	var htmltextarea = jQuery("#smile_custom_html_form");
@@ -236,25 +238,25 @@ jQuery(document).ready(function(){
 
 	var textarea = jQuery("#smile_custom_css");
 	var mode = 'css';
-    var editDiv = jQuery('<div>', {
-        position: 'absolute',
-        width: 300,
-        height: 300,
-        'class': htmltextarea.attr('class')
-    }).insertBefore(textarea);
+	var editDiv = jQuery('<div>', {
+		position: 'absolute',
+		width: 300,
+		height: 300,
+		'class': htmltextarea.attr('class')
+    	}).insertBefore(textarea);
 
-    if( textarea.length > 0 )  {
-	    editDiv.attr('id','editor');
-	    textarea.css('visibility', 'hidden');
-	    var cssEditor = ace.edit(editDiv[0]);
-	    cssEditor.renderer.setShowGutter(true);
-	    cssEditor.getSession().setValue(textarea.val());
-	    cssEditor.getSession().setMode("ace/mode/" + mode);
-	    cssEditor.getSession().setUseWrapMode(true);
+ 	if( textarea.length > 0 )  {
+		editDiv.attr('id','editor');
+		textarea.css('visibility', 'hidden');
+		var cssEditor = ace.edit(editDiv[0]);
+		cssEditor.renderer.setShowGutter(true);
+		cssEditor.getSession().setValue(textarea.val());
+		cssEditor.getSession().setMode("ace/mode/" + mode);
+		cssEditor.getSession().setUseWrapMode(true);
 
-	    cssEditor.on('change', function() {
-	        textarea.val(cssEditor.getSession().getValue());
-	    });
+		cssEditor.on('change', function() {
+			textarea.val(cssEditor.getSession().getValue());
+		});
 	}
 
 	jQuery("body").on("click",".style-title",function(e){
@@ -290,13 +292,13 @@ jQuery(document).ready(function(){
 		var styleName = jQuery("#cp_style_title").val();
 		var target = jQuery(this).attr('target');
 		var cookie = getCookie("cp-unsaved-changes");
-		var redirectURL = jQuery(this).data('redirect');		
+		var redirectURL = jQuery(this).data('redirect');
 		var smile_panel = jQuery(".customize").data('style');
 		var $this = jQuery(this);
 		var closeOncancel = false;
 		var showLoaderOnConfirm = true;
 
-		var live 			= jQuery("#smile_live").val();
+		var live 	 = jQuery("#smile_live").val();
 		var module = jQuery(".customize").data("module");
 		if( live == "" || live == "0" || live == 0 ) {
 			var closeOncancel = false;
@@ -415,7 +417,7 @@ jQuery(document).ready(function(){
 							window.location = redirectURL;
 					}
 				} else {
-					
+
 					jQuery(".cp-discard-popup").trigger("click");
 					removeCookie('cp-unsaved-changes');
 					if( target == '_blank' ){
@@ -426,17 +428,13 @@ jQuery(document).ready(function(){
 				}
 			}
 
-			
 		});
-			
 
 		jQuery(".cp-switch-theme").prev().css( "background-color", "rgba(0,0,0,.9)" );
-		jQuery("body").on("click", ".cp-switch-theme .cp-discard-popup", function(e){			
+		jQuery("body").on("click", ".cp-switch-theme .cp-discard-popup", function(e){
 			e.preventDefault();
 			jQuery(".sweet-overlay, .sweet-alert").fadeOut('slow').remove();
-			
 		});
-
 
 		e.preventDefault();
 		return false;
@@ -595,7 +593,6 @@ jQuery(document).ready(function(){
 
 	btn.click(function(e){
 
-		//console.log('clicked');
 		e.preventDefault();
 		e.stopPropagation();
 		var view = jQuery(this).data('view');
@@ -645,7 +642,7 @@ jQuery(document).ready(function(){
 			var data = '';
 			var	data = {action:'framework_update_preview_data',demo_id:demo_id,module:module,cls:cls};
 			var save_btn = jQuery('#button-save-'+smile_panel);
-			
+
 			jQuery.ajax({
 				url: ajaxurl,
 				data: data,
@@ -653,17 +650,16 @@ jQuery(document).ready(function(){
 				dataType: 'HTML',
 				data: data,
 				success:function(result){
-					
+
 					var iframe = '<div class="design-area-loading"><div class="smile-absolute-loader" style="visibility: visible;"> <div class="smile-loader"><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div><div class="smile-loading-bar"></div></div></div></div><iframe id="smile_design_iframe" src="'+frame_url+'" data-js="'+js_url+'" onload="hideLoading(data_id);">'+result+'</iframe>';
 					design_area.html(iframe);
+					jQuery(document).trigger("smile_iframe_after_load");
 				}
 			});
 
 			jQuery(document).trigger("smile_panel_loaded",[smile_panel,ID]);
 
-			
-
-		//	Handling dependencies
+			//	Handling dependencies
 			smileHandleDependencies();
 		} else {
 			jQuery("#style-title").addClass('smile-new-list-required');
@@ -929,7 +925,7 @@ window.onload = function() {
 				btn.trigger('click');
 			}
 		},500);
-	}	
+	}
 
 	// A function to handle sending messages for live preview.
 	function smileLiveData(e) {
@@ -951,15 +947,15 @@ window.onload = function() {
 		var new_frame_url 	= frame_url+'&'+url_string;
 		var iframe_container = document.getElementById('smile_design_iframe');
 		if( iframe_container ) {
+
 			var iframe 			= iframe_container.contentWindow;
 			// Send the data
 			iframe.postMessage(data, frame_url);
 
-			// 	// create cookie for unsaved changes
+			// create cookie for unsaved changes
 			var cookieName = 'cp-unsaved-changes';
 			createCookie(cookieName,true,1);
 		}
-		
 	}
 
 	jQuery(document).on('smile_panel_loaded',function(e,smile_panel,id){
@@ -1015,8 +1011,8 @@ jQuery(document).ready(function(){
 	});
 
 	jQuery('.has-tip').frosty({
-                    offset: 10,
-        });
+        offset: 10
+    });
 
 	jQuery("a[href='#top']").click(function() {
 	  jQuery("html, body").animate({ scrollTop: 0 }, "1000");
@@ -1027,11 +1023,63 @@ jQuery(document).ready(function(){
 		var redirectLink = jQuery(this).parent().attr('href');
 		window.location.href = redirectLink;
 	});
+
+	jQuery(".cp-style-import-link").click(function(e){
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var actionLink = jQuery(this).find(".cp-action-link");
+        var item_box  = jQuery(this).closest('.cp-style-item-box');
+        var item_text = jQuery(this).find('.cp-action-text');
+
+        item_box.addClass('cp-import-processing');
+
+        item_text.html("Importing ...");
+        item_text.css( 'color', "#008000" );
+
+        actionLink.addClass('cp-save-loader');
+
+        var module = jQuery(this).data('module');
+        var preset = jQuery(this).data('preset');
+
+        var redirect_url = jQuery(this).data('href');
+
+        jQuery.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'cp_import_presets',
+                module: module,
+                preset: preset
+            },
+        })
+        .done(function(e) {
+
+            var result = JSON.parse(e);
+
+            if( result.success != true ) {
+                swal( "Oops...", "Something went wrong!", "error" );
+                return false;
+            }
+
+            actionLink.removeClass('cp-save-loader');
+            item_box.removeClass('cp-import-processing');
+
+            window.location = redirect_url;
+
+        })
+        .fail(function(e) {
+            console.log(e);
+            console.log("error");
+        });
+
+    });
+
 });
 
 jQuery(document).on("customize_loaded", function(){
 	var smile_panel = jQuery(".customize").data('style');
-	//jQuery('#button-save-'+smile_panel+' > span').trigger('click');
 	jQuery('#button-save-'+smile_panel).trigger('click');
 });
 
@@ -1068,20 +1116,20 @@ jQuery(document).on( 'click', '.cp-reset-analytics' , function(e){
 		if (isConfirm) {
 			jQuery(document).trigger('resetAnalytics',[$this,true]);
 		}
-	});	
+	});
 });
 
 
 //prevent action on escape key
-jQuery(document).keyup(function(e){ 
+jQuery(document).keyup(function(e){
 
-     if (e.keyCode == 27) { 
-     	var styleView = jQuery.cpGetUrlVar('style-view');   
-     	if( styleView == 'edit' ) { 	
+     if (e.keyCode == 27) {
+     	var styleView = jQuery.cpGetUrlVar('style-view');
+     	if( styleView == 'edit' ) {
      		e.preventDefault();
      		var cookieName = 'cp-unsaved-changes';
-			var cokkie = createCookie(cookieName,true,1);		
-     		window.location='#';     	
+			var cokkie = createCookie(cookieName,true,1);
+     		window.location='#';
      	}
      }
 });
@@ -1114,15 +1162,15 @@ jQuery(document).on("resetAnalytics", function(e,$this,$reload){
 	});
 });
 
-//dependancy for jugad style layout
+//dependency for jugaad style layout
 jQuery(document).on("change_radio_image", function(e,$this){
-	
+
 	var this_class = $this.find('input.smile-radio-image').parents(".panel-jugaad");
 	if(this_class.length > 0){
 		var modal_image_style = this_class.find(".modal_image").parents(".smile-element-container").css("display");
 		if(modal_image_style == 'none'){
 			this_class.find(".cp-media-sizes").addClass('hide-cp-media-sizes');
-		}else{
+		} else {
 			this_class.find(".cp-media-sizes").removeClass('hide-cp-media-sizes');
 		}
 	}

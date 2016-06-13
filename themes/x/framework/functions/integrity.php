@@ -96,15 +96,9 @@ if ( ! function_exists( 'x_integrity_entry_meta' ) ) :
       $link   = apply_filters( 'x_entry_meta_comments_link', get_comments_link() );
       $number = apply_filters( 'x_entry_meta_comments_number', get_comments_number() );
 
-      if ( $number == 0 ) {
-        $text = __( 'Leave a Comment' , '__x__' );
-      } else if ( $number == 1 ) {
-        $text = $number . ' ' . __( 'Comment' , '__x__' );
-      } else {
-        $text = $number . ' ' . __( 'Comments' , '__x__' );
-      }
+	  $text = ( 0 === $number ) ? 'Leave a Comment' : sprintf( _n( '%s Comment', '%s Comments', $number, '__x__' ), $number );
 
-      $comments = sprintf( '<span><a href="%1$s" title="%2$s" class="meta-comments"><i class="x-icon-comments" data-x-icon="&#xf086;"></i> %3$s</a></span>',
+$comments = sprintf( '<span><a href="%1$s" title="%2$s" class="meta-comments"><i class="x-icon-comments" data-x-icon="&#xf086;"></i> %3$s</a></span>',
         esc_url( $link ),
         esc_attr( sprintf( __( 'Leave a comment on: &ldquo;%s&rdquo;', '__x__' ), $title ) ),
         $text

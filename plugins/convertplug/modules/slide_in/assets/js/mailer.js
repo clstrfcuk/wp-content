@@ -2,7 +2,7 @@
 	"use strict";
 	    // Sets cookies.
 	var createCookie = function(name, value, days){
-	
+
 		// If we have a days value, set it in the expiry of the cookie.
 		if ( days ) {
 			var date = new Date();
@@ -56,7 +56,7 @@
                 return false;
             }
         }
-        
+
         return false;
     }
 
@@ -71,7 +71,7 @@
 			cp_form_processing_wrap = jQuery(t).parents(".cp-animate-container").find('.cp-form-processing-wrap'),
 			cp_animate_container    = jQuery(t).parents(".cp-animate-container"),
 			cp_tooltip    			=  slidein.find(".cp-tooltip-icon").data('classes');
-					
+
 		var cookieTime 		= slidein.data('conversion-cookie-time');
 		var cookieName 		= slidein.data('slidein-id');
 		var dont_close 		= jQuery(t).parents(".slidein-overlay").hasClass("do_not_close");
@@ -83,7 +83,7 @@
         var submit_status = true;
         form.find('.cp-input').each( function(index) {
             var $this = jQuery(this);
-            
+
             if( ! $this.hasClass('cp-submit-button')) { // Check condition for Submit Button
                 var    input_name = $this.attr('name'),
                     input_value = $this.val();
@@ -97,7 +97,7 @@
 
                 var input_required = $this.attr('required') ? true : false;
 
-                if( input_required ) {    
+                if( input_required ) {
                     if( validate_it( $this, input_value ) ) {
                         submit_status = false;
                         $this.addClass('cp-input-error');
@@ -109,13 +109,13 @@
         });
 
 		//	All form fields Validation
-        var fail = false;
+        var fail = 0;
         var fail_log = '';
         form.find( 'select, textarea, input' ).each(function(i, el ){
             if( jQuery( el ).prop( 'required' )){
 
                 if ( ! jQuery( el ).val() ) {
-                    fail = true;
+                    fail++;
                     jQuery( el ).addClass('cp-error');
                     name = jQuery( el ).attr( 'name' );
                     fail_log += name + " is required \n";
@@ -127,10 +127,10 @@
 
 		    			if( isValidEmailAddress( email ) ) {
 			    			jQuery( el ).removeClass('cp-error');
-			    			fail = false;
+			    			//fail = false;
 			    		} else {
 			    			jQuery( el ).addClass('cp-error');
-			    			fail = true;
+			    			fail++;
 			    			var name = jQuery( el ).attr( 'name' ) || '';
 			    			console.log( name + " is required \n" );
 			    		}
@@ -141,8 +141,8 @@
             }
         });
 
-        //submit if fail never got set to true
-        if ( fail ) {
+        //submit if fail count never got greater than 0
+        if ( fail > 0 ) {
             console.log( fail_log );
         } else {
 
@@ -154,7 +154,7 @@
 
 			// Show processing spinner
 			spinner.hide().css({visibility: "visible"}).fadeIn(100);
-			
+
 			jQuery.ajax({
 				url: smile_ajax.url,
 				data: data,
@@ -165,13 +165,15 @@
 					if(cookieTime) {
 						createCookie(cookieName,true,cookieTime);
 					}
-						
+
 					var obj = jQuery.parseJSON( result );
 					var cls = '';
+					var msg_string = '';
+
 					if( typeof obj.status != 'undefined' && obj.status != null ) {
 						cls = obj.status;
 					}
-					
+
 					//	is valid - Email MX Record
 					if( obj.email_status ) {
 						form.find('.cp-email').removeClass('cp-error');
@@ -180,15 +182,26 @@
 						form.find('.cp-email').focus();
 					}
 
+					var detailed_msg = (typeof obj.detailed_msg !== 'undefined' && obj.detailed_msg !== null )  ? obj.detailed_msg : '';
+					console.log(detailed_msg);
+					if( detailed_msg !== '' && detailed_msg !== null ) {
+						detailed_msg =  "<h5>Here is More Information:</h5><div class='cp-detailed-message'>"+detailed_msg+"</div>";
+						detailed_msg += "<div class='cp-admin-error-notice'>Read How to Fix This, click <a target='_blank' href='http://docs.sharkz.in/something-went-wrong/'>here</a></div>";
+						detailed_msg += "<div class='cp-go-back'>Go Back</div>";
+						msg_string   += '<div class="cp-only-admin-msg">[Only you can see this message]</div>';
+					}
+
 					//	show message error/success
 					if( typeof obj.message != 'undefined' && obj.message != null ) {
 						info_container.hide().css({visibility: "visible"}).fadeIn(120);
-						info_container.html( '<div class="cp-m-'+cls+'">'+obj.message+'</div>' );
+						//info_container.html( '<div class="cp-m-'+cls+'">'+obj.message+'</div>' );
+						msg_string += '<div class="cp-m-'+cls+'"><div class="cp-error-msg">'+obj.message+'</div>'+detailed_msg+'</div>';
+						info_container.html( msg_string );
 						cp_animate_container.addClass('cp-form-submit-'+cls);
 					}
-					
+
 					if(typeof obj.action !== 'undefined' && obj.action != null){
-						
+
 						//	Show processing spinner
 						spinner.fadeOut(100, function() {
 						    jQuery(this).show().css({visibility: "hidden"});
@@ -198,10 +211,10 @@
 						info_container.hide().css({visibility: "visible"}).fadeIn(120);
 
 						if( cls === 'success' ) {
-							
-							//hide tool tip 	
+
+							//hide tool tip
 							jQuery('head').append('<style class="cp-tooltip-css">.tip.'+cp_tooltip+'{display:none }</style>');
-							
+
 							// 	Redirect if status is [success]
 							if( obj.action === 'redirect' ) {
 								cp_form_processing_wrap.hide();
@@ -213,7 +226,7 @@
 								} else {
 									urlstring = '?';
 								}
-								
+
 								var redirect_url = url+urlstring+decodeURI(query_string);
 								if( redirectdata == 1 ){
 									window.location = redirect_url;
@@ -227,9 +240,9 @@
 							if(dont_close){
 								setTimeout(function(){
 						           jQuery(document).trigger('closeSlideIn',[slidein]);
-						           
+
 						         },3000);
-							}							
+							}
 						}
 					}
 				},
@@ -245,7 +258,7 @@
 	}
 
 	jQuery(document).ready(function(){
-		
+
 		jQuery('.cp-slidein-popup-container').find('#smile-optin-form').each(function(index, el) {
 
 			// enter key press
@@ -254,10 +267,10 @@
 			        event.preventDefault();
 			        var check_sucess = jQuery(this).parents(".cp-animate-container").hasClass('cp-form-submit-success');
 			        var check_error = jQuery(this).parents(".cp-animate-container").hasClass('cp-form-submit-error');
-			       
+
 			        if(!check_sucess){
 			        	slide_in_process_cp_form( el );
-			    	}		    
+			    	}
 			    }
 			});
 
@@ -281,5 +294,5 @@
 		});
 
 	});
-	
+
 })( jQuery );

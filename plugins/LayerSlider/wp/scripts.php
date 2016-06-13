@@ -7,6 +7,7 @@ add_action('admin_enqueue_scripts', 'layerslider_enqueue_admin_res');
 add_action('admin_enqueue_scripts', 'ls_load_google_fonts');
 add_action('wp_enqueue_scripts', 'ls_load_google_fonts');
 
+add_action('wp_head', 'ls_meta_generator', 9);
 
 
 function layerslider_enqueue_content_res() {
@@ -27,6 +28,10 @@ function layerslider_enqueue_content_res() {
 	wp_register_script('layerslider', LS_ROOT_URL.'/static/js/layerslider.kreaturamedia.jquery.js', array('jquery'), LS_PLUGIN_VERSION, $footer );
 	wp_register_script('layerslider-transitions', LS_ROOT_URL.'/static/js/layerslider.transitions.js', false, LS_PLUGIN_VERSION, $footer );
 	wp_enqueue_style('layerslider', LS_ROOT_URL.'/static/css/layerslider.css', false, LS_PLUGIN_VERSION );
+
+	wp_localize_script('layerslider', 'LS_Meta', array(
+		'v' => LS_PLUGIN_VERSION
+	));
 
 	// User resources
 	$uploads = wp_upload_dir();
@@ -104,7 +109,7 @@ function layerslider_enqueue_admin_res() {
 
 		// 3rd-party: CodeMirror
 		wp_enqueue_style('codemirror', LS_ROOT_URL.'/static/codemirror/lib/codemirror.css', false, LS_PLUGIN_VERSION );
-		wp_enqueue_script('codemirror', LS_ROOT_URL.'/static/ codemirror/lib/codemirror.js', array('jquery'), LS_PLUGIN_VERSION );
+		wp_enqueue_script('codemirror', LS_ROOT_URL.'/static/codemirror/lib/codemirror.js', array('jquery'), LS_PLUGIN_VERSION );
 		wp_enqueue_style('codemirror-solarized', LS_ROOT_URL.'/static/codemirror/theme/solarized.mod.css', false, LS_PLUGIN_VERSION );
 		wp_enqueue_script('codemirror-syntax-css', LS_ROOT_URL.'/static/codemirror/mode/css/css.js', array('jquery'), LS_PLUGIN_VERSION );
 		wp_enqueue_script('codemirror-syntax-javascript', LS_ROOT_URL.'/static/codemirror/mode/javascript/javascript.js', array('jquery'), LS_PLUGIN_VERSION );
@@ -114,7 +119,7 @@ function layerslider_enqueue_admin_res() {
 		wp_enqueue_script('codemirror-active-line', LS_ROOT_URL.'/static/codemirror/addon/selection/active-line.js', array('jquery'), LS_PLUGIN_VERSION );
 
 		// 3rd-party: Google Fonts
-		wp_enqueue_style('google-fonts-indie-flower', 'http://fonts.googleapis.com/css?family=Indie+Flower', false, LS_PLUGIN_VERSION );
+		wp_enqueue_style('google-fonts-indie-flower', '//fonts.googleapis.com/css?family=Indie+Flower', false, LS_PLUGIN_VERSION );
 
 		// Sliders list page
 		if(empty($_GET['action'])) {
@@ -179,22 +184,30 @@ function ls_load_google_fonts() {
 	if(!empty($fonts) && is_array($fonts)) {
 		$lsFonts = array();
 		foreach($fonts as $item) {
-			if(!is_admin() && !$item['admin']) {
-				$lsFonts[] = $item['param'];
-			} else {
-				$lsFonts[] = $item['param'];
+			if( is_admin() || !$item['admin'] ) {
+				$lsFonts[] = htmlspecialchars($item['param']);
 			}
 		}
-		$lsFonts = implode('%7C', $lsFonts);
-		$protocol = is_ssl() ? 'https' : 'http';
-		$query_args = array(
-			'family' => $lsFonts,
-			'subset' => implode('%2C', $scripts),
-		);
 
-		wp_enqueue_style('ls-google-fonts',
-			add_query_arg($query_args, "$protocol://fonts.googleapis.com/css" ),
-			array(), null
-		);
+		if(!empty($lsFonts)) {
+			$lsFonts = implode('%7C', $lsFonts);
+			$protocol = is_ssl() ? 'https' : 'http';
+			$query_args = array(
+				'family' => $lsFonts,
+				'subset' => implode('%2C', $scripts),
+			);
+
+			wp_enqueue_style('ls-google-fonts',
+				add_query_arg($query_args, "$protocol://fonts.googleapis.com/css" ),
+				array(), null
+			);
+		}
 	}
+}
+
+function ls_meta_generator() {
+	$str = '<meta name="generator" content="Powered by LayerSlider '.LS_PLUGIN_VERSION.' - Multi-Purpose, Responsive, Parallax, Mobile-Friendly Slider Plugin for WordPress." />' . NL;
+	$str.= '<!-- LayerSlider updates and docs at: https://kreaturamedia.com/layerslider-responsive-wordpress-slider-plugin/ -->' . NL;
+
+	echo apply_filters('ls_meta_generator', $str);
 }

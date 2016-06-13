@@ -30,7 +30,9 @@
     margin: 3px 0 0;
     padding: 0;
 }
-
+.cp-special-offer-container .cp-overlay-close span{
+        font-family: "Montserrat",serif;
+}
 .cp-special-offer .cp_responsive.cp_font {
     line-height: normal;
 }
@@ -84,7 +86,7 @@
     font-size: 40px;
     line-height: 1.38em;
     outline: none;
-    border-radius: 10px;
+   /*  border-radius: 10px; */
 }
 
 .cp-special-offer .cp-form-layout-3 .cp-submit {

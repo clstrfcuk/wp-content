@@ -7,7 +7,7 @@ foreach ( $configs as $settings ) {
 
 require_once('functions.common.php');
 
-add_action('admin_enqueue_scripts', array($this, 'cp_enqueue_ultimate_google_fonts'));
+add_action( 'admin_enqueue_scripts', 'cp_enqueue_ultimate_google_fonts' );
 if( !function_exists( "cp_enqueue_ultimate_google_fonts" )){
 	function cp_enqueue_ultimate_google_fonts() {
 		$selected_fonts = get_option('ultimate_selected_google_fonts');
@@ -39,7 +39,7 @@ if( !function_exists( "cp_enqueue_ultimate_google_fonts" )){
 					}
 				endif;
 			}
-			
+
 			$link = 'https://fonts.googleapis.com/css?family='.$font_call;
 			wp_register_style('cp_ultimate-selected-google-fonts-style',$link);
 		}

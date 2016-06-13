@@ -125,10 +125,10 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
     font-weight: normal;
     font-variant: normal;
     text-transform: none;
-    line-height: 1;   
+    line-height: 1;
     max-width: 100%;
-    width: calc(100% - 40px)!important; 
-    
+    width: calc(100% - 40px)!important;
+
 }
 .cp-slidein-inline .cp-slidein {
     position: static;
@@ -231,17 +231,17 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
 }
 
 
-.cp-toggle-container.slidein-center-left{   
+.cp-toggle-container.slidein-center-left{
     top: 50%;
     left: 0;
     right: auto;
-    bottom: auto; 
+    bottom: auto;
     -webkit-transform: rotate(-90deg) translateY(50%) translateX(-50%);
        -moz-transform: rotate(-90deg) translateY(50%) translateX(-50%);
         -ms-transform: rotate(-90deg) translateY(50%) translateX(-50%);
          -o-transform: rotate(-90deg) translateY(50%) translateX(-50%);
             transform: rotate(-90deg) translateY(50%) translateX(-50%);
-            transform-origin: left; 
+            transform-origin: left;
 }
 .cp-toggle-container.slidein-center-right{
     top: 50%;
@@ -253,7 +253,7 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
         -ms-transform: rotate(-90deg) translateY(-50%) translateX(50%);
          -o-transform: rotate(-90deg) translateY(-50%) translateX(50%);
             transform: rotate(-90deg) translateY(-50%) translateX(50%);
-            transform-origin: right; 
+            transform-origin: right;
 }
 
 .cp-exceed-vieport .cp-slidein.slidein-top-center.cp-slidein-exceed,
@@ -350,6 +350,9 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
     z-index: 99999;
    /*  border-radius: inherit; */
 }
+.customize-support .tip[class*="close-tip-content"] {
+    padding: 15px 11px;
+}
 
 @media(max-width:768px) {
     .cp-slidein {
@@ -365,8 +368,8 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
     .cp-info-container , .cp-info-container *{
         text-align: center!important;
     }
-    .cp-slidein {   
-        width: calc(100% - 20px)!important;     
+    .cp-slidein {
+        width: calc(100% - 20px)!important;
     }
 
 }
@@ -513,7 +516,7 @@ h2.cp-title {
     cursor: pointer;
 }
 
-.cp-slide-without-toggle .cp-toggle-container { 
+.cp-slide-without-toggle .cp-toggle-container {
     display: none;
 }
 .cp-slidein-body-overlay {
@@ -795,6 +798,7 @@ div#cke_content_editor,
 .slidein-overlay-close span {
     font-size: 17px;
     line-height: 1.35em;
+    font-family: inherit;
 }
 
 .slidein-overlay-close.cp-adjacent-close span,
@@ -1190,9 +1194,9 @@ i.cp-icon[class^="Defaults-"] {
 .cp-toggle-container.cp-slide-hide-btn {
     display: none;
 }
-/* .cp-toggle-container */ 
+/* .cp-toggle-container */
 .cp-toggle-container{
-   
+
     padding: 0px;
     margin-bottom: 0;
     /*  */
@@ -1200,7 +1204,7 @@ i.cp-icon[class^="Defaults-"] {
     z-index: 999999999;
     margin: 0 auto;
     position: fixed;
-     
+
 }
 .cp-slide-edit-btn {
     padding: 10px;
@@ -1213,7 +1217,7 @@ i.cp-icon[class^="Defaults-"] {
     line-height: 1;
     text-align: center;
     text-transform: none;
-    top: auto;      
+    top: auto;
     bottom: 0;
     min-width:100px;
     left: auto;
@@ -1226,10 +1230,7 @@ i.cp-icon[class^="Defaults-"] {
 }
 
 .cp-animate-container.cp-hide-slide{
-    /*opacity: 0;  */
-    /*visibility: hidden; */
     display: none;
-
 }
 .slidein-overlay .smile-animated {
     -webkit-animation-duration: 0.3s;
@@ -1272,4 +1273,34 @@ i.cp-icon[class^="Defaults-"] {
 
 .cp-slidein-inline .cp-slidein-content, .cp-slidein-inline .cp-slidein {
     z-index: 99 !important;
+}
+
+/*----- Form Error Notice --------*/
+.cp-slidein .cp-error-msg {
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+.cp-slidein .cp-detailed-message {
+    color: red;
+    margin-top: 5px;
+    font-size: 13px;
+}
+.cp-slidein .cp-m-error h5 {
+    font-size: 13px;
+}
+.cp-slidein .cp-admin-error-notice {
+    font-size: 13px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #101010;
+}
+.cp-slidein .cp-only-admin-msg {
+    bottom: 0;   
+    font-size: 14px;
+}
+.cp-slidein .cp-go-back {
+    font-size: 15px;
+}
+.cp-slidein .cp-m-success .cp-error-msg {
+    font-size: 15px;
 }

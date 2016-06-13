@@ -4,10 +4,11 @@ if( !function_exists( 'cp_get_form_hidden_fields' ) ) {
 		/** = Form options
 		 *	Mailer - We will also optimize this by filter. If in any style we need the form then apply filter otherwise nope.
 		 *-----------------------------------------------------------*/
-		
-		$mailer 		= explode( ":",$a['mailer'] );
 
+		$mailer 		= explode( ":",$a['mailer'] );
+		$on_success_action = $on_success = '';
 		$mailer_id = $list_id = $data_option = '';
+
 		if( $a['mailer'] !== '' && $a['mailer'] != "custom-form" ) {
 		    $smile_lists = get_option('smile_lists');
 
@@ -24,8 +25,7 @@ if( !function_exists( 'cp_get_form_hidden_fields' ) ) {
 		        $list_id = ( $list != '' ) ? $list['list'] : '';
 		        $data_option = "cp_".$mailer_id."_".$listName;
 		    }
-		    
-		    $on_success_action = $on_success = '';
+
 		    $on_success = ( isset($a['on_success']) ) ? $a['on_success'] : '';
 		    if( isset($on_success) && $on_success == "redirect" )  {
 		    	$on_success_action = $a['redirect_url'];
@@ -34,8 +34,13 @@ if( !function_exists( 'cp_get_form_hidden_fields' ) ) {
 		    }
 		}
 		ob_start();
-		$uid = time(); ?>
+		$uid = md5(uniqid(rand(), true));
 
+		global $wp;
+		$current_url = home_url(add_query_arg(array(),$wp->request));
+		?>
+
+		<input type="hidden" name="cp-page-url" value="<?php echo $current_url; ?>" />
 		<input type="hidden" name="param[user_id]" value="cp-uid-<?php echo $uid; ?>" />
         <input type="hidden" name="param[date]" value="<?php echo esc_attr( date("j-n-Y") ); ?>" />
 		<input type="hidden" name="list_parent_index" value="<?php echo isset( $a['mailer'] ) ? $a['mailer'] : ''; ?>" />
@@ -66,7 +71,7 @@ if( !function_exists( "cp_valid_mx_email_init" ) ){
 			if( cp_is_valid_mx_email($email) ) {
 				return true;
 			} else {
-				return false;	
+				return false;
 			}
 		} else {
 			return true;
@@ -94,7 +99,7 @@ function cp_enabled_mx_record_init() {
 }
 
 /**
- * 	Check if style is visible here or not 
+ * 	Check if style is visible here or not
  * @Since 2.1.0
  */
 function cp_is_style_visible($settings) {
@@ -142,7 +147,7 @@ function cp_is_style_visible($settings) {
 	$exclude_post_type	= str_replace( "special-", "", $exclude_post_type );
 	$exclude_post_type 	= ( !$exclude_post_type == "" ) ? explode( ",", $exclude_post_type ) : '';
 
-	$exclusive_tax 		= isset($settings[ 'exclude_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclude_post_type' ]) : '';
+	$exclusive_tax 		= isset($settings[ 'exclusive_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclusive_post_type' ]) : '';
 	$exclusive_tax		= str_replace( "post-", "", $exclusive_tax );
 	$exclusive_tax		= str_replace( "tax-", "", $exclusive_tax );
 	$exclusive_tax		= str_replace( "special-", "", $exclusive_tax );
@@ -202,7 +207,9 @@ function cp_is_style_visible($settings) {
 			$term_id = '';
 			$obj = get_queried_object();
 			if( $obj !=='' && $obj !== null ){
-				$term_id = $obj->term_id;
+				if( isset($obj->term_id) ) {
+					$term_id = $obj->term_id;
+				}
 			}
 			if( is_array( $exclude_from ) && in_array( $term_id, $exclude_from ) ){
 				$display = false;
@@ -247,6 +254,11 @@ function cp_is_style_visible($settings) {
 						break;
 					case 'post_tag':
 						if( is_tag() ){
+							$display = false;
+						}
+						break;
+					case 'page':
+						if ( is_page() ) {
 							$display = false;
 						}
 						break;
@@ -344,8 +356,8 @@ function cp_is_style_visible($settings) {
 							$display = true;
 						}
 						break;
-					default:
-						if( is_archive( $taxonomy ) ){
+					case 'page':
+						if ( is_page() ) {
 							$display = true;
 						}
 						break;
@@ -358,6 +370,11 @@ function cp_is_style_visible($settings) {
 		if( is_user_logged_in() )
 			$display = false;
 	}
+
+	$style_id = $settings['style_id'];
+
+	// filter target page settings
+	$display = apply_filters( 'cp_target_page_settings', $display, $style_id );
 
 	return $display;
 }
@@ -376,9 +393,9 @@ function cp_display_style_inline() {
 
 	if( is_array($cp_modules) ) {
 
-		foreach( $cp_modules as $module ) {		
+		foreach( $cp_modules as $module ) {
 
-			$module = strtolower( str_replace( "_Popup", "" , $module) );		
+			$module = strtolower( str_replace( "_Popup", "" , $module) );
 			$style_arrays = cp_get_live_styles($module);
 
 			if( is_array($style_arrays) ) {
@@ -429,8 +446,8 @@ function cp_display_style_inline() {
 								$after_content_string .= ob_get_contents();
 								$before_content_string .= ob_get_contents();
 							break;
-						} 
-						
+						}
+
 						ob_end_clean();
 					}
 				}
@@ -448,7 +465,7 @@ function cp_display_style_inline() {
  * @Since 2.1.0
  */
 function cp_get_live_styles($module) {
-	
+
 	$styles = get_option( 'smile_'.$module.'_styles' );
 	$style_variant_tests = get_option( $module.'_variant_tests' );
 	$live_array = array();
@@ -485,4 +502,167 @@ function cp_get_live_styles($module) {
 	}
 
 	return $live_array;
+}
+
+
+/**
+ * 	Notify form submission errors to admin
+ * @Since 2.3.0
+ */
+if( !function_exists('cp_notify_error_to_admin') ) {
+	function cp_notify_error_to_admin($page_url) {
+
+		// prepare content for email
+		$subject  = 'Issue with the ConvertPlug configuration';
+
+		$body = "Hello there, <p>There appears to be an issue with the ConvertPlug configuration on your website. Someone tried to fill out ConvertPlug form on ".$page_url." and regretfully, it didn't go through.</p>";
+
+		$body .= "Please try filling out the form yourself or read more why this could happen here.";
+
+		$body .= "<br>---<p>This e-mail was sent from ConvertPlug on ". get_bloginfo('name') ." (". site_url() . ")</p>";
+
+		// get admin email
+		$to = get_option( 'admin_email' );
+
+		$admin_notifi_time = get_option( 'cp_notified_admin_time' );
+
+		if( !$admin_notifi_time ) {
+			cp_send_mail( $to, $subject, $body );
+			update_option( 'cp_notified_admin_time', date('Y-m-d H:i:s') );
+		} else {
+			// getting previously saved notification time
+			$saved_timestamp = strtotime($admin_notifi_time);
+
+			// getting current date
+			$cDate = strtotime(date('Y-m-d H:i:s'));
+
+			// Getting the value of current date - 24 hours
+			$oldDate = $cDate - 86400; // 86400 seconds in 24 hrs
+
+			// if last email was sent time is greater than 24 hours, sent one more notification email
+			if ( $oldDate > $saved_timestamp ) {
+				cp_send_mail( $to, $subject, $body );
+				update_option( 'cp_notified_admin_time', date('Y-m-d H:i:s') );
+			}
+		}
+	}
+}
+
+/**
+ * Sends an email
+ * @Since 2.3.0
+ */
+if( !function_exists('cp_send_mail') ) {
+	function cp_send_mail($to,$subject,$body) {
+
+		// set headers for email
+		$headers = array('Content-Type: text/html; charset=UTF-8');
+
+		if( wp_mail( $to, $subject, $body, $headers ) ) {
+			$msg = "success";
+		} else {
+			$msg = "error";
+		}
+		return $msg;
+	}
+}
+
+
+function cp_generate_scheduled_info($style_settings) {
+
+	$scheduleData = unserialize($style_settings);
+	$title = '';
+
+    if( isset($scheduleData['schedule']) ) {
+        $scheduledArray = $scheduleData['schedule'];
+        if( is_array($scheduledArray) ) {
+            $startDate = date("j M Y ",strtotime($scheduledArray['start']));
+            $endDate = date("j M Y ",strtotime($scheduledArray['end']));
+            $first = date('j-M-Y (h:i A)', strtotime($scheduledArray['start']));
+            $second = date('j-M-Y (h:i A)', strtotime($scheduledArray['end']));
+            $title = "Scheduled From ".$first." To ".$second;
+        }
+    }
+
+    $status = '<span class="change-status"><span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span class="scheduled-info" title="'.$title.'">'.__( "Scheduled", "smile" ).'</span></span>';
+
+   	return $status;
+}
+
+if( !function_exists( 'cp_get_live_preview_settings' ) ) {
+	function cp_get_live_preview_settings( $module, $settings_method, $style_options, $template_name) {
+
+		$settings = array();
+		if ( $settings_method == 'internal' ) {
+
+			foreach( $style_options as $key => $value ) {
+				$settings[$value['name']] = $value['opts']['value'];
+			}
+
+			$settings['affiliate_setting'] = false;
+			$settings['style'] = 'preview';
+			$settings_encoded = base64_encode( serialize( $settings ) );
+
+		} else {
+
+			$settings = get_option( 'cp_'.$module.'_' . $template_name , '' );
+
+			if( is_array($settings) ) {
+
+				$settings = get_option( 'cp_'.$module.'_' . $template_name , '' );
+
+				$style_setting_arr = $settings['style_settings'];
+				$style_setting_arr['style'] = 'preview';
+
+			} else {
+				$demo_dir = CP_BASE_DIR . 'modules/'.$module.'/presets/'.$template_name.'.txt';
+
+				$handle = fopen($demo_dir, "r");
+
+				$settings = fread($handle, filesize($demo_dir));
+
+				$settings = json_decode($settings, TRUE);
+
+				$style_setting_arr = $settings['style_settings'];
+
+				$style_setting_arr['style'] = 'preview';
+			}
+
+			$style_setting_arr['cp_image_link_url'] = 'external';
+
+			$import_style = array();
+			foreach( $style_setting_arr as $title => $value ){
+				if( !is_array( $value ) ){
+					$value = htmlspecialchars_decode($value);
+					$import_style[$title] = $value;
+				} else {
+					foreach( $value as $ex_title => $ex_val ) {
+							$val[$ex_title] = htmlspecialchars_decode($ex_val);
+					}
+					$import_style[$title] = $val;
+				}
+			}
+
+			$settings_encoded =  base64_encode( serialize ( $import_style ) );
+		}
+
+		return $settings_encoded;
+
+	}
+}
+
+
+if( !function_exists('cp_is_connected') )  {
+	function cp_is_connected() {
+
+	    $connected = @fsockopen("downloads.brainstormforce.com", 80); //website, port  (try 80 or 443)
+
+	    if ( $connected ){
+	        $is_conn = true; //action when connected
+	        fclose($connected);
+	    } else {
+	        $is_conn = false; //action in connection failure
+	    }
+	    return $is_conn;
+	}
 }

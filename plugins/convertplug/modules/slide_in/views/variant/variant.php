@@ -66,7 +66,7 @@ if( count($variants) > 0 ) {
       </a>
       <a href="?page=smile-slide_in-designer" style="margin-right: 25px !important;" class="bsf-connect-download-csv"><i class="connects-icon-reply" style="line-height: 30px;font-size: 22px;"></i>
         <?php _e( "Back to Slide In List", "smile" ); ?>
-      </a>      
+      </a>
 
       <div class="message"></div>
     </div>
@@ -117,7 +117,7 @@ if( count($variants) > 0 ) {
                     } elseif( $live == 0 ){
                       $status .= '<span class="change-status"><span data-live="0" class="cp-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
                     } else {
-                      $status .= '<span class="change-status"><span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span>'.__( "Scheduled", "smile" ).'</span></span>';
+                      $status .= cp_generate_scheduled_info($style['style_settings']);
                     }
                     $status .= '<ul class="manage-column-menu">';
           			    if( $live !== 1 && $live !== "1" ) {
@@ -157,45 +157,44 @@ if( count($variants) > 0 ) {
               }
               ?>
               <?php
+
         $variant_tests = isset($variant_tests[$variant_style]) ? $variant_tests[$variant_style] : '';
 
-        if(is_array($variant_tests) && !empty($variant_tests)){
-          $variant_tests = array_reverse($variant_tests);
-          foreach($variant_tests as $key => $variant_test){
-          $style_name = $variant_test['style_name'];
-          $style_id = $variant_test['style_id'];
-          $impressions = 0;
+        if( is_array($variant_tests) && !empty($variant_tests) ) {
+            $variant_tests = array_reverse($variant_tests);
+            foreach( $variant_tests as $key => $variant_test) {
+                $style_name = $variant_test['style_name'];
+                $style_id = $variant_test['style_id'];
+                $impressions = 0;
 
-          if(isset($analyticsData[$style_id])) {
-            foreach ($analyticsData[$style_id] as $key => $value) {
-              $impressions = $impressions + $value['impressions'];
+            if( isset($analyticsData[$style_id]) ) {
+                foreach ($analyticsData[$style_id] as $key => $value) {
+                    $impressions = $impressions + $value['impressions'];
+                }
             }
-          }
 
-          $style_settings = unserialize($variant_test['style_settings']);
-          $theme = $style_settings['style'];
-          $live = $style_settings['live'];
-          $status = '';
-          if( $live == 1) {
-				    $status .= '<span class="change-status"><span data-live="1" class="cp-status"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></span>';
-			    } elseif( $live == 0 ){
-  				  $status .= '<span class="change-status"><span data-live="0" class="cp-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
-			    } else {
-				    $status .= '<span class="change-status"><span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span>'.__( "Scheduled", "smile" ).'</span></span>';
-    			}
-          $status .= '<ul class="manage-column-menu">';
-    		  if( $live !== 1 && $live !== "1" ) {
-    			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="slide_in_variant_tests" data-live="1" data-option="slide_in_variant_tests"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></a></li>';
-    		  }
-    		  if( $live !== 0 && $live !== "" && $live !== "0" ) {
-    			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="slide_in_variant_tests" data-live="0" data-option="slide_in_variant_tests"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></a></li>';
-    		  }
-    		  if( $live !== 2 && $live !== "2" ) {
-    			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="slide_in_variant_tests" data-live="2" data-option="slide_in_variant_tests" data-schedule="1"><i class="connects-icon-clock"></i><span>'.__( "Schedule", "smile" ).'</span></a></li>';
-    		  }
-    		  $status .= '</ul>';
-          $status .= '</span>';
-          ?>
+            $style_settings = unserialize($variant_test['style_settings']);
+
+            $theme = $style_settings['style'];
+            $live = $style_settings['live'];
+            $status = '';
+            if( $live == 1 ) {
+			    $status .= '<span class="change-status"><span data-live="1" class="cp-status"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></span>';
+		    } elseif( $live == 0 ){
+				  $status .= '<span class="change-status"><span data-live="0" class="cp-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
+		    }
+
+            $status .= '<ul class="manage-column-menu">';
+		    if( $live !== 1 && $live !== "1" ) {
+			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="slide_in_variant_tests" data-live="1" data-option="slide_in_variant_tests"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></a></li>';
+		    }
+		    if( $live !== 0 && $live !== "" && $live !== "0" ) {
+			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="slide_in_variant_tests" data-live="0" data-option="slide_in_variant_tests"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></a></li>';
+		    }
+
+    		$status .= '</ul>';
+            $status .= '</span>';
+        ?>
               <tr id="<?php echo $key; ?>" class="ui-sortable-handle">
                 <td class="name column-name"><a href="?page=smile-slide_in-designer&style-view=variant&variant-test=edit&variant-style=<?php echo $style_id; ?>&style=<?php echo stripslashes($style_name); ?>&parent-style=<?php echo urlencode( stripslashes($_GET['style']) ); ?>&style_id=<?php echo $variant_style; ?>&theme=<?php echo esc_attr( $theme ); ?>"> <?php echo urldecode(stripslashes($style_name)); ?> </a></td>
                 <td class="column-impressions" style="vertical-align: inherit;"><?php echo $impressions; ?></td>

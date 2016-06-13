@@ -63,7 +63,7 @@ if( !function_exists( "slide_in_theme_blank" ) ) {
 ?>
 		<!-- BEFORE CONTENTS -->
         <div class="cp-row">
-        	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+        	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cp-text-container">
 				<?php
                	echo do_shortcode( html_entity_decode( stripcslashes( $a['slidein_title1'] ) ) );
                 ?>

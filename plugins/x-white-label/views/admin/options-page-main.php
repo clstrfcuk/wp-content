@@ -75,7 +75,7 @@
             <th>
               <label for="x_white_label_addons_home_heading">
                 <strong><?php _e( 'Addons Home Heading', '__x__' ); ?></strong>
-                <span><?php _e( 'Enter an alternate heading for the Addons Home page.', '__x__' ); ?></span>
+                <span><?php _e( 'Enter a heading for the box that will be output to the Addons Home page.', '__x__' ); ?></span>
               </label>
             </th>
             <td><input name="x_white_label_addons_home_heading" id="x_white_label_addons_home_heading" type="text" value="<?php echo ( isset( $x_white_label_addons_home_heading ) ) ? $x_white_label_addons_home_heading : ''; ?>" class="large-text"></td>
@@ -83,22 +83,28 @@
 
           <tr>
             <th>
-              <label for="x_white_label_addons_home_subheading">
-                <strong><?php _e( 'Addons Home Subheading', '__x__' ); ?></strong>
-                <span><?php _e( 'Enter an alternate subheading for the Addons Home page.', '__x__' ); ?></span>
+              <label for="x_white_label_addons_home_content">
+                <strong><?php _e( 'Addons Home Content', '__x__' ); ?></strong>
+                <span><?php _e( 'Enter some content for the box that will be output to the Addons Home page.', '__x__' ); ?></span>
               </label>
             </th>
-            <td><input name="x_white_label_addons_home_subheading" id="x_white_label_addons_home_subheading" type="text" value="<?php echo ( isset( $x_white_label_addons_home_subheading ) ) ? $x_white_label_addons_home_subheading : ''; ?>" class="large-text"></td>
+            <td><textarea name="x_white_label_addons_home_content" id="x_white_label_addons_home_content" class="code"><?php echo ( isset( $x_white_label_addons_home_content ) ) ? esc_textarea( $x_white_label_addons_home_content ) : ''; ?></textarea>
+            </td>
           </tr>
 
           <tr>
             <th>
-              <label for="x_white_label_addons_home_content">
-                <strong><?php _e( 'Addons Home Content', '__x__' ); ?></strong>
-                <span><?php _e( 'Enter alternate content for the Addons Home page.', '__x__' ); ?></span>
+              <label for="x_white_label_addons_home_position">
+                <strong><?php _e( 'Addons Home Output Position', '__x__' ); ?></strong>
+                <span><?php _e( 'Select where you would like the box to be positioned on the Addons Home page within the main content.', '__x__' ); ?></span>
               </label>
             </th>
-            <td><textarea name="x_white_label_addons_home_content" id="x_white_label_addons_home_content" class="code"><?php echo ( isset( $x_white_label_addons_home_content ) ) ? esc_textarea( $x_white_label_addons_home_content ) : ''; ?></textarea>
+            <td>
+              <fieldset>
+                <legend class="screen-reader-text"><span>input type="radio"</span></legend>
+                <label class="radio-label"><input type="radio" class="radio" name="x_white_label_addons_home_position" value="x_addons_main_content_start" <?php echo ( isset( $x_white_label_addons_home_position ) && checked( $x_white_label_addons_home_position, 'x_addons_main_content_start', false ) ) ? checked( $x_white_label_addons_home_position, 'x_addons_main_content_start', false ) : 'checked="checked"'; ?>> <span><?php _e( 'Start', '__x__' ); ?></span></label><br>
+                <label class="radio-label"><input type="radio" class="radio" name="x_white_label_addons_home_position" value="x_addons_main_content_end" <?php echo ( isset( $x_white_label_addons_home_position ) && checked( $x_white_label_addons_home_position, 'x_addons_main_content_end', false ) ) ? checked( $x_white_label_addons_home_position, 'x_addons_main_content_end', false ) : ''; ?>> <span><?php _e( 'End', '__x__' ); ?></span></label>
+              </fieldset>
             </td>
           </tr>
 

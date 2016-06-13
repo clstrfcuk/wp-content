@@ -44,7 +44,7 @@ class Envira_Gallery_Posttype {
     public function __construct() {
     
         // Load the base class object.
-        $this->base = Envira_Gallery::get_instance();
+        $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
 
         // Build the labels for the post type.
         $labels =  array(
@@ -76,7 +76,11 @@ class Envira_Gallery_Posttype {
             'menu_position'       => apply_filters( 'envira_gallery_post_type_menu_position', 247 ),
             'menu_icon'           => plugins_url( 'assets/css/images/menu-icon@2x.png', $this->base->file ),
             'supports'            => array( 'title' ),
-            'capabilities'        => array(
+        );
+
+        // Define custom capaibilities if we're running Envira Gallery.
+        if ( class_exists( 'Envira_Gallery' ) ) {
+            $args['capaibilities'] = array(
                 // Meta caps
                 'edit_post'             => 'edit_envira_gallery',
                 'read_post'             => 'read_envira_gallery',
@@ -97,8 +101,10 @@ class Envira_Gallery_Posttype {
                 'edit_private_posts'    => 'edit_private_envira_galleries',
                 'edit_published_posts'  => 'edit_published_envira_galleries',
                 'edit_posts'            => 'create_envira_galleries',                
-            ),
-        );
+            );
+        }
+
+        // Filter arguments.
         $args = apply_filters( 'envira_gallery_post_type_args', $args );
 
         // Register the post type with WordPress.

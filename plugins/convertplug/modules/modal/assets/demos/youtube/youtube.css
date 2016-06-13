@@ -7,7 +7,7 @@
 }
 .cp-youtube .cp-form-container {
     margin: 0;
-    display: none;
+    /* display: none; */
     padding: 20px 0;
     position: relative;
 }
@@ -16,12 +16,15 @@
     line-height: normal;
 }
 .cp-modal .cp-youtube .cp-submit {
-    border: none;
+   /*  border: none; */
     font-weight: 600;
     font-size: 15px;
     line-height: 1.38em;
     outline: 0;
     margin: 0px;
+}
+.cp-youtube-container .cp-overlay-close span{
+    font-family: "Open sans",serif;
 }
 /**	= CTA
  *-----------------------------------------------------------*/
@@ -61,6 +64,12 @@
 .cp-modal .cp-youtube .cp-name.no-margin{
     margin-bottom: 10px !important;
 } 
+
+.cp-modal-window-size .form-main ,
+.cp-modal-window-size .default-form {
+    max-width: 700px !important;
+    margin: 0 auto;
+}
 
 @media only screen and (min-width : 768px) {
 

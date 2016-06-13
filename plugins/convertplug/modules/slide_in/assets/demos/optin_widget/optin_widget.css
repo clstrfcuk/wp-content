@@ -94,7 +94,7 @@
     font-weight: 600;
     font-size: 13px;
     line-height: 1.5em;
-    border-radius: 3px;
+ /*    border-radius: 3px; */
     outline: none;
     margin: 0;
 }
@@ -106,12 +106,12 @@
     background-color: rgb(68, 68, 68);
     background-image: none;
     color: #fff;
-    border: none;
+    /* border: none; */
     margin-bottom: 10px;
 }
 
 .cp-slidein .cp-optin-widget .cp-submit {
-    border-radius: 3px;
+   /*  border-radius: 3px; */
     display: inline-block;
     word-wrap: break-word;
 }

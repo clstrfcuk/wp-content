@@ -12,6 +12,7 @@ if(!class_exists('Smile_Info_Bars')){
 			add_action( 'admin_enqueue_scripts',array($this,'enqueue_admin_scripts' ) );
 			add_action( 'init', array( $this, 'register_theme_templates') );
 			add_filter( 'admin_body_class', array( $this, 'cp_admin_body_class') );
+			require_once('info_bar_preset.php');
 		}
 
 		function cp_admin_body_class( $classes ) {
@@ -36,7 +37,7 @@ if(!class_exists('Smile_Info_Bars')){
 				'convertplug',
 				'Info Bar Designer',
 				'Info Bar',
-				'administrator',
+				'access_cp',
 				'smile-info_bar-designer',
 				array($this,'info_bar_dashboard') );
 			$obj = new Convert_Plug;
@@ -47,15 +48,15 @@ if(!class_exists('Smile_Info_Bars')){
 		}
 
 		function info_bar_admin_scripts(){
-			if( ( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant") ) || !isset( $_GET['style-view'] ) ) {				
+			if( ( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant") ) || !isset( $_GET['style-view'] ) ) {
 
-				wp_enqueue_script( 'smile-info_bar-receiver',			plugins_url( 'assets/js/receiver.js', __FILE__ ) );				
+				wp_enqueue_script( 'smile-info_bar-receiver',			plugins_url( 'assets/js/receiver.js', __FILE__ ) );
 				wp_enqueue_style( 'cp-contacts',						plugins_url( '../../admin/contacts/css/cp-contacts.css', __FILE__ ) );
 				wp_enqueue_media();
 				wp_enqueue_script( 'smile-info_bar-importer',			plugins_url( '../assets/js/admin-media.js',__FILE__),array( 'jquery' ), '', true );
 			}
 
-			if( isset($_GET['style-view']) && $_GET['style-view'] == 'analytics' ) {				
+			if( isset($_GET['style-view']) && $_GET['style-view'] == 'analytics' ) {
 				wp_enqueue_style( 'css-select2',						plugins_url( '../../admin/assets/select2/select2.min.css', __FILE__ ) );
 				wp_enqueue_script( 'convert-select2',					plugins_url( '../../admin/assets/select2/select2.min.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-js',						plugins_url( '../../admin/assets/js/chart.js', __FILE__ ) );
@@ -63,7 +64,7 @@ if(!class_exists('Smile_Info_Bars')){
 				wp_enqueue_script( 'bsf-charts-donut-js',				plugins_url( '../../admin/assets/js/chart.donuts.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-line-js',				plugins_url( '../../admin/assets/js/Chart.Line.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-polararea-js',			plugins_url( '../../admin/assets/js/Chart.PolarArea.js', __FILE__ ) );
-				wp_enqueue_script( 'bsf-style-analytics-js',			plugins_url( 'assets/js/style-analytics.js', __FILE__ ) );
+				wp_enqueue_script( 'bsf-style-analytics-js',			plugins_url( '../assets/js/style-analytics.js', __FILE__ ) );
 			}
 		}
 
@@ -169,61 +170,45 @@ if(!class_exists('Smile_Info_Bars')){
 						$style_id = $info_bar_array[ 'style_id' ];
 						$info_bar_style = $style_settings[ 'style' ];
 
-						if( is_array($style_settings) && !empty($style_settings) ) {							
+						if( is_array($style_settings) && !empty($style_settings) ) {
 
 							$settings = unserialize( $info_bar_array[ 'style_settings' ] );
 							$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';
 
 							$display = cp_is_style_visible($settings);
 							$settings = serialize( $settings );
-							$settings_encoded 	= base64_encode( $settings );	
+							$settings_encoded 	= base64_encode( $settings );
 						}
 
 						if( $display ) {
 
-							$data  =  get_option( 'convert_plug_debug' ); 
-					
+							$data  =  get_option( 'convert_plug_debug' );
+
 							// developer mode
 							if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
-
-								$style_handlers = array(
-									'smile-info-bar-style',
-									'smile-info-bar-grid',
-									'cp-animate-style',
-									'cp-social-media-style',
-									'cp-social-icon-style',
-									'convertplug-style',
-									'cp-frosty-style'
-								);
 
 								$script_handlers = array(
 									'smile-info-bar-script',
 									'cp-ideal-timer-script',
-									'cp-info-bar-mailer-script',
-									'cp-frosty-script'
+									'cp-info-bar-mailer-script'
 								);
 
 	   							$list = 'enqueued';
 
 	   							foreach( $script_handlers as $handler ) {
-	   								if ( !wp_script_is( $handler, $list ) ) {							  
+	   								if ( !wp_script_is( $handler, $list ) ) {
 								       wp_enqueue_script( $handler );
 								    }
 	   							}
 
-	   							foreach( $style_handlers as $handler ) {
-	   								if ( !wp_style_is( $handler, $list ) ) {							      
-								       wp_enqueue_style( $handler );
-								    }
-	   							}
 	   						} else {
 
-								if ( !wp_script_is( 'smile-info-bar-script', 'enqueued' ) ) {						      
-								    wp_enqueue_script( 'smile-info-bar-script' );
+	   							if ( !wp_script_is( 'cp-ideal-timer-script', 'enqueued' ) ) {
+								    wp_enqueue_script( 'cp-ideal-timer-script' );
 								}
 
-								if ( !wp_style_is( 'smile-info-bar-style', 'enqueued' ) ) {							      
-								       wp_enqueue_style( 'smile-info-bar-style' );
+								if ( !wp_script_is( 'smile-info-bar-script', 'enqueued' ) ) {
+								    wp_enqueue_script( 'smile-info-bar-script' );
 								}
 	   						}
 
@@ -252,7 +237,7 @@ if(!class_exists('Smile_Info_Bars')){
 
 			if( ( isset( $_GET['hidemenubar'] ) && isset( $_GET['module'] ) && $_GET['module'] == "info_bar" ) ) {
 
-				wp_enqueue_script( 'cp-admin-customizer-js', 	plugins_url( 'assets/js/admin.customizer.js', __FILE__ ) );
+				wp_enqueue_script( 'cp-admin-customizer-js', 	plugins_url( '../assets/js/admin.customizer.js', __FILE__ ) );
 				wp_enqueue_script( 'smile-info_bar-common-functions-js', 	plugins_url( '/assets/js/functions-common.js', __FILE__), array('jquery') );
 
 				require_once( 'functions/functions.options.php' );
@@ -270,11 +255,21 @@ if(!class_exists('Smile_Info_Bars')){
 		}
 
 		function enqueue_admin_scripts($hook) {
-			if( ( isset( $_GET['hidemenubar'] ) && $_GET['module'] == 'info_bar' ) 
+			if( ( isset( $_GET['hidemenubar'] ) && $_GET['module'] == 'info_bar' )
 					|| ( isset($_GET['style-view']) && $_GET['style-view'] == 'new' && $hook == "convertplug_page_smile-info_bar-designer" ) ) {
-							
-				wp_enqueue_style( 'smile-info-bar', plugins_url( 'assets/css/info_bar.min.css', __FILE__ ) );	
-			    wp_localize_script( 'jquery', 'info_bar', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ) );
+
+				wp_enqueue_style( 'smile-info-bar', plugins_url( 'assets/css/info_bar.min.css', __FILE__ ) );
+			    //wp_localize_script( 'jquery', 'cp', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ), 'module' => 'info_bar' ) );
+
+			    //wp_localize_script( 'jquery', 'info_bar', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ,
+														    	//"module_img_dir" => plugins_url( "../assets/images", __FILE__)
+														    //	) );
+
+				 wp_localize_script( 'jquery', 'cp', array(
+														'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ,
+														'module' => 'info_bar',
+														"module_img_dir" => plugins_url( "/../assets/images", __FILE__)
+														) );
 
 				//	Add 'Theme Name' as a class to <html> tag
 				//	To provide theme compatibility
@@ -291,7 +286,7 @@ if(!class_exists('Smile_Info_Bars')){
 
 			$live_styles = cp_get_live_styles('info_bar');
 
-			$data  =  get_option( 'convert_plug_debug' ); 
+			$data  =  get_option( 'convert_plug_debug' );
 
 			// if any style is live or info_bar is in live preview mode then only enqueue scripts and styles
 			if( $live_styles && count($live_styles) > 0 ) {
@@ -299,27 +294,26 @@ if(!class_exists('Smile_Info_Bars')){
 				if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 
 					// register styles
-					wp_register_style( 'smile-info-bar-style', plugins_url( 'assets/css/info_bar.css', __FILE__ ) );	
-					wp_register_style( 'smile-info-bar-grid', plugins_url( 'assets/css/info_bar-grid.css', __FILE__ ) );
-					wp_register_style( 'cp-animate-style', plugins_url( '../assets/css/animate.css', __FILE__ ) );
-					wp_register_style( 'convertplug-style', plugins_url( '../assets/css/convertplug.css', __FILE__ ) );
-					wp_register_style( 'cp-frosty-style', plugins_url( '../../admin/assets/css/frosty.css', __FILE__ ) );
-					wp_register_style( 'cp-social-media-style', plugins_url( '../assets/css/cp-social-media-style.css', __FILE__ ) );
-					wp_register_style( 'cp-social-icon-style', plugins_url( '../assets/css/social-icon-css.css', __FILE__ ) );
+					wp_enqueue_style( 'smile-info-bar-style', plugins_url( 'assets/css/info_bar.css', __FILE__ ) );
+					wp_enqueue_style( 'smile-info-bar-grid', plugins_url( 'assets/css/info_bar-grid.css', __FILE__ ) );
+					wp_enqueue_style( 'cp-animate-style', plugins_url( '../assets/css/animate.css', __FILE__ ) );
+					wp_enqueue_style( 'convertplug-style', plugins_url( '../assets/css/convertplug.css', __FILE__ ) );
+					wp_enqueue_style( 'cp-social-media-style', plugins_url( '../assets/css/cp-social-media-style.css', __FILE__ ) );
+					wp_enqueue_style( 'cp-social-icon-style', plugins_url( '../assets/css/social-icon-css.css', __FILE__ ) );
 
 					// register scripts
-					wp_register_script( 'cp-ideal-timer-script', plugins_url( 'assets/js/idle-timer.min.js', __FILE__), array( 'jquery' ), null, null, true );
 					wp_register_script( 'smile-info-bar-script', plugins_url( 'assets/js/info_bar.js', __FILE__), array( 'jquery' ));
-					wp_register_script( 'cp-info-bar-mailer-script', plugins_url( 'assets/js/mailer.js', __FILE__), array( 'jquery' ), null, 
-								null, true );					
+
+					wp_register_script( 'cp-info-bar-mailer-script', plugins_url( 'assets/js/mailer.js', __FILE__), array( 'jquery' ), null,
+								null, true );
 					wp_register_script( 'cp-frosty-script', plugins_url( '../../admin/assets/js/frosty.js', __FILE__), array( 'jquery' ), null, null, true );
 
 				} else {
-					wp_register_style( 'smile-info-bar-style', plugins_url( 'assets/css/info_bar.min.css', __FILE__ ) );			
+					wp_enqueue_style( 'smile-info-bar-style', plugins_url( 'assets/css/info_bar.min.css', __FILE__ ) );
 					wp_register_script( 'smile-info-bar-script', plugins_url( 'assets/js/info_bar.min.js', __FILE__), array( 'jquery' ));
-				}							
+				}
 			}
-			
+
 			wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 		}
 	}
@@ -357,11 +351,11 @@ if (!function_exists('cp_info_bar_custom')) {
 		foreach( $live_styles as $key => $info_bar_array ){
 			$style_id = $info_bar_array[ 'style_id' ];
 
-			$settings = unserialize( $info_bar_array[ 'style_settings' ] );			
+			$settings = unserialize( $info_bar_array[ 'style_settings' ] );
 			if(isset($settings['variant_style_id']) && $id == $settings['style_id']){
 				$id = $settings['variant_style_id'];
-			}	
-			
+			}
+
 			if( $id == $style_id ) {
 				$live_array = $info_bar_array;
 				$settings = unserialize( $info_bar_array[ 'style_settings' ] );

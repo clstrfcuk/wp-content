@@ -72,7 +72,10 @@ class Vc_Updating_Manager {
 	 * @return object $ transient
 	 */
 	public function check_update( $transient ) {
-		
+		// Extra check for 3rd plugins
+		if ( isset( $transient->response[ $this->plugin_slug ] ) ) {
+			return $transient;
+		}
 		// Get the remote version
 		$remote_version = $this->getRemote_version();
 

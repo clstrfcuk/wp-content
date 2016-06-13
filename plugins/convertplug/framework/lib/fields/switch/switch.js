@@ -10,5 +10,7 @@ jQuery(document).ready(function(){
 			jQuery(this).parents(".switch-wrapper").find("#"+id).attr('value','1');
 		}
 		jQuery(this).parents(".switch-wrapper").find(".smile-switch-input").trigger('change');
+		$(document).trigger('smile-switch-change', [id] );
+	
 	});
 });

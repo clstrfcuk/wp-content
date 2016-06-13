@@ -60,7 +60,7 @@ function layerslider_help($contextual_help, $screen_id, $screen) {
 		$screen->add_help_tab(array(
 			'id' => 'help',
 			'title' => 'Getting Help',
-			'content' => '<p>Please read our  <a href="http://support.kreaturamedia.com/docs/layersliderwp/documentation.html" target="_blank">Online Documentation</a> carefully, it will likely answer all of your questions.</p><p>You can also check the <a href="http://support.kreaturamedia.com/faq/4/layerslider-for-wordpress/" target="_blank">FAQs</a> for additional information, including our support policies and licensing rules.</p>'
+			'content' => '<p>Please read our  <a href="https://support.kreaturamedia.com/docs/layersliderwp/documentation.html" target="_blank">Online Documentation</a> carefully, it will likely answer all of your questions.</p><p>You can also check the <a href="https://support.kreaturamedia.com/faq/4/layerslider-for-wordpress/" target="_blank">FAQs</a> for additional information, including our support policies and licensing rules.</p>'
 		));
 	}
 }

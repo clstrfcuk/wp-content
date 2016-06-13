@@ -1,14 +1,9 @@
 (function($){
 	$(document).ready(function(){
 
-		//refresh_social_media();
-		//call function 
-	
 		// on change events
 		$(document).on('change','.cp_sm_select_action, .cp_sm_select, .cp_sm_input, .cp_sm_checkbox ', function(){
-			//setTimeout(function(){
-				refresh_social_media();				          
-			//},100);
+			refresh_social_media();
 		});
 
 		// before update starts
@@ -16,8 +11,11 @@
 
 			$('.social-media-wrapper').each(function(i,wrapper){
 				var id = $(wrapper).attr('data-id');
-				cp_social_social_media(id);
+				setTimeout(function(){
+				 cp_social_social_media(id);
+				},100);
 			});
+
 		}
 
 		// click new box
@@ -31,8 +29,7 @@
 				var box_string = '';
 
 				var temp_name = $(box).find('input[name=input_share]').val();
-				var temp_label = $(box).find('.cp_sm_select').val();				
-				//var temp_label = $(box).find('input[name=profile_link]').val();
+				var temp_label = $(box).find('.cp_sm_select').val();
 				var temp_val = (temp_label !== '') ? temp_label : temp_name;
 				$(box).find('.accordion-head-label').html(temp_val);
 
@@ -47,7 +44,6 @@
 					var value = $(input).val();
 					if (value.indexOf(":") >= 0){
 						value = encodeURIComponent(value);
-						//console.log(value);
 					}
 					box_string += name+':'+value+'|';
 				});
@@ -71,7 +67,7 @@
 
 			var $input = $('#social-media-input-'+pre_id);
 			$input.val(string);
-			$input.trigger('change');			
+			//$input.trigger('change');
 			$(document).trigger('socialMediaUpdated',[string, pre_id]);
 		} // cp_social_social_media end
 
@@ -104,7 +100,7 @@
 				$(document).trigger('socialMediaAdded',[new_box]);
 				$(document).trigger('refreshSocialDependancy');
 			});
-			           
+
 		}); // add new click event
 
 		// on click delete box
@@ -131,7 +127,6 @@
 						setTimeout(function(){
 							$(box).remove();
 							refresh_social_media();
-							//$(".sweet-overlay, .sweet-alert").fadeOut('slow').remove();
 						},350);
 					}
 				}
@@ -170,12 +165,11 @@
 			    	offset: 10,
 			 	});
 
-				//
 				refresh_social_media();
 
 			},150);
 		});
-		
+
 		//$(document).trigger('refreshSocialDependancy');
 
 		// update dependancy on input type change
@@ -199,13 +193,12 @@
 			var html = '';
 			var box = $(select).parents('.social-media:first');
 			var val = $(select).val();
-						;
 			$(box).find('.cp_sm_select_action, .cp_sm_select, .cp_sm_input, .cp_sm_checkbox').removeClass('skip-input');
-		
+
 			if(val === 'profile_link') {
 				var hidden_dependant_array_to_hide = [
 					'input[name=input_share]',
-					'input[name=smile_adv_share_opt]'						
+					'input[name=smile_adv_share_opt]'
 				];
 				var hidden_dependant_array_to_show  = [
 					'input[name=profile_link]'
@@ -220,16 +213,16 @@
 					$(box).find(show_ele).parents('.social-media-field').slideDown(100);
 				});
 			}
-			else if( val === 'social_sharing' ) {	
+			else if( val === 'social_sharing' ) {
 				var show_url = $(box).find(".smile-switch-input").val();
 
 				var dropdown_dependant_array_to_hide = [
 					'input[name=profile_link]',
-					'input[name=input_share]'					
+					'input[name=input_share]'
 				];
 
 				if(show_url == 1){
-					var dropdown_dependant_array_to_show  = [					
+					var dropdown_dependant_array_to_show  = [
 					'input[name=input_share]',
 					'input[name=smile_adv_share_opt]'
 					];
@@ -237,7 +230,7 @@
 					var dropdown_dependant_array_to_show  = [
 					'input[name=smile_adv_share_opt]'
 					];
-				}				
+				}
 
 				$.each(dropdown_dependant_array_to_hide,function(i,ele){
 					$(box).find(ele).parents('.social-media-field').slideUp(100);
@@ -251,9 +244,9 @@
 
 				var show_url = $(box).find(".smile-switch-input").val();
 				var dropdown_dependant_array_to_hide = [
-					'input[name=profile_link]'					
+					'input[name=profile_link]'
 				];
-				var dropdown_dependant_array_to_show  = [					
+				var dropdown_dependant_array_to_show  = [
 					'input[name=input_share]',
 					'input[name=smile_adv_share_opt]'
 				];
@@ -271,18 +264,17 @@
 				var show_action = $(box).find(".cp_sm_select_action").val();
 				if(show_action == 'profile_link'){
 					var dropdown_dependant_array_to_hide = [
-					'input[name=input_share]'					
+					'input[name=input_share]'
 				];
-				var dropdown_dependant_array_to_show  = [				
-					'input[name=profile_link]'	
+				var dropdown_dependant_array_to_show  = [
+					'input[name=profile_link]'
 				];
 				}else{
 					var dropdown_dependant_array_to_hide = [
 						'input[name=profile_link]',
-						'input[name=input_share]'				
+						'input[name=input_share]'
 					];
-					var dropdown_dependant_array_to_show  = [					
-						//'input[name=input_share]',
+					var dropdown_dependant_array_to_show  = [
 						'input[name=smile_adv_share_opt]'
 					];
 				}
@@ -295,15 +287,15 @@
 				$.each(dropdown_dependant_array_to_show,function(i,show_ele){
 					$(box).find(show_ele).parents('.social-media-field').slideDown(100);
 				});
-			}else {
-				var dependant_array_to_hide = [			
-				];
+
+			}/*else {
+				var dependant_array_to_hide = [	];
 				var dependant_array_to_show = [
-					'input[name=input_share]',
-					'input[name=profile_link]'
+					//'input[name=input_share]',
+					//'input[name=profile_link]'
 				];
 
-				
+
 				$.each(dependant_array_to_hide,function(i,ele){
 					$(box).find(ele).parents('.social-media-field').slideUp(100);
 					$(box).find(ele).addClass('skip-input'); // skip input value to add to string
@@ -313,7 +305,7 @@
 					$(box).find(show_ele).parents('.social-media-field').slideDown(100);
 				});
 
-			}
+			}*/
 		} // refresh dependancy
 
 		// sortable script

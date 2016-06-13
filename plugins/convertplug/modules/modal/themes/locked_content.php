@@ -18,8 +18,8 @@ if( !function_exists( "modal_theme_locked_content" ) ) {
 		foreach( $style_settings as $key => $setting ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);;
 		}
-		
-		unset($style_settings['style_id']); 
+
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -29,7 +29,7 @@ if( !function_exists( "modal_theme_locked_content" ) ) {
 			"uid"       	=> $uid,
 			"uid_class" 	=> $uid_class,
 			"style_class"	=> "cp-locked-content"
-		);		
+		);
 
 		/**
 		 * Merge short code variables arrays
@@ -64,7 +64,7 @@ if( !function_exists( "modal_theme_locked_content" ) ) {
 		$imageStyle		   .= cp_add_css( 'max-width', $a['image_size'], 'px');
 
 		//	Filters & Actions
-		$modal_image 		= apply_filters( 'cp_get_modal_image_url', $a['modal_image'] );
+		$modal_image 		= apply_filters( 'cp_get_modal_image_url', $a );
 
 		/** = Before filter
 		 *-----------------------------------------------------------*/
@@ -79,8 +79,8 @@ if( !function_exists( "modal_theme_locked_content" ) ) {
 
       	<div class="cp-row">
         	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cp-text-container " >
-           		<div class="cp-image-container"> 
-	              	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image"> 
+           		<div class="cp-image-container">
+	              	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image">
 	              </div>
            		<div class="cp-title-container <?php if( trim( $a['modal_title1'] ) == '' ) { echo 'cp-empty'; } ?> ">
            			<h2 class="cp-title cp_responsive" style="color: <?php echo esc_attr( $a['modal_title_color'] ); ?>;"><?php echo do_shortcode( html_entity_decode( $a['modal_title1'] ) ); ?></h2>
@@ -101,7 +101,7 @@ if( !function_exists( "modal_theme_locked_content" ) ) {
                 	<?php echo do_shortcode( html_entity_decode( stripcslashes( $a['modal_confidential'] ) ) ); ?>
                 </div>
 
-            </div> 
+            </div>
         </div>
        <!-- AFTER CONTENTS -->
 <?php

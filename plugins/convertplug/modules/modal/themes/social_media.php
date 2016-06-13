@@ -68,7 +68,7 @@ if( !function_exists( "modal_theme_social_media" ) ) {
 ?>
 		<!-- BEFORE CONTENTS -->
 		<div class="cp-row <?php echo esc_attr( $cp_row_Class );?>">		
-			<div class="cp-text-container <?php echo esc_attr( $cp_row_eq_Class );?>" >
+			<div class="cp-text-container <?php echo esc_attr( $cp_row_eq_Class );?> " >
 	        	<div class="cp-title-container <?php if( trim( $a['modal_title1'] ) == '' ) { echo 'cp-empty'; } ?>">
 	            	<h2 class="cp-title cp_responsive" style="color: <?php echo esc_attr( $a['modal_title_color'] ); ?>;"><?php echo do_shortcode( html_entity_decode( stripcslashes( $a['modal_title1'] ) ) ); ?></h2>
 	           	</div>

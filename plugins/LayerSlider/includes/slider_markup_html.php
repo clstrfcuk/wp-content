@@ -135,7 +135,7 @@ if(!empty($slider['slides']) && is_array($slider['slides'])) {
 				// WPML support
 				if(function_exists('icl_t')) {
 					$layer['props']['html'] = icl_t('LayerSlider WP', '<'.$layer['props']['type'].':'.substr(sha1($layer['props']['html']), 0, 10).'> layer on slide #'.($slidekey+1).' in slider #'.$id.'', $layer['props']['html']);
-					if(!empty($layer['props']['url']) && !empty($_GET['lang']) && strpos($layer['props']['url'], $_SERVER['SERVER_NAME']) !== false) {
+					if(!empty($layer['props']['url']) && !empty($_GET['lang']) && (strpos($layer['props']['url'], 'http') !== 0 || strpos($layer['props']['url'], $_SERVER['SERVER_NAME']) !== false)) {
 						if(strpos($layer['props']['url'], '?') !== false) { $layer['props']['url'] .= '&amp;lang=' . ICL_LANGUAGE_CODE; }
 						else { $layer['props']['url'] .= '?lang=' . ICL_LANGUAGE_CODE; }
 					}
@@ -259,6 +259,15 @@ if(!empty($slider['slides']) && is_array($slider['slides'])) {
 
 			if($slide['props']['linkUrl'] == '[post-url]') {
 				$slide['props']['linkUrl'] = $postContent->getWithFormat($slide['props']['linkUrl']);
+			}
+
+			// WPML support
+			if(function_exists('icl_t')) {
+
+				if(!empty($_GET['lang']) && (strpos($slide['props']['linkUrl'], 'http') !== 0 || strpos($slide['props']['linkUrl'], $_SERVER['SERVER_NAME']) !== false)) {
+					if(strpos($slide['props']['linkUrl'], '?') !== false) { $slide['props']['linkUrl'] .= '&amp;lang=' . ICL_LANGUAGE_CODE; }
+					else { $slide['props']['linkUrl'] .= '?lang=' . ICL_LANGUAGE_CODE; }
+				}
 			}
 
 			$lsMarkup[] = '<a href="'.$slide['props']['linkUrl'].'"'.$target.' class="ls-link"></a>';

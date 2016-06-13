@@ -38,6 +38,7 @@ jQuery( document ).ready( function( $ ) {
 
         // Setup conditionals on each DOM element
         this.each(function() {
+            
             // Check for conditional elements
             if ( typeof $( this ).data( settings.data ) === 'undefined' ) {
                 return true;

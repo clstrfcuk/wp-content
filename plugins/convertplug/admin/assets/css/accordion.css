@@ -52,7 +52,6 @@
 	text-decoration: none!important;
 }
 .metro .accordion.with-marker .heading.collapsed:before {
-/*	content: '\f132';*/
 	content: '\f140';
 	color: #ABABAB;
 }

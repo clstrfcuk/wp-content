@@ -38,25 +38,23 @@ if ( ! empty( $tabs ) ) :
 
   <?php if ( x_get_option( 'x_woocommerce_product_tabs_enable' ) == '1' ) : ?>
 
+    <?php ob_start(); ?>
+
+      [x_tab_nav type="<?php echo $tab_num_class; ?>"]
+        <?php foreach ( $tabs as $key => $tab ) : ?>
+          [x_tab_nav_item class="<?php echo esc_attr( $key ); ?>_tab" title="<?php echo apply_filters( 'woocommerce_product_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?>"]
+        <?php endforeach; ?>
+      [/x_tab_nav]
+      [x_tabs]
+        <?php foreach ( $tabs as $key => $tab ) : ?>
+          [x_tab class="<?php echo esc_attr( $key ); ?>_pane"]<?php call_user_func( $tab['callback'], $key, $tab ); ?>[/x_tab]
+        <?php endforeach; ?>
+      [/x_tabs]
+
+    <?php $tabs = ob_get_clean(); ?>
+
     <div class="woocommerce-tabs">
-      <ul class="tabs x-nav x-nav-tabs <?php echo $tab_num_class; ?> top">
-
-        <?php foreach ( $tabs as $key => $tab ) : ?>
-          <li class="<?php echo esc_attr( $key ); ?>_tab x-nav-tabs-item">
-            <a href="#tab-<?php echo esc_attr( $key ); ?>"><?php echo apply_filters( 'woocommerce_product_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
-          </li>
-        <?php endforeach; ?>
-
-      </ul>
-      <div class="x-tab-content">
-
-        <?php foreach ( $tabs as $key => $tab ) : ?>
-          <div class="panel x-tab-pane" id="tab-<?php echo esc_attr( $key ); ?>">
-            <?php call_user_func( $tab['callback'], $key, $tab ); ?>
-          </div>
-        <?php endforeach; ?>
-
-      </div>
+      <?php echo do_shortcode( $tabs ); ?>
     </div>
 
   <?php endif; ?>

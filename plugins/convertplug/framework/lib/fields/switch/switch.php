@@ -25,7 +25,6 @@ function smile_switch_image_scripts($hook){
 */
 function switch_settings_field($name, $settings, $value)
 {
-	//var_dump($value);
 	$input_name = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';

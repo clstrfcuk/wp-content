@@ -9,6 +9,9 @@
     text-align: center;
     font-family: 'Montserrat', sans-serif;
 }
+.cp-first-order-container .cp-overlay-close span{
+        font-family: "Montserrat",serif;
+}
 
 .cp-first-order .cp-desc-container,
 .cp-first-order .cp-description {

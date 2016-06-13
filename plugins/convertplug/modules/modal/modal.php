@@ -12,6 +12,7 @@ if(!class_exists('Smile_Modals')){
 			add_action( 'wp_footer', array( $this, 'load_modal_globally' ) );
 			add_action( 'init', array( $this, 'register_theme_templates') );
 			add_filter( 'admin_body_class', array( $this, 'cp_admin_body_class') );
+			require_once( 'modal_preset.php' );
 		}
 
 		function cp_admin_body_class( $classes ) {
@@ -35,7 +36,7 @@ if(!class_exists('Smile_Modals')){
 				'convertplug',
 				'Modal Popup Designer',
 				'Modal Popup',
-				'administrator',
+				'access_cp',
 				'smile-modal-designer',
 				array($this,'modal_dashboard') );
 			$obj = new parent;
@@ -47,14 +48,13 @@ if(!class_exists('Smile_Modals')){
 
 		function modal_admin_scripts(){
 			if( ( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant" ) ) || !isset( $_GET['style-view'] ) ) {
-				
+
 				wp_enqueue_script( 'smile-modal-receiver', 			plugins_url( 'assets/js/receiver.js',__FILE__) );
 				wp_enqueue_media();
 				wp_enqueue_script( 'smile-modal-importer', 			plugins_url( '../assets/js/admin-media.js',__FILE__),array( 'jquery' ),'',true);
-				wp_enqueue_script( 'smile-tooltip-min',             plugins_url('../../admin/assets/js/frosty.js',__FILE__),array( 'jquery' ),'',true);
 			}
 
-			if( isset($_GET['style-view']) && $_GET['style-view'] == 'analytics' ) {				
+			if( isset($_GET['style-view']) && $_GET['style-view'] == 'analytics' ) {
 				wp_enqueue_style( 'css-select2',					plugins_url( '../../admin/assets/select2/select2.min.css', __FILE__ ) );
 				wp_enqueue_script( 'convert-select2',				plugins_url( '../../admin/assets/select2/select2.min.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-js',					plugins_url( '../../admin/assets/js/chart.js', __FILE__ ) );
@@ -62,7 +62,7 @@ if(!class_exists('Smile_Modals')){
 				wp_enqueue_script( 'bsf-charts-donut-js',			plugins_url( '../../admin/assets/js/chart.donuts.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-line-js',			plugins_url( '../../admin/assets/js/Chart.Line.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-polararea-js',		plugins_url( '../../admin/assets/js/Chart.PolarArea.js', __FILE__ ) );
-				wp_enqueue_script( 'bsf-style-analytics-js',		plugins_url( 'assets/js/style-analytics.js', __FILE__ ) );
+				wp_enqueue_script( 'bsf-style-analytics-js',		plugins_url( '../assets/js/style-analytics.js', __FILE__ ) );
 			}
 		}
 
@@ -93,7 +93,7 @@ if(!class_exists('Smile_Modals')){
 					$gfonts = implode( ",", $default_google_fonts );
 					require_once('functions/functions.php');
 					if( function_exists( "cp_enqueue_google_fonts" ) ){
-						cp_enqueue_google_fonts( $gfonts );
+						//cp_enqueue_google_fonts( $gfonts );
 					}
 					require_once('views/new-style.php');
 					break;
@@ -144,7 +144,7 @@ if(!class_exists('Smile_Modals')){
 	            <?php
 
 				$modal_style = $modal_style_delay = $modal_cookie_delay = '';
-				$live_styles = smile_get_live_styles();
+				$live_styles = cp_get_live_styles('modal');
 				$prev_styles = get_option('smile_modal_styles');
 				$smile_variant_tests = get_option('modal_variant_tests');
 
@@ -179,53 +179,46 @@ if(!class_exists('Smile_Modals')){
 
 						if( $display ) {
 
-							$data  =  get_option( 'convert_plug_debug' ); 
-					
+							$data  =  get_option( 'convert_plug_debug' );
+
 							// developer mode
 							if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
-
-								$style_handlers = array(
-									'smile-modal-style',
-									'smile-modal-grid-style',
-									'cp-animate-style',
-									'cp-social-media-style',
-									'cp-social-icon-style',
-									'convertplug-style',
-									'cp-frosty-style'
-								);
 
 								$script_handlers = array(
 									'smile-modal-common',
 									'smile-modal-script',
 									'cp-ideal-timer-script',
 									'cp-modal-mailer-script',
-									'cp-frosty-script'
+									'bsf-core-frosty'
 								);
 
 	   							$list = 'enqueued';
 
 	   							foreach( $script_handlers as $handler ) {
-	   								if ( !wp_script_is( $handler, $list ) ) {							  
+	   								if ( !wp_script_is( $handler, $list ) ) {
 								       wp_enqueue_script( $handler );
 								    }
 	   							}
 
-	   							foreach( $style_handlers as $handler ) {
-	   								if ( !wp_style_is( $handler, $list ) ) {							      
-								       wp_enqueue_style( $handler );
-								    }
-	   							}
 	   						} else {
 
-								if ( !wp_script_is( 'smile-modal-script', 'enqueued' ) ) {						      
-								    wp_enqueue_script( 'smile-modal-script' );
+	   							if ( !wp_script_is( 'bsf-core-frosty', 'enqueued' ) ) {
+								    wp_enqueue_script( 'bsf-core-frosty' );
 								}
 
-								if ( !wp_style_is( 'smile-modal-style', 'enqueued' ) ) {							      
-								       wp_enqueue_style( 'smile-modal-style' );
+								if ( !wp_script_is( 'cp-ideal-timer-script', 'enqueued' ) ) {
+								    wp_enqueue_script( 'cp-ideal-timer-script' );
+								}
+
+								if ( !wp_style_is( 'bsf-core-frosty-style', 'enqueued' ) ) {
+								    wp_enqueue_style( 'bsf-core-frosty-style' );
+								}
+
+								if ( !wp_script_is( 'smile-modal-script', 'enqueued' ) ) {
+								    wp_enqueue_script( 'smile-modal-script' );
 								}
 	   						}
-						    
+
 							//	Generate style ID
 							$id = $modal_style . '-' . $style_id;
 
@@ -239,7 +232,7 @@ if(!class_exists('Smile_Modals')){
 							foreach( $settings as $style => $options ){
 								if( $style == $modal_style ){
 									$customizer_js = $options['customizer_js'];
-									$url = str_replace( "customizer.js",$modal_style.".min.css", $customizer_js);
+									$url = str_replace( "customizer.js", strtolower( $modal_style ) .".min.css", $customizer_js);
 								}
 							}
 
@@ -267,7 +260,7 @@ if(!class_exists('Smile_Modals')){
 				//	Enqueue - CKEditor script
 				wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('../../admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
 				wp_enqueue_script( 'cp-common-functions-js' );
-				wp_enqueue_script( 'cp-admin-customizer-js', plugins_url( 'assets/js/admin.customizer.js', __FILE__ ) );
+				wp_enqueue_script( 'cp-admin-customizer-js', plugins_url( '../assets/js/admin.customizer.js', __FILE__ ) );
 				require_once( 'functions/functions.options.php' );
 				$demo_html = $customizer_js = '';
 				$settings = $this::$options;
@@ -286,16 +279,19 @@ if(!class_exists('Smile_Modals')){
 
 			if( ( isset( $_GET['hidemenubar'] ) && $_GET['module'] == 'modal' )
 				 || ( isset($_GET['style-view']) && $_GET['style-view'] == 'new' && $hook == 'convertplug_page_smile-modal-designer' ) ) {
-				
-				wp_enqueue_style( 'smile-modal', plugins_url( 'assets/css/modal.min.css', __FILE__ ) );	
+
+				wp_enqueue_style( 'smile-modal', plugins_url( 'assets/css/modal.min.css', __FILE__ ) );
 				wp_register_script( 'cp-frosty-script', plugins_url( '../../admin/assets/js/frosty.js', __FILE__), array( 'jquery' ), null, null, true );
             	wp_register_script( 'smile-modal-common', plugins_url( 'assets/js/modal.common.js', __FILE__), array( 'cp-style-customizer-js' ), null, true );
             	wp_register_script( 'cp-common-functions-js', plugins_url( 'assets/js/functions-common.js', __FILE__ ), array('smile-modal-common'), null, true );
 
 				wp_enqueue_script( 'smile-modal');
-				wp_enqueue_script( 'cp-frosty-script');
 				wp_enqueue_script( 'smile-modal-common' );
-				wp_localize_script( 'smile-modal-common', 'cp', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ) );
+				wp_localize_script( 'smile-modal-common', 'cp', array(
+														'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ,
+														'module' => 'modal',
+														"module_img_dir" => plugins_url( "../assets/images", __FILE__)
+														) );
 
 				//	Add 'Theme Name' as a class to <html> tag
 				//	To provide theme compatibility
@@ -304,7 +300,6 @@ if(!class_exists('Smile_Modals')){
 				$theme_name = strtolower( preg_replace("/[\s_]/", "-", $theme_name ) );
 
 				wp_localize_script( 'jquery', 'cp_active_theme', array( 'slug' => $theme_name ) );
-
 				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 
           	}
@@ -315,34 +310,33 @@ if(!class_exists('Smile_Modals')){
             $live_styles = cp_get_live_styles('modal');
 
 			// if any style is live or modal is in live preview mode then only enqueue scripts and styles
-			if( $live_styles && count($live_styles) > 0 ) {	
+			if( $live_styles && count($live_styles) > 0 ) {
 
-					$data  =  get_option( 'convert_plug_debug' ); 
+					$data  =  get_option( 'convert_plug_debug' );
 
 					if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 
-						// register styles 
-						wp_register_style( 'smile-modal-style', plugins_url( 'assets/css/modal.css', __FILE__ ) );
-						wp_register_style( 'smile-modal-grid-style', plugins_url( 'assets/css/modal-grid.css', __FILE__ ) );
-						wp_register_style( 'cp-animate-style', plugins_url( '../assets/css/animate.css', __FILE__ ) );
-						wp_register_style( 'cp-social-media-style', plugins_url( '../assets/css/cp-social-media-style.css', __FILE__ ) );
-						wp_register_style( 'cp-social-icon-style', plugins_url( '../assets/css/social-icon-css.css', __FILE__ ) );
-						wp_register_style( 'convertplug-style', plugins_url( '../assets/css/convertplug.css', __FILE__ ) );
-						wp_register_style( 'cp-frosty-style', plugins_url( '../../admin/assets/css/frosty.css', __FILE__ ) );
+						// register styles
+						wp_enqueue_style( 'smile-modal-style', plugins_url( 'assets/css/modal.css', __FILE__ ) );
+						wp_enqueue_style( 'smile-modal-grid-style', plugins_url( 'assets/css/modal-grid.css', __FILE__ ) );
+						wp_enqueue_style( 'cp-animate-style', plugins_url( '../assets/css/animate.css', __FILE__ ) );
+						wp_enqueue_style( 'cp-social-media-style', plugins_url( '../assets/css/cp-social-media-style.css', __FILE__ ) );
+						wp_enqueue_style( 'cp-social-icon-style', plugins_url( '../assets/css/social-icon-css.css', __FILE__ ) );
+						wp_enqueue_style( 'convertplug-style', plugins_url( '../assets/css/convertplug.css', __FILE__ ) );
 
 						// register scripts
 						wp_register_script( 'smile-modal-common', plugins_url( 'assets/js/modal.common.js', __FILE__), null , null, true );
-						wp_register_script( 'smile-modal-script', plugins_url( 'assets/js/modal.js', __FILE__), array( 'jquery' ), null, null, true );	
+						wp_register_script( 'smile-modal-script', plugins_url( 'assets/js/modal.js', __FILE__), array( 'jquery' ), null, null, true );
 						wp_register_script( 'cp-ideal-timer-script', plugins_url( 'assets/js/idle-timer.min.js', __FILE__), array( 'jquery' ), null, null, true );
-						wp_register_script( 'cp-modal-mailer-script', plugins_url( 'assets/js/mailer.js', __FILE__), array( 'jquery' ), null, 
+						wp_register_script( 'cp-modal-mailer-script', plugins_url( 'assets/js/mailer.js', __FILE__), array( 'jquery' ), null,
 								null, true );
 						wp_register_script( 'cp-frosty-script', plugins_url( '../../admin/assets/js/frosty.js', __FILE__), array( 'jquery' ), null, null, true );
 
 					} else {
 						wp_register_script( 'smile-modal-script', plugins_url( 'assets/js/modal.min.js', __FILE__), array( 'jquery' ), null, null, true );
-						wp_register_style( 'smile-modal-style', plugins_url( 'assets/css/modal.min.css', __FILE__) );
+						wp_enqueue_style( 'smile-modal-style', plugins_url( 'assets/css/modal.min.css', __FILE__) );
 					}
-			
+
 				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 			}
 		}
@@ -377,16 +371,16 @@ if (!function_exists('cp_modal_custom')) {
 			'id' 				=> '',
 			'display'			=> '',
 		), $atts));
-		$live_styles = smile_get_live_styles();
+		$live_styles = cp_get_live_styles('modal');
 		$live_array = $settings = '';
 		foreach( $live_styles as $key => $modal_array ){
 			 $style_id = $modal_array[ 'style_id' ];
 
-			$settings = unserialize( $modal_array[ 'style_settings' ] );			
+			$settings = unserialize( $modal_array[ 'style_settings' ] );
 			if(isset($settings['variant_style_id']) && $id == $settings['style_id']){
 				$id = $settings['variant_style_id'];
-			}	
-			
+			}
+
 			if( $id == $style_id )
 			{
 				$live_array = $modal_array;

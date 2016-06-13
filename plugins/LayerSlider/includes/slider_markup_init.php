@@ -1,4 +1,4 @@
- <?php
+<?php
 
 if(!defined('LS_ROOT_FILE')) {
 	header('HTTP/1.0 403 Forbidden');

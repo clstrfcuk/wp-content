@@ -909,17 +909,19 @@ var LayerSlider = {
 				// Multimedia HTML
 				} else if( jQuery(uploadInput).hasClass('ls-insert-media')) {
 
-					var hasVideo = false;
-					var hasAudio = false;
+					var hasVideo 	= false,
+						hasAudio 	= false,
 
-					var videos = [];
-					var audios = [];
+						videos 		= [],
+						audios 		= [],
 
-					var mediaHTML = '';
+						url 		= '',
+						mediaHTML 	= '';
+
 
 					// Iterate over selected items
 					for(c = 0; c < attachments.length; c++) {
-						var url = '/' + attachments[c].url.split('/').slice(3).join('/');
+						url = '/' + attachments[c].url.split('/').slice(3).join('/');
 						if(attachments[c].type === 'video') {
 							hasVideo = true;
 							videos.push({ url: url, mime: attachment.mime });
@@ -950,6 +952,7 @@ var LayerSlider = {
 						mediaHTML += '</audio>';
 					}
 
+					LS_activeLayerData.html = mediaHTML;
 					jQuery(uploadInput).parent().prev().val(mediaHTML);
 
 				// Image with input field
@@ -1704,6 +1707,8 @@ var LayerSlider = {
 		jQuery.ajax({
 			type: 'post', url: ajaxurl, dataType: 'text',
 			data: {
+				_wpnonce: jQuery('#_wpnonce').val(),
+				_wp_http_referer: jQuery('#ls-slider-form input[name="_wp_http_referer"]').val(),
 				action: 'ls_save_slider',
 				id: LS_sliderID,
 				sliderData: sliderData
@@ -2312,7 +2317,7 @@ jQuery(document).ready(function() {
 
 
 		// Add default slide data to data source if it's a new slider
-		if(typeof window.lsSliderData.layers[0].sublayers == "undefined") {
+		if( window.lsSliderData.properties.new ) {
 			window.lsSliderData.properties = LS_DataSource.readSliderSettings();
 			window.lsSliderData.layers = [{
 				properties: jQuery.extend(true, {}, LS_DataSource.getDefaultSlideData()),
@@ -2758,15 +2763,23 @@ jQuery(document).ready(function() {
 			jQuery(this).closest('.ls-slide-link').children('input').val('[post-url]');
 		});
 
-
 		// Use post image as slide background
 		jQuery('#ls-layers').on('click', '.slide-image .ls-post-image', function(e) {
 			e.preventDefault();
-			jQuery(this).closest('.slide-image').children('input[name="backgroundId"]').val('');
-			jQuery(this).closest('.slide-image').children('input[name="background"]').val('[image-url]');
+			var imageHolder = jQuery(this).closest('.slide-image').find('.ls-image');
 
-			jQuery(this).closest('.slide-image').children('input[name="imageId"]').val('');
-			jQuery(this).closest('.slide-image').children('input[name="image"]').val('[image-url]');
+			// Slide image
+			if( imageHolder.hasClass('ls-slide-image') ) {
+				LS_activeSlideData.properties.background = '[image-url]';
+				LS_activeSlideData.properties.backgroundId = '';
+				LS_activeSlideData.properties.backgroundThumb = '';
+
+			// Layer image
+			} else if( imageHolder.hasClass('ls-layer-image') ) {
+				LS_activeLayerData.image = '[image-url]';
+				LS_activeLayerData.imageId = '';
+				LS_activeLayerData.imageThumb = '';
+			}
 
 			LayerSlider.generatePreview();
 		});

@@ -35,6 +35,7 @@ function media_settings_field($name, $settings, $value, $default_value = null )
 	$input_name = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
+
 	$btn_label = ($value !== "") ? __('Change Image','smile') : __( 'Select Image','smile' );
 	$img_arr = explode("|",$value);
 	$img_size = isset( $img_arr[1] ) ? $img_arr[1] : 'full';
@@ -57,6 +58,17 @@ function media_settings_field($name, $settings, $value, $default_value = null )
 	} else {
 		$image_src = $src;
 	}
+
+	//	Apply partials
+	//	Add attr 'css-image-url' for MEDIA support
+	if( is_numeric( $img_arr[0] ) ) {
+		$css_src = wp_get_attachment_image_src($img_arr[0], $img_size );
+		$img_url = $css_src[0];
+	} else {
+		$img_url = $img_arr[0];
+	}
+	$settings['css-image-url'] = $img_url;
+	$partials = generate_partial_atts( $settings );
 	
 	$img = ($value == "") ? '<p class="description">'.__( 'No Image Selected','smile' ).'</p>' : '<img src="'.$image_src.'"/>';
 	$display = ($value !== "") ? 'style="display:block;"' : 'style="display:none;"';
@@ -66,7 +78,7 @@ function media_settings_field($name, $settings, $value, $default_value = null )
 	
 	$output = '';
 	$output .= '<div class="'.$input_name.'_'.$uid.'_container smile-media-container">'.$img.'</div>';
-	$output .= '<input type="text" id="smile_'.$input_name.'_'.$uid.'" class="form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$value.'" />';
+	$output .= '<input type="text" id="smile_'.$input_name.'_'.$uid.'" class="form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$value.'" '.$partials.' />';
 	$output .= '<div class="smile-media-actions">';
 	$rmv_btn = ( $value == "" ) ? "display:none;" : "";
 	$dflt_btn = ( $default_value == "" ) ? "display:none;" : "";
@@ -81,18 +93,23 @@ function media_settings_field($name, $settings, $value, $default_value = null )
 	$output .= '</div>';
 	$output .= '<div class="smile-element-container cp-media-sizes '.$hideSize.'" data-name="'.$input_name.'_'.$uid.'" data-element="cp-media-'.$uid.'" data-operator="!==" data-value="">';
 	$output .= '<strong><label for="smile_'.$input_name.'_size">'. __( "Select Size", "smile" ) .'</label></strong>';
-	$output .= '<p><select id="smile_'.$input_name.'_size" class="cp-media-'.$uid.' form-control smile-input cp-media-size" name="'.$input_name.'_size" data-id="'.$img_arr[0].'">';
+	$output .= '<p>';
+
+	$image_url = wp_get_attachment_url( $img_arr[0] ); // Just the file name
+	$output .= '<select id="smile_'.$input_name.'_size" class="cp-media-'.$uid.' form-control smile-input cp-media-size" name="'.$input_name.'_size" data-id="'.$img_arr[0].'" data-image-name="'.$image_url.'">';
 	foreach( $imageSizes as $title => $size ) {
 		$s_title = ucwords( str_replace( "-", " ", $title ) );
+		$data_sizes = '';
 		if( is_array( $size ) && !empty( $size ) ){
 			$s_title .= ' - '.$size['width'].' x '.$size['height'];
+			$data_sizes = $size['width'].'x'.$size['height'];
 		}
 		if( $title == $img_size ){
 			$selected = "selected";
 		} else {
 			$selected = '';
 		}
-		$output .= '<option '.$selected.' value="'.$title.'">'.$s_title.'</option>';
+		$output .= '<option '.$selected.' value="'.$title.'" data-size="'.$data_sizes.'">'.$s_title.'</option>';
 	}
 	$output .= '</select></p>';
 	return $output;

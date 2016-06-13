@@ -34,7 +34,11 @@ function box_shadow_settings_field($name, $settings, $value)
 	$input_name = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
-	$output = '<p><textarea id="box-shadow-code" class="content form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" rows="6" cols="6">'.$value.'</textarea></p>';
+
+  //  Apply partials
+  $partials = generate_partial_atts( $settings );
+
+$output = '<p><textarea id="box-shadow-code" class="content form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" rows="6" cols="6" '.$partials.' >'.$value.'</textarea></p>';
 
   
 $pairs = explode("|", $value );

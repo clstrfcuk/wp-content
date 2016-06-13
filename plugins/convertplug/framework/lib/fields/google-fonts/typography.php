@@ -29,20 +29,24 @@ function google_fonts_settings_field($name, $settings, $value) {
 
 	$input_name = $name;
 	$output = '';
-	
+
 	$default_value = $value;
-	
+
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
+	$title = isset($settings['title']) ? $settings['title'] : __('Font Name','ultimate');
 
-	$output .= '<strong><label class="customize-control-title">'.__('Font Name','ultimate').'</label></strong>';
+	//	Apply partials
+	$partials = generate_partial_atts( $settings );
+
+	$output .= '<strong><label class="customize-control-title">'.$title.'</label></strong>';
 
 	//	Google Fonts
 	$fonts = get_option('ultimate_selected_google_fonts');
 	$fontsVals = '';
-	$basicFonts = array ( 
+	$basicFonts = array (
 			"Arial",
-			"Arial Black",			
+			"Arial Black",
 			"Comic Sans MS",
 			"Courier New",
 			"Georgia",
@@ -51,7 +55,7 @@ function google_fonts_settings_field($name, $settings, $value) {
 			"Palatino Linotype",
 			"Tahoma",
 			"Times New Roman",
-			"Trebuchet MS",			
+			"Trebuchet MS",
 			"Verdana",
 	);
 
@@ -62,7 +66,7 @@ function google_fonts_settings_field($name, $settings, $value) {
 			"Montserrat",
 			"Neuton",
 			"Raleway",
-			"Roboto",	
+			"Roboto",
 			"Sacramento",
 			"Varela Round",
 			"Pacifico",
@@ -77,13 +81,13 @@ function google_fonts_settings_field($name, $settings, $value) {
 		}
 	}
 
-	$googleFonts = array_merge( $user_added_fonts, $default_google_fonts );	
+	$googleFonts = array_merge( $user_added_fonts, $default_google_fonts );
 	$googleFonts = array_unique($googleFonts);
 	sort($googleFonts);
 	$fonts  = array_merge( $googleFonts, $basicFonts );
 
 	$output .= '<div class="ultimate_google_font_param_block"><p>';
-	$output .= '	<select name="font_family" class="google-font-list">';
+	$output .= '	<select id="smile_'.$input_name.'" name="font_family" class="smile-input google-font-list" '.$partials.'>';
 	$output .= '		<option value="">'.__('Default','ultimate_vc').'</option>';
 
 						if( !empty($fonts) && is_array($fonts) ) {

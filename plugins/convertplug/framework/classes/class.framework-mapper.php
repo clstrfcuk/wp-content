@@ -124,6 +124,20 @@ function smile_remove_option( $class, $style, $name ){
 }
 
 /**
+ * Call hook for update partial value for a setting
+ *
+ * @param $class           		- module class name
+ * @param $style				- style name, where the option is located
+ * @param $name    				- setting name to update default option
+ * @param $parse_array    		- new parse array to be set for the $name setting
+ * @Since 1.0
+ */
+function smile_update_partial( $class, $style, $name, $parse_array ){
+	Smile_Framework::smile_update_partial_refresh( $class, $style, $name, $parse_array );
+}
+
+
+/**
  * Call hook for adding mailer addon
  *
  * @param $slug           		- mailer slug

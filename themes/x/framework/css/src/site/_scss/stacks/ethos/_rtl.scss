@@ -13,6 +13,7 @@
 //   04. Posts and Pages
 //   05. Comments
 //   06. Widgets
+//   07. Post Carousel
 // =============================================================================
 
 // Topbar
@@ -195,6 +196,21 @@
     ul li ul ul li a,
     ul li .sub-menu ul li a {
       padding-right: 4.25em;
+    }
+  }
+}
+
+
+
+// Post Carousel
+// =============================================================================
+
+.rtl {
+  ul.x-post-carousel {
+    margin: 0 0 0 -2px !important;
+
+    .x-post-carousel-item {
+      float: right;
     }
   }
 }

@@ -12,6 +12,7 @@ if(!class_exists('Smile_Slide_Ins')){
 			add_action( 'wp_footer', array( $this, 'load_slide_in_globally' ) );
 			add_action( 'init', array( $this, 'register_theme_templates') );
 			add_filter( 'admin_body_class', array( $this, 'cp_admin_body_class') );
+			require_once('slide_in_preset.php');
 		}
 
 		function cp_admin_body_class( $classes ) {
@@ -36,7 +37,7 @@ if(!class_exists('Smile_Slide_Ins')){
 				'convertplug',
 				'Slide In Designer',
 				'Slide In',
-				'administrator',
+				'access_cp',
 				'smile-slide_in-designer',
 				array($this,'slide_in_dashboard') );
 			$obj = new parent;
@@ -47,7 +48,7 @@ if(!class_exists('Smile_Slide_Ins')){
 
 		function slide_in_admin_scripts(){
 			if( ( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant" ) ) || !isset( $_GET['style-view'] ) ) {
-				
+
 				wp_enqueue_script( 'smile-slide_in-receiver', 			plugins_url( 'assets/js/receiver.js',__FILE__) );
 				wp_enqueue_style( 'cp-contacts', 					plugins_url( '../../admin/contacts/css/cp-contacts.css', __FILE__ ) );
 				wp_enqueue_media();
@@ -62,7 +63,7 @@ if(!class_exists('Smile_Slide_Ins')){
 				wp_enqueue_script( 'bsf-charts-donut-js',			plugins_url( '../../admin/assets/js/chart.donuts.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-line-js',			plugins_url( '../../admin/assets/js/Chart.Line.js', __FILE__ ) );
 				wp_enqueue_script( 'bsf-charts-polararea-js',		plugins_url( '../../admin/assets/js/Chart.PolarArea.js', __FILE__ ) );
-				wp_enqueue_script( 'bsf-style-analytics-js',		plugins_url( 'assets/js/style-analytics.js', __FILE__ ) );
+				wp_enqueue_script( 'bsf-style-analytics-js',		plugins_url( '../assets/js/style-analytics.js', __FILE__ ) );
 			}
 		}
 
@@ -170,62 +171,56 @@ if(!class_exists('Smile_Slide_Ins')){
 						$slide_in_style = $style_settings[ 'style' ];
 
 						if( is_array($style_settings) && !empty($style_settings) ) {
-							
+
 							$settings = unserialize( $slide_in_array[ 'style_settings' ] );
-							$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';	
+							$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';
 
 							$display = cp_is_style_visible($settings);
 							$settings = serialize( $settings );
 							$settings_encoded 	= base64_encode( $settings );
-						}							
+						}
 
 						if( $display ) {
 
-							$data  =  get_option( 'convert_plug_debug' ); 
-					
+							$data  =  get_option( 'convert_plug_debug' );
+
 							// developer mode
 							if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
-
-								$style_handlers = array(
-									'smile-slide-in-style',
-									'smile-slide-in-grid-style',
-									'cp-animate-style',
-									'cp-social-media-style',
-									'cp-social-icon-style',
-									'convertplug-style',
-									'cp-frosty-style'
-								);
 
 								$script_handlers = array(
 									'smile-slide-in-common',
 									'smile-slide-in-script',
 									'cp-ideal-timer-script',
 									'cp-slide-in-mailer-script',
-									'cp-frosty-script'
+									'bsf-core-frosty'
 								);
 
 	   							$list = 'enqueued';
 
 	   							foreach( $script_handlers as $handler ) {
-	   								if ( !wp_script_is( $handler, $list ) ) {							  
+	   								if ( !wp_script_is( $handler, $list ) ) {
 								       wp_enqueue_script( $handler );
 								    }
 	   							}
 
-	   							foreach( $style_handlers as $handler ) {
-	   								if ( !wp_style_is( $handler, $list ) ) {							      
-								       wp_enqueue_style( $handler );
-								    }
-	   							}
 	   						} else {
 
-								if ( !wp_script_is( 'smile-slide-in-script', 'enqueued' ) ) {						      
+	   							if ( !wp_script_is( 'bsf-core-frosty', 'enqueued' ) ) {
+								    wp_enqueue_script( 'bsf-core-frosty' );
+								}
+
+								if ( !wp_script_is( 'cp-ideal-timer-script', 'enqueued' ) ) {
+								    wp_enqueue_script( 'cp-ideal-timer-script' );
+								}
+
+								if ( !wp_style_is( 'bsf-core-frosty-style', 'enqueued' ) ) {
+								    wp_enqueue_style( 'bsf-core-frosty-style' );
+								}
+
+								if ( !wp_script_is( 'smile-slide-in-script', 'enqueued' ) ) {
 								    wp_enqueue_script( 'smile-slide-in-script' );
 								}
 
-								if ( !wp_style_is( 'smile-slide-in-style', 'enqueued' ) ) {							      
-								       wp_enqueue_style( 'smile-slide-in-style' );
-								}
 	   						}
 
 							wp_enqueue_script( 'cp-perfect-scroll-js-back', plugins_url( '../../admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
@@ -254,11 +249,11 @@ if(!class_exists('Smile_Slide_Ins')){
 
 			if( ( isset( $_GET['hidemenubar'] ) && isset( $_GET['module'] ) && $_GET['module'] == "slide_in" ) ) {
 
-				wp_register_script( 'cp-frosty-script', plugins_url( '../../admin/assets/js/frosty.js', __FILE__), array( 'jquery' ), null, null, true );
-				wp_enqueue_script( 'cp-frosty-script');	
+				wp_enqueue_script( 'bsf-core-frosty' );
+
 				wp_enqueue_script( 'cp-perfect-scroll-js-back', plugins_url( '../../admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
 				wp_enqueue_script( 'cp-common-functions-js' );
-				wp_enqueue_script( 'cp-admin-customizer-js', plugins_url( 'assets/js/admin.customizer.js', __FILE__ ) );
+				wp_enqueue_script( 'cp-admin-customizer-js', plugins_url( '../assets/js/admin.customizer.js', __FILE__ ) );
 				wp_enqueue_script( 'smile-slide_in-editor', plugins_url( '../assets/js/ckeditor/ckeditor.js', __FILE__), array('smile-customizer-js') );
 
 				require_once( 'functions/functions.options.php' );
@@ -281,11 +276,18 @@ if(!class_exists('Smile_Slide_Ins')){
 			if( ( isset( $_GET['hidemenubar'] ) && $_GET['module'] == 'slide_in' )
 			     || (isset($_GET['style-view']) && $_GET['style-view'] == 'new' && $hook == "convertplug_page_smile-slide_in-designer" ) ) {
 
-				wp_enqueue_style( 'smile-slide_in', plugins_url( 'assets/css/slide_in.min.css', __FILE__ ) );	
+				wp_enqueue_style( 'smile-slide_in', plugins_url( 'assets/css/slide_in.min.css', __FILE__ ) );
+
 			    wp_localize_script( 'jquery', 'slide_in', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ) );
+
 				wp_register_script( 'smile-slide_in-common', plugins_url( 'assets/js/slide_in.common.js', __FILE__), array( 'jquery' ), null, true );
 				wp_register_script( 'cp-common-functions-js', plugins_url( 'assets/js/functions-common.js', __FILE__ ), 'smile-slide_in-common', null, true );
 				wp_enqueue_script( 'smile-slide_in-common' );
+				wp_localize_script( 'smile-slide_in-common', 'cp', array( 
+					'demo_dir' => plugins_url('/assets/demos', __FILE__ ),
+					'module' => 'slide_in',
+					"module_img_dir" => plugins_url( "../assets/images", __FILE__) ) 
+				);
 
 				//	Add 'Theme Name' as a class to <html> tag
 				//	To provide theme compatibility
@@ -296,10 +298,10 @@ if(!class_exists('Smile_Slide_Ins')){
 				wp_localize_script( 'jquery', 'cp_active_theme', array( 'slug' => $theme_name ) );
 				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 			}
-		}	
+		}
 
 		function enqueue_front_scripts(){
-			
+
 			wp_localize_script( 'jquery', 'slide_in', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ) );
 
 			$live_styles = cp_get_live_styles('slide_in');
@@ -307,39 +309,35 @@ if(!class_exists('Smile_Slide_Ins')){
 			// if any style is live or modal is in live preview mode then only enqueue scripts and styles
 			if( $live_styles && count($live_styles) > 0 ) {
 
-				wp_enqueue_script( 'smile-tooltip-min', plugins_url('../../admin/assets/js/frosty.js',__FILE__), array( 'jquery' ), '', true );	
+				$data  =  get_option( 'convert_plug_debug' );
 
-					$data  =  get_option( 'convert_plug_debug' ); 
+				if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 
-					if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
+					// register styles
+					wp_enqueue_style( 'smile-slide-in-style', plugins_url( 'assets/css/slide_in.css', __FILE__ ) );
+					wp_enqueue_style( 'smile-slide-in-grid-style', plugins_url( 'assets/css/slide_in-grid.css', __FILE__ ) );
+					wp_enqueue_style( 'cp-animate-style', plugins_url( '../assets/css/animate.css', __FILE__ ) );
+					wp_enqueue_style( 'cp-social-media-style', plugins_url( '../assets/css/cp-social-media-style.css', __FILE__ ) );
+					wp_enqueue_style( 'cp-social-icon-style', plugins_url( '../assets/css/social-icon-css.css', __FILE__ ) );
+					wp_enqueue_style( 'convertplug-style', plugins_url( '../assets/css/convertplug.css', __FILE__ ) );
 
-						// register styles 
-						wp_register_style( 'smile-slide-in-style', plugins_url( 'assets/css/slide_in.css', __FILE__ ) );
-						wp_register_style( 'smile-slide-in-grid-style', plugins_url( 'assets/css/slide_in-grid.css', __FILE__ ) );
-						wp_register_style( 'cp-animate-style', plugins_url( '../assets/css/animate.css', __FILE__ ) );
-						wp_register_style( 'cp-social-media-style', plugins_url( '../assets/css/cp-social-media-style.css', __FILE__ ) );
-						wp_register_style( 'cp-social-icon-style', plugins_url( '../assets/css/social-icon-css.css', __FILE__ ) );
-						wp_register_style( 'convertplug-style', plugins_url( '../assets/css/convertplug.css', __FILE__ ) );
-						wp_register_style( 'cp-frosty-style', plugins_url( '../../admin/assets/css/frosty.css', __FILE__ ) );
+					// register scripts
+					wp_register_script( 'smile-slide-in-common', plugins_url( 'assets/js/slide_in.common.js', __FILE__), null , null, true );
+					wp_register_script( 'smile-slide-in-script', plugins_url( 'assets/js/slide_in.js', __FILE__), array( 'jquery' ), null, null, true );
+					wp_register_script( 'cp-ideal-timer-script', plugins_url( 'assets/js/idle-timer.min.js', __FILE__), array( 'jquery' ), null, null, true );
+					wp_register_script( 'cp-slide-in-mailer-script', plugins_url( 'assets/js/mailer.js', __FILE__), array( 'jquery' ), null,
+							null, true );
 
-						// register scripts
-						wp_register_script( 'smile-slide-in-common', plugins_url( 'assets/js/slide_in.common.js', __FILE__), null , null, true );
-						wp_register_script( 'smile-slide-in-script', plugins_url( 'assets/js/slide_in.js', __FILE__), array( 'jquery' ), null, null, true );	
-						wp_register_script( 'cp-ideal-timer-script', plugins_url( 'assets/js/idle-timer.min.js', __FILE__), array( 'jquery' ), null, null, true );
-						wp_register_script( 'cp-slide-in-mailer-script', plugins_url( 'assets/js/mailer.js', __FILE__), array( 'jquery' ), null, 
-								null, true );
-						wp_register_script( 'cp-frosty-script', plugins_url( '../../admin/assets/js/frosty.js', __FILE__), array( 'jquery' ), null, null, true );
+				} else {
+					wp_register_script( 'smile-slide-in-script', plugins_url( 'assets/js/slide_in.min.js', __FILE__), array( 'jquery' ), null, null, true );
+					wp_enqueue_style( 'smile-slide-in-style', plugins_url( 'assets/css/slide_in.min.css', __FILE__) );
+				}
 
-					} else {
-						wp_register_script( 'smile-slide-in-script', plugins_url( 'assets/js/slide_in.min.js', __FILE__), array( 'jquery' ), null, null, true );
-						wp_register_style( 'smile-slide-in-style', plugins_url( 'assets/css/slide_in.min.css', __FILE__) );
-					}
-			
 				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 			}
-				
+
 			wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('../../admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
-			
+
 		}
 	}
 
@@ -376,11 +374,11 @@ if (!function_exists('cp_slide_in_custom')) {
 		$live_array = $settings = '';
 		foreach( $live_styles as $key => $slide_in_array ){
 			$style_id = $slide_in_array[ 'style_id' ];
-			
-			$settings = unserialize( $slide_in_array[ 'style_settings' ] );			
+
+			$settings = unserialize( $slide_in_array[ 'style_settings' ] );
 			if(isset($settings['variant_style_id']) && $id == $settings['style_id']){
 				$id = $settings['variant_style_id'];
-			}	
+			}
 
 			if( $id == $style_id )
 			{
@@ -399,7 +397,7 @@ if (!function_exists('cp_slide_in_custom')) {
 				}
 				$style_settings[ 'display' ] = $display;
 				$style_settings['custom_class'] .= isset( $style_settings['custom_class']) ? $style_settings['custom_class'].',cp-trigger-'.$style_id : 'cp-trigger-'.$style_id;
-				
+
 				$display = cp_is_style_visible($settings);
 
 				$encode_settings = serialize( $style_settings );

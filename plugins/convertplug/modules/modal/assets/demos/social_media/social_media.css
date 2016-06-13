@@ -14,7 +14,9 @@
     margin: 0 0 10px;
     padding: 0px 0;
 }
-
+.cp-social-media-container .cp-overlay-close span{
+        font-family: "Raleway",serif;
+}
 .cp-social-media .cp-description {
     font-size: 18px;
     font-weight: normal;
@@ -65,6 +67,10 @@
     right: 0;
     height: 100%;
 }
+
+.cp-social-media.no-padding .cp-row-center{
+ margin: 0 -15px;
+} 
 
 .cp-social-media .cp-row-equalized-center {
     position: relative;

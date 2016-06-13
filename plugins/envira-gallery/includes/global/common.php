@@ -44,7 +44,7 @@ class Envira_Gallery_Common {
     public function __construct() {
 
         // Load the base class object.
-        $this->base = Envira_Gallery::get_instance();
+        $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
 
     }
 
@@ -240,16 +240,20 @@ class Envira_Gallery_Common {
      * @since 1.3.6
      *
      * @global array $_wp_additional_image_sizes Array of registered image sizes.
-     * @return array                             Array of image size data.
+     *
+     * @param   bool    $wordpress_only     WordPress Only (excludes the default and envira_gallery_random options)
+     * @return  array                       Array of image size data.
      */
-    public function get_image_sizes() {
+    public function get_image_sizes( $wordpress_only = false ) {
 
-        $sizes = array(
-            array(
-                'value'  => 'default',
-                'name'   => __( 'Default', 'envira-gallery' ),
-            )
-        );
+        if ( ! $wordpress_only ) {
+            $sizes = array(
+                array(
+                    'value'  => 'default',
+                    'name'   => __( 'Default', 'envira-gallery' ),
+                )
+            );
+        }
 
         global $_wp_additional_image_sizes;
         $wp_sizes = get_intermediate_image_sizes();
@@ -271,8 +275,18 @@ class Envira_Gallery_Common {
                 $sizes[] = array(
                     'value'  => $size,
                     'name'   => ucwords( str_replace( array( '-', '_' ), ' ', $size ) ) . ' (' . $width . ' &#215; ' . $height . ')',
+                    'width'  => $width,
+                    'height' => $height,
                 );
             }
+        }
+
+        // Add Random option
+        if ( ! $wordpress_only ) {
+            $sizes[] = array(
+                'value'  => 'envira_gallery_random',
+                'name'   => __( 'Random', 'envira-gallery' ),
+            );
         }
 
         return apply_filters( 'envira_gallery_image_sizes', $sizes );
@@ -553,6 +567,7 @@ class Envira_Gallery_Common {
             'random'              => 0,
             'sorting_direction'   => 'ASC',
             'image_size'          => 'default', // Default = uses the below crop_width and crop_height
+            'image_sizes_random'  => array(),
             'crop_width'          => 640,
             'crop_height'         => 480,
             'crop'                => 0,
@@ -586,6 +601,7 @@ class Envira_Gallery_Common {
             'thumbnails_position' => 'bottom',
 
             // Mobile
+            'mobile_columns'      => 1,
             'mobile'              => 1,
             'mobile_width'        => 320,
             'mobile_height'       => 240,

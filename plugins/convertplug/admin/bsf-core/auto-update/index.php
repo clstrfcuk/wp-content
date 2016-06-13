@@ -66,16 +66,24 @@ if(isset($_POST['bsf-advanced-form-btn'])) {
 	if(isset($_GET['remove-bundled-products']))  {
 		delete_option('brainstrom_bundled_products');
 		delete_site_transient('bsf_get_bundled_products');
-		if(is_multisite())
-			$redirect = network_admin_url('index.php?page=bsf-registration');
-		else {
-			if(defined('BSF_REG_MENU_TO_SETTINGS') && (BSF_REG_MENU_TO_SETTINGS == true || BSF_REG_MENU_TO_SETTINGS == 'true')) {
-				$redirect = admin_url('options-general.php?page=bsf-registration');
-			}
+
+		$redirect = isset( $_GET['redirect'] ) ? urldecode( $_GET['redirect'] ) : '';
+
+		if ( $redirect == '' ) {
+			if(is_multisite())
+				$redirect = network_admin_url('index.php?page=bsf-registration');
 			else {
-				$redirect = admin_url('index.php?page=bsf-registration');
+				if(defined('BSF_REG_MENU_TO_SETTINGS') && (BSF_REG_MENU_TO_SETTINGS == true || BSF_REG_MENU_TO_SETTINGS == 'true')) {
+					$redirect = admin_url('options-general.php?page=bsf-registration');
+				}
+				else {
+					$redirect = admin_url('index.php?page=bsf-registration');
+				}
 			}
+		} else {
+			$redirect = add_query_arg( 'bsf-reload-page', '', $redirect );
 		}
+
 		echo '<script type="text/javascript">window.location = "'.$redirect.'";</script>';
 		//wp_redirect($redirect);
 	}
@@ -328,11 +336,19 @@ if(isset($_POST['bsf-advanced-form-btn'])) {
 <?php
 	$brainstrom_bundled_products = (get_option('brainstrom_bundled_products')) ? get_option('brainstrom_bundled_products') : array();
 	$brainstrom_bundled_products_keys = array();
-
 	if(!empty($brainstrom_bundled_products)) :
-		foreach($brainstrom_bundled_products as $bps){
-			foreach ($bps as $key => $bp) {
-				array_push($brainstrom_bundled_products_keys, $bp->id);
+		foreach($brainstrom_bundled_products as $bkeys => $bps){
+			if(strlen($bkeys) > 1) {
+				foreach ($bps as $key => $bp) {
+					if(!isset($bp->id) || $bp->id == '')
+						continue;
+					array_push($brainstrom_bundled_products_keys, $bp->id);
+				}
+			}
+			else {
+				if(!isset($bps->id) || $bps->id == '')
+					continue;
+				array_push($brainstrom_bundled_products_keys, $bps->id);
 			}
 		}
 	endif;
@@ -798,13 +814,47 @@ if(isset($_POST['bsf-advanced-form-btn'])) {
                                 </td>
                             </tr>
                             <tr>
-                            	<td>BSF Updater Path</td> <td><?php echo BSF_UPDATER_PATH; ?></td>
+                            	<td>BSF Updater Path</td>
+                            	<td>
+                            		<?php global $bsf_core_version; ?>
+                            		<?php echo '(v'.$bsf_core_version.') '.BSF_UPDATER_PATH; ?>
+                            	</td>
                             </tr>
                             <?php if(defined('WPB_VC_VERSION')) : ?>
                             <tr>
                             	<td>vc_shortcode_output Filter</td>
 								<td>
                                 	<?php echo (has_filter('vc_shortcode_output')) ? 'Available' : 'Not Available'; ?>
+                                </td>
+                            </tr>
+							<?php endif; ?>
+							<?php
+								$mix = array_merge($bsf_product_plugins, $bsf_product_themes);
+								$temp_constant = '';
+								if(!empty($mix)) :
+									foreach($mix as $key => $product) :
+										$constant = strtoupper(str_replace('-', '_', $product['id']));
+										$constant = 'BSF_'.$constant.'_CHECK_UPDATES';
+										if(defined($constant) && (constant($constant) === 'false' || constant($constant) === false)) {
+											$temp_constant .= $constant.'<br/>';
+											continue;
+										}
+									endforeach;
+								endif;
+								if(defined('BSF_CHECK_PRODUCT_UPDATES') && BSF_CHECK_PRODUCT_UPDATES == false) {
+									$temp_constant .= 'BSF_CHECK_PRODUCT_UPDATES';
+								}
+								if($temp_constant != '') {
+									if(!defined('BSF_RESTRICTED_UPDATES')) {
+										define('BSF_RESTRICTED_UPDATES', $temp_constant);
+									}
+								}
+							?>
+							<?php if(defined('BSF_RESTRICTED_UPDATES')) : ?>
+                            <tr>
+                            	<td>Restrited Updates Filter</td>
+								<td>
+                                	<?php echo BSF_RESTRICTED_UPDATES; ?>
                                 </td>
                             </tr>
 							<?php endif; ?>
@@ -859,6 +909,18 @@ if(isset($_POST['bsf-advanced-form-btn'])) {
 										}
 										else {
 											echo 'Not Enabled';
+										}
+									?>
+                              	</td>
+                            </tr>
+                            <tr class="<?php echo (!function_exists('curl_version')) ? 'bsf-alert' : ''; ?>">
+                            	<td>SimpleXML</td>
+                                <td>
+									<?php
+										if (extension_loaded('simplexml')) {
+										    echo "All good, extension is installed";
+										} else {
+											echo "Oops! extension not installed, Icon Manager will not work";
 										}
 									?>
                               	</td>

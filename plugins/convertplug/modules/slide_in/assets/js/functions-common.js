@@ -14,8 +14,8 @@ var cp_empty_classes = {
 		".cp-info-container" 		: ".cp-info-container",
 		".cp-short-description"  	: ".cp-short-desc-container",
 		".cp-desc-bottom"           : ".cp-desc-timetable",
-		".cp-mid-description"       : ".cp-mid-desc-container"	
-	};	
+		".cp-mid-description"       : ".cp-mid-desc-container"
+	};
 
 jQuery(document).ready(function(){
 
@@ -30,14 +30,14 @@ jQuery(document).ready(function(){
 				cp_remove_empty_class(value);
 			} );
 		}
-	});	
+	});
 
 	jQuery("html").css('overflow','hidden');
-	
+
 	if( jQuery("#main_title_editor").length !== 0 ) {
 		// Turn off automatic editor creation first.
 		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.inline( 'main_title_editor' );	
+		CKEDITOR.inline( 'main_title_editor' );
 
 		//	Initially set show CKEditor of 'cp-title'
 		//	Ref: http://docs.ckeditor.com/#!/api/CKEDITOR.focusManager
@@ -49,13 +49,13 @@ jQuery(document).ready(function(){
 			//	Set class - `cp-modal-exceed`
 			CP_slide_in_height();
 
-			// Remove Blinking cursor 
+			// Remove Blinking cursor
 			jQuery(".cp-slidein-body").find(".blinking-cursor").remove();
 
 			//	Check & update responsive font sizes
 			check_responsive_font_sizes();
-			
-			//set color for li tags 
+
+			//set color for li tags
         	cp_color_for_list_tag();
 
 			var data = CKEDITOR.instances.main_title_editor.getData();
@@ -112,7 +112,7 @@ jQuery(document).ready(function(){
 	if( jQuery("#sec_title_editor").length !== 0 ) {
 		// Turn off automatic editor creation first.
 		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.inline( 'sec_title_editor' );	
+		CKEDITOR.inline( 'sec_title_editor' );
 		CKEDITOR.instances.sec_title_editor.on( 'change', function() {
 
 			//	Check & update responsive font sizes
@@ -121,7 +121,7 @@ jQuery(document).ready(function(){
 			//	Set class - `cp-modal-exceed`
 			CP_slide_in_height();
 
-			//set color for li tags 
+			//set color for li tags
         	cp_color_for_list_tag();
 
 			var data = CKEDITOR.instances.sec_title_editor.getData();
@@ -136,18 +136,18 @@ jQuery(document).ready(function(){
 		} );
 	}
 
-	
+
 	if( jQuery("#desc_editor").length !== 0 ) {
 		// Turn off automatic editor creation first.
 		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.inline( 'desc_editor' );	
+		CKEDITOR.inline( 'desc_editor' );
 		CKEDITOR.instances.desc_editor.config.toolbar = 'Small';
 		CKEDITOR.instances.desc_editor.on( 'change', function() {
 
 			//	Check & update responsive font sizes
 			check_responsive_font_sizes();
 
-			//set color for li tags 
+			//set color for li tags
         	cp_color_for_list_tag();
 
         	//	Set class - `cp-modal-exceed`
@@ -168,7 +168,7 @@ jQuery(document).ready(function(){
 	if(jQuery("#short_desc_editor").length !== 0) {
 		// Turn off automatic editor creation first.
 		CKEDITOR.disableAutoInline = true;
-		CKEDITOR.inline( 'short_desc_editor' );	
+		CKEDITOR.inline( 'short_desc_editor' );
 		CKEDITOR.instances.short_desc_editor.config.toolbar = 'Small';
 		CKEDITOR.instances.short_desc_editor.on( 'change', function() {
 
@@ -178,7 +178,7 @@ jQuery(document).ready(function(){
 			//	Check & update responsive font sizes
 			check_responsive_font_sizes();
 
-			//set color for li tags 
+			//set color for li tags
         	cp_color_for_list_tag();
 
 			var data = CKEDITOR.instances.short_desc_editor.getData();
@@ -192,22 +192,22 @@ jQuery(document).ready(function(){
 	     		editor.setReadOnly( false );
 		} );
 	}
-	
+
 	//open slide on click of button
-	jQuery("body").on("click", ".cp-toggle-container", function(e){ 
-		
+	jQuery("body").on("click", ".cp-toggle-container", function(e){
+
 		jQuery(this).toggleClass("cp-slide-hide-btn");
 
-		parent.setFocusElement('slide_button_title'); 
+		parent.setFocusElement('slide_button_title');
 
 		var	cp_animate_container = jQuery(".cp-animate-container"),
 			entryanimation       = cp_animate_container.attr("data-entry-animation"),
-			slidein_overlay 	 = jQuery(".slidein-overlay");			
+			slidein_overlay 	 = jQuery(".slidein-overlay");
 
 		slidein_overlay.addClass('cp-slidein-click');
 		cp_animate_container.attr( 'class', 'cp-animate-container cp-hide-slide smile-animated' );
-		
-		setTimeout(function() {	
+
+		setTimeout(function() {
 			cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+entryanimation);
 		}, 10);
 
@@ -215,9 +215,9 @@ jQuery(document).ready(function(){
 		jQuery('head').append('<style class="cp-backend-tooltip-hide">.customize-support .tip[class*="arrow"]:before{display:block} .tip[class*="arrow"]:before{display:block}.customize-support .tip[class*="arrow"]{display:block} .tip[class*="arrow"]{display:block}</style>');
 
 		e.stopPropagation();
-	});	
+	});
 
-	
+
 	// close slide in on click of button
 	jQuery("body").on("click", ".slidein-overlay-close", function(e){
 
@@ -225,11 +225,11 @@ jQuery(document).ready(function(){
 			var cp_toggle_container    = jQuery(".cp-toggle-container"),
 				exitanimation 		 = jQuery(".cp-animate-container").attr('data-exit-animation'),
 				cp_animate_container = jQuery(".cp-animate-container"),
-				slidein_overlay 	 = jQuery(".slidein-overlay");		
+				slidein_overlay 	 = jQuery(".slidein-overlay");
 
 	         cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+exitanimation);
-	          
-	         slidein_overlay.removeClass('cp-slidein-click'); 
+
+	         slidein_overlay.removeClass('cp-slidein-click');
 
 			setTimeout(function() {
 				cp_animate_container.addClass("cp-hide-slide");
@@ -244,11 +244,11 @@ jQuery(document).ready(function(){
 		} else {
 			e.stopPropagation();
 		}
-		
-	});	
 
-	jQuery("body").on("click", ".cp-image", function(e){ parent.setFocusElement('slidein_image'); e.stopPropagation(); });	
-	jQuery("body").on("click", ".cp-submit", function(e){ parent.setFocusElement('button_bg_color'); e.stopPropagation(); });	
+	});
+
+	jQuery("body").on("click", ".cp-image", function(e){ parent.setFocusElement('slidein_image'); e.stopPropagation(); });
+	jQuery("body").on("click", ".cp-submit", function(e){ parent.setFocusElement('button_bg_color'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-slidein-body", function(e){ parent.setFocusElement('slidein_bg_color'); e.stopPropagation(); });
 	jQuery("body").on("click", ".cp-name", function(e){ parent.setFocusElement('name_text'); e.stopPropagation(); });
 	jQuery("body").on("click", ".slidein-overlay-close", function(e){ parent.setFocusElement('close_slidein'); e.stopPropagation(); });
@@ -256,7 +256,7 @@ jQuery(document).ready(function(){
 	// remove blinking cursor
 	jQuery("body").on("click select", ".cp-highlight,.cp-name,.cp-email", function(e){
 		jQuery(".cp-slidein-body").find(".blinking-cursor").remove();
-	}); 
+	});
 
 	jQuery(this).on('submit','form',function(e){
 		e.preventDefault();
@@ -268,20 +268,19 @@ jQuery(window).load(function(){
 	parent.customizerLoaded();
 });
 
-
-// removes &nbsp; and <br> tags from html string 
+// removes &nbsp; and <br> tags from html string
 function cp_get_clean_string(string) {
-	var cleanString = string.replace(/[<]br[^>]*[>]/gi, '').replace(/[&]nbsp[;]/gi, '').replace(/[\u200B]/g, ''); 
+	var cleanString = string.replace(/[<]br[^>]*[>]/gi, '').replace(/[&]nbsp[;]/gi, '').replace(/[\u200B]/g, '');
 	cleanString = jQuery.trim(cleanString);
 	return cleanString;
 }
-		
+
 // Add cp-empty class
 function cp_add_empty_class(element,container) {
 
 	var cleanString 	=  cp_get_clean_string( jQuery(element).html() );
-	
-	// Slide In title 
+
+	// Slide In title
 	if( cleanString.length == 0 ) {
 		jQuery(container).addClass('cp-empty');
 		jQuery(element).html(cleanString);
@@ -303,18 +302,18 @@ function cp_image_settings(data) {
 		cp_img_container		= jQuery(".cp-image-container");
 
 	// image position left/right alignment
-	if( image_position == 1 ){		 
+	if( image_position == 1 ){
 		cp_text_container.removeClass('cp-right-contain');
-	} else {			
+	} else {
 		cp_text_container.addClass('cp-right-contain');
 	}
 }
 
-// tooltip related settings
+// tool tip related settings
 function cp_tooltip_settings(data) {
 
-	var close_tooltip     		= '', 
-		close_tooltip_end 		= '', 
+	var close_tooltip     		= '',
+		close_tooltip_end 		= '',
 		tip_position      		= '',
 		tooltip_class     		= '',
 		offset_position   		= '',
@@ -332,20 +331,21 @@ function cp_tooltip_settings(data) {
 		close_text_color  		= data.close_text_color,
 		slidein_overlay     	= jQuery(".slidein-overlay"),
 		close_img_size			= data.close_img_size,
+		close_si_image_src      = data.close_si_image_src,
 		cp_close_image_width    = data.cp_close_image_width;
 
-	var close_img_default = close_img;				
+	var close_img_default = close_img;
 	overlay_close.appendTo(cp_animate_container);
 	overlay_close.addClass('cp-inside-close').removeClass('cp-adjacent-close');
 
 	if( close_slidein_tooltip == '1' ){
 		var psid = slidein_overlay.find(".cp-slidein-content").data('ps-id');
-			
-			tooltip_class = 'cp-custom-tooltip';		
+
+			tooltip_class = 'cp-custom-tooltip';
 			tip_position = "left";
-			offset_position = 30;	
-			
-			jQuery('.has-tip:empty').remove();		
+			offset_position = 30;
+
+			jQuery('.has-tip:empty').remove();
 	} else {
 		jQuery('.has-tip:empty').remove();
 	}
@@ -353,41 +353,60 @@ function cp_tooltip_settings(data) {
 	close_tooltip = '<span class="'+tooltip_class+' cp-tooltip-icon has-tip cp-tipcontent-'+psid+'" data-classes="close-tip-content-'+psid+'" data-position="'+tip_position+'"  title="'+tooltip_title+'" data-original-title ="'+tooltip_title+'" data-color="'+tooltip_title_color+'" data-bgcolor="'+tooltip_background+'" data-closeid ="cp-tipcontent-'+psid+'" data-offset="'+offset_position+'" >';
 	close_tooltip_end ='</span>';
 
-	if( close_slidein == "close_icon" ){
-		jQuery(".slidein-overlay-close").removeClass('cp-text-close').addClass('cp-image-close');
-		overlay_close.html('<i class="'+close_icon+'"></i>');
-		overlay_close.css({"color":close_text_color});
-	} else if( close_slidein == "close_txt" ){
-		jQuery(".slidein-overlay-close").removeClass('cp-image-close').addClass('cp-text-close');
-		overlay_close.html(close_tooltip+'<span class ="close-txt">'+close_txt+'</span>'+close_tooltip_end);
-		overlay_close.css({"color":close_text_color});
-	} else if(close_img_default.indexOf('http') === -1){
-			if( close_slidein == "close_img" && close_img !== "" ) {
+	if( typeof close_slidein != 'undefined' ) {
+
+		if( close_slidein == "close_txt" ) {
+			jQuery(".slidein-overlay-close").removeClass('cp-image-close').addClass('cp-text-close');
+			overlay_close.html(close_tooltip+'<span class ="close-txt">'+close_txt+'</span>'+close_tooltip_end);
+			overlay_close.css({"color":close_text_color});
+
+		} else if( close_slidein == 'close_img' ) {
+
+			if ( close_si_image_src == 'upload_img'  ) {
+				if( close_img_default.indexOf('http') === -1 ) {
+
+						if( close_slidein == "close_img" && close_img !== "" ) {
+							jQuery(".slidein-overlay-close").removeClass('cp-text-close').addClass('cp-image-close');
+							var img_data = {action:'cp_get_image',img_id:close_img,size:close_img_size};
+							jQuery.ajax({
+								url: smile_ajax.url,
+								data: img_data,
+								type: "POST",
+								success: function(img){
+									overlay_close.html(close_tooltip+'<img src="'+img+'" />'+close_tooltip_end);
+									jQuery(document).trigger("cp_ajax_loaded",[data]);
+								}
+							});
+						} else {
+							jQuery(".slidein-overlay-close").removeClass('cp-text-close cp-imnage-close');
+							overlay_close.html('');
+						}
+
+				} else if( close_img_default.indexOf('http') != -1 ) {
+					close_img_full_src = close_img.split('|');
+					close_img_src = close_img_full_src[0];
+					jQuery(".slidein-overlay-close").removeClass('cp-text-close').addClass('cp-image-close');
+					overlay_close.html(close_tooltip+'<img class="cp-default-close" src="'+close_img_src+'" />'+close_tooltip_end);
+				}
+			} else if ( close_si_image_src == 'custom_url'  ) {
+				var close_img_src = data.slide_in_close_img_custom_url;
 				jQuery(".slidein-overlay-close").removeClass('cp-text-close').addClass('cp-image-close');
-				var img_data = {action:'cp_get_image',img_id:close_img,size:close_img_size};
-				jQuery.ajax({
-					url: smile_ajax.url,
-					data: img_data,
-					type: "POST",
-					success: function(img){						
-						overlay_close.html(close_tooltip+'<img src="'+img+'" />'+close_tooltip_end);
-						jQuery(document).trigger("cp_ajax_loaded",[data]);
-					}
-				});
-			} else {
+				overlay_close.html(close_tooltip+'<img class="" src="'+close_img_src+'" />'+close_tooltip_end);
+			} else if (close_si_image_src == 'pre_icons' ) {
+				var close_icon = data.close_icon;
+				var close_icon_url = cp.module_img_dir + "/" + close_icon + '.png';
+				overlay_close.html(close_tooltip+'<img src="'+close_icon_url+'" />'+close_tooltip_end);
+				jQuery(".slidein-overlay-close").removeClass('cp-text-close').addClass('cp-image-close');
+			}else {
 				jQuery(".slidein-overlay-close").removeClass('cp-text-close cp-imnage-close');
 				overlay_close.html('');
 			}
-	} else if( close_slidein == "do_not_close") {
-		jQuery(".slidein-overlay-close").removeClass('cp-text-close cp-imnage-close');
-		overlay_close.html('');
-	} else if( close_img_default.indexOf('http') != -1 ) {
-		close_img_full_src = close_img.split('|');
-		close_img_src = close_img_full_src[0];
-		jQuery(".slidein-overlay-close").removeClass('cp-text-close').addClass('cp-image-close');
-		overlay_close.html(close_tooltip+'<img class="cp-default-close" src="'+close_img_src+'" />'+close_tooltip_end);
+		} else if( close_slidein == "do_not_close") {
+			jQuery(".slidein-overlay-close").removeClass('cp-text-close cp-imnage-close');
+			overlay_close.html('');
+		}
 	}
-		
+
 	overlay_close.css('background',"transparent");
 
 	if( close_slidein == "do_not_close") {
@@ -396,7 +415,7 @@ function cp_tooltip_settings(data) {
 
 	if( close_slidein != 'close_txt' )
 		overlay_close.css( 'width', cp_close_image_width+'px' );
-	else 
+	else
 		overlay_close.css( 'width', 'auto' );
 }
 
@@ -414,12 +433,12 @@ function cp_tooltip_reinitialize(data) {
 		psid 						= slidein_overlay.find(".cp-slidein-content").data('ps-id'),
 		slidein_overlay_close     	= jQuery(".slidein-overlay-close"),
 		slideinht  					= jQuery(".cp-slidein-content").outerHeight();
-	
+
 	//tool tip for slide in close
 	if( close_slidein_tooltip == '1' ){
-        var tooltip_classname = "cp-tipcontent-"+psid;       
+        var tooltip_classname = "cp-tipcontent-"+psid;
         var tclass = "close-tip-content-"+psid;
-        var vw = jQuery(window).width(); 
+        var vw = jQuery(window).width();
 
 		if( cp_slidein_width > 768 ){
             jQuery(".has-tip").data("position" ,"left");
@@ -428,7 +447,7 @@ function cp_tooltip_reinitialize(data) {
     		jQuery(".has-tip").data("position" ,"left");
         	tip_position = "left";
         }
-		
+
 		if(slideinht >= 500){
            jQuery(".has-tip").data("position" ,"left");
             tip_position = "left";
@@ -439,20 +458,20 @@ function cp_tooltip_reinitialize(data) {
 			tip_position = "left";
 		}
 
-    	jQuery("."+tooltip_classname).frosty({ 
-            className: 'tip close-tip-content-'+psid               
+    	jQuery("."+tooltip_classname).frosty({
+            className: 'tip close-tip-content-'+psid
         });
-    
+
     	jQuery(".cp-backend-tooltip-css").remove();
 
     	jQuery('head').append('<style class="cp-backend-tooltip-css">.customize-support .tip.'+tclass+'{color: '+tooltip_title_color+';background-color:'+tooltip_background+';border-color:'+tooltip_background+';border-radius:7px;padding:15px 30px;font-size:13px; }</style>');
-        
+
         if( tip_position == 'left' ){
            jQuery('head').append('<style class="cp-backend-tooltip-css">.customize-support .'+tclass+'[class*="arrow"]:before{border-left-color: '+tooltip_background+';border-width:8px;margin-top:-8px;border-top-color:transparent }</style>');
         } else {
             jQuery('head').append('<style class="cp-backend-tooltip-css">.customize-support .'+tclass+'[class*="arrow"]:before{border-top-color: '+tooltip_background+';border-width:8px;margin-top:0px; border-left-color:transparent}</style>');
         }
-	}	
+	}
 }
 
 // slide in image related settings
@@ -472,9 +491,9 @@ function cp_image_processing(data) {
 		image_on_left = 'cp-right-contain';
 	}
 
-	if( image_displayon_mobile == 1 ) {	
+	if( image_displayon_mobile == 1 ) {
 		if( vw <= image_resp_width ) {
-            if( image_resp_width >= 768 ){	
+            if( image_resp_width >= 768 ){
                 cp_text_container.removeClass('col-lg-7 col-md-7 col-sm-7').addClass('col-lg-12 col-md-12 col-sm-12 cp-bigtext-container');
             } else {
                 cp_text_container.removeClass('col-lg-12 col-md-12 col-sm-12 cp-bigtext-container').addClass('col-lg-7 col-md-7 col-sm-7');
@@ -483,11 +502,11 @@ function cp_image_processing(data) {
         	cp_text_container.removeClass('col-lg-12 col-md-12 col-sm-12 cp-bigtext-container').addClass('col-lg-7 col-md-7 col-sm-7');
         }
 
-		if( vw <= image_resp_width ) {		
-			cp_img_container.addClass('cp-hide-image');					
-		} else {	
+		if( vw <= image_resp_width ) {
+			cp_img_container.addClass('cp-hide-image');
+		} else {
 			cp_img_container.removeClass('cp-hide-image');
-		}					
+		}
 	} else {
 		cp_text_container.removeClass('col-lg-12 col-md-12 col-sm-12').addClass('col-lg-7 col-md-7 col-sm-7 '+image_on_left);
 		cp_img_container.removeClass('cp-hide-image');
@@ -495,14 +514,14 @@ function cp_image_processing(data) {
 }
 
 
-// adds custom css 
+// adds custom css
 function cp_add_custom_css(data) {
 	var custom_css	= data.custom_css;
 	jQuery("#cp-custom-style").remove();
 	jQuery("head").append('<style id="cp-custom-style">'+custom_css+'</style>');
 }
 
-// animations in customizer  
+// animations in customizer
 function cp_apply_animations(data) {
 	var disable_overlay_effect 	= data.disable_overlay_effect,
 		hide_animation_width 	= data.hide_animation_width,
@@ -513,13 +532,13 @@ function cp_apply_animations(data) {
         vw 						= jQuery(window).width(),
         toggle_btn 			= data.toggle_btn,
 		toggle_btn_visible  = data.toggle_btn_visible;
-     
 
-	if(slidein_overlay.find('.cp-slidein-toggle').length > 0){     	
+
+	if(slidein_overlay.find('.cp-slidein-toggle').length > 0){
 	  overlay_effect = 'slidein-smile-slideInUp';
 	  disable_overlay_effect == 0;
 	}
-    
+
 	if( disable_overlay_effect == 1 ){
 		var vw = jQuery(window).width();
 		if( vw <= hide_animation_width ){
@@ -534,15 +553,15 @@ function cp_apply_animations(data) {
 
 	cp_animate.attr('data-exit-animation', exit_animation );
 	cp_animate.attr("data-entry-animation", overlay_effect );
-		
-	if( toggle_btn == '1' && toggle_btn_visible == '1' ) { 
-		// do not apply animations to info bar 
+
+	if( toggle_btn == '1' && toggle_btn_visible == '1' ) {
+		// do not apply animations to info bar
 	} else {
-		
+
 		if( !cp_animate.hasClass(exit_animation) && exit_animation !== exit_anim ){
-			
+
 			setTimeout(function(){
-				if( exit_animation !== "none" ) {	
+				if( exit_animation !== "none" ) {
 					cp_animate.removeClass(exit_anim);
 					cp_animate.removeClass(entry_anim);
 					cp_animate.addClass('smile-animated '+exit_animation);
@@ -554,9 +573,9 @@ function cp_apply_animations(data) {
 					cp_animate.removeClass(entry_anim);
 					cp_animate.addClass('smile-animated '+entry_anim);
 				}, 1000 );
-			},500);		
+			},500);
 		}
-		
+
 		if( !cp_animate.hasClass(overlay_effect) && overlay_effect !== entry_anim ){
 			setTimeout(function(){
 				if( overlay_effect !== "none" ) {
@@ -565,232 +584,13 @@ function cp_apply_animations(data) {
 					cp_animate.addClass('smile-animated '+overlay_effect);
 					cp_animate.attr('data-entry-animation', overlay_effect );
 				}
-			},500);		
+			},500);
 		}
 	}
 }
 
-// CP Darker / Lighter colors - {Start}
-var pad = function(num, totalChars) {
-    var pad = '0';
-    num = num + '';
-    while (num.length < totalChars) {
-        num = pad + num;
-    }
-    return num;
-};
-
-// Ratio is between 0 and 1
-var changeColor = function(color, ratio, darker) {
-    // Trim trailing/leading whitespace
-    color = color.replace(/^\s*|\s*$/, '');
-
-    // Expand three-digit hex
-    color = color.replace(
-        /^#?([a-f0-9])([a-f0-9])([a-f0-9])$/i,
-        '#$1$1$2$2$3$3'
-    );
-
-    // Calculate ratio
-    var difference = Math.round(ratio * 256) * (darker ? -1 : 1),
-        // Determine if input is RGB(A)
-        rgb = color.match(new RegExp('^rgba?\\(\\s*' +
-            '(\\d|[1-9]\\d|1\\d{2}|2[0-4][0-9]|25[0-5])' +
-            '\\s*,\\s*' +
-            '(\\d|[1-9]\\d|1\\d{2}|2[0-4][0-9]|25[0-5])' +
-            '\\s*,\\s*' +
-            '(\\d|[1-9]\\d|1\\d{2}|2[0-4][0-9]|25[0-5])' +
-            '(?:\\s*,\\s*' +
-            '(0|1|0?\\.\\d+))?' +
-            '\\s*\\)$'
-        , 'i')),
-        alpha = !!rgb && rgb[4] != null ? rgb[4] : null,
-
-        // Convert hex to decimal
-        decimal = !!rgb? [rgb[1], rgb[2], rgb[3]] : color.replace(
-            /^#?([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])/i,
-            function() {
-                return parseInt(arguments[1], 16) + ',' +
-                    parseInt(arguments[2], 16) + ',' +
-                    parseInt(arguments[3], 16);
-            }
-        ).split(/,/),
-        returnValue;
-
-    // Return RGB(A)
-    return !!rgb ?
-        'rgb' + (alpha !== null ? 'a' : '') + '(' +
-            Math[darker ? 'max' : 'min'](
-                parseInt(decimal[0], 10) + difference, darker ? 0 : 255
-            ) + ', ' +
-            Math[darker ? 'max' : 'min'](
-                parseInt(decimal[1], 10) + difference, darker ? 0 : 255
-            ) + ', ' +
-            Math[darker ? 'max' : 'min'](
-                parseInt(decimal[2], 10) + difference, darker ? 0 : 255
-            ) +
-            (alpha !== null ? ', ' + alpha : '') +
-            ')' :
-        // Return hex
-        [
-            '#',
-            pad(Math[darker ? 'max' : 'min'](
-                parseInt(decimal[0], 10) + difference, darker ? 0 : 255
-            ).toString(16), 2),
-            pad(Math[darker ? 'max' : 'min'](
-                parseInt(decimal[1], 10) + difference, darker ? 0 : 255
-            ).toString(16), 2),
-            pad(Math[darker ? 'max' : 'min'](
-                parseInt(decimal[2], 10) + difference, darker ? 0 : 255
-            ).toString(16), 2)
-        ].join('');
-};
-var lighterColor = function(color, ratio) {
-    return changeColor(color, ratio, false);
-};
-var darkerColor = function(color, ratio) {
-    return changeColor(color, ratio, true);
-};
-// CP Darker / Lighter colors - {End}
-
-// form inputs styling
-function cp_form_style(data) {
-
-	var cp_email_data 				= data.cp_email,
-		placeholder_text		  	= data.placeholder_text,
-		button_border_color 	   	= data.button_border_color,
-		name_text 				 	= data.name_text,
-		cp_submit 					= jQuery(".cp-submit"),
-		cp_name						= jQuery(".cp-name"),
-		cp_input					= jQuery(".cp-input"),
-		cp_email 					= jQuery(".cp-email"),
-		input_border_color 			= data.input_border_color,
-		placeholder_color		 	= data.placeholder_color,
-		btn_bg_color			  	= data.button_bg_color,
-		button_bg_hover_color 		= data.button_bg_hover_color,
-		mailer              		= data.mailer,
-		form_container				= jQuery(".default-form"),
-		html_form_container			= jQuery(".custom-html-form"),
-		custom_html_form		  	= data.custom_html_form,
-		input_bg_color 				= data.input_bg_color,
-
-		btn_border 					= data.btn_border,
-		btn_border_radius 			= data.btn_border_radius,
-		btn_border_color 			= data.btn_border_color,
-		btn_style 					= data.btn_style,
-		btn_shadow 					= data.btn_shadow,
-		button_txt_hover_color 		= data.button_txt_hover_color,
-		placeholder_font      		= data.placeholder_font,
-		btn_disp_next_line 			= data.btn_disp_next_line,
-		namefield 					= data.namefield,
-		cp_form_container 			= jQuery(".cp-form-container")
-
-	if( mailer == "custom-form" ) {
-		form_container.css('display','none');
-		html_form_container.html(custom_html_form).show();
-	} else {
-		form_container.css('display','block');
-		html_form_container.css('display','none');
-	}
-
-	// email field style
-	cp_email.attr('placeholder',cp_email_data);
-	cp_email.attr("value", placeholder_text);
-	cp_email.attr("placeholder", placeholder_text);
-
-	//	Remove all classes
-	var classList = ['cp-btn-flat', 'cp-btn-3d', 'cp-btn-outline', 'cp-btn-gradient'];
-	jQuery.each(classList, function(i, v){
-       cp_submit.removeClass(v);
-    });
-	cp_submit.addClass( btn_style );
-
-	var c_normal 	= btn_bg_color;
-	var c_hover  	= darkerColor( btn_bg_color, .05 );
-	var light 		= lighterColor( btn_bg_color, .3 );
-
-	cp_submit.css('background', c_normal);
-	//	Apply box shadow to submit button - If its set & equals to - 1
-	var shadow = radius = '';
-	if( btn_shadow == 1 ) {		
-		shadow += 'box-shadow: 1px 1px 2px 0px rgba(66, 66, 66, 0.6);';
-	}
-	//	Add - border-radius
-	if( btn_border_radius != '' ) {
-		radius += 'border-radius: ' + btn_border_radius + 'px;';
-	}
-
-	jQuery("#cp-temporary-inline-css").remove();
-	jQuery('head').append('<div id="cp-temporary-inline-css"></div>');
-	switch( btn_style ) {
-		case 'cp-btn-flat': 		jQuery('#cp-temporary-inline-css').html('<style>'
-										+ '.cp-slidein .' + btn_style + '.cp-submit{ background: '+c_normal+'!important;' + shadow + radius + '; } '
-										+ '.cp-slidein .' + btn_style + '.cp-submit:hover { background: '+c_hover+'!important; } '
-										+ '</style>');
-			break;
-		case 'cp-btn-3d': 			jQuery('#cp-temporary-inline-css').html('<style>'
-										+ '.cp-slidein .' + btn_style + '.cp-submit {background: '+c_normal+'!important; '+radius+' position: relative ; box-shadow: 0 6px ' + c_hover + ';} '
-										+ '.cp-slidein .' + btn_style + '.cp-submit:hover {background: '+c_normal+'!important;top: 2px; box-shadow: 0 4px ' + c_hover + ';} '
-										+ '.cp-slidein .' + btn_style + '.cp-submit:active {background: '+c_normal+'!important;top: 6px; box-shadow: 0 0px ' + c_hover + ';} '
-										+ '</style>');
-			break;
-		case 'cp-btn-outline': 		jQuery('#cp-temporary-inline-css').html('<style>'
-										+ '.cp-slidein .' + btn_style + '.cp-submit { background: transparent!important;border: 2px solid ' + c_normal + ';color: inherit ;' + shadow + radius + '}'
-										+ '.cp-slidein .' + btn_style + '.cp-submit:hover { background: ' + c_hover + '!important;border: 2px solid ' + c_hover + ';color: ' + button_txt_hover_color + ' ;' + '}'
-										+ '.cp-slidein .' + btn_style + '.cp-submit:hover span { color: inherit !important ; } '
-										+ '</style>');
-			break;
-		case 'cp-btn-gradient': 	//	Apply box shadow to submit button - If its set & equals to - 1
-									jQuery('#cp-temporary-inline-css').html('<style>'
-										+ '.cp-slidein .' + btn_style + '.cp-submit {'
-										+ '     border: none ;'
-										+ 		shadow + radius
-										+ '     background: -webkit-linear-gradient(' + light + ', ' + c_normal + ') !important;'
-										+ '     background: -o-linear-gradient(' + light + ', ' + c_normal + ') !important;'
-										+ '     background: -moz-linear-gradient(' + light + ', ' + c_normal + ') !important;'
-										+ '     background: linear-gradient(' + light + ', ' + c_normal + ') !important;'
-										+ '}'
-										+ '.cp-slidein .' + btn_style + '.cp-submit:hover {'
-										+ '     background: ' + c_normal + ' !important;'
-										+ '}'
-										+ '</style>');
-			break;
-	}
-
-	//	Set either 10% darken color for 'HOVER'
-	//	Or 0.10% darken color for 'GRADIENT'
-	jQuery('#smile_button_bg_hover_color', window.parent.document).val( c_hover );
-	jQuery('#smile_button_bg_gradient_color', window.parent.document).val( light );
-
-	// name field style
-	cp_name.attr("value", name_text);
-	cp_name.attr("placeholder", name_text);
-	jQuery(".cp-name-form").removeClass('cp_big_name');	
-
-	if ( placeholder_font == '' ) {
-		placeholder_font = 'inherit';
-	}
-
-	cp_input.css({ 
-		"background-color":input_bg_color,
-		"border-color":input_border_color,
-		"color":placeholder_color,
-		"font-family": placeholder_font
-	});
-
-	//to align text of form at center
-	if( ( btn_disp_next_line == 1 ) || ( namefield == 1 ) ) {		
-		cp_form_container.addClass('cp-center-align-text');
-	} else {
-		cp_form_container.removeClass('cp-center-align-text');
-	}
-	
-	apply_boxshaddow(input_border_color);
-
-}
-
 // setup editors
-function cp_editor_setup(data) {
+function cp_ckeditors_setup(data) {
 
 	var slidein_title 				= data.slidein_title1,
 	cp_title 						= jQuery(".cp-title"),
@@ -814,9 +614,9 @@ function cp_editor_setup(data) {
 	if( varient_style_id !==''  && typeof varient_style_id !== 'undefined' ){
 		style_id = varient_style_id;
 	}
-		
+
 	//add style id as class to container
-	cp_slidein_content.addClass( style_id );	
+	cp_slidein_content.addClass( style_id );
 
 	// slide in title editor
 	slidein_title = htmlEntities(slidein_title);
@@ -826,7 +626,7 @@ function cp_editor_setup(data) {
 	}
 	cp_title.css('color',slidein_title_color);
 
-	// secondary title editor	
+	// secondary title editor
 	if( jQuery("#sec_title_editor").length !== 0 ) {
 		sec_title = data.slidein_sec_title;
 		slidein_sec_title_color = data.slidein_sec_title_color;
@@ -834,8 +634,8 @@ function cp_editor_setup(data) {
 		slidein_sec_title = htmlEntities(sec_title);
 		jQuery(".cp-sec-title").html(slidein_sec_title);
 		jQuery(".cp-sec-title").css('color',slidein_sec_title_color);
-	}	
-	
+	}
+
 	// short description editor
 	slidein_short_desc = htmlEntities(slidein_short_desc);
 	cp_description.html(slidein_short_desc);
@@ -862,93 +662,13 @@ function cp_editor_setup(data) {
 	cp_desc_bottom.html(slidein_content);
 	if(jQuery("#description_bottom").length !== 0) {
 		CKEDITOR.instances.description_bottom.setData(slidein_content);
-	} 
+	}
 
 	//slide in  button editor
-	slide_button_title = htmlEntities(slide_button_title);	
+	slide_button_title = htmlEntities(slide_button_title);
 	cp_slide_edit_btn.html(slide_button_title);
 }
 
-//background image 
-function cp_bg_image(data) {
-
-	var bg_repeat 	= "";
-	var bg_pos 		= "";
-	var bg_size 	= "";
-
-	var opt_bg					= data.opt_bg,
-		cp_slidein_content		= jQuery(".cp-slidein-content"),
-		cp_slidein_body			= jQuery(".cp-slidein-body"),
-		slidein_bg_image		= data.slidein_bg_image,
-		slidein_bg_image_size	= data.slidein_bg_image_size,
-		cp_md_overlay       	= jQuery(".cp-slidein-body"),
-		cp_slidein_body_inner	= jQuery(".cp-slidein-body-inner"),
-		cp_si_overlay       	= jQuery(".cp-slidein-body-overlay"),
-		bg_color				= data.slidein_bg_color,
-		slidein_bg_gradient 	= data.slidein_bg_gradient,
-		opt_bg 					= opt_bg.split("|"),
-		bg_repeat 				= opt_bg[0],
-		bg_pos 					= opt_bg[1],
-		bg_size 				= opt_bg[2];
-
-	/**
-	 * 	Background - (Background Color / Gradient)
-	 * 	
-	 */
-	var slidelightbg = lighterColor( bg_color, .3 );
-	var slide_bg_style ='';
-	
-	//	Append all CSS
-	jQuery('#cp-slidein-bg-css').remove();
-	jQuery('head').append('<div id="cp-slidein-bg-css"></div>');
-	if( typeof slidein_bg_gradient != 'undefined' && slidein_bg_gradient == '1' ) {
-
-		//	store it!
-		jQuery('#smile_slidein_bg_gradient_lighten', window.parent.document ).val( slidelightbg );
-		
-		slide_bg_style +=  '.cp-slidein-body-overlay {'
-					+ '     background: -webkit-linear-gradient(' + slidelightbg + ', ' + bg_color + ');'
-					+ '     background: -o-linear-gradient(' + slidelightbg + ', ' + bg_color + ');'
-					+ '     background: -moz-linear-gradient(' + slidelightbg + ', ' + bg_color + ');'
-					+ '     background: linear-gradient(' + slidelightbg + ', ' + bg_color + ');'
-					+ '}';
-	} else {
-		slide_bg_style +=  '.cp-slidein-body-overlay {'
-					+ '     background: ' + bg_color
-					+ '}';
-	}
-		
-	//	Append ALL CSS
-	
-	jQuery('#cp-slidein-bg-css').html('<style>' + slide_bg_style + '</style>');
-
-	if( slidein_bg_image !== "" ) {
-		var img_data = {action:'cp_get_image',img_id:slidein_bg_image,size:slidein_bg_image_size};
-		jQuery.ajax({
-			url: smile_ajax.url,
-			data: img_data,
-			type: "POST",
-			success: function(img){
-				jQuery(document).trigger("cp_ajax_loaded",[data]);
-				
-				cp_slidein_content.css({
-					"background-color" : "",
-					"bacround-image" : ""
-				});	
-				cp_slidein_body.css({
-					"background-image"    : 'url('+img+')',
-					"background-repeat"   : bg_repeat,
-					"background-position" : bg_pos,
-					"background-size"     : bg_size
-				});
-				
-			}
-		});
-	} else {
-		cp_slidein_body.css("background-image",'');
-		cp_md_overlay.css("background-color",bg_color);		
-	}
-}
 
 //decode html char
 function escapeHtml(text) {
@@ -956,20 +676,20 @@ function escapeHtml(text) {
     return decoded;
 }
 
-//trigger after ajax sucess 
+//trigger after ajax sucess
 jQuery(document).on("cp_ajax_loaded", function(e,data){
 	// do your stuff here.
 	cp_tooltip_reinitialize(data);
 });
 
 
-// This function set slidein width 
+// This function set slidein width
 function cp_slidein_width_settings(data) {
 
 	var cp_slidein        = jQuery(".cp-slidein"),
 		cp_slidein_width	= data.cp_slidein_width,
 		cp_slidein_body	= jQuery(".cp-slidein-body");
-	
+
 	cp_slidein.css({'max-width':cp_slidein_width+'px'});
 	cp_slidein_body.css( 'max-width', '' );
 	jQuery(".cp_fs_overlay").css({"display":"none"});
@@ -980,28 +700,52 @@ function cp_slidein_width_settings(data) {
 /**
  * Adds blinking cursor
  * @param container  ( HTML container class for cursor)
- * @param bgcolor ( background color for cursor ) 
+ * @param bgcolor ( background color for cursor )
  */
 function cp_blinking_cursor(container,bgcolor) {
-	setTimeout(function() {	
-		if( jQuery(container).find('.blinking-cursor').length == 0 ) { 		
+	setTimeout(function() {
+		if( jQuery(container).find('.blinking-cursor').length == 0 ) {
 			var font_size = parseInt(jQuery(container).data('font-size')) + 2;
 			var fontArray = Array();
 			if( jQuery(container+' span.cp_font').length ) {
 
 				jQuery(container + " span.cp_font").each(function(){
 					fontArray.push( parseInt( jQuery(this).data('font-size') ) );
-				});	
+				});
 
 				var maxFontSize = Math.max.apply(Math,fontArray);
 				font_size = maxFontSize + 2;
-			}	
+			}
 
 			jQuery(container).append('<i style="background-color:'+bgcolor+';font-size: '+font_size+'px !important;" class="blinking-cursor">|</i>');
 		}
 	}, 500);
 }
 
+
+/**
+ * Trigger ColorPicker Change
+ */
+parent.jQuery(window.parent.document).on('smile-colorpicker-change', function( e, el, val) {
+
+	if(jQuery(el).hasClass('slidein_bg_color')){
+		smile_global_data.slidein_bg_color = val;
+		apply_gradient_color( smile_global_data );
+	}
+
+	//close image settings
+	if( jQuery(el).hasClass('close_text_color') ) {
+		smile_global_data.close_text_color = val;
+		cp_info_bar_close_img_settings(smile_global_data);
+	}
+
+	//close image settings
+	if( jQuery(el).hasClass('slide_button_bg_color') ) {
+		smile_global_data.slide_button_bg_color = val;
+		slide_button_setting(smile_global_data);
+	}
+
+});
 
 function slide_button_setting(data){
 
@@ -1013,7 +757,7 @@ function slide_button_setting(data){
 	    slidein_btn_position 			= data.slidein_btn_position,
 	    slidein_position 				= data.slidein_position,
 	    slide_button_title 				= data.slide_button_title,
-	    side_button_bg_color 			= data.side_button_bg_color,
+	    slide_button_bg_color 			= data.slide_button_bg_color,
 	    side_button_txt_hover_color   	= data.side_button_txt_hover_color,
 	    side_button_bg_hover_color	  	= data.side_button_bg_hover_color,
 	    side_button_bg_gradient_color 	= data.side_button_bg_gradient_color,
@@ -1025,41 +769,11 @@ function slide_button_setting(data){
 	    cp_animate_container 			= jQuery(".cp-animate-container"),
 	    slidein_overlay 				= jQuery(".slidein-overlay"),
 	    cp_slide_edit_btn				= jQuery(".cp-slide-edit-btn"),
-	    cp_toggle_container 			=jQuery(".cp-toggle-container"),
+	    cp_toggle_container 			= jQuery(".cp-toggle-container"),
 	    slide_button_text_color 		= data.slide_button_text_color,
-	    side_btn_gradient 				= data.side_btn_gradient,
+	    slide_btn_gradient 				= data.slide_btn_gradient,
 	    toggle_btn						= data.toggle_btn,
-	    toggle_btn_visible  			= data.toggle_btn_visible,
-
-	    //	Toggle Button
-		toggle_button_font 				= data.toggle_button_font;
-
-
-	/**
-	 * 	Toggle Button
-	 */
-	var font = 'sans-serif';
-	if( toggle_button_font ) {
-		font =  toggle_button_font + ',' + font;
-	}
-
-	var font_style ='';
-	font_style = '     font-family: ' + font + ';';
-				
-
-    var name = 'cp-unsaved-changes';
-  	var is_cookie = '';
-  	var nameEQ = name + '=';
-  	var ca = document.cookie.split(';');
-  	for ( var i = 0; i < ca.length; i++ ) {
-		var c = ca[i];
-		while ( c.charAt(0) == ' ' ) {
-			c = c.substring(1, c.length);
-		}
-		if ( c.indexOf(nameEQ) == 0 ) {
-			is_cookie =  c.substring(nameEQ.length, c.length);
-		}
-  	}
+	    toggle_btn_visible  			= data.toggle_btn_visible;
 
   	//	Disable the toggle button
   	if( close_slidein === 'do_not_close' ) {
@@ -1070,66 +784,39 @@ function slide_button_setting(data){
 		slidein_overlay.removeClass('cp-slide-without-toggle');
 	} else {
 	    slidein_overlay.addClass('cp-slide-without-toggle');
-	    slidein_overlay.removeClass('cp-slidein-click'); 
+	    slidein_overlay.removeClass('cp-slidein-click');
 	}
-	
-	if(!cp_animate_container.hasClass('cp-hide-slide')){
+
+	if( !cp_animate_container.hasClass('cp-hide-slide') ) {
 		hide_button_class ='cp-slide-hide-btn';
 	}
-	
-	if( slidein_position == 'center-right' ){ 
-	   button_animation = 'smile-slideInUp'; 
+
+	if( slidein_position == 'center-right' ){
+	   button_animation = 'smile-slideInUp';
 	}
- 
+
 	if( slidein_position == 'center-left' ){
 		button_animation = 'smile-slideInDown';
 	}
- 	
-	if( slidein_position == 'top-left' || slidein_position == 'top-center' || slidein_position == 'top-right' ){
+
+	if( slidein_position == 'top-left' || slidein_position == 'top-center' || slidein_position == 'top-right' ) {
 		button_animation = 'smile-slideInDown';
 	}
 
-	if( slidein_position == 'bottom-left' || slidein_position == 'bottom-center' || slidein_position == 'bottom-right' ){
+	if( slidein_position == 'bottom-left' || slidein_position == 'bottom-center' || slidein_position == 'bottom-right' ) {
 		button_animation = 'smile-slideInUp';
 	}
 
 	jQuery('#smile_button_animation', window.parent.document).val( button_animation );
-	
+
 	// button animation
 	cp_slide_edit_btn.removeAttr('class');
 	cp_slide_edit_btn.attr('class','cp-slide-edit-btn smile-animated '+button_animation +' ');
 	cp_toggle_container.addClass(hide_button_class);
 
-	if( toggle_btn == 1 && toggle_btn_visible == 1 ) {
-		if( !jQuery(".slidein-overlay").hasClass('cp-slide-without-toggle') ) {
-		var cp_toggle_container    = jQuery(".cp-toggle-container"),
-			exitanimation 		 = jQuery(".cp-animate-container").data("exit-animation"),
-			cp_animate_container = jQuery(".cp-animate-container");
-	 
-		cp_animate_container.attr('class', 'cp-animate-container');                                      
-        cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+exitanimation);
-        cp_animate_container.addClass("cp-hide-slide");
-		cp_toggle_container.removeClass("cp-slide-hide-btn");
-		cp_animate_container.removeClass('exitanimation');
-		} else {
-			e.stopPropagation();
-		}
-	} else {
-		if( !jQuery(".cp-toggle-container").hasClass('cp-slide-hide-btn') ) {
-		jQuery(".cp-toggle-container").addClass("cp-slide-hide-btn");
-		parent.setFocusElement('slide_button_title'); 
-		var	cp_animate_container = jQuery(".cp-animate-container"),
-			entryanimation       = cp_animate_container.data("entry-animation");
+	//slide_toggle_button( smile_global_data );
 
-			cp_animate_container.attr('class', 'cp-animate-container cp-hide-slide smile-animated');
-		
-			setTimeout(function() {	
-			 cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+entryanimation);	
-			}, 10);
-		}
-	}
-
-	if( side_btn_gradient == 1 ) {
+	if( slide_btn_gradient == 1 ) {
     	side_btn_style = 'cp-btn-gradient';
     } else {
     	side_btn_style = 'cp-btn-flat';
@@ -1143,49 +830,46 @@ function slide_button_setting(data){
 	jQuery.each(slideclassList, function(i, v){
        cp_slide_edit_btn.removeClass(v);
     });
-  
-    cp_slide_edit_btn.addClass(side_btn_style);	
 
-	// button position
-	var positionclassList = ['slidein-top-left','slidein-top-center','slidein-top-right','slidein-bottom-left','slidein-bottom-center','slidein-bottom-right','slidein-center-left','slidein-center-right'];
-	jQuery.each(positionclassList, function(i, v){		
-       cp_toggle_container.removeClass(v);
-    });
-	cp_toggle_container.addClass( 'slidein-'+slidein_position );
 
-	var c_normal 	= side_button_bg_color;
-	var c_hover  	= darkerColor( side_button_bg_color, .05 );
-	var light 		= lighterColor( side_button_bg_color, .3 );
+    cp_slide_edit_btn.addClass(side_btn_style);
 
-	cp_slide_edit_btn.css('background', c_normal);
-	cp_slide_edit_btn.css('color', slide_button_text_color);
+	change_slidein_btn_position( data );
+
+	if( typeof slide_button_bg_color !== 'undefined' ) {
+		var c_normal 	= slide_button_bg_color;
+		var c_hover  	= darkerColor( slide_button_bg_color, .05 );
+		var light 		= lighterColor( slide_button_bg_color, .3 );
+
+		cp_slide_edit_btn.css('background', c_normal);
+	}
 
 	//	Apply box shadow to submit button - If its set & equals to - 1
 	var shadow = radius = '';
-	if( side_btn_shadow == 1 ) {		
+	if( side_btn_shadow == 1 ) {
 		shadow += 'box-shadow: 1px 1px 2px 0px rgba(66, 66, 66, 0.6);';
 	}
 	//	Add - border-radius
 	if( side_btn_border_radius != '' ) {
 		radius += 'border-radius: ' + side_btn_border_radius + 'px;';
-	}	
+	}
 
 	jQuery("#cp-slide-button-inline-css").remove();
 
 	jQuery('head').append('<div id="cp-slide-button-inline-css"></div>');
-	
+
 	switch( side_btn_style ) {
 		case 'cp-btn-flat': 		jQuery('#cp-slide-button-inline-css').html('<style>'
-										+ '.slidein-overlay .cp-slide-edit-btn.' + side_btn_style + '{ background: '+c_normal+'!important;' + shadow + radius + font_style +'; } '
+										+ '.slidein-overlay .cp-slide-edit-btn.' + side_btn_style + '{ background: '+c_normal+'!important;' + shadow + radius  +'; } '
 										+ '.cp-slidein .cp-slide-edit-btn.' + side_btn_style + ':hover { background: '+c_hover+'!important; } '
 										+ '</style>');
-			break;		
-		
+			break;
+
 		case 'cp-btn-gradient': 	//	Apply box shadow to submit button - If its set & equals to - 1
 									jQuery('#cp-slide-button-inline-css').html('<style>'
 										+ '.slidein-overlay .cp-slide-edit-btn.' + side_btn_style + ' {'
 										+ '     border: none ;'
-										+ 		shadow + radius + font_style
+										+ 		shadow + radius
 										+ '     background: -webkit-linear-gradient(' + light + ', ' + c_normal + ') !important;'
 										+ '     background: -o-linear-gradient(' + light + ', ' + c_normal + ') !important;'
 										+ '     background: -moz-linear-gradient(' + light + ', ' + c_normal + ') !important;'
@@ -1205,8 +889,389 @@ function slide_button_setting(data){
 
 }
 
-// Add class to body for Slide In position 
+
+function change_slidein_btn_position( data ) {
+
+	var cp_toggle_container = jQuery(".cp-toggle-container"),
+		slidein_position    = data.slidein_position;
+	// button position
+	var positionclassList = ['slidein-top-left','slidein-top-center','slidein-top-right','slidein-bottom-left','slidein-bottom-center','slidein-bottom-right','slidein-center-left','slidein-center-right'];
+	jQuery.each(positionclassList, function(i, v){
+       cp_toggle_container.removeClass(v);
+    });
+	cp_toggle_container.addClass( 'slidein-'+slidein_position );
+}
+
+// Add class to body for Slide In position
 function cp_add_class_for_body(bodyclass) {
 	jQuery("body").removeClass('cp-slidein-top-center cp-slidein-bottom-center cp-slidein-center-left cp-slidein-center-right cp-slidein-top-left cp-slidein-bottom-right cp-slidein-bottom-left cp-slidein-top-right');
 	jQuery('body').addClass('cp-slidein-'+bodyclass);
+}
+
+/**
+ * trigger after Ajax success
+ */
+jQuery(document).on("cp_ajax_loaded", function(e,data){
+	// do your stuff here.
+	cp_tooltip_reinitialize(data);
+});
+
+/**
+ * trigger smile_data_received
+ */
+jQuery(document).on('smile_customizer_field_change',function(e, single_data){
+
+	console.log('single data ' + single_data);
+	//	Update box shadow
+	var shadow = single_data.shadow_type || null;
+	if( "shadow_type" in single_data ) {
+		var 	v_horizontal 	= jQuery('#horizontal-length', window.parent.document ).val() || '',
+			v_vertical 	= jQuery('#vertical-length', window.parent.document ).val() || '',
+			v_blur 		= jQuery('#blur-radius', window.parent.document ).val() || '',
+			v_spread 		= jQuery('#spread-field', window.parent.document ).val() || '',
+			v_shadowColor 	= jQuery('#shadow-color', window.parent.document ).val() || '';
+
+		var new_box_shadow  = 'type:'+shadow+'|';
+			new_box_shadow += 'horizontal:'+v_horizontal+'|';
+			new_box_shadow += 'vertical:'+v_vertical+'|';
+			new_box_shadow += 'blur:'+v_blur+'|';
+			new_box_shadow += 'spread:'+v_spread+'|';
+			new_box_shadow += 'color:'+v_shadowColor;
+
+		//	Update box shadow
+		smile_global_data.box_shadow = new_box_shadow;
+		apply_shadow( smile_global_data );
+	}
+
+	//	toggle - modal padding
+	var content_padding = single_data.content_padding || null;
+	if("content_padding" in single_data) {
+		single__toggle_class('.cp-slidein-body', 'no-padding', content_padding, 1);
+	}
+
+	if( "slidein_position" in single_data) {
+		jQuery(".cp-slidein").removeClass('slidein-top-center slidein-bottom-center slidein-center-left slidein-center-right slidein-top-left slidein-bottom-right slidein-bottom-left slidein-top-right').addClass('slidein-'+ single_data.slidein_position);
+		change_slidein_btn_position( smile_global_data );
+	}
+
+	// gradient background
+	if( 'slidein_bg_gradient' in single_data ) {
+		apply_gradient_color( smile_global_data );
+	}
+
+	/**
+	 * Slide in Background Image
+	 */
+	//	AJAX update image size - full / thumbnail / medium etc.
+	if( 'slide_in_bg_image_size' in single_data ) {
+		cp_update_ajax_bg_image_size( smile_global_data, '.cp-slidein-body', "", "slide_in_bg_image", "opt_bg" );
+	}
+
+	if( 'slide_in_bg_image_src' in single_data || 'slide_in_bg_image_custom_url' in single_data ) {
+		// slide in background image
+		cp_update_bg_image( smile_global_data, ".cp-slidein-body", "", 'slide_in_bg_image', 'slide_in_bg_image_src' );
+	}
+
+	//	Background Image - 	repeat
+	var opt_bg_rpt = single_data.opt_bg_rpt || null;
+	if( 'opt_bg_rpt' in single_data ) {
+		add_css( '.cp-slidein-body', "background-repeat", opt_bg_rpt );
+	}
+
+	//	Background Image - 	position
+	var opt_bg_pos = single_data.opt_bg_pos || null;
+	if( 'opt_bg_pos' in single_data ) {
+		add_css( '.cp-slidein-body', "background-position", opt_bg_pos );
+	}
+
+	//	Background Image - 	size
+	var opt_bg_size = single_data.opt_bg_size || null;
+	if( 'opt_bg_size' in single_data ) {
+		add_css( '.cp-slidein-body', "background-size", opt_bg_size );
+	}
+
+	//enable border
+	if( 'slidein_bg_gradient' in single_data ){
+		//gradiant_background(smile_global_data, ".cp-slidein-body-overlay", "slidein_bg_color", "slidein_bg_gradient" );
+	}
+
+	toggle_button_text( smile_global_data );
+	if( "side_button_bg_color" in single_data || "side_button_bg_color" in single_data || "slide_btn_gradient" in single_data ) {
+		slide_button_setting( smile_global_data );
+	}
+
+	if( 'toggle_btn' in single_data ) {
+		slide_toggle_button( smile_global_data );
+	}
+
+	//	Animations
+	if( 'overlay_effect' in single_data || 'exit_animation' in single_data ) {
+		cp_apply_animations( smile_global_data );
+	}
+
+	if( 'slide_button_title' in single_data ) {
+		toggle_button_text( smile_global_data );
+	}
+
+});
+
+jQuery(document).on('smile_data_received',function(e,data){
+	global_initial_call( data );
+	//hide_sidebar();
+});
+
+jQuery(document).on('smile_data_continue_received', function(e,data) {
+	cp_tooltip_settings( data );
+	cp_tooltip_reinitialize( data );
+	cp_add_custom_css( data );
+});
+
+
+function global_initial_call( data ) {
+
+	var style = data.style || null;
+	var cp_slidein	= jQuery(".cp-slidein");
+
+	var slidein_position = data.slidein_position;
+
+	// Add Slide In position class to body
+	cp_add_class_for_body(slidein_position);
+
+	// add custom css
+	cp_add_custom_css(data);
+
+	cp_apply_animations(data);
+
+	cp_tooltip_settings(data); // close button and tool tip related settings
+	cp_tooltip_reinitialize(data); // reinitialize tool tip on slide in resize
+
+	// Shadow
+	if( typeof smile_global_data.box_shadow !=='undefined' ){
+		apply_shadow(data);
+	}
+
+	// border
+	if( typeof smile_global_data.border !=='undefined' ){
+		border_settings(data);
+	}
+
+	// set Slide In width
+	cp_slidein_width_settings(data);
+
+	cp_slidein.removeClass('slidein-top-center slidein-bottom-center slidein-center-left slidein-center-right slidein-top-left slidein-bottom-right slidein-bottom-left slidein-top-right').addClass('slidein-'+slidein_position);
+
+	// slide in background image
+	cp_update_bg_image(data, ".cp-slidein-body", "", 'slide_in_bg_image', 'slide_in_bg_image_src' );
+
+	if( typeof data.slidein_bg_color !='undefined' ){
+		apply_gradient_color( data );
+	}
+
+	// Slide In button settings
+	if( typeof data.slide_button_title !== 'undefined' ) {
+		toggle_button_text( data );
+		slide_button_setting(data);
+	}
+
+	jQuery(".cp-name-form").removeClass('cp_big_name');
+
+	//	'cp_empty_classes' is a classes array defined in another file
+	//	Add Cp-empty Class To Empty Containers
+	jQuery.each( cp_empty_classes, function( key, value) {
+		if( jQuery(value).length !== 0 ) {
+			cp_add_empty_class(key,value);
+		}
+	});
+
+	//	toggle - modal padding
+	if( style =='floating_social_bar' ){
+		smile_global_data.content_padding = 1;
+	}
+	var content_padding = data.content_padding || null;
+	single__toggle_class('.cp-slidein-body', 'no-padding', content_padding, 1);
+}
+
+function apply_shadow( data ) {
+
+	// style dependent variables
+	var box_shadow_str 		= data.box_shadow;
+
+	jQuery("#cp-box-shadow-style").remove();
+
+	if( box_shadow_str.indexOf("inset") > -1 ) {
+
+		// UPDATE - [data-css-selector] to set the box shadow target
+		jQuery('.smile-input[name="box_shadow"]', window.parent.document ).attr('data-css-selector', '.cp-slidein-body-overlay' );
+
+		generate_and_apply_box_shadow_css( '.cp-slidein-body-overlay', box_shadow_str );
+
+	} else {
+
+		generate_and_apply_box_shadow_css( '.cp-slidein-content', box_shadow_str );
+
+		// UPDATE - [data-css-selector] to set the box shadow target
+		jQuery('.smile-input[name="box_shadow"]', window.parent.document ).attr('data-css-selector', '.cp-slidein-content' );
+	}
+
+}
+
+
+/**
+ *Enable Border
+ */
+ function border_settings(data) {
+
+ 	var style 				= data.style,
+		border_str 			= data.border,
+		cp_slidein_content	= jQuery(".cp-slidein-content");
+		smile_global_data   = get_customizer_form_data();
+
+	var border = generateBorderCss(border_str);
+
+	jQuery("#cp-border-style").remove();
+
+	var border_style = '.cp-slidein-content {'
+			+ border +  '}';
+
+	jQuery("head").append('<style id="cp-border-style">'+border_style+'</style>');
+ }
+
+
+/**
+ * Change - Modal Image
+ */
+parent.jQuery(window.parent.document).on('cp-image-change', function( e, name, url, val) {
+
+	//	Modal - Background Image
+	// Process for modal background image - for variable 'modal_bg_image'
+	if( name == 'slide_in_bg_image' && name != 'undefined' && name != null ) {
+		cp_change_bg_img( smile_global_data, '.cp-slidein-body' , '' , name, 'opt_bg', url, val );
+	}
+
+});
+
+
+//	Set Background Image - Position, Repeat & Size
+function image_positions( data ) {
+	var cp_slidein_body	 	= jQuery(".cp-slidein-body"),
+		slidein_size 		= data.slidein_size,
+		opt_bg			 	= data.opt_bg,
+		opt_bg 			 	= opt_bg.split("|"),
+		bg_repeat 		 	= opt_bg[0],
+		bg_pos 			 	= opt_bg[1],
+		bg_size 		 	= opt_bg[2];
+
+	cp_slidein_body.css({ "background-position" :  bg_pos, "background-repeat" : bg_repeat, "background-size" : bg_size });
+
+}
+
+function add_css( selector, property, value ) {
+	jQuery(selector).css(property,value);
+}
+
+
+function single__toggle_class(selector, toggle_class, value, required){
+	if( typeof value !== "undefined" && value == "" || value == required ){
+		jQuery( selector ).addClass( toggle_class );
+	} else {
+		jQuery( selector ).removeClass( toggle_class );
+	}
+}
+
+function apply_gradient_color( data ) {
+
+	var bg_color 			= data.slidein_bg_color,
+		slidein_bg_gradient = data.slidein_bg_gradient,
+		slidelightbg 		= lighterColor( bg_color, .3 ),
+		bg_color			= data.slidein_bg_color,
+		slide_bg_style 		= '';
+
+	if( typeof slidein_bg_gradient != 'undefined' && slidein_bg_gradient == '1' ) {
+
+		//	store it!
+		jQuery('#smile_slidein_bg_gradient_lighten', window.parent.document ).val( slidelightbg );
+
+		slide_bg_style +=  '.cp-slidein-body-overlay {'
+					+ '     background: -webkit-linear-gradient(' + slidelightbg + ', ' + bg_color + ');'
+					+ '     background: -o-linear-gradient(' + slidelightbg + ', ' + bg_color + ');'
+					+ '     background: -moz-linear-gradient(' + slidelightbg + ', ' + bg_color + ');'
+					+ '     background: linear-gradient(' + slidelightbg + ', ' + bg_color + ');'
+					+ '}';
+	} else {
+		slide_bg_style +=  '.cp-slidein-body-overlay {'
+					+ '     background: ' + bg_color
+					+ '}';
+	}
+
+	jQuery("#cp-slidein-bg-css").remove();
+
+	jQuery('<style id="cp-slidein-bg-css">' + slide_bg_style + '</style>').insertAfter( "#cp-preview-css" );
+}
+
+
+/**
+ * Remove - Slide in Background image
+ *
+ * Also, Replaced [data-css-image-url] with empty. [Which is used to updated image URL without AJAX.]
+ */
+parent.jQuery(window.parent.document).on('cp-image-remove', function( e, name, url) {
+
+	jQuery(".cp-slidein-body").css({ 	"background-image" 	: "" });
+
+	//	REMOVE - [data-css-image-url] to get updated image for FULLWIDTH
+	jQuery('.smile-input[name='+name+']', window.parent.document ).attr('data-css-image-url', '' );
+
+});
+
+
+function slide_toggle_button( data ) {
+
+	var cp_animate_container 			= jQuery(".cp-animate-container"),
+	    cp_toggle_container 			=jQuery(".cp-toggle-container"),
+	    toggle_btn						= data.toggle_btn,
+	    toggle_btn_visible  			= data.toggle_btn_visible;
+
+	if( toggle_btn == 1 && toggle_btn_visible == 1 ) {
+
+		if( !jQuery(".slidein-overlay").hasClass('cp-slide-without-toggle') ) {
+
+			var cp_toggle_container    = jQuery(".cp-toggle-container"),
+				exitanimation 		   = jQuery(".cp-animate-container").data("exit-animation"),
+				cp_animate_container   = jQuery(".cp-animate-container");
+
+			cp_animate_container.attr('class', 'cp-animate-container');
+	        cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+exitanimation);
+	        cp_animate_container.addClass("cp-hide-slide");
+			cp_toggle_container.removeClass("cp-slide-hide-btn");
+			cp_animate_container.removeClass('exitanimation');
+
+		} else {
+			e.stopPropagation();
+		}
+	} else {
+
+		if( !jQuery(".cp-toggle-container").hasClass('cp-slide-hide-btn') ) {
+			jQuery(".cp-toggle-container").addClass("cp-slide-hide-btn");
+			parent.setFocusElement('slide_button_title');
+			var	cp_animate_container = jQuery(".cp-animate-container"),
+				entryanimation       = cp_animate_container.data("entry-animation");
+			cp_animate_container.attr('class', 'cp-animate-container cp-hide-slide smile-animated');
+
+			setTimeout(function() {
+			 cp_animate_container.attr('class' , 'cp-animate-container smile-animated '+entryanimation);
+			}, 10);
+		}
+	}
+}
+
+
+/**
+ * toggle_button_text
+ */
+function toggle_button_text(data){
+
+	var slide_button_title 	= data.slide_button_title,
+		cp_ifb_toggle_btn 	= jQuery(".cp-slide-edit-btn");
+
+   	 cp_ifb_toggle_btn.html(slide_button_title);
 }

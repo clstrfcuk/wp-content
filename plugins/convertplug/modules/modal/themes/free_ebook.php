@@ -18,8 +18,8 @@ if( !function_exists( "modal_theme_free_ebook" ) ) {
 		foreach( $style_settings as $key => $setting ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);;
 		}
-		
-		unset($style_settings['style_id']); 
+
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -28,8 +28,8 @@ if( !function_exists( "modal_theme_free_ebook" ) ) {
 		$individual_vars = array(
 			"uid"       	=> $uid,
 			"uid_class" 	=> $uid_class,
-			"style_class"	=> "cp-free-ebook"	
-		);		
+			"style_class"	=> "cp-free-ebook"
+		);
 
 		/**
 		 * Merge short code variables arrays
@@ -59,13 +59,13 @@ if( !function_exists( "modal_theme_free_ebook" ) ) {
 		 *-----------------------------------------------------------*/
 		//	Variables
 		$imgclass 			= ( $a['image_position'] == 0 ) ? 'cp-right-contain' : '';
-		
+
 		$imageStyle		 	= cp_add_css( 'left', $a['image_horizontal_position'], 'px');
 		$imageStyle		   .= cp_add_css( 'top', $a['image_vertical_position'], 'px');
 		$imageStyle		   .= cp_add_css( 'max-width', $a['image_size'], 'px');
 
 		//	Filters & Actions
-		$modal_image 			= apply_filters( 'cp_get_modal_image_url', $a['modal_image'] );
+		$modal_image 			= apply_filters( 'cp_get_modal_image_url', $a );
 
 		/** = Before filter
 		 *-----------------------------------------------------------*/
@@ -82,8 +82,8 @@ if( !function_exists( "modal_theme_free_ebook" ) ) {
 				</div>
 	           	<div class="cp-short-desc-container <?php if( trim( $a['modal_content'] ) == '' ) { echo 'cp-empty'; } ?>" style = "background:<?php echo esc_attr( $a['modal_desc_bg_color'] );?>" >
                     <div class="cp-short-description cp-desc cp_responsive " ><?php echo do_shortcode( html_entity_decode( stripcslashes( $a['modal_content'] ) ) ); ?></div>
-                </div>                 
-                <div class="cp-form-container">	          		
+                </div>
+                <div class="cp-form-container">
 	          		<?php
 	             		/**
 						 * Embed CP Form

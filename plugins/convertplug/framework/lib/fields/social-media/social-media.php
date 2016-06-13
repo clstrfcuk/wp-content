@@ -48,7 +48,7 @@ function available_icon_types() {
 function available_action_types() {
 	$action_array = array(
 		'Social Sharing',
-		'Profile Link'		
+		'Profile Link'
  	);
 	return $action_array;
 }
@@ -71,8 +71,7 @@ function render_multi_social_media($uniq, $value) {
 	$_value_array = array();
 	if(!empty($value_mix_array)) {
 		foreach ($value_mix_array as $key => $value_mix_string) {
-			//var_dump($value_mix_string);
-			$_array_temp = explode(':', $value_mix_string);
+			$_array_temp = explode(':', $value_mix_string , 2);
 			if(!empty($_array_temp)) {
 				$_name = (isset($_array_temp[0])) ? $_array_temp[0] : '';
 				$_value = (isset($_array_temp[1])) ? $_array_temp[1] : '';
@@ -82,7 +81,6 @@ function render_multi_social_media($uniq, $value) {
 			}
 		}
 	}
-//var_dump($_value_array);
 	$current_input_name_val = (isset($_value_array['input_share'])) ? urldecode( $_value_array['input_share'] ): '';
 	$current_input_label_val = (isset($_value_array['profile_link'])) ? urldecode( $_value_array['profile_link'] ) : '';
 
@@ -90,11 +88,10 @@ function render_multi_social_media($uniq, $value) {
 	$current_network_name_label_val= (isset($_value_array['network_name'])) ?  $_value_array['network_name']  : '';
 
 	$accordion_label = ($current_input_type_val != '') ? $current_input_type_val : '';
-	
+
 	$is_hidden = $is_profile = $is_share = $need_placeholder = false;
 
-	//var_dump($_value_array['order']);
-	
+
 	$order = (isset($_value_array['order'])) ?  $_value_array['order']  : '0';
 
 	$bw_type         		= isset( $_value_array['smile_adv_share_opt'] )  ? $_value_array['smile_adv_share_opt'] : 0 ;
@@ -128,8 +125,8 @@ function render_multi_social_media($uniq, $value) {
 			$output .= '</div>';
 
 			//add network name field
-			$output .= '<div class="social-media-field " >';
-				$output .= '<span class="cp-tooltip-icon has-tip" data-position="right" title="Enter the social network name." style="cursor: help;float: right;"><i class="dashicons dashicons-editor-help"></i></span>';
+			$output .= '<div class="social-media-field cp-net-name" >';
+				$output .= '<span class="cp-tooltip-icon has-tip" data-position="right" title="The network name will display along with icon. It\'s visibility depends on \'Layout\' selection & \'Display Network Names\' setting in \'Advance\' section." style="cursor: help;float: right;"><i class="dashicons dashicons-editor-help"></i></span>';
 				$output .= '<label>'.__('Network Name', 'smile').'</label>';
 				$output .= '<input type="text" class="cp_sm_input" id="cp-network_name-'.$uniq.'" name="network_name" value="'.$current_network_name_label_val.'"/>';
 			$output .= '</div>';
@@ -141,7 +138,6 @@ function render_multi_social_media($uniq, $value) {
 				$output .= '<label>'.__('Select Action', 'smile').'</label>';
 				$output .= '<select class="cp_sm_select_action" name="input_action" id="cp-input_action-'.$uniq.'">';
 					$current_input_action_val = (isset($_value_array['input_action'])) ? $_value_array['input_action'] : '';
-					//var_dump($current_input_action_val);
 					if(!empty($action_types)) :
 						foreach ($action_types as $key => $actiontype) :
 							$str_lower = strtolower(str_replace(' ', '_', $actiontype)) ;
@@ -159,7 +155,7 @@ function render_multi_social_media($uniq, $value) {
 				$output .= '</select>';
 			$output .= '</div>';
 
-			
+
 			$profile_style_for_options = ($is_profile) ? 'style="display:block"' : 'style="display:none"';
 			//profile_link
 			$output .= '<div class="social-media-field " '.$profile_style_for_options.'>';
@@ -171,7 +167,7 @@ function render_multi_social_media($uniq, $value) {
 			//switch for share
 			$output .= '<div class="social-media-field " >';
 			$output .= '<span class="cp-tooltip-icon has-tip" data-position="right" title="Select current page URL or any custom URL to share after click." style="cursor: help;float: right;"><i class="dashicons dashicons-editor-help"></i></span>';
-			$output .= '<label>'.__('Share URL', 'smile').'</label>';				
+			$output .= '<label>'.__('Share URL', 'smile').'</label>';
 			$output .= '<div class="param-advanced-switch">
 			                <div class="switch-wrapper param-switch">
 			                    <input type="text" '.$bw_switch_checked.' id="smile_adv_share_opt-'.$order.'_'.$uniq.'" name="smile_adv_share_opt"  class="form-control smile-input smile-switch-input cp_sm_input"  value="'. $bw_type.'" />
@@ -205,7 +201,6 @@ function render_multi_social_media($uniq, $value) {
 
 function social_media_settings_field($name, $settings, $value)
 {
-	//var_dump($value);
 	$input_share = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
@@ -215,7 +210,6 @@ function social_media_settings_field($name, $settings, $value)
 	$output = '<div class="social-media-wrapper" id="cp-wrapper-'.$uniq.'" data-id="'.$uniq.'">';
 		$output .= '<textarea id="social-media-input-'.$uniq.'" class="content cp-hidden form-control smile-input smile-'.$type.' '.$input_share.' '.$type.' '.$class.'" name="' . $input_share . '" rows="6" cols="6" style="display:block !important">'.$value.'</textarea>';
 		$output .= '<div class="social-media-inner">';
-			//var_dump($value);
 			$boxes = explode(';', $value);
 			if(!empty($boxes)) {
 				foreach ($boxes as $key => $box_value) {

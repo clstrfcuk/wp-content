@@ -6,10 +6,8 @@ module.exports = function(grunt) {
 				files: {
 					'assets/js/info_bar.min.js': [
 						'!assets/js/admin.min.js',
-						'assets/js/idle-timer.min.js',
 						'assets/js/info_bar.js',
 						'assets/js/mailer.js',
-						'../../admin/assets/js/frosty.js',
 					]
 				}
 			}

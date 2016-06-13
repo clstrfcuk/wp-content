@@ -15,7 +15,6 @@ if ( function_exists('smile_add_input_type'))
 function checkbox_settings_field($name, $settings, $value)
 {
 	$input_name = $name;
-	//print_r($settings);
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
 	$options = isset($settings['options']) ? $settings['options'] : '';
@@ -36,9 +35,9 @@ function checkbox_settings_field($name, $settings, $value)
     				<p><label><input type="checkbox" value="'.$val.'" id="smile_'.$input_name.'_'.$n.'" class="smile-'.$type.' smile_' . $input_name . '" '.$checked.'>'.$text_val.'</label></p></div>';
 		$n++;
 	}
-	
+
 	$output .= cpGetCheckboxJS($input_name);
-	
+
 	return $output;
 }
 
@@ -63,6 +62,7 @@ if( !function_exists( "cpGetCheckboxJS" ) ){
 				input.val(val);
 				input.attr("value",val);
 				input.trigger("change");
+				jQuery(document).trigger('smile-checkbox-change',[input , val] );
 			});
 		});
 		</script>

@@ -24,6 +24,22 @@ global $cp_social_vars;
 /*
  * 1.	Social Array Setup
  */
+$option_array ='';
+if( isset($_GET['theme']) && $_GET['theme'] =='floating_social_bar' ){
+	$option_array = array(
+			__( "Normal", "smile" )  => "normal",
+			__( "Border", "smile" )  => "border",
+			__( "Flip", "smile" ) 	 => "flip",
+			__( "Grow", "smile" ) 	 => "grow",
+		);
+}else{
+	$option_array = array(
+			__( "Normal", "smile" )  => "normal",
+			//__( "Border", "smile" )  => "border",
+			//__( "Flip", "smile" ) 	 => "flip",
+			__( "Slide", "smile" ) 	 => "slide",
+		);
+}
 
 $cp_social = array(
 	array(
@@ -170,6 +186,9 @@ $cp_social = array(
 				"max" 			=> 50,
 				"step" 			=> 1,
 				"suffix" 		=> "px",
+				"css_property" 	=> "border-radius",
+				"css_selector" 	=> ".cp_social_networks.cp_social_left li",
+				"css_preview" 	=> true,
 				"description" 	=> __( "Apply border radius to icon container.", "smile" ),
 			),
 			"dependency" => array('name' => 'cp_social_icon_style', 'operator' => '!==', 'value' => 'cp-icon-style-simple'),
@@ -207,6 +226,9 @@ $cp_social = array(
 				"max" 			=> 50,
 				"step" 			=> 1,
 				"suffix" 		=> "px",
+				"css_property" 	=> "border-radius",
+				"css_selector" 	=> ".cp-border_radius .cp_social_icon ,.cp-slidein .cp-icon-style-top.cp-border_radius li",
+				"css_preview" 	=> true,
 				"description" 	=> __( "Apply border radius to actual icon.", "smile" ),
 			),
 			"dependency" => array('name' => 'cp_social_icon_shape', 'operator' => '==', 'value' => 'border_radius'),
@@ -239,10 +261,7 @@ $cp_social = array(
 			"opts" 		=> array(
 				"title" 	=> __( "Icon Hover Effect","smile"),
 				"value" 	=> "Slide",
-				"options" 	=> array(
-						__( "Normal", "smile" ) 		=> "normal",
-						__( "Slide", "smile" ) 	    => "slide",
-					),
+				"options" 	=> $option_array,
 				"description" 	=> __( "Apply slide / normal hover effect to icon.", "smile" ),
 				),
 			"panel" => "Social Networks",
@@ -273,6 +292,9 @@ $cp_social = array(
 			"opts"		=> array(
 				"title" 		=> __( "Icon Color", "smile" ),
 				"value" 		=> "rgb(255, 255, 255)",
+				"css_property" => "color",
+				"css_selector" => ".cp-custom-sc-color i.cp_social_icon , .cp-icon-style-top.cp-normal.cp-custom-sc-color i.cp_social_icon ",
+				"css_preview"  => true,
 			),
 			"dependency" => array('name' => 'cp_social_enable_icon_color', 'operator' => '==', 'value' => 'true'),
 			"panel" => "Social Networks",
@@ -286,6 +308,8 @@ $cp_social = array(
 			"opts"		=> array(
 				"title" 		=> __( "Text Color", "smile" ),
 				"value" 		=> "rgb(255, 255, 255)",
+				//"css_property" => "color",
+				//"css_selector" => ".cp-custom-sc-color i.cp_social_icon",
 			),
 			"dependency" => array('name' => 'cp_social_enable_icon_color', 'operator' => '==', 'value' => 'true'),
 			"panel" => "Social Networks",
@@ -299,6 +323,9 @@ $cp_social = array(
 			"opts"		=> array(
 				"title" 		=> __( "Background Color", "smile" ),
 				"value" 		=> "#107fc9",
+				"css_property" => "background",
+				"css_selector" => ".cp_social_networks.cp-custom-sc-color li ,.cp_social_networks.cp-custom-sc-color.cp_social_simple li .cp_social_icon ,.cp_social_networks.cp-custom-sc-color.cp_social_circle li .cp_social_icon",
+				"css_preview"  => true,
 			),
 			"dependency" => array('name' => 'cp_social_enable_icon_color', 'operator' => '==', 'value' => 'true'),
 			"panel" => "Social Networks",
@@ -312,6 +339,9 @@ $cp_social = array(
 			"opts"		=> array(
 				"title" 		=> __( "Icon Hover Color", "smile" ),
 				"value" 		=> "rgb(255, 255, 255)",
+				"css_property" => "color",
+				"css_selector" => ".cp-custom-sc-color i.cp_social_icon:hover ,.cp-custom-sc-color li:hover i.cp_social_icon",
+				"css_preview"  => true,
 			),
 			"dependency" => array('name' => 'cp_social_enable_icon_color', 'operator' => '==', 'value' => 'true'),
 			"panel" => "Social Networks",
@@ -338,6 +368,9 @@ $cp_social = array(
 			"opts"		=> array(
 				"title" 		=> __( "Background Hover Color", "smile" ),
 				"value" 		=> "#0e72b4",
+				"css_property" => "background",
+				"css_selector" => ".cp_social_networks.cp-custom-sc-color li:hover ,.cp_social_networks.cp-custom-sc-color.cp_social_simple li:hover .cp_social_icon,.cp_social_networks.cp-custom-sc-color.cp_social_circle li:hover .cp_social_icon ",
+				"css_preview"  => true,
 			),
 			"dependency" => array('name' => 'cp_social_enable_icon_color', 'operator' => '==', 'value' => 'true'),
 			"panel" => "Social Networks",
@@ -398,7 +431,7 @@ $cp_social = array(
 				"min" 			=> 0,
 				"max" 			=> 1000,
 				"step" 			=> 1,
-				//"suffix" 		=> "",
+				//"suffix" 		=> "",				
 				"description" 	=> __( "Display minimum share count number until actual count increases.", "smile" ),
 			),
 			"dependency" => array('name' => 'cp_social_share_count', 'operator' => '==', 'value' => 'true'),
@@ -485,6 +518,22 @@ if( !function_exists('cp_get_social_init') ) {
          * Build HTML structure for Social_icon
          */
 
+		 //console.log(cp_social_icon);
+           if($cp_social_icon_style =='' || $cp_social_icon_style =='undefined'){       
+              $cp_social_icon_style = 'cp-icon-style-top';
+           }
+           if($cp_display_nw_name =='' ||  $cp_display_nw_name =='undefined'){
+              $cp_display_nw_name = false;
+           }
+           if($cp_social_icon_column =='' ||  $cp_social_icon_column =='undefined'){
+              $cp_social_icon_column = '1';
+           }
+
+           if($cp_social_icon_effect =='' ||  $cp_social_icon_effect =='undefined'){
+              $cp_social_icon_effect = 'none';
+           }
+
+
 		 //apply no of column to container
         if( $cp_social_icon_column == 'auto' ) {
             $cp_social_icon_column_class = 'autowidth';
@@ -540,12 +589,22 @@ if( !function_exists('cp_get_social_init') ) {
 
         //spacing
 	    if( $cp_social_remove_icon_spacing == 1 ) {
-	       $class_list .= 'cp-no-spacing';
+	       $class_list .= ' cp-no-spacing';
 	    }
 
+	    if( $cp_social_icon_style == 'cp-icon-style-top' ){
+	    	$cp_social_icon_column_class .=' cp-hover-'.$cp_social_icon_hover_effect ;
+	    	if( $cp_social_share_count == 0 ){
+                $cp_social_icon_column_class .=' cp-network-without-count';
+            }
+	    }
+	   
+	    if($cp_social_enable_icon_color == 1 ){
+	    	$class_list .=' cp-custom-color';
+	    }
 
 		$social_html = '';
-        $social_html .= '<div class="cp_social_networks cp_social_'.$cp_social_icon_column_class.' cp_social_left cp_social_withcounts cp_social_withnetworknames '.$cp_social_icon_style .' '.$class_list.' cp-'.$cp_social_icon_shape.' cp_'.$cp_social_icon_effect.' '.$no_count.'">';
+        $social_html .= '<div class="cp_social_networks cp_social_'.$cp_social_icon_column_class.' cp_social_left cp_social_withcounts cp_social_withnetworknames '.$cp_social_icon_style .' '.$class_list.' cp-'.$cp_social_icon_shape.' cp_'.$cp_social_icon_effect.' '.$no_count.'" data-column-no ="cp_social_'.$cp_social_icon_column_class.'">';
 
         $social_html .= ' <ul class="cp_social_icons_container">';
 
@@ -568,12 +627,12 @@ if( !function_exists('cp_get_social_init') ) {
             		if($value['smile_adv_share_opt'] == '1' ){            			
             			$current_page = urldecode( $value['input_share'] );
             		}else{
-            			$current_page = $_SERVER['REQUEST_URI'];
+            			$current_page = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; 
             		}
             	}
 
             	$input_action = strtolower( $value['input_action'] );
-
+            	
 				$url = '';
 				if( $input_action == 'profile_link' ){
 
@@ -631,7 +690,7 @@ if( !function_exists('cp_get_social_init') ) {
 
             	if($input_action == 'profile_link' )
             	{
-					$social_html .= "<a href = ".$url." class='cp_social_share cp_social_display_count'  target='_blank' >";
+            		$social_html .= "<a href = ".$url." class='cp_social_share cp_social_display_count'  target='_blank' >";
             	}else{
             		$social_html .= '<a href="'.$url.'" class="cp_social_share cp_social_display_count" onclick="window.open(this.href,\'mywin\',\'left=20,top=20,width=500,height=500,toolbar=1,resizable=0\');return false">';
 	          	}
@@ -688,7 +747,6 @@ function cp_social_css_init( $a ) {
 		  $cp_social_icon_column 		= $a['cp_social_icon_column'];
 		  $cp_social_icon_style  		= $a['cp_social_icon_style'];
 		  $cp_display_nw_name 	 		= $a['cp_display_nw_name'];
-		  $cp_social_icon_style 		= $a['cp_social_icon_style'];
 		  $cp_social_icon_shape 		= $a['cp_social_icon_shape'];
 		  $cp_social_icon_effect  		= $a['cp_social_icon_effect'];
 		  $cp_social_enable_icon_color  = $a['cp_social_enable_icon_color'];
@@ -705,6 +763,10 @@ function cp_social_css_init( $a ) {
 
 		 $light    = $a['social_lighten'];
          $c_hover  = $a['social_darken'];
+
+         if($cp_social_icon_style =='' || $cp_social_icon_style =='undefined'){       
+              $cp_social_icon_style = 'cp-icon-style-top';
+           }
 
 		   //to use user defined color for icon
         if($cp_social_enable_icon_color == 1){
@@ -752,6 +814,8 @@ function cp_social_css_init( $a ) {
                           .'     padding: 5px;'
                           .' }';
                  }
+             
+
            }
 
            	//if icon style is normal
@@ -770,7 +834,7 @@ function cp_social_css_init( $a ) {
             $social_style .='.'.$styleid.' .cp_social_networks .cp_social_network_label ,'
             				.'.'.$styleid.' .cp_social_networks .cp_social_networkname ,'
             				.'.'.$styleid.' .cp_social_networks .cp_social_count{'
-	                         .'   color:'.$cp_social_text_color.';'
+	                         .'   color:'.$cp_social_text_color.'!important;'
 	                         .' }'
 	                         .'.'.$styleid.' .cp_social_networks li:hover .cp_social_network_label, '
 	                         .'.'.$styleid.' .cp_social_networks li:hover .cp_social_networkname,'
@@ -778,12 +842,22 @@ function cp_social_css_init( $a ) {
 	                         .'   color:'.$cp_social_text_hover_color.'!important;'
 	                         .' }';
 
+	          //set visited color none
+                $social_style .='.'.$styleid.' .cp_social_networks li a:visited, .cp_social_networks li a:visited * {'
+                      .'      color: inherit;'
+                      .' }';
+
          }else{
             if( ($cp_social_icon_effect == '3D' && $cp_social_icon_shape == 'square') && ($cp_social_icon_style == 'cp-icon-style-simple') ){
                    $social_style .='.'.$styleid.' .cp_3D .cp_social_share {'
                           .'     padding: 5px;'
-                          .' }';
+                          .' }';                   
                  }
+            //set visited color none
+                $social_style .='.'.$styleid.' .cp_social_networks li a:visited, .cp_social_networks li a:visited * {'
+                      .'      color: #fff;'
+                      .' }';
+
          }
 
          //if icon shape is custom
@@ -791,10 +865,15 @@ function cp_social_css_init( $a ) {
             $social_style .='.'.$styleid.' .cp_social_networks i.cp_social_icon {'
                           .'     border-radius: '.$social_icon_border.'px;'
                           .' }';
+	        if($cp_social_icon_style =='cp-icon-style-top'){
+	            $social_style .='.'.$styleid.' .cp_social_networks li {'
+                          .'     border-radius: '.$social_icon_border.'px!important;'
+                          .' }';	
+	        }
          }
 
          //if apply border-radius to container
-         if( $cp_social_icon_style !== 'cp-icon-style-simple' && $social_container_border !== '' ){
+         if( $cp_social_icon_style !== 'cp-icon-style-simple' && $cp_social_icon_style !== 'cp-icon-style-top' && $social_container_border !== '' ){
             $social_style .='.'.$styleid.' .cp_social_networks.cp_social_left li {'
                           .'     border-radius: '.$social_container_border.'px;'
                           .' }';

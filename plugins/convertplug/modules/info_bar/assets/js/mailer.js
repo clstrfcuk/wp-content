@@ -56,7 +56,7 @@
                 return false;
             }
         }
-        
+
         return false;
     }
 
@@ -71,7 +71,7 @@
 			cp_form_processing_wrap 	= jQuery(t).parents(".global_info_bar_container").find('.cp-form-processing-wrap'),
 			cp_animate_container    	= jQuery(t).parents(".global_info_bar_container"),
 			cp_tooltip    				= info_bar.find(".cp-tooltip-icon").data('classes'),
-			close_div 					= jQuery(".ib-close");
+			close_div 					= jQuery(t).parents(".global_info_bar_container").find(".ib-close");
 
 
 		var cookieTime 					= info_bar.data('conversion-cookie-time');
@@ -84,7 +84,7 @@
         var submit_status = true;
         form.find('.cp-input').each( function(index) {
             var $this = jQuery(this);
-            
+
             if( ! $this.hasClass('cp-submit-button')) { // Check condition for Submit Button
                 var    input_name = $this.attr('name'),
                     input_value = $this.val();
@@ -98,7 +98,7 @@
 
                 var input_required = $this.attr('required') ? true : false;
 
-                if( input_required ) {    
+                if( input_required ) {
                     if( validate_it( $this, input_value ) ) {
                         submit_status = false;
                         $this.addClass('cp-input-error');
@@ -110,13 +110,13 @@
         });
 
 		//	All form fields Validation
-        var fail = false;
+        var fail = 0;
         var fail_log = '';
         form.find( 'select, textarea, input' ).each(function(i, el ){
             if( jQuery( el ).prop( 'required' )){
 
                 if ( ! jQuery( el ).val() ) {
-                    fail = true;
+                    fail++;
                     jQuery( el ).addClass('cp-error');
                     name = jQuery( el ).attr( 'name' );
                     fail_log += name + " is required \n";
@@ -128,10 +128,10 @@
 
 		    			if( isValidEmailAddress( email ) ) {
 			    			jQuery( el ).removeClass('cp-error');
-			    			fail = false;
+			    			//fail = false;
 			    		} else {
 			    			jQuery( el ).addClass('cp-error');
-			    			fail = true;
+			    			fail++;
 			    			var name = jQuery( el ).attr( 'name' ) || '';
 			    			console.log( name + " is required \n" );
 			    		}
@@ -142,8 +142,8 @@
             }
         });
 
-        //submit if fail never got set to true
-        if ( fail ) {
+        //submit if fail count never got greater than 0
+        if ( fail > 0 ) {
             console.log( fail_log );
         } else {
 
@@ -169,6 +169,7 @@
 
 					var obj = jQuery.parseJSON( result );
 					var cls = '';
+					var msg_string = '';
 					if( typeof obj.status != 'undefined' && obj.status != null ) {
 						cls = obj.status;
 					}
@@ -181,17 +182,29 @@
 						form.find('.cp-email').focus();
 					}
 
+					var detailed_msg = (typeof obj.detailed_msg !== 'undefined' && obj.detailed_msg !== null )  ? obj.detailed_msg : '';
+					//console.log("praju"+detailed_msg);
+					if( detailed_msg !== '' && detailed_msg !== null ) {
+						detailed_msg =  "<h5>Here is More Information:</h5><div class='cp-detailed-message'>"+detailed_msg+"</div>";
+						detailed_msg += "<div class='cp-admin-error-notice'>Read How to Fix This, click <a target='_blank' href='http://docs.sharkz.in/something-went-wrong/'>here</a></div>";
+						detailed_msg += "<div class='cp-go-back'>Go Back</div>";
+						msg_string   += '<div class="cp-only-admin-msg">[Only you can see this message]</div>';
+						//console.log("here");
+					}
+
 					//	show message error/success
 					if(typeof obj.message != 'undefined' && obj.message != null) {
 						info_container.hide().css({visibility: "visible"}).fadeIn(120);
 						close_div.hide().css({visibility:  "visible"}).fadeIn(120);
-						info_container.html( '<div class="cp-m-'+cls+'">'+obj.message+'</div>' );
+						//info_container.html( '<div class="cp-m-'+cls+'">'+obj.message+'</div>'+detailed_msg+'</div>' );
+						msg_string += '<div class="cp-m-'+cls+'"><div class="cp-error-msg">'+obj.message+'</div>'+detailed_msg+'</div>';
+						info_container.html( msg_string );
 						cp_animate_container.addClass('cp-form-submit-'+cls);
 					}
-					
-					
+
+
 					if(typeof obj.action !== 'undefined' && obj.action != null){
-						
+
 						spinner.fadeOut(100, function() {
 						    jQuery(this).show().css({visibility: "hidden"});
 						});
@@ -225,11 +238,11 @@
 							} else {
 
 								cp_form_processing_wrap.show();
-								
-								// if button contains anchor tag then redirect to that url 
+
+								// if button contains anchor tag then redirect to that url
 								if( ( jQuery(t).find('a').length > 0 ) ) {
 									var redirect_src = jQuery(t).find('a').attr('href');
-									var redirect_target = jQuery(t).find('a').attr('target');									
+									var redirect_target = jQuery(t).find('a').attr('target');
 									if(redirect_target == '' || typeof redirect_target == 'undefined'){
 										redirect_target ='_self';
 									}
@@ -296,7 +309,7 @@
 			jQuery(this).removeClass('cp-form-submit-error');
 			cp_msg_on_submit.html('');
 			cp_msg_on_submit.removeAttr("style");
-			
+
 			//show tooltip
 			jQuery('head').append('<style class="cp-tooltip-css">.tip.'+cp_tooltip+'{display:block }</style>');
 

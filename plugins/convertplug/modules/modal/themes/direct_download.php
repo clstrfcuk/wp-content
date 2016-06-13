@@ -20,7 +20,7 @@ if( !function_exists( "modal_theme_direct_download" ) ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);
 		}
 
-		unset($style_settings['style_id']); 	
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -67,7 +67,7 @@ if( !function_exists( "modal_theme_direct_download" ) ) {
 		$imageStyle		   .= cp_add_css( 'max-width', $a['image_size'], 'px');
 
 		//	Filters & Actions
-		$modal_image 			= apply_filters( 'cp_get_modal_image_url', $a['modal_image'] );
+		$modal_image 			= apply_filters( 'cp_get_modal_image_url', $a );
 
 		/** = Before filter
 		 *-----------------------------------------------------------*/
@@ -85,7 +85,7 @@ if( !function_exists( "modal_theme_direct_download" ) ) {
 	           	</div>
 	           	<div class="cp-short-desc-container <?php if( trim( $a['modal_content'] ) == '' ) { echo 'cp-empty'; } ?>">
                     <div class="cp-short-description cp-desc cp_responsive " ><?php echo do_shortcode( html_entity_decode( stripcslashes( $a['modal_content'] ) ) ); ?></div>
-                </div> 
+                </div>
                 <div class="cp-form-container cp-vertical-form-container">
                 	<div class="cp-submit-container">
 						<?php
@@ -101,9 +101,18 @@ if( !function_exists( "modal_theme_direct_download" ) ) {
 	            </div>
 	        </div><!-- .col-lg-7 col-md-7 col-sm-7 col-xs-12 cp-text-container -->
             <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 cp-column-equalized-center">
-              <div class="cp-image-container  ">
-              	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image">
-              </div>
+              <?php
+              if ( !isset($a['modal_img_src']) ) {
+              	$a['modal_img_src'] = 'upload_img';
+              }
+
+              if ( isset($a['modal_img_src']) && $a['modal_img_src'] != 'none' ) {
+              ?>
+	              <div class="cp-image-container  ">
+	              	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image">
+	              </div>
+
+              <?php } ?>
             </div><!-- .col-lg-5 col-md-5 col-sm-5 col-xs-12 -->
 		</div>
 		<!-- AFTER CONTENTS -->

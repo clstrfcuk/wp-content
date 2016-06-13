@@ -76,7 +76,7 @@
             } else {
                 //  Apply default line-height - If it does not contain class - `cp_line_height`
                 s.css({'display':'', 'line-height': lh });
-        
+
                 //  Apply `fit-text` for all CKEditor elements - ( .cp-title,  .cp-description etc. )
                 s.fitText(1.2, {  minFontSize: fs, maxFontSize: fs } );
             }
@@ -89,9 +89,10 @@
         setTimeout(function() {
             CPResponsiveTypoInit();
 
-            //for link color change 
+            //for link color change
             cp_color_for_list_tag();
 
+            cp_column_equilize();
          }, 500 );
 
         // hide image for small devices
@@ -111,7 +112,14 @@
 
         form_sep_position();
 
-        cp_set_width_svg(); 
+        cp_set_width_svg();
+
+        setTimeout(function() {
+            cp_column_equilize();
+
+        }, 300);
+
+        cp_social_responsive();
 
     });
 
@@ -159,7 +167,10 @@
 
         set_affiliate_link();
 
-        cp_set_width_svg(); 
+        cp_set_width_svg();
+
+        cp_social_responsive();
+
     });
 
     jQuery(window).load(function() {
@@ -193,7 +204,7 @@
         jQuery(".cp-overlay").each(function() {
             var vw          = jQuery(window).innerWidth();
             var flag        = jQuery(this).data('image-position');
-            var hidewidth   = jQuery(this).data('hide-img-on-mobile');                          
+            var hidewidth   = jQuery(this).data('hide-img-on-mobile');
             if( hidewidth ) {
                 if( vw <= hidewidth ){
                     jQuery(this).find('.cp-image-container').addClass('cp-hide-image');
@@ -278,8 +289,8 @@ function cp_column_equilize() {
     setTimeout(function() {
         jQuery(".cp-columns-equalized").each(function() {
 
-            // if modal is open then only apply equalize properties 
-            if( jQuery(this).closest('.cp-overlay').hasClass('cp-open') ) {    
+            // if modal is open then only apply equalize properties
+            if( jQuery(this).closest('.cp-overlay').hasClass('cp-open') || jQuery(this).closest('.global_modal_container').hasClass('cp-modal-inline') ) {
                 var wh = jQuery(window).width();
 
                 var childClasses = Array();
@@ -290,10 +301,10 @@ function cp_column_equilize() {
 
                 var count = 0;
                 if(jQuery(this).find('.cp-image-container').length > 0){
-                    jQuery(this).find(".cp-highlight").each(function(index, el) {                   
+                    jQuery(this).find(".cp-highlight").each(function(index, el) {
                         count++;
                     });
-                }                
+                }
 
                 var pad_top = parseInt(jQuery(this).css('padding-top'));
                 var pad_bottom = parseInt(jQuery(this).css('padding-top'));
@@ -301,8 +312,8 @@ function cp_column_equilize() {
                 var tot_padding = pad_top + pad_bottom;
 
                 var maxHeight = Math.max.apply(Math, childClasses) + tot_padding;
-                maxHeight = maxHeight-count;            
-               
+                maxHeight = maxHeight-count;
+
 
                 if( wh > 768 ) {
                     jQuery(this).css( 'height', maxHeight );
@@ -311,7 +322,7 @@ function cp_column_equilize() {
                 }
             }
         });
-    }, 200 );   
+    }, 200 );
 }
 
 /**
@@ -350,7 +361,7 @@ function CPResponsiveTypoInit() {
 /**
   *	This function adjust height for modal
   * Loop for all live modal's
-  * 
+  *
   */
 function CPModelHeight() {
 
@@ -358,7 +369,7 @@ function CPModelHeight() {
 
         //  Loop all live modal's
         jQuery('.cp-modal-popup-container').each(function(index, element) {
-            
+
             var t           = jQuery(element),
                 modal       = t.find('.cp-modal'),
                 overlay     = t.find('.cp-overlay'),
@@ -367,7 +378,7 @@ function CPModelHeight() {
                 ww          = jQuery(window).width();
 
 
-            if ( jQuery(this).find('.cp-overlay').hasClass('cp-open') ) {    
+            if ( jQuery(this).find('.cp-overlay').hasClass('cp-open') ) {
                 if( !jQuery( this ).hasClass( 'cp-inline-modal-container' ) ){
                     if( ( modal_body_height > overlay_height ) ) {
                         modal.addClass('cp-modal-exceed');
@@ -380,8 +391,8 @@ function CPModelHeight() {
                     } else {
                         modal.removeClass('cp-modal-exceed');
                         jQuery('html').removeClass('cp-exceed-vieport');
-                        modal.css('height', '' );                
-                       
+                        modal.css('height', '' );
+
                     }
                 }
             }
@@ -391,12 +402,12 @@ function CPModelHeight() {
         });
     }, 1200);
 
-   
+
 }
 
 // function to reinitialize affiliate
-function set_affiliate_link(data){   
-        jQuery(".cp-overlay").each(function() {           
+function set_affiliate_link(data){
+        jQuery(".cp-overlay").each(function() {
             var modal_size           = jQuery(this).find(".cp-modal").hasClass('cp-modal-window-size'),
                 affiliate_setting    = jQuery(this).data('affiliate_setting');
                 vw                   = jQuery(window).width(),
@@ -406,40 +417,40 @@ function set_affiliate_link(data){
 
                if(jQuery(this).hasClass('ps-container')){
                  var affiliate_setting = data;
-               }  
+               }
 
            if( affiliate_setting == '1' ){
-                if( !modal_size ){                  
+                if( !modal_size ){
                     if( vw <= 768 ){
                         cp_affilate_link.appendTo(cp_animate_container);
-                        cp_affilate_link.addClass('cp-afl-for-smallscreen');                
-                    } else {
-                        cp_affilate_link.removeClass('cp-afl-for-smallscreen')  
-                        cp_affilate_link.appendTo(cp_overlay);              
-                    }
-                } else {                      
-                    if( vw <= 768 ){                                               
                         cp_affilate_link.addClass('cp-afl-for-smallscreen');
-                        cp_affilate_link.appendTo(cp_animate_container); 
-                        var ht = jQuery(this).find(".cp-modal-content").outerHeight() - 40; 
+                    } else {
+                        cp_affilate_link.removeClass('cp-afl-for-smallscreen')
+                        cp_affilate_link.appendTo(cp_overlay);
+                    }
+                } else {
+                    if( vw <= 768 ){
+                        cp_affilate_link.addClass('cp-afl-for-smallscreen');
+                        cp_affilate_link.appendTo(cp_animate_container);
+                        var ht = jQuery(this).find(".cp-modal-content").outerHeight() - 40;
                     } else {
                         cp_affilate_link.removeClass('cp-afl-for-smallscreen');
-                        cp_affilate_link.appendTo(cp_overlay);  
-                        cp_affilate_link.css( 'top', '' );  
-                    }                                 
+                        cp_affilate_link.appendTo(cp_overlay);
+                        cp_affilate_link.css( 'top', '' );
+                    }
                 }
             }
         });
     }
 
 // function to change color for list type according to span color
-function cp_color_for_list_tag(){   
+function cp_color_for_list_tag(){
 
     jQuery(".cp-overlay").each(function() {
             var ov                  = jQuery(this),
-                is_responsive_cls   = jQuery(this).parents(".cp_responsive").length;        
+                is_responsive_cls   = jQuery(this).parents(".cp_responsive").length;
 
-        jQuery(this).find("li").each(function() { 
+        jQuery(this).find("li").each(function() {
             if(jQuery(this).parents(".cp_social_networks").length == 0){
             var moadal_style = jQuery( ov ).find(".cp-modal-body").attr('class').split(' ')[1];
 
@@ -448,11 +459,11 @@ function cp_color_for_list_tag(){
             if( parent_li !== null && typeof parent_li !== 'undefined' ) {
                 parent_li   = jQuery(this).parents(".cp_responsive").attr('class').split(' ')[0];
             } else {
-                parent_li   = jQuery(this).parents("div").attr('class').split(' ')[0];  
+                parent_li   = jQuery(this).parents("div").attr('class').split(' ')[0];
             }
 
-            var  cnt    = jQuery(this).index() + 1,  
-                font_size   = jQuery(this).find(".cp_font").css("font-size"),                           
+            var  cnt    = jQuery(this).index() + 1,
+                font_size   = jQuery(this).find(".cp_font").css("font-size"),
                 color       = jQuery(this).find("span").css("color"),
                 list_type   = jQuery(this).parent(),
                 list_type   = list_type[0].nodeName.toLowerCase(),
@@ -462,40 +473,49 @@ function cp_color_for_list_tag(){
             if( list_type == 'ul' ){
                 style_type = jQuery(this).closest('ul').css('list-style-type');
                 if( style_type == 'none' ){
-                    jQuery(this).closest('ul').css( 'list-style-type', 'disc' );  
+                    jQuery(this).closest('ul').css( 'list-style-type', 'disc' );
                 }
             } else {
                 style_type = jQuery(this).closest('ol').css('list-style-type');
                 if( style_type == 'none' ){
-                    jQuery(this).closest('ol').css( 'list-style-type', 'decimal' );  
+                    jQuery(this).closest('ol').css( 'list-style-type', 'decimal' );
                 }
             }
-               
+
             jQuery(this).find("span").each(function(){
                  var spancolor = jQuery(this).css("color");
                  if(spancolor.length > 0){
                         color = spancolor;
                  }
             });
-                
-            var font_style =''; 
+
+            var font_style ='';
             jQuery(".cp-li-color-css-"+cnt).remove();
             jQuery(".cp-li-font-css-"+cnt).remove();
             if( font_size ){
                font_style = 'font-size:'+font_size;
                jQuery('head').append('<style class="cp-li-font-css'+cnt+'">.'+moadal_style+' .'+parent_li+' li:nth-child('+cnt+'){ '+font_style+'}</style>');
-            }   
+            }
             if( color ){
               jQuery('head').append('<style class="cp-li-color-css'+cnt+'">.'+moadal_style+' .'+parent_li+' li:nth-child('+cnt+'){ color: '+color+';}</style>');
-            }   
+            }
 
         }
 
           });
     });
 }
+var smile_global_data = '';
+jQuery(document).on('smile_data_continue_received',function(e){
+    //  YouTube style need to continue call the padding
+    addPaddingtoYoutubeFrame();
+});
+jQuery(document).on('smile_data_received',function(e,data){
+     cp_modal_common( data );
+});
 
-jQuery(this).on('smile_data_received',function(e,data){
+
+function cp_modal_common( data ) {
 
     // Equalize two columns content vertically center
     cp_column_equilize();
@@ -505,12 +525,16 @@ jQuery(this).on('smile_data_received',function(e,data){
 
     addPaddingtoYoutubeFrame();
 
-});
+    //apply inset box shaddow for count down style
+   // apply_box_shaddow_to_count_down(data);
 
+     //cp_form_sep_top();
+}
 
 function cp_form_sep_setting() {
-    jQuery(".cp-overlay").each(function() { 
+    jQuery(".cp-overlay").each(function() {
         if( jQuery(this).find('.cp-modal-body').hasClass('cp-jugaad') ) {
+
             var form_sep_pos = jQuery(this).find('.cp-form-separator').data('form-sep-pos');
             var form_sep_part_of = jQuery(this).find('.cp-form-separator').data('form-sep-part');
             var form_separator = jQuery(this).find('.cp-form-separator').data('form-sep');
@@ -526,10 +550,10 @@ function cp_form_sep_setting() {
                     jQuery(this).find('.cp-form-separator').appendTo( jQuery(this).find(".cp-modal-body > .cp-row"));
                 } else {
                     jQuery(this).find('.cp-form-separator').appendTo( jQuery(this).find(".cp-modal-body > .cp-row"));
-                }               
+                }
             }
 
-            if( form_sep_part_of == 'part-of-content' ) 
+            if( form_sep_part_of == 'part-of-content' )
                 var fillcolor = jQuery(this).find('.cp-content-section-overlay').css('background-color');
             else
                 var fillcolor = jQuery(this).find('.cp-form-section-overlay').css('background-color');
@@ -541,16 +565,17 @@ function cp_form_sep_setting() {
 }
 
 
-// get svg for form separator 
+// get svg for form separator
 function cp_get_svg(shape,fillColor,viewbox,partof) {
+
     var svg = '';
 
-    if( shape == 'waves' ) 
+    if( shape == 'waves' )
         aspRatio = 'preserveAspectRatio="none"';
     else
         aspRatio = '';
 
-    if( partof == 0 ) 
+    if( partof == 0 )
         svgclass = ' right';
     else
         svgclass = ' left';
@@ -565,12 +590,12 @@ function cp_get_svg(shape,fillColor,viewbox,partof) {
             svg += path;
         break;
 
-        case "triangle": 
+        case "triangle":
             var path = '<path class="fil0" d="M-0 0.333331l4.66666 0 0 -3.93701e-006 -2.33333 0 -2.33333 0 0 3.93701e-006zm0 -0.333331l4.66666 0 0 0.166661 -4.66666 0 0 -0.166661zm4.66666 0.332618l0 -0.165953 -4.66666 0 0 0.165953 1.16162 -0.0826181 1.17171 -0.0833228 1.17171 0.0833228 1.16162 0.0826181z"></path>';
             svg += path;
         break;
 
-        case "big_triangle_right": 
+        case "big_triangle_right":
             var poly = '<polygon xmlns="http://www.w3.org/2000/svg" points="1600,-148 0,-148 428.067,-83.114 "/>';
             svg += poly;
         break;
@@ -583,7 +608,7 @@ function cp_get_svg(shape,fillColor,viewbox,partof) {
         case "clouds":
             var clip = '<path d="M369.112,0L369.112,0H0v63.065l0.032,0.559c21.29,9.47,44.537-15.028,44.537-15.028c61.847,30.504,89.625-27.994,89.625-27.994c18.674,10.285,46.32-0.138,46.32-0.138c52.377,76.808,103.636-5.729,103.636-5.729C336.792,42.609,369.104,0.009,369.112,0c22.006,15.26,55.156,1.585,55.156,1.585c19.499,33.14,52.647,32.087,52.647,32.087c42.064,2.626,60.171-11.971,60.171-11.971c37.22,28.195,71.603-12.78,71.603-12.78c19.771,29.328,55.433,2.259,55.433,2.259c28.254,73.546,83.571,19.989,83.571,19.989c20.144,40.313,79.514,47.483,99.412-9.316c11.586,28.465,39.627,23.784,52.524,20.7c29.937,64.271,88.996,43.13,110.192-25.715c17.479,34.709,54.434,16.065,59.901,0.525c21.138,56.183,74.132,32.033,79.915,30.876c3.375,11.047,21.676,45.967,57.934,41.716c36.262-4.245,43.799-39.459,47.08-58.545c33.985,10.523,54.651-15.098,54.651-15.098c59.06,69.967,101.394-1.052,101.394-1.052c31.481,16.827,55.432,1.582,55.432,1.582c16.566,31.292,41.514,38.394,41.514,38.394c36.49,8.943,62.033-28.718,62.033-28.718c11.555,7.383,30.326,7.909,30.326,7.909V0H369.112z"/>';
             svg += clip;
-        break;  
+        break;
 
         case "curve_center":
             var path = '<path class="fil1" d="M4.66666 0l0 7.87402e-006 -3.93701e-006 0c0,0.0920315 -1.04489,0.166665 -2.33333,0.166665 -1.28844,0 -2.33333,-0.0746339 -2.33333,-0.166665l-3.93701e-006 0 0 -7.87402e-006 4.66666 0z"></path>';
@@ -602,7 +627,7 @@ function cp_get_svg(shape,fillColor,viewbox,partof) {
         case "round_split":
             var path = '<g xmlns="http://www.w3.org/2000/svg"><g><defs><rect id="SVGID_1_" y="-1" width="1600" height="90"/></defs><clipPath id="SVGID_2_"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#SVGID_1_" overflow="visible"/></clipPath><g clip-path="url(#SVGID_2_)"><g><path d="M1605,89c33,0,60-27,60-60V-7c0-33-27-60-60-60H860c-33,0-60,27-60,60v36c0,33,27,60,60,60H1605z"/></g></g></g><g><defs><rect id="SVGID_3_" y="-1" width="1600" height="90"/></defs><clipPath id="SVGID_4_"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#SVGID_3_" overflow="visible"/></clipPath><g clip-path="url(#SVGID_4_)"><g><path d="M740,89c33,0,60-27,60-60V-7c0-33-27-60-60-60H-5c-33,0-60,27-60,60v36c0,33,27,60,60,60H740z"/></g></g></g></g>';
             svg += path;
-        break;      
+        break;
     }
 
     svg += '</svg>';
@@ -630,11 +655,11 @@ function cp_get_viewbox_svg(form_separator) {
 
             case "waves":
                 var viewbox = '0 0 6 0.1';
-            break;  
+            break;
 
             case "clouds":
                 var viewbox = '0 0 1600 90';
-            break;      
+            break;
 
             case "curve_center":
                 var viewbox = '0 0 4.66666 0.333331';
@@ -660,7 +685,7 @@ function cp_form_sep_top() {
 
     setTimeout(function() {
 
-        jQuery(".cp-overlay").each(function() { 
+        jQuery(".cp-overlay").each(function() {
             var is_jugaad_style = jQuery(this).find('.cp-modal-body').hasClass('cp-jugaad');
             if( is_jugaad_style ) {
                 var form_sep  = jQuery(this).find('.cp-form-separator');
@@ -673,7 +698,7 @@ function cp_form_sep_top() {
                             form_sep.css( 'bottom', contentHt );
                         } else {
                             form_sep.css( 'top', contentHt );
-                        }           
+                        }
                     } else {
                         if( form_sep.hasClass('upward') ) {
                             form_sep.css( 'bottom', formHt );
@@ -692,18 +717,18 @@ function cp_form_sep_top() {
 function cp_set_width_svg() {
 
     setTimeout(function() {
-        jQuery(".cp-overlay").each(function() { 
+        jQuery(".cp-overlay").each(function() {
             if( jQuery(this).find('.cp-modal-body').hasClass('cp-jugaad') ) {
 
                 var form_sep  = jQuery(this).find('.cp-form-separator');
 
-                if( form_sep.length > 0 ) {           
+                if( form_sep.length > 0 ) {
 
                     var content_section = jQuery(this).find('.cp-content-section');
                     var form_section = jQuery(this).find('.cp-form-section');
                     var form_sep_ht = form_sep.find('svg').outerHeight() + 10 + 'px';
 
-                    if ( form_sep.hasClass('form_bottom') || form_sep.hasClass('img_left_form_bottom') 
+                    if ( form_sep.hasClass('form_bottom') || form_sep.hasClass('img_left_form_bottom')
                         || form_sep.hasClass('img_right_form_bottom') || form_sep.hasClass('form_bottom_img_top') ) {
                         if( form_sep.hasClass('part-of-content') ) {
                             form_section.css( 'padding', form_sep_ht+ ' 15px 15px 15px' );
@@ -722,7 +747,7 @@ function cp_set_width_svg() {
                                 } else {
                                     content_section.css('padding', '15px 15px 15px '+ form_sep_ht );
                                     form_section.css( 'padding', '15px' );
-                                } 
+                                }
                             } else {
                                 if( form_sep.hasClass('part-of-content') ) {
                                     form_section.css( 'padding', '15px 15px '+ form_sep_ht +' 15px' );
@@ -740,7 +765,7 @@ function cp_set_width_svg() {
                                 } else {
                                     content_section.css('padding', '15px '+form_sep_ht+' 15px 15px' );
                                     form_section.css( 'padding', '15px' );
-                                } 
+                                }
                             } else {
                                 if( form_sep.hasClass('part-of-content') ) {
                                     form_section.css( 'padding', form_sep_ht + ' 15px 15px 15px' );
@@ -757,22 +782,22 @@ function cp_set_width_svg() {
                 var cp_row_ht = jQuery(this).find(".cp-modal-body > .cp-row").outerHeight() + 5 +'px';
                 var windowWidth = jQuery(window).width();
                 if( form_sep.hasClass('triangle') || form_sep.hasClass('round_split') || form_sep.hasClass('tilt') ) {
-                    
-                    if( form_sep.hasClass('form_bottom') || 
-                        form_sep.hasClass('img_left_form_bottom') || 
-                        form_sep.hasClass('img_right_form_bottom') ||  
+
+                    if( form_sep.hasClass('form_bottom') ||
+                        form_sep.hasClass('img_left_form_bottom') ||
+                        form_sep.hasClass('img_right_form_bottom') ||
                         form_sep.hasClass('form_bottom_img_top') ) {
                             form_sep.find('svg').attr('width', '100%' );
                     } else {
                         if( windowWidth >= 768 ) {
-                            if(!form_sep.hasClass('tilt')) { 
-                                form_sep.find('svg').attr('width', cp_row_ht ); 
+                            if(!form_sep.hasClass('tilt')) {
+                                form_sep.find('svg').attr('width', cp_row_ht );
                             } else {
-                                form_sep.find('svg').attr('width', '100%' ); 
+                                form_sep.find('svg').attr('width', '100%' );
                             }
                         }
-                        else 
-                            form_sep.find('svg').attr('width', '100%' ); 
+                        else
+                            form_sep.find('svg').attr('width', '100%' );
                     }
                 }
             }
@@ -785,12 +810,12 @@ function cp_set_width_svg() {
 // change position for form separator as window size
 function form_sep_position() {
 
-    jQuery(".cp-overlay").each(function() { 
+    jQuery(".cp-overlay").each(function() {
         if( jQuery(this).find('.cp-modal-body').hasClass('cp-jugaad') ) {
             var form_separator = jQuery(this).find('.cp-form-separator');
             var windowWidth    = jQuery(window).width();
             if( !form_separator.hasClass('form_bottom') && !jQuery('.cp-form-separator').hasClass('form_bottom_img_top') ) {
-                
+
                 if( windowWidth < 768 ) {
                     if( form_separator.hasClass('part-of-form') ) {
                         form_separator.removeClass('cp-fs-vertical cp-fs-vertical-form').addClass('cp-fs-horizontal cp-fs-horizontal-form');
@@ -798,7 +823,7 @@ function form_sep_position() {
                     } else {
                         jQuery(this).find('.cp-form-separator').appendTo( jQuery(this).find('.cp-content-section') );
                         form_separator.removeClass('cp-fs-vertical cp-fs-vertical-content').addClass('cp-fs-horizontal cp-fs-horizontal-content');
-                    }           
+                    }
                 } else {
 
                     if( !form_separator.hasClass('img_left_form_bottom') && !form_separator.hasClass('img_right_form_bottom') ) {
@@ -822,11 +847,11 @@ function form_sep_position() {
 
 jQuery(document).on('after_cp_column_equilize', function(e) {
 
-    jQuery(".cp-overlay").each(function() { 
+    jQuery(".cp-overlay").each(function() {
         if( jQuery(this).find(".cp-modal-body").hasClass('cp-jugaad') ) {
             if( jQuery(this).find(".cp-modal-body .cp-form-separator").length ) {
                 var form_sep_ht = jQuery(this).find(".cp-modal-body .cp-form-separator").outerHeight();
-                var cp_column_ht = jQuery(this).find(".cp-modal-body .cp-columns-equalized").outerHeight() + form_sep_ht; 
+                var cp_column_ht = jQuery(this).find(".cp-modal-body .cp-columns-equalized").outerHeight() + form_sep_ht;
                 jQuery(this).find(".cp-modal-body .cp-columns-equalized").css( 'height', cp_column_ht );
             }
         }
@@ -839,7 +864,13 @@ function addPaddingtoYoutubeFrame() {
     if( jQuery('.cp-youtube-container').length ) {
         if( jQuery('.cp-modal').hasClass('cp-modal-window-size') ) {
             var oh = jQuery('.cp-form-container').outerHeight();
-            jQuery('.cp-youtube-frame').css('padding-bottom', oh + 'px');
+            var style= jQuery('.cp-form-container').css('display');
+            if(style !='none'){
+                jQuery('.cp-youtube-frame').css('padding-bottom', oh + 'px');
+            }else{
+                jQuery('.cp-youtube-frame').css('padding-bottom', '');
+            }
+            //jQuery('.cp-youtube-frame').css('padding-bottom', oh + 'px');
         } else {
             jQuery('.cp-youtube-frame').css('padding-bottom', '');
         }
@@ -849,36 +880,58 @@ function addPaddingtoYoutubeFrame() {
 // Equalize blank style content vertically center
  function cp_row_equilize() {
    setTimeout( function() {
-        jQuery(".cp-row-equalized-center").each(function() {       
-           
+        jQuery(".cp-row-equalized-center").each(function() {
+
             var wh = jQuery(window).width();
 
             var contHeight = jQuery(this).closest(".cp-row-equalized-center").outerHeight();
-            var bodyHeight = jQuery(this).closest(".cp-modal-body").css("min-height").replace('px', '');             
-        
-            if( bodyHeight < contHeight ) {                
+            var bodyHeight = jQuery(this).closest(".cp-modal-body").css("min-height").replace('px', '');
+
+            if( bodyHeight < contHeight ) {
                 jQuery(this).parent(".cp-row-center").addClass('cp-big-content');
-            } else {                
+            } else {
                 jQuery(this).parent(".cp-row-center").removeClass('cp-big-content');
             }
-                
+
         });
     },200);
-   
+
  }
 
-//apply_box_shaddow_to_count_down 
- function apply_box_shaddow_to_count_down(data){    
+//apply_box_shaddow_to_count_down
+ function apply_box_shaddow_to_count_down(data){
     jQuery(".cp-overlay").each(function() {
         var cp_modal_body_overlay   = jQuery(this).find(".cp-modal-body-overlay"),
             shadow_type             = cp_modal_body_overlay.css("box-shadow"),
-            bg_color                = cp_modal_body_overlay.css("background-color"),          
+            bg_color                = cp_modal_body_overlay.css("background-color"),
             cp_modal_content        = jQuery(this).find(".cp-modal-content");
-       
+
         if (shadow_type.indexOf("inset") >= 0){
-            cp_modal_body_overlay.addClass('count-down-shadow');  
+            cp_modal_body_overlay.addClass('count-down-shadow');
         }else{
              cp_modal_body_overlay.removeClass('count-down-shadow');
         }
     });
  }
+
+
+function cp_social_responsive(){
+
+    var wh = jQuery(window).width();
+     jQuery(".cp_social_networks").each(function() {
+        var column_no = jQuery(this).data('column-no');
+        var classname ='';
+        if(wh <= 610){
+            jQuery(this).removeClass('cp_social_networks');
+            jQuery(this).removeClass(column_no);
+            classname =  jQuery(this).attr('class');
+            jQuery(this).attr('class', 'cp_social_networks cp_social_autowidth ' + ' ' + classname );
+        }else{
+            jQuery(this).removeClass('cp_social_networks');
+           jQuery(this).removeClass('cp_social_autowidth');
+           jQuery(this).removeClass(column_no);
+             classname =  jQuery(this).attr('class');
+            jQuery(this).attr('class', 'cp_social_networks ' + ' ' + column_no + ' ' + classname );
+        }
+     });
+}

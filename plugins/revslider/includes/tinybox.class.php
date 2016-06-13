@@ -46,7 +46,7 @@ class RevSliderTinyBox {
 	 */
 	public static function visual_composer_include(){
 		
-		if(is_user_logged_in()){
+		if(@is_user_logged_in()){
 			
 			if(!function_exists('vc_map') || !function_exists('vc_action')) return false;
 			

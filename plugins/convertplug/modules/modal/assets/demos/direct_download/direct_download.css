@@ -49,6 +49,9 @@
     padding: 0;
     color: rgb(44, 62, 80);
 }
+.cp-count-down-container .cp-overlay-close span{
+        font-family: "cp-direct-download-container",serif;
+}
 
 .cp-direct-download .cp-short-desc-container {
     display: block;
@@ -108,7 +111,7 @@
 }
 
 .cp-direct-download div#info_editor {
-    padding: 20px 0 0;
+    /* padding: 20px 0 0; */
 }
 
 .cp-direct-download  .cp-submit  a {

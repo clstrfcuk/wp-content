@@ -1,9 +1,9 @@
 <?php
 global $Smile_Options, $admin_screen;
 
-//echo $Smile_Options;
 if(!function_exists('Smile_Style_Dashboard')){
 	function Smile_Style_Dashboard( $class, $option_name, $module ){
+
 		$html = '';
 		$settings = $class::$options;
 		$all_settings = $settings;
@@ -15,17 +15,25 @@ if(!function_exists('Smile_Style_Dashboard')){
 		$style_view = (isset($urlData['style-view'])) ? $urlData['style-view'] : '';
 
 		$categoryData = array();
-		foreach($all_settings as $style => $options){
+		foreach( $all_settings as $style => $options ) {
 			$all_opts = array();
+			$all_opts[] = $style;
 			$all_opts[] = $options['style_name'];
 			$all_opts[] = $options['demo_url'];
 			$all_opts[] = $options['img_url'];
 			$all_opts[] = $options['customizer_js'];
 			$all_opts[] = $options['tags'];
 
-			$all_styles[$style] = $all_opts;
+			$all_styles[$options['style_name']] = $all_opts;
 		}
-		if(!empty($settings)){
+
+		$preset_templates = get_option( 'cp_'.$module.'_preset_templates' );
+
+		if( is_array($preset_templates) ) {
+			$all_styles = array_merge( $all_styles, $preset_templates );
+		}
+
+		if( !empty($settings) ) {
 
 			$panels = array();
 			$theme_sections = array();
@@ -36,6 +44,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 				if($style !== $ge_theme && $style_view == 'edit')
 					continue;
 				$opts = $new_panels = $new_sections = array();
+				$opts[] = $style;
 				$opts[] = $options['style_name'];
 				$opts[] = $options['demo_url'];
 				$opts[] = $options['img_url'];
@@ -60,7 +69,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 				$style_opts[$style] = $options['options'];
 				$new_options =  $options['options'];
 
-				foreach($new_options as $key => $values){
+				foreach( $new_options as $key => $values ){
 					$temp_panel = array();
 					$panel = $values['panel'];
 					$section = (isset($values['section'])) ? $values['section'] : '';
@@ -138,8 +147,22 @@ if(!function_exists('Smile_Style_Dashboard')){
 			echo '<ul class="cp-styles-list row" id="grid">';
 		}
 
+		$existing_presets = get_option( 'cp_'.$module.'_preset_templates' );
+		$fun = 'cp_add_'.$module.'_template';
+		$preset_list = $fun(array(), '', $module );
 
-		if(!empty($styles)){
+		$display_import_link = false;
+
+		if( is_array($preset_list) ) {
+			foreach ($preset_list as $key => $value) {
+				if( !isset( $existing_presets[$key] ) ) {
+					$display_import_link = true;
+				}
+			}
+		}
+
+		if( !empty($styles) ) {
+
 			$style_name = $style_settings = '';
 			$old_style = '';
 			$data_action = isset( $_GET['variant-test'] ) ? 'update_variant_test_settings' : 'update_style_settings';
@@ -152,7 +175,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 			$smile_variant_tests = isset( $smile_variant_tests[$style_id] ) ? $smile_variant_tests[$style_id] : '';
 			$style_name = isset( $_GET['style'] ) ? $_GET['style'] : '';
 			if( isset( $_GET[ 'variant-style' ] ) ) {
-				if( is_array ( $smile_variant_tests ) && !empty( $smile_variant_tests ) ){
+				if( is_array ( $smile_variant_tests ) && !empty( $smile_variant_tests ) ){ // on edit screen
 					if( isset( $_GET[ 'action' ] ) && $_GET['action'] == 'new' ){
 						$prev_styles = get_option('smile_modal_styles');
 						$key = search_style($prev_styles,$style_id);
@@ -169,53 +192,128 @@ if(!function_exists('Smile_Style_Dashboard')){
 							}
 						}
 					}
-				} elseif( isset( $_GET[ 'action' ] ) && $_GET['action'] == 'new' ){
+				} elseif( isset( $_GET[ 'action' ] ) && $_GET['action'] == 'new' ){ // on new variant screen
 					$prev_styles = get_option('smile_modal_styles');
 					$key = search_style($prev_styles,$style_id);
 					$style_settings = $prev_styles[$key];
 					$style_settings = unserialize($style_settings['style_settings']);
+					// set status to pause for new created variant
+					$style_settings['live'] = 0;
 					$old_style = $style_settings['style'];
 				}
-			} elseif(isset($_GET['style'])){
+			} else if( isset($_GET['style']) ) {
 				$style_id = $_GET['style'];
 				$prev_styles = get_option($data_option);
 				$key = search_style($prev_styles,$style_id);
-				$style_settings = $prev_styles[$key];
-				$style_name = urldecode($style_settings['style_name']);
-				$style_settings = unserialize($style_settings['style_settings']);
-				$old_style = $style_settings['style_id'];
-
+				$style_name = '';
+				if( $key !== NULL ) {
+					$style_settings = $prev_styles[$key];
+					$style_name = urldecode($style_settings['style_name']);
+					$style_settings = unserialize($style_settings['style_settings']);
+					$old_style = $style_settings['style_id'];
+				}
 			}
-			if( isset( $_GET['theme'] ) ){
+			if( isset( $_GET['theme'] ) ) {
 				$theme = $_GET['theme'];
 				$edit_style[$theme] = $styles[$theme];
-
 				$styles = $edit_style;
 			}
 
-			foreach($styles as $style => $options){
+			if( $_GET['style-view'] == 'new' ) { // if on template list screen
+				//  append preset templates
+
+				if( is_array($preset_templates) ) {
+					$styles = array_merge( $styles, $preset_templates );
+				}
+
+				foreach ($styles as $key => $value) {
+					if( isset($preset_list[$key]) ) {
+						unset($preset_list[$key]);
+					}
+				}
+
+				$styles = array_merge($styles, $preset_list);
+
+			} else {
+
+				if( !isset( $_GET[ 'variant-style' ] ) ) {
+
+					$prev_styles = get_option($data_option);
+					$key = search_style( $prev_styles, $_GET['style'] );
+
+					if( $key === NULL ) {
+
+						// if current style is preset
+						if( isset($_GET['preset']) ) {
+							$preset = $_GET['preset'];
+
+							$settings = get_option( 'cp_' . $module . '_' . $preset, '' );
+
+							if ( $settings == '' ) {
+								$demo_dir = CP_BASE_DIR . 'modules/'.$module.'/presets/'.$preset.'.txt';
+								$handle = fopen($demo_dir, "r");
+								$settings = fread($handle, filesize($demo_dir));
+								$settings = json_decode($settings, TRUE);
+							}
+
+							$style_settings = $settings['style_settings'];
+
+							$import_style = array();
+							foreach( $style_settings as $title => $value ){
+								if( !is_array( $value ) ){
+									$value = htmlspecialchars_decode($value);
+									$import_style[$title] = $value;
+								} else {
+									foreach( $value as $ex_title => $ex_val ) {
+											$val[$ex_title] = htmlspecialchars_decode($ex_val);
+									}
+									$import_style[$title] = $val;
+								}
+							}
+
+							$style_settings = $import_style;
+							$styles = array();
+
+							$temp_arr = $preset_templates[$preset];
+							$modal_temp_array = array();
+							$modal_temp_array[$preset] = $temp_arr;
+							$styles = array_merge( $styles, $modal_temp_array );
+
+							$styles[$theme] = $styles[$preset];
+							unset($styles[$preset]);
+						}
+					}
+				}
+			}
+
+			foreach( $styles as $style => $options ) {
+
 				$rand = substr(md5(uniqid()),rand(0,26),5);
 				$dynamic_style_name = 'cp_id_'.$rand;
 				$new_style_id = ( isset( $style_id ) && $style_id !== "" ) ? $style_id : $dynamic_style_name;
 				if( isset( $_GET['variant-test'] ) && $_GET['variant-test'] == "new" ){
 					$new_style_id = $dynamic_style_name;
 				}
-				$active = ($old_style == $style) ? 'active ' : '';
+				$active = ($old_style == $options[0]) ? 'active ' : '';
 
 				$page = $_GET['page'];
 
 				$callback_url = 'admin.php?page='.$page;
-  				$hide_new_style ='';
+  				$hide_new_style = '';
 
 				if( isset( $_GET['style-view'] ) && $_GET['style-view'] !== "variant" ){
-					$url =  'admin.php?page='.$page.'&style-view=edit&action=new&style='.$dynamic_style_name.'&theme='.$style;
-					$callback_url = 'admin.php?page='.$page;					
+
+					$preset = (isset($options[7])) ? "&preset=".$options[7] : '';
+					$url =  'admin.php?page='.$page.'&style-view=edit&action=new&style='.$dynamic_style_name.'&theme='.$options[0].$preset;
+					$callback_url = 'admin.php?page='.$page;
+
 				} else {
+
 					$sid = isset( $_GET['style_id'] ) ? $_GET['style_id'] : $_GET['variant-style'];
 					$pid = isset( $_GET['parent-style'] ) ? $_GET['parent-style'] : $_GET['style_id'] ;
 					$callback_url = 'admin.php?page='.$page.'&style-view=variant&variant-style='.$sid.'&style='.stripslashes($pid).'&theme='.$theme;
-					$url = 'admin.php?page='.$page.'&style-view=variant&variant-test=edit&action=new&variant-style='.$dynamic_style_name.'&style='.urlencode( stripslashes($style_name )  ).'&style_id='.$variant_style.'&theme='.$style;
-					$hide_new_style ='cp-hidden-variant-style';
+					$url = 'admin.php?page='.$page.'&style-view=variant&variant-test=edit&action=new&variant-style='.$dynamic_style_name.'&style='.urlencode( stripslashes($style_name )  ).'&style_id='.$variant_style.'&theme='.$options[0];
+					$hide_new_style = 'cp-hidden-variant-style';
 				}
 
 				if( !isset($style_name) ) {
@@ -226,50 +324,103 @@ if(!function_exists('Smile_Style_Dashboard')){
 					$style_name = '';
 				}
 
+				$is_importable = false;
+
+				// check if this style is importable
+				if( isset($options[7]) ) {
+					$preset_option_data = get_option( 'cp_' . $module . '_' . $options[7] );
+
+					if( is_array($preset_option_data) && !empty($preset_option_data) ) {
+						$is_importable = false;
+					} else {
+						$is_importable = true;
+					}
+				}
+
 				$data_view = ( isset( $_GET['style-view'] ) && $_GET['style-view'] == "new" ) || ( isset( $_GET['variant-test'] ) && $_GET['variant-test'] == "new" ) ? 'data-view="new" ' : 'data-view="edit"';
 
-				if( $_GET['style-view'] == "variant" ){
+				if( $_GET['style-view'] == "variant" ) {
 					if( isset( $_GET['variant-test']) && $_GET['variant-test'] == 'new' ){
 						$el_class = " variant-test";
 					} else {
 						$el_class = '';
 					}
-					echo '<a id="'.$style.'" class="cp-style-split-link button button-primary customize'.$el_class.'" href="'.$url.'" '.$data_view.' data-module="'. ucwords( str_replace( "_", " ", $module ) ) .'" data-id="'.$style.'" data-style="panel-'.$style.'">'.__( "Start Customizing", "smile" ) .'</a>';
+					echo '<a id="'.$style.'" class="cp-style-split-link button button-primary customize'.$el_class.'" href="'.$url.'" '.$data_view.' data-module="'. ucwords( str_replace( "_", " ", $module ) ) .'" data-id="'.$style.'" data-style="panel-'.$options[0].'">'.__( "Start Customizing", "smile" ) .'</a>';
 				} else {
 					if( isset( $_GET["style-view"] ) && $_GET['style-view'] !== "edit" ){
-						$options[4] = explode(",",$options[4]);
+						$options[5] = explode( ",", $options[5] );
 						$result = array();
-						foreach ( $options[4]  as $a1) {
-						    $result[]='"'.$a1.'"';
+						foreach ( $options[5]  as $a1) {
+						    $result[] = '"'.$a1.'"';
 						}
-						$options[4] = implode( ',', $result );
+						$options[5] = implode( ',', $result );
 
-						echo "<li class='col-xs-6 col-sm-4 col-md-4 cp-style-item ".$active."cp-style-".$style."' data-groups='[".$options[4]."]' data-tags=['".$options[5]."']>";
-						echo '<a id="'.$style.'" class="cp-style-item-link customize" data-module="'. ucwords( str_replace( "_", " ", $module ) ) .'" href="'.$url.'" '.$data_view.' data-id="'.$style.'" data-style="panel-'.$style.'"></a>';
+						echo "<li class='col-xs-6 col-sm-4 col-md-4 cp-style-item ".$active."cp-style-".$options[0]."' data-groups='[".$options[5]."]' data-tags=['".$options[6]."']>";
+						echo '<a id="'.$options[0].'" class="cp-style-item-link customize" data-module="'. ucwords( str_replace( "_", " ", $module ) ) .'" href="'.$url.'" '.$data_view.' data-id="'.$options[0].'" data-style="panel-'.$options[0].'"></a>';
 						echo '<div class="cp-style-item-box">';
 						echo '<div class="cp-style-screenshot">';
-						echo '<img src="'.$options[2].'"/>';
-						echo '</div>';
-						echo '<h3 class="cp-style-name">'. $options[0] .'</h3>';
-						echo '<div class="cp-style-actions">';
-						echo '<a id="'.$style.'" class="cp-style-item-link customize" data-module="'. ucwords( str_replace( "_", " ", $module ) ) .'" href="'.$url.'" '.$data_view.' data-id="'.$style.'" data-style="panel-'.$style.'">
-								<span class="cp-action-link customize"><span class="cp-action-link-icon connects-icon-cog"></span>'.__( "Use This", "smile" ).'</span>';
-						echo '</a>';
-						echo '<span class="cp-action-link style-demo"
-							 onclick="displayPopup(\''.$style.'\',\''.$options[0].'\',\''.plugins_url( '../../modules/'.$module.'/assets/demos/'.$style.'/'.$style.'.min.css', __FILE__ ).'\');"><span class="cp-action-link-icon connects-icon-link"></span>'.__( "Live Preview", "smile" ).'</span>
-							</div>';
 
-						echo '</div>'; /*--- .cp-style-item-box ---*/
+						$display_action_links = true;
+
+						if( $is_importable ) {
+							if( cp_is_connected() ) {
+								echo '<img src="'.$options[3].'"/>';
+							} else {
+								$display_action_links = false;
+								echo '<img src="'.plugins_url( "../../admin/assets/img/internet-issue.png",  __FILE__  ) .'"/>';
+							}
+						} else {
+							echo '<img src="'.$options[3].'"/>';
+						}
+
+						echo '</div>';
+						echo '<h3 class="cp-style-name">'. $options[1] .'</h3>';
+
+						if( $display_action_links ) {
+
+							echo '<div class="cp-style-actions">';
+
+							if( !$is_importable ) {
+								echo '<a id="'.$options[0].'" class="cp-style-item-link customize" data-module="'. ucwords( str_replace( "_", " ", $module ) ) .'" href="'.$url.'" '.$data_view.' data-id="'.$options[0].'" data-style="panel-'.$options[0].'">
+									<span class="cp-action-link customize"><span class="cp-action-link-icon connects-icon-cog"></span>'.__( "Use This", "smile" ).'</span>';
+								echo '</a>';
+							} else {
+								echo '<a id="'.$options[0].'" href="javascript:void(0);" class="cp-style-import-link" data-module="'. $module.'" data-href="'.$url.'" '.$data_view.' data-preset="'.$options[7].'" data-id="'.$options[0].'" data-style="panel-'.$options[0].'">
+									<span class="cp-action-link"><span class="cp-action-link-icon"><i class="connects-icon-inbox"></i></span><span class="cp-action-text">'.__( "Import This", "smile" ).'</span></span>';
+								echo '</a>';
+							}
+						}
+
+						if( isset( $options[7] ) ) {
+							$style_settings_method = 'external';
+							$template_name = $options[7];
+						} else {
+							$style_settings_method = 'internal';
+							$template_name = '';
+						}
+
+						if( $display_action_links ) {
+							echo '<span class="cp-action-link style-demo"
+							 onclick="displayPopup(\''.$options[0].'\',\''.$options[1].'\',\''.plugins_url( '../../modules/'.$module.'/assets/demos/'.$options[0].'/'.$options[0].'.min.css', __FILE__ ).'\',\''.$style_settings_method.'\',\''.$template_name.'\');"><span class="cp-action-link-icon connects-icon-link"></span>'.__( "Live Preview", "smile" ).'</span></div>';
+
+							echo '</div>'; /*--- .cp-style-item-box ---*/
+						}
+
+
 					} else {
-						echo '<a id="'.$style.'" class="cp-style-item-link customize" data-module="'. ucwords( str_replace( "_", " ", $module ) ) .'" href="'.$url.'" '.$data_view.' data-id="'.$style.'" data-style="panel-'.$style.'">'.__("Customize", "smile" ) .'</a>';
+						echo '<a id="'.$style.'" class="cp-style-item-link customize" data-module="'. ucwords( str_replace( "_", " ", $module ) ) .'" href="'.$url.'" '.$data_view.' data-id="'.$options[0].'" data-style="panel-'.$options[0].'">'.__("Customize", "smile" ) .'</a>';
 					}
 				}
-				if( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant" && $_GET['variant-test'] == 'edit') ){
+
+				if( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant" && $_GET['variant-test'] == 'edit') ) {
 				?>
 				<div class="customizer-wrapper smile-customizer-wrapper panel-<?php echo $style; ?>" style="display: none;">
-					<div id="cp-designer-form" class="design-form">
-                        <form class="cp-cust-form" id="form-<?php echo $style; ?>" data-action="<?php echo $data_action; ?>">
-                        <input type="hidden" name="style" value="<?php echo $style; ?>" />
+					<div id="cp-designer-form" class="design-form ecedcfsfdc">
+                        <form class="cp-cust-form" id="form-<?php echo $options[0]; ?>" data-action="<?php echo $data_action; ?>">
+                        <?php if( isset($_GET['preset'] ) && $key === NULL ) { ?>
+                        	<input type='hidden' name='style_preset' value='<?php echo $_GET['preset']; ?>'>
+                        <?php } ?>
+                        <input type="hidden" name="style" value="<?php echo $options[0]; ?>" />
                         <input type="hidden" name="style_id" value="<?php echo $new_style_id; ?>" />
                         <input type="hidden" name="option" value="<?php echo $data_option; ?>" />
 		    			<?php if( isset( $_GET[ 'variant-style' ] ) ) { ?>
@@ -277,13 +428,13 @@ if(!function_exists('Smile_Style_Dashboard')){
 	                        <input type="hidden" name="variant_style_id" value="<?php echo $_GET[ 'variant-style' ]; ?>" />
                         <?php } ?>
 
-                         <?php 
+                         <?php
                          $timezone_settings = get_option('convert_plug_settings');
     					 $timezone_name = $timezone_settings['cp-timezone'];
     					 ?>
                         <input type="hidden" name="cp_gmt_offset" class ="cp_gmt_offset" value="<?php echo get_option('gmt_offset'); ?>" />
 	                    <input type="hidden" name="cp_counter_timezone" class ="cp_counter_timezone" value="<?php echo $timezone_name; ?>" />
-                   		<div class="customizer metro" id="accordion-panel-<?php echo $style; ?>">
+                   		<div class="customizer metro" id="accordion-panel-<?php echo $options[0]; ?>">
 							<div class="cp-new-cust-section">
                             <div class="cp-vertical-nav">
                             	<div class="cp-vertical-nav-top cp-customize-section">
@@ -307,7 +458,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 									if( isset($_GET['page']) ) {
 										$dashboard_link = admin_url( 'admin.php?page='.$_GET['page'] );
 									}
-									
+
 									?>
 									<a data-redirect="<?php echo esc_url( $dashboard_link ); ?>" href="javascript:void(0)" target="_blank" class="cp-section cp-dashboard-link">
 										<span class="cp-tooltip-icon has-tip" data-position="right" title="Dashboard">
@@ -356,7 +507,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 							</div><!-- .cp-vertical-nav -->
 							<div class="cp-customizer-tabs-wrapper" style="height:100%;">
 								<div class="preview-notice">
-	                                <span class="theme-name site-title"><?php echo $options[0];?></span>
+	                                <span class="theme-name site-title"><?php echo $options[1];?></span>
 	                            </div>
 								<?php
 									$count = 0;
@@ -396,7 +547,8 @@ if(!function_exists('Smile_Style_Dashboard')){
 																		$name = $values['name'];
 																		$type = $values['type'];
 																		$default_value = isset( $values['opts']['value'] ) ? urldecode($values['opts']['value']) : '';
-																		$input_value = isset($style_settings[$name])? urldecode($style_settings[$name]) : $values['opts']['value'];
+																		$input_value = isset($style_settings[$name])? urldecode( utf8_decode($style_settings[$name] )) : $values['opts']['value'];
+
 																		if(function_exists("do_input_type_settings_field")){
 																			$values['opts']['type'] = $type;
 																			$dependency = isset($values['dependency']) ? $values['dependency'] : '';
@@ -462,7 +614,23 @@ if(!function_exists('Smile_Style_Dashboard')){
                                         </div>
                                         <div class="cp-styles-list row" id="cp_grid" style="margin:0px;">
 											<?php
-                                            foreach($all_styles as $style_title => $style_options){
+                                            foreach( $all_styles as $style_title => $style_options ) {
+
+                                            	$display = true;
+
+                                            	// check if this style is imported
+												if( isset($style_options[7]) ) {
+													$style_option_data = get_option( 'cp_' . $module . '_' . $style_options[7] );
+
+													if( !$style_option_data || empty($style_option_data) ) {
+														$display = false;
+													}
+												}
+
+												if( !$display ) {
+													continue;
+												}
+
                                                 $rand = substr(md5(uniqid()),rand(0,26),5);
                                                 $dynamic_style_name = 'cp_id_'.$rand;
                                                 $new_style_id = ( isset( $style_id ) && $style_id !== "" ) ? $style_id : $dynamic_style_name;
@@ -471,8 +639,8 @@ if(!function_exists('Smile_Style_Dashboard')){
                                                 }
                                                 $active = ($old_style == $style_title) ? 'active ' : '';
 
-                                                if ( isset($style_options[4]) ) {
-                                                	$tags = $style_options[4];
+                                                if ( isset($style_options[5]) ) {
+                                                	$tags = $style_options[5];
                                                 } else {
                                                 	$tags = 'promotions';
                                                 }
@@ -482,29 +650,35 @@ if(!function_exists('Smile_Style_Dashboard')){
                                                 $callback_url = 'admin.php?page='.$page;
 
                                                 if( isset( $_GET['style-view'] ) && $_GET['style-view'] !== "variant" ){
-                                                    $url =  'admin.php?page='.$page.'&style-view=edit&action=new&style='.$dynamic_style_name.'&theme='.$style_title;
+
+                                                	$preset = (isset($style_options[7])) ? "&preset=".$style_options[7] : '';
+                                                    $url =  'admin.php?page='.$page.'&style-view=edit&action=new&style='.$dynamic_style_name.'&theme='.$style_options[0].$preset;
+
                                                     $callback_url = 'admin.php?page='.$page;
                                                 } else {
                                                     $sid = isset( $_GET['style_id'] ) ? $_GET['style_id'] : $_GET['variant-style'];
                                                     $pid = isset( $_GET['parent-style'] ) ? $_GET['parent-style'] : $_GET['style_id'] ;
                                                     $callback_url = 'admin.php?page='.$page.'&style-view=variant&variant-style='.$sid.'&style='.$pid.'&theme='.$theme;
-                                                    $url = 'admin.php?page='.$page.'&style-view=variant&variant-test=edit&action=new&variant-style='.$dynamic_style_name.'&style='.$style_name.'&style_id='.$variant_style.'&theme='.$style_title;
+
+                                                    $url = 'admin.php?page='.$page.'&style-view=variant&variant-test=edit&action=new&variant-style='.$dynamic_style_name.'&style='.$style_name.'&style_id='.$variant_style.'&theme='.$style_options[0];
                                                 }
 
                                                 echo '<div class="cp-style-item '.$active.'cp-style-'.$style_title.'" data-tags=["'.$tags.'"] style="margin: 15px;">';
                                                 echo '<div class="cp-style-item-box">';
                                                 echo '<a id="'.$style_title.'" class="cp-new-style-link" href="'.$url.'" '.$data_view.' data-id="'.$style_title.'" data-style-title="'.$style_options[0].'" data-style="'.$style_id.'" data-option="smile_'.$module.'_styles">';
                                                 echo '<div class="cp-style-screenshot">';
-                                                echo '<img src="'.$style_options[2].'"/>';
+                                                echo '<img src="'.$style_options[3].'"/>';
                                                 echo '</div>';
-                                                echo '<h3 class="cp-style-name">'. $style_options[0] .'</h3>';
+                                                echo '<h3 class="cp-style-name">'. $style_options[1] .'</h3>';
                                                 echo '</a>';
                                                 echo '</div>'; /*--- .cp-style-item-box ---*/
                                                 echo '</div>'; /*--- .cp-style-item ---*/
                                             }
+
                                             ?>
 										</div>
                                         <div class="col-xs-6 col-sm-4 col-md-4 shuffle_sizer"></div>
+
                                         <style type="text/css">
 										.cp-switch-theme > p {
 											position: static !important;
@@ -520,6 +694,8 @@ if(!function_exists('Smile_Style_Dashboard')){
 										</style>
                                         <script type="text/javascript">
 										jQuery(document).ready(function(){
+
+
 											jQuery(".cp-new-style-link").click(function(e){
 												e.preventDefault();
 												e.stopPropagation();
@@ -528,7 +704,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 												var $this = jQuery(this);
 												swal({
 													title: "<?php _e( "What would you like to do with current ".ucwords( str_replace( "_", " ", $module ) )."?", "smile" ); ?>",
-													text: '<span class="cp-discard-popup" style="position: absolute;top: 0;right: 0;"><i class="connects-icon-cross"></i></span>',
+													text: "<span class='cp-discard-popup' style='position: absolute;top: 0;right: 0;'><i class='connects-icon-cross'></i></span>",
 													type: "warning",
 													html: true,
 													showCancelButton: true,
@@ -564,6 +740,9 @@ if(!function_exists('Smile_Style_Dashboard')){
 													jQuery(".sweet-overlay, .sweet-alert").fadeOut('slow').remove();
 												});
 											});
+
+
+
 										});
 										</script>
                                         </div>
@@ -577,6 +756,7 @@ if(!function_exists('Smile_Style_Dashboard')){
                     <script type="text/javascript">
 						jQuery(document).ready(function(){
 							Ps.initialize(document.getElementById('cp-designer-form'));
+
 						});
 						jQuery(document).on("focusElementChanged", function(){
 							Ps.update(document.getElementById('cp-designer-form'));
@@ -591,13 +771,15 @@ if(!function_exists('Smile_Style_Dashboard')){
 							// update scrollbars
 							Ps.update(document.getElementById('cp-designer-form'));
 						}
-					</script>                   
-					<?php	 
-						$iframe_url = admin_url('admin.php?page=cp_customizer') . '&module='.$module.'&class='.$class.'&theme='.$_GET['theme'].'&hidemenubar=true'; 
+
+
+					</script>
+					<?php
+						$iframe_url = admin_url('admin.php?page=cp_customizer') . '&module='.$module.'&class='.$class.'&theme='.$_GET['theme'].'&hidemenubar=true';
                     ?>
-					<div class="design-content" data-demo-id="<?php echo $_GET['theme']; ?>" data-class="<?php echo $class; ?>" data-module="<?php echo $module; ?>" data-js-url="<?php echo $options[3]; ?>" data-iframe-url="<?php echo esc_url( $iframe_url ); ?>">
+					<div class="design-content" data-demo-id="<?php echo $_GET['theme']; ?>" data-class="<?php echo $class; ?>" data-module="<?php echo $module; ?>" data-js-url="<?php echo $options[4]; ?>" data-iframe-url="<?php echo esc_url( $iframe_url ); ?>">
                     	<div class="live-design-area">
-                    		<div class="design-area-loading">                    		
+                    		<div class="design-area-loading">
                     			<!-- <span class="spinner"></span> -->
                                 <div class="smile-absolute-loader" style="visibility: visible;">
                                   <div class="smile-loader">
@@ -618,12 +800,14 @@ if(!function_exists('Smile_Style_Dashboard')){
 			if( $_GET['style-view'] !== "variant" ){
 				echo '</ul>';
 			}
+
 			?>
+
             <script type="text/javascript">
-			function displayPopup( style, title, url ){
+			function displayPopup( style, title, url, style_settings_method, temp_name ){
 				jQuery("#style_preview_css").attr("href", url );
 				// load thickbox
-				tb_show("Preview - "+title, ajaxurl + "?action=cp_display_preview_<?php echo $module; ?>&style=" + style);
+				tb_show("Preview - "+title, ajaxurl + "?action=cp_display_preview_<?php echo $module; ?>&style=" + style + "&method=" + style_settings_method + "&temp_name=" + temp_name);
 
 				var loader = '<div class="smile-absolute-loader" style="visibility: visible;overflow: hidden;width: 80px;height: 80px;background-color: transparent;">\
 							  <div class="smile-loader">\
@@ -704,5 +888,16 @@ add_action( "admin_head", "live_preview_style_css" );
 if( !function_exists( "live_preview_style_css" ) ){
 	function live_preview_style_css(){
 		echo '<link rel="stylesheet" type="text/css" id="style_preview_css" href="#" />';
+	}
+}
+
+if( !function_exists( "generate_partial_atts" ) ){
+	function generate_partial_atts( $s ){
+		$partials	 =	isset( $s['css_property'] ) 	? ' data-css-property="' .$s['css_property']. '" ' 	: '';
+		$partials	.=	isset( $s['css_selector'] ) 	? ' data-css-selector="' .$s['css_selector']. '" ' 	: '';
+		$partials	.=	isset( $s['css_preview'] ) 	? ' data-css-preview="'  .$s['css_preview']. '" ' 	: ' data-css-preview="false" ';
+		$partials	.=	isset( $s['unit'] ) 		? ' data-unit="'  .$s['unit']. '" ' 				: ' data-unit="px" ';
+		$partials	.=	isset( $s['css-image-url'] ) 	? ' data-css-image-url="' .$s['css-image-url']. '" ' 	: ' data-css-image-url="" ';
+		return $partials;
 	}
 }

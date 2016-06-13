@@ -5,6 +5,9 @@
 require_once('functions/functions.options.php');
 
 $style = $_GET['style'];
+$settings_method = $_GET['method'];
+$template_name = $_GET['temp_name'];
+
 $options = Smile_Modals::$options;
 $styles = $options[ $style ];
 $css = isset( $styles['style_css'] ) ? $styles['style_css'] : '';
@@ -12,13 +15,8 @@ if( $css !== ""){
 	echo '<link rel="stylesheet" id="'.$style.'" href="' . $css .'" type="text/css" media="all" />';
 }
 $style_options = $options[$style]['options'];
-$settings = array();
-$settings['style'] = 'preview';
-foreach( $style_options as $key => $value ) {
-	$settings[$value['name']] = $value['opts']['value'];
-}
-$settings['affiliate_setting'] = false;
-$settings_encoded = base64_encode( serialize( $settings ) );
+
+$settings_encoded = cp_get_live_preview_settings( 'modal', $settings_method, $style_options, $template_name );
 
 echo do_shortcode('[smile_modal style="'.$style.'" settings_encoded="' . $settings_encoded . ' "][/smile_modal]');
 ?>

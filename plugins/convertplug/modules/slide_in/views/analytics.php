@@ -39,7 +39,7 @@ $compFactor = ( isset($_GET['compFactor']) && !empty($_GET['compFactor']) ) ? $_
       </div>
       <hr class="bsf-extensions-lists-separator" style="margin: 22px 0px 30px 0px;">
       </hr>
-
+      <input type="hidden" id="cp-module" value="slide_in" >
       <div class="row cp-analytics-filter-section" style="display:none">
         <div class="container form-container analytics-form">
           <div class="col-sm-2">

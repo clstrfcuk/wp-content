@@ -1,5 +1,5 @@
 <div class="wrap smile-add-style bend">
-  <div class="wrap-container">  
+  <div class="wrap-container">
 
     <div class="msg"></div>
 
@@ -13,11 +13,11 @@
     </div>
 
     <div class="bend-content-wrap smile-add-style-content">
-      
+
         <div class="container ">
             <div class="smile-style-category">
-                <?php 
-                    if(function_exists('Smile_Style_Dashboard')){   
+                <?php
+                    if(function_exists('Smile_Style_Dashboard')){
                       Smile_Style_Dashboard('Smile_Modals','smile_modal_styles','modal');
                     }
                 ?>
@@ -29,11 +29,11 @@
         <!-- .container -->
     <div id="cp-scroll-up">
         <a title="Scroll up" href="#top"><i class="connects-icon-small-up" ></i></a>
-    </div>  
     </div>
-    <!-- .bend-content-wrap --> 
+    </div>
+    <!-- .bend-content-wrap -->
   </div>
-  <!-- .wrap-container --> 
+  <!-- .wrap-container -->
 </div>
 <!-- .wrap -->
 

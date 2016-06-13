@@ -1,6 +1,6 @@
 <?php if(!defined('LS_ROOT_FILE')) {  header('HTTP/1.0 403 Forbidden'); exit; } ?>
 <script type="text/html" id="tmpl-ls-add-slider">
-	<form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="post" id="ls-add-slider-template" class="ls-pointer ls-box">
+	<form method="post" id="ls-add-slider-template" class="ls-pointer ls-box">
 		<?php wp_nonce_field('add-slider'); ?>
 		<input type="hidden" name="ls-add-new-slider" value="1">
 		<span class="ls-mce-arrow"></span>

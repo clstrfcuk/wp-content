@@ -57,6 +57,85 @@ if(!class_exists('Ultimate_Google_Font_Manager'))
 			wp_register_style('ultimate-google-fonts-style',plugins_url("assets/css/google-fonts-admin.css",__FILE__));
 			wp_enqueue_style('ultimate-google-fonts-style');
 		}
+		function enqueue_selected_ultimate_google_fonts() {
+			$selected_fonts = get_option('ultimate_selected_google_fonts');
+			//delete_option('ultimate_selected_google_fonts'); exit;
+			$subset_main_array = array();
+			if(!empty($selected_fonts)) {
+
+				$count = count($selected_fonts);
+				$font_call = '';
+				foreach($selected_fonts as $key => $sfont)
+				{
+					$variants_array = array();
+					if($key != 0) {
+						$font_call .= '|';
+					}
+					$font_call .= $sfont['font_family'];
+					if(isset($sfont['variants'])) :
+						$variants = $sfont['variants'];
+						if(!empty($variants)) {
+							$font_call .= ':';
+							foreach($variants as  $variant)
+							{
+								$variant_selected = $variant['variant_selected'];
+								if($variant_selected == 'true' || is_admin()) {
+									array_push($variants_array, $variant['variant_value']);
+								}
+							}
+							$variants_count = count($variants_array);
+							if($variants_count != 0) {
+								$font_call .= 'normal,';
+							}
+							foreach ($variants_array as $vkey => $variant) {
+								$font_call .= $variant;
+								if(($variants_count-1) != $vkey && $variants_count > 0) {
+									$font_call .= ',';
+								}
+							}
+						}
+					endif;
+
+					if(!empty($sfont['subsets']))
+					{
+						$subset_array = array();
+						foreach($sfont['subsets'] as $tsubset)
+						{
+							if($tsubset['subset_selected'] == 'true' || $tsubset['subset_selected'] == true )
+								array_push($subset_main_array, $tsubset['subset_value']);
+						}
+					}
+				}
+
+				$subset_string = '';
+
+				if(!empty($subset_main_array))
+				{
+					$subset_main_array = array_unique($subset_main_array);
+
+					$subset_string = '&subset=';
+					$subset_count = count($subset_main_array);
+					$subset_main_array = array_values($subset_main_array);
+
+					foreach($subset_main_array as $skey => $subset)
+					{
+						if($subset !== '')
+						{
+							$subset_string .= $subset;
+							if(($subset_count-1) != $skey)
+								$subset_string .= ',';
+						}
+					}
+				}
+
+				$link = 'https://fonts.googleapis.com/css?family='.$font_call;
+
+				$font_api_call = $link.$subset_string;
+
+				wp_register_style('ultimate-selected-google-fonts-style',$font_api_call, array(), null);
+				wp_enqueue_style('ultimate-selected-google-fonts-style');
+			}
+		}
 		function enqueue_ultimate_google_fonts() {
 			$selected_fonts = get_option('ultimate_selected_google_fonts');
 			if(!empty($selected_fonts)) {

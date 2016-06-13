@@ -122,6 +122,10 @@ class X_Email_MailChimp extends X_Email_Provider {
     $opts    = ( empty( $api_opts ) && ! empty( $this->api_opts ) ) ? $this->api_opts : $api_opts;
     $wrapper = new Mailchimp( $api_key, $opts );
 
+    if ( apply_filters( 'x_mailchimp_disable_ssl_verify', false ) ) {
+      curl_setopt( $wrapper->ch, CURLOPT_SSL_VERIFYPEER, false );
+    }
+
     if ( $single ) {
       return $wrapper;
     }
@@ -254,6 +258,7 @@ class X_Email_MailChimp extends X_Email_Provider {
 
     $double_optin = ( 'yes' != $this->plugin->options->get( 'mc_skip_double_opt_in' ) );
     $send_welcome = ( 'yes' == $this->plugin->options->get('mc_send_welcome') || $double_optin == false );
+    $send_welcome = apply_filters( 'x_mailchimp_send_welcome', $send_welcome, $list_id, $user_data );
 
     try {
 

@@ -93,12 +93,12 @@
     background-color: rgb(68, 68, 68);
     background-image: none;
     color: #fff;
-    border: none;
+  /*   border: none; */
     margin-bottom: 10px;
 }
 
 .cp-slidein .cp-optin .cp-submit {
-    border-radius: 3px;
+   /*  border-radius: 3px; */
     display: inline-block;
     word-wrap: break-word;
 }

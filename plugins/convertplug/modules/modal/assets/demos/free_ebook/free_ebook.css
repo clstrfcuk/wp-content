@@ -54,7 +54,9 @@
     font-weight: bold;
     line-height: 1.15em;
 }
-
+.cp-free-ebook-container .cp-overlay-close span{
+        font-family:  'Montserrat', sans-serif;
+}
 .cp-free-ebook .cp-form-container,
 .cp-free-ebook .cp-desc-container,
 .cp-free-ebook .cp-description,
@@ -103,7 +105,7 @@
     font-weight: bold;
     font-size: 15px;
     line-height: 1.38em;
-    border-radius: 0px;
+  /*   border-radius: 0px; */
     outline: none;
 }
 
@@ -120,7 +122,7 @@
 }
 
 .cp-modal .cp-free-ebook .cp-submit {
-    border-radius: 0px;
+   /*  border-radius: 0px; */
     margin-right: 0px;
 }
 .cp-free-ebook .cp-modal-window-size .cp-modal-body,

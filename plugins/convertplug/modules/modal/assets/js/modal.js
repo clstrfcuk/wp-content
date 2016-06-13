@@ -27,13 +27,16 @@
         var cp_form = modal.find('.cp-form-container');
         if( modal.find('.cp-modal-body').hasClass('cp-youtube') && !cp_form.hasClass('cp-youtube-cta-none') ) {
             var cta_delay   = cp_form.attr('data-cta-delay') || '';
+
             if( typeof cta_delay != '' && cta_delay != null ) {
 
-                cta_delay = (cta_delay * 1000);
+                cta_delay = parseInt(cta_delay * 1000);                
+                 cp_form.slideUp('500');
                 setTimeout(function() {
 
                     //  show CTA after complete delay time
                     cp_form.slideDown('500');
+                   
 
                 }, cta_delay );
             }
@@ -66,6 +69,13 @@
 
        return returns;
     }
+
+    jQuery(document).on('smile_customizer_field_change',function(e){
+        CPResponsiveTypoInit();
+    });
+    jQuery(document).on('smile_data_received',function(e,data){
+        CPResponsiveTypoInit();
+    });
 
     function getPrioritized(){
         var modal = 'none';
@@ -108,6 +118,16 @@
             url = url.replace("www.","");
             var url_arr = url.split("*");
 
+            if(doc_ref.indexOf("t.co") !== -1 ){
+                doc_ref = 'twitter.com';
+            }
+
+            if( doc_ref.indexOf("plus.google.co") !== -1 ){
+                doc_ref = 'plus.google.com';
+            } else if( doc_ref.indexOf("google.co") !== -1 ) {
+                doc_ref = 'google.com';
+            }
+
             var _domain = url_arr[0];
             _domain = stripTrailingSlash( _domain );
 
@@ -143,6 +163,9 @@
                         return false;
                     }
                 } else if( url == doc_ref ){
+                    display = false;
+                    return false;
+                } else if( doc_ref.indexOf( _domain ) !== -1 ){
                     display = false;
                     return false;
                 } else {
@@ -328,6 +351,8 @@
             var referrer    = $this.data('referrer-domain');
             var ref_check   = $this.data('referrer-check');
             var doc_ref     = document.referrer.toLowerCase();
+
+            //console.log('referrer url :-' + doc_ref);
             var referred = false;
             if( typeof referrer !== "undefined" && referrer !== "" ){
                 referred = modal.isReferrer( referrer, doc_ref, ref_check );
@@ -336,7 +361,7 @@
             }
 
             if( !cookie && delay && display && scheduled && referred ){
-                if( jQuery(".cp-open").length <= 0 ){                    
+                if( jQuery(".cp-open").length <= 0 ){
 
                     setTimeout(function() {
                         cookie = getCookie(cookieName);
@@ -392,20 +417,20 @@
             if( dev_mode == "enabled" ){
                 removeCookie(cookieName);
             }
-        });        
+        });
 
     });
 
     //  Contact Form 7 - Height Issue fixed
     // jQuery(".wpcf7").on('wpcf7:submit', function(event){
     jQuery(".wpcf7").on('wpcf7:invalid', function(event){
-        cp_column_equilize();       
+        cp_column_equilize();
     });
 
     // Display modal on page scroll after x percentage
     jQuery(document).scroll(function(e){
 
-        // count impressions for inline modal style 
+        // count impressions for inline modal style
         count_inline_impressions();
 
         /*  = Responsive Typography
@@ -664,7 +689,7 @@
                 }
             }
         });
-        
+
     });
 
     // Load the user activity handler
@@ -673,7 +698,7 @@
         var cls = new Array();
         var styleArray = Array();
 
-        count_inline_impressions();       
+        count_inline_impressions();
 
         jQuery('.blinking-cursor').remove();
 
@@ -727,10 +752,10 @@
                 });
             }
         });
-        
+
         jQuery.each(cls, function(i,v){
             jQuery("."+v).click(function(e){
-                
+
                 e.preventDefault();
                 var target      = jQuery('.cp-modal-global.'+v);
 
@@ -775,6 +800,9 @@
                             styleArray.push( style );
                             modal.addClass( 'impression_counted' );
                         }
+                        var cp_tooltip  =  modal.find(".cp-tooltip-icon").data('classes');
+                        jQuery('head').append('<style class="cp-tooltip-close-css">.tip.'+cp_tooltip+'{ display:block; }</style>');
+
                     }
 
                     if(styleArray.length !== 0 ) {
@@ -791,7 +819,10 @@
         set_affiliate_link();
 
         // Initialize tool tip
-        close_button_tootip();
+        setTimeout( function(){
+            close_button_tootip();
+
+        },1000);
 
     });
 
@@ -994,11 +1025,13 @@
         cp_column_equilize();
 
         //  Model height
-        CPModelHeight(); 
+        CPModelHeight();
 
         cp_form_sep_top();
 
-        cp_set_width_svg(); 
+        cp_set_width_svg();
+
+        cp_row_equilize();
 
         var cp_animate = data.find('.cp-animate-container');
         var animationclass = cp_animate.data('overlay-animation');
@@ -1010,15 +1043,17 @@
 
         jQuery("#cp-tooltip-close-css").remove();
 
-        // remove scroller if modal is window size 
+        // remove scroller if modal is window size
         jQuery('.cp-modal-popup-container').each(function(index, element) {
            var t        = jQuery(element),
             modal       = t.find('.cp-modal');
             if( !modal.hasClass("cp-modal-exceed") ){
-                if( modal.hasClass('cp-modal-window-size') ){                           
+                if( modal.hasClass('cp-modal-window-size') ){
                     jQuery('html').addClass('cp-window-viewport');
+                 }else{
+                    jQuery("html").css({"overflow":'hidden'});
                  }
-                }
+            }
         });
 
     });
@@ -1033,7 +1068,7 @@
             var modalht = jQuery(this).find(".cp-modal-content").height();
             var vw = jQuery(window).width();
             var id = jQuery(this).data("modal-id");
-            
+
 
             if( jQuery(this).find(".cp-overlay-close").hasClass('cp-inside-close') || jQuery(this).find(".cp-overlay-close").hasClass('cp-adjacent-close') ){
                 if( jQuery(this).find(".cp-modal").hasClass('cp-modal-custom-size') ){
@@ -1076,6 +1111,8 @@
                    offsetval = 20;
             }
 
+            jQuery(this).find(".has-tip").data("offset" ,offsetval);
+
             //initialize
             var innerclass ='';
             if( jQuery(this).find('.cp-modal').hasClass('cp-modal-window-size') ){
@@ -1084,18 +1121,23 @@
                 }
             }
 
-            jQuery("."+closeid).frosty({
-                    className: innerclass +' tip '+classname,
-                    offset: offsetval,
-                    position : position,
+            jQuery("body").addClass('customize-support');
+
+            var position = jQuery(".cp-close-tooltip").data('position');
+             if( jQuery(this).find('.cp-modal').hasClass('cp-modal-window-size') ){
+                var position = 'left';
+             }
+            jQuery("."+classname).frosty({
+                className: 'tip close-tip-content ' + classname ,
+                position : position,
             });
-            
+
             jQuery("."+classname).remove();
-            jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.tip.'+classname+'{color: '+tcolor+';background-color:'+tbgcolor+';border-color:'+tbgcolor+' }</style>');
+            jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .tip.'+classname+'{color: '+tcolor+';background-color:'+tbgcolor+';border-color:'+tbgcolor+' }</style>');
             if( position == 'left' ){
-                jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before {border-left-color: '+tbgcolor+' ;border-top-color:transperant}</style>');
+                jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .tip.'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before {border-left-color: '+tbgcolor+' ;border-top-color:transparant}</style>');
             } else {
-                jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before{border-top-color: '+tbgcolor+';border-left-color:transperant }</style>');
+                jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .tip.'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before{border-top-color: '+tbgcolor+';border-left-color:transparent }</style>');
             }
         });
 }
@@ -1121,7 +1163,7 @@
     jQuery(document).ready(function(){
 
         check_responsive_font_sizes();
-           
+
         jQuery(document).bind('keydown', function(e) {
             if (e.which == 27) {
                 var cp_overlay = jQuery(".cp-open");
@@ -1136,7 +1178,11 @@
     jQuery(document).on("cp_conversion_done", function(e, $this){
         // do your stuff
         if( !jQuery( $this ).parents(".cp-form-container").find(".cp-email").length > 0 ){
-            jQuery($this).addClass('disabled');
+            var is_only_conversion = jQuery( $this ).parents(".cp-form-container").find('[name="only_conversion"]').length;
+
+            if ( is_only_conversion > 0 ) {
+                jQuery($this).addClass('disabled');
+            }
         }
     });
 
@@ -1162,21 +1208,39 @@
 
     function count_inline_impressions()  {
         jQuery(".cp-modal-inline-end").each(function(e) {
-            var elem = jQuery(this); 
-            var is_visible = isScrolledIntoStyleView(elem); 
+            var elem = jQuery(this);
+            var is_visible = isScrolledIntoStyleView(elem);
             var style_id = jQuery(this).data('style');
 
             if( is_visible ) {
                 var styleArray = Array();
                 if( !jQuery(".cp-overlay[data-modal-style="+style_id+"]").hasClass('impression_counted') ) {
                     styleArray.push(style_id);
-                    update_impressions(styleArray); 
+                    update_impressions(styleArray);
                 }
                 jQuery(".cp-overlay[data-modal-style="+style_id+"]").each(function() {
                     jQuery(this).addClass('impression_counted');
                 });
-            }           
-        }); 
+            }
+        });
     }
+
+
+/*
+    jQuery('.cp_social_share ').click( function(e){
+        do_Somethig();       
+    });
+
+
+function do_Somethig(){ 
+   // var imgsInPopUp = jQuery(mywin.document.body);
+       // console.log('here'+window.name);
+
+}
+
+
+jQuery(window).click(function(e) {
+    alert('hh');
+});*/
 
 })(jQuery);

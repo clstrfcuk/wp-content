@@ -9,18 +9,19 @@
 // -----------------------------------------------------------------------------
 //   01. Columns
 //   02. Account and Checkout
-//   03. Navbar Cart
+//   03. My Account Navigation
+//   04. Navbar Cart
 //   05. Cart Quantity Form
-//   05. Cart Actions
-//   06. Cart and Collaterals
-//   07. AJAX Cart Notification
-//   08. Messages and Errors
-//   09. Popups
-//   10. Star Rating
-//   11. Button Icons
-//   12. Shipping Method
-//   13. Product Name Variation
-//   14. Select2
+//   06. Cart Actions
+//   07. Cart and Collaterals
+//   08. AJAX Cart Notification
+//   09. Messages and Errors
+//   10. Popups
+//   11. Star Rating
+//   12. Button Icons
+//   13. Shipping Method
+//   14. Product Name Variation
+//   15. Select2
 // =============================================================================
 
 // Columns
@@ -364,6 +365,71 @@
 
       input[type="text"] {
         width: 100%;
+      }
+    }
+  }
+}
+
+
+
+// My Account Navigation
+// =============================================================================
+
+.woocommerce-MyAccount-navigation {
+  ul {
+    margin-top: -5px;
+    margin-left: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.woocommerce-MyAccount-navigation-link {
+  display: inline-block;
+
+  &.is-active {
+    a {
+      &:before {
+        opacity: 0.875;
+      }
+    }
+  }
+
+  a {
+    position: relative;
+    display: block;
+    margin: 5px 3px 0 0;
+    padding: 5px 6px;
+    font-size: 11px;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    color: currentColor;
+    background-color: transparent;
+
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 1px solid;
+      border-radius: 3px;
+      background-color: transparent;
+      opacity: 0.275;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+      @include transition(#{opacity 0.3s ease});
+    }
+
+    &:hover,
+    &:focus {
+      color: currentColor;
+
+      &:before {
+        opacity: 0.875;
       }
     }
   }

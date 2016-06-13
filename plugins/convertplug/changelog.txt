@@ -1,3 +1,26 @@
+Version 2.3.0 - May 19, 2016
+- New: Introduced 30+ new styles
+- New: Introduced social media styles
+- New: Introduced floating social bar style
+- New: Introduced predefined images set for close image
+- New: Introduced style importer which will import hot link images into WP Media
+- New: Introduced image source option
+- Improvement: Google font import / export  through style exporter
+- Improvement: Something went wrong email notification to administrator
+- Fixed: Fatal error for memory exhausted issue, improved target pages setting
+- Fixed: Form field values in customizer are not saving
+- Fixed: Conflict with WooCommerce update counter
+- Fixed: File permissions issue while style import
+
+Version 2.2.0 - March 31, 2016
+- New: Introduced new option to control double optin setting for third party mailers
+- New: Introduced new setting to manage ConvertPlug dashboard access for user roles
+- New: Introduced new height option for textarea field in form designer
+- New: Introduced new shadow option for input field in form designer
+- Improvement: Partial AJAX call in customizer to improve customizer performance
+- Improvement: Odd fields support for Form Layout 2
+- Fixed: Referrer detection issue
+
 Version 2.1.0 - March 09, 2016
 - New: Introduced smart trigger to display module inline before / after post
 - New: Introduced widget for inline display of modules

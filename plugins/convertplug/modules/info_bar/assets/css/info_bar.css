@@ -187,14 +187,6 @@
         max-height: 100%;
         overflow-y: auto;
     }
-    .cp-info-bar-wrapper .ib-form-container {
-
-        /*  position: relative;
-        top: 0 !important;
-        -webkit-transform: translate(0,0);
-        -moz-transform: translate(0,0);
-        transform: translate(0,0); */
-    }
 
     .ib-form-container .cp-name-field,
     .ib-form-container .cp-email-field,
@@ -221,11 +213,8 @@
 
 /* Info Bar Message Typography */
 .cp-msg-container {
-   
     line-height: normal;
-    position: relative;    /* -webkit-transform: translateY(-50%);
-        -moz-transform: translateY(-50%);
-        transform: translateY(-50%); */
+    position: relative;
 }
 
 /* Close Button */
@@ -300,29 +289,7 @@
     z-index: 0;
 }
 
-/* For Customizer Submit Button */
-/*.cp-submit ,.cp-second-submit-btn {
-    background-color: #F90;
-    color: #fff;
-    box-shadow: none;
-    border-radius: 3px;
-    font-family: inherit;
-    padding: 3px 7px;
-    outline: 0;
-    margin: 5px 0;
-    width: 100%;
-    max-width: 100%;
-}*/
 
-/* Border */
-/*.cp-pos-top.cp-info-bar-border {
-    border-bottom: 2px solid #555;
-}
-
-.cp-pos-bottom.cp-info-bar-border {
-    border-top: 2px solid #555;
-}
-*/
 /* Shadow */
 .cp-pos-top.cp-info-bar-shadow {
     box-shadow: 1px 1px 2px 0px rgba(66, 66, 66, .6);
@@ -333,30 +300,6 @@
 }
 
 /* Form Formatting */
-/*.cp-info-bar input[type=password],
-.cp-info-bar input[type=text],
-.cp-info-bar button,
-.cp-info-bar input,
-.cp-info-bar select,
-.cp-info-bar textarea {
-    border: 1px solid #dddddd;
-    letter-spacing: normal;
-    box-shadow: none;
-    font-size: 14px;
-    line-height: normal;
-    border-radius: 3px;
-    font-family: inherit;
-    padding: 6px 10px;
-    outline: none;
-    display: block;
-    margin: 5px 0;
-    width: 100%;
-    height: auto;
-    min-height: auto;
-    max-width: 100%;
-    font-weight: normal;
-}*/
-
 .custom-html-form input[type=password],
 .custom-html-form input[type=text],
 .custom-html-form button,
@@ -846,17 +789,6 @@
     list-style-position: inside;
 }
 
-.cp-ib-container .ib-close {
-
-    /* position: relative;
-     right: 0px;
-     -webkit-flex-grow: 0;
-     flex-grow: 0;
-     -webkit-transform: none;
-     -moz-transform: none;
-     transform: none; */
-}
-
 @media (max-width:768px) {
     .cp-ib-container {
         -webkit-flex-direction: column;
@@ -884,7 +816,7 @@
     margin: 0 auto;
     position: fixed;
     right: 10px;
-    top: 0;       
+    top: 0;
     min-width: 100px;
     left: auto;
     right: 20px;
@@ -914,10 +846,10 @@
 }
 .cp-live-preview .cp-ifb-hide{
     visibility:hidden;
-} 
+}
 .cp-live-preview .cp-ifb-hide{
     visibility: visible;
-} 
+}
 .cp-live-preview .cp-ifb-show{
     visibility:hidden;
 }
@@ -953,4 +885,35 @@
     flex-wrap: wrap;
     -ms-flex-line-pack: center;
     align-content: center;
+}
+
+.cp-info-bar .default-form.cp-form-layout-3 {
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+}
+
+/*--- error notice-------*/
+.cp-info-bar .cp-error-msg {
+    margin-bottom: 0px;
+    display: inline;
+}
+.cp-info-bar .cp-m-error h5 {
+    font-weight: 400;
+    display: inline;
+}
+.cp-info-bar .cp-detailed-message {
+    margin-top: 0; 
+    display: inline-block;
+}
+.cp-info-bar .cp-admin-error-notice {
+    margin-top: 0;
+    margin-bottom: 0px;
+    display: inline-block;
+}
+.cp-info-bar .cp-only-admin-msg {
+    padding: 0;
+}
+.cp-info-bar .cp-msg-on-submit .cp-m-error{
+    height:100%
 }

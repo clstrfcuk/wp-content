@@ -20,7 +20,7 @@ if( !function_exists( "slide_in_theme_optin_widget" ) ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);
 		}
 
-		unset($style_settings['style_id']); 	
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -65,8 +65,9 @@ if( !function_exists( "slide_in_theme_optin_widget" ) ) {
 
 		//css for border color
 		$slidein_head_css = '';
+		$style_id = isset( $a['style_id'] ) ? $a['style_id'] : '';
 
-		$slidein_head_css .= ".".$a['style_id']. ' .cp-optin-widget .cp-slidein-head {border-bottom:'.$a['optin_border_width'].'px solid '.$a['optin_border_color'] .';}';
+		$slidein_head_css .= ".".$style_id. ' .cp-optin-widget .cp-slidein-head {border-bottom:'.$a['optin_border_width'].'px solid '.$a['optin_border_color'] .';}';
 
 		echo '<style class="cp-slide_optin_border_color" type="text/css">'.$slidein_head_css.'</style>';
 

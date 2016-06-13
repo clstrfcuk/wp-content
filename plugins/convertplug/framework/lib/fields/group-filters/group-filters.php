@@ -17,167 +17,88 @@ function group_filters_settings_field($name, $settings, $value)
 	$input_name = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
+
 	ob_start();
 	?>
 <select name="<?php echo esc_attr( $input_name ); ?>" id="smile_<?php echo esc_attr( $input_name ); ?>" class="select2-group_filters-dropdown form-control smile-input <?php echo esc_attr( 'smile-'.$type.' '.$input_name.' '.$type.' '.$class ); ?>" multiple="multiple" style="width:260px;">
-	<optgroup label="<?php echo esc_attr( __( 'Pages' ) ); ?>">
+
 	<?php
-    $pages = get_pages();
-	$val_arr = explode( ",", $value );
-    foreach ( $pages as $page ) {
-		$selected = ( in_array( "post-".$page->ID, $val_arr) ) ? 'selected="selected"' : '';
-		$option = '<option value="post-' . $page->ID . '" ' . $selected . '>';
-		$option .= $page->post_title;
-		$option .= '</option>';
-		echo $option;
-    }
-    ?>
-    </optgroup>
-	<optgroup label="<?php echo esc_attr( __( 'Posts' ) ); ?>">
-    <?php
-	$args = array( 'posts_per_page' => -1 );
-	$myposts = get_posts( $args );
-    foreach ( $myposts as $post ) {
-		$selected = ( in_array( "post-".$post->ID, $val_arr) ) ? 'selected="selected"' : '';
-		$option = '<option value="post-' . $post->ID . '" ' . $selected . '>';
-		$option .= $post->post_title;
-		$option .= '</option>';
-		echo $option;
-    }
-	?>
-    </optgroup>
-    <?php
-	$args = array(
-	   'public'   => true,
-	   '_builtin' => false
-	);
 
-	$output = 'names'; // names or objects, note names is the default
-	$operator = 'and'; // 'and' or 'or'
-    $post_types = get_post_types( $args, $output, $operator );
+		$selectedValues = explode(",", $value);
 
-    foreach ( $post_types as $post_type ) {
-        $type = $post_type;
-        $args = array(
-          'post_type' => $type,
-          'post_status' => 'publish',
-          'posts_per_page' => -1,
-          'ignore_sticky_posts'=> 1
-        );
+		foreach ($selectedValues as $key => $selValue) {
 
-        $cp_query = null;
-        $cp_query = new WP_Query( $args );
-        if( $cp_query->have_posts() ) { ?>
-			<optgroup label="<?php echo ucwords( $post_type ); ?>">
-			<?php
-            while ($cp_query->have_posts()) : $cp_query->the_post(); ?>
-				<?php
-                global $post;
-                $val_arr = explode( ",", $value );
-                $selected = ( in_array( "post-".$post->ID, $val_arr ) ) ? 'selected="selected"' : '';
-                ?>
-                <option <?php echo $selected; ?> value="post-<?php echo $post->ID; ?>"><?php the_title(); ?></option>
-                <?php
-            endwhile;
-			?>
-            </optgroup>
-            <?php
-        }
-        wp_reset_query();  // Restore global post data stomped by the_post()
-	}
-	$args = array(
-	   'public'   => true,
-	   '_builtin' => false
-	);
-
-	$output = 'objects'; // names or objects, note names is the default
-	$operator = 'and'; // 'and' or 'or'
-    $taxonomies = get_taxonomies( $args, $output, $operator );
-
-    foreach ( $taxonomies as $taxonomy ) {
-        $terms = get_terms( $taxonomy->name, array(
-			'orderby'    => 'count',
-			'hide_empty' => 0,
-		 ) );
-
-		if( !empty( $terms ) ){
-			?>
-			<optgroup label="<?php echo ucwords( $taxonomy->label ); ?>">
-			<?php
-			foreach( $terms as $term ) { ?>
-			<?php
-				$val_arr = explode( ",", $value );
-				$selected = ( in_array( "tax-".$term->term_id, $val_arr) ) ? 'selected="selected"' : '';
-			?>
-				<option <?php echo $selected; ?> value="tax-<?php echo $term->term_id; ?>"><?php echo $term->name; ?></option>
-			<?php
+			// posts
+			if( strpos( $selValue , "post-" ) !== false ) {
+				$postID = (int) str_replace( "post-", "" , $selValue);
+				$postTitle = get_the_title( $postID );
+				echo '<option value="post-' . $postID . '" selected="selected" >'.$postTitle.'</option>';
 			}
-			?>
-            </optgroup>
-            <?php
+
+			// taxonomy options
+			if( strpos( $selValue , "tax-" ) !== false ) {
+				$taxID = (int) str_replace( "tax-", "" , $selValue);
+				$term = get_term( $taxID );
+				$termTaxonomy = ucfirst( str_replace( "_", " ", $term->taxonomy ) );
+				echo '<option value="tax-' . $taxID . '" selected="selected" >'.$term->name.' - '.$termTaxonomy.'</option>';
+			}
+
+			// Special Pages
+			$spacial_pages = array(
+				'blog' 			=> 'Blog / Posts Page',
+				'front_page' 	=> 'Front Page',
+				'archive' 		=> 'Archive Page',
+				'author' 		=> 'Author Page',
+				'search' 		=> 'Search Page',
+				'404' 			=> '404 Page',
+			);
+
+			foreach ( $spacial_pages as $page => $title ) {
+				$selected = ( "special-".$page == $selValue  ) ? true : false;
+				if( $selected ) {
+					echo "<option selected='selected' value='special-".$page . "' >".$title."</option>";
+				}
+			}
 
 		}
-	}
-	$args = array(
-	   'public'   => true,
-	   '_builtin' => true
-	);
 
-	$output = 'objects'; // names or objects, note names is the default
-	$operator = 'and'; // 'and' or 'or'
-    $taxonomies = get_taxonomies( $args, $output, $operator );
-
-    foreach ( $taxonomies as $taxonomy ) {
-        $terms = get_terms( $taxonomy->name, array(
-			'orderby'    => 'count',
-			'hide_empty' => 0,
-		 ) );
-
-		 if( !empty( $terms ) ){
-			?>
-			<optgroup label="<?php echo ucwords( $taxonomy->label ); ?>">
-			<?php
-			foreach( $terms as $term ) { ?>
-			<?php
-				$val_arr = explode( ",", $value );
-				$selected = ( in_array( "tax-".$term->term_id, $val_arr) ) ? 'selected="selected"' : '';
-			?>
-				<option <?php echo $selected; ?> value="tax-<?php echo $term->term_id; ?>"><?php echo $term->name; ?></option>
-			<?php
-			}
-			?>
-			</optgroup>
-			<?php
-		}
-	}
-
-	// Special Pages
-	$spacial_pages = array(
-	'blog' 			=> 'Blog / Posts Page',
-	'front_page' 	=> 'Front Page',
-	'archive' 		=> 'Archive Page',
-	'author' 		=> 'Author Page',
-	'search' 		=> 'Search Page',
-	'404' 			=> '404 Page',
-	);
 	?>
-	<optgroup label="<?php echo __("Special Pages", "smile" ); ?>">
-	<?php
-	foreach ( $spacial_pages as $page => $title ) {
-		$val_arr = explode( ",", $value );
-		$selected = ( in_array( "special-".$page, $val_arr) ) ? 'selected="selected"' : '';
-		?>
-		<option <?php echo $selected; ?> value="special-<?php echo $page; ?>"><?php echo $title; ?></option>
-		<?php
-	}
-	?>
-	</optgroup>
 </select>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('select.select2-group_filters-dropdown').select2({
-		 placeholder: "Select pages / post / categories",
-	});
+jQuery(document).ready(function($) {
+
+		jQuery('select.select2-group_filters-dropdown').select2({
+			placeholder: "Search pages / post / categories",
+
+			ajax: {
+			    url: ajaxurl,
+			    dataType: 'json',
+			    method: 'post',
+			    delay: 250,
+			    data: function (params) {
+			      	return {
+			        	q: params.term, // search term
+				        page: params.page,
+				        action: 'cp_get_posts_by_query'
+			    	};
+				},
+				processResults: function (data) {
+
+					console.log(data);
+
+		            // parse the results into the format expected by Select2.
+		            // since we are using custom formatting functions we do not need to
+		            // alter the remote JSON data
+
+		            return {
+		                results: data
+		            };
+		        },
+			    cache: true
+			},
+			minimumInputLength: 2,
+
+		});
 });
 </script>
     <?php

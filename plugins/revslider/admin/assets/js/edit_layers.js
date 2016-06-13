@@ -2242,10 +2242,16 @@ var UniteLayersRev = new function(){
 		li.find('.action-target-layer').hide();
 		li.find('.action-callback').hide();
 		li.find('.action-toggle_layer').hide();
+		li.find('.action-toggleclass').hide();
+		li.find('.action-delay-wrapper').show();
+		
 		
 		switch (value) {
+			case "none":
+				li.find('.action-delay-wrapper').hide();				
+			break;
 			case "link":
-				li.find('.action-link-wrapper').show();
+				li.find('.action-link-wrapper').show();				
 			break;
 			case "jumpto":
 				li.find('.action-jump-to-slide').show();
@@ -2544,7 +2550,7 @@ var UniteLayersRev = new function(){
 						jQuery('.tp-present-caption-small').parent().addClass("tp-present-wrapper-small");
 						jQuery('.tp-present-caption-small').parent().parent().addClass("tp-present-wrapper-parent-small");
 					},10);
-					return '<div class="tp-present-caption-small"><div class="tp-caption '+this.getAttribute('original-title')+'">example</div></div>';
+					return '<div class="tp-present-caption-small"><div class="example-dark-blinker"></div><div class="tp-caption '+this.getAttribute('original-title')+'">example</div></div>';
 				}
 			});
 		});
@@ -5361,7 +5367,7 @@ var UniteLayersRev = new function(){
 		
 		objLayer.internal_class = objLayer.internal_class || '';
 		
-		// Enabled Hover ?		
+		// Enabled Hover ?
 		objLayer['hover'] = objLayer['hover'] || false;
 
 		objLayer['alias'] = objLayer['alias'] || u.getSortboxText(objLayer.text).toLowerCase();
@@ -5976,6 +5982,9 @@ var UniteLayersRev = new function(){
 		if(objLayer['deformation-hover']['speed'] == undefined)
 			objLayer['deformation-hover']['speed'] = 0;
 		
+		if(objLayer['deformation-hover']['zindex'] == undefined)
+			objLayer['deformation-hover']['zindex'] = "auto";
+		
 		if(objLayer['deformation-hover']['easing'] == undefined)
 			objLayer['deformation-hover']['easing'] = 'Linear.easeNone';
 		
@@ -6126,7 +6135,12 @@ var UniteLayersRev = new function(){
 		obj2.order = undefined;
 		obj2.time = undefined;
 		obj2.createdOnInit = false;
-		addLayer(obj2);		
+		
+		//unique_id change as the true in addLayer is not triggering this
+		unique_layer_id++;
+		obj2.unique_id = unique_layer_id;
+		
+		addLayer(obj2, true);
 		initDisallowCaptionsOnClick();
 		var key;
 		jQuery.each(t.getLayers(),function(k,layer) {
@@ -6796,6 +6810,7 @@ var UniteLayersRev = new function(){
 		objUpdate['deformation-hover']['2d_rotation'] = parseInt(jQuery('#hover_layer_2d_rotation').val(),0); //z rotate
 		
 		objUpdate['deformation-hover']['speed'] = jQuery('#hover_speed').val();
+		objUpdate['deformation-hover']['zindex'] = jQuery('#hover_zindex').val();
 		objUpdate['deformation-hover']['easing'] = jQuery('#hover_easing option:selected').val();
 		objUpdate['deformation-hover']['css_cursor'] = jQuery('#css_cursor option:selected').val();
 		
@@ -7311,6 +7326,7 @@ var UniteLayersRev = new function(){
 				jQuery('#css_cursor option[value="'+objLayer['deformation-hover']['css_cursor']+'"]').attr('selected', true);
 				
 				jQuery('#hover_speed').val(objLayer['deformation-hover']['speed']);
+				jQuery('#hover_zindex').val(objLayer['deformation-hover']['zindex']);
 				jQuery('#hover_easing option[value="'+objLayer['deformation-hover']['easing']+'"]').attr('selected', true);
 				
 			}

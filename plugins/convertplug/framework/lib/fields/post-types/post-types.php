@@ -63,6 +63,8 @@ function post_types_settings_field($name, $settings, $value)
         $operator = 'and'; // 'and' or 'or'
         $builtin_taxonomies = get_taxonomies( $args, $output, $operator );
 
+        unset($builtin_taxonomies['post_format']);
+
         $args = array(
            'public'   => true,
            '_builtin' => false
@@ -73,6 +75,7 @@ function post_types_settings_field($name, $settings, $value)
         $public_taxonomies = get_taxonomies( $args, $output, $operator );
 
         $taxonomies = array_merge( $builtin_taxonomies, $public_taxonomies );
+
         foreach ( $taxonomies as $taxonomy ) {
 			$selected = ( in_array( 'cp-'.$taxonomy->name, $val_arr) ) ? 'selected="selected"' : '';
             ?>  <option <?php echo $selected; ?> value="cp-<?php echo esc_attr( $taxonomy->name ); ?>"><?php echo ucwords( $taxonomy->label ); ?></option> <?php

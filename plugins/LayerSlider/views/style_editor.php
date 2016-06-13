@@ -25,7 +25,7 @@
 
 <div id="ls-screen-options" class="metabox-prefs hidden">
 	<div id="screen-options-wrap" class="hidden">
-		<form id="ls-screen-options-form" action="<?php echo $_SERVER['REQUEST_URI']?>" method="post">
+		<form id="ls-screen-options-form" method="post">
 			<h5><?php _e('Show on screen', 'LayerSlider') ?></h5>
 			<label>
 				<input type="checkbox" name="showTooltips"<?php echo $lsScreenOptions['showTooltips'] == 'true' ? ' checked="checked"' : ''?>> <?php _e('Tooltips', 'LayerSlider') ?>
@@ -58,7 +58,7 @@
 			<?php _e('Contents of your custom CSS file', 'LayerSlider') ?>
 			<figure><span>|</span><?php _e('Ctrl+Q to fold/unfold a block', 'LayerSlider') ?></figure>
 		</h3>
-		<form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="post" class="inner">
+		<form method="post" class="inner">
 			<input type="hidden" name="ls-user-css" value="1">
 			<?php wp_nonce_field('save-user-css'); ?>
 			<textarea rows="10" cols="50" name="contents" class="ls-codemirror"><?php if(!empty($contents)) {

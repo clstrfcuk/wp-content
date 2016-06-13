@@ -72,6 +72,16 @@
             url = url.replace("www.","");
             var url_arr = url.split("*");
 
+            if(doc_ref.indexOf("t.co") !== -1 ){
+                doc_ref = 'twitter.com';
+            }
+
+            if( doc_ref.indexOf("plus.google.co") !== -1 ){
+                doc_ref = 'plus.google.com';
+            } else if( doc_ref.indexOf("google.co") !== -1 ) {
+                doc_ref = 'google.com';
+            }
+
             var _domain = url_arr[0];
             _domain = stripTrailingSlash( _domain );
 
@@ -108,6 +118,9 @@
                 } else if( url == doc_ref ){
                     display = false;
                     return false;
+                } else if( doc_ref.indexOf( _domain ) !== -1 ){
+                    display = false;
+                    return false;
                 } else {
                     display = true;
                 }
@@ -118,12 +131,19 @@
 
     jQuery.fn.isScheduled = function(){
         var y = new Date(gmt) ;
-        var timezonename= this.data('timezone');
         var timestring = this.data('timezonename');
-        var timeformat = this.data('timezoneformat');
+        var tzoffset = this.data('tz-offset');
 
-        var gtime = y.toGMTString() ;
-        var ltime = y.toLocaleString() ;
+        var gtime = y.toGMTString();
+        var ltime = y.toLocaleString();
+
+        var date = new Date();
+
+        // turn date to utc
+        var utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+
+        // set new Date object
+        var new_date = new Date(utc + (3600000*tzoffset));
 
         var scheduled = this.data('scheduled');
 
@@ -131,31 +151,13 @@
 
             var start = this.data('start');
             var end = this.data('end');
-
             start = Date.parse(start);
             end = Date.parse(end);
-            if( timestring == 'wordpress' ){
-                if( timeformat == 'offset' ){
-                    var dt1=Date.parse(y);
-                    var newdate = moment(dt1).utcOffset(timezonename).format(" MM/DD/YYYY h:mm:ss a");
-                    var ltime =  Date.parse(newdate);
-                } else {
-                     y=y.toISOString();
-                    var newdate=moment(y).tz(timezonename).format(" MM/DD/YYYY h:mm:ss a");
-                    var ltime =  Date.parse(newdate);
-                }
 
-            } else if( timestring == 'system' ){
-                ltime = Date.parse(y);
+            if( timestring == 'system' ){
+                ltime = Date.parse(date);
             } else {
-                if( timeformat == 'offset' ){
-                    var dt1 = Date.parse(y);
-                    var newdate = moment(dt1).utcOffset(timezonename).format(" MM/DD/YYYY h:mm:ss a");
-                    var ltime =  Date.parse(newdate);
-                } else {
-                    var newdate = moment(y).tz(timezonename).format(" MM/DD/YYYY h:mm:ss a");
-                    var ltime =  Date.parse(newdate);
-                }
+                ltime = Date.parse(new_date);
             }
 
             if( ltime >= start && ltime <= end ){
@@ -208,7 +210,7 @@
         createCookie(name, '', -1);
     }
 
-    // Display slidein on page load after x seconds
+    // Display slide in on page load after x seconds
     jQuery(window).load(function() {
 
          var styleArray = Array();
@@ -274,6 +276,7 @@
             var referrer    = $this.data('referrer-domain');
             var ref_check   = $this.data('referrer-check');
             var doc_ref     = document.referrer.toLowerCase();
+
             var referred = false;
             if( typeof referrer !== "undefined" && referrer !== "" ){
                 referred = slidein.isReferrer( referrer, doc_ref, ref_check );
@@ -283,7 +286,7 @@
 
             if( !cookie && delay && display && scheduled && referred ){
 
-                 if(jQuery(".si-open").length <= 0 ){ 
+                 if( jQuery(".si-open").length <= 0 ) {
                     setTimeout(function() {
                         cookie = getCookie(cookieName);
                         var tmp_cookie = getCookie(temp_cookie);
@@ -308,7 +311,7 @@
                         } else {
                             display = false;
                         }
-                        
+
                         if( display ) {
                             adjustToggleButton(slidein_container);
                             jQuery(window).trigger('slideinOpen',[slidein]);
@@ -320,7 +323,7 @@
                                 styleArray.push(style);
                                 if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
                                     update_impressions(styleArray);
-                                    
+
                                     jQuery("[data-slidein-style="+style+"]").each(function(e) {
                                         jQuery(this).addClass('impression_counted');
                                     });
@@ -343,7 +346,7 @@
     jQuery(document).scroll(function(e){
 
         // count inline impressions
-        count_inline_impressions(); 
+        count_inline_impressions();
 
         // calculate the percentage the user has scrolled down the page
         var scrollPercent = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
@@ -395,19 +398,19 @@
             }
 
             if( !cookie && scrollTill && scheduled && referred ){
-                if(jQuery(".si-open").length <= 0 ){ 
+                if(jQuery(".si-open").length <= 0 ){
                     if( scrolled >= scrollTill  ) {
                         adjustToggleButton(slidein_Container);
                         jQuery(window).trigger('slideinOpen',[slidein]);
                         slidein.show();
                         jQuery(document).trigger('resize');
                         slidein.addClass('si-open');
-                        
+
                         if( !slidein.hasClass('impression_counted') ) {
                             styleArray.push(style);
                             if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
                                 update_impressions(styleArray);
-                                
+
                                 jQuery("[data-slidein-style="+style+"]").each(function(e) {
                                     jQuery(this).addClass('impression_counted');
                                 });
@@ -475,19 +478,19 @@
             }
 
             if( !cookie && scrollTill && scheduled && referred ){
-                if(jQuery(".si-open").length <= 0 ){ 
+                if(jQuery(".si-open").length <= 0 ){
                     if( scrolled >= scrollTill  ){
                         adjustToggleButton(slidein_Container);
                         jQuery(window).trigger('slideinOpen',[slidein]);
                         slidein.show();
                         jQuery(document).trigger('resize');
                         slidein.addClass('si-open');
-                        
+
                         if( !slidein.hasClass('impression_counted') ) {
                             styleArray.push(style);
                             if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
                                 update_impressions(styleArray);
-                                
+
                                 jQuery("[data-slidein-style="+style+"]").each(function(e) {
                                     jQuery(this).addClass('impression_counted');
                                 });
@@ -559,18 +562,18 @@
             if( !cookie && referred ){
                 if( exit == 'enabled' && scheduled ){
                     if ( e.clientY <= 0 ){
-                        if( jQuery(".si-open").length <= 0 ){  
+                        if( jQuery(".si-open").length <= 0 ){
 
                             adjustToggleButton(slidein_container);
                             jQuery(window).trigger('slideinOpen',[slidein]);
                             slidein.show();
                             slidein.addClass('si-open');
-                            
+
                             if( !slidein.hasClass('impression_counted') ) {
                                 styleArray.push(style);
                                 if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
                                     update_impressions(styleArray);
-                                    
+
                                     jQuery("[data-slidein-style="+style+"]").each(function(e) {
                                         jQuery(this).addClass('impression_counted');
                                     });
@@ -587,7 +590,7 @@
     jQuery(document).ready(function(){
 
         // count inline impressions
-        count_inline_impressions(); 
+        count_inline_impressions();
 
         jQuery('.blinking-cursor').remove();
 
@@ -638,7 +641,7 @@
         // Display slide in on click of custom class
         jQuery.each(jQuery('.slidein-overlay'),function(){
             var slidein_custom_class = jQuery(this).data('custom-class');
-           
+
             if( typeof slidein_custom_class !== "undefined" && slidein_custom_class !== "" ){
                 slidein_custom_class = slidein_custom_class.split(" ");
 
@@ -651,10 +654,10 @@
         jQuery.each(cls, function(i,v){
 
                 jQuery("."+v).click(function(e){
-                    
+
                     e.preventDefault();
                     var target      = jQuery(".cp-slidein-global."+v);
-                    
+
                 if( !target.siblings('.cp-slidein-popup-container').find('.cp-animate-container').hasClass('cp-form-submit-success') ) {
                     var exit        = target.data("exit-intent");
                     var class_id    = target.data("class-id");
@@ -668,13 +671,13 @@
 
                     var hide_on_device = target.data('hide-on-devices');
                     var hide_from_device = hideOnDevice(hide_on_device);
-                    var count = 0;
-                    var inline = jQuery(".slidein-overlay").hasClass('cp-slidein-inline');
-                    if(inline){
-                        count = 1;
-                    }
-                   
-                    if( jQuery(".si-open").length <= count ){
+                    // var count = 0;
+                    // var inline = jQuery(".slidein-overlay").hasClass('cp-slidein-inline');
+                    // if( inline ) {
+                    //     count = 1;
+                    // }
+
+                    if( jQuery(".si-open").length <= 0 ){
 
                         jQuery(window).trigger('slideinOpen',[slidein]);
                         slidein.show();
@@ -684,12 +687,15 @@
                             styleArray.push(style);
                             if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
                                 update_impressions(styleArray);
-                                
+
                                 jQuery("[data-slidein-style="+style+"]").each(function(e) {
                                     jQuery(this).addClass('impression_counted');
                                 });
                             }
                         }
+                        var cp_tooltip  =  slidein.find(".cp-tooltip-icon").data('classes');
+                        jQuery('head').append('<style class="cp-tooltip-hide">.tip.'+cp_tooltip+'{ display:block; }</style>');
+
                     }
                 }
             });
@@ -820,7 +826,7 @@
             }
 
             if( !cookie && display && referred ){
-                if(jQuery(".si-open").length <= 0 ){ 
+                if(jQuery(".si-open").length <= 0 ){
                     adjustToggleButton(slidein_container);
                     jQuery(window).trigger('slideinOpen',[slidein]);
                     slidein.show();
@@ -829,12 +835,12 @@
                     }
 
                     slidein.addClass('si-open');
-                    
+
                     if( !slidein.hasClass('impression_counted') ) {
                         styleArray.push(style);
                         if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
                             update_impressions(styleArray);
-                            
+
                             jQuery("[data-slidein-style="+style+"]").each(function(e) {
                                 jQuery(this).addClass('impression_counted');
                             });
@@ -902,7 +908,7 @@
 
     jQuery(window).on("slideinOpen", function(e,data) {
 
-        //  Model height
+        //  slide in height
         CP_slide_in_height();
         var cp_animate       = data.find('.cp-animate-container'),
          animationclass      = cp_animate.data('overlay-animation'),
@@ -945,20 +951,16 @@
             var position = jQuery(this).find(".has-tip").data("position");
             var offsetval = 10;
 
+            jQuery("body").addClass('customize-support');
+            //var position = jQuery(this).find(".has-tip");
             //initialize
             var innerclass ='';
 
-            jQuery("."+closeid).frosty({
-                    className: innerclass +' tip '+classname,
-                    offset: offsetval,
-                    position : position,
-            });
-
-            jQuery('head').append('<style class="cp-tooltip-css">.tip.'+classname+'{color: '+tcolor+';background-color:'+tbgcolor+';font-size:13px;border-color:'+tbgcolor+' }</style>');
+            jQuery('head').append('<style class="cp-tooltip-css">.customize-support .tip.'+classname+'{color: '+tcolor+';background-color:'+tbgcolor+';font-size:13px;border-color:'+tbgcolor+' }</style>');
             if( position == 'left' ){
-                jQuery('head').append('<style class="cp-tooltip-css">.customize-support .'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before {border-left-color: '+tbgcolor+' ;border-top-color:transperant}</style>');
+                jQuery('head').append('<style class="cp-tooltip-css">.customize-support .tip.'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before {border-left-color: '+tbgcolor+' ;border-top-color:transparant}</style>');
             } else {
-                jQuery('head').append('<style class="cp-tooltip-css">.customize-support .'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before{border-top-color: '+tbgcolor+';border-left-color:transperant }</style>');
+                jQuery('head').append('<style class="cp-tooltip-css">.customize-support .tip.'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before{border-top-color: '+tbgcolor+';border-left-color:transparant }</style>');
             }
         });
     }
@@ -1013,9 +1015,9 @@ function cp_slide_slidein(){
                     vw                   = jQuery(window).width(),
                     animateclass         = '',
                     cp_tooltip           = slidein_overlay.find(".cp-tooltip-icon").data('classes');
-                    
 
-                var is_imp_added = slidein_overlay.data('impression-added');   
+
+                var is_imp_added = slidein_overlay.data('impression-added');
 
                 if( toggle_visibility == true ) {
                     if( typeof is_imp_added == 'undefined' ) {
@@ -1094,7 +1096,10 @@ function cp_slide_slidein(){
 jQuery(document).on("si_conversion_done", function(e, $this){
     // do your stuff
     if( !jQuery( $this ).parents(".cp-form-container").find(".cp-email").length > 0 ){
-        jQuery($this).addClass('disabled');
+        var is_only_conversion = jQuery( $this ).parents(".cp-form-container").find('[name="only_conversion"]').length;
+        if ( is_only_conversion > 0 ) {
+            jQuery($this).addClass('disabled');
+        }
     }
 });
 
@@ -1126,21 +1131,21 @@ jQuery(window).on('slideinOpen' , function(e, slidein) {
 
     function count_inline_impressions()  {
         jQuery(".cp-slide_in-inline-end").each(function(e) {
-            var elem = jQuery(this); 
-            var is_visible = isScrolledIntoStyleView(elem); 
+            var elem = jQuery(this);
+            var is_visible = isScrolledIntoStyleView(elem);
             var style_id = jQuery(this).data('style');
 
             if( is_visible ) {
                 var styleArray = Array();
                 if( !jQuery("[data-slidein-style="+style_id+"]").hasClass('impression_counted') ) {
                     styleArray.push(style_id);
-                    update_impressions(styleArray); 
+                    update_impressions(styleArray);
                 }
                 jQuery("[data-slidein-style="+style_id+"]").each(function() {
                     jQuery(this).addClass('impression_counted');
                 });
-            }           
-        }); 
+            }
+        });
     }
 
 

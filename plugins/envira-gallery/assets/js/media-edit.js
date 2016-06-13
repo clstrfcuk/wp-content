@@ -27,14 +27,16 @@ var EnviraGalleryImages = new Backbone.Collection;
 
 /**
 * Modal Window
+* - Used by most Envira Backbone views to display information e.g. bulk edit, edit single image etc.
 */
-var EnviraGalleryModalWindow = new wp.media.view.Modal( {
-    controller: {
-        trigger: function() {
-
+if ( typeof EnviraGalleryModalWindow == 'undefined' ) {
+    var EnviraGalleryModalWindow = new wp.media.view.Modal( {
+        controller: {
+            trigger: function() {
+            }
         }
-    }
-} );
+    } );
+}
 
 /**
 * View
@@ -83,6 +85,10 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
     * @param object model   EnviraGalleryImage Backbone Model
     */
     initialize: function( args ) {
+
+        // Define loading and loaded events, which update the UI with what's happening.
+        this.on( 'loading', this.loading, this );
+        this.on( 'loaded',  this.loaded, this );
 
         // Set some flags
         this.is_loading = false;
@@ -162,6 +168,26 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
     },
 
     /**
+    * Renders an error using
+    * wp.media.view.EnviraGalleryError
+    */
+    renderError: function( error ) {
+
+        // Define model
+        var model = {};
+        model.error = error;
+
+        // Define view
+        var view = new wp.media.view.EnviraGalleryError( {
+            model: model
+        } );
+
+        // Return rendered view
+        return view.render().el;
+
+    },
+
+    /**
     * Tells the view we're loading by displaying a spinner
     */
     loading: function() {
@@ -187,7 +213,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
 
         // Display the error message, if it's provided
         if ( typeof response !== 'undefined' ) {
-            alert( response );
+            this.$el.find( 'div.media-toolbar' ).after( this.renderError( response ) );
         }
 
     },
@@ -242,7 +268,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
 
         // Update the model's value, depending on the input type
         if ( event.target.type == 'checkbox' ) {
-            value = ( event.target.checked ? 1 : 0 );
+            value = ( event.target.checked ? event.target.value : 0 );
         } else {
             value = event.target.value;
         }
@@ -275,8 +301,22 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
                 this.trigger( 'loaded loaded:success' );
 
                 // Assign the model's JSON string back to the underlying item
-                var item = JSON.stringify( this.model.attributes );
-                jQuery( 'ul#envira-gallery-output li#' + this.model.get( 'id' ) ).attr( 'data-envira-gallery-image-model', item );
+                var item = JSON.stringify( this.model.attributes ),
+                    item_element = jQuery( 'ul#envira-gallery-output li#' + this.model.get( 'id' ) );
+
+                // Assign the JSON
+                jQuery( item_element ).attr( 'data-envira-gallery-image-model', item );
+
+                // Update the title and hint
+                jQuery( 'div.meta div.title span', item_element ).text( this.model.get( 'title' ) );
+                jQuery( 'div.meta div.title a.hint', item_element ).attr( 'title', this.model.get( 'title' ) );
+
+                // Display or hide the title hint depending on the title length
+                if ( this.model.get( 'title' ).length > 20 ) {
+                    jQuery( 'div.meta div.title a.hint', item_element ).removeClass( 'hidden' );
+                } else {
+                    jQuery( 'div.meta div.title a.hint', item_element ).addClass( 'hidden' );
+                }
 
                 // Show the user the 'saved' notice for 1.5 seconds
                 var saved = this.$el.find( '.saved' );
@@ -408,7 +448,7 @@ var EnviraGalleryChildViews = [];
 jQuery( document ).ready( function( $ ) {
 
     // Edit Image
-    $( '#envira-gallery' ).on( 'click.enviraModify', '.envira-gallery-modify-image', function( e ) {
+    $( document ).on( 'click', '#envira-gallery-main a.envira-gallery-modify-image', function( e ) {
 
         // Prevent default action
         e.preventDefault();
@@ -416,8 +456,6 @@ jQuery( document ).ready( function( $ ) {
         // (Re)populate the collection
         // The collection can change based on whether the user previously selected specific images
         EnviraGalleryImagesUpdate( false );
-
-        console.log( EnviraGalleryImages );
 
         // Get the selected attachment
         var attachment_id = $( this ).parent().data( 'envira-gallery-image' );
@@ -463,6 +501,9 @@ function EnviraGalleryImagesUpdate( selected_only ) {
         // Add the model to the collection
         EnviraGalleryImages.add( new EnviraGalleryImage( envira_gallery_image ) );
     } );
+
+    // Update the count in the UI
+    jQuery( '#envira-gallery-main span.count' ).text( jQuery( 'ul#envira-gallery-output li.envira-gallery-image' ).length );
 
 }
 

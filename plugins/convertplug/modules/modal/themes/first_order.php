@@ -18,8 +18,8 @@ if( !function_exists( "modal_theme_first_order" ) ) {
 		foreach( $style_settings as $key => $setting ) {
 			$style_settings[$key] = apply_filters('smile_render_setting',$setting);;
 		}
-		
-		unset($style_settings['style_id']); 
+
+		unset($style_settings['style_id']);
 
 		//	Generate UID
 		$uid		= uniqid();
@@ -29,7 +29,7 @@ if( !function_exists( "modal_theme_first_order" ) ) {
 			"uid"       	=> $uid,
 			"uid_class" 	=> $uid_class,
 			"style_class"	=> "cp-first-order"
-		);		
+		);
 
 		/**
 		 * Merge short code variables arrays
@@ -60,7 +60,7 @@ if( !function_exists( "modal_theme_first_order" ) ) {
 
 
 		//	Filters & Actions
-		$modal_image 		= apply_filters( 'cp_get_modal_image_url', $a['modal_image'] );
+		$modal_image 		= apply_filters( 'cp_get_modal_image_url', $a );
 
 		/** = Before filter
 		 *-----------------------------------------------------------*/

@@ -105,6 +105,12 @@ class X_Addons_Updates {
 			$this->cache_extensions( $data['plugins'] );
 		}
 
+    if ( isset( $data['error'] ) ) {
+      delete_option( 'x_product_validation_key' );
+      delete_site_transient( 'update_themes' );
+      delete_site_transient( 'update_plugins' );
+    }
+
   }
 
   public function cache_extensions( $plugins ) {

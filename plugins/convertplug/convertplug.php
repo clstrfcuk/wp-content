@@ -4,12 +4,12 @@ Plugin Name: ConvertPlug
 Plugin URI: http://convertplug.com/
 Author: Brainstorm Force
 Author URI: https://www.brainstormforce.com
-Version: 2.1.0
+Version: 2.3.0
 Description: Welcome to ConvertPlug - the easiest WordPress plugin to convert website traffic into leads. ConvertPlug will help you build email lists, drive traffic, promote videos, offer coupons and much more!
 Text Domain: smile
 */
 if( !defined( 'CP_VERSION' ) ) {
-	define( 'CP_VERSION', '2.1.0');
+	define( 'CP_VERSION', '2.3.0');
 }
 
 if( !defined( 'CP_BASE_DIR' ) ) {
@@ -35,7 +35,7 @@ function on_cp_activate() {
 	$cp_previous_version = get_option( 'cp_previous_version' );
 
 	if( !$cp_previous_version ) {
-		update_option( 'cp_is_new_user', true );	
+		update_option( 'cp_is_new_user', true );
 	} else {
 		update_option( 'cp_is_new_user', false );
 	}
@@ -46,7 +46,6 @@ function on_cp_activate() {
 	global $wp_version;
 	$wp = '3.5';
 	$php = '5.3.2';
-	$test_php = '5.2.17';
     if ( version_compare( PHP_VERSION, $php, '<' ) )
         $flag = 'PHP';
     elseif
@@ -60,7 +59,6 @@ function on_cp_activate() {
 
 }
 
-
 if(!class_exists( 'Convert_Plug' )){
 	// include Smile_Framework class
 	require_once( 'framework/Smile_Framework.php' );
@@ -72,6 +70,7 @@ if(!class_exists( 'Convert_Plug' )){
 
 			//	Fall back support for multi fields
 			add_action( 'init', array( $this,'fallback_support_for_multifield' ) );
+			add_action( 'wp_loaded', array( $this,'cp_access_capabilities' ), 1 );
 
 			$this->paths = wp_upload_dir();
 			$this->paths['fonts'] 	= 'smile_fonts';
@@ -92,15 +91,73 @@ if(!class_exists( 'Convert_Plug' )){
 			add_action( 'wp_ajax_cp_display_preview_slide_in', array( $this, 'cp_display_preview_slide_in' ) );
 			add_action( 'plugins_loaded', array( $this, 'cp_load_textdomain' ) );
 			add_filter( 'the_content', array( $this, 'cp_add_content' ) );
+
+			// filter hook to add frosty script
+			add_filter( 'bsf_core_frosty_screens', array( $this, 'load_frosty_scripts_from_core' ) );
+
 			require_once( 'admin/ajax-actions.php' );
 			require_once( 'framework/cp-widgets.php' );
 			add_action( 'widgets_init', 'Load_Convertplug_Widget' );
-				
+
 			if( get_option("dismiss-cp-update-notice") == false ) {
-				add_action( 'admin_notices', 'cp_update_admin_notice' );
+				//add_action( 'admin_notices', 'cp_update_admin_notice' );
+			}
+
+			$checked = get_option( "cp_image_compatibility_check" );
+
+			if( !$checked ) {
+				cp_back_compatiblity_image();
+			}
+
+			// minimum requirement for PHP version
+			$php = '5.4';
+
+			// If current version is less than minimum requirement, display admin notice
+			if ( version_compare( PHP_VERSION, $php, '<' ) ) {
+				add_action( 'admin_notices', 'cp_php_version_notice' );
 			}
 
 		}
+
+		/*
+		* Add ConvertPlug access capabilities to user roles
+		* Since 2.2.0
+		*/
+		function cp_access_capabilities() {
+
+			if ( is_user_logged_in() ) {
+				if ( current_user_can( 'manage_options' ) ) {
+
+					global $wp_roles;
+	 				$wp_roles_data = $wp_roles->get_names();
+	 				$roles = false;
+
+					$cp_settings = get_option( 'convert_plug_settings' );
+
+					if( isset($cp_settings['cp-access-role']) ) {
+						$roles = explode( ",", $cp_settings['cp-access-role'] );
+					}
+
+	 				if(!$roles) {
+	 					$roles = array();
+	 				}
+
+	 				// give access to administrator
+	 				$roles[] = 'administrator';
+
+	 				foreach ( $wp_roles_data as $key => $value ) {
+	 					$role = get_role( $key );
+
+	 					if ( in_array( $key, $roles ) ) {
+	 						$role->add_cap( 'access_cp' );
+	 					} else {
+	 						$role->remove_cap( 'access_cp' );
+	 					}
+	 				}
+ 				}
+			}
+		}
+
 		function fallback_support_for_multifield() {
 			$op = get_option('cp_multifield_support', 'no');
 			if( $op == 'no' ) {
@@ -483,6 +540,9 @@ if(!class_exists( 'Convert_Plug' )){
 		*/
 		function cp_admin_scripts($hook) {
 
+			//	Store all global CSS variables
+			wp_enqueue_script( 'cp-css-generator', plugins_url( 'framework/assets/js/css-generator.js', __FILE__ ), array( 'jquery') );
+
 			wp_enqueue_script( 'wp-color-picker' );
 			wp_enqueue_style( 'wp-color-picker' );
 
@@ -490,7 +550,7 @@ if(!class_exists( 'Convert_Plug' )){
 
 			if ( strpos( $hook , 'convertplug' ) !== false ) {
 				wp_enqueue_style( 'cp-connects-icon', plugins_url('modules/assets/css/connects-icon.css',__FILE__) );
-				wp_enqueue_style( 'cp-social-icon', plugins_url('modules/assets/css/social-icon-css.css',__FILE__) );
+				//wp_enqueue_style( 'cp-social-icon', plugins_url('modules/assets/css/social-icon-css.css',__FILE__) );
 			}
 
 			if( isset( $_GET['hidemenubar'] ) ) {
@@ -504,11 +564,12 @@ if(!class_exists( 'Convert_Plug' )){
 					wp_logout();
 					auth_redirect();
 				}
-
+				wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
 				wp_enqueue_script( 'cp-perfect-scroll-js', plugins_url( 'admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
 			}
 
 			if( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == 'variant' ) ) {
+
 				wp_enqueue_script( 'cp-perfect-scroll-js', plugins_url( 'admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
 				wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
 				wp_enqueue_style( 'cp-animate', plugins_url( 'modules/assets/css/animate.css', __FILE__ ) );
@@ -535,10 +596,7 @@ if(!class_exists( 'Convert_Plug' )){
 					wp_enqueue_script( 'bsf-charts-polararea-js', plugins_url('admin/assets/js/Chart.PolarArea.js',__FILE__), false, false, true );
 					wp_enqueue_script( 'bsf-charts-scripts', plugins_url('admin/contacts/js/connect-analytics.js',__FILE__), false, false, true );
 				}
-				if( isset($_GET['page']) && $_GET['page'] == 'contact-manager'  ) {
-					wp_enqueue_style( 'css-tootip', plugins_url('admin/assets/css/frosty.css',__FILE__) );
-					wp_enqueue_script( 'convert-tooltip', plugins_url('admin/assets/js/frosty.js',__FILE__),array( 'jquery' ),'',true);
-				}
+
 				wp_enqueue_style( 'css-select2', plugins_url('admin/assets/select2/select2.min.css',__FILE__) );
 				wp_enqueue_script( 'convert-select2', plugins_url('admin/assets/select2/select2.min.js',__FILE__), false, false, true );
 
@@ -548,11 +606,16 @@ if(!class_exists( 'Convert_Plug' )){
 			}
 
 			if( !isset( $_GET['hidemenubar'] ) && strpos( $hook , 'convertplug' ) !== false ) {
-				
+
 				wp_enqueue_style( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/css/bootstrap-datetimepicker.min.css',__FILE__) );
 
 				wp_enqueue_script( 'smile-moment-with-locales', plugins_url( 'modules/assets/js/moment-with-locales.js', __FILE__), false, false, true );
 				wp_enqueue_script( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/js/bootstrap-datetimepicker.js',__FILE__), false, false, true );
+
+				// sweet alert
+				wp_enqueue_script( 'cp-swal-js', plugins_url('admin/assets/js/sweetalert.min.js',__FILE__), false, false, true );
+				wp_enqueue_style( 'cp-swal-style', plugins_url('admin/assets/css/sweetalert.css',__FILE__) );
+
 			}
 
 			// count down style scripts
@@ -566,7 +629,6 @@ if(!class_exists( 'Convert_Plug' )){
 			if ( strpos( $hook , 'convertplug' ) !== false ) {
 				// developer mode
 				if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
-					wp_enqueue_style( 'css-tootip', plugins_url('admin/assets/css/frosty.css',__FILE__) );
 					wp_enqueue_style( 'convert-admin', plugins_url('admin/assets/css/admin.css',__FILE__) );
 					wp_enqueue_style( 'convert-about', plugins_url('admin/assets/css/about.css',__FILE__) );
 					wp_enqueue_style( 'convert-preview-style', plugins_url('admin/assets/css/preview-style.css',__FILE__) );
@@ -595,17 +657,32 @@ if(!class_exists( 'Convert_Plug' )){
 		*/
 		function enqueue_front_scripts(){
 
+			if( isset( $_GET['hidemenubar'] ) ) {
+
+				//	Common File for ConvertPlug
+				wp_enqueue_script( 'cp-ckeditor', plugins_url( 'modules/assets/js/ckeditor/ckeditor.js', __FILE__) );
+				wp_enqueue_script( 'cp-contact-form', plugins_url( 'modules/assets/js/convetplug.js', __FILE__ ), array( 'jquery', 'cp-ckeditor', 'smile-customizer-js' ) );
+
+				if( !is_user_logged_in() || ( defined( "LOGGED_IN_COOKIE" ) && empty( $_COOKIE[LOGGED_IN_COOKIE] ) ) ){
+					wp_clear_auth_cookie();
+					wp_logout();
+					auth_redirect();
+				}
+
+				wp_enqueue_script( 'cp-perfect-scroll-js', plugins_url( 'admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
+			}
+
 			wp_register_script( 'cp-detect-device', plugins_url( 'modules/assets/js/mdetect.js', __FILE__), array( 'jquery' ), null, null, true );
+			wp_register_script( 'cp-ideal-timer-script', plugins_url( 'modules/assets/js/idle-timer.min.js', __FILE__), array( 'jquery' ), null, null, true );
 		}
 		/*
 		* Add main manu for ConvertPlug
 		* @Since 1.0
 		*/
 		function add_admin_menu(){
-			$page = add_menu_page( 'ConvertPlug Dashboard', 'ConvertPlug', 'administrator', 'convertplug', array($this,'admin_dashboard'), 'div' );
+			$page = add_menu_page( 'ConvertPlug Dashboard', 'ConvertPlug', 'access_cp', 'convertplug', array($this,'admin_dashboard'), 'div' );
 			add_action( 'admin_print_scripts-' . $page, array($this,'convert_admin_scripts'));
 			add_action( 'admin_footer-'. $page, array($this,'cp_admin_footer') );
-
 
 			if(defined('BSF_MENU_POS'))
 				$required_place = BSF_MENU_POS;
@@ -632,7 +709,7 @@ if(!class_exists( 'Convert_Plug' )){
 				"convertplug",
 				__("Connects","smile"),
 				__("Connects","smile"),
-				"administrator",
+				"access_cp",
 				"contact-manager",
 				array($this, 'contacts_manager')
 			);
@@ -642,7 +719,7 @@ if(!class_exists( 'Convert_Plug' )){
 				"convertplug",
 				__("Resources","contacts_manager"),
 				__("Resources","contacts_manager"),
-				"administrator",
+				"access_cp",
 				"cp-resources",
 				array($this, 'cp_resources')
 			);
@@ -652,13 +729,12 @@ if(!class_exists( 'Convert_Plug' )){
 			        'contacts_manager',
 			        'Hidden!',
 			        'Hidden!',
-			        'administrator',
+			        'access_cp',
 			        'cp_customizer',
 			        array($this, 'cp_customizer_render_hidden_page')
 			    );
 
 			add_action( 'admin_footer-'. $cust_page, array($this,'cp_customizer_render_hidden_page') );
-
 
 			// section wise menu
 			global $bsf_section_menu;
@@ -672,7 +748,7 @@ if(!class_exists( 'Convert_Plug' )){
 				"convertplug",
 				__("Google Font Manager","smile"),
 				__("Google Fonts","smile"),
-				"administrator",
+				"access_cp",
 				"bsf-google-font-manager",
 				array($this, 'cp_font_manager')
 			);
@@ -694,10 +770,6 @@ if(!class_exists( 'Convert_Plug' )){
 			if( isset( $submenu['convertplug'][0][0] ) ) {
 			    $submenu['convertplug'][0][0] = 'Dashboard';
 			}
-		}
-		function cp_icon_manager(){
-			$AIO_Icon_Manager = new AIO_Icon_Manager;
-			$AIO_Icon_Manager->icon_manager_dashboard();
 		}
 
 		function cp_resources() {
@@ -785,10 +857,6 @@ if(!class_exists( 'Convert_Plug' )){
 		    return $menu_ord;
 		}
 
-		function add_new_style_fun(){
-			echo "<script>window.location = '?page=smile-modal-designer&style-view=donotdelete'; </script>";
-		}
-
 		/*
 		* Load scripts and styles on admin area of convertPlug
 		* @Since 1.0
@@ -803,9 +871,6 @@ if(!class_exists( 'Convert_Plug' )){
 			// developer mode
 			if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 
-				// tool tip library script
-				wp_enqueue_script( 'convert-tooltip', plugins_url('admin/assets/js/frosty.js',__FILE__),array( 'jquery' ),'',true);
-
 				// accordion
 				wp_enqueue_script( 'convert-accordion-widget', plugins_url('admin/assets/js/jquery.widget.min.js',__FILE__) );
 				wp_enqueue_script( 'convert-accordion', plugins_url('admin/assets/js/accordion.js',__FILE__));
@@ -813,9 +878,9 @@ if(!class_exists( 'Convert_Plug' )){
 				wp_enqueue_script( 'convert-admin', plugins_url('admin/assets/js/admin.js',__FILE__));
 
 				// shuffle js scripts
-				wp_enqueue_script( 'smile-jquery-modernizer', plugins_url('modules/modal/assets/js/jquery.shuffle.modernizr.js',__FILE__),'','',true);
-				wp_enqueue_script( 'smile-jquery-shuffle', plugins_url('modules/modal/assets/js/jquery.shuffle.min.js',__FILE__),'','',true);
-				wp_enqueue_script( 'smile-jquery-shuffle-custom', plugins_url('modules/modal/assets/js/shuffle-script.js',__FILE__),'','',true);
+				wp_enqueue_script( 'smile-jquery-modernizer', plugins_url('modules/assets/js/jquery.shuffle.modernizr.js',__FILE__),'','',true);
+				wp_enqueue_script( 'smile-jquery-shuffle', plugins_url('modules/assets/js/jquery.shuffle.min.js',__FILE__),'','',true);
+				wp_enqueue_script( 'smile-jquery-shuffle-custom', plugins_url('modules/assets/js/shuffle-script.js',__FILE__),'','',true);
 
 				// sweet alert
 				wp_enqueue_script( 'cp-swal-js', plugins_url('admin/assets/js/sweetalert.min.js',__FILE__), false, false, true );
@@ -872,10 +937,31 @@ if(!class_exists( 'Convert_Plug' )){
 
 		    $contactsPage_hook = 'convertplug_page_contact-manager';
 		    $cpmainPage_hook = 'toplevel_page_convertplug';
-		    $modalPage_hook = 'convertplug_page_smile-modal-designer';
-			$infoBarPage_hook = 'convertplug_page_smile-info_bar-designer';
-		    array_push($hooks,$contactsPage_hook,$modalPage_hook,$infoBarPage_hook,$cpmainPage_hook);
+		    array_push($hooks,$contactsPage_hook,$cpmainPage_hook);
 		    return $hooks;
+		}
+
+		/*
+		* Load frosty scripts from bsf core
+		* @Since 2.1.0
+		*/
+		function load_frosty_scripts_from_core($hooks) {
+
+			// page hooks array where we need frosty scripts to load
+			$array = array(
+				'toplevel_page_convertplug',
+				'convertplug_page_smile-modal-designer',
+				'convertplug_page_smile-info_bar-designer',
+				'convertplug_page_smile-slide_in-designer',
+				'convertplug_page_contact-manager',
+				'convertplug_page_role-manager',
+				'admin_page_cp_customizer',
+				'convertplug_page_cp-wp-registration-form'
+			);
+			foreach ($array as $hook) {
+				array_push($hooks, $hook);
+			}
+			return $hooks;
 		}
 
 		/*
@@ -977,11 +1063,13 @@ if(!class_exists( 'Convert_Plug' )){
 	*/
 	function search_style($array, $style)
 	{
-		foreach ($array as $key => $data)
-		{
-			$data_style = isset($data['style_id']) ? $data['style_id'] : '';
-			if ($data_style == $style)
-				return $key;
+		if( is_array($array) ) {
+			foreach ( $array as $key => $data )
+			{
+				$data_style = isset($data['style_id']) ? $data['style_id'] : '';
+				if ($data_style == $style)
+					return $key;
+			}
 		}
 	}
 	/*
@@ -1149,43 +1237,46 @@ if(isset($_GET['hide-bsf-core-notice']) && $_GET['hide-bsf-core-notice'] === 're
 }
 
 /*
- * Function to display admin notice after updating plugin 
+ * Function to display admin notice after updating plugin
 */
-function cp_update_admin_notice() {
-    ?>
-    <script type="text/javascript" >
-    	(function($){
-			$(document).ready(function(){
-				$(document).on( "click", ".cp-update-notice .notice-dismiss", function() {
-					var cp_notice_name = $(this).closest('div').attr("data-cp-notice");
-				    $.ajax({
-				        url: ajaxurl,
-				        method: 'POST',
-				        data: {
-				            action: "cp_dismiss_notice",
-				            notice: cp_notice_name
-				        },
-				        success: function(response) {
-				        	console.log(response);
-				        }
-				    })
-				})
-			});
-		})(jQuery);
-    </script>
-    <div class="notice cp-update-notice notice-success is-dismissible" data-cp-notice="dismiss-cp-update-notice">
-    	<?php
-    	$is_new_user = get_option( 'cp_is_new_user' );
-    	if( $is_new_user ) { 
-    	?>
-	        <p><?php _e( "You've just installed ConvertPlug 2.1.0 As we've made important changes in this version, you are strongly advised to read the changelog <a target='_blank' href='https://changelog.brainstormforce.com/convertplug/author/brainstormforce/'>here</a>.", 'smile' ); ?></p>
-	    <?php 
-    	} else {
-    	?>
-    		<p><?php _e( "You've just updated ConvertPlug 2.1.0 As we've made important changes in this version, you are strongly advised to read the changelog <a target='_blank' href='https://changelog.brainstormforce.com/convertplug/author/brainstormforce/'>here</a>.", 'smile' ); ?></p>
-    	<?php } ?>
-    </div>
-    <?php
+if( !function_exists( 'cp_update_admin_notice' ) ) {
+	function cp_update_admin_notice() {
+	    ?>
+	    <script type="text/javascript" >
+	    	(function($){
+				$(document).ready(function(){
+					$(document).on( "click", ".cp-update-notice .cp-notice-dismiss", function() {
+						var cp_notice_name = $(this).closest('div').attr("data-cp-notice");
+					    $.ajax({
+					        url: ajaxurl,
+					        method: 'POST',
+					        data: {
+					            action: "cp_dismiss_notice",
+					            notice: cp_notice_name
+					        },
+					        success: function(response) {
+					        	console.log(response);
+					        	jQuery(".cp-update-notice").remove();
+					        }
+					    })
+					})
+				});
+			})(jQuery);
+	    </script>
+	    <div class="notice cp-update-notice notice-success " data-cp-notice="dismiss-cp-update-notice">
+	    	<?php
+	    	$is_new_user = get_option( 'cp_is_new_user' );
+	    	if( $is_new_user ) {
+	    	?>
+		        <p><?php _e( "You've just installed ConvertPlug 2.1.0 As we've made important changes in this version, you are strongly advised to read the changelog <a target='_blank' href='https://changelog.brainstormforce.com/convertplug/author/brainstormforce/'>here</a>.", 'smile' ); ?><a class="cp-notice-dismiss" style='float:right; padding-right: 10px; color:red; text-decoration: none;' href="javascript:void(0)">Dismiss this notice </a></p>
+		    <?php
+	    	} else {
+	    	?>
+	    		<p><?php _e( "You've just updated ConvertPlug 2.1.0 As we've made important changes in this version, you are strongly advised to read the changelog <a target='_blank' href='https://changelog.brainstormforce.com/convertplug/author/brainstormforce/'>here</a>.", 'smile' ); ?><a class="cp-notice-dismiss" style='float:right; padding-right: 10px; color:red; text-decoration: none;' href="javascript:void(0)">Dismiss this notice </a></p>
+	    	<?php } ?>
+	    </div>
+	    <?php
+	}
 }
 
 add_action( 'wp_ajax_cp_dismiss_notice', 'cp_dismiss_notice');
@@ -1198,4 +1289,72 @@ if(!function_exists('cp_dismiss_notice')) {
 	}
 }
 
+/*
+ * Function to display admin notice for outdated php version
+*/
+if( !function_exists( 'cp_php_version_notice' ) ) {
+	function cp_php_version_notice() {
+	    ?>
+	    <div class="notice notice-warning cp-php-warning is-dismissible">
+		        <p><?php _e( "Your server seems to be running outdated, unsupported and vulnerable version of PHP. You are advised to contact your host and upgrade to PHP 5.6 or greater.", 'smile' ); ?></p>
+	    </div>
+	    <?php
+	}
+}
+
 // end of common functions
+
+
+function cp_back_compatiblity_image() {
+
+	$modules = array(
+		"slide_in",
+		"info_bar"
+	);
+
+	foreach ( $modules as $module ) {
+
+		$styles = get_option('smile_'.$module.'_styles');
+
+		if( is_array($styles) ) {
+
+			foreach ( $styles as $key => $style ) {
+
+				$style_settings = $style['style_settings'];
+
+				$sett = unserialize($style_settings);
+
+				$old_bg_image_option = str_replace( "_", "", $module ) . '_bg_image';
+				$new_bg_image_option = $module . '_bg_image';
+
+				$old_image_option = str_replace( "_", "", $module ) . '_image';
+				$new_image_option = $module . '_image';
+
+				// style background image
+				if( isset($sett[$old_bg_image_option]) && $sett[$old_bg_image_option] !== '' ) {
+					$image = $sett[$old_bg_image_option];
+					unset( $sett[$old_bg_image_option] );
+					$sett[$new_bg_image_option] = $image;
+				}
+
+				/// style image
+				if( isset($sett[$old_image_option]) && $sett[$old_image_option] !== '' ) {
+					$image = $sett[$old_image_option];
+					unset( $sett[$old_image_option] );
+					$sett[$new_image_option] = $image;
+				}
+
+				$style['style_settings'] =  serialize($sett);
+
+				$styles[$key] = $style;
+
+			}
+
+			update_option( 'smile_'.$module.'_styles' , $styles );
+
+		}
+	}
+
+	update_option( 'cp_image_compatibility_check', true );
+
+}

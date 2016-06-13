@@ -69,6 +69,7 @@ switch ( $display ) {
         slide          : 'li',
         slidesToShow   : <?php echo x_get_option( 'x_ethos_post_carousel_display_count_extra_large' ); ?>,
         slidesToScroll : 1,
+        rtl            : <?php echo json_encode( is_rtl() ); ?>,
         responsive     : [
           { breakpoint : 1500, settings : { speed : 500, slide : 'li', slidesToShow : <?php echo x_get_option( 'x_ethos_post_carousel_display_count_large' ); ?> } },
           { breakpoint : 1200, settings : { speed : 500, slide : 'li', slidesToShow : <?php echo x_get_option( 'x_ethos_post_carousel_display_count_medium' ); ?> } },

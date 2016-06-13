@@ -40,7 +40,7 @@ if(!function_exists('check_bsf_product_status')) {
 					break;
 				}
 			}
-			
+
 
 		}
 
@@ -60,7 +60,7 @@ if(!function_exists('get_bundled_plugins')) {
         $prd_ids = array();
 
 		foreach ( $brainstrom_products as $key => $value ) {
-		   foreach ( $value as $key => $value ) {
+		   foreach ( $value as $key => $value2 ) {
 		       array_push($prd_ids, $key);
 		   }
 		}
@@ -85,16 +85,20 @@ if(!function_exists('get_bundled_plugins')) {
 			)
 		);
 
+
 		if (!is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) === 200)
 		{
 			$brainstrom_bundled_products = (get_option('brainstrom_bundled_products')) ? get_option('brainstrom_bundled_products') : array();
-			$result = json_decode( $request['body'] );	
+			$result = json_decode( $request['body'] );
 
+			if(empty($result)) {
+				return false;
+			}
 			foreach ( $result as $key => $value ) {
 				if( empty( $value ) ) {
 					unset( $result->$key );
 				}
-			}		
+			}
 
 			// if ( array_key_exists( $result[$id]['api'], $result ) ) {
 			// 	update_option('brainstrom_bundled_products_2', '$brainstrom_bundled_products' );
@@ -108,7 +112,7 @@ if(!function_exists('get_bundled_plugins')) {
 			// 				$is_found_in_local = true;
 			// 			}
 			// 		}
-			// 		if(!$is_found_in_local) {						
+			// 		if(!$is_found_in_local) {
 			// 			$brainstrom_bundled_products[] = $bp;
 			// 		}
 			// 	}
@@ -116,8 +120,9 @@ if(!function_exists('get_bundled_plugins')) {
 			// else {
 			// 	$brainstrom_bundled_products = (array)$result;
 			// }
-
-			update_option( 'brainstrom_bundled_products', $result );
+			//echo 'GET BUNDLED <br/>';
+			$brainstrom_bundled_products = (array)$result;
+			update_option( 'brainstrom_bundled_products', $brainstrom_bundled_products );
 		}
 	}
 }
@@ -128,6 +133,7 @@ if(!function_exists('get_bundled_plugins')) {
 			global $bsf_theme_template;
 			$template = (is_multisite()) ? $bsf_theme_template : get_template();
 			get_bundled_plugins( $template );
+			//bsf_check_product_update();
 			set_site_transient( 'bsf_get_bundled_products', true, 7*24*60*60 );
 		}
 	//}
@@ -139,17 +145,27 @@ if(!function_exists('install_bsf_product')) {
 			wp_die(__('You do not have sufficient permissions to install plugins for this site.','bsf'));
 		$brainstrom_bundled_products = (get_option('brainstrom_bundled_products')) ? get_option('brainstrom_bundled_products') : array();
 		$install_product_data = array();
+
 		if(!empty($brainstrom_bundled_products)) :
-			foreach($brainstrom_bundled_products as $products) :
-				foreach ($products as $key => $product) {
-					if($product->id === $install_id) {
-						$install_product_data = $product;
+			foreach($brainstrom_bundled_products as $keys => $products) :
+				if(strlen($keys) > 1) {
+					foreach ($products as $key => $product) {
+						if($product->id === $install_id) {
+							$install_product_data = $product;
+							break;
+						}
+					}
+				}
+				else {
+					if($products->id === $install_id)
+					{
+						$install_product_data = $products;
 						break;
 					}
 				}
-
 			endforeach;
 		endif;
+
 		if(empty($install_product_data))
 			return false;
 		if($install_product_data->type !== 'plugin')

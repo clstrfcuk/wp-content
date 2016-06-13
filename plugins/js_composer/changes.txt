@@ -1,3 +1,20 @@
+15.04.2016 - ver 4.11.2.1
+   - # is properly escaped for updated jQuery
+
+07.04.2016 - ver 4.11.2
+   - Added: Compatibility with WP 4.5
+   - Added: Filter for database query limits
+   - Improved: Input Sanitization
+   - Improved: TGMPA compatibility
+   - Improved: Pageable Container Back button behavior
+   - Improved: vc_siteAttachedImages now uses get_posts instead of direct query
+   - Improved: Ordering by meta key in grid elements
+   - Improved: loop param work with multiple taxonomies selection
+   - Fixed: Google maps scroll behavior
+   - Fixed: Initial loading for Masonry Media Grid
+   - Fixed: Advanced Custom Fields vendor initialization
+   - Fixed: Post Grid filter taxonomy names collapsing
+
 16.03.2016 - ver 4.11.1
    - Fixed: WPML + Image selection is working again
    - Fixed: vc_remove_param() + Custom WP Theme Front-end editor broke Text block

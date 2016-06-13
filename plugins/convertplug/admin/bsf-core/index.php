@@ -22,7 +22,7 @@ require_once 'auto-update/updater.php';
 // abspath of groupi
 
 if ( ! defined( 'BSF_UPDATER_PATH' ) ) {
-	define( 'BSF_UPDATER_PATH', __FILE__ );
+	define( 'BSF_UPDATER_PATH', dirname(__FILE__) );
 }
 
 if(!function_exists('bsf_convert_core_path_to_relative')) {
@@ -320,6 +320,26 @@ if(!function_exists('register_bsf_core_admin_styles')) {
 		}
 	}
 }
+
+/*
+ * Load BSF core scripts on front end
+*/
+add_action( 'wp_enqueue_scripts', 'register_bsf_core_styles', 1 );
+function register_bsf_core_styles( $hook ) {
+
+	global $bsf_core_path;
+	$bsf_core_url = bsf_convert_core_path_to_relative($bsf_core_path);
+	$frosty_script_path = $bsf_core_url.'/assets/js/frosty.js';
+	$frosty_style_path = $bsf_core_url.'/assets/css/frosty.css';
+
+	// Register Frosty script and style
+	wp_register_script( 'bsf-core-frosty', $frosty_script_path );
+	wp_register_style( 'bsf-core-frosty-style', $frosty_style_path );
+
+}
+
+
+
 if(is_multisite()) {
 	add_action('admin_print_scripts', 'print_bsf_styles');
 	if(!function_exists('print_bsf_styles')) {
@@ -386,3 +406,189 @@ if ( ! function_exists( 'bsf_exension_installer_url' ) ) {
 		}
 	}
 }
+
+/**
+ * Return array of bundled plugins for a specific
+ *
+ * @since Graupi 1.9
+ */
+if ( ! function_exists( 'bsf_bundled_plugins' ) ) {
+
+	function bsf_bundled_plugins( $product_id = '' ) {
+		$products = array();
+
+		$brainstrom_bundled_products = get_option( 'brainstrom_bundled_products', '' );
+
+		if ( $brainstrom_bundled_products !== '' ) {
+			if ( array_key_exists( $product_id, $brainstrom_bundled_products ) ) {
+				$products = $brainstrom_bundled_products[ $product_id ];
+			}
+		}
+
+		return $products;
+	}
+}
+
+/**
+ * Get product name from product ID
+ *
+ * @since Graupi 1.9
+ */
+if ( ! function_exists( 'brainstrom_product_name' ) ) {
+
+	function brainstrom_product_name( $product_id = '' ) {
+		$product_name = '';
+		$brainstrom_products =  get_option( 'brainstrom_products', '' );
+
+		foreach ( $brainstrom_products as $key => $value ) {
+			foreach ( $value as $key => $product ) {
+				if ( $product_id == $key ) {
+					$product_name = $product['product_name'];
+				}
+			}
+		}
+
+		return $product_name;
+	}
+}
+
+
+/**
+ * Dismiss Extension installer nag
+ *
+ * @since Graupi 1.9
+ */
+if ( ! function_exists( 'bsf_dismiss_extension_nag' ) ) {
+
+	function bsf_dismiss_extension_nag() {
+		if ( isset( $_GET['bsf-dismiss-notice'] ) ) {
+			$product_id =  $_GET['bsf-dismiss-notice'];
+			update_user_meta( get_current_user_id(), $product_id . '-bsf_nag_dismiss', true );
+		}
+	}
+
+}
+
+add_action( 'admin_head', 'bsf_dismiss_extension_nag' );
+
+// For debugging uncomment line below and remove query var &bsf-dismiss-notice from url and nag will be restored.
+// delete_user_meta( get_current_user_id(), 'bsf-next-bsf_nag_dismiss');
+
+/**
+ * Generate's markup to generate notice to ask users to install required extensions.
+ *
+ * @since Graupi 1.9
+ */
+if ( ! function_exists( 'bsf_extension_nag' ) ) {
+
+	function bsf_extension_nag( $product_id = '' ) {
+
+		$display_nag = get_user_meta( get_current_user_id(), $product_id . '-bsf_nag_dismiss', true );
+
+		if ( $display_nag === '1' ) {
+			return;
+		}
+
+		$bsf_installed_plugins     = '';
+		$bsf_not_installed_plugins = '';
+		$bsf_not_activated_plugins = '';
+		$installer                 = '';
+		$bsf_install               = false;
+		$bsf_activate              = false;
+		$bsf_bundled_products      = bsf_bundled_plugins( $product_id );
+		$bsf_product_name          = brainstrom_product_name( $product_id );
+
+		foreach ( $bsf_bundled_products as $key => $plugin ) {
+
+			if ( ! isset( $plugin->id ) || $plugin->id == '' || ! isset( $plugin->must_have_extension ) || $plugin->must_have_extension == 'false' ) {
+				continue;
+			}
+
+			$plugin_abs_path = WP_PLUGIN_DIR . '/' . $plugin->init;
+			if ( is_file( $plugin_abs_path ) ) {
+
+				if ( ! is_plugin_active( $plugin->init ) ) {
+					$bsf_not_activated_plugins .= $bsf_bundled_products[ $key ]->name . ', ';
+				}
+			} else {
+				$bsf_not_installed_plugins .= $bsf_bundled_products[ $key ]->name . ', ';
+			}
+
+		}
+
+		$bsf_not_activated_plugins = rtrim( $bsf_not_activated_plugins, ", " );
+		$bsf_not_installed_plugins = rtrim( $bsf_not_installed_plugins, ", " );
+
+		if ( $bsf_not_activated_plugins !== '' || $bsf_not_installed_plugins !== '' ) {
+			echo '<div class="updated notice is-dismissible"><p></p>';
+			if ( $bsf_not_activated_plugins !== '' ) {
+				echo '<p>';
+				echo $bsf_product_name . __( ' requires following plugins to be active : ', 'bsf' );
+				echo "<strong><em>";
+				echo $bsf_not_activated_plugins;
+				echo "</strong></em>";
+				echo '</p>';
+				$bsf_activate = true;
+			}
+
+			if ( $bsf_not_installed_plugins !== '' ) {
+				echo '<p>';
+				echo $bsf_product_name . __( ' requires following plugins to be installed and activated : ', 'bsf' );
+				echo "<strong><em>";
+				echo $bsf_not_installed_plugins;
+				echo "</strong></em>";
+				echo '</p>';
+				$bsf_install = true;
+			}
+
+			if ( $bsf_activate == true ) {
+				$installer .= '<a href="' . get_admin_url() . 'plugins.php?plugin_status=inactive">' . __( 'Begin activating plugins', 'bsf' ) . '</a> | ';
+			}
+
+			if ( $bsf_install == true ) {
+				$installer .= '<a href="' . bsf_exension_installer_url( $product_id ) . '">' . __( 'Begin installing plugins', 'bsf' ) . '</a> | ';
+			}
+
+			$installer .= '<a href="' . esc_url( add_query_arg( 'bsf-dismiss-notice', $product_id ) ) . '">' . __( 'Dismiss This Notice', 'bsf' ) . '</a>';
+
+			$installer = ltrim( $installer, '| ' );
+			echo '<p><strong>';
+			echo rtrim( $installer, ' |' );
+			echo '</p></strong>';
+
+			echo '<p></p></div>';
+		}
+	}
+
+}
+
+/**
+ * Check if bundled products data on site is from old version of graupi and force refresh the data if required.
+ */
+function bsf_check_correct_updater_data() {
+	$brainstrom_bundled_products = get_option( 'brainstrom_bundled_products', array() );
+	$url = '';
+
+	foreach ( $brainstrom_bundled_products  as $key => $value) {
+		if ( is_object( $value ) || is_object( $brainstrom_bundled_products ) ) {
+			if ( is_multisite() ) {
+				$url = network_admin_url( 'admin.php?page=bsf-registration&remove-bundled-products', $scheme );
+			} else {
+				$url = admin_url( 'index.php?page=bsf-registration&remove-bundled-products' );
+			}
+
+			continue;
+		}
+	}
+
+	// if page is reloaded once dont check agan, this may result in redirect loop if brainstorm products are not being updated.
+	if ( $url !== '' && ! isset( $_GET['bsf-reload-page'] ) ) {
+		echo '<script type="text/javascript">
+				var redirect = window.location.href;
+				window.location = "'.$url.'&redirect=" + redirect + "&bsf-reload-page";
+			  </script>';
+	}
+
+}
+
+add_action( 'admin_init', 'bsf_check_correct_updater_data', 2 );

@@ -82,6 +82,9 @@ class Envira_Gallery_Export {
         // Append the in_gallery data checker to the data array.
         $data['in_gallery'] = get_post_meta( $post_id, '_eg_in_gallery', true );
 
+        // Allow Addons to add to the Gallery export
+        $data = apply_filters( 'envira_gallery_export_gallery_data', $data, $post_id );
+
         // Set the proper headers.
         nocache_headers();
         header( 'Content-Type: application/json; charset=utf-8' );
