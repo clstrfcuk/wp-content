@@ -72,7 +72,7 @@ $account_info = $dropbox->GetAccountInfo();
         echo $account_info->display_name . ', ' .'you have'. ' ' .$used .'GB' .'of'. ' ' . $quota . 'GB (' . round(($used / $quota) * 100, 0) .'%) ' .'free';
     
      echo '</br><p>Unlink Account for local backups</p></br>';
-     echo '<td><a href="'.site_url().'/wp-admin/tools.php?page=wp-database-backup&action=unlink" class="button-primary">Unlink Account<a/>';
+     echo '<td><a href="'.site_url().'/wp-admin/tools.php?page=wp-database-backup&action=unlink" class="btn btn-primary">Unlink Account<a/>';
       
              
    
@@ -103,7 +103,7 @@ store_token($request_token, $request_token['t']);
           <p>
     <form action="" method="get">
         <a href="<?php echo $auth_url?>"><input type="button" name="authorize" id="authorize" value="Authorize"
-               class="button-primary" /></a><br/>
+               class="btn btn-primary" /></a><br/>
          </form>
     </p>
     <?php

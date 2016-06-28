@@ -25,6 +25,8 @@ function tc_set_plugin_meta( $links, $file ) {
 	if ( strpos( $file, 'artiss-transient-cleaner.php' ) !== false ) {
 
 		$links = array_merge( $links, array( '<a href="http://wordpress.org/support/plugin/artiss-transient-cleaner">' . __( 'Support', 'artiss-transient-cleaner' ) . '</a>' ) );
+		$links = array_merge( $links, array( '<a href="http://www.artiss.co.uk/donate">' . __( 'Donate', 'artiss-transient-cleaner' ) . '</a>' ) );
+
 	}
 
 	return $links;

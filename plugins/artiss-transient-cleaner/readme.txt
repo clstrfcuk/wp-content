@@ -1,9 +1,10 @@
 === Transient Cleaner ===
-Contributors: codedart
+Contributors: dartiss
+Donate link: http://artiss.co.uk/donate
 Tags: cache, clean, database, housekeep, options, table, tidy, transient, update, upgrade
 Requires at least: 3.3
-Tested up to: 4.4.2
-Stable tag: 1.4.1
+Tested up to: 4.5
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +71,9 @@ A transient may consist of one or more records (normally a timed transient - the
 
 == Changelog ==
 
+= 1.4.2 =
+* Maintenance: Updated branding, inc. adding donation links
+
 = 1.4.1 =
 * Bug: Awww... biscuits. I was being smart by including a call to a function to check something without realising you have to have WordPress 4.4 for it to work. Thankfully, it's not critical so I've removed it for now and will add a "proper" solution in future
 
@@ -123,6 +127,9 @@ A transient may consist of one or more records (normally a timed transient - the
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.4.2 =
+* Minor update to change branding
 
 = 1.4.1 =
 * Urgent update to fix a bug that will affect those running WordPress before version 4.4

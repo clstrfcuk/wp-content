@@ -184,7 +184,8 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 			'backup_test_site' => 'iwp_mmb_backup_test_site',
 			'ithemes_security_load' => 'iwp_mmb_ithemes_security_load',
 			'get_seo_info' => 'iwp_mmb_yoast_get_seo_info',
-			'save_seo_info' => 'iwp_mmb_yoast_save_seo_info'
+			'save_seo_info' => 'iwp_mmb_yoast_save_seo_info',
+			'fetch_activities_log' => 'iwp_mmb_fetch_activities_log'
 		);
 		
 		add_action('rightnow_end', array( &$this, 'add_right_now_info' ));       
@@ -628,7 +629,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
      */
     function install() {
 		
-        global $wpdb, $_wp_using_ext_object_cache, $current_user;
+        global $wpdb, $_wp_using_ext_object_cache, $current_user, $iwp_mmb_activities_log;
         $_wp_using_ext_object_cache = false;
 
         //delete plugin options, just in case
@@ -666,7 +667,8 @@ class IWP_MMB_Core extends IWP_MMB_Helper
         delete_option('iwp_client_pageview_alerts');
 		
 		add_option('iwp_client_activate_key', sha1( rand(1, 99999). uniqid('', true) . get_option('siteurl') ) );
-        
+		
+		$iwp_mmb_activities_log->iwp_mmb_save_options_for_activity_log('install');
     }
     
     /**
@@ -730,6 +732,10 @@ class IWP_MMB_Core extends IWP_MMB_Helper
         delete_option('iwp_client_pageview_alerts');
 		
 		delete_option('iwp_client_activate_key');
+		delete_option('iwp_client_all_themes_history');
+		delete_option('iwp_client_all_plugins_history');
+		delete_option('iwp_client_wp_version_old');
+		delete_option('is_save_activity_log');
     }
     
     
@@ -754,7 +760,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
      */
     function update_client_plugin($params)
     {
-		
+		global $iwp_mmb_activities_log;
         extract($params);
         if ($download_url) {
             @include_once ABSPATH . 'wp-admin/includes/file.php';
@@ -785,52 +791,14 @@ class IWP_MMB_Core extends IWP_MMB_Helper
             ob_end_clean();
 			@wp_update_plugins();
 			
-			//iwp_mmb_create_backup_table();
-			
-			//add_action( 'plugins_loaded', 'iwp_mmb_create_backup_table' );
-			
-			/*global $wpdb;
-			
-				
-			$IWP_MMB_BACKUP_TABLE_VERSION = '1.0';
-			if (get_site_option( 'iwp_backup_table_version' ) != $IWP_MMB_BACKUP_TABLE_VERSION) {
-				
-				$table_name = $wpdb->base_prefix . "iwp_backup_status"; 
-								
-				$sql = "
-						CREATE TABLE IF NOT EXISTS $table_name (
-						  `ID` int(11) NOT NULL AUTO_INCREMENT,
-						  `historyID` int(11) NOT NULL,
-						  `taskName` varchar(255) NOT NULL,
-						  `action` varchar(50) NOT NULL,
-						  `type` varchar(50) NOT NULL,
-						  `category` varchar(50) NOT NULL,
-						  `stage` varchar(255) NOT NULL,
-						  `status` varchar(255) NOT NULL,
-						  `finalStatus` varchar(50) DEFAULT NULL,
-						  `statusMsg` varchar(255) NOT NULL,
-						  `requestParams` text NOT NULL,
-						  `responseParams` longtext,
-						  `taskResults` text,
-						  `startTime` int(11) DEFAULT NULL,
-						  `endTime` int(11) NOT NULL,
-						  PRIMARY KEY (`ID`)
-						) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-						";
-					
-				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-				dbDelta( $sql );
-				
-				add_option( "iwp_backup_table_version", $IWP_MMB_BACKUP_TABLE_VERSION);
-			}*/
-			// import iwp_client_backup_tasks option table array to row data.
-		
-			
             if (is_wp_error($result) || !$result) {
                 return array(
                     'error' => 'InfiniteWP Client plugin could not be updated.', 'error_code' => 'client_plugin_could_not_be_updated'
                 );
-            } else {			
+            } else {
+				
+				$iwp_mmb_activities_log->iwp_mmb_save_options_for_activity_log('update_client_plugin');
+				
                 return array(
                     'success' => 'InfiniteWP Client plugin successfully updated.'
                 );

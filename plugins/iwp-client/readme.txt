@@ -1,8 +1,8 @@
-=== InfiniteWP Client ===
+﻿=== InfiniteWP Client ===
 Contributors: infinitewp
 Tags: admin, administration, amazon, api, authentication, automatic, dashboard, dropbox, events, integration, manage, multisite, multiple, notification, performance, s3, security, seo, stats, tracking, infinitewp, updates, backup, restore, iwp, infinite
 Requires at least: 3.1
-Tested up to: 4.4.2
+Tested up to: 4.5.3
 Stable tag: trunk
 
 Install this plugin on unlimited sites and manage them all from a central dashboard.
@@ -10,7 +10,7 @@ This plugin communicates with your InfiniteWP Admin Panel.
 
 == Description ==
 
-[InfiniteWP](http://infinitewp.com/ "Manage Multiple WordPress") allows users to manage unlimited number of WordPress sites from their own server.
+[InfiniteWP](https://infinitewp.com/ "Manage Multiple WordPress") allows users to manage unlimited number of WordPress sites from their own server.
 
 Main features:
 
@@ -22,11 +22,11 @@ Main features:
 *   Bulk Install plugins & themes in multiple sites at once
 *   and more..
 
-Visit us at [InfiniteWP.com](http://infinitewp.com/ "Manage Multiple WordPress").
+Visit us at [InfiniteWP.com](https://infinitewp.com/ "Manage Multiple WordPress").
 
-Check out the [InfiniteWP Overview Video](http://www.youtube.com/watch?v=IOu7LdyPOSs) below.
+Check out the [InfiniteWP Overview Video](https://www.youtube.com/watch?v=8wOMewY2EBY) below.
 
-http://www.youtube.com/watch?v=IOu7LdyPOSs
+https://www.youtube.com/watch?v=8wOMewY2EBY
 
 Credits: [Vladimir Prelovac](http://prelovac.com/vladimir) for his worker plugin on which the client plugin is being developed.
 
@@ -47,6 +47,18 @@ Credits: [Vladimir Prelovac](http://prelovac.com/vladimir) for his worker plugin
 5. One-click updates
 
 == Changelog ==
+
+= 1.6.0 - June 27th 2016 =
+* Feature: Activity log for updates and backups to be used in new version of client reporting beta will be saved and retrieved from the WP Admin instead of the IWP Admin Panel, provided the client reporting addon is active.
+* Improvement: The code in the backup_status_table has been refactored.
+* Fix: Failed backups with date “01 Jan 1970” were not cleared from the database.
+
+= 1.5.1.3 - May 24th 2016 =
+* Fix: "Unable to update File list table : Can’t DROP ‘thisFileName’; check that column/key exists" error would be thrown while taking Multi-call backups in the Multi-site WordPress environment.
+
+= 1.5.1.2 - May 18th 2016 =
+* Fix: If the file path is 192 characters or higher, it would throw a Zip error: unable to update the file list while performing multicall backup.
+* Fix: For the first WP core update alone, the From Version was missing in the WP updates section of the Client Reports.
 
 = 1.5.1.1 - Mar 18th 2016 =
 * Improvement: Verifying backup uploaded to Amazon S3 utilized higher bandwidth.

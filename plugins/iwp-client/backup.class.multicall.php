@@ -186,6 +186,8 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 	
 	function set_backup_task($params)
 	{
+		global $iwp_mmb_activities_log;
+		
 		if(!empty($params))
 		{
 			initialize_manual_debug();
@@ -314,6 +316,9 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 			$responseParams = array();
 			$responseParams['nextFunc'] = 'backup';
 			$responseParams['mechanism'] = 'multiCall';
+			
+			$iwp_mmb_activities_log->iwp_mmb_collect_backup_details($params);
+			
 			return $this->statusLog($historyID, array('stage' => 'verification', 'status' => 'completed', 'statusMsg' => 'verified', 'nextFunc' => 'backup', 'responseParams' => $responseParams));
 		}
 	}
@@ -2298,8 +2303,8 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		$stats = array();
 		$table_name = $wpdb->base_prefix . "iwp_backup_status";
 		
-		$rows = $wpdb->get_results("SELECT taskName,taskResults FROM ".$table_name,  ARRAY_A);
-		
+		$rows = $wpdb->get_results("SELECT ID, taskName, taskResults FROM ".$table_name." ORDER BY ID DESC",  ARRAY_A);
+		$this->cleanup_failed_backups($rows);
 		$task_res = array();
 		foreach($rows as $key => $value){
 			$task_results = unserialize($value['taskResults']);
@@ -2314,7 +2319,31 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		return $task_res;
 	}
 	
-	
+	function cleanup_failed_backups($rows){
+		$rowCount = 0;
+        if (empty($rows) || !is_array($rows)) {
+            return false;
+        }
+        foreach($rows as $key => $value){
+            $task_results = unserialize($value['taskResults']);
+            if(empty($task_results['task_results'])){
+                if ($rowCount > 0) {
+                   $this->remove_failed_backups($value['ID']);
+                }
+                $rowCount++;
+                continue;
+            }
+            $rowCount++;
+        }
+    }
+
+    function remove_failed_backups($ID){
+        global $wpdb;
+        $table_name = $wpdb->base_prefix . "iwp_backup_status";
+        $delete_query = "DELETE FROM ".$table_name." WHERE ID = '".$ID."' ";
+        $deleteRes = $wpdb->query($delete_query);
+    }
+
 	function get_this_tasks(){
 		$this->wpdb_reconnect();
 		
@@ -2380,7 +2409,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		$this->wpdb_reconnect();
   		if(empty($historyID))
 		{
-  			$insert  = $wpdb->insert($wpdb->base_prefix.'iwp_backup_status',array( 'stage' => $statusArray['stage'], 'status' => $statusArray['status'],  'action' => $params['args']['action'], 'type' => $params['args']['type'],'category' => $params['args']['what'],'historyID' => $params['args']['parentHID'],'finalStatus' => 'pending','startTime' => microtime(true),'endTime' => '','statusMsg' => $statusArray['statusMsg'],'requestParams' => serialize($params),'taskName' => $params['task_name']), array( '%s', '%s','%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%s', '%s', '%s' ) );
+  			$insert  = $wpdb->insert($wpdb->base_prefix.'iwp_backup_status',array( 'stage' => $statusArray['stage'], 'status' => $statusArray['status'],  'action' => $params['args']['action'], 'type' => $params['args']['type'],'category' => $params['args']['what'],'historyID' => $params['args']['parentHID'],'finalStatus' => 'pending','startTime' => microtime(true), 'lastUpdateTime' => microtime(true), 'endTime' => '','statusMsg' => $statusArray['statusMsg'],'requestParams' => serialize($params),'taskName' => $params['task_name']), array( '%s', '%s','%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%s', '%s', '%s' ) );
 			if($insert)
 			{
 				$insertID = $wpdb->insert_id; 
@@ -2388,12 +2417,12 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
   		}
 		else if((isset($statusArray['responseParams']))||(isset($statusArray['task_result'])))
 		{
-			$update = $wpdb->update($wpdb->base_prefix.'iwp_backup_status',array( 'responseParams' => $this->maybe_serialize_compress($statusArray['responseParams']),'stage' => $statusArray['stage'], 'status' => $statusArray['status'],'statusMsg' => $statusArray['statusMsg'],'taskResults' =>  isset($statusArray['task_result']) ? serialize($statusArray['task_result']) : serialize(array()) ),array( 'historyID' => $historyID),array('%s','%s', '%s', '%s','%s'),array('%d'));
+			$update = $wpdb->update($wpdb->base_prefix.'iwp_backup_status',array( 'responseParams' => $this->maybe_serialize_compress($statusArray['responseParams']),'stage' => $statusArray['stage'], 'status' => $statusArray['status'],'statusMsg' => $statusArray['statusMsg'],'taskResults' =>  isset($statusArray['task_result']) ? serialize($statusArray['task_result']) : serialize(array()), 'lastUpdateTime' => microtime(true)),array( 'historyID' => $historyID),array('%s','%s', '%s', '%s','%s'),array('%d'));
 		}
   		else
 		{
 			//$responseParams = $this -> getRequiredData($historyID,"responseParams");
-			$update = $wpdb->update($wpdb->base_prefix.'iwp_backup_status',array('stage' => $statusArray['stage'], 'status' => $statusArray['status'],'statusMsg' => $statusArray['statusMsg'] ),array( 'historyID' => $historyID),array( '%s', '%s', '%s'),array('%d'));
+			$update = $wpdb->update($wpdb->base_prefix.'iwp_backup_status',array('stage' => $statusArray['stage'], 'status' => $statusArray['status'],'statusMsg' => $statusArray['statusMsg'], 'lastUpdateTime' => microtime(true)),array( 'historyID' => $historyID),array( '%s', '%s', '%s'),array('%d'));
 		}
 		if( (isset($update)&&($update === false)) || (isset($insert)&&($insert === false)) )
 		{
@@ -3182,7 +3211,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 			$delete = $wpdb->query("DROP TABLE '".$table."' ");
 		}
 			
-		iwp_mmb_create_backup_table();
+		iwp_mmb_backup_db_changes();
 		
 		if(!empty($clone_restore_options['iwp_client_backup_tasks'])){
 			$this->insertBackupStatusContens($clone_restore_options['iwp_client_backup_tasks']);
@@ -6032,14 +6061,14 @@ function ftp_backup($historyID,$args = '')
 			global $wpdb;
 			$this_table_name = $wpdb->base_prefix . 'iwp_file_list';			//in case, if we are changing table name.
 			$result = true;
-			
-			$IWP_FILE_LIST_TABLE_VERSION =	get_site_option('iwp_file_list_table_version');
+                        
+			$IWP_FILE_LIST_TABLE_VERSION =	iwp_mmb_get_site_option('iwp_file_list_table_version');
 			
 			//write in db and refresh for_every_count,  all_files_detail;
 			if($wpdb->get_var("SHOW TABLES LIKE '$this_table_name'") == $this_table_name) {
 				$result = $wpdb->query('TRUNCATE TABLE ' . $this_table_name );
 				$error_msg = 'Unable to empty File list table : ' . $wpdb->last_error ;
-				if(version_compare($IWP_FILE_LIST_TABLE_VERSION, '1.0') == -1){
+				if(version_compare($IWP_FILE_LIST_TABLE_VERSION, '1.1') == -1){
 					$result = iwp_create_file_list_table();
 					$error_msg = 'Unable to update File list table : ' . $wpdb->last_error ;
 				}
@@ -6064,7 +6093,7 @@ function ftp_backup($historyID,$args = '')
 			}
 			$table_created = false;
 			
-			$IWP_FILE_LIST_TABLE_VERSION =	get_site_option('iwp_file_list_table_version');
+			$IWP_FILE_LIST_TABLE_VERSION =	iwp_mmb_get_site_option('iwp_file_list_table_version');
 			$table_name = $wpdb->base_prefix . "iwp_file_list";
 			
 			if (!empty($charset_collate)){
@@ -6082,7 +6111,8 @@ function ftp_backup($historyID,$args = '')
 						`thisFileCount` int(11) DEFAULT NULL,
 						`thisFileHeader` text,
 						`thisFileName` varchar(255) DEFAULT NULL,
-						UNIQUE KEY `thisFileName` (`thisFileName`(191)),
+						`thisFileNameHash` varchar(32) DEFAULT NULL,
+						UNIQUE KEY `thisFileNameHash` (`thisFileNameHash`(32)),
 						PRIMARY KEY (`ID`)
 					)".$cachecollation." ;
 				";
@@ -6091,12 +6121,13 @@ function ftp_backup($historyID,$args = '')
 				
 				if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name){
 					$table_created = true;
-					update_option( "iwp_file_list_table_version", '1.0');
+					update_option( "iwp_file_list_table_version", '1.1');
 				}
 			}
-			else if(version_compare($IWP_FILE_LIST_TABLE_VERSION, '1.0') == -1){
+			else if(version_compare($IWP_FILE_LIST_TABLE_VERSION, '1.1') == -1){
+				if(iwp_alter_file_list_table()){
 				$table_created = true;
-				update_option( "iwp_file_list_table_version", '1.0');
+				}
 			}
 			return $table_created;
 		}
@@ -6188,9 +6219,9 @@ function ftp_backup($historyID,$args = '')
 				
 				foreach($all_files_header_detail as $k => $v){
 					if($action == 'insert'){
-						$is_already = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix. $this_table_name . " WHERE thisFileName = '". $v['stored_filename'].$v['splitFilename']."'" );
+						$is_already = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix. $this_table_name . " WHERE thisFileName = '". $v['stored_filename'].$v['splitFilename']."' AND thisFileNameHash = '".md5($v['stored_filename'].$v['splitFilename'])."'" );
 						if(empty($is_already)){
-							$result = $wpdb->insert($wpdb->base_prefix . $this_table_name, array('thisFileDetails' => serialize($v), 'thisFileCount' => $k, 'thisFileName' => $v['stored_filename'].$v['splitFilename']), array( '%s', '%d', '%s' ));
+							$result = $wpdb->insert($wpdb->base_prefix . $this_table_name, array('thisFileDetails' => serialize($v), 'thisFileCount' => $k, 'thisFileName' => $v['stored_filename'].$v['splitFilename'],'thisFileNameHash'=>md5($v['stored_filename'].$v['splitFilename'])), array( '%s', '%d', '%s', '%s' ));
 						}
 					}
 					else if($action == 'update'){
@@ -6261,6 +6292,69 @@ function ftp_backup($historyID,$args = '')
 			return false;
 		}
 	}
+	
+	if(!function_exists('iwp_alter_file_list_table')){
+		function iwp_alter_file_list_table(){
+			$altered = true;
+			$IWP_FILE_LIST_TABLE_VERSION =	iwp_mmb_get_site_option('iwp_file_list_table_version');
+			$failed_alter = false;
+			if(version_compare($IWP_FILE_LIST_TABLE_VERSION, '1.1') != -1){
+				return true;
+			}
+			
+			/*upgrade file list table version from 1.0 to 1.1*/
+			if(version_compare($IWP_FILE_LIST_TABLE_VERSION, '1.0', '=')){
+				if(!alter_iwp_filelisttable_1_1()){
+					$altered = false;
+				}
+			}
+			return $altered;
+		}
+	}
+
+	if(!function_exists('alter_iwp_filelisttable_1_1')){
+		function alter_iwp_filelisttable_1_1(){
+			global $wpdb;
+			if(method_exists($wpdb, 'get_charset_collate')){
+				$charset_collate = $wpdb->get_charset_collate();
+			}	
+			$table_name = $wpdb->base_prefix . "iwp_file_list";
+
+			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+				if (!empty($charset_collate)){
+					$cachecollation = str_ireplace('DEFAULT ', '', $charset_collate);
+				}
+				else{
+					$cachecollation = ' CHARACTER SET utf8 COLLATE utf8_general_ci ';
+				}
+
+				$sql = array();
+
+				$columnData = $wpdb->get_var("SHOW COLUMNS FROM $table_name WHERE Field = 'thisFileNameHash'");
+                                if(empty($columnData)) {
+                                    $sql[] = "ALTER TABLE $table_name ADD `thisFileNameHash` VARCHAR(32) $cachecollation NULL DEFAULT NULL AFTER `thisFileName`";
+                                    $sql[] = "ALTER IGNORE TABLE $table_name ADD UNIQUE `thisFileNameHash` (`thisFileNameHash`(32))";
+                                }
+                                $indexData = $wpdb->get_var("SHOW KEYS FROM $table_name WHERE Key_name = 'thisFileName'");
+                                if(!empty($indexData)){
+                                    $sql[] = "ALTER TABLE $table_name DROP INDEX thisFileName;";
+                                }
+
+				//Running the alter queries to the table
+				foreach($sql as $v){
+					if(!$wpdb->query($v)){
+						$failed_alter = true;
+					}
+				}
+				if(!$failed_alter){
+					update_option( "iwp_file_list_table_version", '1.1');
+					return true;
+				}
+				return false;
+			}
+		}
+	}
+
 /*if( function_exists('add_filter') ){
 	add_filter( 'iwp_website_add', 'IWP_MMB_Backup::readd_tasks' );
 }*/

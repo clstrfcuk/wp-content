@@ -186,9 +186,10 @@ if (!empty($xml)) {
             </button>
             <ul class="dropdown-menu">
                 <li>
-                    <a href="https://walkeprashant.wordpress.com/about-me/" target="_blank" >
+                    <a href="http://walkeprashant.in" target="_blank" >
                         <h5 ><?php _e('Plugin Author', 'wpdbbkp'); ?></h5>
                         <p><?php _e('Prashant Walke', 'wpdbbkp'); ?></p>
+                        <p><?php _e('(Sr. PHP Developer)', 'wpdbbkp'); ?></p>
                     </a>
                 </li>
                 <li role="separator" class="divider"></li>

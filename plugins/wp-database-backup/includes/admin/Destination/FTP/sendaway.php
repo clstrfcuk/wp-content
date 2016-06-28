@@ -31,7 +31,7 @@ $wp_upload_dir = wp_upload_dir();
 	$wp_upload_dir['basedir'] = str_replace('\\', '/', $wp_upload_dir['basedir']);
 $remotefile = $subdir.'/'.$filename;
 $localfile = trailingslashit($wp_upload_dir['basedir'].'/db-backup'). $filename;
-
+if(isset($host) && !empty($host) && isset($user) && !empty($user) && isset($pass) && !empty($pass)){
 // see if port option is blank and set it to 21 if it isn't
 if (!get_option('backupbreeze_ftp_port')) {
 	$port = '21';
@@ -75,6 +75,7 @@ if (!$success = ftp_put($conn, $remotefile, $localfile, FTP_BINARY)) {
 } 
 else {
  //error_log( '<div class="error">File was uploaded successfully <br /></div>');
+    $args[2]=$args[2].'<br> Upload Database Backup on FTP '.$host;
              }
       }
 }
@@ -82,5 +83,5 @@ else {
 @ftp_quit($conn);
 
 // echo "... Done!";
-
+}
 ?>

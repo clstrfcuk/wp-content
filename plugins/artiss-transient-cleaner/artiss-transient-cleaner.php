@@ -3,9 +3,9 @@
 Plugin Name: Transient Cleaner
 Plugin URI: https://wordpress.org/plugins/artiss-transient-cleaner/
 Description: Clean expired transients from your options table
-Version: 1.4.1
-Author: Coded Art
-Author URI: http://codedart.co
+Version: 1.4.2
+Author: David Artiss
+Author URI: http://www.artiss.co.uk
 Text Domain: artiss-transient-cleaner
 Domain Path: /languages
 */

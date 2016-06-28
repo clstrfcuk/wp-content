@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Transient Cleaner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-25 14:36-0000\n"
-"PO-Revision-Date: 2016-02-25 14:36-0000\n"
+"POT-Creation-Date: 2016-04-15 14:19-0000\n"
+"PO-Revision-Date: 2016-04-15 14:19-0000\n"
 "Last-Translator: David Artiss <david.artiss@artiss.co.uk>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Generator: Poedit 1.7.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/options-general.php:17 includes/set-admin-config.php:100
+#: includes/options-general.php:17 includes/set-admin-config.php:102
 msgid "Transient Cleaner Options"
 msgstr ""
 
@@ -136,38 +136,42 @@ msgstr ""
 msgid "Support"
 msgstr ""
 
-#: includes/set-admin-config.php:53
+#: includes/set-admin-config.php:28
+msgid "Donate"
+msgstr ""
+
+#: includes/set-admin-config.php:55
 msgid "Settings"
 msgstr ""
 
-#: includes/set-admin-config.php:76
+#: includes/set-admin-config.php:78
 msgid ""
 "An external object cache is in use so Transient Cleaner is not required. "
 "Please disable the plugin!"
 msgstr ""
 
-#: includes/set-admin-config.php:100
+#: includes/set-admin-config.php:102
 msgid "Transients"
 msgstr ""
 
-#: includes/set-admin-config.php:139
+#: includes/set-admin-config.php:141
 msgid "Help"
 msgstr ""
 
-#: includes/set-admin-config.php:154
+#: includes/set-admin-config.php:156
 msgid ""
 "This screen allows you to specify the default options for the Transient "
 "Cleaner plugin."
 msgstr ""
 
-#: includes/set-admin-config.php:155
+#: includes/set-admin-config.php:157
 msgid ""
 "In addition, details of recent transient cleans are shown. Tick the 'Run "
 "Now' options to perform a clean, whether a full removal of transients or "
 "just the removal of expired tranients."
 msgstr ""
 
-#: includes/set-admin-config.php:156
+#: includes/set-admin-config.php:158
 msgid ""
 "Remember to click the Save Changes button at the bottom of the screen for "
 "new settings to take effect."
