@@ -10,6 +10,7 @@
         echo '<div style="background: #2F9DD2;color: #FFF;padding: 16px;margin-top: 20px;margin-right: 20px;text-align: center;font-size: 16px;border-radius: 4px;">Removed All Styles..!</div>';
     }
 
+
     $prev_styles = get_option('smile_slide_in_styles');
     $variant_tests = get_option('slide_in_variant_tests');
     $analyticsData = get_option('smile_style_analytics');
@@ -216,7 +217,7 @@
 			            foreach( $style_settings as $title => $value ){
 				            if( !is_array( $value ) ){
 					            $value = urldecode($value);
-    				  	      $exp_settings[$title] = htmlentities(stripslashes(utf8_encode($value)), ENT_QUOTES);
+    				  	      $exp_settings[$title] = htmlentities(stripslashes(utf8_encode($value)), ENT_QUOTES);//esc_attr(str_replace('"','&quot;',$value));
       				      } else {
   					          foreach( $value as $ex_title => $ex_val ) {
   						          $val[$ex_title] = $ex_val;
@@ -227,12 +228,11 @@
   			         $export = $style;
   			         $export['style_settings'] = $exp_settings;
 
-                    $theme = $style_settings['style'];
-                    $multivariant = isset($style['multivariant']) ? true : false;
-                    $live = isset( $style['slideinStatus'] ) ? (int)$style['slideinStatus'] : '';
-                    $isScheduled = false;
-                    $status = '';
-                    $title = '';
+                  $theme = $style_settings['style'];
+                  $multivariant = isset($style['multivariant']) ? true : false;
+                  $live = isset( $style['slideinStatus'] ) ? (int)$style['slideinStatus'] : '';
+                  $isScheduled = false;
+                  $status = '';
 
                   if($hasVariants) {
                     $status .= "<a href=?page=smile-slide_in-designer&style-view=variant&variant-style=".urlencode( $style_id )."&style=".urlencode( stripslashes($style_name ) )."&theme=".urlencode( $theme ).">";
@@ -245,14 +245,28 @@
                   } elseif( $live == 0 ){
                      $status .= '<span data-live="0" class="cp-status cp-main-variant-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
                   } else {
-                     $status .= cp_generate_scheduled_info($style['style_settings']);
+                     $scheduleData = unserialize($style['style_settings']);
+                     if( isset($scheduleData['schedule']) ) {
+                        $scheduledArray = $scheduleData['schedule'];
+                        if( is_array($scheduledArray) ) {
+                           $startDate = date("j M Y ",strtotime($scheduledArray['start']));
+                           $endDate = date("j M Y ",strtotime($scheduledArray['end']));
+                           $first = date('j-M-Y (h:i A) ', strtotime($scheduledArray['start']));
+                           $second = date('j-M-Y (h:i A) ', strtotime($scheduledArray['end']));
+                           $title = "Scheduled From ".$first." To ".$second;
+                        }
+                     } else {
+                        $title = '';
+                     }
+
+                     $status .= '<span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span title="'.$title.'">'.__( "Scheduled", "smile" ).'</span></span>';
                   }
 
                   if($hasVariants) {
                     $status .= "</a>";
                   }
 
-                  if( !$hasVariants ) {
+                  if(!$hasVariants) {
                     $status .= '<ul class="manage-column-menu">';
             				  if( $live !== 1 && $live !== "1" ) {
                         $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-live="1" data-option="smile_slide_in_styles"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></a></li>';
@@ -261,7 +275,7 @@
             				  	$status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-live="0" data-option="smile_slide_in_styles"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></a></li>';
             				  }
             				  if( $live !== 2 && $live !== "2" ) {
-                        $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-live="2" data-option="smile_slide_in_styles" data-schedule="1"><i class="connects-icon-clock"></i><span class="scheduled-info" title="'.$title.'">'.__( "Schedule", "smile" ).'</span></a></li>';
+                        $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-live="2" data-option="smile_slide_in_styles" data-schedule="1"><i class="connects-icon-clock"></i><span>'.__( "Schedule", "smile" ).'</span></a></li>';
             				  }
                     $status .= '</ul>';
                   }
@@ -269,9 +283,9 @@
             ?>
             <tr id="<?php echo $key; ?>" class="ui-sortable-handle <?php if($hasVariants) { echo 'cp-variant-exist'; } ?>">
                <?php if($multivariant || $hasVariants ) { ?>
-                  <td class="name column-name"><a href="?page=smile-slide_in-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( $style_name ); ?>&theme=<?php echo urlencode( $theme ); ?>"> <?php echo "Variants of ".urldecode($style_name); ?> </a></td>
+                  <td class="name column-name"><a href="?page=smile-slide_in-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( $style_name ); ?>&theme=<?php echo urlencode( $theme ); ?>"  > <?php echo "Variants of ".urldecode($style_name); ?> </a></td>
                <?php  } else { ?>
-                  <td class="name column-name"><a href="?page=smile-slide_in-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>"> <?php echo urldecode($style_name); ?> </a></td>
+                  <td class="name column-name"><a href="?page=smile-slide_in-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>" target ="_blank" > <?php echo urldecode($style_name); ?> </a></td>
                   <?php } ?>
                   <td class="column-impressions"><?php echo $impressions; ?></td>
                   <td class="column-status"><?php echo $status; ?></td>

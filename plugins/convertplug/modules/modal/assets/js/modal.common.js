@@ -173,7 +173,7 @@
 
     });
 
-    jQuery(window).load(function() {
+    jQuery(window).on( 'load', function() {
         set_affiliate_link();
     });
 
@@ -286,11 +286,13 @@
   * This function will apply height to cp-columns-equalized class
   */
 function cp_column_equilize() {
+
     setTimeout(function() {
         jQuery(".cp-columns-equalized").each(function() {
 
             // if modal is open then only apply equalize properties
             if( jQuery(this).closest('.cp-overlay').hasClass('cp-open') || jQuery(this).closest('.global_modal_container').hasClass('cp-modal-inline') ) {
+
                 var wh = jQuery(window).width();
 
                 var childClasses = Array();
@@ -313,7 +315,6 @@ function cp_column_equilize() {
 
                 var maxHeight = Math.max.apply(Math, childClasses) + tot_padding;
                 maxHeight = maxHeight-count;
-
 
                 if( wh > 768 ) {
                     jQuery(this).css( 'height', maxHeight );
@@ -451,7 +452,7 @@ function cp_color_for_list_tag(){
                 is_responsive_cls   = jQuery(this).parents(".cp_responsive").length;
 
         jQuery(this).find("li").each(function() {
-            if(jQuery(this).parents(".cp_social_networks").length == 0){
+            if(jQuery(this).parents(".cp_social_networks").length == 0 && (jQuery(this).parents(".custom-html-form").length == 0) ){
             var moadal_style = jQuery( ov ).find(".cp-modal-body").attr('class').split(' ')[1];
 
             var parent_li   = jQuery(this).parents(".cp_responsiv").attr('class');
@@ -921,7 +922,8 @@ function cp_social_responsive(){
      jQuery(".cp_social_networks").each(function() {
         var column_no = jQuery(this).data('column-no');
         var classname ='';
-        if(wh <= 610){
+
+        if(wh < 768){
             jQuery(this).removeClass('cp_social_networks');
             jQuery(this).removeClass(column_no);
             classname =  jQuery(this).attr('class');

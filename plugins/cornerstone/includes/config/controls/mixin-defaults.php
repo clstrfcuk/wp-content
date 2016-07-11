@@ -20,4 +20,4 @@ return array(
 	'animation_flavor' => 'none',
 	'animation_offset' => 50,
 	'animation_delay'  => 0
-)
+);

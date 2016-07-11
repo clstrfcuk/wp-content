@@ -32,7 +32,9 @@ add_filter( 'wp_nav_menu_items', 'x_wpml_add_classes_for_language_switcher' );
 add_filter( 'template_include', 'x_force_template_override', 99 );
 
 function x_force_template_override( $template ) {
-
+	
+  if ( x_is_shop() || x_is_product_category() || x_is_product_tag() )  return $template;
+  
   if( is_search() || is_archive() ) {
     $p = pathinfo($template);
     return $p['dirname'].'/index.php';

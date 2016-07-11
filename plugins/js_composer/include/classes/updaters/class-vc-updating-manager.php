@@ -172,7 +172,7 @@ class Vc_Updating_Manager {
 	public function addUpgradeMessageLink() {
 		$is_activated = vc_license()->isActivated();
 		if ( ! $is_activated ) {
-			$url = esc_url( ( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) ) );
+			$url = esc_url( ( vc_is_network_plugin() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) ) );
 			$redirect = sprintf( '<a href="%s" target="_blank">%s</a>', $url, __( 'settings', 'js_composer' ) );
 
 			echo sprintf( ' ' . __( 'To receive automatic updates license activation is required. Please visit %s to activate your Visual Composer.', 'js_composer' ), $redirect ) .

@@ -1,9 +1,8 @@
 (function(e){function t(){var e=document.createElement("p");var t=false;if(e.addEventListener)e.addEventListener("DOMAttrModified",function(){t=true},false);else if(e.attachEvent)e.attachEvent("onDOMAttrModified",function(){t=true});else return false;e.setAttribute("id","target");return t}function n(t,n){if(t){var r=this.data("attr-old-value");if(n.attributeName.indexOf("style")>=0){if(!r["style"])r["style"]={};var i=n.attributeName.split(".");n.attributeName=i[0];n.oldValue=r["style"][i[1]];n.newValue=i[1]+":"+this.prop("style")[e.camelCase(i[1])];r["style"][i[1]]=n.newValue}else{n.oldValue=r[n.attributeName];n.newValue=this.attr(n.attributeName);r[n.attributeName]=n.newValue}this.data("attr-old-value",r)}}var r=window.MutationObserver||window.WebKitMutationObserver;e.fn.attrchange=function(i){var s={trackValues:false,callback:e.noop};if(typeof i==="function"){s.callback=i}else{e.extend(s,i)}if(s.trackValues){e(this).each(function(t,n){var r={};for(var i,t=0,s=n.attributes,o=s.length;t<o;t++){i=s.item(t);r[i.nodeName]=i.value}e(this).data("attr-old-value",r)})}if(r){var o={subtree:false,attributes:true,attributeOldValue:s.trackValues};var u=new r(function(t){t.forEach(function(t){var n=t.target;if(s.trackValues){t.newValue=e(n).attr(t.attributeName)}s.callback.call(n,t)})});return this.each(function(){u.observe(this,o)})}else if(t()){return this.on("DOMAttrModified",function(e){if(e.originalEvent)e=e.originalEvent;e.attributeName=e.attrName;e.oldValue=e.prevValue;s.callback.call(this,e)})}else if("onpropertychange"in document.body){return this.on("propertychange",function(t){t.attributeName=window.event.propertyName;n.call(e(this),s.trackValues,t);s.callback.call(this,t)})}return this}})(jQuery)
 
-jQuery(window).load(function() {
+jQuery(window).on( 'load', function() {
 	parent.customizerLoaded();
 	cp_color_for_list_tag();
-	//cp_social_responsive();
 });
 
 jQuery(document).on('smile_data_on_load',function(e,data){
@@ -554,7 +553,21 @@ function cp_info_bar_close_img_settings(data){
 		close_img			= data.close_img,
 		close_img_size		= data.close_img_size,
 		close_ib_image_src  = data.close_ib_image_src,
-		close_img_position  = data.close_info_bar_pos;
+		close_img_position  = data.close_info_bar_pos,
+		adjacent_close_position = data.adjacent_close_position;
+
+		var adj_class ='';
+
+	switch(adjacent_close_position){
+		case 'top_left': adj_class = 'cp-adjacent-left';
+			break;
+		case 'top_right': adj_class = 'cp-adjacent-right';
+			break;
+		case 'bottom_left': adj_class = 'cp-adjacent-bottom-left';
+			break;
+		case 'bottom_right': adj_class = 'cp-adjacent-bottom-right';
+			break;
+	}
 
 		cp_close.show();
 		cp_close.removeAttr("class");
@@ -566,6 +579,8 @@ function cp_info_bar_close_img_settings(data){
 			cp_close.appendTo(jQuery(".cp-info-bar-container"));
 			ib_body_container.addClass('ib-close-outside').removeClass('ib-close-inline');
 		}
+
+
 
 		if( close_info_bar == "close_img" ) {
 
@@ -610,6 +625,9 @@ function cp_info_bar_close_img_settings(data){
 			cp_close.addClass("ib-close");
 			cp_close.hide();
 		}
+
+		cp_close.removeClass('cp-adjacent-left cp-adjacent-right cp-adjacent-bottom-left cp-adjacent-bottom-right');
+   		cp_close.addClass(adj_class);
 }
 
 /**
@@ -628,7 +646,6 @@ function cp_info_bar_animation_setup(data){
 
 	cp_animate.removeClass('smile-animated');
 
-	//if( toggle_btn == '1' && toggle_btn_visible == '1' )
 	if( cp_animate.hasClass('cp-ifb-hide') || toggle_btn_visible == '1') {
 		// do not apply animations to info bar
 		cp_animate.attr('data-entry-animation', entry_animation );
@@ -805,7 +822,7 @@ function cp_add_custom_css(data) {
  * Also, Replaced [data-css-image-url] with empty. [Which is used to updated image URL without AJAX.]
  */
 parent.jQuery(window.parent.document).on('cp-image-remove', function( e, url) {
-	//console.log('cp image remove');
+
 	var cp_info_bar_body	 = jQuery(".cp-info-bar-body");
 	cp_info_bar_body.css({ 	"background-image" 	: "" });
 	//	REMOVE - [data-css-image-url] to get updated image for FULLWIDTH
@@ -817,7 +834,6 @@ parent.jQuery(window.parent.document).on('cp-image-remove', function( e, url) {
  */
 parent.jQuery(window.parent.document).on('cp-image-change', function( e, name, url, val) {
 
-	//console.log('inside image change');
 	//	Info bar - Background Image
 	// Process for Info bar background image - for variable 'info_bar_bg_image'
 	if( name == 'info_bar_bg_image' && name != 'undefined' && name != null ) {
@@ -951,7 +967,7 @@ function cp_color_for_list_tag(){
 		var moadal_style    = 'cp-info-bar';
 
 		jQuery(this).find("li").each(function() {
-			if(jQuery(this).parents(".cp_social_networks").length == 0){
+			if(jQuery(this).parents(".cp_social_networks").length == 0 && (jQuery(this).parents(".custom-html-form").length == 0)){
             var parent_li   = jQuery(this).parents("div").attr('class').split(' ')[0];
 
             var  cnt         = jQuery(this).index()+1,
@@ -1282,13 +1298,13 @@ function close_ifb(e){
 /**
  *for responsive social media icon*
  */
-function cp_social_responsive(){
+function cp_infobar_social_responsive(){
 
     var wh = jQuery(window).width();
      jQuery(".cp_social_networks").each(function() {
         var column_no = jQuery(this).data('column-no');
         var classname ='';
-        if(wh <= 610){
+        if(wh < 768){
             jQuery(this).removeClass('cp_social_networks');
             jQuery(this).removeClass(column_no);
             classname =  jQuery(this).attr('class');
@@ -1304,5 +1320,5 @@ function cp_social_responsive(){
 }
 
 jQuery(window).resize(function(){
-	cp_social_responsive();
+	cp_infobar_social_responsive();
 });

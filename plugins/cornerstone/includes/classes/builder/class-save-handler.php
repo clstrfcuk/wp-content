@@ -6,31 +6,31 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 	public function ajax_handler( $data ) {
 
 		if ( ! isset( $data['elements'] )  ) {
-			cs_send_json_error( array( 'message' => 'No element data recieved' ) );
+			return cs_send_json_error( array( 'message' => 'No element data recieved' ) );
 		}
 
 		if ( ! isset( $data['settings'] ) ) {
-			cs_send_json_error( array( 'message' => 'No setting data recieved' ) );
+			return cs_send_json_error( array( 'message' => 'No setting data recieved' ) );
 		}
 
 		if ( ! is_array( $data['elements'] )  ) {
-			cs_send_json_error( array( 'message' => 'Element data invalid' ) );
+			return cs_send_json_error( array( 'message' => 'Element data invalid' ) );
 		}
 
 		if ( ! is_array( $data['settings'] ) ) {
-			cs_send_json_error( array( 'message' => 'Setting data invalid' ) );
+			return cs_send_json_error( array( 'message' => 'Setting data invalid' ) );
 		}
 
 		global $post;
 		$post = get_post( (int) $data['post_id'] ); // WPCS: override ok.
 
 		if ( ! isset( $data['post_id'] ) || ! $post ) {
-			cs_send_json_error( array( 'message' => 'post_id not set' ) );
+			return cs_send_json_error( array( 'message' => 'post_id not set' ) );
 		}
 
 		$cap = $this->plugin->common()->get_post_capability( $post, 'edit_post' );
 		if ( ! current_user_can( $cap, $data['post_id'] ) ) {
-			cs_send_json_error( array( 'message' => sprintf( '%s capability required.', $cap ) ) );
+			return cs_send_json_error( array( 'message' => sprintf( '%s capability required.', $cap ) ) );
 		}
 
 		setup_postdata( $post );
@@ -44,7 +44,7 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 		$settings = $this->save_settings( $data['settings'] );
 
 		if ( is_wp_error( $settings ) ) {
-			cs_send_json_error( array( 'message' => $settings->get_error_message() ) );
+			return cs_send_json_error( array( 'message' => $settings->get_error_message() ) );
 		}
 
 		$element_buffer = $this->save_elements( $data['elements'] );
@@ -52,7 +52,7 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 		wp_reset_postdata();
 
 		if ( is_wp_error( $element_buffer ) ) {
-			cs_send_json_error( array( 'message' => $element_buffer->get_error_message() ) );
+			return cs_send_json_error( array( 'message' => $element_buffer->get_error_message() ) );
 		}
 
 		update_post_meta( $this->post_id, '_cornerstone_version', $this->plugin->version() );
@@ -105,7 +105,7 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 			$buffer .= $content;
 		}
 
-		update_post_meta( $this->post_id, '_cornerstone_data', $elements );
+		cs_update_serialized_post_meta( $this->post_id, '_cornerstone_data', $elements );
 		delete_post_meta( $this->post_id, '_cornerstone_override' );
 
 		$buffer = $this->process_content( $buffer );
@@ -113,7 +113,7 @@ class Cornerstone_Save_Handler extends Cornerstone_Plugin_Component {
 
 		wp_update_post( array(
 			'ID'           => $this->post_id,
-			'post_content' => $post_content,
+			'post_content' => wp_slash( $post_content ),
 		) );
 
 		$post_type = get_post_type( $this->post_id );

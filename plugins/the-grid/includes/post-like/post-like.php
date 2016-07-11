@@ -25,9 +25,9 @@ if(!class_exists('TO_Post_Like')) {
 	class TO_Post_Like {
 		
 		/**
-		 * Main var for this instance
-		 * @since 1.0.0
-		 */
+		* Main var for this instance
+		* @since 1.0.0
+		*/
 		private $like_icon    = false;
 		private $unlike_icon  = false;
 		protected $debug_mode = false;
@@ -37,6 +37,7 @@ if(!class_exists('TO_Post_Like')) {
 		* @since 1.0.0
 		*/
 		public function __construct() {
+			
 			$this->define_constants();
 			$this->localize_plugin();
 			// get debug mode option
@@ -47,12 +48,13 @@ if(!class_exists('TO_Post_Like')) {
 			add_action( 'wp_ajax_nopriv_to_like_post', array($this, 'like_post_callback') );
 			add_action( 'wp_ajax_to_like_post', array($this, 'like_post_callback') );
 			// Load public/admin CSS styles
-			add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'),10);
-			add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'),10);
+			add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'), 101);
+			add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'), 101);
 			// Load front-end JS script
-			add_action('wp_enqueue_scripts', array($this, 'enqueue_script'),10);
+			add_action('wp_enqueue_scripts', array($this, 'enqueue_script'), 101);
 			// register post like script (prevent additionnal request just fro a small script)
-			add_action('wp_footer', array($this, 'enqueue_post_like_script'),100);
+			add_action('wp_footer', array($this, 'enqueue_post_like_script'), 100);
+			
 		}
 		
 		/**
@@ -74,8 +76,10 @@ if(!class_exists('TO_Post_Like')) {
 		* @since 1.0.0
 		*/
 		public function define_constants() {
+			
 			define('TO_POST_LIKE_PATH', trailingslashit(str_replace('\\', '/', dirname(__FILE__))));
 			define('TO_POST_LIKE_URL', site_url(str_replace(trailingslashit(str_replace('\\', '/',ABSPATH)), '', TO_POST_LIKE_PATH)));
+			
 		}
 		
 		
@@ -84,8 +88,10 @@ if(!class_exists('TO_Post_Like')) {
 		* @since 1.0.0
 		*/
 		public function to_post_like_shortcode($atts, $content = null){
+			
 			extract(shortcode_atts(array(), $atts));
 			return TO_Get_Post_Like();
+			
 		}
 		
 		
@@ -93,19 +99,22 @@ if(!class_exists('TO_Post_Like')) {
 		* Enqueue styles on front-end for debug mode enable
 		* @since 1.0.0
 		*/
-		public function enqueue_script() {	
+		public function enqueue_script() {
+				
 			// enqueue js scripts
 			if ($this->debug_mode) {
 				wp_enqueue_script( 'to-like-post', TO_POST_LIKE_URL .'assets/js/post-like.js', array('jquery'), '1.0', 1 );
 				wp_localize_script( 'to-like-post', 'to_like_post', array('url' => admin_url( 'admin-ajax.php' ),'nonce' => wp_create_nonce( 'to_like_post' )));
 			}
+			
 		}
 		
 		/**
 		* Enqueue post like script on front-end for debug mode disable
 		* @since 1.0.5
 		*/
-		public function enqueue_post_like_script() {	
+		public function enqueue_post_like_script() {
+				
 			if (!$this->debug_mode) {
 				$script = '<script type="text/javascript">';
 				$script .= 'var to_like_post = {"url":"'.admin_url( 'admin-ajax.php' ).'","nonce":"'.wp_create_nonce( 'to_like_post' ).'"};';
@@ -113,6 +122,7 @@ if(!class_exists('TO_Post_Like')) {
 				$script .= '</script>';
 				echo $script;
 			}
+			
 		}
 		
 		/**
@@ -120,9 +130,12 @@ if(!class_exists('TO_Post_Like')) {
 		* @since 1.0.0
 		*/
 		public function enqueue_styles() {	
+		
 			// enqueue inline styles (because really small css) no need additionnal request blocking the page
-			$custom_css = '.to-post-like{position:relative;display:inline-block;width:auto;cursor:pointer;font-weight:400}.to-post-like .to-like-count{position:relative;display:inline-block;margin:0 0 0 18px}.to-post-like .to-heart-icon{position:absolute;top:50%;width:15px;height:14px;-webkit-transform:translateY(-50%);transform:translateY(-50%)}.to-heart-icon g{-webkit-transform:scale(1);transform:scale(1)}.to-heart-icon path{-webkit-transform:scale(1);transform:scale(1);transition:fill 400ms ease,stroke 400ms ease}.no-liked .to-heart-icon path{fill:#999;stroke:#999}.empty-heart .to-heart-icon path{fill:transparent!important;stroke:#999}.liked .to-heart-icon path,.to-heart-icon:hover path{fill:#ff6863!important;stroke:#ff6863!important}@keyframes heartBeat{0%{transform:scale(1)}20%{transform:scale(.8)}30%{transform:scale(.95)}45%{transform:scale(.75)}50%{transform:scale(.85)}100%{transform:scale(.9)}}@-webkit-keyframes heartBeat{0%,100%,50%{-webkit-transform:scale(1)}20%{-webkit-transform:scale(.8)}30%{-webkit-transform:scale(.95)}45%{-webkit-transform:scale(.75)}}.heart-pulse g{-webkit-animation-name:heartBeat;animation-name:heartBeat;-webkit-animation-duration:1s;animation-duration:1s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite;-webkit-transform-origin:50% 50%;transform-origin:50% 50%}.to-post-like a{color:inherit!important;fill:inherit!important;stroke:inherit!important}';
+			$custom_css = '.to-heart-icon,.to-heart-icon svg,.to-post-like,.to-post-like .to-like-count{position:relative;display:inline-block}.to-post-like{width:auto;cursor:pointer;font-weight:400}.to-post-like .to-like-count{float:right}.to-heart-icon{float:left;margin:0 4px 0 0}.to-heart-icon svg{overflow:visible;width:15px;height:14px}.to-heart-icon g{-webkit-transform:scale(1);transform:scale(1)}.to-heart-icon path{-webkit-transform:scale(1);transform:scale(1);transition:fill .4s ease,stroke .4s ease}.no-liked .to-heart-icon path{fill:#999;stroke:#999}.empty-heart .to-heart-icon path{fill:transparent!important;stroke:#999}.liked .to-heart-icon path,.to-heart-icon svg:hover path{fill:#ff6863!important;stroke:#ff6863!important}@keyframes heartBeat{0%{transform:scale(1)}20%{transform:scale(.8)}30%{transform:scale(.95)}45%{transform:scale(.75)}50%{transform:scale(.85)}100%{transform:scale(.9)}}@-webkit-keyframes heartBeat{0%,100%,50%{-webkit-transform:scale(1)}20%{-webkit-transform:scale(.8)}30%{-webkit-transform:scale(.95)}45%{-webkit-transform:scale(.75)}}.heart-pulse g{-webkit-animation-name:heartBeat;animation-name:heartBeat;-webkit-animation-duration:1s;animation-duration:1s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite;-webkit-transform-origin:50% 50%;transform-origin:50% 50%}.to-post-like a{color:inherit!important;fill:inherit!important;stroke:inherit!important}';
+
 			wp_add_inline_style('the-grid', $custom_css);
+			
 		}
 		
 		/**
@@ -316,10 +329,12 @@ class TO_Get_Post_Like extends TO_Post_Like {
 	* @since 1.0.0
 	*/
 	static public function getInstance() {
+		
 		if(self::$instance == null) {
 			self::$instance = new self;
 		}
 		return self::$instance;
+		
 	}
 	
 	/**
@@ -327,6 +342,7 @@ class TO_Get_Post_Like extends TO_Post_Like {
 	* @since 1.0.0
 	*/
     public function __construct($post_id = null) {
+		
         $post_id    = (!empty($post_id)) ? $post_id : get_the_ID();
 		$like_count = get_post_meta($post_id, '_post_like_count', true);
 		$like_count = (empty( $like_count) || $like_count == '0' ) ? '0' : $like_count;
@@ -342,11 +358,13 @@ class TO_Get_Post_Like extends TO_Post_Like {
 			$title = __('Like', 'to-text-domain');			
 		}
 
-		$heart  = '<svg class="to-heart-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 64 64">';
-		$heart .= '<g transform="translate(0, 0)">';
-		$heart .= '<path stroke-width="6" stroke-linecap="square" stroke-miterlimit="10" d="M1,21c0,20,31,38,31,38s31-18,31-38  c0-8.285-6-16-15-16c-8.285,0-16,5.715-16,14c0-8.285-7.715-14-16-14C7,5,1,12.715,1,21z"></path>';
-		$heart .= '</g>';
-		$heart .= '</svg>';
+		$heart = '<span class="to-heart-icon">';
+			$heart .= '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 64 64">';
+				$heart .= '<g transform="translate(0, 0)">';
+					$heart .= '<path stroke-width="6" stroke-linecap="square" stroke-miterlimit="10" d="M1,21c0,20,31,38,31,38s31-18,31-38 c0-8.285-6-16-15-16c-8.285,0-16,5.715-16,14c0-8.285-7.715-14-16-14C7,5,1,12.715,1,21z"></path>';
+				$heart .= '</g>';
+			$heart .= '</svg>';
+		$heart .= '</span>';
 		
 		$output = '<span class="no-ajaxy to-post-like'.esc_attr($class).'" data-post-id="'.esc_attr($post_id).'" title="'.esc_attr($title).'">';
 			$output .= $heart;

@@ -61,26 +61,30 @@
     }
 
 	function modal_process_cp_form(t) {
-
+		// console.log(jQuery(t));
 		var form 					= jQuery(t).parents(".cp-modal-body").find("#smile-optin-form"),
 			data 					= form.serialize(),
 			info_container  		= jQuery(t).parents(".cp-animate-container").find('.cp-msg-on-submit'),
 			form_container  		= jQuery(t).parents(".cp-modal-body").find('.cp-form-container'),
 			spinner  				= jQuery(t).parents(".cp-animate-container").find('.cp-form-processing'),
-			modal 					= jQuery(t).parents(".cp-overlay"),
+			modal 					= jQuery(t).parents(".global_modal_container "),
 			cp_form_processing_wrap = jQuery(t).parents(".cp-animate-container").find('.cp-form-processing-wrap'),
 			cp_animate_container    = jQuery(t).parents(".cp-animate-container"),
 			cp_tooltip    			= modal.find(".cp-tooltip-icon").data('classes');
 
-		var cookieTime 				= modal.data('conversion-cookie-time');
-		var cookieName 				= modal.data('modal-id');
-		var dont_close 				= jQuery(t).parents(".cp-overlay").hasClass("do_not_close");
-		var redirectdata 			= jQuery(t).parents(".cp-overlay").data("redirect-lead-data");
-
+		var cookieTime 				= modal.data('conversion-cookie-time'),
+			cookieName 				= modal.data('modal-id'),
+		 	dont_close 				= jQuery(t).parents(".global_modal_container ").hasClass("do_not_close"),
+			redirectdata 			= jQuery(t).parents(".global_modal_container ").data("redirect-lead-data"),
+		 	redirect_to 			= jQuery(t).parents(".global_modal_container ").data("redirect-to"),
+		 	form_action_on_submit 	= jQuery(t).parents(".global_modal_container").data("form-action"),
+		 	form_action_dealy		= jQuery(t).parents(".global_modal_container").data("form-action-time"),
+		 	form_action_dealy 		= parseInt(form_action_dealy * 1000);
 		// Check for required fields are not empty
 		// And create query strings to send to redirect URL after form submission
 		var query_string = '';
         var submit_status = true;
+        var redirect_with = '';
         form.find('.cp-input').each( function(index) {
             var $this = jQuery(this);
 
@@ -127,12 +131,11 @@
 
 		    			if( isValidEmailAddress( email ) ) {
 			    			jQuery( el ).removeClass('cp-error');
-			    			//fail = false;
 			    		} else {
 			    			jQuery( el ).addClass('cp-error');
 			    			fail++;
 			    			var name = jQuery( el ).attr( 'name' ) || '';
-			    			console.log( name + " is required \n" );
+			    			fail_log += name + " is required \n";
 			    		}
 		    		} else {
                 		jQuery( el ).removeClass('cp-error');
@@ -190,7 +193,10 @@
 						detailed_msg += "<div class='cp-go-back'>Go Back</div>";
 						msg_string   += '<div class="cp-only-admin-msg">[Only you can see this message]</div>';
 					}
-					
+
+					// remove backslashes from success message
+					obj.message = obj.message.replace(/\\/g, '');
+
 					//	show message error/success
 					if( typeof obj.message != 'undefined' && obj.message != null) {
 						info_container.hide().css({visibility: "visible"}).fadeIn(120);
@@ -226,10 +232,18 @@
 
 								var redirect_url = url + urlstring + decodeURI(query_string);
 								if( redirectdata == 1 ){
-									window.location = redirect_url;
+									redirect_url = redirect_url ;
 								} else {
-									window.location = obj.url;
+									redirect_url = obj.url ;
 								}
+
+								if(redirect_to !=='download'){
+									redirect_with = redirect_to;
+									window.open( redirect_url,'_'+redirect_with );
+								}else{
+									cp_download_file(redirect_url);
+								}
+
 							} else {
 
 								cp_form_processing_wrap.show();
@@ -246,13 +260,33 @@
                                         window.open( redirect_src,redirect_target );
                                     }
 								}
+
+								if(form_action_on_submit == 'disappear'){
+									modal.removeClass('cp-hide-inline-style');
+									setTimeout(function(){
+										if( modal.hasClass('cp-modal-inline') ){
+											modal.addClass('cp-hide-inline-style');
+										}
+										jQuery(document).trigger('closeModal',[modal]);
+									},form_action_dealy);
+								}else if(form_action_on_submit == 'reappear'){
+									setTimeout(function(){										
+										info_container.empty();
+										cp_form_processing_wrap.css({'display': 'none'});
+										info_container.removeAttr('style');
+										spinner.removeAttr('style');
+										form.trigger("reset");
+
+
+									},form_action_dealy);
+								}
+								
 							}
 
 							if(dont_close){
 								setTimeout(function(){
 						           jQuery(document).trigger('closeModal',[modal]);
-
-						         },3000);
+						        },3000);
 							}
 						}
 					}
@@ -305,5 +339,32 @@
 		});
 
 	});
+
+function cp_download_file(fileURL, fileName) {
+    // for non-IE
+    if (!window.ActiveXObject) {
+        var save = document.createElement('a');
+        save.href = fileURL;
+        save.target = '_blank';
+        var filename = fileURL.substring(fileURL.lastIndexOf('/')+1);
+        save.download = fileName || filename;
+        var evt = new MouseEvent('click', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': false
+        });
+        save.dispatchEvent(evt);
+
+        (window.URL || window.webkitURL).revokeObjectURL(save.href);
+    }
+
+    // for IE < 11
+    else if ( !! window.ActiveXObject && document.execCommand)     {
+        var _window = window.open(fileURL, '_blank');
+        _window.document.close();
+        _window.document.execCommand('SaveAs', true, fileName || fileURL)
+        _window.close();
+    }
+}
 
 })( jQuery );

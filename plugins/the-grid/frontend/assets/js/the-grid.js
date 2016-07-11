@@ -713,8 +713,8 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 				layout[param].previewMode = $preview;
 				layout.hiddenStyle.opacity = 0;
 				layout.visibleStyle.opacity = 1;
-				layout.hiddenStyle.transform = options.animation[2].hidden;
-				layout.visibleStyle.transform = options.animation[1].visible;
+				layout.hiddenStyle.transform = options.animation.hidden;
+				layout.visibleStyle.transform = options.animation.visible;
 				layout.transitionDuration = options.transition;
 				layout.getSortData = The_Grid.sortData;
 				el.TG_Layout(layout);
@@ -839,7 +839,8 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 					grid_name  : el.data('name'),
 					grid_page  : page,
 					grid_data  : get_meta_data(),
-					grid_social: el.data('social')
+					grid_ajax  : el.data('ajax'),
+					main_query : tg_global_var.main_query
 				};
 
 				xhr = $.ajax({
@@ -856,14 +857,19 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 					success : function(data){
 
 						// retrieve ajax response
-						var success = data.success,
-							message = data.message,
-							content = data.content,
-							social  = data.social;
+						var success   = data.success,
+							message   = data.message,
+							content   = data.content,
+							ajax_data = data.ajax_data;
 						
-						// assign new social ajax data
-						social  = (typeof $.parseJSON(social) == 'object') ? $.parseJSON(social) : social;
-						el.data('social', social);
+						// assign new ajax data (check if json)
+						var is_json = true;
+						try {
+							ajax_data = $.parseJSON(ajax_data);
+						} catch(err) {
+							is_json = false;
+						}     
+						el.data('ajax', ajax_data);
 
 						// if an error occur during retrieving content
 						if (!success) {
@@ -926,15 +932,17 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 										func = (options.layout === 'horizontal') && $frame.reload();
 										// show ajax pages & reset ajax
 										if (itemNb === i || !options.ajaxDelay) {
-											count_filter(); // 11. re-count filter nb  
-											count_items();  // 12. recount item for ajax button
+											count_filter(); // 10. re-count filter nb  
+											count_items();  // 11. re-count item for ajax button
 											func = (!options.ajaxDelay) && el.TG_Layout('appended',$items);
 											func = (options.layout === 'horizontal') && $frame.reload();
 											$pages.removeClass('tg-loading');
 											isAjax = false;
 											interval.clear();
-											// for Foobox lightbox
+											// update 3rd party plugins lightbox
 											func = (typeof FOOBOX !== 'undefined' && $.isFunction(FOOBOX.init)) && FOOBOX.init();
+											func = ($().fancybox) && $('.tg-item a.fancybox').fancybox();
+											func = ($().prettyPhoto) && $('.tg-item  a[rel^="prettyPhoto"]').prettyPhoto();
 											// clean data
 											cleanData($item);
 											return false;
@@ -1338,7 +1346,9 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 				TG_YT_players[playerID] = new YT.Player(playerID, {
 					events: {
 						'onReady':function(event){
-							event.target.playVideo();
+							if (!tg_is_mobile) {
+								event.target.playVideo();
+							}
 							$.TG_Media_Ready($this,event.target,'YT'); 
 						},
 						'onStateChange': function(event){
@@ -1591,7 +1601,7 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 			script,
 			scripts = [
 				{'ID':'youtube', 'url':'//www.youtube.com/iframe_api'},
-				{'ID':'vimeo', 'url':'//a.vimeocdn.com/js/froogaloop2.min.js'},
+				{'ID':'vimeo', 'url':'//f.vimeocdn.com/js/froogaloop2.min.js'},
 				{'ID':'soundcloud', 'url':'//w.soundcloud.com/player/api.js'},
 				{'ID':'wistia', 'url':'//fast.wistia.com/assets/external/E-v1.js'}
 			];
@@ -1632,7 +1642,7 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 		};
 		
 		/* jshint loopfunc:true */
-		// auto & smart load API scripts (only when necessary)
+		// autoload API scripts (only when necessary)
 		for (var i = 0; i < scripts.length; i++) {
 			type = scripts[i].ID;
 			if ($('[data-api="1"].tg-item-'+type).length > 0) {
@@ -1641,7 +1651,7 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 					tag = document.createElement('script');
 					tag.src = scripts[i].url;
 					tag.id  = 'tg-'+type+'-api';
-					script = document.getElementsByTagName('script')[0];
+					script  = document.getElementsByTagName('script')[0];
 					script.parentNode.insertBefore(tag, script);
 					(function(tag,type){
 						tag.onload = function() {
@@ -1662,10 +1672,8 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 				$('.tg-item-video-player:not(.tg-mediaelement-init), .tg-item-audio-player:not(.tg-mediaelement-init)').mediaelementplayer({
 					audioVolume: 'vertical',
 					videoVolume: 'vertical',
-					startVolume: 0.8,
-					success: function(media, domObject) {
-						$(domObject).TO_MediaRail();
-					}
+					features: ['playpause', 'current', 'progress', 'fullscreen', 'volume', 'duration'],
+					startVolume: 0.8
 				});	
 				$('.tg-item-video-player, .tg-item-audio-player').addClass('tg-mediaelement-init');
 			}
@@ -1714,25 +1722,10 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 		});
 		
 		// delete all instances of mediaelement.js
-		if (mejs) {
+		if (tg_global_var.mediaelement) {
 			mejs.players = [];
 		}
 			
-	};
-	
-	// adjust Mediaelement timerail
-	$.fn.TO_MediaRail = function() {
-		var dom   = this;
-		var ctrl  = dom.closest('.mejs-container').find('.mejs-controls');
-		if (ctrl.length > 0) {
-			dom.closest('.tg-item').on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
-				if (!dom.closest('.tg-item').hasClass('tg-item-hidden')) {
-					if (dom[0].player) {
-						dom[0].player.setControlsSize();
-					}
-				}
-			});
-		}
 	};
 
 	// ======================================================
@@ -1786,21 +1779,17 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 			autoplay = tg_global_var.lightbox_autoplay;
 
 		function checkLightbox() {
-			var y = 0;
-			media_length = $(media_data).length;
+			var $media_data = $(media_data).filter(':visible');
+			media_length = $media_data.length;
 			for (i = 0; i < media_length; i++) {
-				var el = $(media_data).eq(i);
-				if (el.is(':visible')) {
-					media_arr[y] = {};
-					media_arr[y].type   = el.data('tolb-type');
-					media_arr[y].src    = el.data('tolb-src');
-					media_arr[y].alt    = el.data('tolb-alt');
-					media_arr[y].poster = el.data('tolb-poster');
-					el.data(index,y);
-					y++;
-				}
+				var el = $media_data.eq(i);
+				media_arr[i] = {};
+				media_arr[i].type   = el.data('tolb-type');
+				media_arr[i].src    = el.data('tolb-src');
+				media_arr[i].alt    = el.data('tolb-alt');
+				media_arr[i].poster = el.data('tolb-poster');
+				el.data(index,i);
 			}
-			media_length = y;
 			if (media_length > 1) {
 				$(next+','+prev).show();
 			} else {
@@ -1908,13 +1897,16 @@ var tg_is_mobile = (tg_global_var.is_mobile); // check is we are on a mobile dev
 		
 		function mediaelement() {
 			media_html.mediaelementplayer({
-				features: ['playpause', 'stop', 'loop','current','progress','duration','volume', 'sourcechooser', 'fullscreen'],
+				features: ['playpause', 'stop', 'loop', 'current', 'progress', 'duration', 'volume', 'sourcechooser', 'fullscreen'],
 				videoVolume: 'horizontal',
 				startVolume: 0.8,
 				success: function(media, domObject) {
 					player = media;
 					media_html = $(domObject).closest('.mejs-container');
 					unloadMedia();
+					player.addEventListener('ended', function(){
+						media_html.find('.mejs-poster').show();
+					});
 				}	
 			});
 		}

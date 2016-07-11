@@ -83,7 +83,7 @@
         },
 
         addClass: function(klass) {
-        	console.log("in");
+            console.log("in");
             if (typeof klass === 'string') { this.$el.addClass(klass); }
         },
 
@@ -198,9 +198,9 @@
                     break;
                 default:
                     coords.top = coords.top - this.$el.outerHeight() - this.options.offset;
-					var left = coords.left + (this.$anchor.outerWidth() / 2) - (this.$el.outerWidth() / 2);
-					if( left < 0 )
-						left = 0;
+                    var left = coords.left + (this.$anchor.outerWidth() / 2) - (this.$el.outerWidth() / 2);
+                    if( left < 0 )
+                        left = 0;
                     coords.left = left;
             }
             //console.log(coords);
@@ -213,9 +213,9 @@
     };
 
     $.fn[pluginName] = function (options, args) {
-    	//console.log($.data(this, "plugin_" + pluginName));
+        //console.log($.data(this, "plugin_" + pluginName));
         if (typeof options === 'string') {
-        	//console.log(options);
+            //console.log(options);
             switch (options) {
                 case 'show':
                     this.each(function() { $.data(this, "plugin_" + pluginName)['show'](); });

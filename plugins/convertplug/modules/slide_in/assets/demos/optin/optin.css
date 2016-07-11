@@ -94,13 +94,15 @@
     background-image: none;
     color: #fff;
   /*   border: none; */
-    margin-bottom: 10px;
+   /*  margin-bottom: 10px; */
 }
 
 .cp-slidein .cp-optin .cp-submit {
    /*  border-radius: 3px; */
     display: inline-block;
     word-wrap: break-word;
+    font-size: 14px;
+    line-height: normal;
 }
 
 .cp-optin .cp-email-form {
@@ -182,7 +184,7 @@
 .cp-optin .cp-form-container {
     display: block;
     padding-bottom: 10px;
-    margin-top: 20px 0px 0px 0px;
+    margin-bottom: 10px;
     font-size: 16px;
 }
 
@@ -194,10 +196,9 @@
     padding: 0 10px;
 }
 
-.cp-optin #cp_button_editor span.cp_responsive.cp_font {
-    line-height: 1em;
+.cp-optin-container .cp-top-img .cp-row{
+    margin-top: 15px;
 }
-
 .cp-optin .cp-short-desc-font {
     font-style: italic;
 }
@@ -305,7 +306,9 @@
 
     .cp-optin .cp-form-layout-3 .cp-submit-wrap {
         padding-right: 0;
+        padding-left: 0;
     }
+
 
 }
 

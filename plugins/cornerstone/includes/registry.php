@@ -35,7 +35,8 @@ return array(
 			'Tco',
 			'Common',
 			'Updates',
-			'Integration_Manager'
+			'Integration_Manager',
+      'Options_Bootstrap'
 		),
 		'init' => array(
 			'Legacy_Elements',
@@ -45,9 +46,12 @@ return array(
 			'Front_End',
 			'Customizer_Manager',
 			'Style_Loader',
+      'Headers:theme-support:cornerstone_headers'
 		),
 		'loggedin' => array(
 			'Admin',
+      'Options_Manager', // MOVE
+      'App',
 			'Validation',
 			'Revision_Manager',
 			'Builder',

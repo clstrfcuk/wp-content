@@ -72,9 +72,9 @@ class CS_Callout extends Cornerstone_Element_Base {
       'left',
       array(
         'choices' => array(
-          array( 'value' => 'left',   'tooltip' => __( 'Left', 'cornerstone' ) ),
-          array( 'value' => 'center', 'tooltip' => __( 'Center', 'cornerstone' ) ),
-          array( 'value' => 'right',  'tooltip' => __( 'Right', 'cornerstone' ) )
+          array( 'value' => 'left',   'label' => __( 'Left', 'cornerstone' ) ),
+          array( 'value' => 'center', 'label' => __( 'Center', 'cornerstone' ) ),
+          array( 'value' => 'right',  'label' => __( 'Right', 'cornerstone' ) )
         )
       )
     );

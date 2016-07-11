@@ -242,7 +242,160 @@ function cp_add_modal_template( $args, $preset, $module ) {
 					"Shortcode,Canvas,HTML,Custom", // tags
 					"black_friday_discount" // template unique slug
 					),
-
+				"design_kitchen" =>
+				array (
+					"locked_content", // theme slug for template
+					"Design Kitchen", // template name
+					plugins_url('assets/demos/locked_content/locked_content.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshots_design_kitchen.png", // screen shot url for template
+					plugins_url('assets/demos/locked_content/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup, Updates", // categories
+					"Shortcode,Canvas,HTML,Custom,Kitchen,Delights", // tags
+					"design_kitchen" // template unique slug
+					),
+				"exclusive_tips" =>
+				array (
+					"every_design", // theme slug for template
+					"Exclusive Tips", // template name
+					plugins_url('assets/demos/every_design/every_design.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshots_excl_tip.png", // screen shot url for template
+					plugins_url('assets/demos/every_design/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup, Updates", // categories
+					"Shortcode,Canvas,HTML,Custom,Tips", // tags
+					"exclusive_tips" // template unique slug
+					),
+				"show_time" =>
+				array (
+					"optin_to_win", // theme slug for template
+					"Show Time", // template name
+					plugins_url('assets/demos/optin_to_win/optin_to_win.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshots_show_time.png", // screen shot url for template
+					plugins_url('assets/demos/optin_to_win/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup, Updates", // categories
+					"Shortcode,Canvas,HTML,Custom,Tips,Movie", // tags
+					"show_time" // template unique slug
+					),
+				"design_post" =>
+				array (
+					"every_design", // theme slug for template
+					"Design Post", // template name
+					plugins_url('assets/demos/every_design/every_design.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshots_design_post.png", // screen shot url for template
+					plugins_url('assets/demos/every_design/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,exit intent,offers,Optins", // categories
+					"Shortcode,Canvas,HTML,Custom", // tags
+					"design_post" // template unique slug
+					),
+				"extended_discount" =>
+				array (
+					"first_order_2", // theme slug for template
+					"Extended Discount", // template name
+					plugins_url('assets/demos/first_order_2/first_order_2.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshot_ext_disc.png", // screen shot url for template
+					plugins_url('assets/demos/first_order_2/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,Offers,Updates,Exit Intent", // categories
+					"Shortcode,Canvas,HTML,Custom,Discount", // tags
+					"extended_discount" // template unique slug
+					),
+				"design_tigers" =>
+				array (
+					"every_design", // theme slug for template
+					"Design Tigers", // template name
+					plugins_url('assets/demos/every_design/every_design.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshots_super_surviver.png", // screen shot url for template
+					plugins_url('assets/demos/every_design/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,exit intent,offers,Optins", // categories
+					"Shortcode,Canvas,HTML,Custom", // tags
+					"design_tigers" // template unique slug
+					),
+				"free_note" =>
+				array (
+					"first_order", // theme slug for template
+					"Free Note", // template name
+					plugins_url('assets/demos/first_order/first_order.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshot_note.png", // screen shot url for template
+					plugins_url('assets/demos/first_order/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,Updates,Offers", // categories
+					"Shortcode,Canvas,HTML,Custom,Notes,Enterpreneur", // tags
+					"free_note" // template unique slug
+					),
+				"conversion_hack" =>
+				array (
+					"direct_download", // theme slug for template
+					"Conversion Hack", // template name
+					plugins_url('assets/demos/direct_download/direct_download.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshot_conversion_tips.png", // screen shot url for template
+					plugins_url('assets/demos/direct_download/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,Exit Intent", // categories
+					"Shortcode,Canvas,HTML,Custom", // tags
+					"conversion_hack" // template unique slug
+					),
+				"ecommerce_growth" =>
+				array (
+					"webinar", // theme slug for template
+					"Ecommerce Growth", // template name
+					plugins_url('assets/demos/webinar/webinar.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshot_ecommerce.png", // screen shot url for template
+					plugins_url('assets/demos/webinar/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,Optins", // categories
+					"Shortcode,Canvas,HTML,Custom,Ecommerce", // tags
+					"ecommerce_growth" // template unique slug
+					),
+				"pet_care_fullscreen" =>
+				array (
+					"locked_content", // theme slug for template
+					"Pet Care", // template name
+					plugins_url('assets/demos/locked_content/locked_content.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshot_full_pet_care.png", // screen shot url for template
+					plugins_url('assets/demos/locked_content/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup, Updates", // categories
+					"Shortcode,Canvas,HTML,Custom,Pet,Care", // tags
+					"pet_care_fullscreen" // template unique slug
+					),
+				"we_care_your_pet" =>
+				array (
+					"first_order_2", // theme slug for template
+					"We Care Your Pet", // template name
+					plugins_url('assets/demos/first_order_2/first_order_2.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/preset_we_care_ur_pet.png", // screen shot url for template
+					plugins_url('assets/demos/first_order_2/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,Offers,Updates,Exit Intent", // categories
+					"Shortcode,Canvas,HTML,Custom,Discount,Pet", // tags
+					"we_care_your_pet" // template unique slug
+					),
+				"e_cooking_classes" =>
+				array (
+					"direct_download", // theme slug for template
+					"E Cooking Classes", // template name
+					plugins_url('assets/demos/direct_download/direct_download.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshot_cookery_classes.png", // screen shot url for template
+					plugins_url('assets/demos/direct_download/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,Exit Intent", // categories
+					"Shortcode,Canvas,HTML,Custom", // tags
+					"e_cooking_classes" // template unique slug
+					),
+				"huge_discount" =>
+				array (
+					"first_order", // theme slug for template
+					"Huge Discount", // template name
+					plugins_url('assets/demos/first_order/first_order.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshot_huge.png", // screen shot url for template
+					plugins_url('assets/demos/first_order/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,Updates,Offers", // categories
+					"Shortcode,Canvas,HTML,Custom,Notes,Enterpreneur", // tags
+					"huge_discount" // template unique slug
+					),
+				"Yello_pet_food_offer" =>
+				array (
+					"special_offer", // theme slug for template
+					"Yello Pet Food Offer", // template name
+					plugins_url('assets/demos/special_offer/special_offer.html',__FILE__),	 // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/screenshot_yellow_food_pet.png", // screen shot url for template
+					plugins_url('assets/demos/special_offer/customizer.js',__FILE__), // customizer js for template
+					"All,modal popup,Updates,Offers", // categories
+					"Shortcode,Canvas,HTML,Custom,Pet,Food", // tags
+					"Yello_pet_food_offer" // template unique slug
+					),
 		);
 
 		if( $preset  !== '' ) {

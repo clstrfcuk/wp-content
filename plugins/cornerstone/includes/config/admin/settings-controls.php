@@ -1,6 +1,6 @@
 <?php
 
-return array(
+$controls = array(
 	'allowed_post_types' => array(
 		'type' => 'multi-select',
 		'ui' => array(
@@ -38,3 +38,18 @@ return array(
 		)
 	),
 );
+
+if ( apply_filters( '_cornerstone_alpha', false ) ) {
+  $controls['custom_app_slug'] = array(
+    'type' => 'text',
+    'ui' => array(
+      'title'       => __( 'Custom Path', 'cornerstone' ),
+      'description' => __( 'Change the path used to load the main interface.', 'cornerstone' ),
+    ),
+    'options' => array(
+      'placeholder' => apply_filters( 'cornerstone_default_app_slug', 'cornerstone' )
+    )
+  );
+}
+
+return $controls;

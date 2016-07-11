@@ -41,20 +41,23 @@ $args = array(
             'key' => $meta_key
         ),
 		$WPML_meta_query
-    )
+    ),
+	'no_found_rows' => true,
+	'cache_results' => false
 );
 
 $my_query  = get_posts($args);
 
 $args['posts_per_page'] = -1;
+$args['fields'] = 'ids';
 $nb_grids  = count(get_posts($args));
 $nb_pages  = ceil($nb_grids/$number);
 $page_links = paginate_links( array(
 	'base'      => add_query_arg( 'pagenum', '%#%' ),
 	'format'    => '',
 	'add_args'  => array('limit' => $number),
-	'prev_text' => __( '&laquo;', 'tg-text-domain' ),
-	'next_text' => __( '&raquo;', 'tg-text-domain' ),
+	'prev_text' => __( '&lsaquo;', 'tg-text-domain' ),
+	'next_text' => __( '&rsaquo;', 'tg-text-domain' ),
 	'total'     => $nb_pages,
 	'current'   => $pagenum,
 	'type'      => 'array'
@@ -137,16 +140,21 @@ $grid_list  = '<div id="tg-grid-list-holder">';
 			}
 			$grid_ID   = $grid->ID;
 			$grid_tile = $grid->post_title;
-			$favorited = get_post_meta($grid_ID, 'the_grid_favorite', true);
-			$post_types = get_post_meta($grid_ID, 'the_grid_post_type', true);
-			$post_types = (isset($post_types) && is_array($post_types)) ? $post_types : array('post' => 'post');
-			$posts = null;
-			foreach ($post_types as $post_type) {
-				if (post_type_exists($post_type)) {
-					$obj  = get_post_type_object($post_type);
-					$name = $obj->labels->name;
-					$posts .= ', '.$name;
+			$favorited   = get_post_meta($grid_ID, 'the_grid_favorite', true);
+			$source_type = get_post_meta($grid_ID, 'the_grid_source_type', true);
+			$post_types  = get_post_meta($grid_ID, 'the_grid_post_type', true);
+			$post_types  = (isset($post_types) && is_array($post_types)) ? $post_types : array('post' => 'post');
+			if ($source_type == 'post_type' || empty($source_type)) {
+				$posts = null;
+				foreach ($post_types as $post_type) {
+					if (post_type_exists($post_type)) {
+						$obj  = get_post_type_object($post_type);
+						$name = $obj->labels->name;
+						$posts .= ', '.$name;
+					}
 				}
+			} else {
+				$posts = ', '.$source_type;
 			}
 			$post_type = ucwords(substr($posts,2));
 			$style     = ucfirst(get_post_meta($grid_ID, 'the_grid_style', true));
@@ -257,5 +265,3 @@ $form .= '</div>';
 echo $form;
 
 add_option('the_grid_new', true);
-
-wp_reset_query();

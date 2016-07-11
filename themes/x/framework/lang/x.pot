@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License v2.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: X 4.5.2\n"
+"Project-Id-Version: X 4.6.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/theme/x\n"
-"POT-Creation-Date: 2016-06-03 15:57:00+00:00\n"
+"POT-Creation-Date: 2016-07-06 15:43:14+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1633,7 +1633,7 @@ msgstr ""
 #: framework/functions/ethos.php:242 framework/functions/ethos.php:244
 #: framework/views/ethos/_index-featured.php:20
 #: framework/views/ethos/_index-featured.php:22
-#: framework/views/ethos/_post-slider.php:77
+#: framework/views/ethos/_post-slider.php:78
 msgid "View Post"
 msgstr ""
 

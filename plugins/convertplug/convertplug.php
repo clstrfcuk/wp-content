@@ -4,16 +4,20 @@ Plugin Name: ConvertPlug
 Plugin URI: http://convertplug.com/
 Author: Brainstorm Force
 Author URI: https://www.brainstormforce.com
-Version: 2.3.0
+Version: 2.3.1
 Description: Welcome to ConvertPlug - the easiest WordPress plugin to convert website traffic into leads. ConvertPlug will help you build email lists, drive traffic, promote videos, offer coupons and much more!
 Text Domain: smile
 */
 if( !defined( 'CP_VERSION' ) ) {
-	define( 'CP_VERSION', '2.3.0');
+	define( 'CP_VERSION', '2.3.1');
 }
 
 if( !defined( 'CP_BASE_DIR' ) ) {
 	define( 'CP_BASE_DIR', plugin_dir_path( __FILE__ ));
+}
+
+if( !defined( 'CP_BASE_URL' ) ) {
+	define( 'CP_BASE_URL', plugin_dir_url( __FILE__ ));
 }
 
 if( !defined( 'CP_DIR_NAME' ) ){
@@ -29,7 +33,7 @@ register_activation_hook( __FILE__, 'on_cp_activate' );
 function on_cp_activate() {
 
 	update_option( 'convert_plug_redirect', true );
-	update_option( 'bsf_force_check_extensions', true );
+	update_site_option( 'bsf_force_check_extensions', true );
 	update_option( "dismiss-cp-update-notice", false );
 
 	$cp_previous_version = get_option( 'cp_previous_version' );
@@ -71,6 +75,7 @@ if(!class_exists( 'Convert_Plug' )){
 			//	Fall back support for multi fields
 			add_action( 'init', array( $this,'fallback_support_for_multifield' ) );
 			add_action( 'wp_loaded', array( $this,'cp_access_capabilities' ), 1 );
+			add_action( 'wp_loaded', array( $this,'cp_set_options' ), 1 );
 
 			$this->paths = wp_upload_dir();
 			$this->paths['fonts'] 	= 'smile_fonts';
@@ -95,6 +100,9 @@ if(!class_exists( 'Convert_Plug' )){
 			// filter hook to add frosty script
 			add_filter( 'bsf_core_frosty_screens', array( $this, 'load_frosty_scripts_from_core' ) );
 
+			// de register scripts
+			add_action( 'admin_enqueue_scripts', array( $this, 'cp_dergister_scripts' ), 100 );
+
 			require_once( 'admin/ajax-actions.php' );
 			require_once( 'framework/cp-widgets.php' );
 			add_action( 'widgets_init', 'Load_Convertplug_Widget' );
@@ -117,6 +125,22 @@ if(!class_exists( 'Convert_Plug' )){
 				add_action( 'admin_notices', 'cp_php_version_notice' );
 			}
 
+			$data = get_option( 'convert_plug_debug' );
+
+			$display_debug_info = isset($data['cp-display-debug-info']) ? $data['cp-display-debug-info'] : 0;
+
+			if( $display_debug_info ) {
+ 				add_action( 'admin_footer', array( $this, 'cp_add_debug_info' ) );
+ 			}
+
+		}
+
+		/*
+		* Set options on load of WordPress
+		* Since 2.3.1
+		*/
+		function cp_set_options() {
+			update_option( 'cp_is_displayed_debug_info', false );
 		}
 
 		/*
@@ -550,7 +574,6 @@ if(!class_exists( 'Convert_Plug' )){
 
 			if ( strpos( $hook , 'convertplug' ) !== false ) {
 				wp_enqueue_style( 'cp-connects-icon', plugins_url('modules/assets/css/connects-icon.css',__FILE__) );
-				//wp_enqueue_style( 'cp-social-icon', plugins_url('modules/assets/css/social-icon-css.css',__FILE__) );
 			}
 
 			if( isset( $_GET['hidemenubar'] ) ) {
@@ -573,7 +596,6 @@ if(!class_exists( 'Convert_Plug' )){
 				wp_enqueue_script( 'cp-perfect-scroll-js', plugins_url( 'admin/assets/js/perfect-scrollbar.jquery.js', __FILE__ ), array( "jquery" ) );
 				wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
 				wp_enqueue_style( 'cp-animate', plugins_url( 'modules/assets/css/animate.css', __FILE__ ) );
-				wp_enqueue_style( 'cp-social-style', plugins_url( 'modules/assets/css/cp-social-media-style.css', __FILE__ ) );
 
 				// ace editor files
 				if( !isset( $_GET['hidemenubar'] ) ) {
@@ -598,7 +620,7 @@ if(!class_exists( 'Convert_Plug' )){
 				}
 
 				wp_enqueue_style( 'css-select2', plugins_url('admin/assets/select2/select2.min.css',__FILE__) );
-				wp_enqueue_script( 'convert-select2', plugins_url('admin/assets/select2/select2.min.js',__FILE__), false, false, true );
+				wp_enqueue_script( 'convert-select2', plugins_url('admin/assets/select2/select2.min.js',__FILE__), false, '2.4.0.3', true );
 
 				// sweet alert
 				wp_enqueue_script( 'cp-swal-js', plugins_url('admin/assets/js/sweetalert.min.js',__FILE__), false, false, true );
@@ -607,10 +629,23 @@ if(!class_exists( 'Convert_Plug' )){
 
 			if( !isset( $_GET['hidemenubar'] ) && strpos( $hook , 'convertplug' ) !== false ) {
 
-				wp_enqueue_style( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/css/bootstrap-datetimepicker.min.css',__FILE__) );
+				if( ( isset( $_GET['variant-test'] ) && $_GET['variant-test'] !== 'edit' )
+					|| ( isset( $_GET['style-view'] ) && $_GET['style-view'] !== 'edit' )
+					|| ( isset( $_GET['style-view'] ) && $_GET['style-view'] == 'edit' && isset( $_GET['theme'] ) && $_GET['theme'] == 'countdown' )
+					|| !isset( $_GET['style-view'] ) )
+				{
 
-				wp_enqueue_script( 'smile-moment-with-locales', plugins_url( 'modules/assets/js/moment-with-locales.js', __FILE__), false, false, true );
-				wp_enqueue_script( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/js/bootstrap-datetimepicker.js',__FILE__), false, false, true );
+					wp_enqueue_style( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/css/bootstrap-datetimepicker.min.css',__FILE__) );
+
+					wp_enqueue_script( 'smile-moment-with-locales', plugins_url( 'modules/assets/js/moment-with-locales.js', __FILE__), false, false, true );
+
+					if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
+						wp_enqueue_script( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/js/bootstrap-datetimepicker.js',__FILE__), false, false, true );
+
+					} else {
+						wp_enqueue_script( 'smile-bootstrap-datetimepicker', plugins_url('modules/assets/js/bootstrap-datetimepicker.min.js',__FILE__), false, false, true );
+					}
+				}
 
 				// sweet alert
 				wp_enqueue_script( 'cp-swal-js', plugins_url('admin/assets/js/sweetalert.min.js',__FILE__), false, false, true );
@@ -752,6 +787,16 @@ if(!class_exists( 'Convert_Plug' )){
 				"bsf-google-font-manager",
 				array($this, 'cp_font_manager')
 			);
+
+			add_submenu_page(
+				"convertplug",
+				__("Knowledge Base","smile"),
+				__("Knowledge Base","smile"),
+				"access_cp",
+				"knowledge-base",
+				array($this, 'cp_redirect_to_kb' )
+			);
+
 			$Ultimate_Google_Font_Manager = new Ultimate_Google_Font_Manager;
 			add_action( 'admin_print_scripts-' . $google_manager, array($Ultimate_Google_Font_Manager,'admin_google_font_scripts'));
             add_action( 'admin_footer-'. $google_manager, array($this,'cp_admin_footer') );
@@ -783,7 +828,7 @@ if(!class_exists( 'Convert_Plug' )){
 		    if(!isset($submenu['convertplug']))
 		    	return false;
 
-		    $temp_resource = $temp_connect = $temp_google_font_manager = $temp_font_icon_manager = $temp_in_sync = array();
+		    $temp_resource = $temp_connect = $temp_google_font_manager = $temp_font_icon_manager = $temp_in_sync = $temp_knowledge_base = array();
 		    foreach ($submenu['convertplug'] as $key => $cp_submenu) {
 		    	if($cp_submenu[2] === 'cp-resources') {
 		    		$temp_resource = $submenu['convertplug'][$key];
@@ -803,6 +848,10 @@ if(!class_exists( 'Convert_Plug' )){
 		    	}
 		    	if($cp_submenu[2] === 'bsf-google-font-manager') {
 		    		$temp_google_font_manager = $submenu['convertplug'][$key];
+		    		unset($submenu['convertplug'][$key]);
+		    	}
+		    	if($cp_submenu[2] === 'knowledge-base') {
+		    		$temp_knowledge_base= $submenu['convertplug'][$key];
 		    		unset($submenu['convertplug'][$key]);
 		    	}
 		    	if($cp_submenu[2] === 'cp-wp-comment-form') {
@@ -837,6 +886,9 @@ if(!class_exists( 'Convert_Plug' )){
 	    	}
 	    	if(!empty($temp_google_font_manager)) {
 	    		array_push($submenu['convertplug'], $temp_google_font_manager);
+	    	}
+	    	if(!empty($temp_knowledge_base)) {
+	    		array_push($submenu['convertplug'], $temp_knowledge_base);
 	    	}
 	    	if(!empty($temp_font_icon_manager)) {
 	    		array_push($submenu['convertplug'], $temp_font_icon_manager);
@@ -890,7 +942,9 @@ if(!class_exists( 'Convert_Plug' )){
 			}
 
 			if( ( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == "edit" || $_GET['style-view'] == "variant" ) ) || !isset( $_GET['style-view'] ) ) {
-				wp_enqueue_script( 'convert-select2', plugins_url('admin/assets/select2/select2.min.js',__FILE__));
+
+				wp_enqueue_script( 'convert-select2', plugins_url('admin/assets/select2/select2.min.js',__FILE__), false, '2.4.0.1');
+
 			}
 
 			// REMOVE WP EMOJI
@@ -939,6 +993,15 @@ if(!class_exists( 'Convert_Plug' )){
 		    $cpmainPage_hook = 'toplevel_page_convertplug';
 		    array_push($hooks,$contactsPage_hook,$cpmainPage_hook);
 		    return $hooks;
+		}
+
+
+		/**
+		* Redirects to the premium version of MailChimp for WordPress (uses JS)
+		*/
+		function cp_redirect_to_kb() {
+
+			?><script type="text/javascript">window.location.replace('<?php echo admin_url(); ?>admin.php?page=convertplug&view=knowledge_base'); </script><?php
 		}
 
 		/*
@@ -1052,6 +1115,109 @@ if(!class_exists( 'Convert_Plug' )){
 			   remove_action( 'admin_notices', 'update_nag', 3 );
 			}
 		}
+
+		/*
+		* Deregister scripts on customizer page
+		*
+		* @Since 2.3.1
+		*/
+		function cp_dergister_scripts($hook) {
+
+			$data    =  get_option( 'convert_plug_settings' );
+			$psval   = isset( $data['cp-plugin-support'] ) ? $data['cp-plugin-support'] : 1;
+
+			if( $psval ) {
+
+	 			$page_hooks = array(
+					'convertplug_page_smile-modal-designer',
+					'convertplug_page_smile-info_bar-designer',
+					'convertplug_page_smile-slide_in-designer',
+					'admin_page_cp_customizer'
+				);
+
+				if( in_array( $hook, $page_hooks ) ) {
+
+					if( ( isset( $_GET['style-view'] ) && ( $_GET['style-view'] == 'edit' || $_GET['style-view'] == 'variant'  ) )  || isset( $_GET['hidemenubar'] ) )  {
+
+						global $wp_scripts;
+			        	$scripts = $wp_scripts->registered;
+			        	$deregistered_scripts = array();
+
+			        	if( is_array($scripts) ) {
+				        	foreach ($scripts as $key => $script) {
+
+				        		$source = $script->src;
+
+				        		// if script is registered by plugin other than ConvertPlg OR by Theme
+				        		if( ( strpos( $source, "wp-content/plugins" ) && !strpos( $source, "wp-content/plugins/". CP_DIR_NAME ) ) || strpos( $source, "wp-content/themes" ) ) {
+
+				        			if( isset( $script->handle ) ) {
+					        			$handle = $script->handle;
+					        			$source = $script->src;
+
+					        			$deregistered_scripts[$source] = $handle;
+
+					        			// deregister script handle
+					        			wp_deregister_script( $handle );
+					        		}
+				        		}
+
+				        	}
+				        }
+
+				        if( !empty($deregistered_scripts) ) {
+				        	update_option( 'cp_scripts_debug_info', $deregistered_scripts );
+				        }
+
+				    }
+				}
+			}
+		}
+
+		/*
+		* Display debug info for excluded scripts
+		*
+		* @Since 2.3.1
+		*/
+		function cp_add_debug_info() {
+
+			$is_displayed_info = get_option( 'cp_is_displayed_debug_info' );
+
+			// if debug info is not already displayed
+			if( !$is_displayed_info ) {
+
+				$screen = get_current_screen();
+
+				$current_page_hook = $screen->base;
+
+				$page_hooks = array(
+					'convertplug_page_smile-modal-designer',
+					'convertplug_page_smile-info_bar-designer',
+					'convertplug_page_smile-slide_in-designer'
+				);
+
+				if( in_array( $current_page_hook, $page_hooks ) && !isset($_GET['hidemenubar']) ) {
+
+					update_option( "cp_is_displayed_debug_info", true );
+
+					$debug_info = get_option( 'cp_scripts_debug_info' );
+
+					$debug_info_html = "<!-- CP Debug Information - List of the JS disabled on customizer screen ----------- \n";
+
+					if( is_array($debug_info) ) {
+						foreach ($debug_info as $src => $handle) {
+							$string = $handle . " :- " . $src;
+							$debug_info_html .= $string ."\n";
+						}
+					}
+
+					$debug_info_html .= "<!-- End - CP Debug Information -->";
+
+					echo $debug_info_html;
+				}
+			}
+		}
+
 	}
 
 
@@ -1149,21 +1315,82 @@ function cp_bsf_core_style_hooks($hooks) {
 	return $hooks;
 }
 
-function cp_bsf_extensions_menu( $reg_menu ) {
+/**
+ * Register Comvertplug Addons installer menu
+ */
+if ( ! function_exists( 'cp_bsf_extensions_menu' ) ) {
 
-	$bsf_cp_id = bsf_extract_product_id( CP_BASE_DIR );
+	function cp_bsf_extensions_menu( $reg_menu ) {
 
-	$reg_menu['ConvertPlug'] = array(
+		$reg_menu = get_site_option( 'bsf_installer_menu', $reg_menu );
+
+		$_dir = CP_BASE_DIR;
+
+		$bsf_cp_id = bsf_extract_product_id( $_dir );
+
+		$reg_menu['ConvertPlug'] = array(
 			'parent_slug'	=>	'convertplug',
 			'page_title'	=>	__('Addons','smile'),
 			'menu_title' 	=>	__('Addons','smile'),
 			'product_id' 	=>	$bsf_cp_id,
 		);
 
-	return $reg_menu;
+		update_site_option( 'bsf_installer_menu', $reg_menu );
+
+
+		return $reg_menu;
+	}
+
 }
 
 add_filter( 'bsf_installer_menu', 'cp_bsf_extensions_menu' );
+if ( is_multisite() ) {
+	add_action( 'admin_head', 'cp_bsf_extensions_menu' );
+}
+
+/**
+ * Heading for the extensions installer screen
+ *
+ * @return String: Heading to which will appear on Extensions installer page
+ */
+function cp_bsf_extensioninstaller_heading() {
+	return 'ConvertPlug Addons';
+}
+
+add_filter( 'bsf_extinstaller_heading_14058953', 'cp_bsf_extensioninstaller_heading' );
+
+/**
+ * Sub Heading for the extensions installer screen
+ *
+ * @return String: Sub Heading to which will appear on Extensions installer page
+ */
+function cp_bsf_extensioninstaller_subheading() {
+	return 'Add-ons extend the functionality of ConvertPlug. With these addons, you can connect with third party softwares, integrate new features and make ConvertPlug even more powerful.';
+}
+
+add_filter( 'bsf_extinstaller_subheading_14058953', 'cp_bsf_extensioninstaller_subheading' );
+/**
+ * Heading for the extensions installer screen
+ *
+ * @return String: Heading to which will appear on Extensions installer page
+ */
+function cp_extensioninstaller_heading() {
+	return 'ConvertPlug Addons';
+}
+
+add_filter( 'bsf_extinstaller_heading_14058953', 'cp_extensioninstaller_heading' );
+
+/**
+ * Sub Heading for the extensions installer screen
+ *
+ * @return String: Sub Heading to which will appear on Extensions installer page
+ */
+function cp_extensioninstaller_subheading() {
+	return 'Add-ons extend the functionality of ConvertPlug. With these addons, you can connect with third party softwares, integrate new features and make ConvertPlug even more powerful.';
+}
+
+add_filter( 'bsf_extinstaller_subheading_14058953', 'cp_extensioninstaller_subheading' );
+
 
 // BSF CORE commom functions
 if(!function_exists('bsf_get_option')) {

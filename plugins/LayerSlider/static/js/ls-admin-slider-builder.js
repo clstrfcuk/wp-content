@@ -740,7 +740,7 @@ var LayerSlider = {
 
 		if( item.is('img') ){
 
-			item.load(function(){
+			item.on( 'load', function(){
 				setPositions();
 			}).attr('src',item.attr('src') );
 		}else{

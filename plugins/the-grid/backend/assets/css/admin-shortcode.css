@@ -50,20 +50,26 @@ TinyMCE popup
 /****************
 Grid list
 ****************/
-.tg-grid-list-wrapper {
+
+.tg-list-item-wrapper {
 	position: relative !important;
     display: block !important;
 	overflow: hidden !important;
     max-width: 660px !important;
 }
-.tg-grid-list-wrapper[data-multi-select="1"] {
+#tg-shortcode-panel .tg-list-item-wrapper,
+.vc_ui-panel-content-container .tg-list-item-wrapper {
+    margin: 0 auto !important;
+    max-width: 557px !important;
+}
+.tg-list-item-wrapper[data-multi-select="1"] {
 	max-width: 1098px !important;
 }
-.tg-grid-list-wrapper[data-multi-select=""] {
+.tg-list-item-wrapper[data-multi-select=""] {
 	max-width: 557px !important;
 	margin: 0 auto !important;
 }
-.tg-grid-list-holder {
+.tg-list-item-holder {
 	position: relative !important;
     display: block !important;
     overflow: hidden !important;
@@ -80,14 +86,14 @@ Grid list
 	margin: 20px 0 !important;
 	text-align: center !important;
 }
-.tg-grid-list-search-holder {
+.tg-list-item-search-holder {
 	position: relative !important;
     display: block !important;
 }
-.tg-grid-list-wrapper[data-multi-select="1"] .tg-grid-list-search-holder {
+.tg-list-item-wrapper[data-multi-select="1"] .tg-list-item-search-holder {
     max-width: 268px !important;
 }
-.tg-grid-list-search {
+.tg-list-item-search {
 	position: relative !important;
     display: block !important;
     width: 100% !important;
@@ -96,8 +102,9 @@ Grid list
     padding: 0 12px 0 28px !important;
     line-height: 36px !important;
     box-sizing: border-box !important;
+	font-size: 13px !important;
 }
-.tg-grid-list-search-icon {
+.tg-list-item-search-icon {
     position: absolute !important;
 	top: 0 !important;
     height: 36px !important;
@@ -107,7 +114,7 @@ Grid list
     color: #aaaaaa !important;
 	font-family: dashicons !important;
 }
-.tg-grid-list-item {
+.tg-list-item {
 	position: relative !important;
 	display: inline-block;
 	float: left !important;
@@ -116,7 +123,7 @@ Grid list
 	line-height: 34px !important;
 	background: #f5f5f5 !important;
 	margin: 2px !important;
-	padding: 0 8px 0 2px!important;
+	padding: 0 8px 0 0 !important;
 	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1) !important;
 	cursor: pointer !important;
 	white-space: nowrap !important;
@@ -127,18 +134,47 @@ Grid list
 	border: 2px solid #f5f5f5 !important;
 	transition: border 0.15s ease-in-out !important;
 }
-.tg-grid-list-item i {
+.tg-list-item:before {
+    content: attr(data-type);
+    position: relative;
+    display: inline-block;
+    float: left;
+    padding: 0 8px;
+    margin: 0 8px 0 0;
+    line-height: 32px;
+	width: 24px;
+    height: 32px;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #738598;
+}
+.tg-list-item[data-type="skin"]:before {
+    background: rgb(113, 114, 168);
+}
+.tg-list-item[data-type="elem"]:before {
+    background: #DE917A;
+}
+.tg-list-item span {
+	position: relative;
+    display: inline-block;
+    float: left;
+	line-height: 32px;
+    height: 32px;
+}
+.tg-list-item i {
 	line-height: 16px !important;
 	font-family: dashicons !important;
 }
-.tg-grid-list-item img {
+.tg-list-item img {
 	position: relative;
     display: inline-block;
 	vertical-align: baseline;
     padding: 0 2px;
     top: 1px;
 }
-.tg-grid-list-item span {
+.tg-list-item span {
 	display: inline !important;
 	vertical-align: top;
 	padding: 0 6px 0 0;
@@ -146,16 +182,16 @@ Grid list
 	height: 34px;
 	color: #444444;
 }
-.tg-grid-list-item b {
+.tg-list-item b {
     line-height: 34px !important;
     height: 34px !important;
 	font-weight: 600 !important;
 }
-.tg-grid-list-item.selected,
-.tg-grid-list-item:hover{
+.tg-list-item.selected,
+.tg-list-item:hover{
 	border: 2px solid #4ECDC4 !important;
 }
-.tg-grid-list-item .tg-dashicons-star-empty {
+.tg-list-item .tg-dashicons-star-empty {
 	vertical-align: middle;
 	color: #f39c12;
 	font-size: 12px !important;
@@ -168,18 +204,18 @@ Grid list
 	height: 20px;
 	text-align: center;
 }
-.tg-grid-list-item .tg-dashicons-star-empty:before {
+.tg-list-item .tg-dashicons-star-empty:before {
 	content: "\f154";
 	font-weight: 600;
 	color: #f39c12 !important;
 }
-.tg-grid-list-item .tg-dashicons-star-empty.favorite:before {
+.tg-list-item .tg-dashicons-star-empty.favorite:before {
 	content: "\f155";
 	font-weight: 600;
 	color: #f39c12 !important;
 }
-.tg-grid-list-clear,
-.tg-grid-list-add-all {
+.tg-list-item-clear,
+.tg-list-item-add-all {
 	position: relative;
     display: inline-block;
     line-height: 30px;
@@ -190,11 +226,11 @@ Grid list
     padding: 5px 0 0 0;
     cursor: pointer;
 }
-.tg-grid-list-clear:hover,
-.tg-grid-list-add-all:hover {
+.tg-list-item-clear:hover,
+.tg-list-item-add-all:hover {
 	opacity: 0.8;
 }
-.tg-grid-list-clear {
+.tg-list-item-clear {
     color: #e74c3c;
 }
 #tg-sc-button {

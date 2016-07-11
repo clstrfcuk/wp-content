@@ -120,14 +120,14 @@ class Cornerstone_Settings_Handler extends Cornerstone_Plugin_Component {
 	public function ajax_save( $data ) {
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			cs_send_json_error();
+			return cs_send_json_error();
 		}
 
 		$this->setup_controls();
 		$data = $this->controls->sanitize( $data );
 
 		if ( is_wp_error( $data ) ) {
-			cs_send_json_error( $data );
+			return cs_send_json_error( $data );
 		}
 
 		$settings = CS()->settings();
@@ -136,9 +136,13 @@ class Cornerstone_Settings_Handler extends Cornerstone_Plugin_Component {
 			$settings[$key] = $value;
 		}
 
+    if ( isset( $settings['custom_app_slug'] ) ) {
+      $settings['custom_app_slug'] = sanitize_title_with_dashes( $settings['custom_app_slug'] );
+    }
+
 		update_option( 'cornerstone_settings', $settings );
 
-		cs_send_json_success();
+		return cs_send_json_success();
 
 	}
 

@@ -37,7 +37,9 @@
 .cp-floating-social-bar-container .cp-slidein {
     max-width: 80px;
 }
-
+.cp-free-widget .cp-overlay-close span{
+        font-family: "Raleway",serif;
+}
 @media (max-width:768px) {
     .cp-floating-social-bar-body.cp-floating-social-bar {
         text-align: center;
@@ -49,5 +51,8 @@
     }
     .cp-floating-social-bar-body.cp-floating-social-bar, .cp-floating-social-bar-body.cp-floating-social-bar * {
         text-align: center!important;
+    }
+    .cp-floating-social-bar .cp_social_networks li {
+     width: 100%!important;
     }
 }

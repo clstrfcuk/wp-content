@@ -111,7 +111,7 @@ if (!class_exists('TOMB_Class')) {
 		* @since 1.0.0
 		*/
 		public function enqueue_scripts() {
-
+			
 			// Main Script
 			wp_register_script('tomb-js', TOMB_URL . 'assets/js/tomb.js', array('jquery','media-upload','thickbox'));
 			wp_enqueue_script('tomb-js');

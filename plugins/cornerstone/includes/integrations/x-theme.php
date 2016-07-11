@@ -28,7 +28,10 @@ class Cornerstone_Integration_X_Theme {
 		add_filter( 'cornerstone_enqueue_styles', '__return_false' );
 		add_filter( 'cornerstone_customizer_output',  '__return_false' );
 
-		// Don't load the Customizer
+    // Set the app slug
+    add_filter( 'cornerstone_default_app_slug', array( $this, 'x_slug' ) );
+
+    // Don't load the Customizer
 		add_filter( 'cornerstone_use_customizer',  '__return_false' );
 
 		// Enable X specific settings pane items
@@ -67,6 +70,10 @@ class Cornerstone_Integration_X_Theme {
 		add_filter( 'pre_option_cs_product_validation_key', array( $this, 'validation_passthru' ) );
 
 	}
+
+  public function x_slug() {
+    return 'x';
+  }
 
 	public function admin_init() {
 		if ( ! has_action( '_cornerstone_home_not_validated' ) ) {

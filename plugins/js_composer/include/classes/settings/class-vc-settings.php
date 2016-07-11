@@ -1088,6 +1088,7 @@ class Vc_Settings {
 		require_once( ABSPATH . 'wp-admin/includes/template.php' );
 		/** WordPress Administration File API */
 		require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		delete_option( self::$field_prefix . 'compiled_js_composer_less' );
 		$this->initAdmin();
 		$this->buildCustomCss(); // TODO: remove this - no needs to re-save always
 	}
@@ -1121,6 +1122,7 @@ class Vc_Settings {
 		$css_string = get_option( self::$field_prefix . 'compiled_js_composer_less' );
 		if ( strlen( trim( $css_string ) ) > 0 ) {
 			update_option( self::$field_prefix . 'less_version', WPB_VC_VERSION );
+			delete_option( self::$field_prefix . 'compiled_js_composer_less' );
 			$css_string = strip_tags( $css_string );
 			// HERE goes the magic
 			if ( ! $wp_filesystem->put_contents( $filename, $css_string, FS_CHMOD_FILE ) ) {

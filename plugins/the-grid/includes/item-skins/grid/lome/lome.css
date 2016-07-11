@@ -73,10 +73,6 @@
     font-size: 12px;
 	line-height: 16px;
 }
-.lome .mejs-overlay-play {
-	display: none !important;
-}
-
 .lome .tg-media-button {
     position: absolute;
     display: block;

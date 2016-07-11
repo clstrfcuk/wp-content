@@ -9,7 +9,10 @@
 .cp-modal-body ul li {
 	margin: 2% 0 0 2%;
 }
-
+.cp_social_networks a:hover,
+.cp_social_networks a:hover * {  
+  color: #fff;
+ }
 .cp_social_networks,
 .cp_social_networks span,
 .cp_social_networks a,
@@ -584,7 +587,13 @@ _all_button {
 }
 
 .cp_social_flip.cp_social_left.cp_social_autowidth li:hover .cp_social_network_label {
-	padding-right: 5px;
+	padding-right: 5px;	
+}
+.cp_social_flip.cp_social_left.cp_social_autowidth.cp-icon-style-right li:hover .cp_social_network_label {
+	/* margin-left: 0px;
+	    margin-right: 45px; */
+	margin-left: -5px!important;
+    margin-right: 65px!important;
 }
 
 .cp_social_flip.cp_social_circle li .cp_social_icon,
@@ -763,7 +772,7 @@ _all_button {
 .cp_social_networks.cp_social_simple .cp_social_icon,
 .cp_social_networks.cp_social_simple .cp_social_icon:after,
 .cp_social_networks.cp_social_simple .cp_social_icon:before {
-	border-radius: 5px;
+	/* border-radius: 5px; */
 }
 
 /*----- icon facebook -------*/
@@ -1302,7 +1311,7 @@ li.cp_social_digg:hover,
 
 }
 
-@media only screen and (max-width:610px) {
+@media only screen and (max-width:768px) {
 	.cp_social_networks li {
 		width: 100% !important;
 		margin-left: 0 !important;
@@ -1748,11 +1757,11 @@ span.cp_social_hide_sidebar.cp_hidden_sidebar {
 .cp-ifb-sc-media {
 
 	/*  min-width: 40%; */
-	-webkit-flex-grow: 1;
+	/* -webkit-flex-grow: 1;
 	-moz-flex-grow: 1;
 	-ms-flex-grow: 1;
 	-o-flex-grow: 1;
-	flex-grow: 1;
+	flex-grow: 1; */
 }
 
 .cp-info-bar .cp_social_media_wrapper {
@@ -1794,9 +1803,24 @@ span.cp_social_hide_sidebar.cp_hidden_sidebar {
 	.cp-info-bar .cp-icon-style-rectangle.cp-normal.cp_gradient {
 		max-width: 150px;
 	}
+	.cp-ifb-sc-media {
+	    margin-top: 10px;
+	    margin-bottom: 10px;
+	}
 
 }
 
 .cp-slidein-inline span.cp_social_hide_sidebar.cp_social_icon {
     visibility: hidden;
+}
+
+.cp_social_networks.cp_social_left.cp-icon-style-simple.cp-square li{
+	border-radius: 0!important;
+}
+.cp-modal-inline .cp_social_networks  ul.cp_social_icons_container {
+    color: #fff;
+}
+.cp_social_networks li a:visited span, .cp_social_networks li a:visited span *,
+.cp_social_networks li a:hover span, .cp_social_networks li a:hover span *{
+    color:inherit
 }

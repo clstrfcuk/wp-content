@@ -8,7 +8,7 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 	private $templateLoader;
 	private $router;
 	public $mixins;
-	public $dependencies = array( 'Router', 'Injector', 'Control_Mixins', 'Data_Controller', 'Shortcode_Generator2' );
+	public $dependencies = array( 'Router', 'Injector', 'Control_Mixins', 'Data_Controller' );
 
 	/**
 	 * Determine whether we are working in the iframe, or primary screen.
@@ -85,9 +85,9 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 	 */
 	public function enqueueStyles() {
 
-		wp_register_style( 'cs-lato', '//fonts.googleapis.com/css?family=Lato%3A300%2C400%2C700&subset=latin%2Clatin-ext' );
-		wp_register_style( 'cs-dashicons', "/wp-includes/css/dashicons.min.css" );
-		wp_enqueue_style( 'cs-styles', $this->plugin->css( 'admin/builder' ), array( 'open-sans', 'cs-lato', 'cs-dashicons' ), $this->plugin->version() );
+		$this->plugin->loadComponent( 'App' )->register_font_styles();
+		wp_register_style( 'cs-dashicons', '/wp-includes/css/dashicons.min.css' );
+		wp_enqueue_style( 'cs-styles', $this->plugin->css( 'admin/builder' ), array( 'cs-open-sans', 'cs-lato', 'cs-dashicons' ), $this->plugin->version() );
 		wp_enqueue_style( 'cs-huebert-style' );
 		wp_enqueue_style( 'cs-code-editor-style' );
 	}
@@ -126,7 +126,7 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 		$settings = $this->plugin->settings();
 
 		return cs_booleanize( wp_parse_args( array(
-			'strings' => $this->plugin->config( 'builder/strings-builder' ),
+      'strings' => $this->plugin->i18n( 'builder', false ),
 			'isPreview' => $this->isPreview(),
 			'post' => $this->get_post_data(),
 			'dashboardEditUrl' => get_edit_post_link(),

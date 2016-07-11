@@ -53,9 +53,11 @@
         <?php if($reg_menu_hide !== true) : ?>
         <a class="nav-tab" href="?page=convertplug&view=registration" title="<?php _e( "Registration", "smile"); ?>"><?php echo __("Registration", "smile" ); ?></a>
         <?php endif; ?>
-        <!-- <a class="nav-tab" href="?page=convertplug&view=cp_import" title="<?php _e( "Import", "smile" ); ?>"><?php echo __( "Import", "smile" ); ?></a> -->
+
+        <a class="nav-tab nav-tab-active" href="?page=convertplug&view=knowledge_base" title="<?php _e( "knowledge Base", "smile"); ?>"><?php echo __("Knowledge Base", "smile" ); ?></a>
+
         <?php if( isset( $_GET['author'] ) ){ ?>
-        <a class="nav-tab nav-tab-active" href="?page=convertplug&view=debug&author=true" title="<?php _e( "Debug", "smile" ); ?>"><?php echo __( "Debug", "smile" ); ?></a>
+        <a class="nav-tab" href="?page=convertplug&view=debug&author=true" title="<?php _e( "Debug", "smile" ); ?>"><?php echo __( "Debug", "smile" ); ?></a>
         <?php } ?>
       </h2>
     <div id="smile-settings">
@@ -181,6 +183,26 @@
                   <option value="process_success" <?php echo esc_attr( $selected_msg_success ); ?>><?php _e( "Update and process as success", "smile" ); ?></option>
                 </select>
               </p>
+            </div><!-- .debug-section -->
+
+            <div class="debug-section">
+              <?php
+                $dival        = isset($data['cp-display-debug-info']) ? $data['cp-display-debug-info'] : 0;
+                $is_checked   = ( $dival ) ? ' checked="checked" ' : '';
+                $uniq         =  uniqid();
+              ?>
+              <p>
+                <label for="hide-options" style="width:320px; display: inline-block;"><strong><?php _e( "Display Debug Info", "smile" ); ?></strong>
+                  <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Enable this option to display debug info in HTML comments.", "smile" ); ?>">
+                    <i class="dashicons dashicons-editor-help"></i>
+                  </span>
+                </label>
+                <label class="switch-wrapper" style="display: inline-block;margin: 0;height: 20px;">
+                  <input type="text"  id="cp-display-debug-info" class="form-control smile-input smile-switch-input" name="cp-display-debug-info" value="<?php echo $dival; ?>" />
+                  <input type="checkbox" <?php echo $is_checked; ?> id="smile_cp-display-debug-info_btn_<?php echo $uniq; ?>"  class="ios-toggle smile-input smile-switch-input switch-checkbox smile-switch " value="<?php echo $dival; ?>" >
+                  <label class="smile-switch-btn checkbox-label" data-on="ON"  data-off="OFF" data-id="cp-display-debug-info" for="smile_cp-display-debug-info_btn_<?php echo $uniq; ?>"></label>
+                </label>
+              </p><!-- Contact Form 7 - Styles -->
             </div><!-- .debug-section -->
 
         </form>

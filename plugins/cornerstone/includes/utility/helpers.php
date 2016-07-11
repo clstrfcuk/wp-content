@@ -196,6 +196,7 @@ function cs_build_shortcode( $name, $attributes, $extra = '', $content = '', $re
 	if ( '' === $content && ! $require_content ) {
 		$output .= ']';
 	} else {
+    $content = apply_filters( 'cs_element_update_build_shortcode_content', $content, null );
 		$output .= "]{$content}[/{$name}]";
 	}
 
@@ -510,6 +511,9 @@ function cs_derive_excerpt( $content, $store = false ) {
  * @return string          HTML ready to use in shortcode output
  */
 function cs_decode_shortcode_attribute( $content ) {
+  if ( ! is_string( $content ) ) {
+    return $content;
+  }
 	return apply_filters( 'cornerstone_decode_shortcode_attribute', wp_specialchars_decode( $content, ENT_QUOTES ) );
 }
 
@@ -519,4 +523,38 @@ function cs_decode_shortcode_attribute( $content ) {
  */
 function cs_tco() {
 	return TCO_1_0::instance();
+}
+
+
+function cs_update_serialized_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' ) {
+
+	if ( is_array( $meta_value ) && apply_filters( 'cornerstone_store_as_json', true ) ) {
+		$meta_value = wp_slash( json_encode( $meta_value ) );
+	}
+
+	return update_post_meta( $post_id, $meta_key, $meta_value, $prev_value );
+
+}
+
+function cs_get_serialized_post_meta( $post_id, $key = '', $single = false ) {
+	return cs_maybe_json_decode( get_post_meta( $post_id, $key, $single ) );
+}
+
+function cs_maybe_json_decode( $value ) {
+	if ( is_string( $value ) ) {
+		$value = json_decode( $value, true );
+	}
+	return $value;
+}
+
+function cs_error( $data, $throw = false ) {
+  return new Cornerstone_Error( $data, $throw );
+}
+
+function is_cs_error( $error ) {
+  return is_a( $error, 'Cornerstone_Error' );
+}
+
+function cs_to_component_name( $name ) {
+  return ucwords( strtolower( str_replace( '-', '_', str_replace( '/', '_', $name ) ) ), '_' );
 }

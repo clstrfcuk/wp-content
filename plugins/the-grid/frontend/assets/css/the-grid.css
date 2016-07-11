@@ -42,13 +42,14 @@
 .the-grid-plugin {
 	display: none !important;
 }
-.tg-no-post {
+.tg-error-msg {
 	position: relative;
 	display: block;
 	padding: 50px;
 	text-align: center;
 	font-size: 16px;
 	font-weight: 600;
+	white-space: pre;
 }
 .tg-grid-sizer,
 .tg-gutter-sizer {
@@ -266,6 +267,17 @@ input[type=text].tg-search {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+.tg-item-clear,
+.tg-item-line-break {
+    clear: both;
+    height: 0;
+	opacity: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+.tg-item-line-break {
+    height: 10px;
+}
 .tg-item .tg-item-title,
 .tg-item .tg-item-title a,
 .tg-item .tg-item-excerpt,
@@ -364,10 +376,10 @@ div.tg-item-image {
 	transition: opacity 0.3s linear;
 }
 .tg-item-gallery-holder .tg-item-image {
-	opacity: 0;
+	opacity: 0 !important;
 }
 .tg-item-gallery-holder .tg-item-image.show {
-	opacity: 1;
+	opacity: 1 !important;
 }
 .tg-layout-masonry .tg-item-media-holder,
 .tg-layout-masonry .tg-item-audio-poster {
@@ -415,6 +427,16 @@ div.tg-item-image {
 .tg-item-youtube,
 .tg-item-soundcloud {
 	border: none !important;
+	background: transparent !important;
+}
+.tg-is-playing .tg-item-vimeo,
+.tg-force-play .tg-item-vimeo,
+.tg-is-playing .tg-item-wistia,
+.tg-force-play .tg-item-wistia,
+.tg-is-playing .tg-item-youtube,
+.tg-force-play .tg-item-youtube,
+.tg-is-playing .tg-item-soundcloud,
+.tg-force-play .tg-item-soundcloud {
 	background: #000000 !important;
 }
 .tg-item .iframe-embed {
@@ -475,36 +497,28 @@ div.tg-item-image {
 .tg-item-media-poster,
 .tg-item-audio-poster,
 .tg-item-media-holder > div:not(.tg-item-media-inner) {
-	max-width: 100%;
-	max-height: 100%;
 	background-repeat: no-repeat;
 	background-position: center center;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-	-webkit-transition: -webkit-transform 0.4s ease, opacity 0.4s ease, max-height 0s step-end, max-width 0s step-end, top 0s step-end;
-	-moz-transition: -moz-transform 0.4s ease, opacity 0.4s ease, max-height 0s step-end, max-width 0s step-end, top 0s step-end;
-	-ms-transition: -ms-transform 0.4s ease, opacity 0.4s ease, max-height 0q step-end, max-width 0s step-end, top 0s step-end;
-	-o-transition: -o-transform 0.4s ease, opacity 0.4s ease, max-height 0s step-end, max-width 0s step-end, top 0s step-end;
-	transition: transform 0.4s ease, opacity 0.4s ease, max-height 0s step-end, max-width 0s step-end, top 0s step-end;
+	-webkit-transition: all 0.4s ease;
+	-moz-transition: all 0.4s ease;
+	-ms-transition: all 0.4s ease;
+	-o-transition: all 0.4s ease;
+	transition: all 0.4s ease;
 }
 .tg-force-play .tg-item-media-poster,
 .tg-is-playing .tg-item-media-poster,
 .tg-force-play .tg-item-media-holder > div:not(.tg-item-media-inner),
 .tg-is-playing .tg-item-media-holder > div:not(.tg-item-media-inner) {
-	max-width: 0;
-	max-height: 0;
 	opacity: 0;
+	visibility: hidden;
 	overflow: hidden;
-	-webkit-transition: -webkit-transform 0.4s ease, opacity 0.4s ease, max-height 0.4s step-end, max-width 0.4s step-end, top 0.4s step-end;
-	-moz-transition: -moz-transform 0.4s ease, opacity 0.4s ease, max-height 0.4s step-end, max-width 0.4s step-end, top 0.4s step-end;
-	-ms-transition: -ms-transform 0.4s ease, opacity 0.4s ease, max-height 0.4s step-end, max-width 0.4s step-end, top 0.4s step-end;
-	-o-transition: -o-transform 0.4s ease, opacity 0.4s ease, max-height 0.4s step-end, max-width 0.4s step-end, top 0.4s step-end;
-	transition: transform 0.4s ease, opacity 0.4s ease, max-height 0.4s step-end, max-width 0.4s step-end, top 0.4s step-end;
 }
 .tg-item .tg-item-video-player:not(.mejs-container-fullscreen) .mejs-controls,
-.tg-item .has-media-poster:not(.no-index) .mejs-controls {
+.tg-item .has-media-poster:not(.no-index) .mejs-container:not(.mejs-container-fullscreen) .mejs-controls {
 	opacity : 0;
 	visibility: visible !important;
 	-webkit-transform: translateY(48px);
@@ -518,7 +532,7 @@ div.tg-item-image {
 	-o-transition: -o-transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 	transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;	
 }
-.tg-item .has-media-poster:not(.no-index) .mejs-controls {
+.tg-item .has-media-poster:not(.no-index) .mejs-container.mejs-audio .mejs-controls {
 	-webkit-transform: translateY(0);
 	-moz-transform: translateY(0);
 	-ms-transform: translateY(0);
@@ -526,7 +540,7 @@ div.tg-item-image {
 	transform: translateY(0);	
 }
 .tg-item:hover .tg-item-video-player:not(.mejs-container-fullscreen) .mejs-controls,
-.tg-item:hover .has-media-poster .mejs-controls {
+.tg-item:hover .has-media-poster .mejs-container:not(.mejs-container-fullscreen) .mejs-controls {
 	opacity : 1;
 	-webkit-transform: translateY(0);
 	-moz-transform: translateY(0);
@@ -561,10 +575,10 @@ div.tg-item-image {
 	position: absolute;
 	bottom: 0;
 }
-.tg-item:not(.tg-is-playing) .has-media-poster:not(.no-index) .mejs-controls {	
+.tg-item:not(.tg-is-playing) .has-media-poster:not(.no-index) .mejs-container:not(.mejs-container-fullscreen) .mejs-controls {	
 	opacity: 0 !important;
 }
-.tg-item.tg-is-playing  .has-media-poster .mejs-controls  {
+.tg-item.tg-is-playing .has-media-poster .mejs-container:not(.mejs-container-fullscreen) .mejs-controls  {
 	opacity: 1;
 }
 .mejs-offscreen {
@@ -810,6 +824,7 @@ div.tg-item-image {
 	vertical-align: top;
 	margin: 0 5px 0 0;
 	padding: 0px 15px;
+	white-space: pre;
 }
 .tg-ajax-scroll-holder,
 .no-touch .tg-ajax-scroll-holder {
@@ -1235,14 +1250,14 @@ input[type=text].tg-search:focus {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	-webkit-transform: scale3d(.5,.5,.5);
-    -moz-transform:  scale3d(.5,.5,.5);
-    transform: scale3d(.5,.5,.5);
+	-webkit-transform: matrix3d(0.5,0,0,0,0,0.5,0,0,0,0,1,0,0,0,0,1);
+    -moz-transform: matrix3d(0.5,0,0,0,0,0.5,0,0,0,0,1,0,0,0,0,1);
+    transform: matrix3d(0.5,0,0,0,0,0.5,0,0,0,0,1,0,0,0,0,1);
 }
 .tolb-holder.tolb-ready .tolb-inner {
-	-webkit-transform: scale3d(1,1,1);
-    -moz-transform: scale3d(1,1,1);
-    transform: scale3d(1,1,1);
+	-webkit-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    -moz-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 }
 .tolb-holder figure {
 	position: relative;
@@ -1735,7 +1750,7 @@ h3.tg-instagram-user-desc-fullname,
 	width: 150px;
     height: 150px;
 	padding: 0 40px;
-	box-sizing: content-box;	
+	box-sizing: content-box;		
 }
 .tg-vimeo-channel-logo img {
     width: 100%;

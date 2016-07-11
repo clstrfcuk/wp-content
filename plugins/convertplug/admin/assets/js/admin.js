@@ -91,6 +91,7 @@ window.removeCookie = function(name){
 jQuery(document).on('iframe_load',function(e,data){
 	var smile_panel = jQuery(".customize").data('style');
 	jQuery('#button-save-'+smile_panel+' > span').trigger('click');
+	jQuery('a[data-section-id="responsive-sect"]').trigger('click');
 	setTimeout( function() {
 		jQuery('#button-save-'+smile_panel).trigger('click');
 		jQuery(".cp-section").first().trigger('click');
@@ -1175,3 +1176,15 @@ jQuery(document).on("change_radio_image", function(e,$this){
 		}
 	}
 });
+
+jQuery('a[data-section-id="responsive-sect"]').click(function(e){
+		e.preventDefault();
+		var $this = jQuery(this);
+		jQuery(document).trigger('hide_images_on_mobile',[$this,true]);
+});
+
+jQuery('.close_btn_duration ').keydown(function(e){	
+        var kCode = (e.which || e.keyCode)
+        if(kCode == 190 || kCode == 110) e.preventDefault();
+        if(e.which === 86 && (e.ctrlKey || e.metaKey)) e.preventDefault();
+    })

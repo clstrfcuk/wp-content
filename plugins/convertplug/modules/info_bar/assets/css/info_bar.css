@@ -204,6 +204,10 @@
         margin-top: 5px;
     }
 
+    /*.cp-info-bar .cp-form-container .cp-all-inputs-wrap{
+        margin-bottom: 10px;
+    }*/
+
 }
 
 .cp-info-bar-msg div {
@@ -229,7 +233,14 @@
     line-height: 1;
     cursor: pointer;
 }
-
+.ib-close.cp-adjacent-left { 
+    right: auto;
+    left: 10px;
+}
+.ib-close.cp-adjacent-right { 
+    right: 10px;
+    left: auto;
+}
 .ib-close-inline .ib-close {
     position: relative;
     right: 0;
@@ -893,17 +904,30 @@
     -webkit-justify-content: center;
 }
 
+.cp-info-bar .default-form {
+    -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+    flex-wrap: wrap;
+}
+
 /*--- error notice-------*/
 .cp-info-bar .cp-error-msg {
     margin-bottom: 0px;
-    display: inline;
+    display: inline; 
+    /*  display: block;
+        position: relative;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+      -moz-transform: translateY(-50%);
+       -ms-transform: translateY(-50%);
+        -o-transform: translateY(-50%);
+           transform: translateY(-50%); */
 }
 .cp-info-bar .cp-m-error h5 {
     font-weight: 400;
     display: inline;
 }
 .cp-info-bar .cp-detailed-message {
-    margin-top: 0; 
+    margin-top: 0;
     display: inline-block;
 }
 .cp-info-bar .cp-admin-error-notice {
@@ -917,3 +941,7 @@
 .cp-info-bar .cp-msg-on-submit .cp-m-error{
     height:100%
 }
+.cp-info-bar.cp-hide-inline-style {
+    display: none!important;
+}
+

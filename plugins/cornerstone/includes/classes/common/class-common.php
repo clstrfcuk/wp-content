@@ -59,6 +59,8 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 			$allowed_types = explode( ',', $settings['allowed_post_types'] );
 		}
 
+    $allowed_types = array_filter( $allowed_types );
+
 		if ( ! is_array( $settings['permitted_roles'] ) ) {
 			$permitted_roles = explode( ',', $settings['permitted_roles'] );
 		}
@@ -200,6 +202,11 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 
 	}
 
+	public function get_post_settings( $post_id ) {
+		$settings = cs_get_serialized_post_meta( $post_id, '_cornerstone_settings', true );
+		return ( is_array( $settings ) ) ? $settings : array();
+	}
+
 	/**
 	 * Detect if a post has saved Cornerstone data
 	 * @return bool true is Cornerstone meta exists
@@ -211,7 +218,7 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 		if (!$post)
 			return false;
 
-		$rows = get_post_meta( $post->ID, '_cornerstone_data', true );
+		$rows = cs_get_serialized_post_meta( $post->ID, '_cornerstone_data', true );
 		$override = get_post_meta( $post->ID, '_cornerstone_override', true );
 
 		if ( !$rows || $override )
@@ -321,5 +328,19 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 		return $caps[ $cap ];
 
 	}
+
+  public function get_app_slug() {
+
+    $settings = $this->plugin->settings();
+
+    $slug = apply_filters( 'cornerstone_default_app_slug', 'cornerstone' );
+
+    if ( isset( $settings['custom_app_slug'] ) && '' !== $settings['custom_app_slug'] ) {
+      $slug = sanitize_title_with_dashes( $settings['custom_app_slug'] );
+    }
+
+    return $slug;
+
+  }
 
 }

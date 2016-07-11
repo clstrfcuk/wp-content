@@ -114,7 +114,7 @@ if(!class_exists('Smile_Modals')){
 			if(!isset($_GET['hidemenubar'])){
 				?>
 	            <script type="text/javascript" id="modal">
-				jQuery(window).load( function(){
+				jQuery(window).on( 'load', function(){
 					startclock();
 				});
 				function stopclock (){
@@ -144,7 +144,7 @@ if(!class_exists('Smile_Modals')){
 	            <?php
 
 				$modal_style = $modal_style_delay = $modal_cookie_delay = '';
-				$live_styles = cp_get_live_styles('modal');
+				$live_styles = smile_get_live_styles();
 				$prev_styles = get_option('smile_modal_styles');
 				$smile_variant_tests = get_option('modal_variant_tests');
 
@@ -173,6 +173,10 @@ if(!class_exists('Smile_Modals')){
 							$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';
 
 							$display = cp_is_style_visible($settings);
+
+							// remove back slashes from settings
+							$settings = stripslashes_deep( $settings );
+
 							$settings = serialize( $settings );
 							$settings_encoded 	= base64_encode( $settings );
 						}
@@ -300,7 +304,7 @@ if(!class_exists('Smile_Modals')){
 				$theme_name = strtolower( preg_replace("/[\s_]/", "-", $theme_name ) );
 
 				wp_localize_script( 'jquery', 'cp_active_theme', array( 'slug' => $theme_name ) );
-				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+				wp_localize_script( 'cp-common-functions-js', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 
           	}
 		}
@@ -337,7 +341,7 @@ if(!class_exists('Smile_Modals')){
 						wp_enqueue_style( 'smile-modal-style', plugins_url( 'assets/css/modal.min.css', __FILE__) );
 					}
 
-				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+				wp_localize_script( 'smile-modal-script', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 			}
 		}
 
@@ -354,6 +358,17 @@ if (!function_exists('smile_modal_popup')) {
 		), $atts));
 		$output = '';
 		$func = 'modal_theme_'.$style;
+
+		$settings = base64_decode( $atts['settings_encoded'] );
+		$style_settings = unserialize( $settings );
+
+		// remove back slashes from settings
+		$settings = stripslashes_deep( $style_settings );
+
+		$settings = serialize( $settings );
+		$settings_encoded 	= base64_encode( $settings );
+		$atts['settings_encoded'] = $settings_encoded;
+
 		if( function_exists( $func ) ) {
 			$output = $func( $atts );
 		}
@@ -371,7 +386,7 @@ if (!function_exists('cp_modal_custom')) {
 			'id' 				=> '',
 			'display'			=> '',
 		), $atts));
-		$live_styles = cp_get_live_styles('modal');
+		$live_styles = smile_get_live_styles();
 		$live_array = $settings = '';
 		foreach( $live_styles as $key => $modal_array ){
 			 $style_id = $modal_array[ 'style_id' ];
@@ -395,6 +410,9 @@ if (!function_exists('cp_modal_custom')) {
 				$style_settings[ 'display' ] = $display;
 				$style_settings['custom_class'] .= isset( $style_settings['custom_class']) ? $style_settings['custom_class'].',cp-trigger-'.$style_id : 'cp-trigger-'.$style_id;
 				$display = cp_is_style_visible($style_settings);
+
+				// remove back slashes from settings
+				$settings = stripslashes_deep( $settings );
 
 				$encode_settings = serialize( $style_settings );
 				$settings_encoded = base64_encode( $encode_settings );

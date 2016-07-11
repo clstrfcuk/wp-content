@@ -600,7 +600,7 @@ if (isset($_GET['instagram_logout']) && $_GET['instagram_logout'] == true) {
 	update_option('the_grid_instagram_api_key', null);
 	$intagram_token = null;
 }
-
+// access token instagram http://instagram.pixelunion.net/
 $form .= '<div class="tomb-tab-content social-api tomb-tab-show">';
 
 	// meta data
@@ -611,23 +611,19 @@ $form .= '<div class="tomb-tab-content social-api tomb-tab-show">';
 		$form .= '<div class="tomb-row tomb-field the_grid_instagram">';
 			$form .= '<label class="tomb-label">'. __( 'Connect to Instagram', 'tg-text-domain' ) .'</label>';
 			$form .= '<div class="tomb-spacer" style="height: 15px"></div>';
-			$form .= '<p class="tomb-desc">'.__( 'Please enter your access token:', 'tg-text-domain' ).'</p>';
+			$form .= '<p class="tomb-desc">'.__( 'Please enter your Access Token:', 'tg-text-domain' ).'</p>';
 			$form .= '<input type="text" style="width: 420px;" class="tomb-text the_grid_instagram_api_key" name="the_grid_instagram_api_key" value=\''.$intagram_token.'\'>';
 			$form .= '<p class="tomb-sub-desc">';
-			$form .= __( 'Get your Instagram Access Token ', 'tg-text-domain' ).' <a target="_blank" href="http://instagram.pixelunion.net/">'. __( 'here', 'tg-text-domain' ).'</a><br>';
-			$form .= __( 'By creating your own Instagram App you can also get your Access Token', 'tg-text-domain' ).' <a target="_blank" href="https://www.instagram.com/developer/">'. __( 'Create your App', 'tg-text-domain' ).'</a></p>';
-			$form .= '</p>';
 			
-			/*if (!$intagram_token) {
-				$form .= __( 'You can authorize in Instagram and your Access Token will be recieved automatically.', 'tg-text-domain' ) .'<br><br>';
-				$form .= '<a class="tg-instagram-access-token tg-button">'. __( 'Authorize in Instagram', 'tg-text-domain' ) .'</a>';
+			$plugin_info   = get_option('the_grid_plugin_info', '');
+			$purchase_code = (isset($plugin_info['purchase_code'])) ? $plugin_info['purchase_code'] : null;
+			if (!$purchase_code) {
+				$form .= __( 'By creating your own Instagram App you can get your Access Token', 'tg-text-domain' ).' <a target="_blank" href="https://www.instagram.com/developer/">'. __( 'Create your App', 'tg-text-domain' ).'</a></p>';
 			} else {
-				$form .= '<p>'.__( 'Your Instagram Access Token is:', 'tg-text-domain' );
-				$form .= '<br><strong>'.$intagram_token.'</strong>';
-				$form .= '</p>';
-				$form .= '<a class="tg-instagram-log-out tg-button" href="'.admin_url('admin.php?page=the_grid_global_settings&instagram_logout=true').'">'. __( 'Logout from Instagram', 'tg-text-domain' ) .'</a>';
-			}*/
+				$form .= __( 'Get your Instagram Access Token ', 'tg-text-domain' ).' <a target="_blank" href="http://theme-one.com/services/instagram/?get_access_token">'. __( 'here', 'tg-text-domain' ).'</a><br>';
+			}
 			
+			$form .= '</p>';			
 		$form .= '</div>';		
 	$form .= '</div>';
 	
@@ -653,12 +649,12 @@ $form .= '<div class="tomb-tab-content social-api tomb-tab-show">';
 		$form .= '<h3>'. __( 'Vimeo API', 'tg-text-domain' ) .'</h3>';
 	$form .= '</div>';
 	$form .= '<div class="inside tg-box-inside">';
-		$youtube_api_key  = get_option('the_grid_vimeo_api_key', '');
+		$vimeo_api_key  = get_option('the_grid_vimeo_api_key', '');
 		$form .= '<div class="tomb-row tomb-field the_grid_vimeo">';
 			$form .= '<label class="tomb-label">'. __( 'Connect to Vimeo', 'tg-text-domain' ) .'</label>';
 			$form .= '<div class="tomb-spacer" style="height: 15px"></div>';
 			$form .= '<p class="tomb-desc">'.__( 'Please enter your Vimeo API key:', 'tg-text-domain' ).'</p>';
-			$form .= '<input type="text" style="width: 420px;" class="tomb-text the_grid_vimeo_api_key" name="the_grid_vimeo_api_key" value=\''.$youtube_api_key.'\'>';	
+			$form .= '<input type="text" style="width: 420px;" class="tomb-text the_grid_vimeo_api_key" name="the_grid_vimeo_api_key" value=\''.$vimeo_api_key.'\'>';	
 			$form .= '<p class="tomb-sub-desc">'.__( 'You can find more information about the Vimeo API key', 'tg-text-domain' ).' <a target="_blank" href="https://developer.vimeo.com/apps">'.__( 'here', 'tg-text-domain' ).'</a></p>';					
 		$form .= '</div>';
 	$form .= '</div>';

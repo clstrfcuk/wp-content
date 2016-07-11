@@ -104,6 +104,18 @@ if (!class_exists('TOMB_Metabox')) {
 					$this->TOMB_Metabox_show($post);
 				echo '</div>';
 			
+			} else if (isset($this->_meta_box['type']) && $this->_meta_box['type'] == 'page2') {
+				
+				global $post;
+				$post = array('ID' => -1);
+				$post = new \WP_Post( (object) $post );
+				
+				$class = (isset($this->_meta_box['class']) && !empty($this->_meta_box['class'])) ? ' '.$this->_meta_box['class'] : '';
+				
+				echo '<div id="'.$this->_meta_box['id'].'" class="tomb-metabox'.$class.'">';
+					$this->TOMB_Metabox_show($post);
+				echo '</div>';
+				
 			}
 			
 		}

@@ -141,6 +141,7 @@ h3.tomb-title {
 	font-weight: bold;
 	display: block;
 	color: #444;
+	cursor: default;
 }
 label.tomb-inline {
 	display: inline-block;
@@ -305,7 +306,7 @@ input[type=radio].tomb-radio {
 	opacity: 1;
 	filter: alpha(opacity=100);
 	background: #ffffff;
-	margin-left: 15px;
+	margin: -4px 4px 0 15px;
 	padding: 0 !important;
 	color: #34495e;
 	border: 2px solid #34495e;
@@ -315,7 +316,7 @@ input[type=radio].tomb-radio {
 	min-width: 0px !important;
 }
 input[type=radio].first-input {
-	margin-left: 0;
+	margin: -4px 4px 0 0;
 }
 input[type=radio].tomb-radio:checked:before {
 	background-color: #2c3e50;

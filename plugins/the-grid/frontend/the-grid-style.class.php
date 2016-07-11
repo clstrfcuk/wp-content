@@ -9,26 +9,38 @@
 if (!defined('ABSPATH')) { 
 	exit;
 }
- 
-/***********************************************
-* THE GRID STYLE Class
-***********************************************/
 
-class The_Grid_Style extends The_Grid {
+class The_Grid_Styles {
 
 	/**
-	 * Plugin slug & prefix
-	 * @since 1.0.0
-	 */
-	protected $plugin_slug = TG_SLUG;
-	protected $grid_prefix = TG_PREFIX;
-	protected $grid_data;
+	* Grid Data
+	*
+	* @since 1.0.0
+	* @access public
+	*
+	* @var array
+	*/
+	public $grid_data;
+	
+	/**
+	* Base class
+	*
+	* @since 1.0.0
+	* @access private
+	*
+	* @var objet
+	*/
+	private $base;
 	
 	/**
 	* initialization
 	* @since 1.0.0
 	*/
-	public function __construct() {}
+	public function __construct($grid_data) {
+		
+		$this->grid_data = $grid_data;
+		
+	}
 	
 	/**
 	* Processing styles
@@ -36,14 +48,13 @@ class The_Grid_Style extends The_Grid {
 	*/
 	public function styles_processing() {
 		
-		global $tg_grid_data;
-		
-		// register main grid data 
-		$this->grid_data = $tg_grid_data;
-		
+		// set the grid base helper class
+		$this->base = new The_Grid_Base();
+	
 		// defined the grid ID for css
 		$this->grid_data['css_id'] = '#'.$this->grid_data['ID'];
 		
+		// retrive all styles
 		$styles  = $this->main_wrapper_style();
 		$styles .= $this->main_background_style();
 		$styles .= $this->navigation_style();
@@ -53,10 +64,14 @@ class The_Grid_Style extends The_Grid {
 		$styles .= $this->item_color();
 		$styles .= $this->custom_css();
 		
-		$base   = new The_Grid_Base();
-		$styles = $base->compress_css($styles);
-
-		return $styles;
+		// compress css rules
+		$styles = $this->base->compress_css($styles);
+		
+		// reassign grid css for later (grid layout)
+		$this->grid_data['grid_css'] = $styles;
+		
+		// return new grid data
+		return $this->grid_data;
 		
 	}
 	
@@ -123,15 +138,14 @@ class The_Grid_Style extends The_Grid {
 		$styles  = null;
 		
 		// navigation styles
-		$base = new The_Grid_Base();
 		$grid_ID          = $this->grid_data['css_id'];
 		$navigation_name  = $this->grid_data['navigation_style'];
 		$nav_text_color   = $this->grid_data['navigation_color'];
 		$nav_accent_color = $this->grid_data['navigation_accent_color'];
 		$nav_background   = $this->grid_data['navigation_bg'];
 		$nav_accent_bg    = $this->grid_data['navigation_accent_bg'];
-		$brightness = $base->brightness($nav_text_color);
-		$nav_border_color = ($brightness == 'bright') ? $base->HEX2RGB($nav_text_color,$alpha=0.6) : $base->HEXLighter($nav_text_color,$ratio=3);
+		$brightness = $this->base->brightness($nav_text_color);
+		$nav_border_color = ($brightness == 'bright') ? $this->base->HEX2RGB($nav_text_color,$alpha=0.6) : $this->base->HEXLighter($nav_text_color,$ratio=3);
 		
 		// navigation styles
 		global $tg_nav_colors;
@@ -265,20 +279,17 @@ class The_Grid_Style extends The_Grid {
 	*/
 	public function item_skin() {
 		
-		global $tg_item_skins;
-		
 		$styles      = null;
-		$item_skins  = array();
-		$base        = new The_Grid_Base();
-		$item_base   = new The_Grid_Item_Skin();
-		$get_skins   = $item_base->get_skin_names();
-		$skins       = json_decode($this->grid_data['skins'], TRUE);
+		$item_skins  = $this->grid_data['item_skins'];
+		$get_skins   = $this->grid_data['grid_skins'];
+		$skins       = json_decode($this->grid_data['skins'], true);
+		$skins       = (empty($skins) || !is_array($skins)) ? array('post' => $this->base->default_skin($grid_style)) : $skins;
 		$social_skin = $this->grid_data['social_skin'];
 		$grid_style  = ($this->grid_data['style'] === 'justified') ? 'grid' : $this->grid_data['style'];
-		
-		if (is_array($tg_item_skins) && $this->grid_data['source_type'] == 'post_type') {
-			
-			foreach ($tg_item_skins as $item_skin) {	
+
+		if (is_array($item_skins) && $this->grid_data['source_type'] == 'post_type') {
+
+			foreach ($item_skins as $item_skin) {	
 				$item_skin_slug = (array_key_exists($item_skin,$get_skins)) ? $item_skin : '';
 				if (!empty($item_skin_slug) && $get_skins[$item_skin_slug]['type'] != $grid_style) {
 					$item_skin_slug = '';
@@ -286,27 +297,31 @@ class The_Grid_Style extends The_Grid {
 				$item_skins[] = $item_skin_slug;
 			}
 			
-			$item_skins = array_filter($item_skins, 'strlen');
+			$item_skins = (array) array_filter($item_skins, 'strlen');
 			$skins = array_merge($skins,$item_skins);
 			$skins = array_unique($skins);
-			
+
 		} else {
 			// social media skin
 			$skins = (array) $social_skin;
 		}
 
 		foreach ($skins as $skin) {	
-			
-			$skin_slug = (array_key_exists($skin,$get_skins)) ? $skin : $base->default_skin($grid_style);
+
+			$skin_slug = (array_key_exists($skin, $get_skins)) ? $skin : $this->base->default_skin($grid_style);
 			if (!$skin_slug) {
 				return false;
 			}
 			
-			ob_start();
-			include $get_skins[$skin_slug]['css'];
-			$file_content  = ob_get_contents();
-			ob_end_clean();
-			$styles .= $file_content;
+			if ($get_skins[$skin_slug]['css'] == 'is_custom_skin') {
+				$styles .= The_Grid_Custom_Table::get_skin_styles($skin_slug);
+			} else {
+				ob_start();
+				include $get_skins[$skin_slug]['css'];
+				$file_content  = ob_get_contents();
+				ob_end_clean();
+				$styles .= $file_content;
+			}
 			
 		}
 		
@@ -324,9 +339,9 @@ class The_Grid_Style extends The_Grid {
 		$grid_ID = $this->grid_data['css_id'];
 		
 		$schemes    = array('dark','light');
-		$title_tags = array('h2','h2 a','h3','h3 a','a','a.tg-link-url','i','.tg-media-button');
-		$para_tags  = array('p');
-		$span_tags  = array('span','.no-liked .to-heart-icon path','.empty-heart .to-heart-icon path');
+		$title_tags = array('h1','h1 a','h2','h2 a','h3','h3 a','h4','h4 a','h5','h5 a','h6','h6 a','a','a.tg-link-url','i','.tg-media-button', '.tg-item-price span');
+		$para_tags  = array('p', 'div', 'ol', 'ul', 'li');
+		$span_tags  = array('span','.no-liked .to-heart-icon path','.empty-heart .to-heart-icon path', '.tg-item-comment i', '.tg-item-price del span');
 		
 		$tags = array(
 			'title' => $title_tags,
@@ -348,8 +363,10 @@ class The_Grid_Style extends The_Grid {
 			foreach ($tags as $tag => $classes) {
 				$classes   = implode(',.tg-item .'.$scheme.' ', $classes);
 				$def_color = $default[$scheme.'_'.$tag];
-				$color     = get_option('the_grid_'.$scheme.'_'.$tag, $def_color);
-				$colors   .= '.tg-item .'.$scheme.' '.$classes.'{color:'.$color.';fill:'.$color.';stroke:'.$color.'}';
+				$color_options = $this->base->getVar($this->grid_data,'grid_colors', array());
+				$color_scheme  = $this->base->getVar($color_options,$scheme, array());
+				$color_value   = $this->base->getVar($color_scheme,$tag,$def_color);
+				$colors .= ($color_value) ? '.tg-item .'.$scheme.' '.$classes.'{color:'.$color_value.';fill:'.$color_value.';stroke:'.$color_value.';border-color:'.$color_value.';}' : '';
 			}
 		}
 

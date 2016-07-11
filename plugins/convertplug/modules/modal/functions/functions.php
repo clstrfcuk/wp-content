@@ -3,13 +3,55 @@
 * Global functions for modal
 */
 
+if( !function_exists( "smile_get_live_styles" )){
+	function smile_get_live_styles(){
+		$styles = get_option( 'smile_modal_styles' );
+		$smile_variant_tests = get_option( 'modal_variant_tests' );
+		$live_array = array();
+		if( !empty( $styles ) ) {
+			foreach( $styles as $key => $style ){
+				$settings = unserialize( $style[ 'style_settings' ] );
+
+				$split_tests = isset( $smile_variant_tests[$style['style_id']] ) ? $smile_variant_tests[$style['style_id']] : '';
+				if( is_array( $split_tests ) && !empty( $split_tests ) ) {
+					$split_array = array();
+					$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
+					if( $live ){
+						array_push( $split_array, $styles[ $key ] );
+					}
+					foreach( $split_tests as $key => $test ) {
+						$settings = unserialize( $test[ 'style_settings' ] );
+						$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
+						if( $live ){
+							array_push( $split_array, $test );
+						}
+					}
+					if( !empty( $split_array ) ) {
+						$key 	= array_rand( $split_array, 1 );
+						$array 	= $split_array[$key];
+						array_push( $live_array, $array );
+					}
+				} else {
+					$live = isset( $settings[ 'live' ] ) ? (int)$settings[ 'live' ] : false;
+					if( $live ){
+						array_push( $live_array, $styles[ $key ] );
+					}
+				}
+			}
+		}
+
+		return $live_array;
+	}
+}
+
+
 if( !function_exists( "cp_generate_style_css" )){
 	function cp_generate_style_css( $a ) {
 
 		//custom css
-		$style  = $a['custom_css'];
+		//$style  = $a['custom_css'];
 		$styleID = "content-".$a['uid'];
-
+		$style  = "";
 		//custom height only for blank style
 		if( isset( $a['cp_custom_height'] ) && isset( $a['cp_modal_height'] ) && $a['cp_custom_height'] == '1' ) {
 			$style  .= "";
@@ -286,6 +328,27 @@ if( !function_exists( "cp_get_modal_image_url_init" ) ) {
 }
 add_filter( 'cp_get_modal_image_url', 'cp_get_modal_image_url_init' );
 
+if( !function_exists( "cp_get_modal_image_alt_init" ) ) {
+	function cp_get_modal_image_alt_init( $a = '' ) {
+
+		if( !isset($a['modal_img_src']) ) {
+			$a['modal_img_src'] = 'upload_img';
+		}
+		$alt = '';
+		if( isset( $a['modal_img_src'] ) && $a['modal_img_src'] == 'upload_img' ) {
+			if ( strpos($a['modal_image'],'http') !== false ) {
+			} else {
+				$modal_image_alt = explode( '|', $a['modal_image'] );
+              	if( sizeof($modal_image_alt) >2 ){
+				 $alt = "alt='".$modal_image_alt[2]."'";
+				}
+		   	}
+		}
+	   	return $alt;
+	}
+}
+add_filter( 'cp_get_modal_image_alt', 'cp_get_modal_image_alt_init' );
+
 /**
  *	Get WordPress attachment url
  *
@@ -293,11 +356,13 @@ add_filter( 'cp_get_modal_image_url', 'cp_get_modal_image_url_init' );
  */
 if( !function_exists( "cp_get_wp_image_url_init" ) ) {
 	function cp_get_wp_image_url_init( $wp_image = '') {
+
 		if( cp_is_not_empty($wp_image) ){
 			$wp_image = explode("|", $wp_image);
 			$wp_image = wp_get_attachment_image_src($wp_image[0],$wp_image[1]);
 			$wp_image = $wp_image[0];
 		}
+
 		return $wp_image;
 	}
 }
@@ -322,23 +387,49 @@ if( !function_exists( "cp_get_custom_class_init" ) ) {
 	}
 }
 
+
+/**
+ *	Set scroll class for modal
+ *
+ * @since 0.1.5
+ */
+add_filter( 'cp_get_scroll_class', 'cp_get_scroll_class_init' );
+
+if( !function_exists( "cp_get_scroll_class_init" ) ) {
+	function cp_get_scroll_class_init( $scroll_class) {
+		$scroll_class = $scroll_class;
+		$scroll_class  = str_replace( " ", "", trim( $scroll_class ) );
+		$scroll_class  = str_replace( ",", " ", trim( $scroll_class ) );
+		//$scroll_class .= ' cp-'.$style_id;
+		$scroll_class = trim( $scroll_class );
+		return $scroll_class;
+	}
+}
+
 /**
  * Check modal has redirection
  *
  * @since 0.1.5
  *
  * @param bullion - $on_success
- * @param string - 	$redirect_url
- * @param string -  $redirect_data
+ * @param string  - $redirect_url
+ * @param string  - $redirect_data
+ * @param string  - $on_redirect
+ * @param string  - $download_url
  * @return string - Data Attribute
  */
 
 if( !function_exists( "cp_has_redirect_init" ) ) {
-	function cp_has_redirect_init($on_success, $redirect_url, $redirect_data) {
+	function cp_has_redirect_init( $on_success, $redirect_url, $redirect_data , $on_redirect ,$download_url ) {
 		$op = '';
 		if( $on_success == 'redirect' && $redirect_url != '' && $redirect_data == 1 ) {
-			$op = ' data-redirect-lead-data="'.$redirect_data.'" ';
+			$op .= ' data-redirect-lead-data="'.$redirect_data.'" ';
+
 		}
+		if( $on_success == 'redirect' && $redirect_url != '' && $on_redirect !== '' ) {
+			$op .= ' data-redirect-to ="'.$on_redirect.'" ';
+		}
+
 		return $op;
 	}
 }
@@ -517,6 +608,15 @@ function cp_modal_global_before_init( $a ) {
 		$referrer_data = "";
 	}
 
+	// check close after few second
+	$autoclose_on_duration  = ( isset( $a['autoclose_on_duration'] ) && (int)$a['autoclose_on_duration'] ) ? $a['autoclose_on_duration'] : '';
+	$close_module_duration = ( isset( $a['close_module_duration'] ) && (int)$a['close_module_duration'] ) ? $a['close_module_duration'] : '';
+	$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
+
+	$autoclose_data = '';
+	if( $autoclose_on_duration !== '' && (!$isInline) && ( isset( $a['close_modal'] ) && $a['close_modal']!=='do_not_close' )){
+		$autoclose_data = 'data-close-after = "'.$close_module_duration.'"';
+	}
 	//	Enqueue Google Fonts
 	cp_enqueue_google_fonts( $a['cp_google_fonts'] );
 
@@ -552,7 +652,7 @@ function cp_modal_global_before_init( $a ) {
 	//	Modal - Padding
 	$el_class = '';
 	if( isset( $a['content_padding'] ) && !empty( $a['content_padding'] ) ) {
-		$el_class .= ' no-padding ';
+		$el_class .= ' cp-no-padding ';
 	}
 
 	//	Modal - Background Image & Background Color
@@ -561,14 +661,18 @@ function cp_modal_global_before_init( $a ) {
 	if( !isset( $a['modal_bg_image_src'] ) ) {
 		$a['modal_bg_image_src']  = 'upload_img';
 	}
-
 	if( isset( $a['modal_bg_image_src'] ) && !empty( $a['modal_bg_image_src'] ) ) {
 
 		if ( $a['modal_bg_image_src'] == 'custom_url' ) {
 			$modal_bg_image = $a['modal_bg_image_custom_url'];
 		} else if ( $a['modal_bg_image_src'] == 'upload_img' ) {
 			if( isset( $a['modal_bg_image'] ) ) {
-				$modal_bg_image = apply_filters( 'cp_get_wp_image_url', $a['modal_bg_image'] );
+				if ( strpos($a['modal_bg_image'],'http') !== false ) {
+					$modal_bg_image = explode( '|', $a['modal_bg_image'] );
+					$modal_bg_image = $modal_bg_image[0];
+				} else {
+					$modal_bg_image = apply_filters( 'cp_get_wp_image_url', $a['modal_bg_image'] );
+			   	}
 			}
 		} else {
 			$modal_bg_image = '';
@@ -621,7 +725,7 @@ function cp_modal_global_before_init( $a ) {
 	if( $a['close_modal'] == "close_txt") {
 		$close_html = '<span style="color:'.$a['close_text_color'].'">'.$a['close_txt'].'</span>';
 	} else if( $a['close_modal'] == "close_img" ) {
-		$close_html = '<img class="'.$close_img_class.'" src="'.$close_img.'" />';
+		$close_html = '<img class="'.$close_img_class.'" src="'.$close_img.'"  />';
 	} else {
 		$close_class = ' do_not_close ';
 	}
@@ -635,6 +739,11 @@ function cp_modal_global_before_init( $a ) {
 	$load_on_duration = '';
 	if( $a['autoload_on_duration'] ) {
 		$load_on_duration = $a['load_on_duration'];
+	}
+
+	$close_btn_on_duration = '';
+	if( isset( $a['display_close_on_duration'] ) && $a['display_close_on_duration'] && $a['close_modal'] !== 'do_not_close' ) {
+		$close_btn_on_duration  .= "data-close-btnonload-delay=".$a['close_btn_duration'];
 	}
 
 	$dev_mode = 'disabled';
@@ -654,14 +763,30 @@ function cp_modal_global_before_init( $a ) {
 		$inactive_data = 'data-inactive-time="'.$user_inactivity.'"';
 	}
 
+	//scroll up to specific class
+	$scroll_data = $scroll_class = '';
+	$enable_custom_scroll = isset( $a['enable_custom_scroll'] ) ? $a['enable_custom_scroll'] : '';
+	$enable_scroll_class = isset( $a['enable_scroll_class'] ) ? $a['enable_scroll_class'] : '';
+
+	if($enable_custom_scroll){
+		if( $enable_scroll_class!='' ){
+			$scroll_class 	= cp_get_scroll_class_init( $a['enable_scroll_class'] );
+			$scroll_data 	= 'data-scroll-class="'.$scroll_class.'"';
+		}
+	}
+
 	//	Variables
 	$global_class 			= 'global_modal_container';
 	$schedule               = isset( $a['schedule'] ) ? $a['schedule'] : '';
 	$isScheduled 			= cp_is_modal_scheduled( $schedule, $a['live'] );
 	//	Filters & Actions
 	$data_redirect = '';
-	if( isset($a['on_success']) && isset($a['redirect_url']) && isset($a['redirect_data']) ) {
-		$data_redirect	 	= cp_has_redirect_init( $a['on_success'], $a['redirect_url'], $a['redirect_data'] );
+	if( isset($a['on_success']) && isset($a['redirect_url']) && isset($a['redirect_data']) && isset($a['on_redirect']) ) {
+		$download_url ='';
+		if(isset($a['download_url'])){
+			$download_url = $a['download_url'];
+		}
+		$data_redirect	 	= cp_has_redirect_init( $a['on_success'], $a['redirect_url'], $a['redirect_data'] , $a['on_redirect'] ,$download_url);
 	}
 	$overlay_effect = '';
 	if( isset($a['overlay_effect']) ) {
@@ -783,15 +908,26 @@ function cp_modal_global_before_init( $a ) {
 		$global_class .= ' cp-window-overlay';
 	}
 
+	//form display/hide after sucessfull submission
+	$form_data_onsubmit ='';
+	$form_action_onsubmit = isset( $a['form_action_on_submit'] )? $a['form_action_on_submit'] :'';
+	
+	if( $form_action_onsubmit == 'reappear' ){
+		$form_data_onsubmit = 'data-form-action = reappear';
+		$form_data_onsubmit .= ' data-form-action-time ='.$a['form_reappear_time'];
+	}else if( $form_action_onsubmit == 'disappears' ){
+		$form_data_onsubmit = 'data-form-action = disappear';
+		$form_data_onsubmit .= ' data-form-action-time ='.$a['form_disappears_time'];
+	}
+
 	ob_start();
 
 ?>
 <?php if( !$isInline ){ ?>
-	<div data-class-id="content-<?php echo $a['uid']; ?>" <?php echo $referrer_data; ?> <?php echo $after_content_data; ?> class="<?php echo $cp_onload; ?> overlay-show <?php echo esc_attr( $custom_class ); ?>" data-overlay-class="overlay-zoomin" data-onload-delay="<?php echo esc_attr( $load_on_duration ); ?>" data-onscroll-value="<?php echo esc_attr( $load_after_scroll ); ?>" data-exit-intent="<?php echo esc_attr($modal_exit_intent); ?>" <?php echo $global_modal_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" <?php echo $inactive_data; ?> <?php echo $cp_modal_visibility; ?>></div>
+	<div data-class-id="content-<?php echo $a['uid']; ?>" <?php echo $referrer_data; ?> <?php echo $after_content_data; ?> class="<?php echo $cp_onload; ?> overlay-show <?php echo esc_attr( $custom_class ); ?>" data-overlay-class="overlay-zoomin" data-onload-delay="<?php echo esc_attr( $load_on_duration ); ?>" data-onscroll-value="<?php echo esc_attr( $load_after_scroll ); ?>" data-exit-intent="<?php echo esc_attr($modal_exit_intent); ?>" <?php echo $global_modal_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" <?php echo $inactive_data; ?> <?php echo $cp_modal_visibility; ?> <?php echo  $scroll_data ;?> ></div>
 <?php } ?>
 	<div data-form-layout="<?php echo $form_layout; ?>" class="cp-modal-popup-container <?php echo esc_attr( $style_id ); ?> <?php echo $style_class. '-container'; ?><?php echo ( $isInline ) ? " cp-inline-modal-container" : ""; ?>">
-		<div class="<?php echo ( $isInline ) ? "cp-modal-inline" : "cp-overlay "; ?><?php echo esc_attr( $close_modal_on ); ?> <?php echo esc_attr( $overlay_effect ); ?> content-<?php echo $a['uid'] . ' ' . $global_class . ' ' . $close_class ; ?>" data-placeholder-font="<?php echo $placeholder_font; ?>" data-class="content-<?php echo $a['uid']; ?>" style=" <?php echo esc_attr( 'background:'.$a['modal_overlay_bg_color'] ); ?>" <?php echo $global_modal_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" data-placeholder-color="<?php echo $placeholder_color; ?>" data-image-position="<?php echo $image_position ;?>" <?php echo $hide_image; ?> <?php echo $afl_setting; ?> <?php echo $overaly_setting;?> <?php echo $data_redirect;?> data-tz-offset="<?php echo $schedular_tmz_offset ;?>" >
-
+		<div class="<?php echo ( $isInline ) ? "cp-modal-inline" : "cp-overlay "; ?><?php echo esc_attr( $close_modal_on ); ?> <?php echo esc_attr( $overlay_effect ); ?> content-<?php echo $a['uid'] . ' ' . $global_class . ' ' . $close_class ; ?>" data-placeholder-font="<?php echo $placeholder_font; ?>" data-class="content-<?php echo $a['uid']; ?>" style=" <?php echo esc_attr( 'background:'.$a['modal_overlay_bg_color'] ); ?>" <?php echo $global_modal_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" data-placeholder-color="<?php echo $placeholder_color; ?>" data-image-position="<?php echo $image_position ;?>" <?php echo $hide_image; ?> <?php echo $afl_setting; ?> <?php echo $overaly_setting;?> <?php echo $data_redirect;?> data-tz-offset="<?php echo $schedular_tmz_offset ;?>" <?php echo esc_attr( $close_btn_on_duration ); ?>  <?php echo $autoclose_data; ?>  <?php echo esc_attr( $form_data_onsubmit );?>>
 	    	<div class="cp-modal <?php echo esc_attr( $a['modal_size'] ); ?>" style="<?php echo esc_attr( $modal_size_style ); ?>">
 	      		<div class="cp-animate-container" <?php echo $overaly_setting;?> data-exit-animation="<?php echo esc_attr( $exit_animation ); ?>">
 	      			<div class="cp-modal-content <?php echo $cp_modal_content_class; ?>" style="<?php echo esc_attr( $css_style ); ?>;<?php echo esc_attr( $windowcss );?>">
@@ -817,6 +953,16 @@ add_filter( 'cp_modal_global_before', 'cp_modal_global_before_init' );
 if( !function_exists( "cp_modal_global_after_init" ) ) {
 function cp_modal_global_after_init( $a ) {
 
+	$edit_link = '';
+	if( is_user_logged_in() ) {
+		// if user has access to ConvertPlug, then only display edit style link
+		if( current_user_can( 'access_cp' ) ) {
+			if( isset( $a['style_id'] ) ) {
+				$edit_link = cp_get_edit_link( $a['style_id'], 'modal', $a['style'] );
+			}
+		}
+	}
+
 	if ( !isset( $a['modal_size'] ) ) {
 		$a['modal_size'] = 'cp-modal-custom-size';
 	}
@@ -830,18 +976,23 @@ function cp_modal_global_after_init( $a ) {
 		$cp_close_image_width = 'auto';
 
 	//	{START} - SAME FOR BEFORE & AFTER NEED TO CREATE FUNCTION IT's TEMP
-	$close_img_class = $close_img = '';
+	$close_img_class = $close_img = $close_alt  = '';
 
 	$close_img_prop = cp_close_image_setup( $a );
 
 	$close_img = $close_img_prop['close_img'];
 	$close_img_class = $close_img_prop['close_img_class'];
+	$close_alt = $close_img_prop['close_alt'];
+	if($close_alt!==''){
+		$close_alt = 'alt="'.$close_alt .'"';
+	}
 
 	$close_html = $el_class = $modal_size_style = $close_class = '';
 	if( isset( $a['content_padding'] ) && $a['content_padding'] ) {
-		$el_class .= 'no-padding ';
+		$el_class .= 'cp-no-padding ';
 	}
 	$close_tooltip = $close_tooltip_end = '';
+
 	if( $a['close_modal'] == "close_txt" ) {
 		$close_class .= 'cp-text-close';
 		if( $a['close_modal_tooltip'] == 1 ) {
@@ -851,19 +1002,41 @@ function cp_modal_global_after_init( $a ) {
 		$close_html = '<span style="color:'.$a['close_text_color'].'">'.$a['close_txt'].'</span>';
 	} else if( $a['close_modal'] == "close_img" ) {
 		$close_class .= 'cp-image-close';
-		$close_html   = '<img class="'.$close_img_class.'" src="'.$close_img.'" />';
+		$close_html   = '<img class="'.$close_img_class.'" src="'.$close_img.'" '.$close_alt.' />';
 	} else {
 		$close_class = 'do_not_close';
 	}
+
+	if( isset( $a['display_close_on_duration'] ) && $a['display_close_on_duration'] && $a['close_modal'] !== 'do_not_close' ) {
+		$close_class  .= ' cp-hide-close';
+	}
+
 	//	{END} - SAME FOR BEFORE & AFTER NEED TO CREATE FUNCTION IT's TEMP
 
 	/* -- tool tip ----- */
 	$tooltip_position = '';
+
 	if( $a['modal_size'] == "cp-modal-custom-size" ){
 		$tooltip_position = 'top';
 	} else {
 		$tooltip_position = 'left';
 	}
+
+	$close_adjacent_position = ( isset( $a['adjacent_close_position'] ) ? $a['adjacent_close_position'] : 'cp-adjacent-right' );
+	$close_position = ( isset($a['close_position']) ? $a['close_position'] :'' );
+ 	if($close_adjacent_position!=''){
+		switch( $close_adjacent_position ){
+			case 'top_left':  $tooltip_position = 'right';
+				break;
+			case 'top_right': $tooltip_position = 'left';
+				break;
+		}
+	}
+
+	if( $close_position =='inside_modal' ){
+		//$tooltip_position = 'top';
+	}
+
 
 	$tooltip_class = $tooltip_style = '';
 	if( $a['close_modal_tooltip'] == 1 ) {
@@ -903,6 +1076,17 @@ function cp_modal_global_after_init( $a ) {
 ?>
 		</div><!-- .cp-modal-body -->
 
+		<?php
+		if ( $edit_link !== '' ) {
+
+			$edit_link_text = 'Edit With ConvertPlug';
+
+			$edit_link_txt = apply_filters( 'cp_style_edit_link_text', $edit_link_text );
+
+		 	echo "<div class='cp_edit_link'><a target='_blank' href=".$edit_link.">".$edit_link_txt."<a></div>";
+		}
+		?>
+
 			</div><!-- .cp-modal-content -->
             <?php if( isset($a['form_layout']) && $a['form_layout'] != 'cp-form-layout-4' ) { ?>
 			<div class="cp-form-processing-wrap" style="<?php echo esc_attr($formProcessCss); ?>;">
@@ -922,17 +1106,34 @@ function cp_modal_global_after_init( $a ) {
             </div>
             <?php } ?>
 
-    		<?php if( $a['close_modal'] == 'close_img' && $a['close_position'] != 'out_modal' ) { ?>
+    		<?php
+    		    $close_adj_class = '';
+    			$close_adjacent_position = ( isset( $a['adjacent_close_position'] ) ? $a['adjacent_close_position'] : 'cp-adjacent-right' );
+	      			switch( $close_adjacent_position ){
+						case 'top_left':  $close_adj_class .= ' cp-adjacent-left';
+							break;
+						case 'top_right': $close_adj_class .= ' cp-adjacent-right';
+							break;
+						case 'bottom_left': $close_adj_class .= ' cp-adjacent-bottom-left';
+							break;
+						case 'bottom_right': $close_adj_class .= ' cp-adjacent-bottom-right';
+							break;
+					}
+
+    		if( $a['close_modal'] == 'close_img' && $a['close_position'] != 'out_modal' ) { ?>
 
 	      		<?php
-	      		if( $a['close_position'] == 'adj_modal' )
+	      		if( $a['close_position'] == 'adj_modal' ){
 	      			$close_overlay_class = 'cp-adjacent-close';
-	      		else
+	      		}else{
 	      			$close_overlay_class = 'cp-inside-close';
+	      		}
+	      		   $close_overlay_class .= $close_adj_class;
+
 	      		?>
 		      	<div class="cp-overlay-close <?php echo esc_attr( $close_class ).' '.esc_attr( $close_overlay_class ); ?>" style="width: <?php echo esc_attr( $cp_close_image_width ); ?>">
 					<?php if( $a['close_modal_tooltip'] == 1 ) { ?>
-	      			<span class=" cp-tooltip-icon cp-inside-tip has-tip cp-tipcontent-<?php echo $a['style_id']; ?>" data-classes="close-tip-content-<?php echo $a['style_id']; ?>" data-offset="10"  data-position="<?php echo esc_attr( $tooltip_position );?>"  title="<?php echo html_entity_decode(stripslashes(esc_attr( $a['tooltip_title'] ) ));?>"  data-color="<?php echo esc_attr( $a['tooltip_title_color'] );?>" data-bgcolor="<?php echo esc_attr( $a['tooltip_background'] );?>" data-closeid ="cp-tipcontent-<?php echo $a['style_id']; ?>">
+	      			<span class=" cp-tooltip-icon 1 cp-inside-tip has-tip cp-tipcontent-<?php echo $a['style_id']; ?>" data-classes="close-tip-content-<?php echo $a['style_id']; ?>" data-offset="20"  data-position="<?php echo esc_attr( $tooltip_position );?>"  title="<?php echo html_entity_decode(stripslashes(esc_attr( $a['tooltip_title'] ) ));?>"  data-color="<?php echo esc_attr( $a['tooltip_title_color'] );?>" data-bgcolor="<?php echo esc_attr( $a['tooltip_background'] );?>" data-closeid ="cp-tipcontent-<?php echo $a['style_id']; ?>">
 	      			<?php } ?>
 					<?php echo $close_html; ?>
 					<?php if($a['close_modal_tooltip'] == 1){ ?></span><?php } ?>
@@ -953,9 +1154,9 @@ function cp_modal_global_after_init( $a ) {
       	<?php } ?><!-- .affiliate link for fullscreen -->
 
 		<?php if( ( $a['close_position'] == 'out_modal' && $a['close_modal'] != 'do_not_close') || $a['close_modal'] == 'close_txt' ) { ?>
-		    <div class="cp-overlay-close <?php echo esc_attr( $close_class ); ?>"  style="width: <?php echo esc_attr( $cp_close_image_width ); ?>">
+		    <div class="cp-overlay-close cp-outside-close <?php echo esc_attr( $close_class ); ?> <?php echo $close_adj_class;?>"  style="width: <?php echo esc_attr( $cp_close_image_width ); ?>">
 				 <?php if( $a['close_modal_tooltip'] == 1 ) { ?>
-					<span class=" cp-close-tooltip cp-tooltip-icon has-tip cp-tipcontent-<?php echo $a['style_id']; ?>" data-classes="close-tip-content-<?php echo $a['style_id']; ?>" data-position="left"  title="<?php echo html_entity_decode(stripslashes(esc_attr( $a['tooltip_title'] ) ));?>"  data-color="<?php echo esc_attr( $a['tooltip_title_color'] );?>" data-bgcolor="<?php echo esc_attr( $a['tooltip_background'] );?>" data-closeid ="cp-tipcontent-<?php echo $a['style_id']; ?>">
+					<span class=" cp-close-tooltip cp-tooltip-icon  has-tip cp-tipcontent-<?php echo $a['style_id']; ?>" data-classes="close-tip-content-<?php echo $a['style_id']; ?>" data-position="<?php echo $tooltip_position;?>"  title="<?php echo html_entity_decode(stripslashes(esc_attr( $a['tooltip_title'] ) ));?>"  data-color="<?php echo esc_attr( $a['tooltip_title_color'] );?>" data-bgcolor="<?php echo esc_attr( $a['tooltip_background'] );?>" data-closeid ="cp-tipcontent-<?php echo $a['style_id']; ?>" data-offset="20">
 				<?php } ?>
 				<?php echo $close_html; ?><?php if($a['close_modal_tooltip'] == 1){ ?></span><?php } ?>
 			 </div>
@@ -970,7 +1171,7 @@ add_filter( 'cp_modal_global_after', 'cp_modal_global_after_init' );
 if( !function_exists('cp_close_image_setup') ) {
 
 	function cp_close_image_setup( $a ) {
-		$close_img = $close_img_class = '';
+		$close_img = $close_img_class = $close_alt = '';
 
 		if ( !isset( $a['close_image_src'] ) ) {
 			$a['close_image_src'] = 'upload_img';
@@ -988,6 +1189,10 @@ if( !function_exists('cp_close_image_setup') ) {
 				    $close_img_class = 'cp-default-close';
 				} else {
 					$close_img = apply_filters('cp_get_wp_image_url', $a['close_img'] );
+					$close_img_alt =  explode( '|', $a['close_img'] );
+					if( sizeof($close_img_alt) > 2 ){
+						$close_alt = $close_img_alt[2];
+					}
 				}
 			}
 		} else if ( $a['close_image_src'] == 'custom_url' ) {
@@ -999,10 +1204,11 @@ if( !function_exists('cp_close_image_setup') ) {
 
 		$close_img_prop = array (
 			"close_img" => $close_img,
-			"close_img_class" => $close_img_class
+			"close_img_class" => $close_img_class,
+			"close_alt" => $close_alt,
 			);
-
 		return $close_img_prop;
 
 	}
 }
+

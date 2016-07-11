@@ -122,7 +122,6 @@ span.connect-list-gravtar-img {
           $name   = ( isset( $list['name'] ) && $list['name'] !== "" ) ? $list['name'] : 'NA';
           $date   = date("j M Y",strtotime($list['date']));
           $user_id =  ( isset( $list['user_id'] ) && $list['user_id'] !== "" ) ? $list['user_id'] : '';
-          $url    = plugins_url( '../images/default-gravtar.png',  __FILE__ );
 
           //  Check Current User
           if( empty( $currentUser ) ) {

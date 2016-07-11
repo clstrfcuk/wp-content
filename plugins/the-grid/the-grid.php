@@ -5,14 +5,14 @@
  * @copyright 2015 Themeone
  *
  * @wordpress-plugin
- * Plugin Name:       The Grid
- * Plugin URI:        http://www.theme-one.com/the-grid/
- * Description:       The Grid - Create advanced grids for any post type with endless possibilities (no programming knowledge required)
- * Version:           1.4.0
- * Author:            Themeone
- * Author URI:        http://www.theme-one.com/
- * Text Domain:       tg-text-domain
- * Domain Path:       /langs
+ * Plugin Name:  The Grid
+ * Plugin URI:   http://www.theme-one.com/the-grid/
+ * Description:  The Grid - Create advanced grids for any post type with endless possibilities (no programming knowledge required)
+ * Version:      1.6.0
+ * Author:       Themeone
+ * Author URI:   http://www.theme-one.com/
+ * Text Domain:  tg-text-domain
+ * Domain Path:  /langs
  */
 
 // Exit if accessed directly
@@ -21,17 +21,39 @@ if (!defined('ABSPATH')) {
 }
 
 // Initialize if The Grid Plugin does not exist
-if(!class_exists('The_Grid_Plugin')) {
+if (!class_exists('The_Grid_Plugin')) {
 
 	class The_Grid_Plugin {
 		
 		/**
-		* @vars string
+		* Plugin Version
+		*
 		* @since 1.0.0
+		* @access public
+		*
+		* @var string
 		*/
-		public $plugin_version = '1.4.0';
-		public $plugin_prefix  = 'the_grid_';
-		public $plugin_slug    = 'the_grid';	
+		public $plugin_version = '1.6.0';
+		
+		/**
+		* Plugin Prefix
+		*
+		* @since 1.0.0
+		* @access public
+		*
+		* @var string
+		*/
+		public $plugin_prefix = 'the_grid_';
+		
+		/**
+		* Plugin Slug
+		*
+		* @since 1.0.0
+		* @access public
+		*
+		* @var string
+		*/
+		public $plugin_slug = 'the_grid';	
 		
 		/**
 		* Cloning disabled
@@ -60,27 +82,12 @@ if(!class_exists('The_Grid_Plugin')) {
 	 	*/
 		public function __construct() {
 			
-			$this->localize_plugin();
 			$this->define_constants();
 			$this->includes();
 			$this->init_hooks();
 			
 		}
-		
-		/**
-		* Localize_plugin
-		* @since 1.0.0
-		*/
-		public function localize_plugin() {
-			
-			load_plugin_textdomain(
-				'tg-text-domain',
-				FALSE,
-				dirname( plugin_basename( __FILE__ ) ) . '/langs'
-			);
-			
-		}
-		
+
 		/**
 		* Define The Grid Constants
 		* @since 1.0.0
@@ -116,6 +123,8 @@ if(!class_exists('The_Grid_Plugin')) {
 			require_once(TG_PLUGIN_PATH . '/includes/media-taxonomies.php');
 			// Grid base Class (main functionnalities)
 			require_once(TG_PLUGIN_PATH . '/includes/the-grid-base.class.php');
+			// Grid custom table Class
+			require_once(TG_PLUGIN_PATH . '/includes/custom-table.class.php');
 			// Load skins classes
 			require_once(TG_PLUGIN_PATH . '/includes/item-skin.class.php');
 			require_once(TG_PLUGIN_PATH . '/includes/preloader-skin.class.php');
@@ -123,21 +132,24 @@ if(!class_exists('The_Grid_Plugin')) {
 			require_once(TG_PLUGIN_PATH . '/includes/item-animation.class.php');
 			// post like class
 			require_once(TG_PLUGIN_PATH . '/includes/post-like/post-like.php');
+			// deprecated class to retrieve item element
+			require_once(TG_PLUGIN_PATH . '/includes/deprecated/the-grid-element.class.php');
 			// Load frontend classes
 			require_once(TG_PLUGIN_PATH . '/frontend/the-grid-init.class.php');
+			require_once(TG_PLUGIN_PATH . '/frontend/the-grid-item.class.php');
 			require_once(TG_PLUGIN_PATH . '/includes/first-media.class.php');
 			// Load backend classes
-			if (is_admin()) {	
+			if (is_admin()) {
+				require_once(TG_PLUGIN_PATH . '/includes/element-animation.class.php');
 				require_once(TG_PLUGIN_PATH . '/includes/envato-api.class.php');
 				require_once(TG_PLUGIN_PATH . '/includes/update-plugin.class.php');
-				require_once(TG_PLUGIN_PATH . '/includes/default-post.class.php');
 				require_once(TG_PLUGIN_PATH . '/includes/custom-fields.class.php');
 				require_once(TG_PLUGIN_PATH . '/backend/admin-init.php');
 				require_once(TG_PLUGIN_PATH . '/includes/wpml.class.php');	
 			}
 			// Register shortcode & add Tinymce button/popup & add Visual Composer element
-			require_once(TG_PLUGIN_PATH . '/backend/the-grid-shortcode.php');
-			
+			require_once(TG_PLUGIN_PATH . '/backend/admin-shortcode.php');
+
 		}
 		
 		/**
@@ -146,7 +158,9 @@ if(!class_exists('The_Grid_Plugin')) {
 		* @modified 1.3.0
 		*/
 		public function init_hooks() {
-			
+
+			// Load plugin text domain
+			add_action( 'plugins_loaded', array( &$this, 'localize_plugin' ) );
 			// Register The Grid post type
 			add_action( 'init', array( &$this, 'register_post_type' ) );
 			// Add post format for any kind of post type
@@ -157,38 +171,31 @@ if(!class_exists('The_Grid_Plugin')) {
 			add_filter( 'plugin_action_links_'. plugin_basename(__FILE__), array( &$this, 'action_links'), 10, 4 );
 			// Make changes after important update on plugin activation
 			register_activation_hook( __FILE__, array( &$this, 'plugin_activated' ) );
+			// Create custom table on plugin activation
+			register_activation_hook( __FILE__, array( 'The_Grid_Custom_Table', 'create_tables' ) );
 			// Remove uncessary data on plugin deactivation
 			register_deactivation_hook( __FILE__, array( &$this, 'plugin_deactivated' ) );
 			
 		}
 		
 		/**
-		* Add image sizes to Wordpress
+		* Localize_plugin
 		* @since 1.0.0
-		* @modified 1.0.7
 		*/
-		public function add_image_size() {
+		public function localize_plugin() {
 			
-			// default image sizes
-			$def = array(
-				'w' => array(500, 500, 1000, 1000, 500),
-				'h' => array(500, 1000, 500, 1000, 99999),
-				'c' => array(true, true, true, true, '')
+			load_plugin_textdomain(
+				'tg-text-domain',
+				false,
+				plugin_basename( dirname( __FILE__ ) ) . '/langs'
 			);
-			
-			// add image sizes with values from global settings
-			for ($i = 0; $i <= 4; $i++) {
-				$w = get_option('the_grid_size'. ($i+1) .'_width', $def['w'][$i]);
-				$h = get_option('the_grid_size'. ($i+1) .'_height', $def['h'][$i]);
-				$c = get_option('the_grid_size'. ($i+1) .'_crop', $def['c'][$i]);
-				add_image_size('the_grid_size'. ($i+1), $w, $h, $c);
-			}
 			
 		}
 		
 		/**
 		* Register post type
 		* @since 1.0.0
+		* @modified 1.5.0
 		*/
 		public function register_post_type() {	
 			
@@ -209,11 +216,11 @@ if(!class_exists('The_Grid_Plugin')) {
 			 $args = array(
 					'labels'          => $labels,
 					'singular_label'  => __('The Grid', 'tg-text-domain'),
-					'public'          => true,
+					'public'          => false,
 					'capability_type' => 'post',
-					'query_var'       => true,
-					'rewrite'         => true,
-					'show_ui'         => true,
+					'query_var'       => false,
+					'rewrite'         => false,
+					'show_ui'         => false,
 					'show_in_menu'    => false,
 					'hierarchical'    => false,
 					'menu_position'   => 10,
@@ -221,7 +228,7 @@ if(!class_exists('The_Grid_Plugin')) {
 					'supports'        => false,
 					'rewrite'         => array(
 						'slug' => $this->plugin_slug,
-						'with_front' => FALSE
+						'with_front' => false
 					),
 			);
 			
@@ -256,6 +263,30 @@ if(!class_exists('The_Grid_Plugin')) {
 		}
 		
 		/**
+		* Add image sizes to Wordpress
+		* @since 1.0.0
+		* @modified 1.0.7
+		*/
+		public function add_image_size() {
+			
+			// default image sizes
+			$def = array(
+				'w' => array(500, 500, 1000, 1000, 500),
+				'h' => array(500, 1000, 500, 1000, 99999),
+				'c' => array(true, true, true, true, '')
+			);
+			
+			// add image sizes with values from global settings
+			for ($i = 0; $i <= 4; $i++) {
+				$w = get_option('the_grid_size'. ($i+1) .'_width', $def['w'][$i]);
+				$h = get_option('the_grid_size'. ($i+1) .'_height', $def['h'][$i]);
+				$c = get_option('the_grid_size'. ($i+1) .'_crop', $def['c'][$i]);
+				add_image_size('the_grid_size'. ($i+1), $w, $h, $c);
+			}
+			
+		}
+
+		/**
 		* Add edit link on plugin activation
 		* @since 1.0.0
 		* @modified 1.1.0
@@ -278,7 +309,7 @@ if(!class_exists('The_Grid_Plugin')) {
 			
 			// delete The Grid cache to prevent any issues due to changes
 			$base = new The_Grid_Base();
-			$base->delete_transient('tg_grid_transient_');
+			$base->delete_transient('tg_grid');
 			
 		}
 		
@@ -290,7 +321,7 @@ if(!class_exists('The_Grid_Plugin')) {
 			
 			// delete The Grid cache to prevent any issues due to changes
 			$base = new The_Grid_Base();
-			$base->delete_transient('tg_grid_transient_');
+			$base->delete_transient('tg_grid');
 			
 		}
 

@@ -10,14 +10,10 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-// retrieve all grid settings
-global $tg_grid_data;
+$ajax_method  = $tg_grid_data['ajax_method'];
+$source_type  = $tg_grid_data['source_type'];
 
-$ajax_method = $tg_grid_data['ajax_method'];
-		
-if ($ajax_method != 'on_scroll' && $tg_grid_data['source_type'] == 'post_type') {
-			
-	global $tg_grid_query;
+if ($ajax_method != 'on_scroll' && $source_type == 'post_type') {
 
 	$big   = 999999999;
 			
@@ -25,7 +21,7 @@ if ($ajax_method != 'on_scroll' && $tg_grid_data['source_type'] == 'post_type') 
 	$next_text    = $tg_grid_data['pagination_next'];
 	$prev_text    = $tg_grid_data['pagination_prev'];
 	$current_page = (get_query_var('paged')) ? max(1, get_query_var('paged')) : max(1, get_query_var('page'));
-	$total_pages  = $tg_grid_query->max_num_pages;
+	$total_pages  = $tg_grid_data['max_num_pages'];
 			
 	$ajax = $tg_grid_data['ajax_pagination'];
 	$type = $tg_grid_data['pagination_type'];

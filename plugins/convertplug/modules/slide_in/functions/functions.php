@@ -269,6 +269,30 @@ if( !function_exists( "cp_get_slidein_image_url_init" ) ){
 add_filter( 'cp_get_slidein_image_url', 'cp_get_slidein_image_url_init' );
 
 /**
+ *	Get SlideIn Image URL
+ *
+ * @since 0.1.5
+ */
+if( !function_exists( "cp_get_slidein_image_alt_init" ) ){
+	function cp_get_slidein_image_alt_init( $a = '' ) {
+		$alt = '';
+
+		if( $a['slidein_img_src'] == 'upload_img' ) {
+			if ( strpos($a['slidein_image'],'http') !== false ) {
+			} else {
+				$slidein_image = apply_filters('cp_get_wp_image_url', $a['slidein_image'] );
+				$slidein_image_alt = explode( '|', $a['slidein_image'] );
+              		if( sizeof($slidein_image_alt) > 2 ){
+				 $alt = "alt='".$slidein_image_alt[2]."'";
+				}
+		   	}
+		}
+	   	return $alt;
+	}
+}
+add_filter( 'cp_get_slidein_image_alt', 'cp_get_slidein_image_alt_init' );
+
+/**
  *	Get WordPress attachment url
  *
  * @since 0.1.5
@@ -304,6 +328,24 @@ if( !function_exists( "cp_get_custom_class_init" ) ) {
 }
 
 /**
+ *	Set custom class for modal
+ *
+ * @since 0.1.5
+ */
+add_filter( 'cp_get_scroll_class', 'cp_get_scroll_class_init' );
+
+if( !function_exists( "cp_get_scroll_class_init" ) ) {
+	function cp_get_scroll_class_init( $scroll_class) {
+		$scroll_class = $scroll_class;
+		$scroll_class  = str_replace( " ", "", trim( $scroll_class ) );
+		$scroll_class  = str_replace( ",", " ", trim( $scroll_class ) );
+		//$scroll_class .= ' cp-'.$style_id;
+		$scroll_class = trim( $scroll_class );
+		return $scroll_class;
+	}
+}
+
+/**
  * Check slidein has redirection
  *
  * @since 0.1.5
@@ -318,6 +360,12 @@ if( !function_exists( "cp_has_redirect_init" ) ){
 		$op = '';
 		if($on_success == 'redirect' && $redirect_url != '' && $redirect_data == 1){
 			$op = ' data-redirect-lead-data="'.$redirect_data.'" ';
+		}
+		if( $on_success == 'redirect' && $redirect_url != '' && $on_redirect !== '' ) {
+			$op .= ' data-redirect-to ="'.$on_redirect.'" ';
+			/*if( $on_redirect == 'download' && $download_url !=='' ){
+				$op .= ' data-download-url = "'.$download_url.'" ';
+			}*/
 		}
 		return $op;
 	}
@@ -436,8 +484,7 @@ add_filter( 'cp_get_affiliate_setting', 'cp_get_affiliate_setting_init');
 if( !function_exists( "cp_hide_image_on_mobile_init" ) ){
 	function cp_hide_image_on_mobile_init($image_displayon_mobile, $image_resp_width){
 		$hide_image = '';
-		if($image_displayon_mobile==1){
-			//$hide_image ='cp-hide-image' ;
+		if( $image_displayon_mobile == 1 ){
 			$hide_image =' data-hide-img-on-mobile='.$image_resp_width;
 		}
 		return $hide_image;
@@ -494,6 +541,17 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 			$referrer_data = "";
 		}
 
+		// check close after few second
+		$autoclose_on_duration  = ( isset( $a['autoclose_on_duration'] ) && (int)$a['autoclose_on_duration'] ) ? $a['autoclose_on_duration'] : '';
+		$close_module_duration = ( isset( $a['close_module_duration'] ) && (int)$a['close_module_duration'] ) ? $a['close_module_duration'] : '';
+		$autoclose_data = '';
+		// check if inline display is set
+		$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
+
+		if( $autoclose_on_duration !== '' && !$isInline && ( isset( $a['toggle_btn'] ) && $a['toggle_btn'] !== '1' ) && (isset( $a['close_slidein']) && $a['close_slidein']!=='do_not_close' ) ){
+			$autoclose_data = 'data-close-after="'.$close_module_duration.'"';
+		}
+
 		//	Enqueue Google Fonts\
 		if( isset( $a['cp_google_fonts'] ) ){
 			cp_enqueue_google_fonts( $a['cp_google_fonts'] );
@@ -545,7 +603,7 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 		}
 
 		if( isset( $a['content_padding'] ) && !empty( $a['content_padding'] ) ) {
-			$el_class .= ' no-padding ';
+			$el_class .= ' cp-no-padding ';
 		}
 
 		//	SlideIn - Background Image & Background Color
@@ -654,6 +712,11 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 			$load_on_duration = $a['load_on_duration'];
 		}
 
+		$close_btn_on_duration = '';
+		if( isset( $a['display_close_on_duration'] ) && $a['display_close_on_duration'] && $a['close_slidein']!=='do_not_close' ) {
+			$close_btn_on_duration  .= "data-close-btnonload-delay=".$a['close_btn_duration'];
+		}
+
 		$dev_mode = 'disabled';
 		if( !$a['developer_mode'] ){
 			$a['closed_cookie'] = $a['conversion_cookie'] = 0;
@@ -667,16 +730,30 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
 			$inactive_data = 'data-inactive-time="'.$user_inactivity.'"';
 		}
 
+		//scroll up to specific class
+		$scroll_data = $scroll_class = '';
+		$enable_scroll_class = isset( $a['enable_scroll_class'] ) ? $a['enable_scroll_class'] : '';
+		$enable_custom_scroll = isset( $a['enable_custom_scroll'] ) ? $a['enable_custom_scroll'] : '';
+
+		if($enable_custom_scroll){
+			if( $enable_scroll_class!='' ){
+				$scroll_class 	= cp_get_scroll_class_init( $a['enable_scroll_class'] );
+				$scroll_data 	= 'data-scroll-class="'.$scroll_class.'"';
+			}
+		}
+
 		//	Variables
-		$global_class 			= 'global_slidein_container';
+		$global_class 			= ' global_slidein_container ';
 		//	Functions
 
 		$schedule 				= isset($a['schedule']) ? $a['schedule'] : '';
 		$isScheduled 			= cp_is_slidein_scheduled( $schedule, $a['live'] );
 		//	Filters & Actions
 		$data_redirect = '';
-		if( isset($a['on_success']) && isset($a['redirect_url']) && isset($a['redirect_data']) ) {
-			$data_redirect	 	= cp_has_redirect_init( $a['on_success'], $a['redirect_url'], $a['redirect_data'] );
+		if( isset($a['on_success']) && isset($a['redirect_url']) && isset($a['redirect_data']) && isset($a['on_redirect']) ) {
+			$download_url = '';
+
+			$data_redirect	 	= cp_has_redirect_init( $a['on_success'], $a['redirect_url'], $a['redirect_data'] , $a['on_redirect'] ,$download_url );
 		}
 		$overlay_effect = '';
 		if( isset($a['overlay_effect']) ) {
@@ -820,18 +897,45 @@ if( !function_exists( "cp_slidein_global_before_init" ) ){
         if( !$isInline ) {
         	$slide_position ='slidein-'.$a['slidein_position'];
         }
+        $cp_close_body ='';
+        $close_adjacent_position = ( isset( $a['adjacent_close_position'] ) ? $a['adjacent_close_position'] : 'cp-adjacent-right' );
+        if( $close_adjacent_position =='top_left' && !$isInline ){
+        	$cp_close_body ='cp-top-img';
+        }
+
+        $minimize_widget = isset( $a['minimize_widget'] ) ? $a['minimize_widget'] : '';
+        if( !$isInline && $minimize_widget == '1' ){
+        	$minimize_widget = 'minimize-widget';
+        }
+
+        $optin_widgetclass ='';
+        if( isset($a['developer_mode'] ) && $a['developer_mode'] && ( $a['style'] =='optin_widget' || $a['style'] =='social_widget_box' ) ){
+        	$minimize_widget .=' always-minimize-widget';
+        }
+
+        	//form display/hide after sucessfull submission
+		$form_data_onsubmit ='';
+		$form_action_onsubmit = isset( $a['form_action_on_submit'] )? $a['form_action_on_submit'] :'';
+
+		if( $form_action_onsubmit == 'reappear' ){
+			$form_data_onsubmit .= 'data-form-action = reappear';
+			$form_data_onsubmit .= ' data-form-action-time ='.$a['form_reappear_time'];
+		}else if( $form_action_onsubmit == 'disappears' ){
+			$form_data_onsubmit .= 'data-form-action = disappear';
+			$form_data_onsubmit .= ' data-form-action-time ='.$a['form_disappears_time'];
+		}
 
 		ob_start();
 		if( !$isInline ){
 	?>
-<div data-class-id="content-<?php echo $uid; ?>" <?php echo $referrer_data; ?> <?php echo $after_content_data; ?> class="<?php echo $si_onload; ?> overlay-show <?php echo esc_attr( $custom_class ); ?>" data-overlay-class="overlay-zoomin" data-onload-delay="<?php echo esc_attr( $load_on_duration ); ?>" data-onscroll-value="<?php echo esc_attr( $load_after_scroll ); ?>" data-exit-intent="<?php echo esc_attr($slidein_exit_intent); ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" <?php echo $inactive_data; ?> <?php echo $cp_slidein_visibility; ?> <?php echo $alwaysVisible; ?>></div>
+<div data-class-id="content-<?php echo $uid; ?>" <?php echo $referrer_data; ?> <?php echo $after_content_data; ?> class="<?php echo $si_onload; ?> overlay-show <?php echo esc_attr( $custom_class ); ?>" data-overlay-class="overlay-zoomin" data-onload-delay="<?php echo esc_attr( $load_on_duration ); ?>" data-onscroll-value="<?php echo esc_attr( $load_after_scroll ); ?>" data-exit-intent="<?php echo esc_attr($slidein_exit_intent); ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" <?php echo $inactive_data; ?> <?php echo $cp_slidein_visibility; ?> <?php echo $alwaysVisible; ?> <?php echo $scroll_data; ?> ></div>
 <?php } ?>
 		<div class="cp-slidein-popup-container <?php echo esc_attr( $style_id ); ?> <?php echo $style_class. '-container'; ?>">
-			<div class="slidein-overlay <?php echo ( $isInline ) ? "cp-slidein-inline  " : "" ; ?><?php echo esc_attr( $slide_toggle_class ); echo ' content-'.$uid;?> <?php echo ' ' . $close_class ; ?>" data-placeholder-font="<?php echo $placeholder_font; ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" data-timezoneformat="<?php echo esc_attr($timezoneformat);?>" data-placeholder-color="<?php echo $placeholder_color; ?>" data-image-position="<?php echo $image_position ;?>" <?php echo $hide_image; ?>  <?php echo $overaly_setting;?> <?php echo $data_redirect;?>>
+			<div class="slidein-overlay <?php echo $global_class;?> <?php echo ( $isInline ) ? "cp-slidein-inline  " : "" ; ?><?php echo esc_attr( $slide_toggle_class ); echo ' content-'.$uid;?> <?php echo ' ' . $close_class ; ?> <?php echo $minimize_widget;?>" data-placeholder-font="<?php echo $placeholder_font; ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_slidein_settings; ?> data-custom-class="<?php echo esc_attr( $custom_class ); ?>" data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" data-timezoneformat="<?php echo esc_attr($timezoneformat);?>" data-placeholder-color="<?php echo $placeholder_color; ?>" data-image-position="<?php echo $image_position ;?>" <?php echo $hide_image; ?>  <?php echo $overaly_setting;?> <?php echo $data_redirect;?> <?php echo esc_attr( $close_btn_on_duration ); ?> <?php echo $autoclose_data;?> <?php echo esc_attr( $form_data_onsubmit );?> >
 				<div class="cp-slidein <?php echo $slide_position; ?>" style="<?php echo esc_attr( $slidein_size_style ); ?>">
 					<div class="cp-animate-container <?php echo esc_attr( $toggleclass );?>" <?php echo $overaly_setting;?> data-exit-animation="<?php echo esc_attr( $exit_animation ); ?>">
 						<div class="cp-slidein-content" id="slide-in-animate-<?php echo esc_attr( $style_id ); ?>" style="<?php echo esc_attr( $css_style ); ?>;<?php echo esc_attr( $windowcss );?>">
-							<div class="cp-slidein-body <?php echo $style_class . ' ' . esc_attr( $el_class ); ?>" style="<?php echo esc_attr( $customcss );?>">
+							<div class="cp-slidein-body <?php echo $style_class . ' ' . esc_attr( $el_class ); ?> <?php echo esc_attr( $cp_close_body );?>" style="<?php echo esc_attr( $customcss );?>">
 							  <div class="cp-slidein-body-overlay cp_cs_overlay" style="<?php echo esc_attr( $inset ) ?>;"></div>
 	<?php
 	}
@@ -847,6 +951,18 @@ add_filter( 'cp_slidein_global_before', 'cp_slidein_global_before_init' );
 if( !function_exists( "cp_slidein_global_after_init" ) ){
 	function cp_slidein_global_after_init( $a ) {
 
+		$edit_link = '';
+		if( is_user_logged_in() ) {
+			// if user has access to ConvertPlug, then only display edit style link
+			if( current_user_can( 'access_cp' ) ) {
+				if( isset( $a['style_id'] ) ) {
+					if( isset( $a['style_id'] ) ) {
+						$edit_link = cp_get_edit_link( $a['style_id'], 'slide_in', $a['style'] );
+					}
+				}
+			}
+		}
+
 		$style_id 	= ( isset( $a['style_id'] ) ) ? $a['style_id'] : '';
 
 		if( isset( $a['close_slidein'] ) && $a['close_slidein'] !== 'close_txt' )
@@ -855,17 +971,21 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 			$cp_close_image_width = 'auto';
 
 		//	{START} - SAME FOR BEFORE & AFTER NEED TO CREATE FUNCTION IT's TEMP
-		$close_img_class = '';
+		$close_img_class = $close_alt = '';
 
 		$close_img_prop = cp_si_close_image_setup( $a );
 
 		$close_img = $close_img_prop['close_img'];
 		$close_img_class = $close_img_prop['close_img_class'];
+		$close_alt = $close_img_prop['close_alt'];
+		if($close_alt!==''){
+			$close_alt = 'alt="'.$close_alt .'"';
+		}
 
 		$close_html = $el_class = $slidein_size_style = $close_class = '';
 
 		if( isset( $a['content_padding'] ) && $a['content_padding'] ) {
-			$el_class .= 'no-padding ';
+			$el_class .= 'cp-no-padding ';
 		}
 		$close_tooltip= $close_tooltip_end ='';
 		if( isset( $a['close_slidein'] ) && $a['close_slidein'] == "close_txt" ) {
@@ -877,14 +997,37 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 			$close_html = '<span style="color:'.$a['close_text_color'].'">'.$a['close_txt'].'</span>';
 		} else if( isset( $a['close_slidein'] ) && $a['close_slidein'] == "close_img" ){
 			$close_class .= 'cp-image-close';
-			$close_html = '<img class="'.$close_img_class.'" src="'.$close_img.'" />';
+			$close_html = '<img class="'.$close_img_class.'" src="'.$close_img.'" '.$close_alt.'/>';
 		} else {
 			$close_class = 'do_not_close';
 		}
+
+		if( isset( $a['display_close_on_duration'] ) && $a['display_close_on_duration'] && $a['close_slidein']!=='do_not_close' ) {
+
+			if( $a['toggle_btn_visible']!=='1' ){
+				$close_class  .= ' cp-hide-close';
+			}else{
+				if(isset( $a['toggle_btn'] ) && $a['toggle_btn'] == '0' && $a['toggle_btn_visible'] =='1' ){
+					$close_class  .= ' cp-hide-close';
+				}
+			}
+
+		}
+
 		//	{END} - SAME FOR BEFORE & AFTER NEED TO CREATE FUNCTION IT's TEMP
 
 		/*-- tool tip -----*/
 		$tooltip_position = 'left';
+
+		$close_adjacent_position = ( isset( $a['adjacent_close_position'] ) ? $a['adjacent_close_position'] : 'cp-adjacent-right' );
+	    if($close_adjacent_position!=''){
+		    switch( $close_adjacent_position ){
+				case 'top_left':  $tooltip_position = 'right';
+					break;
+				case 'top_right': $tooltip_position = 'left';
+					break;
+			}
+		}
 
 		$tooltip_class = $tooltip_style = '';
 		if( isset( $a['close_slidein_tooltip'] ) && $a['close_slidein_tooltip'] == 1 ) {
@@ -944,25 +1087,52 @@ if( !function_exists( "cp_slidein_global_after_init" ) ){
 
 							<?php
 							$close_overlay_class = 'cp-inside-close';
+							$close_adj_class = '';
+			    			$close_adjacent_position = ( isset( $a['adjacent_close_position'] ) ? $a['adjacent_close_position'] : 'cp-adjacent-right' );
+				      			switch( $close_adjacent_position ){
+									case 'top_left':  $close_adj_class .= ' cp-adjacent-left';
+										break;
+									case 'top_right': $close_adj_class .= ' cp-adjacent-right';
+										break;
+									case 'bottom_left': $close_adj_class .= ' cp-adjacent-bottom-left';
+										break;
+									case 'bottom_right': $close_adj_class .= ' cp-adjacent-bottom-right';
+										break;
+								}
+
+							$close_overlay_class .= $close_adj_class;
+
 							if( !$isInline ){
 							?>
 							<div class="slidein-overlay-close <?php echo esc_attr( $close_class ).' '.esc_attr( $close_overlay_class ); ?>" style="width: <?php echo esc_attr( $cp_close_image_width ); ?>">
 								<?php if( isset( $a['close_slidein_tooltip'] ) &&  $a['close_slidein_tooltip'] == 1 ) { ?>
-								<span class=" cp-tooltip-icon cp-inside-tip has-tip cp-tipcontent-<?php echo $a['style_id']; ?>" data-classes="close-tip-content-<?php echo $a['style_id']; ?>" data-position="<?php echo esc_attr( $tooltip_position );?>"  title="<?php echo esc_attr( $a['tooltip_title'] );?>"  data-color="<?php echo esc_attr( $a['tooltip_title_color'] );?>" data-bgcolor="<?php echo esc_attr( $a['tooltip_background'] );?>" data-closeid ="cp-tipcontent-<?php echo $a['style_id']; ?>">
+								<span class=" cp-tooltip-icon cp-inside-tip has-tip cp-tipcontent-<?php echo $a['style_id']; ?>" data-offset="20" data-classes="close-tip-content-<?php echo $a['style_id']; ?>" data-position="<?php echo esc_attr( $tooltip_position );?>"  title="<?php echo esc_attr( $a['tooltip_title'] );?>"  data-color="<?php echo esc_attr( $a['tooltip_title_color'] );?>" data-bgcolor="<?php echo esc_attr( $a['tooltip_background'] );?>" data-closeid ="cp-tipcontent-<?php echo $a['style_id']; ?>">
 								<?php } ?>
 								<?php echo $close_html; ?>
 								<?php if( isset( $a['close_slidein_tooltip'] ) && $a['close_slidein_tooltip'] == 1 ){ ?></span><?php } ?>
 							</div>
 							<?php } ?>
 							</div><!-- .cp-animate-container -->
+					<?php
+					if ( $edit_link !== '' ) {
+
+						$edit_link_text = 'Edit With ConvertPlug';
+
+						$edit_link_txt = apply_filters( 'cp_style_edit_link_text', $edit_link_text );
+
+					 	echo "<div class='cp_edit_link'><a target='_blank' href=".$edit_link.">".$edit_link_txt."<a></div>";
+					}
+					?>
 					</div><!-- .cp-slidein -->
+
+
 
 					 <?php if( $isInline ) { ?>
 						<span class="cp-slide_in-inline-end" data-style="<?php echo $style_id; ?>"></span>
 					<?php } ?>
 
 
-					<?php if( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == 1 ) {
+					<?php if( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == 1 && $a['close_slidein']!=='do_not_close' ) {
 						if( $a['slide_btn_gradient'] == '1' ) {
 							$slidebutton_class = 'cp-btn-gradient';
 						} else {
@@ -1001,7 +1171,7 @@ add_filter( 'cp_slidein_global_after', 'cp_slidein_global_after_init' );
 if( !function_exists('cp_si_close_image_setup') ) {
 
 	function cp_si_close_image_setup( $a ) {
-		$close_img = $close_img_class = '';
+		$close_img = $close_img_class = $close_alt ='';
 
 		if ( !isset( $a['close_si_image_src'] ) ) {
 			$a['close_si_image_src'] = 'upload_img';
@@ -1019,6 +1189,11 @@ if( !function_exists('cp_si_close_image_setup') ) {
 				    $close_img_class = 'cp-default-close';
 				} else {
 					$close_img = apply_filters('cp_get_wp_image_url', $a['close_img'] );
+					$close_img_alt =  explode( '|', $a['close_img'] );
+
+					if( sizeof($close_img_alt) > 2 ){
+						$close_alt = $close_img_alt[2];
+					}
 				}
 			}
 		} else if ( isset( $a['close_si_image_src'] ) && $a['close_si_image_src'] == 'custom_url' ) {
@@ -1031,7 +1206,8 @@ if( !function_exists('cp_si_close_image_setup') ) {
 
 		$close_img_prop = array (
 			"close_img" => $close_img,
-			"close_img_class" => $close_img_class
+			"close_img_class" => $close_img_class,
+			"close_alt" => $close_alt,
 			);
 
 		return $close_img_prop;

@@ -10,9 +10,6 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-// retrieve all grid settings
-global $tg_grid_data;
-
 // main filter global var settings
 $buttons = $tg_grid_data['filters'];
 $all_txt = $tg_grid_data['filter_all_text'];

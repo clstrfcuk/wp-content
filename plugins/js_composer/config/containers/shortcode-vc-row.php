@@ -171,6 +171,13 @@ return array(
 			'description' => sprintf( __( 'Enter row ID (Note: make sure it is unique and valid according to <a href="%s" target="_blank">w3c specification</a>).', 'js_composer' ), 'http://www.w3schools.com/tags/att_global_id.asp' ),
 		),
 		array(
+			'type' => 'checkbox',
+			'heading' => __( 'Disable row', 'js_composer' ),
+			'param_name' => 'disable_element', // Inner param name.
+			'description' => __( 'If checked the row won\'t be visible on the public side of your website. You can switch it back any time.', 'js_composer' ),
+			'value' => array( __( 'Yes', 'js_composer' ) => 'yes' ),
+		),
+		array(
 			'type' => 'textfield',
 			'heading' => __( 'Extra class name', 'js_composer' ),
 			'param_name' => 'el_class',

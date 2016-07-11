@@ -11,6 +11,8 @@ if( isset( $_GET[ 'view' ] ) && $_GET[ 'view' ] == 'smile-mailer-integrations' )
 	require_once( 'registration.php' );
 } else if( isset( $_GET['view'] ) && $_GET['view'] ==  'debug' ) {
 	require_once( 'debug.php' );
+} else if( isset( $_GET['view'] ) && $_GET['view'] ==  'knowledge_base' ) {
+	require_once( 'knowledge_base.php' );
 } else {
 	require_once('get_started.php');
 }

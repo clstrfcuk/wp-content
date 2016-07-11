@@ -116,7 +116,7 @@ if(!class_exists('Smile_Info_Bars')){
 			if(!isset($_GET['hidemenubar'])){
 				?>
 	            <script type="text/javascript" id="info-bar">
-				jQuery(window).load( function(){
+				jQuery(window).on( 'load', function(){
 					startclock();
 				});
 				function stopclock (){
@@ -176,6 +176,10 @@ if(!class_exists('Smile_Info_Bars')){
 							$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';
 
 							$display = cp_is_style_visible($settings);
+
+							// remove back slashes from settings
+							$settings = stripslashes_deep( $settings );
+
 							$settings = serialize( $settings );
 							$settings_encoded 	= base64_encode( $settings );
 						}
@@ -259,13 +263,8 @@ if(!class_exists('Smile_Info_Bars')){
 					|| ( isset($_GET['style-view']) && $_GET['style-view'] == 'new' && $hook == "convertplug_page_smile-info_bar-designer" ) ) {
 
 				wp_enqueue_style( 'smile-info-bar', plugins_url( 'assets/css/info_bar.min.css', __FILE__ ) );
-			    //wp_localize_script( 'jquery', 'cp', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ), 'module' => 'info_bar' ) );
 
-			    //wp_localize_script( 'jquery', 'info_bar', array( 'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ,
-														    	//"module_img_dir" => plugins_url( "../assets/images", __FILE__)
-														    //	) );
-
-				 wp_localize_script( 'jquery', 'cp', array(
+				wp_localize_script( 'jquery', 'cp', array(
 														'demo_dir' => plugins_url('/assets/demos', __FILE__ ) ,
 														'module' => 'info_bar',
 														"module_img_dir" => plugins_url( "/../assets/images", __FILE__)
@@ -291,6 +290,7 @@ if(!class_exists('Smile_Info_Bars')){
 			// if any style is live or info_bar is in live preview mode then only enqueue scripts and styles
 			if( $live_styles && count($live_styles) > 0 ) {
 
+				$handler ='';
 				if( isset( $data['cp-dev-mode'] ) && $data['cp-dev-mode'] == '1' ) {
 
 					// register styles
@@ -307,14 +307,13 @@ if(!class_exists('Smile_Info_Bars')){
 					wp_register_script( 'cp-info-bar-mailer-script', plugins_url( 'assets/js/mailer.js', __FILE__), array( 'jquery' ), null,
 								null, true );
 					wp_register_script( 'cp-frosty-script', plugins_url( '../../admin/assets/js/frosty.js', __FILE__), array( 'jquery' ), null, null, true );
-
 				} else {
 					wp_enqueue_style( 'smile-info-bar-style', plugins_url( 'assets/css/info_bar.min.css', __FILE__ ) );
 					wp_register_script( 'smile-info-bar-script', plugins_url( 'assets/js/info_bar.min.js', __FILE__), array( 'jquery' ));
 				}
 			}
 
-			wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+			wp_localize_script( 'smile-info-bar-script', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 		}
 	}
 
@@ -330,6 +329,17 @@ if (!function_exists('smile_info_bar_popup')) {
 		), $atts));
 		$output = '';
 		$func = 'info_bar_theme_'.$style;
+
+		$settings = base64_decode( $atts['settings_encoded'] );
+		$style_settings = unserialize( $settings );
+
+		// remove back slashes from settings
+		$settings = stripslashes_deep( $style_settings );
+
+		$settings = serialize( $settings );
+		$settings_encoded 	= base64_encode( $settings );
+		$atts['settings_encoded'] = $settings_encoded;
+
 		if( function_exists( $func ) ) {
 			$output = $func( $atts );
 		}
@@ -368,6 +378,9 @@ if (!function_exists('cp_info_bar_custom')) {
 				$style_settings[ 'display' ] = $display;
 				$style_settings['custom_class'] .= isset( $style_settings['custom_class']) ? $style_settings['custom_class'].',cp-trigger-'.$style_id : 'cp-trigger-'.$style_id;
 				$display = cp_is_style_visible($style_settings);
+
+				// remove back slashes from settings
+				$settings = stripslashes_deep( $settings );
 
 				$encode_settings = serialize( $style_settings );
 				$settings_encoded = base64_encode( $encode_settings );

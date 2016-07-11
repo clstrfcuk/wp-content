@@ -18,8 +18,9 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 	 * @param  string asset name. For example: "admin/builder"
 	 * @return string URL to asset
 	 */
-	public function js( $asset ) {
-		return $this->url( "assets/js/dist/$asset" . $this->component( 'Common' )->jsSuffix() );
+	public function js( $asset, $app = false ) {
+    $app = ( $app ) ? '-app' : '';
+		return $this->url( "assets/dist$app/js/$asset" . $this->component( 'Common' )->jsSuffix() );
 	}
 
 	/**
@@ -27,8 +28,9 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 	 * @param  string asset name. For example: "admin/builder"
 	 * @return string URL to asset
 	 */
-	public function css( $asset ) {
-		return $this->url( "assets/css/$asset.css" );
+	public function css( $asset, $app = false ) {
+    $app = ( $app ) ? '-app' : '';
+		return $this->url( "assets/dist$app/css/$asset.css" );
 	}
 
 	/**

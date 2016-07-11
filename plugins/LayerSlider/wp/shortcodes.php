@@ -203,7 +203,7 @@ class LS_Shortcode {
 		$slides = $slider['data'];
 
 		// Store generated output
-		$lsInit = ''; $lsContainer = ''; $lsMarkup = '';
+		$lsInit = array(); $lsContainer = array(); $lsMarkup = array();
 
 		// Include slider file
 		if(is_array($slides)) {

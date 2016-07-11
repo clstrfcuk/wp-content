@@ -15,7 +15,8 @@ function x_shortcode_google_map( $atts, $content = null ) {
     'zoom_control' => '',
     'height'       => '',
     'hue'          => '',
-    'no_container' => ''
+    'no_container' => '',
+    'api_key'      => ''
   ), $atts, 'x_google_map' ) );
 
   static $count = 0; $count++;
@@ -37,8 +38,15 @@ function x_shortcode_google_map( $atts, $content = null ) {
 
   $data = cs_generate_data_attributes( 'google_map', $js_params );
 
-  wp_register_script( 'vendor-google-maps', 'https://maps.googleapis.com/maps/api/js' );
-  wp_enqueue_script( 'vendor-google-maps' );
+  $script_url = 'https://maps.googleapis.com/maps/api/js';
+
+  if ( $api_key ) {
+    $api_key = esc_attr( $api_key );
+    $script_url = add_query_arg( array( 'key' => $api_key ), $script_url );
+  }
+
+  wp_register_script( 'cs-google-maps', $script_url );
+  wp_enqueue_script( 'cs-google-maps' );
 
   $output = "<div id=\"{$id}\" class=\"{$class}{$no_container}\" {$data} {$style}><div class=\"x-map-inner x-google-map-inner\" {$height}></div>" . do_shortcode( $content ) . "</div>";
 

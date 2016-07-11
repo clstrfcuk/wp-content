@@ -29,7 +29,7 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
   public function ajax_update_check() {
 
   	if ( ! current_user_can( 'update_plugins' ) ) {
-      wp_send_json_error();
+      return cs_send_json_error();
     }
 
     delete_site_transient( 'update_plugins' );
@@ -37,12 +37,12 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
     $errors = cs_tco()->updates()->get_errors();
 
     if ( empty( $errors ) ) {
-      cs_send_json_success( array(
+      return cs_send_json_success( array(
         'latest' => esc_html( $this->get_latest_version() )
       ) );
     }
 
-    cs_send_json_error( array( 'errors' => $errors ) );
+    return cs_send_json_error( array( 'errors' => $errors ) );
 
   }
 
@@ -157,6 +157,11 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 		if ( !isset( $updates['plugins'] ) ) {
 			$updates['plugins'] = array();
 		}
+
+    if ( isset( $data['error'] ) ) {
+      delete_option( 'cs_product_validation_key' );
+      delete_site_transient( 'update_plugins' );
+    }
 
 		$plugin_updates = array();
 

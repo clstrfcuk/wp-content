@@ -26,10 +26,10 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 <?php endif ?>
 
 <form action="options.php"
-      method="post"
-      id="vc_settings-<?php echo $tab ?>"
-      data-vc-ui-element="settings-tab-<?php echo $tab ?>"
-      class="<?php echo $classes ?>"
+	method="post"
+	id="vc_settings-<?php echo $tab ?>"
+	data-vc-ui-element="settings-tab-<?php echo $tab ?>"
+	class="<?php echo $classes ?>"
 	<?php echo apply_filters( 'vc_setting-tab-form-' . $tab, '' ) ?>
 >
 
@@ -41,8 +41,8 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 				<th scope="row"><?php _e( 'Guide tours', 'js_composer' ) ?></th>
 				<td>
 					<a href="#" class="button vc_pointers-reset-button"
-					   id="vc_settings-vc-pointers-reset"
-					   data-vc-done-txt="<?php _e( 'Done', 'js_composer' ) ?>"><?php _e( 'Reset', 'js_composer' ) ?></a>
+						id="vc_settings-vc-pointers-reset"
+						data-vc-done-txt="<?php _e( 'Done', 'js_composer' ) ?>"><?php _e( 'Reset', 'js_composer' ) ?></a>
 
 					<p
 						class="description indicator-hint"><?php _e( 'Guide tours are shown in VC editors to help you to start working with editors. You can see them again by clicking button above.', 'js_composer' ) ?></p>
@@ -64,7 +64,7 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 	<?php endif ?>
 
 	<input type="hidden" name="vc_action" value="vc_action-<?php echo $tab; ?>"
-	       id="vc_settings-<?php echo $tab; ?>-action"/>
+		id="vc_settings-<?php echo $tab; ?>-action"/>
 
 	<?php if ( 'color' === $tab ) : ?>
 		<a href="#" class="button vc_restore-button" id="vc_settings-color-restore-default">
@@ -93,7 +93,7 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 					</button>
 
 					<img src="<?php echo get_admin_url() ?>/images/wpspin_light.gif" class="vc_updater-spinner"
-					     id="vc_updater-spinner" width="16" height="16" alt="spinner"/>
+						id="vc_updater-spinner" width="16" height="16" alt="spinner"/>
 				</p>
 
 			<?php else: ?>
@@ -114,7 +114,7 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 					</button>
 
 					<img src="<?php echo get_admin_url() ?>/images/wpspin_light.gif" class="vc_updater-spinner"
-					     id="vc_updater-spinner" width="16" height="16" alt="spinner"/>
+						id="vc_updater-spinner" width="16" height="16" alt="spinner"/>
 				</p>
 
 				<p class="description">

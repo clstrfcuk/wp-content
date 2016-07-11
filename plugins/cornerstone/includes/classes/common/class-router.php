@@ -13,7 +13,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 	protected $errors = array();
 	protected $fatal_error = false;
 	protected $routes = array();
-	protected $nonce_verification = true;
+	protected $nonce_verification = false;
 
 	/**
 	 * Instantiate and register AJAX handlers
@@ -34,10 +34,13 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 	}
 
 	/**
-	 * Attach hooke
-	 * @return [type] [description]
+	 * Attach hooks to both endpoints
+	 * @return none
 	 */
 	public function register_routes() {
+
+    // Add special controllers route
+    $this->routes['controllers'] = array( 'Router', 'controllers' );
 
 		foreach ( $this->routes as $action => $route ) {
 
@@ -83,7 +86,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 		$json = $this->get_json();
 
 		if ( ! $this->nonce_verification ) {
-			cs_send_json_error( array( 'message' => 'nonce verification failed.' ) );
+			return cs_send_json_error( array( 'message' => 'nonce verification failed.' ) );
 		}
 
 		return call_user_func( $handler, $json );
@@ -295,7 +298,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 			$this->errors[] = $type . ': ' . $errno['message'] . ' in ' . $errno['file'] . ' on line ' . $errno['line'] . '.';
 			$this->fatal_error = true;
 
-			cs_send_json_error();
+			return cs_send_json_error();
 
 		}
 
@@ -317,7 +320,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 			delete_option( 'cs_legacy_ajax' );
 		}
 
-		cs_send_json_success();
+		return cs_send_json_success();
 
 	}
 
@@ -420,19 +423,8 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 	 */
 	public function endpoint_available() {
 
-		if ( is_multisite() || $this->use_legacy_ajax() ) {
+		if ( is_multisite() || $this->use_legacy_ajax() || !$this->is_permalink_structure_valid() ) {
 			return false;
-		}
-
-		$structure = get_option( 'permalink_structure' );
-
-		// Permalinks disabled
-		if ( ! $structure ) {
-			return false;
-		}
-
-		if ( false !== strpos( $structure, 'index.php' ) ) {
-			return false; // Don't support PATHINFO rules
 		}
 
 		$rules = get_option( 'rewrite_rules' );
@@ -466,5 +458,92 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 		return false;
 
 	}
+
+  /**
+   * Check if the WordPress permalink settings will meet our needs.
+   * @return boolean
+   */
+  public function is_permalink_structure_valid() {
+
+    $structure = get_option( 'permalink_structure' );
+
+    // Permalinks disabled
+    if ( ! $structure ) {
+      return false;
+    }
+
+    // Don't support PATHINFO rules
+    if ( false !== strpos( $structure, 'index.php' ) ) {
+      return false;
+    }
+
+    return true;
+
+  }
+
+  public function controllers( $json ) {
+
+    if ( !isset( $json['actions' ] ) ) {
+      return cs_send_json_error( array( 'message' => 'No actions provided.' ) );
+    }
+
+    $response = array();
+
+    foreach ( $json['actions' ] as $action ) {
+      $params = ( isset($action['params']) && is_array( $action['params']) ) ? $action['params'] : array();
+
+      $action_response = $this->get_aggregate_response( $action['name'], $params );
+
+      $action_response_data = array( 'name' => $action['name'] );
+
+      if ( is_wp_error( $action_response ) ) {
+        $action_response_data['data'] = array( 'message' => $action_response->get_error_message() );
+        $action_response_data['success'] = false;
+      } else {
+        $action_response_data['success'] = true;
+        $action_response_data['data'] = $action_response;
+      }
+
+      $response[] = $action_response_data;
+    }
+
+    return cs_send_json_success( $response );
+
+  }
+
+  public function get_aggregate_response( $action, $params ) {
+
+    try {
+
+      $controller_method = explode( '::', $action );
+      if ( ! isset( $controller_method[0] ) && ! isset( $controller_method[1] ) ) {
+        throw new Exception( 'Invalid controller request.' );
+      }
+
+      $component_name = 'Controller_' . cs_to_component_name( $controller_method[0] );
+      $controller = $this->plugin->loadComponent( $component_name );
+
+      if ( ! $controller ) {
+        throw new Exception( "Requested controller '$component_name' is not registered." );
+      }
+
+      $method = array( $controller, strtolower( $controller_method[1] ) );
+      if ( ! is_callable( $method ) ) {
+        throw new Exception( "Requested method '$component_name::" . $controller_method[1] . "' is not registered." );
+      }
+
+      $result = call_user_func_array( $method, array( $params ) );
+
+      if ( is_wp_error( $result ) ) {
+        throw new Exception( $result->get_error_message() );
+      }
+
+      return $result;
+
+    } catch ( Exception $e ) {
+      return new WP_Error( 'cornerstone_router', $e->getMessage() );
+    }
+
+  }
 
 }

@@ -47,9 +47,6 @@
 	-webkit-transform: matrix(1,0,0,1,0,0) !important;
 	-moz-transform: matrix(1,0,0,1,0,0) !important;
 }
-.sofia .mejs-overlay-play {
-	display: none !important;
-}
 .sofia .tg-item-image {
 	outline: 1px solid transparent !important;
 }

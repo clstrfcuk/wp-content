@@ -161,9 +161,6 @@
 	pointer-events: none;
 	opacity: 0 !important;
 }
-.lima .mejs-overlay-play {
-	display: none !important;
-}
 .lima .tg-item-excerpt {
 	position: relative;
 	display: block;

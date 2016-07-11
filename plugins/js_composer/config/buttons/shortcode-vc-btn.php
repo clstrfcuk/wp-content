@@ -76,7 +76,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'gradient' ),
 		),
-		'edit_field_class' => 'vc_col-sm-6 vc_column',
+		'edit_field_class' => 'vc_col-sm-6',
 	),
 	array(
 		'type' => 'dropdown',
@@ -91,7 +91,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'gradient' ),
 		),
-		'edit_field_class' => 'vc_col-sm-6 vc_column',
+		'edit_field_class' => 'vc_col-sm-6',
 	),
 	array(
 		'type' => 'colorpicker',
@@ -104,7 +104,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'gradient-custom' ),
 		),
-		'edit_field_class' => 'vc_col-sm-4 vc_column',
+		'edit_field_class' => 'vc_col-sm-4',
 	),
 	array(
 		'type' => 'colorpicker',
@@ -117,7 +117,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'gradient-custom' ),
 		),
-		'edit_field_class' => 'vc_col-sm-4 vc_column',
+		'edit_field_class' => 'vc_col-sm-4',
 	),
 	array(
 		'type' => 'colorpicker',
@@ -131,7 +131,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'gradient-custom' ),
 		),
-		'edit_field_class' => 'vc_col-sm-4 vc_column',
+		'edit_field_class' => 'vc_col-sm-4',
 	),
 	array(
 		'type' => 'colorpicker',
@@ -142,7 +142,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'custom' ),
 		),
-		'edit_field_class' => 'vc_col-sm-6 vc_column',
+		'edit_field_class' => 'vc_col-sm-6',
 		'std' => '#ededed',
 	),
 	array(
@@ -154,7 +154,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'custom' ),
 		),
-		'edit_field_class' => 'vc_col-sm-6 vc_column',
+		'edit_field_class' => 'vc_col-sm-6',
 		'std' => '#666',
 	),
 	array(
@@ -166,7 +166,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'outline-custom' ),
 		),
-		'edit_field_class' => 'vc_col-sm-4 vc_column',
+		'edit_field_class' => 'vc_col-sm-4',
 		'std' => '#666',
 	),
 	array(
@@ -178,7 +178,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'outline-custom' ),
 		),
-		'edit_field_class' => 'vc_col-sm-4 vc_column',
+		'edit_field_class' => 'vc_col-sm-4',
 		'std' => '#666',
 	),
 	array(
@@ -190,7 +190,7 @@ $params = array_merge( array(
 			'element' => 'style',
 			'value' => array( 'outline-custom' ),
 		),
-		'edit_field_class' => 'vc_col-sm-4 vc_column',
+		'edit_field_class' => 'vc_col-sm-4',
 		'std' => '#fff',
 	),
 	array(
@@ -313,6 +313,22 @@ $params = array_merge( array(
 			'heading' => __( 'Extra class name', 'js_composer' ),
 			'param_name' => 'el_class',
 			'description' => __( 'Style particular content element differently - add a class name and refer to it in custom CSS.', 'js_composer' ),
+		),
+		array(
+			'type' => 'checkbox',
+			'heading' => __( 'Advanced on click action', 'js_composer' ),
+			'param_name' => 'custom_onclick',
+			'description' => __( 'Insert inline onclick javascript action.', 'js_composer' ),
+		),
+		array(
+			'type' => 'textfield',
+			'heading' => __( 'On click code', 'js_composer' ),
+			'param_name' => 'custom_onclick_code',
+			'description' => __( 'Enter onclick action code.', 'js_composer' ),
+			'dependency' => array(
+				'element' => 'custom_onclick',
+				'not_empty' => true,
+			),
 		),
 		array(
 			'type' => 'css_editor',

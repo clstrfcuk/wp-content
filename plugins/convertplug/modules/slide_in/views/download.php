@@ -50,6 +50,7 @@ if( $data_style !== "" ) {
 
 				$close_image = isset( $style_settings['close_img'] ) ? $style_settings['close_img'] : '' ;
 				$bg_image = isset( $style_settings['slide_in_bg_image'] ) ? $style_settings['slide_in_bg_image'] : '';
+				$slidein_image = isset( $style_settings['slidein_image'] ) ? $style_settings['slidein_image'] : '';
 
 				if( $hasVariants ) {
 					foreach($variant_tests[$data_style] as $variant) {
@@ -111,6 +112,30 @@ if( $data_style !== "" ) {
 			copy( $bg_image, $dir.'/'.$bg_image_name );
 
 			$media['slide_in_bg_image'] = $dir.'/'.$bg_image_name;
+		}
+
+	}
+
+	if( $slidein_image !== "" )
+	{
+		if ( ( isset( $style_settings['slidein_image_src'] ) && $style_settings['slidein_image_src'] == 'upload_img'  )
+			|| !isset( $style_settings['slidein_image_src'] ) )  {
+
+			$slidein_image = str_replace( "%7C", "|", $slidein_image );
+			if (strpos($slidein_image,'http') !== false) {
+				$slidein_image = explode( '|', $slidein_image );
+				$slidein_image = $slidein_image[0];
+				$slidein_image = urldecode( $slidein_image );
+			} else {
+				$slidein_image = explode("|", $slidein_image);
+				$slidein_image = wp_get_attachment_image_src($slidein_image[0],$slidein_image[1]);
+				$slidein_image = $slidein_image[0];
+			}
+
+			$slidein_image_name = basename( $slidein_image );
+			copy( $slidein_image, $dir.'/'.$slidein_image_name );
+
+			$media['slidein_image'] = $dir.'/'.$slidein_image_name;
 		}
 
 	}

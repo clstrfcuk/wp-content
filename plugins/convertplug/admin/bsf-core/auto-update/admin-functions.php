@@ -110,6 +110,8 @@ if(!function_exists('bsf_register_product_callback')) {
 				if($type === 'theme') {
 					delete_option('brainstrom_bundled_products');
 					delete_site_transient('bsf_get_bundled_products');
+					global $ultimate_referer;
+					$ultimate_referer = 'on-register-product';
 					bsf_check_product_update();
 				}
 				$brainstrom_products[$type.'s'][$product_key]['step'] = 'step-all-success';
@@ -339,6 +341,8 @@ if(!function_exists('bsf_register_user_callback')) {
 
 				update_option('brainstrom_users', $brainstrom_users);
 
+				global $ultimate_referer;
+				$ultimate_referer = 'on-user-register';
 				bsf_check_product_update();
 			}
 			echo json_encode($result);

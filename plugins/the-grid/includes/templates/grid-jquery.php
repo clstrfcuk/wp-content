@@ -10,9 +10,6 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-// retrieve all grid settings
-global $tg_grid_data;
-
 // Cornerstone live builder mode
 if (isset($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], 'action=cs_render_element') !== false) {
 	$ID = $tg_grid_data['ID'];

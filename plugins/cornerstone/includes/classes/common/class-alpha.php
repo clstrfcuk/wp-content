@@ -7,7 +7,7 @@
 class Cornerstone_Alpha extends Cornerstone_Plugin_Component {
 
 	public function setup() {
-
+    add_filter( '_cornerstone_alpha', '__return_true' );
 		add_filter( 'cornerstone_config_builder_keybindings', array( $this, 'keybindings' ) );
 		add_filter( 'cornerstone_config_data', array( $this, 'builder_config' ) );
 		add_action( 'cornerstone_load_builder', array( $this, 'load_builder' ) );

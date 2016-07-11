@@ -10,20 +10,21 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-// retrieve all grid settings
-global $tg_grid_data;
+$tg_area_elements = $tg_grid_data['area_right_elements'];
 
-$elements = $tg_grid_data['area_right_elements'];
+if (!empty($tg_area_elements)) {
 
-$area  = '<!-- The Grid Area Right -->';
-$area .= '<div class="tg-grid-area-right">';
-	$area .= '<div class="tg-grid-area-inner">';
-		$area .= '<div class="tg-grid-area-wrapper">';
-			foreach($elements as $element) {
-				$area .= $element;
-			}
+	$area  = '<!-- The Grid Area Right -->';
+	$area .= '<div class="tg-grid-area-right">';
+		$area .= '<div class="tg-grid-area-inner">';
+			$area .= '<div class="tg-grid-area-wrapper">';
+				foreach($tg_area_elements as $tg_area_element) {
+					$area .= $tg_area_element;
+				}
+			$area  .= '</div>';
 		$area  .= '</div>';
-	$area  .= '</div>';
-$area .= '</div>';
+	$area .= '</div>';
 	
-echo $area;
+	echo $area;
+
+}

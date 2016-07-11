@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<ruleset name="Cornerstone">
+  <description>Cornerstone PHP linting based on WordPress Core standards</description>
+
+  <exclude-pattern>/vendor/*</exclude-pattern>
+
+  <rule ref="WordPress-Extra">
+
+    <exclude name="WordPress.WhiteSpace.ControlStructureSpacing" />
+    <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
+    <exclude name="Generic.WhiteSpace.ScopeIndent" />
+    <exclude name="WordPress.Arrays.ArrayDeclaration" /> <!-- Doesn't like multi-level associative arrays -->
+    <exclude name="WordPress.XSS.EscapeOutput" />
+  </rule>
+
+</ruleset>

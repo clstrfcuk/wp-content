@@ -63,7 +63,8 @@ class CS_Settings_General {
 		$settings = array();
 
 		if ( isset( $this->manager->post_meta['_cornerstone_settings'] ) ) {
-			$settings = maybe_unserialize( $this->manager->post_meta['_cornerstone_settings'][0] );
+			$settings = cs_maybe_json_decode( maybe_unserialize( $this->manager->post_meta['_cornerstone_settings'][0] ) );
+			$settings = ( is_array( $settings ) ) ? $settings : array();
 		}
 
 		if ( 'custom_css' === $key && isset( $settings['custom_css'] ) ) {
@@ -179,7 +180,8 @@ class CS_Settings_General {
 	public function handler( $data ) {
 
 		global $post;
-		$settings = get_post_meta( $post->ID, '_cornerstone_settings', true );
+		$settings = CS()->common()->get_post_settings( $post->ID );
+
 		$update = array();
 
 		if ( isset( $data['post_title'] ) ) {
@@ -235,7 +237,7 @@ class CS_Settings_General {
 			$settings['custom_js_mini'] = $minified;
 
 		}
-
+		//jsond( $settings);
 		if ( ! empty( $update ) ) {
 
 			$update['ID'] = $post->ID;
@@ -247,7 +249,7 @@ class CS_Settings_General {
 
 		}
 
-		update_post_meta( $post->ID, '_cornerstone_settings', $settings );
+		cs_update_serialized_post_meta( $post->ID, '_cornerstone_settings', $settings );
 
 	}
 

@@ -75,6 +75,87 @@ function cornerstone_unregister_integration( $name ) {
 	CS()->component( 'Integration_Manager' )->unregister( $name );
 }
 
+/**
+ * Provide Cornerstone with data and a template loader so styles can be dynamically
+ * generated. Should be used before `wp_head`, preferably in `template_redirect`
+ * @param  array    $header          Header data object
+ * @param  string   $class_prefix    CSS prefix to place before each id.
+ * @param  function $template_loader Callback that will return template markup
+ * @return none
+ */
+function cornerstone_setup_header_styles( $header, $class_prefix, $template_loader ) {
+  $headers = CS()->loadComponent( 'Headers' );
+  if ( $headers ) {
+    $headers->add_styling( $header, $class_prefix, $template_loader );
+  }
+}
+
+function cornerstone_options_register_option( $name, $default_value = null, $options = array() ) {
+  $options_bootstrap = CS()->loadComponent( 'Options_Bootstrap' );
+  $options_bootstrap->register_option( $name, $default_value, $options );
+}
+
+function cornerstone_options_register_options( $group, $options = array() ) {
+  $options_bootstrap = CS()->loadComponent( 'Options_Bootstrap' );
+  $options_bootstrap->register_options( $group, $options );
+}
+
+function cornerstone_options_get_defaults() {
+  return CS()->loadComponent( 'Options_Bootstrap' )->get_defaults();
+}
+
+function cornerstone_options_get_default( $name ) {
+  return CS()->loadComponent( 'Options_Bootstrap' )->get_default( $name );
+}
+
+function cornerstone_options_get_value( $name ) {
+  return CS()->loadComponent( 'Options_Bootstrap' )->get_value( $name );
+}
+
+function cornerstone_options_update_value( $name, $value ) {
+  return CS()->loadComponent( 'Options_Bootstrap' )->update_value( $name, $value );
+}
+
+function cornerstone_options_register_section( $name, $value = array() ) {
+  return CS()->loadComponent( 'Options_Manager' )->register_section( $name, $value );
+}
+
+function cornerstone_options_register_sections( $groups ) {
+  return CS()->loadComponent( 'Options_Manager' )->register_sections( $groups );
+}
+
+function cornerstone_options_register_control( $option_name, $control ) {
+  return CS()->loadComponent( 'Options_Manager' )->register_control( $option_name, $control );
+}
+
+function cornerstone_options_unregister_option( $name ) {
+  return CS()->loadComponent( 'Options_Bootstrap' )->unregister_option( $name );
+}
+
+function cornerstone_options_unregister_section( $name ) {
+  return CS()->loadComponent( 'Options_Manager' )->unregister_section( $name );
+}
+
+function cornerstone_options_unregister_control( $option_name ) {
+  return CS()->loadComponent( 'Options_Manager' )->unregister_control( $option_name );
+}
+
+function cornerstone_options_enable_custom_css( $option_name ) {
+  return CS()->loadComponent( 'Options_Manager' )->enable_custom_css( $option_name );
+}
+
+function cornerstone_options_enable_custom_js( $option_name ) {
+  return CS()->loadComponent( 'Options_Manager' )->enable_custom_js( $option_name );
+}
+
+/**
+ * Returns the styling created by cornerstone_setup_header_styles
+ * @return string
+ */
+function cornerstone_get_header_styles() {
+  $headers = CS()->component( 'Headers' );
+  return ( $headers ) ? $headers->get_styles() : '';
+}
 
 /**
  * Deprecated

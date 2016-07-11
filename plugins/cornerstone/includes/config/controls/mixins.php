@@ -12,7 +12,7 @@ return array(
 			'title' => __( 'ID', 'cornerstone' ),
 			'tooltip' => __( 'Add an ID to this element so you can target it with your own customizations.', 'cornerstone' ),
 		),
-		'options' => array( 'monospace' => true, 'advanced' => true )
+		'options' => array( 'monospace' => true )
 	),
 
 	//
@@ -25,7 +25,7 @@ return array(
 			'title' => __( 'Class', 'cornerstone' ),
 			'tooltip' => __( 'Add custom classes to this element. Multiple classes should be seperated by spaces. They will be added at the root level element.', 'cornerstone' ),
 		),
-		'options' => array( 'monospace' => true, 'advanced' => true )
+		'options' => array( 'monospace' => true )
 	),
 
   //
@@ -38,7 +38,7 @@ return array(
 			'title' => __( 'Style', 'cornerstone' ),
 			'tooltip' => __( 'Add an inline style to this element. This only contain valid CSS rules with no selectors or braces.', 'cornerstone' ),
 		),
-		'options' => array( 'monospace' => true, 'advanced' => true )
+		'options' => array( 'monospace' => true )
 	),
 
   //

@@ -485,7 +485,7 @@ if( function_exists( "smile_update_settings" ) ) {
 			"class" 		=> "",
 			"name" 			=> "load_on_duration",
 			"opts"			=> array(
-				"title" 		=> __( "After Few Seconds", "smile" ),
+				"title" 		=> __( "Load After Seconds", "smile" ),
 				"value" 		=> 1,
 				"min" 			=> 0.1,
 				"max" 			=> 100,
@@ -610,8 +610,35 @@ if( function_exists( "smile_update_settings" ) ) {
             "section_icon" => "connects-icon-toggle",
             "dependency" => array('name' => 'enable_display_inline', 'operator' => '==', 'value' => 'true')
         ),
-
-
+        array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "enable_custom_scroll",
+			"opts"		=> array(
+				"title" 	=> __( "After Scroll To Certain ID / Class", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "Inof Bar will be triggered when user scrolls to certain css class or id.", "smile" ),
+			),
+			"panel" 	=> "Smart Launch",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "enable_scroll_class",
+			"opts"		=> array(
+				"title" 		=> __( "Enter Class Name/Id", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter CSS Class / ID <br/>[ You can enter multiple values here by separating with comma. Class name should start with '.' & id name should start with '#', example => #id, .class ]", "smile" ),
+			),
+			"panel" => "Smart Launch",
+            "section" => "Behavior",
+            "section_icon" => "connects-icon-toggle",
+            "dependency" => array('name' => 'enable_custom_scroll', 'operator' => '==', 'value' => 'true')
+		),
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -1015,6 +1042,38 @@ if( function_exists( "smile_update_settings" ) ) {
 			"section_icon" => "connects-icon-disc",
 		),
 		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "on_redirect",
+			"opts" 		=> array(
+				"title" 	=> __( "Redirect User To","smile"),
+				"value" 	=> "message",
+				"options" 	=> array(
+						__( "Same Tab", "smile" ) 		=> "self",
+						//__( "New Tab", "smile" ) 		=> "blank",
+						__( "Download File", "smile" ) 	=> "download",
+					)
+				),
+			"panel" => "Form Setup",
+			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'redirect'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		/*array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "download_url",
+			"opts"		=> array(
+				"title" 		=> __( "Download URL", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter the URL where you would like to download the file after successfully added to the list.<br/><br/> Please add http / https prefix to URL. e.g. http://convertplug.com", "smile" ),
+			),
+			"panel" 	=> "Form Setup",
+			"dependency" => array('name' => 'on_redirect', 'operator' => '==', 'value' => 'download'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),*/
+		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
 			"name" 		=> "redirect_data",
@@ -1031,13 +1090,13 @@ if( function_exists( "smile_update_settings" ) ) {
 			"section_icon" => "connects-icon-disc",
 		),
 		array(
-			"type" 		=> "textfield",
+			"type" 		=> "textarea",
 			"class" 	=> "",
 			"name" 		=> "success_message",
 			"opts"		=> array(
 				"title" 		=> __( "Message After Success", "smile" ),
 				"value" 		=> __( 'Thank you.', 'smile' ),
-				"description" 	=> __( "Enter the message you would like to display the user after successfully added to the list.", "smile" ),
+				"description" 	=> __( "Enter the message you would like to display the user after successfully added to the list.<br/>This input field supports HTML too.", "smile" ),
 			),
 			"panel" 	=> "Form Setup",
 			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'message'),
@@ -1058,14 +1117,84 @@ if( function_exists( "smile_update_settings" ) ) {
 			"section" => "Submission",
 			"section_icon" => "connects-icon-disc",
 		),
+		//infobar close After form submission Options
+ 		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "form_action_on_submit",
+			"opts" 		=> array(
+				"title" 	=> __( "Action After Submission","smile"),
+				"value" 	=> "do_nothing",
+				"options" 	=> array(
+						__( "Reappear Form", "smile" ) 		=> "reappear",
+						__( "Hide Form", "smile" ) 			=> "disappears",
+						__( "Do Nothing", "smile" ) 		=> "do_nothing",
+					),
+				"description" 	=> __( "Select how your Info Bar behaves after successful form submission.", "smile" ),
+				),
+			"panel" => "Form Setup",
+			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'message'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
 		array(
-			"type" 		=> "textfield",
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "form_reappear_time",
+			"opts"			=> array(
+				"title" 		=> __( "Reappear Form After 'x' Seconds of Submission", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "s",
+				"description" 	=> __( "Reappear form after successful form submission.", "smile" ),
+			),
+			"panel" => "Form Setup",
+			"dependency"	=> array("name" => "form_action_on_submit", "operator" => "==", "value" => "reappear"),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "form_disappears_time",
+			"opts"			=> array(
+				"title" 		=> __( "Hide Info Bar After 'x' Seconds of Submission", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "s",
+				"description" 	=> __( "Hide Info Bar after successful form submission.", "smile" ),
+			),
+			"panel" => "Form Setup",
+			"dependency"	=> array("name" => "form_action_on_submit", "operator" => "==", "value" => "disappears"),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		//fail submission
+		array(
+			"type" 		=> "section",
+			"class" 	=> "",
+			"name" 		=> "msg_on_fail_submission",
+			"opts"		=> array(
+				"title" 		=> __( "Failed Submission", "smile" ),
+				"value" 		=> "",
+			),
+			"panel" 	=> "Form Setup",
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+			"dependency"	=> array("name" => "mailer", "operator" => "!=", "value" => "custom-form"),
+		),
+		array(
+			"type" 		=> "textarea",
 			"class" 	=> "",
 			"name" 		=> "msg_wrong_email",
 			"opts"		=> array(
 				"title" 		=> __( "Failed Submission", "smile" ),
 				"value" 		=> __( "Please enter correct email address.", "smile" ),
-				"description" 	=> __( "Enter the message you would like to display the user for invalid email address.", "smile" ),
+				"description" 	=> __( "Enter the message you would like to display the user for invalid email address.<br/>This input field supports HTML too.", "smile" ),
 			),
 			"panel" 	=> "Form Setup",
 			"section" => "Submission",
@@ -1276,8 +1405,7 @@ $animation = array(
 				"options" 	=> array(
 						__( "Custom URL", "smile" ) 	 => "custom_url",
 						__( "Upload Image", "smile" ) 	 => "upload_img",
-						__( "Predefined Icons", "smile" ) => "pre_icons",
-						//__( "None", "smile" ) 	 		 => "none",
+						__( "Predefined Icons", "smile" ) => "pre_icons"
 					)
 				),
 			"panel" => "Close Link",
@@ -1293,14 +1421,14 @@ $animation = array(
                 "value" => 'default',
                 "width" => '80px',
                 "options" => array(
-                    "black"         => plugins_url( '../../assets/images/black.png', __FILE__ ),
-                    "blue_final"    => plugins_url( '../../assets/images/blue_final.png', __FILE__ ),
-                    "circle_final"  => plugins_url( '../../assets/images/circle_final.png', __FILE__ ),
-                    "default"    	=> plugins_url( '../../assets/images/default.png', __FILE__ ),
-                    "grey_close"  	=> plugins_url( '../../assets/images/grey_close.png', __FILE__ ),
-                    "red02" 		=> plugins_url( '../../assets/images/red02.png', __FILE__ ),
-                    "red2_close"    => plugins_url( '../../assets/images/red2_close.png', __FILE__ ),
-                    "white20"       => plugins_url( '../../assets/images/white20_bb.png', __FILE__ ),
+                     "black"        => CP_BASE_URL . 'modules/assets/images/black.png',
+                    "blue_final"    => CP_BASE_URL . 'modules/assets/images/blue_final.png',
+                    "circle_final"  => CP_BASE_URL . 'modules/assets/images/circle_final.png',
+                    "default"    	=> CP_BASE_URL . 'modules/assets/images/default.png',
+                    "grey_close"  	=> CP_BASE_URL . 'modules/assets/images/grey_close.png',
+                    "red02" 		=> CP_BASE_URL . 'modules/assets/images/red02.png',
+                    "rounded_black"    => CP_BASE_URL . 'modules/assets/images/rounded_black.png',
+                    "white20"       => CP_BASE_URL . 'modules/assets/images/white20_bb.png'
                 ),
 				"imagetitle" => array(
 					__( "title-0", "smile" ) 	=> "Black",
@@ -1403,6 +1531,60 @@ $animation = array(
 			),
 			"panel" 		=> "Close Link",
 			"dependency" => array('name' => 'close_info_bar', 'operator' => '==', 'value' => 'close_img' , 'name' => 'close_ib_image_src','operator' => '!=', 'value' => 'none'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "adjacent_close_position",
+			"opts" 		=> array(
+				"title" 	=> __( "Close Image Position","smile"),
+				"value" 	=> "top_right",
+				"options" 	=> array(
+						__( "Top Left", "smile" ) 		=> "top_left",
+						__( "Top Right", "smile" ) 		=> "top_right",
+						//__( "Bottom Left", "smile" ) 	=> "bottom_left",
+						//__( "Bottom Right", "smile" )   => "bottom_right"
+					),
+				"description" 	=> __( "Choose position for close button.", "smile" ),
+				),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'close_info_bar', 'operator' => '!=', 'value' => 'do_not_close'),
+		),
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "display_close_on_duration",
+			"opts"		=> array(
+				"title" 	=> __( "Display Close After Few Seconds", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "If enabled, close image / text will display after few seconds.", "smile" ),
+			),
+			"dependency" => array('name' => 'close_info_bar', 'operator' => '!=', 'value' => 'do_not_close'),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "close_btn_duration",
+			"opts"			=> array(
+				"title" 		=> __( "Display After Seconds", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 1,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "Sec",
+				"description" 	=> __( "How long the close image / text to be displayed after Info Bar is loaded? (value in seconds).", "smile" ),
+			),
+			"dependency" => array('name' => 'display_close_on_duration', 'operator' => '==', 'value' => 'true'),
+			"panel" => "Close Link",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 		),
@@ -1552,6 +1734,55 @@ $animation = array(
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
 		),
+		//	InfoBar Auto close Options
+ 		array(
+			"type" 		=> "section",
+			"class" 	=> "",
+			"name" 		=> "infobar_auto_close_section",
+			"opts"		=> array(
+				"title" 		=> __( "Auto Close Module", "smile" ),
+				"value" 		=> "",
+			),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency"	=> array("name" => "toggle_btn", "operator" => "!=", "value" => true ),
+		),
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "autoclose_on_duration",
+			"opts"		=> array(
+				"title" 	=> __( "Autoclose Module", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "If enabled, Info Bar will close automatically after 'x' seconds when user is inactive on webpage.", "smile" ),
+			),
+			"dependency"	=> array("name" => "toggle_btn", "operator" => "!=", "value" => true ),
+			"panel" 	=> "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "close_module_duration",
+			"opts"			=> array(
+				"title" 		=> __( "Autoclose Duration", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0.1,
+				"max" 			=> 100,
+				"step" 			=> 0.1,
+				"suffix" 		=> "Sec",
+				"description" 	=> __( "How long the Info Bar should take to be close after its loaded? (value in seconds).", "smile" ),
+			),
+			"dependency" => array('name' => 'autoclose_on_duration', 'operator' => '==', 'value' => '1'),
+			"panel" 	=> "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+
 	);
 
 	$ib_content = array(
@@ -2058,8 +2289,8 @@ if( function_exists( "smile_update_default" ) ){
 		"form_input_align"			=> "left",
 		"form_submit_align" 		=> "cp-submit-wrap-full",
 		"form_grid_structure"		=> "cp-form-grid-structure-1",
-		"form_input_font_size"		=> 14,
-		"form_input_padding_tb"		=> 10,
+		"form_input_font_size"		=> 13,
+		"form_input_padding_tb"		=> 8,
 		"form_input_padding_lr"		=> 15,
 		"bg_color"	    		 	=> "#ffffff",
 		"infobar_height"		 	=> 80,
@@ -2070,8 +2301,7 @@ if( function_exists( "smile_update_default" ) ){
 		"button_bg_color"		 	=> "#db6d2c",
 		"button_border_color"	 	=> "#db6d2c",
 		"bg_gradient"			 	=> false,
-		"image_displayon_mobile" 	=> true
-
+		"image_displayon_mobile" 	=> true,
 	);
 	foreach( $image_preview_default as $option => $value ){
 		smile_update_default( "Smile_Info_Bars", "image_preview", $option, $value );
@@ -2103,7 +2333,7 @@ if( function_exists( "smile_update_default" ) ){
 		"placeholder_text"		 	=> __( "Your Email", "smile" ),
 		"image_size"			 	=> 120,
 		"image_displayon_mobile" 	=> true,
-		"info_bar_image" 		 	=> plugins_url('../assets/img/CP_Product_Box_Mockup.png', __FILE__ ),
+		"info_bar_image" 		 	=> CP_BASE_URL . 'modules/info_bar/assets/img/CP_Product_Box_Mockup.png',
 		"infobar_position" 		 	=> "cp-pos-bottom",
 		"close_info_bar"		 	=> "do_not_close",
 		"entry_animation"		 	=> "smile-slideInUp",
@@ -2123,7 +2353,7 @@ if( function_exists( "smile_update_default" ) ){
 		"form_submit_align" 		=> "cp-submit-wrap-full",
 		"form_grid_structure"		=> "cp-form-grid-structure-1",
 		"form_input_font_size"		=> 15,
-		"form_input_padding_tb"		=> 8,
+		"form_input_padding_tb"		=> 9,
 		"form_input_padding_lr"		=> 10,
 		"submit_button_tb_padding"	=> 10,
 		"submit_button_lr_padding"	=> 20,
@@ -2139,7 +2369,7 @@ if( function_exists( "smile_update_default" ) ){
 		"infobar_width"				=> "1600",
 		"bg_gradient"				=> false,
 		"namefield"					=> true,
-		"info_bar_image" 			=> plugins_url('../assets/img/hellobar.png', __FILE__ ),
+		"info_bar_image" 			=> CP_BASE_URL . 'modules/info_bar/assets/img/hellobar.png',
 		"image_size" 				=> "50",
 	);
 	foreach( $weekly_article_optin_default as $option => $value ){

@@ -56,7 +56,7 @@
 .cp-social-inline-share .cp-sec-title{
     font-size: 15px;
 }
-.cp-social-inline-share.no-padding .cp-row.cp-row-center {
+.cp-social-inline-share.cp-no-padding .cp-row.cp-row-center {
     margin: 0 -15px;
 }
 .cp-social-inline-share .cp_social_autowidth.cp-no-spacing {
@@ -136,3 +136,17 @@
 
 }
 
+@media only screen and (max-width: 768px){
+    .cp-social-inline-share .cp_social_autowidth.cp_social_networks li:nth-child(n) {
+        margin: 0% 5px 5px 5px!important;
+    } 
+    .cp-social-inline-share .cp-auto-column .cp_social_networks .cp_social_icons_container {
+        margin-bottom: 0px!important;
+    }
+    .cp-social-inline-share  .cp-auto-column .cp_social_autowidth.cp_social_networks li:nth-child(n) {
+        margin: 5px 5px 5px 5px!important;
+    } 
+    .cp-social-inline-share .cp_social_media_wrapper.cp-auto-column {
+        margin: 0;
+    }
+}

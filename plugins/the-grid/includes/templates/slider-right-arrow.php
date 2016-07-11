@@ -9,9 +9,6 @@
 if (!defined('ABSPATH')) { 
 	exit;
 }
-
-// retrieve all grid settings
-global $tg_grid_data;
 		
 if ($tg_grid_data['layout'] == 'horizontal') {
 	

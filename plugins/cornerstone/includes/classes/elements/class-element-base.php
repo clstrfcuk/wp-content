@@ -320,7 +320,6 @@ abstract class Cornerstone_Element_Base {
 	}
 
 	public function renderElement( $atts ) {
-
 		return $this->render( $this->injectAtts( $atts ) );
 	}
 
@@ -334,6 +333,10 @@ abstract class Cornerstone_Element_Base {
 		add_filter( 'cornerstone_control_mixin_expanders_dynamic', array( $this, 'add_mixin_expander' ) );
 		$atts = apply_filters( 'cornerstone_control_injections', $atts );
 		remove_filter( 'cornerstone_control_mixin_expanders_dynamic', array( $this, 'add_mixin_expander' ) );
+
+    if ( $atts['content'] ) {
+      $atts['content'] = apply_filters( 'cs_element_update_build_shortcode_content', $atts['content'], null );
+    }
 
 		$atts['extra'] = $this->extra( $atts );
 

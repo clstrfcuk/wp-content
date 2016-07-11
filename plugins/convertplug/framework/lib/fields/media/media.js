@@ -1,5 +1,6 @@
 jQuery(document).ready(function(jQuery){
 	jQuery('.smile-upload-media').click(function(e) {
+
 		_wpPluploadSettings['defaults']['multipart_params']['admin_page']= 'customizer';
 		var button = jQuery(this);
 		var id = 'smile_'+button.attr('id');
@@ -18,16 +19,19 @@ jQuery(document).ready(function(jQuery){
 			multiple: false,
 		});
 		uploader.on('select', function(props, attachment){
+
 			attachment = uploader.state().get('selection').first().toJSON();
+
 			var data = attachment.id+"|"+attachment.url;
 			var sz = jQuery(".cp-media-"+uid).val();
-			var val = attachment.id+"|"+sz;
-
+			var alt = attachment.alt;//console.log(id);
+			var val = attachment.id+"|"+sz+"|"+alt;
 			var a = jQuery("#"+id);
 			var name = jQuery("#"+id).attr('name');
 			a.val(val);
 			a.attr('value',val);
 			jQuery(".cp-media-"+uid).attr('data-id',attachment.id);
+			jQuery(".cp-media-"+uid).attr('data-alt',attachment.alt);
 			jQuery(".cp-media-"+uid).parents(".cp-media-sizes").removeClass("hide-for-default");
 			jQuery("."+img_container).html('<img src="'+attachment.url+'"/>');
 			jQuery("#"+rmv_btn).show();
@@ -52,6 +56,7 @@ jQuery(document).ready(function(jQuery){
 	});
 
 	jQuery('.smile-remove-media').on('click', function(e){
+
 		e.preventDefault();
 		var button = jQuery(this);
 		var id = button.attr('id').replace("remove_","smile_");
@@ -81,6 +86,7 @@ jQuery(document).ready(function(jQuery){
 	});
 
 	jQuery('.smile-default-media').on('click', function(e){
+
 		e.preventDefault();
 		var button = jQuery(this);
 		var id = button.attr('id').replace("default_","smile_");
@@ -110,11 +116,16 @@ jQuery(document).ready(function(jQuery){
 	});
 
 	jQuery(".cp-media-size").on("change", function(e){
+
 		var img_id = jQuery(this).attr('data-id');
+		var alt = jQuery(this).attr('data-alt');
 		var input = 'smile_'+jQuery(this).parents('.cp-media-sizes').data('name');
 		var val = "";
 		if( img_id !== '' ) {
 			val = img_id+"|"+jQuery(this).val();
+		}
+		if( alt !== '' ) {
+			val = val+"|"+alt;
 		}
 		jQuery("#"+input).val(val);
 		jQuery("#"+input).attr('value',val);

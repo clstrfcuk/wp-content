@@ -147,9 +147,6 @@
 .pracia .tg-media-button:hover {
 	opacity: 0.75;
 }
-.pracia .mejs-overlay-play {
-	display: none !important;
-}
 .pracia .to-post-like {
 	position: absolute;
     display: block;

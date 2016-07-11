@@ -25,6 +25,11 @@
 .cp-slidein .cp-text-container{
     color: #444;
 }
+ .cp-blank-container .cp-top-img .cp-row,
+ .cp-blank-container .cp-top-img #main_title_editor {
+    margin-top: 15px;
+}
+
 
 @media (max-width:768px) {
     .cp-slidein-body.cp-slidein {

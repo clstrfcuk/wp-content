@@ -21,7 +21,9 @@
 .cp-blank .cp-sec-title{
     font-size: 15px;
 }
-
+.cp-blank .cp_responsive {
+    font-family: "Open sans",serif;
+}
 .cp-blank .cp-row-center{
     position: relative;   
     padding: inherit;
@@ -40,7 +42,7 @@
             transform: none;
 
 }
-.cp-blank.no-padding .cp-row-equalized-center {
+.cp-blank.cp-no-padding .cp-row-equalized-center {
     padding:0 10px;
 }
 .cp-blank .cp-row {

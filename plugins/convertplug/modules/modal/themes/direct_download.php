@@ -69,6 +69,9 @@ if( !function_exists( "modal_theme_direct_download" ) ) {
 		//	Filters & Actions
 		$modal_image 			= apply_filters( 'cp_get_modal_image_url', $a );
 
+		//	Filters & Actions for modal_image_alt
+		$modal_image_alt 		= apply_filters( 'cp_get_modal_image_alt', $a );
+
 		/** = Before filter
 		 *-----------------------------------------------------------*/
 		apply_filters_ref_array('cp_modal_global_before', array( $a ) );
@@ -105,11 +108,11 @@ if( !function_exists( "modal_theme_direct_download" ) ) {
               if ( !isset($a['modal_img_src']) ) {
               	$a['modal_img_src'] = 'upload_img';
               }
-
-              if ( isset($a['modal_img_src']) && $a['modal_img_src'] != 'none' ) {
+             
+              if ( isset($a['modal_img_src']) && $a['modal_img_src'] != 'none'  ) {
               ?>
 	              <div class="cp-image-container  ">
-	              	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image">
+	              	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image" <?php echo $modal_image_alt;?> >
 	              </div>
 
               <?php } ?>

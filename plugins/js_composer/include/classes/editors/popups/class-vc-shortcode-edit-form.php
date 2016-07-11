@@ -113,7 +113,7 @@ class Vc_Shortcode_Edit_Form implements Vc_Render {
 		if ( isset( $param['edit_field_class'] ) ) {
 			$new_css = $param['edit_field_class'];
 		} else {
-			$new_css = 'vc_col-xs-12 vc_column';
+			$new_css = 'vc_col-xs-12';
 		}
 		array_unshift( $css, $new_css );
 		$param['vc_single_param_edit_holder_class'] = $css;

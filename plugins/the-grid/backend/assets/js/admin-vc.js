@@ -1,7 +1,7 @@
 /*global vc:false*/
 
 if(typeof(window.InlineShortcodeView) !== 'undefined'){
-	
+
 	window.InlineShortcodeView_the_grid = window.InlineShortcodeView.extend({
 		
 		render: function() {

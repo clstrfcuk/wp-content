@@ -3,21 +3,24 @@
 class Cornerstone_Code_Editor {
 
   static $instance;
+  public $localized = false;
 
-  public static function init() {
+  public static function init( $register = true ) {
 
-    self::$instance = new Cornerstone_Code_Editor;
+    self::$instance = new Cornerstone_Code_Editor( $register );
   }
 
-  public static function instance() {
+  public static function instance( $register = true ) {
   	if ( !isset( self::$instance ) ) {
-      self::init();
+      self::init( $register );
     }
     return self::$instance;
   }
 
-  function __construct() {
-    add_action( is_admin() ? 'admin_enqueue_scripts' : 'wp_enqueue_scripts', array( $this, 'register' ) );
+  function __construct( $register = true ) {
+    if ( $register ) {
+      add_action( is_admin() ? 'admin_enqueue_scripts' : 'wp_enqueue_scripts', array( $this, 'register' ) );
+    }
   }
 
   public function register() {

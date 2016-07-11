@@ -189,6 +189,9 @@
 	font-size: 13px;
 	margin: 0 0 0 12px;
 }
+.riga .to-post-like .to-heart-icon {
+	margin: 2px 4px 0 0;
+}
 .riga .tg-item-comment {
 	position: relative;
     display: inline-block;
@@ -203,11 +206,11 @@
 }
 .riga .tg-item-overlay-media,
 .riga .tg-item-overlay-link {	
-	-webkit-transform: scale3d(1.35,1.35,1.35);
-    -moz-transform: scale3d(1.35,1.35,1.35);
-    -ms-transform: scale3d(1.35,1.35,1.35);
-    -o-transform: scale3d(1.35,1.35,1.35);
-    transform: scale3d(1.35,1.35,1.35);
+	-webkit-transform: matrix3d(1.35,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(1.35,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(1.35,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(1.35,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(1.35,0,0,0,0,1.35,0,0,0,0,1,0,0,0,0,1);
 }
 .riga .tg-item-overlay-media,
 .riga .tg-item-overlay-link {
@@ -225,17 +228,14 @@
 .riga .tg-item-media-holder:hover .tg-item-overlay-media,
 .riga .tg-item-media-holder:hover .tg-item-overlay-link {
 	opacity: 1;
-	-webkit-transform: scale3d(1,1,1);
-    -moz-transform: scale3d(1,1,1);
-    -ms-transform: scale3d(1,1,1);
-    -o-transform: scale3d(1,1,1);
-    transform: scale3d(1,1,1);
+	-webkit-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 }
 .riga.tg-is-playing .tg-item-overlay,
 .riga.tg-force-play .tg-item-overlay {
 	pointer-events: none;
 	opacity: 0 !important;
-}
-.riga .mejs-overlay-play {
-	display: none !important;
 }

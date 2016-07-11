@@ -31,7 +31,7 @@ function framework_media_admin_styles($hook){
 */
 function media_settings_field($name, $settings, $value, $default_value = null )
 {
-	
+
 	$input_name = $name;
 	$type = isset($settings['type']) ? $settings['type'] : '';
 	$class = isset($settings['class']) ? $settings['class'] : '';
@@ -39,19 +39,23 @@ function media_settings_field($name, $settings, $value, $default_value = null )
 	$btn_label = ($value !== "") ? __('Change Image','smile') : __( 'Select Image','smile' );
 	$img_arr = explode("|",$value);
 	$img_size = isset( $img_arr[1] ) ? $img_arr[1] : 'full';
-	
+	//var_dump($value);
 	$displaySize = false;
 	$displaySize = ( $value !== "" ) ? strpos( $value, "http") : true ;
-	
+	$alt = '';
+	$newvalue = $value;
 	if( $displaySize !== false ) {
 		$hideSize = 'hide-for-default';
-		$src = $value;
+		$src = $value;		
 	} else {
 		$hideSize = "";
 		$src = wp_get_attachment_image_src($img_arr[0]);
-		$src = $src[0];
+		$alt = get_post_meta( $img_arr[0], '_wp_attachment_image_alt', true );
+		$newvalue = $value.'|'.$alt;
+		//var_dump($alt);
+		$src = $src[0];		
 	}
-
+//var_dump($newvalue);
 	if ( strpos($src, '|') !== FALSE ) {
 		$image_src = explode( '|', $src );
 		$image_src = $image_src[0];
@@ -68,6 +72,7 @@ function media_settings_field($name, $settings, $value, $default_value = null )
 		$img_url = $img_arr[0];
 	}
 	$settings['css-image-url'] = $img_url;
+	$settings['css-image-alt'] = $alt;
 	$partials = generate_partial_atts( $settings );
 	
 	$img = ($value == "") ? '<p class="description">'.__( 'No Image Selected','smile' ).'</p>' : '<img src="'.$image_src.'"/>';
@@ -78,7 +83,7 @@ function media_settings_field($name, $settings, $value, $default_value = null )
 	
 	$output = '';
 	$output .= '<div class="'.$input_name.'_'.$uid.'_container smile-media-container">'.$img.'</div>';
-	$output .= '<input type="text" id="smile_'.$input_name.'_'.$uid.'" class="form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$value.'" '.$partials.' />';
+	$output .= '<input type="text" id="smile_'.$input_name.'_'.$uid.'" class="form-control smile-input smile-'.$type.' '.$input_name.' '.$type.' '.$class.'" name="' . $input_name . '" value="'.$newvalue.'" '.$partials.' />';
 	$output .= '<div class="smile-media-actions">';
 	$rmv_btn = ( $value == "" ) ? "display:none;" : "";
 	$dflt_btn = ( $default_value == "" ) ? "display:none;" : "";
@@ -96,7 +101,7 @@ function media_settings_field($name, $settings, $value, $default_value = null )
 	$output .= '<p>';
 
 	$image_url = wp_get_attachment_url( $img_arr[0] ); // Just the file name
-	$output .= '<select id="smile_'.$input_name.'_size" class="cp-media-'.$uid.' form-control smile-input cp-media-size" name="'.$input_name.'_size" data-id="'.$img_arr[0].'" data-image-name="'.$image_url.'">';
+	$output .= '<select id="smile_'.$input_name.'_size" class="cp-media-'.$uid.' form-control smile-input cp-media-size" name="'.$input_name.'_size" data-id="'.$img_arr[0].'" data-alt="'.$alt.'" data-image-name="'.$image_url.'">';
 	foreach( $imageSizes as $title => $size ) {
 		$s_title = ucwords( str_replace( "-", " ", $title ) );
 		$data_sizes = '';

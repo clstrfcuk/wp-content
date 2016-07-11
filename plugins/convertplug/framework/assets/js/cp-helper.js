@@ -457,8 +457,8 @@ function cp_set_image( smile_global_data, option ) {
 
                     var image_details = image.split("|"),
                         img_id = image_details[0],
-                        img_size = image_details[1];
-
+                        img_size = image_details[1],
+                        img_alt = image_details[2];
                     var img_data = {
                         action:'cp_get_image',
                         img_id: img_id,

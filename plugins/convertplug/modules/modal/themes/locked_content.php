@@ -66,6 +66,9 @@ if( !function_exists( "modal_theme_locked_content" ) ) {
 		//	Filters & Actions
 		$modal_image 		= apply_filters( 'cp_get_modal_image_url', $a );
 
+		//	Filters & Actions for modal_image_alt
+		$modal_image_alt 		= apply_filters( 'cp_get_modal_image_alt', $a );
+
 		/** = Before filter
 		 *-----------------------------------------------------------*/
 		apply_filters_ref_array('cp_modal_global_before', array( $a ) );
@@ -79,9 +82,10 @@ if( !function_exists( "modal_theme_locked_content" ) ) {
 
       	<div class="cp-row">
         	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cp-text-container " >
+           		<?php if ( isset($a['modal_img_src']) && $a['modal_img_src'] != 'none'  ) {?>
            		<div class="cp-image-container">
-	              	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image">
-	              </div>
+	              	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image"  <?php echo $modal_image_alt;?> >
+	              </div><?php }?>
            		<div class="cp-title-container <?php if( trim( $a['modal_title1'] ) == '' ) { echo 'cp-empty'; } ?> ">
            			<h2 class="cp-title cp_responsive" style="color: <?php echo esc_attr( $a['modal_title_color'] ); ?>;"><?php echo do_shortcode( html_entity_decode( $a['modal_title1'] ) ); ?></h2>
           		</div>

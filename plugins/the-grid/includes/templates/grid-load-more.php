@@ -10,20 +10,15 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-// retrieve all grid settings
-global $tg_grid_data, $tg_grid_query;
+if ($tg_grid_data['source_type'] == 'post_type') {
 
-$source_type = $tg_grid_data['source_type'];
-
-if (isset($tg_grid_query) && !empty($tg_grid_query) && $source_type == 'post_type') {
-
-	$item_total   = $tg_grid_query->found_posts;
+	$item_total   = $tg_grid_data['item_total'];
 	$item_loaded  = $tg_grid_data['item_number'];
 	$item_remain  = $tg_grid_data['ajax_items_remain'];		
 	$item_to_load = $item_total - $item_loaded;
 	$button_text  = $tg_grid_data['ajax_button_text'];
 	$button_count = ($item_remain) ? ' ('.$item_to_load.')' : null;
-		
+
 	if ($item_to_load > 0 && $item_loaded != -1) {
 			
 		$text      = ' data-button="'.esc_attr($button_text).'"';
@@ -43,7 +38,7 @@ if (isset($tg_grid_query) && !empty($tg_grid_query) && $source_type == 'post_typ
 		
 	}
 
-} else if ($source_type != 'post_type'){
+} else {
 	
 	$text      = ' data-button="'.esc_attr($tg_grid_data['ajax_button_text']).'"';
 	$loading   = ' data-loading="'.esc_attr($tg_grid_data['ajax_button_loading']).'"';

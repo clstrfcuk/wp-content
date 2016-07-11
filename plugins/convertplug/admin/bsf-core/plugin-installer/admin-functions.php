@@ -59,6 +59,10 @@ if(!function_exists('get_bundled_plugins')) {
 
         $prd_ids = array();
 
+        if ( $brainstrom_products == array() ) {
+        	init_bsf_core();
+        }
+
 		foreach ( $brainstrom_products as $key => $value ) {
 		   foreach ( $value as $key => $value2 ) {
 		       array_push($prd_ids, $key);
@@ -70,8 +74,10 @@ if(!function_exists('get_bundled_plugins')) {
 		// if( !$id )
 		// 	return false;
 
+		global $ultimate_referer;
+
 		global $bsf_product_validate_url;
-		$path = $bsf_product_validate_url;
+		$path = $bsf_product_validate_url.'?referer='.$ultimate_referer;
 
 		$data = array(
 				'action' => 'bsf_get_bundled_products',
@@ -84,7 +90,6 @@ if(!function_exists('get_bundled_plugins')) {
 				'sslverify' => false
 			)
 		);
-
 
 		if (!is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) === 200)
 		{
@@ -131,10 +136,33 @@ if(!function_exists('get_bundled_plugins')) {
 //	function bsf_network_get_bundled_products() {
 		if(false === get_site_transient( 'bsf_get_bundled_products' )) {
 			global $bsf_theme_template;
-			$template = (is_multisite()) ? $bsf_theme_template : get_template();
-			get_bundled_plugins( $template );
-			//bsf_check_product_update();
-			set_site_transient( 'bsf_get_bundled_products', true, 7*24*60*60 );
+			$proceed = true;
+
+			if(phpversion() > 5.2) {
+				$bsf_local_transient_bundled = get_option('bsf_local_transient_bundled');
+
+				if($bsf_local_transient_bundled != false) {
+					$datetime1 = new DateTime();
+					$date_string = gmdate("Y-m-d\TH:i:s\Z", $bsf_local_transient_bundled);
+					$datetime2 = new DateTime($date_string);
+
+					$interval = $datetime1->diff($datetime2);
+					$elapsed = $interval->format('%h');
+					$elapsed = $elapsed + ($interval->days*24);
+					if($elapsed <= 168 || $elapsed <= '168') {
+						$proceed = false;
+					}
+				}
+			}
+
+			if($proceed) {
+				global $ultimate_referer;
+				$ultimate_referer = 'on-bundled-products-transient-delete';
+				$template = (is_multisite()) ? $bsf_theme_template : get_template();
+				get_bundled_plugins( $template );
+				update_option('bsf_local_transient_bundled', current_time( 'timestamp' ));
+				set_site_transient( 'bsf_get_bundled_products', true, 7*24*60*60 );
+			}
 		}
 	//}
 //}

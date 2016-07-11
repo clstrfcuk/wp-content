@@ -21,9 +21,10 @@ jQuery.noConflict();
 			taxonomy,
 			disabled,
 			value,
+			parent,
 			id,
 			i;
-		
+
 		if ($category.length) {
 			for (i = 0; i < $category.length; i++) { 
 				disabled    = '';
@@ -36,20 +37,24 @@ jQuery.noConflict();
 				taxonomy    = taxonomy[1];
 				id          = information[2].split(':');
 				id          = id[1];
+				parent      = (information[3]) ? information[3].split(':') : '';
+				parent      = (parent[1]) ? parent[1] : '';
 				if (id.indexOf('option_disabled') > -1){
 					disabled = 'disabled="disabled"';
-				}	
-				if (!post_type_arr[post_type]) {
-					post_type_arr[post_type] = [];
-					filter_arr[post_type] = [];
 				}
-				post_type_arr[post_type].push('<option value="'+taxonomy+':'+id+'" '+disabled+'>'+value+'</option>');
-				if (!disabled) {
-					var name   = $.trim(value.replace(/\(.*?\)/, ''));
-					var regExp = /\(([^)]+)\)/;
-					var number = regExp.exec(value);
-					number = number[1];
-					filter_arr[post_type].push('<li class="tg-state-default" value="'+id+'" data-taxonomy="'+taxonomy+'" data-name="'+name+'" data-number="'+number+'"><span class="tg-filte-icon dashicons"></span>'+value+'</li>');
+				if (post_type) {
+					if (!post_type_arr.hasOwnProperty(post_type)) {
+						post_type_arr[post_type] = [];
+						filter_arr[post_type] = [];
+					}
+					post_type_arr[post_type].push('<option value="'+taxonomy+':'+id+'" '+disabled+'>'+value+'</option>');
+					if (!disabled) {
+						var name   = $.trim(value.replace(/\(.*?\)/, ''));
+						var regExp = /\(([^)]+)\)/;
+						var number = regExp.exec(value);
+						number = number[1];
+						filter_arr[post_type].push('<li class="tg-state-default" data-parent="'+parent+'" value="'+id+'" data-taxonomy="'+taxonomy+'" data-name="'+name+'" data-number="'+number+'"><span class="tg-filte-icon dashicons"></span>'+value+'</li>');
+					}
 				}
 			}
 		}
@@ -302,15 +307,17 @@ jQuery.noConflict();
 		
 		function autoFillFilters() {
 			$filter_sort1.find('li').remove();
-			var selected = $('.the_grid_post_type select').val();
-			var category = $('.the_grid_categories select').val();
+			var selected    = $('.the_grid_post_type select').val();
+			var category    = $('.the_grid_categories select').val();
+			var allow_child = $('input[type="checkbox"]#the_grid_categories_child').is(':checked');
 			if (selected) {
 				$.each(selected, function(a, $s) {
 					if (filter_arr[$s]) {
 						if (category && category.length > 0) {
 							$.each(filter_arr[$s], function(b, $v) {
-								var data = $('<div/>').html($v).contents().data('taxonomy')+':'+$('<div/>').html($v).contents().val();
-								if ($.inArray(data, category) > -1) {
+								var data  = $('<div/>').html($v).contents().data('taxonomy')+':'+$('<div/>').html($v).contents().val(),
+									child = (allow_child) ? $('<div/>').html($v).contents().data('taxonomy')+':'+$('<div/>').html($v).contents().data('parent') : '';
+								if ($.inArray(data, category) > -1 || $.inArray(child, category) > -1) {
 									$filter_sort1.append($v);
 								}
 							});
@@ -323,6 +330,15 @@ jQuery.noConflict();
 				});
 			}
 		}
+		
+		$('input[type="checkbox"]#the_grid_categories_child').on('change', function() {
+			$('.the_grid_filters_holder').each(function() {
+				$(this).find('ul li').remove();
+			});
+			autoFillFilters();
+			checkFilterList();
+			updateFilterList();
+		});
 		
 		function updateFilterList() {
 			$('.the_grid_filters_holder').each(function(i) {
@@ -528,8 +544,8 @@ jQuery.noConflict();
 		function animation_preview() {
 			var value = $('select[name="the_grid_animation"]').val();
 			if (value) {
-				var visible    = tg_anim[value][1].visible,
-					hidden     = tg_anim[value][2].hidden,
+				var visible    = tg_anim[value].visible,
+					hidden     = tg_anim[value].hidden,
 					transition = $('input[name="the_grid_transition"]').val();
 				if (value !== 'none') {
 					$('#tg-animation-preview').attr('data-animation',value);

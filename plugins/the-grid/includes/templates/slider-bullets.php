@@ -9,13 +9,8 @@
 if (!defined('ABSPATH')) { 
 	exit;
 }
-
-// retrieve all grid settings
-global $tg_grid_data;
-
-$grid_layout = $tg_grid_data['layout'];
 		
-if ($grid_layout == 'horizontal') {
+if ($tg_grid_data['layout'] == 'horizontal') {
 	
 	$bullets  = '<!-- The Grid Slider Bullets -->';
 	$bullets .= '<div class="tg-slider-bullets-holder">';

@@ -31,11 +31,13 @@ if ( ! class_exists( 'TOMB_Select_Field' ) ) {
 				$output .= '</div>';	
 				
 				$output .= '<select class="tomb-select" name="'.$field['id'].'" data-clear="'.$clear.'">';
+				if (isset($field['options']) && !empty($field['options'])) {
 					$output .= ($clear) ? '<option></option>' : null;
 					foreach ( $field['options'] as $value => $label ) {
 						$disabled = strpos($value, 'disabled') ? 'disabled="disabled"' : false;
 						$output .= '<option value="'.$value.'" '.selected( $value, $meta, false ).' '. $disabled .'>'.$label.'</option>';
 					}
+				}
 				$output .= '</select>';
 			
 			$output .= '</div>';

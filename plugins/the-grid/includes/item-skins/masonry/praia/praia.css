@@ -46,9 +46,6 @@
 	-webkit-transform: matrix(1,0,0,1,0,0) !important;
 	-moz-transform: matrix(1,0,0,1,0,0) !important;
 }
-.praia .mejs-overlay-play {
-	display: none !important;
-}
 .praia .tg-item-image {
 	outline: 1px solid transparent !important;
 }
@@ -229,8 +226,8 @@
 	-o-transform: translate3d(0,-30px,0);
 	transform: translate3d(0,-30px,0);
 }
-.praia.tg-is-playing .tg-item-content-holder,
-.praia.tg-force-play .tg-item-content-holder,
+.praia.tg-is-playing .tg-item-content-holder:not(.no-image),
+.praia.tg-force-play .tg-item-content-holder:not(.no-image),
 .praia.tg-is-playing .tg-item-overlay,
 .praia.tg-force-play .tg-item-overlay {
 	opacity: 0;

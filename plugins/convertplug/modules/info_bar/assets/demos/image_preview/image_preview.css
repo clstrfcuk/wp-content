@@ -17,6 +17,8 @@
 .cp-image-preview-bar.cp-info-bar-inline .cp-submit,
 .cp-image-preview-bar.cp-info-bar .cp-submit {
     font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    line-height: normal;
 }
 .cp-image-preview-bar .cp-msg-container {
     font-size: 18px;

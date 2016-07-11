@@ -265,7 +265,6 @@ if ( ! class_exists( 'Vc_Automapper' ) ) {
 				</div>
 				<span
 					class="description"><?php _e( 'Enter valid shortcode (Example: [my_shortcode first_param="first_param_value"]My shortcode content[/my_shortcode]).', 'js_composer' ) ?></span>
-				</div>
 			</script>
 			<script type="text/html" id="vc_automapper-item-complex-tpl">
 				<div class="widget-top">
@@ -277,8 +276,7 @@ if ( ! class_exists( 'Vc_Automapper' ) ) {
 							<span class="screen-reader-text"><?php _e( 'Search', 'js_composer' ) ?></span>
 						</a>
 					</div>
-					<div class="widget-title"><h4>{{ name
-							}}<span class="in-widget-title"></span></h4></div>
+					<div class="widget-title"><h4>{{ name }}<span class="in-widget-title"></span></h4></div>
 				</div>
 				<div class="widget-inside">
 				</div>
@@ -410,6 +408,9 @@ if ( ! class_exists( 'Vc_Automapper' ) ) {
 									</div>
 								</div>
 							</div>
+						</div>
+					</div>
+				</div>
 			</script>
 			<?php
 		}
@@ -592,6 +593,7 @@ if ( ! function_exists( 'vc_atm_build_params_array' ) ) {
 				if ( 'dropdown' === $param['type'] ) {
 					$param['value'] = explode( ',', preg_replace( '/\,\s+/', ',', trim( $param['value'] ) ) );
 				}
+				$param['save_always'] = true;
 				$params[] = $param;
 			}
 		}

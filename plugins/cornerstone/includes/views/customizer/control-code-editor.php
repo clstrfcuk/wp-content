@@ -17,9 +17,10 @@ $button_text = ( isset( $this->options['buttonText'] ) ) ? $this->options['butto
 
 <label>
   <span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-  <textarea <?php echo cs_atts( $textarea_atts ); $this->link(); ?> ><?php echo esc_textarea( $this->value() ); ?></textarea>
   <button <?php echo cs_atts( $button_atts ); ?>><span><?php echo $button_text; ?></span></button>
 </label>
+
+<textarea <?php echo cs_atts( $textarea_atts ); $this->link(); ?> ><?php echo esc_textarea( $this->value() ); ?></textarea>
 
 <script>
 

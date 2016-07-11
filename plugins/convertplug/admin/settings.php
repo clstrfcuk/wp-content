@@ -56,6 +56,9 @@
         <?php if($reg_menu_hide !== true) : ?>
         <a class="nav-tab" href="?page=convertplug&view=registration" title="<?php _e( "Registration", "smile"); ?>"><?php echo __("Registration", "smile" ); ?></a>
         <?php endif; ?>
+
+        <a class="nav-tab" href="?page=convertplug&view=knowledge_base" title="<?php _e( "knowledge Base", "smile"); ?>"><?php echo __("Knowledge Base", "smile" ); ?></a>
+
         <?php if( isset( $_GET['author'] ) ){ ?>
         <a class="nav-tab" href="?page=convertplug&view=debug&author=true" title="<?php _e( "Debug", "smile" ); ?>"><?php echo __( "Debug", "smile" ); ?></a>
         <?php } ?>
@@ -197,6 +200,7 @@
               </p>
             </div>
 
+
             <div class="debug-section">
               <p>
                   <label for="user_inactivity" style="width:340px; display: inline-block;"><strong><?php _e( "User Inactivity Time", "smile" ); ?></strong>
@@ -205,6 +209,50 @@
                     </span>
                   </label>
                   <input type="number" id="user_inactivity" name="user_inactivity" min="1" max="10000" value="<?php echo $user_inactivity; ?>"/> <span class="description"><?php _e( " Seconds", "smile" ); ?></span>
+              </p>
+            </div>
+
+            <div class="debug-section">
+              <p>
+                <?php
+
+                $psval        = isset($data['cp-edit-style-link']) ? $data['cp-edit-style-link'] : 0;
+                $is_checked   = ( $psval ) ? ' checked="checked" ' : '';
+                $uniq         =  uniqid();
+
+                ?>
+                <label for="edit-style-link" style="width:340px; display: inline-block;"><strong><?php _e( "Display Style Edit Link On Front End", "smile" ); ?></strong>
+                  <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Enable style edit link on frontend at bottom right corner of the module, so a user can easily navigate to edit style window. This link will be visible to users who have access to ConvertPlug backend.", "smile" ); ?>">
+                    <i class="dashicons dashicons-editor-help"></i>
+                  </span>
+                </label>
+                <label class="switch-wrapper" style="display: inline-block;margin: 0;height: 20px;">
+                  <input type="text"  id="cp-edit-style-link" class="form-control smile-input smile-switch-input"  name="cp-edit-style-link" value="<?php echo $psval; ?>" />
+                  <input type="checkbox" <?php echo $is_checked; ?> id="smile_cp-edit-style-link_btn_<?php echo $uniq; ?>"  class="ios-toggle smile-input smile-switch-input switch-checkbox smile-switch " value="<?php echo $gfval; ?>" >
+                  <label class="smile-switch-btn checkbox-label" data-on="ON"  data-off="OFF" data-id="cp-edit-style-link" for="smile_cp-edit-style-link_btn_<?php echo $uniq; ?>"></label>
+                </label>
+              </p>
+            </div>
+
+            <div class="debug-section">
+              <p>
+                <?php
+
+                $psval        = isset($data['cp-plugin-support']) ? $data['cp-plugin-support'] : 1;
+                $is_checked   = ( $psval ) ? ' checked="checked" ' : '';
+                $uniq         =  uniqid();
+
+                ?>
+                <label for="plugin-support" style="width:340px; display: inline-block;"><strong><?php _e( "Third Party Plugin Support", "smile" ); ?></strong>
+                  <span class="cp-tooltip-icon has-tip" data-position="top" style="cursor: help;" title="<?php _e( "Enable this option if you are facing any issues to access ConvertPlug customizer ( edit module screen ). After enabling this option, ConvertPlug will try to resolve all possible JS errors automatically.", "smile" ); ?>">
+                    <i class="dashicons dashicons-editor-help"></i>
+                  </span>
+                </label>
+                <label class="switch-wrapper" style="display: inline-block;margin: 0;height: 20px;">
+                  <input type="text"  id="cp-plugin-support" class="form-control smile-input smile-switch-input"  name="cp-plugin-support" value="<?php echo $psval; ?>" />
+                  <input type="checkbox" <?php echo $is_checked; ?> id="smile_cp-plugin-support_btn_<?php echo $uniq; ?>"  class="ios-toggle smile-input smile-switch-input switch-checkbox smile-switch " value="<?php echo $gfval; ?>" >
+                  <label class="smile-switch-btn checkbox-label" data-on="ON"  data-off="OFF" data-id="cp-plugin-support" for="smile_cp-plugin-support_btn_<?php echo $uniq; ?>"></label>
+                </label>
               </p>
             </div>
 

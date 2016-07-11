@@ -519,6 +519,9 @@ function vc_check_post_type( $type ) {
 	}
 	$valid = apply_filters( 'vc_check_post_type_validation', null, $type );
 	if ( is_null( $valid ) ) {
+		if ( is_multisite() && is_super_admin() ) {
+			return true;
+		}
 		$state = vc_user_access()->part( 'post_types' )->getState();
 		if ( null === $state ) {
 			return in_array( $type, vc_default_editor_post_types() );

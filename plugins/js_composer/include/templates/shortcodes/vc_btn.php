@@ -41,7 +41,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 $style = $shape = $color = $size = $custom_background = $custom_text = $align = $link = $title = $button_block = $el_class = $outline_custom_color = $outline_custom_hover_background =
 $outline_custom_hover_text = $add_icon = $i_align = $i_type = $i_icon_entypo = $i_icon_fontawesome = $i_icon_linecons = $i_icon_pixelicons = $i_icon_typicons = $css = $css_animation = '';
 $gradient_color_1 = $gradient_color_2 = $gradient_custom_color_1 = $gradient_custom_color_2 = $gradient_text_color = '';
-$a_href = $a_title = $a_target = '';
+$custom_onclick = $custom_onclick_code = '';
+$a_href = $a_title = $a_target = $a_rel = '';
 $styles = array();
 $icon_wrapper = false;
 $icon_html = false;
@@ -78,6 +79,7 @@ if ( strlen( $link['url'] ) > 0 ) {
 	$a_href = $link['url'];
 	$a_title = $link['title'];
 	$a_target = $link['target'];
+	$a_rel = $link['rel'];
 }
 
 $wrapper_classes = array(
@@ -229,11 +231,18 @@ if ( $button_classes ) {
 }
 
 if ( $use_link ) {
-	$attributes[] = 'href="' . esc_url( trim( $a_href ) ) . '"';
+	$attributes[] = 'href="' . trim( $a_href ) . '"';
 	$attributes[] = 'title="' . esc_attr( trim( $a_title ) ) . '"';
 	if ( ! empty( $a_target ) ) {
 		$attributes[] = 'target="' . esc_attr( trim( $a_target ) ) . '"';
 	}
+	if ( ! empty( $a_rel ) ) {
+		$attributes[] = 'rel="' . esc_attr( trim( $a_rel ) ) . '"';
+	}
+}
+
+if ( ! empty( $custom_onclick ) && $custom_onclick_code ) {
+	$attributes[] = 'onclick="' . esc_attr( $custom_onclick_code ) . '"';
 }
 
 $attributes = implode( ' ', $attributes );

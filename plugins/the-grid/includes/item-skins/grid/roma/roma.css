@@ -102,7 +102,6 @@
     font-weight: normal;
     padding: 8px 0 0 0 !important;
 }
-.roma .tg-item-media-overlay .tg-media-button i,
-.roma .mejs-overlay-play {
+.roma .tg-item-media-overlay .tg-media-button i {
 	display: none !important;
 }

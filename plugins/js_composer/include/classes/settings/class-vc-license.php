@@ -291,7 +291,7 @@ class Vc_License {
 	public function generateActivationUrl() {
 		$token = sha1( $this->newLicenseKeyToken() );
 		$url = esc_url( site_url() );
-		$redirect = esc_url( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
+		$redirect = esc_url( vc_is_network_plugin() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
 
 		return sprintf( '%s/activate-license?token=%s&url=%s&redirect=%s',
 			self::$support_host,
@@ -309,7 +309,7 @@ class Vc_License {
 		$license_key = $this->getLicenseKey();
 		$token = sha1( $this->newLicenseKeyToken() );
 		$url = esc_url( site_url() );
-		$redirect = esc_url( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
+		$redirect = esc_url( vc_is_network_plugin() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
 
 		return sprintf( '%s/deactivate-license?license_key=%s&token=%s&url=%s&redirect=%s',
 			self::$support_host,
@@ -541,7 +541,7 @@ class Vc_License {
 
 	public function adminNoticeLicenseActivation() {
 		update_option( 'wpb_js_composer_license_activation_notified', 'yes' );
-		$redirect = esc_url( ( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) ) );
+		$redirect = esc_url( ( vc_is_network_plugin() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) ) );
 		?>
 		<style>
 			.vc_license-activation-notice {

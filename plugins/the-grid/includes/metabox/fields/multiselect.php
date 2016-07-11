@@ -41,9 +41,11 @@ if ( ! class_exists( 'TOMB_Multiselect_Field' ) ) {
 				$output .= '</div>';
 			
 				$output .= '<select class="tomb-multiselect" name="'.$field['id'].'[]" id="'.$field['id'].'" multiple="multiple">';
-				foreach ( $field['options'] as $value => $label ) {
-					$disabled = strpos($value, 'disabled') ? 'disabled="disabled"' : false;
-					$output .= '<option value="'.$value.'" '.selected( in_array( $value, (array) $meta ), true, false ).' '. $disabled .'>'.$label.'</option>';
+				if (isset($field['options']) && !empty($field['options'])) {
+					foreach ( $field['options'] as $value => $label ) {
+						$disabled = strpos($value, 'disabled') ? 'disabled="disabled"' : false;
+						$output .= '<option value="'.$value.'" '.selected( in_array( $value, (array) $meta ), true, false ).' '. $disabled .'>'.$label.'</option>';
+					}
 				}
 				$output .= '</select>';
 

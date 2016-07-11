@@ -50,45 +50,33 @@ if(!class_exists('TO_First_Media')) {
 		* Run the main function class
 		* @since 1.0.0
 		*/
-		public function process() {
+		public function process($format) {
 			
 			$media   = array();
-			$post_id = get_the_ID();
-			$format  = get_post_format($post_id);
-			
-			// set type of content (no necessary correspond to format)
-			$media['media_type'] = $format;
-			$media['media_data'] = null;
 			
 			switch ($format) {
 				case 'gallery':
-					$media['media_data'] = $this->get_first_content_gallery();
+					$media = $this->get_first_content_gallery();
 					break;
 				case 'quote':
-					$media['quote_data'] = $this->get_first_content_quote();
+					$media = $this->get_first_content_quote();
 					break;
 				case 'link':
-					$media['link_data'] = $this->get_first_content_link();
+					$media = $this->get_first_content_link();
 					break;
 				case 'audio':
-					$media['media_data'] = $this->get_first_content_audio();
+					$media = $this->get_first_content_audio();
 					break;
 				case 'video':
-					$media['media_data'] = $this->get_first_content_video();
+					$media = $this->get_first_content_video();
 					break;
 				default:
-					$media['media_data'] = $this->get_first_content_image();
-					$media['media_type'] = (empty($media['media_data'])) ? 'none' : 'image';
+					$media = $this->get_first_content_image();
 					break;
-			}
-
-			// if format not image and no media found then try to get image
-			if (empty($media['media_data']) && $format != 'standard') {
-				$media['media_data'] = $this->get_first_content_image();
-				$media['media_type'] = (empty($media['media_data'])) ? 'none' : 'image';
 			}
 			
 			return $media;
+			
 		}
 		
 		/**
@@ -129,6 +117,7 @@ if(!class_exists('TO_First_Media')) {
 			
 			if (!empty($content)) {
 				
+				libxml_use_internal_errors(true);
 				$dom->loadHTML(apply_filters('the_content', $content));
 				$blockquotes = $dom->getElementsByTagname('blockquote');
 	
@@ -166,8 +155,9 @@ if(!class_exists('TO_First_Media')) {
 					$blockquote->parentNode->removeChild($blockquote);
 					$remaining_content = $dom->saveXML();
 	
-					$blockquote_arr['content'] = $blockquote_content;
-					$blockquote_arr['author']  = $cite_content;
+					$blockquote_arr['type'] = 'quote';
+					$blockquote_arr['source']['content'] = $blockquote_content;
+					$blockquote_arr['source']['author']  = $cite_content;
 					
 					return $blockquote_arr;
 				}
@@ -186,7 +176,9 @@ if(!class_exists('TO_First_Media')) {
 			$link = preg_match_all( '/href\s*=\s*[\"\']([^\"\']+)/', $post->post_content, $links );
 			$link = (isset($links[1][0]) && !empty($links[1][0])) ? $links[1][0] : null;
 			if (!empty($link)) {	
-				$link_arr['link'] = $link;
+				$link_arr['type'] = 'link';
+				$link_arr['source']['content'] = '';
+				$link_arr['source']['url'] = $link;
 				return $link;
 			}
 		}
@@ -245,7 +237,7 @@ if(!class_exists('TO_First_Media')) {
 				}
 			}
 			
-			if(isset($embeds) && !empty($embeds)) {
+			if(isset($embeds) && !empty($embeds) && is_string($embeds)) {
 				switch (true) {
 					case strpos($embeds, 'soundcloud'):
 						$audio = self::get_soundclound($embeds);
@@ -271,7 +263,7 @@ if(!class_exists('TO_First_Media')) {
 				$audio['type'] = 'audio';
 				foreach($attr as $key => $value ){
 					if ($this->strpos_array($key,array('mp3','ogg')) !== false) {
-						$audio[$key]['url'] = $value;  
+						$audio['source'][$key] = $value;  
 					}
 				}
 				return $audio;
@@ -288,8 +280,8 @@ if(!class_exists('TO_First_Media')) {
 				preg_match_all('/\/\/api.soundcloud.com\/tracks\/(.[0-9]*)/i', rawurldecode($url[0][0]), $matches);
 				if(isset($matches[1][0])) {
 					$audio['type'] = 'soundcloud';
-					$audio['url']  = $matches[0][0];
-					$audio['ID']   = $matches[1][0];
+					$audio['source']['url'] = $matches[0][0];
+					$audio['source']['ID']  = $matches[1][0];
 					return $audio;
 				}
 			}
@@ -304,8 +296,8 @@ if(!class_exists('TO_First_Media')) {
 			preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $url[0][0], $url);
 			if(isset($url[0]) && !empty($url[0])) {
 				$video['type'] = 'youtube';
-				$video['url']  = $url[0];
-				$video['ID']   = $url[1];
+				$video['source']['url'] = $url[0];
+				$video['source']['ID']  = $url[1];
 				return $video;
 			}
 		}
@@ -316,13 +308,11 @@ if(!class_exists('TO_First_Media')) {
 		*/
 		public function get_vimeo($content) {
 			preg_match_all('/\b(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)[-A-Z0-9+&@#\/%=~_|$?!:,.]*[A-Z0-9+&@#\/%=~_|$]/i', $content, $url, PREG_PATTERN_ORDER);
-			$request  = wp_remote_get( 'http://vimeo.com/api/oembed.json?url='.$url[0][0]);
-			$response = wp_remote_retrieve_body( $request );
-			if('OK' !== wp_remote_retrieve_response_message($response) || 200 !== wp_remote_retrieve_response_code($response)) {
-				$json = json_decode($response);
+			preg_match('#(https?://)?(www.)?(player.)?vimeo.com/([a-z]*/)*([0-9]{6,11})[?]?.*#', $url[0][0], $url);
+			if(isset($url[0]) && !empty($url[0]) && strlen($url[5])) {
 				$video['type'] = 'vimeo';
-				$video['url']  = $url[0][0];
-				$video['ID']   = $json->video_id;
+				$video['source']['url'] = $url[0];
+				$video['source']['ID']  = $url[5];
 				return $video;
 			}
 		}
@@ -340,11 +330,7 @@ if(!class_exists('TO_First_Media')) {
 					$video['type'] = 'video';
 					foreach($attr as $key => $value ){
 						if ($this->strpos_array($key,array('mp4','webm','ogv','poster')) !== false) {
-							if ($key == 'poster') {
-								$video[$key] = $value;
-							} else {
-								$video[$key]['url'] = $value;  
-							}
+							$video['source'][$key] = $value;
 						}
 					}
 					return $video;
@@ -410,9 +396,9 @@ if(!function_exists('TO_First_Media')) {
 	* Tiny wrapper function
 	* @since 1.0.0
 	*/
-	function TO_First_Media() {
-		$to_first_media = TO_First_Media::getInstance();
-		return $to_first_media->process();
+	function TO_First_Media($format = 'standard') {
+		$to_first_media = TO_First_Media::getInstance($format);
+		return $to_first_media->process($format);
 	}
 	
 }

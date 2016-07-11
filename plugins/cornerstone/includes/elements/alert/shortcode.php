@@ -11,6 +11,7 @@ $atts = cs_atts( array(
 	'class' => trim( "x-alert x-alert-$type " . $close_class . ' ' . $class ),
 	'style' => $style
 ) );
+$heading = cs_decode_shortcode_attribute( $heading );
 
 $button = ( $close ) ? "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>" : '';
 $heading = ( $heading ) ? "<h6 class=\"h-alert\">{$heading}</h6>" : '';

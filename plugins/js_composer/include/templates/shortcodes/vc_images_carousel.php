@@ -40,7 +40,7 @@ $el_start = '';
 $el_end = '';
 $slides_wrap_start = '';
 $slides_wrap_end = '';
-$pretty_rand = 'link_image' === $onclick ? ' rel="prettyPhoto[rel-' . get_the_ID() . '-' . rand() . ']"' : '';
+$pretty_rand = 'link_image' === $onclick ? ' data-rel="prettyPhoto[rel-' . get_the_ID() . '-' . rand() . ']"' : '';
 
 wp_enqueue_script( 'vc_carousel_js' );
 wp_enqueue_style( 'vc_carousel_css' );

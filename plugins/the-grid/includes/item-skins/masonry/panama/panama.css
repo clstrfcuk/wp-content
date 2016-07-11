@@ -204,7 +204,10 @@
 	font-size: 13px;
 }
 .panama .to-post-like .to-heart-icon {
-	width: 14px;
+	margin: 2px 4px 0 0;
+}
+.panama .to-heart-icon svg {
+    width: 14px;
     height: 13px;
 }
 .panama .tg-link-button,
@@ -241,9 +244,6 @@
 .panama.tg-force-play .tg-item-overlay {
 	pointer-events: none;
 	opacity: 0 !important;
-}
-.panama .mejs-overlay-play {
-	display: none !important;
 }
 .panama .tg-share-icons {
 	position: absolute;

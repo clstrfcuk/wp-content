@@ -19,7 +19,7 @@ class Paginator {
 		* @Since 1.0
 	*/
 	public function getData( $limit = 10, $page = 1 ,$orderby , $order , $searchKey , $serachInParams , $maintainKeys ) {
-     
+     	$this->serachInParams ='';
 	    $this->_limit   = $limit;
 	    $this->_page    = $page;
 	    $this->_offset   = ( ( $this->_page - 1 ) * $this->_limit );
@@ -30,17 +30,20 @@ class Paginator {
 	 	$this->maintainKeys = $maintainKeys;
 
 	 	$data = $this->contacts;
-	 	//var_dump($this->serachInParams);
+	 	//var_dump($searchKey);
 	 	if( $searchKey !== '' ) {
 		 			
 	 		$data = array_filter($data, function ($item) use ($searchKey) {
 	 			
 	 			$found = false;
-	 			foreach($this->serachInParams as $param) {
 
-				    if ( stripos( strtolower( urldecode( $item[$param] ) ), $searchKey) !== false ) {
-				        $found = true;
-				    }			   
+	 			foreach($this->serachInParams as $param) {	 			
+	 				
+	 					if (array_key_exists($param, $item)) {						  		 			
+						    if ( stripos( strtolower( urldecode( $item[$param] ) ), $searchKey) !== false ) {
+						        $found = true;
+						    }	
+				    	}		   
 			    }
 			    if($found) {
 			    	return true; 

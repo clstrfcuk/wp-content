@@ -72,19 +72,19 @@
 }
 .podgorica .tg-media-button i,
 .podgorica .tg-link-button i {	
-	-webkit-transform: scale3d(1,1,1);
-    -moz-transform: scale3d(1,1,1);
-    -ms-transform: scale3d(1,1,1);
-    -o-transform: scale3d(1,1,1);
-    transform: scale3d(1,1,1);
+	-webkit-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 }
 .podgorica .tg-item-media-holder:hover .tg-media-button i,
 .podgorica .tg-item-media-holder:hover .tg-link-button i {
-	-webkit-transform: scale3d(1.2,1.2,1.2);
-    -moz-transform: scale3d(1.2,1.2,1.2);
-    -ms-transform: scale3d(1.2,1.2,1.2);
-    -o-transform: scale3d(1.2,1.2,1.2);
-    transform: scale3d(1.2,1.2,1.2);
+	-webkit-transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
 }
 .podgorica .tg-item-duration {
     position: absolute;

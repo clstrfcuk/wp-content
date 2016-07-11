@@ -31,7 +31,7 @@ class Cornerstone_Data_Controller  extends Cornerstone_Plugin_Component {
 	 */
 	public function get() {
 
-		$data = get_post_meta( $this->post->ID, '_cornerstone_data', true );
+		$data = cs_get_serialized_post_meta( $this->post->ID, '_cornerstone_data', true );
 
 		if ( !is_array( $data ) )
 			return $data;

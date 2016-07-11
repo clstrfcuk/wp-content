@@ -1,101 +1,97 @@
 <?php
+/**
+ * @package   The_Grid
+ * @author    Themeone <themeone.master@gmail.com>
+ * @copyright 2015 Themeone
+ *
+ * Skin: Quito
+ *
+ */
 
-// Available options to retrieve and customize markup
-$options = array(
-	'poster' => true,  // Media poster for audio/video (if false no play buttons will be created)
-	'icons' => array(  // set all icons
-		'link'       => __( 'Read More', 'tg-text-domain' ),  // Button link icon
-		'comment'    => '',                                   // Button link icon
-		'image'      => '<i class="tg-icon-add"></i>',        // Ligthbox icon
-		'audio'      => __( 'Play Song', 'tg-text-domain' ),  // Audio icon
-		'video'      => __( 'Play Video', 'tg-text-domain' ), // HTML Video icon
-		'vimeo'      => __( 'Play Video', 'tg-text-domain' ), // Vimeo icon
-		'wistia'     => __( 'Play Video', 'tg-text-domain' ), // Wistia icon
-		'youtube'    => __( 'Play Video', 'tg-text-domain' ), // Youtube icon
-		'soundcloud' => __( 'Play Song', 'tg-text-domain' ),  // SoundCloud icon
-	),
-	'excerpt_length'  => 200,     // Excerpt character length
-	'excerpt_tag'     => '...',   // Excerpt more tag
-	'read_more'       => __( 'Read More', 'tg-text-domain' ), // Read more text
-	'date_format'     => '' ,     // Date format (https://codex.wordpress.org/Formatting_Date_and_Time)
-	'get_terms'       => true,    // Get all post terms (if false $content['terms'] will be empty)
-	'term_color'      => 'background', // Get terms color (option: 'color', 'background', 'none'); default 'none'
-	'term_link'       => true,    // Add link to term
-	'term_separator'  => '',      // Term separator
-	'author_prefix'   => __( 'By', 'tg-text-domain' ).' ', // Author prefix like 'By',...
-	'avatar'          => false    // Add author avatar
-);
-
-// If function do not exists, then return immediately
-if (!function_exists('The_Grid_Item_Content')) {
-	return;
+// Exit if accessed directly
+if (!defined('ABSPATH')) { 
+	exit;
 }
 
-// Main Func/Class to retrieve all necessary item content/markup
-$content = The_Grid_Item_Content($options);
+$tg_el = The_Grid_Elements();
 
-$html = null;
+$format = $tg_el->get_item_format();
+$colors = $tg_el->get_colors();
 
-// background image for quote/link
-$bg_img = (isset($content['media_data']['url'])) ? '<div class="tg-item-image" style="background-image: url('.$content['media_data']['url'].')"></div>' : null;
+$excerpt_args = array(
+	'length' => 200,
+);
 
-// change color of author & comments
-$author   = preg_replace('/(<a\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['span'].'">', $content['author']);
-$comments = preg_replace('/(<a\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['span'].'">', $content['comments']['markup']);
-$comments = preg_replace('/(<i\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['span'].'">', $comments);
+$readmore_args = array(
+	'text' => __( 'Read More', 'tg-text-domain' ),
+);
+
+$link_arg = array(
+	'icon' => __( 'Read More', 'tg-text-domain' )
+);
+
+$terms_args = array(
+	'color'     => 'background',
+	'separator' => ''
+);
+
+$media_args = array(
+	'icons' => array(
+		'audio' => __( 'Play Song', 'tg-text-domain' ),
+		'video' => __( 'Play Video', 'tg-text-domain' ),
+	)
+);
+
+$comments = preg_replace('/(<a\b[^><]*)>/i', '$1 style="color:'.$colors['content']['span'].'">', $tg_el->get_the_comments_number());
+
+if ($format == 'quote' || $format == 'link') {
 	
-if (isset($content['quote_markup'])) {
+	$bg_img = $tg_el->get_attachement_url();
+
+	$output  = ($bg_img) ? '<div class="tg-item-image" style="background-image: url('.esc_url($bg_img).')"></div>' : null;
+	$output .= $tg_el->get_content_wrapper_start();
+		$output .= '<i class="tg-'.$format.'-icon tg-icon-'.$format.'" style="color:'.$colors['content']['title'].'"></i>';
+		$output .= ($format == 'quote') ? $tg_el->get_the_quote_format() : $tg_el->get_the_link_format();
+		$output .= '<div class="tg-item-footer">';
+			$output .= $tg_el->get_the_date();
+			$output .= ($comments) ? '<span>/</span>' : null;
+			$output .= $comments;
+		$output .= '</div>';
+	$output .= $tg_el->get_content_wrapper_end();
 	
-	$html .= $bg_img;
-	$html .= $content['content_wrapper_start'];
-	$html .= '<i class="tg-quote-icon tg-icon-quote" style="color:'.$content['colors']['content']['title'].'"></i>';
-	$html .= $content['quote_markup'];
-	$html .= '<div class="tg-item-footer">';
-	$html .= $content['date'];
-	$html .= '<span>/</span>';
-	$html .= $comments;
-	$html .= '</div>';
-	$html .= $content['content_wrapper_end'];
-	
-} else if (isset($content['link_markup'])) {
-	
-	$html .= $bg_img;
-	$html .= $content['content_wrapper_start'];
-	$html .= '<i class="tg-link-icon tg-icon-link" style="color:'.$content['colors']['content']['title'].'"></i>';
-	$html .= $content['link_markup'];
-	$html .= '<div class="tg-item-footer">';
-	$html .= $content['date'];
-	$html .= '<span>/</span>';
-	$html .= $comments;
-	$html .= '</div>';
-	$html .= $content['content_wrapper_end'];
+	return $output;
 	
 } else {
 	
-	$media_button = $content['media_button'];
-	$link_button  = $content['link_button'];
+	$output = null;
+	
+	$media_content = $tg_el->get_media();
+	$media_button  = $tg_el->get_media_button($media_args);
+	$link_button   = $tg_el->get_link_button($link_arg);
+	
+	if ($media_content) {
+		$output .= $tg_el->get_media_wrapper_start();
+			$output .= $media_content;
+			$output .= ($media_button) ? $tg_el->get_overlay() : null;
+			$output .= ($media_button) ? $tg_el->get_center_wrapper_start() : null;
+				$output .= ($media_button && in_array($format, array('video', 'audio'))) ? $media_button : null;
+				$output .= ($link_button && !in_array($format, array('video', 'audio'))) ? $link_button : null;
+			$output .= ($media_button) ? $tg_el->get_center_wrapper_end() : null;
+		$output .= $tg_el->get_media_wrapper_end();
+	}
+	
+	$output .= $tg_el->get_content_wrapper_start();
+		$output .= $tg_el->get_the_terms($terms_args);
+		$output .= $tg_el->get_the_title();
+		$output .= $tg_el->get_the_excerpt($excerpt_args);
+		$output .= $tg_el->get_read_more_button($readmore_args);
+		$output .= '<div class="tg-item-footer">';
+			$output .= $tg_el->get_the_date();
+			$output .= ($comments) ? '<span>/</span>' : null;
+			$output .= $comments;
+		$output .= '</div>';
+	$output .= $tg_el->get_content_wrapper_end();
 
-	$html .= $content['media_wrapper_start'];
-		$html .= $content['media_markup'];
-		$html .= (!empty($media_button)) ? $content['overlay'] : null;
-		$html .= (!empty($media_button)) ? $content['center_wrapper_start'] : null;
-			$html .= ($content['media_type'] !== 'image' && $content['media_type'] !== 'gallery') ? $media_button : null; 
-			$html .= ($content['media_type']  == 'image' || $content['media_type']  == 'gallery') ? $link_button  : null;
-		$html .= (!empty($media_button)) ? $content['center_wrapper_end'] : null;
-	$html .= $content['media_wrapper_end'];
-	
-	$html .= $content['content_wrapper_start'];
-		$html .= $content['terms'];
-		$html .= $content['title'];
-		$html .= $content['content'];
-		$html .= $content['read_more'];
-		$html .= '<div class="tg-item-footer">';
-		$html .= $content['date'];
-		$html .= (!empty($comments)) ? '<span>/</span>' : null;
-		$html .= $comments;
-		$html .= '</div>';
-	$html .= $content['content_wrapper_end'];
-	
-}
+	return $output;
 		
-return $html;
+}

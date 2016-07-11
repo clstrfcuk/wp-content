@@ -3384,7 +3384,7 @@ return Item;
   Masonry.prototype._getContainerSize = function() {
     this.maxY = Math.max.apply( Math, this.colYs );
     var size = {
-      height: this.maxY
+      height: this.maxY-this.gutter
     };
 
     if ( this.options.isFitWidth ) {
@@ -5631,7 +5631,7 @@ if ( typeof define === 'function' && define.amd ) {
 		
 		
 		justified.prototype.getSize = function(image) {
-			
+
 			if (image[0].naturalWidth) {
 				var nWidth  = (image[0]) ? image[0].naturalWidth  : null;
 				var nHeight = (image[0]) ? image[0].naturalHeight : null;

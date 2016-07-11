@@ -68,7 +68,7 @@
     height: 100%;
 }
 
-.cp-social-media.no-padding .cp-row-center{
+.cp-social-media.cp-no-padding .cp-row-center{
  margin: 0 -15px;
 } 
 
@@ -127,7 +127,10 @@
     .cp-social-media .cp-text-container {
         padding: 20px 15px;
     }
-
+    .cp-modal-body.cp-social-media {
+        height: auto!important;
+        min-height: auto!important;
+    }
 }
 
 /*------social -----------*/

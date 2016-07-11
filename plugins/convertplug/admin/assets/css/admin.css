@@ -3557,6 +3557,9 @@ div#wpfooter {
 	display: block !important;
 }
 
+.smile-element-container.hide-label{
+	display: none!important;
+}
 
 .scheduled-info:after {
     content: attr(title);
@@ -3596,4 +3599,39 @@ div#wpfooter {
 
 .panel-YouTube .shadow_type option.smile_inset {
 	display: none;
+}
+
+
+.panel-free_ebook .smile-element-container[element="btn_attached_email"]{
+	display: none;
+}
+.panel-free_ebook img.smile-radio-control.form_layout-cp-form-layout-3{
+    display: none;
+}
+.panel-free_ebook img.smile-radio-control.form_layout-cp-form-layout-4 {
+    max-width: 140px!important;
+    margin-left: -10px;
+    padding-right: 0;
+}
+/* Fix for compatibility with advanced parallax background plugin */
+.smile-style-search-section,
+ ul.cp-styles-list{
+	float: none;
+}
+
+.smile-element-container.hide_email_attached{
+  display: none!important;
+}
+
+.panel-social_media_with_form option.smile_cp-modal-window-size {
+    display: none;
+}
+
+.panel-social_media_with_form select#smile_modal_size {   
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+    line-height:1em;
+    pointer-events: none;
 }

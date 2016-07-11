@@ -52,6 +52,7 @@ if ( ! empty( $link ) ) {
 	$link = vc_build_link( $link );
 	$text = '<a href="' . esc_attr( $link['url'] ) . '"'
 		. ( $link['target'] ? ' target="' . esc_attr( $link['target'] ) . '"' : '' )
+		. ( $link['rel'] ? ' rel="' . esc_attr( $link['rel'] ) . '"' : '' )
 		. ( $link['title'] ? ' title="' . esc_attr( $link['title'] ) . '"' : '' )
 		. '>' . $text . '</a>';
 }

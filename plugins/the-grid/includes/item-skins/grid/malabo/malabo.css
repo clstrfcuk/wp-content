@@ -40,18 +40,18 @@
 	left: 10px;
 	bottom: 10px;
 	right: 10px;
-	-webkit-transform: scale3d(0.75,0.75,0.75);
-	-moz-transform: scale3d(0.75,0.75,0.75);
-	-ms-transform: scale3d(0.75,0.75,0.75);
-	-o-transform: scale3d(0.75,0.75,0.75);
-	transform: scale3d(0.75,0.75,0.75);
+	-webkit-transform: matrix3d(0.75,0,0,0,0,0.75,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(0.75,0,0,0,0,0.75,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(0.75,0,0,0,0,0.75,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(0.75,0,0,0,0,0.75,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(0.75,0,0,0,0,0.75,0,0,0,0,1,0,0,0,0,1);
 }
 .malabo:hover .tg-item-overlay {
-	-webkit-transform: scale3d(1,1,1);
-	-moz-transform: scale3d(1,1,1);
-	-ms-transform: scale3d(1,1,1);
-	-o-transform: scale3d(1,1,1);
-	transform: scale3d(1,1,1);
+	-webkit-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 }
 .malabo .tg-item-content {
 	margin: 22px 28px;
@@ -153,7 +153,4 @@
 }
 .malabo .tg-media-button .tg-icon-add {
 	font-size: 28px;
-}
-.malabo .mejs-overlay-play {
-	display: none !important;
 }

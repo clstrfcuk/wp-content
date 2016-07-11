@@ -1,46 +1,45 @@
 <?php
+/**
+ * @package   The_Grid
+ * @author    Themeone <themeone.master@gmail.com>
+ * @copyright 2015 Themeone
+ *
+ * Skin: Praia
+ *
+ */
 
-// Available options to retrieve and customize markup
-$options = array(
-	'poster' => true,  // Media poster for audio/video (if false no play buttons will be created)
-	'icons' => array(  // set all icons
-		'link'       => '<i class="tg-icon-add"></i>'.__( 'Read More', 'tg-text-domain' ),   // Button link icon
-		'comment'    => '<i class="tg-icon-chat"></i>',       // Button link icon
-		'image'      => '<i class="tg-icon-add"></i>',        // Ligthbox icon
-		'audio'      => '<i class="tg-icon-play"></i>'.__( 'Play Song', 'tg-text-domain' ),  // Audio icon
-		'video'      => '<i class="tg-icon-play"></i>'.__( 'Play Video', 'tg-text-domain' ), // HTML Video icon
-		'vimeo'      => '<i class="tg-icon-play"></i>'.__( 'Play Video', 'tg-text-domain' ), // Vimeo icon
-		'wistia'     => '<i class="tg-icon-play"></i>'.__( 'Play Video', 'tg-text-domain' ), // Wistia icon
-		'youtube'    => '<i class="tg-icon-play"></i>'.__( 'Play Video', 'tg-text-domain' ), // Youtube icon
-		'soundcloud' => '<i class="tg-icon-play"></i>'.__( 'Play Song', 'tg-text-domain' ),  // SoundCloud icon
-	),
-	'excerpt_length'  => 200,     // Excerpt character length
-	'excerpt_tag'     => '',      // Excerpt more tag
-	'read_more'       => '',      // Read more text
-	'date_format'     => '' ,     // Date format (https://codex.wordpress.org/Formatting_Date_and_Time)
-	'get_terms'       => true,    // Get all post terms (if false $content['terms'] will be empty)
-	'term_color'      => 'none',  // Get terms color (option: 'color', 'background', 'none'); default 'none'
-	'term_link'       => true,    // Add link to term
-	'term_separator'  => ', ',    // Term separator
-	'author_prefix'   => __( 'By', 'tg-text-domain' ).' ', // Author prefix like 'By',...
-	'avatar'          => false    // Add author avatar
-);
-
-// If function do not exists, then return immediately
-if (!function_exists('The_Grid_Item_Content')) {
-	return;
+// Exit if accessed directly
+if (!defined('ABSPATH')) { 
+	exit;
 }
 
-// Main Func/Class to retrieve all necessary item content/markup
-$content = The_Grid_Item_Content($options);
+$tg_el = The_Grid_Elements();
 
-$html = null;
+$format = $tg_el->get_item_format();
+$colors = $tg_el->get_colors();
 
-$media_button = $content['media_button'];
-$link_button  = $content['link_button'];
+$excerpt_args = array(
+	'length' => 200
+);
+
+$author_args = array(
+	'prefix' => __( 'By', 'tg-text-domain' ).' ',
+);
+
+$link_arg = array(
+	'icon' => '<i class="tg-icon-add"></i>'.__( 'Read More', 'tg-text-domain' )
+);
+
+$media_args = array(
+	'icons' => array(
+		'image' => '<i class="tg-icon-add"></i>',
+		'audio' => '<i class="tg-icon-play"></i>'.__( 'Play Song', 'tg-text-domain' ),
+		'video' => '<i class="tg-icon-play"></i>'.__( 'Play Video', 'tg-text-domain' ),
+	)
+);
 
 $base  = new The_Grid_Base();
-$color = $content['colors']['overlay']['background'];
+$color = $colors['overlay']['background'];
 $gradient = null;
 if (!empty($color)) {
 	$color = str_replace(array('#','(',')','rgba','rgb'), array('','','','',''), $color);
@@ -59,60 +58,55 @@ if (!empty($color)) {
 	$gradient = 'style="background:transparent;background: linear-gradient(top, rgba('.$color1.',0) 0%, rgba('.$color2.') 100%);background: -moz-linear-gradient(top, rgba('.$color1.',0) 0%, rgba('.$color2.') 100%);background: -ms-linear-gradient(top, rgba('.$color1.',0) 0%, rgba('.$color2.') 100%);background: -o-linear-gradient( top, rgba('.$color1.',0) 0%, rgba('.$color2.') 100%);background: -webkit-linear-gradient( top, rgba('.$color1.',0) 0%, rgba('.$color2.') 100%);-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00'.$color3.', endColorstr=#ff'.$color3.');filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00'.$color3.', endColorstr=#ff'.$color3.');"';
 }
 
-$bg_img = (isset($content['media_data']['url'])) ? '<div class="tg-item-image" style="background-image: url('.$content['media_data']['url'].')"></div>' : null;
 
-if (isset($content['quote_markup'])) {
-
-	$html .= '<div class="tg-item-image-holder">'.$bg_img.'</div>';
-	$html .= str_replace('tg-item-content-holder','tg-item-content-holder tg-panZ', $content['content_wrapper_start']);
-	$html .= '<i class="tg-quote-icon tg-icon-quote" style="color:'.$content['colors']['content']['title'].'"></i>';
-	$html .= $content['quote_markup'];
-	$html .= preg_replace('/(<span\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['title'].'">', $content['date']);
-	$html .= $content['content_wrapper_end'];
+if ($format == 'quote' || $format == 'link') {
 	
-} else if (isset($content['link_markup'])) {
+	$bg_img = $tg_el->get_attachement_url();
 
-	$html .= '<div class="tg-item-image-holder">'.$bg_img.'</div>';
-	$html .= str_replace('tg-item-content-holder','tg-item-content-holder tg-panZ', $content['content_wrapper_start']);
-	$html .= '<i class="tg-link-icon tg-icon-link" style="color:'.$content['colors']['content']['title'].'"></i>';
-	$html .= $content['link_markup'];
-	$html .= preg_replace('/(<span\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['title'].'">', $content['date']);
-	$html .= $content['content_wrapper_end'];
+	$output  = ($bg_img) ? '<div class="tg-item-image-holder"><div class="tg-item-image" style="background-image: url('.esc_url($bg_img).')"></div></div>' : null;
+	$output .= $tg_el->get_content_wrapper_start('tg-panZ');
+		$output .= '<i class="tg-'.$format.'-icon tg-icon-'.$format.'" style="color:'.$colors['content']['title'].'"></i>';
+		$output .= ($format == 'quote') ? $tg_el->get_the_quote_format() : $tg_el->get_the_link_format();
+		$output .= preg_replace('/(<span\b[^><]*)>/i', '$1 style="color:'.$colors['content']['title'].'">', $tg_el->get_the_date());
+	$output .= $tg_el->get_content_wrapper_end();
+	
+	return $output;
 	
 } else {
 	
-	$image = false;
-	if ($content['media_type'] == 'image') {
-		$image = (isset($content['media_data']['url'])) ? null : ' no-image';
-	} else if ($content['media_type'] == 'gallery') {
-		$image = (isset($content['media_data']['images'][0]['url'])) ? null : ' no-image';
-	} else if ($content['media_type'] == 'video' || $content['media_type'] == 'audio') {
-		$image = (isset($content['media_poster']['url'])) ? null : ' no-image';
-	} else if ($content['media_type'] == 'none') {
-		$image = ' no-image';
-	}
-	$content_class = ($image == null) ? $content['colors']['overlay']['class'] : $content['colors']['content']['class'];
+	$media_content = $tg_el->get_media();
+	$media_button  = $tg_el->get_media_button($media_args);
+	$link_button   = $tg_el->get_link_button($link_arg);
+	$author        = $tg_el->get_the_author($author_args);
 	
-	$html .='<div class="tg-panZ">';
-	
-		$html .= $content['media_wrapper_start'];	
-			$html .= $content['media_markup'];
-		$html .= $content['media_wrapper_end'];
-		$html .= ($image == null) ? '<div class="tg-item-overlay" '.$gradient.'></div>' : null;
-	
-		$html .= str_replace(array('tg-item-content-holder light','tg-item-content-holder dark'),array('tg-item-content-holder '.$content_class.$image,'tg-item-content-holder '.$content_class.$image), $content['content_wrapper_start']);	
-			$html .= '<div class="tg-item-content-inner">';
-				$html .= $content['title'];
-				$html .= ($image != null) ? $content['content'] : null;
-				$html .= $content['date'];
-				$html .= ($image == null) ? preg_replace('/(<a\b[^><]*)>/i', '$1 style="color:'.$content['colors']['overlay']['title'].'">', $content['author']) : preg_replace('/(<a\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['title'].'">', $content['author']);
-				$html .= ($content['media_type'] !== 'image' && $content['media_type'] !== 'gallery') ? $media_button : null;
-				$html .= ($content['media_type']  == 'image' || $content['media_type']  == 'gallery') ? $link_button  : null;
-			$html .= '</div>';	
-		$html .= $content['content_wrapper_end'];
-	
-	$html .='</div>';
-	
-}
+	$content_class = ($media_button) ? $colors['overlay']['class'] : $colors['content']['class'].' no-image';
+	$author_color  = ($media_button) ? $colors['overlay']['title'] : $colors['content']['title'];
 
-return $html;
+	$content_wrapper = $tg_el->get_content_wrapper_start($content_class);
+	$content_wrapper = str_replace('tg-item-content-holder light', 'tg-item-content-holder', $content_wrapper);
+	$content_wrapper = str_replace('tg-item-content-holder dark', 'tg-item-content-holder', $content_wrapper);
+
+	$output = '<div class="tg-panZ">';
+	
+		if ($media_content) {
+			$output .= $tg_el->get_media_wrapper_start();
+				$output .= $media_content;
+			$output .= $tg_el->get_media_wrapper_end();
+			$output .= ($media_button) ? '<div class="tg-item-overlay" '.$gradient.'></div>' : null;
+		}
+		
+		$output .= $content_wrapper;
+			$output .= '<div class="tg-item-content-inner">';
+				$output .= $tg_el->get_the_title();
+				$output .= (!$media_content) ? $tg_el->get_the_excerpt($excerpt_args) : null;
+				$output .= $tg_el->get_the_date();
+				$output .= preg_replace('/(<a\b[^><]*)>/i', '$1 style="color:'.$author_color.'">', $author);
+				$output .= ($media_content && in_array($format, array('video', 'audio'))) ? $media_button : null;
+				$output .= ($media_content && $link_button && !in_array($format, array('video', 'audio'))) ? $link_button : null;
+			$output .= '</div>';
+		$output .= $tg_el->get_content_wrapper_end();
+		
+	$output .= '</div>';
+	
+	return $output;
+}

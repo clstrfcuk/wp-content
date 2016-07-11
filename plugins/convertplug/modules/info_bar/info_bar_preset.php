@@ -40,6 +40,17 @@ function cp_add_info_bar_template( $args, $preset, $module ) {
 					"Shortcode,Canvas,HTML,Custom,Notice", // tags
 					"stickybar_newsletter" // template unique slug
 			),
+			"social_infobar_circle" =>
+				array (
+					"social_info_bar", // theme slug for template
+					"Social Info Bar Circle", // template name
+					plugins_url('assets/demos/social_info_bar/social_info_bar.html',__FILE__), // HTML file for template
+					"http://downloads.brainstormforce.com/convertplug/presets/social_site.png", // screen shot
+					plugins_url('assets/demos/social_info_bar/customizer.js',__FILE__), // customizer js for template
+					"All,Optins,info bar", // categories
+					"Shortcode,Canvas,HTML,Custom,Notice", // tags
+					"social_infobar_circle" // template unique slug
+			),
 		);
 
 		if( $preset  !== '' ) {

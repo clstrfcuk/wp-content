@@ -46,9 +46,9 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 	 */
 	public function scripts() {
 
-  	wp_register_script( 'cornerstone-site-head', $this->url( 'assets/js/dist/site/cs-head.min.js' ), array( 'jquery' ), $this->plugin->version(), false );
-  	wp_register_script( 'cornerstone-site-body', $this->url( 'assets/js/dist/site/cs-body.min.js' ), array( 'cornerstone-site-head' ), $this->plugin->version(), true );
-  	wp_register_script( 'vendor-ilightbox',      $this->url( 'assets/js/dist/site/vendor-ilightbox.min.js' ), array( 'jquery' ), $this->plugin->version(), true );
+  	wp_register_script( 'cornerstone-site-head', $this->url( 'assets/dist/js/site/cs-head.min.js' ), array( 'jquery' ), $this->plugin->version(), false );
+  	wp_register_script( 'cornerstone-site-body', $this->url( 'assets/dist/js/site/cs-body.min.js' ), array( 'cornerstone-site-head' ), $this->plugin->version(), true );
+  	wp_register_script( 'vendor-ilightbox',      $this->url( 'assets/dist/js/site/vendor-ilightbox.min.js' ), array( 'jquery' ), $this->plugin->version(), true );
 	//wp_register_script( 'vendor-google-maps',    'https://maps.googleapis.com/maps/api/js?sensor=false', array( 'jquery' ) );
 
   	wp_enqueue_script( 'cornerstone-site-head' );
@@ -63,8 +63,7 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 			add_action( 'wp_footer', array( $this, 'inlineScripts' ), 9998, 0 );
 		}
 
-		$postSettings = get_post_meta( get_the_ID(), '_cornerstone_settings', true );
-		$this->postSettings = ( is_array( $postSettings ) ) ? $postSettings : array();
+		$this->postSettings = $this->plugin->common()->get_post_settings( get_the_ID() );
 
 	}
 

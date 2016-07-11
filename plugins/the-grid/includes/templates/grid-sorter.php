@@ -10,12 +10,9 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-// retrieve all grid settings
-global $tg_grid_data;
-
 $base    = new The_Grid_Base();
 $sorting = $base->grid_sorting();
-		
+
 $sortBy       = $tg_grid_data['sort_by'];
 $sort_txt     = $tg_grid_data['sort_by_text'];
 $sort_onload  = $tg_grid_data['sort_by_onload'];

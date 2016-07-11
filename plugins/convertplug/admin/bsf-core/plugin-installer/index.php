@@ -1,28 +1,28 @@
 <?php
-	$action = (isset($_GET['action']) && $_GET['action']==='install') ? $_GET['action'] : '';
-	if($action === 'install')
-	{
-		$request_product_id = (isset($_GET['id'])) ? $_GET['id'] : '';
-		if($request_product_id !== '')
-		{
-			?>
-            	<div class="clear"></div>
-				<div class="wrap">
+    $action = (isset($_GET['action']) && $_GET['action']==='install') ? $_GET['action'] : '';
+    if($action === 'install')
+    {
+        $request_product_id = (isset($_GET['id'])) ? $_GET['id'] : '';
+        if($request_product_id !== '')
+        {
+            ?>
+                <div class="clear"></div>
+                <div class="wrap">
                 <h2><?php echo __('Installing Extension','bsf') ?></h2>
-				<?php
-                	$installed = install_bsf_product($request_product_id);
+                <?php
+                    $installed = install_bsf_product($request_product_id);
                 ?>
                 <?php if(isset($installed['status']) && $installed['status'] === true) : ?>
-                	<?php $current_name = strtolower(bsf_get_current_name($installed['init'], $installed['type'])); ?>
+                    <?php $current_name = strtolower(bsf_get_current_name($installed['init'], $installed['type'])); ?>
                     <?php $current_name = preg_replace("![^a-z0-9]+!i", "-", $current_name); ?>
-                	<a href="<?php echo (is_multisite()) ? network_admin_url('plugins.php#'.$current_name) : admin_url('plugins.php#'.$current_name) ?>"><?php echo __('Manage plugin here','bsf') ?></a>
+                    <a href="<?php echo (is_multisite()) ? network_admin_url('plugins.php#'.$current_name) : admin_url('plugins.php#'.$current_name) ?>"><?php echo __('Manage plugin here','bsf') ?></a>
                 <?php endif; ?>
-            	</div>
-			<?php
-			require_once(ABSPATH . 'wp-admin/admin-footer.php');
-			exit;
-		}
-	}
+                </div>
+            <?php
+            require_once(ABSPATH . 'wp-admin/admin-footer.php');
+            exit;
+        }
+    }
     global $bsf_theme_template;
     if(is_multisite())
         $template = $bsf_theme_template;
@@ -38,14 +38,28 @@
         $product_id = $arr[1];
     }
 
+    $extensions_installer_heading = apply_filters( "bsf_extinstaller_heading_{$product_id}", 'iMedica Extensions' );
+
+    $extensions_installer_subheading = apply_filters( "bsf_extinstaller_subheading_{$product_id}", 'iMedica is already very flexible & feature rich theme. It further aims to be all-in-one solution for your WordPress needs. Install any necessary extensions you like from below and take it on the steroids.' );
+
     $status = check_bsf_product_status( $product_id );
 
-    $redirect =  admin_url( 'admin.php?page=' . $current_page );
+    if ( is_multisite() ) {
+        $redirect =  network_admin_url( 'admin.php?page=' . $current_page );
+    } else {
+        $redirect =  admin_url( 'admin.php?page=' . $current_page );    
+    }
+    
     $reset_bundled_url =  $redirect . '&remove-bundled-products';
 
 
     if( isset( $_GET['remove-bundled-products'] ) )  {
+        delete_option('brainstrom_bundled_products');
+        global $ultimate_referer;
+        $ultimate_referer = 'on-refresh-bundled-products-extensions-page';
         get_bundled_plugins();
+        set_site_transient( 'bsf_get_bundled_products', true, 7*24*60*60 );
+        update_option('bsf_local_transient_bundled', current_time( 'timestamp' ));
 
         echo '<script type="text/javascript">window.location = "'.$redirect.'";</script>';
     }
@@ -57,13 +71,8 @@
 
     <div class="bend-heading-section extension-about-header">
 
-        <?php if ( $product_id == '14058953' ): ?>
-            <h1><?php _e( 'ConvertPlug Addons', 'bsf' ); ?></h1>
-            <h3><?php _e( 'Add-ons extend the functionality of ConvertPlug. With these addons, you can connect with third party softwares, integrate new features and make ConvertPlug even more powerful.', 'bsf' ); ?></h3>
-        <?php else: ?>
-            <h1><?php _e( 'iMedica Extensions', 'bsf' ); ?></h1>
-            <h3><?php _e( 'iMedica is already very flexible & feature rich theme. It further aims to be all-in-one solution for your WordPress needs. Install any necessary extensions you like from below and take it on the steroids.', 'bsf' ); ?></h3>
-        <?php endif ?>
+        <h1><?php _e( $extensions_installer_heading, 'bsf' ); ?></h1>
+        <h3><?php _e( $extensions_installer_subheading, 'bsf' ); ?></h3>
 
         <div class="bend-head-logo">
             <?php /*<img src="<?php echo get_template_directory_uri().'/css/img/brainstorm-logo.png' ?>" /> */ ?>
@@ -75,10 +84,10 @@
     <hr class="bsf-extensions-lists-separator">
     <h3 class="bf-ext-sub-title"><?php echo __('Available Extensions','bsf'); ?></h3>
 
-	<?php
+    <?php
 
         // update_option( 'brainstrom_bundled_products', '' );
-	   $brainstrom_bundled_products = ( get_option('brainstrom_bundled_products') ) ? (array)get_option('brainstrom_bundled_products') : array();
+       $brainstrom_bundled_products = ( get_option('brainstrom_bundled_products') ) ? (array)get_option('brainstrom_bundled_products') : array();
 
         if ( isset( $brainstrom_bundled_products[$product_id] ) ) {
             $brainstrom_bundled_products = $brainstrom_bundled_products[$product_id];
@@ -86,25 +95,25 @@
 
         usort( $brainstrom_bundled_products, "bsf_sort" );
 
-    	if( !empty( $brainstrom_bundled_products ) ) :
-    		$global_plugin_installed = $global_plugin_activated = 0;
-    		$total_bundled_plugins = count($brainstrom_bundled_products);
-    		foreach( $brainstrom_bundled_products as $key => $plugin ) {
+        if( !empty( $brainstrom_bundled_products ) ) :
+            $global_plugin_installed = $global_plugin_activated = 0;
+            $total_bundled_plugins = count($brainstrom_bundled_products);
+            foreach( $brainstrom_bundled_products as $key => $plugin ) {
                 if(!isset($plugin->id) || $plugin->id == '')
                     continue;
-    			if( isset( $request_product_id ) && $request_product_id !== $plugin->id ){
-    				continue;
+                if( isset( $request_product_id ) && $request_product_id !== $plugin->id ){
+                    continue;
                 }
-    			$plugin_abs_path = WP_PLUGIN_DIR.'/'.$plugin->init;
-    			if(is_file($plugin_abs_path)) {
-    				$global_plugin_installed++;
+                $plugin_abs_path = WP_PLUGIN_DIR.'/'.$plugin->init;
+                if(is_file($plugin_abs_path)) {
+                    $global_plugin_installed++;
 
-    				if(is_plugin_active($plugin->init)) {
-    					$global_plugin_activated++;
+                    if(is_plugin_active($plugin->init)) {
+                        $global_plugin_activated++;
                     }
-    			}
-    		}
-	?>
+                }
+            }
+    ?>
 
         <ul class="bsf-extensions-list">
             <?php
@@ -156,7 +165,7 @@
                                     </div>
                                 <?php endif; ?>
                                 <div class="bsf-extension-info">
-                                	<?php $name = (isset($plugin->short_name)) ? $plugin->short_name : $plugin->name ?>
+                                    <?php $name = (isset($plugin->short_name)) ? $plugin->short_name : $plugin->name ?>
                                     <h4 class="title"><?php echo $name; ?></h4>
                                     <?php /*
                                     <span class="status">
@@ -206,8 +215,8 @@
                                     }
                                     else
                                     {
-										$current_name = strtolower(bsf_get_current_name($plugin->init, $plugin->type));
-                    					$current_name = preg_replace("![^a-z0-9]+!i", "-", $current_name);
+                                        $current_name = strtolower(bsf_get_current_name($plugin->init, $plugin->type));
+                                        $current_name = preg_replace("![^a-z0-9]+!i", "-", $current_name);
                                         if(is_multisite())
                                             $link = network_admin_url('plugins.php#'.$current_name);
                                         else
@@ -221,12 +230,12 @@
                         </li>
                 <?php endforeach; ?>
                 <?php
-					if($total_bundled_plugins === $global_plugin_installed) : ?>
-					<div class="bsf-extensions-no-active">
-						<div class="bsf-extensions-title-icon"><span class="dashicons dashicons-smiley"></span></div>
-						<p class="bsf-text-light"><em><?php echo __('All available extensions have been installed!', 'bsf'); ?></em></p>
-					</div>
-            	<?php endif; ?>
+                    if($total_bundled_plugins === $global_plugin_installed) : ?>
+                    <div class="bsf-extensions-no-active">
+                        <div class="bsf-extensions-title-icon"><span class="dashicons dashicons-smiley"></span></div>
+                        <p class="bsf-text-light"><em><?php echo __('All available extensions have been installed!', 'bsf'); ?></em></p>
+                    </div>
+                <?php endif; ?>
         </ul>
 
 
@@ -282,7 +291,7 @@
                                     </div>
                                 <?php endif; ?>
                                 <div class="bsf-extension-info">
-                                	<?php $name = (isset($plugin->short_name)) ? $plugin->short_name : $plugin->name ?>
+                                    <?php $name = (isset($plugin->short_name)) ? $plugin->short_name : $plugin->name ?>
                                     <h4 class="title"><?php echo $name; ?></h4>
                                     <?php /*
                                     <span class="status">
@@ -332,8 +341,8 @@
                                     }
                                     else
                                     {
-										$current_name = strtolower(bsf_get_current_name($plugin->init, $plugin->type));
-                    					$current_name = preg_replace("![^a-z0-9]+!i", "-", $current_name);
+                                        $current_name = strtolower(bsf_get_current_name($plugin->init, $plugin->type));
+                                        $current_name = preg_replace("![^a-z0-9]+!i", "-", $current_name);
                                         if(is_multisite())
                                             $link = network_admin_url('plugins.php#'.$current_name);
                                         else
@@ -356,7 +365,7 @@
         </ul>
 
         <!-- End - Just Design Purpose -->
-	<?php else : ?>
+    <?php else : ?>
         <div class="bsf-extensions-no-active">
             <div class="bsf-extensions-title-icon"><span class="dashicons dashicons-download"></span></div>
             <p class="bsf-text-light"><em><?php echo __('No extensions available yet!', 'bsf'); ?></em></p>
@@ -391,21 +400,21 @@
 <?php else : ?>
     <script type="text/javascript">
     (function($){
-    	$(document).ready(function(){
-    		$('.bsf-install-button').on('click',function(e){
+        $(document).ready(function(){
+            $('.bsf-install-button').on('click',function(e){
                 e.preventDefault();
 
                 var is_plugin_installed = is_plugin_activated = false;
 
-    			if((typeof $(this).attr('disabled') !== 'undefined' && $(this).attr('disabled') === 'disabled'))
-    				return false;
-    			$(this).attr('disabled',true);
-    			var ext = $(this).attr('data-ext');
+                if((typeof $(this).attr('disabled') !== 'undefined' && $(this).attr('disabled') === 'disabled'))
+                    return false;
+                $(this).attr('disabled',true);
+                var ext = $(this).attr('data-ext');
                 var product_id = $(this).attr('data-pid');
                 var action = 'bsf_'+$(this).attr('data-action');
                 var bundled = $(this).attr('data-bundled');
-    			var $ext = $('#ext-'+ext);
-    			$ext.find('.bsf-extension-start-install').addClass('show-install');
+                var $ext = $('#ext-'+ext);
+                $ext.find('.bsf-extension-start-install').addClass('show-install');
                 var data = {
                     'action': action,
                     'product_id': product_id,
@@ -454,8 +463,8 @@
                         }
                     }
                 });
-    		});
-    	});
+            });
+        });
     })(jQuery);
     </script>
 <?php endif; ?>

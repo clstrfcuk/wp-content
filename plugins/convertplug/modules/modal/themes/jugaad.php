@@ -63,6 +63,9 @@ if( !function_exists( "modal_theme_jugaad" ) ) {
 		//	Filters & Actions
 		$modal_image 	   = apply_filters( 'cp_get_modal_image_url', $a );
 
+		//	Filters & Actions for modal_image_alt
+		$modal_image_alt 		= apply_filters( 'cp_get_modal_image_alt', $a );
+
 		/** = Before filter
 		 *-----------------------------------------------------------*/
 		apply_filters_ref_array( 'cp_modal_global_before', array( $a ) );
@@ -254,15 +257,16 @@ if( !function_exists( "modal_theme_jugaad" ) ) {
 
 	    // Start output buffer for image container variable
 	    ob_start();
-
+	     if ( isset($a['modal_img_src']) && $a['modal_img_src'] != 'none'  ) {
 	    if ( $a['modal_layout'] == 'img_left_form_bottom' || $a['modal_layout'] == 'img_right_form_bottom' ){ ?>
 	    	<div class="cp-image-container col-md-4 col-sm-12 col-xs-12 col-lg-4 cp-column-equalized-center" >
 	    <?php } else { ?>
 	    	<div class="cp-image-container col-md-12 col-sm-12 col-xs-12 col-lg-12" >
-	    <?php } ?>
-			   	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image">
+	    <?php } } 
+	    if ( isset($a['modal_img_src']) && $a['modal_img_src'] != 'none'  ) {?>	    
+			   	<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $modal_image ); ?>" class="cp-image" <?php echo $modal_image_alt;?> >
 			</div>
-
+		<?php } ?>
 		<?php $img_container = ob_get_clean();
 
 		// Start output buffer for text container variable

@@ -10,17 +10,14 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-// retrieve all grid settings
-global $tg_grid_data;
+$tg_area_elements = $tg_grid_data['area_bottom2_elements'];
 
-$elements = $tg_grid_data['area_bottom2_elements'];
-
-if (!empty($elements)) {
+if (!empty($tg_area_elements)) {
 
 	$area  = '<!-- The Grid Area Bottom 2 -->';
 	$area .= '<div class="tg-grid-area-bottom2">';
-		foreach($elements as $element) {
-			$area .= $element;
+		foreach($tg_area_elements as $tg_area_element) {
+			$area .= $tg_area_element;
 		}
 	$area .= '</div>';
 	

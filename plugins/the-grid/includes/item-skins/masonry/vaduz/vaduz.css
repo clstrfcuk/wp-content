@@ -56,11 +56,11 @@
     height: 75px;
     margin: 0 auto;
 	border-radius: 50%;
-	-webkit-transform: scale3d(0.8,0.8,0.8);
-	-moz-transform: scale3d(0.8,0.8,0.8);
-    -ms-transform: scale3d(0.8,0.8,0.8);
-    -o-transform: scale3d(0.8,0.8,0.8);
-    transform: scale3d(0.8,0.8,0.8);
+	-webkit-transform: matrix3d(0.8,0,0,0,0,0.8,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(0.8,0,0,0,0,0.8,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(0.8,0,0,0,0,0.8,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(0.8,0,0,0,0,0.8,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(0.8,0,0,0,0,0.8,0,0,0,0,1,0,0,0,0,1);
 }
 .vaduz .tg-media-button,
 .vaduz .tg-link-button {
@@ -92,22 +92,19 @@
 }
 .vaduz .tg-media-button i,
 .vaduz .tg-link-button i {	
-	-webkit-transform: scale3d(1,1,1);
-    -moz-transform: scale3d(1,1,1);
-    -ms-transform: scale3d(1,1,1);
-    -o-transform: scale3d(1,1,1);
-    transform: scale3d(1,1,1);
+	-webkit-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 }
 .vaduz .tg-item-media-holder:hover .tg-media-button i,
 .vaduz .tg-item-media-holder:hover .tg-link-button i {
-	-webkit-transform: scale3d(1.2,1.2,1.2);
-    -moz-transform: scale3d(1.2,1.2,1.2);
-    -ms-transform: scale3d(1.2,1.2,1.2);
-    -o-transform: scale3d(1.2,1.2,1.2);
-    transform: scale3d(1.2,1.2,1.2);
-}
-.vaduz .mejs-overlay-play {
-	display: none !important;
+	-webkit-transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
+	-moz-transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
+	-ms-transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
+	-o-transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
+	transform: matrix3d(1.2,0,0,0,0,1.2,0,0,0,0,1,0,0,0,0,1);
 }
 .vaduz .tg-item-excerpt {
 	position: relative;
@@ -176,7 +173,7 @@
     position: relative;
 	display: inline-block;
     width: 100%;
-	border-top: 1px solid #dddddd;
+	border-top: 1px solid #dddddd !important;
     padding: 8px 0 0;
 	line-height: 25px;
 }
@@ -194,6 +191,9 @@
 .vaduz .tg-item-footer .to-post-like,
 .vaduz .tg-item-footer .tg-item-comment {
     float: right;	
+}
+.vaduz .to-post-like .to-heart-icon {
+	margin: 2px 4px 0 0;
 }
 .vaduz .tg-item-footer .tg-item-comment {
     margin: 0 0 0 6px;

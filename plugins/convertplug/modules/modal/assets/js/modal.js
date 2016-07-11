@@ -30,13 +30,13 @@
 
             if( typeof cta_delay != '' && cta_delay != null ) {
 
-                cta_delay = parseInt(cta_delay * 1000);                
+                cta_delay = parseInt(cta_delay * 1000);
                  cp_form.slideUp('500');
                 setTimeout(function() {
 
                     //  show CTA after complete delay time
                     cp_form.slideDown('500');
-                   
+
 
                 }, cta_delay );
             }
@@ -285,7 +285,7 @@
     }
 
     // Display modal on page load after x seconds
-    jQuery(window).load(function() {
+    jQuery(window).on( 'load', function() {
 
          var styleArray = Array();
         jQuery(".cp-onload").each(function(t) {
@@ -352,7 +352,6 @@
             var ref_check   = $this.data('referrer-check');
             var doc_ref     = document.referrer.toLowerCase();
 
-            //console.log('referrer url :-' + doc_ref);
             var referred = false;
             if( typeof referrer !== "undefined" && referrer !== "" ){
                 referred = modal.isReferrer( referrer, doc_ref, ref_check );
@@ -516,8 +515,6 @@
     jQuery(document).scroll(function(e){
 
         // calculate the percentage the user has scrolled down the page
-        // var scrollPercent = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
-        // var scrolled = scrollPercent.toFixed(0);
 
 		var scrolled = jQuery(window).scrollTop();
         var styleArray = Array();
@@ -706,11 +703,14 @@
             var inactive_time = jQuery(this).data('inactive-time');
             if( typeof inactive_time !== "undefined" ) {
                 inactive_time = inactive_time*1000;
+                //console.log("inactive_time"+inactive_time);
                 jQuery( document ).idleTimer( {
                     timeout: inactive_time,
-                    idle: true
+                    idle: false
                 });
             }
+
+
         });
 
         //  Set normal values in data attribute to reset these on window resize
@@ -828,6 +828,7 @@
 
     // Close modal on click of close button
     jQuery(document).on("closeModal", function(e,modal){
+
         var container   = modal.parents(".cp-modal-popup-container");
         var template    = container.data('template');
         var cookieTime  = modal.data('closed-cookie-time');
@@ -852,6 +853,11 @@
         var vw = jQuery(window).width();
         if( exit_anim == "cp-overlay-none" || ( typeof animatedwidth !== 'undefined' && vw <= animatedwidth ) ){
             modal.removeClass("cp-open");
+            
+            if( modal.hasClass('cp-hide-inline-style') ){
+                exit_anim = "cp-overlay-none";                
+            }
+
             exit_anim = "cp-overlay-none";
             if( jQuery(".cp-open").length < 1 ){
                 jQuery("html").removeAttr('style');
@@ -878,6 +884,10 @@
                 }, 1000 );
             }
         }
+
+        // hide submit message container
+        modal.find(".cp-msg-on-submit").css( "visibility", "hidden" );
+
     });
 
     jQuery(document).on("click", ".cp-overlay", function(e){
@@ -973,6 +983,16 @@
         }
     });
 
+    jQuery(".cp-overlay").on( "idle.idleTimer", function(event, elem, obj){
+        var modal = jQuery(this);
+        jQuery(document).trigger('closeModal',[modal]);
+        var cp_tooltip  =  modal.find(".cp-tooltip-icon").data('classes');
+        setTimeout(function(){
+            jQuery('head').append('<style id="cp-tooltip-close-css">.tip.'+cp_tooltip+'{ display:none; }</style>');
+        },1000);
+
+    });
+
     jQuery(document).on("click", ".cp-overlay-close", function(e){
         if( !jQuery(this).hasClass('do_not_close') ){
             var container   = jQuery(this).parents(".cp-modal-popup-container")
@@ -1021,6 +1041,18 @@
 
     jQuery(window).on("modalOpen", function(e,data) {
 
+        var close_btn_delay               = data.data("close-btnonload-delay");
+
+        // convert delay time from seconds to miliseconds
+        close_btn_delay   = Math.round(close_btn_delay * 1000);
+
+        // console.log("here"+close_btn_delay);
+        if(close_btn_delay){
+            setTimeout( function(){
+                  data.find('.cp-overlay-close').removeClass('cp-hide-close');
+            },close_btn_delay);
+        }
+
         // set columns equalized
         cp_column_equilize();
 
@@ -1056,87 +1088,68 @@
             }
         });
 
+        //for close modal after x  sec of inactive
+        var inactive_close_time = data.data('close-after');
+        jQuery.idleTimer('destroy');
+        if( typeof inactive_close_time !== "undefined" ) {
+            inactive_close_time = inactive_close_time*1000;
+            jQuery( ".cp-overlay" ).idleTimer( {
+                timeout: inactive_close_time,
+                idle: false
+            });
+        }
+
+        close_button_tootip();
+
+
     });
 
+jQuery( window ).resize(function() {
+ close_button_tootip();
+});
 
     function close_button_tootip(){
         jQuery(".cp-overlay").each(function(t) {
-            var classname = jQuery(this).find(".has-tip").data('classes');
-            var closeid = jQuery(this).find(".has-tip").data('closeid');
-            var tcolor = jQuery(this).find(".has-tip").data("color");
-            var tbgcolor = jQuery(this).find(".has-tip").data("bgcolor");
+            var classname = jQuery(this).find(".cp-tooltip-icon").data('classes');
+            var closeid = jQuery(this).find(".cp-tooltip-icon").data('closeid');
+            var tcolor = jQuery(this).find(".cp-tooltip-icon").data("color");
+            var tbgcolor = jQuery(this).find(".cp-tooltip-icon").data("bgcolor");
             var modalht = jQuery(this).find(".cp-modal-content").height();
             var vw = jQuery(window).width();
             var id = jQuery(this).data("modal-id");
-
-
-            if( jQuery(this).find(".cp-overlay-close").hasClass('cp-inside-close') || jQuery(this).find(".cp-overlay-close").hasClass('cp-adjacent-close') ){
-                if( jQuery(this).find(".cp-modal").hasClass('cp-modal-custom-size') ){
-                    if( vw < 768 ){
-                        position = 'left';
-                        jQuery(this).find(".has-tip").data("position" ,"left");
-                    } else {
-                        if( modalht >= 490 ){
-                            position = 'left';
-                            jQuery(this).find(".has-tip").data("position" ,"left");
-                        } else {
-                             jQuery(this).find(".has-tip").data("position" ,"top");
-                             position = "top";
-                        }
-                        var modal_width =jQuery(this).find(".cp-modal").css('max-width');
-
-                        modal_width = modal_width.replace(/px/g,"");
-
-                        if(modal_width > vw){
-                             position = 'left';
-                            jQuery(this).find(".has-tip").data("position" ,"left");
-                        }
-                    }
-                }
+            var new_tooltip_position = '' ;
+            if(jQuery(this).find(".cp-overlay-close").hasClass('cp-adjacent-left')){
+                new_tooltip_position ='right';
+            }else if( jQuery(this).find(".cp-overlay-close").hasClass('cp-adjacent-right')){
+                 new_tooltip_position ='left';
             }
 
-            var position = jQuery(this).find(".has-tip").data("position");
-            var offsetval = '';
-            if( position == 'left' ){
-                if( jQuery(this).find('.cp-modal').hasClass('cp-modal-window-size') ){
-                    if( jQuery(this).find('.cp-overlay-close').hasClass('cp-inside-close') ){
-                        offsetval = 10;
-                    } else {
-                        offsetval = 10;
-                    }
-                } else {
-                    offsetval = 20;
-                }
-            } else {
-                   offsetval = 20;
+            if( jQuery(this).find(".cp-overlay-close").hasClass('cp-inside-close')){
+                 //new_tooltip_position ='top';
             }
 
-            jQuery(this).find(".has-tip").data("offset" ,offsetval);
+            jQuery(this).find(".cp-tooltip-icon").removeAttr('data-position');
+            jQuery(this).find(".cp-tooltip-icon").attr("data-position" , new_tooltip_position );
 
-            //initialize
-            var innerclass ='';
-            if( jQuery(this).find('.cp-modal').hasClass('cp-modal-window-size') ){
-                if( jQuery(this).find('.cp-overlay-close').hasClass('cp-inside-close') ){
-                    var innerclass = 'cp-innertip';
-                }
-            }
+            var position = new_tooltip_position;
+            var offsetval = '20';
 
             jQuery("body").addClass('customize-support');
 
-            var position = jQuery(".cp-close-tooltip").data('position');
-             if( jQuery(this).find('.cp-modal').hasClass('cp-modal-window-size') ){
-                var position = 'left';
-             }
-            jQuery("."+classname).frosty({
+            /*jQuery("."+classname).frosty({
                 className: 'tip close-tip-content ' + classname ,
                 position : position,
-            });
+            });*/
+
 
             jQuery("."+classname).remove();
             jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .tip.'+classname+'{color: '+tcolor+';background-color:'+tbgcolor+';border-color:'+tbgcolor+' }</style>');
+
             if( position == 'left' ){
                 jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .tip.'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before {border-left-color: '+tbgcolor+' ;border-top-color:transparant}</style>');
-            } else {
+            }else if( position == 'right' ) {
+                jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .tip.'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before{border-right-color: '+tbgcolor+';border-left-color:transparent }</style>');
+            }else {
                 jQuery('head').append('<style class="cp-tooltip-css '+classname+'">.customize-support .tip.'+classname+'[class*="arrow"]:before , .'+classname+'[class*="arrow"]:before{border-top-color: '+tbgcolor+';border-left-color:transparent }</style>');
             }
         });
@@ -1225,22 +1238,132 @@
         });
     }
 
+//Open modal scroll upto particular class/id
+    var scrollcls = [];
+        jQuery.each(jQuery('.cp-onload'),function(){
+            var modal_scroll_class = jQuery(this).data('scroll-class');
+            if( typeof modal_scroll_class !== "undefined" && modal_scroll_class !== "" ){
+                modal_scroll_class = modal_scroll_class.split(" ");
+                jQuery.each( modal_scroll_class, function(i,c){
+                    scrollcls.push(c);
+                });
+            }
 
-/*
-    jQuery('.cp_social_share ').click( function(e){
-        do_Somethig();       
+        });
+
+    jQuery.each(scrollcls, function(i,v){
+
+        jQuery(document).scroll(function(e){
+
+            // count impressions for inline modal style
+            count_inline_impressions();
+
+            /*  = Responsive Typography
+             *-----------------------------------------------------------*/
+            //CPAutoResponsiveResize();
+
+            // calculate the percentage the user has scrolled down the page
+            var scrollPercent = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
+            var scrolled = scrollPercent.toFixed(0);
+            //console.log(scrolled);
+            var styleArray = Array();
+            jQuery(".cp-onload").each(function(t) {
+                var $this = jQuery(this);
+                var exit        = jQuery(this).data("exit-intent");
+                var class_id    = jQuery(this).data("class-id");
+                var dev_mode    = jQuery(this).data("dev-mode");
+                var cookieName  = jQuery('.'+class_id).data('modal-id');
+                var temp_cookie     = "temp_"+cookieName;
+                var opt         = jQuery('.'+class_id).data('option');
+                var style       = jQuery('.'+class_id).data('modal-style');
+                var modal       = jQuery('.'+class_id);
+                var scrollclass = v;
+                var scrollTill ='';
+                if( typeof scrollclass !== 'undefined' && scrollclass !== ' ' ){
+                    var position    = jQuery(scrollclass).position();
+                    if( typeof position !== 'undefined' && position !== ' ' ){
+                        scrollTill = jQuery(scrollclass).cp_modal_isOnScreen();
+                    }
+
+                }
+
+                var data        = {action:'smile_update_impressions',impression:true,style_id:style,option:opt};
+                if( dev_mode == "enabled" ){
+                    removeCookie(cookieName);
+                }
+                var cookie      = getCookie(cookieName);
+                var tmp_cookie  = getCookie(temp_cookie);
+                if( !temp_cookie ){
+                    createCookie( temp_cookie, true, 1 );
+                } else if( dev_mode == "enabled" && tmp_cookie ) {
+                    cookie = true;
+                }
+
+                if( modal.hasClass('cp-window-size')){
+                   modal.windowSize();
+                }
+                var scheduled = modal.isScheduled();
+
+                var referrer    = $this.data('referrer-domain');
+                var ref_check   = $this.data('referrer-check');
+                var doc_ref     = document.referrer.toLowerCase();
+                var referred = false;
+                if( typeof referrer !== "undefined" && referrer !== "" ){
+                    referred = modal.isReferrer( referrer, doc_ref, ref_check );
+                } else {
+                    referred = true;
+                }
+
+                if( !cookie && scrollTill && scheduled && referred ){
+                    if( jQuery(".cp-open").length <= 0 ){
+
+                          if( scrollTill == true ){
+                            jQuery(window).trigger('modalOpen',[modal]);
+                            modal.show();
+
+                            var isAutoPlay = modal.find('.cp-youtube-frame').attr('data-autoplay') || '0';
+                            if( isAutoPlay === '1' ) {
+                                cpExecuteVideoAPI(modal,'play');
+                            }
+
+                            modal.addClass('cp-open');
+
+                            //  Show YouTube CTA form
+                            youtube_show_cta(modal);
+
+                            if( !modal.hasClass( 'impression_counted' ) ) {
+                                styleArray.push( style );
+                                modal.addClass( 'impression_counted' );
+                                if( styleArray.length !== 0 ) {
+                                    update_impressions(styleArray);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            });
+
+        });
     });
 
+    jQuery.fn.cp_modal_isOnScreen = function(){
 
-function do_Somethig(){ 
-   // var imgsInPopUp = jQuery(mywin.document.body);
-       // console.log('here'+window.name);
+        var win = $(window);
 
-}
+        var viewport = {
+            top : win.scrollTop(),
+            left : win.scrollLeft()
+        };
+        viewport.right = viewport.left + win.width();
+        viewport.bottom = viewport.top + win.height();
 
+        var bounds = this.offset();
+        bounds.right = bounds.left + this.outerWidth();
+        bounds.bottom = bounds.top + this.outerHeight();
 
-jQuery(window).click(function(e) {
-    alert('hh');
-});*/
+        return (!(viewport.right < bounds.left || viewport.left > bounds.right || viewport.bottom < bounds.top || viewport.top > bounds.bottom));
+
+    };
 
 })(jQuery);

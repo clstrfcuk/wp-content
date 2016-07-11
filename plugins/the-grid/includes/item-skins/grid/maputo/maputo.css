@@ -1,5 +1,6 @@
 .maputo a,
 .maputo a:hover,
+.maputo .tg-item-image,
 .maputo .tg-media-button,
 .maputo a:active,
 .maputo a:focus,
@@ -8,11 +9,11 @@
     border: none;
 	-webkit-box-shadow: none;
     box-shadow: none;
-	-webkit-transition: opacity 0.25s ease, color 0.25s ease;
-	-moz-transition: opacity 0.25s ease, color 0.25s ease;
-	-ms-transition: opacity 0.25s ease, color 0.25s ease;
-	-o-transition: opacity 0.25s ease, color 0.25s ease;
-	transition: opacity 0.25s ease, color 0.25s ease;
+	-webkit-transition: all 0.25s ease;
+	-moz-transition: all 0.25s ease;
+	-ms-transition: all 0.25s ease;
+	-o-transition: all 0.25s ease;
+	transition: all 0.25s ease;
 }
 .maputo .tg-media-button:hover,
 .maputo a:not(.mejs-volume-slider):hover {
@@ -89,6 +90,7 @@
 .maputo .tg-item-comment i {
 	font-size: 25px;
     line-height: 67px;
+	color: inherit !important;
 }   
 .maputo .to-post-like {
     position: relative;
@@ -124,9 +126,7 @@
 	margin: 0 1px;
 }
 .maputo div.tg-item-overlay,
-.maputo div.tg-media-button,
-.maputo .tg-item-image,
-.maputo .tg-item-media-poster {
+.maputo div.tg-media-button {
 	-webkit-transition: background 0.15s ease-in-out, opacity 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
 	-moz-transition: background 0.15s ease-in-out, opacity 0.3s ease-in-out, -moz-transform 0.3s ease-in-out;
 	-ms-transition: background 0.15s ease-in-out, opacity 0.3s ease-in-out, -ms-transform 0.3s ease-in-out;
@@ -163,23 +163,34 @@
 	-o-transform: translate3d(0,0,0);
 	transform: translate3d(0,0,0);
 }
-.maputo.tg-item:hover .tg-item-image,
-.maputo.tg-item:hover .tg-item-media-poster {
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
-    -ms-transform: scale(1.1);
-    -o-transform: scale(1.1);
-    transform: scale(1.1);
+.maputo .tg-item-image,
+.maputo .tg-item-media-poster {
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+	transform: translateZ(0);
+	outline: 1px solid transparent;
+}
+.maputo:not(.tg-is-playing):not(.tg-force-play):hover .tg-item-image,
+.maputo:not(.tg-is-playing):not(.tg-force-play):hover .tg-item-media-poster {
+	top: -5%;
+	bottom: -5%;
+	left: -5%;
+	right: -5%;
 }
 .maputo.tg-is-playing .tg-item-overlay,
 .maputo.tg-force-play .tg-item-overlay {
 	pointer-events: none;
 	opacity: 0 !important;
 }
-.maputo .mejs-overlay-play {
-	display: none !important;
-}
 .maputo .to-post-like .to-heart-icon {
+    position: relative;
+    display: inline;
+    float: none;
+    margin: 0;
+	background: transparent !important;
+}
+.maputo .to-post-like .to-heart-icon svg {
     position: relative;
     top: 50%;
     width: 40px;
@@ -191,7 +202,7 @@
     stroke-width: 4;
 	fill: transparent !important;
 }
-.maputo .to-post-like .to-heart-icon:hover path {
+.maputo .to-post-like .to-heart-icon svg:hover path {
     stroke: inherit !important;
 }
 .maputo .tg-item-comment span,

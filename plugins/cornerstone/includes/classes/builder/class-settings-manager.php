@@ -84,8 +84,9 @@ class Cornerstone_Settings_Manager extends Cornerstone_Plugin_Component {
 
 		global $post;
 
-		if ( ! isset( $data['post_id'] ) || ! $post = get_post( (int) $data['post_id'] ) )
-      cs_send_json_error( array('message' => 'post_id not set' ) );
+		if ( ! isset( $data['post_id'] ) || ! $post = get_post( (int) $data['post_id'] ) ) {
+      return cs_send_json_error( array('message' => 'post_id not set' ) );
+    }
 
     setup_postdata( $post );
 

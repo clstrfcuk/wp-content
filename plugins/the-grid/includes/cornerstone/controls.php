@@ -18,11 +18,14 @@ $post_args = array(
 	'post_type'      => 'the_grid',
 	'post_status'    => 'any',
 	'posts_per_page' => -1,
+	'orderby'        => 'modified',
 	'meta_query' => array(
-		'relation' => 'AND',
+	'relation' => 'AND',
 		$WPML_meta_query
 	),
-	'suppress_filters' => true 
+	'suppress_filters' => true,
+	'no_found_rows' => true,
+	'cache_results' => false
 );
 			
 $grids   = get_posts($post_args);
@@ -33,16 +36,10 @@ $choices = array();
 			
 if(!empty($grids)){
 	foreach($grids as $grid){
-		$grid_post   = (array) get_post_meta($grid->ID, 'the_grid_post_type', true);
-		$grid_post   = implode('/', $grid_post);
-		$grid_post   = ($grid_post) ? $grid_post : 'post';
-		$grid_style  = get_post_meta($grid->ID, 'the_grid_style', true);
-		$grid_layout = get_post_meta($grid->ID, 'the_grid_layout', true);
-		$grid_name   = get_post_meta($grid->ID, 'the_grid_name', true);
-		$choice    = array( 'value' => $grid_name, 'label' => $grid_name.' ('.$grid_post.', '.$grid_style.', '.$grid_layout.')');
+		$choice    = array( 'value' => $grid->post_title, 'label' => $grid->post_title);
 		$choices[] = $choice;
 		if ($count == 0) {
-			$first_grid = $grid_name;
+			$first_grid = $grid->post_title;
 		}
 		$count++;
 	}

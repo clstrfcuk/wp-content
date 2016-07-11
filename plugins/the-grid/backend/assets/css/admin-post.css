@@ -1099,11 +1099,6 @@ pre.prettyprint:after{
 	margin: 16px auto 22px auto;  
 	text-align: center;
 }
-#tg-grid-skins .tg-filters-holder .tg-filter .tg-filter-name {
-    padding: 6px 20px;
-    background: #ffffff;
-	font-weight: 600;
-}
 #tg-grid-skins .tg-filters-holder .tg-filter[data-filter=".selected"] {
     display: inline-block !important;
 }

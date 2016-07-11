@@ -5,7 +5,7 @@
     window.css_array = [];
     window.targets = {};
     window.properties = {};
-
+  var flag = 1;
     /**
      *  Initially APPLY CSS
      *
@@ -93,7 +93,6 @@
      */
     jQuery(document).on('iframe_load',function(e,data){
         //  Init - Generate global CSS
-
         jQuery('.cp-cust-form .smile-input', window.parent.document ).each(function(index, el) {
             var t           = jQuery(el);
 
@@ -134,7 +133,12 @@
             dual__design_social_media();
         }
 
+
+        check_layout_dependancy();
+
         disable_form_field();
+
+        hide_butn_style();
 
         //  Label Visibility
         var lable_visible = jQuery('#smile_form_lable_visible', window.parent.document ).val();
@@ -171,9 +175,13 @@
      */
     //  Call form builder only for - form layout & form grid structure
     $(document).on('smile-radio-image-change', function(e, el) {
+
         var s = jQuery(el);
         if( s.hasClass('form_layout') || s.hasClass('form_grid_structure') ) {
             dual__design_form();
+
+            //
+            hide_butn_style();
 
             //  Label Visibility
             var lable_visible = jQuery('#smile_form_lable_visible', window.parent.document ).val();
@@ -184,6 +192,16 @@
         if( s.hasClass('cp_social_icon_style')){
             dual__design_social_media();
         }
+         if( s.hasClass('form_layout')) {
+            var val = jQuery(el).attr('value');
+            if( val == 'cp-form-layout-4' || val == 'cp-form-layout-3' ){
+                jQuery('.smile-element-container[data-element="form_lable_visible"]').addClass('hide-label');
+            }else{
+               jQuery('.smile-element-container[data-element="form_lable_visible"]').removeClass('hide-label');
+
+            }
+
+         }
 
     });
     $(document).on('smile-select-change', function(e, el) {
@@ -191,6 +209,7 @@
         var s = jQuery(el);
         if( s.hasClass('form_submit_align') ) {
             dual__design_form_submit_align();
+            //dual__design_form();
         }
 
         //social media
@@ -198,9 +217,14 @@
             dual__design_social_media();
         }
 
+       if( s.hasClass('btn_style')){
+          hide_butn_style();
+        }
+
     });
     $(document).on('multiBoxUpdated', function( e, new_string, pre_id) {
         dual__design_form();
+        hide_butn_style ();
     });
 
    $(document).on('smile-switch-change', function(e,val) {
@@ -208,22 +232,28 @@
         if( val == 'smile_cp_social_remove_icon_spacing' ||  val == 'smile_cp_display_nw_name' ||  val == 'smile_cp_social_share_count' || val == 'smile_cp_social_enable_icon_color' ){
             dual__design_social_media();
         }
-        
+
          if( val == 'smile_cta_switch'){
              disable_form_field();
          }
-       
+
+         if( val == 'smile_btn_attached_email' || val == 'smile_btn_shadow'){
+          dual__design_form();
+          hide_butn_style();
+         }
+        
     });
 
    $(document).on('cp-slider-slide', function(e,el) {
         if( jQuery(el).hasClass('social_min_count') ) {
             dual__design_social_media();
         }
-              
+
    });
 
+
    function disable_form_field(){
-     var val = jQuery('#smile_cta_switch').val() || '';    
+     var val = jQuery('#smile_cta_switch').val() || '';
      var parent = jQuery("#smile_cta_switch").parents('.accordion-frame');
      var next = jQuery('.cta_delay').parents('.smile-element-container');
      if(val == 0){
@@ -233,13 +263,17 @@
      }
    }
 
+
     function dual__design_form() {
+
         var form_submit_align = jQuery('#smile_form_submit_align').val() || '';
         var form_grid_structure = jQuery('[name="form_grid_structure"]:checked').val() || '';
         var form_layout = jQuery('[name="form_layout"]:checked').val() || '';
         var fields = jQuery('.smile-multi_box.form_fields').val() || '';
-
+        var enable_attached_field = jQuery('[name="btn_attached_email"]').val() || '';
         var preview_frame = jQuery("#smile_design_iframe").contents();
+        var box_shadow = jQuery('[name="btn_shadow"]').val() || '';
+
         /**
          *  Hide unwanted things from - INFO_BAR
          * 1. Disable 1 & 2 Layouts
@@ -354,6 +388,8 @@
         cp_submit_wrap.addClass( class_submit );
         cp_all_inputs_wrap.addClass( class_cp_all_inputs_wrap );
 
+
+
         /**
          * Create HTML structures
          *
@@ -373,16 +409,21 @@
             var single = val.split("|");
             if(single.length!== 0){
                 if (single[1].indexOf("hidden") <= 0){
-                    data_value.push(single[0]);              
+                    data_value.push(single[0]);
                 }
             }
 
         });
-        
+
         var last_order = data_value[data_value.length-1];
         last_order= last_order.split("->");
         last_order = parseInt(last_order[1]);
         }
+
+        if(typeof last_order =='undefined' || last_order == ''){
+         last_order = 0;
+        }
+
         var p = 0;
         $.each( all , function( index, val ) {
 
@@ -394,6 +435,7 @@
             var type = '';
             var dropdown_options = '';
             var row_value ='';
+            var last_input_class = '';
 
             //  Extract SINGLE - all
             var single = val.split("|");
@@ -419,13 +461,48 @@
 
             //  If last child then add '.col-md-12' for last child
                 if( ( form_layout !== 'cp-form-layout-3' ) && ( index === last_order ) && ( p%2 == 0 ) ) {
+
                     class_fields = ' col-md-12 col-lg-12 col-sm-12 col-xs-12 odd-field-fallback';
                 }
-           
+
+            if(( form_layout == 'cp-form-layout-2' ) &&  $lg == 0 ){
+                if(( index === last_order ) && ( p%2 == 0 )){
+                     class_fields = ' col-md-12 col-lg-12 col-sm-12 col-xs-12 odd-field-fallback';
+                 }else{
+                    class_fields = ' col-md-12 col-lg-12 col-sm-12 col-xs-12 ';
+                }
+            }
+
             if( type !== 'hidden' ) {
                 p++;
             }
-           
+
+            flag = last_order;
+            last_order =parseInt(last_order);
+            if( ( form_layout == 'cp-form-layout-3' ) && last_order == 0 ){
+               jQuery(".smile-element-container[ data-element='btn_attached_email']").removeClass('hide_email_attached');
+             }else{
+               jQuery(".smile-element-container[ data-element='btn_attached_email']").addClass('hide_email_attached');
+             }
+
+            if( ( form_layout == 'cp-form-layout-3' ) && ( index === last_order ) && enable_attached_field == 1 ){
+                if( last_order == 0 ){
+                    //enable_attached_field = 1;
+                    last_input_class = 'enable-field-attached';
+                    if( box_shadow == '1' ){
+                        last_input_class = last_input_class+" cp-enable-box-shadow";
+                    }
+                }else{
+                    //enable_attached_field = 0;
+                   // jQuery('[name="btn_attached_email"]').val("0");
+                }
+            }
+
+            var shadow_input_class = '';
+            /* if( box_shadow == '1' ){
+                shadow_input_class = " cp-enable-box-shadow";
+             }*/
+
             //  For ONLY hidden field
             if( type == 'hidden' ) {
                 //  Hidden
@@ -450,7 +527,7 @@
                     class_fields = ' col-md-12 col-lg-12 col-sm-12 col-xs-12 odd-field-fallback';
                 }*/
 
-                HTML += '<div class="cp-form-field '+class_fields+'">';
+                HTML += '<div class="cp-form-field '+class_fields+' '+last_input_class+' '+ shadow_input_class+'" >';
                 HTML += '   <label style="'+display+'">'+label+'</label>';
                 HTML += '       <div>';
 
@@ -493,6 +570,16 @@
         if( typeof function_name == 'CPModelHeight' ) {
              CPModelHeight();
         }
+
+        if( form_layout == 'cp-form-layout-3' && enable_attached_field == 1 && flag == 0){
+            cp_submit_wrap.addClass('enable-field-attached');
+           // cp_all_inputs_wrap.find('.cp-form-field:last-child').addClass('enable-field-attached');
+        }else{
+            cp_submit_wrap.removeClass('enable-field-attached');
+            //cp_all_inputs_wrap.find('.cp-form-field:last-child').removeClass('enable-field-attached');
+        }
+
+
     }
     //  Hide Labels?
     function dual__hide_form_labels( is_visible ) {
@@ -504,9 +591,11 @@
     }
     function dual__design_form_submit_align() {
         var v = $('#smile_form_submit_align' ).val();
+
         if( typeof v != 'undefined' && v != '' ) {
             var submit = jQuery("#smile_design_iframe").contents().find(".cp-submit-wrap")
-            submit.removeClass( "cp-submit-wrap-center cp-submit-wrap-left cp-submit-wrap-right cp-submit-wrap-full" );
+            submit.removeClass( "cp-submit-wrap-center cp-submit-wrap-left cp-submit-wrap-right cp-submit-wrap-full " );
+            //submit.removeClass("enable-field-attached");
             submit.addClass( v );
         }
     }
@@ -558,9 +647,8 @@
             social_style                    = '',
             icon_style                      = '';
 
-       
-           //console.log(cp_social_icon);
-           if(cp_social_icon_style =='' || typeof cp_social_icon_style =='undefined'){       
+
+           if(cp_social_icon_style =='' || typeof cp_social_icon_style =='undefined'){
               cp_social_icon_style = 'cp-icon-style-top';
            }
            if(cp_display_nw_name =='' || typeof cp_display_nw_name =='undefined'){
@@ -573,7 +661,7 @@
            if(cp_social_icon_effect =='' || typeof cp_social_icon_effect =='undefined'){
               cp_social_icon_effect = 'none';
            }
-    
+
         //remove html structure of wrapper
         if( typeof cp_social_icon !=='undefined' || cp_social_icon !==''){
              cp_social_media_wrapper.empty();
@@ -667,11 +755,11 @@
         if( typeof function_name == 'cp_row_equilize' ) {
                 cp_row_equilize();
         }
-       
-    //style class       
+
+    //style class
 
         var class_icon_hover_effect = '';
-       
+
         if( cp_social_icon_hover_effect == 'slide'){
             switch( cp_social_icon_style ) {
                 case 'cp-icon-style-simple':
@@ -690,7 +778,7 @@
                             class_icon_hover_effect = 'cp_social_flip';
                     break;
 
-               
+
             }
         }
 
@@ -712,7 +800,6 @@
 
         //for floating sidebar of slidein
         if( cp_social_icon_style == 'cp-icon-style-top'){
-        //console.log("here"+cp_social_icon_hover_effect);
             var cpeffectList = ['cp-hover-simple', 'cp-hover-slide', 'cp-hover-grow', 'cp-hover-flip'];
             jQuery.each(cpeffectList, function(i, v){
                container_social_nw.removeClass(v);
@@ -784,6 +871,46 @@
             container_social_nw.removeClass('cp-custom-sc-color');
         }
 
+    }
+
+
+}
+    function check_layout_dependancy(){
+        var layout = jQuery('[name="form_layout"]:checked').val() || '';
+        if( layout == 'cp-form-layout-4' || layout == 'cp-form-layout-3' ){
+            jQuery('.smile-element-container[data-element="form_lable_visible"]').addClass('hide-label');
+        }else{
+           jQuery('.smile-element-container[data-element="form_lable_visible"]').removeClass('hide-label');
+
+        }
+    }
+
+//hide btn style for enable input field attached
+function hide_butn_style(){
+
+    var layout = jQuery('[name="form_layout"]:checked').val() || '';
+    var btn_attached_email    = jQuery('[name="btn_attached_email"]').val() || '';
+    var option =  jQuery("#smile_btn_style").val();
+    var btn_shadow = jQuery(".smile-element-container[data-element='btn_shadow']");
+
+    if( btn_attached_email == '1' && layout == 'cp-form-layout-3' && flag !== 1 ){
+        jQuery("#smile_btn_style option[value=cp-btn-3d]").hide();
+        jQuery("#smile_btn_style option[value=cp-btn-outline]").hide();
+        if( option == 'cp-btn-3d' || option == 'cp-btn-outline' ){
+            jQuery('select[name^="btn_style"] option[selected="selected"]').removeAttr("selected");
+            jQuery('select[name^="btn_style"] option[value="cp-btn-flat"]').attr("selected","selected");
+            btn_shadow.addClass('display-shadow');
+        }else{
+           jQuery('select[name^="btn_style"] option[selected="selected"]').removeAttr("selected");
+            btn_shadow.removeClass('display-shadow');
+            jQuery('select[name^="btn_style"] option[value="'+option+'"]').attr("selected","selected");
+        }
+    }else{
+        jQuery('select[name^="btn_style"] option[selected="selected"]').removeAttr("selected");
+        btn_shadow.removeClass('display-shadow');
+        jQuery('select[name^="btn_style"] option[value="'+option+'"]').attr("selected","selected");
+        jQuery("#smile_btn_style option[value=cp-btn-3d]").show();
+        jQuery("#smile_btn_style option[value=cp-btn-outline]").show();
     }
 }
 

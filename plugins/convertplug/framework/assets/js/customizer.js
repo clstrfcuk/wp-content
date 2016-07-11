@@ -58,8 +58,7 @@ window.onload = function() {
  *
  * It works only once when page is loaded.
  */
-jQuery(window).load(function() {
-
+jQuery(window).on( 'load', function() {
 	smile_global_data = get_customizer_form_data();
 
 	smile_global_data.modal_size = ( typeof smile_global_data.modal_size == 'undefined' ? 'cp-modal-custom-size' : smile_global_data.modal_size );
@@ -193,7 +192,7 @@ function get_customizer_form_single_data() {
  * 	Slider			- 	Slide
  * 	ColorPicker		- 	Drag Drop
  */
-jQuery(window).load(function() {
+jQuery(window).on( 'load', function() {
 	jQuery('.cp-cust-form .smile-input', window.parent.document ).change(function( event ) {
 		var self = jQuery( this );
 
@@ -221,6 +220,7 @@ jQuery(window).load(function() {
 		}
 
 		input_shadow_change(smile_global_data);
+		//field_submit_attached(smile_global_data);
 
 	});
 });
@@ -228,7 +228,6 @@ jQuery(window).load(function() {
 /** TRIGGER - SINGLE */
 jQuery(document).on('smile_data_received',function(e,data){
     dual__toggle_cp_form(data);
-    // dual__hide_form_labels(data);
     input_shadow_change(smile_global_data);
 });
 
@@ -268,3 +267,16 @@ function input_shadow_change( data ){
 	 jQuery(".default-form").removeClass('enable_input_shadow');
 	}
 }
+
+function field_submit_attached( data ){
+	if(data.btn_attached_email !='' && data.btn_attached_email == 1 ){
+	 jQuery(".cp-submit-wrap").addClass('enable-field-attached');
+	 jQuery('.cp-form-field:last-child').addClass('enable-field-attached');
+	}else{
+	 jQuery(".cp-submit-wrap").removeClass('enable-field-attached');
+	 jQuery('.cp-form-field:last-child').removeClass('enable-field-attached');
+	}
+}
+
+
+

@@ -80,14 +80,14 @@ $params = array_merge( array(
 		'param_name' => 'h2',
 		'value' => __( 'Hey! I am first heading line feel free to change me', 'js_composer' ),
 		'description' => __( 'Enter text for heading line.', 'js_composer' ),
-		'edit_field_class' => 'vc_col-sm-9 vc_column',
+		'edit_field_class' => 'vc_col-sm-9',
 	),
 	array(
 		'type' => 'checkbox',
 		'heading' => __( 'Use custom font?', 'js_composer' ),
 		'param_name' => 'use_custom_fonts_h2',
 		'description' => __( 'Enable Google fonts.', 'js_composer' ),
-		'edit_field_class' => 'vc_col-sm-3 vc_column',
+		'edit_field_class' => 'vc_col-sm-3',
 	),
 
 ), $h2_custom_heading, array(
@@ -97,14 +97,14 @@ $params = array_merge( array(
 			'param_name' => 'h4',
 			'value' => '',
 			'description' => __( 'Enter text for subheading line.', 'js_composer' ),
-			'edit_field_class' => 'vc_col-sm-9 vc_column',
+			'edit_field_class' => 'vc_col-sm-9',
 		),
 		array(
 			'type' => 'checkbox',
 			'heading' => __( 'Use custom font?', 'js_composer' ),
 			'param_name' => 'use_custom_fonts_h4',
 			'description' => __( 'Enable custom font option.', 'js_composer' ),
-			'edit_field_class' => 'vc_col-sm-3 vc_column',
+			'edit_field_class' => 'vc_col-sm-3',
 		),
 	), $h4_custom_heading, array(
 		array(
@@ -150,7 +150,7 @@ $params = array_merge( array(
 				'element' => 'style',
 				'value' => array( 'custom' ),
 			),
-			'edit_field_class' => 'vc_col-sm-6 vc_column',
+			'edit_field_class' => 'vc_col-sm-6',
 		),
 		array(
 			'type' => 'colorpicker',
@@ -161,7 +161,7 @@ $params = array_merge( array(
 				'element' => 'style',
 				'value' => array( 'custom' ),
 			),
-			'edit_field_class' => 'vc_col-sm-6 vc_column',
+			'edit_field_class' => 'vc_col-sm-6',
 		),
 		array(
 			'type' => 'dropdown',

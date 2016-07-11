@@ -38,7 +38,7 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 		$result = $this->data_migration( $data );
 
 		if ( is_wp_error( $result ) )
-			cs_send_json_error( array( 'message' => $result->get_error_message() ) );
+			return cs_send_json_error( array( 'message' => $result->get_error_message() ) );
 
 		return cs_send_json_success( $result );
 
@@ -129,11 +129,11 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 	public function ajax_save( $post ) {
 
 		if ( ! current_user_can( 'edit_pages' ) ) {
-			cs_send_json_error( 'Capability mismatch.' );
+			return cs_send_json_error( 'Capability mismatch.' );
 		}
 
 		if ( !isset( $post['elements'] ) )
-			cs_send_json_error( 'Missing element data.' );
+			return cs_send_json_error( 'Missing element data.' );
 
 		if ( !isset( $post['type'] ) )
 			$post['type'] = 'block';
@@ -177,7 +177,7 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 	public function ajax_delete( $post ) {
 
 		if ( ! current_user_can( 'edit_pages' ) ) {
-			cs_send_json_error( 'Capability mismatch.' );
+			return cs_send_json_error( 'Capability mismatch.' );
 		}
 
 		if ( !isset( $post['slug'] ) )

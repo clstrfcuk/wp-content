@@ -592,29 +592,41 @@ function vc_map_get_defaults( $tag ) {
 	$shortcode = vc_get_shortcode( $tag );
 	$params = array();
 	if ( is_array( $shortcode ) && isset( $shortcode['params'] ) && ! empty( $shortcode['params'] ) ) {
-		foreach ( $shortcode['params'] as $param ) {
-			if ( isset( $param['param_name'] ) && 'content' !== $param['param_name'] ) {
-				$value = '';
-				if ( isset( $param['std'] ) ) {
-					$value = $param['std'];
-				} elseif ( isset( $param['value'] ) && 'checkbox' !== $param['type'] ) {
-					if ( is_array( $param['value'] ) ) {
-						$value = current( $param['value'] );
-						if ( is_array( $value ) ) {
-							// in case if two-dimensional array provided (vc_basic_grid)
-							$value = current( $value );
-						}
-						// return first value from array (by default)
-					} else {
-						$value = $param['value'];
-					}
-				}
-				$params[ $param['param_name'] ] = $value;
-			}
-		}
+		$params = vc_map_get_params_defaults( $shortcode['params'] );
 	}
 
 	return $params;
+}
+
+/**
+ * @param $params
+ * @since 4.12
+ * @return array
+ */
+function vc_map_get_params_defaults( $params ) {
+	$resultParams = array();
+	foreach ( $params as $param ) {
+		if ( isset( $param['param_name'] ) && 'content' !== $param['param_name'] ) {
+			$value = '';
+			if ( isset( $param['std'] ) ) {
+				$value = $param['std'];
+			} elseif ( isset( $param['value'] ) ) {
+				if ( is_array( $param['value'] ) ) {
+					$value = current( $param['value'] );
+					if ( is_array( $value ) ) {
+						// in case if two-dimensional array provided (vc_basic_grid)
+						$value = current( $value );
+					}
+					// return first value from array (by default)
+				} else {
+					$value = $param['value'];
+				}
+			}
+			$resultParams[ $param['param_name'] ] = apply_filters( 'vc_map_get_param_defaults', $value, $param );
+		}
+	}
+
+	return $resultParams;
 }
 
 /**

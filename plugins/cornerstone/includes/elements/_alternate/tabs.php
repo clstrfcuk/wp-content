@@ -98,11 +98,11 @@ class CS_Tabs extends Cornerstone_Element_Base {
 
     foreach ( $elements as $e ) {
 
-      $tabs_extra = $this->extra( array(
-        'class' => $e['class']
-      ) );
+      $e_params = array(
+        'active' => $e['active']
+      );
 
-      $tabs_content .= '[x_tab active="' . $e['active'] . '"' . $tabs_extra . ']' . $e['content'] . '[/x_tab]';
+      $tabs_content .= cs_build_shortcode( 'x_tab', $e_params, $this->extra( $e ), $e['content'] );
 
     }
 

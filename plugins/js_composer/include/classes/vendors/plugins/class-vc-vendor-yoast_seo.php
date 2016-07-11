@@ -64,7 +64,7 @@ class Vc_Vendor_YoastSeo implements Vc_Vendor_Interface {
 	 * @since 4.4
 	 */
 	public function enqueueJs() {
-		wp_enqueue_script( 'vc_vendor_yoast_js', vc_asset_url( 'js/vendors/yoast.js' ), array( 'yoast-seo' ), WPB_VC_VERSION, true );
+		wp_enqueue_script( 'vc_vendor_yoast_js', vc_asset_url( 'js/vendors/yoast.js' ), array( 'yoast-seo-admin-global-script' ), WPB_VC_VERSION, true );
 	}
 
 	public function frontendEditorBuild() {

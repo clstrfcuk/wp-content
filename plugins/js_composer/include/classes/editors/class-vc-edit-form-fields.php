@@ -265,6 +265,7 @@ class Vc_Edit_Form_Fields implements Vc_Render {
 			'wpb_el_type_' . $param['type'],
 			'vc_wrapper-param-type-' . $param['type'],
 			'vc_shortcode-param',
+			'vc_column',
 		);
 		if ( ! empty( $param['param_holder_class'] ) ) {
 			$param['vc_single_param_edit_holder_class'][] = $param['param_holder_class'];

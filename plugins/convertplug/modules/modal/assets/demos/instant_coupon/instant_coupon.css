@@ -151,9 +151,9 @@
 .cp-instant-coupon .cp-form-container .cp-form-field textarea:active,
 .cp-instant-coupon .cp-form-container .cp-form-field textarea:hover,
 .cp-instant-coupon .cp-form-container .cp-form-field textarea:focus {
-    -webkit-box-shadow: inset 1px 1px 3px 0px #A5A5A5;
+    /* -webkit-box-shadow: inset 1px 1px 3px 0px #A5A5A5;
     -moz-box-shadow: inset 1px 1px 3px 0px #A5A5A5;
-    box-shadow: inset 1px 1px 3px 0px #A5A5A5;
+    box-shadow: inset 1px 1px 3px 0px #A5A5A5; */
 }
 
 .cp-form-container.cp-no-padding {

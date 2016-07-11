@@ -83,9 +83,10 @@ jQuery( document ).ready( function () {
 	var VcVendorYoast = function () {
 		// init
 		YoastSEO.app.registerPlugin( pluginName, { status: 'ready' } );
+		YoastSEO.app.pluginReady( pluginName );
 		YoastSEO.app.registerModification( 'content', contentModification, pluginName, 5 );
 	};
-	vc.events.once( 'app.addAll', function () {
+	jQuery( window ).on( 'YoastSEO:ready', function () {
 		vcYoast = new VcVendorYoast();
 	} );
 } );

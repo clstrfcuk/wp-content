@@ -141,7 +141,7 @@ jQuery(document).on('smile_panel_loaded',function(e,smile_panel,id){
 			var value       = o;
 			partial_refresh_font_family( css_preview, selector, property, unit, value );
 
-			$(document).trigger('smile-google-font-change', [a] );
+			jQuery(document).trigger('smile-google-font-change', [a] );
 		});
 	});
 

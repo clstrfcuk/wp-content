@@ -26,7 +26,7 @@ jQuery.noConflict();
 		if (xhr && (xhr.readyState == 3 || xhr.readyState == 2 || xhr.readyState == 1)) {
 			return false;
 		}
-		
+
 		// prepare message icon
 		var msg_state = msg_strings[ajax_data.func];
 		
@@ -107,7 +107,7 @@ jQuery.noConflict();
 				meta_val = $this.find('[name]').val();
 			}	
 			if (meta_ID !== '') {
-				meta_data[meta_ID] =  meta_val;
+				meta_data[meta_ID] = meta_val;
 			}
 			
 		});
@@ -116,6 +116,139 @@ jQuery.noConflict();
 		
 	};
 
+// ==================================================================
+// Helper to get field value
+// ==================================================================
+	
+	window.TG_field_value = function(el, prefix){ 
+		
+		var data = {};
+		
+		el.find('.tomb-row input, .tomb-row select, .tomb-row textarea').each(function() {
+					
+			var $this  = $(this), value,
+				name   = $this.attr('name');
+				
+			if ($this.is(':radio')) {
+				value = $this.closest('.tomb-row').find('[name]:checked').val();
+			} else if ($this.is(':checkbox')) {
+				value = $this.is(':checked');
+				value = (value) ? true : '';
+			} else {
+				value = $this.val();
+			}
+				
+			if (name) {
+				data[name.replace(prefix,'')] = value;
+			}
+			
+		});
+		
+		return data;
+	
+	}
+	
+// ==================================================================
+// Helper to set element color (skin builder)
+// ==================================================================
+	
+	window.TG_element_color = function(element, settings) {
+		
+		var tag,
+			title_tag    = settings['title_tag'],
+			source_type  = settings['source_type'],
+			post_content = settings['post_content'],
+			woo_content  = settings['woocommerce_content'];
+		
+		if (source_type === 'post') {
+			switch(post_content) {
+				case 'get_the_title':
+					if (title_tag === 'p' || title_tag === 'div') {
+						tag = 'tg-p-tag';
+					} else {
+						tag = 'tg-h-tag';
+					}
+					break;
+				case 'get_the_excerpt':
+					tag = 'tg-p-tag';
+					break;
+				case 'get_the_date':
+					tag = 'tg-span-tag';
+					break;
+				case 'get_media_button':
+					tag = 'tg-h-tag';
+					break;
+				case 'get_the_author':
+					tag = 'tg-span-tag';
+					break;
+				case 'get_the_comments_number':
+					tag = 'tg-span-tag';
+					break;
+				case 'get_the_likes_number':
+					tag = 'tg-span-tag';
+					break;
+				case 'get_the_terms':
+					tag = 'tg-span-tag';
+					break;
+				case 'get_item_meta':
+					tag = 'tg-span-tag';
+					break;
+				default:
+					tag = 'tg-p-tag';
+			}
+		} else if (source_type === 'woocommerce') {
+			switch(woo_content) {
+				case 'get_product_price':
+					tag = 'tg-h-tag';
+					break;
+				case 'get_product_full_price':
+					tag = 'tg-h-tag';
+					break;
+				case 'get_product_regular_price':
+					tag = 'tg-h-tag';
+					break;
+				case 'get_product_sale_price':
+					tag = 'tg-h-tag';
+					break;
+				case 'get_product_add_to_cart_url':
+					tag = 'tg-h-tag';
+					break;
+				default:
+					tag = 'tg-span-tag';
+			}
+		} else if (source_type === 'icon') {
+			tag = 'tg-h-tag';
+		} else if (source_type === 'html') {
+			tag = 'tg-p-tag';
+		} else if (source_type === 'line_break') {
+			tag = 'tg-line-break';
+		}
+		
+		$('.tg-element-draggable'+element).removeClass('tg-h-tag tg-p-tag tg-span-tag tg-line-break').addClass(tag);
+	
+	}
+
+// ==================================================================
+// Helper to get url parameter
+// ===================================================================
+
+	function TG_getUrlParameter(sParam) {
+		
+		var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+			sURLVariables = sPageURL.split('&'),
+			sParameterName,
+			i;
+	
+		for (i = 0; i < sURLVariables.length; i++) {
+			sParameterName = sURLVariables[i].split('=');
+	
+			if (sParameterName[0] === sParam) {
+				return sParameterName[1] === undefined ? true : sParameterName[1];
+			}
+		}
+		
+	};
+	
 // ==================================================================
 // Sticker banner/header
 // ===================================================================
@@ -187,13 +320,14 @@ jQuery.noConflict();
 	// grid list overview event
 	$(document).on('click', over_event, function(e) {
 		e.preventDefault();
+		var result;
 		if ($(this).hasClass('tg-delete')) {
-			var result = confirm(tg_admin_global_var.box_messages.tg_delete.message);
+			result = confirm(tg_admin_global_var.box_messages.tg_delete.message);
 			if (!result) {
 				return false;
 			}
 		} else if ($(this).hasClass('tg-clone')) {
-			var result = confirm(tg_admin_global_var.box_messages.tg_clone.message);
+			result = confirm(tg_admin_global_var.box_messages.tg_clone.message);
 			if (!result) {
 				return false;
 			}
@@ -494,32 +628,32 @@ jQuery.noConflict();
 // GRID Export
 // ==================================================================
 
-	$(document).on('click','#tg_post_export', function() {
+	$(document).on('click','#tg_export_items', function() {
 		
 		$('.tg-export-msg').html('');
 		
-		var post_IDs = [];
-		var y = 0;
-		$('.tg-export .tg-grid-list-holder li').each(function(i, selected){ 
-			if ($(this).hasClass('selected')) {
-				post_IDs[y] = $(selected).data('id'); 
-				y++;
+		var item_IDs = {};
+		$('.tg-export .tg-list-item-holder li').each(function(){ 
+			var $this = $(this);
+			if ($this.hasClass('selected')) {
+				item_IDs[$this.data('type')] = (item_IDs[$this.data('type')]) ? item_IDs[$this.data('type')] : {};
+				item_IDs[$this.data('type')][$this.data('name')] = $this.data('id'); 
 			}
 		});
-		
-		if (post_IDs.length) {
-			$(info_msg).html(msg_icons.before+msg_strings.tg_export_grids.before);
+
+		if (item_IDs) {
+			$(info_msg).html(msg_icons.before+msg_strings.tg_export_items.before);
 			$(info_box).addClass(box_load);
-			$('[name="tg_export_grids"]').val(JSON.stringify(post_IDs));
-			$('[name="tg_export_grids"]').trigger('click');
+			$('[name="tg_export_items"]').val(JSON.stringify(item_IDs));
+			$('[name="tg_export_items"]').trigger('click');
 			setTimeout(function() {
-				$(info_msg).html(msg_icons.success+msg_strings.tg_export_grids.success);
+				$(info_msg).html(msg_icons.success+msg_strings.tg_export_items.success);
 				setTimeout(function() {
 					$(info_box).removeClass(box_load);
 				}, 800);
 			}, 800);
 		} else {
-			$('.tg-export-msg').html(msg_strings.tg_export_grids.empty);
+			$('.tg-export-msg').html(msg_strings.tg_export_items.empty);
 		}
 
 	});
@@ -528,25 +662,25 @@ jQuery.noConflict();
 // Export grid list selection
 // ======================================================
 		
-	$(document).on('click', '.tg-grid-list-wrapper[data-multi-select="1"] .tg-grid-list-holder li', function() {
+	$(document).on('click', '.tg-list-item-wrapper[data-multi-select="1"] .tg-list-item-holder li', function() {
 		$(this).toggleClass('selected');
 	});
 		
-	$(document).on('keyup','.tg-grid-list-search', function() {
+	$(document).on('keyup','.tg-list-item-search', function() {
 		var val = $(this).val();
 		tg_search_grid(val);
 	});
 	
-	$(document).on('click', '.tg-grid-list-add-all', function() {
-		$(this).prevAll('.tg-grid-list-wrapper').find('.tg-grid-list-holder li').addClass('selected');
+	$(document).on('click', '.tg-list-item-add-all', function() {
+		$(this).prevAll('.tg-list-item-wrapper').find('.tg-list-item-holder li').addClass('selected');
 	});
 	
-	$(document).on('click', '.tg-grid-list-clear', function() {
-		$(this).prevAll('.tg-grid-list-wrapper').find('.tg-grid-list-holder li').removeClass('selected');
+	$(document).on('click', '.tg-list-item-clear', function() {
+		$(this).prevAll('.tg-list-item-wrapper').find('.tg-list-item-holder li').removeClass('selected');
 	});
 		
 	function tg_search_grid(val) {
-		$('.tg-grid-list-holder li').each(function(index, element) {
+		$('.tg-list-item-holder li').each(function(index, element) {
 			var $this = $(this);
 			var grid = $this.text();
 			if (grid.toLowerCase().indexOf(val) >= 0) {
@@ -568,13 +702,13 @@ jQuery.noConflict();
 		import_message_success = '.tg-import-msg-success',
 		import_message_error   = '.tg-import-msg-error';
 	
-	$(document).on('click','#tg_post_import, #tg-import-demo', function() {
+	$(document).on('click','#tg_import_items, #tg-import-demo', function() {
 		
-		var grid_names = [];
+		var item_names = [];
 		var y = 0;
-		$('.tg-import .tg-grid-list-holder li').each(function(i, selected){ 
+		$('.tg-import .tg-list-item-holder li').each(function(i, selected){ 
 			if ($(this).hasClass('selected')) {
-				grid_names[y] = $(selected).data('name'); 
+				item_names[y] = $(selected).data('name'); 
 				y++;
 			}
 		});
@@ -583,8 +717,8 @@ jQuery.noConflict();
 			nonce      : tg_admin_global_var.nonce,
 			action     : 'backend_grid_ajax',
 			func       : $(this).data('action'),
-			grid_data  : import_data,
-			grid_names : grid_names,
+			item_data  : import_data,
+			item_names : item_names,
 			grid_demo  : $(this).data('grid-demo'),
 			callbacks : {
 				before  : show_message_load,
@@ -693,8 +827,8 @@ jQuery.noConflict();
 		$grid_skins_loading = $('#tg-grid-skins-loading'),
 		dft_post_style = $('.the_grid_style input:checked').val(),
 		dft_post_style = (dft_post_style === 'justified') ? 'grid' : dft_post_style,
-		dft_maso_skin  = tg_admin_global_var.default_skin.masonry,
-		dft_grid_skin  = tg_admin_global_var.default_skin.grid,
+		dft_maso_skin  = (typeof tg_admin_global_var.default_skin !== 'undefined') ? tg_admin_global_var.default_skin.masonry : null,
+		dft_grid_skin  = (typeof tg_admin_global_var.default_skin !== 'undefined') ? tg_admin_global_var.default_skin.grid : null,
 		dft_skin_name  = (dft_post_style === 'grid') ?  dft_grid_skin : dft_maso_skin,
 		skin_data_arr  = $.parseJSON($('.tomb-grid-skins').val());
 		skin_data_arr  = (skin_data_arr && !$.isEmptyObject(skin_data_arr)) ? skin_data_arr : {};
@@ -714,25 +848,27 @@ jQuery.noConflict();
 				},
 				success : function(ajax_data, response, msg) {
 					
-					if (!response.content) {
-						$grid_skins_loading.removeClass('loading-anim').html(msg_strings.tg_skin_selector.empty);
+					if (!response.success) {
+						$grid_skins_loading.removeClass('loading-anim').html(response.message);
 						return false;
 					}
 					
 					$grid_skins.html(response.content).find('.tg-grid-holder').The_Grid();
+					$grid_skins.find('[data-filter=".selected"] .tg-filter-count').html(1);
 					var interval = setInterval(function(){ 
 						if ($grid_skins.find('.tg-grid-loaded').length === 2) {
 							$(window).trigger(tg_debounce_resize);
 							clearInterval(interval);
 						}
 					}, 50);
+					
 					// set selected skins
 					grid_skins_preview();
 					update_selected_skin();	
 									
 				},
-				error   : function(ajax_data, response) {
-					$grid_skins.html(response.error);
+				error : function(ajax_data, response) {
+					$grid_skins_loading.removeClass('loading-anim').html(response.message);
 				}
 			}
 		});
@@ -894,7 +1030,7 @@ jQuery.noConflict();
 					}
 				},
 				error : function(ajax_data, response) {
-					$grid_preview_loader.html(msg_strings.tg_grid_preview.error);
+					$grid_preview_loader.html(response.message);
 				}
 			}
 		});
@@ -1109,41 +1245,6 @@ jQuery.noConflict();
 	});
 
 // ==================================================================
-// Instagram Authorization - Access Token
-// ==================================================================
-	
-	$('.tg-instagram-access-token').click(function() {
-		
-		var href = window.location.href;
-			href = href.replace(href.substr(href.lastIndexOf('/') + 1), 'admin.php?page=the_grid_global_settings');
-	
-		var instagram = 'https://api.instagram.com/oauth/authorize/?' + $.param({
-			client_id: '01af9ed3d2b34098962286b042c7004a',
-			redirect_uri: 'http://theme-one.com/services/instagram?url=' + href,
-			response_type: 'code',
-			scope: 'public_content',
-			url: document.location.href
-		});
-		
-		document.location.href = instagram;
-		
-	});
-	
-	$(document).ready(function(e) {
-		
-		var href = window.location.href,
-			match1 = href.match(/([?&])instagram_access_token(?:(?=&)|=[^&]*)/),
-			match2 = href.match(/([?&])instagram_logout(?:(?=&)|=[^&]*)/);
-		if (match1 || match2) {
-			var lastIndex = href.substr(href.lastIndexOf('/') + 1);
-				href = href.replace(lastIndex, 'admin.php?page=the_grid_global_settings');
-			history.pushState(null, null, href);
-			$('[data-target="social-api"].tomb-tab').trigger('click');
-		}
-		
-	});
-
-// ==================================================================
 // Envato Authorization - Access Token
 // ==================================================================
 	
@@ -1168,9 +1269,13 @@ jQuery.noConflict();
 				success : function(ajax_data, response, msg) {
 					$this.nextAll('.spinner').css('visibility', 'hidden').hide();
 					$this.nextAll('strong').html(msg_strings[ajax_data.func].success);
-					setTimeout(function() {
-						$('.tg-row').html($(response.content).html());
-					}, 1500);
+					if ($('.tg-custom-skins-overview').length) {
+						location.reload();
+					} else {
+						setTimeout(function() {
+							$('.tg-row').html($(response.content).html());
+						}, 1500);
+					}
 				},
 				error : function(ajax_data, response) {
 					$this.nextAll('.spinner').css('visibility', 'hidden').hide();
@@ -1226,12 +1331,376 @@ jQuery.noConflict();
 // The Grid - Update plugin
 // ==================================================================
 	
-	
 	$(document).on('click','.update-now.tg-button-live-update', function(e) {
 		
 		var $this = $(this);
 		$this.nextAll('.spinner').css('visibility', 'visible').show();
 		$this.nextAll('strong').html(msg_strings.tg_update_plugin.before);
+		
+	});
+	
+// ==================================================================
+// The Grid - Custom Skins Overview
+// ==================================================================
+	
+	// skins overview style buttons
+	$(document).on('click', '.tg-skins-style-button', function() {
+		
+		var $this = $(this),
+			style = $this.data('style');
+			
+		$('.tg-skins-style-button').removeClass('tg-selected');
+		$this.addClass('tg-selected');
+		$('.tg-grid-wrapper').addClass('skin-hidden');
+		$('#tg-grid-'+style+'-skin').removeClass('skin-hidden');
+		
+	});
+
+// ==================================================================
+// The Grid - Import demo skins
+// ==================================================================
+	
+	// import demo skins
+	$(document).on('click', '#tg-import-skin-demo', function() {
+
+		var $this = $(this);
+		
+		Ajax_Helper({
+			nonce     : tg_admin_global_var.nonce,
+			action    : 'backend_grid_ajax',
+			func      : 'tg_import_demo_skins',
+			callbacks : {
+				before  : show_message_load,
+				success : function(ajax_data, response, msg) {
+					$(info_msg).html(msg);
+					setTimeout(function() {
+						$(info_box).removeClass(box_load);
+						if (response.content) {
+							var skin_list = $(response.content);
+							$('.tg-custom-skins-overview').replaceWith(skin_list);
+							$('.tg-grid-holder').The_Grid();
+						}
+					}, 800);
+				},
+				error   : show_message_error
+			}
+		});
+		
+	});
+
+// ==================================================================
+// The Grid - Get custom skin settings
+// ==================================================================
+
+	function TG_fect_skin_data() {
+		
+		var json = {};
+		
+		json['item'] = {};
+		json['elements'] = {};
+		
+		// store elements settings for each item area
+		$('.tg-skin-build-inner [data-item-area]').each(function() {
+			
+			var area = $(this).data('item-area');
+			json['elements'][area] = {};
+			
+			if ($(this).is(':visible')) {
+				$(this).find('.tg-element-draggable').each(function() {
+					
+					var $this = $(this);
+					json['elements'][area][$this.data('name')] = $this.data('settings');
+					
+				});
+			}
+			
+        });
+		
+		// store item layout settings
+		$('.tg-panel-item > div > [data-settings]').each(function() {
+			
+			var prefix  = $(this).data('prefix');
+			var element = $(this).data('settings');
+
+			if ($(this).data('style') && element != 'animations') {
+
+				if (!json['item']['containers']) {
+					json['item']['containers'] = {};
+				}
+				json['item']['containers'][element] = {};
+				
+				$(this).find('[data-settings="styles"]').each(function() {
+					
+					var settings = $(this).data('settings');
+					json['item']['containers'][element][settings] = {};
+					
+					$(this).find('[data-settings]').each(function() {
+						
+						prefix = $(this).data('prefix');
+						json['item']['containers'][element][settings][$(this).data('settings')] = TG_field_value($(this), prefix);
+						
+					});
+					
+					var $animation = $('.tg-panel-item [data-settings="animation"] [data-settings=\''+element+'\']');
+					json['item']['containers'][element][settings]['is_hover'] = $(this).find('[name="is_hover"]').is(':checked');
+					json['item']['containers'][element]['animation'] = TG_field_value($animation, $animation.data('prefix'));
+					
+				});
+				
+			} else if (element != 'animations'){
+				
+				if (element != 'global_css'){
+					json['item'][$(this).data('settings')] = TG_field_value($(this), prefix);
+				} else {
+					json['item'][$(this).data('settings')] = $(this).find('textarea').val();
+				}
+				
+			}
+            
+        });
+		
+		return json;
+		
+	}
+	
+// ==================================================================
+// The Grid - Save skin
+// ==================================================================
+
+	$(document).on('click', '#tg_skin_save', function() {
+		
+		var $this   = $(this);
+		
+		var json = TG_fect_skin_data();
+
+		Ajax_Helper({
+			nonce     : tg_admin_global_var.nonce,
+			action    : 'backend_grid_ajax',
+			func      : $this.data('action'),
+			id        : TG_getUrlParameter('id'),
+			settings  : JSON.stringify(json),
+			callbacks : {
+				before  : show_message_load,
+				success : function(ajax_data, response, msg) {
+					
+					var href = window.location.href,
+					lastIndex = href.substr(href.lastIndexOf('/') + 1);
+					href = href.replace(lastIndex, 'admin.php?page=the_grid_skin_builder&id='+response.message);					
+					if (history.pushState) {
+						history.pushState(null, null, href);
+					} else {
+						window.location.href = href;
+					}
+					
+					$(info_msg).html(msg);
+					setTimeout(function() {
+						$(info_box).removeClass(box_load);
+					}, 800);
+					
+				},
+				error   : show_message_error
+			}
+		});
+		
+	});
+	
+// ==================================================================
+// The Grid - Download skin
+// ==================================================================
+
+	$(document).on('click', '#tg_download_skin', function() {
+		
+		var json = TG_fect_skin_data();
+		$('[name="tg_export_skin"]').val(JSON.stringify(json));
+		$('[name="tg_export_skin"]').trigger('click');
+		
+		$(info_msg).html(msg_icons.before+msg_strings.tg_download_skin.before);
+		$(info_box).addClass(box_load);
+		setTimeout(function() {
+			$(info_msg).html(msg_icons.success+msg_strings.tg_download_skin.success);
+			setTimeout(function() {
+				$(info_box).removeClass(box_load);
+			}, 800);
+		}, 800);
+		
+	});
+
+// ==================================================================
+// The Grid - Delete/Clone skin
+// ==================================================================
+	
+	$(document).on('click', '#tg-delete-skin, #tg-clone-skin', function() {
+
+		var $this = $(this);
+		
+		var result  = confirm(tg_admin_global_var.box_messages[$this.data('action')].message);
+		if (!result) {
+			return false;
+		}
+		
+		Ajax_Helper({
+			nonce     : tg_admin_global_var.nonce,
+			action    : 'backend_grid_ajax',
+			func      : $this.data('action'),
+			id        : $this.data('id'),
+			callbacks : {
+				before  : show_message_load,
+				success : function(ajax_data, response, msg) {
+					$(info_msg).html(msg);
+					/*if ($this.data('action') === 'tg_delete_skin') {
+						$this.closest('.tg-grid-holder').TG_Layout('remove', $this.closest('.tg-item')[0]).TG_Layout();
+					}*/
+					setTimeout(function() {
+						$(info_box).removeClass(box_load);
+						if (response.content) {
+							var skin_list = $(response.content);
+							$('.tg-custom-skins-overview').replaceWith(skin_list);
+							$('.tg-grid-holder').The_Grid();
+						}
+					}, 800);
+				},
+				error   : show_message_error
+			}
+		});
+		
+	});
+	
+// ==================================================================
+// The Grid - Save skin element
+// ==================================================================
+
+	var tg_element_name;
+	var tg_overwrite_element = '';
+	
+	$(document).on('click', '#tg-element-save', function() {
+
+		var $this = $(this);
+		
+		// if overwrite mode name input box
+		if (!tg_overwrite_element) {
+			tg_element_name = window.prompt(tg_admin_global_var.box_messages[$this.data('action')].message, 'My element');
+		}
+		
+		if (tg_element_name === null) {
+        	return;
+    	}
+		
+		// get element settings
+		var tg_element_settings = /*$.parseJSON(JSON.stringify(*/$('.tg-element-draggable.tg-element-selected').data('settings')/*))*/;
+		//$('body').append(JSON.stringify(tg_element_settings));
+		Ajax_Helper({
+			nonce     : tg_admin_global_var.nonce,
+			action    : 'backend_grid_ajax',
+			func      : $this.data('action'),
+			overwrite : tg_overwrite_element,
+			element_name     : tg_element_name,
+			element_settings : tg_element_settings,
+			callbacks : {
+				before  : show_message_load,
+				success : function(ajax_data, response, msg) {
+
+					// if element exists
+					if (response.content === 'exists') {
+						$(info_box).removeClass(box_load);
+						tg_overwrite_element  = confirm(tg_admin_global_var.box_messages[$this.data('action')].message2);
+						if (tg_overwrite_element) {
+							$('#tg-element-save').trigger('click');
+						} else {
+							tg_overwrite_element = '';
+						}
+						return false;
+					}
+					
+					
+					var $element = $(response.content.markup);
+					if (tg_overwrite_element) {
+						// replace existing element if overwrite
+						$('.tg-element-custom[data-slug="'+response.content.slug+'"]').closest('.tg-element-holder').replaceWith($element);
+						$('.tg-element-styles[data-slug="'+response.content.slug+'"]').remove();
+					} else {
+						// append new element with styles
+						$('.tg-elements-inner .tg-custom-elements').prepend($element);
+						
+					}
+					$('.tg-element-styles-holder').append(response.content.styles);
+					TG_element_color('[data-slug="'+response.content.slug+'"]', tg_element_settings['source']);
+					
+					// add settings to element
+					$element.find('.tg-element-custom').data('settings', tg_element_settings);
+					$('.tg-no-custom-element').hide();
+					
+					var initial_width;
+					$element.find('.tg-element-custom').draggable({
+						connectToSortable: '.tg-skin-build-inner .tg-area-droppable',
+						helper: 'clone',
+						zIndex: 99999,
+						appendTo: 'body',
+						start: function(event, ui) {
+							var width  = $(ui.helper).outerWidth(),
+								item_width = $('.tg-item-inner').innerWidth(),
+								min_width  = (width > item_width) ? item_width : width;
+			
+							$(ui.helper).css({
+								'width': width,
+								'min-width': min_width,
+								'max-width': item_width,
+							});
+							
+							initial_width = $(ui.helper)[0].getBoundingClientRect().width;
+							/*** get data attribute ***/
+							$(ui.helper).css({'height':$(ui.helper)[0].getBoundingClientRect().height});
+							$(ui.helper).data('settings', $(event.target).data('settings'));
+						}
+					}).disableSelection();
+					
+					tg_overwrite_element = '';
+					$(info_msg).html(msg);
+					
+					setTimeout(function() {
+						$(info_box).removeClass(box_load);
+					}, 800);
+					
+				},
+				error   : show_message_error
+			}
+		});
+		
+	});
+	
+// ==================================================================
+// The Grid - Delete skin element
+// ==================================================================
+
+	$(document).on('click', '.tg-custom-element-delete', function() {
+
+		var $this = $(this);
+		
+		var result  = confirm(tg_admin_global_var.box_messages[$this.data('action')].message);
+		if (!result) {
+			return false;
+		}
+
+		Ajax_Helper({
+			nonce     : tg_admin_global_var.nonce,
+			action    : 'backend_grid_ajax',
+			func      : $this.data('action'),
+			id        : $this.data('id'),
+			callbacks : {
+				before  : show_message_load,
+				success : function(ajax_data, response, msg) {
+					$(info_msg).html(msg);
+					$this.closest('.tg-element-holder').remove();
+					$('.tg-element-styles-holder .tg-element-styles[data-slug="'+$this.prevAll('[data-slug]').data('slug')+'"]').remove();
+					if (!$('.tg-custom-elements .tg-element-holder').length) {
+						$('.tg-no-custom-element').show();
+					}
+					setTimeout(function() {
+						$(info_box).removeClass(box_load);
+					}, 800);
+				},
+				error   : show_message_error
+			}
+		});
 		
 	});
 

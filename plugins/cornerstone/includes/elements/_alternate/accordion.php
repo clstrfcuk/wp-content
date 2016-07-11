@@ -52,14 +52,12 @@ class CS_Accordion extends Cornerstone_Element_Base {
 
     foreach ( $elements as $e ) {
 
-      $item_extra = $this->extra( array(
-        'id'    => $e['id'],
-        'class' => $e['class'],
-        'style' => $e['style']
-      ) );
+      $e_params = array(
+        'title' => $e['title'],
+        'open' => $e['open']
+      );
 
-      $contents .= '[x_accordion_item title="' . $e['title'] . '" ';
-      $contents .= 'open="' . $e['open']  . '"' . $item_extra . ']' . $e['content'] . '[/x_accordion_item]';
+      $contents .= cs_build_shortcode( 'x_accordion_item', $e_params, $this->extra( $e ), $e['content'] );
 
     }
 

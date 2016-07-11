@@ -10,6 +10,8 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
+global $tg_admin_notices;
+
 $banner  = '<div id="tg-banner-holder">';
 
 	$banner .= '<div id="tg-banner" class="tg-banner-sticky">';
@@ -17,5 +19,7 @@ $banner  = '<div id="tg-banner-holder">';
 	$banner .= '</div>';
 
 $banner .= '</div>';
+
+$banner .= $tg_admin_notices;
 
 echo $banner;

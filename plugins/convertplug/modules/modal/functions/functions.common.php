@@ -467,14 +467,14 @@ if( function_exists( "smile_update_settings" ) ){
                 "value" => 'default',
                 "width" => '80px',
                 "options" => array(
-                    "black"         => plugins_url( '../../assets/images/black.png', __FILE__ ),
-                    "blue_final"    => plugins_url( '../../assets/images/blue_final.png', __FILE__ ),
-                    "circle_final"  => plugins_url( '../../assets/images/circle_final.png', __FILE__ ),
-                    "default"    	=> plugins_url( '../../assets/images/default.png', __FILE__ ),
-                    "grey_close"  	=> plugins_url( '../../assets/images/grey_close.png', __FILE__ ),
-                    "red02" 		=> plugins_url( '../../assets/images/red02.png', __FILE__ ),
-                    "red2_close"    => plugins_url( '../../assets/images/red2_close.png', __FILE__ ),
-                    "white20"       => plugins_url( '../../assets/images/white20_bb.png', __FILE__ ),
+					"black"        => CP_BASE_URL . 'modules/assets/images/black.png',
+                    "blue_final"    => CP_BASE_URL . 'modules/assets/images/blue_final.png',
+                    "circle_final"  => CP_BASE_URL . 'modules/assets/images/circle_final.png',
+                    "default"    	=> CP_BASE_URL . 'modules/assets/images/default.png',
+                    "grey_close"  	=> CP_BASE_URL . 'modules/assets/images/grey_close.png',
+                    "red02" 		=> CP_BASE_URL . 'modules/assets/images/red02.png',
+                    "rounded_black"    => CP_BASE_URL . 'modules/assets/images/rounded_black.png',
+                    "white20"       => CP_BASE_URL . 'modules/assets/images/white20_bb.png'
                 ),
 				"imagetitle" => array(
 					__( "title-0", "smile" ) 	=> "Black",
@@ -570,18 +570,39 @@ if( function_exists( "smile_update_settings" ) ){
 			"class" 	=> "",
 			"name" 		=> "close_position",
 			"opts" 		=> array(
-				"title" 	=> __( "Position","smile"),
+				"title" 	=> __( "Close Image Area","smile"),
 				"value" 	=> "adj_modal",
 				"options" 	=> array(
 						__( "Outside Modal", "smile" ) 	=> "out_modal",
 						__( "On Modal Edge", "smile" ) 	=> "adj_modal",
 						__( "Inside Modal", "smile" )   => "inside_modal"
-					)
+					),
+				"description" 	=> __( "Select the close button placement area.", "smile" ),
 				),
 			"panel" => "Close Link",
 			"section" => "Design",
-			"section_icon" => "connects-icon-disc",
+			"section_icon" => "connects-icon-image",
 			"dependency" => array('name' => 'close_modal', 'operator' => '==', 'value' => 'close_img'),
+		),
+		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "adjacent_close_position",
+			"opts" 		=> array(
+				"title" 	=> __( "Close Image Position","smile"),
+				"value" 	=> "top_right",
+				"options" 	=> array(
+						__( "Top Left", "smile" ) 		=> "top_left",
+						__( "Top Right", "smile" ) 		=> "top_right",
+						//__( "Bottom Left", "smile" ) 	=> "bottom_left",
+						//__( "Bottom Right", "smile" )   => "bottom_right"
+					),
+				"description" 	=> __( "Choose position for close button.", "smile" ),
+				),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'close_modal', 'operator' => '!=', 'value' => 'do_not_close'),
 		),
 		array(
 			"type" 		=> "switch",
@@ -651,7 +672,90 @@ if( function_exists( "smile_update_settings" ) ){
 			"panel" => "Close Link",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
-		)
+		),
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "display_close_on_duration",
+			"opts"		=> array(
+				"title" 	=> __( "Display Close After Few Seconds", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "If enabled, close image / text will display after few seconds.", "smile" ),
+			),
+			"dependency" => array('name' => 'close_modal', 'operator' => '!=', 'value' => 'do_not_close'),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "close_btn_duration",
+			"opts"			=> array(
+				"title" 		=> __( "Display After Seconds", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 1,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "Sec",
+				"description" 	=> __( "How long the close image / text to be displayed after Modal is loaded? (value in seconds).", "smile" ),
+			),
+			"dependency" => array('name' => 'display_close_on_duration', 'operator' => '==', 'value' => 'true'),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+		//	Modal Auto close Options
+ 		array(
+			"type" 		=> "section",
+			"class" 	=> "",
+			"name" 		=> "modal_auto_close_section",
+			"opts"		=> array(
+				"title" 		=> __( "Auto Close Module", "smile" ),
+				"value" 		=> "",
+			),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'close_modal', 'operator' => '!=', 'value' => 'do_not_close'),
+		),
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "autoclose_on_duration",
+			"opts"		=> array(
+				"title" 	=> __( "Autoclose Module", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "If enabled, Modal will close automatically after 'x' seconds when user is inactive on webpage.", "smile" ),
+			),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'close_modal', 'operator' => '!=', 'value' => 'do_not_close'),
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "close_module_duration",
+			"opts"			=> array(
+				"title" 		=> __( "Autoclose Duration", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0.1,
+				"max" 			=> 100,
+				"step" 			=> 0.1,
+				"suffix" 		=> "Sec",
+				"description" 	=> __( " How long the Modal should take to be close after its loaded? (value in seconds).", "smile" ),
+			),
+			"dependency" => array('name' => 'autoclose_on_duration', 'operator' => '==', 'value' => '1'),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+
 	);
 
 	/*** Array contains animation options ***/
@@ -1187,7 +1291,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"class" 		=> "",
 			"name" 			=> "load_on_duration",
 			"opts"			=> array(
-				"title" 		=> __( "After Few Seconds", "smile" ),
+				"title" 		=> __( "Load After Seconds", "smile" ),
 				"value" 		=> 1,
 				"min" 			=> 0.1,
 				"max" 			=> 100,
@@ -1312,7 +1416,35 @@ if( function_exists( "smile_update_settings" ) ){
             "section_icon" => "connects-icon-toggle",
             "dependency" => array('name' => 'enable_display_inline', 'operator' => '==', 'value' => 'true')
         ),
-
+        array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "enable_custom_scroll",
+			"opts"		=> array(
+				"title" 	=> __( "After Scroll To Certain ID / Class", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "Modal will be triggered when user scrolls to certain css class or id.", "smile" ),
+			),
+			"panel" 	=> "Smart Launch",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+		),
+        array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "enable_scroll_class",
+			"opts"		=> array(
+				"title" 		=> __( "Enter Class Name/Id", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter CSS Class / ID <br/>[ You can enter multiple values here by separating with comma. Class name should start with '.' & id name should start with '#', example => #id, .class ]", "smile" ),
+			),
+			"panel" => "Smart Launch",
+            "section" => "Behavior",
+            "section_icon" => "connects-icon-toggle",
+            "dependency" => array('name' => 'enable_custom_scroll', 'operator' => '==', 'value' => 'true')
+		),
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -1734,6 +1866,38 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-disc",
 		),
 		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "on_redirect",
+			"opts" 		=> array(
+				"title" 	=> __( "Redirect User To","smile"),
+				"value" 	=> "message",
+				"options" 	=> array(
+						__( "Same Tab", "smile" ) 		=> "self",
+						//__( "New Tab", "smile" ) 		=> "blank",
+						__( "Download File", "smile" ) 	=> "download",
+					)
+				),
+			"panel" => "Form Setup",
+			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'redirect'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		/*array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "download_url",
+			"opts"		=> array(
+				"title" 		=> __( "Download URL", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter the URL where you would like to download the file after successfully added to the list.<br/><br/> Please add http / https prefix to URL. e.g. http://convertplug.com", "smile" ),
+			),
+			"panel" 	=> "Form Setup",
+			"dependency" => array('name' => 'on_redirect', 'operator' => '==', 'value' => 'download'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),*/
+		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
 			"name" 		=> "redirect_data",
@@ -1750,27 +1914,97 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-disc",
 		),
 		array(
-			"type" 		=> "textfield",
+			"type" 		=> "textarea",
 			"class" 	=> "",
 			"name" 		=> "success_message",
 			"opts"		=> array(
 				"title" 		=> __( "Message After Success", "smile" ),
 				"value" 		=> __( 'Thank you.', 'smile' ),
-				"description" 	=> __( "Enter the message you would like to display the user after successfully added to the list.", "smile" ),
+				"description" 	=> __( "Enter the message you would like to display the user after successfully added to the list.<br/>This input field supports HTML too.", "smile" ),
 			),
 			"panel" 	=> "Form Setup",
 			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'message'),
 			"section" => "Submission",
 			"section_icon" => "connects-icon-disc",
 		),
+		//Modal close After form submission Options
 		array(
-			"type" 		=> "textfield",
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "form_action_on_submit",
+			"opts" 		=> array(
+				"title" 	=> __( "Action After Submission","smile"),
+				"value" 	=> "do_nothing",
+				"options" 	=> array(
+						__( "Reappear Form", "smile" ) 		=> "reappear",
+						__( "Hide Form", "smile" ) 			=> "disappears",
+						__( "Do Nothing", "smile" ) 		=> "do_nothing",
+					),
+				"description" 	=> __( "Select how your Modal behaves after successful form submission.", "smile" ),
+				),
+			"panel" => "Form Setup",
+			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'message'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "form_reappear_time",
+			"opts"			=> array(
+				"title" 		=> __( "Reappear Form After 'x' Seconds of Submission", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "s",
+				"description" 	=> __( "Reappear form after successful form submission.", "smile" ),
+			),
+			"panel" => "Form Setup",
+			"dependency"	=> array("name" => "form_action_on_submit", "operator" => "==", "value" => "reappear"),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "form_disappears_time",
+			"opts"			=> array(
+				"title" 		=> __( "Hide Modal After 'x' Seconds of Submission", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "s",
+				"description" 	=> __( "Hide Modal after successful form submission.", "smile" ),
+			),
+			"panel" => "Form Setup",
+			"dependency"	=> array("name" => "form_action_on_submit", "operator" => "==", "value" => "disappears"),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		//fail submission
+		array(
+			"type" 		=> "section",
+			"class" 	=> "",
+			"name" 		=> "msg_on_fail_submission",
+			"opts"		=> array(
+				"title" 		=> __( "Failed Submission", "smile" ),
+				"value" 		=> "",
+			),
+			"panel" 	=> "Form Setup",
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+			"dependency"	=> array("name" => "mailer", "operator" => "!=", "value" => "custom-form"),
+		),
+		array(
+			"type" 		=> "textarea",
 			"class" 	=> "",
 			"name" 		=> "msg_wrong_email",
 			"opts"		=> array(
 				"title" 		=> __( "Failed Submission", "smile" ),
 				"value" 		=> __( "Please enter correct email address.", "smile" ),
-				"description" 	=> __( "Enter the message you would like to display the user for invalid email address.", "smile" ),
+				"description" 	=> __( "Enter the message you would like to display the user for invalid email address.<br/>This input field supports HTML too.", "smile" ),
 			),
 			"panel" 	=> "Form Setup",
 			"section" => "Submission",
@@ -2044,14 +2278,14 @@ $modal_layout = array(
                 "value" => 'form_left',
                 "width" => '80px',
                 "options" => array(
-                    "form_left"             => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout01.jpg', __FILE__ ),
-                    "form_right"            => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout02.jpg', __FILE__ ),
-                    "form_left_img_top"     => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout03.jpg', __FILE__ ),
-                    "form_right_img_top"    => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout04.jpg', __FILE__ ),
-                    "img_left_form_bottom"  => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout05.jpg', __FILE__ ),
-                    "img_right_form_bottom" => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout06.jpg', __FILE__ ),
-                    "form_bottom_img_top"   => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout07.jpg', __FILE__ ),
-                    "form_bottom"           => plugins_url( '../../modal/assets/demos/jugaad/img/modal-layout08.jpg', __FILE__ ),
+                    "form_left"             => CP_BASE_URL . 'modules/modal/assets/demos/jugaad/img/modal-layout01.jpg',
+                    "form_right"            => CP_BASE_URL . 'modules/modal/assets/demos/jugaad/img/modal-layout02.jpg',
+                    "form_left_img_top"     => CP_BASE_URL . 'modules/modal/assets/demos/jugaad/img/modal-layout03.jpg',
+                    "form_right_img_top"    => CP_BASE_URL . 'modules/modal/assets/demos/jugaad/img/modal-layout04.jpg',
+                    "img_left_form_bottom"  => CP_BASE_URL . 'modules/modal/assets/demos/jugaad/img/modal-layout05.jpg',
+                    "img_right_form_bottom" => CP_BASE_URL . 'modules/modal/assets/demos/jugaad/img/modal-layout06.jpg',
+                    "form_bottom_img_top"   => CP_BASE_URL . 'modules/modal/assets/demos/jugaad/img/modal-layout07.jpg',
+                    "form_bottom"           => CP_BASE_URL . 'modules/modal/assets/demos/jugaad/img/modal-layout08.jpg',
                 ),
 				"imagetitle" => array(
 					__( "title-0", "smile" ) 	=> "Form At Left Without Image",
@@ -2789,6 +3023,39 @@ $modal_layout = array(
 			$behavior
 		)
 	);
+
+
+	// social_article
+	smile_update_options( "Smile_Modals", "social_article",
+		array_merge(
+			$name,
+			$secondary_title,
+			$background,
+			$cp_social,
+			$close_link,
+			$animations,
+			$style_height,
+			$adv_design_options,
+			$behavior
+		)
+	);
+
+	// social_media_with_form
+	smile_update_options( "Smile_Modals", "social_media_with_form",
+		array_merge(
+			$name,
+			$background,
+			$cp_form,
+			$cp_social,
+			//$modal_img,
+			$form_bg_color,
+			$close_link,
+			$animations,
+			$adv_design_options,
+			$behavior,
+			$submission
+		)
+	);
 }
 
 
@@ -2907,6 +3174,7 @@ if( function_exists( "smile_update_default" ) ){
 		"placeholder_font"   	=> "Palatino Linotype",
 		"btn_border_radius"		=> 4,
 		"btn_disp_next_line"    => false,
+		"form_input_font" 		=> 'Lato',
 
 	);
 	foreach( $every_design_default as $option => $value ){
@@ -3044,6 +3312,7 @@ if( function_exists( "smile_update_default" ) ){
 		"placeholder_text"       => __( "Enter Your Email Here", "smile" ),
 		"btn_style" 		 	 => "cp-btn-gradient",
 		"btn_shadow" 			 => true,
+		"input_shadow"			 => true,
 	);
 	foreach( $locked_content_default as $option => $value ){
 		smile_update_default( "Smile_Modals", "locked_content", $option, $value );
@@ -3136,6 +3405,7 @@ if( function_exists( "smile_update_default" ) ){
 		"placeholder_font"   	 => "Roboto",
 		"modal_desc_color"   	 => "rgb(255, 255, 255)",
 		"modal_title_color"  	 => "rgb(16, 16, 16)",
+		"input_shadow"			 => true,
 	);
 	foreach( $instant_coupon_default as $option => $value ){
 		smile_update_default( "Smile_Modals", "instant_coupon", $option, $value );
@@ -3215,8 +3485,9 @@ if( function_exists( "smile_update_default" ) ){
 		"cp_social_icon_shape" 	  => "circle",
 		"cp_social_icon_effect"   => "flat",
 		"cp_social_icon" 		  => "order:0|input_type:Facebook|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:1|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Twitter|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:3|input_type:Blogger|network_name:|input_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:",
-		"close_img" 			  => plugins_url('config/img/cross-new.png', __FILE__ ),
-		"cp_close_image_width"	  => "32",
+		//"close_img" 			  => plugins_url('config/img/cross-new.png', __FILE__ ),
+		//"cp_close_image_width"	  => "32",
+		"close_image_src" 		  => "pre_icons",
 	);
 	foreach( $cp_social_default as $option => $value ) {
 		smile_update_default( "Smile_Modals", "social_media", $option, $value );
@@ -3261,11 +3532,12 @@ if( function_exists( "smile_update_default" ) ){
 		"cp_social_icon_shape" 	  => "normal",
 		"cp_social_icon_effect"   => "gradient",
 		"cp_social_icon" 		  => "order:0|input_type:Facebook|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:1|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Twitter|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:",
-		"close_img" 			  => plugins_url('config/img/cross-new.png', __FILE__ ),
-		"cp_close_image_width"	  => "32",
+		//"close_img" 			  => plugins_url('config/img/cross-new.png', __FILE__ ),
+		//"cp_close_image_width"	  => "32",
 		"content_padding" 		  => true,
 		"close_modal" 			  => "do_not_close",
 		"affiliate_setting"		  => false,
+		"close_image_src" 		  => "pre_icons",
 	);
 	foreach( $cp_social_inline_share_default as $option => $value ) {
 		smile_update_default( "Smile_Modals", "social_inline_share", $option, $value );
@@ -3286,11 +3558,85 @@ if( function_exists( "smile_update_default" ) ){
 		"cp_social_icon_effect"   => "flat",
 		"cp_social_icon_align"    => "center",
 		"cp_social_icon" 		  => "order:0|input_type:Facebook|network_name:|input_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:;order:1|input_type:StumbleUpon|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:3|input_type:Blogger|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:",
-		"close_img" 			  => plugins_url('config/img/cross-new.png', __FILE__ ),
-		"cp_close_image_width"	  => "32",
+		//"close_img" 			  => plugins_url('config/img/cross-new.png', __FILE__ ),
+		//"cp_close_image_width"	  => "32",
+		"close_image_src" 		  => "pre_icons",
 	);
 	foreach( $social_widget_box_default as $option => $value ) {
 		smile_update_default( "Smile_Modals", "social_widget_box", $option, $value );
+	}
+
+
+	// social_article
+	$social_article_default = array(		
+		'modal_title1'     		  => __( "Enjoyed this article? Please spread the word." ),
+		'border'				  => "br_all:0|br_tl:0|br_tr:0|br_br:0|br_bl:0|style:none|color:rgb(0,0,0)|bw_all:5|bw_t:5|bw_l:5|bw_r:5|bw_b:5",
+		"cp_modal_width"    	  => "550",
+		"modal_bg_color"    	  => "#edf7f7",
+		"modal_title_color"    	  => "#37474F",
+		"cp_modal_height" 		  => "160",
+		"cp_custom_height" 		  => true,
+		"cp_social_icon_hover_effect" => "slide",
+		"cp_display_nw_name" 	  => true,
+		"cp_social_share_count"	  => true,
+		"social_min_count"		  => 180,
+		"cp_social_icon_style" 	  => "cp-icon-style-simple",
+		"cp_social_icon_effect"   => "flat",
+		"cp_social_icon_align"    => "center",
+		"cp_social_icon_shape" 	  => "border_radius",
+		"cp_social_icon" 		  => "order:0|input_type:Facebook|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:1|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Twitter|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:",
+		//"close_img" 			  => plugins_url('config/img/cross-new.png', __FILE__ ),
+		//"modal_overlay_bg_color"  => "rgba(255,255,255,0.89)",
+		"close_image_src" 		  => "pre_icons",
+		"content_padding"		  => true,
+		"box_shadow"			  => "type:outset|horizontal:4|vertical:4|blur:4|spread:0|color:#cbcbcb"
+	);
+	foreach( $social_article_default as $option => $value ) {
+		smile_update_default( "Smile_Modals", "social_article", $option, $value );
+	}
+
+	// social_media_with_form
+	$social_media_with_form_default = array(
+		"form_fields" 				=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"				=> "cp-form-layout-4",
+		"form_input_align"			=> "left",
+		"submit_button_tb_padding" 	=> 10,
+		"submit_button_lr_padding" 	=> 15,
+		'form_bg_color'      		=> '#fafafa',
+		"form_submit_align" 		=> "cp-submit-wrap-full",
+		"form_grid_structure"		=> "cp-form-grid-structure-2",
+		"overlay_effect" 	 		=> "smile-3DRotateBottom",
+		"modal_short_desc1"  		=> '<span style=" font-style:italic">'.__( "Join over 4000 of Your Peers!" , "smile" ).'</span>',
+		"modal_title1"		 		=> __( "Signup For Access To Free WordPress Tips & Resources.", "smile" ),
+		"modal_confidential" 		=> "",
+		"modal_content" 	 		=> __( "TODAY – 8.00 PM to 8.35 PM (EST)", "smile" ),
+		"modal_bg_color"     		=> "rgba(0,0,0,0.24)",
+		"modal_overlay_bg_color" 	=> "rgba(0, 0, 0, 0.7)",
+		"button_title"       		=> __( "GET IT NOW!", "smile" ),
+		"button_bg_color"    		=> "#193d59",
+		"button_border_color"		=> "#193d59",
+		"btn_style" 				=> "cp-btn-3d",
+		"cp_modal_width"     		=> "650",
+		"border" 			 		=> "br_all:4|br_tl:4|br_tr:4|br_br:4|br_bl:4|style:none|color:rgb(255,255,255)|bw_all:1|bw_t:1|bw_l:1|bw_r:1|bw_b:1",
+		"btn_disp_next_line" 		=> false,
+		"close_position"     		=> "out_modal",
+		"modal_title_color"  		=> "rgb(255, 255, 255)",
+		"modal_desc_color" 	 		=> "rgb(255, 255, 255)",
+		"tip_color"          		=> "rgb(255, 255, 255)",
+		"placeholder_text"   		=> __( "Enter Your Email Here", "smile" ),
+		"name_text"  		 		=> __( "Enter Your Name", "smile" ),
+		"placeholder_font"   		=> "Lato",
+		"modal_bg_image"			=> plugins_url('config/img/free_widget.jpg', __FILE__ ),
+		"cp_display_nw_name" 	  	=> false,
+		"social_container_border" 	=> "20",
+		"cp_social_icon_style" 	 	=> "cp-icon-style-left",
+		"cp_social_icon_effect"   	=> "flat",
+		"cp_social_icon_align"    	=> "center",
+		"cp_social_icon" 		  	=> "order:0|input_type:Facebook|network_name:|input_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:;order:1|input_type:Twitter|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:2|input_type:Google|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:3|input_type:Blogger|network_name:|input_action:social_sharing|smile_adv_share_opt:0|input_share_count:;order:4|input_type:Pinterest|network_name:|input_action:social_sharing|profile_link:|smile_adv_share_opt:0|input_share:|input_share_count:",
+	);
+
+	foreach( $social_media_with_form_default as $option => $value ){
+		smile_update_default( "Smile_Modals", "social_media_with_form", $option, $value );
 	}
 
 }
@@ -3368,7 +3714,9 @@ if( function_exists( "smile_remove_option" ) ){
 		'input_bg_color' ,
 		'input_border_color' ,
 		'form_options_title',
-		'placeholder_font' )
+		'placeholder_font' ,
+		'btn_attached_email',
+		)
 	);
 
 	//countdown
@@ -3466,6 +3814,21 @@ if( function_exists('smile_update_partial') ) {
 	);
 	foreach( $count_down_partial as $option => $parse_array ){
 	    smile_update_partial( "Smile_Modals", "countdown", $option, $parse_array );
+	}
+
+	// Webinar
+	$social_media_with_form_partial = array(
+	    'form_bg_color' => array(
+	        'css_selector' => '.cp-row.cp-social-form-form',
+	        'css_property' => 'background-color',
+	    ),
+	    'form_border_color' => array(
+	        'css_selector' => '.cp-row.cp-social-form-form',
+	        'css_property' => 'border-color',
+	    ),
+	);
+	foreach( $social_media_with_form_partial as $option => $parse_array ){
+	    smile_update_partial( "Smile_Modals", "social_media_with_form", $option, $parse_array );
 	}
 
 }

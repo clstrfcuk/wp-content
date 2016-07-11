@@ -48,11 +48,48 @@
         form_input_align        = smile_global_data.form_input_align,
         cp_submit               = jQuery(".cp-submit"),
         input_shadow            = data.input_shadow,
-        input_shadow_color      = data.input_shadow_color;
+        input_shadow_color      = data.input_shadow_color,
+        form_layout             = data.form_layout,
+        btn_attached_email      = data.btn_attached_email,
+        form_fields             = data.form_fields;
         var style = '';
 
         //  Remove all classes
+
         cp_submit.removeClass('cp-btn-flat cp-btn-3d cp-btn-outline cp-btn-gradient');
+
+
+        //check if only on einput field is present in form
+        var data_value = [];
+        var last_order = '';
+        //  Extract ALL - field
+        var all = form_fields.split(";");
+        var lg = all.length-1;
+        if(lg !== 0){
+          jQuery.each( all , function( index, val ) {
+               //  Extract SINGLE - all
+              var single = val.split("|");
+              if(single.length!== 0){
+                  if (single[1].indexOf("hidden") <= 0){
+                      data_value.push(single[0]);
+                  }
+              }
+
+          });
+          var last_order = data_value[data_value.length-1];
+          last_order= last_order.split("->");
+          last_order = parseInt(last_order[1]);
+      }
+      if(typeof last_order =='undefined' || last_order == ''){
+       last_order = 0;
+      }
+
+      if( form_layout == 'cp-form-layout-3' &&  btn_attached_email =='1' && last_order == '0') {
+           if( btn_style == 'cp-btn-3d' || btn_style == 'cp-btn-outline' ){
+            btn_style = 'cp-btn-flat';
+           }
+        }
+
         cp_submit.addClass( btn_style );
 
         var c_normal    = btn_bg_color;
@@ -212,7 +249,8 @@
                           +' }';
             social_style  += '.cp_social_networks li:hover .cp_social_network_label,'
                           +'  .cp_social_networks li:hover .cp_social_networkname,'
-                          +'  .cp_social_networks li:hover .cp_social_count{'
+                          +'  .cp_social_networks li:hover .cp_social_count ,'
+                          +'  .cp_social_networks li:hover .cp_social_count span {'
                           +'     color: '+cp_social_text_hover_color+'!important;'
                           +' }';
 
@@ -439,7 +477,7 @@
           form_submit_button( data );
         }
 
-        if( cp_isValid( style ) ) {        
+        if( cp_isValid( style ) ) {
             if( typeof smile_global_data.cp_social_icon !== 'undefined' ) {
                 social_media_css(data);
             }
@@ -451,8 +489,8 @@
           smile_global_data.counter_bg_color  = val;
           start_count_timer(smile_global_data);
         }
-        if(jQuery(el).hasClass('cp_social_icon_color')){  
-          smile_global_data.cp_social_icon_color  = val;   
+        if(jQuery(el).hasClass('cp_social_icon_color')){
+          smile_global_data.cp_social_icon_color  = val;
           social_media_css(smile_global_data);
         }
 

@@ -115,7 +115,7 @@ if(!class_exists('Smile_Slide_Ins')){
 			if(!isset($_GET['hidemenubar'])){
 				?>
 	            <script type="text/javascript" id="slidein">
-				jQuery(window).load( function(){
+				jQuery(window).on( 'load', function(){
 					startclock();
 				});
 				function stopclock (){
@@ -175,7 +175,12 @@ if(!class_exists('Smile_Slide_Ins')){
 							$settings = unserialize( $slide_in_array[ 'style_settings' ] );
 							$css = isset( $settings['custom_css'] ) ? urldecode($settings['custom_css']) : '';
 
+
 							$display = cp_is_style_visible($settings);
+
+							// remove back slashes from settings
+							$settings = stripslashes_deep( $settings );
+
 							$settings = serialize( $settings );
 							$settings_encoded 	= base64_encode( $settings );
 						}
@@ -283,10 +288,10 @@ if(!class_exists('Smile_Slide_Ins')){
 				wp_register_script( 'smile-slide_in-common', plugins_url( 'assets/js/slide_in.common.js', __FILE__), array( 'jquery' ), null, true );
 				wp_register_script( 'cp-common-functions-js', plugins_url( 'assets/js/functions-common.js', __FILE__ ), 'smile-slide_in-common', null, true );
 				wp_enqueue_script( 'smile-slide_in-common' );
-				wp_localize_script( 'smile-slide_in-common', 'cp', array( 
+				wp_localize_script( 'smile-slide_in-common', 'cp', array(
 					'demo_dir' => plugins_url('/assets/demos', __FILE__ ),
 					'module' => 'slide_in',
-					"module_img_dir" => plugins_url( "../assets/images", __FILE__) ) 
+					"module_img_dir" => plugins_url( "../assets/images", __FILE__) )
 				);
 
 				//	Add 'Theme Name' as a class to <html> tag
@@ -296,7 +301,7 @@ if(!class_exists('Smile_Slide_Ins')){
 				$theme_name = strtolower( preg_replace("/[\s_]/", "-", $theme_name ) );
 
 				wp_localize_script( 'jquery', 'cp_active_theme', array( 'slug' => $theme_name ) );
-				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+				wp_localize_script( 'smile-slide_in-common', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 			}
 		}
 
@@ -333,7 +338,7 @@ if(!class_exists('Smile_Slide_Ins')){
 					wp_enqueue_style( 'smile-slide-in-style', plugins_url( 'assets/css/slide_in.min.css', __FILE__) );
 				}
 
-				wp_localize_script( 'jquery', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
+				wp_localize_script( 'smile-slide-in-script', 'smile_ajax', array( 'url' => admin_url( 'admin-ajax.php' ) ) );
 			}
 
 			wp_enqueue_style( 'cp-perfect-scroll-style', plugins_url('../../admin/assets/css/perfect-scrollbar.min.css',__FILE__) );
@@ -353,6 +358,17 @@ if (!function_exists('smile_slide_in_popup')) {
 		), $atts));
 		$output = '';
 		$func = 'slide_in_theme_'.$style;
+
+		$settings = base64_decode( $atts['settings_encoded'] );
+		$style_settings = unserialize( $settings );
+
+		// remove back slashes from settings
+		$settings = stripslashes_deep( $style_settings );
+
+		$settings = serialize( $settings );
+		$settings_encoded 	= base64_encode( $settings );
+		$atts['settings_encoded'] = $settings_encoded;
+
 		if( function_exists( $func ) ) {
 			$output = $func( $atts );
 		}
@@ -399,6 +415,9 @@ if (!function_exists('cp_slide_in_custom')) {
 				$style_settings['custom_class'] .= isset( $style_settings['custom_class']) ? $style_settings['custom_class'].',cp-trigger-'.$style_id : 'cp-trigger-'.$style_id;
 
 				$display = cp_is_style_visible($settings);
+
+				// remove back slashes from settings
+				$settings = stripslashes_deep( $settings );
 
 				$encode_settings = serialize( $style_settings );
 				$settings_encoded = base64_encode( $encode_settings );

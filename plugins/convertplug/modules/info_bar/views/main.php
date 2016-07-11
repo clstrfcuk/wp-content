@@ -234,7 +234,7 @@
                   $isScheduled = false;
                   $status = '';
 
-                  if( $hasVariants ) {
+                  if($hasVariants) {
                     $status .= "<a href=?page=smile-info_bar-designer&style-view=variant&variant-style=".urlencode( $style_id )."&style=".urlencode( stripslashes($style_name ) )."&theme=".urlencode( $theme ).">";
                   } else {
                     $status .= '<span class="change-status">';
@@ -245,7 +245,21 @@
                   } elseif( $live == 0 ){
                      $status .= '<span data-live="0" class="cp-status cp-main-variant-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
                   } else {
-                     $status .= cp_generate_scheduled_info($style['style_settings']);
+                     $scheduleData = unserialize($style['style_settings']);
+                     if( isset($scheduleData['schedule']) ) {
+                        $scheduledArray = $scheduleData['schedule'];
+                        if( is_array($scheduledArray) ) {
+                           $startDate = date("j M Y ",strtotime($scheduledArray['start']));
+                           $endDate = date("j M Y ",strtotime($scheduledArray['end']));
+                           $first = date('j-M-Y (h:i A) ', strtotime($scheduledArray['start']));
+                           $second = date('j-M-Y (h:i A) ', strtotime($scheduledArray['end']));
+                           $title = "Scheduled From ".$first." To ".$second;
+                        }
+                     } else {
+                        $title = '';
+                     }
+
+                     $status .= '<span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span title="'.$title.'">'.__( "Scheduled", "smile" ).'</span></span>';
                   }
 
                   if($hasVariants) {
@@ -269,9 +283,9 @@
             ?>
             <tr id="<?php echo $key; ?>" class="ui-sortable-handle <?php if($hasVariants) { echo 'cp-variant-exist'; } ?>">
                <?php if( $multivariant || $hasVariants ) { ?>
-                  <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( $style_name ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><?php echo "Variants of ".urldecode($style_name); ?> </a></td>
+                  <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=variant&variant-style=<?php echo urlencode( $style_id ); ?>&style=<?php echo urlencode( $style_name ); ?>&theme=<?php echo urlencode( $theme ); ?>"  ><?php echo "Variants of ".urldecode($style_name); ?> </a></td>
                <?php  } else { ?>
-                  <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><?php echo urldecode($style_name); ?> </a></td>
+                  <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>" target ="_blank" ><?php echo urldecode($style_name); ?> </a></td>
                   <?php } ?>
                   <td class="column-impressions"><?php echo $impressions; ?></td>
                   <td class="column-status"><?php echo $status; ?></td>

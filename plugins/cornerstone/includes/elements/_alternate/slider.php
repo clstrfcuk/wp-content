@@ -137,13 +137,7 @@ class CS_Slider extends Cornerstone_Element_Base {
 
     foreach ( $elements as $e ) {
 
-      $item_extra = $this->extra( array(
-        'id'    => $e['id'],
-        'class' => $e['class'],
-        'style' => $e['style']
-      ) );
-
-      $contents .= '[x_slide' . $item_extra . ']' . $e['content'] . '[/x_slide]';
+      $contents .= cs_build_shortcode( 'x_slide', array(), $this->extra( $e ), $e['content'] );
 
     }
 

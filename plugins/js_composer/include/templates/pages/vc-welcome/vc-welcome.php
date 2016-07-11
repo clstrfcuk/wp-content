@@ -8,10 +8,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div>
 			<img class="vc-featured-img" src="<?php echo vc_asset_url( 'vc/vc-welcome/screenshot.png' ); ?>"/>
 
-			<h3><?php _e( 'Awesome Styles, Icons and More', 'js_composer' ); ?></h3>
+			<h3><?php _e( 'Default Templates for Posts', 'js_composer' ); ?></h3>
 
-			<p><?php _e( 'Visual Composer 4.11 offers fresh update to create and control even the smallest pieces of your WordPress site. Follow latest design trends by applying new buttons, get your hands on new predefined templates and various social icons.', 'js_composer' ); ?></p>
-			<p><?php _e( 'With new version of Visual Composer you now how even more control over your grid elements, including grid loading and paging settings.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Visual Composer 4.12 introduces new template options to speed up your WordPress website content management. Now you are able to set up templates for your pages, posts and custom post types by default.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Meaning, every time you create new post there will be default layout available - so you should just change the information and Publish it. Working with authors, but afraid they can break your layout? Not any more! With default template setup and existing Role Manager you will be able to set up amazing mechanism for your WordPress website.', 'js_composer' ); ?></p>
 		</div>
 	</div>
 
@@ -19,23 +19,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="vc_col-xs-4">
 			<img class="vc-img-center"
 			     src="<?php echo vc_asset_url( 'vc/vc-welcome/01.png' ); ?>"/>
-			<h4><?php _e( 'Grid Loading', 'js_composer' ); ?></h4>
+			<h4><?php _e( 'Disable Row', 'js_composer' ); ?></h4>
 
-			<p><?php _e( 'Control or disable initial loading and pagination animation of Visual Composer grid content elements with one click only.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Need to hide some part of your content, but don\'t want to delete it? Disable any Visual Composer row with all the content - one click only.
+', 'js_composer' ); ?></p>
 		</div>
 		<div class="vc_col-xs-4">
 			<img class="vc-img-center"
 			     src="<?php echo vc_asset_url( 'vc/vc-welcome/02.png' ); ?>"/>
-			<h4><?php _e( 'Gradient Buttons', 'js_composer' ); ?></h4>
+			<h4><?php _e( 'Polylang and qTranslate X', 'js_composer' ); ?></h4>
 
-			<p><?php _e( 'Choose trendy gradient button design with smooth hover transition. Specify gradient colors from default or choose your own custom colors.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Visual Composer is ensured to be fully compatible with Polylang and also popular version of qTranslate X so you can create multi-language websites.', 'js_composer' ); ?></p>
 		</div>
 		<div class="vc_col-xs-4">
 			<img class="vc-img-center"
 			     src="<?php echo vc_asset_url( 'vc/vc-welcome/03.png' ); ?>"/>
-			<h4><?php _e( 'Social Icons', 'js_composer' ); ?></h4>
+			<h4><?php _e( 'Nofollow and Actions', 'js_composer' ); ?></h4>
 
-			<p><?php _e( 'Get your hands on "Mono Social" icons added to icon library with most popular social icons included.', 'js_composer' ); ?></p>
+			<p><?php _e( 'Enhanced link selection allows you to set nofollow attributes for your links with one click. Moreover, button element now has onclick event for better tracking options.', 'js_composer' ); ?></p>
 		</div>
 	</div>
 

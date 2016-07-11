@@ -387,6 +387,10 @@ class WPBakeryShortCode_VC_Tta_Accordion extends WPBakeryShortCodesContainer {
 
 		return implode( '', $html );
 	}
+	public function enqueueTtaStyles() {
+		wp_register_style( 'vc_tta_style', vc_asset_url( 'css/js_composer_tta.min.css' ), false, WPB_VC_VERSION );
+		wp_enqueue_style('vc_tta_style');
+	}
 
 	public function enqueueTtaScript() {
 		wp_register_script( 'vc_accordion_script', vc_asset_url( 'lib/vc_accordion/vc-accordion.min.js' ), array( 'jquery' ), WPB_VC_VERSION, true );

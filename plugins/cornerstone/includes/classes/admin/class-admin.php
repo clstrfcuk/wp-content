@@ -53,13 +53,13 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 			update_post_meta( $_POST['post_id'], '_cornerstone_override', true );
 		}
 
-		cs_send_json_success();
+		return cs_send_json_success();
 
 	}
 
 	public function ajax_dismiss_validation_notice() {
 		update_option( 'cornerstone_dismiss_validation_notice', true );
-		cs_send_json_success();
+		return cs_send_json_success();
 	}
 
 	public function add_script_data( $handle, $callback ) {
@@ -102,7 +102,7 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 			'editURL'   => $this->plugin->common()->getEditURL(),
 			'post_id'   => $post_id,
 			'_cs_nonce' => wp_create_nonce( 'cornerstone_nonce' ),
-			'strings'   => $this->plugin->config( 'admin/strings-admin' ),
+			'strings'   => $this->plugin->i18n( 'admin', false ),
 		);
 
 		if ( false !== strpos( $hook, 'cornerstone-home' ) ) {

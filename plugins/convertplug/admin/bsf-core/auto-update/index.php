@@ -65,7 +65,12 @@ if(isset($_POST['bsf-advanced-form-btn'])) {
 
 	if(isset($_GET['remove-bundled-products']))  {
 		delete_option('brainstrom_bundled_products');
-		delete_site_transient('bsf_get_bundled_products');
+		global $ultimate_referer;
+        $ultimate_referer = 'on-refresh-bundled-products';
+        get_bundled_plugins();
+        set_site_transient( 'bsf_get_bundled_products', true, 7*24*60*60 );
+		update_option('bsf_local_transient_bundled', current_time( 'timestamp' ));
+		//delete_site_transient('bsf_get_bundled_products');
 
 		$redirect = isset( $_GET['redirect'] ) ? urldecode( $_GET['redirect'] ) : '';
 
@@ -102,7 +107,11 @@ if(isset($_POST['bsf-advanced-form-btn'])) {
 	}
 
 	if(isset($_GET['force-check-update'])) {
+		global $ultimate_referer;
+		$ultimate_referer = 'on-force-check-update';
 		bsf_check_product_update();
+		set_transient( 'bsf_check_product_updates', true, 2*24*60*60 );
+		update_option('bsf_local_transient', current_time( 'timestamp' ));
 		if(is_multisite())
 			$redirect = network_admin_url('update-core.php#brainstormforce-products');
 		else

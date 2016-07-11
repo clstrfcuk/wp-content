@@ -10,6 +10,7 @@ abstract class Cornerstone_Plugin_Base {
 	protected $admin_init_priority = 10;
 	protected $includes_folder = 'includes';
 	protected $config_folder = 'includes/config';
+  protected $i18n_folder = 'includes/i18n';
 	protected $templates_folder = 'templates';
 	protected $views_folder = 'includes/views';
 	protected $theme_template_folder = ''; // defaults to slug
@@ -179,7 +180,7 @@ abstract class Cornerstone_Plugin_Base {
 
 	public function loadComponent( $name ) {
 
-		try {
+    try {
 
 			$class = $this->name . '_' . $name;
 
@@ -188,6 +189,12 @@ abstract class Cornerstone_Plugin_Base {
 			}
 
 			if ( ! isset( $this->components[ $name ] ) ) {
+
+        $name = $this->componentConditions( $name );
+
+        if ( false === $name ) {
+          return false;
+        }
 
 				$instance = new $class( $this );
 				$this->components[ $name ] = $instance;
@@ -212,6 +219,29 @@ abstract class Cornerstone_Plugin_Base {
 		return false;
 
 	}
+
+  public function controller( $name ) {
+    return $this->loadComponent( "Controller_$name" );
+  }
+
+  public function componentConditions( $name ) {
+
+    $name = explode( ':', $name );
+
+    if ( count( $name ) === 1 ) {
+      return $name[0];
+    }
+
+    if ( $name[1] == 'theme-support' ) {
+
+      if ( isset( $name[2] ) && current_theme_supports( $name[2] ) ) {
+        return $name[0];
+      }
+
+    }
+
+    return false;
+  }
 
 	/**
 	 * Returns a component instance via it's name
@@ -451,30 +481,64 @@ abstract class Cornerstone_Plugin_Base {
 
 	}
 
+/**
+   *
+   * @param
+   * @param  string path to config file
+   * @return array
+   */
 	/**
-	 * Retrieve a particular configuration set and apply filters.
-	 * @param  string path to config file
-	 * @return array request configuration values
-	 */
-	public function config( $name ) {
+   * Retrieve a particular configuration set and apply filters.
+   * @param  string $name      string path to config file
+   * @param  string $namespace namespace to prepend to key for caching
+   * @param  string $path      alternate path
+   * @return array            requested configuration values
+   */
+	public function config( $name = '', $namespace = '', $path = '' ) {
 
-		if ( ! isset( $this->config_store[ $name ] ) ) {
+    $key = ( $namespace ) ? "{$namespace}.{$name}" : $name;
+    $path = ( $path ) ? $path : $this->config_folder;
+		if ( ! isset( $this->config_store[ $key ] ) ) {
 			$data = array();
-			$value = include( $this->path( trailingslashit( $this->config_folder ) . $name . '.php' ) );
+			$value = include( $this->path( trailingslashit( $path ) . $name . '.php' ) );
 			if ( is_array( $value ) ) {
 				$data = $value;
 			}
-			$this->config_store[ $name ] = $data;
+			$this->config_store[ $key ] = $data;
 		}
 
 		/**
 		 * Filter example: $name == 'folder/defaults-file'
 		 * 'plugin_config_folder_defaults-file'
+     * 'plugin_config_folder_defaults-file'
 		 */
 		$filter_name = sanitize_key( str_replace( '/', '_', $name ) );
-		return apply_filters( "{$this->slug}_config_{$filter_name}", $this->config_store[ $name ] );
+		return apply_filters( "{$this->slug}_config_{$filter_name}", $this->config_store[ $key ] );
 
 	}
+
+  /**
+   * Get a named set of localized strings from the i18n directory
+   * @param  string  $name      Name of the strings file to load
+   * @param  boolean $namespace Should we prepend a namespace to the keys?
+   * @return array              Localized strings
+   */
+  public function i18n( $name, $namespace = true ) {
+
+    $strings = $this->config( $name, 'i18n', $this->i18n_folder );
+
+    if ( !$namespace ) {
+      return $strings;
+    }
+
+    $namespaced = array();
+
+    foreach ( $strings as $key => $value ) {
+      $namespaced["$name.$key"] = $value;
+    }
+
+    return $namespaced;
+  }
 
 	/**
 	 * Plugin entry point.

@@ -10,5 +10,6 @@ return array(
   'allowed_post_types'  => array( 'post', 'page' ),
   'permitted_roles'     => array(), // administrator always allowed
   'visual_enhancements' => true,
-  'show_wp_toolbar'     => false
+  'show_wp_toolbar'     => false,
+  'custom_app_slug'     => ''
 );

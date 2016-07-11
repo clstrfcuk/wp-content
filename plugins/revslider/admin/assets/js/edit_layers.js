@@ -1960,8 +1960,8 @@ var UniteLayersRev = new function(){
 						backgroundColor:"transparent"});		
 			break;
 			case "trans":
-
-				jQuery('#slide_selector .list_slide_links li.selected .slide-media-container ').css("background-image","").addClass("mini-transparent").css({backgroundSize:"inherit"});
+			case "transparent":
+				jQuery('#slide_selector .list_slide_links li.selected .slide-media-container ').css("background-image","").css("background-repeat","repeat").addClass("mini-transparent").css({backgroundSize:"inherit"});
 				nextsh.find('.defaultimg, .slotslidebg').css({
 						backgroundImage:"none",
 						backgroundPosition:bgpos,
@@ -2080,8 +2080,9 @@ var UniteLayersRev = new function(){
 
 			break;
 		}
-		if (bbggtt != "solid" && bbggtt!="trans")
+		if (bbggtt != "solid" && bbggtt!="trans" && bbggtt!="transparent")
 			jQuery('#slide_selector .list_slide_links li.selected .slide-media-container ').css("background-image","url("+bgimg+")");
+		
 		jQuery('#divbgholder').css({background:"none",backgroundImage:"none",backgroundColor:"transparent"});
 		
 		// Use Admin Thumbnail if Selected

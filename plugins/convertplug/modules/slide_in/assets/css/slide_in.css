@@ -15,7 +15,9 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
+.cp-slidein .cp-text-close {
+    font-family: sans-serif;
+}
 /* Clearing Floats */
 .cp-slidein-popup-container:after,
 .cp-slidein:after,
@@ -407,11 +409,11 @@ html.cp-exceed-vieport .slidein-overlay.ps-container {
     box-shadow: none;
 }
 
-.cp-hide-image,
+/* .cp-hide-image,
 .cp-image-container.cp-hide-image {
     display: none !important;
 }
-
+ */
 img.cp-image.cp_default_img {
     width: 75%;
 }
@@ -473,6 +475,10 @@ img.cp-image.cp_default_img {
         top: auto !important;
         /* max-width: 100%!important;  */
         width: 75%;
+    }
+    .cp-hide-image,
+    .cp-image-container.cp-hide-image {
+        display: none !important;
     }
 }
 @media(max-width:667px) {
@@ -769,6 +775,22 @@ div#cke_content_editor,
 .slidein-overlay-close.cp-inside-close,
 .cp-slidein-window-size + .slidein-overlay-close,
 .cp-slidein-window-size .slidein-overlay-close.cp-inside-close {
+    left: auto;
+    top: 8px;
+    right: 8px;
+}
+
+.cp-slidein-window-size .slidein-overlay-close.cp-inside-close.cp-adjacent-left,
+.cp-slidein-window-size+.slidein-overlay-close.cp-adjacent-left,
+.slidein-overlay-close.cp-inside-close.cp-adjacent-left {
+    left: 8px;
+    top: 8px;
+    right: auto;
+}
+
+.cp-slidein-window-size .slidein-overlay-close.cp-inside-close.cp-adjacent-right,
+.cp-slidein-window-size+.slidein-overlay-close.cp-adjacent-right,
+.slidein-overlay-close.cp-inside-close.cp-adjacent-right {
     left: auto;
     top: 8px;
     right: 8px;
@@ -1092,7 +1114,7 @@ span.cp-tooltip-icon {
     border: inherit;
 }
 
-.no-padding {
+.cp-no-padding {
     padding: 0 !important;
 }
 
@@ -1295,7 +1317,7 @@ i.cp-icon[class^="Defaults-"] {
     color: #101010;
 }
 .cp-slidein .cp-only-admin-msg {
-    bottom: 0;   
+    bottom: 0;
     font-size: 14px;
 }
 .cp-slidein .cp-go-back {
@@ -1303,4 +1325,15 @@ i.cp-icon[class^="Defaults-"] {
 }
 .cp-slidein .cp-m-success .cp-error-msg {
     font-size: 15px;
+}
+
+/* slide in overlap fix */
+
+.cp-slidein .cp-animate-container{
+    position: relative;
+    z-index: 999999;
+}
+
+.cp-hide-slide-widget{
+    opacity: 0 !important;
 }

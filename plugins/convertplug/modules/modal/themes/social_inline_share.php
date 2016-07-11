@@ -70,14 +70,15 @@ if( !function_exists( "modal_theme_social_inline_share" ) ) {
 		if( $a['cp_social_remove_icon_spacing'] == 1 ){
 			$class .= 'cp-social-no-space';
 		}
-		if( $a['cp_social_icon_column'] == 1 ){
-			$class .= 'cp-auto-column';
+		if( $a['cp_social_icon_column'] == 'auto' ){
+			$class .= ' cp-auto-column';
 		}
+		
 ?>
 		<!-- BEFORE CONTENTS -->
 		<div class="cp-row <?php echo esc_attr( $cp_row_Class );?>">		
 			<div class="cp-text-container <?php echo esc_attr( $cp_row_eq_Class );?>" >
-	        	<div class="cp_social_media_wrapper <?php echo $class;?>">
+	        	<div class="cp_social_media_wrapper <?php echo esc_attr($class);?>">
 						<?php
 		             		/**
 							 * Embed CP Form

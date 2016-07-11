@@ -108,6 +108,18 @@ function vc_checkbox_form_field( $settings, $value ) {
 	return $output;
 }
 
+add_filter( 'vc_map_get_param_defaults', 'vc_checkbox_param_defaults', 10, 2 );
+function vc_checkbox_param_defaults( $value, $param ) {
+	if ( 'checkbox' === $param['type'] ) {
+		$value = '';
+		if ( isset( $param['std'] ) ) {
+			$value = $param['std'];
+		}
+	}
+
+	return $value;
+}
+
 /**
  * Checkbox shortcode attribute type generator.
  *

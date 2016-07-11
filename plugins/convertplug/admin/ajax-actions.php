@@ -476,6 +476,7 @@ function smile_delete_style(){
 	$prev_styles = get_option($option);
 	$key = search_style($prev_styles, $style_id);
 	$hasVariants = false;
+	$result = true;
 
 	$modal_arrays = array();
 
@@ -484,46 +485,53 @@ function smile_delete_style(){
 		$hasVariants = array_key_exists( $style_id, $smile_variant_tests );
 	}
 
-	if( $hasVariants ) {
-		$delMethod = $_POST['deleteMethod'];
-		if( $delMethod == 'soft' ) {
-			$prev_styles[$key]['multivariant'] = true;
-			$settings = unserialize($prev_styles[$key]['style_settings']);
-			$settings['live'] = '0';
-			$prev_styles[$key]['style_settings'] = serialize($settings);
-		} else {
-			unset($prev_styles[$key]);
-			unset($smile_variant_tests[$style_id]);
-		}
-		update_option($option,$prev_styles);
-		update_option( $variant_option,$smile_variant_tests);
-		$result = true;
+	if( $hasVariants && $key !== NULL ) {
+
+			$delMethod = $_POST['deleteMethod'];
+			if( $delMethod == 'soft' ) {
+				$prev_styles[$key]['multivariant'] = true;
+				$settings = unserialize($prev_styles[$key]['style_settings']);
+				$settings['live'] = '0';
+				$prev_styles[$key]['style_settings'] = serialize($settings);
+			} else {
+				unset( $prev_styles[$key] );
+				unset( $smile_variant_tests[$style_id] );
+			}
+			update_option( $option, $prev_styles );
+			update_option( $variant_option, $smile_variant_tests );
+
+			// reset analytics data for style
+			cp_reset_analytics($style_id);
+
 	} else {
 
-		$key = search_style($prev_styles, $style_id);
 		if( $key !== NULL ) {
 			unset($prev_styles[$key]);
 			$modal_arrays = $prev_styles;
+			$result = update_option( $option,$modal_arrays );
+
+			// reset analytics data for style
+			cp_reset_analytics($style_id);
+
 		} else {
 			foreach($smile_variant_tests as $key1 => $arrays ){
 				foreach($arrays as $key2 => $array ){
 					if( $array['style_id'] == $style_id ){
 						$modal_arrays = $array;
-						unset($smile_variant_tests[$key1][$key2]);
+						unset( $smile_variant_tests[$key1][$key2] );
+						$modal_arrays = $smile_variant_tests;
+						$result = update_option( $variant_option, $modal_arrays );
+
+						// reset analytics data for style
+						cp_reset_analytics($style_id);
 						break;
 					}
 				}
 			}
-			$modal_arrays = $smile_variant_tests;
 		}
-
-		$result = update_option($option,$modal_arrays);
 	}
 
-	// reset analytics data for style
-	cp_reset_analytics($style_id);
-
-	if($result){
+	if( $result ){
 		print_r(json_encode(array(
                'message' => 'Deleted'
 			)));
@@ -699,7 +707,7 @@ function cp_add_subscriber(){
 		$on_success = 'close';
 	}
 	$msg_wrong_email = ( isset( $data['msg_wrong_email']  )  && $data['msg_wrong_email'] !== '' ) ? $data['msg_wrong_email'] : __( 'Please enter correct email address.', 'smile' );
-	$msg = ( isset( $data['message'] ) && $data['message'] !== '' ) ? $data['message'] : __( 'Thank you.', 'smile' );
+	$msg = ( isset( $data['message'] ) && $data['message'] !== '' ) ? do_shortcode( html_entity_decode( stripcslashes( $_POST['message'] ) ) ) : __( 'Thank you.', 'smile' );
 
 	if( $on_success == 'message' ) {
 		$action		= 	'message';
@@ -724,8 +732,8 @@ function cp_add_subscriber(){
 		//	Check MX Record setting globally enabled / disabled?
 		if( !empty($email) && ( apply_filters( 'cp_enabled_mx_record', $email) ) ) {
 
-			if( filter_var($email, FILTER_VALIDATE_EMAIL) ) {
-				$email_status = apply_filters('cp_valid_mx_email', $email );
+			if( filter_var( $email, FILTER_VALIDATE_EMAIL) ) {
+				$email_status = apply_filters( 'cp_valid_mx_email', $email );
 			} else {
 				$email_status = false;
 			}
@@ -743,14 +751,14 @@ function cp_add_subscriber(){
 		if( !empty($email) && $prev_contacts) {
 			$index = cp_check_in_array($email, $prev_contacts, 'email');
 		}
-
+		//var_dump($prev_contacts);
 
 		if ( $index !== false ) {
 
 			$contact['user_id'] = $prev_contacts[$index]['user_id'];
 			$prev_contacts[$index] = $contact;
 			$updated = true;
-
+			$status = 'error';
 			//	Show message for already subscribed users
 			$data					=	get_option( 'convert_plug_settings' );
 			$default_msg_status		=	isset($data['cp-default-messages']) ? $data['cp-default-messages'] : 1;

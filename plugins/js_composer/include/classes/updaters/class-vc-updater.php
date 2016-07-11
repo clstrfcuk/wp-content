@@ -17,7 +17,7 @@ class Vc_Updater {
 	/**
 	 * @var string
 	 */
-	protected $version_url = 'http://wpbakery.com/version/?';
+	protected $version_url = 'http://version.wpbakery.com/?';
 
 	/**
 	 * Proxy URL that returns real download link
@@ -131,7 +131,7 @@ class Vc_Updater {
 			if ( vc_is_as_theme() && vc_get_param( 'action' ) !== 'update-selected' ) {
 				return false;
 			}
-			$url = esc_url( is_multisite() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
+			$url = esc_url( vc_is_network_plugin() ? network_admin_url( 'admin.php?page=vc-updater' ) : admin_url( 'admin.php?page=vc-updater' ) );
 
 			return new WP_Error( 'no_credentials', __( 'To receive automatic updates license activation is required. Please visit <a href="' . $url . '' . '" target="_blank">Settings</a> to activate your Visual Composer.', 'js_composer' ) . ' ' . sprintf( ' <a href="http://go.wpbakery.com/faq-update-in-theme" target="_blank">%s</a>', __( 'Got Visual Composer in theme?', 'js_composer' ) ) );
 		}

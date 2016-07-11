@@ -1,5 +1,5 @@
 <?php
- 
+
    $smile_lists = get_option('smile_lists');
    $provider = '';
    $list_name = '';
@@ -9,16 +9,16 @@
         $list = $smile_lists[$list_id];
         $list_name = $list['list-name'];
         $provider = $list['list-provider'];
-      }      
+      }
    }
-    
+
    $totalContacts = 0;
-            
+
    $id = isset( $list['list'] ) ? $list['list'] : '';
 
    $mailer = str_replace(" ","_",strtolower( trim( $provider ) ) );
    $listName = str_replace(" ","_",strtolower( trim( $list_name ) ) );
-   if( $mailer !== "convert_plug" ){      
+   if( $mailer !== "convert_plug" ){
       $listOption = "cp_".$mailer."_".$listName;
       $contacts = get_option($listOption);
    } else {
@@ -47,37 +47,37 @@
       echo "<script>
       window.location.href= '$redirectString';
       </script>";
-   } else { 
+   } else {
       $searchKey = '';
    }
 
-   if ( isset( $_GET['order'] )  && $_GET['order']  == 'asc' ) 
+   if ( isset( $_GET['order'] )  && $_GET['order']  == 'asc' )
       $orderLink = "order=desc";
-   else 
-      $orderLink = "order=asc"; 
+   else
+      $orderLink = "order=asc";
 
-   $sortingNameClass = $sortingEmailClass = $sortingDateClass = "sorting"; 
+   $sortingNameClass = $sortingEmailClass = $sortingDateClass = "sorting";
 
    if ( isset( $_GET['orderby'] ) ) {
       switch( $_GET['orderby'] ) {
-        case "name" : 
+        case "name" :
           $sortingNameClass  = 'sorting-'.$_GET['order'];
-        break; 
-        case "email" : 
+        break;
+        case "email" :
           $sortingEmailClass = 'sorting-'.$_GET['order'];
-        break; 
-        case "date" : 
+        break;
+        case "date" :
           $sortingDateClass  = 'sorting-'.$_GET['order'];
         break;
       }
-    }    
+    }
 
     if( isset( $_POST['sq'] ) && $_POST['sq'] !== '' )
       $searchKey =  $_POST['sq'];
-    else 
+    else
       $searchKey = '';
 
-    if( isset($_GET['sq']) && !empty($_GET['sq']) ) 
+    if( isset($_GET['sq']) && !empty($_GET['sq']) )
       $sq = $_GET['sq'];
     else
       $sq = $searchKey;
@@ -85,14 +85,14 @@
     if( isset( $_POST['sq'] ) && $_POST['sq'] == '' )
        $sq = '';
 
-    $searchInParams = array('name','email'); 
+    $searchInParams = array('name','email');
     if ($contacts) {
-      
+
       $Paginator = new Paginator( $contacts );
       $result = $Paginator->getData( $limit , $page ,$orderby, $order , $sq ,$searchInParams , $maintainKeys );
 
-      $contacts = $result->data;   
-    }   
+      $contacts = $result->data;
+    }
 
 ?>
 
@@ -151,8 +151,8 @@
         $name = ( isset( $list['name'] ) && $list['name'] !== "" ) ? $list['name'] : 'NA';
         $email = ( isset( $list['email'] ) && !empty( $list['email'] ) ) ? $list['email'] : 'NA';
         $user_id = ( isset( $list['user_id'] ) && !empty( $list['user_id'] ) ) ? $list['user_id'] : '';
-        $date = date("j M Y",strtotime($list['date']));        
-        $url = plugins_url( '../images/default-gravtar.png',  __FILE__ );
+        $date = date("j M Y",strtotime($list['date']));
+        $url = CP_BASE_URL . 'admin/images/default-gravtar.png';
         ?>
             <tr data-href="<?php echo admin_url(); ?>admin.php?page=contact-manager&view=contact-details&list=<?php echo $_GET['list']; ?>&id=<?php echo esc_attr( $user_id ); ?>&email=<?php echo $email; ?>">
               <td scope="col" class="manage-column column-name"><span class="connect-list-gravtar-img"><?php echo get_avatar($email,'96','https://support.brainstormforce.com/wp-content/uploads/2015/07/default-gravtar.png' ); ?></span><?php echo esc_attr( $name ); ?></td>
@@ -168,7 +168,7 @@
                   <th scope="col" class="manage-column bsf-connect-column-empty" colspan="3"><?php _e( "No results available.", "smile" ); ?><a class="add-new-h2" style="position:relative;top:-2px;" href="?page=contact-manager&view=contacts&list=<?php echo $list_id; ?>"><?php _e( "Back to Contact List", "smile" ); ?></a></th>
               <?php } else { ?>
                   <th scope="col" class="manage-column bsf-connect-column-empty" colspan="3"><?php _e( "No contacts available.", "smile" ); ?></th>
-              <?php } ?>        
+              <?php } ?>
             </tr>
             <?php
     }
@@ -176,7 +176,7 @@
           </tbody>
         </table>
       </div>
-      <!-- .container --> 
+      <!-- .container -->
 
       <div class="row">
         <div class="container" style="max-width:100% !important;width:100% !important;">
@@ -186,26 +186,26 @@
                 <label class="screen-reader-text" for="post-search-input"><?php _e( "Search Contacts:", "smile" ); ?></label>
                 <input type="search" id="post-search-input" name="sq" value="<?php echo esc_attr($sq ); ?>">
                 <input type="submit" id="search-submit" class="button" value="Search">
-              </form> 
+              </form>
             </p>
           </div><!-- .col-sm-6 -->
           <div class="col-sm-6">
-            <?php 
+            <?php
             if($contacts) {
               $basePageLink = '?page=contact-manager&view=contacts';
-              echo $Paginator->createLinks( $links, 'pagination bsf-cnt-pagi', $listID , $sq ,$basePageLink); 
-            }  
+              echo $Paginator->createLinks( $links, 'pagination bsf-cnt-pagi', $listID , $sq ,$basePageLink);
+            }
             ?>
             <div class="bsf-cnt-total-contancts"><?php echo $totalContacts; ?> <?php _e( "Contacts", "smile" ); ?></div>
           </div><!-- .col-sm-6 -->
         </div><!-- .container -->
       </div><!-- .row -->
 
-      
+
     </div>
-    <!-- .bend-content-wrap --> 
+    <!-- .bend-content-wrap -->
   </div>
-  <!-- .wrap-container --> 
+  <!-- .wrap-container -->
 </div>
 <!-- .wrap -->
 
@@ -221,7 +221,7 @@
   });
 
   jQuery( document ).ready(function() {
-      
+
       jQuery('table tbody tr').click(function(){
           window.location = jQuery(this).data('href');
           return false;

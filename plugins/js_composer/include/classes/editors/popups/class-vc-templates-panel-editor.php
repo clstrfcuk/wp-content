@@ -54,7 +54,10 @@ class Vc_Templates_Panel_Editor implements Vc_Render {
 		 *  'vc_frontend_load_template' -> loading template content for frontend
 		 *  'vc_delete_template' -> deleting template by index
 		 */
-		add_action( 'wp_ajax_vc_save_template', array( &$this, 'save' ) );
+		add_action( 'wp_ajax_vc_save_template', array(
+			&$this,
+			'save',
+		) );
 		add_action( 'wp_ajax_vc_backend_load_template', array(
 			&$this,
 			'renderBackendTemplate',
@@ -67,12 +70,15 @@ class Vc_Templates_Panel_Editor implements Vc_Render {
 			&$this,
 			'renderTemplatePreview',
 		) );
-		add_action( 'wp_ajax_vc_delete_template', array( &$this, 'delete' ) );
-
-/*		add_action( 'vc-render-templates-preview-template', array(
+		add_action( 'wp_ajax_vc_delete_template', array(
 			&$this,
-			'addScriptsToTemplatePreview',
-		) );*/
+			'delete',
+		) );
+
+		/*		add_action( 'vc-render-templates-preview-template', array(
+					&$this,
+					'addScriptsToTemplatePreview',
+				) );*/
 
 	}
 
@@ -440,7 +446,10 @@ HTML;
 		vc_user_access()
 			->checkAdminNonce()
 			->validateDie()
-			->wpAny( array( 'edit_post', (int) vc_request_param( 'post_id' ) ) )
+			->wpAny( array(
+				'edit_post',
+				(int) vc_request_param( 'post_id' ),
+			) )
 			->validateDie()
 			->part( 'templates' )
 			->can()
@@ -478,6 +487,7 @@ HTML;
 		die();
 
 	}
+
 	public function registerPreviewScripts() {
 		visual_composer()->registerAdminJavascript();
 		visual_composer()->registerAdminCss();
@@ -487,6 +497,7 @@ HTML;
 			'vc-backend-min-js',
 		), WPB_VC_VERSION, true );
 	}
+
 	/**
 	 * Enqueue required scripts for template preview
 	 * @since 4.8
@@ -543,6 +554,16 @@ HTML;
 	}
 
 	/**
+	 * Get user templates
+	 *
+	 * @since 4.12
+	 * @return mixed
+	 */
+	public function getUserTemplates() {
+		return apply_filters( 'vc_get_user_templates', get_option( $this->option_name ) );
+	}
+
+	/**
 	 * Function to get all templates for display
 	 *  - with image (optional preview image)
 	 *  - with unique_id (required for do something for rendering.. )
@@ -560,7 +581,7 @@ HTML;
 		// Here we go..
 		if ( apply_filters( 'vc_show_user_templates', true ) ) {
 			// We need to get all "My Templates"
-			$user_templates = apply_filters( 'vc_get_user_templates', get_option( $this->option_name ) );
+			$user_templates = $this->getUserTemplates();
 			// this has only 'name' and 'template' key  and index 'key' is template id.
 			$arr_category = array(
 				'category' => 'my_templates',
@@ -689,7 +710,6 @@ HTML;
 			if ( ! is_array( $this->default_templates ) ) {
 				$this->default_templates = array();
 			}
-
 			$this->default_templates[] = $data;
 
 			return true;
@@ -729,7 +749,10 @@ HTML;
 	 */
 	public function sortTemplatesByCategories( array $data ) {
 		$buffer = $data;
-		uasort( $buffer, array( &$this, 'cmpCategory' ) );
+		uasort( $buffer, array(
+			&$this,
+			'cmpCategory',
+		) );
 
 		return $buffer;
 	}
@@ -743,7 +766,10 @@ HTML;
 	 */
 	public function sortTemplatesByNameWeight( array $data ) {
 		$buffer = $data;
-		uasort( $buffer, array( &$this, 'cmpNameWeight' ) );
+		uasort( $buffer, array(
+			&$this,
+			'cmpNameWeight',
+		) );
 
 		return $buffer;
 	}
@@ -886,5 +912,9 @@ HTML;
 HTML;
 
 		return $output;
+	}
+
+	public function getOptionName() {
+		return $this->option_name;
 	}
 }

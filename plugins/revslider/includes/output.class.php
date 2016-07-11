@@ -3551,7 +3551,7 @@ class RevSliderOutput {
 			echo $a_html;
 			
 			// SVG OUTPUT
-			if (!empty($svg_val) && sizeof($svg_val)>0) {				
+			if (!empty($svg_val) && sizeof($svg_val)>0) {
 				echo '			data-svg_src="'.$svg_val->{'src'}.'"'." \n";
 				echo '			data-svg_idle="sc:'.$svg_val->{'svgstroke-color'}.';sw:'.$svg_val->{'svgstroke-width'}.';sda:'.$svg_val->{'svgstroke-dasharray'}.';sdo:'.$svg_val->{'svgstroke-dashoffset'}.';"'." \n";
 				if($is_hover_active){

@@ -204,7 +204,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 						'element' => 'post_type',
 						'value_not_equal_to' => array( 'custom' ),
 					),
-					'edit_field_class' => 'vc_col-sm-6 vc_column',
+					'edit_field_class' => 'vc_col-sm-6',
 					'description' => __( 'Select display style for grid.', 'js_composer' ),
 				),
 				array(
@@ -221,7 +221,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 							'pagination',
 						),
 					),
-					'edit_field_class' => 'vc_col-sm-6 vc_column',
+					'edit_field_class' => 'vc_col-sm-6',
 				),
 				array(
 					'type' => 'checkbox',
@@ -236,7 +236,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 					'param_name' => 'element_width',
 					'value' => self::$gridColsList,
 					'std' => '4',
-					'edit_field_class' => 'vc_col-sm-6 vc_column',
+					'edit_field_class' => 'vc_col-sm-6',
 					'description' => __( 'Select number of single grid elements per row.', 'js_composer' ),
 				),
 				array(
@@ -259,7 +259,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 					),
 					'std' => '30',
 					'description' => __( 'Select gap between grid elements.', 'js_composer' ),
-					'edit_field_class' => 'vc_col-sm-6 vc_column',
+					'edit_field_class' => 'vc_col-sm-6',
 				),
 				// Data settings
 				array(
@@ -757,7 +757,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 						'element' => 'post_type',
 						'value_not_equal_to' => array( 'custom' ),
 					),
-					'edit_field_class' => 'vc_col-sm-6 vc_column',
+					'edit_field_class' => 'vc_col-sm-6',
 					'description' => __( 'Select display style for grid.', 'js_composer' ),
 				),
 				array(
@@ -774,7 +774,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 							'pagination',
 						),
 					),
-					'edit_field_class' => 'vc_col-sm-6 vc_column',
+					'edit_field_class' => 'vc_col-sm-6',
 				),
 				array(
 					'type' => 'dropdown',
@@ -782,7 +782,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 					'param_name' => 'element_width',
 					'value' => self::$gridColsList,
 					'std' => '4',
-					'edit_field_class' => 'vc_col-sm-6 vc_column',
+					'edit_field_class' => 'vc_col-sm-6',
 					'description' => __( 'Select number of single grid elements per row.', 'js_composer' ),
 				),
 				array(
@@ -805,7 +805,7 @@ if ( ! class_exists( 'VcGridsCommon' ) ) {
 					),
 					'std' => '5',
 					'description' => __( 'Select gap between grid elements.', 'js_composer' ),
-					'edit_field_class' => 'vc_col-sm-6 vc_column',
+					'edit_field_class' => 'vc_col-sm-6',
 				),
 				array(
 					'type' => 'hidden',

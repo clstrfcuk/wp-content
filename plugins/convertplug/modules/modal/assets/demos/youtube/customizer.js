@@ -1,5 +1,5 @@
 
-jQuery(window).load(function(){
+jQuery(window).on( 'load',function(){
 	parent.customizerLoaded();
 });
 

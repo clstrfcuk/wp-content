@@ -1,113 +1,99 @@
 <?php
+/**
+ * @package   The_Grid
+ * @author    Themeone <themeone.master@gmail.com>
+ * @copyright 2015 Themeone
+ *
+ * Skin: Kampala
+ *
+ */
 
-// Available options to retrieve and customize markup
-$options = array(
-	'poster' => true,  // Media poster for audio/video (if false no play buttons will be created)
-	'icons' => array(  // set all icons
-		'link'       => '<i class="tg-icon-link"></i>', // Button link icon
-		'comment'    => '',                             // Comment icon
-		'image'      => '<i class="tg-icon-add"></i>',  // Ligthbox icon
-		'audio'      => '<i class="tg-icon-play"></i>', // Audio icon
-		'video'      => '<i class="tg-icon-play"></i>', // HTML Video icon
-		'vimeo'      => '<i class="tg-icon-play"></i>', // Vimeo icon
-		'wistia'     => '<i class="tg-icon-play"></i>', // Wistia icon
-		'youtube'    => '<i class="tg-icon-play"></i>', // Youtube icon
-		'soundcloud' => '<i class="tg-icon-play"></i>', // SoundCloud icon
-	),
-	'excerpt_length'  => 240,     // Excerpt character length
-	'excerpt_tag'     => '...',   // Excerpt more tag
-	'read_more'       => '',      // Read more text
-	'date_format'     => '' ,     // Date format (https://codex.wordpress.org/Formatting_Date_and_Time)
-	'get_terms'       => true,    // Get all post terms (if false $content['terms'] will be empty)
-	'term_color'      => 'color', // Get terms color (option: 'color', 'background', 'none'); default 'none'
-	'term_link'       => true,    // Add link to term
-	'term_separator'  => ', ',    // Term separator
-	'author_prefix'   => '',      // Author prefix like 'By',...
-	'avatar'          => false    // Add author avatar
+// Exit if accessed directly
+if (!defined('ABSPATH')) { 
+	exit;
+}
+
+$tg_el = The_Grid_Elements();
+
+$format = $tg_el->get_item_format();
+$colors = $tg_el->get_colors();
+
+$terms_args = array(
+	'color' => 'color',
+	'separator' => ', '
 );
 
-// If function do not exists, then return immediately
-if (!function_exists('The_Grid_Item_Content')) {
-	return;
-}
+$media_args = array(
+	'icons' => array(
+		'image' => '<i class="tg-icon-add"></i>'
+	)
+);
 
-// Main Func/Class to retrieve all necessary item content/markup
-$content = The_Grid_Item_Content($options);
-				
-$html  = null;
-
-// background image for quote/link
-$bg_img = (isset($content['media_data']['url'])) ? '<div class="tg-item-image" style="background-image: url('.$content['media_data']['url'].')"></div>' : null;
-
-if (isset($content['quote_markup'])) {
+if ($format == 'quote' || $format == 'link') {
 	
-	$html .= $bg_img;
-	$html .= $content['content_wrapper_start']; // add content wrapper start (to apply color scheme and contains main info
-	$html .= $content['date'];           // get the date markup
-	$html .= $content['quote_markup'];   // get the quote markup
-	$html .= '<div class="tg-item-footer">';
-	$html .= '<i class="tg-quote-icon tg-icon-quote" style="color:'.$content['colors']['content']['title'].'"></i>';
-	$html .= $content['post_like'];	     // get the post like markup
-	$html .= '</div>';
-	$html .= $content['content_wrapper_end'];  // add content wrapper end
+	$bg_img = $tg_el->get_attachement_url();
 	
-} else if (isset($content['link_markup'])) {
+	$output  = ($bg_img) ? '<div class="tg-item-image" style="background-image: url('.esc_url($bg_img).')"></div>' : null;
+	$output .= $tg_el->get_content_wrapper_start();
+		$output .= $tg_el->get_the_date();
+		$output .= ($format == 'quote') ? $tg_el->get_the_quote_format() : $tg_el->get_the_link_format();
+		$output .= '<div class="tg-item-footer">';
+			$output .= '<i class="tg-'.$format.'-icon tg-icon-'.$format.'" style="color:'.$colors['content']['title'].'"></i>';
+			$output .= $tg_el->get_the_likes_number();
+		$output .= '</div>';
+	$output .= $tg_el->get_content_wrapper_end();
 	
-	$html .= $bg_img;
-	$html .= $content['content_wrapper_start']; // add content wrapper start (to apply color scheme and contains main info
-	$html .= $content['date'];           // get the date markup
-	$html .= $content['link_markup'];    // get the link markup
-	$html .= '<div class="tg-item-footer">';
-	$html .= '<i class="tg-link-icon tg-icon-link" style="color:'.$content['colors']['content']['title'].'"></i>';
-	$html .= $content['post_like'];    	 // get the post like markup
-	$html .= '</div>';
-	$html .= $content['content_wrapper_end'];  // add content wrapper end
-	
+	return $output;
+		
 } else {
 	
-	$media_button = $content['media_button']; // Lightbox/Play button (depends of the post format)
-	$link_button  = $content['link_button'];  // button link
-	
-	$triangle_bot  = '<div class="tg-item-decoration">';
-		$triangle_bot .= '<div class="triangle-down-right" style="border-color:'.$content['colors']['content']['background'].'"></div>';
-	$triangle_bot .= '</div>';
-	
-	if (!empty($content['social_links'])) {
-		$triangle_top  = '<div class="tg-item-share-holder">';
-			$triangle_top .= '<div class="triangle-up-left" style="border-color:'.$content['colors']['overlay']['background'].'"></div>'; // get overlay background color
-			$triangle_top .= '<i class="tg-icon-reply" style="color:'.$content['colors']['overlay']['title'].'"></i>'; // get overlay title color
-			$triangle_top .= '<div class="tg-share-icons">';
-				$triangle_top .= $content['social_links']['facebook'];  // get facebook share button
-				$triangle_top .= $content['social_links']['twitter'];   // get twitter share button
-				$triangle_top .= $content['social_links']['google+'];   // get google+ share button
-				$triangle_top .= $content['social_links']['pinterest']; // get pinterest share button
-			$triangle_top .= '</div>';
-		$triangle_top .= '</div>';
-	} else {
-		$triangle_top  = null;
+	$output = null;
+
+	$social = $tg_el->get_social_share_links();
+	$social_button  = null;
+	if (!empty($social)) {
+		$social_button = '<div class="tg-item-share-holder">';
+			$social_button .= '<div class="triangle-up-left" style="border-color:'.$colors['overlay']['background'].'"></div>';
+			$social_button .= '<i class="tg-icon-reply" style="color:'.$colors['overlay']['title'].'"></i>';
+			$social_button .= '<div class="tg-share-icons">';
+				foreach ($social as $url) {
+					$social_button .= $url;
+				}
+			$social_button .= '</div>';
+		$social_button .= '</div>';
 	}
 	
-	$html .= $content['media_wrapper_start']; // Media wrapper start markup (no included in media markup to allow custom position of media and link buttons)
-		$html .= $content['media_markup'];    // Media markup with all html to build audio/video/image/galley media
-		$html .= (!empty($media_button)) ? $content['center_wrapper_start'] : null; // Wrapper Start to center content inside
-			$html .= ($content['media_type'] != 'image' && $content['media_type'] != 'gallery' && !empty($media_button)) ? $content['overlay'].$media_button : null;  // Lightbox/Play button
-			$html .= (($content['media_type']  == 'image' || $content['media_type']  == 'gallery') && !empty($link_button)) ? $content['overlay'].$link_button  : null;  // button link if image or gallery
-		$html .= (!empty($media_button)) ? $content['center_wrapper_end'] : null;   // Wrapper End to center content inside
-		$html .= (!empty($media_button)) ? $triangle_bot : null;
-		$html .= (!empty($media_button)) ? $triangle_top: null;
-	$html .= $content['media_wrapper_end'];   // Media wrapper markup end
+	$decoration  = '<div class="tg-item-decoration">';
+		$decoration .= '<div class="triangle-down-right" style="border-color:'.$colors['content']['background'].'"></div>';
+	$decoration .= '</div>';
 	
-	$html .= $content['content_wrapper_start']; // add content wrapper start (to apply color scheme and contains main info
-		$html .= $content['date'];       // get the date markup
-		$html .= $content['title'];      // get the title markup
-		$html .= $content['terms'];      // get terms list markup
-		$html .= $content['content'];    // get the content/excerpt markup
-		$html .= '<div class="tg-item-footer">';
-			$html .=  preg_replace('/(<a\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['title'].'">', $content['comments']['markup']); // get the comments markup
-			$html .= $content['post_like'];	 // get the post like markup
-		$html .= '</div>';
-	$html .= $content['content_wrapper_end']; // add content wrapper end
+	$media_content = $tg_el->get_media();
+	$media_button  = $tg_el->get_media_button($media_args);
+	$link_button   = $tg_el->get_link_button();
+
+	if ($media_content) {
+		$output .= $tg_el->get_media_wrapper_start();
+			$output .= $media_content;
+			$output .= ($media_button) ? $tg_el->get_center_wrapper_start() : null;
+				$output .= ($media_button && in_array($format, array('video', 'audio'))) ? $tg_el->get_overlay().$media_button : null;
+				$output .= ($link_button && !in_array($format, array('video', 'audio'))) ? $tg_el->get_overlay().$link_button : null;
+			$output .= ($media_button) ? $tg_el->get_center_wrapper_end() : null;
+			$output .= ($media_button) ? $decoration : null;
+			$output .= ($media_button) ? $social_button : null;
+		$output .= $tg_el->get_media_wrapper_end();
+	}
 	
+	$output .= $tg_el->get_content_wrapper_start();
+		$output .= $tg_el->get_the_date();
+		$output .= $tg_el->get_the_title();
+		$output .= $tg_el->get_the_terms($terms_args);
+		$output .= $tg_el->get_the_excerpt();
+		$output .= '<div class="tg-item-footer">';
+			$output .= $tg_el->get_the_comments_number();
+			$output .= $tg_el->get_the_likes_number();
+		$output .= '</div>';
+	$output .= $tg_el->get_content_wrapper_end();
+
+	return $output;
+
 }
-		
-return $html;

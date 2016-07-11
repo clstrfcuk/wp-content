@@ -2,12 +2,6 @@
 /*global tinymce:false*/
 /*global tg_names:false*/
 /*global tg_sc_title:false*/
-/*global tg_but_tooltip:false*/
-/*global tg_but_url:false*/
-/*global tg_but_text:false*/
-/*global tg_but_label:false*/
-/*global tg_list_tooltip:false*/
-/*global tg_list_label:false*/
 /*global tg_sc_tooltip:false*/
 
 (function($) {

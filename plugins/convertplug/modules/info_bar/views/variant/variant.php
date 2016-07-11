@@ -117,8 +117,7 @@ if( count($variants) > 0 ) {
                     } elseif( $live == 0 ){
                       $status .= '<span class="change-status"><span data-live="0" class="cp-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
                     } else {
-
-                        $status .= cp_generate_scheduled_info($style['style_settings']);
+                      $status .= '<span class="change-status"><span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span>'.__( "Scheduled", "smile" ).'</span></span>';
                     }
                     $status .= '<ul class="manage-column-menu">';
           			    if( $live !== 1 && $live !== "1" ) {
@@ -135,7 +134,7 @@ if( count($variants) > 0 ) {
                     ?>
                     <?php if( !isset($style['multivariant']) ) { ?>
                         <tr id="<?php echo $key; ?>" class="ui-sortable-handle">
-                          <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><?php echo urldecode($style_name); ?> </a></td>
+                          <td class="name column-name"><a target="_blank" href="?page=smile-info_bar-designer&style-view=edit&style=<?php echo urlencode( $style_id ); ?>&theme=<?php echo urlencode( $theme ); ?>" ><?php echo urldecode($style_name); ?> </a></td>
                           <td class="column-impressions" style="vertical-align: inherit;"><?php echo $impressions; ?></td>
                           <td class="column-status" style="vertical-align: inherit;"><?php echo $status; ?></td>
                           <td class="actions column-actions" style="vertical-align: inherit;">
@@ -181,19 +180,24 @@ if( count($variants) > 0 ) {
 				    $status .= '<span class="change-status"><span data-live="1" class="cp-status"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></span>';
 			    } elseif( $live == 0 ){
   				  $status .= '<span class="change-status"><span data-live="0" class="cp-status"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></span>';
-			    }
-            $status .= '<ul class="manage-column-menu">';
+			    } else {
+				    $status .= '<span class="change-status"><span data-live="2" class="cp-status"><i class="connects-icon-clock"></i><span>'.__( "Scheduled", "smile" ).'</span></span>';
+    			}
+          $status .= '<ul class="manage-column-menu">';
     		  if( $live !== 1 && $live !== "1" ) {
     			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="info_bar_variant_tests" data-live="1" data-option="info_bar_variant_tests"><i class="connects-icon-play"></i><span>'.__( "Live", "smile" ).'</span></a></li>';
     		  }
     		  if( $live !== 0 && $live !== "" && $live !== "0" ) {
     			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="info_bar_variant_tests" data-live="0" data-option="info_bar_variant_tests"><i class="connects-icon-pause"></i><span>'.__( "Pause", "smile" ).'</span></a></li>';
     		  }
+    		  if( $live !== 2 && $live !== "2" ) {
+    			   $status .= '<li><a href="#" class="change-status" data-style-id="'.$style_id.'" data-variant="info_bar_variant_tests" data-live="2" data-option="info_bar_variant_tests" data-schedule="1"><i class="connects-icon-clock"></i><span>'.__( "Schedule", "smile" ).'</span></a></li>';
+    		  }
     		  $status .= '</ul>';
-            $status .= '</span>';
+          $status .= '</span>';
           ?>
               <tr id="<?php echo $key; ?>" class="ui-sortable-handle">
-                <td class="name column-name"><a href="?page=smile-info_bar-designer&style-view=variant&variant-test=edit&variant-style=<?php echo $style_id; ?>&style=<?php echo stripslashes($style_name); ?>&parent-style=<?php echo $_GET['style']; ?>&style_id=<?php echo $variant_style; ?>&theme=<?php echo esc_attr( $theme ); ?>" > <?php echo urldecode(stripslashes($style_name)); ?> </a></td>
+                <td class="name column-name"><a target="_blank" href="?page=smile-info_bar-designer&style-view=variant&variant-test=edit&variant-style=<?php echo $style_id; ?>&style=<?php echo stripslashes($style_name); ?>&parent-style=<?php echo $_GET['style']; ?>&style_id=<?php echo $variant_style; ?>&theme=<?php echo esc_attr( $theme ); ?>" > <?php echo urldecode(stripslashes($style_name)); ?> </a></td>
                 <td class="column-impressions" style="vertical-align: inherit;"><?php echo $impressions; ?></td>
                 <td class="column-status" style="vertical-align: inherit;"><?php echo $status; ?></td>
                 <td class="actions column-actions" style="vertical-align: inherit;">

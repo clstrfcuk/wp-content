@@ -62,25 +62,31 @@
 
 	function slide_in_process_cp_form(t) {
 
-		var form 			= jQuery(t),
-			data 			= form.serialize(),
-			info_container  = jQuery(t).parents(".cp-animate-container").find('.cp-msg-on-submit'),
-			form_container  = jQuery(t).parents(".cp-slidein-body").find('.cp-form-container'),
-			spinner  		= jQuery(t).parents(".cp-animate-container").find('.cp-form-processing'),
-			slidein 			= jQuery(t).parents(".slidein-overlay"),
+		var form 					= jQuery(t),
+			data 					= form.serialize(),
+			info_container  		= jQuery(t).parents(".cp-animate-container").find('.cp-msg-on-submit'),
+			form_container  		= jQuery(t).parents(".cp-slidein-body").find('.cp-form-container'),
+			spinner  				= jQuery(t).parents(".cp-animate-container").find('.cp-form-processing'),
+			slidein 				= jQuery(t).parents(".global_slidein_container"),
 			cp_form_processing_wrap = jQuery(t).parents(".cp-animate-container").find('.cp-form-processing-wrap'),
 			cp_animate_container    = jQuery(t).parents(".cp-animate-container"),
-			cp_tooltip    			=  slidein.find(".cp-tooltip-icon").data('classes');
-
-		var cookieTime 		= slidein.data('conversion-cookie-time');
-		var cookieName 		= slidein.data('slidein-id');
-		var dont_close 		= jQuery(t).parents(".slidein-overlay").hasClass("do_not_close");
-		var redirectdata 	= jQuery(t).parents(".slidein-overlay").data("redirect-lead-data");
-
+			cp_tooltip    			=  slidein.find(".cp-tooltip-icon").data('classes'),
+	 		cookieTime 				= slidein.data('conversion-cookie-time'),
+			cookieName 				= slidein.data('slidein-id'),
+			dont_close 				= jQuery(t).parents(".global_slidein_container").hasClass("do_not_close"),
+			redirectdata 			= jQuery(t).parents(".global_slidein_container").data("redirect-lead-data"),
+			redirect_to 			= jQuery(t).parents(".global_slidein_container").data("redirect-to"),
+		 	//download_url 			= jQuery(t).parents(".global_slidein_container").data("download-url");
+		 	form_action_on_submit 	= jQuery(t).parents(".global_slidein_container").data("form-action"),
+		 	form_action_dealy		= jQuery(t).parents(".global_slidein_container").data("form-action-time"),
+		 	form_action_dealy 		= parseInt(form_action_dealy * 1000),
+		 	cp_optin_widget 		= jQuery(t).parents(".global_slidein_container").find(".cp-slidein-body").hasClass('cp-optin-widget');
+		console.log("cookiename"+cookieName);
 		// Check for required fields are not empty
 		// And create query strings to send to redirect URL after form submission
         var query_string = '';
         var submit_status = true;
+        var redirect_with =''; 
         form.find('.cp-input').each( function(index) {
             var $this = jQuery(this);
 
@@ -162,8 +168,13 @@
 				dataType: 'HTML',
 				success: function(result){
 
-					if(cookieTime) {
-						createCookie(cookieName,true,cookieTime);
+					if(cookieTime) {											
+						if(slidein.find('.cp-slidein-toggle').length > 0){							
+							createCookie(cookieName+'-conversion',true,cookieTime);
+						}else{
+							//removeCookie(cookieName+'-conversion');
+							createCookie(cookieName,true,cookieTime);
+						}
 					}
 
 					var obj = jQuery.parseJSON( result );
@@ -190,6 +201,9 @@
 						detailed_msg += "<div class='cp-go-back'>Go Back</div>";
 						msg_string   += '<div class="cp-only-admin-msg">[Only you can see this message]</div>';
 					}
+
+					// remove backslashes from success message
+					obj.message = obj.message.replace(/\\/g, '');
 
 					//	show message error/success
 					if( typeof obj.message != 'undefined' && obj.message != null ) {
@@ -228,13 +242,44 @@
 								}
 
 								var redirect_url = url+urlstring+decodeURI(query_string);
-								if( redirectdata == 1 ){
-									window.location = redirect_url;
+								if( redirectdata == 1 ){									
+									redirect_url = redirect_url ;						
 								} else {
-									window.location = obj.url;
+									redirect_url = obj.url ;
+								}
+
+								if(redirect_to !=='download'){
+									redirect_with = redirect_to;
+									window.open( redirect_url,'_'+redirect_with );
+								}else{									
+									cp_slidein_download_file(redirect_url);
 								}
 							} else {
 								cp_form_processing_wrap.show();
+								
+								if(form_action_on_submit == 'disappear'){
+									slidein.removeClass('cp-hide-inline-style');
+									slidein.removeClass('cp-close-slidein');
+									setTimeout(function(){
+										if( slidein.hasClass('cp-slidein-inline') ){
+											slidein.addClass('cp-hide-inline-style');
+										}
+										if( slidein.find('.cp-toggle-container').length >=1 || cp_optin_widget == true ){											
+											slidein.addClass('cp-close-slidein');
+										}
+
+										jQuery(document).trigger('closeSlideIn',[slidein]);
+									},form_action_dealy);
+								}else if(form_action_on_submit == 'reappear'){
+									setTimeout(function(){										
+										info_container.empty();
+										cp_form_processing_wrap.css({'display': 'none'});
+										info_container.removeAttr('style');
+										spinner.removeAttr('style');
+										form.trigger("reset");
+									},form_action_dealy);
+								}
+
 							}
 
 							if(dont_close){
@@ -277,6 +322,7 @@
 			// submit add subscriber request
 		    jQuery(el).find('.btn-subscribe').click(function(e){
 				e.preventDefault;
+				//console.log("submit click");
 				if( !jQuery(this).hasClass('disabled') ){
 					slide_in_process_cp_form( el );
 					jQuery(document).trigger("si_conversion_done",[this]);
@@ -294,5 +340,33 @@
 		});
 
 	});
+
+function cp_slidein_download_file(fileURL, fileName) {	
+    // for non-IE
+    if (!window.ActiveXObject) {
+        var save = document.createElement('a');
+        save.href = fileURL;
+        save.target = '_blank';
+        var filename = fileURL.substring(fileURL.lastIndexOf('/')+1);
+        save.download = fileName || filename;
+
+        var evt = new MouseEvent('click', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': false
+        });
+        save.dispatchEvent(evt);
+
+        (window.URL || window.webkitURL).revokeObjectURL(save.href);
+    }
+
+    // for IE < 11
+    else if ( !! window.ActiveXObject && document.execCommand)     {
+        var _window = window.open(fileURL, '_blank');
+        _window.document.close();
+        _window.document.execCommand('SaveAs', true, fileName || fileURL)
+        _window.close();
+    }
+}
 
 })( jQuery );

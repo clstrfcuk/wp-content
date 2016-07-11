@@ -12,6 +12,7 @@
 	-webkit-box-shadow: none;
     box-shadow: none;
 }
+.male .tg-item-content-holder,
 .male .tg-item-media-holder {
 	background: transparent !important;
 }
@@ -101,9 +102,6 @@
 .male .tg-media-button .tg-icon-add {
     font-size: 28px;
 }
-.male .mejs-overlay-play {
-	display: none !important;
-}
 .male .tg-item-front,
 .male .tg-item-back,
 .male .tg-item-back-inner,
@@ -173,6 +171,7 @@
 .male.tg-force-play .tg-item-front-inner,
 .male:hover .tg-item-back-inner {
 	opacity: 1 !important;
+	visibility: visible !important;
 	-webkit-transform: perspective(550px) rotate3d(1,0,0,0deg) translate3d(0,0.0001%,0);
 	-moz-transform: perspective(550px) rotate3d(1,0,0,0deg) translate3d(0,0.0001%,0);
 	-ms-transform: perspective(550px) rotate3d(1,0,0,0deg) translate3d(0,0.0001%,0);

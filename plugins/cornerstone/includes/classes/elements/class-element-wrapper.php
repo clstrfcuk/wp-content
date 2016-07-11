@@ -148,13 +148,14 @@ class Cornerstone_Element_Wrapper {
 	}
 
 
-	public function shortcode_output( $atts, $content = "", $shortcode_name ) {
+	public function shortcode_output( $atts, $content = '', $shortcode_name ) {
 
 		$defaults = $this->controls()->get_transformed_atts( $this->defaults() );
 		$atts = shortcode_atts( $defaults, $atts, $shortcode_name );
 
-		if ( isset( $atts['content'] ) )
+    if ( isset( $atts['content'] ) ) {
 			unset( $atts['content'] );
+    }
 
 		extract( $atts );
 
@@ -321,11 +322,13 @@ class Cornerstone_Element_Wrapper {
 		$atts = $this->build_shortcode_clean_atts( $atts );
 
 		if ( isset( $atts['content'] ) ) {
-			if  ( '' == $content )
+			if ( '' == $content ) {
 				$content = $atts['content'];
+      }
 			unset( $atts['content'] );
 		}
 
+    $content = apply_filters( 'cs_element_update_build_shortcode_content', $content, $parent );
 		$content = apply_filters( $this->hook_prefix . 'update_build_shortcode_content', $content, $parent );
 
 	  $output = "[{$this->shortcode_name}";

@@ -72,6 +72,9 @@ if( !function_exists( "info_bar_theme_free_trial" ) ) {
 		//info bar image
 		$info_bar_image 		= apply_filters( 'cp_get_info_bar_image_url', $a );
 
+		//info bar image alt text
+		$info_bar_alt 		= apply_filters( 'cp_get_info_bar_image_alt', $a );
+
 		$imageStyle		    = cp_add_css( 'max-width', $a['image_size'], 'px');
 		$imageStyle		   .= cp_add_css( 'width', $a['image_size'], 'px');
 
@@ -84,7 +87,7 @@ if( !function_exists( "info_bar_theme_free_trial" ) ) {
 		?>
 
 		<div class="cp-image-container">
-			<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $info_bar_image ); ?>" class="cp-image <?php echo esc_attr( $img_class );?>">
+			<img style="<?php echo esc_attr($imageStyle); ?>" src="<?php echo esc_attr( $info_bar_image ); ?>" class="cp-image <?php echo esc_attr( $img_class );?>" <?php echo $info_bar_alt ;?> >
         </div>
         <div class="cp-sub-container">
             <div class="cp-msg-container <?php echo ( trim( $a['infobar_title'] ) == "" ? "cp-empty" : '' );  ?>">

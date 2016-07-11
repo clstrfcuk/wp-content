@@ -32,6 +32,8 @@ if( !function_exists( "cp_import_slide_in" ) ){
 		$paths['tempdir'] = trailingslashit($paths['basedir']).'cp_modal';
 		$paths['temp']  	= trailingslashit($paths['basedir']).'cp_modal/'.$title;
 		$paths['tempurl'] = trailingslashit($paths['baseurl']).'cp_modal/';
+		$paths['basepath'] = $paths['basedir'].'/cp_modal/';
+		$folderPath = $paths['basedir'] .'/cp_modal/'.$title;
 
 		// Create the respective directory inside wp-uploads directory
 		if( !is_dir( $paths['temp'] ) ){
@@ -44,13 +46,27 @@ if( !function_exists( "cp_import_slide_in" ) ){
 		// Extract the zip to our newly created directory
 		$unzipfile = unzip_file( $file, $destination_path);
 
+
 		if ( !$unzipfile ) {
 	      	die(__( 'Unable to extract the file.', 'smile' ));
 	   	}
 
-		// Set the json file file url to get the settings for the style
-		$json_file = $paths['tempurl'].$title.'/'.$title.'.txt';
+		// sanitize folder name
+	   	$newFolderName = sanitize_file_name( $title );
 
+	   	// grant permission
+	   	chmod( $folderPath, 0755);
+
+	   	$newFolderPath =  $paths['basepath'] . $newFolderName;
+
+	   	// rename folder
+	    rename( $folderPath, $newFolderPath );
+
+	    // rename settings file
+	    rename( $newFolderPath .'/'. $title . '.txt' , $newFolderPath .'/'.$newFolderName .'.txt' );
+
+		// Set the json file file url to get the settings for the style
+		$json_file = $paths['tempurl'].$newFolderName.'/'.$newFolderName.'.txt';
 
 		$module = $data['module'];
 		$data_option = 'smile_slide_in_styles';
@@ -58,6 +74,7 @@ if( !function_exists( "cp_import_slide_in" ) ){
 
 		// Read the text file containing the json formatted settings of style and decode it
 		$content = wp_remote_get($json_file);
+
 		$json = $content['body'];
 		$obj = json_decode($json,true);
 		$import_style = array();
@@ -93,6 +110,12 @@ if( !function_exists( "cp_import_slide_in" ) ){
 			cp_import_google_fonts($google_fonts);
 		}
 
+		if( isset($obj['media']['slidein_bg_image']) ) {
+			$old_image = $obj['media']['slidein_bg_image'];
+			unset($obj['media']['slidein_bg_image']);
+			$obj['media']['slide_in_bg_image'] =  $old_image;
+		}
+
 		if( isset($obj['media']) ) {
 			$media = (array)$obj['media'];
 			$media_ids = array();
@@ -100,6 +123,8 @@ if( !function_exists( "cp_import_slide_in" ) ){
 			if ( isset($media) && is_array($media) ) {
 				// Import media if any
 				foreach( $media as $option => $value ) {
+
+					$value = str_replace( $title , $newFolderName, $value);
 
 					// $filename should be the path to a file in the upload directory.
 					$filename =  $paths['tempdir'].'/'.$value;
@@ -156,6 +181,11 @@ if( !function_exists( "cp_import_slide_in" ) ){
 		$update = false;
 
 		foreach( $style_settings as $title => $value ){
+
+			if( $title == 'slidein_bg_image' ) {
+				$title = 'slide_in_bg_image';
+			}
+
 			if( !is_array( $value ) ){
 				$value = htmlspecialchars_decode($value);
 				$import_style[$title] = $value;
@@ -166,6 +196,8 @@ if( !function_exists( "cp_import_slide_in" ) ){
 				$import_style[$title] = $val;
 			}
 		}
+
+
 		$import = $obj;
 		$import['style_settings'] = serialize( $import_style );
 
@@ -256,6 +288,8 @@ if( !function_exists( "cp_import_info_bar" ) ){
 		$paths['tempdir'] = trailingslashit($paths['basedir']).'cp_modal';
 		$paths['temp']  	= trailingslashit($paths['basedir']).'cp_modal/'.$title;
 		$paths['tempurl'] = trailingslashit($paths['baseurl']).'cp_modal/';
+		$paths['basepath'] = $paths['basedir'].'/cp_modal/';
+		$folderPath = $paths['basedir'] .'/cp_modal/'.$title;
 
 		// Create the respective directory inside wp-uploads directory
 		if( !is_dir( $paths['temp'] ) ){
@@ -268,12 +302,27 @@ if( !function_exists( "cp_import_info_bar" ) ){
 		// Extract the zip to our newly created directory
 		$unzipfile = unzip_file( $file, $destination_path);
 
+
 		if ( !$unzipfile ) {
 	      	die(__( 'Unable to extract the file.', 'smile' ));
 	   	}
 
+		// sanitize folder name
+	   	$newFolderName = sanitize_file_name( $title );
+
+	   	// grant permission
+	   	chmod( $folderPath, 0755 );
+
+	   	$newFolderPath =  $paths['basepath'] . $newFolderName;
+
+	   	// rename folder
+	    rename( $folderPath, $newFolderPath );
+
+	    // rename settings file
+	    rename( $newFolderPath .'/'. $title . '.txt' , $newFolderPath .'/'.$newFolderName .'.txt' );
+
 		// Set the json file file url to get the settings for the style
-		$json_file = $paths['tempurl'].$title.'/'.$title.'.txt';
+		$json_file = $paths['tempurl'].$newFolderName.'/'.$newFolderName.'.txt';
 
 		$module = $data['module'];
 		$data_option = 'smile_info_bar_styles';
@@ -281,7 +330,9 @@ if( !function_exists( "cp_import_info_bar" ) ){
 
 		// Read the text file containing the json formatted settings of style and decode it
 		$content = wp_remote_get($json_file);
+
 		$json = $content['body'];
+
 		$obj = json_decode($json,true);
 		$import_style = array();
 		$new_style_id = $obj['style_id'];
@@ -312,6 +363,18 @@ if( !function_exists( "cp_import_info_bar" ) ){
 
 		$style_settings = (array)$obj['style_settings'];
 
+		if( isset($obj['media']['infobar_image']) ) {
+			$old_ib_image = $obj['media']['infobar_image'];
+			unset($obj['media']['infobar_image']);
+			$obj['media']['info_bar_image'] =  $old_ib_image;
+		}
+
+		if( isset($obj['media']['infobar_bg_image']) ) {
+			$old_ib_bg_image = $obj['media']['infobar_bg_image'];
+			unset($obj['media']['infobar_bg_image']);
+			$obj['media']['info_bar_bg_image'] =  $old_ib_bg_image;
+		}
+
 		if( isset($obj['media']) ) {
 			$media = (array)$obj['media'];
 		}
@@ -328,6 +391,8 @@ if( !function_exists( "cp_import_info_bar" ) ){
 
 			// Import media if any
 			foreach( $media as $option => $value ) {
+
+				$value = str_replace( $title , $newFolderName, $value);
 
 				// $filename should be the path to a file in the upload directory.
 				$filename =  $paths['tempdir'].'/'.$value;
@@ -382,6 +447,15 @@ if( !function_exists( "cp_import_info_bar" ) ){
 		$update = false;
 
 		foreach( $style_settings as $title => $value ){
+
+			if( $title == 'infobar_bg_image' ) {
+				$title = 'info_bar_bg_image';
+			}
+
+			if( $title == 'infobar_image' ) {
+				$title = 'info_bar_image';
+			}
+
 			if( !is_array( $value ) ){
 				$value = htmlspecialchars_decode($value);
 				$import_style[$title] = $value;
@@ -484,6 +558,8 @@ if( !function_exists( "cp_import_modal" ) ){
 		$paths['tempdir'] = trailingslashit($paths['basedir']).'cp_modal';
 		$paths['temp']    = trailingslashit($paths['basedir']).'cp_modal/'.$title;
 		$paths['tempurl'] = trailingslashit($paths['baseurl']).'cp_modal/';
+		$paths['basepath'] = $paths['basedir'].'/cp_modal/';
+		$folderPath = $paths['basedir'] .'/cp_modal/'.$title;
 
 		// Create the respective directory inside wp-uploads directory
 		if( !is_dir( $paths['temp'] ) ) {
@@ -500,16 +576,30 @@ if( !function_exists( "cp_import_modal" ) ){
 	      	die(__( 'Unable to extract the file.', 'smile' ));
 	   	}
 
-		// Set the json file file url to get the settings for the style
-		$json_file = $paths['tempurl'].$title.'/'.$title.'.txt';
+	   	// sanitize folder name
+	   	$newFolderName = sanitize_file_name( $title );
 
+	   	// grant permission
+	   	chmod( $folderPath, 0755 );
+
+	   	$newFolderPath =  $paths['basepath'] . $newFolderName;
+
+	   	// rename folder
+	    rename( $folderPath, $newFolderPath );
+
+	    // rename settings file
+	    rename( $newFolderPath .'/'. $title . '.txt' , $newFolderPath .'/'.$newFolderName .'.txt' );
+
+		// Set the json file file url to get the settings for the style
+		$json_file = $paths['tempurl'].$newFolderName.'/'.$newFolderName.'.txt';
 
 		$module = $data['module'];
 		$data_option = 'smile_modal_styles';
 		$variant_option = 'modal_variant_tests';
 
 		// Read the text file containing the json formatted settings of style and decode it
-		$content = wp_remote_get($json_file);
+		$content = wp_remote_get( $json_file );
+
 		$json = $content['body'];
 
 		$obj = json_decode($json,true);
@@ -554,6 +644,8 @@ if( !function_exists( "cp_import_modal" ) ){
 		if ( isset($media) && is_array($media) ) {
 			// Import media if any
 			foreach( $media as $option => $value ) {
+
+				$value = str_replace( $title , $newFolderName, $value);
 
 				// $filename should be the path to a file in the upload directory.
 				$filename =  $paths['tempdir'].'/'.$value;

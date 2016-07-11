@@ -1,96 +1,82 @@
 <?php
+/**
+ * @package   The_Grid
+ * @author    Themeone <themeone.master@gmail.com>
+ * @copyright 2015 Themeone
+ *
+ * Skin: Vaduz
+ *
+ */
 
-global $tg_skins_preview;
+// Exit if accessed directly
+if (!defined('ABSPATH')) { 
+	exit;
+}
 
-// Available options to retrieve and customize markup
-$options = array(
-	'poster' => true,  // Media poster for audio/video (if false no play buttons will be created)
-	'icons' => array(  // set all icons
-		'link'       => '<i class="tg-icon-link"></i>', // Button link icon
-		'comment'    => '<i class="tg-icon-chat"></i>', // Button link icon
-		'image'      => ($tg_skins_preview) ? '<i class="tg-icon-play"></i>' : '<i class="tg-icon-arrows-out-2"></i>',  // Ligthbox icon
-		'audio'      => '<i class="tg-icon-play"></i>', // Audio icon
-		'video'      => '<i class="tg-icon-play"></i>', // HTML Video icon
-		'vimeo'      => '<i class="tg-icon-play"></i>', // Vimeo icon
-		'wistia'     => '<i class="tg-icon-play"></i>', // Wistia icon
-		'youtube'    => '<i class="tg-icon-play"></i>', // Youtube icon
-		'soundcloud' => '<i class="tg-icon-play"></i>', // SoundCloud icon
-	),
-	'excerpt_length'  => 140,       // Excerpt character length
-	'excerpt_tag'     => '...',      // Excerpt more tag
-	'read_more'       => '',      // Read more text
-	'date_format'     => '' ,     // Date format (https://codex.wordpress.org/Formatting_Date_and_Time)
-	'get_terms'       => true,    // Get all post terms (if false $content['terms'] will be empty)
-	'term_color'      => 'color', // Get terms color (option: 'color', 'background', 'none'); default 'none'
-	'term_link'       => true,    // Add link to term
-	'term_separator'  => ', ',    // Term separator
-	'author_prefix'   => __( 'By', 'tg-text-domain' ).' ', // Author prefix like 'By',...
-	'avatar'          => false     // Add author avatar
+$tg_el = The_Grid_Elements();
+
+$format = $tg_el->get_item_format();
+$colors = $tg_el->get_colors();
+
+$com_args = array(
+	'icon' => '<i class="tg-icon-chat"></i>'
 );
 
-// If function do not exists, then return immediately
-if (!function_exists('The_Grid_Item_Content')) {
-	return;
-}
-
-// Main Func/Class to retrieve all necessary item content/markup
-$content = The_Grid_Item_Content($options);
-
-$html = null;
-
-$media_button = preg_replace('/(<i\b[^><]*)>/i', '$1 style="color:'.$content['colors']['overlay']['background'].'">', $content['media_button']);
-
-// background image for quote/link
-$bg_img = (isset($content['media_data']['url'])) ? '<div class="tg-item-image" style="background-image: url('.$content['media_data']['url'].')"></div>' : null;
-$comments = preg_replace('/(<a\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['span'].'">', $content['comments']['markup']);
-$comments = preg_replace('/(<i\b[^><]*)>/i', '$1 style="color:'.$content['colors']['content']['span'].'">', $comments);
-
-if (isset($content['quote_markup'])) {
-
-	$html .= $bg_img;
-	$html .= $content['content_wrapper_start'];
-	$html .= '<i class="tg-quote-icon tg-icon-quote" style="color:'.$content['colors']['content']['title'].'"></i>';
-	$html .= $content['quote_markup'];
-	$html .= '<div class="tg-item-footer">';
-		$html .= $content['views'];
-		$html .= $comments;	
-		$html .= $content['post_like'];		
-	$html .= '</div>';
-	$html .= $content['content_wrapper_end'];
+$excerpt_args = array(
+	'length' => 140
+);
 	
-} else if (isset($content['link_markup'])) {
+$media_args = array(
+	'icons' => array(
+		'image' => '<i class="tg-icon-arrows-out-2"></i>'
+	)
+);
 
-	$html .= $bg_img;
-	$html .= $content['content_wrapper_start'];
-	$html .= '<i class="tg-link-icon tg-icon-link" style="color:'.$content['colors']['content']['title'].'"></i>';
-	$html .= $content['link_markup'];
-	$html .= '<div class="tg-item-footer">';
-		$html .= $content['views'];
-		$html .= $comments;	
-		$html .= $content['post_like'];		
-	$html .= '</div>';
-	$html .= $content['content_wrapper_end'];
+if ($format == 'quote' || $format == 'link') {
+		
+	$bg_img = $tg_el->get_attachement_url();
 	
+	$output  = ($bg_img) ? '<div class="tg-item-image" style="background-image: url('.esc_url($bg_img).')"></div>' : null;
+	$output .= $tg_el->get_content_wrapper_start();
+		$output .= '<i class="tg-'.$format.'-icon tg-icon-'.$format.'" style="color:'.$colors['content']['title'].'"></i>';
+		$output .= ($format == 'quote') ? $tg_el->get_the_quote_format() : $tg_el->get_the_link_format();
+		$output .= '<div class="tg-item-footer">';
+			$output .= $tg_el->get_the_views_number();
+			$output .= $tg_el->get_the_comments_number($com_args);
+			$output .= $tg_el->get_the_likes_number();
+		$output .= '</div>';
+	$output .= $tg_el->get_content_wrapper_end();
+	
+	return $output;
+		
 } else {
-			
-	$html .= $content['media_wrapper_start'];
-		$html .= $content['media_markup'];
-		$html .= $media_button;
-		$html .= (isset($content['duration'])) ? $content['duration'] : null;
-	$html .= $content['media_wrapper_end'];
-		
-	$html .= $content['content_wrapper_start'];
-		$html .= $content['title'];
-		$html .= $content['date'];
-		$html .= $content['content'];
-		$html .= '<div class="tg-item-footer">';
-			$html .= $content['views'];
-			$html .= $comments;	
-			$html .= $content['post_like'];		
-		$html .= '</div>';
-		
-	$html .= $content['content_wrapper_end'];
+	
+	$media_content = $tg_el->get_media();
+	$media_button  = preg_replace('/(<i\b[^><]*)>/i', '$1 style="color:'.$colors['overlay']['background'].'">', $tg_el->get_media_button($media_args));
+	
+	$output = null;
+	
+	if ($media_content) {
+	
+		$output .= $tg_el->get_media_wrapper_start();
+			$output .= $media_content;
+			$output .= $media_button;
+			$output .= $tg_el->get_the_duration();
+		$output .= $tg_el->get_media_wrapper_end();
+	
+	}
+	
+	$output .= $tg_el->get_content_wrapper_start();
+		$output .= $tg_el->get_the_title();
+		$output .= $tg_el->get_the_date();
+		$output .= $tg_el->get_the_excerpt($excerpt_args);
+		$output .= '<div class="tg-item-footer">';
+			$output .= $tg_el->get_the_views_number();
+			$output .= $tg_el->get_the_comments_number($com_args);
+			$output .= $tg_el->get_the_likes_number();
+		$output .= '</div>';
+	$output .= $tg_el->get_content_wrapper_end();
+	
+	return $output;
 
 }
-		
-return $html;

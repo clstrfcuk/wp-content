@@ -76,12 +76,19 @@
 
 		var cookieTime 					= info_bar.data('conversion-cookie-time');
 		var cookieName 					= info_bar.data('info_bar-id');
-		var redirectdata 				= jQuery(t).parents(".global_info_bar_container").data("redirect-lead-data");
+		var redirectdata 				= jQuery(t).parents(".global_info_bar_container").data("redirect-lead-data"),
+			redirect_to 				= jQuery(t).parents(".global_info_bar_container").data("redirect-to"),
+		 	//download_url 				= jQuery(t).parents(".global_info_bar_container").data("download-url");
+		 	form_action_on_submit 		= jQuery(t).parents(".global_info_bar_container").data("form-action"),
+		 	form_action_dealy			= jQuery(t).parents(".global_info_bar_container").data("form-action-time"),
+		 	form_action_dealy 			= parseInt(form_action_dealy * 1000);
 
 		// Check for required fields are not empty
 		// And create query strings to send to redirect URL after form submission
         var query_string = '';
         var submit_status = true;
+        var redirect_with = '';
+
         form.find('.cp-input').each( function(index) {
             var $this = jQuery(this);
 
@@ -183,20 +190,21 @@
 					}
 
 					var detailed_msg = (typeof obj.detailed_msg !== 'undefined' && obj.detailed_msg !== null )  ? obj.detailed_msg : '';
-					//console.log("praju"+detailed_msg);
+
 					if( detailed_msg !== '' && detailed_msg !== null ) {
 						detailed_msg =  "<h5>Here is More Information:</h5><div class='cp-detailed-message'>"+detailed_msg+"</div>";
 						detailed_msg += "<div class='cp-admin-error-notice'>Read How to Fix This, click <a target='_blank' href='http://docs.sharkz.in/something-went-wrong/'>here</a></div>";
 						detailed_msg += "<div class='cp-go-back'>Go Back</div>";
 						msg_string   += '<div class="cp-only-admin-msg">[Only you can see this message]</div>';
-						//console.log("here");
 					}
+
+					// remove backslashes from success message
+					obj.message = obj.message.replace(/\\/g, '');
 
 					//	show message error/success
 					if(typeof obj.message != 'undefined' && obj.message != null) {
 						info_container.hide().css({visibility: "visible"}).fadeIn(120);
 						close_div.hide().css({visibility:  "visible"}).fadeIn(120);
-						//info_container.html( '<div class="cp-m-'+cls+'">'+obj.message+'</div>'+detailed_msg+'</div>' );
 						msg_string += '<div class="cp-m-'+cls+'"><div class="cp-error-msg">'+obj.message+'</div>'+detailed_msg+'</div>';
 						info_container.html( msg_string );
 						cp_animate_container.addClass('cp-form-submit-'+cls);
@@ -230,14 +238,48 @@
 								}
 
 								var redirect_url = url + urlstring + decodeURI(query_string);
-								if( redirectdata == 1){
-									window.location = redirect_url;
-								} else{
-									window.location = obj.url;
-								}
-							} else {
 
+								if( redirectdata == 1 ){
+									redirect_url = redirect_url ;
+								} else {
+									redirect_url = obj.url ;
+								}
+
+								if(redirect_to !=='download'){
+									redirect_with = redirect_to;
+									window.open( redirect_url,'_'+redirect_with );
+								}else{
+									cp_ifb_download_file(redirect_url);
+								}
+
+							} else {
 								cp_form_processing_wrap.show();
+								
+								if(form_action_on_submit == 'disappear'){
+									info_bar.removeClass('cp-hide-inline-style');
+									info_bar.removeClass('cp-close-ifb');
+
+									setTimeout(function(){
+										if( info_bar.hasClass('cp-info-bar-inline') ){
+											info_bar.addClass('cp-hide-inline-style');
+										}
+										if( info_bar.hasClass('cp-ifb-with-toggle') ){
+											info_bar.addClass('cp-close-ifb');
+										}
+
+										jQuery(document).trigger('cp_close_info_bar',[info_bar]);
+									},form_action_dealy);
+								}else if(form_action_on_submit == 'reappear'){
+									setTimeout(function(){										
+										info_container.empty();
+										cp_form_processing_wrap.css({'display': 'none'});
+										info_container.removeAttr('style');
+										spinner.removeAttr('style');
+										form.trigger("reset");
+
+
+									},form_action_dealy);
+								}
 
 								// if button contains anchor tag then redirect to that url
 								if( ( jQuery(t).find('a').length > 0 ) ) {
@@ -316,5 +358,33 @@
 		});
 
 	});
+
+function cp_ifb_download_file(fileURL, fileName) {
+    // for non-IE
+    if (!window.ActiveXObject) {
+        var save = document.createElement('a');
+        save.href = fileURL;
+        save.target = '_blank';
+        var filename = fileURL.substring(fileURL.lastIndexOf('/')+1);
+        save.download = fileName || filename;
+
+        var evt = new MouseEvent('click', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': false
+        });
+        save.dispatchEvent(evt);
+
+        (window.URL || window.webkitURL).revokeObjectURL(save.href);
+    }
+
+    // for IE < 11
+    else if ( !! window.ActiveXObject && document.execCommand)     {
+        var _window = window.open(fileURL, '_blank');
+        _window.document.close();
+        _window.document.execCommand('SaveAs', true, fileName || fileURL)
+        _window.close();
+    }
+}
 
 })( jQuery );

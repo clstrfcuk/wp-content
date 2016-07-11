@@ -1,3 +1,32 @@
+08.06.2016 - ver 4.12
+   - Added: Set default templates for post types
+   - Added: Option to disable/hide row
+   - Added: ’nofollow’ attribute option for links
+   - Added: onclick action option for links
+   - Improved: CSS file loading
+   - Improved: Custom Heading added to Toggle(Faq)
+   - Improved: Compatibility with qTranslate X and Polylang
+   - Improved: French translation files
+   - Fixed: White line in grid on mac chrome
+   - Fixed: vc_vendor for Yoast
+   - Fixed: Post grid and post masonry grid settings
+   - Fixed: Lightbox prettyPhoto JS
+   - Fixed: Shortcode mapper default value
+   - Fixed: Server resource control
+   - Fixed: textarea_raw_html in param_group
+   - Fixed: Image doubling in masonry grid
+   - Fixed: Locale file for Japanese
+   - Fixed: Contact Form 7 search by title
+   - Fixed: Version display on Welcome page
+   - Fixed: Equal Height on IE11
+   - Fixed: ‘js_composer_front.min.js and Masonry component
+   - Fixed: Ability to disable accordion scroll
+   - Fixed: ‘Add Template’ and WPML conflict
+   - Fixed: Autocomplete field
+   - Fixed: PrettyPhoto navigation in Image Carousel
+   - Fixed: Loop builder in grid
+   - Fixed: Woo Commerce product settings
+   
 15.04.2016 - ver 4.11.2.1
    - # is properly escaped for updated jQuery
 

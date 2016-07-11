@@ -90,7 +90,6 @@
 }
 
 .cp-modal .cp-optin-to-win .cp-submit {
-  /*   border-radius: 3px; */
     margin: 0px;
 }
 
@@ -101,11 +100,8 @@
 .cp-optin-to-win input.cp-email,
 .cp-optin-to-win input.cp-name,
 .cp-optin-to-win input.cp-name {
-
-    /*padding: 10px 25px;
-    font-size: 15px;*/
-    line-height: normal;    /*text-align: left;*/
-    margin-bottom: 10px;
+    line-height: normal;
+    margin: 0 0 10px 0;
 }
 
 .cp-optin-to-win .col-md-6.cp-name-form,

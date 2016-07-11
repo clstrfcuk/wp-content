@@ -4,14 +4,21 @@ return array(
 	'custom_css' => array(
 		'type' => 'code-editor',
 		'options' => array(
-			'settings' => array( 'mode' => 'css' )
+			'settings' => array(
+        'label' => __( 'Custom CSS', 'cornerstone' ),
+        'mode' => 'css'
+      )
 		)
 	),
 
 	'custom_js' => array(
 		'type' => 'code-editor',
 		'options' => array(
-			'settings' => array( 'mode' => 'javascript', 'lint' => true )
+			'settings' => array(
+        //'label' => __( 'Custom Javascript', 'cornerstone' ),
+        'mode' => 'javascript',
+        'lint' => true
+      )
 		)
 	),
 

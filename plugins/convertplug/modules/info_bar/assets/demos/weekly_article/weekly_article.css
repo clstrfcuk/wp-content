@@ -5,9 +5,10 @@
 .cp-weekly-article.cp-info-bar-inline .cp-submit,
 .cp-weekly-article.cp-info-bar .cp-submit {
     margin: 0;
-    font-size: 16px;
+    font-size: 15px;
     font-family: inherit;
-    line-height: 1em;
+    line-height: normal;
+    font-family: "Lato", sans-serif;
 }
 
 .cp-weekly-article .cp-msg-container {

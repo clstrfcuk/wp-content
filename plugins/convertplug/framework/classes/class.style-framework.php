@@ -175,7 +175,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 			$smile_variant_tests = isset( $smile_variant_tests[$style_id] ) ? $smile_variant_tests[$style_id] : '';
 			$style_name = isset( $_GET['style'] ) ? $_GET['style'] : '';
 			if( isset( $_GET[ 'variant-style' ] ) ) {
-				if( is_array ( $smile_variant_tests ) && !empty( $smile_variant_tests ) ){ // on edit screen
+				if( is_array ( $smile_variant_tests ) && !empty( $smile_variant_tests ) ){
 					if( isset( $_GET[ 'action' ] ) && $_GET['action'] == 'new' ){
 						$prev_styles = get_option('smile_modal_styles');
 						$key = search_style($prev_styles,$style_id);
@@ -192,13 +192,11 @@ if(!function_exists('Smile_Style_Dashboard')){
 							}
 						}
 					}
-				} elseif( isset( $_GET[ 'action' ] ) && $_GET['action'] == 'new' ){ // on new variant screen
+				} elseif( isset( $_GET[ 'action' ] ) && $_GET['action'] == 'new' ){
 					$prev_styles = get_option('smile_modal_styles');
 					$key = search_style($prev_styles,$style_id);
 					$style_settings = $prev_styles[$key];
 					$style_settings = unserialize($style_settings['style_settings']);
-					// set status to pause for new created variant
-					$style_settings['live'] = 0;
 					$old_style = $style_settings['style'];
 				}
 			} else if( isset($_GET['style']) ) {
@@ -286,6 +284,12 @@ if(!function_exists('Smile_Style_Dashboard')){
 				}
 			}
 
+			if( cp_is_connected() ) {
+				$cp_connected = true;
+			} else {
+				$cp_connected = false;
+			}
+
 			foreach( $styles as $style => $options ) {
 
 				$rand = substr(md5(uniqid()),rand(0,26),5);
@@ -363,11 +367,11 @@ if(!function_exists('Smile_Style_Dashboard')){
 						$display_action_links = true;
 
 						if( $is_importable ) {
-							if( cp_is_connected() ) {
+							if( $cp_connected ) {
 								echo '<img src="'.$options[3].'"/>';
 							} else {
 								$display_action_links = false;
-								echo '<img src="'.plugins_url( "../../admin/assets/img/internet-issue.png",  __FILE__  ) .'"/>';
+								echo '<img src="'. CP_BASE_URL . 'admin/assets/img/internet-issue.png" />';
 							}
 						} else {
 							echo '<img src="'.$options[3].'"/>';
@@ -401,7 +405,7 @@ if(!function_exists('Smile_Style_Dashboard')){
 
 						if( $display_action_links ) {
 							echo '<span class="cp-action-link style-demo"
-							 onclick="displayPopup(\''.$options[0].'\',\''.$options[1].'\',\''.plugins_url( '../../modules/'.$module.'/assets/demos/'.$options[0].'/'.$options[0].'.min.css', __FILE__ ).'\',\''.$style_settings_method.'\',\''.$template_name.'\');"><span class="cp-action-link-icon connects-icon-link"></span>'.__( "Live Preview", "smile" ).'</span></div>';
+							 onclick="displayPopup(\''.$options[0].'\',\''.$options[1].'\',\''. CP_BASE_URL . 'modules/'.$module.'/assets/demos/'.$options[0].'/'.$options[0].'.min.css','\',\''.$style_settings_method.'\',\''.$template_name.'\');"><span class="cp-action-link-icon connects-icon-link"></span>'.__( "Live Preview", "smile" ).'</span></div>';
 
 							echo '</div>'; /*--- .cp-style-item-box ---*/
 						}
@@ -546,8 +550,9 @@ if(!function_exists('Smile_Style_Dashboard')){
 																	foreach($panel as $key => $values){
 																		$name = $values['name'];
 																		$type = $values['type'];
+
 																		$default_value = isset( $values['opts']['value'] ) ? urldecode($values['opts']['value']) : '';
-																		$input_value = isset($style_settings[$name])? urldecode( utf8_decode($style_settings[$name] )) : $values['opts']['value'];
+																		$input_value = isset($style_settings[$name])? urldecode($style_settings[$name]) : $values['opts']['value'];
 
 																		if(function_exists("do_input_type_settings_field")){
 																			$values['opts']['type'] = $type;
@@ -560,6 +565,10 @@ if(!function_exists('Smile_Style_Dashboard')){
 																					$html .= '<span class="cp-tooltip-icon has-tip" data-position="right" title="'.$values['opts']['description'].'" style="cursor: help;float: right;"><i class="dashicons dashicons-editor-help"></i></span>';
 																				}
 																			}
+
+																			$input_value =  stripslashes($input_value);
+																			$default_value = stripslashes($default_value);
+
 																			$html .= do_input_type_settings_field( $name, $type, $values['opts'], $input_value, $default_value );
 																			$html .= '</div>';
 																		}

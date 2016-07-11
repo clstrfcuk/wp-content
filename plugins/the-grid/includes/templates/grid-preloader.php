@@ -10,13 +10,9 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-// retrieve all grid settings
-global $tg_grid_data;
-
-$preloader_name = esc_attr($tg_grid_data['preloader_style']);
-$grid_ID = esc_attr($tg_grid_data['ID']);
-
-if (!empty($preloader_name)) {
+if (!empty($tg_grid_data['preloader_style'])) {
+	
+	$grid_ID = esc_attr($tg_grid_data['ID']);
 	
 	// retrieve the preloader skin
 	$preloader_base   = new The_Grid_Preloader_Skin();

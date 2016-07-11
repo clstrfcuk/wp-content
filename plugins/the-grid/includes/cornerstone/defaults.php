@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 require_once(TG_PLUGIN_PATH . '/includes/wpml.class.php');
-		
+			
 $WPML = new The_Grid_WPML();
 $WPML_meta_query = $WPML->WPML_meta_query();
 $post_args = array(

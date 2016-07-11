@@ -89,7 +89,7 @@
 	white-space: nowrap;
 	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
 }
-#tg-grid-list-holder #tg-grids-flags {
+#tg-item-list-holder #tg-grids-flags {
 	box-shadow: none;
 }
 #tg-grids-flags span {
@@ -124,6 +124,7 @@
    01. Grid list table
 /* ============================================================ */
 
+#tg-item-list-holder,
 #tg-grid-list-holder {
 	margin: 30px 0 0 0;
 }
@@ -157,7 +158,8 @@
 }
 .tg-button#tg-import-read-file,
 .tg-button#tg-import-read-demo,
-.tg-button#tg-import-demo {
+.tg-button#tg-import-demo,
+.tg-button#tg-import-skin-demo {
 	position: relative;
 	display: inline-block;
 	padding: 2px 14px;
@@ -215,7 +217,7 @@
 	content: '\f140';
 }
 #tg-grids-list-holder tbody td {
-	border-bottom: 1px solid #f5f6fa !important;
+	border-bottom: 1px solid rgba(0,0,0,0.065) !important;
 	white-space: nowrap;
 	overflow: hidden;
     text-overflow: ellipsis;
@@ -248,6 +250,9 @@
 #tg-grid-list-inner table tbody tr td:nth-child(7) {
 	display: none;
 }
+.tg-list-number {
+	height: 28px !important;
+}
 }
 @media screen and (max-width: 520px) {
 .tg-grid-list-button .tg-button {
@@ -277,7 +282,7 @@
 	transition: all 0.3s ease-out;
 }
 #tg-grids-list-holder tbody tr:hover {
-	background: #f1f1f1;
+	background: rgba(0,0,0,0.035);
 }
 #tg-grids-list-holder tbody tr.cloned {
 	-webkit-animation: cloned 3s infinite;
@@ -306,9 +311,11 @@
 	100% {background-color: #f1f1f1;}
 }
 
+.tg-item-list-favorite,
 .tg-grid-list-favorite {
 	text-align: center;
 }
+.tg-item-list-favorite .dashicons,
 .tg-grid-list-favorite .dashicons {
 	font-size: 16px;
 	vertical-align: middle;
@@ -317,22 +324,27 @@
 	font-weight: 600;
 	cursor: pointer;
 }
+.tg-item-list-favorite .dashicons:before,
 .tg-grid-list-favorite .dashicons:before {
 	content: "\f154";
 	vertical-align: middle;
 }
+.tg-item-list-favorite .dashicons.favorite:before,
 .tg-grid-list-favorite .dashicons.favorite:before {
 	content: "\f155";
 }
+#tg-item-list-inner,
 #tg-grid-list-inner {
 	position: relative;
 	display: block;
 	margin: 0 0 30px 0;
 }
+#tg-item-list-inner #tg-info-box,
 #tg-grid-list-inner #tg-info-box {
 	position: absolute;
 	display: block;
 }
+.tg-item-list-name span,
 .tg-grid-list-name span {
 	position: relative;
 	font-weight: 700;
@@ -466,7 +478,8 @@
 #tg_post_save,
 #tg_skin_save,
 #tg_settings_save,
-#tg_envato_activate {
+#tg_envato_activate,
+#tg-edit-skin {
 	background: #4ECDC4;
 }
 .tg-close-infox-box {
@@ -499,7 +512,8 @@
 #tg-add-relation.tg-button,
 #tg_post_preview,
 #tg_envato_update,
-#tg_envato_check_update {
+#tg_envato_check_update,
+#tg_download_skin {
 	background: #2c3e50;
 }
 .tg-button.tg-delete,
@@ -507,7 +521,8 @@
 #tg_settings_remove_metadata,
 #tg_post_delete,
 #tg_settings_reset,
-#tg_clear_cache {
+#tg_clear_cache,
+#tg-delete-skin {
 	background: #e74c3c;
 }
 #tg_post_close {
@@ -981,8 +996,8 @@
    06. EXPORT/IMPORT FORM
 /* ============================================================ */
 
-#tg_post_export,
-#tg_post_import {
+#tg_export_items,
+#tg_import_items {
 	display: inline-block;
 	height: 26px;
 	padding: 0 10px;
@@ -1001,8 +1016,8 @@
 	line-height: 30px;
 	vertical-align: top;
 }
-#tg_post_export .dashicons ,
-#tg_post_import .dashicons{
+#tg_export_items .dashicons ,
+#tg_import_items .dashicons{
 	font-size: 16px;
 }
 .tg-import-error {
@@ -1442,8 +1457,7 @@
 .tg-container-header {
 	max-height: 50px;
 	line-height: 50px;
-    border-bottom: 1px solid #e5e5e5;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(0,0,0,0.065);
     padding: 0px 20px;
 }
 .tg-container-title {
@@ -1468,6 +1482,67 @@
 	color: #444;
     box-sizing: border-box;
     -moz-box-sizing: border-box;   
+}
+.tg-col-full .tg-container-inner {
+	min-height: auto;
+	max-height: none;
+	padding: 20px;
+}
+.tg-pad-lock-icon,
+.tg-pad-open-icon,
+.tg-syncing-icon,
+.tg-checkbox-icon,
+.tg-warning-icon {
+	position: absolute;
+    padding: 6px;
+    right: 0;
+    top: 0;
+    border-left: 1px solid rgba(0,0,0,0.065);
+}
+.tg-pad-lock-icon,
+.tg-syncing-icon,
+.tg-warning-icon {
+    background: #fef7f6;
+}
+.tg-pad-open-icon,
+.tg-checkbox-icon {
+    background: #f4fcfc;
+}
+.tg-container-inner.tg-container-register:before {
+    content: "";
+    position: absolute;
+	top: 42px;
+    right: -34px;
+    width: 200px;
+    height: 210px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 0;
+    background-image: url(../images/support-forum.jpg);
+	outline: 1px solid transparent;
+}
+.tg-container-inner.tg-container-update:before {
+	content: "";
+    position: absolute;
+    top: 22px;
+    right: -45px;
+    width: 240px;
+    height: 240px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 0;
+    background-image: url(../images/auto-update.jpg);
+    outline: 1px solid transparent;
 }
 .tg-container-anim .tg-container-inner {
 	-webkit-transition: all 0.3s ease-out;
@@ -1642,11 +1717,162 @@
 .tg-col-3 {
 	width: 33.33%;
 }
-@media screen and (max-width: 1362px) {
-.tg-col {
+.tg-col-full {
+	width: 100%;
+	margin: 30px 0 0 0;
+	padding: 0;
+}
+@media screen and (max-width: 1700px) {
+.tg-row .tg-col-3 {
+	width: 50%;
+}
+.tg-row .tg-col-3:nth-child(2) {
+	width: 100%;
 	padding: 0 0 20px 0;
 }
-.tg-col-3 {
-	width: 100%;
 }
+@media screen and (max-width: 980px) {
+.tg-row .tg-col-3,
+.tg-row .tg-col-3:nth-child(2) {
+	width: 100%;
+	padding: 0 0 20px 0;
+}
+}
+@media screen and (max-width: 540px) {
+.tg-container-inner.tg-container-register:before,
+.tg-container-inner.tg-container-update:before {
+	display: none !important;
+}
+}
+
+/* ============================================================
+   08. Skin builder overview
+/* ============================================================ */
+
+.tg-container-empty {
+	text-align: center;
+}
+.tg-custom-skins-overview.tg-col .tg-container-header,
+.tg-custom-skins-overview .tg-col:first-child .tg-container-header {
+	padding: 0;
+	text-align: center;
+}
+.tg-custom-skins-overview .tg-container-title {
+	width: 100%;
+	vertical-align: baseline;
+	line-height: 50px;
+}
+.tg-custom-skins-overview .tg-container-inner.tg-has-skins {
+    background-image: url('../images/checker-bg.gif');
+}
+.tg-skins-style-button {
+	position: relative;
+    display: inline-block;
+    width: 50%;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+	box-sizing: border-box;
+	cursor: pointer;
+	-webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+.tg-skins-style-button.tg-selected {
+    background: #2c3e50;
+    color: #fff;
+}
+.tg-skins-style-button:first-child {
+	border-right: 1px solid rgba(0,0,0,0.065);	
+}
+.tg-skins-style-button:before {
+	content: "";
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 50px;
+    margin: 0 10px 0 0;
+    background-image: url(../images/grid-layout.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 0px 7px;
+    text-align: center;
+    line-height: 50px;
+    box-sizing: border-box;
+}
+.tg-skins-style-button:last-child:before {
+	background-image: url(../images/masonry-layout.png);
+}
+.tg-custom-skins-overview .tg-grid-wrapper.skin-hidden {
+	height: 0;
+	opacity: 0;
+	padding: 0;
+}
+.tg-custom-skins-overview .tg-filters-holder {
+	width: 100%;
+	text-align: center;
+	margin: 0 0 30px 0;
+}
+.tg-custom-skins-overview .tg-item-custom-skin-name {
+    position: absolute;
+    display: block;
+    z-index: 2;
+    top: 0;
+    width: 100%;
+	height: 35px;
+    background: #34495e;
+    line-height: 35px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    cursor: pointer;
+    -webkit-transition: background 0.35s ease-out;
+    -moz-transition: background 0.35s ease-out;
+    -o-transition: background 0.35s ease-out;
+    transition: background 0.35s ease-out;
+}
+.tg-custom-skins-overview .tg-layout-grid .tg-item-inner {
+    position: absolute;
+    bottom: 0;
+    top: 35px;
+    height: auto;
+}
+.tg-custom-skins-overview .tg-layout-masonry .tg-item-inner {
+    margin-top: 35px;
+}
+.tg-custom-skins-overview .tg-item-custom-skin-name span {
+    position: absolute;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	white-space: nowrap;
+    left: 0;
+    right: 125px;
+    height: 35px;
+    padding: 0 0 0 15px;
+    margin: 0;
+    text-align: left;
+}
+.tg-custom-skins-overview .tg-item-custom-skin-name .tg-button {
+	position: relative;
+	display: inline-block;
+	float: right;
+	width: 35px;
+	height: 35px;
+	line-height: 35px;
+	padding: 0;
+	margin: 0;
+}
+.tg-custom-skins-overview .tg-item-custom-skin-name .tg-button i {
+	width: 35px;
+    line-height: 35px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+#tg-clone-skin {
+	background: #7C8892;
 }

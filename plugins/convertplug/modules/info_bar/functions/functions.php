@@ -29,6 +29,33 @@ if( !function_exists( "cp_get_info_bar_image_url_init" ) ) {
 add_filter( 'cp_get_info_bar_image_url', 'cp_get_info_bar_image_url_init' );
 
 /**
+ *	Get info bar Image ALt text
+ *
+ * @since 0.1.5
+ */
+if( !function_exists( "cp_get_info_bar_image_alt_init" ) ) {
+	function cp_get_info_bar_image_alt_init( $a = '' ) {
+
+		$alt = '';
+		if( !isset($a['info_bar_img_src']) ) {
+			$a['info_bar_img_src'] = 'upload_img';
+		}
+		if( $a['info_bar_img_src'] == 'upload_img' ) {
+			if ( strpos($a['info_bar_image'],'http') !== false ) {
+			} else {
+				$image_alt = explode( '|', $a['info_bar_image'] );
+				if( sizeof($image_alt) > 2){
+				 $alt = "alt='".$image_alt[2]."'";
+				}
+		   	}
+		}
+	   	return $alt;
+	}
+}
+add_filter( 'cp_get_info_bar_image_alt', 'cp_get_info_bar_image_alt_init' );
+
+
+/**
  *	Get WordPress attachment url
  *
  * @since 0.1.5
@@ -195,6 +222,24 @@ if( !function_exists( "cp_info_bar_visibility_on_devices_browser_os_init" ) ) {
 add_filter( 'cp_info_bar_visibility', 'cp_info_bar_visibility_on_devices_browser_os_init');
 
 /**
+ *	Set scroll class for modal
+ *
+ * @since 0.1.5
+ */
+add_filter( 'cp_get_scroll_class', 'cp_get_scroll_class_init' );
+
+if( !function_exists( "cp_get_scroll_class_init" ) ) {
+	function cp_get_scroll_class_init( $scroll_class) {
+		$scroll_class = $scroll_class;
+		$scroll_class  = str_replace( " ", "", trim( $scroll_class ) );
+		$scroll_class  = str_replace( ",", " ", trim( $scroll_class ) );
+		//$scroll_class .= ' cp-'.$style_id;
+		$scroll_class = trim( $scroll_class );
+		return $scroll_class;
+	}
+}
+
+/**
  * Info Bar Before
  *
  * @since 0.2.3
@@ -225,6 +270,15 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 			$referrer_data .= ' data-referrer-check="'.$referrer_check.'"';
 		} else {
 			$referrer_data = "";
+		}
+
+		// check close after few second
+		$autoclose_on_duration  = ( isset( $a['autoclose_on_duration'] ) && (int)$a['autoclose_on_duration'] ) ? $a['autoclose_on_duration'] : '';
+		$close_module_duration = ( isset( $a['close_module_duration'] ) && (int)$a['close_module_duration'] ) ? $a['close_module_duration'] : '';
+		$autoclose_data = '';
+		$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
+		if( $autoclose_on_duration !== '' && !$isInline && ( isset( $a['toggle_btn'] ) && $a['toggle_btn'] !== '1' ) && (isset( $a['close_info_bar']) && $a['close_info_bar']!=='do_not_close' ) ){
+			$autoclose_data = 'data-close-after="'.$close_module_duration.'"';
 		}
 
 		// Enqueue Google Fonts
@@ -382,6 +436,17 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 			$inactive_data = 'data-inactive-time="'.$user_inactivity.'"';
 		}
 
+		//scroll up to specific class
+		$scroll_data = $scroll_class = '';
+		$enable_scroll_class = isset( $a['enable_scroll_class'] ) ? $a['enable_scroll_class'] : '';
+		$enable_custom_scroll = isset( $a['enable_custom_scroll'] ) ? $a['enable_custom_scroll'] : '';
+
+		if($enable_custom_scroll){
+			if( $enable_scroll_class!='' ){
+				$scroll_class 	= cp_get_scroll_class_init( $a['enable_scroll_class'] );
+				$scroll_data 	= 'data-scroll-class = "'.$scroll_class.'"';
+			}
+		}
 		$isScheduled = '';
 		$schedule = isset( $a['schedule'] ) ? $a['schedule'] : '';
 
@@ -441,6 +506,11 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 			$load_on_duration = $a['load_on_duration'];
 		}
 
+		$close_btn_on_duration = '';
+		if( isset( $a['display_close_on_duration'] ) && $a['display_close_on_duration'] && $a['close_modal'] !== 'do_not_close' ) {
+			$close_btn_on_duration  .= "data-close-btnonload-delay=".$a['close_btn_duration'];
+		}
+
 		$dev_mode = 'disabled';
 		if( !$a['developer_mode'] ){
 			$closed_cookie = $conversion_cookie = 0;
@@ -452,11 +522,18 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 		}
 
 		$data_redirect = '';
-		if( isset($a['on_success']) && $a['on_success'] == 'redirect' && $a['redirect_url'] !== '' && (int)$a['redirect_data'] ){
-				$data_redirect = 'data-redirect-lead-data="'.$a['redirect_data'].'"';
+		$on_success = ( isset( $a['on_success']) ? $a['on_success'] : '' );
+		$on_redirect = ( isset( $a['on_redirect']) ? $a['on_redirect'] : '' );
+
+		if( $on_success == 'redirect' && $a['redirect_url'] !== '' && (int)$a['redirect_data'] ){
+			$data_redirect .= 'data-redirect-lead-data="'.$a['redirect_data'].'"';
 		}
 
-		$global_info_bar_settings = 'data-closed-cookie-time="'.$closed_cookie.'" data-conversion-cookie-time="'.$conversion_cookie.'" data-info_bar-id="'.$style_id.'" data-info_bar-style="'.$style_id.'" data-entry-animation="'. $a['entry_animation'] .'" data-exit-animation="'. $a['exit_animation'] .'" data-option="smile_info_bar_styles"' . $inactive_data;
+		if( $on_success == 'redirect' && $a['redirect_url']  != '' && $on_redirect!== '' ) {
+			$data_redirect .= ' data-redirect-to ="'.$on_redirect.'" ';
+		}
+
+		$global_info_bar_settings = 'data-closed-cookie-time="'.$closed_cookie.'" data-conversion-cookie-time="'.$conversion_cookie.'" data-info_bar-id="'.$style_id.'" data-info_bar-style="'.$style_id.'" data-entry-animation="'. $a['entry_animation'] .'" data-exit-animation="'. $a['exit_animation'] .'" data-option="smile_info_bar_styles"' . $inactive_data . ' '.$scroll_data;
 		$global_class = 'global_info_bar_container';
 
 		if( $a['fix_position'] ){
@@ -624,12 +701,25 @@ if( !function_exists( "cp_ib_global_before_init" ) ) {
 		$after_content_data = 'data-after-content-value="'. $after_content_scroll .'"';
 
         $alwaysVisible = ( ( isset($a['toggle_btn']) && $a['toggle_btn'] == '1' ) && ( isset($a['toggle_btn_visible']) && $a['toggle_btn_visible']  == '1' ) ) ? 'data-toggle-visible=true' : '';
+
+		//form display/hide after sucessfull submission
+		$form_data_onsubmit ='';
+		$form_action_onsubmit = isset( $a['form_action_on_submit'] )? $a['form_action_on_submit'] :'';
+
+		if( $form_action_onsubmit == 'reappear' ){
+			$form_data_onsubmit .= 'data-form-action = reappear';
+			$form_data_onsubmit .= ' data-form-action-time ='.$a['form_reappear_time'];
+		}else if( $form_action_onsubmit == 'disappears' ){
+			$form_data_onsubmit .= 'data-form-action = disappear';
+			$form_data_onsubmit .= ' data-form-action-time ='.$a['form_disappears_time'];
+		}
+
 		?>
 
 		<input type="hidden" id="cp-push-down-support" value="<?php echo $push_page_input; ?>">
 		<input type="hidden" id="cp-top-offset-container" value="<?php echo $top_offset_container; ?>">
 
-        <div id="<?php echo esc_attr( $ib_custom_id ); ?>" <?php echo $referrer_data; ?> <?php echo $after_content_data; ?> class="<?php echo esc_attr( $cp_info_bar_class ); ?> <?php echo esc_attr($a['style_class']); ?> cp-info-bar-container <?php echo $ib_onload; ?> cp-clear <?php echo esc_attr( $a['infobar_position'] ); echo ( !$isInline ) ? ' content-'.$uid .' '.$style_id. ' '.$ib_custom_class : "";?> <?php echo $global_class; ?> <?php echo esc_attr( $toggle_container_class ); ?>" style="min-height:<?php echo esc_attr( $a['infobar_height'] ); ?>px;" data-push-down="<?php echo esc_attr( $page_down ); ?>" data-animate-push-page="<?php echo esc_attr( $a['animate_push_page'] ); ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_info_bar_settings; echo ( !$isInline ) ? ' data-custom-class="'.esc_attr( $ib_custom_class ).'"' : ""; ?> data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" <?php echo $data_redirect;?> data-onload-delay="<?php echo esc_attr($load_on_duration); ?>" data-onscroll-value="<?php echo esc_attr($load_after_scroll); ?>" data-exit-intent="<?php echo esc_attr($ib_exit_intent); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" data-tz-offset="<?php echo $schedular_tmz_offset ;?>" data-toggle="<?php echo $a['toggle_btn'] ;?>" <?php echo $alwaysVisible; ?>>
+        <div id="<?php echo esc_attr( $ib_custom_id ); ?>" <?php echo $referrer_data; ?> <?php echo $after_content_data; ?> class="<?php echo esc_attr( $cp_info_bar_class ); ?> <?php echo esc_attr($a['style_class']); ?> cp-info-bar-container <?php echo $ib_onload; ?> cp-clear <?php echo esc_attr( $a['infobar_position'] ); echo ( !$isInline ) ? ' content-'.$uid .' '.$style_id. ' '.$ib_custom_class : "";?> <?php echo $global_class; ?> <?php echo esc_attr( $toggle_container_class ); ?>" style="min-height:<?php echo esc_attr( $a['infobar_height'] ); ?>px;" data-push-down="<?php echo esc_attr( $page_down ); ?>" data-animate-push-page="<?php echo esc_attr( $a['animate_push_page'] ); ?>" data-class="content-<?php echo $uid; ?>" <?php echo $global_info_bar_settings; echo ( !$isInline ) ? ' data-custom-class="'.esc_attr( $ib_custom_class ).'"' : ""; ?> data-load-on-refresh="<?php echo esc_attr($load_on_refresh); ?>" <?php echo $isScheduled; ?> data-timezone="<?php echo esc_attr($timezone); ?>" data-timezonename="<?php echo esc_attr( $timezone_name );?>" <?php echo $data_redirect;?> data-onload-delay="<?php echo esc_attr($load_on_duration); ?>" data-onscroll-value="<?php echo esc_attr($load_after_scroll); ?>" data-exit-intent="<?php echo esc_attr($ib_exit_intent); ?>" data-dev-mode="<?php echo esc_attr( $dev_mode ); ?>" data-tz-offset="<?php echo $schedular_tmz_offset ;?>" data-toggle="<?php echo $a['toggle_btn'] ;?>" <?php echo $alwaysVisible; ?> <?php echo esc_attr( $close_btn_on_duration ); ?> <?php echo $autoclose_data; ?> <?php echo esc_attr( $form_data_onsubmit );?>>
 
             <div class="cp-info-bar-wrapper cp-clear">
                 <div class="cp-info-bar-body-overlay"></div>
@@ -653,8 +743,19 @@ if( !function_exists( "cp_ib_global_after_init" ) ) {
 		$toggle_btn_style = '';
         $ib_close_html = $ib_close_class = $close_img_class = '';
         $img_src = '';
-        $style_id = ( isset( $a['style_id'] ) ) ? $a['style_id'] : '';
 
+        $edit_link = '';
+		if( is_user_logged_in() ) {
+			// if user has access to ConvertPlug, then only display edit style link
+			if( current_user_can( 'access_cp' ) ) {
+				if( isset( $a['style_id'] ) ) {
+					$edit_link = cp_get_edit_link( $a['style_id'], 'info_bar', $a['style'] );
+				}
+			}
+		}
+
+        $style_id = ( isset( $a['style_id'] ) ) ? $a['style_id'] : '';
+        $close_alt = $close_img_alt = '';
         if ( !isset( $a['close_ib_image_src'] ) ) {
 			$a['close_ib_image_src'] = 'upload_img';
 		}
@@ -667,6 +768,14 @@ if( !function_exists( "cp_ib_global_after_init" ) ) {
 					$close_img_class = 'ib-img-default';
 				}
 	            $img_src = cp_get_ib_image_url( $a['close_img'] );
+		           $close_img_alt =  explode( '|', $a['close_img'] );
+		           $cnt_arr = count($close_img_alt);
+		            if ( $cnt_arr > 2 ) {
+						if( $close_img_alt[2]!='' ){
+							$close_alt = 'alt="'.$close_img_alt[2].'"';
+						}
+					}
+
 	        } else if ( $a['close_ib_image_src'] == 'custom_url' ) {
 				$img_src = $a['info_bar_close_img_custom_url'];
 			}else if( $a['close_ib_image_src'] == 'pre_icons' ) {
@@ -674,7 +783,7 @@ if( !function_exists( "cp_ib_global_after_init" ) ) {
 				$img_src = $icon_url;
 			}
 
-            $ib_close_html = '<img src="'.$img_src.'" class="'.$close_img_class.'">';
+            $ib_close_html = '<img src="'.$img_src.'" class="'.$close_img_class.'" '.$close_alt.' >';
 			$ib_close_class = 'ib-img-close';
 			$ib_img_width = "width:" . esc_attr( $a['close_img_width'] ) . "px;";
 
@@ -683,6 +792,18 @@ if( !function_exists( "cp_ib_global_after_init" ) ) {
 			$ib_close_class = 'ib-text-close';
 			$ib_img_width = '';
         }
+
+        if( isset( $a['display_close_on_duration'] ) && $a['display_close_on_duration']
+        	&& $a['close_info_bar'] !== 'do_not_close' ) {
+
+        	if( $a['toggle_btn_visible'] !== '1' ) {
+				$ib_close_class  .= ' cp-hide-close';
+			} else {
+				if( isset( $a['toggle_btn'] ) && $a['toggle_btn'] == '0' && $a['toggle_btn_visible'] =='1' ) {
+					$ib_close_class  .= ' cp-hide-close';
+				}
+			}
+		}
 
         //toggle settings
         //	Disable toggle button if button link is 'do_not_close'
@@ -708,13 +829,39 @@ if( !function_exists( "cp_ib_global_after_init" ) ) {
 
 		//	Is InfoBar InLine?
 		$isInline = ( isset( $a['display'] ) && $a['display'] == "inline" ) ? true : false;
+
 		?>
 		    </div><!-- cp-ib-container -->
 			    <?php
+			     $close_adj_class = '';
+    			 $close_adjacent_position = ( isset( $a['adjacent_close_position'] ) ? $a['adjacent_close_position'] : 'cp-adjacent-right' );
+	      			switch( $close_adjacent_position ){
+						case 'top_left':  $close_adj_class .= ' cp-adjacent-left';
+							break;
+						case 'top_right': $close_adj_class .= ' cp-adjacent-right';
+							break;
+						case 'bottom_left': $close_adj_class .= ' cp-adjacent-bottom-left';
+							break;
+						case 'bottom_right': $close_adj_class .= ' cp-adjacent-bottom-right';
+							break;
+					}
+
 			    if( !$isInline && $a['close_info_bar_pos'] == 0 && $a['close_info_bar'] !== "do_not_close" )  { ?>
-					<div class="ib-close <?php echo esc_attr( $ib_close_class ); ?>" style=" <?php echo esc_attr( $ib_img_width ); ?>"><?php echo do_shortcode( $ib_close_html ); ?></div>
+					<div class="ib-close <?php echo esc_attr( $ib_close_class ); ?> <?php echo esc_attr( $close_adj_class );?>" style=" <?php echo esc_attr( $ib_img_width ); ?>"><?php echo do_shortcode( $ib_close_html ); ?></div>
 				<?php } ?>
 			</div><!-- cp-info-bar-body -->
+
+			<?php
+			if ( $edit_link !== '' ) {
+
+				$edit_link_text = 'Edit With ConvertPlug';
+
+				$edit_link_txt = apply_filters( 'cp_style_edit_link_text', $edit_link_text );
+
+			 	echo "<div class='cp_edit_link'><a target='_blank' href=".$edit_link.">".$edit_link_txt."<a></div>";
+			}
+			?>
+
 		</div>
 		<!--toggle button-->
 			<?php if( !$isInline && $a['toggle_btn'] == '1' ) { ?>
@@ -722,7 +869,7 @@ if( !function_exists( "cp_ib_global_after_init" ) ) {
 		  	<?php } ?>
 			<?php
 		    if( !$isInline && $a['close_info_bar_pos'] == 1 && $a['close_info_bar'] !== "do_not_close" )  { ?>
-		        <div class="ib-close <?php echo esc_attr( $ib_close_class ); ?>" style=" <?php echo esc_attr( $ib_img_width ); ?>"><?php echo do_shortcode( $ib_close_html ); ?></div>
+		        <div class="ib-close  <?php echo esc_attr( $ib_close_class ); ?> <?php echo esc_attr( $close_adj_class );?>" style=" <?php echo esc_attr( $ib_img_width ); ?>"><?php echo do_shortcode( $ib_close_html ); ?></div>
 		    <?php } ?>
 
 		    <?php if( $isInline ) { ?>

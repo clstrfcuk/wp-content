@@ -22,7 +22,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.coreStyles_bold      = { element : 'span', attributes : { 'style' : 'font-weight:bold' } };
     config.coreStyles_italic    = { element : 'span', attributes : { 'style' : 'font-style:italic' } };
     config.coreStyles_underline = { element : 'span', attributes : { 'style' : 'text-decoration:underline' } };
-    
+
     // This is actually the default value for it.
     config.fontSize_style       = { element : 'span', styles: { 'font-size': '#(size)' }, attributes : { 'data-font-size': '#(size)', 'class' : 'cp_responsive cp_font' } };
     config.cp_line_height_style = { element : 'span', styles: { 'line-height': '#(size)' }, attributes : { 'data-line-height': '#(size)', 'class' : 'cp_responsive cp_line_height' } };
@@ -51,8 +51,11 @@ CKEDITOR.editorConfig = function( config ) {
     //  Remove Magic Line
     // config.magicline_everywhere = false;
     config.removePlugins = 'magicline';
-    
+
     config.forcePasteAsPlainText = true;
+
+    // allow empty span tags
+    config.protectedSource.push(/<span[^>]*><\/span>/g);
 
     /** = ConvertPlug - Fonts Sizes - [ 8-100 px]
      *-----------------------------------------------------------*/

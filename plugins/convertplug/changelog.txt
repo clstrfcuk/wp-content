@@ -1,3 +1,26 @@
+Version 2.3.1 - June 20, 2016
+- New: Social media with form modal style
+- New: Social article modal style
+- New: Free widget slide in style
+- New: Filter hook for target page settings
+- New: HTML tags allowed in success and failure message after form submission
+- New: Added input box radius option
+- New: Added option to set timeout to display close button
+- New: Retrieving alt attribute for media images
+- New: Added download file option after redirection
+- New: Added positions for close button
+- New: Added option to appear module when user scrolls to a certain ID or Class on the page
+- New: Added option to auto close module
+- New: Added option to set actions after successful form submission
+- New: Added option to minimize optin widget slide in style on load
+- New: Added option to attach input field and submit button
+- Improvement: Display style edit link at front end only for users who has access to ConvertPlug
+- Improvement: Fixed conflicts with WooCommerce, Ultimate Member and Blog Manager plugin
+- Fixed: Mod security for relative image path
+- Fixed: Modal overlapping on other HTML containers after closing
+- Fixed: Sanitize folder name issue while importing style
+- Fixed: Custom CSS style including multiple times
+
 Version 2.3.0 - May 19, 2016
 - New: Introduced 30+ new styles
 - New: Introduced social media styles

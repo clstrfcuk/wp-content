@@ -229,63 +229,6 @@
         return returns;
     }
 
-    function hideOnOS(OS){
-        if( typeof OS !== "undefined" ) {
-            OS = OS.split("|");
-            var returns = false,
-            isWin       = false,
-            isMac       = false,
-            isUnix      = false,
-            isLinux     = false,
-            isAndroid   = false;
-
-            isWin       = isOs.Win();
-            isMac       = isOs.Mac();
-            isLinux     = isOs.Linux();
-            isUnix      = isOs.Unix();
-            isAndroid   = isOs.Android();
-
-            jQuery.each(OS, function(){
-                var _os = jQuery(this).selector;
-                if( ( _os == "win"      && isWin )
-                ||  ( _os == "mac"      && isMac )
-                ||  ( _os == "linux"    && isLinux )
-                ||  ( _os == "unix"     && isUnix )
-                ||  ( _os == "android"  && isAndroid ) ){
-                    returns  = true;
-                }
-            });
-        }
-        return returns;
-    }
-
-    function hideOnBrowser(browsers){
-        if( typeof browsers !== "undefined" ) {
-            browsers        = browsers.split("|");
-            var returns = false,
-            is_chrome   = false,
-            is_mozilla  = false,
-            is_safari   = false,
-            is_ie       = false;
-
-            is_chrome   = isBrowser.Chrome();
-            is_mozilla  = isBrowser.Mozilla();
-            is_safari   = isBrowser.Safari();
-            is_ie       = isBrowser.IE();
-
-            jQuery.each(browsers, function(){
-                var browser = jQuery(this).selector;
-                if( ( is_chrome     && browser == 'chrome')
-                ||  ( is_mozilla    && browser == "mozilla")
-                ||  ( is_safari     && browser == "safari")
-                ||  ( is_ie         && browser == "ie") ){
-                    returns = true;
-                }
-            });
-        }
-        return returns;
-    }
-
     jQuery.fn.windowSize = function(){
         var cp_content_container= this.find(".cp-content-container"),
             cp_info_bar            = this.find(".cp-info-bar"),
@@ -418,7 +361,7 @@
         createCookie(name, '', -1);
     }
 
-    jQuery(window).load(function() {
+    jQuery(window).on( 'load', function() {
         var styleArray = Array();
         jQuery(".cp-info-bar").each(function(t) {
             var class_id          = jQuery(this).data("class-id");
@@ -438,12 +381,12 @@
             infoBarPos(jQuery( this ) );
         });
 
-        cp_social_responsive();
+        cp_infobar_social_responsive();
 
     });
 
     // Display info_bar on page load after x seconds
-    jQuery(window).load(function() {
+    jQuery(window).on( 'load', function() {
         var styleArray = Array();
         jQuery(".cp-ib-onload").each(function(t) {
             var $this = jQuery(this);
@@ -460,12 +403,6 @@
             var load_on_refresh     = jQuery(this).data('load-on-refresh');
             var hide_on_device      = jQuery(this).data('hide-on-devices');
             var hide_from_device    = hideOnDevice(hide_on_device);
-
-            var hide_on_OS          = jQuery(this).data('hide-on-os');
-            var hide_from_OS        = hideOnOS(hide_on_OS);
-
-            var hide_on_browser     = jQuery(this).data('hide-on-browser');
-            var hide_from_browser   = hideOnBrowser(hide_on_browser);
 
             var scrollPercent       = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
             var scrollTill          = jQuery(this).data("onscroll-value");
@@ -527,7 +464,7 @@
                 setTimeout(function() {
                     if( jQuery(".ib-display").length <= 0 ) {
 
-                        info_bar.show();
+                        //info_bar.show();
 
                         if( !info_bar.hasClass('impression_counted') ) {
                             styleArray.push(style);
@@ -554,6 +491,7 @@
 
                         jQuery(document).trigger('resize');
                         info_bar.addClass('ib-display');
+                        jQuery(document).trigger('infobarOpen',[info_bar]);
                         setTimeout( function(){
                             var anim = info_bar.find(".cp-submit").data("animation");
                             info_bar.find(".cp-submit").addClass(anim);
@@ -593,12 +531,6 @@
 
             var hide_on_device      = jQuery(this).data('hide-on-devices');
             var hide_from_device    = hideOnDevice(hide_on_device);
-
-            var hide_on_OS          = jQuery(this).data('hide-on-os');
-            var hide_from_OS        = hideOnOS(hide_on_OS);
-
-            var hide_on_browser     = jQuery(this).data('hide-on-browser');
-            var hide_from_browser   = hideOnBrowser(hide_on_browser);
 
             var toggle_visible      = jQuery(this).data('toggle-visible');
 
@@ -651,7 +583,7 @@
                             }
                         }
 
-                        info_bar.show();
+                        //info_bar.show();
                         if( info_bar.hasClass("cp-pos-top")){
                             if( jQuery("body").hasClass("admin-bar") ){
                                 var ab_height = jQuery("#wpadminbar").outerHeight();
@@ -662,6 +594,7 @@
                             info_bar.css("min-height",cp_height+"px");
                         }
                         info_bar.addClass('ib-display');
+                        jQuery(document).trigger('infobarOpen',[info_bar]);
                         setTimeout( function(){
                             var anim = info_bar.find(".cp-submit").data("animation");
                             info_bar.find(".cp-submit").addClass(anim);
@@ -693,12 +626,6 @@
 
             var hide_on_device      = jQuery(this).data('hide-on-devices');
             var hide_from_device    = hideOnDevice(hide_on_device);
-
-            var hide_on_OS          = jQuery(this).data('hide-on-os');
-            var hide_from_OS        = hideOnOS(hide_on_OS);
-
-            var hide_on_browser     = jQuery(this).data('hide-on-browser');
-            var hide_from_browser   = hideOnBrowser(hide_on_browser);
 
             var toggle_visible      = jQuery(this).data('toggle-visible');
 
@@ -745,7 +672,7 @@
 
                         apply_push_page_down(info_bar);
 
-                        info_bar.show();
+                        //info_bar.show();
                         if( info_bar.hasClass("cp-pos-top")){
                             if( jQuery("body").hasClass("admin-bar") ){
                                 var ab_height = jQuery("#wpadminbar").outerHeight();
@@ -756,7 +683,7 @@
                             info_bar.css("min-height",cp_height+"px");
                         }
                         info_bar.addClass('ib-display');
-
+                        jQuery(document).trigger('infobarOpen',[info_bar]);
                         if( !info_bar.hasClass('impression_counted') ) {
                             styleArray.push(style);
                             if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
@@ -801,12 +728,6 @@
 
             var hide_on_device      = $this.data('hide-on-devices');
             var hide_from_device    = hideOnDevice(hide_on_device);
-
-            var hide_on_OS          = $this.data('hide-on-os');
-            var hide_from_OS        = hideOnOS(hide_on_OS);
-
-            var hide_on_browser     = $this.data('hide-on-browser');
-            var hide_from_browser   = hideOnBrowser(hide_on_browser);
 
             var toggle_visible      = jQuery(this).data('toggle-visible');
 
@@ -855,7 +776,7 @@
 
                             apply_push_page_down(info_bar);
 
-                            info_bar.show();
+                            //info_bar.show();
                             if( info_bar.hasClass("cp-pos-top")){
                                 if( jQuery("body").hasClass("admin-bar") ){
                                     var ab_height = jQuery("#wpadminbar").outerHeight();
@@ -869,7 +790,7 @@
                             jQuery(document).trigger('playYoutube');
 
                             info_bar.addClass('ib-display');
-
+                            jQuery(document).trigger('infobarOpen',[info_bar]);
                             if( !info_bar.hasClass('impression_counted') ) {
                                 styleArray.push(style);
                                 if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
@@ -900,7 +821,7 @@
 
         cp_ifb_toggle();
 
-        cp_social_responsive();
+        cp_infobar_social_responsive();
 
         // count inline impressions
         count_inline_impressions();
@@ -917,7 +838,7 @@
                 inactive_time = inactive_time*1000;
                 jQuery( document ).idleTimer( {
                     timeout: inactive_time,
-                    idle: true
+                    idle: false
                 });
             }
 
@@ -1005,9 +926,30 @@
         if(cookieTime) {
             createCookie(cookieName,true,cookieTime);
         }
+
+        if( info_bar.hasClass('cp-hide-inline-style') || info_bar.hasClass('cp-close-ifb') ){
+            exit_anim = "cp-overlay-none";
+        }
+
+        if( info_bar.hasClass('cp-close-ifb') ){
+            setTimeout( function(){
+                //if(!info_bar.hasClass('cp-ifb-with-toggle') ){
+                    info_bar.hide();
+                    info_bar.removeClass("ib-display");
+
+                    //  If not has 'cp-ifb-with-toggle' class for smooth toggle
+                    info_bar.removeClass(exit_anim);
+                    info_bar.addClass(entry_anim);
+               // }
+                jQuery("html").css("overflow-x","auto");
+            }, 3000);
+        }
+
         if( exit_anim !== "cp-overlay-none" ){
             setTimeout( function(){
-                if(!info_bar.hasClass('cp-ifb-with-toggle')){
+
+                if(!info_bar.hasClass('cp-ifb-with-toggle') ){
+
                     info_bar.hide();
                     info_bar.removeClass("ib-display");
 
@@ -1052,12 +994,6 @@
             var hide_on_device      = $this.data('hide-on-devices');
             var hide_from_device    = hideOnDevice(hide_on_device);
 
-            var hide_on_OS          = $this.data('hide-on-os');
-            var hide_from_OS        = hideOnOS(hide_on_OS);
-
-            var hide_on_browser     = $this.data('hide-on-browser');
-            var hide_from_browser   = hideOnBrowser(hide_on_browser);
-
             var toggle_visible      = jQuery(this).data('toggle-visible');
 
             var data                = {action:'smile_update_impressions',impression:true,style_id:style,option:opt};
@@ -1101,7 +1037,7 @@
 
                    apply_push_page_down(info_bar);
 
-                    info_bar.show();
+                    //info_bar.show();
                     if( info_bar.hasClass("cp-pos-top")){
                         if( jQuery("body").hasClass("admin-bar") ){
                             var ab_height = jQuery("#wpadminbar").height();
@@ -1113,7 +1049,7 @@
                     }
 
                     info_bar.addClass('ib-display');
-
+                    jQuery(document).trigger('infobarOpen',[info_bar]);
                     if( !info_bar.hasClass('impression_counted') ) {
                         styleArray.push(style);
                         if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
@@ -1133,6 +1069,14 @@
                 }
             }
         });
+    });
+
+    //close modal after few second
+    jQuery(document).on( "idle.idleTimer", function(event, elem, obj){
+        if( jQuery(".ib-display").hasClass('cp-close-after-x')){
+            var info_bar = jQuery(".ib-display");
+            jQuery(document).trigger('cp_close_info_bar',[info_bar]);
+        }
     });
 
     // Display info bar on click of custom class
@@ -1177,7 +1121,7 @@
 
                             apply_push_page_down(info_bar);
 
-                            info_bar.show();
+                            //info_bar.show();
                             if( info_bar.hasClass("cp-pos-top")){
                                 if( jQuery("body").hasClass("admin-bar") ){
                                     var ab_height = jQuery("#wpadminbar").outerHeight();
@@ -1188,7 +1132,7 @@
                                 info_bar.css("min-height",cp_height+"px");
                             }
                             info_bar.addClass('ib-display');
-
+                            jQuery(document).trigger('infobarOpen',[info_bar]);
                             if( !info_bar.hasClass('impression_counted') ) {
                                 styleArray.push(style);
                                 if( styleArray.length !== 0 ) {
@@ -1248,22 +1192,26 @@
                     top:  jQuery('body').css('top'),
             };
         } else {
-            var site_offset = jQuery(cp_top_offset_container).offset().top;
-            var offset_def_settings = {
-                    margin_top: jQuery(cp_top_offset_container).css('margin-top'),
-                    top:  jQuery(cp_top_offset_container).css('top'),
-            };
+
+            if( jQuery(cp_top_offset_container).length > 0 ) {
+                var site_offset = jQuery(cp_top_offset_container).offset().top;
+                var offset_def_settings = {
+                        margin_top: jQuery(cp_top_offset_container).css('margin-top'),
+                        top:  jQuery(cp_top_offset_container).css('top'),
+                };
+            }
         }
 
-        var seetings_string = JSON.stringify(offset_def_settings);
-
-        jQuery("#cp-top-offset-container").attr("data-offset_def_settings", seetings_string  );
+        if( typeof offset_def_settings !== 'undefined' ) {
+            var seetings_string = JSON.stringify(offset_def_settings);
+            jQuery("#cp-top-offset-container").attr("data-offset_def_settings", seetings_string  );
+        }
 
         var push_down_top = (ib_height + site_offset) - wpadminbar;
         var push_down_top_support = ib_height + site_offset;
 
         var cp_push_down_support_ht = jQuery(cp_push_down_support_container).outerHeight(); // Calculate height of user entered fixed class / ID
-        var cp_push_down_support_htop = push_down_top_support - cp_push_down_support_ht;
+        var cp_push_down_support_htop = push_down_top_support - 0;
 
         if(toggle) {
             cp_push_down_support_htop = wpadminbar + ib_height;
@@ -1282,7 +1230,7 @@
     jQuery(document).ready(change_placeholdercolor);
 
     function change_placeholdercolor(){
-        jQuery(".cp-overlay").each(function() {
+        jQuery(".cp-info-bar").each(function() {
             var placeholder_color = jQuery(this).data("placeholder-color");
             var uid = jQuery(this).data("class");
             var defaultColor = placeholder_color;
@@ -1551,13 +1499,13 @@
 /*
  * for social media responsive icon*
  */
-function cp_social_responsive(){
+function cp_infobar_social_responsive(){
 
     var wh = jQuery(window).width();
      jQuery(".cp_social_networks").each(function() {
         var column_no = jQuery(this).data('column-no');
         var classname ='';
-        if(wh <= 610){
+        if(wh < 768){
             jQuery(this).removeClass('cp_social_networks');
             jQuery(this).removeClass(column_no);
             classname =  jQuery(this).attr('class');
@@ -1571,5 +1519,177 @@ function cp_social_responsive(){
         }
      });
 }
+
+ jQuery(document).on("infobarOpen", function(e,data) {
+
+    var close_btn_delay               = data.data("close-btnonload-delay");
+
+    // convert delay time from seconds to miliseconds
+    close_btn_delay                   = Math.round(close_btn_delay * 1000);
+
+    if(close_btn_delay){
+        setTimeout( function(){
+              data.find('.ib-close').removeClass('cp-hide-close');
+        },close_btn_delay);
+    }
+
+        //for close modal after x  sec of inactive
+        var inactive_close_time = data.data('close-after');
+
+        jQuery.idleTimer('destroy');
+        if( typeof inactive_close_time !== "undefined" ) {
+            inactive_close_time = inactive_close_time*1000;
+            setTimeout(function(){
+                data.addClass('cp-close-after-x');
+            }, inactive_close_time );
+
+            jQuery(document).idleTimer( {
+                timeout: inactive_close_time,
+                idle: false
+            });
+        }
+
+ });
+
+ //Open infobar scroll upto particular class/id
+    var ifb_scrollcls = [];
+        jQuery.each(jQuery('.cp-info-bar'),function(){
+            var ifb_scroll_class = jQuery(this).data('scroll-class');
+            if( typeof ifb_scroll_class !== "undefined" && ifb_scroll_class !== "" ){
+                ifb_scroll_class = ifb_scroll_class.split(" ");
+                jQuery.each( ifb_scroll_class, function(i,c){
+                    ifb_scrollcls.push(c);
+                });
+            }
+
+        });
+    jQuery.each(ifb_scrollcls, function(i,v){
+       jQuery(document).scroll(function(e){
+
+        // count inline impressions
+        count_inline_impressions();
+
+        // calculate the percentage the user has scrolled down the page
+        var scrollPercent = 100 * jQuery(window).scrollTop() / (jQuery(document).height() - jQuery(window).height());
+        var scrolled = scrollPercent.toFixed(0);
+        var styleArray = Array();
+        jQuery(".cp-ib-onload").each(function(t) {
+            var $this = jQuery(this);
+            var exit                = jQuery(this).data("exit-intent");
+            var class_id            = jQuery(this).data("class");
+            var dev_mode            = jQuery(this).data("dev-mode");
+            var cookieName          = jQuery(this).data('info_bar-id');
+            var temp_cookie         = "temp_"+cookieName;
+            var opt                 = jQuery(this).data('option');
+            var style               = jQuery(this).data('info_bar-style');
+            var info_bar            = jQuery(this);
+            var scrollclass         = v;
+            var scrollTill          = '';
+            if( typeof scrollclass !== 'undefined' && scrollclass !== ' ' ){
+                var div_ht = jQuery(scrollclass).outerHeight();
+                var position    = jQuery(scrollclass).position();
+                 if( typeof position !== 'undefined' && position !== ' ' ){
+
+                    scrollTill = jQuery(scrollclass).cp_ifb_isOnScreen();
+                }
+            }
+
+            var hide_on_device      = jQuery(this).data('hide-on-devices');
+            var hide_from_device    = hideOnDevice(hide_on_device);
+
+            var toggle_visible      = jQuery(this).data('toggle-visible');
+
+            var data                = {action:'smile_update_impressions',impression:true,style_id:style,option:opt};
+            if( dev_mode == "enabled" ){
+                removeCookie(cookieName);
+            }
+            var cookie              = getCookie(cookieName);
+            var tmp_cookie          = getCookie(temp_cookie);
+            if( !temp_cookie ){
+                createCookie(temp_cookie,true,1);
+            } else if( dev_mode == "enabled" && tmp_cookie ) {
+                cookie = true;
+            }
+
+            var scheduled = info_bar.isScheduled();
+
+            if( hide_from_device ) {
+                cookie = scrollTill = scheduled = false;
+            }
+
+            var page_down = jQuery(this).data('push-down');
+            page_down = parseInt( page_down );
+            var ib_height = jQuery(this).outerHeight();
+
+            var referrer    = $this.data('referrer-domain');
+            var ref_check   = $this.data('referrer-check');
+            var doc_ref     = document.referrer.toLowerCase();
+            var referred = false;
+            if( typeof referrer !== "undefined" && referrer !== "" ){
+                referred = info_bar.isReferrer( referrer, doc_ref, ref_check );
+            } else {
+                referred = true;
+            }
+
+            if( !cookie && scrollTill && scheduled && referred ){
+                if( jQuery(".ib-display").length <= 0 ){
+                    if( scrollTill == true ){
+
+                        apply_push_page_down(info_bar);
+
+                        if( !info_bar.hasClass('impression_counted') ) {
+                            styleArray.push(style);
+                            if( styleArray.length !== 0 && typeof toggle_visible == 'undefined' ) {
+                                update_impressions(styleArray);
+
+                                jQuery("[data-info_bar-style="+style+"]").each(function(e) {
+                                    jQuery(this).addClass('impression_counted');
+                                });
+                            }
+                        }
+
+                        //info_bar.show();
+                        if( info_bar.hasClass("cp-pos-top")){
+                            if( jQuery("body").hasClass("admin-bar") ){
+                                var ab_height = jQuery("#wpadminbar").outerHeight();
+                                info_bar.css("top", ab_height+"px");
+                            }
+                        } else {
+                            var cp_height       = info_bar.find(".cp-info-bar-body").outerHeight();
+                            info_bar.css("min-height",cp_height+"px");
+                        }
+                        info_bar.addClass('ib-display');
+                        jQuery(document).trigger('infobarOpen',[info_bar]);
+                        setTimeout( function(){
+                            var anim = info_bar.find(".cp-submit").data("animation");
+                            info_bar.find(".cp-submit").addClass(anim);
+                        }, 2000 );
+                    }
+                }
+            }
+        });
+
+    });
+});
+
+// check whether div is in viewport or not?
+jQuery.fn.cp_ifb_isOnScreen = function(){
+
+    var win = $(window);
+
+    var viewport = {
+        top : win.scrollTop(),
+        left : win.scrollLeft()
+    };
+    viewport.right = viewport.left + win.width();
+    viewport.bottom = viewport.top + win.height();
+
+    var bounds = this.offset();
+    bounds.right = bounds.left + this.outerWidth();
+    bounds.bottom = bounds.top + this.outerHeight();
+
+    return (!(viewport.right < bounds.left || viewport.left > bounds.right || viewport.bottom < bounds.top || viewport.top > bounds.bottom));
+
+};
 
 })(jQuery);

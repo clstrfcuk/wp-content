@@ -122,7 +122,7 @@ jQuery(document).ready(function(e) {
 
 });
 
-jQuery(window).load(function(){
+jQuery(window).on( 'load', function() {
 	var selVal = jQuery("#accordion-panel-jugaad input[name='modal_layout']:checked").val();
 
 	if( typeof selVal !== 'undefined' ) {

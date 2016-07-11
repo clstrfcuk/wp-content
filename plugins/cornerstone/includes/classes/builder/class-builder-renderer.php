@@ -23,12 +23,12 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 
 		global $post;
 		if ( !isset( $data['post_id'] ) || ! $post = get_post( (int) $data['post_id'] ) ) {
-      cs_send_json_error( array( 'message' => 'post_id not set' ) );
+      return cs_send_json_error( array( 'message' => 'post_id not set' ) );
 		}
 
     $cap = $this->plugin->common()->get_post_capability( $post, 'edit_post' );
 		if ( ! current_user_can( $cap, $data['post_id'] ) ) {
-			cs_send_json_error( array( 'message' => sprintf( '%s capability required.', $cap ) ) );
+			return cs_send_json_error( array( 'message' => sprintf( '%s capability required.', $cap ) ) );
 		}
 
     setup_postdata( $post );
@@ -41,14 +41,14 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
     	$this->raw_markup = (bool) $data['raw_markup'];
 
     if ( !isset( $data['batch'] ) )
-			cs_send_json_error( array('message' => 'No element data recieved' ) );
+			return cs_send_json_error( array('message' => 'No element data recieved' ) );
 
 		$jobs = $this->batch( $data['batch'] );
 		$scripts = $this->enqueue_extractor->get_scripts();
 		$styles = $this->enqueue_extractor->get_styles();
 
 		if ( is_wp_error( $jobs ) )
-			cs_send_json_error( array( 'message' => $jobs->get_error_message() ) );
+			return cs_send_json_error( array( 'message' => $jobs->get_error_message() ) );
 
 		$result = array( 'jobs' => $jobs );
 

@@ -83,15 +83,6 @@ if( !function_exists( "modal_theme_YouTube" ) ) {
 			$atts
 		);
 
-
-		global $cp_form_vars;
-
-        $all = array_merge(
-            $individual_vars,
-            $cp_form_vars,
-            $style_settings
-        );
-
         //    Merge arrays - 'shortcode atts' & 'style options'
         $a = shortcode_atts( $all , $style_settings );
 
@@ -145,12 +136,12 @@ if( !function_exists( "modal_theme_YouTube" ) ) {
          		/**
 				 * Embed CP Form
 				 */
-         		
+
 					apply_filters_ref_array('cp_get_form', array( $a ) );
-			
+
 			?>
 		</div>
-		<?php 
+		<?php
 	}?>
 
 <?php

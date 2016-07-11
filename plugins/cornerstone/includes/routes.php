@@ -2,7 +2,7 @@
 
 /**
  * Routes.php
- * Maps AJAX endpoints to components
+ * Map explicit AJAX endpoints to components
  */
 
 return array(

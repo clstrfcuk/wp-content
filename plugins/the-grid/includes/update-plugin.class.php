@@ -107,13 +107,18 @@ if (!class_exists('TG_update_plugin')) {
 				$bubble = '&nbsp;<span class="update-plugins count-1"><span class="plugin-count">1</span></span>';
 				
 				$menu_name = $this->menu_name;
+				
 				if (!empty($menu_name) && isset($plugin) && version_compare($plugin['version'], TG_VERSION) >  0) {
+					
 					foreach ($menu as $key => $item) {
+						
 						if ($item[0] == $menu_name) {
 							$menu[$key][0] .= $bubble;
 							break;
 						}
+						
 					}
+					
 				}
 				
 			}

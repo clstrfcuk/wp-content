@@ -1,12 +1,12 @@
 /**
  * Description: Modal Element Basic CSS
- * Version: 2.3.0
+ * Version: 2.3.1
  * Author: Brainstorm Force
  */
 
 /* ==========================================================================
      Common
-     ========================================================================== */
+   ========================================================================== */
 
 /* Box Sizing */
 .cp-modal-popup-container,
@@ -87,6 +87,7 @@ html.cp-exceed-vieport .cp-overlay.ps-container {
     position: fixed;
     width: 100%;
     height: 100%;
+    display: none;
     top: 0;
     bottom: 0;
     left: 0;
@@ -104,6 +105,7 @@ html.cp-exceed-vieport .cp-overlay.ps-container {
 .cp-overlay.cp-open {
     opacity: 1;
     visibility: visible;
+    display: block;
     -webkit-transition: opacity 300ms, visibility 300ms;
     -moz-transition: opacity 300ms, visibility 300ms;
     -ms-transition: opacity 300ms, visibility 300ms;
@@ -118,6 +120,10 @@ html.cp-exceed-vieport .cp-overlay.ps-container {
 .cp-overlay.cp-open .cp-modal {
     opacity: 1;
     visibility: visible;
+}
+
+.cp-modal-inline.cp-hide-inline-style {
+    display: none;
 }
 
 /* Modal Structure
@@ -266,10 +272,6 @@ html.cp-exceed-vieport .cp-overlay.ps-container {
     display: block;
     position: relative;
 }
-
-/* .cp-modal-body.no-padding {
-    padding: 0;
-} */
 
 .cp-modal-body p {
     margin-bottom: 1em
@@ -654,9 +656,74 @@ div#cke_content_editor,
     -ms-transform: translate(50%, -50%);
     transform: translate(50%, -50%);
 }
+.cp-overlay-close.cp-adjacent-close.cp-adjacent-left {
+    left: 0;
+    top: 0;
+    right: auto;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+}
+.cp-overlay-close.cp-adjacent-close.cp-adjacent-right {
+    left: auto;
+    top: 0;
+    right: 0;
+    -webkit-transform: translate(50%,-50%);
+    -moz-transform: translate(50%,-50%);
+    -ms-transform: translate(50%,-50%);
+    transform: translate(50%,-50%);
+}
+
+.cp-overlay-close.cp-adjacent-close.cp-adjacent-bottom-right {
+    left: auto;
+    top: auto;
+    right: 0;
+    -webkit-transform: translate(50%,-50%);
+    -moz-transform: translate(50%,-50%);
+    -ms-transform: translate(50%,-50%);
+    transform: translate(50%,-50%);
+}
+.cp-overlay-close.cp-adjacent-close.cp-adjacent-bottom-left {
+    left: 0;
+    top: auto;
+    right: auto;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+}
 
 .cp-modal-window-size .cp-overlay-close.cp-adjacent-close {
     -webkit-transform: translate(-5px, 5px);
+    -moz-transform: translate(-5px, 5px);
+    -ms-transform: translate(-5px, 5px);
+    transform: translate(-5px, 5px);
+}
+.cp-modal-window-size .cp-overlay-close.cp-adjacent-close.cp-adjacent-right {
+    -webkit-transform: translate(-10px, 10px);
+    -moz-transform: translate(-10px, 10px);
+    -ms-transform: translate(-10px, 10px);
+    transform: translate(-10px, 10px);
+}
+.cp-modal-window-size .cp-overlay-close.cp-adjacent-close.cp-adjacent-left {
+    -webkit-transform: translate(10px,10px);
+    -moz-transform: translate(10px,10px);
+    -ms-transform: translate(10px,10px);
+    transform: translate(10px,10px);
+}
+
+.cp-modal-window-size .cp-overlay-close.cp-adjacent-close.cp-adjacent-bottom-left {
+    bottom: 10px;
+    -webkit-transform: translate(5px,5px);
+    -moz-transform: translate(5px,5px);
+    -ms-transform: translate(5px,5px);
+    transform: translate(5px,5px);
+}
+
+.cp-modal-window-size .cp-overlay-close.cp-adjacent-close.cp-adjacent-bottom-right {
+    bottom: 10px;
+   -webkit-transform: translate(-5px, 5px);
     -moz-transform: translate(-5px, 5px);
     -ms-transform: translate(-5px, 5px);
     transform: translate(-5px, 5px);
@@ -669,6 +736,51 @@ div#cke_content_editor,
     top: 10px;
     right: 10px;
 }
+
+.cp-overlay-close.cp-inside-close.cp-adjacent-left,
+.cp-modal-window-size + .cp-overlay-close.cp-adjacent-left,
+.cp-modal-window-size .cp-overlay-close.cp-inside-close.cp-adjacent-left,
+.cp-overlay-close.cp-inside-close.cp-adjacent-bottom-left,
+.cp-modal-window-size + .cp-overlay-close.cp-adjacent-bottom-left,
+.cp-modal-window-size .cp-overlay-close.cp-inside-close.cp-adjacent-bottom-left {
+    left: 10px;
+    top: 10px;
+    right: auto
+}
+
+.cp-overlay-close.cp-inside-close.cp-adjacent-right,
+.cp-modal-window-size + .cp-overlay-close.cp-adjacent-right,
+.cp-modal-window-size .cp-overlay-close.cp-inside-close.cp-adjacent-right,
+.cp-overlay-close.cp-inside-close.cp-adjacent-bottom-right,
+.cp-modal-window-size + .cp-overlay-close.cp-adjacent-bottom-right,
+.cp-modal-window-size .cp-overlay-close.cp-inside-close.cp-adjacent-bottom-right {
+    left: auto;
+    top: 10px;
+    right: 10px;
+}
+
+.cp-overlay-close.cp-outside-close.cp-adjacent-left {
+    right: auto;
+    left: 15px;
+    top: 15px;
+}
+.cp-overlay-close.cp-outside-close.cp-adjacent-right {
+    right: 15px;
+    top: 15px;
+    left:auto;
+}
+/* text close position*/
+.cp-overlay-close.cp-text-close.cp-adjacent-left{
+    right: auto;
+    left: 35px;
+    top:15px;
+}
+.cp-overlay-close.cp-text-close.cp-adjacent-right{
+    right: 35px;
+    left: auto;
+    top:15px;
+}
+
 
 .cp-overlay-close.cp-adjacent-close .cp-default-close,
 .cp-overlay-close.cp-inside-close .cp-default-close {
@@ -970,7 +1082,7 @@ span.cp-tooltip-icon {
     border: inherit;
 }
 
-.no-padding {
+.cp-no-padding {
     padding: 0 !important;
 }
 

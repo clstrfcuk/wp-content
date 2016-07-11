@@ -114,7 +114,7 @@ var TOMB_Select = {
 		}).on('click', select_remove, function() {
 			jQuery(this).data('option').prop('selected', false).trigger('change');
 			TOMB_Select.close();
-		});
+		});		
 		
 	},
 	open: function(el) {
@@ -162,11 +162,13 @@ var TOMB_Select = {
 		$dropdown.find('ul').prepend(opt);
 		jQuery('body').append($dropdown);
 		el.addClass(select_open);
+		$dropdown.find('ul').scrollTop(el.data('scrollTop'));
 		jQuery(select_search_in).select();
 		TOMB_Select.empty();
 		var scroller = el.closest(':TOMB_hasScroll(y)');
 		el.closest(':TOMB_hasScroll(y)').on('mousewheel DOMMouseScroll', TOMB_Select.noscroll);
-		
+		$dropdown.find('ul').scroll(function() {TOMB_Select.onscroll(jQuery(this), el);});
+
 	},
 	close: function(el) {
 		
@@ -179,6 +181,9 @@ var TOMB_Select = {
 	},
 	noscroll: function(e) {
 		e.preventDefault();
+	},
+	onscroll: function(dd, el) {
+		el.data('scrollTop', dd.scrollTop());
 	},
 	position: function(el, nb) {
 		
@@ -283,80 +288,87 @@ var TOMB_Code = {
 // ======================================================
 
 var TOMB_ColorPicker = {
+	
 	init: function() {
 		var $colorPicker = jQuery('.tomb-colorpicker');
-		if ($colorPicker.length > 0 ) {
-			
-			$colorPicker.wpColorPicker();
 		
-			$colorPicker.each(function() {
+		if ($colorPicker.length > 0 ) {
 
-				if (jQuery(this).data('alpha') !== 1) return;
-
-				var $control = jQuery(this),
-					value    = $control.val().replace(/\s+/g, ''),
-					$alpha   = jQuery(
-						'<div class="tomb-alpha-container">'+
-						'<div class="slider-alpha"></div>'+
-						'<div class="transparency"></div>'+
-						'</div>'
-					),
-					new_alpha_val,
-					color_picker,
-					alpha_val,
-					$slider,
-					iris;
-				
-				if ($control.parents('.wp-picker-container').find('.tomb-alpha-container').length === 0) {
-					$alpha.appendTo($control.parents('.wp-picker-container'));
-				}
-				$slider = $control.parents('.wp-picker-container:first').find('.slider-alpha');
-
-				if (value.match(/rgba\(\d+\,\d+\,\d+\,([^\)]+)\)/)) {
-					alpha_val = parseFloat(value.match(/rgba\(\d+\,\d+\,\d+\,([^\)]+)\)/)[1]) * 100;
-					alpha_val = parseInt(alpha_val);
-				} else {
-					alpha_val = 100;
-				}
-
-				
-				$slider.slider({
-					slide: function(event, ui) {
-						getAlphaVal(ui.value);
-					},
-					value: alpha_val,
-					range: "max",
-					step: 1,
-					min: 1,
-					max: 100
-				});
-				
-				var get_val = $control.val();
-
-				$control.wpColorPicker({
-					color: get_val,
-					clear: function() {
-						$slider.slider({value: 100});
-						$control.val('');	
-					},
-					change: function(event, ui) {
-						var $transparency = $control.parents('.wp-picker-container:first').find('.transparency');
-						$transparency.css('backgroundColor', ui.color.toString('no-alpha'));
-					},
-				});
-				
-				function getAlphaVal(value) {
-					iris = $control.data('a8cIris');
-					new_alpha_val = parseFloat(value);
-					color_picker = $control.data('wpWpColorPicker');
-					iris._color._alpha = new_alpha_val / 100.0;
-					$control.val(iris._color.toString());
-					jQuery($control).wpColorPicker('color', $control.val());
-				}
+			if (typeof jQuery().wpColorPicker !== 'undefined') {
 			
-			});
+				$colorPicker.wpColorPicker();
+			
+				$colorPicker.each(function() {
+	
+					if (jQuery(this).data('alpha') !== 1) return;
+	
+					var $control = jQuery(this),
+						value    = $control.val().replace(/\s+/g, ''),
+						$alpha   = jQuery(
+							'<div class="tomb-alpha-container">'+
+							'<div class="slider-alpha"></div>'+
+							'<div class="transparency"></div>'+
+							'</div>'
+						),
+						new_alpha_val,
+						color_picker,
+						alpha_val,
+						$slider,
+						iris;
+					
+					if ($control.parents('.wp-picker-container').find('.tomb-alpha-container').length === 0) {
+						$alpha.appendTo($control.parents('.wp-picker-container'));
+					}
+					$slider = $control.parents('.wp-picker-container:first').find('.slider-alpha');
+	
+					if (value.match(/rgba\(\d+\,\d+\,\d+\,([^\)]+)\)/)) {
+						alpha_val = parseFloat(value.match(/rgba\(\d+\,\d+\,\d+\,([^\)]+)\)/)[1]) * 100;
+						alpha_val = parseInt(alpha_val);
+					} else {
+						alpha_val = 100;
+					}
+	
+					
+					$slider.slider({
+						slide: function(event, ui) {
+							getAlphaVal(ui.value);
+						},
+						value: alpha_val,
+						range: "max",
+						step: 1,
+						min: 1,
+						max: 100
+					});
+					
+					var get_val = $control.val();
+	
+					$control.wpColorPicker({
+						color: get_val,
+						clear: function() {
+							$slider.slider({value: 100});
+							$control.val('');	
+						},
+						change: function(event, ui) {
+							var $transparency = $control.parents('.wp-picker-container:first').find('.transparency');
+							$transparency.css('backgroundColor', ui.color.toString('no-alpha'));
+						},
+					});
+					
+					function getAlphaVal(value) {
+						iris = $control.data('a8cIris');
+						new_alpha_val = parseFloat(value);
+						color_picker = $control.data('wpWpColorPicker');
+						iris._color._alpha = new_alpha_val / 100.0;
+						$control.val(iris._color.toString());
+						jQuery($control).wpColorPicker('color', $control.val());
+					}
+				
+				});
+			
+			}
 		}
 	}
+	
 };
 
 // ======================================================
@@ -403,19 +415,20 @@ var TOMB_RequiredField = {
 				data  = $this.data('required').split(';');
 			for (var i = 0; i < data.length; i++) {	
 				var field = data[i].split(',');
-				input = jQuery('.tomb-row.'+field[0]).find('input').val();
-				if (!input) {
-					input = jQuery('.tomb-row.'+field[0]+' select').val();
-				}
-				if (jQuery('.'+field[0]).find('input').is(':radio')) {
-					input = jQuery('.tomb-row.'+field[0]).find('input:checked').val();
-				} else if (jQuery('.'+field[0]).find('input.tomb-checkbox').length) {
-					input = String(jQuery('.tomb-row.'+field[0]).find('input').prop('checked'));
+				input = jQuery('[name="'+field[0]+'"]');
+				if (jQuery('[name="'+field[0]+'[]"]select').length) {
+					input = jQuery('[name="'+field[0]+'[]"]').val();
+				} else if (input.is(':radio')) {
+					input = jQuery('.'+field[0]).find('input:checked').val();
 				} else if (jQuery('.'+field[0]).find('input.tomb-checkbox-list').length) {
-					input = jQuery('.tomb-row.'+field[0]).find('input:checked').val();
+					input = jQuery('.'+field[0]).find('input:checked').val();
+				} else if (jQuery('.'+field[0]).find('input.tomb-checkbox').length) {
+					input = String(input.prop('checked'));
 				} else if (jQuery('.'+field[0]).find('input.tomb-slider-input').length) {
-					input = jQuery('.tomb-row.'+field[0]).find('input.tomb-slider-input').val();
-				}
+					input = jQuery('.'+field[0]).find('input.tomb-slider-input').val();
+				} else {
+					input = input.val();
+				} 
 				
 				var value = field[2];
 				var op    = field[1];
@@ -530,15 +543,16 @@ var TOMB_RangeSlider = {
 	change: function(el) {
 		var $this = el.closest(slider_field).find(slider_range),
 			step  = ($this.data('step')) ? $this.data('step') : 1,
-			val   = $this.slider("option", "value"),
+			val   = el.closest(slider_field).find('.tomb-slider-input').val(),
 			min   = $this.slider("option", "min"),
 			max   = $this.slider("option", "max");
+
 		if (el.is(slider_less)) {
 			step = -step;
 		}
-		val = val+step;
+		val = parseFloat(val)+step;
 		if (val <= max && val >= min) {
-			$this.slider("option", "value",val);
+			$this.slider("option", "value", val);
 		}
 	}
 
@@ -894,23 +908,27 @@ var TOMB_GalleryControl = {
 // ======================================================
 
 jQuery(document).ready(function() {
- 
-	Color.prototype.toString = function(remove_alpha) {
-		if (remove_alpha == 'no-alpha') {
-			return this.toCSS('rgba', '1').replace(/\s+/g, '');
-		}
-		if (this._alpha < 1) {
-			return this.toCSS('rgba', this._alpha).replace(/\s+/g, '');
-		}
-		var hex = parseInt(this._color, 10).toString(16);
-		if (this.error) return '';
-		if (hex.length < 6) {
-			for (var i = 6 - hex.length - 1; i >= 0; i--) {
-				hex = '0' + hex;
+
+	if (typeof Color !== 'undefined') {
+		
+		Color.prototype.toString = function(remove_alpha) {
+			if (remove_alpha == 'no-alpha') {
+				return this.toCSS('rgba', '1').replace(/\s+/g, '');
 			}
-		}
-		return '#' + hex;
-	};
+			if (this._alpha < 1) {
+				return this.toCSS('rgba', this._alpha).replace(/\s+/g, '');
+			}
+			var hex = parseInt(this._color, 10).toString(16);
+			if (this.error) return '';
+			if (hex.length < 6) {
+				for (var i = 6 - hex.length - 1; i >= 0; i--) {
+					hex = '0' + hex;
+				}
+			}
+			return '#' + hex;
+		};
+	
+	}
 
 });
 

@@ -16,7 +16,7 @@ class Cornerstone_Core_Scripts extends Cornerstone_Plugin_Component {
 
 	public function register_scripts() {
 
-		Cornerstone_Huebert::init();
+		//Cornerstone_Huebert::init();
 
 		$orchestrator = $this->plugin->component( 'Element_Orchestrator' );
 
@@ -32,8 +32,8 @@ class Cornerstone_Core_Scripts extends Cornerstone_Plugin_Component {
 		$definitions = cs_memoize( '_cornerstone_element_definitions', array( $orchestrator, 'getModels' ), 15 );
 
 		$icon_maps = wp_parse_args( array(
-			'elements' => add_query_arg( array( 'v' => $this->plugin->version() ), $this->plugin->url('assets/svg/dist/elements.svg') ),
-			'interface' => add_query_arg( array( 'v' => $this->plugin->version() ), $this->plugin->url('assets/svg/dist/interface.svg') ),
+			'elements' => add_query_arg( array( 'v' => $this->plugin->version() ), $this->plugin->url('assets/dist-app/svg/elements.svg') ),
+			'interface' => add_query_arg( array( 'v' => $this->plugin->version() ), $this->plugin->url('assets/dist-app/svg/interface.svg') ),
 		), apply_filters( 'cornerstone_icon_map', array() ) );
 
 		wp_localize_script( 'cs-core', 'csCoreData', cs_booleanize( array(

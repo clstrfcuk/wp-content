@@ -2,10 +2,10 @@
 // Alternative function for wp_remote_get
 if(!function_exists('bsf_get_remote_version')) {
 	function bsf_get_remote_version($products, $check_license){
-
+		global $ultimate_referer;
 		global $bsf_product_validate_url;
 
-		$path = $bsf_product_validate_url;
+		$path = $bsf_product_validate_url.'?referer='.$ultimate_referer;
 
 		$data = array(
 				'action' => 'bsf_get_product_versions',
@@ -228,8 +228,31 @@ else
 	$BSF_CHECK_PRODUCT_UPDATES = BSF_CHECK_PRODUCT_UPDATES;
 
 if((false === get_transient( 'bsf_check_product_updates') && ($BSF_CHECK_PRODUCT_UPDATES === true || $BSF_CHECK_PRODUCT_UPDATES === 'true') )) {
-	bsf_check_product_update();
-	set_transient( 'bsf_check_product_updates', true, 2*24*60*60 );
+	$proceed = true;
+
+	if(phpversion() > 5.2) {
+		$bsf_local_transient = get_option('bsf_local_transient');
+		if($bsf_local_transient != false) {
+			$datetime1 = new DateTime();
+			$date_string = gmdate("Y-m-d\TH:i:s\Z", $bsf_local_transient);
+			$datetime2 = new DateTime($date_string);
+
+			$interval = $datetime1->diff($datetime2);
+			$elapsed = $interval->format('%h');
+			$elapsed = $elapsed + ($interval->days*24);
+			if($elapsed <= 48 || $elapsed <= '48') {
+				$proceed = false;
+			}
+		}
+	}
+
+	if($proceed) {
+		global $ultimate_referer;
+		$ultimate_referer = 'on-transient-delete';
+		bsf_check_product_update();
+		update_option('bsf_local_transient', current_time( 'timestamp' ));
+		set_transient( 'bsf_check_product_updates', true, 2*24*60*60 );
+	}
 }
 
 if(!function_exists('get_bsf_product_upgrade_link')) {

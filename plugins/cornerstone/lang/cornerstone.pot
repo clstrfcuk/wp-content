@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Cornerstone package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Cornerstone 1.2.4\n"
+"Project-Id-Version: Cornerstone 1.3.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/cornerstone\n"
-"POT-Creation-Date: 2016-04-13 15:55:07+00:00\n"
+"POT-Creation-Date: 2016-07-06 15:43:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -35,15 +35,14 @@ msgstr ""
 
 #: includes/classes/admin/class-admin.php:179
 #: includes/classes/builder/class-legacy-setting-section.php:39
-#: includes/config/builder/strings-builder.php:134
-#: includes/views/admin/settings.php:13
+#: includes/i18n/builder.php:134 includes/views/admin/settings.php:13
 msgid "Settings"
 msgstr ""
 
 #: includes/classes/admin/class-admin.php:226
 #: includes/classes/admin/class-admin.php:246
-#: includes/config/admin/strings-admin.php:11
-#: includes/config/admin/tco-admin.php:8 includes/views/admin/editor-tab.php:14
+#: includes/config/admin/tco-admin.php:8 includes/i18n/admin.php:11
+#: includes/views/admin/editor-tab.php:14
 msgid "Edit with Cornerstone"
 msgstr ""
 
@@ -164,6 +163,13 @@ msgstr ""
 
 #: includes/classes/admin/class-validation.php:112
 msgid "<strong>Congratulations,</strong> your site is now validated!"
+msgstr ""
+
+#. translators: To add an additional subset specific to your language,
+#: includes/classes/app/class-app.php:132
+msgctxt ""
+"Translate to: (greek, cyrillic, vietnamese) to add an additional font subset."
+msgid "cs-no-subset"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:54
@@ -350,27 +356,27 @@ msgid ""
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:190
-#: includes/config/controls/mixins.php:103
+#: includes/config/controls/mixins.php:103 includes/i18n/app.php:10
 msgid "XL"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:191
-#: includes/config/controls/mixins.php:104
+#: includes/config/controls/mixins.php:104 includes/i18n/app.php:11
 msgid "LG"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:192
-#: includes/config/controls/mixins.php:105
+#: includes/config/controls/mixins.php:105 includes/i18n/app.php:12
 msgid "MD"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:193
-#: includes/config/controls/mixins.php:106
+#: includes/config/controls/mixins.php:106 includes/i18n/app.php:13
 msgid "SM"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:194
-#: includes/config/controls/mixins.php:107
+#: includes/config/controls/mixins.php:107 includes/i18n/app.php:14
 msgid "XS"
 msgstr ""
 
@@ -385,8 +391,6 @@ msgid "Set a text alignment, or deselect to inherit from parent elements."
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:213
-#: includes/config/builder/strings-builder.php:115
-#: includes/config/builder/strings-builder.php:155
 #: includes/config/controls/mixins.php:82
 #: includes/elements/_alternate/_column.php:64
 #: includes/elements/_alternate/_pullquote.php:50
@@ -398,7 +402,8 @@ msgstr ""
 #: includes/elements/_alternate/image.php:128
 #: includes/elements/_alternate/prompt.php:76
 #: includes/elements/_alternate/tabs.php:45
-#: includes/elements/column/controls.php:34
+#: includes/elements/column/controls.php:34 includes/i18n/builder.php:115
+#: includes/i18n/builder.php:155
 msgid "Left"
 msgstr ""
 
@@ -411,8 +416,6 @@ msgid "Center"
 msgstr ""
 
 #: includes/classes/builder/class-control-mixins.php:215
-#: includes/config/builder/strings-builder.php:113
-#: includes/config/builder/strings-builder.php:156
 #: includes/config/controls/mixins.php:84
 #: includes/elements/_alternate/_column.php:62
 #: includes/elements/_alternate/_pullquote.php:51
@@ -424,7 +427,8 @@ msgstr ""
 #: includes/elements/_alternate/image.php:126
 #: includes/elements/_alternate/prompt.php:77
 #: includes/elements/_alternate/tabs.php:46
-#: includes/elements/column/controls.php:32
+#: includes/elements/column/controls.php:32 includes/i18n/builder.php:113
+#: includes/i18n/builder.php:156
 msgid "Right"
 msgstr ""
 
@@ -475,17 +479,15 @@ msgid ""
 "milliseconds."
 msgstr ""
 
-#: includes/classes/builder/class-huebert.php:27
+#: includes/classes/builder/class-huebert.php:29
 msgid "Select Color"
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:60
-#: includes/classes/builder/class-shortcode-generator2.php:55
 msgid "Click the button below to check out a live example of this shortcode"
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:69
-#: includes/classes/builder/class-shortcode-generator2.php:60
 msgid "Insert Shortcodes"
 msgstr ""
 
@@ -753,7 +755,7 @@ msgstr ""
 #: includes/classes/builder/class-shortcode-generator.php:1173
 #: includes/classes/builder/class-shortcode-generator.php:1517
 #: includes/elements/_alternate/embedded-video.php:46
-#: includes/elements/_alternate/google-map.php:92
+#: includes/elements/_alternate/google-map.php:100
 #: includes/elements/_alternate/map-embed.php:29
 #: includes/elements/_alternate/self-hosted-video.php:90
 #: includes/elements/_alternate/slider.php:117
@@ -762,7 +764,7 @@ msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:400
 #: includes/classes/builder/class-shortcode-generator.php:474
-#: includes/elements/_alternate/google-map.php:93
+#: includes/elements/_alternate/google-map.php:101
 #: includes/elements/_alternate/map-embed.php:30
 msgid "Select to remove the container around the map."
 msgstr ""
@@ -779,7 +781,7 @@ msgstr ""
 #: includes/classes/builder/class-shortcode-generator.php:429
 #: includes/classes/builder/class-shortcode-generator.php:501
 #: includes/elements/_alternate/google-map-marker.php:29
-#: includes/elements/_alternate/google-map.php:33
+#: includes/elements/_alternate/google-map.php:41
 msgid "Latitude"
 msgstr ""
 
@@ -790,7 +792,7 @@ msgstr ""
 #: includes/classes/builder/class-shortcode-generator.php:435
 #: includes/classes/builder/class-shortcode-generator.php:507
 #: includes/elements/_alternate/google-map-marker.php:37
-#: includes/elements/_alternate/google-map.php:41
+#: includes/elements/_alternate/google-map.php:49
 msgid "Longitude"
 msgstr ""
 
@@ -799,7 +801,7 @@ msgid "Enter in the center longitude of your map."
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:441
-#: includes/elements/_alternate/google-map.php:65
+#: includes/elements/_alternate/google-map.php:73
 msgid "Draggable"
 msgstr ""
 
@@ -818,7 +820,7 @@ msgid ""
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:454
-#: includes/elements/_alternate/google-map.php:57
+#: includes/elements/_alternate/google-map.php:65
 msgid "Zoom Control"
 msgstr ""
 
@@ -827,7 +829,7 @@ msgid "Select to activate the zoom control for the map."
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:461
-#: includes/elements/_alternate/google-map.php:73
+#: includes/elements/_alternate/google-map.php:81
 #: includes/elements/_alternate/line.php:28
 msgid "Height"
 msgstr ""
@@ -968,9 +970,8 @@ msgid "Optionally float the button."
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:652
-#: includes/config/builder/strings-builder.php:62
-#: includes/config/builder/strings-builder.php:65
-#: includes/elements/_alternate/button.php:85
+#: includes/elements/_alternate/button.php:85 includes/i18n/builder.php:62
+#: includes/i18n/builder.php:65
 msgid "Block"
 msgstr ""
 
@@ -1022,7 +1023,7 @@ msgstr ""
 #: includes/classes/builder/class-shortcode-generator.php:2246
 #: includes/elements/_alternate/author.php:23
 #: includes/elements/_alternate/social-sharing.php:20
-#: includes/settings/general/controls.php:21
+#: includes/settings/general/controls.php:28
 msgid "Title"
 msgstr ""
 
@@ -1236,10 +1237,10 @@ msgid "Enter in the alt text for your image."
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:883
-#: includes/config/builder/strings-builder.php:116
 #: includes/elements/_alternate/creative-cta.php:131
 #: includes/elements/_alternate/image.php:53
 #: includes/elements/icon-list-item/controls.php:39
+#: includes/i18n/builder.php:116
 msgid "Link"
 msgstr ""
 
@@ -2070,8 +2071,7 @@ msgid "Set the title of the table of contents item."
 msgstr ""
 
 #: includes/classes/builder/class-shortcode-generator.php:2253
-#: includes/config/builder/strings-builder.php:61
-#: includes/config/builder/strings-builder.php:64
+#: includes/i18n/builder.php:61 includes/i18n/builder.php:64
 msgid "Page"
 msgstr ""
 
@@ -2156,7 +2156,7 @@ msgstr ""
 #: includes/elements/_alternate/icon.php:8
 #: includes/elements/_alternate/icon.php:20
 #: includes/elements/icon-list-item/controls.php:18
-#: includes/integrations/x-theme.php:190
+#: includes/integrations/x-theme.php:197
 msgid "Icon"
 msgstr ""
 
@@ -2335,12 +2335,11 @@ msgid ""
 "any."
 msgstr ""
 
-#. #-#-#-#-#  cornerstone.pot (Cornerstone 1.2.4)  #-#-#-#-#
+#. #-#-#-#-#  cornerstone.pot (Cornerstone 1.3.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: includes/classes/common/class-common.php:42
 #: includes/classes/customizer/class-customizer-manager.php:193
-#: includes/config/admin/strings-admin.php:12
-#: includes/views/admin/editor-tab.php:7
+#: includes/i18n/admin.php:12 includes/views/admin/editor-tab.php:7
 msgid "Cornerstone"
 msgstr ""
 
@@ -2395,8 +2394,7 @@ msgid "Mini"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:132
-#: includes/config/builder/strings-builder.php:164
-#: includes/elements/_alternate/button.php:72
+#: includes/elements/_alternate/button.php:72 includes/i18n/builder.php:164
 msgid "Small"
 msgstr ""
 
@@ -2406,13 +2404,12 @@ msgid "Regular"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:134
-#: includes/config/builder/strings-builder.php:162
-#: includes/elements/_alternate/button.php:74
+#: includes/elements/_alternate/button.php:74 includes/i18n/builder.php:162
 msgid "Large"
 msgstr ""
 
 #: includes/classes/customizer/class-customizer-manager.php:135
-#: includes/config/builder/strings-builder.php:161
+#: includes/i18n/builder.php:161
 msgid "Extra Large"
 msgstr ""
 
@@ -2567,56 +2564,47 @@ msgstr ""
 msgid "Turns on creative save messages."
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:7
-msgid "Yes, proceed"
+#: includes/config/admin/settings-controls.php:46
+msgid "Custom Path"
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:8
-msgid "No, take me back"
+#: includes/config/admin/settings-controls.php:47
+msgid "Change the path used to load the main interface."
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:13
-#: includes/config/admin/tco-admin.php:10
-#: includes/config/builder/strings-generator.php:12
+#: includes/config/admin/tco-admin.php:10 includes/i18n/admin.php:13
+#: includes/i18n/generator.php:12
 msgid "Insert Shortcode"
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:14
-#: includes/config/admin/tco-admin.php:11
+#: includes/config/admin/tco-admin.php:11 includes/i18n/admin.php:14
 msgid "Updating"
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:15
-#: includes/config/admin/tco-admin.php:12
-#: includes/config/builder/strings-builder.php:72
-#: includes/config/builder/strings-builder.php:174
+#: includes/config/admin/tco-admin.php:12 includes/i18n/admin.php:15
+#: includes/i18n/builder.php:72 includes/i18n/builder.php:174
 msgid "Yep"
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:16
-#: includes/config/admin/tco-admin.php:13
-#: includes/config/builder/strings-builder.php:73
-#: includes/config/builder/strings-builder.php:175
+#: includes/config/admin/tco-admin.php:13 includes/i18n/admin.php:16
+#: includes/i18n/builder.php:73 includes/i18n/builder.php:175
 msgid "Nope"
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:17
-#: includes/config/admin/tco-admin.php:14
+#: includes/config/admin/tco-admin.php:14 includes/i18n/admin.php:17
 msgid ""
 "Hold up! You&apos;re welcome to make changes to the content. However, these "
 "will not be reflected in Cornerstone. If you edit the page in Cornerstone "
 "again, any changes made here will be overwritten. Do you wish to continue?"
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:18
-#: includes/config/admin/tco-admin.php:15
+#: includes/config/admin/tco-admin.php:15 includes/i18n/admin.php:18
 msgid ""
 "Hold up! The content has been modified outside of Cornerstone. Editing in "
 "Cornerstone will replace the current content. Do you wish to continue?"
 msgstr ""
 
-#: includes/config/admin/strings-admin.php:23
-#: includes/config/admin/tco-admin.php:16
+#: includes/config/admin/tco-admin.php:16 includes/i18n/admin.php:23
 msgid "Cornerstone Draft"
 msgstr ""
 
@@ -2624,8 +2612,7 @@ msgstr ""
 msgid "Workflow"
 msgstr ""
 
-#: includes/config/builder/cheatsheet.php:9
-#: includes/config/builder/strings-builder.php:224
+#: includes/config/builder/cheatsheet.php:9 includes/i18n/builder.php:224
 msgid "Skeleton Mode"
 msgstr ""
 
@@ -2633,640 +2620,76 @@ msgstr ""
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:10
-#: includes/elements/_alternate/_section.php:8
-#: includes/elements/section/definition.php:11
-msgid "Section"
+#: includes/config/common/font-weights.php:4
+msgid "100 &ndash; Ultra Light"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:11
-msgid "Section %s"
+#: includes/config/common/font-weights.php:5
+msgid "100 &ndash; Ultra Light (Italic)"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:12
-msgid "Section &ndash; %s"
+#: includes/config/common/font-weights.php:6
+msgid "200 &ndash; Light"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:13
-#: includes/elements/_alternate/_row.php:8
-#: includes/elements/row/definition.php:11
-msgid "Row"
+#: includes/config/common/font-weights.php:7
+msgid "200 &ndash; Light (Italic)"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:14
-msgid "Row %s"
+#: includes/config/common/font-weights.php:8
+msgid "300 &ndash; Book"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:15
-#: includes/elements/_alternate/_column.php:8
-#: includes/elements/column/definition.php:11
-msgid "Column"
+#: includes/config/common/font-weights.php:9
+msgid "300 &ndash; Book (Italic)"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:16
-msgid "Column &ndash; %s"
+#: includes/config/common/font-weights.php:10
+msgid "400 &ndash; Regular"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:22
-#: includes/config/builder/strings-builder.php:53
-msgid "Save"
+#: includes/config/common/font-weights.php:11
+msgid "400 &ndash; Regular (Italic)"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:23
-msgid "Are you sure you wish to return to the Dashbord?"
+#: includes/config/common/font-weights.php:12
+msgid "500 &ndash; Medium"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:26
-msgid "Layout"
+#: includes/config/common/font-weights.php:13
+msgid "500 &ndash; Medium (Italic)"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:27
-msgid "Back to Layout"
+#: includes/config/common/font-weights.php:14
+msgid "600 &ndash; Semi-Bold"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:28
-msgid "Add Row"
+#: includes/config/common/font-weights.php:15
+msgid "600 &ndash; Semi-Bold (Italic)"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:29
-msgid "Add Section"
+#: includes/config/common/font-weights.php:16
+msgid "700 &ndash; Bold"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:30
-msgid "Templates"
+#: includes/config/common/font-weights.php:17
+msgid "700 &ndash; Bold (Italic)"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:33
-msgid ""
-"Are you sure you want to delete this section along with all it&apos;s "
-"contents?"
+#: includes/config/common/font-weights.php:18
+msgid "800 &ndash; Extra Bold"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:34
-msgid ""
-"Are you sure you want to delete this row along with all it&apos;s contents?"
+#: includes/config/common/font-weights.php:19
+msgid "800 &ndash; Extra Bold (Italic)"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:35
-msgid "Click a row to manage columns. Drag to reorder."
+#: includes/config/common/font-weights.php:20
+msgid "900 &ndash; Ultra Bold"
 msgstr ""
 
-#: includes/config/builder/strings-builder.php:36
-msgid "Just getting started?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:37
-msgid ""
-"Add a section then click on it to manage column layouts or drag it to "
-"reorder."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:42
-msgid "Custom"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:47
-msgid ""
-"This will remove all elements from this column. Are you sure you want to "
-"continue?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:51
-msgid "Blocks and pages?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:52
-msgid ""
-"<strong>Blocks</strong> are appended to your content, whereas <strong>Pages</"
-"strong> will replace your content."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:54
-msgid "Upload"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:55
-msgid "My Custom Template"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:56
-msgid "Add to layout"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:57
-msgid "Download"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:58
-msgid "To Library"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:59
-msgid "Template saved."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:60
-msgid "How would you like this page stored in your library?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:63
-msgid ""
-"How would you like this added to your page? Remember, using a page will "
-"ERASE your current page contents."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:66
-msgid "Insert"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:67
-msgid "Themeco Pages"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:68
-msgid "Themeco Blocks"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:69
-msgid "My Pages"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:70
-msgid "My Blocks"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:71
-msgid ""
-"Using a page will <span style=\"color: #e74c3c;\">erase</span> your current "
-"page contents. Are you sure you wish to proceed?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:74
-msgid "Unable to read file"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:75
-msgid "Sorry! Your file is not properly formatted."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:76
-msgid "Unable to save template."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:77
-msgid "Could not load template."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:78
-msgid "Remove Templates"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:79
-#: includes/config/builder/strings-builder.php:102
-#: includes/config/builder/strings-builder.php:122
-msgid "Delete"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:80
-msgid "(Block) %s"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:81
-msgid "(Page) %s"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:82
-msgid "Are you sure you wish to delete this template? This can not be undone."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:83
-msgid "Template removed from library."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:84
-msgid "Unable to delete stored template."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:85
-msgid "Page updated."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:86
-msgid "Block inserted."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:90
-msgid "Elements"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:91
-msgid "Search Elements"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:92
-msgid "Back to Elements"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:95
-msgid "Inspector"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:96
-msgid "Back to Inspector"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:97
-msgid "No elements are selected!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:98
-msgid "Nothing Selected"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:99
-msgid "Click on an element in the site preview to begin inspecting it."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:100
-msgid "Inspect an element by clicking on it in the preview pane."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:101
-#: includes/config/builder/strings-builder.php:121
-msgid "Duplicate"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:103
-msgid "Really Delete?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:104
-msgid "Are you sure you wish to delete this element?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:105
-#: includes/config/builder/strings-builder.php:120
-msgid "Erase"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:106
-msgid "Really Erase?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:107
-#: includes/config/builder/strings-builder.php:119
-msgid "Manage Layout"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:110
-msgid "On"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:111
-msgid "Off"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:112
-#: includes/elements/_alternate/_column.php:61
-#: includes/elements/_alternate/button.php:157
-#: includes/elements/_alternate/feature-box.php:276
-#: includes/elements/_alternate/feature-list.php:110
-#: includes/elements/_alternate/image.php:125
-#: includes/elements/_alternate/tabs.php:44
-#: includes/elements/column/controls.php:31
-msgid "Top"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:114
-#: includes/elements/_alternate/_column.php:63
-#: includes/elements/_alternate/button.php:159
-#: includes/elements/_alternate/image.php:127
-#: includes/elements/column/controls.php:33
-msgid "Bottom"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:117
-msgid "Unlink"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:118
-msgid "Inspect"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:123
-msgid "Add"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:124
-msgid "Are you sure you wish to remove this item?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:125
-msgid ""
-"The last item can&apos;t be deleted, but would you like to reset it to "
-"defaults?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:126
-msgid ""
-"This element has reached it&apos;s capacity. You can&apos;t add any more."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:127
-msgid "New Item %s"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:128
-msgid "Copy of %s"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:129
-msgid "No items!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:130
-msgid "Add some to continue building."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:131
-msgid "Expand"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:135
-msgid "Back to Settings"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:136
-msgid "Please wait while the settings are loaded."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:137
-msgid "Custom CSS"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:138
-msgid "Custom JS"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:139
-msgid "Your user role does not permit editing javascript."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:140
-msgid "Remember to save to see your script applied."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:141
-msgid ""
-"You&apos;ve updated a WordPress setting. Please save your page to apply the "
-"changes."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:142
-msgid ""
-"You&apos;ve updated a theme setting. Please save your page to apply the "
-"changes."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:145
-msgid "You have not saved any changes!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:146
-msgid "Last saved: %s."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:147
-msgid "View Page"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:148
-msgid "Dashboard"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:149
-msgid "Wait! You have unsaved changes."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:152
-msgid "Help Text"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:153
-msgid ""
-"Enables tooltips when you hover over control labels and other bits of "
-"informational text througout the interface."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:154
-msgid "Editor Position"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:157
-msgid "Move the editor to your preferred side of the window."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:163
-msgid "Medium"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:165
-msgid "Extra Small"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:166
-msgid "1200px &amp; Up"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:167
-msgid "980px &ndash; 1199px"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:168
-msgid "768px &ndash; 979px"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:169
-msgid "481px &ndash; 767px"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:170
-msgid "480px &amp; Smaller"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:173
-msgid "Are you sure?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:176
-msgid "Back"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:178
-msgid "Are you sure you wish to delete this %s?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:179
-msgid "Are you sure you wish to delete this %s, along with its contents?"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:182
-msgid "Unable to save page."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:183
-msgid "Content saved."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:185
-msgid "Woohoo!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:186
-msgid "Rock On!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:187
-msgid "Radical!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:188
-msgid "Tubular!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:189
-msgid "Spiffy!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:190
-msgid "Yahoo!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:191
-msgid "Yippee!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:192
-msgid "Have Fun!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:193
-msgid "Neat-O!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:194
-msgid "Bodacious!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:195
-msgid "Scintillating!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:200
-msgid "Hey!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:201
-msgid "Awesome!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:202
-msgid "Uh oh!"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:204
-msgid "January_February_March_April_May_June_July_August_September_October_November_December"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:205
-msgid "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:206
-msgid "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:207
-msgid "Sun_Mon_Tue_Wed_Thu_Fri_Sat"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:208
-msgid "Su_Mo_Tu_We_Th_Fr_Sa"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:209
-msgid "Previous Month"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:210
-msgid "Next Month"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:213
-msgid "We're sorry! Your web browser does not support this action."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:214
-msgid "%s (Preview Unsupported)"
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:215
-msgid ""
-"An unidentifiable error is preventing the live preview from loading. "
-"Switching to Skeleton Mode."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:216
-msgid ""
-"A suitable content area for the live preview couldn't be identified. "
-"Switching to Skeleton Mode."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:217
-msgid ""
-"Skeleton Mode can not be closed because the live preview is unavailable."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:218
-msgid ""
-"Loading the preview took longer than expected. There may be script conflicts "
-"on this page."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:219
-msgid "We found some invalid HTML in your content."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:220
-msgid "You have unclosed HTML tags."
-msgstr ""
-
-#: includes/config/builder/strings-builder.php:221
-msgid ""
-"If not part of an HTML tag, consider using HTML entities for angle brackets "
-"by converting <span class=\"monospace\">&lt;</span> to <span class="
-"\"monospace\">&amp;lt;</span> and <span class=\"monospace\">&gt;</span> to "
-"<span class=\"monospace\">&amp;gt;</span>"
-msgstr ""
-
-#: includes/config/builder/strings-generator.php:10
-msgid "Shortcodes"
-msgstr ""
-
-#: includes/config/builder/strings-generator.php:11
-msgid "Toggle Advanced Controls"
-msgstr ""
-
-#: includes/config/builder/strings-generator.php:13
-msgid "Choose a Shortcode from the Sidebar to Get Started"
-msgstr ""
-
-#: includes/config/builder/strings-generator.php:14
-msgid "Preview"
-msgstr ""
-
-#: includes/config/builder/strings-generator.php:15
-msgid "Live Example"
+#: includes/config/common/font-weights.php:21
+msgid "900 &ndash; Ultra Bold (Italic)"
 msgstr ""
 
 #: includes/config/controls/animation-choices.php:5
@@ -3567,6 +2990,11 @@ msgstr ""
 msgid "4"
 msgstr ""
 
+#: includes/elements/_alternate/_column.php:8
+#: includes/elements/column/definition.php:11 includes/i18n/builder.php:15
+msgid "Column"
+msgstr ""
+
 #: includes/elements/_alternate/_column.php:10
 msgid "Column description."
 msgstr ""
@@ -3608,6 +3036,23 @@ msgstr ""
 msgid ""
 "Choose a direction to fade from. \"None\" will allow the column to fade in "
 "without coming from a particular direction."
+msgstr ""
+
+#: includes/elements/_alternate/_column.php:61
+#: includes/elements/_alternate/button.php:157
+#: includes/elements/_alternate/feature-box.php:276
+#: includes/elements/_alternate/feature-list.php:110
+#: includes/elements/_alternate/image.php:125
+#: includes/elements/_alternate/tabs.php:44
+#: includes/elements/column/controls.php:31 includes/i18n/builder.php:112
+msgid "Top"
+msgstr ""
+
+#: includes/elements/_alternate/_column.php:63
+#: includes/elements/_alternate/button.php:159
+#: includes/elements/_alternate/image.php:127
+#: includes/elements/column/controls.php:33 includes/i18n/builder.php:114
+msgid "Bottom"
 msgstr ""
 
 #: includes/elements/_alternate/_column.php:73
@@ -3866,6 +3311,11 @@ msgstr ""
 msgid "Enter the maximum size of your Responsive Text."
 msgstr ""
 
+#: includes/elements/_alternate/_row.php:8
+#: includes/elements/row/definition.php:11 includes/i18n/builder.php:13
+msgid "Row"
+msgstr ""
+
 #: includes/elements/_alternate/_row.php:10
 msgid "Row description."
 msgstr ""
@@ -3904,6 +3354,11 @@ msgid ""
 "Specify the margins for your Row utilizing the controls below. For most "
 "situations you will likely want no margin. Can accept CSS units like px, "
 "ems, and % (default unit is px)."
+msgstr ""
+
+#: includes/elements/_alternate/_section.php:8
+#: includes/elements/section/definition.php:11 includes/i18n/builder.php:10
+msgid "Section"
 msgstr ""
 
 #: includes/elements/_alternate/_section.php:10
@@ -5032,41 +4487,49 @@ msgstr ""
 msgid "Map Marker %s"
 msgstr ""
 
+#: includes/elements/_alternate/google-map.php:33
+msgid "Google API Key"
+msgstr ""
+
 #: includes/elements/_alternate/google-map.php:34
-msgid "Enter the latitude for the center of your map."
+msgid "Optionally provide a Browser key from your Google developer console."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:42
-msgid "Enter the longitude for the center of your map."
-msgstr ""
-
-#: includes/elements/_alternate/google-map.php:49
-msgid "Zoom"
+msgid "Enter the latitude for the center of your map."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:50
-msgid "Specify a number between 1 and 18 for the zoom level of your map."
+msgid "Enter the longitude for the center of your map."
+msgstr ""
+
+#: includes/elements/_alternate/google-map.php:57
+msgid "Zoom"
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:58
-msgid "Enable to display the zoom controls for your map."
+msgid "Specify a number between 1 and 18 for the zoom level of your map."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:66
-msgid "Enable to make your map draggable."
+msgid "Enable to display the zoom controls for your map."
 msgstr ""
 
 #: includes/elements/_alternate/google-map.php:74
+msgid "Enable to make your map draggable."
+msgstr ""
+
+#: includes/elements/_alternate/google-map.php:82
 msgid ""
 "Specify a custom height for your map if desired. You may use pixels, ems, or "
 "percentages."
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:81
+#: includes/elements/_alternate/google-map.php:89
 msgid "Map Hue"
 msgstr ""
 
-#: includes/elements/_alternate/google-map.php:82
+#: includes/elements/_alternate/google-map.php:90
 msgid ""
 "Specifying a hexadecimal map hue will give your map a different color "
 "palette."
@@ -5919,37 +5382,672 @@ msgid ""
 "this element&apos;s return."
 msgstr ""
 
+#: includes/i18n/admin.php:7
+msgid "Yes, proceed"
+msgstr ""
+
+#: includes/i18n/admin.php:8
+msgid "No, take me back"
+msgstr ""
+
+#: includes/i18n/app.php:4
+msgid "<strong>Howdy!</strong> Where would you like to start?"
+msgstr ""
+
+#: includes/i18n/app.php:5 includes/i18n/builder.php:22
+#: includes/i18n/builder.php:53
+msgid "Save"
+msgstr ""
+
+#: includes/i18n/app.php:6
+msgid "Loading&hellip;"
+msgstr ""
+
+#: includes/i18n/app.php:7
+msgid "You don&apos;t have permission to do that."
+msgstr ""
+
+#: includes/i18n/app.php:15 includes/i18n/builder.php:166
+msgid "1200px &amp; Up"
+msgstr ""
+
+#: includes/i18n/app.php:16
+msgid "980px-1199px"
+msgstr ""
+
+#: includes/i18n/app.php:17
+msgid "768px-979px"
+msgstr ""
+
+#: includes/i18n/app.php:18
+msgid "481px-767px"
+msgstr ""
+
+#: includes/i18n/app.php:19 includes/i18n/builder.php:170
+msgid "480px &amp; Smaller"
+msgstr ""
+
+#: includes/i18n/app.php:22
+msgid "Previous Value Unavailable"
+msgstr ""
+
+#: includes/i18n/app.php:23
+msgid "{{family}} ({{source}})"
+msgstr ""
+
+#: includes/i18n/builder.php:11
+msgid "Section %s"
+msgstr ""
+
+#: includes/i18n/builder.php:12
+msgid "Section &ndash; %s"
+msgstr ""
+
+#: includes/i18n/builder.php:14
+msgid "Row %s"
+msgstr ""
+
+#: includes/i18n/builder.php:16
+msgid "Column &ndash; %s"
+msgstr ""
+
+#: includes/i18n/builder.php:23
+msgid "Are you sure you wish to return to the Dashbord?"
+msgstr ""
+
+#: includes/i18n/builder.php:26
+msgid "Layout"
+msgstr ""
+
+#: includes/i18n/builder.php:27
+msgid "Back to Layout"
+msgstr ""
+
+#: includes/i18n/builder.php:28
+msgid "Add Row"
+msgstr ""
+
+#: includes/i18n/builder.php:29
+msgid "Add Section"
+msgstr ""
+
+#: includes/i18n/builder.php:30
+msgid "Templates"
+msgstr ""
+
+#: includes/i18n/builder.php:33
+msgid ""
+"Are you sure you want to delete this section along with all it&apos;s "
+"contents?"
+msgstr ""
+
+#: includes/i18n/builder.php:34
+msgid ""
+"Are you sure you want to delete this row along with all it&apos;s contents?"
+msgstr ""
+
+#: includes/i18n/builder.php:35
+msgid "Click a row to manage columns. Drag to reorder."
+msgstr ""
+
+#: includes/i18n/builder.php:36
+msgid "Just getting started?"
+msgstr ""
+
+#: includes/i18n/builder.php:37
+msgid ""
+"Add a section then click on it to manage column layouts or drag it to "
+"reorder."
+msgstr ""
+
+#: includes/i18n/builder.php:42
+msgid "Custom"
+msgstr ""
+
+#: includes/i18n/builder.php:47
+msgid ""
+"This will remove all elements from this column. Are you sure you want to "
+"continue?"
+msgstr ""
+
+#: includes/i18n/builder.php:51
+msgid "Blocks and pages?"
+msgstr ""
+
+#: includes/i18n/builder.php:52
+msgid ""
+"<strong>Blocks</strong> are appended to your content, whereas <strong>Pages</"
+"strong> will replace your content."
+msgstr ""
+
+#: includes/i18n/builder.php:54
+msgid "Upload"
+msgstr ""
+
+#: includes/i18n/builder.php:55
+msgid "My Custom Template"
+msgstr ""
+
+#: includes/i18n/builder.php:56
+msgid "Add to layout"
+msgstr ""
+
+#: includes/i18n/builder.php:57
+msgid "Download"
+msgstr ""
+
+#: includes/i18n/builder.php:58
+msgid "To Library"
+msgstr ""
+
+#: includes/i18n/builder.php:59
+msgid "Template saved."
+msgstr ""
+
+#: includes/i18n/builder.php:60
+msgid "How would you like this page stored in your library?"
+msgstr ""
+
+#: includes/i18n/builder.php:63
+msgid ""
+"How would you like this added to your page? Remember, using a page will "
+"ERASE your current page contents."
+msgstr ""
+
+#: includes/i18n/builder.php:66
+msgid "Insert"
+msgstr ""
+
+#: includes/i18n/builder.php:67
+msgid "Themeco Pages"
+msgstr ""
+
+#: includes/i18n/builder.php:68
+msgid "Themeco Blocks"
+msgstr ""
+
+#: includes/i18n/builder.php:69
+msgid "My Pages"
+msgstr ""
+
+#: includes/i18n/builder.php:70
+msgid "My Blocks"
+msgstr ""
+
+#: includes/i18n/builder.php:71
+msgid ""
+"Using a page will <span style=\"color: #e74c3c;\">erase</span> your current "
+"page contents. Are you sure you wish to proceed?"
+msgstr ""
+
+#: includes/i18n/builder.php:74
+msgid "Unable to read file"
+msgstr ""
+
+#: includes/i18n/builder.php:75
+msgid "Sorry! Your file is not properly formatted."
+msgstr ""
+
+#: includes/i18n/builder.php:76
+msgid "Unable to save template."
+msgstr ""
+
+#: includes/i18n/builder.php:77
+msgid "Could not load template."
+msgstr ""
+
+#: includes/i18n/builder.php:78
+msgid "Remove Templates"
+msgstr ""
+
+#: includes/i18n/builder.php:79 includes/i18n/builder.php:102
+#: includes/i18n/builder.php:122
+msgid "Delete"
+msgstr ""
+
+#: includes/i18n/builder.php:80
+msgid "(Block) %s"
+msgstr ""
+
+#: includes/i18n/builder.php:81
+msgid "(Page) %s"
+msgstr ""
+
+#: includes/i18n/builder.php:82
+msgid "Are you sure you wish to delete this template? This can not be undone."
+msgstr ""
+
+#: includes/i18n/builder.php:83
+msgid "Template removed from library."
+msgstr ""
+
+#: includes/i18n/builder.php:84
+msgid "Unable to delete stored template."
+msgstr ""
+
+#: includes/i18n/builder.php:85
+msgid "Page updated."
+msgstr ""
+
+#: includes/i18n/builder.php:86
+msgid "Block inserted."
+msgstr ""
+
+#: includes/i18n/builder.php:90
+msgid "Elements"
+msgstr ""
+
+#: includes/i18n/builder.php:91
+msgid "Search Elements"
+msgstr ""
+
+#: includes/i18n/builder.php:92
+msgid "Back to Elements"
+msgstr ""
+
+#: includes/i18n/builder.php:95
+msgid "Inspector"
+msgstr ""
+
+#: includes/i18n/builder.php:96
+msgid "Back to Inspector"
+msgstr ""
+
+#: includes/i18n/builder.php:97
+msgid "No elements are selected!"
+msgstr ""
+
+#: includes/i18n/builder.php:98
+msgid "Nothing Selected"
+msgstr ""
+
+#: includes/i18n/builder.php:99
+msgid "Click on an element in the site preview to begin inspecting it."
+msgstr ""
+
+#: includes/i18n/builder.php:100
+msgid "Inspect an element by clicking on it in the preview pane."
+msgstr ""
+
+#: includes/i18n/builder.php:101 includes/i18n/builder.php:121
+msgid "Duplicate"
+msgstr ""
+
+#: includes/i18n/builder.php:103
+msgid "Really Delete?"
+msgstr ""
+
+#: includes/i18n/builder.php:104
+msgid "Are you sure you wish to delete this element?"
+msgstr ""
+
+#: includes/i18n/builder.php:105 includes/i18n/builder.php:120
+msgid "Erase"
+msgstr ""
+
+#: includes/i18n/builder.php:106
+msgid "Really Erase?"
+msgstr ""
+
+#: includes/i18n/builder.php:107 includes/i18n/builder.php:119
+msgid "Manage Layout"
+msgstr ""
+
+#: includes/i18n/builder.php:110
+msgid "On"
+msgstr ""
+
+#: includes/i18n/builder.php:111
+msgid "Off"
+msgstr ""
+
+#: includes/i18n/builder.php:117
+msgid "Unlink"
+msgstr ""
+
+#: includes/i18n/builder.php:118
+msgid "Inspect"
+msgstr ""
+
+#: includes/i18n/builder.php:123
+msgid "Add"
+msgstr ""
+
+#: includes/i18n/builder.php:124
+msgid "Are you sure you wish to remove this item?"
+msgstr ""
+
+#: includes/i18n/builder.php:125
+msgid ""
+"The last item can&apos;t be deleted, but would you like to reset it to "
+"defaults?"
+msgstr ""
+
+#: includes/i18n/builder.php:126
+msgid ""
+"This element has reached it&apos;s capacity. You can&apos;t add any more."
+msgstr ""
+
+#: includes/i18n/builder.php:127
+msgid "New Item %s"
+msgstr ""
+
+#: includes/i18n/builder.php:128
+msgid "Copy of %s"
+msgstr ""
+
+#: includes/i18n/builder.php:129
+msgid "No items!"
+msgstr ""
+
+#: includes/i18n/builder.php:130
+msgid "Add some to continue building."
+msgstr ""
+
+#: includes/i18n/builder.php:131
+msgid "Expand"
+msgstr ""
+
+#: includes/i18n/builder.php:135
+msgid "Back to Settings"
+msgstr ""
+
+#: includes/i18n/builder.php:136
+msgid "Please wait while the settings are loaded."
+msgstr ""
+
+#: includes/i18n/builder.php:137 includes/settings/general/controls.php:8
+msgid "Custom CSS"
+msgstr ""
+
+#: includes/i18n/builder.php:138
+msgid "Custom JS"
+msgstr ""
+
+#: includes/i18n/builder.php:139
+msgid "Your user role does not permit editing javascript."
+msgstr ""
+
+#: includes/i18n/builder.php:140
+msgid "Remember to save to see your script applied."
+msgstr ""
+
+#: includes/i18n/builder.php:141
+msgid ""
+"You&apos;ve updated a WordPress setting. Please save your page to apply the "
+"changes."
+msgstr ""
+
+#: includes/i18n/builder.php:142
+msgid ""
+"You&apos;ve updated a theme setting. Please save your page to apply the "
+"changes."
+msgstr ""
+
+#: includes/i18n/builder.php:145
+msgid "You have not saved any changes!"
+msgstr ""
+
+#: includes/i18n/builder.php:146
+msgid "Last saved: %s."
+msgstr ""
+
+#: includes/i18n/builder.php:147
+msgid "View Page"
+msgstr ""
+
+#: includes/i18n/builder.php:148
+msgid "Dashboard"
+msgstr ""
+
+#: includes/i18n/builder.php:149
+msgid "Wait! You have unsaved changes."
+msgstr ""
+
+#: includes/i18n/builder.php:152
+msgid "Help Text"
+msgstr ""
+
+#: includes/i18n/builder.php:153
+msgid ""
+"Enables tooltips when you hover over control labels and other bits of "
+"informational text througout the interface."
+msgstr ""
+
+#: includes/i18n/builder.php:154
+msgid "Editor Position"
+msgstr ""
+
+#: includes/i18n/builder.php:157
+msgid "Move the editor to your preferred side of the window."
+msgstr ""
+
+#: includes/i18n/builder.php:163
+msgid "Medium"
+msgstr ""
+
+#: includes/i18n/builder.php:165
+msgid "Extra Small"
+msgstr ""
+
+#: includes/i18n/builder.php:167
+msgid "980px &ndash; 1199px"
+msgstr ""
+
+#: includes/i18n/builder.php:168
+msgid "768px &ndash; 979px"
+msgstr ""
+
+#: includes/i18n/builder.php:169
+msgid "481px &ndash; 767px"
+msgstr ""
+
+#: includes/i18n/builder.php:173
+msgid "Are you sure?"
+msgstr ""
+
+#: includes/i18n/builder.php:176
+msgid "Back"
+msgstr ""
+
+#: includes/i18n/builder.php:178
+msgid "Are you sure you wish to delete this %s?"
+msgstr ""
+
+#: includes/i18n/builder.php:179
+msgid "Are you sure you wish to delete this %s, along with its contents?"
+msgstr ""
+
+#: includes/i18n/builder.php:182
+msgid "Unable to save page."
+msgstr ""
+
+#: includes/i18n/builder.php:183
+msgid "Content saved."
+msgstr ""
+
+#: includes/i18n/builder.php:185
+msgid "Woohoo!"
+msgstr ""
+
+#: includes/i18n/builder.php:186
+msgid "Rock On!"
+msgstr ""
+
+#: includes/i18n/builder.php:187
+msgid "Radical!"
+msgstr ""
+
+#: includes/i18n/builder.php:188
+msgid "Tubular!"
+msgstr ""
+
+#: includes/i18n/builder.php:189
+msgid "Spiffy!"
+msgstr ""
+
+#: includes/i18n/builder.php:190
+msgid "Yahoo!"
+msgstr ""
+
+#: includes/i18n/builder.php:191
+msgid "Yippee!"
+msgstr ""
+
+#: includes/i18n/builder.php:192
+msgid "Have Fun!"
+msgstr ""
+
+#: includes/i18n/builder.php:193
+msgid "Neat-O!"
+msgstr ""
+
+#: includes/i18n/builder.php:194
+msgid "Bodacious!"
+msgstr ""
+
+#: includes/i18n/builder.php:195
+msgid "Scintillating!"
+msgstr ""
+
+#: includes/i18n/builder.php:200
+msgid "Hey!"
+msgstr ""
+
+#: includes/i18n/builder.php:201
+msgid "Awesome!"
+msgstr ""
+
+#: includes/i18n/builder.php:202
+msgid "Uh oh!"
+msgstr ""
+
+#: includes/i18n/builder.php:204
+msgid "January_February_March_April_May_June_July_August_September_October_November_December"
+msgstr ""
+
+#: includes/i18n/builder.php:205
+msgid "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec"
+msgstr ""
+
+#: includes/i18n/builder.php:206
+msgid "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday"
+msgstr ""
+
+#: includes/i18n/builder.php:207
+msgid "Sun_Mon_Tue_Wed_Thu_Fri_Sat"
+msgstr ""
+
+#: includes/i18n/builder.php:208
+msgid "Su_Mo_Tu_We_Th_Fr_Sa"
+msgstr ""
+
+#: includes/i18n/builder.php:209
+msgid "Previous Month"
+msgstr ""
+
+#: includes/i18n/builder.php:210
+msgid "Next Month"
+msgstr ""
+
+#: includes/i18n/builder.php:213
+msgid "We're sorry! Your web browser does not support this action."
+msgstr ""
+
+#: includes/i18n/builder.php:214
+msgid "%s (Preview Unsupported)"
+msgstr ""
+
+#: includes/i18n/builder.php:215
+msgid ""
+"An unidentifiable error is preventing the live preview from loading. "
+"Switching to Skeleton Mode."
+msgstr ""
+
+#: includes/i18n/builder.php:216
+msgid ""
+"A suitable content area for the live preview couldn't be identified. "
+"Switching to Skeleton Mode."
+msgstr ""
+
+#: includes/i18n/builder.php:217
+msgid ""
+"Skeleton Mode can not be closed because the live preview is unavailable."
+msgstr ""
+
+#: includes/i18n/builder.php:218
+msgid ""
+"Loading the preview took longer than expected. There may be script conflicts "
+"on this page."
+msgstr ""
+
+#: includes/i18n/builder.php:219
+msgid "We found some invalid HTML in your content."
+msgstr ""
+
+#: includes/i18n/builder.php:220
+msgid "You have unclosed HTML tags."
+msgstr ""
+
+#: includes/i18n/builder.php:221
+msgid ""
+"If not part of an HTML tag, consider using HTML entities for angle brackets "
+"by converting <span class=\"monospace\">&lt;</span> to <span class="
+"\"monospace\">&amp;lt;</span> and <span class=\"monospace\">&gt;</span> to "
+"<span class=\"monospace\">&amp;gt;</span>"
+msgstr ""
+
+#: includes/i18n/generator.php:10
+msgid "Shortcodes"
+msgstr ""
+
+#: includes/i18n/generator.php:11
+msgid "Toggle Advanced Controls"
+msgstr ""
+
+#: includes/i18n/generator.php:13
+msgid "Choose a Shortcode from the Sidebar to Get Started"
+msgstr ""
+
+#: includes/i18n/generator.php:14
+msgid "Preview"
+msgstr ""
+
+#: includes/i18n/generator.php:15
+msgid "Live Example"
+msgstr ""
+
 #: includes/integrations/x-shortcodes.php:27
 msgid ""
 "<strong>X &ndash; Shortcodes has been deactivated</strong>. Cornerstone will "
 "now provide your site with those shortcodes, and many new ones."
 msgstr ""
 
-#: includes/integrations/x-theme.php:176
+#: includes/integrations/x-theme.php:183
 msgid "Facebook Profile"
 msgstr ""
 
-#: includes/integrations/x-theme.php:177
+#: includes/integrations/x-theme.php:184
 msgid "Twitter Profile"
 msgstr ""
 
-#: includes/integrations/x-theme.php:178
+#: includes/integrations/x-theme.php:185
 msgid "Google+ Profile"
 msgstr ""
 
-#: includes/integrations/x-theme.php:188
+#: includes/integrations/x-theme.php:195
 msgid "Integrity"
 msgstr ""
 
-#: includes/integrations/x-theme.php:189
+#: includes/integrations/x-theme.php:196
 msgid "Renew"
 msgstr ""
 
-#: includes/integrations/x-theme.php:191
+#: includes/integrations/x-theme.php:198
 msgid "Ethos"
 msgstr ""
 
-#: includes/integrations/x-theme.php:198
+#: includes/integrations/x-theme.php:205
 msgid ""
 "You&apos;re using %s. Click the button below to check out a live example of "
 "this shortcode when using this Stack."
@@ -6266,40 +6364,40 @@ msgstr ""
 msgid "Sitewide styles outside of the content area are managed via the %s."
 msgstr ""
 
-#: includes/settings/general/controls.php:22
+#: includes/settings/general/controls.php:29
 msgid "Shortcut for changing the title from within Cornerstone."
 msgstr ""
 
-#: includes/settings/general/controls.php:32
+#: includes/settings/general/controls.php:39
 msgid "Status"
 msgstr ""
 
-#: includes/settings/general/controls.php:43
+#: includes/settings/general/controls.php:50
 msgid "Allow Comments"
 msgstr ""
 
-#: includes/settings/general/controls.php:44
+#: includes/settings/general/controls.php:51
 msgid ""
 "Opens or closes comments. Note: The comment form may not be shown if your "
 "chosen page template doesn&apost support them."
 msgstr ""
 
-#: includes/settings/general/controls.php:54
+#: includes/settings/general/controls.php:61
 msgid "Manual Excerpt"
 msgstr ""
 
-#: includes/settings/general/controls.php:57
+#: includes/settings/general/controls.php:64
 msgid ""
 "(Optional) Cornerstone will derive an excerpt from any paragraphs in your "
 "content. You can override this by crafting your own excerpt here, or in the "
 "WordPress post editor."
 msgstr ""
 
-#: includes/settings/general/controls.php:64
+#: includes/settings/general/controls.php:71
 msgid "Parent Page"
 msgstr ""
 
-#: includes/settings/general/controls.php:75
+#: includes/settings/general/controls.php:82
 msgid "Page Template"
 msgstr ""
 
@@ -6331,31 +6429,31 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: includes/settings/general/definition.php:114
+#: includes/settings/general/definition.php:115
 msgid "Publish"
 msgstr ""
 
-#: includes/settings/general/definition.php:118
+#: includes/settings/general/definition.php:119
 msgid "Privately Published"
 msgstr ""
 
-#: includes/settings/general/definition.php:121
+#: includes/settings/general/definition.php:122
 msgid "Scheduled"
 msgstr ""
 
-#: includes/settings/general/definition.php:124
+#: includes/settings/general/definition.php:125
 msgid "Pending Review"
 msgstr ""
 
-#: includes/settings/general/definition.php:127
+#: includes/settings/general/definition.php:128
 msgid "Draft"
 msgstr ""
 
-#: includes/settings/general/definition.php:148
+#: includes/settings/general/definition.php:149
 msgid "(no parent)"
 msgstr ""
 
-#: includes/settings/general/definition.php:169
+#: includes/settings/general/definition.php:170
 msgid "Default Template"
 msgstr ""
 

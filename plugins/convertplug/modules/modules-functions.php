@@ -6,7 +6,7 @@ if( !function_exists( 'cp_get_form_hidden_fields' ) ) {
 		 *-----------------------------------------------------------*/
 
 		$mailer 		= explode( ":",$a['mailer'] );
-		$on_success_action = $on_success = '';
+		$on_success_action = $on_success = $on_redirect = '';
 		$mailer_id = $list_id = $data_option = '';
 
 		if( $a['mailer'] !== '' && $a['mailer'] != "custom-form" ) {
@@ -29,8 +29,17 @@ if( !function_exists( 'cp_get_form_hidden_fields' ) ) {
 		    $on_success = ( isset($a['on_success']) ) ? $a['on_success'] : '';
 		    if( isset($on_success) && $on_success == "redirect" )  {
 		    	$on_success_action = $a['redirect_url'];
+		    	if( isset($a['on_redirect']) && $a['on_redirect'] !== '' ){
+		    		$on_redirect .= '<input type="hidden" name="redirect_to" value="'.$a['on_redirect'].'" />';
+		    		if( $a['on_redirect'] == 'download' && isset($a['download_url']) && $a['download_url']!=='' ){
+		    		$on_redirect .= '<input type="hidden" name="download_url" value="'.$a['download_url'].'" />';
+		    		}
+
+		    	}
 		    } else if( isset( $a['success_message'] ) ) {
-		    	$on_success_action = $a['success_message'] ;
+		    	//$on_success_action = $a['success_message'] ;
+		    	$on_success_action =  do_shortcode( html_entity_decode( stripcslashes( $a['success_message'] ) ) );
+
 		    }
 		}
 		ob_start();
@@ -48,8 +57,11 @@ if( !function_exists( 'cp_get_form_hidden_fields' ) ) {
 		<input type="hidden" name="action" value="<?php echo $mailer_id; ?>_add_subscriber" />
         <input type="hidden" name="list_id" value="<?php echo $list_id; ?>" />
         <input type="hidden" name="style_id" value="<?php echo ( isset( $a['style_id'] ) ) ? $a['style_id'] : ''; ?>" />
-        <input type="hidden" name="msg_wrong_email" value="<?php echo isset( $a['msg_wrong_email'] ) ? $a['msg_wrong_email'] : ''; ?>" />
-        <input type="hidden" name="<?php echo $on_success; ?>" value="<?php echo $on_success_action; ?>" />
+        <input type="hidden" name="msg_wrong_email" value='<?php echo isset( $a['msg_wrong_email'] ) ? do_shortcode( html_entity_decode( stripcslashes( $a['msg_wrong_email'] ) ) ) : ''; ?>' />
+        <input type="hidden" name="<?php echo $on_success; ?>" value='<?php echo $on_success_action; ?>' />
+        <?php
+        //echo $on_redirect;
+        ?>
         <?php
         $html = ob_get_clean();
         echo $html;
@@ -127,37 +139,20 @@ function cp_is_style_visible($settings) {
 	$exclusive_on		= str_replace( "special-", "", $exclusive_on );
 	$exclusive_on 		= ( !$exclusive_on == "" ) ? explode( ",", $exclusive_on ) : '';
 
-
+	// exclude post type
 	$exclude_cpt 		= isset($settings[ 'exclude_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclude_post_type' ]) : '';
 	$exclude_cpt		= str_replace( "post-", "", $exclude_cpt );
 	$exclude_cpt		= str_replace( "tax-", "", $exclude_cpt );
 	$exclude_cpt		= str_replace( "special-", "", $exclude_cpt );
 	$exclude_cpt 		= ( !$exclude_cpt == "" ) ? explode( ",", $exclude_cpt ) : '';
 
-	$exclusive_cpt 		= isset($settings[ 'exclusive_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclusive_post_type' ]) : '';
-	$exclusive_cpt		= str_replace( "post-", "", $exclusive_cpt );
-	$exclusive_cpt		= str_replace( "tax-", "", $exclusive_cpt );
-	$exclusive_cpt		= str_replace( "special-", "", $exclusive_cpt );
-	$exclusive_cpt 		= ( !$exclusive_cpt == "" ) ? explode( ",", $exclusive_cpt ) : '';
-
-
-	$exclude_post_type 	= isset($settings[ 'exclude_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclude_post_type' ]) : '';
-	$exclude_post_type	= str_replace( "post-", "", $exclude_post_type );
-	$exclude_post_type	= str_replace( "tax-", "", $exclude_post_type );
-	$exclude_post_type	= str_replace( "special-", "", $exclude_post_type );
-	$exclude_post_type 	= ( !$exclude_post_type == "" ) ? explode( ",", $exclude_post_type ) : '';
-
+	// exclusive taxonomy
 	$exclusive_tax 		= isset($settings[ 'exclusive_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclusive_post_type' ]) : '';
+
 	$exclusive_tax		= str_replace( "post-", "", $exclusive_tax );
 	$exclusive_tax		= str_replace( "tax-", "", $exclusive_tax );
 	$exclusive_tax		= str_replace( "special-", "", $exclusive_tax );
 	$exclusive_tax 		= ( !$exclusive_tax == "" ) ? explode( ",", $exclusive_tax ) : '';
-
-	$exclusive_cats 	= isset($settings[ 'exclusive_post_type' ]) ? apply_filters('smile_render_setting', $settings[ 'exclusive_post_type' ]) : '';
-	$exclusive_cats		= str_replace( "post-", "", $exclusive_cats );
-	$exclusive_cats		= str_replace( "tax-", "", $exclusive_cats );
-	$exclusive_cats		= str_replace( "special-", "", $exclusive_cats );
-	$exclusive_cats 	= ( !$exclusive_cats == "" ) ? explode( ",", $exclusive_cats ) : '';
 
 	if( !$global_display ){
 		if( !$settings['enable_custom_class'] ) {
@@ -229,39 +224,25 @@ function cp_is_style_visible($settings) {
 				}
 			}
 		}
-		if( $post_type ) {
-			if( is_array( $exclude_cpt ) && in_array( $post_type, $exclude_cpt ) ){
-				foreach( $exclude_cpt as $cpt ){
-					switch( $cpt ){
-						case 'post':
-							if( !is_archive() && !is_home() ){
-								$display = false;
-							}
-							break;
-					}
-				}
-			}
-		}
 
-		if( !empty( $exclude_post_type ) && is_array( $exclude_post_type ) ){
-			foreach( $exclude_post_type as $taxonomy ) {
+		if( !empty( $exclude_cpt ) && is_array( $exclude_cpt ) ){
+			foreach( $exclude_cpt as $taxonomy ) {
 				$taxonomy = str_replace( "cp-", "", $taxonomy );
-				switch( $taxonomy ){
-					case 'category':
-						if( is_category() ){
-							$display = false;
-						}
-						break;
-					case 'post_tag':
-						if( is_tag() ){
-							$display = false;
-						}
-						break;
-					case 'page':
-						if ( is_page() ) {
-							$display = false;
-						}
-						break;
+
+				if( is_singular($taxonomy) ) {
+					$display = false;
+				}
+
+				if( is_category($taxonomy) ){
+					$display = false;
+				}
+
+				if( is_tag($taxonomy) ){
+					$display = false;
+				}
+
+				if( is_tax($taxonomy) ){
+					$display = false;
 				}
 			}
 		}
@@ -326,41 +307,25 @@ function cp_is_style_visible($settings) {
 				}
 			}
 		}
-		if( $post_type ) {
-			if( is_array( $exclusive_cpt) && in_array( $post_type, $exclusive_cpt ) ){
-				foreach( $exclusive_cpt as $cpt ){
-					switch( $cpt ){
-						case 'post':
-							if( !is_archive() && !is_home() ){
-								$display = true;
-							}
-							break;
-						default:
-							$display = true;
-							break;
-					}
-				}
-			}
-		}
+
 		if( !empty( $exclusive_tax ) ){
 			foreach( $exclusive_tax as $taxonomy ) {
 				$taxonomy = str_replace( "cp-", "", $taxonomy );
-				switch( $taxonomy ){
-					case 'category':
-						if( is_category() ){
-							$display = true;
-						}
-						break;
-					case 'post_tag':
-						if( is_tag() ){
-							$display = true;
-						}
-						break;
-					case 'page':
-						if ( is_page() ) {
-							$display = true;
-						}
-						break;
+
+				if( is_singular($taxonomy) ) {
+					$display = true;
+				}
+
+				if( is_category($taxonomy) ){
+					$display = true;
+				}
+
+				if( is_tag($taxonomy) ){
+					$display = true;
+				}
+
+				if( is_tax($taxonomy) ){
+					$display = true;
 				}
 			}
 		}
@@ -655,14 +620,78 @@ if( !function_exists( 'cp_get_live_preview_settings' ) ) {
 if( !function_exists('cp_is_connected') )  {
 	function cp_is_connected() {
 
-	    $connected = @fsockopen("downloads.brainstormforce.com", 80); //website, port  (try 80 or 443)
+	    $is_conn = false;
+        $response = wp_remote_get( 'http://downloads.brainstormforce.com' );
 
-	    if ( $connected ){
-	        $is_conn = true; //action when connected
-	        fclose($connected);
-	    } else {
-	        $is_conn = false; //action in connection failure
-	    }
+        $response_code = wp_remote_retrieve_response_code( $response );
+
+        if ( $response_code == 200 ){
+    		$is_conn = true; //action when connected
+      	} else {
+       		$is_conn = false; //action in connection failure
+      	}
+
 	    return $is_conn;
 	}
+
 }
+
+if( !function_exists('cp_get_edit_link') ) {
+	function cp_get_edit_link( $style_id, $module, $theme ) {
+
+		$url = '';
+
+		$data   =  get_option( 'convert_plug_settings' );
+		$esval  =  isset($data['cp-edit-style-link']) ? $data['cp-edit-style-link'] : 0;
+
+		if( $esval ) {
+
+			// get module styles
+			$styles = get_option("smile_".$module."_styles");
+
+			// get variant style for module
+			$variant_styles = get_option( $module."_variant_tests" );
+
+			$parent_style = false;
+			$variant_style = false;
+			$variant_style_id = '';
+
+			if( is_array($styles) ) {
+				foreach ($styles as $style) {
+
+					// check if it is parent style
+					if( $style['style_id'] == $style_id ) {
+						$parent_style = true;
+						break;
+					}
+
+					if( is_array($variant_styles) ) {
+						if( isset( $variant_styles[$style['style_id']] ) ) {
+							foreach ($variant_styles[$style['style_id']] as $child_style) {
+
+								// check if it is child/ variant style
+								if( $child_style['style_id'] == $style_id ) {
+									$variant_style = true;
+									$variant_style_id = $style['style_id'];
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if( $parent_style ) {
+				$baseurl = "admin.php?page=smile-".$module."-designer&style-view=edit&style=".$style_id."&theme=".$theme;
+				$url = admin_url($baseurl);
+			} else {
+				$baseurl = "admin.php?page=smile-".$module."-designer&style-view=variant&variant-test=edit&variant-style=".$style_id."&style=".$theme."&parent-style=".$theme."&style_id=".$variant_style_id."&theme=".$theme;
+				$url = admin_url($baseurl);
+			}
+		}
+
+		return $url;
+
+	}
+}
+

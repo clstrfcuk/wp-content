@@ -383,7 +383,6 @@ if( function_exists( "smile_update_settings" ) ){
 						__( "Custom URL", "smile" ) 	 => "custom_url",
 						__( "Upload Image", "smile" ) 	 => "upload_img",
 						__( "Predefined Icons", "smile" ) => "pre_icons",
-						//__( "None", "smile" ) 	 		 => "none",
 					)
 				),
 			"panel" => "Close Link",
@@ -399,14 +398,14 @@ if( function_exists( "smile_update_settings" ) ){
                 "value" => 'default',
                 "width" => '80px',
                 "options" => array(
-                    "black"         => plugins_url( '../../assets/images/black.png', __FILE__ ),
-                    "blue_final"    => plugins_url( '../../assets/images/blue_final.png', __FILE__ ),
-                    "circle_final"  => plugins_url( '../../assets/images/circle_final.png', __FILE__ ),
-                    "default"    	=> plugins_url( '../../assets/images/default.png', __FILE__ ),
-                    "grey_close"  	=> plugins_url( '../../assets/images/grey_close.png', __FILE__ ),
-                    "red02" 		=> plugins_url( '../../assets/images/red02.png', __FILE__ ),
-                    "red2_close"    => plugins_url( '../../assets/images/red2_close.png', __FILE__ ),
-                    "white20"       => plugins_url( '../../assets/images/white20_bb.png', __FILE__ ),
+                    "black"         => CP_BASE_URL . 'modules/assets/images/black.png',
+                    "blue_final"    => CP_BASE_URL . 'modules/assets/images/blue_final.png',
+                    "circle_final"  => CP_BASE_URL . 'modules/assets/images/circle_final.png',
+                    "default"    	=> CP_BASE_URL . 'modules/assets/images/default.png',
+                    "grey_close"  	=> CP_BASE_URL . 'modules/assets/images/grey_close.png',
+                    "red02" 		=> CP_BASE_URL . 'modules/assets/images/red02.png',
+                    "rounded_black"    => CP_BASE_URL . 'modules/assets/images/rounded_black.png',
+                    "white20"       => CP_BASE_URL . 'modules/assets/images/white20_bb.png'
                 ),
 				"imagetitle" => array(
 					__( "title-0", "smile" ) 	=> "Black",
@@ -469,7 +468,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"name" 		=> "close_img",
 			"opts"		=> array(
 				"title" 		=> __( "Choose Image", "smile" ),
-				"value" 		=> plugins_url('../assets/img/cross.png', __FILE__ ),
+				"value" 		=> CP_BASE_URL . 'modules/slide_in/assets/img/cross.png',
 			),
 			"panel" 	=> "Close Link",
 			"dependency" => array('name' => 'close_si_image_src', 'operator' => '==', 'value' => 'upload_img'),
@@ -492,6 +491,26 @@ if( function_exists( "smile_update_settings" ) ){
 			"dependency" => array('name' => 'close_slidein', 'operator' => '==', 'value' => 'close_img'),
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
+		),
+		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "adjacent_close_position",
+			"opts" 		=> array(
+				"title" 	=> __( "Close Image Position","smile"),
+				"value" 	=> "top_right",
+				"options" 	=> array(
+						__( "Top Left", "smile" ) 		=> "top_left",
+						__( "Top Right", "smile" ) 		=> "top_right",
+						//__( "Bottom Left", "smile" ) 	=> "bottom_left",
+						//__( "Bottom Right", "smile" )   => "bottom_right"
+					),
+				"description" 	=> __( "Choose position for close button.", "smile" ),
+				),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'close_slidein', 'operator' => '!=', 'value' => 'do_not_close'),
 		),
 		array(
 			"type" 		=> "switch",
@@ -543,6 +562,40 @@ if( function_exists( "smile_update_settings" ) ){
 				"value" 		=> "rgb(209, 37, 37)",
 			),
 			"dependency" => array('name' => 'close_slidein_tooltip', 'operator' => '==', 'value' => 'true'),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+			array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "display_close_on_duration",
+			"opts"		=> array(
+				"title" 	=> __( "Display Close After Few Seconds", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "If enabled, close image / text will display after few seconds.", "smile" ),
+			),
+			"dependency" => array('name' => 'close_slidein', 'operator' => '!=', 'value' => 'do_not_close'),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "close_btn_duration",
+			"opts"			=> array(
+				"title" 		=> __( "Display After Seconds", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 1,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "Sec",
+				"description" 	=> __( "How long the close image / text to be displayed after Slide In is loaded? (value in seconds).", "smile" ),
+			),
+			"dependency" => array('name' => 'display_close_on_duration', 'operator' => '==', 'value' => 'true'),
 			"panel" => "Close Link",
 			"section" => "Design",
 			"section_icon" => "connects-icon-image",
@@ -686,8 +739,76 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-image",
 			"dependency"	=> array("name" => "toggle_btn", "operator" => "==", "value" => true),
 		),
+
+		//	Slide Auto close Options
+ 		array(
+			"type" 		=> "section",
+			"class" 	=> "",
+			"name" 		=> "slidein_auto_close_section",
+			"opts"		=> array(
+				"title" 		=> __( "Auto Close Module", "smile" ),
+				"value" 		=> "",
+			),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency"	=> array("name" => "toggle_btn", "operator" => "!=", "value" => true ),
+		),
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "autoclose_on_duration",
+			"opts"		=> array(
+				"title" 	=> __( "Autoclose Module", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "If enabled, Slide In will close automatically after 'x' seconds when user is inactive on webpage.", "smile" ),
+			),
+			"dependency"	=> array("name" => "toggle_btn", "operator" => "!=", "value" => true ),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "close_module_duration",
+			"opts"			=> array(
+				"title" 		=> __( "Autoclose Duration", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0.1,
+				"max" 			=> 100,
+				"step" 			=> 0.1,
+				"suffix" 		=> "Sec",
+				"description" 	=> __( "How long the Slide In should take to be close after its loaded? (value in seconds).", "smile" ),
+			),
+			"dependency" => array('name' => 'autoclose_on_duration', 'operator' => '==', 'value' => '1'),
+			"panel" => "Close Link",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		),
+
 	);
 
+/*** Array contains animation options ***/
+	$widget_close = array (
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "minimize_widget",
+			"opts"		=> array(
+				"title" 	=> __( "Initial Appearance", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "Minimize", "smile" ),
+				"off"		=> __( "Open", "smile" ),
+				"description" 	=> __( " Select how your module appears after page loads. You can minimize or open it for initial view.", "smile" ),
+			),
+			"panel" => "Appearance",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+		)		
+	);
 
 
 	/*** Array contains animation options ***/
@@ -1346,7 +1467,7 @@ if( function_exists( "smile_update_settings" ) ){
 			"class" 		=> "",
 			"name" 			=> "load_on_duration",
 			"opts"			=> array(
-				"title" 		=> __( "After Few Seconds", "smile" ),
+				"title" 		=> __( "Load After Seconds", "smile" ),
 				"value" 		=> 1,
 				"min" 			=> 0.1,
 				"max" 			=> 100,
@@ -1408,6 +1529,20 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-toggle",
 		),
 		array(
+			"type" 		=> "txt-link",
+			"class" 	=> "",
+			"name" 		=> "inactivity_link",
+			"opts"		=> array(
+				"link" 		=> __( "Slide In will trigger after `".$user_inactivity."  ".__("Seconds", "smile" )."` of user inactivity. If you would like, you can change the time <a target=\"_blank\" href=\"".admin_url('admin.php?page=convertplug&view=settings#user_inactivity')."\">here</a>", "smile" ),
+				"value" 		=> "",
+				"title" 		=> "",
+			),
+			"panel" 	=> "Smart Launch",
+			"section" => "Behavior",
+			"section_icon" => "connects-icon-toggle",
+			"dependency" => array('name' => 'inactivity', 'operator' => '==', 'value' => 'true'),
+		),
+		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
 			"name" 		=> "enable_after_post",
@@ -1457,21 +1592,36 @@ if( function_exists( "smile_update_settings" ) ){
             "section_icon" => "connects-icon-toggle",
             "dependency" => array('name' => 'enable_display_inline', 'operator' => '==', 'value' => 'true')
         ),
-
-		array(
-			"type" 		=> "txt-link",
+        array(
+			"type" 		=> "switch",
 			"class" 	=> "",
-			"name" 		=> "inactivity_link",
+			"name" 		=> "enable_custom_scroll",
 			"opts"		=> array(
-				"link" 		=> __( "Slide In will trigger after `".$user_inactivity."  ".__("Seconds", "smile" )."` of user inactivity. If you would like, you can change the time <a target=\"_blank\" href=\"".admin_url('admin.php?page=convertplug&view=settings#user_inactivity')."\">here</a>", "smile" ),
-				"value" 		=> "",
-				"title" 		=> "",
+				"title" 	=> __( "After Scroll To Certain ID / Class", "smile" ),
+				"value" 	=> false,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "Slide In will be triggered when user scrolls to certain css class or id.", "smile" ),
 			),
 			"panel" 	=> "Smart Launch",
 			"section" => "Behavior",
 			"section_icon" => "connects-icon-toggle",
-			"dependency" => array('name' => 'inactivity', 'operator' => '==', 'value' => 'true'),
 		),
+        array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "enable_scroll_class",
+			"opts"		=> array(
+				"title" 		=> __( "Enter Class Name/Id", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter CSS Class / ID <br/>[ You can enter multiple values here by separating with comma. Class name should start with '.' & id name should start with '#', example => #id, .class ]", "smile" ),
+			),
+			"panel" => "Smart Launch",
+            "section" => "Behavior",
+            "section_icon" => "connects-icon-toggle",
+             "dependency" => array('name' => 'enable_custom_scroll', 'operator' => '==', 'value' => 'true')
+		),
+
 		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
@@ -1888,6 +2038,38 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-disc",
 		),
 		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "on_redirect",
+			"opts" 		=> array(
+				"title" 	=> __( "Redirect User To","smile"),
+				"value" 	=> "message",
+				"options" 	=> array(
+						__( "Same Tab", "smile" ) 		=> "self",
+						//__( "New Tab", "smile" ) 		=> "blank",
+						__( "Download File", "smile" ) 	=> "download",
+					)
+				),
+			"panel" => "Form Setup",
+			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'redirect'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		/*array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "download_url",
+			"opts"		=> array(
+				"title" 		=> __( "Download URL", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter the URL where you would like to download the file after successfully added to the list.<br/><br/> Please add http / https prefix to URL. e.g. http://convertplug.com", "smile" ),
+			),
+			"panel" 	=> "Form Setup",
+			"dependency" => array('name' => 'on_redirect', 'operator' => '==', 'value' => 'download'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),*/
+		array(
 			"type" 		=> "switch",
 			"class" 	=> "",
 			"name" 		=> "redirect_data",
@@ -1904,27 +2086,97 @@ if( function_exists( "smile_update_settings" ) ){
 			"section_icon" => "connects-icon-disc",
 		),
 		array(
-			"type" 		=> "textfield",
+			"type" 		=> "textarea",
 			"class" 	=> "",
 			"name" 		=> "success_message",
 			"opts"		=> array(
 				"title" 		=> __( "Message After Success", "smile" ),
 				"value" 		=> __( "Thank you.", "smile" ),
-				"description" 	=> __( "Enter the message you would like to display the user after successfully added to the list.", "smile" ),
+				"description" 	=> __( "Enter the message you would like to display the user after successfully added to the list.<br/>This input field supports HTML too.", "smile" ),
 			),
 			"panel" 	=> "Form Setup",
 			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'message'),
 			"section" => "Submission",
 			"section_icon" => "connects-icon-disc",
 		),
+		//Slidein close After form submission Options
 		array(
-			"type" 		=> "textfield",
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "form_action_on_submit",
+			"opts" 		=> array(
+				"title" 	=> __( "Action After Submission","smile"),
+				"value" 	=> "do_nothing",
+				"options" 	=> array(
+						__( "Reappear Form", "smile" ) 		=> "reappear",
+						__( "Hide Form", "smile" ) 			=> "disappears",
+						__( "Do Nothing", "smile" ) 		=> "do_nothing",
+					),
+				"description" 	=> __( "Select how your Slide In behaves after successful form submission.", "smile" ),
+				),
+			"panel" => "Form Setup",
+			"dependency" => array('name' => 'on_success', 'operator' => '==', 'value' => 'message'),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "form_reappear_time",
+			"opts"			=> array(
+				"title" 		=> __( "Reappear Form After 'x' Seconds of Submission", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "s",
+				"description" 	=> __( "Reappear form after successful form submission.", "smile" ),
+			),
+			"panel" => "Form Setup",
+			"dependency"	=> array("name" => "form_action_on_submit", "operator" => "==", "value" => "reappear"),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		array(
+			"type" 			=> "slider",
+			"class" 		=> "",
+			"name" 			=> "form_disappears_time",
+			"opts"			=> array(
+				"title" 		=> __( "Hide Slide In After 'x' Seconds of Submission", "smile" ),
+				"value" 		=> 1,
+				"min" 			=> 0,
+				"max" 			=> 100,
+				"step" 			=> 1,
+				"suffix" 		=> "s",
+				"description" 	=> __( "Hide Slide In after successful form submission.", "smile" ),
+			),
+			"panel" => "Form Setup",
+			"dependency"	=> array("name" => "form_action_on_submit", "operator" => "==", "value" => "disappears"),
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+		),
+		//fail submission
+		array(
+			"type" 		=> "section",
+			"class" 	=> "",
+			"name" 		=> "msg_on_fail_submission",
+			"opts"		=> array(
+				"title" 		=> __( "Failed Submission", "smile" ),
+				"value" 		=> "",
+			),
+			"panel" 	=> "Form Setup",
+			"section" => "Submission",
+			"section_icon" => "connects-icon-disc",
+			"dependency"	=> array("name" => "mailer", "operator" => "!=", "value" => "custom-form"),
+		),
+		array(
+			"type" 		=> "textarea",
 			"class" 	=> "",
 			"name" 		=> "msg_wrong_email",
 			"opts"		=> array(
 				"title" 		=> __( "Failed Submission", "smile" ),
 				"value" 		=> __( "Please enter correct email address.", "smile" ),
-				"description" 	=> __( "Enter the message you would like to display the user for invalid email address.", "smile" ),
+				"description" 	=> __( "Enter the message you would like to display the user for invalid email address<br/>This input field supports HTML too..", "smile" ),
 			),
 			"panel" 	=> "Form Setup",
 			"section" => "Submission",
@@ -2180,6 +2432,144 @@ $form_bg_color = array (
 		),
 	);
 
+		/*** Array contains Slide In Image options ***/
+	$slidein_img = array(
+
+		array(
+			"type" 		=> "dropdown",
+			"class" 	=> "",
+			"name" 		=> "slidein_img_src",
+			"opts" 		=> array(
+				"title" 	=> __( "Image source","smile"),
+				"value" 	=> "upload_img",
+				"options" 	=> array(
+						__( "Custom URL", "smile" ) 	 => "custom_url",
+						__( "Upload Image", "smile" ) 	 => "upload_img",
+						__( "None", "smile" ) 	 		 => "none",
+					)
+				),
+			"panel" => "Slide In Image",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
+		),
+		array(
+			"type" 		=> "textfield",
+			"class" 	=> "",
+			"name" 		=> "slidein_img_custom_url",
+			"opts"		=> array(
+				"title" 		=> __( "Custom URL", "smile" ),
+				"value" 		=> "",
+				"description" 	=> __( "Enter custom URL for your image.", "smile" ),
+			),
+			"panel" 	=> "Slide In Image",
+			"dependency" => array('name' => 'slidein_img_src', 'operator' => '==', 'value' => 'custom_url'),
+			"section" => "Design",
+			"section_icon" => "connects-icon-image"
+		),
+		array(
+			"type" 		=> "media",
+			"class" 	=> "",
+			"name" 		=> "slidein_image",
+			"opts"		=> array(
+				"title" 		=> __( "Upload Image", "smile" ),
+				"value" 		=> plugins_url('config/img/default-image.png', __FILE__ ),
+				"description" 	=> __( "Upload an image that will be displayed inside the content area.Image size will not bigger than its container.", "smile" ),
+			),
+			"panel" 	 => "Slide In Image",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'slidein_img_src', 'operator' => '==', 'value' => 'upload_img')
+		),
+		array(
+			"type" 		=> "slider",
+			"class" 	=> "",
+			"name" 		=> "image_size",
+			"opts"			=> array(
+				"title" 		=> __( "Resize Image", "smile" ),
+				"css_property" => "max-width",
+				"css_selector" => ".cp-image-container img",
+				"value" 		=> 298,
+				"min" 			=> 1,
+				"max" 			=> 1000,
+				"step" 			=> 1,
+				"suffix" 		=> "px",
+				"description" 	=> __( "The maximum size of an image is limited to the size of its container.", "smile" ),
+			),
+			"panel" 	 => "Slide In Image",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'slidein_img_src', 'operator' => '!=', 'value' => 'none')
+		),
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "image_position",
+			"opts"		=> array(
+				"title" 	=> __( "Image Position", "smile" ),
+				"value" 	=> true,
+				"on" 		=> __( "RIGHT", "smile" ),
+				"off"		=> __( "LEFT", "smile" ),
+			),
+			"panel" 	 => "Slide In Image",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'slidein_img_src', 'operator' => '!=', 'value' => 'none')
+		),
+		array(
+			"type" 		=> "slider",
+			"class" 	=> "",
+			"name" 		=> "image_horizontal_position",
+			"opts"			=> array(
+				"title" 		=> __( "Horizontal Position", "smile" ),
+				"css_property" => "left",
+				"css_selector" => ".cp-image-container img",
+				"value" 		=> 0,
+				"min" 			=> -250,
+				"max" 			=> 250,
+				"step" 			=> 1,
+			),
+			"panel" 	 => "Slide In Image",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'slidein_img_src', 'operator' => '!=', 'value' => 'none')
+		),
+		array(
+			"type" 		=> "slider",
+			"class" 	=> "",
+			"name" 		=> "image_vertical_position",
+			"opts"			=> array(
+				"title" 		=> __( "Vertical Position", "smile" ),
+				"css_property" => "top",
+				"css_selector" => ".cp-image-container img",
+				"value" 		=> 0,
+				"min" 			=> -250,
+				"max" 			=> 250,
+				"step" 			=> 1,
+			),
+			"panel" 	 => "Slide In Image",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'slidein_img_src', 'operator' => '!=', 'value' => 'none')
+		),
+
+		array(
+			"type" 		=> "switch",
+			"class" 	=> "",
+			"name" 		=> "image_displayon_mobile",
+			"opts"		=> array(
+				"title" 	=> __( "Hide Image on Small Screens", "smile" ),
+				"value" 	=> true,
+				"on" 		=> __( "YES", "smile" ),
+				"off"		=> __( "NO", "smile" ),
+				"description" 	=> __( "On smaller screens like mobile, smaller modals look more beautiful. To reduce the size of the modal, you may hide the image with this setting.", "smile" ),
+			),
+			"panel" 	 => "Slide In Image",
+			"section" => "Design",
+			"section_icon" => "connects-icon-image",
+			"dependency" => array('name' => 'slidein_img_src', 'operator' => '!=', 'value' => 'none')
+		),
+	);
+
 	// Add options and manage their orders
     // blank theme
 	smile_update_options( "Smile_Slide_Ins", "blank",
@@ -2214,6 +2604,7 @@ $form_bg_color = array (
 			$name,
 			$cp_form,
 			$background,
+			$widget_close,
 			$optin_border,
 			$animations,
 			$adv_design_options_widget,
@@ -2251,11 +2642,27 @@ $form_bg_color = array (
 		array_merge(
 			$name,
 			$background,
+			$widget_close,
 			$cp_social,
 			$social_optin_border,
 			$animations,
 			$adv_design_options_widget,
 			$behavior
+		)
+	);
+
+	//free_widget
+	smile_update_options( "Smile_Slide_Ins", "free_widget",
+		array_merge(
+			$name,
+			$cp_form,
+			$background,
+			$slidein_img,
+			$close_link,
+			$animations,
+			$adv_design_options,
+			$behavior,
+			$submission
 		)
 	);
 
@@ -2422,7 +2829,52 @@ if( function_exists( "smile_update_default" ) ){
 		smile_update_default( "Smile_Slide_Ins", "social_widget_box", $option, $value );
 	}
 
+	//free_widget
+	$free_widget_default = array(
+		"form_fields" 				=> "order->0|input_type->email|input_label->Email|input_name->email|input_placeholder->Enter Your Email Address|input_require->true",
+		"form_layout"			 	=> "cp-form-layout-4",
+		"form_input_align"		 	=> "left",
+		"form_submit_align" 	 	=> "cp-submit-wrap-full",
+		"form_grid_structure"		=> "cp-form-grid-structure-2",
+		"form_lable_font_size"		=> 14,
+		"form_input_font_size"		=> 14,
+		"submit_button_tb_padding" 	=> 13,
+		"submit_button_lr_padding" 	=> 20,
+		"form_input_padding_tb"		=> 11,
+		"form_input_padding_lr"		=> 20,
+		"slidein_short_desc1"  		=> '<span style="">This style is purely built for customization and supports text, images, shortcodes, HTML etc. </span>',
+		"slidein_title1"		 	=> "Download all the latest Freebies!",
+		"slidein_confidential"   	=> "You can unsubscribe anytime.",
+		"slidein_bg_color"     		=> "#ffffff",
+		"button_title"       		=> "SUBSCRIBE HERE",
+		"button_bg_color"    		=> "#ef5350",
+		"button_border_color"		=> "#ef5350",
+		"cp_slidein_width"     		=> "450",
+		"cp_close_image_width" 		=> 26,
+		"border" 			 		=> "br_all:5|br_tl:5|br_tr:5|br_br:5|br_bl:5|style:solid|color:#ff8201|bw_type:1|bw_all:0|bw_t:0|bw_l:0|bw_r:0|bw_b:0",
+		"btn_disp_next_line" 		=> false,
+		"close_position"     		=> "adj_slidein",
+		"slidein_title_color" 		=> "#30414f",
+		"slidein_desc_color" 		=> "#30414f",
+		"tip_color"          		=> "#30414f",
+		"placeholder_text"   		=> "Enter Your Email Here",
+		"name_text"  		 		=> "Enter Your Name",
+		"placeholder_font"   		=> "Raleway",
+		"overlay_effect" 	 		=> "smile-slideInUp",
+		"exit_animation"     		=> "smile-slideOutDown",
+		"close_slidein" 	 		=> "close_img",
+		"close_text_color"	 		=> "#898989",
+		"slide_button_bg_color"     => "#ef5350",
+		"toggle_btn"				=> true,
+		"btn_border_radius"			=> 5,
+		"image_size"  				=> 100,
+		"image_position"			=> false,
+		"slidein_image" 			=> plugins_url('config/img/icon.png', __FILE__ ),
 
+	);
+	foreach( $free_widget_default as $option => $value ){
+		smile_update_default( "Smile_Slide_Ins", "free_widget", $option, $value );
+	}
 }
 
 //Remove option

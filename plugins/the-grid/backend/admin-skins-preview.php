@@ -10,26 +10,67 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-class The_Grid_Skins_Preview {
+class The_Grid_Skins_Preview extends The_Grid {
 	
 	/**
-	* declare main protected var
+	* Grid styles
+	*
 	* @since 1.0.0
+	* @access public
+	*
+	* @var array
 	*/
-	protected $post_ID;
+	protected $grid_styles = array('grid', 'masonry');
 	
+	/**
+	* Grid style
+	*
+	* @since 1.0.0
+	* @access public
+	*
+	* @var string
+	*/
+	protected $grid_style;
+	
+	/**
+	* Available The Grid Skins
+	*
+	* @since 1.0.0
+	* @access public
+	*
+	* @var array
+	*/
 	protected $skins = array();
-	protected $skins_types = array();
-
-	protected $skin_php;
-	protected $skin_name;
-	protected $skin_slug;
-	protected $skin_type;
-	protected $skin_filter;
-	protected $skin_col;
-	protected $skin_row;
 	
-	protected $grid_filters;
+	/**
+	* Skins for 
+	*
+	* @since 1.0.0
+	* @access public
+	*
+	* @var array
+	*/
+	protected $grid_skins = array();
+	
+	/**
+	* Current grid style setting
+	*
+	* @since 1.0.0
+	* @access public
+	*
+	* @var string
+	*/
+	protected $current_style;
+	
+	/**
+	* Custom skins
+	*
+	* @since 1.0.0
+	* @access public
+	*
+	* @var string
+	*/
+	protected $custom_skins;
 	
 	/**
 	* The singleton instance
@@ -38,10 +79,32 @@ class The_Grid_Skins_Preview {
 	static private $instance = null;
 	
 	/**
+	* Cloning disabled
+	* @since 1.0.0
+	*/
+	private function __clone() {
+	}
+	
+	/**
+	* Serialization disabled
+	* @since 1.0.0
+	*/
+	private function __sleep() {
+	}
+	
+	/**
+	* De-serialization disabled
+	* @since 1.0.0
+	*/
+	private function __wakeup() {
+	}
+	
+	/**
 	* No initialization allowed
 	* @since 1.0.0
 	*/
-	private function __construct() {}
+	public function __construct() {
+	}
 	
 	/**
 	* to initialize a The_Grid_Skins_Preview object
@@ -55,412 +118,497 @@ class The_Grid_Skins_Preview {
 	}
 	
 	/**
-	* Process skins preview
+	* Render grid skins preview
 	* @since 1.0.0
 	*/
-	public function process($post_ID) {
-		
-		$skins = null;
-		
-		$this->post_ID = $post_ID;
-		
-		$this->set_preview_mode();
-		$this->set_virtual_post();
-		$this->get_skins();
-		if (!empty($this->skins)) {
-			$this->get_skins_types();
-			$skins = $this->retrieve_skins();
-		}
-		$this->unset_preview_mode();
-		$this->reset_virtual_post();
-		
-		echo $skins;	
-		
-	}
-	
-	/**
-	* Set in Global we are in preview mode
-	* @since 1.0.0
-	*/
-	public function set_preview_mode() {
+	public function render_preview($post_ID, $custom_skins) {
 		
 		global $tg_skins_preview;
+		
+		// set skin preview mode
 		$tg_skins_preview = true;
 		
-	}
-	
-	/**
-	* Unset in Global preview mode
-	* @since 1.0.0
-	*/
-	public function unset_preview_mode() {
+		// set custom skins if exists
+		$this->custom_skins = $custom_skins;
 		
-		global $tg_skins_preview;
+		// add filter to inject grid skin name and filter areas
+		add_filter('tg_after_grid_wrapper_start', array($this, 'grid_filters_area'), 10, 2);
+		// add filter to change grid item filter
+		add_filter('tg_grid_item_data', array($this, 'add_item_filter'));
+		// add filter to name to each skin
+		if (is_array($custom_skins) && !empty($custom_skins)) {
+			add_filter('tg_after_grid_item_start', array($this, 'add_skin_edit'), 10, 2);
+		} else {
+			add_filter('tg_after_grid_item_start', array($this, 'add_skin_name'), 10, 2);
+		}
+		
+		// prepare output
+		$output = null;
+		
+		// retrieve current grid style from grid settings
+		$this->get_current_style($post_ID);
+		
+		// get all registered skins 
+		$this->get_skins($custom_skins);
+
+		if (!empty($this->skins)) {
+
+			// build a grid for each grid style
+			foreach($this->grid_styles as $style) {
+
+				// set current grid style
+				$this->grid_style = $style;
+				// retrieve skins for current grid style
+				$this->get_grid_skins();
+				
+				if ($this->grid_skins) {
+					
+					// build grid data according to grid style
+					$this->set_grid_data();
+					// normalize data to prevent any error
+					$this->normalize_data();
+					// Retrieve the grid style
+					$this->get_styles();
+					// Build grid item
+					$this->get_items();
+					// get the grid layout
+					$grid = $this->get_layout();	
+					// disabled lightbox
+					$grid = str_replace('class="tg-media-button','class="tg-media-button tolb-disabled', $grid);
+					// output grids skin
+					$output .= $grid;
+					
+				} else {
+					
+					$class = ($this->current_style != $this->grid_style) ? ' skin-hidden' : null;
+					$output .= '<div class="tg-grid-wrapper tg-error-msg'.$class.'" id="tg-grid-'.$this->grid_style.'-skin">';
+						$output .= sprintf( __( 'Sorry, no %s skin was found ', 'tg-text-domain' ), $this->grid_style );
+					$output .= '</div>';
+					
+				}
+				
+			}
+		
+		}
+		
+		// unset skin preview mode
 		$tg_skins_preview = false;
 		
-	}
-	
-	/**
-	* Set virtual post for the custom loop
-	* @since 1.0.0
-	*/
-	public function set_virtual_post() {
-		
-		$virtual_post = new The_Grid_Skin_Post();
-		$virtual_post->virtual_post();
+		return $output;
 		
 	}
 	
 	/**
-	* Reset virtual post for the custom loop
+	* Get grid skins
 	* @since 1.0.0
 	*/
-	public function reset_virtual_post() {
+	public function get_grid_skins() {
 		
-		$virtual_post = new The_Grid_Skin_Post();
-		$virtual_post->reset_virtual_post();
-		
+		$this->grid_skins = array_filter($this->skins, array($this, 'filter_skin'));
+
 	}
 	
 	/**
-	* Set global grid data
+	* Retrieve/filter skins corresponding to a grid style
 	* @since 1.0.0
 	*/
-	public function set_global_grid_data() {
-		
-		global $tg_grid_data;
-				
-		$tg_grid_data = array(
-			'source_type' => 'post_type',
-			'style' => $this->skin_type,
-			'item_ratio_x' => 1,
-			'item_ratio_y' => 1,
-			'default_image' => TG_PLUGIN_URL . 'backend/assets/images/skin-placeholder.jpg',
-			'skin_content_background' => '#ffffff',
-			'skin_overlay_background' => 'rgba(52, 73, 94, 0.75)',
-			'skin_content_color' => 'dark',
-			'skin_overlay_color' => 'light'
-		);
-		
+	public function filter_skin($var) {
+		return ($var['type'] == $this->grid_style);
 	}
 	
 	/**
-	* Retrieve skin names array
+	* Get current grid style
 	* @since 1.0.0
 	*/
-	public function get_skins() {
+	public function get_current_style($post_ID) {
 		
-		$item_base  = new The_Grid_Item_Skin();
-		$this->skins = $item_base->get_skin_names();
-		// arrange skins name by alphabetical order
-		uasort($this->skins,  function ($a,$b){ return strcmp($a['name'], $b['name']); });
-		
+		$this->current_style = get_post_meta($post_ID, 'the_grid_style', true);
+		$this->current_style = (empty($this->current_style) || $this->current_style == 'justified') ? 'grid' : $this->current_style;
+
 	}
 	
 	/**
 	* Get skins types
 	* @since 1.0.0
 	*/
-	public function get_skins_types() {
-		
-		$skins_types = array();
-		foreach($this->skins as $skin => $data) {
-			if (!in_array($data['type'], $skins_types)) {
-				array_push($skins_types, $data['type']);
-			}
-		}
-		
-		$this->skins_types = $skins_types;
-		
-	}
-	
-	/**
-	* Get skins css
-	* @since 1.0.0
-	*/
-	public function get_skins_css() {
-		
-		$css    = null;
-		$colors = $this->set_skin_colors();
-
-		foreach($this->skins as $item_skin => $skin) {
-			ob_start();
-			include $skin['css'];
-			$file_content  = ob_get_contents();
-			ob_end_clean();
-			$css .= $file_content;
-		}
-		
-		// compress css
-		$base = new The_Grid_Base();
-		$css  = $base->compress_css($css.$colors);
-		
-		return '<style id="tg-grid-skin-css">'.$css.'</style>';
+	public function get_skins($custom_skins) {
 			
+		if (is_array($custom_skins) && !empty($custom_skins)) {
+			
+			$this->skins = $custom_skins;
+			
+		} else {
+			
+			$item_base = new The_Grid_Item_Skin();
+			$this->skins = $item_base->get_skin_names();
+			$this->custom_skins_settings();
+
+		}
+		
+		
 	}
 	
 	/**
-	* Set skin css colors
+	* Set custom skins settings
 	* @since 1.0.0
 	*/
-	public function set_skin_colors() {
+	public function custom_skins_settings() {
 		
-		// declare may tags for color scheme
-		$schemes    = array('dark','light');
-		$title_tags = array('h2','h2 a','h3','h3 a','a','a.tg-link-url','i');
-		$para_tags  = array('p');
-		$span_tags  = array('span','.no-liked .to-heart-icon path','.empty-heart .to-heart-icon path');
-		$tags       = array('title' => $title_tags, 'text'  => $para_tags, 'span'  => $span_tags);
+		$custom_skin_settings = get_option('tg_custom_skins_settings');
 		
-		// default colors from Global settings
-		$default = array(
-			'dark_title'  => '#444444',
-			'dark_text'   => '#777777',
-			'dark_span'   => '#999999',
-			'light_title' => '#ffffff',
-			'light_text'  => '#f5f5f5',
-			'light_span'  => '#f6f6f6',
-		);
+		if (is_array($custom_skin_settings) && !empty($custom_skin_settings)) {
+			
+			$this->skins = array_replace_recursive($this->skins, $custom_skin_settings);
+			
+		}
 		
-		// loop throught each tag and apply right css 
-		$colors = null;
-		foreach ($schemes as $scheme) {
-			foreach ($tags as $tag => $classes) {
-				$classes   = implode(',.tg-item .'.$scheme.' ', $classes);
-				$def_color = $default[$scheme.'_'.$tag];
-				$color     = get_option('the_grid_'.$scheme.'_'.$tag, $def_color);
-				$colors   .= '#tg-grid-skins .tg-item .'.$scheme.' '.$classes.'{color:'.$color.';fill:'.$color.';stroke:'.$color.'}';
+	}
+
+	/**
+	* Retrieve grid data
+	* @since 1.0.0
+	*/
+	public function set_grid_data() {
+		
+		$skins = array();
+		
+		foreach($this->grid_skins as $skin => $data) {
+			if ($data['type'] == $this->grid_style) {
+				$skins[] = $data['slug'];
 			}
 		}
 		
-		// for bg white color for skin preview only
-		$colors .= '#tg-grid-skins .tg-item .tg-item-content-holder {background-color: #ffffff;}
-				    #tg-grid-skins .tg-item .tg-item-overlay {background-color: rgba(52, 73, 94, 0.75);}';
-				   
-		return $colors;
+		if ($skins) {
+
+			$this->grid_data = array(
+				'ID'                      => 'tg-grid-'.$this->grid_style.'-skin',
+				'name'                    => 'tg_grid_skins_preview',
+				'css_class'               => ($this->current_style != $this->grid_style) ? ' skin-hidden' : null,
+				'source_type'             => 'post_type',
+				'post_type'               => array('post'),
+				'style'                   => $this->grid_style,
+				'items_format'            => array('video'),
+				'item_ratio_x'            => 1,
+				'item_ratio_y'            => 1,
+				'default_image'           => TG_PLUGIN_URL . 'backend/assets/images/skin-placeholder.jpg',
+				'skin_content_background' => '#ffffff',
+				'skin_overlay_background' => 'rgba(52, 73, 94, 0.75)',
+				'skin_content_color'      => 'dark',
+				'skin_overlay_color'      => 'light',
+				'navigation_style'        => 'tg-nav-bg',
+				'navigation_color'        => (!$this->custom_skins) ? '#444444' : '#ffffff',
+				'navigation_accent_color' => '#ffffff',
+				'navigation_bg'           => (!$this->custom_skins) ? '#ffffff' : '#2c3e50',
+				'navigation_accent_bg'    => '#4ECDC4',
+				'lightbox_type'           => 'the_grid',
+				'skins'                   => '{"post":"'.$skins[0].'"}',
+				'desktop_large'           => 4,
+				'desktop_medium'          => 3,
+				'desktop_small'           => 2,
+				'tablet'                  => 1,
+				'tablet_small'            => 1,
+				'mobile'                  => 1,
+				'gutter'                  => 28,
+				'desktop_medium_gutter'   => 28,
+				'desktop_small_gutter'    => 28,
+				'tablet_gutter'           => 28,
+				'tablet_small_gutter'     => 28,
+				'mobile_gutter'           => 28,
+				'desktop_medium_width'    => 1480,
+				'desktop_small_width'     => 1200,
+				'tablet_width'            => 768,
+				'tablet_small_width'      => 480,
+				'mobile_width'            => 320,
+				'layout'                  => (!$this->custom_skins) ? 'horizontal' : 'vertical',
+				'row_nb'                  => ($this->grid_style == 'grid') ? 2 : 1,
+				'slider_itemNav'          => 'basic',
+				'area_bottom2'            => '{"styles":"","functions":["the_grid_get_slider_bullets"]}',
+				'transition'              => 600,
+				'item_skins'              => $skins,
+				'video_lightbox'          => true
+			);
+		
+		}
 		
 	}
 	
 	/**
-	* Get grid filters
+	* Normalize grid data
 	* @since 1.0.0
 	*/
-	public function get_grid_filters() {
+	public function normalize_data() {
+		
+		try {
+			
+			// get grid data
+			$data_class = new The_Grid_Data('tg-grid-'.$this->grid_style.'-skin');
+			$this->grid_data = $data_class->normalize_data($this->grid_data);
+			
+		} catch (Exception $e) {
+			
+			// show error message if throw
+			throw new Exception($e->getMessage());
+			
+		}
+		
+	}
+	
+	/**
+	* Retrieve grid items
+	* @since 1.0.0
+	*/
+	public function get_items() {
+		
+		$this->grid_items = array();
+
+		// sort the skins by alphabetical asc order
+		usort($this->grid_skins, function ($a,$b){ return strcmp($a['slug'], $b['slug']); });
+
+		foreach($this->grid_skins as $skin) {
+
+			$this->grid_items[] = array(
+				'ID'              => 'fake',
+				'date'            => current_time('timestamp'),
+				'post_type'       => 'post',
+				'sticky'          => null,
+				'format'          => (!in_array($skin['slug'],array('vaduz','victoria','podgorica'))) ? 'image' : 'video',
+				'url'             => 'javascript:;',
+				'title'           => 'The post title',
+				'excerpt'         => 'Actique exilium principis is in nullos Constantio et absolutum quorum movebantur ita intendebantur ubi gladii sub coopertos facile uncosque in poenales coopertos ubi eculei quemquam sceleste ex alii Constantio parabat principis Paulus exilium deiectos movebantur intend.',
+				'terms'           => array(
+					array(
+						'ID'       => '0',
+						'slug'     => 'category',
+						'name'     => 'Category',
+						'taxonomy' => 'category',
+						'url'      => 'javascript:;',
+						'color'    => null
+					)
+				),
+				'author'          => array(
+					'name'   => 'Themeone',
+					'url'    => 'javascript:;',
+					'avatar' => TG_PLUGIN_URL . 'backend/assets/images/avatar.png'
+				),
+				'likes_number'    => '1',
+				'comments_number' => '1',
+				'views_number'    => '12500',
+				'image'           => array(
+					'url'    => TG_PLUGIN_URL . 'backend/assets/images/skin-placeholder.jpg',
+					'lb_url' => TG_PLUGIN_URL . 'backend/assets/images/skin-placeholder.jpg',
+					'width'  => 800,
+					'height' => 460,
+					'alt'    => ''
+				),
+				'gallery'         => null,
+				'video'           => array(
+					'duration' => '06:25',
+					'type'   => 'youtube',
+						'source' => array(
+							'ID'  => 'about:blank',
+						),
+				),
+				'audio'           => null,
+				'quote'           => null,
+				'link'            => null,
+				'meta_data'       => array(
+					'the_grid_item_skin_id' => $skin['id'],
+					'the_grid_item_filter'  => $skin['filter'],
+					'the_grid_item_skin'    => $skin['slug'],
+					'the_grid_item_name'    => $skin['name'],
+					'the_grid_item_col'     => $skin['col'],
+					'the_grid_item_row'     => $skin['row']
+				),
+				'product' => array(
+					'price'         => '<span class="amount">179$</span>',
+					'full_price'    => '<del><span class="amount">$179</span></del> <ins><span class="amount">$99</span></ins>',
+					'regular_price' => '<span class="amount">179$</span>',
+					'sale_price'    => '<span class="amount">99$</span>',
+					'rating'        => '<div class="star-rating"><span style="width:90%"></span></div>',
+					'text_rating'   => __( '4.5 out of 5', 'tg-text-domain' ),
+					'on_sale'       => '<span class="onsale">'.__( 'Sale!', 'tg-text-domain' ).'</span>',
+					'cart_button'   => '<a href="" rel="nofollow" data-product_id="-1" data-product_sku="" data-quantity="0" class="button add_to_cart_button product_type_simple">'.__( 'Add to cart', 'tg-text-domain' ).'</a>',
+					'wishlist'    => ''
+				)
+			);
+		}	
+
+	}
+
+	/**
+	* Retrieve grid styles
+	* @since 1.0.0
+	*/
+	public function get_styles() {
+		
+		try {
+			
+			// get grid styles
+			$styles_class = new The_Grid_Styles($this->grid_data);
+			$this->grid_data = $styles_class->styles_processing();
+			
+		} catch (Exception $e) {
+			
+			// show error message if throw
+			throw new Exception($e->getMessage());
+			
+		}
+		
+	}
+	
+	/**
+	* Retrieve grid layout
+	* @since 1.0.0
+	*/
+	public function get_layout() {
+		
+		try {
+			
+			// retrive entire grid layout
+			$layout_class = new The_Grid_Layout($this->grid_data, $this->grid_items);
+			return $layout_class->output();
+		
+		} catch (Exception $e) {
+			
+			// show error message if throw
+			throw new Exception($e->getMessage());
+			
+		}
+	
+	}
+	
+	/**
+	* Grid skin header and filters
+	* @since 1.0.0
+	*/
+	public function grid_filters_area($html, $args) {
 		
 		$grid_filters = array();
+		
+		// if screen id is skin builder
+		if (!$this->custom_skins) {
+			
+			// add skin preview title
+			$title   = ($this->grid_style == 'grid') ? ' / Justified' : null;
+			echo '<div class="tg-grid-skin-type">'.esc_attr(ucfirst($this->grid_style).$title).' '.__( 'Skins', 'tg-text-domain' ).'</div>';
+		
+		
+			// filter for selected skin
+			$grid_filters[] = array(
+				'taxo' => 'skin_filter',
+				'id'   => '.selected',
+				'name' => __( 'Selected Skin', 'tg-text-domain' )
+			);
+		
+		}
+		
+		// retrieve all filter for current grid style
 		foreach($this->skins as $skin => $data) {
-			if ($data['type'] == $this->skin_type) {
+			if ($data['type'] == $this->grid_style) {
 				$item_filter = esc_attr($data['filter']);
-				if(!in_array($data['filter'], $grid_filters, true)){
-					array_push($grid_filters, $data['filter']);
+				if(!in_array($data['filter'], $grid_filters, true) && $data['filter']){
+					$grid_filters[$data['filter']] = array(
+						'taxo' => 'skin_filter',
+						'id'   => '.'.sanitize_key($data['filter']),
+						'name' => ucwords($data['filter'])
+					);
 				}
 			}
 		}
+
+		// setup arguments for filter buttons template
+		$args = array(
+			'filter_all_text'       => __( 'All', 'tg-text-domain' ),
+			'filter_count'          => 'inline',
+			'filters'               => $grid_filters,
+			'filter_dropdown_title' => '',
+			'active_filters'        => array()
+		);
 		
-		return $grid_filters;
-		
-	}
-	
-	/**
-	* Build Skin selector
-	* @since 1.0.0
-	*/
-	public function retrieve_skins() {
-		
-		$markup = $this->get_skins_css();
-		
-		foreach($this->skins_types as $type) {
-			
-			$this->skin_type = $type;
-			
-			$this->set_global_grid_data();
-			
-			$markup .= $this->grid_wrapper_start();
-			
-			foreach($this->skins as $skin => $data) {
-				
-				if ($data['type'] == $type) {
-				
-					$this->skin_name = $data['name'];
-					$this->skin_slug = $data['slug'];
-					$this->skin_php  = $data['php'];
-					$this->skin_col  = $data['col'];
-					$this->skin_row  = $data['row'];
-					$this->skin_filter = $data['filter'];
-					
-					$markup .= $this->build_skin_item();
-					
-				}
-			}
-			
-			$markup .= $this->grid_wrapper_end();
-			
+		if (count($grid_filters) > 0) {
+			// generate filters from template
+			tg_get_template_part('filter', 'buttons', true, $args);
 		}
-		
-		return $markup;
 
 	}
-	
+		
 	/**
-	* Grid skin wrapper start
+	* Add Grid item filter
 	* @since 1.0.0
 	*/
-	public function grid_wrapper_start() {
-		
-		$data_attr = $this->grid_skin_attribute();
-		
-    	$id = $this->post_ID;
-		
-		$style = get_post_meta($id, 'the_grid_style', true);
-		$style = (empty($style) || $style == 'justified') ? 'grid' : $style;
-		$class = ($style != $this->skin_type) ? ' skin-hidden' : null;
-		
-		$wrapper_start  = '<div class="tomb-clearfix"></div>';
-		$wrapper_start .= '<div class="tg-grid-wrapper'.$class.'" id="tg-grid-'.$this->skin_type.'-skin">';
-			$justified = ($this->skin_type == 'grid') ? ' / Justified' : null;
-			$wrapper_start .= '<div class="tg-grid-skin-type">'.esc_attr(ucfirst($this->skin_type).$justified).' '.__( 'Skins', 'tg-text-domain' ).'</div>';
-			$wrapper_start .= '<div class="tg-grid-sizer"></div>';
-			$wrapper_start .= '<div class="tg-gutter-sizer"></div>';
-			$wrapper_start .= $this->grid_filters_area();
-			$wrapper_start .= '<div class="tg-grid-slider">';
-				$wrapper_start .= '<div class="tg-grid-holder tg-layout-'.esc_attr($this->skin_type).'" '.$data_attr.'>';
-		
-		return $wrapper_start;
-		
-	}
-	
-	/**
-	* Retrieve all skins
-	* @since 1.0.0
-	*/
-	public function grid_skin_attribute() {
-		
-		$type  = $this->skin_type;
-		$rowNb = ($type == 'grid') ? 2 : 1;
-		
-		$data_attr  = ' data-name="tg-grid-'.$type.'-demo"';
-		$data_attr .= ' data-style="'.$type.'"';
-		$data_attr .= ' data-row="'.$rowNb.'"';
-		$data_attr .= ' data-layout="horizontal"';
-		$data_attr .= ' data-ratio="1.33"';
-		$data_attr .= ' data-cols="[[320,1],[480,2],[768,2],[1200,2],[1480,3],[9999,4]]"';
-		$data_attr .= ' data-gutters="[[320,28],[480,28],[768,28],[1200,28],[1480,28],[9999,28]]"';
-		$data_attr .= ' data-transition="600ms"';
-		$data_attr .= ' data-preloader="true"';
-		$data_attr .= ' data-rtl="false"';
-		$data_attr .= ' data-slider=\'{"itemNav":"basic","swingSpeed":0.1,"cycleBy":"null","cycle":5000,"startAt":1}\'';
-		
-		return $data_attr;
-		
-	}
-	
-	/**
-	* Grid skin wrapper start
-	* @since 1.0.0
-	*/
-	public function grid_wrapper_end() {
-		
-				$wrapper_end = '</div>';
-			$wrapper_end .= '</div>';
-			$wrapper_end .= '<div class="tg-slider-bullets-holder">';
-				$wrapper_end .= '<div class="tg-slider-bullets"></div>';
-			$wrapper_end .= '</div>';
-		$wrapper_end .= '</div>';
-		
-		return $wrapper_end;
-		
-	}
-	
-	/**
-	* Grid skin wrapper start
-	* @since 1.0.0
-	*/
-	public function grid_filters_area() {
-		
-		$grid_filters = $this->get_grid_filters();
-		
-		$filter_area  = '<div class="tg-filters-holder">';
-		$filter_area .= '<div class="tg-filter tg-show-filter tg-filter-active tg-filter-all" data-filter="*"><span class="tg-filter-name">'.__( 'All', 'tg-text-domain' ).' (<span class="tg-filter-count"></span>)</span></div>';
-		$filter_area .= '<div class="tg-filter tg-show-filter" data-filter=".selected"><span class="tg-filter-name">'.__( 'Selected Skin', 'tg-text-domain' ).' (1)</span></div>';
-		if (count($grid_filters) > 1) {
-			
-			if(($key = array_search('Standard', $grid_filters)) !== false) {
-    			unset($grid_filters[$key]);
-			}
-			sort($grid_filters);
-			
-			$filter_area .= '<div class="tg-filter tg-show-filter" data-filter=".standard">';
-				$filter_area .= '<span class="tg-filter-name">'.__( 'Standard', 'tg-text-domain' ).' (<span class="tg-filter-count"></span>)</span>';
-			$filter_area .= '</div>';
-			
-			foreach($grid_filters as $grid_filter) {	
-				$filter_area .= '<div class="tg-filter tg-show-filter" data-filter=".'.esc_attr(sanitize_key($grid_filter)).'">';
-					$filter_area .= '<span class="tg-filter-name">'.esc_attr(ucwords($grid_filter)).' (<span class="tg-filter-count"></span>)</span>';
-				$filter_area .= '</div>';
-			}
-		}
-		$filter_area .= '</div>';
-		
-		return $filter_area;
-		
-	}
-	
-	/**
-	* Build skin item
-	* @since 1.0.0
-	*/
-	public function build_skin_item() {
+	public function add_item_filter($data) {
 
-		// skin filter
-		$skin_filter  = sanitize_key($this->skin_filter);
+		$filter = $data['meta_data']['the_grid_item_filter'];
+		$data['class'] = (isset($data['class'])) ? str_replace(' f0', '', $data['class']).' '.sanitize_key($filter) : null;
+		return $data;
+	
+	}
+	
+	/**
+	* Add Grid item name/slug
+	* @since 1.0.0
+	*/
+	public function add_skin_name($output, $args) {
+
+		$slug = $args['meta_data']['the_grid_item_skin'];
+		$name = $args['meta_data']['the_grid_item_name'];
+		$name = (!$name) ? $slug : $name;
+
+		$output = '<div class="tg-item-skin-name" data-slug="'.esc_attr($slug).'">';
+			$output .= '<i class="dashicons dashicons-yes"></i>';
+			$output .= '<span>'.esc_html(ucfirst($name)).'</span>';
+			$output .= '<span class="tg-select-skin">'.__( 'Select this skin', 'tg-text-domain' ).'</span>';
+		$output .= '</div>';
 		
-		// skin classes
-		$skin_classes = esc_attr($this->skin_slug).' '.esc_attr($skin_filter);
+		return $output;
 		
-		// skin slug
-		$skin_slug = 'data-slug="'.esc_attr($this->skin_slug).'"';
+	}
+	
+	/**
+	* Add edit button for custom skins
+	* @since 1.0.0
+	*/
+	public function add_skin_edit($output, $args) {
 		
-		// set skin column number attribute
-		$col_nb = $this->skin_col;
-		$col_nb = (isset($row_nb) && !empty($col_nb) && $col_nb != 0) ? $col_nb : 1;
-		$col_nb = ' data-col="'.esc_attr($col_nb).'"';
+		$id   = $args['meta_data']['the_grid_item_skin_id'];
+		$slug = $args['meta_data']['the_grid_item_skin'];
+		$name = $args['meta_data']['the_grid_item_name'];
+		$name = (!$name) ? $slug : $name;
+
+		$output = '<div class="tg-item-custom-skin-name" data-id="'.esc_attr($id).'">';
+			$output .= '<span>'.esc_html(ucfirst($name)).'</span>';
+			$output .= '<div class="tg-button" id="tg-delete-skin" data-action="tg_delete_skin" data-id="'.esc_attr($id).'"><i class="dashicons dashicons-trash"></i></div>';		
+			$output .= '<div class="tg-button" id="tg-clone-skin" data-action="tg_clone_skin" data-id="'.esc_attr($id).'"><i class="dashicons dashicons-images-alt2"></i></div>';
+			$output .= '<a class="tg-button" id="tg-edit-skin" href="'.admin_url( 'admin.php?page=the_grid_skin_builder&id='.esc_attr($id)).'"><i class="dashicons dashicons-admin-tools"></i></a>';
+		$output .= '</div>';
 		
-		// set skin row number attribute
-		$row_nb = $this->skin_row;
-		$row_nb = (isset($row_nb) && !empty($row_nb) && $row_nb != 0) ? $row_nb : 1;
-		$row_nb = ' data-row="'.esc_attr($row_nb).'"';
-		
-		// build item skin markup
-		$item_html  = '<article class="tg-item '.$skin_classes.'" '.$col_nb.$row_nb.'>';
-			$item_html .= '<div class="tg-item-skin-name" '.$skin_slug.'>';
-				$item_html .= '<i class="dashicons dashicons-yes"></i>';
-				$item_html .= '<span>'.esc_html(ucfirst($this->skin_name)).'</span>';
-				$item_html .= '<span class="tg-select-skin">'.__( 'Select this skin', 'tg-text-domain' ).'</span>';
-			$item_html .= '</div>';
-			$item_html .= '<div class="tg-item-inner">';
-		
-				// retireve current skin markup
-				ob_start();
-				$item_html .= include($this->skin_php);	
-				ob_end_clean();
-		
-			$item_html .= '</div>';
-		$item_html .= '</article>';
-		
-		return $item_html;
+		return $output;
 		
 	}
 	
 }
 
 if(!function_exists('The_Grid_Skins_Preview')) {
+	
 	/**
 	* Tiny wrapper function
 	* @since 1.0.0
 	*/
-	function The_Grid_Skins_Preview($post_ID = '') {
-		$skins_preview = The_Grid_Skins_Preview::getInstance();
-		return $skins_preview->process($post_ID);
+	function The_Grid_Skins_Preview($post_ID = '', $custom_skins = '') {
+		
+		try {
+			
+			// render skins preview
+			$skins_preview = The_Grid_Skins_Preview::getInstance();
+			return $skins_preview->render_preview($post_ID, $custom_skins);
+			
+		} catch (Exception $e) {
+			
+			// show error message if throw
+			throw new Exception($e->getMessage());
+			
+		}
+
 	}
 	
 }

@@ -50,7 +50,8 @@ if ( $is_blog || $is_archive ) :
         'posts_per_page' => $count,
         'orderby'        => 'date',
         'meta_key'       => $info[3],
-        'meta_value'     => 'on'
+        'meta_value'     => 'on',
+        'ignore_sticky_posts'	=> true
       );
       break;
   }

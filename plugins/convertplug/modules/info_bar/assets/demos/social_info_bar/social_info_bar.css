@@ -16,11 +16,11 @@
     font-family: inherit;
     font-weight: normal;
     line-height: 1em;
-    -webkit-flex-grow: 1;
-   -moz-flex-grow: 1;
-   -ms-flex-grow: 1;
-   -o-flex-grow: 1;
-   flex-grow: 1;
+    /* -webkit-flex-grow: 1;
+       -moz-flex-grow: 1;
+       -ms-flex-grow: 1;
+       -o-flex-grow: 1;
+       flex-grow: 1; */
 }
 
 .cp-ifb-social-media .cp-submit {
