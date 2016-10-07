@@ -63,7 +63,7 @@
 <?php else: ?>
 
 	<div id="message" class="info">
-		<p><?php _e( 'Sorry, there were no sites found.', 'buddypress' ); ?></p>
+		<p><?php _e( 'Sorry, there were no sites found.', '__x__' ); ?></p>
 	</div>
 
 <?php endif; ?>

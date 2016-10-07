@@ -6,14 +6,14 @@
 
 		<label for="pwd"><?php _e( 'Current Password <span>(required to update email or change current password)</span>', 'buddypress' ); ?></label>
 		<input type="password" name="pwd" id="pwd" size="16" value="" class="settings-input small x-lost-password-input" />
-		<a href="<?php echo wp_lostpassword_url(); ?>" title="<?php esc_attr_e( 'Password Lost and Found', 'buddypress' ); ?>"><?php _e( 'Lost your password?', 'buddypress' ); ?></a>
+		<a href="<?php echo wp_lostpassword_url(); ?>" title="<?php esc_attr_e( 'Password Lost and Found', 'buddypress' ); ?>"><?php _e( 'Lost your password?', '__x__' ); ?></a>
 
 	<?php endif; ?>
 
-	<label for="email"><?php _e( 'Account Email', 'buddypress' ); ?></label>
+	<label for="email"><?php _e( 'Account Email', '__x__' ); ?></label>
 	<input type="text" name="email" id="email" value="<?php echo bp_get_displayed_user_email(); ?>" class="settings-input" />
 
-	<label for="pass1"><?php _e( 'Change Password <span>(leave blank for no change)</span>', 'buddypress' ); ?></label>
+	<label for="pass1"><?php _e( 'Change Password <span>(leave blank for no change)</span>', '__x__' ); ?></label>
 	<input type="password" name="pass1" id="pass1" size="16" value="" class="settings-input small" />
 
 	<label for="pass2"><?php _e( 'Repeat New Password <span>(confirm above entry)</span>', '__x__' ); ?></label>

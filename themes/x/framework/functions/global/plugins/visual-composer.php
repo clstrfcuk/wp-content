@@ -23,6 +23,10 @@
 //   12. Incremental ID Counter for Templates
 //   13. Overwrite No Content Message
 //   14. Overwrite Layout Error Message
+//   15. VC Column Inner Template
+//   16. VC Column Template
+//   17. VC Coulmn Row Inner Template
+//   18. VC Row template
 // =============================================================================
 
 // Legacy Update
@@ -190,21 +194,6 @@ function x_visual_composer_disable_frontend_editor_callback() {
 function x_visual_composer_hide_design_options_callback() {
   return x_visual_composer_options_checkbox( 'x_hide_design_options', true, __( 'Enable', '__x__' ), __( 'Hides Visual Composer options for which X already provides functionality.', '__x__' ) );
 }
-
-
-
-// Overwrite Visual Composer Rows and Columns
-// =============================================================================
-
-if ( function_exists( 'vc_set_shortcodes_templates_dir' ) && ! x_visual_composer_integration_on() ) {
-
-  $dir = get_stylesheet_directory() . '/vc_templates_custom_output';
-
-  vc_set_shortcodes_templates_dir( $dir );
-
-}
-
-
 
 // Remove Default Shortcodes
 // =============================================================================
@@ -5153,5 +5142,480 @@ if ( ! function_exists( 'x_visual_composer_overwrite_layout_error_message' ) && 
   }
 
   add_action( 'admin_head-post.php', 'x_visual_composer_overwrite_layout_error_message', 999 );
+
+}
+
+if ( x_visual_composer_integration_on() ) {
+	
+// VC Column Inner template
+// =============================================================================
+
+// Make [vc_column_inner] behave like the [column] shortcode.
+// =============================================================================
+
+extract( shortcode_atts( array(
+  'id'                    => '',
+  'class'                 => '',
+  'style'                 => '',
+  'width'                 => '',
+  'last'                  => '',
+  'fade'                  => '',
+  'fade_animation'        => '',
+  'fade_animation_offset' => ''
+), $atts ) );
+
+$id    = ( $id    != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
+$class = ( $class != '' ) ? 'x-column x-sm vc ' . esc_attr( $class ) : 'x-column x-sm vc';
+$style = ( $style != '' ) ? $style : '';
+$fade_duration         = ( $fade_duration         != ''     ) ? $fade_duration : '750';
+
+switch ( $width ) {
+  case '1/1' :
+    $width = ' x-1-1';
+    break;
+  case '1/2' :
+    $width = ' x-1-2';
+    break;
+  case '1/3' :
+    $width = ' x-1-3';
+    break;
+  case '2/3' :
+    $width = ' x-2-3';
+    break;
+  case '1/4' :
+    $width = ' x-1-4';
+    break;
+  case '3/4' :
+    $width = ' x-3-4';
+    break;
+  case '1/6' :
+    $width = ' x-1-6';
+    break;
+  case '5/6' :
+    $width = ' x-5-6';
+    break;
+}
+
+if ( $fade == 'true' ) {
+  
+  $fade = 'data-fade="true"';
+
+  $data = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'column', array( 'fade' => true ) ) : '';
+
+  switch ( $fade_animation ) {
+      case 'in' :
+        $fade_animation_offset = '';
+        break;
+      case 'in-from-top' :
+        $fade_animation_offset = ' transform: translate(0, -' . $fade_animation_offset . '); ';
+        break;
+      case 'in-from-left' :
+        $fade_animation_offset = ' transform: translate(-' . $fade_animation_offset . ', 0); ';
+        break;
+      case 'in-from-right' :
+        $fade_animation_offset = ' transform: translate(' . $fade_animation_offset . ', 0); ';
+        break;
+      case 'in-from-bottom' :
+        $fade_animation_offset = ' transform: translate(0, ' . $fade_animation_offset . '); ';
+        break;
+    }
+
+  $fade_animation_style = 'opacity: 0;' . $fade_animation_offset . 'transition-duration: ' . $fade_duration . 'ms;';
+  
+} else {
+  $data                 = '';
+    $fade                 = '';
+    $fade_animation_style = '';
+}
+
+$output = "<div {$id} class=\"{$class}{$width}{$last}\" style=\"{$style}{$fade_animation_style}{$bg_color}\" {$data}{$fade}>" . do_shortcode( $content ) . "</div>";
+
+ob_start();
+
+echo $output;
+
+ob_get_clean();
+
+// VC Column Template
+// =============================================================================
+
+// Make [vc_column] behave like the [column] shortcode.
+// =============================================================================
+
+
+extract( shortcode_atts( array(
+  'id'                    => '',
+  'class'                 => '',
+  'style'                 => '',
+  'width'                 => '',
+  'last'                  => '',
+  'fade'                  => '',
+  'fade_animation'        => '',
+  'fade_animation_offset' => '',
+  'fade_duration'         => '',
+  'bg_color'              => '',
+), $atts ) );
+
+$id    = ( $id    != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
+$class = ( $class != '' ) ? 'x-column x-sm vc ' . esc_attr( $class ) : 'x-column x-sm vc';
+$style = ( $style != '' ) ? $style : '';
+$fade_duration         = ( $fade_duration         != ''     ) ? $fade_duration : '750';
+
+switch ( $width ) {
+  case '1/1' :
+    $width = ' x-1-1';
+    break;
+  case '1/2' :
+    $width = ' x-1-2';
+    break;
+  case '1/3' :
+    $width = ' x-1-3';
+    break;
+  case '2/3' :
+    $width = ' x-2-3';
+    break;
+  case '1/4' :
+    $width = ' x-1-4';
+    break;
+  case '3/4' :
+    $width = ' x-3-4';
+    break;
+  case '1/6' :
+    $width = ' x-1-6';
+    break;
+  case '5/6' :
+    $width = ' x-5-6';
+    break;
+}
+
+if ( $fade == 'true' ) {
+  
+  $fade = 'data-fade="true"';
+
+  $data = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'column', array( 'fade' => true ) ) : '';
+
+  switch ( $fade_animation ) {
+      case 'in' :
+        $fade_animation_offset = '';
+        break;
+      case 'in-from-top' :
+        $fade_animation_offset = ' transform: translate(0, -' . $fade_animation_offset . '); ';
+        break;
+      case 'in-from-left' :
+        $fade_animation_offset = ' transform: translate(-' . $fade_animation_offset . ', 0); ';
+        break;
+      case 'in-from-right' :
+        $fade_animation_offset = ' transform: translate(' . $fade_animation_offset . ', 0); ';
+        break;
+      case 'in-from-bottom' :
+        $fade_animation_offset = ' transform: translate(0, ' . $fade_animation_offset . '); ';
+        break;
+    }
+
+  $fade_animation_style = 'opacity: 0;' . $fade_animation_offset . 'transition-duration: ' . $fade_duration . 'ms;';
+
+} else {
+  $data                 = '';
+    $fade                 = '';
+    $fade_animation_style = '';
+}
+
+$output = "<div {$id} class=\"{$class}{$width}{$last}\" style=\"{$style}{$fade_animation_style}{$bg_color}\" {$data}{$fade}>" . do_shortcode( $content ) . "</div>";
+
+ob_start();
+
+echo $output;
+
+ob_get_clean();
+
+// VC Row Inner Template
+// =============================================================================
+// Make [vc_row_inner] behave like the [content_band] shortcode.
+// =============================================================================
+
+extract( shortcode_atts( array(
+  'class'              => '',
+  'style'              => '',
+  'border'             => '',
+  'bg_color'           => '',
+  'bg_pattern'         => '',
+  'bg_image'           => '',
+  'bg_video'           => '',
+  'bg_video_poster'    => '',
+  'no_margin'          => '',
+  'padding_top'        => '',
+  'padding_bottom'     => '',
+  'inner_container'    => '',
+  'parallax'           => '',
+  'marginless_columns' => ''
+), $atts, 'content_band' ) );
+
+$class = ( $class != '' ) ? 'x-content-band vc ' . esc_attr( $class ) : 'x-content-band vc';
+$style = ( $style != '' ) ? ' ' . $style : '';
+switch ( $border ) {
+  case 'top' :
+    $border = ' border-top';
+    break;
+  case 'left' :
+    $border = ' border-left';
+    break;
+  case 'right' :
+    $border = ' border-right';
+    break;
+  case 'bottom' :
+    $border = ' border-bottom';
+    break;
+  case 'vertical' :
+    $border = ' border-top border-bottom';
+    break;
+  case 'horizontal' :
+    $border = ' border-left border-right';
+    break;
+  case 'all' :
+    $border = ' border-top border-left border-right border-bottom';
+    break;
+  default :
+    $border = '';
+}
+$bg_color         = ( $bg_color        != ''     ) ? $bg_color : 'transparent';
+$bg_pattern       = ( $bg_pattern      != ''     ) ? $bg_pattern : '';
+$bg_pattern_class = ( $bg_pattern      != ''     ) ? ' bg-pattern' : '';
+$bg_image         = ( $bg_image        != ''     ) ? $bg_image : '';
+$bg_image_class   = ( $bg_image        != ''     ) ? ' bg-image' : '';
+$bg_video         = ( $bg_video        != ''     ) ? $bg_video : '';
+$bg_video_poster  = ( $bg_video_poster != ''     ) ? $bg_video_poster : '';
+$bg_video_class   = ( $bg_video        != ''     ) ? ' bg-video' : '';
+$no_margin        = ( $no_margin       == 'true' ) ? ' man' : '';
+$padding_top      = ( $padding_top     != ''     ) ? ' padding-top: ' . $padding_top . ';' : '';
+$padding_bottom   = ( $padding_bottom  != ''     ) ? ' padding-bottom: ' . $padding_bottom . ';' : '';
+switch ( $inner_container ) {
+  case 'true' :
+    $container_start = '<div class="x-container max width wpb_row">';
+    $container_end   = '</div>';
+    break;
+  default :
+    $container_start = '<div class="x-container wpb_row">';
+    $container_end   = '</div>';
+}
+$parallax                 = ( $parallax           == 'true' ) ? $parallax : '';
+$parallax_class           = ( $parallax           == 'true' ) ? ' parallax' : '';
+$marginless_columns       = ( $marginless_columns == 'true' ) ? $marginless_columns : '';
+$marginless_columns_class = ( $marginless_columns == 'true' ) ? ' marginless-columns' : '';
+
+if ( is_numeric( $bg_video_poster ) ) {
+  $bg_video_poster_info = wp_get_attachment_image_src( $bg_video_poster, 'full' );
+  $bg_video_poster      = $bg_video_poster_info[0];
+}
+
+if ( is_numeric( $bg_image ) ) {
+  $bg_image_info = wp_get_attachment_image_src( $bg_image, 'full' );
+  $bg_image      = $bg_image_info[0];
+}
+
+if ( is_numeric( $bg_pattern ) ) {
+  $bg_pattern_info = wp_get_attachment_image_src( $bg_pattern, 'full' );
+  $bg_pattern      = $bg_pattern_info[0];
+}
+
+$count = x_visual_composer_templates_id_increment();
+
+if ( $bg_video != '' ) {
+
+  $js_params = array(
+    'type' => 'video'
+  );
+
+  $data         = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'content_band', $js_params ) : '';
+  $video_output = ( function_exists( 'cs_bg_video' ) ) ? cs_bg_video( $bg_video, $bg_video_poster ) : '';
+
+  $output = "<div id=\"x-content-band-{$count}\" class=\"{$class}{$bg_video_class}{$marginless_columns_class}{$border}{$no_margin}\" {$data} style=\"{$padding_top}{$padding_bottom}{$style}\">"
+            . $video_output
+            . $container_start . do_shortcode( $content ) . $container_end
+          . '</div>';
+
+} elseif ( $bg_image != '' ) {
+
+  $js_params = array(
+    'type'     => 'image',
+    'parallax' => ( $parallax == 'true' )
+  );
+
+  $data = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'content_band', $js_params ) : '';
+
+  $output = "<div id=\"x-content-band-{$count}\" class=\"{$class}{$bg_image_class}{$parallax_class}{$marginless_columns_class}{$border}{$no_margin}\" {$data} style=\"background-image: url({$bg_image}); background-color: {$bg_color};{$padding_top}{$padding_bottom}{$style}\">"
+            . $container_start . do_shortcode( $content ) . $container_end
+          . '</div>';
+
+} elseif ( $bg_pattern != '' ) {
+
+  $js_params = array(
+    'type'     => 'pattern',
+    'parallax' => ( $parallax == 'true' )
+  );
+
+  $data = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'content_band', $js_params ) : '';
+
+  $output = "<div id=\"x-content-band-{$count}\" class=\"{$class}{$bg_pattern_class}{$parallax_class}{$marginless_columns_class}{$border}{$no_margin}\" style=\"background-image: url({$bg_pattern}); background-color: {$bg_color};{$padding_top}{$padding_bottom}{$style}\">"
+            . $container_start . do_shortcode( $content ) . $container_end
+          . '</div>';
+
+} else {
+
+  $output = "<div id=\"x-content-band-{$count}\" class=\"{$class}{$marginless_columns_class}{$border}{$no_margin}\" style=\"background-color: {$bg_color};{$padding_top}{$padding_bottom}{$style}\">"
+            . $container_start . do_shortcode( $content ) . $container_end
+          . '</div>';
+
+}
+
+ob_start();
+
+echo $output;
+
+ob_get_clean();
+
+// VC Row Template
+// =============================================================================
+// Make [vc_row] behave like the [content_band] shortcode.
+// =============================================================================
+
+extract( shortcode_atts( array(
+  'class'              => '',
+  'style'              => '',
+  'border'             => '',
+  'bg_color'           => '',
+  'bg_pattern'         => '',
+  'bg_image'           => '',
+  'bg_video'           => '',
+  'bg_video_poster'    => '',
+  'no_margin'          => '',
+  'padding_top'        => '',
+  'padding_bottom'     => '',
+  'inner_container'    => '',
+  'parallax'           => '',
+  'marginless_columns' => ''
+), $atts, 'content_band' ) );
+
+$class = ( $class != '' ) ? 'x-content-band vc ' . esc_attr( $class ) : 'x-content-band vc';
+$style = ( $style != '' ) ? ' ' . $style : '';
+switch ( $border ) {
+  case 'top' :
+    $border = ' border-top';
+    break;
+  case 'left' :
+    $border = ' border-left';
+    break;
+  case 'right' :
+    $border = ' border-right';
+    break;
+  case 'bottom' :
+    $border = ' border-bottom';
+    break;
+  case 'vertical' :
+    $border = ' border-top border-bottom';
+    break;
+  case 'horizontal' :
+    $border = ' border-left border-right';
+    break;
+  case 'all' :
+    $border = ' border-top border-left border-right border-bottom';
+    break;
+  default :
+    $border = '';
+}
+$bg_color         = ( $bg_color        != ''     ) ? $bg_color : 'transparent';
+$bg_pattern       = ( $bg_pattern      != ''     ) ? $bg_pattern : '';
+$bg_pattern_class = ( $bg_pattern      != ''     ) ? ' bg-pattern' : '';
+$bg_image         = ( $bg_image        != ''     ) ? $bg_image : '';
+$bg_image_class   = ( $bg_image        != ''     ) ? ' bg-image' : '';
+$bg_video         = ( $bg_video        != ''     ) ? $bg_video : '';
+$bg_video_poster  = ( $bg_video_poster != ''     ) ? $bg_video_poster : '';
+$bg_video_class   = ( $bg_video        != ''     ) ? ' bg-video' : '';
+$no_margin        = ( $no_margin       == 'true' ) ? ' man' : '';
+$padding_top      = ( $padding_top     != ''     ) ? ' padding-top: ' . $padding_top . ';' : '';
+$padding_bottom   = ( $padding_bottom  != ''     ) ? ' padding-bottom: ' . $padding_bottom . ';' : '';
+switch ( $inner_container ) {
+  case 'true' :
+    $container_start = '<div class="x-container max width wpb_row">';
+    $container_end   = '</div>';
+    break;
+  default :
+    $container_start = '<div class="x-container wpb_row">';
+    $container_end   = '</div>';
+}
+$parallax                 = ( $parallax           == 'true' ) ? $parallax : '';
+$parallax_class           = ( $parallax           == 'true' ) ? ' parallax' : '';
+$marginless_columns       = ( $marginless_columns == 'true' ) ? $marginless_columns : '';
+$marginless_columns_class = ( $marginless_columns == 'true' ) ? ' marginless-columns' : '';
+
+if ( is_numeric( $bg_video_poster ) ) {
+  $bg_video_poster_info = wp_get_attachment_image_src( $bg_video_poster, 'full' );
+  $bg_video_poster      = $bg_video_poster_info[0];
+}
+
+if ( is_numeric( $bg_image ) ) {
+  $bg_image_info = wp_get_attachment_image_src( $bg_image, 'full' );
+  $bg_image      = $bg_image_info[0];
+}
+
+if ( is_numeric( $bg_pattern ) ) {
+  $bg_pattern_info = wp_get_attachment_image_src( $bg_pattern, 'full' );
+  $bg_pattern      = $bg_pattern_info[0];
+}
+
+$count = x_visual_composer_templates_id_increment();
+
+if ( $bg_video != '' ) {
+
+  $js_params = array(
+    'type' => 'video'
+  );
+
+  $data         = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'content_band', $js_params ) : '';
+  $video_output = ( function_exists( 'cs_bg_video' ) ) ? cs_bg_video( $bg_video, $bg_video_poster ) : '';
+
+  $output = "<div id=\"x-content-band-{$count}\" class=\"{$class}{$bg_video_class}{$marginless_columns_class}{$border}{$no_margin}\" {$data} style=\"{$padding_top}{$padding_bottom}{$style}\">"
+            . $video_output
+            . $container_start . do_shortcode( $content ) . $container_end
+          . '</div>';
+
+} elseif ( $bg_image != '' ) {
+
+  $js_params = array(
+    'type'     => 'image',
+    'parallax' => ( $parallax == 'true' )
+  );
+
+  $data = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'content_band', $js_params ) : '';
+
+  $output = "<div id=\"x-content-band-{$count}\" class=\"{$class}{$bg_image_class}{$parallax_class}{$marginless_columns_class}{$border}{$no_margin}\" {$data} style=\"background-image: url({$bg_image}); background-color: {$bg_color};{$padding_top}{$padding_bottom}{$style}\">"
+            . $container_start . do_shortcode( $content ) . $container_end
+          . '</div>';
+
+} elseif ( $bg_pattern != '' ) {
+
+  $js_params = array(
+    'type'     => 'pattern',
+    'parallax' => ( $parallax == 'true' )
+  );
+
+  $data = ( function_exists( 'cs_generate_data_attributes' ) ) ? cs_generate_data_attributes( 'content_band', $js_params ) : '';
+
+  $output = "<div id=\"x-content-band-{$count}\" class=\"{$class}{$bg_pattern_class}{$parallax_class}{$marginless_columns_class}{$border}{$no_margin}\" {$data} style=\"background-image: url({$bg_pattern}); background-color: {$bg_color};{$padding_top}{$padding_bottom}{$style}\">"
+            . $container_start . do_shortcode( $content ) . $container_end
+          . '</div>';
+
+} else {
+
+  $output = "<div id=\"x-content-band-{$count}\" class=\"{$class}{$marginless_columns_class}{$border}{$no_margin}\" style=\"background-color: {$bg_color};{$padding_top}{$padding_bottom}{$style}\">"
+            . $container_start . do_shortcode( $content ) . $container_end
+          . '</div>';
+
+}
+
+ob_start();
+
+echo $output;
+
+ob_get_clean();
 
 }

@@ -114,6 +114,8 @@ if ( ! function_exists( 'x_buddypress_members_loop_item_class' ) ) :
   }
 endif;
 
+// Disable cover images for members
+add_filter( 'bp_is_profile_cover_image_active', '__return_false' );
 
 //
 // The output of the list item header for members loop items.
@@ -252,6 +254,8 @@ if ( ! function_exists( 'x_buddypress_group_forum_settings_js_output' ) ) :
   add_action( 'bp_after_group_admin_content', 'x_buddypress_group_forum_settings_js_output' );
 endif;
 
+// Disable cover images for groups
+add_filter( 'bp_is_groups_cover_image_active', '__return_false' );
 
 
 // Blogs

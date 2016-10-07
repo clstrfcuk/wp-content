@@ -6,7 +6,7 @@
 			<?php if ( is_user_logged_in() ) : ?>
 	
 				<li>
-					<a href="<?php bp_forum_topic_new_reply_link(); ?>" class="new-reply-link"><?php _e( 'New Reply', 'buddypress' ); ?></a>
+					<a href="<?php bp_forum_topic_new_reply_link(); ?>" class="new-reply-link"><?php _e( 'New Reply', '__x__' ); ?></a>
 				</li>
 	
 			<?php endif; ?>
@@ -14,7 +14,7 @@
 			<?php if ( bp_forums_has_directory() ) : ?>
 	
 				<li>
-					<a href="<?php bp_forums_directory_permalink(); ?>"><?php _e( 'Forum Directory', 'buddypress' ); ?></a>
+					<a href="<?php bp_forums_directory_permalink(); ?>"><?php _e( 'Forum Directory', '__x__' ); ?></a>
 				</li>
 	
 			<?php endif; ?>
@@ -29,7 +29,7 @@
 	
 			<div class="topic-tags">
 	
-				<?php _e( 'Topic tags:', 'buddypress' ); ?> <?php bp_forum_topic_tag_list(); ?>
+				<?php _e( 'Topic tags:', '__x__' ); ?> <?php bp_forum_topic_tag_list(); ?>
 	
 			</div>
 	
@@ -78,7 +78,7 @@
 						<a href="<?php bp_the_topic_post_poster_link(); ?>">
 							<?php bp_the_topic_post_poster_avatar( 'width=40&height=40' ); ?>
 						</a>
-						<?php echo sprintf( __( '%1$s said %2$s:', 'buddypress' ), bp_get_the_topic_post_poster_name(), bp_get_the_topic_post_time_since() ); ?>
+						<?php echo sprintf( __( '%1$s said %2$s:', '__x__' ), bp_get_the_topic_post_poster_name(), bp_get_the_topic_post_time_since() ); ?>
 					</div>
 
 					<div class="post-content">
@@ -92,7 +92,7 @@
 
 						<?php do_action( 'bp_group_forum_post_meta' ); ?>
 
-						<a href="#post-<?php bp_the_topic_post_id(); ?>" title="<?php esc_attr_e( 'Permanent link to this post', 'buddypress' ); ?>">#</a>
+						<a href="#post-<?php bp_the_topic_post_id(); ?>" title="<?php esc_attr_e( 'Permanent link to this post', '__x__' ); ?>">#</a>
 					</div>
 				</li>
 
@@ -116,7 +116,7 @@
 	<?php else: ?>
 	
 		<div id="message" class="info">
-			<p><?php _e( 'There are no posts for this topic.', 'buddypress' ); ?></p>
+			<p><?php _e( 'There are no posts for this topic.', '__x__' ); ?></p>
 		</div>
 	
 	<?php endif;?>
@@ -131,17 +131,17 @@
 					<p id="post-reply"></p>
 
 					<?php if ( bp_groups_auto_join() && !bp_group_is_member() ) : ?>
-						<p><?php _e( 'You will auto join this group when you reply to this topic.', 'buddypress' ); ?></p>
+						<p><?php _e( 'You will auto join this group when you reply to this topic.', '__x__' ); ?></p>
 					<?php endif; ?>
 
 					<?php do_action( 'groups_forum_new_reply_before' ); ?>
 
-					<h4><?php _e( 'Add a reply:', 'buddypress' ); ?></h4>
+					<h4><?php _e( 'Add a reply:', '__x__' ); ?></h4>
 
 					<textarea name="reply_text" id="reply_text"></textarea>
 
 					<div class="submit">
-						<input type="submit" name="submit_reply" id="submit" value="<?php esc_attr_e( 'Post Reply', 'buddypress' ); ?>" />
+						<input type="submit" name="submit_reply" id="submit" value="<?php esc_attr_e( 'Post Reply', '__x__' ); ?>" />
 					</div>
 
 					<?php do_action( 'groups_forum_new_reply_after' ); ?>
@@ -152,7 +152,7 @@
 			<?php elseif ( !bp_group_is_user_banned() ) : ?>
 
 				<div id="message" class="info">
-					<p><?php _e( 'This topic is closed, replies are no longer accepted.', 'buddypress' ); ?></p>
+					<p><?php _e( 'This topic is closed, replies are no longer accepted.', '__x__' ); ?></p>
 				</div>
 
 			<?php endif; ?>

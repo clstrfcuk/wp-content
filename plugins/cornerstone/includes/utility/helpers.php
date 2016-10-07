@@ -368,15 +368,19 @@ function cs_clean_shortcode_att( $value ) {
 /**
  * Sanitizes an HTML classname to ensure it only contains valid characters.
  *
- * Uses sanitize_html_class but allows spaces for multiple classes.
+ * Uses sanitize_html_class but allows accepts multiple classes, either as
+ * an array or a space delimted string.
  *
- * @param string $class    The classname to be sanitized
- * @return string The sanitized value
+ * @param string|array $classes    The classname to be sanitized
+ * @return string the sanitized value
  */
-function cs_sanitize_html_classes( $class ) {
+function cs_sanitize_html_classes( $classes ) {
 
-	$classes = explode( ' ', $class );
-	array_map( 'sanitize_html_class', $classes );
+  if ( is_string( $classes ) ) {
+    $classes = explode( ' ', $classes );
+  }
+
+	array_map( 'sanitize_html_class', array_filter( $classes ) );
 	$class = implode( ' ', $classes );
 
 	return $class;

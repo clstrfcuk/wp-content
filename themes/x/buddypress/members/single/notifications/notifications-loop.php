@@ -1,9 +1,9 @@
 <table class="notifications">
 	<thead>
 		<tr>
-			<th class="title"><?php _e( 'Notification', 'buddypress' ); ?></th>
-			<th class="date"><?php _e( 'Date Received', 'buddypress' ); ?></th>
-			<th class="actions"><?php _e( 'Actions', 'buddypress' ); ?></th>
+			<th class="title"><?php _e( 'Notification', '__x__' ); ?></th>
+			<th class="date"><?php _e( 'Date Received', '__x__' ); ?></th>
+			<th class="actions"><?php _e( 'Actions', '__x__' ); ?></th>
 		</tr>
 	</thead>
 

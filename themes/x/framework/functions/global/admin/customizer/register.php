@@ -55,6 +55,12 @@ function x_customizer_options_register( $wp_customize ) {
     '1' => 'On',
     ''  => 'Off'
   );
+  
+  $list_overflow_options = array(
+	  'overflow-scroll' => __( 'On (no submenu support)', '__x__' ),
+	  'overflow-visible' => __( 'Off', '__x__' )
+  );
+
 
   $list_stacks = array(
     'integrity' => __( 'Integrity', '__x__' ),
@@ -766,6 +772,9 @@ function x_customizer_options_register( $wp_customize ) {
 
       $x['set'][] = array( 'x_navbar_positioning', 'refresh' );
       $x['con'][] = array( 'x_navbar_positioning', 'radio', __( 'Navbar Position', '__x__' ), $list_navbar_positions, 'x_customizer_section_header' );
+      
+      $x['set'][] = array( 'x_fixed_menu_scroll', 'refresh' );
+      $x['con'][] = array( 'x_fixed_menu_scroll', 'radio', __('Navbar Scrolling', '__x__'),$list_overflow_options, 'x_customizer_section_header' );
 
 
       //

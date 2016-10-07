@@ -16,10 +16,10 @@
 
 		<div class="x-item-list-tabs-nav item-list-tabs" role="navigation">
 			<ul>
-				<li class="selected" id="groups-all"><a href="<?php bp_groups_directory_permalink(); ?>"><?php printf( __( 'All Groups <span>%s</span>', 'buddypress' ), bp_get_total_group_count() ); ?></a></li>
+				<li class="selected" id="groups-all"><a href="<?php bp_groups_directory_permalink(); ?>"><?php printf( __( 'All Groups <span>%s</span>', '__x__' ), bp_get_total_group_count() ); ?></a></li>
 
 				<?php if ( is_user_logged_in() && bp_get_total_group_count_for_user( bp_loggedin_user_id() ) ) : ?>
-					<li id="groups-personal"><a href="<?php echo bp_loggedin_user_domain() . bp_get_groups_slug() . '/my-groups/'; ?>"><?php printf( __( 'My Groups <span>%s</span>', 'buddypress' ), bp_get_total_group_count_for_user( bp_loggedin_user_id() ) ); ?></a></li>
+					<li id="groups-personal"><a href="<?php echo bp_loggedin_user_domain() . bp_get_groups_slug() . '/my-groups/'; ?>"><?php printf( __( 'My Groups <span>%s</span>', '__x__' ), bp_get_total_group_count_for_user( bp_loggedin_user_id() ) ); ?></a></li>
 				<?php endif; ?>
 
 				<?php do_action( 'bp_groups_directory_group_filter' ); ?>
@@ -33,13 +33,13 @@
 
 				<li id="groups-order-select" class="last filter">
 
-					<label for="groups-order-by"><?php _e( 'Order By:', 'buddypress' ); ?></label>
+					<label for="groups-order-by"><?php _e( 'Order By:', '__x__' ); ?></label>
 
 					<select id="groups-order-by">
-						<option value="active"><?php _e( 'Last Active', 'buddypress' ); ?></option>
-						<option value="popular"><?php _e( 'Most Members', 'buddypress' ); ?></option>
-						<option value="newest"><?php _e( 'Newly Created', 'buddypress' ); ?></option>
-						<option value="alphabetical"><?php _e( 'Alphabetical', 'buddypress' ); ?></option>
+						<option value="active"><?php _e( 'Last Active', '__x__' ); ?></option>
+						<option value="popular"><?php _e( 'Most Members', '__x__' ); ?></option>
+						<option value="newest"><?php _e( 'Newly Created', '__x__' ); ?></option>
+						<option value="alphabetical"><?php _e( 'Alphabetical', '__x__' ); ?></option>
 
 						<?php do_action( 'bp_groups_directory_order_options' ); ?>
 					</select>

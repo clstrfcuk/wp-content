@@ -183,8 +183,15 @@ abstract class Cornerstone_Plugin_Base {
     try {
 
 			$class = $this->name . '_' . $name;
+      $exists = false;
 
-			if ( ! class_exists( $class ) ) {
+      try {
+        $exists = class_exists( $class );
+      } catch ( Exception $e ) {
+        trigger_error( 'Exception: ',  $e->getMessage(), "\n" );
+      }
+
+			if ( ! $exists ) {
 				return false;
 			}
 

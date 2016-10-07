@@ -11,17 +11,17 @@
 
 				<?php if ( !bp_get_the_thread_recipients() ) : ?>
 
-					<?php _e( 'You are alone in this conversation.', 'buddypress' ); ?>
+					<?php _e( 'You are alone in this conversation.', '__x__' ); ?>
 
 				<?php else : ?>
 
-					<?php printf( __( 'Conversation between %s and you.', 'buddypress' ), bp_get_the_thread_recipients() ); ?>
+					<?php printf( __( 'Conversation between %s and you.', '__x__' ), bp_get_the_thread_recipients() ); ?>
 
 				<?php endif; ?>
 
 			</span>
 
-			<a class="x-btn-bp confirm" href="<?php bp_the_thread_delete_link(); ?>" title="<?php esc_attr_e( "Delete Message", "buddypress" ); ?>"><?php _e( 'Delete', 'buddypress' ); ?></a>
+			<a class="x-btn-bp confirm" href="<?php bp_the_thread_delete_link(); ?>" title="<?php esc_attr_e( "Delete Message", "__x__" ); ?>"><?php _e( 'Delete', '__x__' ); ?></a>
 		</p>
 
 		<?php do_action( 'bp_before_message_thread_list' ); ?>

@@ -70,6 +70,14 @@ class CS_Gravity_Forms extends Cornerstone_Element_Base {
 			'',
 			true
 		);
+		
+		$this->addControl(
+			'tabindex_id',
+			'number',
+			__( 'Tabindex ID', 'cornerstone' ),
+			__( 'Specify the starting tab index for the fields of this Gravity Form.', 'cornerstone' ),
+			'1'
+		);
 
 	}
 
@@ -84,7 +92,7 @@ class CS_Gravity_Forms extends Cornerstone_Element_Base {
 		if ( 'none' === $form_id )
 			return '';
 
-		$shortcode = "[gravityform id=\"{$form_id}\" title=\"{$show_title}\" description=\"{$show_description}\" ajax=\"{$enable_ajax}\"]";
+		$shortcode = "[gravityform id=\"{$form_id}\" title=\"{$show_title}\" description=\"{$show_description}\" ajax=\"{$enable_ajax}\" tabindex=\"{$tabindex_id}\"]";
 
 		return $shortcode;
 

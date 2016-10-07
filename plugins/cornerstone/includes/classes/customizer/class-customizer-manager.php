@@ -13,11 +13,11 @@ class Cornerstone_Customizer_Manager extends Cornerstone_Plugin_Component {
    */
   public function setup() {
 
-    if ( apply_filters( 'cornerstone_use_customizer', true ) ) {
+    if ( apply_filters( 'cornerstone_options_use_native', true ) ) {
       add_action( 'customize_register', array( $this, 'register' ) );
     }
 
-    $this->defaults = $this->plugin->config( 'customizer/defaults' );
+    $this->defaults = $this->plugin->config( 'options/defaults' );
 
     if ( defined('WP_DEBUG') && WP_DEBUG ) {
       add_shortcode( 'cornerstone_customizer_debug', array( $this, 'debugShortcode' ) );

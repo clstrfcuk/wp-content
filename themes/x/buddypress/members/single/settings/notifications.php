@@ -6,7 +6,7 @@
 
 	<?php do_action( 'bp_members_notification_settings_before_submit' ); ?>
 
-	<input type="submit" name="submit" value="<?php esc_attr_e( 'Save', 'buddypress' ); ?>" id="submit" class="auto" />
+	<input type="submit" name="submit" value="<?php esc_attr_e( 'Save', '__x__' ); ?>" id="submit" class="auto" />
 
 	<?php do_action( 'bp_members_notification_settings_after_submit' ); ?>
 

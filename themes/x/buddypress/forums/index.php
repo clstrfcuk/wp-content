@@ -19,11 +19,11 @@
 
 		<div class="x-item-list-tabs-nav item-list-tabs" role="navigation">
 			<ul>
-				<li class="selected" id="forums-all"><a href="<?php echo trailingslashit( bp_get_root_domain() . '/' . bp_get_forums_root_slug() ); ?>"><?php printf( __( 'All Topics <span>%s</span>', 'buddypress' ), bp_get_forum_topic_count() ); ?></a></li>
+				<li class="selected" id="forums-all"><a href="<?php echo trailingslashit( bp_get_root_domain() . '/' . bp_get_forums_root_slug() ); ?>"><?php printf( __( 'All Topics <span>%s</span>', '__x__' ), bp_get_forum_topic_count() ); ?></a></li>
 
 				<?php if ( is_user_logged_in() && bp_get_forum_topic_count_for_user( bp_loggedin_user_id() ) ) : ?>
 
-					<li id="forums-personal"><a href="<?php echo trailingslashit( bp_loggedin_user_domain() . bp_get_forums_slug() . '/topics' ); ?>"><?php printf( __( 'My Topics <span>%s</span>', 'buddypress' ), bp_get_forum_topic_count_for_user( bp_loggedin_user_id() ) ); ?></a></li>
+					<li id="forums-personal"><a href="<?php echo trailingslashit( bp_loggedin_user_domain() . bp_get_forums_slug() . '/topics' ); ?>"><?php printf( __( 'My Topics <span>%s</span>', '__x__' ), bp_get_forum_topic_count_for_user( bp_loggedin_user_id() ) ); ?></a></li>
 
 				<?php endif; ?>
 
@@ -39,11 +39,11 @@
 
 				<li id="forums-order-select" class="last filter">
 
-					<label for="forums-order-by"><?php _e( 'Order By:', 'buddypress' ); ?></label>
+					<label for="forums-order-by"><?php _e( 'Order By:', '__x__' ); ?></label>
 					<select id="forums-order-by">
-						<option value="active"><?php _e( 'Last Active', 'buddypress' ); ?></option>
-						<option value="popular"><?php _e( 'Most Posts', 'buddypress' ); ?></option>
-						<option value="unreplied"><?php _e( 'Unreplied', 'buddypress' ); ?></option>
+						<option value="active"><?php _e( 'Last Active', '__x__' ); ?></option>
+						<option value="popular"><?php _e( 'Most Posts', '__x__' ); ?></option>
+						<option value="unreplied"><?php _e( 'Unreplied', '__x__' ); ?></option>
 
 						<?php do_action( 'bp_forums_directory_order_options' ); ?>
 
@@ -79,23 +79,23 @@
 					<?php do_action( 'groups_forum_new_topic_before' ); ?>
 
 					<a name="post-new"></a>
-					<h5><?php _e( 'Create New Topic:', 'buddypress' ); ?></h5>
+					<h5><?php _e( 'Create New Topic:', '__x__' ); ?></h5>
 
 					<?php do_action( 'template_notices' ); ?>
 
-					<label><?php _e( 'Title:', 'buddypress' ); ?></label>
+					<label><?php _e( 'Title:', '__x__' ); ?></label>
 					<input type="text" name="topic_title" id="topic_title" value="" maxlength="100" />
 
-					<label><?php _e( 'Content:', 'buddypress' ); ?></label>
+					<label><?php _e( 'Content:', '__x__' ); ?></label>
 					<textarea name="topic_text" id="topic_text"></textarea>
 
-					<label><?php _e( 'Tags (comma separated):', 'buddypress' ); ?></label>
+					<label><?php _e( 'Tags (comma separated):', '__x__' ); ?></label>
 					<input type="text" name="topic_tags" id="topic_tags" value="" />
 
-					<label><?php _e( 'Post In Group Forum:', 'buddypress' ); ?></label>
+					<label><?php _e( 'Post In Group Forum:', '__x__' ); ?></label>
 					<select id="topic_group_id" name="topic_group_id">
 
-						<option value=""><?php /* translators: no option picked in select box */ _e( '----', 'buddypress' ); ?></option>
+						<option value=""><?php /* translators: no option picked in select box */ _e( '----', '__x__' ); ?></option>
 
 						<?php while ( bp_groups() ) : bp_the_group(); ?>
 
@@ -112,8 +112,8 @@
 					<?php do_action( 'groups_forum_new_topic_after' ); ?>
 
 					<div class="submit">
-						<input type="submit" name="submit_topic" id="submit" value="<?php esc_attr_e( 'Post Topic', 'buddypress' ); ?>" />
-						<input type="button" name="submit_topic_cancel" id="submit_topic_cancel" value="<?php esc_attr_e( 'Cancel', 'buddypress' ); ?>" />
+						<input type="submit" name="submit_topic" id="submit" value="<?php esc_attr_e( 'Post Topic', '__x__' ); ?>" />
+						<input type="button" name="submit_topic_cancel" id="submit_topic_cancel" value="<?php esc_attr_e( 'Cancel', '__x__' ); ?>" />
 					</div>
 
 					<?php wp_nonce_field( 'bp_forums_new_topic' ); ?>
@@ -124,7 +124,7 @@
 
 				<div id="message" class="info">
 
-					<p><?php printf( __( "You are not a member of any groups so you don't have any group forums you can post in. To start posting, first find a group that matches the topic subject you'd like to start. If this group does not exist, why not <a href='%s'>create a new group</a>? Once you have joined or created the group you can post your topic in that group's forum.", 'buddypress' ), site_url( bp_get_groups_root_slug() . '/create/' ) ); ?></p>
+					<p><?php printf( __( "You are not a member of any groups so you don't have any group forums you can post in. To start posting, first find a group that matches the topic subject you'd like to start. If this group does not exist, why not <a href='%s'>create a new group</a>? Once you have joined or created the group you can post your topic in that group's forum.", '__x__' ), site_url( bp_get_groups_root_slug() . '/create/' ) ); ?></p>
 
 				</div>
 

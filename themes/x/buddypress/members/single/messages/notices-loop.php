@@ -33,14 +33,14 @@
 
 					<?php endif; ?>
 
-					<span class="activity"><?php _e( 'Sent:', 'buddypress' ); ?> <?php bp_message_notice_post_date(); ?></span>
+					<span class="activity"><?php _e( 'Sent:', '__x__' ); ?> <?php bp_message_notice_post_date(); ?></span>
 				</td>
 
 				<?php do_action( 'bp_notices_list_item' ); ?>
 
 				<td width="10%">
 					<a class="button" href="<?php bp_message_activate_deactivate_link(); ?>" class="confirm"><?php bp_message_activate_deactivate_text(); ?></a>
-					<a class="button" href="<?php bp_message_notice_delete_link(); ?>" class="confirm" title="<?php esc_attr_e( "Delete Message", "buddypress" ); ?>">x</a>
+					<a class="button" href="<?php bp_message_notice_delete_link(); ?>" class="confirm" title="<?php esc_attr_e( "Delete Message", "__x__" ); ?>">x</a>
 				</td>
 			</tr>
 		<?php endwhile; ?>
@@ -51,7 +51,7 @@
 <?php else: ?>
 
 	<div id="message" class="info">
-		<p><?php _e( 'Sorry, no notices were found.', 'buddypress' ); ?></p>
+		<p><?php _e( 'Sorry, no notices were found.', '__x__' ); ?></p>
 	</div>
 
 <?php endif;?>

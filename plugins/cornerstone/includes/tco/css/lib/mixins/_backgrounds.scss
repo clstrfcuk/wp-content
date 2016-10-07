@@ -15,7 +15,7 @@
 // =============================================================================
 
 @mixin bg-gradient($startColor: #555555, $endColor: #333333, $deg: 0deg) {
-  background-color: $endColor;
+  background-color: mix($startColor, $endColor);
   background-image: -webkit-linear-gradient($deg, $startColor, $endColor);
   background-image: linear-gradient($deg, $startColor, $endColor);
   background-repeat: repeat-x;

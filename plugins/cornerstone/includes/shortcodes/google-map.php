@@ -38,7 +38,7 @@ function x_shortcode_google_map( $atts, $content = null ) {
 
   $data = cs_generate_data_attributes( 'google_map', $js_params );
 
-  $script_url = 'https://maps.googleapis.com/maps/api/js';
+  $script_url = 'https://maps.googleapis.com/maps/api/js?v=3';
 
   if ( $api_key ) {
     $api_key = esc_attr( $api_key );

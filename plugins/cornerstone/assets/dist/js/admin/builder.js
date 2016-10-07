@@ -6863,7 +6863,7 @@ module.exports = CS.Mn.LayoutView.extend({
 
     var opts = {
       message: '',
-      duration: 4000,
+      duration: 10000,
     };
 
     if (args && args[0]) opts.message = args[0];
@@ -6922,6 +6922,7 @@ module.exports = CS.Mn.LayoutView.extend({
   }
 
 });
+
 },{"../extra/expansion":140,"../inspector/inspector":146,"../layout/layout":147,"../library/element-library":150,"../settings/settings":178,"./footer":155,"./header":156,"./skeleton":159}],155:[function(require,module,exports){
 var ViewExpand  = require('../extra/expand')
   , ViewConfirm = require('../extra/confirm')

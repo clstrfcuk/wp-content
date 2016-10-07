@@ -11,20 +11,20 @@
 		<?php if ( bp_account_was_activated() ) : ?>
 
 			<?php if ( isset( $_GET['e'] ) ) : ?>
-				<p><?php _e( 'Your account was activated successfully! Your account details have been sent to you in a separate email.', 'buddypress' ); ?></p>
+				<p><?php _e( 'Your account was activated successfully! Your account details have been sent to you in a separate email.', '__x__' ); ?></p>
 			<?php else : ?>
-				<p><?php printf( __( 'Your account was activated successfully! You can now <a href="%s">log in</a> with the username and password you provided when you signed up.', 'buddypress' ), wp_login_url( bp_get_root_domain() ) ); ?></p>
+				<p><?php printf( __( 'Your account was activated successfully! You can now <a href="%s">log in</a> with the username and password you provided when you signed up.', '__x__' ), wp_login_url( bp_get_root_domain() ) ); ?></p>
 			<?php endif; ?>
 
 		<?php else : ?>
 
 			<form action="" method="get" class="standard-form cf man" id="activation-form">
 
-				<label for="key"><?php _e( 'Please provide a valid activation key.', 'buddypress' ); ?></label>
+				<label for="key"><?php _e( 'Please provide a valid activation key.', '__x__' ); ?></label>
 				<input type="text" name="key" id="key" value="" />
 
 				<p class="submit">
-					<input type="submit" name="submit" value="<?php esc_attr_e( 'Activate', 'buddypress' ); ?>" />
+					<input type="submit" name="submit" value="<?php esc_attr_e( 'Activate', '__x__' ); ?>" />
 				</p>
 
 			</form>

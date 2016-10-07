@@ -138,7 +138,7 @@ class Cornerstone_Builder extends Cornerstone_Plugin_Component {
 			'scrollTopSelector' => apply_filters( 'cornerstone_scrolltop_selector', null ),
 			'savedLast' => get_the_modified_time('U'),
 			'visualEnhancements' => (bool) $settings['visual_enhancements'],
-			'keybindings' => $this->plugin->config( 'builder/keybindings' ), // filterable on: cornerstone_config_builder_keybindings
+			'keybindings' => apply_filters('cornerstone_keybindings', $this->plugin->config( 'builder/keybindings' ) ),
 			'cssClassMap' => $this->plugin->config( 'common/class-map' ),
 		), apply_filters( 'cornerstone_config_data', array() ) ) );
 

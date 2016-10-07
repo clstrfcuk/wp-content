@@ -13,11 +13,11 @@
 
 		<div class="x-item-list-tabs-nav item-list-tabs" role="navigation">
 			<ul>
-				<li class="selected" id="blogs-all"><a href="<?php bp_root_domain(); ?>/<?php bp_blogs_root_slug(); ?>"><?php printf( __( 'All Sites <span>%s</span>', 'buddypress' ), bp_get_total_blog_count() ); ?></a></li>
+				<li class="selected" id="blogs-all"><a href="<?php bp_root_domain(); ?>/<?php bp_blogs_root_slug(); ?>"><?php printf( __( 'All Sites <span>%s</span>', '__x__' ), bp_get_total_blog_count() ); ?></a></li>
 
 				<?php if ( is_user_logged_in() && bp_get_total_blog_count_for_user( bp_loggedin_user_id() ) ) : ?>
 
-					<li id="blogs-personal"><a href="<?php echo bp_loggedin_user_domain() . bp_get_blogs_slug(); ?>"><?php printf( __( 'My Sites <span>%s</span>', 'buddypress' ), bp_get_total_blog_count_for_user( bp_loggedin_user_id() ) ); ?></a></li>
+					<li id="blogs-personal"><a href="<?php echo bp_loggedin_user_domain() . bp_get_blogs_slug(); ?>"><?php printf( __( 'My Sites <span>%s</span>', '__x__' ), bp_get_total_blog_count_for_user( bp_loggedin_user_id() ) ); ?></a></li>
 
 				<?php endif; ?>
 
@@ -33,11 +33,11 @@
 
 				<li id="blogs-order-select" class="last filter">
 
-					<label for="blogs-order-by"><?php _e( 'Order By:', 'buddypress' ); ?></label>
+					<label for="blogs-order-by"><?php _e( 'Order By:', '__x__' ); ?></label>
 					<select id="blogs-order-by">
-						<option value="active"><?php _e( 'Last Active', 'buddypress' ); ?></option>
-						<option value="newest"><?php _e( 'Newest', 'buddypress' ); ?></option>
-						<option value="alphabetical"><?php _e( 'Alphabetical', 'buddypress' ); ?></option>
+						<option value="active"><?php _e( 'Last Active', '__x__' ); ?></option>
+						<option value="newest"><?php _e( 'Newest', '__x__' ); ?></option>
+						<option value="alphabetical"><?php _e( 'Alphabetical', '__x__' ); ?></option>
 
 						<?php do_action( 'bp_blogs_directory_order_options' ); ?>
 

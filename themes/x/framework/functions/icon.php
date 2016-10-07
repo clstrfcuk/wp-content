@@ -89,7 +89,7 @@ if ( ! function_exists( 'x_icon_comment' ) ) :
         $comment_time = sprintf( __( '%1$s at %2$s', '__x__' ), get_comment_date(), get_comment_time() );
       endif;
     ?>
-    <li id="li-comment-<?php comment_ID(); ?>" <?php comment_class(); ?>>
+    <li id="li-comment-<?php comment_ID(); ?>" itemprop="review" itemscope itemtype="http://schema.org/Review"<?php comment_class(); ?>>
       <?php $comment_reply = ( ! x_is_product() ) ? '<div class="x-reply">' . get_comment_reply_link( array_merge( $args, array( 'reply_text' => __( 'Reply<span class="comment-reply-link-after"><i class="x-icon-reply" data-x-icon="&#xf112;"></i></span>', '__x__' ), 'depth' => $depth, 'max_depth' => $args['max_depth'] ) ) ) . '</div>' : ''; ?>
       <?php
       printf( '<div class="x-comment-img">%1$s %2$s %3$s</div>',
@@ -101,7 +101,7 @@ if ( ! function_exists( 'x_icon_comment' ) ) :
       <article id="comment-<?php comment_ID(); ?>" class="comment">
         <header class="x-comment-header">
           <?php
-          printf( '<cite class="x-comment-author">%1$s</cite>',
+          printf( '<cite class="x-comment-author" itemprop="author">%1$s</cite>',
             get_comment_author_link()
           );
           if ( x_is_product() && get_option( 'woocommerce_enable_review_rating' ) == 'yes' ) : ?> 
@@ -111,7 +111,7 @@ if ( ! function_exists( 'x_icon_comment' ) ) :
               </div>
             </div>
           <?php endif;
-          printf( '<div><a href="%1$s" class="x-comment-time"><time datetime="%2$s">%3$s</time></a></div>',
+          printf( '<div><a href="%1$s" class="x-comment-time"><time itemprop="datePublished" datetime="%2$s">%3$s</time></a></div>',
             esc_url( get_comment_link( $comment->comment_ID ) ),
             get_comment_time( 'c' ),
             $comment_time
@@ -122,7 +122,7 @@ if ( ! function_exists( 'x_icon_comment' ) ) :
         <?php if ( '0' == $comment->comment_approved ) : ?>
           <p class="x-comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.', '__x__' ); ?></p>
         <?php endif; ?>
-        <section class="x-comment-content">
+        <section class="x-comment-content" itemprop="description">
           <?php comment_text(); ?>
         </section>
       </article>

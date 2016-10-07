@@ -121,7 +121,7 @@ function x_customizer_get_css() {
 function x_customizer_output_js() {
 
   $x_custom_scripts                     = x_get_option( 'x_custom_scripts' );
-  $entry_id                             = get_the_ID();
+  $entry_id                             = get_queried_object_id();
   $x_entry_bg_image_full                = get_post_meta( $entry_id, '_x_entry_bg_image_full', true );
   $x_entry_bg_image_full_fade           = get_post_meta( $entry_id, '_x_entry_bg_image_full_fade', true );
   $x_entry_bg_image_full_duration       = get_post_meta( $entry_id, '_x_entry_bg_image_full_duration', true );
@@ -138,7 +138,7 @@ function x_customizer_output_js() {
 
   <?php endif; ?>
 
-  <?php if ( $x_entry_bg_image_full && is_singular() ) : ?>
+  <?php if ( $x_entry_bg_image_full ) : ?>
 
     <?php
     $page_bg_images_output = '';

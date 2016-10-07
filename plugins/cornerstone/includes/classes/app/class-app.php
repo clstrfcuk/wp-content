@@ -153,7 +153,7 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
     wp_enqueue_style( 'cs-code-editor-style' );
   }
 
-  public function enqueue_scripts( $settings ) {
+  public function register_app_scripts( $settings, $isPreview = false ) {
 
     wp_register_script( 'cs-app-vendor', $this->plugin->js( 'cs-vendor', true ), array( 'jquery' ), $this->plugin->version(), false );
     wp_register_script( 'cs-app', $this->plugin->js( 'cs', true ), array( 'cs-app-vendor' ), $this->plugin->version(), false );
@@ -177,15 +177,24 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
       'isRTL'           => is_rtl(),
       'i18n'            => $this->plugin->i18n( 'app' ),
       '_cs_nonce'       => wp_create_nonce( 'cornerstone_nonce' ),
-      'iconMaps'        => $icon_maps,
+      'permissions'     => $app_controller->permissions(),
       'funMode'         => (bool) $settings['visual_enhancements'],
       'fontAwesome'     => $this->plugin->common()->getFontIcons(),
+      'iconMaps'        => $icon_maps,
+      'isPreview'       => $isPreview,
+      'previewData'     => $this->plugin->component( 'Preview_Frame' )->data(),
       'editorMarkup'    => $this->get_wp_editor(),
-      'permissions'     => $app_controller->permissions(),
       'font_data'       => $app_controller->font_data(),
       'font_weights'    => $app_controller->font_weights(),
+      'keybindings'     => apply_filters('cornerstone_keybindings', $this->plugin->config( 'builder/keybindings' ) ),
+      'home_url'        => home_url()
     ) ) );
 
+  }
+
+  public function enqueue_scripts( $settings ) {
+
+    $this->register_app_scripts( $settings );
     wp_enqueue_script( 'cs-app' );
 
     // Dependencies

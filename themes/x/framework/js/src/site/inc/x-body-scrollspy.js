@@ -168,6 +168,15 @@ jQuery(document).ready(function($) {
   var locHref              = location.href;
   var locHashIndex         = locHref.indexOf('#');
   var locHash              = locHref.substr(locHashIndex);
+  var dragging             = false;
+  
+  $body.on('touchmove', function() {
+	  dragging = true;
+  } );
+  
+  $body.on('touchstart', function() {
+	  dragging = false;
+  } );
 
 
   //
@@ -197,7 +206,7 @@ jQuery(document).ready(function($) {
   // Scroll trigger.
   //
 
-  $('a[href*="#"]').on('touchstart click', function(e) {
+  $('a[href*="#"]').on('touchend click', function(e) {
     href        = $(this).attr('href');
     notComments = href.indexOf('#comments') === -1;
     if ( href !== '#' && notComments ) {
@@ -205,6 +214,11 @@ jQuery(document).ready(function($) {
       var $el   = $('#' + theId);
       if ( $el.length > 0 ) {
         e.preventDefault();
+        
+        if (dragging) {
+	        return;
+        }
+        
         animateOffset($el, 850, 'easeInOutExpo');
       }
     }

@@ -9,6 +9,7 @@
 // -----------------------------------------------------------------------------
 //   01. Clearfix
 //   02. Hide Text
+//   03. Tab Focus
 // =============================================================================
 
 // Clearfix
@@ -37,4 +38,15 @@
   text-shadow: none;
   background-color: transparent;
   border: 0;
+}
+
+
+
+// Tab Focus
+// =============================================================================
+
+@mixin tab-focus() {
+  outline: thin dotted #333; // 1
+  outline: 5px auto $linkColor; // 2
+  outline-offset: -1px;
 }

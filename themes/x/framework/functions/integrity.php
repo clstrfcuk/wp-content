@@ -177,7 +177,7 @@ if ( ! function_exists( 'x_integrity_comment' ) ) :
       endif;
       $avatar_variation = ( x_is_product() ) ? ' x-img-thumbnail' : '';
     ?>
-    <li id="li-comment-<?php comment_ID(); ?>" <?php comment_class(); ?>>
+    <li id="li-comment-<?php comment_ID(); ?>" itemprop="review" itemscope itemtype="http://schema.org/Review" <?php comment_class(); ?>>
       <?php
       printf( '<div class="x-comment-img">%1$s %2$s</div>',
         '<span class="avatar-wrap cf' . $avatar_variation . '">' . get_avatar( $comment, 120 ) . '</span>',
@@ -187,10 +187,10 @@ if ( ! function_exists( 'x_integrity_comment' ) ) :
       <article id="comment-<?php comment_ID(); ?>" class="comment">
         <header class="x-comment-header">
           <?php
-          printf( '<cite class="x-comment-author">%1$s</cite>',
+          printf( '<cite class="x-comment-author" itemprop="author">%1$s</cite>',
             get_comment_author_link()
           );
-          printf( '<div><a href="%1$s" class="x-comment-time"><time datetime="%2$s">%3$s</time></a></div>',
+          printf( '<div><a href="%1$s" class="x-comment-time"><time itemprop="datePublished datetime="%2$s">%3$s</time></a></div>',
             esc_url( get_comment_link( $comment->comment_ID ) ),
             get_comment_time( 'c' ),
             sprintf( __( '%1$s at %2$s', '__x__' ),
@@ -211,7 +211,7 @@ if ( ! function_exists( 'x_integrity_comment' ) ) :
         <?php if ( '0' == $comment->comment_approved ) : ?>
           <p class="x-comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.', '__x__' ); ?></p>
         <?php endif; ?>
-        <section class="x-comment-content">
+        <section class="x-comment-content" itemprop="description">
           <?php comment_text(); ?>
         </section>
         <?php if ( ! x_is_product() ) : ?>

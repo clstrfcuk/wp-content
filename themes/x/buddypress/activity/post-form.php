@@ -14,9 +14,9 @@
 	<?php do_action( 'bp_before_activity_post_form' ); ?>
 	
 	<p class="activity-greeting cfc-h-tx"><?php if ( bp_is_group() )
-		printf( __( "What's new in %s, %s?", 'buddypress' ), bp_get_group_name(), bp_get_user_firstname() );
+		printf( __( "What's new in %s, %s?", '__x__' ), bp_get_group_name(), bp_get_user_firstname() );
 	else
-		printf( __( "What's new, %s?", 'buddypress' ), bp_get_user_firstname() );
+		printf( __( "What's new, %s?", '__x__' ), bp_get_user_firstname() );
 	?></p>
 
 	<div id="whats-new-content">

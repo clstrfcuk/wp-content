@@ -19,8 +19,8 @@
 
 				<div class="x-list-item-meta activity-meta">
 					<div class="x-list-item-meta-inner">
-						<a class="accept" href="<?php bp_group_accept_invite_link(); ?>"><?php _e( 'Accept', 'buddypress' ); ?></a> &nbsp;
-						<a class="reject confirm" href="<?php bp_group_reject_invite_link(); ?>"><?php _e( 'Reject', 'buddypress' ); ?></a>
+						<a class="accept" href="<?php bp_group_accept_invite_link(); ?>"><?php _e( 'Accept', '__x__' ); ?></a> &nbsp;
+						<a class="reject confirm" href="<?php bp_group_reject_invite_link(); ?>"><?php _e( 'Reject', '__x__' ); ?></a>
 
 						<?php do_action( 'bp_group_invites_item_action' ); ?>
 
@@ -39,7 +39,7 @@
 <?php else: ?>
 
 	<div id="message" class="info" role="main">
-		<p><?php _e( 'You have no outstanding group invites.', 'buddypress' ); ?></p>
+		<p><?php _e( 'You have no outstanding group invites.', '__x__' ); ?></p>
 	</div>
 
 <?php endif;?>

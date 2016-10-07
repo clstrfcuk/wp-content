@@ -7,7 +7,7 @@
 	<table id="message-threads" class="messages-notices">
 
 		<tr>
-			<th class="thread-from"><?php ( 'sentbox' != bp_current_action() ) ? _e( 'From', 'buddypress' ): _e( 'To', 'buddypress' ); ?></th>
+			<th class="thread-from"><?php ( 'sentbox' != bp_current_action() ) ? _e( 'From', '__x__' ): _e( 'To', '__x__' ); ?></th>
 			<th class="thread-info"><?php _e( 'Message', '__x__' ); ?></th>
 			<th class="thread-options"><?php _e( 'Action', '__x__' ); ?></th>
 		</tr>
@@ -34,7 +34,7 @@
 				<?php endif; ?>
 
 				<td class="thread-info">
-					<a href="<?php bp_message_thread_view_link(); ?>" title="<?php esc_attr_e( "View Message", "buddypress" ); ?>"><?php bp_message_thread_subject(); ?></a><br />
+					<a href="<?php bp_message_thread_view_link(); ?>" title="<?php esc_attr_e( "View Message", "__x__" ); ?>"><?php bp_message_thread_subject(); ?></a><br />
 					<span class="thread-excerpt"><?php bp_message_thread_excerpt(); ?></span>
 				</td>
 
@@ -42,7 +42,7 @@
 
 				<td class="thread-options">
 					<input type="checkbox" name="message_ids[]" value="<?php bp_message_thread_id(); ?>" />
-					<a class="confirm" href="<?php bp_message_thread_delete_link(); ?>" title="<?php esc_attr_e( "Delete Message", "buddypress" ); ?>"><?php _e( 'Delete', 'buddypress' ); ?></a>
+					<a class="confirm" href="<?php bp_message_thread_delete_link(); ?>" title="<?php esc_attr_e( "Delete Message", "__x__" ); ?>"><?php _e( 'Delete', '__x__' ); ?></a>
 				</td>
 			</tr>
 
@@ -70,7 +70,7 @@
 <?php else: ?>
 
 	<div id="message" class="info">
-		<p><?php _e( 'Sorry, no messages were found.', 'buddypress' ); ?></p>
+		<p><?php _e( 'Sorry, no messages were found.', '__x__' ); ?></p>
 	</div>
 
 <?php endif;?>

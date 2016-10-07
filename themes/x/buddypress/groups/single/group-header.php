@@ -9,7 +9,7 @@ do_action( 'bp_before_group_header' );
 		<?php bp_group_avatar(); ?>
 		<span class="highlight"><?php bp_group_type(); ?></span>
 	</a>
-	<span class="activity"><?php printf( __( 'active %s', 'buddypress' ), bp_get_group_last_active() ); ?></span>
+	<span class="activity"><?php printf( __( 'active %s', '__x__' ), bp_get_group_last_active() ); ?></span>
 </div><!-- #item-header-avatar -->
 
 <div id="item-header-content">
@@ -33,7 +33,7 @@ do_action( 'bp_before_group_header' );
 			<?php if ( bp_group_is_visible() ) : ?>
 
 				<div class="item-action group-admins cf">
-					<h3 class="cfc-b-tx"><?php _e( 'Admins', 'buddypress' ); ?></h3>
+					<h3 class="cfc-b-tx"><?php _e( 'Admins', '__x__' ); ?></h3>
 					<?php bp_group_list_admins();
 					do_action( 'bp_after_group_menu_admins' ); ?>
 				</div>
@@ -42,7 +42,7 @@ do_action( 'bp_before_group_header' );
 
 					<div class="item-action group-mods cf">
 						<?php do_action( 'bp_before_group_menu_mods' ); ?>
-						<h3 class="cfc-b-tx"><?php _e( 'Mods' , 'buddypress' ); ?></h3>
+						<h3 class="cfc-b-tx"><?php _e( 'Mods' , '__x__' ); ?></h3>
 						<?php bp_group_list_mods();
 						do_action( 'bp_after_group_menu_mods' ); ?>
 					</div>

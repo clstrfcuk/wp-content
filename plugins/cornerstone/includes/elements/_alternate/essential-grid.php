@@ -59,6 +59,10 @@ class CS_Essential_Grid extends Cornerstone_Element_Base {
   public function render( $atts ) {
 
     extract( $atts );
+    
+    // force script enqueue
+    $esg = new Essential_Grid();
+    $esg->enqueue_scripts();
 
     $shortcode = "[ess_grid alias=\"$alias\"]";
 

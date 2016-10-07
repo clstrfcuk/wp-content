@@ -7,6 +7,9 @@
 <?php $this->head(); ?>
 </head>
 <body<?php $this->body_classes(); ?>>
-<?php $this->footer(); ?>
+<?php
+  $this->view( 'app/components/entry-preloader', true );
+  $this->footer();
+?>
 </body>
 </html>

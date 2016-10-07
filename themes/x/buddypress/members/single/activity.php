@@ -15,24 +15,24 @@
 		<?php bp_get_options_nav(); ?>
 
 		<li id="activity-filter-select" class="last">
-			<label for="activity-filter-by"><?php _e( 'Show:', 'buddypress' ); ?></label>
+			<label for="activity-filter-by"><?php _e( 'Show:', '__x__' ); ?></label>
 			<select id="activity-filter-by">
-				<option value="-1"><?php _e( 'Everything', 'buddypress' ); ?></option>
-				<option value="activity_update"><?php _e( 'Updates', 'buddypress' ); ?></option>
+				<option value="-1"><?php _e( 'Everything', '__x__' ); ?></option>
+				<option value="activity_update"><?php _e( 'Updates', '__x__' ); ?></option>
 
 				<?php
 				if ( !bp_is_current_action( 'groups' ) ) :
 					if ( bp_is_active( 'blogs' ) ) : ?>
 
-						<option value="new_blog_post"><?php _e( 'Posts', 'buddypress' ); ?></option>
-						<option value="new_blog_comment"><?php _e( 'Comments', 'buddypress' ); ?></option>
+						<option value="new_blog_post"><?php _e( 'Posts', '__x__' ); ?></option>
+						<option value="new_blog_comment"><?php _e( 'Comments', '__x__' ); ?></option>
 
 					<?php
 					endif;
 
 					if ( bp_is_active( 'friends' ) ) : ?>
 
-						<option value="friendship_accepted,friendship_created"><?php _e( 'Friendships', 'buddypress' ); ?></option>
+						<option value="friendship_accepted,friendship_created"><?php _e( 'Friendships', '__x__' ); ?></option>
 
 					<?php endif;
 
@@ -40,15 +40,15 @@
 
 				if ( bp_is_active( 'forums' ) ) : ?>
 
-					<option value="new_forum_topic"><?php _e( 'Forum Topics', 'buddypress' ); ?></option>
-					<option value="new_forum_post"><?php _e( 'Forum Replies', 'buddypress' ); ?></option>
+					<option value="new_forum_topic"><?php _e( 'Forum Topics', '__x__' ); ?></option>
+					<option value="new_forum_post"><?php _e( 'Forum Replies', '__x__' ); ?></option>
 
 				<?php endif;
 
 				if ( bp_is_active( 'groups' ) ) : ?>
 
-					<option value="created_group"><?php _e( 'New Groups', 'buddypress' ); ?></option>
-					<option value="joined_group"><?php _e( 'Group Memberships', 'buddypress' ); ?></option>
+					<option value="created_group"><?php _e( 'New Groups', '__x__' ); ?></option>
+					<option value="joined_group"><?php _e( 'Group Memberships', '__x__' ); ?></option>
 
 				<?php endif;
 

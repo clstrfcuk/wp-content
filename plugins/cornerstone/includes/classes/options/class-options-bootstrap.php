@@ -5,6 +5,12 @@ class Cornerstone_Options_Bootstrap extends Cornerstone_Plugin_Component {
   protected $defaults = array();
   protected $options = array();
 
+  public function setup() {
+    if ( apply_filters( 'cornerstone_options_use_native', true ) ) {
+      $this->register_options( $this->plugin->config( 'options/defaults' ) );
+    }
+  }
+
   public function register_option( $name, $default_value, $options = array() ) {
 
     if ( isset( $this->defaults[ $name ] ) ) {
@@ -20,7 +26,7 @@ class Cornerstone_Options_Bootstrap extends Cornerstone_Plugin_Component {
   }
 
   /**
-   * Register multiple options... with the same options...
+   * Register multiple "option" entities... with the same configuration options...
    */
   public function register_options( $group, $options = array() ) {
     foreach ( $group as $name => $item ) {

@@ -129,7 +129,7 @@ endif;
 // Define Constants
 // =============================================================================
 
-define( 'X_VERSION', '4.6.0' );
+define( 'X_VERSION', '4.6.3' );
 define( 'X_TEMPLATE_PATH', get_template_directory() );
 define( 'X_TEMPLATE_URL', get_template_directory_uri() );
 define( 'X_BBPRESS_IS_ACTIVE', class_exists( 'bbPress' ) );
@@ -146,6 +146,8 @@ define( 'X_VISUAL_COMOPSER_IS_ACTIVE', defined( 'WPB_VC_VERSION' ) );
 define( 'X_WOOCOMMERCE_IS_ACTIVE', class_exists( 'WC_API' ) );
 define( 'X_WPML_IS_ACTIVE', defined( 'ICL_SITEPRESS_VERSION' ) );
 define( 'X_UBERMENU_IS_ACTIVE', class_exists( 'UberMenu' ) );
+define( 'X_THE_GRID_IS_ACTIVE', class_exists( 'The_Grid_Plugin' ) );
+define( 'X_EP_PAYMENT_FORM_IS_ACTIVE', class_exists( 'LFB_Core' ) );
 
 
 
@@ -418,5 +420,6 @@ $customizer_settings_data = array(
   'x_icon_tile'                                         => '',
   'x_icon_tile_bg_color'                                => '#ffffff',
   'x_custom_styles'                                     => '',
-  'x_custom_scripts'                                    => ''
+  'x_custom_scripts'                                    => '',
+  'x_fixed_menu_scroll'                                 => 'overflow-visible'
 );

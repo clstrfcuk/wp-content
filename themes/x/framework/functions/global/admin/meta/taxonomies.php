@@ -105,7 +105,7 @@ function x_taxonomy_save_custom_meta( $term_id ) {
     $cat_keys  = array_keys( $_POST['term_meta'] );
     foreach ( $cat_keys as $key ) {
       if ( isset ( $_POST['term_meta'][$key] ) ) {
-        $term_meta[$key] = $_POST['term_meta'][$key];
+        $term_meta[$key] = wp_kses_post( stripslashes( $_POST['term_meta'][$key] ) );
       }
     }
     update_option( 'taxonomy_' . $t_id, $term_meta );

@@ -575,13 +575,15 @@
     var $headerNavbarPositionTarg = [
       '#customize-control-x_navbar_width',
       '#customize-control-x_logo_adjust_navbar_side',
-      '#customize-control-x_navbar_adjust_links_side'
+      '#customize-control-x_navbar_adjust_links_side',
+      '#customize-control-x_fixed_menu_scroll'
     ];
 
     if ( $headerNavbarPositionInit === 'static-top' || $headerNavbarPositionInit === 'fixed-top' ) {
       $( $headerNavbarPositionTarg[0] ).attr('data-x-hide', 'true');
       $( $headerNavbarPositionTarg[1] ).attr('data-x-hide', 'true');
       $( $headerNavbarPositionTarg[2] ).attr('data-x-hide', 'true');
+      $( $headerNavbarPositionTarg[3] ).attr('data-x-hide', 'true');
     }
 
     $headerNavbarPositionOpts.change( function() {
@@ -590,10 +592,12 @@
         $( $headerNavbarPositionTarg[0] ).attr('data-x-hide', 'true');
         $( $headerNavbarPositionTarg[1] ).attr('data-x-hide', 'true');
         $( $headerNavbarPositionTarg[2] ).attr('data-x-hide', 'true');
+        $( $headerNavbarPositionTarg[3] ).attr('data-x-hide', 'true');
       } else if ( $value === 'fixed-left' || $value === 'fixed-right' ) {
         $( $headerNavbarPositionTarg[0] ).removeAttr('data-x-hide');
         $( $headerNavbarPositionTarg[1] ).removeAttr('data-x-hide');
         $( $headerNavbarPositionTarg[2] ).removeAttr('data-x-hide');
+        $( $headerNavbarPositionTarg[3] ).removeAttr('data-x-hide');
       }
     });
 

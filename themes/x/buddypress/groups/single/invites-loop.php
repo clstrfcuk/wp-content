@@ -34,7 +34,7 @@
 
 				<div class="x-list-item-meta action">
 					<div class="x-list-item-meta-inner">
-						<a class="remove" href="<?php bp_group_invite_user_remove_invite_url(); ?>" id="<?php bp_group_invite_item_id(); ?>"><?php _e( 'Remove Invite', 'buddypress' ); ?></a>
+						<a class="remove" href="<?php bp_group_invite_user_remove_invite_url(); ?>" id="<?php bp_group_invite_item_id(); ?>"><?php _e( 'Remove Invite', '__x__' ); ?></a>
 
 						<?php do_action( 'bp_group_send_invites_item_action' ); ?>
 
@@ -58,7 +58,7 @@
 
 	<?php else : ?>
 		<div id="message" class="info">
-			<p><?php _e( 'Select people to invite from your friends list.', 'buddypress' ); ?></p>
+			<p><?php _e( 'Select people to invite from your friends list.', '__x__' ); ?></p>
 		</div>
 	<?php endif; ?>
 

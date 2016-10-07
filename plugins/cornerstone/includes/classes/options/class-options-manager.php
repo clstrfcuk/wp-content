@@ -7,6 +7,41 @@ class Cornerstone_Options_Manager extends Cornerstone_Plugin_Component {
   protected $sections = array();
   protected $controls = array();
   protected $registered = false;
+  protected $custom_css_key = '';
+  protected $custom_js_key = '';
+
+  public function setup() {
+
+    if ( apply_filters( 'cornerstone_options_use_native', true ) ) {
+      add_action( 'cornerstone_options_register', array( $this, 'register_native_options' ) );
+    }
+
+  }
+
+  public function config() {
+
+    return array(
+      'i18n' => $this->plugin->i18n( 'options' ),
+      'customCSSKey' => $this->get_custom_css_key(),
+      'customJSKey' => $this->get_custom_js_key(),
+      'title' => apply_filters( 'cornerstone_options_theme_title', false ) ? 'title-theme' : 'title-default',
+    );
+
+  }
+
+  public function register_native_options() {
+    $this->register_sections( $this->plugin->config( 'options/sections' ) );
+    $this->enable_custom_css( 'cs_v1_custom_css' );
+    $this->enable_custom_js( 'cs_v1_custom_js' );
+  }
+
+  public function get_custom_css_key() {
+    return $this->custom_css_key;
+  }
+
+  public function get_custom_js_key() {
+    return $this->custom_js_key;
+  }
 
   public function register() {
 

@@ -6,6 +6,11 @@ return array(
   'loading'      => __( 'Loading&hellip;', 'cornerstone' ),
   'unauthorized' => __( 'You don&apos;t have permission to do that.', 'cornerstone' ),
 
+  // General Purpose
+  'copy-of'    => __( 'Copy of {{title}}', 'cornerstone' ),
+  'new-at-index' => __( '{{item}} {{index}}', 'cornerstone'),
+  'search' => __( 'Search', 'cornerstone' ),
+
   // Preview Sizer
   'preview-sizer-abbr-xl' => __( 'XL', 'cornerstone' ),
   'preview-sizer-abbr-lg' => __( 'LG', 'cornerstone' ),
@@ -21,4 +26,14 @@ return array(
   // Controls
   'controls-previous-missing'   => __( 'Previous Value Unavailable', 'cornerstone' ),
   'controls-font-family-select' => __( '{{family}} ({{source}})', 'cornerstone' ),
+
+  // Notifications
+  'notification-notice'  => __( 'Hey!', 'cornerstone' ),
+  'notification-success' => __( 'Awesome!', 'cornerstone' ),
+  'notification-error'   => __( 'Uh oh!', 'cornerstone' ),
+
+  // Confirm
+  'confirm-yep'  => __( 'Yep', 'cornerstone' ),
+  'confirm-nope' => __( 'Nope', 'cornerstone' )
+
 );

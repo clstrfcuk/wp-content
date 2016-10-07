@@ -12,7 +12,7 @@
 					<thead>
 						<tr>
 							<th class="title field-group-name"><?php bp_the_profile_group_name(); ?></th>
-							<th class="title"><?php _e( 'Visibility', 'buddypress' ); ?></th>
+							<th class="title"><?php _e( 'Visibility', '__x__' ); ?></th>
 						</tr>
 					</thead>
 
