@@ -5153,6 +5153,9 @@ if ( x_visual_composer_integration_on() ) {
 // Make [vc_column_inner] behave like the [column] shortcode.
 // =============================================================================
 
+function vc_theme_vc_column_inner( $atts, $content = '' ) { 
+	ob_start();
+
 extract( shortcode_atts( array(
   'id'                    => '',
   'class'                 => '',
@@ -5230,11 +5233,10 @@ if ( $fade == 'true' ) {
 
 $output = "<div {$id} class=\"{$class}{$width}{$last}\" style=\"{$style}{$fade_animation_style}{$bg_color}\" {$data}{$fade}>" . do_shortcode( $content ) . "</div>";
 
-ob_start();
-
 echo $output;
 
-ob_get_clean();
+return ob_get_clean();
+}
 
 // VC Column Template
 // =============================================================================
@@ -5242,6 +5244,8 @@ ob_get_clean();
 // Make [vc_column] behave like the [column] shortcode.
 // =============================================================================
 
+function vc_theme_vc_column( $atts, $content = '' ) {
+	ob_start();
 
 extract( shortcode_atts( array(
   'id'                    => '',
@@ -5322,16 +5326,18 @@ if ( $fade == 'true' ) {
 
 $output = "<div {$id} class=\"{$class}{$width}{$last}\" style=\"{$style}{$fade_animation_style}{$bg_color}\" {$data}{$fade}>" . do_shortcode( $content ) . "</div>";
 
-ob_start();
-
 echo $output;
 
-ob_get_clean();
+return ob_get_clean();
+}
 
 // VC Row Inner Template
 // =============================================================================
 // Make [vc_row_inner] behave like the [content_band] shortcode.
 // =============================================================================
+
+function vc_theme_vc_row_inner( $atts, $content = '' ) {
+	ob_start();
 
 extract( shortcode_atts( array(
   'class'              => '',
@@ -5467,16 +5473,19 @@ if ( $bg_video != '' ) {
 
 }
 
-ob_start();
-
 echo $output;
 
-ob_get_clean();
+return ob_get_clean();
+}
+
 
 // VC Row Template
 // =============================================================================
 // Make [vc_row] behave like the [content_band] shortcode.
 // =============================================================================
+
+function vc_theme_vc_row( $atts, $content = '' ) {
+	ob_start();
 
 extract( shortcode_atts( array(
   'class'              => '',
@@ -5612,10 +5621,9 @@ if ( $bg_video != '' ) {
 
 }
 
-ob_start();
-
 echo $output;
 
-ob_get_clean();
+return ob_get_clean();
 
+	}
 }

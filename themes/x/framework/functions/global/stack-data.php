@@ -129,7 +129,7 @@ endif;
 // Define Constants
 // =============================================================================
 
-define( 'X_VERSION', '4.6.3' );
+define( 'X_VERSION', '4.6.4' );
 define( 'X_TEMPLATE_PATH', get_template_directory() );
 define( 'X_TEMPLATE_URL', get_template_directory_uri() );
 define( 'X_BBPRESS_IS_ACTIVE', class_exists( 'bbPress' ) );
