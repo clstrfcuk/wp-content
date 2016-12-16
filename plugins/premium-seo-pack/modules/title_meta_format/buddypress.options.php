@@ -89,7 +89,7 @@ if ( $psp->is_buddypress() ) {
 							'size' 		=> 'small',
 							'force_width'=> '400',
 							'title' 	=> __('Homepage Meta Robots:', 'psp'),
-							'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+							'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 							'options'	=> $__metaRobotsList
 						),
 					)

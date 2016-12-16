@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.0.3.2] - 05.12.2016
+- solved bug: in psp locations the google map was not loading
+
+## [2.0.3.1] - 05.12.2016
+- solved bug: woocommerce shop page could not recognize the meta settings (seo title, description, focus keyword, keywords) ; bug occured for the page setted here: Woocommerce settings / Products / Display / Shop & Product Page / "Shop Page" option
+
+## [2.0.3] - 14.11.2016
+- plugin now compatible with CORNERSTONE frontend editor
+
+## [2.0.2] - 09.11.2016
+- fixed issue on rich snippets & localseo shortcodes
+
+## [2.0.1] - 07.11.2016
+- Fixed caching issue on dashboard loading
+- fixed 404 error module not redirecting
+- fixed google+ authorship display issue
+
+## [2.0] -04.11.2016
+- Implemented a new framework 
+
+## [1.9.1.4] - 25.05.2016
+- added SERP support for Google.rs(Serbian)
+- fixed OnPage Optimization to show up in category/taxonomy details page
+
+
 ## [1.9.1.3]
 - added "Close button" to the 'Install default config' message
 - solved bug "SEO Insert Code > Insert code in <head>, <wp footer> sections, any codes after the & character (including the & itself) is chopped away."

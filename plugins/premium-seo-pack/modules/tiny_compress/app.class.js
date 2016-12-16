@@ -17,7 +17,7 @@ pspTinyCompress = (function ($) {
     (function init() {
         // load the triggers
         $(document).ready(function(){
-            maincontainer = $("#psp-wrapper");
+            maincontainer = $(".psp-main");
             loading = maincontainer.find("#psp-main-loading");
 
             triggers();
@@ -37,7 +37,7 @@ pspTinyCompress = (function ($) {
             if( row.size() > 0 ){
                 
                 if( row.find('.psp-row-loading-marker').size() == 0 ){
-                    var row_loading_box = $('<div class="psp-row-loading-marker" style="top: -' + ( parseInt(row.height()/2 - 3) ) + 'px;"><div class="psp-row-loading"><div class="psp-meter psp-animate" style="width:30%; margin: 10px 0px 0px 30%;"><span style="width:100%"></span></div></div></div>')
+                    var row_loading_box = $('<div class="psp-row-loading-marker"><div class="psp-row-loading"><div class="psp-meter psp-animate"><span style="width:100%"></span></div></div></div>')
                     row_loading_box.find('div.psp-row-loading').css({
                         'width': row.width(),
                         'height': row.height()
@@ -73,6 +73,7 @@ pspTinyCompress = (function ($) {
 
             if( response.status == 'valid' ) {
                 respEl.removeClass('psp-info psp-error').addClass('psp-success');
+
             } else {
                 respEl.removeClass('psp-info psp-success').addClass('psp-error');
             }
@@ -126,7 +127,7 @@ pspTinyCompress = (function ($) {
 
             smushit( row );
         });*/
-
+        
         maincontainer.on('click', '.psp-do_item_smushit', function(e){
             e.preventDefault();
 
@@ -135,7 +136,7 @@ pspTinyCompress = (function ($) {
 
         maincontainer.on('click', '#psp-do_mass_smushit', function(e){
             e.preventDefault();
-            
+
             massSmushit( $(this) );
         });
         

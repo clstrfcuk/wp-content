@@ -17,7 +17,7 @@ pspHTMLValidation = (function ($) {
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
+			maincontainer = $(".psp-main");
 			loading = maincontainer.find("#main-loading");
 
 			triggers();
@@ -155,7 +155,7 @@ pspHTMLValidation = (function ($) {
 			if( $.trim(title.val()) == "" ){
 
 				row_loading(row, 'hide');
-				alert('Your post don\' have Focus Keyword.'); return false;
+				alert('Your post dosen\'t have Focus Keyword.'); return false;
 			}
 
 			verifyPage(itemID, row);

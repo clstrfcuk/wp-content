@@ -79,9 +79,26 @@ if(class_exists('psp') != true) {
 		public $pluginDepedencies = null;
 		public $pluginName = 'Premium SEO Pack';
 		
+		public $feedback_url = "http://aa-team.com/feedback/index.php?app=%s&refferer_url=%s";
+		
 		public $buddypress_utils = null;
         
         public $app_settings = array(); // all plugin settings
+        
+        public $u; // utils function object!
+        public $pu; // utils function object!
+        
+        // New Settings / february 2016
+        public $plugin_details = array(); // see constructor
+        public $ss = array(
+		);
+		private static $plugin_row_meta = array(
+			'buy_url'			=> 'http://codecanyon.net/item/premium-seo-pack-wordpress-plugin/6109437',
+			'docs_url'			=> 'http://docs.aa-team.com/products/premium-seo-pack/',
+			'support_url'		=> 'http://support.aa-team.com/',
+			'latest_ver_url'	=> 'http://cc.aa-team.com/apps-versions/index.php?app=',
+			'portfolio'         => 'http://codecanyon.net/user/aa-team/portfolio',
+		);
 
 
 		/**
@@ -90,7 +107,15 @@ if(class_exists('psp') != true) {
 		public function __construct($here = __FILE__)
 		{
 			$this->is_admin = is_admin() === true ? true : false;
+			$this->cfg['css_cache_time'] = 1; // seconds
+            
+            add_action('wp_ajax_PSP_framework_style', array( $this, 'framework_style') );
+            add_action('wp_ajax_nopriv_PSP_framework_style', array( $this, 'framework_style') );
 			
+			//$current_url = $_SERVER['HTTP_REFERER'];
+			$current_url = $this->get_current_page_url();
+			$this->feedback_url = sprintf($this->feedback_url, $this->alias, rawurlencode($current_url));
+
 			$this->setIniConfiguration();
             
             // load WP_Filesystem 
@@ -169,7 +194,7 @@ if(class_exists('psp') != true) {
 				'button' => 'css/button.css',
 				'table' => 'css/table.css',
 				'tipsy' => 'css/tooltip.css',
-				'admin' => 'css/admin-style.css',
+				//'admin' => 'css/admin-style.css',
 				'additional' => 'css/additional.css'
 			));
 
@@ -188,6 +213,28 @@ if(class_exists('psp') != true) {
 				'flot-resize' => 'js/jquery.flot.resize.min.js'
 			));
 
+			// plugin folder in wp-content/plugins/
+			$plugin_folder = explode('wp-content/plugins/', $this->cfg['paths']['plugin_dir_path']);
+			$plugin_folder = end($plugin_folder);
+			$this->plugin_details = array(
+				'folder'		=> $plugin_folder,
+				'folder_index'	=> $plugin_folder . 'plugin.php',
+			);
+            
+            // utils functions
+            require_once( $this->cfg['paths']['plugin_dir_path'] . 'aa-framework/utils/utils.php' );
+            if( class_exists('psp_Utils') ){
+                // $this->u = new psp_Utils( $this );
+                $this->u = psp_Utils::getInstance( $this );
+            }
+			
+			// plugin utils functions
+            require_once( $this->cfg['paths']['plugin_dir_path'] . 'aa-framework/utils/plugin_utils.php' );
+            if( class_exists('psp_PluginUtils') ){
+                // $this->pu = new psp_PluginUtils( $this );
+                $this->pu = psp_PluginUtils::getInstance( $this );
+            }
+			
             // get plugin text details
             $this->get_plugin_data();
 
@@ -207,7 +254,7 @@ if(class_exists('psp') != true) {
     			require_once( $this->cfg['paths']['plugin_dir_path'] . 'aa-framework/menu.php' );
     			
     			// Run the plugins section load method
-    			add_action('wp_ajax_pspLoadSection', array( &$this, 'load_section' ));
+    			add_action('wp_ajax_pspLoadSection', array( $this, 'load_section' ));
     			
     			// Plugin Depedencies Verification!
     			if ( get_option('psp_depedencies_is_valid', false) ) {
@@ -234,29 +281,30 @@ if(class_exists('psp') != true) {
 			} // end is_admin
 			
 			// Run the plugins initialization method
-			add_action('init', array( &$this, 'initThePlugin' ), 5);
+			add_action('init', array( $this, 'initThePlugin' ), 5);
 			add_action('init', array( $this, 'session_start' ), 1);
 
             if ( $this->is_admin ) {
 
     			// Run the plugins section options save method
-    			add_action('wp_ajax_pspSaveOptions', array( &$this, 'save_options' ));
+    			add_action('wp_ajax_pspSaveOptions', array( $this, 'save_options' ));
     
     			// Run the plugins section options save method
-    			add_action('wp_ajax_pspModuleChangeStatus', array( &$this, 'module_change_status' ));
+    			add_action('wp_ajax_pspModuleChangeStatus', array( $this, 'module_change_status' ));
     			
     			// Run the plugins section options save method
-    			add_action('wp_ajax_pspModuleChangeStatus_bulk_rows', array( &$this, 'module_bulk_change_status' ));
+    			add_action('wp_ajax_pspModuleChangeStatus_bulk_rows', array( $this, 'module_bulk_change_status' ));
     
     			// Run the plugins section options save method
-    			add_action('wp_ajax_pspInstallDefaultOptions', array( &$this, 'install_default_options' ));
+    			add_action('wp_ajax_pspInstallDefaultOptions', array( $this, 'install_default_options' ));
     
     			// W3CValidate helper
-    			add_action('wp_ajax_pspW3CValidate', array( &$this, 'pspW3CValidate' ));
+    			add_action('wp_ajax_pspW3CValidate', array( $this, 'pspW3CValidate' ));
     
     			// W3CValidate helper
-    			add_action('wp_ajax_pspUpload', array( &$this, 'upload_file' ));
-    			add_action('wp_ajax_pspWPMediaUploadImage', array( &$this, 'wp_media_upload_image' ));
+    			add_action('wp_ajax_pspUpload', array( $this, 'upload_file' ));
+    			add_action('wp_ajax_pspWPMediaUploadImage', array( $this, 'wp_media_upload_image' ));
+				add_action('wp_ajax_pspDismissNotice', array( $this, 'dismiss_notice' ));
             } // end is_admin
 			
 			require_once( $this->cfg['paths']['scripts_dir_path'] . '/utf8/utf8.php' );
@@ -284,10 +332,22 @@ if(class_exists('psp') != true) {
 				add_action('wp_footer', array($this, 'print_psp_usages') );
 				add_action('admin_footer', array($this, 'print_psp_usages') );
 			}
-            
+
             if ( $this->is_admin ) {
-                add_action( 'admin_bar_menu', array($this, 'update_notifier_bar_menu'), 1000 );
-                add_action( 'admin_menu', array($this, 'update_plugin_notifier_menu'), 1000 );
+                //add_action( 'admin_bar_menu', array($this->pu, 'update_notifier_bar_menu'), 1000 );
+                //add_action( 'admin_menu', array($this->pu, 'update_plugin_notifier_menu'), 1000 );
+				
+				// add additional links below plugin on the plugins page
+				//add_filter( 'plugin_row_meta', array($this->pu, 'plugin_row_meta_filter'), 10, 2 );
+		
+				// alternative API to check updating for the filter transient
+				//add_filter( 'pre_set_site_transient_update_plugins', array( $this->pu, 'update_plugins_overwrite' ), 10, 1 );
+   
+				// alternative response with plugin details for admin thickbox tab
+				//add_filter( 'plugins_api', array( $this->pu, 'plugins_api_overwrite' ), 10, 3 );
+				
+				// message on wp plugins page with updating link
+				//add_action( 'in_plugin_update_message-'.$this->plugin_details['folder_index'], array($this->pu, 'in_plugin_update_message'), 10, 2 );
             }
 			
             if ( $this->is_admin ) {
@@ -326,6 +386,94 @@ if(class_exists('psp') != true) {
 			}
 		}
 
+		public function framework_style()
+        {
+            $start = microtime(true);
+    		
+            require $this->cfg['paths']['freamwork_dir_path'] . "/utils/scssphp/scss.inc.php";
+            $scss = new scssc();
+
+			$main_file = $this->wp_filesystem->get_contents( $this->cfg['paths']['freamwork_dir_path'] . "/scss/styles.scss" );
+			if( !$main_file ){
+				$main_file = file_get_contents( $this->cfg['paths']['freamwork_dir_path'] . "/scss/styles.scss" );
+			}
+
+            $files = array();
+            if(preg_match_all('/@import (url\(\"?)?(url\()?(\")?(.*?)(?(1)\")+(?(2)\))+(?(3)\")/i', $main_file, $matches)){
+                    foreach($matches[4] as $url){
+                        if( file_exists( $this->cfg['paths']['freamwork_dir_path'] . "/scss/_" . $url . '.scss') ){ 
+                            $files[] = '_' . $url . '.scss';
+                        }
+                    if( file_exists( $this->cfg['paths']['freamwork_dir_path'] . "/scss/" . $url . '.scss') ){
+                            $files[] = $url . '.scss';
+                        }
+                    }
+            }
+            
+            $buffer = '';
+            if( count($files) > 0 ){
+                foreach ($files as $scss_file) {
+                    if( 0 ){ 
+                        $buffer .= "\n" .   "/****-------------------------------\n";
+                        $buffer .= "\n" .   " IN FILE: $scss_file \n";
+                        $buffer .= "\n" .   "------------------------------------\n";
+                        $buffer .= "\n***/\n";
+                    }
+                    $buffer .= $this->wp_filesystem->get_contents( $this->cfg['paths']['freamwork_dir_path'] . "/scss/" . $scss_file );
+                }
+            } 
+                        
+            $buffer = $scss->compile( $buffer );
+            
+            #$buffer = str_replace( "fonts/", $this->cfg['paths']['freamwork_dir_url'] . "fonts/", $buffer );
+            $buffer = str_replace( "images/", $this->cfg['paths']['freamwork_dir_url'] . "images/", $buffer );
+            
+            
+            $time_elapsed_secs = microtime(true) - $start;
+            $buffer .= "\n\n/*** Compile time: $time_elapsed_secs */";
+            
+            // Enable caching
+            header('Cache-Control: public');
+
+            // Expire in one day
+            header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
+
+            // Set the correct MIME type, because Apache won't set it for us
+            header("Content-type: text/css");
+
+            // Write everything out
+            echo $buffer;
+			
+			$buffer = str_replace( $this->cfg['paths']['freamwork_dir_url'], '', $buffer );
+
+			$has_wrote = $this->wp_filesystem->put_contents( $this->cfg['paths']['freamwork_dir_path'] . 'main-style.css', $buffer );
+			if ( !$has_wrote ) {
+				$has_wrote = file_put_contents( $this->cfg['paths']['freamwork_dir_path'] . 'main-style.css', $buffer );
+			}
+
+            die;
+        }
+
+        public function print_section_header( $title='', $desc='', $docs_url='')
+		{
+			$html = array();
+
+			$html[] = '<div class="panel panel-default ' . ( $this->alias ) . '-panel ' . ( $this->alias ) . '-section-header">';
+			$html[] =   '<div class="panel-heading ' . ( $this->alias ) . '-panel-heading">';
+			if( trim($title) != "" )    $html[] =       '<h1 class="panel-title ' . ( $this->alias ) . '-panel-title">' . ( $title ) . '</h1>';
+			if( trim($desc) != "" )     $html[] =       $desc;
+			$html[] =   '</div>';
+			$html[] =   '<div class="panel-body ' . ( $this->alias ) . '-panel-body ' . ( $this->alias ) . '-no-padding" >';
+			
+			
+			if( trim($docs_url) != "" ) $html[] =       '<a href="' . ( $docs_url ) . '" target="_blank" class="' . ( $this->alias ) . '-tab"><span class="psp-icon-support"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span> Documentation</a>';
+			$html[] =       '<a href="' . ( $this->plugin_row_meta( 'portfolio' ) ) . '?ref=AA-Team" target="_blank" class="' . ( $this->alias ) . '-tab"><i class="' . ( $this->alias ) . '-icon-heart"></i> More AA-Team Products</a>';
+			$html[] =   '</div>';
+			$html[] = '</div>';
+
+			return implode(PHP_EOL, $html);
+		}
+
 		public function session_start() {
             $session_id = isset($_COOKIE['PHPSESSID']) ? session_id($_COOKIE['PHPSESSID']) : ( isset($_REQUEST['PHPSESSID']) ? $_REQUEST['PHPSESSID'] : session_id() );
             if(!$session_id) {
@@ -339,14 +487,37 @@ if(class_exists('psp') != true) {
             session_write_close(); // close the session
         }
 		
+		public function dismiss_notice()
+		{
+			update_option( $this->alias . "_dismiss_notice" , "true" );
+			header( 'Location: ' . sprintf( admin_url('admin.php?page=%s'), $this->alias ) );
+			die;
+		}
+
+		public function notifier_cache_interval() {
+			return self::NOTIFIER_CACHE_INTERVAL;
+		}
+		
+		public function plugin_row_meta($what='') {
+			if ( !empty($what) && isset(self::$plugin_row_meta["$what"]) ) {
+				return self::$plugin_row_meta["$what"];
+			}
+			return self::$plugin_row_meta;
+		}
+
+
+		/**
+		 * Utils
+		 */
+		/*
 		public function lang_init() 
 		{ 
 		    //load_plugin_textdomain( $this->alias, false, $this->cfg['paths']["plugin_dir_path"] . '/languages/');
 		} 
-		
-		// public function psp_load_textdomain() {
-			// load_plugin_textdomain( 'psp', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-		// }
+		public function psp_load_textdomain() {
+			load_plugin_textdomain( 'psp', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		}
+		*/
 		
 		public function mark_content( $content ) 
 		{
@@ -363,7 +534,7 @@ if(class_exists('psp') != true) {
 			} 
 
 			//if ( !is_singular() ) return false;
-			if ( !is_admin() ) return $oldcontent;
+			if ( !$this->is_admin ) return $oldcontent;
 			if ( is_null($post) || ( !is_object($post) && !is_array($post) ) ) return $oldcontent;
 			if ( $istax ) {
 				if ( is_object($post) && !isset($post->term_id) ) return $oldcontent;
@@ -502,6 +673,10 @@ if(class_exists('psp') != true) {
 			}
 		}
 
+
+        /**
+         * Some Plugin Status Info
+         */
 		public function plugin_redirect() {
 			
 			$req = array(
@@ -528,161 +703,20 @@ if(class_exists('psp') != true) {
 			add_option('psp_depedencies_do_activation_redirect', true);
 		}
 
-		public function get_plugin_status ()
-		{
-			return $this->v->isReg( get_option('psp_hash') );
+        public function get_plugin_status ()
+        {
+			return $this->v->isReg( get_option($this->alias.'_hash') );
+        }
+
+        public function get_plugin_data()
+        {
+            $this->details = $this->pu->get_plugin_data();
+            return $this->details;  
+        }
+
+		public function get_latest_plugin_version($interval) {
+			return $this->pu->get_latest_plugin_version($interval);
 		}
-		
-		public function get_plugin_data()
-		{
-            $source = file_get_contents( $this->cfg['paths']['plugin_dir_path'] . "/plugin.php" );
-            $tokens = token_get_all( $source );
-            $data = array();
-            if( trim($tokens[1][1]) != "" ){
-                $__ = explode(PHP_EOL, $tokens[1][1]);
-                foreach ($__ as $key => $value) {
-                    $___ = explode(": ", $value);
-                    if( count($___) == 2 ){
-                        $data[trim(strtolower(str_replace(" ", '_', $___[0])))] = trim($___[1]);
-                    }
-                }               
-            }
-  
-			$this->details = $data;
-			return $data;  
-		}
-
-        public function update_plugin_notifier_menu() {
-            if (function_exists('simplexml_load_string')) { // Stop if simplexml_load_string funtion isn't available
-
-                // Get the latest remote XML file on our server
-                $xml = $this->get_latest_plugin_version( self::NOTIFIER_CACHE_INTERVAL );
-
-                $plugin_data = get_plugin_data( $this->cfg['paths']['plugin_dir_path'] . 'plugin.php' ); // Read plugin current version from the main plugin file
-
-                if( isset($plugin_data) && count($plugin_data) > 0 ){
-                    if( (string)$xml->latest > (string)$plugin_data['Version']) { // Compare current plugin version with the remote XML version
-                        add_dashboard_page(
-                            $plugin_data['Name'] . ' Plugin Updates',
-                            'PSP <span class="update-plugins count-1"><span class="update-count">New Updates</span></span>',
-                            'administrator',
-                            $this->alias . '-plugin-update-notifier',
-                            array( $this, 'update_notifier' )
-                        );
-                    }
-                }
-            }
-        }
-
-        public function update_notifier() {
-            $xml = $this->get_latest_plugin_version( self::NOTIFIER_CACHE_INTERVAL );
-            $plugin_data = get_plugin_data( $this->cfg['paths']['plugin_dir_path'] . 'plugin.php' ); // Read plugin current version from the main plugin file
-        ?>
-
-            <style>
-            .update-nag { display: none; }
-            #instructions {max-width: 670px;}
-            h3.title {margin: 30px 0 0 0; padding: 30px 0 0 0; border-top: 1px solid #ddd;}
-            </style>
-
-            <div class="wrap">
-
-            <div id="icon-tools" class="icon32"></div>
-            <h2><?php echo $plugin_data['Name'] ?> Plugin Updates</h2>
-            <div id="message" class="updated below-h2"><p><strong>There is a new version of the <?php echo $plugin_data['Name'] ?> plugin available.</strong> You have version <?php echo $plugin_data['Version']; ?> installed. Update to version <?php echo $xml->latest; ?>.</p></div>
-            <div id="instructions">
-            <h3>Update Download and Instructions</h3>
-            <p><strong>Please note:</strong> make a <strong>backup</strong> of the Plugin inside your WordPress installation folder <strong>/wp-content/plugins/<?php echo end(explode('wp-content/plugins/', $this->cfg['paths']['plugin_dir_path'])); ?></strong></p>
-            <p>To update the Plugin, login to <a href="http://www.codecanyon.net/?ref=AA-Team">CodeCanyon</a>, head over to your <strong>downloads</strong> section and re-download the plugin like you did when you bought it.</p>
-            <p>Extract the zip's contents, look for the extracted plugin folder, and after you have all the new files upload them using FTP to the <strong>/wp-content/plugins/<?php echo end(explode('wp-content/plugins/', $this->cfg['paths']['plugin_dir_path'])); ?></strong> folder overwriting the old ones (this is why it's important to backup any changes you've made to the plugin files).</p>
-            <p>If you didn't make any changes to the plugin files, you are free to overwrite them with the new ones without the risk of losing any plugins settings, and backwards compatibility is guaranteed.</p>
-            </div>
-            <h3 class="title">Changelog</h3>
-            <?php echo $xml->changelog; ?>
-
-            </div>
-        <?php
-        }
-
-        public function update_notifier_bar_menu() {
-            if (function_exists('simplexml_load_string')) { // Stop if simplexml_load_string funtion isn't available
-                global $wp_admin_bar, $wpdb;
-
-                // Don't display notification in admin bar if it's disabled or the current user isn't an administrator
-                if ( !is_super_admin() || !is_admin_bar_showing() )
-                return;
-
-                // Get the latest remote XML file on our server
-                // The time interval for the remote XML cache in the database (21600 seconds = 6 hours)
-                $xml = $this->get_latest_plugin_version( self::NOTIFIER_CACHE_INTERVAL );
-
-                if ( is_admin() )
-                    $plugin_data = get_plugin_data( $this->cfg['paths']['plugin_dir_path'] . 'plugin.php' ); // Read plugin current version from the main plugin file
-
-                    if( isset($plugin_data) && count($plugin_data) > 0 ){
-
-                        if( (string)$xml->latest > (string)$plugin_data['Version']) { // Compare current plugin version with the remote XML version
-
-                        $wp_admin_bar->add_menu(
-                            array(
-                                'id' => 'plugin_update_notifier',
-                                'title' => '<span>' . ( $plugin_data['Name'] ) . ' <span id="ab-updates">New Updates</span></span>',
-                                'href' => get_admin_url() . 'index.php?page=' . ( $this->alias ) . '-plugin-update-notifier'
-                            )
-                        );
-                    }
-                }
-            }
-        }
-
-        public function get_latest_plugin_version($interval) {
-            $base = array();
-            $notifier_file_url = 'http://cc.aa-team.com/apps-versions/index.php?app=' . $this->alias;
-            $db_cache_field = $this->alias . '_notifier-cache';
-            $db_cache_field_last_updated = $this->alias . '_notifier-cache-last-updated';
-            $last = get_option( $db_cache_field_last_updated );
-            $now = time();
-
-            // check the cache
-            if ( !$last || (( $now - $last ) > $interval) ) {
-                // cache doesn't exist, or is old, so refresh it
-                if( function_exists('curl_init') ) { // if cURL is available, use it...
-                    $ch = curl_init($notifier_file_url);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HEADER, 0);
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-                    $cache = curl_exec($ch);
-                    curl_close($ch);
-                } else {
-                    // ...if not, use the common file_get_contents()
-                    $cache = file_get_contents($notifier_file_url);
-                }
-
-                if ($cache) {
-                    // we got good results
-                    update_option( $db_cache_field, $cache );
-                    update_option( $db_cache_field_last_updated, time() );
-                }
-
-                // read from the cache file
-                $notifier_data = get_option( $db_cache_field );
-            }
-            else {
-                // cache file is fresh enough, so read from it
-                $notifier_data = get_option( $db_cache_field );
-            }
-
-            // Let's see if the $xml data was returned as we expected it to.
-            // If it didn't, use the default 1.0 as the latest version so that we don't have problems when the remote server hosting the XML file is down
-            if( strpos((string)$notifier_data, '<notifier>') === false ) {
-                $notifier_data = '<?xml version="1.0" encoding="UTF-8"?><notifier><latest>1.0</latest><changelog></changelog></notifier>';
-            }
-
-            // Load the remote XML data into a variable and return it
-            $xml = simplexml_load_string($notifier_data);
-
-            return $xml;
-        }
 
 
 		// add admin js init
@@ -702,7 +736,7 @@ if(class_exists('psp') != true) {
 		 */
 		public function initThePlugin()
 		{
-		    $is_admin = is_admin();
+		    $is_admin = $this->is_admin;
 			$loadPluginData = false;
 
 			// If the user can manage options, let the fun begin!
@@ -710,18 +744,18 @@ if(class_exists('psp') != true) {
 			if ( $is_admin /*&& current_user_can( 'manage_options' )*/ ) {
 				if ( (stripos($page,'codestyling') === false) ) {
 					// Adds actions to hook in the required css and javascript
-					add_action( "admin_print_styles", array( &$this, 'admin_load_styles') );
-					add_action( "admin_print_scripts", array( &$this, 'admin_load_scripts') );
+					add_action( "admin_print_styles", array( $this, 'admin_load_styles') );
+					add_action( "admin_print_scripts", array( $this, 'admin_load_scripts') );
 					
 					// get fatal errors
-					add_action ( 'admin_notices', array( &$this, 'fatal_errors'), 10 );
+					add_action ( 'admin_notices', array( $this, 'fatal_errors'), 10 );
 	
 					// get fatal errors
-					add_action ( 'admin_notices', array( &$this, 'admin_warnings'), 10 );
+					add_action ( 'admin_notices', array( $this, 'admin_warnings'), 10 );
 				}
 				
 				// create dashboard page
-				add_action( 'admin_menu', array( &$this, 'createDashboardPage' ) );
+				add_action( 'admin_menu', array( $this, 'createDashboardPage' ) );
 				
 				$loadPluginData = true;
 			} else if ( !$is_admin ) {
@@ -1028,7 +1062,7 @@ if(class_exists('psp') != true) {
 				'section' 		=> isset($_REQUEST['section']) ? strip_tags($_REQUEST['section']) : false,
 				'subsection' 	=> isset($_REQUEST['subsection']) ? strip_tags($_REQUEST['subsection']) : false
 			);
-   
+
 			// get module if isset
 			if(!in_array( $request['section'], $this->cfg['activate_modules'])) die(json_encode(array('status' => 'err', 'msg' => __('invalid section want to load!', $this->localizationName))));
 
@@ -1043,10 +1077,10 @@ if(class_exists('psp') != true) {
 				}
 				$options = ob_get_contents(); //copy current buffer contents into $message variable and delete current output buffer
 				ob_end_clean();
-   
+				  
 				if(trim($options) != "") {
 					$options = json_decode($options, true);
-
+					 
 					// Derive the current path and load up aaInterfaceTemplates
 					$plugin_path = dirname(__FILE__) . '/';
 					if(class_exists('aaInterfaceTemplates') != true) {
@@ -1057,7 +1091,7 @@ if(class_exists('psp') != true) {
 
 						// then build the html, and return it as string
 						$html = $aaInterfaceTemplates->bildThePage($options, $this->alias, $tryed_module);
-
+						 
 						// fix some URI
 						$html = str_replace('{plugin_folder_uri}', $tryed_module['folder_uri'], $html);
 
@@ -1175,14 +1209,31 @@ if(class_exists('psp') != true) {
 		public function admin_load_styles()
 		{
 			global $wp_scripts;
-			
+			$protocol = is_ssl() ? 'https:' : 'http:';
 			$javascript = $this->admin_get_scripts();
 			
-            $style_url = $this->cfg['paths']['freamwork_dir_url'] . 'load-styles.php';
+			wp_enqueue_style( $this->alias . '-google-Roboto',  $protocol . '//fonts.googleapis.com/css?family=Roboto:400,500,400italic,500italic,700,700italic' );
+			wp_enqueue_style( $this->alias . '-font-awesome',   $protocol . '//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css' );
+			wp_enqueue_style( $this->alias . '-admin-font',   $this->cfg['paths']['freamwork_dir_url'] . 'css/font.css' );
+
+			$main_style = admin_url('admin-ajax.php?action=PSP_framework_style');
+            $main_style_cached = $this->cfg['paths']['freamwork_dir_path'] . 'css/main-style.css';
+            if( is_file( $main_style_cached ) ) {
+                if( (filemtime($main_style_cached) + $this->cfg['css_cache_time']) > time() ) {  
+                    $main_style = $this->cfg['paths']['freamwork_dir_url'] . 'css/main-style.css';
+                }
+            }
+            // !!! debug
+			$main_style = admin_url('admin-ajax.php?action=PSP_framework_style');
+            
+            wp_enqueue_style( $this->alias . '-main-style', $main_style, array( $this->alias . '-font-awesome' ) );
+
+
+            /*$style_url = $this->cfg['paths']['freamwork_dir_url'] . 'load-styles.php';
             if ( is_file( $this->cfg['paths']['freamwork_dir_path'] . 'load-styles.css' ) ) {
                 $style_url = str_replace('.php', '.css', $style_url);
             }
-			wp_enqueue_style( 'psp-aa-framework-styles', $style_url );
+			wp_enqueue_style( 'psp-aa-framework-styles', $style_url );*/
 			
 			if( in_array( 'jquery-ui-core', $javascript ) ) {
 				$ui = $wp_scripts->query('jquery-ui-core');
@@ -1285,7 +1336,7 @@ if(class_exists('psp') != true) {
 				foreach ($this->cfg['freamwork-js-files'] as $key => $value){
 
 					if( is_file($this->cfg['paths']['freamwork_dir_path'] . $value) ){
-						if( in_array( $key, $javascript ) ) wp_enqueue_script( $this->alias . '-' . $key, $this->cfg['paths']['freamwork_dir_url'] . $value );
+						if( in_array( $key, $javascript ) ) wp_enqueue_script( $this->alias . '-' . $key, $this->cfg['paths']['freamwork_dir_url'] . $value . '?' . time() );
 					} else {
 						$this->errors->add( 'warning', __('Invalid JS path to file: <strong>' . $this->cfg['paths']['freamwork_dir_path'] . $value . '</strong> . Call in:' . __FILE__ . ":" . __LINE__ , $this->localizationName) );
 					}
@@ -1316,7 +1367,7 @@ if(class_exists('psp') != true) {
 					__( 'Premium SEO', $this->localizationName ),
 					'read',
 					$this->alias,
-					array( &$this, 'manage_options_template' ),
+					array( $this, 'manage_options_template' ),
 					$this->cfg['paths']['plugin_dir_url'] . 'icon_16.png'
 				);
 			//}
@@ -1444,7 +1495,7 @@ if(class_exists('psp') != true) {
 		/*
 		* GET modules lists
 		*/
-		function load_modules( $pluginPage='' )
+		public function load_modules( $pluginPage='' )
 		{
 			$folder_path = $this->cfg['paths']['plugin_dir_path'] . 'modules/';
 			$cfgFileName = 'config.php';
@@ -1482,8 +1533,10 @@ if(class_exists('psp') != true) {
 					require_once( $module_config  );
 				}
 				$settings = ob_get_clean(); //copy current buffer contents into $message variable and delete current output buffer
-			
+				
 				if(trim($settings) != "") {
+					
+					//var_dump('<pre>',$settings,'</pre>');  
 					$settings = json_decode($settings, true);
 					$__settings = array_keys($settings); // e-strict solve!
 					$alias = (string)end($__settings);
@@ -1601,7 +1654,7 @@ if(class_exists('psp') != true) {
 					
 					if( $status == true && isset( $settings[$alias]['module_init'] ) ){
 						if( is_file($module_folder . $settings[$alias]['module_init']) ){
-							//if( is_admin() ) {
+							//if( $this->is_admin ) {
 								$current_module = array($alias => $this->cfg['modules'][$alias]); 
 								require_once( $module_folder . $settings[$alias]['module_init'] );
 								
@@ -2038,7 +2091,7 @@ if(class_exists('psp') != true) {
 					<div>
 						<span>' . __('Meta Robots Index:', $this->localizationName) . '</span>
 						<select name="psp-editpost-meta-robots-index" id="psp-editpost-meta-robots-index">
-							<option value="default" selected="true">' . __('Default settings', $this->localizationName) . '</option>
+							<option value="default" selected="true">' . __('Default Setting', $this->localizationName) . '</option>
 							<option value="index">' . __('Index', $this->localizationName) . '</option>
 							<option value="noindex">' . __('NO Index', $this->localizationName) . '</option>
 						</select>
@@ -2046,7 +2099,7 @@ if(class_exists('psp') != true) {
 					<div>
 						<span>' . __('Meta Robots Follow:', $this->localizationName) . '</span>
 						<select name="psp-editpost-meta-robots-follow" id="psp-editpost-meta-robots-follow">
-							<option value="default" selected="true">Default settings</option>
+							<option value="default" selected="true">Default Setting</option>
 							<option value="follow">Follow</option>
 							<option value="nofollow">NO Follow</option>
 						</select>
@@ -2063,7 +2116,7 @@ if(class_exists('psp') != true) {
 				<td colspan=3>
 					<div style="float:left; width:100%;">
 						<input type="button" value="' . __('Cancel', $this->localizationName) . '" id="psp-inline-btn-cancel" class="psp-button gray" style="float:left;">
-						<input type="button" value="' . __('Save', $this->localizationName) . '" id="psp-inline-btn-save" class="psp-button blue" style="float:right;">
+						<input type="button" value="' . __('Save', $this->localizationName) . '" id="psp-inline-btn-save" class="psp-button blue psp-form-button-small psp-form-button-info" style="float:right;">
 					</div>
 				</td>
 			</tr>
@@ -2597,7 +2650,7 @@ if(class_exists('psp') != true) {
 			$html = array();
 			if( count($module) == 0 ) return true;
   
-			$html[] = '<div class="psp-grid_4 psp-error-using-module">';
+			$html[] = '<div class="psp-grid_4 psp-error-using-module psp-message psp-error">';
 			$html[] = 	'<div class="psp-panel">';
 			$html[] = 		'<div class="psp-panel-header">';
 			$html[] = 			'<span class="psp-panel-title">';
@@ -2702,6 +2755,12 @@ if(class_exists('psp') != true) {
 				$page_type['type'] = '404';
             }
 
+			// woocommerce
+			if ( $this->is_shop() ) {
+				$page_type['type'] = 'page'; // archive
+			}
+
+
 			$page_type = $page_type['type'];
 			return apply_filters( 'premiumseo_seo_pagetype', $page_type );
         }
@@ -2736,6 +2795,19 @@ if(class_exists('psp') != true) {
                 return $roles;
             }
         }
+
+		// is woocommerce shop page?
+		// Products / Display / Shop & Product Page / "Shop Page" option
+		// wp_options / get_option('woocommerce_shop_page_id')
+		public function is_shop() {
+			//if ( class_exists('Woocommerce') ) {
+			if ( function_exists('is_woocommerce') && function_exists('is_product') ) {
+        		if ( is_shop() ) {
+					return true;
+				}
+			}
+			return false;
+		}
 
 
 		/**
@@ -3074,7 +3146,8 @@ if(class_exists('psp') != true) {
 			if ( is_array($msg) ) {
 				$msg_ = serialize( $msg );
 			}
-			$msg_ = substr($msg_, 0, 150);
+			
+			//$msg_ = substr($msg_, 0, 150);
 			$msg_ = serialize( $msg_ );	
 			$last_status = array('last_status' => array('status' => $status, 'step' => $step, 'data' => date("Y-m-d H:i:s"), 'msg' => $msg_));
 			$this->save_theoption( $this->alias . '_facebook_planner_last_status', $last_status );
@@ -3113,12 +3186,13 @@ if(class_exists('psp') != true) {
 		
 		public function load_woocommerce_taxonomies() {
 			if ( !$this->is_woocommerce_installed() ) return;
-
-			$wc_path = WC()->plugin_path();
-			$wc_path_full = $wc_path . '/includes/class-wc-post-types.php';
-			require_once( $wc_path_full );
-			WC_Post_types::register_taxonomies();
-			WC_Post_types::register_post_types();
+			if( class_exists( 'WooCommerce' ) ) {
+				$wc_path = WC()->plugin_path();
+				$wc_path_full = $wc_path . '/includes/class-wc-post-types.php';
+				require_once( $wc_path_full );
+				WC_Post_types::register_taxonomies();
+				WC_Post_types::register_post_types();
+			}
 		}
 	}
 }
@@ -3150,5 +3224,12 @@ if ( !function_exists('array_replace_recursive') ) {
 		}
 
 		return $base;
+	}
+}
+
+if ( !function_exists('psp') ) {
+	function psp() {
+		global $psp;
+		return $psp;
 	}
 }

@@ -21,7 +21,7 @@ echo json_encode(
 				'buttons' 	=> array(
 					'save' => array(
 						'value' => __('Save settings', 'psp'),
-						'color' => 'green',
+						'color' => 'success',
 						'action'=> 'psp-saveOptions'
 					)
 				), // true|false
@@ -30,24 +30,29 @@ echo json_encode(
 				// create the box elements array
 				'elements'	=> array(
 					array(
-						'type' 		=> 'message',
+						'type' 		=> 'html',
 						
-						'html' 		=> __('
-							<h2>Basic Setup</h2>
-							<ul>
+						'html' 		=> '<div class="panel-heading psp-panel-heading">' . __('<h2>Basic Setup</h2>', 'psp') . '</div>',
+					),
+					
+					array(
+						'type' 		=> 'html',
+						
+						'html' 		=> '<div class="panel-body psp-panel-body"><div class="psp-callout psp-callout-primary">' . __('
+							<ol>
 								<li>Create a Project in the Google APIs Console: <a href="https://console.developers.google.com" target="_blank">https://console.developers.google.com</a></li>
-								<li>Enable the Analytics API under APIs & auth ->APIs </li>
-								<li>Under APIs & auth -> Credentials -> Create Client ID</li>
+								<li>Enable the Analytics API from the <a href="https://console.developers.google.com/apis/library" target="_blank" > Library </a></li>
+								<li>After Enabling the API go to -> <a href="https://console.developers.google.com/apis/credentials" target="_blank"> Credentials </a> -> Create Credentials Button -> Create OAuth Client ID</li>
 								<li>On Application type, choose Web application </li>
-								<li>On Authorized redirect URI make sure you add the link from the Premium Seo Google Settings</li>
-							</ul>', 'psp'),
+								<li>On Authorized redirect URIs make sure you add the link from the Premium Seo Google Settings</li>
+							</ol>', 'psp') . '</div></div>',
 					),
 						
 					'client_id' 	=> array(
 						'type' 		=> 'text',
 						'std' 		=> '',
 						'size' 		=> 'small',
-						'force_width'=> '300',
+						'force_width'=> '520',
 						'title' 	=> __('Your client id:', 'psp'),
 						'desc' 		=> __('From the APIs console.', 'psp')
 					),
@@ -56,7 +61,7 @@ echo json_encode(
 						'type' 		=> 'text',
 						'std' 		=> '',
 						'size' 		=> 'small',
-						'force_width'=> '200',
+						'force_width'=> '520',
 						'title' 	=> __('Your client secret:', 'psp'),
 						'desc' 		=> __('From the APIs console.', 'psp')
 					),
@@ -74,7 +79,7 @@ echo json_encode(
 						'type' 		=> 'select',
 						'size' 		=> 'large',
 						'title' 	=> __('Profile ID:', 'psp'),
-						'force_width'=> '200',
+						'force_width'=> '300',
 						'desc' 		=> __('Select your website profile from list. If list is empty please authorize first the app.', 'psp'),
 						'options'	=> apply_filters('psp_google_analytics_get_profiles', '')
 					),
@@ -84,9 +89,9 @@ echo json_encode(
 						'options' => array(
 							'authorize_app' => array(
 								'value' => __('Authorize the app', 'psp'),
-								'color' => 'blue',
+								'color' => 'info',
 								'action'=> 'psp-google-authorize-app',
-								'width' => '120px'
+								'width' => '145px'
 							)
 						)
 					),
@@ -112,9 +117,7 @@ echo json_encode(
 					array(
 						'type' 		=> 'message',
 						
-						'html' 		=> __('
-							Add <a href="http://www.google.com/analytics/" target="_blank">Google Analytics</a> javascript code on all pages.
-						', 'psp'),
+						'html' 		=> __('Add <a href="http://www.google.com/analytics/" target="_blank">Google Analytics</a> javascript code on all pages.', 'psp'),
 					),
 					
 					'google_anonymize_ip' 	=> array(
@@ -123,7 +126,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('Anonymize Analytics IP: ', 'psp'),
-						'desc' 		=> __('If you choose YES => The Google Analytics script which tracks your visitors views, we\'ll use Google Analytics _anonymizeIp function that anonymizes the last digits of the user\'s IP.', 'psp'),
+						'desc' 		=> __('If you choose YES, the Google Analytics script which tracks your visitors views will use Google Analytics\' _anonymizeIp function, that anonymizes the last digits of the user\'s IP.', 'psp'),
 						'options'	=> array(
 							'yes' 	=> __('YES', 'psp'),
 							'no' 	=> __('NO', 'psp')

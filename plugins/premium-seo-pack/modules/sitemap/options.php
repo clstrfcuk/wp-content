@@ -51,7 +51,7 @@ function psp_postTypes_priority( $istab = '', $is_subtab='' ) {
 		?>
 		<label for="priority[<?php echo $key;?>]" style="display:inline;float:none;"><?php echo ucfirst(str_replace('_', ' ', $value));?>:</label>
 		&nbsp;
-		<select id="priority[<?php echo $key;?>]" name="priority[<?php echo $key;?>]" style="width:60px;">
+		<select id="priority[<?php echo $key;?>]" name="priority[<?php echo $key;?>]" style="width:400px;">
 			<?php
 			foreach (range(0, 1, 0.1) as $kk => $vv){
 				$vv = (string) $vv;
@@ -98,7 +98,7 @@ function psp_postTypes_changefreq( $istab = '', $is_subtab='' ) {
 		?>
 		<label for="changefreq[<?php echo $key;?>]" style="display:inline;float:none;"><?php echo ucfirst(str_replace('_', ' ', $value));?>:</label>
 		&nbsp;
-		<select id="changefreq[<?php echo $key;?>]" name="changefreq[<?php echo $key;?>]" style="width:120px;">
+		<select id="changefreq[<?php echo $key;?>]" name="changefreq[<?php echo $key;?>]" style="width:400px;">
 			<?php
 			foreach (array('always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never') as $kk => $vv){
 				echo '<option value="' . ( $vv ) . '" ' . ( $val == $vv ? 'selected="true"' : '' ) . '>' . ( $vv ) . '</option>';
@@ -155,7 +155,7 @@ function __pspNotifyEngine( $engine='google', $action='default', $istab = '', $i
 	ob_end_clean();
 	$html[] = $selectSitemap;
 	
-	$html[] = '<input type="button" class="psp-button blue" style="width: 160px;" id="psp-notify-' . $engine . '" value="' . ( __('Notify '.ucfirst($engine), 'psp') ) . '">
+	$html[] = '<input type="button" class="psp-form-button psp-form-button-info psp-button blue" style="width: 160px;" id="psp-notify-' . $engine . '" value="' . ( __('Notify '.ucfirst($engine), 'psp') ) . '">
 	<span style="margin:0px 0px 0px 10px" class="response">' . __pspNotifyEngine( $engine, 'getStatus' ) . '</span>';
 
 	$html[] = '</div>';
@@ -392,7 +392,7 @@ echo json_encode(
 						'type' 		=> 'select',
 						'std' 		=> 'yes',
 						'size' 		=> 'large',
-						'force_width'=> '120',
+						'force_width'=> '100',
 						'title' 	=> __('Add to virtual robots.txt: ', 'psp'),
 						'desc' 		=> __('Add to Wordpress virtual robots.txt', 'psp'),
 						'options'	=> array(
@@ -414,7 +414,7 @@ echo json_encode(
 						'type' 		=> 'select',
 						'std' 		=> 'no',
 						'size' 		=> 'large',
-						'force_width'=> '70',
+						'force_width'=> '100',
 						'title' 	=> 'Enable Stylesheet',
 						'desc' 		=> 'enable default stylesheet for sitemaps',
 						'options' 	=> array(
@@ -427,9 +427,9 @@ echo json_encode(
                         'type'      => 'select',
                         'std'       => 'no',
                         'size'      => 'large',
-                        'force_width'=> '70',
+                        'force_width'=> '100',
                         'title'     => 'Last modified is GMT:',
-                        'desc'      => 'if you choose NO => local timezone setting from Settings > General will be used',
+                        'desc'      => 'if you choose NO, then the local timezone setting from Settings > General will be used',
                         'options'   => array(
                             'yes'   => __('YES', 'psp'),
                             'no'    => __('NO', 'psp')
@@ -440,7 +440,7 @@ echo json_encode(
                         'type'      => 'select',
                         'std'       => 'no',
                         'size'      => 'large',
-                        'force_width'=> '70',
+                        'force_width'=> '100',
                         'title'     => 'Use xmlns:schemaLocation sitemap.xsd validation:',
                         'desc'      => 'use xmlns:schemaLocation sitemap.xsd validation',
                         'options'   => array(
@@ -503,7 +503,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('Compress: ', 'psp'),
-						'desc' 		=> __('If you choose YES => automatically compress the sitemap if the requesting client supports it (gzip is used)', 'psp'),
+						'desc' 		=> __('If you choose YES, then the plugin will automatically compress the sitemap if the requesting client supports it (gzip is used)', 'psp'),
 						'options'	=> array(
 							'yes' 	=> __('YES', 'psp'),
 							'no' 	=> __('NO', 'psp')

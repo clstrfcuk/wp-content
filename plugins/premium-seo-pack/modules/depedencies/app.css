@@ -35,7 +35,6 @@
 			display: table-cell;
 		}
 		.psp-dashboard-status-box-row .psp-dashboard-status-box-content.is_ajax_content {
-			background: url("../../modules/dashboard/assets/ajax-loading.gif") no-repeat;
 			background-position: 20px center;
 			overflow: hidden;
 			text-indent: -1000px;
@@ -200,7 +199,6 @@
 #psp-audience-visits-graph {
 	height: 220px;
 	overflow: hidden;
-	background: url("../../modules/dashboard/assets/ajax-loading.gif") no-repeat;
 	background-position: center center;
 }	
 

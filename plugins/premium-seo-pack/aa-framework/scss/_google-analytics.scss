@@ -1,0 +1,305 @@
+.#{$alias} {
+
+	.#{$alias}-gAnalytics-box-statistics {
+		.#{$alias}-panel-content {
+			table {
+				display: none;
+				th {
+					background: $white;
+					border: 0;
+					border-bottom: 1px solid $medium-gray;
+					color: $black;
+					font-weight: $bold;
+					font-size: px(11);
+					text-transform: uppercase;
+					&:first-child {
+						padding-left: px(15) !important;
+						text-align: left !important;
+					}
+				}
+				td {
+					border: 0;
+					&:only-child {
+						background: $white;
+					}
+					&:first-child {
+						padding-left: px(15) !important;
+						text-align: left !important;
+					}
+				}
+			}
+		}
+	}
+	
+	.#{$alias}-audience-graph {
+		.legend {
+			table {
+				font-size: px(13) !important;
+				
+				tr {
+					padding: px(0);
+					td {
+						padding: px(5) 0;
+					}
+					td.legendColorBox {
+						padding-right: px(10);
+						&>div {
+							border: none !important;
+							padding: 0 px(5) !important;
+							&>div {
+								width: px(25) !important;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.#{$alias}-section-Google_Analytics {
+		.#{$alias}-saveOptions,
+		.#{$alias}-google-authorize-app {
+			margin-left: 0;
+			cursor: pointer;
+		}
+		.#{$alias}-message {
+			ul {
+			    display: block;
+			    background: #EEEEEE;
+			    border-radius: 0.5rem;
+			    border: solid 0.1rem #e5e5e5;
+			    line-height: 3.5;
+			    margin: px(40) 0;
+			    padding: px(10) px(25);
+			}
+		}
+	}
+
+
+	##{$alias}-gAnalytics-wrapper {
+		label {
+			margin-bottom: 0;
+		}
+		##{$alias}-audience-visits-graph {
+			height: px(300);
+			overflow: hidden;
+		}
+		.#{$alias}-audience-container {
+			padding: px(10);
+			h2 {
+				margin: 0 0 px(15) 0;
+				font-weight: normal;
+			}
+		}
+		#audience-choose-container {
+			overflow: hidden;
+			margin: px(25) 0 px(37) 0;
+			div {
+				display: inline-block;
+				width: 13.3%;
+				margin: 0 0 0 px(5);
+				padding-right: px(8);
+				font-size: px(12);
+				input {
+					margin: 0 px(4) 0 0;
+				}
+				label {
+					font-weight: normal !important;
+				}
+				&:first-child {
+					border: 0;
+					padding-right: 0;
+				}
+			}
+		}
+		.#{$alias}-ga-summary-stat {
+			overflow: hidden;
+			margin: px(10) 0 0;
+			padding: px(20) 0 0;
+		}
+		.#{$alias}-ga-summary-block {
+			float: left;
+		    margin: 0 0 1.5rem 0;
+		    padding: px(22);
+		    margin-left: 15px;
+		    background: #f6f6f6;
+		    border-right: 0;
+		    width: 23%;
+		    border-radius: px(3);
+		    min-height: 4rem;
+		    &:hover {
+		    	.#{$alias}-ga-summery-desc {
+		    		display: block;
+		    	}
+		    }
+		    &:first-child,
+		    &:nth-child(5) {
+		    	margin-left: 0 !important;
+		    }
+		    &:first-child {
+		    	span {
+		    		color: #4abbf5;
+		    	}
+		    }
+		    &:nth-child(2) {
+		    	span {
+		    		color: #c90dac;
+		    	}
+		    }
+		    &:nth-child(3) {
+		    	span {
+		    		color: #f03a3a;
+		    	}
+		    }
+		    &:nth-child(4) {
+		    	span {
+		    		color: #0ca67c;
+		    	}
+		    }
+		    &:nth-child(5) {
+		    	span {
+		    		color: #68c64b;
+		    	}
+		    }
+		    &:nth-child(6) {
+		    	span {
+		    		color: #4abbf5;
+		    	}
+		    }
+		    &:nth-child(7) {
+		    	span {
+		    		color: #954bb3;
+		    	}
+		    }
+		    
+			.#{$alias}-ga-summery-title {
+				font-size: px(14);
+				width: 100%;
+				text-align: center;
+				span {
+					font-weight: bold;
+				}
+			}
+			.#{$alias}-ga-summery-desc {
+				border-radius: 0.5rem;
+				font-size: px(12);
+				background: #484848;
+				color: $white;
+				opacity: 0.9;
+				display: none;
+				position: absolute;
+				padding: px(25);
+				a {
+					color: $orange;
+				}
+			}
+		}
+		.#{$alias}-ga-filter {
+			position: relative;
+			padding-top: px(3);
+			padding-bottom: px(3);
+			height: px(25);
+		}
+		.#{$alias}-panel-content {
+			min-height: px(590);
+		}
+		.#{$alias}-top-filters {
+			float: right;
+			margin-top: -#{px(5)};
+			##{$alias}-filter-by-date {
+				width: px(400);
+				label {
+					float: left;
+					width: auto;
+					margin: 0 px(5) 0 0;
+					position: relative;
+					bottom: -#{px(5)};
+					display: block;
+				}
+				input[type=text] {
+					float: left;
+					width: px(110);
+					margin: 0 px(10) 0 0;
+					padding: px(4);
+				}
+			}
+		}
+		.#{$alias}-demographics-container table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+		.#{$alias}-system-container table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+		.#{$alias}-mobile-container table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+		table.#{$alias}-table {
+			display: none;
+			tr {
+				th {
+					padding: px(4) px(8);
+				}
+				td {
+					padding: px(4) px(8);
+				}
+			}
+		}
+	}
+	
+	.#{$alias}-gAnalytics-box-statistics {
+		padding: px(24);
+		
+		.#{$alias}-panel-heading {
+			padding: 0;
+			h2 {
+				margin-bottom: px(24) !important;
+			}
+		}
+		.#{$alias}-panel-body {
+			border-top: none;
+			padding: px(24) 0 0 0;
+		}
+		
+		.#{$alias}-table {
+			th {
+				padding-top: px(2);
+			}
+			th, td {
+				text-align: left;
+				line-height: 2;
+				height: auto;
+			}
+		}
+	}
+
+	.#{$alias}-content {
+		.#{$alias}-main {
+			.panel {
+				.panel-heading {
+					h2 {
+						display: inline-block;
+						font-weight: $medium;
+						font-size: px(18);
+						color: $black;
+						line-height: px(18);
+
+					}
+					select.#{$alias}-ga-filter {
+						width: 100%;
+						display: block;
+						padding: 0 0 0 px(12);
+						height: px(40);
+						font-weight: $normal;
+						color: $black;
+						font-size: px(14);
+						border-radius: px(3);
+					}
+				}
+			}
+		}
+	}
+
+}

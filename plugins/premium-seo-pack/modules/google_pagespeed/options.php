@@ -21,7 +21,7 @@ echo json_encode(
 				'buttons' 	=> array(
 					'save' => array(
 						'value' => __('Save settings', 'psp'),
-						'color' => 'green',
+						'color' => 'success',
 						'action'=> 'psp-saveOptions'
 					)
 				), // true|false
@@ -29,13 +29,19 @@ echo json_encode(
 
 				// create the box elements array
 				'elements'	=> array(
+					array(
+						'type' 		=> 'html',
+						
+						'html' 		=> '<div class="panel-heading psp-panel-heading">' . __('<h2>Basic Setup</h2>', 'psp') . '</div>',
+					),
+					
 					'developer_key' 	=> array(
 						'type' 		=> 'text',
 						'std' 		=> '',
 						'size' 		=> 'large',
 						'force_width'=> '400',
-						'title' 	=> __('Google Developer Key:', 'psp'),
-						'desc' 		=> __('Google Developer Key', 'psp')
+						'title' 	=> __('API Key:', 'psp'),
+						'desc' 		=> __('API Key - get it from Google Console - read more in the documentation in how to setup', 'psp')
 					),
 					
 					'google_language' 	=> array(
@@ -49,14 +55,14 @@ echo json_encode(
 							'ar' => 'Arabic',
 							'bg' => 'Bulgarian',
 							'ca' => 'Catalan',
-							'zh-TW' => 'Traditional Chinese (Taiwan)',
-							'zh-CN' => 'Simplified Chinese',
+							'zh_TW' => 'Traditional Chinese (Taiwan)',
+							'zh_CN' => 'Simplified Chinese',
 							'hr' => 'Croatian',
 							'cs' => 'Czech',
 							'da' => 'Danish',
 							'nl' => 'Dutch',
 							'en' => 'English',
-							'en-GB' => 'English UK',
+							'en_GB' => 'English UK',
 							'fil' => 'Filipino',
 							'fi' => 'Finnish',
 							'fr' => 'French',
@@ -73,8 +79,8 @@ echo json_encode(
 							'lt' => 'Lithuanian',
 							'no' => 'Norwegian',
 							'pl' => 'Polish',
-							'pt-BR' => 'Portuguese (Brazilian)',
-							'pt-PT' => 'Portuguese (Portugal)',
+							'pt_BR' => 'Portuguese (Brazilian)',
+							'pt_PT' => 'Portuguese (Portugal)',
 							'ro' => 'Romanian',
 							'ru' => 'Russian',
 							'sr' => 'Serbian',

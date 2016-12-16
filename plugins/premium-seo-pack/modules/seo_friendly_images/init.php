@@ -55,9 +55,12 @@ if (class_exists('pspSEOImages') != true) {
 		public function add_images_tags( $the_content )
 		{
 			global $post;
+			
+			$post_id = is_object($post) && isset($post->ID) ? (int) $post->ID : 0;
+			if ( empty($post_id) ) return do_shortcode($the_content);
 
 			// php query class
-			require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/php-query/php-query.php' );  
+			require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/php-query/php-query.php' );
 			
 			$psp_meta = get_post_meta( $post->ID, 'psp_meta', true );
 			

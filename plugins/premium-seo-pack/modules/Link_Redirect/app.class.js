@@ -9,15 +9,13 @@ pspLinkRedirect = (function ($) {
     // public
     var debug_level = 0;
     var maincontainer = null;
-    var mainloading = null;
     var lightbox = null;
 
 	// init function, autoload
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
-			mainloading = $("#psp-main-loading");
+			maincontainer = $(".psp-main");
 			lightbox = $("#psp-lightbox-overlay");
 
 			triggers();
@@ -67,7 +65,7 @@ pspLinkRedirect = (function ($) {
 	function addToBuilder( $form )
 	{
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		var url = $form.find('#new_url'), 
 			url_val = url.val(),
@@ -91,16 +89,16 @@ pspLinkRedirect = (function ($) {
 		jQuery.post(ajaxurl, data_save, function(response) {
 			if( response.status == 'valid' ) {
 				setFlagAdd(1);
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
 	
 	function getUpdateData( itemid ) {
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspGetUpdateDataRedirect',
@@ -108,12 +106,12 @@ pspLinkRedirect = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 
 				setUpdateForm( response.data );
 				showUpdateLink();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -140,15 +138,15 @@ pspLinkRedirect = (function ($) {
     	data_save.push({ name: "itemid", value: itemid });
 			
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		jQuery.post(ajaxurl, data_save, function(response) {
 			if( response.status == 'valid' ){
 				setFlagAdd(1);
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -156,7 +154,7 @@ pspLinkRedirect = (function ($) {
 	function deleteFromBuilder( itemid )
 	{
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspRemoveFromRedirect',
@@ -165,10 +163,10 @@ pspLinkRedirect = (function ($) {
 		}, function(response) {
 			if( response.status == 'valid' ){
 				setFlagAdd(1);
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -184,7 +182,7 @@ pspLinkRedirect = (function ($) {
 			return false;
 		}
 		
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspLinkRedirect_do_bulk_delete_rows',
@@ -192,13 +190,13 @@ pspLinkRedirect = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				setFlagAdd(1);
 				//refresh page!
 				window.location.reload();
 				return false;
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			alert('Problems occured while trying to delete the selected rows!');
 		}, 'json');
 	}

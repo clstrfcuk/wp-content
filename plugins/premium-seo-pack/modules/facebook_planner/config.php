@@ -15,13 +15,13 @@
 				'order' => 96,
 				'show_in_menu' => false,
 				'title' => __('Facebook Planner', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-facebook_planner"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
 				'url'	=> admin_url("admin.php?page=psp#facebook_planner")
 			),
-			'description' => __('This module allows you to post your content to facebook.', 'psp'),
+			'description' => __('This module allows you to post your content to facebook in a programatic way, based on your own schedule.', 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',
@@ -53,20 +53,20 @@
 				1 => __('
 					You configured Facebook Planner Service incorrectly. See 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue psp-show-docs-shortcut',
+						'color' => 'info psp-show-docs-shortcut',
 						'url' => 'javascript: void(0)',
 						'title' => 'here'
 					) ) ) . ' for more details on fixing it. <br />
 					Module Facebook Planner verification section: click Verify button and read status 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue',
+						'color' => 'info',
 						'url' => admin_url( 'admin.php?page=psp_server_status#sect-facebook_planner' ),
 						'title' => 'here',
 						'target' => '_blank'
 					) ) ) . '<br />
 					Setup the Facebook Planner module 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue',
+						'color' => 'info',
 						'url' => admin_url( 'admin.php?page=psp#facebook_planner' ),
 						'title' => 'here'
 					) ) ) . '

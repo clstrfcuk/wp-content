@@ -19,7 +19,13 @@ pspPageSpeedInsights = (function ($) {
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
+			// load the checkbox styling plugin
+			/*$('input').iCheck({
+			    checkboxClass: 'icheckbox_minimal-blue',
+			    radioClass: 'iradio_minimal-blue'
+			});*/
+
+			maincontainer = $(".psp-main");
 			loading = maincontainer.find("#psp-main-loading");
 			detail_page = maincontainer.find("#psp-pagespeed-detail");
 
@@ -50,7 +56,7 @@ pspPageSpeedInsights = (function ($) {
 		if( status == 'show' ){
 			if( row.size() > 0 ){
 				if( row.find('.psp-row-loading-marker').size() == 0 ){
-					var row_loading_box = $('<div class="psp-row-loading-marker"><div class="psp-row-loading"><div class="psp-meter psp-animate" style="width:30%; margin: 10px 0px 0px 30%;"><span style="width:100%"></span></div></div></div>')
+					var row_loading_box = $('<div class="psp-row-loading-marker"><div class="psp-row-loading"><div class="psp-meter psp-animate"><span style="width:100%"></span></div></div></div>')
 					row_loading_box.find('div.psp-row-loading').css({
 						'width': row.width(),
 						'height': row.height()
@@ -70,7 +76,7 @@ pspPageSpeedInsights = (function ($) {
 		var row = that.parents("tr").eq(0),
 			id 	= row.data('itemid');
 		
-		loading.show();
+		pspFreamwork.to_ajax_loader('Loading...');
 		
 		$.post(ajaxurl, {
 			'action' 		: 'pspPageSpeedInsightsRequest',
@@ -81,9 +87,13 @@ pspPageSpeedInsights = (function ($) {
 			if( response.viewSpeedRaportById.status == 'valid'){ 			
 				detail_page.find("#psp-pagespeed-ajaxresponse").html( response.viewSpeedRaportById.html );
 				detail_page.show();
-				loading.hide();
+				pspFreamwork.to_ajax_loader_close();
+				
+				$('html, body').animate({
+			        scrollTop: 0
+			    }, 1000);
 			}
-			loading.hide();
+			pspFreamwork.to_ajax_loader_close();
 		}, 'json'); 
 	}
 	

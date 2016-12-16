@@ -22,7 +22,7 @@ var tblPrev = null;
 (function init() {
 	// load the triggers
 	$(document).ready(function(){
-		maincontainer = $("#psp-wrapper")
+		maincontainer = $(".psp-main")
 		loading = maincontainer.find("#main-loading");
 		socialBox = maincontainer.find('#psp-ajax-response');
 		socialBoxResp = socialBox.find('#psp-socialsharing-ajax');
@@ -39,7 +39,7 @@ function ajaxLoading()
 }
 
 function get_options( tbl ) {
-	ajaxLoading();
+	pspFreamwork.to_ajax_loader( "Loading..." );
 
 	//var theTrigger = socialBox.find('#toolbar'), theTriggerVal = theTrigger.val();
 	var theTrigger = tbl, theTriggerVal = tbl.attr('id').replace('tab-item-', '');
@@ -49,8 +49,8 @@ function get_options( tbl ) {
 		return false;
 	}
 
-	tblPrev.parent().removeClass('active');
-	theTrigger.parent().addClass('active');
+	tblPrev.closest('li').removeClass('active');
+	theTrigger.closest('li').addClass('active');
 
 	$.post(ajaxurl, {
 		'action' 		: 'pspSocialSharing',
@@ -87,9 +87,13 @@ function get_options( tbl ) {
 			.bind('keyup', function(){
 				$(this).ColorPickerSetColor( this.value );
 			});
+			
+			pspFreamwork.to_ajax_loader_close();
 
 			return true;
 		}
+		
+		pspFreamwork.to_ajax_loader_close();
 		return false;
 	}, 'json');
 }
@@ -128,7 +132,7 @@ function triggers()
 	tblWrap.on('click', 'li.tab-item', function (e) {
 		e.preventDefault();
 
-		var $this = $(this), __sel = $this.find('> input[type=checkbox]');
+		var $this = $(this), __sel = $this.find('input[type=checkbox]');
 		get_options( __sel );
 		tblPrev = __sel;
 	});

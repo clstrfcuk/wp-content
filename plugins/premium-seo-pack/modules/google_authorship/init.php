@@ -91,8 +91,7 @@ if (class_exists('pspGoogleAuthorship') != true) {
 				add_filter( 'author_link', array( $this, 'author_link_filter' ), 999, 3 );
 			}
 		}
-
-
+		
 		/**
 		 * Frontend
 		 */
@@ -468,9 +467,9 @@ if (class_exists('pspGoogleAuthorship') != true) {
 			$user_meta = get_user_meta( $user_id, 'psp_google_authorship', true );
 			 
 			// then build the html, and return it as string
-			$html_information = $aaInterfaceTemplates->bildThePage( $this->information_options( $user_meta ) , $this->the_plugin->alias, array(), false);
+			$html_information = $aaInterfaceTemplates->bildThePage( $this->information_options( $user_meta ) , $this->the_plugin->alias, array(), false);  
 ?>
-			<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
+			<!-- <link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' /> -->
 			<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
 			<div id="psp-meta-box-preload" style="height:200px; position: relative;">
 				<!-- Main loading box -->
@@ -482,28 +481,19 @@ if (class_exists('pspGoogleAuthorship') != true) {
 				</div>
 			</div>
 			
-			<div class="psp-meta-box-container" id="psp-user-authorship" style="display:none; border:0px;">
+			<div class="psp" id="psp-user-authorship">
 				<!-- box Tab Menu -->
 				<!--<div class="psp-tab-menu">
 					<a href="#dashboard" class="open"><?php _e('PSP Google+ Authorship', 'psp');?></a>
 				</div>-->
 				
-				<!-- box Data -->
-				<div class="psp-tab-container">
-				
-					<!-- box Dashboard -->
-					<div id="psp-tab-div-id-dashboard" style="display:block;">
-						<div class="psp-dashboard-box span_3_of_3">
-							<!-- Creating the option fields -->
-							<div class="psp-form">
-								<?php echo $html_information;?>
-							</div>
-						</div>
+				<div class="psp-content">
+					<!-- Creating the option fields -->
+					<div class="panel panel-default psp-panel psp-setup">
+						<?php echo $html_information;?>
 					</div>
-					
 				</div>
-			<div style="clear:both"></div>
-		</div>
+			</div>
 <?php
 		}
 
@@ -517,97 +507,97 @@ if (class_exists('pspGoogleAuthorship') != true) {
 				array(
 					/* define the form_sizes  box */
 					'google_authorship_meta' => array(
-						'title' 	=> __('Google+ Authorship Settings', $psp->localizationName),
+						'title' 	=> __('Google+ Authorship Settings', 'psp'),
 						'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
 						'header' 	=> true, // true|false
 						'toggler' 	=> false, // true|false
 						'buttons' 	=> false, // true|false
-						'style' 	=> 'panel', // panel|panel-widget
+						'style' 	=> 'panel-widget', // panel|panel-widget
 						
 						// create the box elements array
 						'elements'	=> array(
-					'google_url' 	=> array(
-						'type' 		=> 'text',
-						'std' 		=> '',
-						'size' 		=> 'large',
-						'force_width'=> '500',
-						'title' 	=> __('Google+ Profile URL: ', $psp->localizationName),
-						'desc' 		=> __('the url to your google+ profile to linked it with your website.', $psp->localizationName)
-					),
-
-					'author_location' 	=> array(
-						'type' 		=> 'select',
-						'std' 		=> 'header',
-						'size' 		=> 'large',
-						'force_width'=> '400',
-						'title' 	=> __('Location:', $psp->localizationName),
-						'desc' 		=> __('generic setting for all authors: where you want the google+ profile for author to be displayed', $psp->localizationName),
-						'options' 	=> array(
-							'disabled'		=> __('Disabled', $psp->localizationName),
-							'header'		=> __('In the header (not visible to site visitors) - recommended', $psp->localizationName),
-							'footer'		=> __('In the footer', $psp->localizationName),
-							'replace'		=> __('Replace author link with the authors Google+ link (verify that your theme support it!)', $psp->localizationName),
-							'content_top'	=> __('In the content (top)', $psp->localizationName),
-							'content_bottom'=> __('In the content (bottom)', $psp->localizationName)
-						)
-					),
-					
-					'author_visibility' 	=> array(
-						'type' 		=> 'select',
-						'std' 		=> 'visible',
-						'size' 		=> 'large',
-						'force_width'=> '200',
-						'title' 	=> __('Visibility:', $psp->localizationName),
-						'desc' 		=> __('generic setting for all authors: if you want the google+ profile for author to be displayed (available only for Location: In the footer, In the content (top or bottom))', $psp->localizationName),
-						'options' 	=> array(
-							'visible'		=> __('Visible', $psp->localizationName),
-							'hidden'		=> __('Hidden', $psp->localizationName)
-						)
-					),
-					
-					'author_feed' => array(
-						'type' 		=> 'select',
-						'std' 		=> 'no',
-						'size' 		=> 'large',
-						'force_width'=> '120',
-						'title' 	=> __('Display in feeds? ', $psp->localizationName),
-						'desc' 		=> __('generic setting for all authors: if you want the google+ profile for author to be include in the feeds', $psp->localizationName),
-						'options'	=> array(
-							'yes' 	=> __('YES', $psp->localizationName),
-							'no' 	=> __('NO', $psp->localizationName)
-						)
-					),
-					
-					'author_newwindow' => array(
-						'type' 		=> 'select',
-						'std' 		=> 'no',
-						'size' 		=> 'large',
-						'force_width'=> '120',
-						'title' 	=> __('Open link in new window?', $psp->localizationName),
-						'desc' 		=> __('generic setting for all authors: open the url to google+ profile for author in new window', $psp->localizationName),
-						'options'	=> array(
-							'yes' 	=> __('YES', $psp->localizationName),
-							'no' 	=> __('NO', $psp->localizationName)
-						)
-					),
-					
-					'author_title' 	=> array(
-						'type' 		=> 'text',
-						'std' 		=> 'Google+ Author',
-						'size' 		=> 'large',
-						'force_width'=> '300',
-						'title' 	=> __('URL Title: ', $psp->localizationName),
-						'desc' 		=> __('generic setting for all authors: url title - to google+ profile for author.', $psp->localizationName)
-					),
-					
-					'author_text' 	=> array(
-						'type' 		=> 'text',
-						'std' 		=> 'Google+',
-						'size' 		=> 'large',
-						'force_width'=> '300',
-						'title' 	=> __('URL Text: ', $psp->localizationName),
-						'desc' 		=> __('generic setting for all authors: url text - to google+ profile for author.', $psp->localizationName)
-					)
+							'google_url' 	=> array(
+								'type' 		=> 'text',
+								'std' 		=> '',
+								'size' 		=> 'large',
+								'force_width'=> '500',
+								'title' 	=> __('Google+ Profile URL: ', 'psp'),
+								'desc' 		=> __('the url to your google+ profile to be linked with your website.', 'psp')
+							),
+		
+							'author_location' 	=> array(
+								'type' 		=> 'select',
+								'std' 		=> 'header',
+								'size' 		=> 'large',
+								'force_width'=> '400',
+								'title' 	=> __('Location:', 'psp'),
+								'desc' 		=> __('generic setting for all authors: where you want the google+ profile for author to be displayed', 'psp'),
+								'options' 	=> array(
+									'disabled'		=> __('Disabled', 'psp'),
+									'header'		=> __('In the header (not visible to site visitors) - recommended', 'psp'),
+									'footer'		=> __('In the footer', 'psp'),
+									'replace'		=> __('Replace author link with the authors Google+ link (verify that your theme support it!)', 'psp'),
+									'content_top'	=> __('In the content (top)', 'psp'),
+									'content_bottom'=> __('In the content (bottom)', 'psp')
+								)
+							),
+							
+							'author_visibility' 	=> array(
+								'type' 		=> 'select',
+								'std' 		=> 'visible',
+								'size' 		=> 'large',
+								'force_width'=> '200',
+								'title' 	=> __('Visibility:', 'psp'),
+								'desc' 		=> __('generic setting for all authors: if you want the google+ profile for author to be displayed (available only for Location: In the footer, In the content (top or bottom))', 'psp'),
+								'options' 	=> array(
+									'visible'		=> __('Visible', 'psp'),
+									'hidden'		=> __('Hidden', 'psp')
+								)
+							),
+							
+							'author_feed' => array(
+								'type' 		=> 'select',
+								'std' 		=> 'no',
+								'size' 		=> 'large',
+								'force_width'=> '120',
+								'title' 	=> __('Display in feeds? ', 'psp'),
+								'desc' 		=> __('generic setting for all authors: if you want the google+ profile for author to be included in the feeds', 'psp'),
+								'options'	=> array(
+									'yes' 	=> __('YES', 'psp'),
+									'no' 	=> __('NO', 'psp')
+								)
+							),
+							
+							'author_newwindow' => array(
+								'type' 		=> 'select',
+								'std' 		=> 'no',
+								'size' 		=> 'large',
+								'force_width'=> '120',
+								'title' 	=> __('Open link in new window?', 'psp'),
+								'desc' 		=> __('generic setting for all authors: open the url to google+ profile for author in a new window', 'psp'),
+								'options'	=> array(
+									'yes' 	=> __('YES', 'psp'),
+									'no' 	=> __('NO', 'psp')
+								)
+							),
+							
+							'author_title' 	=> array(
+								'type' 		=> 'text',
+								'std' 		=> 'Google+ Author',
+								'size' 		=> 'large',
+								'force_width'=> '300',
+								'title' 	=> __('URL Title: ', 'psp'),
+								'desc' 		=> __('generic setting for all authors: url title - to google+ authors profiles', 'psp')
+							),
+							
+							'author_text' 	=> array(
+								'type' 		=> 'text',
+								'std' 		=> 'Google+',
+								'size' 		=> 'large',
+								'force_width'=> '300',
+								'title' 	=> __('URL Text: ', 'psp'),
+								'desc' 		=> __('generic setting for all authors: url text - to google+ profile for author.', 'psp')
+							)
 						)
 					)
 				)

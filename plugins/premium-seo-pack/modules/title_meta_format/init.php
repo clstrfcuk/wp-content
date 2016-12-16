@@ -106,7 +106,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 			add_action( 'premiumseo_head', array( &$this, 'the_meta_description' ), 10 );
 			add_action( 'premiumseo_head', array( &$this, 'the_meta_keywords' ), 11 );
 			add_action( 'premiumseo_head', array( &$this, 'the_canonical' ), 19 );
-			
+   
 			//if ( self::$titleForce ) {
 			$titleForce = !isset($this->plugin_settings['force_title']) ||
                 ( isset($this->plugin_settings['force_title']) && $this->plugin_settings['force_title'] == 'yes' ) ? true : false;
@@ -146,10 +146,11 @@ if (class_exists('pspTitleMetaFormat') != true) {
 		public function head_title_tag($head) {
 			$title = $this->the_title('');
 			if ( !$title ) return $head;
-
+			 
 			// replace old title with the new title
 			//return eregi_replace('<title>[^<]*</title>', '<title>'.$title.'</title>', $head);
-			return preg_replace('/<title>([^<]*)<\/title>/i', '<title>'.$title.'</title>', $head);
+			return preg_replace( '/<title.*?\/title>/i', '<title>'.$title.'</title>', $head );
+			//return preg_replace('/<title>([^<]*)<\/title>/i', '<title>'.$title.'</title>', $head);
 		}
 		
 		
@@ -162,9 +163,9 @@ if (class_exists('pspTitleMetaFormat') != true) {
 			$post = $wp_query->get_queried_object();
 
 			$url = '';
-			
-			if ( is_singular() || $this->the_plugin->_is_blog_posts_page() ) { //post|page|post_type
-				
+
+			if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop() ) { //post|page|post_type
+
 				$canonical = $this->the_canonical( false );
 				if ( isset($canonical) && !empty($canonical) )
 					$url = $canonical;
@@ -221,7 +222,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 
 			$canonical = '';
 
-        	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $__postType == 'post' ) {
+        	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop() || $__postType == 'post' ) {
 
 				$__theMeta = get_post_meta( $post->ID, 'psp_meta', true );
         	}
@@ -236,7 +237,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				$__theMeta = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
         	}
         	
-        	if ( is_singular() || $this->the_plugin->_is_blog_posts_page()
+        	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop()
 				|| is_category() || is_tag() || is_tax() || !empty($__postType) ) {
         		
         		if ( isset($__theMeta['canonical']) ) {
@@ -392,7 +393,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
         			$__field = 'title';
         			break;
         	}
-        	
+
   			//current field value!
  			$__currentValue = $this->get_current_field( $__field );
  			if ( !is_null($__currentValue) && !empty($__currentValue) && $__currentValue!='' ) {
@@ -436,15 +437,15 @@ if (class_exists('pspTitleMetaFormat') != true) {
 					$post = $wp_query->get_queried_object();
 			} else
 				$post = $wp_query->get_queried_object();
-  		
+
 			$__postType = $this->getPostType();
 			if ( !empty($__postType) ) $post = $this->post;
 
 			$value = '';
 
 			$__theMeta = array();
-        	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $__postType == 'post' ) {
-
+        	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop() || $__postType == 'post' ) {
+     
 				$post_id = (int) $post->ID;
 
 				if ( $post_id > 0 )
@@ -460,8 +461,8 @@ if (class_exists('pspTitleMetaFormat') != true) {
 
 				$__theMeta = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
         	}
-  
-        	if ( is_singular() || $this->the_plugin->_is_blog_posts_page()
+
+        	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop()
 				|| is_category() || is_tag() || is_tax() || !empty($__postType) ) {
 
 				if ( $field=='all' )
@@ -489,10 +490,10 @@ if (class_exists('pspTitleMetaFormat') != true) {
          */
         public function the_pagetype($field='title', $format_func='the_format') {
         	$page_type = $this->the_plugin->get_wp_pagetype();
-			
+
 			if ( in_array($page_type, array('admin', 'feed')) )
 				return '';
-  
+
 			return call_user_func( array( $this, $format_func ), $field, $page_type );
         }
 
@@ -942,7 +943,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 			$__postType = '';
 			if ( $this->verifyPostInfo() ) {
 				$post = $this->post;
-  
+
 				if ( isset($post->ID) ) {
 					$__postType = 'post';
 				}

@@ -460,7 +460,7 @@ msgstr ""
 
 #: aa-framework/menu.php:85
 #@ psp
-msgid "Monitorize"
+msgid "Monitor"
 msgstr ""
 
 #: aa-framework/menu.php:91
@@ -511,7 +511,7 @@ msgstr ""
 
 #: aa-framework/menu.php:151
 #@ psp
-msgid "ON Page Optimization"
+msgid "On-page Optimization"
 msgstr ""
 
 #: aa-framework/menu.php:164
@@ -573,7 +573,7 @@ msgstr ""
 
 #: aa-framework/menu.php:225
 #@ psp
-msgid "OFF Page Optimization"
+msgid "Off-page Optimization"
 msgstr ""
 
 #: aa-framework/menu.php:231
@@ -627,7 +627,7 @@ msgstr ""
 #: modules/file_edit/init.php:86
 #: modules/file_edit/init.php:166
 #@ psp
-msgid "Files Edit"
+msgid "File Editor"
 msgstr ""
 
 #: aa-framework/menu.php:284
@@ -699,7 +699,7 @@ msgstr ""
 #: aa-framework/menu.php:376
 #: modules/server_status/config.php:18
 #@ psp
-msgid "Server status"
+msgid "Server Status"
 msgstr ""
 
 #: aa-framework/menu.php:383
@@ -2010,7 +2010,7 @@ msgstr ""
 
 #: modules/Google_Analytics/config.php:24
 #@ psp
-msgid "We’ve made a module that takes the data from Google Analytics and transforms it into a easy to understand dashboard, that will allow you to see the impact on search engines."
+msgid "This module takes the data from your Google Analytics and transforms it into an easy to understand dashboard that allows you to see the impact on search engines."
 msgstr ""
 
 #: modules/Google_Analytics/config.php:76
@@ -2311,7 +2311,7 @@ msgstr ""
 
 #: modules/Link_Builder/config.php:23
 #@ psp
-msgid "You can create list of keywords and URLs, and they will automatically be created"
+msgid "You can create a list of keywords and URLs, and they will be automatically created"
 msgstr ""
 
 #: modules/Link_Builder/init.php:487
@@ -2538,7 +2538,8 @@ msgstr ""
 
 #: modules/Social_Stats/config.php:23
 #@ psp
-msgid "You’re putting a lot of effort on marketing your website trough social media? Want to know for sure if your tactics have results? "
+msgid "
+You’re putting a lot of effort on marketing your website trough social media and want to know for sure if your tactics have results? "
 msgstr ""
 
 #: modules/Social_Stats/init.php:218
@@ -2792,7 +2793,7 @@ msgstr ""
 
 #: modules/capabilities/config.php:23
 #@ psp
-msgid "Using this module you can choose to give different kind of permissions to different kind of user groups."
+msgid "Using this module you can choose to assign different kinds of permissions to different kinds of user groups."
 msgstr ""
 
 #: modules/capabilities/init.php:198
@@ -3108,7 +3109,7 @@ msgstr ""
 
 #: modules/facebook_planner/config.php:24
 #@ psp
-msgid "This module allows you to post your content to facebook."
+msgid "This module allows you to post your content to facebook in a programatic way, based on your own schedule."
 msgstr ""
 
 #: modules/facebook_planner/init.php:134
@@ -3394,7 +3395,7 @@ msgstr ""
 
 #: modules/facebook_planner/options.php:91
 #@ psp
-msgid "What inputs do you want to be available for posting to facebook? It will appear on page/post details"
+msgid "What inputs do you want to be available for posting to facebook? They will appear on the page/post details."
 msgstr ""
 
 #: modules/facebook_planner/options.php:99
@@ -3472,7 +3473,7 @@ msgstr ""
 msgid ""
 "\n"
 "\t\t\t\t\t<h2>Important Information</h2>\n"
-"\t\t\t\t\t<p>You need to create a Facebook App. You can do that <a href='http://developers.facebook.com' target='_blank'>here.</a> and enter its details in to the fields below.</p>"
+"\t\t\t\t\t<p>You need to create a Facebook App. You can do that <a href='http://developers.facebook.com' target='_blank'>here</a>, and then enter its details in the fields below.</p>"
 msgstr ""
 
 #: modules/facebook_planner/options.php:171
@@ -3716,7 +3717,7 @@ msgstr ""
 #: modules/google_authorship/init.php:535
 #: modules/google_authorship/options.php:154
 #@ psp
-msgid "the url to your google+ profile to linked it with your website."
+msgid "the url to your google+ profile to be linked with your website."
 msgstr ""
 
 #: modules/google_authorship/init.php:543
@@ -3806,7 +3807,7 @@ msgstr ""
 #: modules/google_authorship/init.php:574
 #: modules/google_authorship/options.php:267
 #@ psp
-msgid "generic setting for all authors: if you want the google+ profile for author to be include in the feeds"
+msgid "generic setting for all authors: if you want the google+ profile for author to be included in the feeds"
 msgstr ""
 
 #: modules/google_authorship/init.php:586
@@ -3818,7 +3819,7 @@ msgstr ""
 #: modules/google_authorship/init.php:587
 #: modules/google_authorship/options.php:280
 #@ psp
-msgid "generic setting for all authors: open the url to google+ profile for author in new window"
+msgid "generic setting for all authors: open the url to google+ profile for author in a new window"
 msgstr ""
 
 #: modules/google_authorship/init.php:599
@@ -3830,7 +3831,7 @@ msgstr ""
 #: modules/google_authorship/init.php:600
 #: modules/google_authorship/options.php:293
 #@ psp
-msgid "generic setting for all authors: url title - to google+ profile for author."
+msgid "generic setting for all authors: url title - to google+ authors profiles"
 msgstr ""
 
 #: modules/google_authorship/init.php:608
@@ -3854,7 +3855,7 @@ msgstr ""
 
 #: modules/google_authorship/options.php:163
 #@ psp
-msgid "where you want the google+ profile for publisher should be displayed"
+msgid "where you want the google+ profile for publisher to be displayed"
 msgstr ""
 
 #: modules/google_authorship/options.php:166
@@ -5272,7 +5273,7 @@ msgid ""
 "\t\t\t\t\t\t\t\t<li>- <i>why use Slug Optimizer:</i> because it increases keyword potency because there are less words in your URLs so their relevance is greater.</li>\n"
 "\t\t\t\t\t\t\t\t<li>- <i>keep slug unchanged:</i> if every word in your post or page title is in the list of words to be removed or doesn'n have the necessary limit of minimum characters (but this is a rare case), PSP Slug Optimizer will not remove the words, because you would end up with a blank slug.</li>\n"
 "\t\t\t\t\t\t\t\t<li>- <i>manually edit slug:</i> PSP Slug Optimizer will not remove words from a manually edited slug.</li>\n"
-"\t\t\t\t\t\t\t\t<li>- <i>revert to optimized slug:</i> if after editing your slug, you want to come back to the optimized slug (made from post title), you must erase the content of the slug textbox and click save.</li>\n"
+"\t\t\t\t\t\t\t\t<li>- <i>revert to optimized slug:</i> if after editing your slug, you want to come back to the optimized slug (made from the post title), you must erase the content of the slug textbox and click save.</li>\n"
 "\t\t\t\t\t\t\t</ul>\n"
 "\t\t\t\t\t\t"
 msgstr ""
@@ -5377,7 +5378,7 @@ msgstr ""
 
 #: modules/modules_manager/config.php:16
 #@ psp
-msgid "Modules manager"
+msgid "Modules Manager"
 msgstr ""
 
 #: modules/modules_manager/config.php:23
@@ -5422,7 +5423,7 @@ msgstr ""
 
 #: modules/monitor_404/config.php:24
 #@ psp
-msgid "On this module you can see what URLs are referring visitors to 404 pages, how many hits it had and redirect them to another page."
+msgid "On this module you can see what URLs are referring visitors to 404 pages, how many hits they had and you can redirect them to another page."
 msgstr ""
 
 #: modules/monitor_404/config.php:47
@@ -6039,7 +6040,7 @@ msgstr ""
 
 #: modules/on_page_optimization/options.php:47
 #@ psp
-msgid "if you chose yes, the shortcodes in the page/post content are also parsed by optimization algorithm, but it will be more time consuming."
+msgid "If you choose "yes", the shortcodes in the page/post content are also parsed by the optimization algorithm, but the process will be more time consuming."
 msgstr ""
 
 #: modules/on_page_optimization/options.php:60
@@ -6049,7 +6050,7 @@ msgstr ""
 
 #: modules/on_page_optimization/options.php:61
 #@ psp
-msgid "Server Charset (used by php-query class)"
+msgid "Server Charset (used by the php-query class)"
 msgstr ""
 
 #: modules/remote_support/config.php:24
@@ -7174,7 +7175,7 @@ msgid ""
 "\t\t\t\t\t\t\t\t<li><code>{focus_keyword}</code> - replaces with your Focus Keywords (if you have)</li>\n"
 "\t\t\t\t\t\t\t\t<li><code>{title}</code> - replaces with your page title</li>\n"
 "\t\t\t\t\t\t\t\t<li><code>{image_name}</code> - replaces with image name (without extension)</li>\n"
-"\t\t\t\t\t\t\t\t<li><code>{nice_image_name}</code> - replaces with image name nice formmated. Exclude special character with space (without extension)</li>\n"
+"\t\t\t\t\t\t\t\t<li><code>{nice_image_name}</code> - replaces with image name nice formated, replacing special characters with spaces</li>\n"
 "\t\t\t\t\t\t\t</ul><br />"
 msgstr ""
 
@@ -7225,7 +7226,7 @@ msgstr ""
 
 #: modules/serp/config.php:24
 #@ psp
-msgid "This module reads the results from Google for you focus keywords"
+msgid "This module reads the results from Google for your focus keywords"
 msgstr ""
 
 #: modules/serp/init.php:133
@@ -7533,7 +7534,7 @@ msgstr ""
 
 #: modules/server_status/config.php:25
 #@ psp
-msgid "Using the server status module you can check if your install is correct, if you have the right server configuration and test product import."
+msgid "Using the server status module you can check if your install is correct, if you have the right server configuration and you can test the product imports."
 msgstr ""
 
 #: modules/server_status/init.php:77
@@ -7808,7 +7809,7 @@ msgstr ""
 
 #: modules/setup_backup/config.php:19
 #@ psp
-msgid "Using this module you can install a default configuration for the plugin, and as well to back up settins!"
+msgid "Using this module you can install a default configuration for the plugin, as well as backing up the settings!"
 msgstr ""
 
 #: modules/setup_backup/options.php:16
@@ -8182,7 +8183,7 @@ msgstr ""
 
 #: modules/smushit/init.php:737
 #@ psp
-msgid "Smushit Status"
+msgid "TinyPNG Status"
 msgstr ""
 
 #: modules/smushit/init.php:761
@@ -8200,7 +8201,7 @@ msgid ""
 "\t\t\t\t\t\t\t\t<li>The image must be less than 1 megabyte in size. This is a limit of the Yahoo Smush.it service.</li>\n"
 "\t\t\t\t\t\t\t\t<li>The image must be accessible from non-https URL. This is a limit of the Yahoo Smush.it service.</li>\n"
 "\t\t\t\t\t\t\t\t<li>The Yahoo Smush.it service needs to download the image via a URL and the image needs to be on a public server and not a local local development system. This is a limit of the Yahoo Smush.it service.</li>\n"
-"\t\t\t\t\t\t\t\t<li>The image must be local to the site, not stored on a CDN (Content Delivery Networks).</li>\n"
+"\t\t\t\t\t\t\t\t<li>The image must be local to the site, not stored on a CDN (Content Delivery Network).</li>\n"
 "\t\t\t\t\t\t\t</ul>\n"
 "\t\t\t\t\t\t"
 msgstr ""
@@ -8232,7 +8233,7 @@ msgstr ""
 
 #: modules/smushit/options.php:68
 #@ psp
-msgid "image url must be on same domain as website home url!"
+msgid "Specify if the image url must or must not be on the same domain as the website's home url."
 msgstr ""
 
 #: modules/title_meta_format/buddypress.options.php:105

@@ -16,7 +16,7 @@ echo json_encode(
 				'order' => 99,
 				'show_in_menu' => false,
 				'title' => __('Backlink Builder', 'psp'),
-				'icon' => 'assets/menu_icon.png'
+				'icon' => '<span class="' . ( $psp->alias ) . '-icon-backlink_builder"><span class="path1"></span><span class="path2"></span></span>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

@@ -9,7 +9,6 @@ pspSERP = (function ($) {
     // public
     var debug_level = 0;
     var maincontainer = null;
-    var mainloading = null;
     var lightbox = null;
     var engine_access_time = null;
     var engine_wait = 5; //in seconds;
@@ -18,8 +17,7 @@ pspSERP = (function ($) {
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-serp-container");
-			mainloading = $("#psp-main-loading");
+			maincontainer = $(".psp-main");
 			lightbox = $("#psp-lightbox-overlay");
 			triggers();
 		});
@@ -84,7 +82,8 @@ pspSERP = (function ($) {
 	
 	function refreshGraph()
 	{
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader('Loading...');
+		
 		var keys = [], urls = [],
 		__ck = $('.psp-panel .psp-serp-filter-keyurl-content .psp-table input.psp-item-checkbox-key:checked'),
 		__ck2 = $('.psp-panel .psp-serp-filter-keyurl-content .psp-table input.psp-item-checkbox-url:checked');
@@ -112,7 +111,7 @@ pspSERP = (function ($) {
 			//data not received!
 			if (response.status == 'invalid') {
 				$("#psp-serp-graph").fadeOut('fast');
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				return false;
 			}
 			
@@ -129,7 +128,9 @@ pspSERP = (function ($) {
 					},
 					grid: {
 						hoverable: true,
-						clickable: true
+						clickable: true,
+						borderColor: '#dbdbdb',
+						borderWidth: 1
 					},
 					tooltip: true,
 					tooltipOpts: {
@@ -160,15 +161,15 @@ pspSERP = (function ($) {
 					}
 				});
 				
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 			}
 		}, 'json');
 	}
 	
 	function SERPInterface()
 	{
-		if ( $('#psp-wrapper').find('.psp-error-using-module').length > 0 ) {
-			mainloading.fadeOut('fast');
+		if ( maincontainer.find('.psp-error-using-module').length > 0 ) {
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}
 
@@ -196,7 +197,7 @@ pspSERP = (function ($) {
 	
 	function showFocusKW()
 	{
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader('Loading...');
 		
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspGetFocusKW',
@@ -205,7 +206,7 @@ pspSERP = (function ($) {
 			if( response.status == 'valid' ){
 				$("#psp-lightbox-seo-report-response").html( response.html );
 				lightbox.fadeIn('fast', function(){
-					mainloading.fadeOut('fast');
+					pspFreamwork.to_ajax_loader_close();
 				});
 			}
 		}, 'json');
@@ -219,7 +220,7 @@ pspSERP = (function ($) {
 	function addToReporter( keyword, link, itemid )
 	{
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader('Loading...');
 
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspAddToReporter',
@@ -231,10 +232,10 @@ pspSERP = (function ($) {
 		}, function(response) {
 
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -244,7 +245,7 @@ pspSERP = (function ($) {
 		subaction = subaction || '';
 		
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader('Loading...');
 		
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspUpdateToReporter',
@@ -257,11 +258,11 @@ pspSERP = (function ($) {
 			if( response.status == 'valid' ){
 				if ( subaction == 'publish' ) ;
 				else
-					mainloading.fadeOut('fast');
+					pspFreamwork.to_ajax_loader_close();
 
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -269,7 +270,7 @@ pspSERP = (function ($) {
 	function deleteFromReporter( itemid )
 	{
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader('Loading...');
 		
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspRemoveFromReporter',
@@ -277,10 +278,10 @@ pspSERP = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -363,17 +364,17 @@ pspSERP = (function ($) {
 		/*$('body').on('click', '#psp-cron-ckeck', function(e) {
 			e.preventDefault();
 
-			mainloading.fadeIn('fast');
+			pspFreamwork.to_ajax_loader('Loading...');
 
 			jQuery.post(ajaxurl, {
 				'action' 		: 'pspCronCheck',
 				'debug_level'	: debug_level
 			}, function(response) {
 				if( response.status == 'valid' ){
-					mainloading.fadeOut('fast');
+					pspFreamwork.to_ajax_loader_close();
 					window.location.reload();
 				}
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				return false;
 			}, 'json');
 		});*/
@@ -387,10 +388,10 @@ pspSERP = (function ($) {
 				'debug_level'	: debug_level
 			}, function(response) {
 				if( response.status == 'valid' ){
-					mainloading.fadeOut('fast');
+					pspFreamwork.to_ajax_loader_close();
 					window.location.reload();
 				}
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				return false;
 			}, 'json');
 		});

@@ -82,8 +82,8 @@ if (class_exists('pspFileEdit') != true) {
     		if ( $this->the_plugin->capabilities_user_has_module('file_edit') ) {
 	    		add_submenu_page(
 	    			$this->the_plugin->alias,
-	    			$this->the_plugin->alias . " " . __('Files Edit', 'psp'),
-		            __('Files Edit', 'psp'),
+	    			$this->the_plugin->alias . " " . __('File Editor', 'psp'),
+		            __('File Editor', 'psp'),
 		            'read',
 		            $this->the_plugin->alias . "_massFileEdit",
 		            array($this, 'display_index_page')
@@ -116,97 +116,92 @@ if (class_exists('pspFileEdit') != true) {
 		{
 			global $wpdb;
 ?>
-		<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('advanced_setup|file_edit')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
-
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['file_edit']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['file_edit']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['file_edit']['help']) ? true : false;
-					if( $has_help === true ){
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('advanced_setup|file_edit')->show_menu();
+				?>
+				
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
 						
-						$help_type = isset($this->module['file_edit']['help']['type']) && $this->module['file_edit']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['file_edit']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['file_edit']['menu']['title'],
+						$this->module['file_edit']['description'],
+						$this->module['file_edit']['help']['url']
+					);
 					?>
-				</h1>
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+						
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('File Editor', 'psp');?></h2>
+						</div>
+	
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
 
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php _e('Files Edit', 'psp');?>
-										</span>
-									</div>
-									<div class="psp-panel-content">
 										<form class="psp-form" id="frm-save-changes" action="#save_with_ajax" method="post">
 											<?php if (function_exists('wp_nonce_field')) { wp_nonce_field('psp-file-edit-changes'); } ?>
 											<input type="hidden" name="savechanges" value="ok">
 											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response" style="padding: 0px 0px 0px 0px;">
 
-<?php
-	//save changes on form submit!
-	$__saveRes = $this->saveChanges();
-
-	$__result = array(
-		'robotstxt'	=> false,
-		'htaccess'	=> false
-	);
-	$__result['robotstxt'] = $this->getFile('robots.txt');
-				
-	if ( $this->verify_htaccess() )
-		$__result['htaccess'] =  $this->getFile('.htaccess');
-	else
-		$__result['htaccess']['msg'] = __('You\'re not on a Apache hosting', 'psp');
-	
-	//make short aliases
-	$rt = $__result['robotstxt'];
-	$ht = $__result['htaccess'];
-	$showBtnSave = (bool) ($rt['status']=='active' || $ht['status']=='active');
-	
-	$__msg = array('rt' => array(), 'ht' => array());
-	//msg: get files
-	$rt!==false ? $__msg['rt'][] = $rt['msg'] : '';
-	$ht!==false ? $__msg['ht'][] = $ht['msg'] : '';
-	//msg: save changes!
-	$__saveRes['robotstxt']!==false ? $__msg['rt'][] = $__saveRes['robotstxt']['msg'] : '';
-	$__saveRes['htaccess']!==false ? $__msg['ht'][] = $__saveRes['htaccess']['msg'] : '';
-
-	if ( !empty($__saveRes['msg']) ) {
-		$__msg['rt'][] = $__saveRes['msg']['rt'];
-		$__msg['ht'][] = $__saveRes['msg']['ht'];
-	}
-	$__msg = array_filter($__msg, array( $this, 'removeEmptyItems')); //filter empty messages!
-	if ( empty($__msg) ) $__msg = array('rt' => array(), 'ht' => array());
-?>
+												<?php
+													//save changes on form submit!
+													$__saveRes = $this->saveChanges();
+												
+													$__result = array(
+														'robotstxt'	=> false,
+														'htaccess'	=> false
+													);
+													$__result['robotstxt'] = $this->getFile('robots.txt');
+																
+													if ( $this->verify_htaccess() )
+														$__result['htaccess'] =  $this->getFile('.htaccess');
+													else
+														$__result['htaccess']['msg'] = __('You\'re not on a Apache hosting', 'psp');
+													
+													//make short aliases
+													$rt = $__result['robotstxt'];
+													$ht = $__result['htaccess'];
+													$showBtnSave = (bool) ($rt['status']=='active' || $ht['status']=='active');
+													
+													$__msg = array('rt' => array(), 'ht' => array());
+													//msg: get files
+													$rt!==false ? $__msg['rt'][] = $rt['msg'] : '';
+													$ht!==false ? $__msg['ht'][] = $ht['msg'] : '';
+													//msg: save changes!
+													$__saveRes['robotstxt']!==false ? $__msg['rt'][] = $__saveRes['robotstxt']['msg'] : '';
+													$__saveRes['htaccess']!==false ? $__msg['ht'][] = $__saveRes['htaccess']['msg'] : '';
+												
+													if ( !empty($__saveRes['msg']) ) {
+														$__msg['rt'][] = $__saveRes['msg']['rt'];
+														$__msg['ht'][] = $__saveRes['msg']['ht'];
+													}
+													$__msg = array_filter($__msg, array( $this, 'removeEmptyItems')); //filter empty messages!
+													if ( empty($__msg) ) $__msg = array('rt' => array(), 'ht' => array());
+												?>
 
 												<table class="psp-table" style="border: none;border-bottom: 1px solid #dadada;width:100%;border-spacing:0; border-collapse:collapse;">
 													<thead>
@@ -215,12 +210,12 @@ if (class_exists('pspFileEdit') != true) {
 															<ul>
 																<li>Here you can edit the robots.txt and .htaccess files.</li>
 																<li><a href="http://www.robotstxt.org/robotstxt.html" target="_blank">robots.txt file help</a> (incorrectly editing your robots.txt file could block search engines from targeting your site)</li>
-																<li><a href="http://httpd.apache.org/docs/2.4/howto/htaccess.html" target="_blank">.htaccess file help</a> (.htaccess file is static and it is possible that WordPress or another plugin may overwrite this file, also if you\'ve inserted code that your web server can\'t understand, you can disable your entire website in this way, <span style="color: blue;">so make a backup of this file, found on the root of your website, before making changes with this module</span>)</li>
+																<li><a href="http://httpd.apache.org/docs/2.4/howto/htaccess.html" target="_blank">.htaccess file help</a> (.htaccess file is static and it is possible that WordPress or another plugin may overwrite this file, also if you\'ve inserted code that your web server can\'t understand, you can disable your entire website in this way, <span>so make a backup of this file, found on the root of your website, before making changes with this module</span>)</li>
 															</u>', 'psp');?></th>
 														</tr>
 														<?php if ($showBtnSave) { ?>
 														<tr>
-															<td colspan="2" align="left"><input type="button" class="psp-button blue psp-fe-save" value="Save changes"><input type="button" class="psp-button red psp-fe-create-robots-txt" style="margin-left: 10px;" value="Create Robots.txt file"></td>
+															<td colspan="2" align="left"><input type="button" class="psp-form-button psp-form-button-info psp-button blue psp-fe-save" value="Save settings"><input type="button" class="psp-form-button psp-form-button-danger psp-button red psp-fe-create-robots-txt" style="margin-left: 10px;" value="Create Robots.txt file"></td>
 														</tr>
 														<?php } ?>
 														<tr>
@@ -235,7 +230,7 @@ if (class_exists('pspFileEdit') != true) {
 																		}
 																	}
 																?>
-																<span id="psp-fe-rt-wrap"><?php echo implode('<br />', $__msg['rt']); ?></span>
+																<span id="psp-fe-rt-wrap"><?php echo is_array($__msg['rt']) ? implode('<br />', $__msg['rt']) : ''; ?></span>
 															</td>
 															<td width="50%">
 																<span><?php _e('.htaccess file', 'psp'); ?></span><br />
@@ -246,14 +241,14 @@ if (class_exists('pspFileEdit') != true) {
 																<textarea <?php echo $ht['status']=='disabled' ? 'disabled="disabled"' : ''; ?> style="height:300px;" rows="40" name="htaccess" id="htaccess"><?php echo $ht['content']; ?></textarea>
 																<?php
 																		}
-																	}
+																	} 
 																?>
-																<span id="psp-fe-ht-wrap"><?php echo implode('<br />', $__msg['ht']); ?></span>
+																<span id="psp-fe-ht-wrap"><?php echo is_array($__msg['ht']) ? implode('<br />', $__msg['ht']) : ''; ?></span>
 															</td>
 														</tr>
 														<?php if ($showBtnSave) { ?>
 														<tr>
-															<td colspan="2" align="left"><input type="button" class="psp-button blue psp-fe-save" value="Save changes"><input type="button" class="psp-button red psp-fe-create-robots-txt" style="margin-left: 10px;" value="Create Robots.txt file"></td>
+															<td colspan="2" align="left"><input type="button" class="psp-form-button psp-form-button-info psp-button blue psp-fe-save" value="Save settings"><input type="button" class="psp-form-button psp-form-button-danger psp-button red psp-fe-create-robots-txt" style="margin-left: 10px;" value="Create Robots.txt file"></td>
 														</tr>
 														<?php } ?>
 													</thead>
@@ -268,10 +263,9 @@ if (class_exists('pspFileEdit') != true) {
 				            		</div>
 								</div>
 							</div>
-							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 

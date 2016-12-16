@@ -44,7 +44,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('Parse content shortcodes:', 'psp'),
-						'desc' 		=> __('if you chose yes, the shortcodes in the page/post content are also parsed by optimization algorithm, but it will be more time consuming.', 'psp'),
+						'desc' 		=> __('If you choose "yes", the shortcodes in the page/post content are also parsed by the optimization algorithm, but the process will be more time consuming.', 'psp'),
 						'options'	=> array(
 							'yes' => 'YES',
 							'no' => 'NO'
@@ -58,7 +58,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Server Charset:', 'psp'),
-						'desc' 		=> __('Server Charset (used by php-query class)', 'psp')
+						'desc' 		=> __('Server Charset (used by the php-query class)', 'psp')
 					),
 					
 					'meta_title_sufix' 	=> array(
@@ -67,7 +67,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Meta title text append to:', $psp->localizationName),
-						'desc' 		=> __('Append this text to the end of the meta title value from database', $psp->localizationName)
+						'desc' 		=> __('Append this text to the end of the meta title value from the database', $psp->localizationName)
 					),
 					
 					'meta_keywords_stop_words' 	=> array(

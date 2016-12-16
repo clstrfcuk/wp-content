@@ -14,8 +14,8 @@
 			'menu' => array(
 				'order' => 95,
 				'show_in_menu' => false,
-				'title' => __('Files Edit', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				'title' => __('File Editor', 'psp')
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-files_edit"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

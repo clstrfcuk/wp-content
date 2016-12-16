@@ -34,7 +34,7 @@ echo json_encode(
 								<li><code>{focus_keyword}</code> - replaces with your Focus Keywords (if you have)</li>
 								<li><code>{title}</code> - replaces with your page title</li>
 								<li><code>{image_name}</code> - replaces with image name (without extension)</li>
-								<li><code>{nice_image_name}</code> - replaces with image name nice formmated. Exclude special character with space (without extension)</li>
+								<li><code>{nice_image_name}</code> - replaces with a nicely formmated image name, replacing special characters with spaces</li>
 							</ul><br />', 'psp'),
 					),
 						

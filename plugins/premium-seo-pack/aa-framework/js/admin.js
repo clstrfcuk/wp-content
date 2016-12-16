@@ -10,6 +10,7 @@ pspFreamwork = (function ($) {
 
 	var t 			= null,
 		ajaxBox 	= null,
+		loading 	= null,
 		section		= 'dashboard',
 		subsection	= '',
 		sub_istab   = '',
@@ -23,53 +24,52 @@ pspFreamwork = (function ($) {
 		// load the triggers
 		$(document).ready(function(){
  
-			t 			= $("div.wrapper-psp" ),
+			t 			= $("div.psp" ),
 			ajaxBox 	= t.find('#psp-ajax-response'),
-			topMenu 	= t.find('#psp-topMenu');
+			topMenu 	= t.find('nav.psp-nav');
  
 	        // plugin depedencies if default!
 	        if ( $("li#psp-nav-depedencies").length > 0 ) {
 	        	section = 'depedencies';
 	        }
-
+			
 			triggers();
 			fixLayoutHeight();
 		});
 	})();
 	
-	/*
-	function addPreviewFooter()
+	function responsiveMenu()
 	{
-		var box = $("<div />");
-		
-		box.css({
-			'position': 'absolute',
-			'left': '0px',
-			'top': ($(document).height() - 113) + 'px',
-			'width': '100%',
-			'height': '113px',
-			'border-top': '2px solid #e87124',
-			'background': "#fff",
-			'z-index': 9999999
-		});
-		
-		var logo = $("<img src='http://dev.premiumseopack.com/wp-content/plugins/premium-seo-pack/thumb_full.png' />");
-		box.css({
-			'position': 'absolute',
-			'left': '30px',
-			'top': '-30px'
-		});
-		
-		box.append( logo );
-		
-		$("body").append(box);
-	}*/
+		/*$( document ).ready(function() {*/
+			$('.psp-responsive-menu').toggle(function() {
+				$('.psp-nav').show();
+			}, function() {
+				$('.psp-nav').hide();
+			});
+		/*});*/
+	};
 	
-	function ajaxLoading(status)
+	function ajax_loading( label ) 
 	{
-		var loading = $('<div id="psp-ajaxLoadingBox" class="psp-panel-widget">loading</div>');
 		// append loading
+		loading = $('<div class="psp-loader-holder"><div class="psp-loader"></div> ' + ( label ) + '</div>');
 		ajaxBox.html(loading);
+	}
+
+	function take_over_ajax_loader( label, target )
+	{
+		loading = $('<div class="psp-loader-holder-take-over"><div class="psp-loader"></div> ' + ( label ) + '</div>');
+		
+		if( typeof target != 'undefined' ) {
+			target.append(loading);
+		}else{
+			t.append(loading);
+	   }
+	}
+
+	function take_over_ajax_loader_close()
+	{
+		t.find(".psp-loader-holder-take-over").remove();
 	}
 	
 	function makeRequest( callback )
@@ -83,12 +83,13 @@ pspFreamwork = (function ($) {
 		// do not exect the request if we are not into our ajax request pages
 		if( ajaxBox.size() == 0 ) return false;
 
-		ajaxLoading();
+		ajax_loading( "Loading section: " + section );
 		var data = {
 			'action' 		: 'pspLoadSection',
 			'section' 		: section,
 			'subsection'	: subsection
 		};
+		
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		$.post(ajaxurl, data, function(response) {
 			if(response.status == 'ok'){
@@ -133,10 +134,17 @@ pspFreamwork = (function ($) {
 				}
 				
 				// callback - subsection!
-				if ( $.isArray(callback) && callback.length == 2 && $.isFunction( callback[0] ) )
-					callback[0]( callback[1] );
+				if ( $.isArray(callback) && $.isFunction( callback[0] ) ) {
+					if ( callback.length == 1 ) {
+						callback[0]();
+					}
+					else if ( callback.length == 2 ) {
+						callback[0]( callback[1] );
+					}
+				}
 					
 				multiselect_left2right();
+				init_custom_checkbox();
 			}
 		}, 'json');
 	}
@@ -235,31 +243,15 @@ pspFreamwork = (function ($) {
 				'options' 	: theForm.serialize()
 			};
 			
-            /*$.ajax({
-                    type: "POST",
-                    url: ajaxurl,
-                    data: JSON.stringify( data ),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: 'json',
-                    processData: false, // this is true by default
-                    success: function(response) {
-                        if(response.status == 'ok'){
-                            statusBoxHtml.addClass('psp-success').html(response.html).fadeIn().delay(3000).fadeOut();
-                            setTimeout(function(){
-                                window.location.reload();
-                            }, 1000);
-                        }else{
-                            statusBoxHtml.addClass('psp-error').html(response.html).fadeIn().delay(13000).fadeOut();
-                        }
-                        // replace the save button value with default message
-                        $btn.val( value ).removeClass('gray').addClass('blue');
-                    }
-            });*/
 			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 			$.post(ajaxurl, data, function(response) {
 				if(response.status == 'ok'){
 					statusBoxHtml.addClass('psp-success').html(response.html).fadeIn().delay(3000).fadeOut();
 					setTimeout(function(){
+						var currentLoc 	= window.location.href,
+							newLoc		= currentLoc.indexOf('#') > 0 ? currentLoc.replace(/#.*$/, '#modules_manager') : currentLoc + '#modules_manager';
+						
+						window.location.replace( newLoc );
 						window.location.reload();
 					}, 1000);
 				}else{
@@ -299,7 +291,6 @@ pspFreamwork = (function ($) {
                 );
             }
         }
-        //console.log( options ); return false; 
 
 		if(theForm.length > 0) {
 			// serialiaze the form and send to saving data
@@ -331,7 +322,7 @@ pspFreamwork = (function ($) {
 	function moduleChangeStatus($btn)
 	{
 		var value = $btn.text(),
-			the_status = $btn.hasClass('activate') ? 'true' : 'false';
+			the_status = $btn.hasClass('psp_activate') ? 'true' : 'false';
 		// replace the save button value with loading message
 		$btn.text('saving setings ...');
 		var data = {
@@ -359,9 +350,10 @@ pspFreamwork = (function ($) {
 	function fixLayoutHeight()
 	{
 		var win 			= $(window),
-			pspWrapper 	= $("#psp-wrapper"),
+			pspWrapper 	= $(".psp-content"),
 			minusHeight 	= 70,
 			winHeight		= win.height();
+			
 		// show the freamwork wrapper and fix the height
 		pspWrapper.css('height', parseInt(winHeight - minusHeight)).show();
 		$("div#psp-ajax-response").css('min-height', parseInt(winHeight - minusHeight - 240)).show();
@@ -389,6 +381,10 @@ pspFreamwork = (function ($) {
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		$.post(ajaxurl, data, function(response) {
 			if(response.status == 'OK') {
+				var currentLoc 	= window.location.href,
+					newLoc		= currentLoc.indexOf('#') > 0 ? currentLoc.replace(/#.*$/, '#modules_manager') : currentLoc + '#modules_manager';
+				
+				window.location.replace( newLoc );
 				window.location.reload();
 			}
 			else{
@@ -402,8 +398,7 @@ pspFreamwork = (function ($) {
 	{
 
 		var make_request = function( action, params, callback ){
-			var loading = $("#psp-main-loading");
-			loading.show();
+			take_over_ajax_loader('Loading...');
 
 			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 			$.post(ajaxurl, {
@@ -416,13 +411,14 @@ pspFreamwork = (function ($) {
 				if( response.status == 'valid' )
 				{
 					$("#psp-table-ajax-response").html( response.html );
+					init_custom_checkbox();
 					
 					//SERP module case!
 					var ajax_id = $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val();
 					if ( 'pspSERPKeywords' == ajax_id )
 						pspSERP.wait_time();
-
-					loading.fadeOut('fast');
+					
+					take_over_ajax_loader_close();
 				}
 			}, 'json');
 		}
@@ -545,7 +541,7 @@ pspFreamwork = (function ($) {
 	function makeTabs()
 	{
 		// tabs
-		$('ul.tabsHeader').each(function() {
+		$('ul.psp-tabs-header').each(function() {
 			var child_tab = '', child_tab_s = '';
 
 			// For each set of tabs, we want to keep track of
@@ -857,10 +853,71 @@ pspFreamwork = (function ($) {
 		}
 	}
 	
+	function init_custom_checkbox()
+	{
+		$('.psp-main input[type="checkbox"]').each(function() {
+			var $this = $(this);
+			
+			if( !$this.prev().hasClass('psp-custom-checkbox') ) {
+				$this.wrap('<div class="psp-custom-checkbox"></div>');
+			}
+		});
+		
+		$('.psp-custom-checkbox').each(function() {
+			var $this = $(this);
+			if( !$this.find('input[type="checkbox"]').hasClass('input-hidden') ) {
+				$this.prepend('<i class="checkbox ' + ( $this.find('input[type="checkbox"]').is(':checked') ? 'checked' : '' ) + '"></i>');
+				$this.find('input[type="checkbox"]').addClass('input-hidden').hide();
+			}
+		});
+	}
+	
+	function check_checkbox(elm) 
+	{
+		var $this = elm;
+		
+		if( !$this.hasClass('checked') ) {
+			$this.addClass('checked');
+			$this.parent().find('input').prop('checked', true);
+			$this.parent().find('input').attr('checked','checked');
+		}else{
+			$this.removeClass('checked');
+			$this.parent().find('input').prop('checked', false);
+			$this.parent().find('input').removeAttr('checked');
+		}
+	}
+	
 	function triggers()
 	{
+		responsiveMenu();
 		googleAuthorizeApp();
 		facebookAuthorizeApp();
+		init_custom_checkbox();
+		
+		$('body').on('click', '.psp-custom-checkbox .checkbox', function(e) {
+			e.preventDefault();
+			
+			var $this = $(this);
+			
+			if( typeof $this.parent().find('input').attr('id') != 'undefined' && $this.parent().find('input').attr('id').search('check-all') > 0 ) {
+				if( $this.hasClass('checked') ) {
+					$(this).parents('table').find('.psp-custom-checkbox').each(function() {
+						$(this).find('.checkbox').removeClass('checked');
+						$(this).find('input').prop('checked', false);
+						$(this).parent().find('input').removeAttr('checked');
+					});
+				}else{
+					$(this).parents('table').find('.psp-custom-checkbox').each(function() {
+						$(this).find('.checkbox').addClass('checked');
+						$(this).find('input').prop('checked', true);
+						$(this).parent().find('input').attr('checked','checked');
+					});
+				}
+			}else{
+				check_checkbox( $this );
+			}
+			
+		});
 		
 		$('body').on('click', '.upload_image_button_wp, .change_image_button_wp', function(e) {
 			e.preventDefault();
@@ -887,6 +944,22 @@ pspFreamwork = (function ($) {
 		$(window).resize(function() {
 			fixLayoutHeight();
 		});
+		
+		$("body").on('mousemove', '.psp-loader-holder, .psp-loader-holder-take-over', function( event ) {
+			
+			var pageCoords = "( " + event.pageX + ", " + event.pageY + " )";
+			var clientCoords = "( " + event.clientX + ", " + event.clientY + " )";
+			var parent = $(this).parent();
+			var parentPos = parent.position();
+			
+			event.pageY = event.pageY - 85;
+			if( typeof parent != 'undefined' && !parent.hasClass('psp') ) {
+				event.pageY = event.pageY - ( parentPos.top + (parent.height() / 2) + 50 );
+			}
+
+			$(this).find(".psp-loader").css( 'margin-top', event.pageY + 'px' );
+		});
+		
 		$('body').on('click', '.psp_activate_product', function(e) {
 			e.preventDefault();
 			activatePlugin($(this));
@@ -903,20 +976,22 @@ pspFreamwork = (function ($) {
 			e.preventDefault();
 			importSEOData($(this));
 		});
-		$("body").on('click', '#psp-module-manager a', function(e) {
+		$("body").on('click', '.psp-section-modules_manager a.psp_action_button', function(e) {
 			e.preventDefault();
 			moduleChangeStatus($(this));
 		});
 
-		$('body').on('click', 'input#psp-item-check-all', function(){
+		$('body').on('click', 'ins.iCheck-helper', function(){
 			var that = $(this),
 				checkboxes = $('#psp-list-table-posts input.psp-item-checkbox');
 
 			if( that.is(':checked') ){
 				checkboxes.prop('checked', true);
+				checkboxes.addClass('checked');
 			}
 			else{
 				checkboxes.prop('checked', false);
+				checkboxes.removeClass('checked');
 			}
 		});
 
@@ -1040,8 +1115,10 @@ pspFreamwork = (function ($) {
 		'scrollToElement'			: scrollToElement,
 		'substr_utf8_bytes' 		: substr_utf8_bytes,
 		'makeTabs'					: makeTabs,
+		'to_ajax_loader'        	: take_over_ajax_loader,
+		'to_ajax_loader_close'  	: take_over_ajax_loader_close,
+		'init_custom_checkbox'		: init_custom_checkbox,
 		'multiselect_left2right'	: multiselect_left2right
-		//'addPreviewFooter'	: addPreviewFooter
     }
     
 })(jQuery);

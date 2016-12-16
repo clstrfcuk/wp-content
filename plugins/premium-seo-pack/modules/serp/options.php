@@ -94,6 +94,7 @@ $__google_locations = array(
 	'sh' => 'Saint Helena',
 	'sm' => 'San Marino',
 	'com.sa' => 'Saudi Arabia',
+	'rs' => 'Serbia',
 	'com.sg' => 'Singapore',
 	'sk' => 'Slovakia',
 	'co.za' => 'South Africa',
@@ -126,7 +127,7 @@ echo json_encode(
 				'buttons' 	=> array(
 					'save' => array(
 						'value' => __('Save settings', 'psp'),
-						'color' => 'green',
+						'color' => 'success',
 						'action'=> 'psp-saveOptions'
 					)
 				), // true|false
@@ -135,6 +136,13 @@ echo json_encode(
 				// create the box elements array
 				'elements'	=> array(
 				
+					array(
+						'type' 		=> 'html',
+						'html' 		=> '<div class="panel-heading psp-panel-heading">
+											<h2>Basic Setup</h2>
+										</div>'
+					),
+					
 					'nbreq_max_limit' 	=> array(
 						'type' 		=> 'text',
 						'std' 		=> 100,
@@ -149,8 +157,8 @@ echo json_encode(
 						'std' 		=> '',
 						'size' 		=> 'large',
 						'force_width'=> '400',
-						'title' 	=> __('Google Developer Key:', 'psp'),
-						'desc' 		=> __('Google Developer Key', 'psp')
+						'title' 	=> __('API Key:', 'psp'),
+						'desc' 		=> __('API Key', 'psp')
 					),
 					
 					'custom_search_id' 	=> array(
@@ -202,13 +210,13 @@ echo json_encode(
 						'type' 		=> 'html',
 						'html' 		=> '<div style="margin: 20px 0px 20px 20px;">
 							<h2>How to setup the Cron Job</h2>
-							<p>WordPress comes with its own cron job that allows you to schedule your posts and events. However, in many situations, the WP-Cron is not working well and leads to posts missed their publication schedule and/or scheduled events not executed.<br>
+							<p>WordPress comes with its own cron job utility, that allows you to schedule your posts and events. However, in many situations, the WP-Cron is not working properly and this can lead to posts missing their publication schedule and/or scheduled events not getting executed.<br>
 							<span id="more-74"></span><br>
-							To understand why this happen, we need to know that the WP-Cron is not a real cron job. It is in fact a virtual cron that only works when a page is loaded. In short, when a page is requested on the frontend/backend, WordPress will first load WP-Cron, follow by the necessary page to display to your reader. The loaded WP-Cron will then check the database to see if there is any thing that needs to be done.</p>
-							<p>Reasons for WP-Cron to fail could be due to:</p>
+							To understand why this happens, we need to know that the WP-Cron is not a real cron job. It is in fact a virtual cron that only works when a page is loaded. In short, when a page is requested on the frontend/backend, WordPress will first load WP-Cron, followed by the necessary page to display to your reader. The loaded WP-Cron will then check the database to see if there is any thing that needs to be done.</p>
+							<p>Reasons for WP-Cron to fail could be:</p>
 							<ul>
-								<li>DNS issue in the server.</li>
-								<li>Plugins conflict</li>
+								<li>DNS issues in the server.</li>
+								<li>Plugin(s) conflict(s)</li>
 								<li>Heavy load in the server which results in WP-Cron not executed fully</li>
 								<li>WordPress bug</li>
 								<li>Using of cache plugins that prevent the WP-Cron from loading</li>
@@ -220,22 +228,22 @@ echo json_encode(
 							<h3>Scheduling a real cron job</h3>
 							<p>To configure a real cron job, you will need access to your cPanel or Admin panel (we will be using cPanel in this tutorial).</p>
 							<p>1. Log into your cPanel.</p>
-							<p>2. Scroll down the list of applications until you see the “<em>cron jobs</em>�? link. Click on it.</p>
+							<p>2. Scroll down the list of applications until you see the “<em>cron jobs</em>" link. Click on it.</p>
 							<p><img width="510" height="192" class="aligncenter size-full wp-image-81" alt="wpcron-cpanel" src="{plugin_folder_uri}assets/wpcron-cpanel.png"></p>
 							<p>3. Under the <em>Add New Cron Job</em> section, choose the interval that you want it to run the cron job. I have set it to run every 15minutes, but you can change it according to your liking.</p>
 							<p><img width="470" height="331" class="aligncenter size-full wp-image-82" alt="wpcron-add-new-cron-job" src="{plugin_folder_uri}/assets/wpcron-add-new-cron-job.png"></p>
 							<p>4. In the Command field, enter the following:</p>
 						
-							<div class="wp_syntax"><div class="code"><pre style="font-family:monospace;" class="bash"><span style="color: #c20cb9; font-weight: bold;">wget</span> <span style="color: #660033;">-q</span> <span style="color: #660033;">-O</span> - </span>' . ( $psp->cfg["paths"]["plugin_dir_url"] ) . '<span style="color: #000000; font-weight: bold;"></span>do-cron.php <span style="color: #000000; font-weight: bold;">&gt;/</span>dev<span style="color: #000000; font-weight: bold;">/</span>null <span style="color: #000000;">2</span><span style="color: #000000; font-weight: bold;">&gt;&amp;</span><span style="color: #000000;">1</span></pre></div></div>
+							<div class="wp_syntax"><div class="code">wget -q -O - ' . ( $psp->cfg["paths"]["plugin_dir_url"] ) . 'do-cron.php &gt; /dev/null 2&gt;&amp;1</div></div>
 						
-							<p>5. Click the “Add New Cron Job�? button. You should now see a message like this:</p>
+							<p>5. Click the “Add New Cron Job“ button. You should now see a message like this:</p>
 							<p><img width="577" height="139" class="aligncenter size-full wp-image-83" alt="wpcron-current-cron-job" src="{plugin_folder_uri}/assets/wpcron-current-cron-job.png"></p>
 							<p>6. Next, using a FTP program, connect to your server and download the <code>wp-config.php</code> file.</p>
 							<p>7. Open the <code>wp-config.php</code> file with a text editor and paste the following line:</p>
 						
-							<div class="wp_syntax"><div class="code"><pre style="font-family:monospace;" class="php"><span style="color: #990000;">define</span><span style="color: #009900;">(</span><span style="color: #0000ff;">\'DISABLE_WP_CRON\'</span><span style="color: #339933;">,</span> <span style="color: #009900; font-weight: bold;">true</span><span style="color: #009900;">)</span><span style="color: #339933;">;</span></pre></div></div>
+							<div class="wp_syntax"><div class="code">define(\'DISABLE_WP_CRON\', true);</div></div>
 						
-							<p>8. Save and upload (and replace) this file back to the server. This will disable WordPress internal cron job.</p>
+							<p>8. Save and upload (and replace) this file back to the server. This will disable WordPress\' internal cron job.</p>
 							<p>That’s it.</p>
 						
 						

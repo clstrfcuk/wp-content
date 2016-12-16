@@ -26,8 +26,8 @@ if (class_exists('pspLocalSEO') != true) {
 		
 		static protected $_instance;
 		
-		static protected $geo_uri = 'http://maps.googleapis.com/maps/api/geocode/{output}?address={address}&sensor=false';
-		static protected $geo_uri_js = 'http://maps.google.com/maps/api/js?v=3.exp&sensor=false';
+		static protected $geo_uri = '//maps.googleapis.com/maps/api/geocode/{output}?address={address}&sensor=false';
+		static protected $geo_uri_js = '//maps.google.com/maps/api/js?v=3.exp&sensor=false';
 		static protected $slug = 'psplocation';
 		
 	
@@ -185,7 +185,7 @@ if (class_exists('pspLocalSEO') != true) {
 				</div>
 			</div>
 			
-			<div class="psp-meta-box-container" style="display:none;">
+			<div class="psp-meta-box-container psp" style="display:none;">
 				<!-- box Tab Menu -->
 				<div class="psp-tab-menu">
 					<a href="#business_information" class="open"><?php _e('Business Information', 'psp');?></a>
@@ -248,7 +248,7 @@ if (class_exists('pspLocalSEO') != true) {
 					'location' => array(
 						'title' 	=> 'Business Information Settings',
 						'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-						'header' 	=> true, // true|false
+						'header' 	=> false, // true|false
 						'toggler' 	=> false, // true|false
 						'buttons' 	=> false, // true|false
 						'style' 	=> 'panel', // panel|panel-widget
@@ -406,7 +406,7 @@ if (class_exists('pspLocalSEO') != true) {
 					'location' => array(
 						'title' 	=> 'Business Contact and Google Map Settings',
 						'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-						'header' 	=> true, // true|false
+						'header' 	=> false, // true|false
 						'toggler' 	=> false, // true|false
 						'buttons' 	=> false, // true|false
 						'style' 	=> 'panel', // panel|panel-widget
@@ -531,7 +531,7 @@ if (class_exists('pspLocalSEO') != true) {
 					'location' => array(
 						'title' 	=> 'Other Details Settings',
 						'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-						'header' 	=> true, // true|false
+						'header' 	=> false, // true|false
 						'toggler' 	=> false, // true|false
 						'buttons' 	=> false, // true|false
 						'style' 	=> 'panel', // panel|panel-widget
@@ -553,7 +553,7 @@ if (class_exists('pspLocalSEO') != true) {
 								'title' 	=> __('Currencies accepted:', 'psp'),
 								//'force_width' => '150',
 								'std'		=> '',
-								'desc' 		=> 'ex: USD, CAD, GBP (full list is on <a href="http://en.wikipedia.org/wiki/ISO_4217" target="_blank">Wikipedia</a>',
+								'desc' 		=> 'ex: USD, CAD, GBP (full list is on <a href="http://en.wikipedia.org/wiki/ISO_4217" target="_blank">Wikipedia</a>)',
 							)
 							
 							,'payment_price_range' => array(
@@ -601,7 +601,7 @@ if (class_exists('pspLocalSEO') != true) {
 					'location' => array(
 						'title' 	=> 'Opening Hours Settings',
 						'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-						'header' 	=> true, // true|false
+						'header' 	=> false, // true|false
 						'toggler' 	=> false, // true|false
 						'buttons' 	=> false, // true|false
 						'style' 	=> 'panel', // panel|panel-widget
@@ -610,7 +610,6 @@ if (class_exists('pspLocalSEO') != true) {
 						'elements'	=> array(
 							'oh_heading' => array(
 								'type' 		=> 'text',
-								'size' 		=> 'large',
 								'title' 	=> __('Opening Hours Header:', 'psp'),
 								//'force_width' => '150',
 								'std'		=> '',
@@ -619,7 +618,7 @@ if (class_exists('pspLocalSEO') != true) {
 							
 							,'openings_hours_msginfo' => array(
 								'type' 		=> 'html',
-								'html' 		=> '<div class="psp-form-row">You must use 24h format ( hours from 0-23, minutes from 0-59 ).</div>'
+								'html' 		=> '<div class="panel-body psp-panel-body psp-form-row">You must use 24h format ( hours from 0-23, minutes from 0-59 ).</div>'
 							)
 							
 							,'openings_hours' => array(
@@ -658,12 +657,9 @@ if (class_exists('pspLocalSEO') != true) {
 			
 			echo '<input type="hidden" name="psp-opening-nr" id="psp-opening-nr" value="' . ( count($openings) ) . '" />';
 			?>
-							<a class="psp-button blue small" id="psp-add-new-opening" href="#">
-								<img alt="" src="<?php echo $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/local_seo/assets/plus.png';?>">
-								Add new Opening
-							</a>
+							<a class="psp-form-button-small psp-form-button-info psp-button blue small" id="psp-add-new-opening" href="#">Add new Opening</a>
 			<?php
-			echo '<div class="psp-form-row" id="psp-panel-content-dom">';
+			echo '<div class="panel-body psp-panel-body psp-form-row" id="psp-panel-content-dom">';
 			if(is_array($openings) && count($openings) > 0) {
 				foreach ($openings as $key => $value){
 					$__theKey = '';
@@ -689,7 +685,7 @@ if (class_exists('pspLocalSEO') != true) {
 											<input type='text' class='opening-to-min' name='oh[".$key."][to_min]' value='" . ( $value['to_min'] ) . "'> 
 										</div>
 										<div class='psp-form-col-1-8' style='position: relative;'> 
-											<a href='#' class='opening-delete-btn'>Delete</a> 
+											<a href='#' class='psp-form-button psp-form-button-danger opening-delete-btn'>Delete</a> 
 										</div> 
 									</div>";
 				}
@@ -726,7 +722,7 @@ if (class_exists('pspLocalSEO') != true) {
 											<input type='text' class='opening-to-min' name='' value=''>
 										</div>
 										<div class='psp-form-col-1-8' style='position: relative;'>
-											<a href='#' class='opening-delete-btn'>Delete</a>
+											<a href='#' class='psp-form-button psp-form-button-danger opening-delete-btn'>Delete</a>
 										</div>
 									</div>
 								</div>
@@ -777,8 +773,8 @@ if (class_exists('pspLocalSEO') != true) {
 				$val = $db_meta_name;
 			}
 		?>
-		<div class="psp-form-row">
-			<label><a href="http://schema.org/docs/full.html#LocalBusiness" target="_blank"><?php _e('Business type:', 'psp'); ?></a></label>
+		<div class="panel-body psp-panel-body psp-form-row">
+			<label class="psp-form-label"><a href="http://schema.org/docs/full.html#LocalBusiness" target="_blank"><?php _e('Business type:', 'psp'); ?></a></label>
 			<div class="psp-form-item large">
 				<select id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" style="width:200px;">
 					<?php
@@ -811,7 +807,7 @@ if (class_exists('pspLocalSEO') != true) {
 		?>
 
 		<script type="text/javascript" src="<?php echo $this->get_geo_uri_js(); ?>" ></script>
-		<div class="psp-form-row">
+		<div class="panel-body psp-panel-body psp-form-row">
 			<label><?php _e('Google Map Preview:', 'psp'); ?>	</label>
 			<!--<span class="formNote">You can verify latitude and longitude <a href="http://www.geo-tag.de/generator/en.html" target="_blank">here</a> (only if you think that automatically generated map by using Googles api from the address you've entered, isn't right)</span>-->
 			<div class="psp-form-item large">
@@ -893,14 +889,16 @@ if (class_exists('pspLocalSEO') != true) {
 			
 			// retrieve the existing value(s) for this meta field. This returns an array
 			$locations_meta = get_post_meta( $id, 'psp_locations_meta', true );
-			$locations_meta = $locations_meta;
+			
 		    switch ($column_name) {
 				case 'locations_id':
 		            echo $id;
 		            break;
 		        case 'locations_thumbnail':
-					$thumb = $this->the_plugin->image_resize( $locations_meta['location']['logo_image'], 80, 80, 1 );
-					echo '<img src="' . ( $thumb ) . '" width="80" style="border: 1px solid #ff;">';
+					if( isset($locations_meta['location']) ) {
+						$thumb = $this->the_plugin->image_resize( $locations_meta['location']['logo_image'], 80, 80, 1 );
+						echo '<img src="' . ( $thumb ) . '" width="80" style="border: 1px solid #ff;">';
+					}
 		            break;
 		        default:
 		            break;

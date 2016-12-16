@@ -15,13 +15,13 @@
 				'order' => 92,
 				'show_in_menu' => false,
 				'title' => __('Monitor 404', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-404"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
 				'url'	=> admin_url('admin.php?page=' . $psp->alias . "_mass404Monitor")
 			),
-			'description' => __('On this module you can see what URLs are referring visitors to 404 pages, how many hits it had and redirect them to another page.', 'psp'),
+			'description' => __('On this module you can see what URLs are referring visitors to 404 pages, how many hits they had and you can redirect them to another page.', 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',

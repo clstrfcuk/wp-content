@@ -736,79 +736,69 @@ if (class_exists('pspTinyCompress') != true) {
 		private function printBaseInterface()
 		{
 			
-	    	if( !wp_script_is('psp-media-tiny_compress-js') ) {
-	    		wp_enqueue_style( 'psp-media-tiny_compress-js', $this->module_folder .  'app.css', false, '1.0', 'all' );
-	    	}
-	    	if( !wp_script_is('psp-media-tiny_compress-css') ) {
-				wp_enqueue_script( 'psp-media-tiny_compress-css', $this->module_folder . 'app.class.js', array('jquery'), '1.0', false );
-	    	}
+	    	/*if( !wp_script_is('psp-media-tiny_compress-js') ) {
+				wp_enqueue_script( 'psp-media-tiny_compress-js', $this->module_folder . 'app.class.js', array('jquery'), '1.0', false );
+	    	}*/
 ?>
-		<?php /*
-		<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
-		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		*/ ?>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('advanced_setup|tiny_compress')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<!-- Page detail -->
-			<div id="psp-pagespeed-detail">
-				<div id="psp-pagespeed-ajaxresponse"></div>
-			</div>
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
 				
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
-				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['tiny_compress']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['tiny_compress']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['tiny_compress']['help']) ? true : false;
-					if( $has_help === true ){
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('advanced_setup|tiny_compress')->show_menu();
+				?>
+			
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
 						
-						$help_type = isset($this->module['tiny_compress']['help']['type']) && $this->module['tiny_compress']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['tiny_compress']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['tiny_compress']['menu']['title'],
+						$this->module['tiny_compress']['description'],
+						$this->module['tiny_compress']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-                            <?php 
-                            // find if user makes the setup
-                            $moduleValidateStat = $this->moduleValidation();
-                            if ( !$moduleValidateStat['status'] )
-                                echo $moduleValidateStat['html'];
-                            else{ 
-                            ?>
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php _e('Media files Tiny Compress!', 'psp');?>
-										</span>
-									</div>
-									<div class="psp-panel-content">
-									    
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel psp-tiny-compress">
+						
+						<!-- Page detail -->
+						<div id="psp-pagespeed-detail">
+							<div id="psp-pagespeed-ajaxresponse"></div>
+						</div>
+							
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Media files Tiny Compress!', 'psp');?></h2>
+						</div>
+						
+						 <?php 
+                        // find if user makes the setup
+                        $moduleValidateStat = $this->moduleValidation();
+                        if ( !$moduleValidateStat['status'] )
+                            echo $moduleValidateStat['html'];
+                        else{ 
+                        ?>
+                        
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+		                        		
 									    <?php echo $this->show_connection_status(); ?>
 									    
 										<form class="psp-form" id="1" action="#save_with_ajax">
@@ -849,7 +839,7 @@ if (class_exists('pspTinyCompress') != true) {
 													),
 
 													'smushit'		=> array(
-														'th'	=> __('Smushit Status', 'psp'),
+														'th'	=> __('TinyPNG Status', 'psp'),
 														'td'	=> '%smushit_status%',
 														'align' => 'left'
 													),
@@ -866,7 +856,7 @@ if (class_exists('pspTinyCompress') != true) {
 														'option' => array(
 															'value' => __('Smushit', 'psp'),
 															'action' => 'do_item_smushit',
-															'color' => 'orange'
+															'color' => 'danger'
 														),
 														'width' => '80'
 													),
@@ -875,7 +865,7 @@ if (class_exists('pspTinyCompress') != true) {
 														'speed_test_mass' => array(
 															'value' => __('Mass Smushit', 'psp'),
 															'action' => 'do_mass_smushit',
-															'color' => 'blue'
+															'color' => 'info'
 														)
 												)
 											);
@@ -889,13 +879,10 @@ if (class_exists('pspTinyCompress') != true) {
 				            		</div>
 								</div>
 							</div>
-                            <?php
-                            } 
-                            ?>
-							<div class="clear"></div>
 						</div>
+						<?php } ?>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 
@@ -1065,7 +1052,7 @@ if (class_exists('pspTinyCompress') != true) {
                 $ret['status'] = 'valid';
             }
             $msg .= '<br />';
-            $msg .= __('You only pay for what you use. The first 500 compression each month are free. You will only be billed if you compress more than 500 images in a month. <a href="https://tinypng.com/developers" target="_blank">More details here</a> - see bottom "Pricing" section.', 'psp');
+            $msg .= __('You only pay for what you use. The first 500 compressions in each month are free. You will only be billed if you compress more than 500 images in a month. <a href="https://tinypng.com/developers" target="_blank">More details here</a> - see bottom "Pricing" section.', 'psp');
             
             $ret = array_merge($ret, array('msg' => $msg));
             return $ret;

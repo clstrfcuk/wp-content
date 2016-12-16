@@ -117,14 +117,14 @@ echo json_encode(
 						'type' 		=> 'message',
 						
 						'html' 		=> __('
-							<p><strong>TinyPNG.com API</strong> uses optimization techniques specific to image format to remove unnecessary bytes from image files. It is a "lossless" tool, which means it optimizes the images without changing their look or visual quality.</p>
+							<p><strong>The TinyPNG.com API</strong> uses optimization techniques specific to image formatting to remove unnecessary bytes from image files. It is a "lossless" tool, which means it optimizes the images without changing their look or visual quality.</p>
 							<ul>
-							    <li style="color: blue;">You only pay for what you use. The first 500 compression each month are free. You will only be billed if you compress more than 500 images in a month. <a href="https://tinypng.com/developers" target="_blank">More details here</a> - see bottom "Pricing" section.</li>
+							    <li style="color: blue;">You only pay for what you use. The first 500 compressions in each month are free. You will only be billed if you compress more than 500 images in a month. <a href="https://tinypng.com/developers" target="_blank">More details here</a> - see bottom "Pricing" section.</li>
 								<li>The TinyPNG.com service will download the image via the URL and will then return a URL to the new version of the image, which will be downloaded and will replace the original image on your server.</li>
-								<li>The image must be less than 2 megabyte in size. This is a limit of the TinyPNG.com service.</li>
-								<li>The image must be accessible from non-https URL. This is a limit of the TinyPNG.com service.</li>
+								<li>The image must be less than 2 megabytes in size. This is a limit of the TinyPNG.com service.</li>
+								<li>The image must be accessible from a non-https URL. This is a limit of the TinyPNG.com service.</li>
 								<li>The TinyPNG.com service needs to download the image via a URL and the image needs to be on a public server and not a local local development system. This is a limit of the TinyPNG.com service.</li>
-								<li>The image must be local to the site, not stored on a CDN (Content Delivery Networks).</li>
+								<li>The image must be local to the site, not stored on a CDN (Content Delivery Network).</li>
 							</ul>
 						', 'psp'),
 					),
@@ -148,7 +148,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('TinyPNG.com on Upload: ', 'psp'),
-						'desc' 		=> __('TinyPNG.com on media image upload', 'psp'),
+						'desc' 		=> __('Choose whether to apply the TinyPNG compression automaticcally on upload, or not.', 'psp'),
 						'options'	=> array(
 							'yes' 		=> __('YES', 'psp'),
 							'no' 		=> __('NO', 'psp')
@@ -160,7 +160,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('Image same domain: ', 'psp'),
-						'desc' 		=> __('image url must be on same domain as website home url!', 'psp'),
+						'desc' 		=> __('Specify if the image url must or must not be on the same domain as the website\'s home url.', 'psp'),
 						'options'	=> array(
 							'yes' 		=> __('YES', 'psp'),
 							'no' 		=> __('NO', 'psp')
@@ -195,7 +195,7 @@ echo json_encode(
                         'size'      => 'large',
                         'force_width'=> '400',
                         'title'     => __('Request Last Status:', 'psp'),
-                        'desc'      => __('Last Status for smushit operation over an image', 'psp')
+                        'desc'      => __('Last Status for a TinyPNG operation on an image.', 'psp')
                     )
 
 				)

@@ -18,7 +18,7 @@ pspOnPageOptimization = (function ($) {
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
+			maincontainer = $(".psp-main");
 			loading = maincontainer.find("#main-loading");
 
 			triggers();
@@ -106,7 +106,7 @@ pspOnPageOptimization = (function ($) {
 		if( status == 'show' ){
 			if( row.size() > 0 ){
 				if( row.find('.psp-row-loading-marker').size() == 0 ){
-					var row_loading_box = $('<div class="psp-row-loading-marker"><div class="psp-row-loading"><div class="psp-meter psp-animate" style="width:30%; margin: 10px 0px 0px 30%;"><span style="width:100%"></span></div></div></div>')
+					var row_loading_box = $('<div class="psp-row-loading-marker"><div class="psp-row-loading"><div class="psp-meter psp-animate"><span style="width:100%"></span></div></div></div>')
 					row_loading_box.find('div.psp-row-loading').css({
 						'width': row.width(),
 						'height': row.height()
@@ -136,7 +136,7 @@ pspOnPageOptimization = (function ($) {
 			if( response.status == 'valid' ){
 				do_progress_bar(row, response.score);
 
-				lightbox.find(".psp-lightbox-headline i").text( response.post_id );
+				lightbox.find(".psp-lightbox-headline i").eq(0).text( response.post_id );
 				lightbox.find("#psp-lightbox-seo-report-response").html( response.html );
 				lightbox.fadeIn('fast');
 			}

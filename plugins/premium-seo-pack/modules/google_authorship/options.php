@@ -66,7 +66,7 @@ echo json_encode(
 				'buttons' 	=> array(
 					'save' => array(
 						'value' => __('Save settings', 'psp'),
-						'color' => 'green',
+						'color' => 'success',
 						'action'=> 'psp-saveOptions'
 					)
 				), // true|false
@@ -133,7 +133,7 @@ echo json_encode(
 		<br>
 		<h4>Details</h4>
 		<ul>
-			<li>- this module also integrated <strong>coauthors_posts_links</strong> function from <strong>co-authors-plus plugin</strong>!</li>
+			<li>- this module also integrates <strong>coauthors_posts_links</strong> function from <strong>co-authors-plus plugin</strong>!</li>
 		</ul>
 							</div>', 'psp'),
 					),
@@ -151,7 +151,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '500',
 						'title' 	=> __('Google+ Profile URL: ', 'psp'),
-						'desc' 		=> __('the url to your google+ profile to linked it with your website.', 'psp')
+						'desc' 		=> __('the url to your google+ profile to be linked with your website.', 'psp')
 					),
 					
 					'publisher_location' 	=> array(
@@ -160,7 +160,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Location:', 'psp'),
-						'desc' 		=> __('where you want the google+ profile for publisher should be displayed', 'psp'),
+						'desc' 		=> __('where you want the google+ profile for publisher to be displayed', 'psp'),
 						'options' 	=> array(
 							'disable'		=> __('Disabled', 'psp'), 
 							'header'		=> __('In the header (not visible to website visitors) - recommended', 'psp'),
@@ -264,7 +264,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('Display in feeds? ', 'psp'),
-						'desc' 		=> __('generic setting for all authors: if you want the google+ profile for author to be include in the feeds', 'psp'),
+						'desc' 		=> __('generic setting for all authors: if you want the google+ profile for author to be included in the feeds', 'psp'),
 						'options'	=> array(
 							'yes' 	=> __('YES', 'psp'),
 							'no' 	=> __('NO', 'psp')
@@ -277,7 +277,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('Open link in new window?', 'psp'),
-						'desc' 		=> __('generic setting for all authors: open the url to google+ profile for author in new window', 'psp'),
+						'desc' 		=> __('generic setting for all authors: open the url to google+ profile for author in a new window', 'psp'),
 						'options'	=> array(
 							'yes' 	=> __('YES', 'psp'),
 							'no' 	=> __('NO', 'psp')
@@ -290,7 +290,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '300',
 						'title' 	=> __('URL Title: ', 'psp'),
-						'desc' 		=> __('generic setting for all authors: url title - to google+ profile for author.', 'psp')
+						'desc' 		=> __('generic setting for all authors: url title - to google+ authors profiles', 'psp')
 					),
 					
 					'author_text' 	=> array(

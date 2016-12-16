@@ -17,7 +17,7 @@ pspPriceUpdateMonitor = (function ($) {
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
+			maincontainer = $(".psp-main");
 			loading = maincontainer.find("#psp-main-loading");
 
 			triggers();

@@ -62,7 +62,7 @@ if (class_exists('aaModulesManger') != true) {
 
 			$this->settings = $this->the_plugin->getAllSettings( 'array', 'modules_manager' );
 			
-			$this->cfg = $this->the_plugin->cfg; //$this->cfg = $cfg;
+			$this->cfg = $this->the_plugin->cfg;
 		}
 		
 		public function printListInterface()
@@ -80,76 +80,80 @@ if (class_exists('aaModulesManger') != true) {
 			</div>
 			';
 
-			$html[] = '<script type="text/javascript" src="' . $this->module_folder . 'app.class.js" ></script>';
-			//$html[] = '<link rel="stylesheet" href="' . $this->module_folder . 'app.css" type="text/css" media="all" />';
-
-			$html[] = '<table class="psp-table" id="' . ($this->cfg['default']['alias']) . '-module-manager" style="border-collapse: collapse;border-spacing: 0;">';
-			$html[] = '<thead>
-						<tr>
-							<th width="10"><input type="checkbox" id="psp-item-check-all" checked></th>
-							<th width="10">' . __('Icon', 'psp') . '</th>
-							<th width="10">' . __('Version', 'psp') . '</th>
-							<th width="350" align="left">' . __('Name', 'psp') . '</th>
-							<th align="left">' . __('About', 'psp') . '</th>
-						</tr>
-					</thead>';
-			$html[] = '<tbody>';
+			$html[] = '<script type="text/javascript" src="' . $this->module_folder . 'app.class.js?' . ( time() ) . '" ></script>';
+			
+			
+			$html[] = '<div class="psp-section-modules_manager">';
+			
 			$cc     = 0;
+
+			$icon = array(
+			    'Backlink_Builder'		=> 		'<i class="psp-icon-backlink_builder"></i>',
+			    'capabilities'			=> 		'<i class="psp-icon-capabilities"></i>',
+			    'Google_Analytics' 		=> 		'<i class="psp-icon-google_analytics"></i>',
+			    'Link_Builder'			=> 		'<span class="psp-icon-Link_Builder"><span class="path1"></span><span class="path2"></span></span>',
+			    'Link_Redirect'			=> 		'<i class="psp-icon-link_redirect"></i>',
+			    'Minify'				=> 		'<i class="psp-icon-minify"></i>',
+			    'Social_Stats'			=> 		'<i class="psp-icon-social_stats"></i>',
+			    'W3C_HTMLValidator'		=> 		'<span class="psp-icon-W3C"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></span>',
+			    'facebook_planner'		=> 		'<i class="psp-icon-facebook_planner"></i>',
+			    'file_edit'				=> 		'<i class="psp-icon-files_edit"></i>',
+			    'frontend'				=> 		'<span class="psp-icon-frontend"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                </span>',
+			    'google_authorship'		=> 		'<i class="psp-icon-google_authorship"></i>',
+			    'google_pagespeed'		=> 		'<i class="psp-icon-pagespeed_insights"></i>',
+			    'local_seo'				=> 		'<span class="psp-icon-local_seo"><span class="path1"></span><span class="path2"></span></span>',
+			    'misc'					=> 		'<span class="psp-icon-slug_optimize"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span>',
+			    'modules_manager'		=> 		'<i class="psp-icon-modules_manager"></i>',
+			    'monitor_404'			=> 		'<i class="psp-icon-404"></i>',
+			    'on_page_optimization'	=> 		'<span class="psp-icon-mass_optimization"><span class="path1"></span><span class="path2"></span></span>',
+			    'remote_support'		=> 		'<span class="psp-icon-support"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span>',
+			    'rich_snippets'			=> 		'<i class="psp-icon-rich_snippets"></i>',
+			    'seo_friendly_images'	=> 		'<span class="psp-icon-seo_friendly_images"><span class="path1"></span><span class="path2"></span><span class="path3"></span></span>',
+			    'serp'					=> 		'<span class="psp-icon-serp"><span class="path1"></span><span class="path2"></span></span>',
+			    'server_status'			=> 		'<i class="psp-icon-server_status"></i>',
+			    'setup_backup'			=> 		'<i class="psp-icon-setup_backup"></i>',
+			    'sitemap'				=> 		'<i class="psp-icon-sitemap"></i>',
+			    'tiny_compress'			=> 		'<i class="psp-icon-tiny_compress"></i>',
+			    'title_meta_format'		=> 		'<span class="psp-icon-title_meta"><span class="path1"></span><span class="path2"></span></span>',
+			    'dashboard'				=> 		'<i class="psp-icon-dashboard"></i>'
+			);
+
 			foreach ($this->cfg['modules'] as $key => $value) {
 				$module = $key;
+
+				// Icon
 				if ( !in_array($module, $this->cfg['core-modules'])
 				&& !$this->the_plugin->capabilities_user_has_module($module) ) {
 					continue 1;
 				}
 				
-				$icon = '';
-				if (is_file($value["folder_path"] . $value[$key]['menu']['icon'])) {
-					$icon = $value["folder_uri"] . $value[$key]['menu']['icon'];
-				}
-				$html[] = '<tr class="' . ($cc % 2 ? 'odd' : 'even') . '">
-                	<td align="center">';
+				$html[] = '<div class="psp_module-menu-wrapper ' . ($value['status'] == false ? 'psp_inactive' : '') . '">';
+				$html[] = $icon[$key] != "" ? '<div class="psp_icon_wrapper">' . $icon[$key] . '</div>' : '';
+
+				$html[] = 	'<div class="psp_module_title">' . $value[$key]['menu']['title'] . '</div>';
+				
 				// activate / deactivate plugin button
 				if ($value['status'] == true) {
 					if (!in_array($key, $this->cfg['core-modules'])) {
-						$html[] = '<input type="checkbox" class="psp-item-checkbox" name="psp-item-checkbox-' . ( $key ) . '" checked>';
-					} else {
-						$html[] = ""; // core module
-					}
-				} else {
-					$html[] = '<input type="checkbox" class="psp-item-checkbox" name="psp-item-checkbox-' . ( $key ) . '">';
-				}
-				$html[] = '</td>
-					<td align="center">' . (trim($icon) != "" ? '<img src="' . ($icon) . '" width="16" height="16" />' : '') . '</td>
-					<td align="center">' . ($value[$key]['version']) . '</td>
-					<td>';
-				// activate / deactivate plugin button
-				if ($value['status'] == true) {
-					if (!in_array($key, $this->cfg['core-modules'])) {
-						$html[] = '<a href="#deactivate" class="deactivate" rel="' . ($key) . '">Deactivate</a>';
+						$html[] = '<a href="#deactivate" class="psp_action_button psp_deactivate" rel="' . ($key) . '">Deactivate</a>';
 					} else {
 						$html[] = "<i>" . __("Core Modules, can't be deactivated!", 'psp') . "</i>";
 					}
 				} else {
-					$html[] = '<a href="#activate" class="activate" rel="' . ($key) . '">' . __('Activate', 'psp') . '</a>';
+					$html[] = '<a href="#activate" class="psp_action_button psp_activate" rel="' . ($key) . '">' . __('Activate', 'psp') . '</a>';
 				}
-				$html[] = "&nbsp; | &nbsp;" . $value[$key]['menu']['title'];
-				$html[] = '</td>
-					<td>' . (isset($value[$key]['description']) ? $value[$key]['description'] : '') . '</td>
-				</tr>';
+				
+				$html[] = 	'<a href="#" class="psp_read_more">' . ( __('read more', 'psp') ) . '</a>';
+				$html[] = 	'<div class="psp_module_description">' . (isset($value[$key]['description']) ? $value[$key]['description'] : '') . '<a class="psp_close_description"><span class="psp-icon-close"></span></a></div>';
+				$html[] = '</div>';
 				$cc++;
 			}
-			$html[] = '</tbody>';
-			$html[] = '</table>';
-
-			$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px; padding-bottom: 5px;">&nbsp;';
-			$html[] = 	'<input type="button" value="' . __('Activate selected modules', 'psp') . '" id="psp-activate-selected" class="psp-button blue">';
-			$html[] = 	'<input type="button" value="' . __('Deactivate selected modules', 'psp') . '" id="psp-deactivate-selected" class="psp-button blue">';
+			
+			$html[] = '<div class="clear"></div>';
 			$html[] = '</div>';
 
 			return implode("\n", $html);
 		}
 	}
 }
-// Initalize the your aaModulesManger
-//$aaModulesManger = new aaModulesManger($this->cfg, $module);
-//$aaModulesManger = new aaModulesManger($this->cfg);

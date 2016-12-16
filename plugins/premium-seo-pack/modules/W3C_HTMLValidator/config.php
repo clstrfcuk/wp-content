@@ -15,7 +15,7 @@
 				'order' => 97,
 				'show_in_menu' => false,
 				'title' => __('W3C Validator', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<span class="' . ( $psp->alias ) . '-icon-W3C"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></span>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

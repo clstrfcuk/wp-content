@@ -1,0 +1,204 @@
+.#{$alias} {
+	.#{$alias}-backlink-builder {
+
+		##{$alias}-list-table-posts {
+		margin-top: px(21);
+		color: $black;
+		.form-inline-editpost {
+			##{$alias}-inline-btn-save {
+				cursor: pointer;
+				padding: px(3) px(18) px(1) px(18);
+				width: auto;
+				height: auto;
+				border-radius: px(3);
+				font-family: $primary_font;
+				font-weight: $bold;
+				font-size: px(11);
+				text-transform: none;
+			}
+			##{$alias}-inline-btn-cancel {
+				cursor: pointer;
+				padding: px(3) px(18) px(1) px(18);
+				width: auto;
+				height: auto;
+				background: #969696;
+				color: $white;
+				border-radius: px(3);
+				border: 1px solid #969696;
+				font-family: $primary_font;
+				font-weight: $bold;
+				font-size: px(11);
+				&:hover {
+					background: darken(#969696, 25%);
+				}
+			}
+			td {
+				font-family: $primary_font;
+				font-size: px(14);
+				font-weight: $normal;
+				line-height: px(26);
+			}
+			tr {
+				&:nth-child(1) {
+					td {
+						&:nth-child(1) {
+							padding-top: px(19) !important;
+							input,
+							select {
+								width: 70%;
+								height: px(38);
+								margin-bottom: px(10);
+								float: right;
+								padding-left: px(7);
+								border: 1px solid #dbdbdb;
+								border-radius: px(3);
+							}
+						}
+						textarea {
+							height: px(188);
+							padding-left: px(14);
+							padding-top: px(13);
+							border: 1px solid #dbdbdb;
+							border-radius: px(3);
+						}
+						padding: px(19) !important;
+					}
+				}
+			}
+			th {
+				strong {
+					padding-left: px(7);
+				}
+				&:nth-child(2),
+				&:nth-child(3) {
+					padding-left: px(13);
+					
+				}	
+			}
+			div {
+				text-align: left;
+				span {
+					font-family: $primary_font;
+					font-size: px(14);
+					font-weight: $bold;
+					line-height: px(26.5);
+					margin-left: px(7);
+					float: left;
+					clear: both;
+					margin-top: px(7);
+				}
+			}
+		}
+		
+		th {
+			padding-top: px(14) !important;
+			color: $black;
+			font-weight: $bold;
+			font-size: px(14);
+			line-height: px(26.5);
+			&.checkbox-column {
+				padding-top: px(7) !important;
+			}
+		}
+		td {
+			.#{$alias}-seo-report-btn {
+				text-transform: none !important;
+				font-weight: $bold !important;
+			}
+			.#{$alias}-do_item_optimize {
+				text-transform: none;
+				cursor: pointer;
+			}
+			.#{$alias}-text-field-kw {
+				width: px(240);
+				padding: px(5);
+				font-family: $primary-font;
+				border-radius: px(3);
+			}
+			.#{$alias}-auto-detect-kw-btn {
+			    border-radius: px(3);
+			    margin-left: px(2);
+			    padding: px(7) px(15) px(22) px(14);
+			    text-transform: none;
+			    font-weight: $bold;
+			    font-size: px(11);
+			}
+			&:nth-child(4) {
+				&>a {
+					color: #e41e26;
+					font-weight: $normal !important;
+					font-size: px(14);
+					line-height: px(26);
+				}
+				&>span {
+					&>a {
+						font-size: px(12);
+						color: $gray;
+						font-weight: $normal !important;
+					}
+				}
+			}
+			&:nth-child(7) {
+				i {
+					font-size: px(14);
+					line-height: px(24);
+				}
+			}
+		}
+		.#{$alias}-list-table-left-col {
+			margin-top: px(62);
+		    margin-bottom: px(42);
+			input[type="button"] {
+				margin-top: px(17);
+				cursor: pointer;
+				border-radius: px(3);
+				padding: px(12) px(20) !important;
+				padding-bottom: px(28) !important;
+				letter-spacing: 0.06em;
+				font-weight: $bold;
+				font-size: px(11);
+				font-family: $primary_font;
+				&:first-child {
+					margin-left: -#{px(6)};
+					margin-right: -#{px(2)};
+				}
+			}
+		}
+
+		.#{$alias}-list-table-right-col {
+			float: none !important;
+			position: relative;
+			top: -#{px(8)};
+
+		}
+	}
+
+		##{$alias}-lightbox-container {
+			.show {
+				display: table;
+			}
+			.hide {
+				display: none;
+			}
+		}
+		.#{$alias}-update-link-form {
+			label {
+				font-weight: bold;
+			}
+			.#{$alias}-add-link-field {
+				padding: px(6) px(8);
+				width: 100%;
+			}
+			select {
+				padding: px(4) px(6);
+				height: px(28);
+			}
+			.#{$alias}-button {
+				margin: px(10) 0 px(8);
+			}
+			#new_url_redirect2 {
+				width: px(300);
+			}
+		}
+	}
+}

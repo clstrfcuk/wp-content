@@ -15,14 +15,14 @@ echo json_encode(
 			'menu' => array(
 				'order' => 4,
 				'show_in_menu' => false,
-				'title' => __('Server status', 'psp'),
-				'icon' => 'assets/16_serversts.png'
+				'title' => __('Server Status', 'psp'),
+				'icon' => '<i class="' . ( $psp->alias ) . '-icon-server_status"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32_serverstatus.png',
 				'url'	=> admin_url("admin.php?page=psp_server_status")
 			),
-			'description' => __('Using the server status module you can check if your install is correct, if you have the right server configuration and test product import.', 'psp'),
+			'description' => __('Using the server status module you can check if your install is correct, if you have the right server configuration and you can test the product imports.', 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',

@@ -224,216 +224,241 @@ _gaq.push(['_trackPageview']);
 		private function printBaseInterface()
 		{
 ?>
-		<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('monitoring|Google_Analytics')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
 
-			<!-- Header -->
-			<div id="psp-header">
-
-				<div id="psp-header-bottom">
-					<!-- Container -->
-					<div class="psp-container clearfix"></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
-					
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['Google_Analytics']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['Google_Analytics']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['Google_Analytics']['help']) ? true : false;
-					if( $has_help === true ){
-						
-						$help_type = isset($this->module['Google_Analytics']['help']['type']) && $this->module['Google_Analytics']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['Google_Analytics']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
-					?>
-				</h1>
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('monitoring|Google_Analytics')->show_menu();
+				?>
 				
-				<!-- Container -->
-				<div class="psp-container clearfix">
 
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-gAnalytics-container">
-							<?php 
-							// find if user makes the setup
-							$moduleValidateStat = $this->moduleValidation();
-							if ( !$moduleValidateStat['status'] )
-								echo $moduleValidateStat['html'];
-							else{ 
-							?>
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php _e('Audience Overview', 'psp');?> - <span id="psp-gdata-profile"></span>
-										</span>
-										
-										<div class="psp-top-filters">
-											<div id="psp-filter-by-date">
-												<label for="psp-filter-by-date-from"><?php _e('From:', 'psp');?></label>
-												<input type="text" id="psp-filter-by-date-from" name="psp-filter-by-date-from" value="<?php echo date('Y-m-d', strtotime("-1 week"));?>" />
-												<label for="psp-filter-by-date-to"><?php _e('to', 'psp');?></label>
-												<input type="text" id="psp-filter-by-date-to" name="psp-filter-by-date-to" value="<?php echo date('Y-m-d');?>" />
-												<input type="button" class="psp-button blue" id="psp-filter-graph-data" value="<?php _e('Apply Filters', 'psp');?>">
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
+					
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['Google_Analytics']['menu']['title'],
+						$this->module['Google_Analytics']['description'],
+						$this->module['Google_Analytics']['help']['url']
+					);
+					?>
+					
+					<div id="<?php echo $this->the_plugin->alias; ?>-gAnalytics-wrapper" class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+						
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Audience Overview', 'psp');?> - <span id="psp-gdata-profile"></span></h2>
+							
+							<div class="psp-top-filters">
+								<div id="psp-filter-by-date">
+									<label for="psp-filter-by-date-from"><?php _e('From:', 'psp');?></label>
+									<input type="text" id="psp-filter-by-date-from" name="psp-filter-by-date-from" value="<?php echo date('Y-m-d', strtotime("-1 week"));?>" />
+									<label for="psp-filter-by-date-to"><?php _e('to', 'psp');?></label>
+									<input type="text" id="psp-filter-by-date-to" name="psp-filter-by-date-to" value="<?php echo date('Y-m-d');?>" />
+									<input type="button" class="psp-form-button-small psp-form-button-info" id="psp-filter-graph-data" value="<?php _e('Apply Filters', 'psp');?>">
+								</div>
+							</div>
+						</div>
+						
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+									<?php 
+									// find if user makes the setup
+									$moduleValidateStat = $this->moduleValidation();
+									if ( !$moduleValidateStat['status'] )
+										echo $moduleValidateStat['html'];
+									else{ 
+									?>
+									<div class="psp-grid_4">
+			                        	<div class="psp-panel">
+											
+											<div class="psp-audience-container">
+												<div class="psp-audience-graph" id="psp-audience-visits-graph"></div>
+												<div id="audience-choose-container"></div>
+												
+												<div class="psp-ga-summary-stat">
+													<div class="psp-ga-summary-block">
+														<div class="psp-ga-summery-title">
+															<?php _e('Visits', 'psp');?>: <span id="ga-data-visits"></span> 
+														</div>
+														<div class="psp-ga-summery-desc">
+															<?php _e('The number of visits to your site. For more information, see <a href="http://support.google.com/analytics/bin/answer.py?answer=2731565&amp;topic=2524483&amp;ctx=topic">How Visits are Calculated in Analytics</a>', 'psp');?>
+														</div>
+													</div>
+													<div class="psp-ga-summary-block">
+														<div class="psp-ga-summery-title">
+															<?php _e('Unique Visitors', 'psp');?>: <span id="ga-data-uniquePageviews"></span> 
+														</div>
+														<div class="psp-ga-summery-desc">
+															<?php _e('Unique Visitors is the number of unduplicated (counted only once) visitors to your website over the course of a specified time period.', 'psp');?>
+														</div>
+													</div>
+													<div class="psp-ga-summary-block">
+														<div class="psp-ga-summery-title">
+															<?php _e('% New Visits', 'psp');?>: <span id="ga-data-newVisits"></span> 
+														</div>
+														<div class="psp-ga-summery-desc">
+															<?php _e('An estimate of the percentage of first time visits.', 'psp');?>
+														</div>
+													</div>
+													<div class="psp-ga-summary-block">
+														<div class="psp-ga-summery-title">
+															<?php _e('Avg. Visit Duration', 'psp');?>: <span id="ga-data-avgTimeOnPage"></span> 
+														</div>
+														<div class="psp-ga-summery-desc">
+															<?php _e('The average time duration of a session.', 'psp');?>
+														</div>
+													</div>
+													<div class="psp-ga-summary-block">
+														<div class="psp-ga-summery-title">
+															<?php _e('Bounce Rate', 'psp');?>: <span id="ga-data-visitBounceRate"></span> 
+														</div>
+														<div class="psp-ga-summery-desc">
+															<?php _e('Bounce Rate is the percentage of single-page visits (i.e. visits in which the person left your site from the entrance page without interacting with the page).', 'psp');?>
+														</div>
+													</div>
+		                                        	<div class="psp-ga-summary-block">
+		                                        		<div class="psp-ga-summery-title">
+															<?php _e('Pages / Visit', 'psp');?>: <span id="ga-data-pageviewsPerVisit"></span> 
+														</div>
+														<div class="psp-ga-summery-desc">
+															<?php _e('Pages/Visit (Average Page Depth) is the average number of pages viewed during a visit to your site. Repeated views of a single page are counted.', 'psp');?>
+														</div>
+													</div>
+													<div class="psp-ga-summary-block">
+														<div class="psp-ga-summery-title">
+															<?php _e('Pageviews', 'psp');?>: <span id="ga-data-pageviews"></span> 
+														</div>
+														<div class="psp-ga-summery-desc">
+															<?php _e('Pageviews is the total number of pages viewed. Repeated views of a single page are counted.', 'psp');?>
+														</div>
+													</div>
+													
+		                                        </div>
 											</div>
 										</div>
 									</div>
-									
-									<div class="psp-panel-content">
-										<div class="psp-audience-container">
-											<div class="psp-audience-graph" id="psp-audience-visits-graph"></div>
-											<div id="audience-choose-container"></div>
-											
-											<div class="psp-ga-summary-stat">
-												<div class="psp-ga-summary-block">
-													<div class="psp-ga-summery-title">
-														<?php _e('Visits', 'psp');?>: <span id="ga-data-visits"></span> 
-													</div>
-													<div class="psp-ga-summery-desc">
-														<?php _e('The number of visits to your site. For more information, see <a href="http://support.google.com/analytics/bin/answer.py?answer=2731565&amp;topic=2524483&amp;ctx=topic">How Visits are Calculated in Analytics</a>', 'psp');?>
-													</div>
-												</div>
-												<div class="psp-ga-summary-block">
-													<div class="psp-ga-summery-title">
-														<?php _e('Unique Visitors', 'psp');?>: <span id="ga-data-uniquePageviews"></span> 
-													</div>
-													<div class="psp-ga-summery-desc">
-														<?php _e('Unique Visitors is the number of unduplicated (counted only once) visitors to your website over the course of a specified time period.', 'psp');?>
-													</div>
-												</div>
-												<div class="psp-ga-summary-block">
-													<div class="psp-ga-summery-title">
-														<?php _e('% New Visits', 'psp');?>: <span id="ga-data-newVisits"></span> 
-													</div>
-													<div class="psp-ga-summery-desc">
-														<?php _e('An estimate of the percentage of first time visits.', 'psp');?>
-													</div>
-												</div>
-												<div class="psp-ga-summary-block">
-													<div class="psp-ga-summery-title">
-														<?php _e('Avg. Visit Duration', 'psp');?>: <span id="ga-data-avgTimeOnPage"></span> 
-													</div>
-													<div class="psp-ga-summery-desc">
-														<?php _e('The average time duration of a session.', 'psp');?>
-													</div>
-												</div>
-												<div class="psp-ga-summary-block">
-													<div class="psp-ga-summery-title">
-														<?php _e('Bounce Rate', 'psp');?>: <span id="ga-data-visitBounceRate"></span> 
-													</div>
-													<div class="psp-ga-summery-desc">
-														<?php _e('Bounce Rate is the percentage of single-page visits (i.e. visits in which the person left your site from the entrance page without interacting with the page).', 'psp');?>
-													</div>
-												</div>
-	                                        	<div class="psp-ga-summary-block">
-	                                        		<div class="psp-ga-summery-title">
-														<?php _e('Pages / Visit', 'psp');?>: <span id="ga-data-pageviewsPerVisit"></span> 
-													</div>
-													<div class="psp-ga-summery-desc">
-														<?php _e('Pages/Visit (Average Page Depth) is the average number of pages viewed during a visit to your site. Repeated views of a single page are counted.', 'psp');?>
-													</div>
-												</div>
-												<div class="psp-ga-summary-block">
-													<div class="psp-ga-summery-title">
-														<?php _e('Pageviews', 'psp');?>: <span id="ga-data-pageviews"></span> 
-													</div>
-													<div class="psp-ga-summery-desc">
-														<?php _e('Pageviews is the total number of pages viewed. Repeated views of a single page are counted.', 'psp');?>
-													</div>
-												</div>
-												
-	                                        </div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					
+					<div class="psp-gAnalytics-box-statistics panel panel-default <?php echo $this->the_plugin->alias; ?>-panel col-xs-12 col-md-12 col-lg-3">
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Demographics', 'psp');?></h2>
+							
+							<select class="psp-ga-filter" data-rel="psp-demographics-container" id="psp-demographics-select">
+								<option value="language" selected><?php _e('Language', 'psp');?></option>
+								<option value="country"><?php _e('Country / Territory', 'psp');?></option>
+								<option value="city"><?php _e('City', 'psp');?></option>
+							</select>
+						</div>
+						
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									<div class="psp-grid_1_3">
+			                        	<div class="psp-panel">
+											<div class="psp-panel-content">
+												<div class="psp-demographics-container"></div>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-
-							<div class="psp-grid_1_3">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php _e('Demographics', 'psp');?>
-										</span>
-										
-										<select class="psp-ga-filter" data-rel="psp-demographics-container" id="psp-demographics-select">
-											<option value="language" selected><?php _e('Language', 'psp');?></option>
-											<option value="country"><?php _e('Country / Territory', 'psp');?></option>
-											<option value="city"><?php _e('City', 'psp');?></option>
-										</select>
-									</div>
-									
-									<div class="psp-panel-content">
-										<div class="psp-demographics-container"></div>
-									</div>
-								</div>
-							</div>
-							
-							<div class="psp-grid_1_3">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php _e('System', 'psp');?>
-										</span>
-										<select class="psp-ga-filter" data-rel="psp-system-container" id="psp-system-select">
-											<option value="browser" selected><?php _e('Browser', 'psp');?></option>
-											<option value="operatingSystem"><?php _e('Operating System', 'psp');?></option>
-											<option value="networkDomain"><?php _e('Service Provider', 'psp');?></option>
-										</select>
-									</div>
-									
-									<div class="psp-panel-content">
-										<div class="psp-system-container"></div>
-									</div>
-								</div>
-							</div>
-							
-							<div class="psp-grid_1_3">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php _e('Mobile', 'psp');?>
-										</span>
-										<select class="psp-ga-filter" data-rel="psp-mobile-container" id="psp-mobile-select">
-											<option value="mob_operatingSystem" selected><?php _e('Operating System', 'psp');?></option>
-											<option value="mob_networkDomain"><?php _e('Service Provider', 'psp');?></option>
-											<option value="mob_screenResolution"><?php _e('Screen Resolution', 'psp');?></option>
-										</select>
-									</div>
-									
-									<div class="psp-panel-content">
-										<div class="psp-mobile-container"></div>
-									</div>
-								</div>
-							</div>
-							<?php
-							}
-							?>
-							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+					
+					<div class="psp-gAnalytics-box-statistics panel panel-default <?php echo $this->the_plugin->alias; ?>-panel col-xs-12 col-md-12 col-lg-4 col-lg-offset-1">
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('System', 'psp');?></h2>
+							
+							<select class="psp-ga-filter" data-rel="psp-system-container" id="psp-system-select">
+								<option value="browser" selected><?php _e('Browser', 'psp');?></option>
+								<option value="operatingSystem"><?php _e('Operating System', 'psp');?></option>
+								<option value="networkDomain"><?php _e('Service Provider', 'psp');?></option>
+							</select>
+						</div>
+						
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+									<div class="psp-grid_1_3">
+			                        	<div class="psp-panel">
+											<div class="psp-panel-content">
+												<div class="psp-system-container"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="psp-gAnalytics-box-statistics panel panel-default <?php echo $this->the_plugin->alias; ?>-panel col-xs-12 col-md-12 col-lg-3 col-lg-offset-1 ">
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Mobile', 'psp');?></h2>
+							
+							<select class="psp-ga-filter" data-rel="psp-mobile-container" id="psp-mobile-select">
+								<option value="mob_operatingSystem" selected><?php _e('Operating System', 'psp');?></option>
+								<option value="mob_networkDomain"><?php _e('Service Provider', 'psp');?></option>
+								<option value="mob_screenResolution"><?php _e('Screen Resolution', 'psp');?></option>
+							</select>
+						</div>
+						
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									<div class="psp-grid_1_3">
+			                        	<div class="psp-panel">
+											<div class="psp-panel-content">
+												<div class="psp-mobile-container"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php
+					}
+					?>
+					<div class="clear"></div>
+				</section>
 			</div>
 		</div>
 
@@ -490,7 +515,7 @@ _gaq.push(['_trackPageview']);
 	        	if (!isset($data['totalsForAllResults'])) {
 		        	$ret['getAudience']['status'] = 'invalid';
 					$ret['__access']['isalert'] = 'yes';
-					$ret['getAudience']['reason'] = __('No records found for interval:', 'psp') . $params['start-date'] . ' - ' . $params['start-date'];
+					$ret['getAudience']['reason'] = __('No records found for interval : ', 'psp') . $params['start-date'] . ' - ' . $params['start-date'];
 	        	} else {
 				
     				// refformating data
@@ -611,11 +636,9 @@ _gaq.push(['_trackPageview']);
 				$html[] = '<table class="psp-table" id="psp-statistics-table-' . ( $alias ) . '">';
 				$html[] = 	'<thead>';
 				$html[] = 		'<tr>';
-				$html[] = 			'<th width="10"></th>';
-				
 				$html[] = 			'<th align="left"><strong>' . ( $title ) . '</strong></th>';
-				$html[] = 			'<th width="30">' . __('Visits', 'psp') . '</th>';
-				$html[] = 			'<th width="50">' . __('% Visits', 'psp') . '</th>';
+				$html[] = 			'<th>' . __('Visits', 'psp') . '</th>';
+				$html[] = 			'<th>' . __('% Visits', 'psp') . '</th>';
 				$html[] = 		'</tr>';
 				$html[] = 	'</thead>';
 				$html[] = 	'<tbody>';
@@ -623,7 +646,6 @@ _gaq.push(['_trackPageview']);
 				foreach ($sets["rows"] as $key => $value) {
 					$percent = (100 / $total) * $value[1];
 					$html[] = 		'<tr>';
-					$html[] = 			'<td>' . ( $i++ ) . '.</td>';
 					$html[] = 			'<td>' . ( $value[0] ) . '</td>';
 					$html[] = 			'<td>' . ( $value[1] ) . '</td>';
 					$html[] = 			'<td>';

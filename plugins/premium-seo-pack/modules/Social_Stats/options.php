@@ -44,7 +44,6 @@ function psp_social_sharing_html() {
 	<script type="text/javascript" src="<?php echo $frm_folder; ?>js/colorpicker/colorpicker.js"></script>
 
 	<!-- admin css/js -->
-	<link rel='stylesheet' href='<?php echo $module_folder; ?>app.css' type='text/css' media='all' />
 	<script type="text/javascript" src="<?php echo $module_folder; ?>social_sharing.admin.js"></script>
 <?php
 	$output = ob_get_contents();
@@ -97,7 +96,7 @@ echo json_encode(
 				'title' 	=> __('Social Services', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> true, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
@@ -130,7 +129,7 @@ echo json_encode(
 				'title' 	=> __('Social Sharing', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> true, // true|false
 				'style' 	=> 'panel', // panel|panel-widget

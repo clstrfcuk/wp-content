@@ -280,6 +280,11 @@ if (class_exists('pspOnPageOptimization') != true) {
 			$postID = isset($post->ID) && (int) $post->ID > 0 ? $post->ID : 0;
 			if( $postID > 0 ){
 				$focus_kw = isset($_REQUEST['psp-field-focuskw']) ? $_REQUEST['psp-field-focuskw'] : '';
+				
+				// FIX: CORNERSTONE skip
+				if( isset($_REQUEST['action']) && $_REQUEST['action'] == 'cs_endpoint_save' )
+					return;
+				
 				$__stat = $this->optimize_page( $postID, $focus_kw );
 			}
 		}
@@ -470,11 +475,13 @@ if (class_exists('pspOnPageOptimization') != true) {
 			if ( isset($psp_meta['facebook_isactive']) && !empty($psp_meta['facebook_isactive']) )
 				$fb_isactive = $psp_meta['facebook_isactive'];
 
-			//open graph type
+			//open graph type   
 			$fb_opengraph = 'default';
 			if ( isset($psp_option['social_opengraph_default']) && !empty($psp_option['social_opengraph_default'])
 				&& !$this->the_plugin->__tax_istax( $tax ) )
-				$ogdef  = $psp_option['social_opengraph_default']["{$post_type}"];
+				if( isset($psp_option['social_opengraph_default']["{$post_type}"]) ) {
+					$ogdef  = $psp_option['social_opengraph_default']["{$post_type}"];
+				}
 			if ( isset($ogdef) && !empty($ogdef) )
 				$fb_opengraph = $ogdef;
 			if ( isset($psp_meta['facebook_opengraph_type']) && !empty($psp_meta['facebook_opengraph_type']) )
@@ -531,12 +538,12 @@ if (class_exists('pspOnPageOptimization') != true) {
 				<div id="psp-main-loading" style="display:block;">
 					<div id="psp-loading-box" style="top: 50px">
 						<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-						<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+						<div class="psp-meter psp-animate"><span style="width:100%"></span></div>
 					</div>
 				</div>
 			</div>
 			
-			<div class="psp-meta-box-container" style="display:none;">
+			<div class="psp psp-meta-box-container" style="display:none;">
 				<!-- box Tab Menu -->
 				<div class="psp-tab-menu">
 					<a href="#dashboard" class="open"><?php _e('Dashboard', 'psp');?></a>
@@ -561,7 +568,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 				
 					<!-- box Dashboard -->
 					<div id="psp-tab-div-id-dashboard" style="display:block;">
-						<div class="psp-dashboard-box span_3_of_3" rel="psp-box-id-visits-and-serp">
+						<div class="psp psp-dashboard-box span_3_of_3" rel="psp-box-id-visits-and-serp">
 							<h1><?php _e('SEO Status', 'psp');?></h1>
 							<div class="psp-dashboard-box-content">
 								<table id="psp-seo-score-box" style="width:100%;">
@@ -576,20 +583,20 @@ if (class_exists('pspOnPageOptimization') != true) {
 												}
 											?>
 											<?php if( isset($focus_kw) && trim($focus_kw) != "" ) { ?>
-												<a style="position: relative; bottom: -8px;" id="psp-edit-focus-keywords" class="psp-button blue" href="#edit-focus-keywords">
+												<a style="position: relative; bottom: -8px;" id="psp-edit-focus-keywords" class="psp-form-button psp-form-button-info" href="#edit-focus-keywords">
 													<?php _e('Edit Focus Keywords', 'psp');?>
 												</a>
 											<?php 
 												}else{
 											?>
-												<a style="position: relative; bottom: 0px;" id="psp-edit-focus-keywords" class="psp-button blue" href="#edit-focus-keywords">
+												<a style="position: relative; bottom: -8px;" id="psp-edit-focus-keywords" class="psp-form-button psp-form-button-info" href="#edit-focus-keywords">
 													<?php _e('Add Focus Keywords', 'psp');?>
 												</a>
 											<?php
 												}
 											?>
 											<?php if ( !$parse_shortcodes ) { ?>
-											<a style="position: relative; bottom: -8px; margin-left:5px;" id="psp-btn-metabox-autofocus2" class="psp-button blue" href="#btn-metabox-autofocus2">
+											<a style="position: relative; bottom: -8px; margin-left:5px;" id="psp-btn-metabox-autofocus2" class="psp-form-button psp-form-button-info" href="#btn-metabox-autofocus2">
 												<?php _e('Auto-complete fields', 'psp');?>
 											</a>
 											<?php } ?>
@@ -673,13 +680,13 @@ if (class_exists('pspOnPageOptimization') != true) {
 												<i style="font-size: 10px; color: #ccc;"><?php _e('Auto-Refresh each 2 seconds:', 'psp');?></i>
 											</td>
 											<td>
-												<div class="psp-prev-box">
+												<div class="psp psp-prev-box">
 													<!--span class="psp-prev-focuskw"></span-->
 													<a href="#" class="psp-prev-title"></a>
 													<a href="#" class="psp-prev-url"></a>
 													<p class="psp-prev-desc"></p>
 													<?php if ( !$parse_shortcodes ) { ?>
-													<a style="margin-top:5px;" id="psp-btn-metabox-autofocus" class="psp-button blue" href="#metabox-autofocus"><?php _e('Auto-complete fields', 'psp');?></a>
+													<a style="margin-top:5px;" id="psp-btn-metabox-autofocus" class="psp-form-button psp-form-button-info" href="#metabox-autofocus"><?php _e('Auto-complete fields', 'psp');?></a>
 													<?php } ?>
 												</div>
 											</td>
@@ -739,7 +746,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 										</td>
 										<td>
 											<select name="psp-field-facebook-isactive" id="psp-field-facebook-isactive">
-												<option value="default" <?php echo $fb_isactive=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default settings', 'psp');?></option>
+												<option value="default" <?php echo $fb_isactive=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
 												<option value="yes" <?php echo $fb_isactive=='yes' ? 'selected="true"' : ''; ?> ><?php _e('Yes', 'psp');?></option>
 												<option value="no" <?php echo $fb_isactive=='no' ? 'selected="true"' : ''; ?> ><?php _e('No', 'psp');?></option>
 											</select>
@@ -839,7 +846,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 										</td>
 										<td>
 											<select name="psp-field-meta_robots_index" id="psp-field-meta_robots_index">
-												<option value="default" <?php echo isset($psp_meta['robots_index']) && $psp_meta['robots_index']=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default settings', 'psp');?></option>
+												<option value="default" <?php echo isset($psp_meta['robots_index']) && $psp_meta['robots_index']=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
 												<option value="index" <?php echo isset($psp_meta['robots_index']) && $psp_meta['robots_index']=='index' ? 'selected="true"' : ''; ?> ><?php _e('Index', 'psp'); ?></option>
 												<option value="noindex" <?php echo isset($psp_meta['robots_index']) && $psp_meta['robots_index']=='noindex' ? 'selected="true"' : ''; ?> ><?php _e('NO Index', 'psp'); ?></option>
 											</select>
@@ -852,7 +859,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 										</td>
 										<td>
 											<select name="psp-field-meta_robots_follow" id="psp-field-meta_robots_follow">
-												<option value="default" <?php echo isset($psp_meta['robots_follow']) && $psp_meta['robots_follow']=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default settings', 'psp');?></option>
+												<option value="default" <?php echo isset($psp_meta['robots_follow']) && $psp_meta['robots_follow']=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
 												<option value="follow" <?php echo isset($psp_meta['robots_follow']) && $psp_meta['robots_follow']=='follow' ? 'selected="true"' : ''; ?> ><?php _e('Follow', 'psp'); ?></option>
 												<option value="nofollow" <?php echo isset($psp_meta['robots_follow']) && $psp_meta['robots_follow']=='nofollow' ? 'selected="true"' : ''; ?> ><?php _e('NO Follow', 'psp'); ?></option>
 											</select>
@@ -866,7 +873,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 										</td>
 										<td>
 											<select name="psp-field-include-sitemap" id="psp-field-include-sitemap">
-												<option value="default" <?php echo $psp_sitemap_isincluded=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default settings', 'psp');?></option>
+												<option value="default" <?php echo $psp_sitemap_isincluded=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
 												<option value="always_include" <?php echo $psp_sitemap_isincluded=='always_include' ? 'selected="true"' : ''; ?> ><?php _e('Always include', 'psp');?></option>
 												<option value="never_include" <?php echo $psp_sitemap_isincluded=='never_include' ? 'selected="true"' : ''; ?> ><?php _e('Never include', 'psp');?></option>
 											</select>
@@ -1011,71 +1018,68 @@ $twc = new pspTwitterCards( $this->the_plugin );
 		{
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('on_page_optimization|on_page_optimization')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<div id="psp-lightbox-overlay">
-				<div id="psp-lightbox-container">
-					<h1 class="psp-lightbox-headline">
-						<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
-						<span><?php _e('PSP SEO Report for post ID:', 'psp');?> <i></i></span>
-						<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>"></a>
-					</h1>
-
-					<div class="psp-seo-status-container">
-						<div id="psp-lightbox-seo-report-response"></div>
-						<div style="clear:both"></div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
 				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['on_page_optimization']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['on_page_optimization']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['on_page_optimization']['help']) ? true : false;
-					if( $has_help === true ){
-						
-						$help_type = isset($this->module['on_page_optimization']['help']['type']) && $this->module['on_page_optimization']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['on_page_optimization']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('on_page_optimization|on_page_optimization')->show_menu();
+				?>
+				
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main psp-mass-optimization">
+					
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['on_page_optimization']['menu']['title'],
+						$this->module['on_page_optimization']['description'],
+						$this->module['on_page_optimization']['help']['url']
+					);
 					?>
-				</h1>
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+			
+						<div id="psp-lightbox-overlay">
+							<div id="psp-lightbox-container">
+								<h1 class="psp-lightbox-headline">	
+									<span><?php _e('PSP SEO Report for post ID:', 'psp');?> <i></i></span>
+									<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox11', 'psp'); ?>">
+										<i class="psp-icon-close" ></i>
+									</a>
+								</h1>
+			
+								<div class="psp-seo-status-container">
+									<div id="psp-lightbox-seo-report-response"></div>
+									<div style="clear:both"></div>
+								</div>
+							</div>
+						</div>
+			
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate"><span style="width:100%"></span></div>
+							</div>
+						</div>
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Mass Optimization', 'psp');?></h2>
+						</div>
 
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<img src="<?php echo $this->the_plugin->cfg['paths']['plugin_dir_url'];?>/modules/Social_Stats/assets/menu_icon.png">
-											<?php _e('Mass Optimization', 'psp');?>
-										</span>
-									</div>
-									<div class="psp-panel-content">
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+	                        		
 										<form class="psp-form" id="1" action="#save_with_ajax">
 											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
 											<?php
@@ -1106,11 +1110,7 @@ $twc = new pspTwitterCards( $this->the_plugin );
 														'score'		=> array(
 															'th'	=> __('Score', 'psp'),
 															'td'	=> '%score%',
-															'width' => '130',
-															'css' 	=> array(
-																'padding' => '0px',
-																'background' => '#fcfcfc'
-															)
+															'width' => '120'
 														),
 
 														'focus_keyword'	=> array(
@@ -1139,7 +1139,7 @@ $twc = new pspTwitterCards( $this->the_plugin );
 															'option' => array(
 																'value' => __('Optimize', 'psp'),
 																'action' => 'do_item_optimize',
-																'color' => 'orange'
+																'color' => 'warning'
 															),
 															'width' => '80'
 														),
@@ -1155,7 +1155,7 @@ $twc = new pspTwitterCards( $this->the_plugin );
 							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 
@@ -1708,7 +1708,7 @@ $twc = new pspTwitterCards( $this->the_plugin );
 	
 				$html[] = 	'</td>';
 				$html[] = '<td>';
-				$html[] = 		'<a href="#" class="button upload_button" id="' . ( $elm_id ) . '">' . ( $value['value'] ) . '</a> ';
+				$html[] = 		'<a href="#" class="psp-form-button-small psp-form-button-info button upload_button" id="' . ( $elm_id ) . '">' . ( $value['value'] ) . '</a> ';
 				//$html[] = 		'<a href="#" class="button reset_button ' . $hide . '" id="reset_' . ( $elm_id ) . '" title="' . ( $elm_id ) . '">' . __('Remove', 'psp') . '</a> ';
 				$html[] = '</td>';
 				$html[] = '</tr>';
@@ -1742,7 +1742,7 @@ $twc = new pspTwitterCards( $this->the_plugin );
 
 				$html .= '
 				<select id="' . $field_name . '" name="' . $field_name . '" style="width:120px;">
-					<option value="default" ' . ($val=='default' ? 'selected="true"' : '') . '>' . __('Default settings', 'psp') . '</option>
+					<option value="default" ' . ($val=='default' ? 'selected="true"' : '') . '>' . __('Default Setting', 'psp') . '</option>
 					<option value="none" ' . ($val=='none' ? 'selected="true"' : '') . '>' . __('None', 'psp') . '</option>
 				';
 					$opengraph_defaults = array(

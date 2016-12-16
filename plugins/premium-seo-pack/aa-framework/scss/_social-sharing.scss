@@ -1,0 +1,415 @@
+.#{$alias} {
+	
+	.#{$alias}-sshare-wrapper {
+		background-color: #ecf0f1;
+		text-align: center;
+		z-index: 19998;
+		padding: px(7);
+		&.large {
+			padding: px(12);
+		}
+		.#{$alias}-socialbox-content {
+			float: left;
+			margin: 0 auto;
+			text-align: left;
+			position: relative;
+			.social-btn {
+				float: left;
+				width: px(30);
+				margin-right: px(7);
+				overflow: hidden;
+				&.viewcount {
+					float: left;
+					width: px(30);
+					margin-right: px(7);
+					overflow: hidden;
+					width: px(76);
+					&.print > span.text {
+						float: left;
+						text-align: left;
+						font-family: Arial;
+						color: #fff;
+						overflow: hidden;
+						font-size: px(11);
+						text-indent: 0;
+						line-height: px(30);
+						width: px(46);
+						height: px(30);
+						background-color: #2c3e50;
+						cursor: pointer;
+						cursor: hand;
+						text-indent: px(6);
+					}
+					&.email > span.text {
+						float: left;
+						text-align: left;
+						font-family: Arial;
+						color: #fff;
+						overflow: hidden;
+						font-size: px(11);
+						text-indent: 0;
+						line-height: px(30);
+						width: px(46);
+						height: px(30);
+						background-color: #2c3e50;
+						cursor: pointer;
+						cursor: hand;
+						text-indent: px(6);
+						background-color: #444444;
+					}
+					&.more > span.text {
+						float: left;
+						text-align: left;
+						font-family: Arial;
+						color: #fff;
+						overflow: hidden;
+						font-size: px(11);
+						text-indent: 0;
+						line-height: px(30);
+						width: px(46);
+						height: px(30);
+						background-color: #2c3e50;
+						cursor: pointer;
+						cursor: hand;
+						text-indent: px(6);
+						background-color: #9b9b9b;
+					}
+				}
+				&.large {
+					float: left;
+					width: px(30);
+					margin-right: px(7);
+					overflow: hidden;
+					width: px(50);
+					margin-right: px(12);
+					&.viewcount {
+						float: left;
+						width: px(30);
+						margin-right: px(7);
+						overflow: hidden;
+						width: px(50);
+						margin-right: px(12);
+						width: px(127);
+						&.print > span.text {
+							float: left;
+							text-align: left;
+							font-family: Arial;
+							color: #fff;
+							overflow: hidden;
+							font-size: px(11);
+							text-indent: 0;
+							line-height: px(30);
+							width: px(46);
+							height: px(30);
+							background-color: #2c3e50;
+							cursor: pointer;
+							cursor: hand;
+							text-indent: px(6);
+							font-size: px(18);
+							line-height: px(50);
+							width: px(77);
+							height: px(50);
+						}
+						&.email > span.text {
+							float: left;
+							text-align: left;
+							font-family: Arial;
+							color: #fff;
+							overflow: hidden;
+							font-size: px(11);
+							text-indent: 0;
+							line-height: px(30);
+							width: px(46);
+							height: px(30);
+							background-color: #2c3e50;
+							cursor: pointer;
+							cursor: hand;
+							text-indent: px(6);
+							background-color: #444444;
+							font-size: px(18);
+							line-height: px(50);
+							width: px(77);
+							height: px(50);
+						}
+						&.more > span.text {
+							float: left;
+							text-align: left;
+							font-family: Arial;
+							color: #fff;
+							overflow: hidden;
+							font-size: px(11);
+							text-indent: 0;
+							line-height: px(30);
+							width: px(46);
+							height: px(30);
+							background-color: #2c3e50;
+							cursor: pointer;
+							cursor: hand;
+							text-indent: px(6);
+							background-color: #9b9b9b;
+							font-size: px(18);
+							line-height: px(50);
+							width: px(77);
+							height: px(50);
+						}
+					}
+					> span.count {
+						float: left;
+						text-align: center;
+						font-family: Arial;
+						color: #a8a8a8;
+						overflow: hidden;
+						white-space: nowrap;
+						background-position: 0 0;
+						background-repeat: no-repeat;
+					}
+					> span.count {
+						font-size: px(18);
+						text-indent: px(8);
+						line-height: px(50);
+						width: px(69);
+						height: px(50);
+						margin-left: px(8);
+						background-image: url(assets-sharing/social-count-box-large.png);
+					}
+					> a.icon {
+						float: left;
+						width: px(30);
+						height: px(30);
+						background-image: url(assets-sharing/icons-sprite-normal.png);
+						background-position: 0 0;
+						background-repeat: no-repeat;
+						width: px(50);
+						height: px(50);
+						background-image: url(assets-sharing/icons-sprite-large.png);
+					}
+					&.print > a.icon {
+						background-position: 0 0;
+					}
+					&.email > a.icon {
+						background-position: 0 -#{px(50)};
+					}
+					&.more > a.icon {
+						background-position: 0 -#{px(750)};
+					}
+					&.facebook > a.icon {
+						background-position: 0 -#{px(100)};
+					}
+					&.twitter > a.icon {
+						background-position: 0 -#{px(150)};
+					}
+					&.plusone > a.icon {
+						background-position: 0 -#{px(200)};
+					}
+					&.linkedin > a.icon {
+						background-position: 0 -#{px(250)};
+					}
+					&.pinterest > a.icon {
+						background-position: 0 -#{px(300)};
+					}
+					&.flattr > a.icon {
+						background-position: 0 -#{px(350)};
+					}
+					&.reddit > a.icon {
+						background-position: 0 -#{px(400)};
+					}
+					&.tumblr > a.icon {
+						background-position: 0 -#{px(450)};
+					}
+					&.xing > a.icon {
+						background-position: 0 -#{px(500)};
+					}
+					&.stumbleupon > a.icon {
+						background-position: 0 -#{px(550)};
+					}
+					&.buffer > a.icon {
+						background-position: 0 -#{px(600)};
+					}
+					&.digg > a.icon {
+						background-position: 0 -#{px(650)};
+					}
+					&.delicious > a.icon {
+						background-position: 0 -#{px(700)};
+					}
+				}
+				> span.count {
+					float: left;
+					text-align: center;
+					font-family: Arial;
+					color: #a8a8a8;
+					overflow: hidden;
+					white-space: nowrap;
+					background-position: 0 0;
+					background-repeat: no-repeat;
+					font-size: px(11);
+					text-indent: px(5);
+					line-height: px(30);
+					width: px(41);
+					height: px(30);
+					margin-left: px(5);
+					background-image: url(assets-sharing/social-count-box-normal.png);
+				}
+				> a.icon {
+					float: left;
+					width: px(30);
+					height: px(30);
+					background-image: url(assets-sharing/icons-sprite-normal.png);
+					background-position: 0 0;
+					background-repeat: no-repeat;
+				}
+				&.print > a.icon {
+					background-position: 0 0;
+				}
+				&.email > a.icon {
+					background-position: 0 -#{px(30)};
+				}
+				&.more > a.icon {
+					background-position: 0 -#{px(450)};
+				}
+				&.facebook > a.icon {
+					background-position: 0 -#{px(60)};
+				}
+				&.twitter > a.icon {
+					background-position: 0 -#{px(90)};
+				}
+				&.plusone > a.icon {
+					background-position: 0 -#{px(120)};
+				}
+				&.linkedin > a.icon {
+					background-position: 0 -#{px(150)};
+				}
+				&.pinterest > a.icon {
+					background-position: 0 -#{px(180)};
+				}
+				&.flattr > a.icon {
+					background-position: 0 -#{px(210)};
+				}
+				&.reddit > a.icon {
+					background-position: 0 -#{px(240)};
+				}
+				&.tumblr > a.icon {
+					background-position: 0 -#{px(270)};
+				}
+				&.xing > a.icon {
+					background-position: 0 -#{px(300)};
+				}
+				&.stumbleupon > a.icon {
+					background-position: 0 -#{px(330)};
+				}
+				&.buffer > a.icon {
+					background-position: 0 -#{px(360)};
+				}
+				&.digg > a.icon {
+					background-position: 0 -#{px(390)};
+				}
+				&.delicious > a.icon {
+					background-position: 0 -#{px(420)};
+				}
+			}
+			.more-list {
+				float: left;
+				width: px(30);
+				margin-right: px(7);
+				overflow: hidden;
+				width: px(44);
+				padding: px(7);
+				border: 0 solid  blue;
+				background-color: #e8e8e8;
+				display: none;
+				z-index: 19999;
+				&.viewcount {
+					float: left;
+					width: px(30);
+					margin-right: px(7);
+					overflow: hidden;
+					width: px(76);
+					width: px(44);
+					width: px(90);
+				}
+				&.large {
+					float: left;
+					width: px(30);
+					margin-right: px(7);
+					overflow: hidden;
+					width: px(50);
+					margin-right: px(12);
+					width: px(44);
+					width: px(74);
+					padding: px(12);
+					&.viewcount {
+						float: left;
+						width: px(30);
+						margin-right: px(7);
+						overflow: hidden;
+						width: px(50);
+						margin-right: px(12);
+						width: px(127);
+						width: px(44);
+						width: px(74);
+						width: px(151);
+					}
+				}
+			}
+		}
+		&.box-panel {
+			padding-bottom: 0;
+			padding-right: 0;
+			.#{$alias}-socialbox-content .more-list {
+				padding-bottom: 0;
+			}
+			> .#{$alias}-socialbox-content .social-btn {
+				margin-bottom: px(7);
+				&.large {
+					margin-bottom: px(12);
+				}
+			}
+		}
+		&.box-floating {
+			position: fixed;
+			width: px(30);
+			&.large {
+				width: px(50);
+				&.viewcount {
+					width: px(151);
+				}
+			}
+			&.viewcount {
+				width: px(151);
+			}
+			> .#{$alias}-socialbox-content .social-btn {
+				margin-top: px(7);
+				&.large {
+					margin-top: px(12);
+				}
+				&:first-child {
+					margin-top: 0;
+				}
+			}
+		}
+		&.box-panel-vertical {
+			position: absolute;
+			width: px(30);
+			&.large {
+				width: px(50);
+				&.viewcount {
+					width: px(151);
+				}
+			}
+			&.viewcount {
+				width: px(90);
+			}
+			> .#{$alias}-socialbox-content .social-btn {
+				margin-top: px(7);
+				margin-right: 0;
+				&.large {
+					margin-top: px(12);
+					margin-right: 0;
+				}
+				&:first-child {
+					margin-top: 0;
+				}
+			}
+		}
+	}
+	
+}

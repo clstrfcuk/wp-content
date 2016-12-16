@@ -111,57 +111,52 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 		{
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('advanced_setup|W3C_HTMLValidator')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('advanced_setup|W3C_HTMLValidator')->show_menu();
+				?>
 				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['W3C_HTMLValidator']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['W3C_HTMLValidator']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['W3C_HTMLValidator']['help']) ? true : false;
-					if( $has_help === true ){
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
 						
-						$help_type = isset($this->module['W3C_HTMLValidator']['help']['type']) && $this->module['W3C_HTMLValidator']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['W3C_HTMLValidator']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['W3C_HTMLValidator']['menu']['title'],
+						$this->module['W3C_HTMLValidator']['description'],
+						$this->module['W3C_HTMLValidator']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
 					
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php /*<img src="<?php echo $this->module_folder;?>assets/w3-icon.png">*/ ?>
-											<?php _e('Mass Check the markup (HTML, XHTML, …) of your pages', 'psp');?>
-										</span>
-									</div>
-									<div class="psp-panel-content">
-										<form class="psp-form" id="1" action="#save_with_ajax">
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+				
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><img src="<?php echo $this->module_folder;?>assets/w3-icon.png"> <?php _e('Mass Check the markup (HTML, XHTML, …) of your pages', 'psp');?></h2>
+						</div>
+	
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+	
+										<form class="psp-form psp-html-validator" id="1" action="#save_with_ajax">
 											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
 											<?php
 											pspAjaxListTable::getInstance( $this->the_plugin )
@@ -175,19 +170,19 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 															'th'	=>  'checkbox',
 															'td'	=>  'checkbox',
 														),
-
+	
 														'id'		=> array(
 															'th'	=> __('ID', 'psp'),
 															'td'	=> '%ID%',
 															'width' => '40'
 														),
-
+	
 														'title'		=> array(
 															'th'	=> __('Title', 'psp'),
 															'td'	=> '%title%',
 															'align' => 'left'
 														),
-
+	
 														'status'		=> array(
 															'th'	=> __('Status', 'psp'),
 															'td'	=> '%status%',
@@ -195,7 +190,7 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 															'align' => 'center',
 															'width' => '40'
 														),
-
+	
 														'nr_of_errors'		=> array(
 															'th'	=> __('# of Errors:', 'psp'),
 															'td'	=> '%nr_of_errors%',
@@ -203,7 +198,7 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 															'align' => 'center',
 															'width' => '80'
 														),
-
+	
 														'nr_of_warning'		=> array(
 															'th'	=> __('# of Warning', 'psp'),
 															'td'	=> '%nr_of_warning%',
@@ -211,7 +206,7 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 															'align' => 'center',
 															'width' => '80'
 														),
-
+	
 														'last_check_at'		=> array(
 															'th'	=> __('Last check at', 'psp'),
 															'td'	=> '%last_check_at%',
@@ -219,26 +214,27 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 															'align' => 'center',
 															'width' => '120'
 														),
-
+	
 														'view_full_report' => array(
 															'th'	=> __('View full report', 'psp'),
 															'td'	=> '%view_full_report%',
 															'align' => 'center',
 															'width' => '120'
 														),
-
+	
 														'date'		=> array(
 															'th'	=> __('Date', 'psp'),
 															'td'	=> '%date%',
 															'width' => '120'
 														),
-
+	
 														'optimize_btn' => array(
 															'th'	=> __('Action', 'psp'),
 															'td'	=> '%button%',
 															'option' => array(
 																'value' => __('Verify page', 'psp'),
-																'action' => 'do_item_html_validation'
+																'action' => 'do_item_html_validation',
+																'color' => 'psp-form-button-small psp-form-button-success'
 															),
 															'width' => '80'
 														),
@@ -247,7 +243,7 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 														'html_validation' => array(
 															'value' => __('Verify all selected pages', 'psp'),
 															'action' => 'do_bulk_html_validation',
-															'color' => 'blue'
+															'color' => 'info'
 														)
 													)
 												))
@@ -255,13 +251,12 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 								            ?>
 								            </div>
 							            </form>
-				            		</div>
+					            	</div>
 								</div>
 							</div>
-							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 

@@ -14,13 +14,13 @@
 			'menu' => array(
 				'order' => 13,
 				'title' => __('Tiny Compress', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-tiny_compress"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
 				'url'	=> admin_url('admin.php?page=' . $psp->alias . "_tiny_compress")
 			),
-			'description' => __('Tiny Compress module uses optimization techniques specific to image format to remove unnecessary bytes from image files, by connecting to the <a href="https://tinypng.com/" target="_blank">TinyPNG service</a>. It is a "lossless" tool, which means it optimizes the images without changing their look or visual quality', 'psp'),
+			'description' => __('The Tiny Compress module uses optimization techniques specific to image formatting to remove unnecessary bytes from image files, by connecting to the <a href="https://tinypng.com/" target="_blank">TinyPNG service</a>. This is a "lossless" tool, which means it optimizes the images without changing their look or visual quality.', 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',
@@ -48,20 +48,20 @@
                 1 => __('
                     You configured Tiny Compress module incorrectly. See 
                     ' . ( $psp->convert_to_button ( array(
-                        'color' => 'white_blue psp-show-docs-shortcut',
+                        'color' => 'info psp-show-docs-shortcut',
                         'url' => 'javascript: void(0)',
                         'title' => 'here'
                     ) ) ) . ' for more details on fixing it. <br />
                     Module Tiny Compress verification section: click Verify button and read status 
                     ' . ( $psp->convert_to_button ( array(
-                        'color' => 'white_blue',
+                        'color' => 'info',
                         'url' => admin_url( 'admin.php?page=psp_server_status#sect-tiny_compress' ),
                         'title' => 'here',
                         'target' => '_blank'
                     ) ) ) . '<br />
                     Setup the Tiny Compress module 
                     ' . ( $psp->convert_to_button ( array(
-                        'color' => 'white_blue',
+                        'color' => 'info',
                         'url' => admin_url( 'admin.php?page=psp#tiny_compress' ),
                         'title' => 'here'
                     ) ) ) . '

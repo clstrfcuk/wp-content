@@ -1,0 +1,9 @@
+##{$alias}_misc {
+	.#{$alias}-message { 
+		p {
+			&#insert-code {
+				margin-top: px(50);
+			}
+		}
+	}
+}

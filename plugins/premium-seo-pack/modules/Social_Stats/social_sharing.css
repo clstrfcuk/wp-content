@@ -35,16 +35,16 @@
 
 /* vertical toolbars */
 .psp-sshare-wrapper.box-floating, .psp-sshare-wrapper.box-panel-vertical {
-	width: 30px;
+	width: 43px;
 }
 .psp-sshare-wrapper.box-floating.large, .psp-sshare-wrapper.box-panel-vertical.large {
-	width: 50px;
+	width: 52wpx;
 }
 .psp-sshare-wrapper.box-floating.viewcount, .psp-sshare-wrapper.box-panel-vertical.viewcount {
 	width: 90px;
 }
 .psp-sshare-wrapper.box-floating.large.viewcount, .psp-sshare-wrapper.box-panel-vertical.large.viewcount {
-	width: 127px;
+	width: 151px;
 }
 
 		/* toolbar buttons */

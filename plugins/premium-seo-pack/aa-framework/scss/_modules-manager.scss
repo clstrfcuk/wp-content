@@ -1,0 +1,84 @@
+.#{$alias}-section-modules_manager {
+	margin: px(20);
+	
+	.#{$alias}_module-menu-wrapper {
+		@include border-radius(px(5));
+		background-color: #edf8ea;
+		display: block;
+		float: left;
+		padding: px(15);
+		margin: 0 px(25) px(25) 0;
+		text-align: center;
+		width: px(160);
+		height: px(180);
+		.#{$alias}_icon_wrapper {
+			i, span {
+				color: #67b930;
+				font-size: px(35);
+			}
+		}
+		
+		&.#{$alias}_inactive {
+			background-color: #ffe7ed;
+			.#{$alias}_icon_wrapper {
+				i, span {
+					color: #ff1844;
+				}
+			}
+		}
+		
+		.#{$alias}_module_title {
+			color: $black;
+			font-size: px(16);
+			font-family: 'Open Sans';
+			font-weight: bold;
+			margin-top: px(10);
+			height: px(36);
+		}
+		a.#{$alias}_action_button {
+			@include border-radius(px(5));
+			background-color: #00cb8f;
+			display: inline-block;
+			color: $white;
+			padding: px(8) px(10);
+			margin: px(20) auto px(10) auto;
+			font-size: px(11);
+			line-height: px(11);
+			text-transform: uppercase;
+			&.psp_deactivate {
+				background-color: #ff6b88;
+			}
+		}
+		.#{$alias}_module_description {
+			display: none;
+			@include border-radius(px(5));
+			border: px(1) solid $gray;
+		    position: absolute;
+		    background-color: $white;
+		    padding: px(20) px(15) px(10);
+		    margin-top: px(20);
+		    max-width: px(300);
+		    
+			.#{$alias}_close_description {
+				font-size: px(12);
+				color: $gray;
+				cursor: pointer;
+				display: block;
+				position: absolute;
+				top: px(5);
+				right: px(5);
+				width: px(16);
+				height: px(16);
+				&:hover {
+					color: $danger;
+				}
+			}
+		}
+		.#{$alias}_read_more {
+			display: block;
+			color: $gray;
+			font-size: px(10);
+			line-height: px(13);
+		}
+	}
+}

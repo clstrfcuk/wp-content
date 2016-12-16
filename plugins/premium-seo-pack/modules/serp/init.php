@@ -262,97 +262,67 @@ if (class_exists('pspSERP') != true) {
 		private function printBaseInterface()
 		{
 ?>
-		<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('monitoring|serp')->show_menu();
-			?>
-			
-			<div id="psp-lightbox-overlay">
-				<div id="psp-lightbox-container">
-					<h1 class="psp-lightbox-headline">
-						<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
-						<span><?php _e('Your focus keywords list', 'psp');?></span>
-					<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>"></a>
-					</h1>
+			<div class="psp-serp <?php echo $this->the_plugin->alias; ?>-content"> 
 
-					<div class="psp-seo-status-container">
-						<div id="psp-lightbox-seo-report-response"></div>
-						<div style="clear:both"></div>
-					</div>
-				</div>
-			</div>
-			
-			<!-- Main loading box -->
-			<div id="psp-main-loading" style="display:block;">
-				<div id="psp-loading-overlay" style="display:block;"></div>
-				<div id="psp-loading-box" style="display:block;">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('monitoring|serp')->show_menu();
+				?>
 				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['serp']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['serp']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['serp']['help']) ? true : false;
-					if( $has_help === true ){
-						
-						$help_type = isset($this->module['serp']['help']['type']) && $this->module['serp']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['serp']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
+					
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['serp']['menu']['title'],
+						$this->module['serp']['description'],
+						$this->module['serp']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<?php 
-							// find if user makes the setup
-							$moduleValidateStat = $this->moduleValidation();
-							if ( !$moduleValidateStat['status'] )
-								echo $moduleValidateStat['html'];
-							else{ 
-							?>
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php /*<img src="<?php echo $this->module_folder;?>assets/serp-icon.png">*/ ?>
-											<?php _e('Search Engine Results Page Reporter', 'psp');?>
-										</span>
-									</div>
-									<div class="psp-panel-content">
+					
+					<?php 
+					// find if user makes the setup
+					$moduleValidateStat = $this->moduleValidation();
+					if ( !$moduleValidateStat['status'] )
+						echo $moduleValidateStat['html'];
+					else{ 
+					?>
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Search Engine Results Page Reporter', 'psp');?></h2>
+						</div>
+			
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+			
+		                        	<div class="psp-panel">
+		                        		
 										<form class="psp-form" action="#save_with_ajax">
 											<div class="psp-form-row" id="psp-serp-container">
 												<div class="psp-top-filters">
-
-													<span id="psp-select-engine-text"><?php _e('Google:', 'psp');?> </span>
-													
-													<select id="select-engine">
-													<option value='--all--'><?php _e('all locations', 'psp');?></option>
-													<?php
-													$__seUsed = $this->getSearchEngineUsed();
-													foreach ($__seUsed as $__k=>$__v) {
-														echo '<option value="'.$__v.'" '.(isset($_SESSION['psp_serp']['search_engine']) && $__v==$_SESSION['psp_serp']['search_engine'] ? ' selected ' : '').'>'.$__v.'</option>';
-													}
-													?>
-													</select>
-
+													<div class="psp-select-engine-wrapper">
+														<span id="psp-select-engine-text"><?php _e('Google:', 'psp');?> </span>
+														<select id="select-engine">
+														<option value='--all--'><?php _e('all locations', 'psp');?></option>
+														<?php
+														$__seUsed = $this->getSearchEngineUsed();
+														foreach ($__seUsed as $__k=>$__v) {
+															echo '<option value="'.$__v.'" '.(isset($_SESSION['psp_serp']['search_engine']) && $__v==$_SESSION['psp_serp']['search_engine'] ? ' selected ' : '').'>'.$__v.'</option>';
+														}
+														?>
+														</select>
+													</div>
 													<?php /*<input type="button" class="psp-button blue" id="psp-cron-ckeck" value="<?php _e('Cron check now', 'psp');?>">*/ ?>
 													
 													<div id="psp-filter-by-date">
@@ -360,8 +330,8 @@ if (class_exists('pspSERP') != true) {
 														<input type="text" id="psp-filter-by-date-from" name="psp-filter-by-date-from" value="<?php echo $this->__initialDate['from']; ?>" />
 														<label for="psp-filter-by-date-to"><?php _e('to', 'psp');?></label>
 														<input type="text" id="psp-filter-by-date-to" name="psp-filter-by-date-to" value="<?php echo $this->__initialDate['to']; ?>" />
-														<input type="button" id="psp-toggle-ku" class="psp-button gray psp-select-fw" value="Customize view">
-														<input type="button" class="psp-button blue" id="psp-filter-graph-data" value="<?php _e('Apply Filters', 'psp');?>">
+														<input type="button" id="psp-toggle-ku" class="psp-button gray psp-select-fw psp-form-button-small psp-form-button-info" value="Customize view">
+														<input type="button" class="psp-button blue psp-form-button-small psp-form-button-info" id="psp-filter-graph-data" value="<?php _e('Apply Filters', 'psp');?>">
 													</div>
 												</div>
 												
@@ -377,7 +347,7 @@ if (class_exists('pspSERP') != true) {
 														<table class="psp-table" style="border:  none;border-bottom:  1px solid #dadada;width:100%;  border-spacing:0;border-collapse:collapse;">
 															<thead>
 																<tr>
-																	<th align="left" width="10"><input type="checkbox" id="psp-item-check-all-key"></th>
+																	<th align="center" width="10"><input type="checkbox" id="psp-item-check-all-key"></th>
 																	<th align="left"><?php _e('Focus Keywords', 'psp');?></th>
 																</tr>
 															</thead>
@@ -389,7 +359,7 @@ if (class_exists('pspSERP') != true) {
 																$__theHtml = array();
 																foreach ($__keys as $k=>$v) {
 																	$__theHtml[] = '<tr>';
-																	$__theHtml[] = 		'<td align="left">';
+																	$__theHtml[] = 		'<td align="center">';
 																	$__theHtml[] = 			'<input type="checkbox" class="psp-item-checkbox-key" name="psp-item-checkbox-key-'.$v['id'].'" value="'.$v['info'].'"' . (isset($_SESSION['psp_serp']['filter_keywords']) && isset($_SESSION['psp_serp']['filter_keywords'][$v['info']]) ? ' checked="checked" ' : '') . '>';
 																	$__theHtml[] = 		'</td>';
 																	$__theHtml[] = 		'<td align="left">';
@@ -407,7 +377,7 @@ if (class_exists('pspSERP') != true) {
 														 <table class="psp-table" style="border: none;border-left: 1px solid #ededed;border-bottom: 1px solid #dadada;width:100%;border-spacing:0;border-collapse:collapse;">
 															<thead>
 																<tr>
-																	<th align="left" width="10"><input type="checkbox" id="psp-item-check-all-url"></th>
+																	<th align="center" width="10"><input type="checkbox" id="psp-item-check-all-url"></th>
 																	<th align="left"><?php _e('URLs', 'psp');?></th>
 																</tr>
 															</thead>
@@ -419,7 +389,7 @@ if (class_exists('pspSERP') != true) {
 																$__theHtml = array();
 																foreach ($__keys as $k=>$v) {
 																	$__theHtml[] = '<tr>';
-																	$__theHtml[] = 		'<td align="left">';
+																	$__theHtml[] = 		'<td align="center">';
 																	$__theHtml[] = 			'<input type="checkbox" class="psp-item-checkbox-url" name="psp-item-checkbox-url-'.$v['id'].'" value="'.$v['info'].'"' . (isset($_SESSION['psp_serp']['filter_urls']) && isset($_SESSION['psp_serp']['filter_urls'][$v['info']]) ? ' checked="checked" ' : '') . '>';
 																	$__theHtml[] = 		'</td>';
 																	$__theHtml[] = 		'<td align="left">';
@@ -438,154 +408,215 @@ if (class_exists('pspSERP') != true) {
 												</div>
 												
 												<div class="psp-serp-graph" id="psp-serp-graph"></div>
-												
-												<div class="psp-panel psp-serp-add-keyword" id="psp-serp-add-keyword">
-					                        		<div class="psp-panel-header">
-														<span class="psp-panel-title">
-															<img src="<?php echo $this->module_folder;?>assets/new-kw.png">
-															<?php _e('Add Keyword <i>(You can keep an eye on your competitors too)</i>', 'psp');?>
-															<span id="search-engine-current-loc"><?php _e('Google location currently used: ', 'psp'); echo '<strong>'.$this->search_engine."</strong>"; ?></span>
-														</span>
-													</div>
-													<div class="psp-panel-content">
-														<div id="psp-add-keyword-block">
-															<div style="float: left;width: 450px;">
-																<label for="psp-new-keyword"><?php _e('Keyword:', 'psp');?></label>
-																<input type="text" id="psp-new-keyword" name="psp-new-keyword" class="psp-new-keyword" value="" />
-																<div style="clear:left;"></div>
-																<label for="psp-new-keyword-link"><?php _e('URL:', 'psp');?></label>
-																<input type="text" id="psp-new-keyword-link" name="psp-new-keyword-link" class="psp-new-keyword-link" value="" />
-															</div>
-															<div class="psp-or-block">
-																<span class="line"></span>
-																<h2><?php _e('OR', 'psp');?></h2>	
-															</div>
-															<div style="float: left;width: 300px; ">
-																<label><?php _e('Select from your:', 'psp');?></label>
-																<div style="clear:left;"></div>
-																<input type="button" id="psp-select-fw" class="psp-button gray psp-select-fw" value="<?php _e('Focus keywords', 'psp');?>">
-															</div>	
-															<div style="clear:left;"></div>
-															<input type="button" class="psp-button blue" id="psp-submit-to-reporter" value="<?php _e('Add to Reporter', 'psp');?>">
-														</div>
-														<div style="clear:left;"></div>
-													</div>
-												</div>
-												
-												
-												<form class="psp-form" action="#save_with_ajax">
-													<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
-													<?php
-													$html_rank_header = array();
-													$html_rank_header[] = '<table class="serp-thead-rank">';
-													$html_rank_header[] = 	'<thead>';
-													$html_rank_header[] = 		'<tr>';
-													$html_rank_header[] = 			'<th>' . ( __('Current', 'psp') ) . '</th>';
-													$html_rank_header[] = 			'<th>' . ( __('Best', 'psp') ) . '</th>';
-													$html_rank_header[] = 			'<th>' . ( __('Worst', 'psp') ) . '</th>';
-													$html_rank_header[] = 		'</tr>';
-													$html_rank_header[] = 	'</thead>';
-													$html_rank_header[] = '</table>';
-
-													pspAjaxListTable::getInstance( $this->the_plugin )
-														->setup(array(
-															'id' 				=> 'pspSERPKeywords',
-															'custom_table'		=> "psp_serp_reporter",
-															'show_header' 		=> true,
-															'items_per_page' 	=> '10',
-															'post_statuses' 	=> 'all',
-															'columns'			=> array(
-															
-																'serp_focus_keyword' => array(
-																	'th'	=> __('Focus Keyword', 'psp'),
-																	'td'	=> '%serp_focus_keyword%',
-																	'align' => 'left',
-																	'width' => '150'
-																),
-																
-																'serp_url'	=> array(
-																	'th'	=> __('URL', 'psp'),
-																	'td'	=> '%serp_url%',
-																	'align' => 'left'
-																),
-																
-																'serp_location'	=> array(
-																	'th'	=> __('Location', 'psp'),
-																	'td'	=> '%serp_location%',
-																	'align' => 'center',
-																	'width' => '80'
-																),
-																
-																'serp_google'=> array(
-																	'th'	=> __('Google Rank', 'psp') . implode("\n", $html_rank_header),
-																	'td'	=> '%serp_google%',
-																	'align' => 'center',
-																	'width' => '120'
-																),
-																
-																'serp_start_date' => array(
-																	'th'	=> __('Start Date', 'psp'),
-																	'td'	=> '%serp_start_date%',
-																	'width' => '115'
-																),
-		
-																'serp_visits'		=> array(
-																	'th'	=> __('Visits', 'psp'),
-																	'td'	=> '%serp_visits%',
-																	'width' => '30'
-																),
-																
-																'publish_btn' => array(
-																	'th'	=> __('Status', 'psp'),
-																	'td'	=> '%button_publish%',
-																	'option' => array(
-																		'value' => __('Unpublish', 'psp'),
-																		'value_change' => __('Publish', 'psp'),
-																		'action' => 'do_item_publish',
-																		'color'	=> 'orange',
-																	),
-																	'width' => '40'
-																),
-																
-																'update_btn' => array(
-																	'th'	=> __('Update', 'psp'),
-																	'td'	=> '%button%',
-																	'option' => array(
-																		'value' => __('Update', 'psp'),
-																		'action' => 'do_item_update',
-																		'color'	=> 'blue',
-																	),
-																	'width' => '35'
-																),
-					
-																'delete_btn' => array(
-																	'th'	=> __('Delete', 'psp'),
-																	'td'	=> '%button%',
-																	'option' => array(
-																		'value' => __('Delete', 'psp'),
-																		'action' => 'do_item_delete',
-																		'color'	=> 'red',
-																	),
-																	'width' => '35'
-																),
-															)
-														))
-														->print_html();
-										            ?>
-										            </div>
-									            </form>
-								            </div>
-							            </form>
-				            		</div>
+											</div>
+										</form>
+									</div>	
 								</div>
 							</div>
-							<?php
-							} 
-							?>
-							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+					
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+						
+						<div id="psp-lightbox-overlay">
+							<div id="psp-lightbox-container">
+								<h1 class="psp-lightbox-headline">
+									<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
+									<span><?php _e('Your focus keywords list', 'psp');?></span>
+								<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>">
+									<i class="fa fa-times" aria-hidden="true"></i>
+								</a>
+								</h1>
+			
+								<div class="psp-seo-status-container">
+									<div id="psp-lightbox-seo-report-response"></div>
+									<div style="clear:both"></div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Add Keyword <i>(You can keep an eye on your competitors too)</i>', 'psp');?></h2>
+							<span id="search-engine-current-loc"><?php _e('Google location currently used: ', 'psp'); echo '<strong>'.$this->search_engine."</strong>"; ?></span>
+						</div>
+			
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+												
+									<div class="psp-panel">
+										
+										<div class="psp-panel psp-serp-add-keyword" id="psp-serp-add-keyword">
+											<div class="psp-panel-content">
+												<div id="psp-add-keyword-block">
+													<div style="float: left;width: 450px;">
+														<label for="psp-new-keyword"><?php _e('Keyword:', 'psp');?></label>
+														<input type="text" id="psp-new-keyword" name="psp-new-keyword" class="psp-new-keyword" value="" />
+														<div style="clear:left;"></div>
+														<label for="psp-new-keyword-link"><?php _e('URL:', 'psp');?></label>
+														<input type="text" id="psp-new-keyword-link" name="psp-new-keyword-link" class="psp-new-keyword-link" value="" />
+													</div>
+													<div class="psp-or-block">
+														<span class="line"></span>
+														<h2><?php _e('OR', 'psp');?></h2>	
+													</div>
+													<div>
+														<label><?php _e('Select from your:', 'psp');?></label>
+														<div style="clear:left;"></div>
+														<input type="button" id="psp-select-fw" class="psp-form-button-small psp-form-button-info psp-select-fw" value="<?php _e('Focus keywords', 'psp');?>">
+													</div>	
+													<div style="clear:left;"></div>
+													<input type="button" class="psp-form-button-small psp-form-button-info" id="psp-submit-to-reporter" value="<?php _e('Add to Reporter', 'psp');?>">
+												</div>
+												<div style="clear:left;"></div>
+											</div>
+										</div>
+										
+										
+										<form class="psp-form" action="#save_with_ajax">
+											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
+											<?php
+											$html_rank_header = array();
+											$html_rank_header[] = '<table class="serp-thead-rank">';
+											$html_rank_header[] = 	'<thead>';
+											$html_rank_header[] = 		'<tr>';
+											$html_rank_header[] = 			'<th width="83">' . ( __('Current', 'psp') ) . '</th>';
+											$html_rank_header[] = 			'<th width="52">' . ( __('Best', 'psp') ) . '</th>';
+											$html_rank_header[] = 			'<th>' . ( __('Worst', 'psp') ) . '</th>';
+											$html_rank_header[] = 		'</tr>';
+											$html_rank_header[] = 	'</thead>';
+											$html_rank_header[] = '</table>';
+
+											pspAjaxListTable::getInstance( $this->the_plugin )
+												->setup(array(
+													'id' 				=> 'pspSERPKeywords',
+													'custom_table'		=> "psp_serp_reporter",
+													'show_header' 		=> true,
+													'items_per_page' 	=> '10',
+													'post_statuses' 	=> 'all',
+													'columns'			=> array(
+													
+														'serp_focus_keyword' => array(
+															'th'	=> __('Focus Keyword', 'psp'),
+															'td'	=> '%serp_focus_keyword%',
+															'align' => 'left',
+															'width' => '150'
+														),
+														
+														'serp_url'	=> array(
+															'th'	=> __('URL', 'psp'),
+															'td'	=> '%serp_url%',
+															'align' => 'left'
+														),
+														
+														'serp_location'	=> array(
+															'th'	=> __('Location', 'psp'),
+															'td'	=> '%serp_location%',
+															'align' => 'center',
+															'width' => '80'
+														),
+														
+														'serp_google'=> array(
+															'th'	=> __('Google Rank', 'psp') . implode("\n", $html_rank_header),
+															'td'	=> '%serp_google%',
+															'align' => 'center',
+															'width' => '120',
+														),
+														
+														'serp_start_date' => array(
+															'th'	=> __('Start Date', 'psp'),
+															'td'	=> '%serp_start_date%',
+															'width' => '115'
+														),
+
+														'serp_visits'		=> array(
+															'th'	=> __('Visits', 'psp'),
+															'td'	=> '%serp_visits%',
+															'width' => '30'
+														),
+														
+														'publish_btn' => array(
+															'th'	=> __('Operations', 'psp'),
+															'td'	=> '%serp_operation%',
+															'option' => array(
+																array(
+																	'value' => __('Unpublish', 'psp'),
+																	'value_change' => __('Publish', 'psp'),
+																	'action' => 'do_item_publish',
+																	'color'	=> 'warning',
+																	'icon' => '<i class="fa fa-eye-slash"></i>',
+																	'icon_change' => '<i class="fa fa-eye"></i>'
+																),
+																array(
+																	'value' => __('Update', 'psp'),
+																	'action' => 'do_item_update',
+																	'color'	=> 'info',
+																	'icon' => '<i class="fa fa-refresh"></i>',
+																),
+																array(
+																	'value' => __('Delete', 'psp'),
+																	'action' => 'do_item_delete',
+																	'color'	=> 'danger',
+																	'icon' => '<i class="fa fa-times"></i>',
+																)
+															),
+															'width' => '120',
+														),
+														/*
+														'publish_btn' => array(
+															'th'	=> __('Operations', 'psp'),
+															'td'	=> '%button_publish%',
+															'option' => array(
+																'value' => __('Unpublish', 'psp'),
+																'value_change' => __('Publish', 'psp'),
+																'action' => 'do_item_publish',
+																'color'	=> 'warning',
+															),
+															'width' => '40',
+														),
+														
+														'update_btn' => array(
+															'th'	=> __('Update', 'psp'),
+															'td'	=> '%button%',
+															'option' => array(
+																'value' => __('Update', 'psp'),
+																'action' => 'do_item_update',
+																'color'	=> 'info',
+															),
+															'width' => '35'
+														),
+			
+														'delete_btn' => array(
+															'th'	=> __('Delete', 'psp'),
+															'td'	=> '%button%',
+															'option' => array(
+																'value' => __('Delete', 'psp'),
+																'action' => 'do_item_delete',
+																'color'	=> 'danger',
+															),
+															'width' => '35'
+														),*/
+													)
+												))
+												->print_html();
+								            ?>
+								            </div>
+							            </form>
+									</div>
+									<?php
+									} 
+									?>
+									<div class="clear"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
 			</div>
 		</div>
 
@@ -1256,8 +1287,8 @@ if (class_exists('pspSERP') != true) {
 					$html[] = '<tr>'; 
 					$html[] = 	'<td width="50" style="text-align: center;">' . ( $value['post_id'] ). '</td>';
 					$html[] = 	'<td width="120" style="text-align: center;">' . ( $value['meta_value'] ). '</td>';
-					$html[] = 	'<td>' . ( $permalink ). '</td>';
-					$html[] = 	'<td><input type="button" data-itemid="' . ( $value['post_id'] ) . '" data-permalink="' . ( $permalink ) . '" data-keyword="' . ( $value['meta_value'] ) . '" value="' . __('Add to Reporter', 'psp') . '" class="psp-button blue psp-this-select-fw"></td>';
+					$html[] = 	'<td><div style="overflow:hidden; width:300px;">' . ( $permalink ). '</div></td>';
+					$html[] = 	'<td><input type="button" data-itemid="' . ( $value['post_id'] ) . '" data-permalink="' . ( $permalink ) . '" data-keyword="' . ( $value['meta_value'] ) . '" value="' . __('Add to Reporter', 'psp') . '" class="psp-this-select-fw psp-form-button psp-form-button-small psp-form-button-info"></td>';
 					$html[] = '</tr>';
 				}
 			}else{

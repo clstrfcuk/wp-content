@@ -1,0 +1,81 @@
+#frm-save-changes {
+    margin: -#{px(25)};
+    //margin-right: -#{px(25)};
+    //margin-bottom: -#{px(25)};
+	background: $white;
+	table {
+		border: none;
+		a,
+		.#{$alias}-fe-err {
+			color: #e41e26;
+			&:hover {
+				color: $primary;
+			}
+		}
+		span {
+			font-weight: $bold;
+		}
+		tr {
+			background: $white;
+
+			ul,
+			span {
+				line-height: px(27);
+				font-family: $primary-font;
+				font-size: px(14);
+				font-weight: $normal;
+				color: $black;
+			}
+			th {
+				padding: px(24);
+			}
+			input[type="button"] {
+				margin-left: px(24);
+				margin-top: px(24);
+				margin-bottom: px(24);
+				border-radius: px(3);
+				padding: px(10) px(25);
+				cursor: pointer;
+				letter-spacing: 0.06em;
+
+				&.form-button-danger {
+					background: #e41e26;
+					margin-left: px(2);
+				}
+			}
+			&:nth-child(2) {
+				input[type="button"] {
+					&:nth-child(2) {
+						margin-left: 0;
+					}
+				}
+			}
+			&:nth-child(3) {
+				td {
+					border: none;
+					padding-left: px(24);
+					padding-top: px(38);
+					padding-bottom: px(44);
+					&:nth-of-type(2) {
+						padding-right: px(26);
+					}
+					span {
+						&:first-of-type {
+							margin-bottom: -#{px(8)};
+							display: block;
+						}
+					}
+					textarea {
+						height: px(186);
+						width: 100%;
+						padding: px(15);
+						font-family: Consolas;
+						font-size: px(13);
+						line-height: px(26);
+						color: $gray;
+					}
+				}
+			}
+		}
+	}
+}

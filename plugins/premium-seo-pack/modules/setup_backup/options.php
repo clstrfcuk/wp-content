@@ -22,7 +22,7 @@ echo json_encode(
 					'install_btn' => array(
 						'type' => 'submit',
 						'value' => __('Install settings', 'psp'),
-						'color' => 'blue',
+						'color' => 'info',
 						'action' => 'psp-installDefaultOptions',
 					)
 				), // true|false|array
@@ -46,13 +46,13 @@ echo json_encode(
 				'title' 	=> __('Import settings from other SEO plugins for posts, pages, custom post types', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> array(
 					'install_btn' => array(
 						'type' => 'submit',
 						'value' => __('Import SEO', 'psp'),
-						'color' => 'green',
+						'color' => 'success',
 						'action' => 'psp-ImportSEO',
 					)
 				), // true|false|array
@@ -83,7 +83,7 @@ echo json_encode(
 				'title' 	=> __('backup you current plugin settings', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> false, // true|false
 				'style' 	=> 'panel', // panel|panel-widget

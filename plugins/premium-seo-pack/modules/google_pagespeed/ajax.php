@@ -131,7 +131,7 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 					}
 					
 					
-					$html[] = 	'<a href="#" class="psp-button red psp-close-page-detail"> ' . ( __('Close Page Report', 'psp') ) . '</a>';
+					$html[] = 	'<a href="#" class="psp-button red psp-close-page-detail psp-form-button-small psp-form-button-danger"> ' . ( __('Close Page Report', 'psp') ) . '</a>';
 					
 					$html[] = '</div>';
 					
@@ -223,7 +223,7 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 										$html[] = '<li>';
 										$html[] = 	'<p>' . $header_format . '<p>';
 										if( trim($hyperlink) != "" ){
-											$html[] = '<a href="' . ( $hyperlink ) . '" class="psp-button gray" target="_blank">' . ( __('Read Documentation', 'psp') ) . '</a>';
+											$html[] = '<a href="' . ( $hyperlink ) . '" class="psp-button gray psp-form-button-small psp-form-button-info" target="_blank">' . ( __('Read Documentation', 'psp') ) . '</a>';
 										}
 										$html[] = '</li>';
 										
@@ -258,21 +258,21 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 											<tbody>
 												<tr>
 													<td class="psp-icon-status">
-														<i class="psp-status-icon is_error"></i>
+														<i class="psp-status-icon is_error fa fa-times" aria-hidden="true"></i>
 													</td>
 													<td>' . ( __('red exclamation point', 'psp') ) . '</td>
 													<td>' . ( __('Fixing this would have a measurable impact on page performance.', 'psp') ) . '</td>
 												</tr>
 												<tr>
 													<td class="psp-icon-status">
-														<i class="psp-status-icon is_warning"></i>
+														<i class="psp-status-icon is_warning fa fa-exclamation" aria-hidden="true"></i>
 													</td>
 													<td>' . ( __('yellow exclamation point', 'psp') ) . '</td>
 													<td>' . ( __('Consider fixing this if it is not an onerous amount of work.', 'psp') ) . '</td>
 												</tr>
 												<tr>
 													<td class="psp-icon-status">
-														<i class="psp-status-icon is_success"></i>
+														<i class="psp-status-icon is_success fa fa-check" aria-hidden="true"></i>
 													</td>
 													<td>' . ( __('green check mark', 'psp') ) . '</td>
 													<td>' . ( __('No significant issues found. Good job!', 'psp') ) . '</td>

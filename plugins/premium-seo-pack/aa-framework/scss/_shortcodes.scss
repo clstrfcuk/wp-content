@@ -1,0 +1,62 @@
+.#{$alias}-shortcode-pop-up {
+	.#{$alias}-panel-title {
+	    font-size: 14px;
+	    display: block;
+	    line-height: 18px;
+	    border-bottom: 2px solid #f4f4f4;
+	    margin: 0px 15px 10px 15px;
+	    padding-top: 20px;
+	    padding-bottom: 12px;
+	    font-size: 16px;
+	    img {
+	        max-height: 16px;
+		    max-width: 16px;
+		    display: inline;
+		    margin-right: 4px;
+		    margin-bottom: -2px;
+		    padding: 2px;
+	    }
+	}
+	.#{$alias}-form-note {
+	    font-size: 1.2rem;
+	    font-weight: 500;
+	    color: #b2b2b2;
+	    display: block;
+	    margin-top: 1rem;
+	}
+	select,
+	textarea {
+	    height: auto;
+	    padding: px(10) px(16);
+	    border: solid 1px #e5e5e5;
+	    border-radius: px(5);
+	    clear: both;
+	}
+	textarea {
+		width: 100%;
+	}
+	input {
+
+		&[type="text"] {
+			width: 100% !important;
+		    height: auto;
+		    padding: px(10) px(16);
+		    border: solid 1px #e5e5e5;
+		    border-radius: px(5);
+		    clear: both;
+		}
+		&[type="submit"] {
+			float: right;
+		}
+		&[type="reset"] {
+			float: left;
+			&:hover,
+			&:active,
+			&:focus {
+				color: $white;
+				padding: px(4) px(15);
+				background: $info;
+			}
+		}
+	}
+}

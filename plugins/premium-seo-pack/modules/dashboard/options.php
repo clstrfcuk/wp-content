@@ -30,14 +30,14 @@ echo json_encode(array(
                 'productKey' => array(
                     'type' => 'text',
                     'std' => '',
-                    'size' => 'small',
+                    'size' => 'large',
                     'title' => 'Item Purchase Code',
                     'desc' => 'Get it from CodeCanyon account and go to your “Downloads” page.'
                 ),
                 'yourEmail' => array(
                     'type' => 'text',
                     'std' => get_option('admin_email'),
-                    'size' => 'small',
+                    'size' => 'large',
                     'title' => 'Your Email',
                     'desc' => 'We will notify you via this email about this product update and bug fix.'
                 ),
@@ -46,9 +46,8 @@ echo json_encode(array(
                     'options' => array(
                         array(
                             'action' => 'psp_activate_product',
-                            'width' => '100px',
                             'type' => 'submit',
-                            'color' => 'green',
+                            'color' => 'success',
                             'pos' => 'left',
                             'value' => 'Activate now'
                         )

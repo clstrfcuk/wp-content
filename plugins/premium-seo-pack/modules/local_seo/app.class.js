@@ -9,7 +9,6 @@ pspLocalSEO = (function ($) {
     // public
     var debug_level = 0;
     var maincontainer = null;
-    var loading = null;
     var IDs = [];
     var loaded_page = 0;
 
@@ -18,7 +17,6 @@ pspLocalSEO = (function ($) {
 		// load the triggers
 		$(document).ready(function(){
 			maincontainer = $("#psp_locations_meta_box");
-			loading = maincontainer.find("#psp-main-loading");
 
 			triggers();
 		});

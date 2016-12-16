@@ -1,0 +1,22 @@
+.#{$alias} {
+	.panel {
+		position: relative;
+		.panel-body {
+			border-top: solid px(1) lighten($gray,40%);
+		}
+		.panel-heading {
+			border-bottom: none;
+		}
+		.panel-heading, .panel-body {
+			padding: px(24);
+		}
+		&>.panel-heading {
+			position: relative;
+			background: $white;
+			color: $gray;
+			h1 {
+				color: $black;
+			}
+		}
+	}
+}

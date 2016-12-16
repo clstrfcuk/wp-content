@@ -14,7 +14,7 @@
 			'menu' => array(
 				'order' => 13,
 				'title' => __('Local SEO', 'psp'),
-				'icon' => 'assets/menu_icon.png'
+				'icon' => '<span class="' . ( $psp->alias ) . '-icon-local_seo"><span class="path1"></span><span class="path2"></span></span>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

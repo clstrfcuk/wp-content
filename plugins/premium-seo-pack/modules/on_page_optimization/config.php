@@ -15,7 +15,7 @@
 				'order' => 93,
 				'show_in_menu' => false,
 				'title' => __('Mass Optimization', 'psp'),
-				'icon' => 'assets/menu_icon.png',
+				'icon' => '<span class="' . ( $psp->alias ) . '-icon-mass_optimization"><span class="path1"></span><span class="path2"></span></span>',
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
@@ -34,7 +34,8 @@
 					'edit.php',
 					'post.php',
 					'post-new.php',
-					'edit-tags.php'
+					'edit-tags.php',
+					'term.php'
 				),
 				'frontend' => false
 			),

@@ -41,7 +41,7 @@ if (class_exists('psp404Monitor') != true) {
 			if ( !$this->the_plugin->verify_module_status( 'monitor_404' ) ) ; //module is inactive
 			else {
 				if ( $this->the_plugin->is_admin !== true )
-					add_action("wp_head", array( &$this, 'store_new_404_log' ));
+					add_action("template_redirect", array( &$this, 'store_new_404_log' ));
 			}
 			
 			// ajax  helper
@@ -60,7 +60,7 @@ if (class_exists('psp404Monitor') != true) {
 		private function init() {
 			//$this->createTable();
 		}
-
+		
 		/**
 	    * Singleton pattern
 	    *
@@ -274,28 +274,43 @@ if (class_exists('psp404Monitor') != true) {
 				$request['id'] = implode(',', $__rq2);
 			}
 			
-			$sql = "
-				INSERT INTO " . ( $wpdb->prefix ) . "psp_link_redirect (url, url_redirect)
-				 SELECT url, %s FROM " . ( $wpdb->prefix ) . "psp_monitor_404 AS a
-				 WHERE 1=1 AND a.id IN (" . $request['id'] . ");
-			";
-			$sql = $wpdb->prepare( $sql, $request['url_redirect'] );
-			$__stat = $wpdb->query( $sql );
-			
-			if ($__stat!== false) {
-				//keep page number & items number per page
-				$_SESSION['pspListTable']['keepvar'] = array('paged'=>true,'posts_per_page'=>true);
-					
-				die( json_encode(array(
-					'status' => 'valid',
-					'msg'	 => '',
-					'nbrows' => $__stat
-				)) );
+			$check = $wpdb->get_results("SELECT b.id, a.url FROM " . ( $wpdb->prefix ) . "psp_link_redirect AS a INNER JOIN " . ( $wpdb->prefix ) . "psp_monitor_404 AS b ON a.url=b.url WHERE b.id IN (" . $request['id'] . ")");
+			 
+			if( count($check) > 0 ) {
+				foreach( $check as $url ) {
+					if( ($key = array_search($url->id, $__rq2)) !== false) {
+						unset($__rq2[$key]);
+					}
+					$msg['err'][] = __('Redirect for', 'psp') .' "'.($url->url).'" ' . __('already exists. (not added)', 'psp');
+				}
+				$request['id'] = implode(',', $__rq2);
 			}
-					
+			
+			if( $request['id'] != '' ) {
+				$sql = "
+					INSERT INTO " . ( $wpdb->prefix ) . "psp_link_redirect (url, url_redirect)
+					 SELECT url, %s FROM " . ( $wpdb->prefix ) . "psp_monitor_404 AS a
+					 WHERE 1=1 AND a.id IN (" . $request['id'] . ");
+				";
+				$sql = $wpdb->prepare( $sql, $request['url_redirect'] );
+				 
+				$__stat = $wpdb->query( $sql );
+				
+				if ($__stat!== false) {
+					//keep page number & items number per page
+					$_SESSION['pspListTable']['keepvar'] = array('paged'=>true,'posts_per_page'=>true);
+						
+					die( json_encode(array(
+						'status' => 'valid',
+						'msg'	 => isset($msg['err']) && count($msg['err']) > 0 ? implode("\n\n", $msg['err']) : __('Redirect added.', 'psp'),
+						'nbrows' => $__stat
+					)) );
+				}
+			}
+			
 			die( json_encode(array(
 				'status' => 'invalid',
-				'msg'	 => ''
+				'msg'	 => isset($msg['err']) && count($msg['err']) > 0 ? implode("\n\n", $msg['err']) : ''
 			)) );
 		}
 
@@ -311,95 +326,89 @@ if (class_exists('psp404Monitor') != true) {
 			global $wpdb;
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('monitoring|monitor_404')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?> psp-404">
 			
-			<div id="psp-lightbox-overlay">
-				<div id="psp-lightbox-container">
-					<h1 class="psp-lightbox-headline">
-						<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
-						<span id="link-details"><?php _e('Details:', 'psp');?></span>
-						<span id="link-add-redirect"><?php _e('Add to Link Redirect:', 'psp');?></span>
-						<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>"></a>
-					</h1>
-
-					<div class="psp-seo-status-container">
-						<div id="psp-lightbox-seo-report-response"></div>
-						
-						<div id="psp-lightbox-seo-report-response2">
-							<form class="psp-update-link-form">
-								<input type="hidden" id="upd-itemid" name="upd-itemid" value="" />
-								<table width="100%">
-									<tr>
-										<td width="120"><label><?php _e('URL:', 'psp');?></label></td>
-										<td><span id="old_url_list"></span></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('URL Redirect:', 'psp');?></label></td>
-										<td><input type="text" id="new_url_redirect2" name="new_url_redirect2" value="" class="psp-add-link-field" /></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<input type="button" class="psp-button green" value="<?php _e('Add to Link Redirect', 'psp'); ?>" id="psp-submit-to-builder2">
-										</td>
-									</tr>
-								</table>
-								
-							</form>
-						</div>
-						<div style="clear:both"></div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
+			<div class="<?php echo $this->the_plugin->alias; ?>-content"> 
 				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['monitor_404']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['monitor_404']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['monitor_404']['help']) ? true : false;
-					if( $has_help === true ){
-						
-						$help_type = isset($this->module['monitor_404']['help']['type']) && $this->module['monitor_404']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['monitor_404']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('monitoring|monitor_404')->show_menu();
+				?>
+				
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
+					
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['monitor_404']['menu']['title'],
+						$this->module['monitor_404']['description'],
+						$this->module['monitor_404']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php /*<img src="<?php echo $this->the_plugin->cfg['paths']['plugin_dir_url'];?>/modules/Social_Stats/assets/menu_icon.png">*/ ?>
-											<?php _e('Monitor Page Not Found Errors', 'psp');?>
-										</span>
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+			
+						<div id="psp-lightbox-overlay">
+							<div id="psp-lightbox-container">
+								<h1 class="psp-lightbox-headline">
+									<span class="psp-details-text"><?php _e('Details:', 'psp');?></span>
+									<a href="#" class="psp-close-btn psp-form-button-small psp-form-button-danger" title="<?php _e('Close Lightbox', 'psp'); ?>">
+										<i class="psp-icon-close"></i>
+									</a>
+								</h1>
+			
+								<div class="psp-seo-status-container">
+									<div id="psp-lightbox-seo-report-response"></div>
+									<div id="psp-lightbox-seo-report-response2">
+										<form class="psp-update-link-form">
+											<input type="hidden" id="upd-itemid" name="upd-itemid" value="" />
+											<table width="100%">
+												<tr>
+													<td width="120"><label><?php _e('URL:', 'psp');?></label></td>
+													<td><span id="old_url_list"></span></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('URL Redirect:', 'psp');?></label></td>
+													<td><input type="text" id="new_url_redirect2" name="new_url_redirect2" value="" class="psp-add-link-field" /></td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<input type="button" class="psp-button green" value="<?php _e('Add to Link Redirect', 'psp'); ?>" id="psp-submit-to-builder2">
+													</td>
+												</tr>
+											</table>
+											
+										</form>
 									</div>
-									<div class="psp-panel-content">
+									<div style="clear:both"></div>
+								</div>
+							</div>
+						</div>
+			
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Monitor Page Not Found Errors', 'psp');?></h2>
+						</div>
+						
+                		<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+				
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									<div class="psp-panel">
+										
 										<form class="psp-form" id="1" action="#save_with_ajax">
 											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
 											<?php
@@ -440,32 +449,32 @@ if (class_exists('psp404Monitor') != true) {
 															'th'	=> __('Referrers', 'psp'),
 															'td'	=> '%referrers%',
 															'align' => 'center',
-															'width' => '80'
+															'width' => '109'
 														),
 
 														'user_agents'	=> array(
 															'th'	=> __('User Agents', 'psp'),
 															'td'	=> '%user_agents%',
 															'align' => 'center',
-															'width' => '80'
+															'width' => '112'
 														),
 
 														'last_date'		=> array(
 															'th'	=> __('Last Log Date', 'psp'),
 															'td'	=> '%last_date%',
-															'width' => '120'
+															'width' => '177'
 														)
 													),
 													'mass_actions' 	=> array(
 														'add_new_link' => array(
 															'value' => __('Add to Link Redirect', 'psp'),
 															'action' => 'do_add_new_link',
-															'color' => 'blue'
+															'color' => 'info'
 														),
 														'delete_404_rows' => array(
 															'value' => __('Delete selected rows', 'psp'),
 															'action' => 'do_bulk_delete_404_rows',
-															'color' => 'blue'
+															'color' => 'info'
 														)
 													)
 												))
@@ -476,10 +485,9 @@ if (class_exists('psp404Monitor') != true) {
 				            		</div>
 								</div>
 							</div>
-							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 

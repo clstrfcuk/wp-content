@@ -273,7 +273,6 @@ audio, img, video {
 
 	#psp-list-table-header .psp-filter-post_type {
 		float: left;
-		width: 100px;
 		margin: 0px 10px 0px 0px;
 		position: relative;
 		bottom: -4px;
@@ -290,7 +289,6 @@ audio, img, video {
 	}
 	.psp-list-table-search-box {
 		width: 300px;
-		float: right;
 	}
 		.psp-list-table-search-box input[type=text] {
 			float: left;
@@ -393,14 +391,11 @@ audio, img, video {
 			}
 				#psp-list-table-posts table td .psp-focus-kw-box .psp-text-field-kw {
 					float: left;
-					width: 260px;
 				}
 				#psp-list-table-posts table td .psp-focus-kw-box .psp-auto-detect-kw-btn {
 					float: left;
 					width: 80px;
 					position: relative;
-					bottom: -2px;
-					margin: 0px 0px 0px 10px;
 				}
 
 			#psp-list-table-posts table td .psp-button img {
@@ -409,8 +404,7 @@ audio, img, video {
 
 			#psp-list-table-posts table td .psp-seo-report-btn {
 				position: relative;
-				bottom: -2px;
-				font-weight: normal !important;
+				font-weight: normal;
 			}
 
 /* Progress Bar */
@@ -498,7 +492,7 @@ audio, img, video {
 }
 	#psp-lightbox-overlay #psp-lightbox-container {
 		position: absolute;
-		width: 800px;
+		width: 1000px;
 		min-height: 110px;
 		top: 5%;
 		left: 50%;
@@ -540,8 +534,6 @@ audio, img, video {
 				display: block;
 				width: 28px;
 				height: 28px;
-				background: url('images/close_btn.png') no-repeat;
-				background-position: -28px 0px;
 				position: absolute;
 				top: 7px;
 				right: 6px;

@@ -9,15 +9,13 @@ pspModulesManager = (function ($) {
 	// public
 	var debug_level = 0;
 	var maincontainer = null;
-	var mainloading = null;
 	var lightbox = null;
 
 	// init function, autoload
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
-			mainloading = $("#psp-main-loading");
+			maincontainer = $(".psp-main");
 			lightbox = $("#psp-lightbox-overlay");
 
 			triggers();
@@ -25,7 +23,7 @@ pspModulesManager = (function ($) {
 	})();
 	
 	function get_user_modules() {
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		$.post(ajaxurl, {
@@ -36,16 +34,29 @@ pspModulesManager = (function ($) {
 
 			if( response.status == 'valid' )
 			{
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				$("#psp-table-ajax-response").html( response.html );
+				
+				pspFreamwork.init_custom_checkbox();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
+
+			$( "td" ).each(function() {
+				if( $(this).has("i.checked" ).length ) {
+					$(this).css("background", "#e4e4e4");
+				}
+				else {
+					$(this).css("background", "#f6f6f6");
+				}
+			});
+
+			
 			return false;
 		}, 'json');
 	}
 	
 	function save_changes() {
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		var ids = [], __ck = $('.psp-form .psp-table input.psp-item-checkbox:checked');
 		__ck.each(function (k, v) {
@@ -54,7 +65,7 @@ pspModulesManager = (function ($) {
 		ids = ids.join(',');
 		if (ids.length<=0) {
 		}
-
+		
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		$.post(ajaxurl, {
 			'action' 		: 'pspCapabilities_saveChanges',
@@ -65,10 +76,11 @@ pspModulesManager = (function ($) {
 
 			if( response.status == 'valid' )
 			{
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				$("#psp-table-ajax-response").html( response.html );
+				pspFreamwork.init_custom_checkbox();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -79,6 +91,7 @@ pspModulesManager = (function ($) {
 			e.preventDefault();
 
 			get_user_modules();
+
 		});
 		
 		maincontainer.on('click', 'input#psp-save-changes', function(e) {
@@ -86,6 +99,32 @@ pspModulesManager = (function ($) {
 			
 			save_changes();
 		});
+
+		$( "td" ).each(function( index ) {
+			var that = $(this);
+			if( $( "i" ).hasClass('checked') ) {
+				that.css("background", "#e4e4e4");
+			}
+			else {
+				that.css("background", "#f6f6f6");
+			}
+		});
+
+		maincontainer.on('click', '.psp-custom-checkbox i', function(e) {
+			e.preventDefault();
+
+			var that = $(this);
+			
+			if ( that.hasClass('checked') ) {
+				that.parents('td').css("background", "#f6f6f6");
+			}
+			else {
+				that.parents('td').css("background", "#e4e4e4");
+			} 
+
+		});
+
+
 	}
 
 	// external usage

@@ -149,264 +149,274 @@ if (class_exists('pssBacklinkBuilder') != true) {
 			global $wpdb;
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
+			
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
+			
 			<?php
 			// show the top menu
 			pspAdminMenu::getInstance()->make_active('off_page_optimization|Backlink_Builder')->show_menu();
 			?>
-			<div id="psp-lightbox-overlay">
-				<div id="psp-lightbox-container">
-					<h1 class="psp-lightbox-headline">
-						<span style="left: 10px;"><?php _e('The submit status was:', 'psp');?></span>
-						<a href="#" class="psp-close-btn" title="Close Lightbox"></a>
-					</h1>
-
-					<div class="psp-seo-status-container" style="margin: 30px 0 0;">
 			
-						<div id="psp-lightbox-backlink-builder-response" style="text-align: center;">
-							<br /><br />
-							<a href="#" data-status="success" class="psp-button green psp-submit-status"><?php _e('Success submited', 'psp');?></a>&nbsp;
-							<a href="#" data-status="error" class="psp-button red psp-submit-status"><?php _e('Error on submit', 'psp');?></a>
-						</div>
-						<div style="clear:both"></div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
 			<!-- Content -->
-			<div id="psp-content">
+			<section class="<?php echo $this->the_plugin->alias; ?>-main psp-backlink-builder">
+					
+				<?php 
+				echo psp()->print_section_header(
+					$this->module['Backlink_Builder']['menu']['title'],
+					$this->module['Backlink_Builder']['description'],
+					$this->module['Backlink_Builder']['help']['url']
+				);
+				?>
 				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['Backlink_Builder']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['Backlink_Builder']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['Backlink_Builder']['help']) ? true : false;
-					if( $has_help === true ){
+				<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+					
+					<div id="psp-lightbox-overlay">
+						<div id="psp-lightbox-container">
+							<h1 class="psp-lightbox-headline">
+								<span style="left: 10px;"><?php _e('The submit status was:', 'psp');?></span>
+								<a href="#" class="psp-close-btn" title="Close Lightbox"></a>
+							</h1>
+		
+							<div class="psp-seo-status-container" style="margin: 30px 0 0;">
+					
+								<div id="psp-lightbox-backlink-builder-response" style="text-align: center;">
+									<br /><br />
+									<a href="#" data-status="success" class="psp-form-button-small psp-form-button-success psp-button green psp-submit-status"><?php _e('Success submited', 'psp');?></a>&nbsp;
+									<a href="#" data-status="error" class="psp-form-button-small psp-form-button-danger psp-button red psp-submit-status"><?php _e('Error on submit', 'psp');?></a>
+								</div>
+								<div style="clear:both"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Main loading box -->
+					<div id="psp-main-loading">
+						<div id="psp-loading-overlay"></div>
+						<div id="psp-loading-box">
+							<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+							<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+						</div>
+					</div>
+
+					<div class="panel-heading psp-panel-heading">
+						<h2><img src="<?php echo $this->module_folder;?>assets/link.png"> <?php _e('Semi-automatic Backink Builder', 'psp');?></h2>
+					</div>
+
+					<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
 						
-						$help_type = isset($this->module['Backlink_Builder']['help']['type']) && $this->module['Backlink_Builder']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['Backlink_Builder']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
-					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<img src="<?php echo $this->module_folder;?>assets/link.png">
-											<?php _e('Semi-automatic Backink Builder', 'psp');?>
-										</span>
-									</div>
-									<div class="psp-panel-content">
-										<div style="display: none;" id="psp-submit-status-values">
-											<div class="submit_never"><?php ( _e('Never submit', 'psp') ); ?></div>
-											<div class="submit_inprogress"><?php ( _e('Submit in progress', 'psp') ); ?></div>
-											<div class="submit_error"><?php ( _e('Error on submit', 'psp') ); ?></div>
-											<div class="submit_success"><?php ( _e('Submit successfully', 'psp') ); ?></div>
-											
-											
-										</div>
-										<form class="psp-form" id="1" action="#save_with_ajax">
-											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
-											<?php
-											pspAjaxListTable::getInstance( $this->the_plugin )
-												->setup(array(
-													'id' 				=> 'pspWebDirectories',
-													'custom_table'		=> "psp_web_directories",
-													'custom_table_force_action' => true,
-													//'deleted_field'		=> true,
-													'show_header' 		=> true,
-													'items_per_page' 	=> '10',
-													'post_statuses' 	=> 'all',
-													'notices'			=> array(
-														'default_clause'	=> 'empty',
-														'default'			=> '<span class="psp-message psp-warning" style="display: block;">' . __('Click the Import directory rows button to get the directory index urls!', 'psp') . '</span>'
-													),
-													'columns'			=> array(
-														'checkbox'	=> array(
-															'th'	=>  'checkbox',
-															'td'	=>  'checkbox',
-														),
-														
-														'submit_btn'		=> array(
-															'th'	=> __('Submit', 'psp'),
-															'td'	=> '%submit_btn%',
-															'align' => 'center',
-															'width' => '120'
-														),
-														
-														
-														'submit_status'		=> array(
-															'th'	=> __('Submit status', 'psp'),
-															'td'	=> '%submit_status%',
-															'align' => 'center',
-															'width' => '120'
-														),
-
-														'directory_name'		=> array(
-															'th'	=> __('Directory Name', 'psp'),
-															'td'	=> '%directory_name%',
-															'align' => 'left'
-														),
-
-														'pagerank'		=> array(
-															'th'	=> '<img src="' . ( $this->module_folder ) . 'assets/google.png" style="position: relative;bottom: -3px; left: -2px;"> ' . __('Pagerank', 'psp'),
-															'td'	=> '%pagerank%',
-															'align' => 'center',
-															'width' => '80'
-														),
-														
-														'alexa'		=> array(
-															'th'	=> '<img src="' . ( $this->module_folder ) . 'assets/alexa.png" style="position: relative;bottom: -3px; left: -2px"> ' . __('Alexa', 'psp'),
-															'td'	=> '%alexa%',
-															'align' => 'center',
-															'width' => '70'
-														)
-													),
-													'mass_actions' 	=> array(
-														
-														'import' => array(
-															'value' => __('Import directory rows', 'psp'),
-															'action' => 'import_directory_rows',
-															'color' => 'blue'
-														),
-														'delete_directory' => array(
-															'value' => __('Delete selected rows', 'psp'),
-															'action' => 'do_bulk_delete_directory_rows',
-															'color' => 'red'
-														)
-													)
-												))
-												->print_html();
-								            ?>
-								            </div>
-							            </form>
-				            		</div>
-								</div>
-							</div>
-							
-							<?php
-							$website_profile = get_option( 'psp_website_profile', true );
-							$website_profile = maybe_unserialize( $website_profile );
-
-							if( $website_profile === true || count($website_profile) == 0 ){
-								global $current_user;
-	      						get_currentuserinfo();
-								$page_details = $this->the_plugin->get_page_meta( home_url() );
-								$website_profile_values = array(
-									'page_title' => $page_details['page_title'],
-									'page_meta_description' => $page_details['page_meta_description'],
-									'page_meta_keywords' => $page_details['page_meta_keywords'],
-									'author_name' => $current_user->user_firstname . " " . $current_user->user_lastname,
-									'author_email' => $current_user->user_email
-								);
-							}else{
+						<!-- Container -->
+						<div class="psp-container clearfix">
+		
+							<!-- Main Content Wrapper -->
+							<div id="psp-content-wrap" class="clearfix">
 								
-								$website_profile_values = array(
-									'page_title' => $website_profile['website_title'],
-									'page_meta_description' => $website_profile['website_meta_description'],
-									'page_meta_keywords' => $website_profile['website_meta_keywords'],
-									'author_name' => $website_profile['website_author_name'],
-									'author_email' => $website_profile['website_author_email']
-								);
-							}
-							?>
-							<div class="psp-grid_4">
-								<div class="psp-panel">
-									<div class="psp-panel-header">
-										<span class="psp-panel-title"> 
-											<img src="<?php echo $this->module_folder;?>assets/website.png">
-											<?php _e('Autofill options', 'psp');?>
-										</span>
+                        		<div class="psp-panel">
+                        		
+									<div style="display: none;" id="psp-submit-status-values">
+										<div class="submit_never"><?php ( _e('Never submited', 'psp') ); ?></div>
+										<div class="submit_inprogress"><?php ( _e('Submit in progress', 'psp') ); ?></div>
+										<div class="submit_error"><?php ( _e('Error on submit', 'psp') ); ?></div>
+										<div class="submit_success"><?php ( _e('Submit successfully', 'psp') ); ?></div>
 									</div>
-									<div class="psp-panel-content">
-										<form action="#save_with_ajax" id="psp_website_profile" class="psp-form">
-											
-											<div class="psp-message" style="padding-left: 10px;">
-												<?php _e('Drag this button to your bookmark bar:', 'psp'); ?>
-												<a class="psp-button orange" style="display:inline-block; margin: 0px 0px 0px 10px; position: relative; bottom: -6px;" href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='<?php echo $this->module_folder;?>/backlink.php';})();"><?php _e('Autofill', 'psp'); ?> <?php echo get_bloginfo();?> <?php _e('Metas', 'psp'); ?></a><br>
-											</div>
-											
-											<input type="hidden" value="psp_website_profile" name="box_id" id="box_id">
-											<input type="hidden" id="box_nonce" name="box_nonce" value="<?php echo wp_create_nonce( 'psp_website_profile-nonce');?>" />
-											
-											<div class="psp-form-row">
-												<label for="services"><?php _e('Your Name:', 'psp'); ?></label>
-												<div class="psp-form-item large">
-													<span class="formNote"><span style="color:red">*</span> <?php _e('This field is required.', 'psp'); ?></span>
-													<input type="text" value="<?php echo $website_profile_values['author_name'];?>" name="website_author_name" id="website_author_name" style="width:30%">
+									
+									<form class="psp-form" id="1" action="#save_with_ajax">
+										<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
+										<?php
+										pspAjaxListTable::getInstance( $this->the_plugin )
+											->setup(array(
+												'id' 				=> 'pspWebDirectories',
+												'custom_table'		=> "psp_web_directories",
+												'custom_table_force_action' => true,
+												//'deleted_field'		=> true,
+												'show_header' 		=> true,
+												'items_per_page' 	=> '10',
+												'post_statuses' 	=> 'all',
+												'notices'			=> array(
+													'default_clause'	=> 'empty',
+													'default'			=> '<span class="psp-message psp-warning" style="display: block;">' . __('Click the Import directory rows button to get the directory index urls!', 'psp') . '</span>'
+												),
+												'columns'			=> array(
+													'checkbox'	=> array(
+														'th'	=>  'checkbox',
+														'td'	=>  'checkbox',
+													),
+													
+													'submit_btn'		=> array(
+														'th'	=> __('Submit', 'psp'),
+														'td'	=> '%submit_btn%',
+														'align' => 'center',
+														'width' => '120'
+													),
+													
+													
+													'submit_status'		=> array(
+														'th'	=> __('Submit status', 'psp'),
+														'td'	=> '%submit_status%',
+														'align' => 'center',
+														'width' => '120'
+													),
+
+													'directory_name'		=> array(
+														'th'	=> __('Directory Name', 'psp'),
+														'td'	=> '%directory_name%',
+														'align' => 'left'
+													),
+
+													'pagerank'		=> array(
+														'th'	=> '<img src="' . ( $this->module_folder ) . 'assets/google.png" style="position: relative;bottom: -3px; left: -2px;"> ' . __('Pagerank', 'psp'),
+														'td'	=> '%pagerank%',
+														'align' => 'center',
+														'width' => '80'
+													),
+													
+													'alexa'		=> array(
+														'th'	=> '<img src="' . ( $this->module_folder ) . 'assets/alexa.png" style="position: relative;bottom: -3px; left: -2px"> ' . __('Alexa', 'psp'),
+														'td'	=> '%alexa%',
+														'align' => 'center',
+														'width' => '70'
+													)
+												),
+												'mass_actions' 	=> array(
+													
+													'import' => array(
+														'value' => __('Import directory rows', 'psp'),
+														'action' => 'import_directory_rows',
+														'color' => 'info'
+													),
+													'delete_directory' => array(
+														'value' => __('Delete selected rows', 'psp'),
+														'action' => 'do_bulk_delete_directory_rows',
+														'color' => 'danger'
+													)
+												)
+											))
+											->print_html();
+							            ?>
+							            </div>
+						            </form>
+						            
+			            		</div>
+							</div>
+						</div>
+					</div>
+				</div>	
+				
+				<?php
+				$website_profile = get_option( 'psp_website_profile', true );
+				$website_profile = maybe_unserialize( $website_profile );
+
+				if( $website_profile === true || count($website_profile) == 0 ){
+					global $current_user;
+					get_currentuserinfo();
+					$page_details = $this->the_plugin->get_page_meta( home_url() );
+					$website_profile_values = array(
+						'page_title' => $page_details['page_title'],
+						'page_meta_description' => $page_details['page_meta_description'],
+						'page_meta_keywords' => $page_details['page_meta_keywords'],
+						'author_name' => $current_user->user_firstname . " " . $current_user->user_lastname,
+						'author_email' => $current_user->user_email
+					);
+				}else{
+					
+					$website_profile_values = array(
+						'page_title' => $website_profile['website_title'],
+						'page_meta_description' => $website_profile['website_meta_description'],
+						'page_meta_keywords' => $website_profile['website_meta_keywords'],
+						'author_name' => $website_profile['website_author_name'],
+						'author_email' => $website_profile['website_author_email']
+					);
+				}
+				?>
+				
+				
+				<div class="psp-grid_4">
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+						<div class="panel-heading psp-panel-heading">
+							<h2><img src="<?php echo $this->module_folder;?>assets/website.png"> <?php _e('Autofill options', 'psp');?></h2>
+						</div>
+
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+										<div class="psp-panel-content">
+											<form action="#save_with_ajax" id="psp_website_profile" class="psp-form">
+												
+												<div class="psp-message" style="padding-left: 10px;">
+													<?php _e('Drag this button to your bookmark bar:', 'psp'); ?>
+													<a class="psp-form-button-small psp-form-button-warning psp-button orange" style="display:inline-block; margin: -25px 0px 0px 10px;" href="javascript:(function(){document.body.appendChild(document.createElement('script')).src='<?php echo $this->module_folder;?>/backlink.php';})();"><?php _e('Autofill', 'psp'); ?> <?php echo get_bloginfo();?> <?php _e('Metas', 'psp'); ?></a><br>
 												</div>
-											</div>
-											
-											<div class="psp-form-row">
-												<label for="services"><?php _e('Your Email:', 'psp'); ?></label>
-												<div class="psp-form-item large">
-													<span class="formNote"><span style="color:red">*</span> <?php _e('This field is required.', 'psp'); ?></span>
-													<input type="text" value="<?php echo $website_profile_values['author_email'];?>" name="website_author_email" id="website_author_email" style="width:35%">
+												
+												<input type="hidden" value="psp_website_profile" name="box_id" id="box_id">
+												<input type="hidden" id="box_nonce" name="box_nonce" value="<?php echo wp_create_nonce( 'psp_website_profile-nonce');?>" />
+												
+												<div class="psp-form-row">
+													<label for="services"><?php _e('Your Name:', 'psp'); ?></label>
+													<div class="psp-form-item large">
+														<span class="formNote"><span style="color:red">*</span> <?php _e('This field is required.', 'psp'); ?></span>
+														<input type="text" value="<?php echo $website_profile_values['author_name'];?>" name="website_author_name" id="website_author_name" style="width:30%">
+													</div>
 												</div>
-											</div>
-											
-											<div class="psp-form-row">
-												<label for="services"><?php _e('Title:', 'psp'); ?></label>
-												<div class="psp-form-item large">
-													<span class="formNote"><span style="color:red">*</span> <?php _e('This field is required.', 'psp'); ?></span>
-													<input type="text" value="<?php echo $website_profile_values['page_title'];?>" name="website_title" id="website_title" style="width:40%">
+												
+												<div class="psp-form-row">
+													<label for="services"><?php _e('Your Email:', 'psp'); ?></label>
+													<div class="psp-form-item large">
+														<span class="formNote"><span style="color:red">*</span> <?php _e('This field is required.', 'psp'); ?></span>
+														<input type="text" value="<?php echo $website_profile_values['author_email'];?>" name="website_author_email" id="website_author_email" style="width:35%">
+													</div>
 												</div>
-											</div>
-											<div class="psp-form-row">
-												<label for="services"><?php _e('URL:', 'psp'); ?></label>
-												<div class="psp-form-item large">
-													<span class="formNote"><span style="color:red">*</span> <?php _e('This field is required.', 'psp'); ?></span>
-													<input type="text" readonly value="<?php echo home_url();?>" name="website_url" id="website_url" style="width:60%">
+												
+												<div class="psp-form-row">
+													<label for="services"><?php _e('Title:', 'psp'); ?></label>
+													<div class="psp-form-item large">
+														<span class="formNote"><span style="color:red">*</span> <?php _e('This field is required.', 'psp'); ?></span>
+														<input type="text" value="<?php echo $website_profile_values['page_title'];?>" name="website_title" id="website_title" style="width:40%">
+													</div>
 												</div>
-											</div>
-											<div class="psp-form-row">
-												<label for="services"><?php _e('Meta Description:', 'psp'); ?></label>
-												<div class="psp-form-item large">
-													<span class="formNote"><?php _e('This field is not required.', 'psp'); ?></span>
-													<textarea name="website_meta_description" id="website_meta_description" style="width:40%"><?php echo $website_profile_values['page_meta_description'];?></textarea>
+												<div class="psp-form-row">
+													<label for="services"><?php _e('URL:', 'psp'); ?></label>
+													<div class="psp-form-item large">
+														<span class="formNote"><span style="color:red">*</span> <?php _e('This field is required.', 'psp'); ?></span>
+														<input type="text" readonly value="<?php echo home_url();?>" name="website_url" id="website_url" style="width:60%">
+													</div>
 												</div>
-											</div>
-											<div class="psp-form-row">
-												<label for="services"><?php _e('Meta Keywords:', 'psp'); ?></label>
-												<div class="psp-form-item large">
-													<span class="formNote"><?php _e('This field is not required.', 'psp'); ?></span>
-													<input type="text" value="<?php echo $website_profile_values['page_meta_keywords'];?>" name="website_meta_keywords" id="website_meta_keywords">
+												<div class="psp-form-row">
+													<label for="services"><?php _e('Meta Description:', 'psp'); ?></label>
+													<div class="psp-form-item large">
+														<span class="formNote"><?php _e('This field is not required.', 'psp'); ?></span>
+														<textarea name="website_meta_description" id="website_meta_description" style="width:40%"><?php echo $website_profile_values['page_meta_description'];?></textarea>
+													</div>
 												</div>
-											</div>
-											<div style="display:none;" id="psp-status-box" class="psp-message"></div>
-											<div class="psp-button-row">
-												<input type="submit" class="psp-button green psp-saveOptions" value="<?php _e('Save the settings', 'psp'); ?>">
-											</div>
-										</form>
+												<div class="psp-form-row">
+													<label for="services"><?php _e('Meta Keywords:', 'psp'); ?></label>
+													<div class="psp-form-item large">
+														<span class="formNote"><?php _e('This field is not required.', 'psp'); ?></span>
+														<input type="text" value="<?php echo $website_profile_values['page_meta_keywords'];?>" name="website_meta_keywords" id="website_meta_keywords">
+													</div>
+												</div>
+												<div style="display:none;" id="psp-status-box" class="psp-message"></div>
+												<div class="psp-button-row">
+													<input type="submit" class="psp-form-button psp-form-button-success psp-saveOptions" value="<?php _e('Save the settings', 'psp'); ?>">
+												</div>
+											</form>
+										</div>
 									</div>
 								</div>
 							</div>
-							<div class="clear"></div>
 						</div>
 					</div>
 				</div>
-			</div>
+				
+			</section>
 		</div>
+	</div>
 
 <?php
 		}

@@ -9,15 +9,13 @@ pspGoogleAnalytics = (function ($) {
     // public
     var debug_level = 0;
     var maincontainer = null;
-    var mainloading = null;
 
 	// init function, autoload
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
-			mainloading = $("#psp-main-loading");
-
+			maincontainer = $(".psp-main");
+			
 			triggers();
 		});
 	})();
@@ -25,7 +23,7 @@ pspGoogleAnalytics = (function ($) {
 	function loadAudience()
 	{
 		if ( $('#psp-wrapper').find('.psp-error-using-module').length > 0 ) {
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}
 		jQuery.post(ajaxurl, {
@@ -38,7 +36,7 @@ pspGoogleAnalytics = (function ($) {
 			//data not received!
 			if (response.__access.status == 'invalid') {
 				//$(".psp-panel, .psp-grid_1_3").css({'display': 'none'}); //hide info panels!
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				if ( response.__access.isalert == 'yes' )
 					alert(response.__access.msg);
 				return false;
@@ -61,7 +59,7 @@ pspGoogleAnalytics = (function ($) {
 				make_getAudienceDemographics( response.getAudienceDemographics.data );
 			}
 			
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 		}, 'json');
 	}
 	
@@ -179,10 +177,10 @@ pspGoogleAnalytics = (function ($) {
 
 	function createInterface()
 	{
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		if ( $('#psp-wrapper').find('.psp-error-using-module').length > 0 ) {
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}
 		
@@ -213,7 +211,7 @@ pspGoogleAnalytics = (function ($) {
 		createInterface();
 		
 		$("#psp-filter-graph-data").click(function () {
-			mainloading.fadeIn('fast');
+			pspFreamwork.to_ajax_loader( "Loading..." );
 			
 			loadAudience();
 		});

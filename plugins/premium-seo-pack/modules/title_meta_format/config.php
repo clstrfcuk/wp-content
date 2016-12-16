@@ -14,7 +14,7 @@
 			'menu' => array(
 				'order' => 10,
 				'title' => __('Title & Meta Format', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<span class="' . ( $psp->alias ) . '-icon-title_meta"><span class="path1"></span><span class="path2"></span></span>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

@@ -14,13 +14,14 @@
 			'menu' => array(
 				'order' => 18,
 				'title' => __('Social Stats', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-social_stats"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
 				'url'	=> admin_url('admin.php?page=' . $psp->alias . "_Social_Stats")
 			),
-			'description' => __('You’re putting a lot of effort on marketing your website trough social media? Want to know for sure if your tactics have results? ', 'psp'),
+			'description' => __('
+You’re putting a lot of effort on marketing your website trough social media and want to know for sure if your tactics have results? ', 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',

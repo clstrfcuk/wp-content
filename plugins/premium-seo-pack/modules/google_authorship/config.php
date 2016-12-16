@@ -14,7 +14,7 @@
 			'menu' => array(
 				'order' => 30,
 				'title' => __('Google Authorship', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-google_authorship"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

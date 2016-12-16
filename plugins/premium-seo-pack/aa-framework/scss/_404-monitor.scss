@@ -1,0 +1,131 @@
+body .#{$alias}-404 {
+	##{$alias}-lightbox-container {
+		.#{$alias}-lightbox-headline {
+			background-color: $info !important;
+		}
+	}
+	##{$alias}-list-table-header {
+		.#{$alias}-box-show-per-pages {
+			select {
+				width: px(56) !important;
+			}
+		}
+	}
+	##{$alias}-list-table-posts {
+		margin-top: px(28) !important;
+		border: none !important;
+		.#{$alias}-box-show-per-pages {
+			select {
+				width: px(56) !important;
+			}
+		}
+		.#{$alias}-list-table-left-col {
+			input[type="button"] {
+				margin-top: px(17);
+				cursor: pointer;
+				border-radius: px(3);
+				padding: px(12) px(20) !important;
+				padding-bottom: px(28) !important;
+				letter-spacing: 0.06em;
+				font-weight: $bold;
+				font-size: px(11);
+				font-family: $primary_font;
+				&:first-child {
+					margin-left: -#{px(6)};
+					margin-right: -#{px(2)};
+				}
+			}
+		}
+		th {
+			padding-top: px(14) !important;
+			color: $black;
+			font-weight: $bold;
+			font-size: px(14);
+			line-height: px(26.5);
+			&.checkbox-column {
+				padding-top: px(7) !important;
+			}
+		}
+		td {
+			color: $black;
+			&:nth-child(5),
+			&:nth-child(6) {
+				padding: px(6) px(14) !important;
+			}
+			&:nth-child(4),
+			&:last-child {
+				i {
+					font-style: normal !important;
+				}
+			}
+			.#{$alias}-btn-referrers-lightbox,
+			.#{$alias}-btn-user_agents-lightbox {
+				color: $white;
+				padding: px(5) px(10);
+				font-family: $primary_font;
+				font-weight: $bold;
+				font-size: px(11);
+				border-radius: px(4);
+				line-height: px(20);
+				background: #969696;
+				display: block;
+				&:hover {
+					background: darken(#969696, 25%);
+				}
+			}
+		}
+	}
+	##{$alias}-lightbox-container {
+		.show {
+			display: table;
+		}
+		.hide {
+			display: none;
+		}
+	}
+	.#{$alias}-update-link-form {
+		margin-top: px(50);
+		label {
+			font-weight: bold;
+		}
+		.#{$alias}-add-link-field {
+			padding: px(6) px(8);
+			width: 100%;
+		}
+		select {
+			padding: px(4) px(6);
+			height: px(28);
+		}
+		.#{$alias}-button {
+			margin: px(10) 0 px(8);
+		}
+		#new_url_redirect2 {
+			width: px(300);
+		}
+	}
+}
+
+.psp #psp-lightbox-overlay #psp-lightbox-container .psp-seo-status-container {
+  margin-bottom:20px;
+  padding: 3rem 4.1rem 2rem 4.1rem !important; 
+ }
+.psp #psp-lightbox-overlay #psp-lightbox-container h1.psp-lightbox-headline a.psp-close-btn { 
+  width:auto !important;
+  height:auto !important;
+  padding:3px 10px 3px 10px !important;  
+  background-color:transparent;
+  font-size:16px;
+}
+.psp .psp-list-table-left-col {
+  height:auto !important;
+}
+.psp .psp-details-text {
+  font-size:14px;
+  text-transform:uppercase;
+  margin-left:-23px !important;
+  display: block;
+}
+
+.psp a.psp-icon-close:before {
+  font-size:16px;
+}

@@ -15,7 +15,7 @@ function __pspNotifyEngine_localseo( $engine='google', $action='default' ) {
 	
 	if ( $req['action'] == 'getStatus' ) {
 		$notifyStatus = $psp->get_theoption('psp_localseo_engine_notify');
-		if ( $notifyStatus === false || !isset($notifyStatus["$engine"]) )
+		if ( $notifyStatus === false || !isset($notifyStatus["$engine"]) || !isset($notifyStatus["$engine"]["msg_html"]) )
 			return '';
 		return $notifyStatus["$engine"]["msg_html"];
 	}
@@ -30,7 +30,7 @@ function __pspNotifyEngine_localseo( $engine='google', $action='default' ) {
 		$html[] = '<div class="">' . sprintf( __('Notify Bing: you can check statistics on <a href="%s" target="_blank">Bing Webmaster Tools</a>', 'psp'), 'http://www.bing.com/toolbox/webmaster' ). '</div>';
 	}
 
-	$html[] = '<input type="button" class="psp-button blue" style="width: 160px;" id="psp-notify-' . $engine . '" value="' . ( __('Notify '.ucfirst($engine), 'psp') ) . '">
+	$html[] = '<input type="button" class="psp-form-button psp-form-button-info psp-button blue" style="width: 160px;" id="psp-notify-' . $engine . '" value="' . ( __('Notify '.ucfirst($engine), 'psp') ) . '">
 	<span style="margin:0px 0px 0px 10px" class="response">' . __pspNotifyEngine_localseo( $engine, 'getStatus' ) . '</span>';
 
 	$html[] = '</div>';
@@ -69,6 +69,7 @@ console.log( response  );
 	return implode( "\n", $html );
 }
 global $psp;
+
 echo json_encode(
 	array(
 		$tryed_module['db_alias'] => array(

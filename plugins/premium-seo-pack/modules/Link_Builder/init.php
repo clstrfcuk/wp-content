@@ -472,238 +472,235 @@ if (class_exists('pspLinkBuilder') != true) {
 		{
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='all' />
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('off_page_optimization|Link_Builder')->show_menu();
-			?>
 		
-			<div id="psp-lightbox-overlay">
-				<div id="psp-lightbox-container">
-					<h1 class="psp-lightbox-headline">
-						<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
-						<span id="link-title-details"><?php _e('Details:', $this->the_plugin->localizationName);?></span>
-						<span id="link-title-add"><?php _e('Add new link:', $this->the_plugin->localizationName);?></span>
-						<span id="link-title-upd"><?php _e('Update link:', $this->the_plugin->localizationName);?></span>
-						<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', $this->the_plugin->localizationName); ?>"></a>
-					</h1>
-
-					<div class="psp-seo-status-container">
-						<div id="psp-lightbox-seo-report-response-details">
-								<table width="100%">
-									<tr>
-										<td width="120"><label><?php _e('URL:', $this->the_plugin->localizationName);?></label></td>
-										<td><span id="details_url"></span></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Text:', $this->the_plugin->localizationName);?></label></td>
-										<td><span id="details_text"></span></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Title:', $this->the_plugin->localizationName);?></label></td>
-										<td><span id="details_title"></span></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Rel:', $this->the_plugin->localizationName);?></label></td>
-										<td><span id="details_rel"></span></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Target:', $this->the_plugin->localizationName);?></label></td>
-										<td><span id="details_target"></span></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Max replacements:', $this->the_plugin->localizationName);?></label></td>
-										<td><span id="details_max_replacements"></span></td>
-									</tr>
-								</table>
-						</div>
-					
-						<div id="psp-lightbox-seo-report-response">
-							<form class="psp-add-link-form">
-								<input type="hidden" id="new_hits" name="new_hits" value="0" />
-								<table width="100%">
-									<tr>
-										<td width="80"><label><?php _e('Text:', $this->the_plugin->localizationName);?></label></td>
-										<td><input type="text" id="new_text" name="new_text" value="" class="psp-add-link-field" /></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('URL:', $this->the_plugin->localizationName);?></label></td>
-										<td><input type="text" id="new_url" name="new_url" value="" class="psp-add-link-field" /></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<input type="button" class="psp-button blue" value="Verify founds" id="psp-builder-verify-hits"><span style="margin-left:10px;" id="psp-builder-text-hits"><span style="font-weight:bold;"></span><?php _e(' posts|pages in which the text was found!', $this->the_plugin->localizationName); ?></span>
-										</td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Title:', $this->the_plugin->localizationName);?></label></td>
-										<td><input type="text" id="new_title" name="new_title" value="" class="psp-add-link-field" /></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Rel:', $this->the_plugin->localizationName);?></label></td>
-										<td>
-											<select id="rel" name="new_rel">
-												<?php 
-													$arr_rel = array( 'no','alternate','author','bookmark','help','license','next','nofollow','noreferrer','prefetch','prev','search','tag' );
-													foreach ($arr_rel as $key => $value) {
-														echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
-													}												
-												?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Target:', $this->the_plugin->localizationName);?></label></td>
-										<td>
-											<select id="target" name="new_target">
-												<?php 
-													$arr_target = array( 'no','_blank','_parent','_self','_top' );
-													foreach ($arr_target as $key => $value) {
-														echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
-													}												
-												?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Max replacements:', $this->the_plugin->localizationName);?></label></td>
-										<td>
-											<select id="max_replacements" name="new_max_replacements">
-												<?php 
-													$arr_target = range(1, 10, 1);
-													foreach ($arr_target as $key => $value) {
-														echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
-													}												
-												?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<input type="button" class="psp-button green" value="<?php _e('Add this new link', $this->the_plugin->localizationName); ?>" id="psp-submit-to-builder">
-										</td>
-									</tr>
-								</table>
-								
-							</form>
-						</div>
-						
-						<div id="psp-lightbox-seo-report-response2">
-							<form class="psp-update-link-form">
-								<input type="hidden" id="upd-itemid" name="upd-itemid" value="" />
-								<table width="100%">
-									<tr>
-										<td width="80"><label><?php _e('Text:', $this->the_plugin->localizationName);?></label></td>
-										<td><input type="text" id="new_text2" name="new_text2" value="" class="psp-add-link-field" readonly disabled="disabled" /></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('URL:', $this->the_plugin->localizationName);?></label></td>
-										<td><input type="text" id="new_url2" name="new_url2" value="" class="psp-add-link-field" readonly disabled="disabled" /></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Title:', $this->the_plugin->localizationName);?></label></td>
-										<td><input type="text" id="new_title2" name="new_title2" value="" class="psp-add-link-field" /></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Rel:', $this->the_plugin->localizationName);?></label></td>
-										<td>
-											<select id="rel2" name="new_rel2">
-												<?php 
-													$arr_rel = array( 'no','alternate','author','bookmark','help','license','next','nofollow','noreferrer','prefetch','prev','search','tag' );
-													foreach ($arr_rel as $key => $value) {
-														echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
-													}												
-												?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Target:', $this->the_plugin->localizationName);?></label></td>
-										<td>
-											<select id="target2" name="new_target2">
-												<?php 
-													$arr_target = array( 'no','_blank','_parent','_self','_top' );
-													foreach ($arr_target as $key => $value) {
-														echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
-													}												
-												?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td><label><?php _e('Max replacements:', $this->the_plugin->localizationName);?></label></td>
-										<td>
-											<select id="max_replacements2" name="new_max_replacements2">
-												<?php 
-													$arr_target = range(1, 10, 1);
-													foreach ($arr_target as $key => $value) {
-														echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
-													}												
-												?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<input type="button" class="psp-button green" value="<?php _e('Update link info', $this->the_plugin->localizationName); ?>" id="psp-submit-to-builder2">
-										</td>
-									</tr>
-								</table>
-								
-							</form>
-						</div>
-						<div style="clear:both"></div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', $this->the_plugin->localizationName);?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<!-- Content -->
-			<div id="psp-content">
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
+			
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('off_page_optimization|Link_Builder')->show_menu();
+				?>
 				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['Link_Builder']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['Link_Builder']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['Link_Builder']['help']) ? true : false;
-					if( $has_help === true ){
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
 						
-						$help_type = isset($this->module['Link_Builder']['help']['type']) && $this->module['Link_Builder']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['Link_Builder']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['Link_Builder']['menu']['title'],
+						$this->module['Link_Builder']['description'],
+						$this->module['Link_Builder']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix" style="padding-top: 20px;">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php _e('SEO link builder (internal/external)', $this->the_plugin->localizationName);?>
-										</span>
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+						
+						<div id="psp-lightbox-overlay">
+							<div id="psp-lightbox-container">
+								<h1 class="psp-lightbox-headline">
+									<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
+									<span id="link-title-details"><?php _e('Details:', $this->the_plugin->localizationName);?></span>
+									<span id="link-title-add"><?php _e('Add new link:', $this->the_plugin->localizationName);?></span>
+									<span id="link-title-upd"><?php _e('Update link:', $this->the_plugin->localizationName);?></span>
+									<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', $this->the_plugin->localizationName); ?>"><i class="<?php echo $this->the_plugin->alias; ?>-icon-close"></i></a>
+								</h1>
+			
+								<div class="psp-seo-status-container">
+									<div id="psp-lightbox-seo-report-response-details">
+											<table width="100%">
+												<tr>
+													<td width="120"><label><?php _e('URL:', $this->the_plugin->localizationName);?></label></td>
+													<td><span id="details_url"></span></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Text:', $this->the_plugin->localizationName);?></label></td>
+													<td><span id="details_text"></span></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Title:', $this->the_plugin->localizationName);?></label></td>
+													<td><span id="details_title"></span></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Rel:', $this->the_plugin->localizationName);?></label></td>
+													<td><span id="details_rel"></span></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Target:', $this->the_plugin->localizationName);?></label></td>
+													<td><span id="details_target"></span></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Max replacements:', $this->the_plugin->localizationName);?></label></td>
+													<td><span id="details_max_replacements"></span></td>
+												</tr>
+											</table>
 									</div>
+								
+									<div id="psp-lightbox-seo-report-response">
+										<form class="psp-add-link-form">
+											<input type="hidden" id="new_hits" name="new_hits" value="0" />
+											<table width="100%">
+												<tr>
+													<td width="80"><label><?php _e('Text:', $this->the_plugin->localizationName);?></label></td>
+													<td><input type="text" id="new_text" name="new_text" value="" class="psp-add-link-field" /></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('URL:', $this->the_plugin->localizationName);?></label></td>
+													<td><input type="text" id="new_url" name="new_url" value="" class="psp-add-link-field" /></td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<input type="button" class="psp-button blue" value="Verify founds" id="psp-builder-verify-hits"><span style="margin-left:10px;" id="psp-builder-text-hits"><span style="font-weight:bold;"></span><?php _e(' posts|pages in which the text was found!', $this->the_plugin->localizationName); ?></span>
+													</td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Title:', $this->the_plugin->localizationName);?></label></td>
+													<td><input type="text" id="new_title" name="new_title" value="" class="psp-add-link-field" /></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Rel:', $this->the_plugin->localizationName);?></label></td>
+													<td>
+														<select id="rel" name="new_rel">
+															<?php 
+																$arr_rel = array( 'no','alternate','author','bookmark','help','license','next','nofollow','noreferrer','prefetch','prev','search','tag' );
+																foreach ($arr_rel as $key => $value) {
+																	echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
+																}												
+															?>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Target:', $this->the_plugin->localizationName);?></label></td>
+													<td>
+														<select id="target" name="new_target">
+															<?php 
+																$arr_target = array( 'no','_blank','_parent','_self','_top' );
+																foreach ($arr_target as $key => $value) {
+																	echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
+																}												
+															?>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Max replacements:', $this->the_plugin->localizationName);?></label></td>
+													<td>
+														<select id="max_replacements" name="new_max_replacements">
+															<?php 
+																$arr_target = range(1, 10, 1);
+																foreach ($arr_target as $key => $value) {
+																	echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
+																}												
+															?>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<input type="button" class="psp-button green" value="<?php _e('Add this new link', $this->the_plugin->localizationName); ?>" id="psp-submit-to-builder">
+													</td>
+												</tr>
+											</table>
+											
+										</form>
+									</div>
+									
+									<div id="psp-lightbox-seo-report-response2">
+										<form class="psp-update-link-form">
+											<input type="hidden" id="upd-itemid" name="upd-itemid" value="" />
+											<table width="100%">
+												<tr>
+													<td width="80"><label><?php _e('Text:', $this->the_plugin->localizationName);?></label></td>
+													<td><input type="text" id="new_text2" name="new_text2" value="" class="psp-add-link-field" readonly disabled="disabled" /></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('URL:', $this->the_plugin->localizationName);?></label></td>
+													<td><input type="text" id="new_url2" name="new_url2" value="" class="psp-add-link-field" readonly disabled="disabled" /></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Title:', $this->the_plugin->localizationName);?></label></td>
+													<td><input type="text" id="new_title2" name="new_title2" value="" class="psp-add-link-field" /></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Rel:', $this->the_plugin->localizationName);?></label></td>
+													<td>
+														<select id="rel2" name="new_rel2">
+															<?php 
+																$arr_rel = array( 'no','alternate','author','bookmark','help','license','next','nofollow','noreferrer','prefetch','prev','search','tag' );
+																foreach ($arr_rel as $key => $value) {
+																	echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
+																}												
+															?>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Target:', $this->the_plugin->localizationName);?></label></td>
+													<td>
+														<select id="target2" name="new_target2">
+															<?php 
+																$arr_target = array( 'no','_blank','_parent','_self','_top' );
+																foreach ($arr_target as $key => $value) {
+																	echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
+																}												
+															?>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td><label><?php _e('Max replacements:', $this->the_plugin->localizationName);?></label></td>
+													<td>
+														<select id="max_replacements2" name="new_max_replacements2">
+															<?php 
+																$arr_target = range(1, 10, 1);
+																foreach ($arr_target as $key => $value) {
+																	echo '<option value="' . ( $value ) . '">' . ( $value ) . '</option>';
+																}												
+															?>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<input type="button" class="psp-button green" value="<?php _e('Update link info', $this->the_plugin->localizationName); ?>" id="psp-submit-to-builder2">
+													</td>
+												</tr>
+											</table>
+											
+										</form>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							</div>
+						</div>
+			
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', $this->the_plugin->localizationName);?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+			
+			
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('SEO link builder (internal/external)', $this->the_plugin->localizationName);?></h2>
+						</div>
+	
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+	                        		
 									<div class="psp-panel-content">
 										<form class="psp-form" id="1" action="#save_with_ajax">
 											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
@@ -791,7 +788,7 @@ if (class_exists('pspLinkBuilder') != true) {
 																		'value' => __('Unpublish', $this->the_plugin->localizationName),
 																		'value_change' => __('Publish', $this->the_plugin->localizationName),
 																		'action' => 'do_item_publish',
-																		'color'	=> 'orange',
+																		'color'	=> 'warning',
 																	),
 																	'width' => '40'/*,
 																	'html5_data' => array(
@@ -806,7 +803,7 @@ if (class_exists('pspLinkBuilder') != true) {
 																	'option' => array(
 																		'value' => __('Update', $this->the_plugin->localizationName),
 																		'action' => 'do_item_update',
-																		'color'	=> 'blue',
+																		'color'	=> 'info',
 																	),
 																	'width' => '30'
 																),
@@ -817,7 +814,7 @@ if (class_exists('pspLinkBuilder') != true) {
 																	'option' => array(
 																		'value' => __('Delete', $this->the_plugin->localizationName),
 																		'action' => 'do_item_delete',
-																		'color'	=> 'red',
+																		'color'	=> 'danger',
 																	),
 																	'width' => '30'
 																)
@@ -826,12 +823,12 @@ if (class_exists('pspLinkBuilder') != true) {
 														'add_new_link' => array(
 															'value' => __('Add new link', $this->the_plugin->localizationName),
 															'action' => 'do_add_new_link',
-															'color' => 'blue'
+															'color' => 'info'
 														),
 														'delete_all_rows' => array(
 															'value' => __('Delete selected rows', $this->the_plugin->localizationName),
 															'action' => 'do_bulk_delete_rows',
-															'color' => 'red'
+															'color' => 'danger'
 														)
 													)
 												))
@@ -840,12 +837,13 @@ if (class_exists('pspLinkBuilder') != true) {
 								            </div>
 							            </form>
 				            		</div>
+				            		
+				            		</div>
 								</div>
 							</div>
-							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 <?php

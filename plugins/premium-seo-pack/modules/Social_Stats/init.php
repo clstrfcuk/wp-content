@@ -169,160 +169,156 @@ if (class_exists('pspSocialStats') != true) {
 			//if( count($socialServices) > 0 ) $this->socialstats_scripts($socialServices);
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='all' />
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('off_page_optimization|Social_Stats')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('off_page_optimization|Social_Stats')->show_menu();
+				?>
 				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['Social_Stats']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['Social_Stats']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['Social_Stats']['help']) ? true : false;
-					if( $has_help === true ){
-						
-						$help_type = isset($this->module['Social_Stats']['help']['type']) && $this->module['Social_Stats']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['Social_Stats']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
+					
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['Social_Stats']['menu']['title'],
+						$this->module['Social_Stats']['description'],
+						$this->module['Social_Stats']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix" style="padding-top: 20px;">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php _e('Social Stats of your pages', 'psp');?>
-										</span>
-									</div>
-									<div class="psp-panel-content">
-										<form class="psp-form" id="1" action="#save_with_ajax">
-											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
-											<?php
-											$columns = array(
-												'id'		=> array(
-													'th'	=> __('ID', 'psp'),
-													'td'	=> '%ID%',
-													'width' => '40'
-												),
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel psp-social-stats">
+						
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+						
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Social Stats of your pages', 'psp');?></h2>
+						</div>
 	
-												'title'		=> array(
-													'th'	=> __('Title', 'psp'),
-													'td'	=> '%title%',
-													'align' => 'left'
-												)
-											);
-											
-											if( count($socialServices) > 0 ){
-												foreach ($socialServices as $key => $value){
-													if( $value == 'facebook' ){
-														$columns['ss_facebook'] = array(
-															'th'	=> __('Facebook', 'psp'),
-															'td'	=> '%ss_facebook%',
-															'width' => '80'
-														);
-													}
-													
-													if( $value == 'twitter' ){
-														$columns['ss_twitter'] = array(
-															'th'	=> __('Twitter', 'psp'),
-															'td'	=> '%ss_twitter%',
-															'width' => '80'
-														);
-													}
-													
-													if( $value == 'google' ){
-														$columns['ss_google'] = array(
-															'th'	=> __('Google +1', 'psp'),
-															'td'	=> '%ss_google%',
-															'width' => '80'
-														);
-													}
-													
-													if( $value == 'pinterest' ){
-														$columns['ss_pinterest'] = array(
-															'th'	=> __('Pinterest', 'psp'),
-															'td'	=> '%ss_pinterest%',
-															'width' => '80'
-														);
-													}
-													
-													if( $value == 'stumbleupon' ){
-														$columns['ss_stumbleupon'] = array(
-															'th'	=> __('Stumbleupon', 'psp'),
-															'td'	=> '%ss_stumbleupon%',
-															'width' => '80'
-														);
-													}
-													
-													if( $value == 'digg' ){
-														$columns['ss_digg'] = array(
-															'th'	=> __('Digg', 'psp'),
-															'td'	=> '%ss_digg%',
-															'width' => '80'
-														);
-													}
-													
-													if( $value == 'linkedin' ){
-														$columns['ss_linkedin'] = array(
-															'th'	=> __('Linkedin', 'psp'),
-															'td'	=> '%ss_linkedin%',
-															'width' => '80'
-														);
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+	                        			
+										<div class="psp-panel-content">
+											<form class="psp-form" id="1" action="#save_with_ajax">
+												<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
+												<?php
+												$columns = array(
+													'id'		=> array(
+														'th'	=> __('ID', 'psp'),
+														'td'	=> '%ID%',
+														'width' => '40'
+													),
+		
+													'title'		=> array(
+														'th'	=> __('Title', 'psp'),
+														'td'	=> '%title%',
+														'align' => 'left'
+													)
+												);
+												
+												if( count($socialServices) > 0 ){
+													foreach ($socialServices as $key => $value){
+														if( $value == 'facebook' ){
+															$columns['ss_facebook'] = array(
+																'th'	=> __('Facebook', 'psp'),
+																'td'	=> '%ss_facebook%',
+																'width' => '80'
+															);
+														}
+														
+														if( $value == 'twitter' ){
+															$columns['ss_twitter'] = array(
+																'th'	=> __('Twitter', 'psp'),
+																'td'	=> '%ss_twitter%',
+																'width' => '80'
+															);
+														}
+														
+														if( $value == 'google' ){
+															$columns['ss_google'] = array(
+																'th'	=> __('Google +1', 'psp'),
+																'td'	=> '%ss_google%',
+																'width' => '80'
+															);
+														}
+														
+														if( $value == 'pinterest' ){
+															$columns['ss_pinterest'] = array(
+																'th'	=> __('Pinterest', 'psp'),
+																'td'	=> '%ss_pinterest%',
+																'width' => '80'
+															);
+														}
+														
+														if( $value == 'stumbleupon' ){
+															$columns['ss_stumbleupon'] = array(
+																'th'	=> __('Stumbleupon', 'psp'),
+																'td'	=> '%ss_stumbleupon%',
+																'width' => '80'
+															);
+														}
+														
+														if( $value == 'digg' ){
+															$columns['ss_digg'] = array(
+																'th'	=> __('Digg', 'psp'),
+																'td'	=> '%ss_digg%',
+																'width' => '80'
+															);
+														}
+														
+														if( $value == 'linkedin' ){
+															$columns['ss_linkedin'] = array(
+																'th'	=> __('Linkedin', 'psp'),
+																'td'	=> '%ss_linkedin%',
+																'width' => '80'
+															);
+														}
 													}
 												}
-											}
-											
-											$columns['date'] = array(
-												'th'	=> __('Date', 'psp'),
-												'td'	=> '%date%',
-												'width' => '120'
-											);
-											
-											pspAjaxListTable::getInstance( $this->the_plugin )
-												->setup(array(
-													'id' 				=> 'pspSocialStats',
-													'show_header' 		=> true,
-													'show_footer' 		=> false,
-													'items_per_page' 	=> '10',
-													'post_statuses' 	=> 'all',
-													'columns'			=> $columns,
-													'mass_actions'		=> false
-												))
-												->print_html();
-								            ?>
-								            </div>
-							            </form>
-				            		</div>
+												
+												$columns['date'] = array(
+													'th'	=> __('Date', 'psp'),
+													'td'	=> '%date%',
+													'width' => '120'
+												);
+												
+												pspAjaxListTable::getInstance( $this->the_plugin )
+													->setup(array(
+														'id' 				=> 'pspSocialStats',
+														'show_header' 		=> false,
+														'show_footer' 		=> false,
+														'items_per_page' 	=> '10',
+														'post_statuses' 	=> 'all',
+														'columns'			=> $columns,
+														'mass_actions'		=> false
+													))
+													->print_html();
+									            ?>
+									            </div>
+								            </form>
+					            		</div>
+									</div>
 								</div>
 							</div>
-							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 

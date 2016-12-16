@@ -202,7 +202,7 @@ if (class_exists('pspSocialSharing') != true) {
 					'socialsharing' => array(
 						'title' 		=> $toolbarTitle,
 						'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-						'header' 	=> true, // true|false
+						'header' 	=> false, // true|false
 						'toggler' 	=> false, // true|false
 						'buttons' 	=> false, // true|false
 						'style' 		=> 'panel', // panel|panel-widget
@@ -329,7 +329,7 @@ if (class_exists('pspSocialSharing') != true) {
 			
 			require($this->module_folder_path . 'lists.inc.php');
 		?>
-<div class="psp-form-row">
+<div class="psp-panel-body panel-body psp-form-row">
 	<label><?php _e('Position: ', $this->the_plugin->localizationName); ?></label>
 	<div class="psp-form-item large">
 	<span class="formNote">&nbsp;</span>
@@ -372,7 +372,7 @@ if (class_exists('pspSocialSharing') != true) {
 			
 			require($this->module_folder_path . 'lists.inc.php');
 		?>
-<div class="psp-form-row">
+<div class="psp-panel-body panel-body psp-form-row">
 	<label><?php _e('Margin: ', $this->the_plugin->localizationName); ?></label>
 	<div class="psp-form-item large">
 	<span class="formNote">&nbsp;</span>
@@ -417,7 +417,7 @@ if (class_exists('pspSocialSharing') != true) {
 				'withmore'		=> array('title' => __('With More button', $this->the_plugin->localizationName)),
 			);
 		?>
-<div class="psp-form-row">
+<div class="psp-panel-body panel-body psp-form-row">
 	<label><?php _e('Buttons options: ', $this->the_plugin->localizationName); ?></label>
 	<div class="psp-form-item large">
 	<span class="formNote">&nbsp;</span>
@@ -456,7 +456,7 @@ if (class_exists('pspSocialSharing') != true) {
 			
 			require($this->module_folder_path . 'lists.inc.php');
 		?>
-<div class="psp-form-row">
+<div class="psp-panel-body panel-body psp-form-row">
 	<label><?php _e('Include/Exclude toolbar on Post, Pages: ', $this->the_plugin->localizationName); ?></label>
 	<div class="psp-form-item large">
 	<span class="formNote">&nbsp;</span>
@@ -499,7 +499,7 @@ if (class_exists('pspSocialSharing') != true) {
 				'floating_beyond_content'	=> array('title' => __('Floating beyond the end of the post content', $this->the_plugin->localizationName))
 			);
 		?>
-<div class="psp-form-row">
+<div class="psp-panel-body panel-body psp-form-row">
 	<label><?php _e('Design: ', $this->the_plugin->localizationName); ?></label>
 	<div class="psp-form-item large">
 	<span class="formNote">&nbsp;</span>
@@ -557,7 +557,7 @@ if (class_exists('pspSocialSharing') != true) {
 			$availableBtn = array_keys( $this->socialNetworks );
 			$availableBtn = array_diff( $availableBtn, $selectedBtn );
 		?>
-<div class="psp-form-row">
+<div class="psp-panel-body panel-body psp-form-row">
 	<label><?php _e('Toolbar buttons: ', $this->the_plugin->localizationName); ?></label>
 	<div class="psp-form-item large">
 	<span class="formNote">&nbsp;</span>
@@ -609,7 +609,7 @@ if (class_exists('pspSocialSharing') != true) {
 
 			$__optArr = $psp_socialsharing_opt['contact'];
 		?>
-<div class="psp-form-row">
+<div class="psp-panel-body panel-body psp-form-row">
 	<label><?php _e('Info details: ', $this->the_plugin->localizationName); ?></label>
 	<div class="psp-form-item large">
 	<span class="formNote">&nbsp;</span>

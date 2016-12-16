@@ -9,15 +9,13 @@ pspLinkBuilder = (function ($) {
     // public
     var debug_level = 0;
     var maincontainer = null;
-    var mainloading = null;
     var lightbox = null;
 
 	// init function, autoload
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
-			mainloading = $("#psp-main-loading");
+			maincontainer = $(".psp-main");
 			lightbox = $("#psp-lightbox-overlay");
 			triggers();
 		});
@@ -86,7 +84,7 @@ pspLinkBuilder = (function ($) {
 	
 	function getDetails( itemid )
 	{
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 			
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		jQuery.post(ajaxurl, {
@@ -95,7 +93,7 @@ pspLinkBuilder = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				
 				var r = response.data, $details = $('#psp-lightbox-seo-report-response-details');
 
@@ -108,7 +106,7 @@ pspLinkBuilder = (function ($) {
 
 				showDetails();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 
 		}, 'json');
@@ -117,7 +115,7 @@ pspLinkBuilder = (function ($) {
 	function addToBuilder( $form )
 	{
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		var url = $form.find('#new_url'), url_val = url.val();
 		if (!url_val.match("^http?://")) url.val("http://" + url_val);
@@ -130,16 +128,16 @@ pspLinkBuilder = (function ($) {
 		jQuery.post(ajaxurl, data_save, function(response) {
 			if( response.status == 'valid' ) {
 				setFlagAdd(1);
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
 	
 	function getUpdateData( itemid ) {
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspGetUpdateDataBuilder',
@@ -147,12 +145,12 @@ pspLinkBuilder = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 
 				setUpdateForm( response.data );
 				showUpdateLink();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -184,7 +182,7 @@ pspLinkBuilder = (function ($) {
     	data_save.push({ name: "itemid", value: itemid });
 			
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		jQuery.post(ajaxurl, data_save, function(response) {
 			if( response.status == 'valid' ){
@@ -192,11 +190,11 @@ pspLinkBuilder = (function ($) {
 				
 				if ( subaction == 'publish' ) ;
 				else
-					mainloading.fadeOut('fast');
+					pspFreamwork.to_ajax_loader_close();
 
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -204,7 +202,7 @@ pspLinkBuilder = (function ($) {
 	function deleteFromBuilder( itemid )
 	{
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspRemoveFromBuilder',
@@ -213,10 +211,10 @@ pspLinkBuilder = (function ($) {
 		}, function(response) {
 			if( response.status == 'valid' ){
 				setFlagAdd(1);
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				window.location.reload();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -232,7 +230,7 @@ pspLinkBuilder = (function ($) {
 			return false;
 		}
 		
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspLinkBuilder_do_bulk_delete_rows',
@@ -240,13 +238,13 @@ pspLinkBuilder = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				setFlagAdd(1);
 				//refresh page!
 				window.location.reload();
 				return false;
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			alert('Problems occured while trying to delete the selected rows!');
 		}, 'json');
 	}

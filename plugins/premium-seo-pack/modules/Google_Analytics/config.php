@@ -15,13 +15,13 @@ global $psp;
 			'menu' => array(
 				'order' => 11,
 				'title' => __('Google Analytics', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-google_analytics"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
 				'url'	=> admin_url('admin.php?page=' . $psp->alias . "_Google_Analytics")
 			),
-			'description' => __("We’ve made a module that takes the data from Google Analytics and transforms it into a easy to understand dashboard, that will allow you to see the impact on search engines.", 'psp'),
+			'description' => __("This module takes the data from your Google Analytics and transforms it into an easy to understand dashboard that allows you to see the impact on search engines.", 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',
@@ -55,20 +55,20 @@ global $psp;
 				1 => __('
 					You configured Google Analytics Service incorrectly. See 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue psp-show-docs-shortcut',
+						'color' => 'info psp-show-docs-shortcut',
 						'url' => 'javascript: void(0)',
 						'title' => 'here'
 					) ) ) . ' for more details on fixing it. <br />
 					Module Google Analytics verification section: click Verify button and read status 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue',
+						'color' => 'info',
 						'url' => admin_url( 'admin.php?page=psp_server_status#sect-google_analytics' ),
 						'title' => 'here',
 						'target' => '_blank'
 					) ) ) . '<br />
 					Setup the Google Analytics module 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue',
+						'color' => 'info',
 						'url' => admin_url( 'admin.php?page=psp#Google_Analytics' ),
 						'title' => 'here'
 					) ) ) . '

@@ -71,7 +71,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 				if ( !defined('FACEBOOK_SDK_V4_SRC_DIR') ) {
 					define( 'FACEBOOK_SDK_V4_SRC_DIR', $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook-v4-5.0.0/' );
 				}
-	
+
 				// load the facebook SDK
 				require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook-v4-5.0.0/autoload.php' );
 			}
@@ -148,7 +148,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 	                	'psp_facebook_share-options', 
 	                	$screen . ' - ' . __('Publish on Facebook ?', 'psp'), 
 	                	array($this, 'display_page_options'),
-	                	$key, 
+	                	$key,
 	                	'normal', 
 	                	'high'
 					);
@@ -251,7 +251,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 				</div>
 			</div>
 			
-			<div class="psp-meta-box-container" style="display:none;">
+			<div class="psp-meta-box-container psp" style="display:none;">
 				<!-- box Tab Menu -->
 				<div class="psp-tab-menu">
 					<a href="#publish_on_facebook" class="open"><?php _e('What do you want to publish on facebook ?', 'psp');?></a>
@@ -268,7 +268,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 							<table width="98%" cellspacing="5" cellpadding="2" border="0" style="margin: 10px 1% 10px 1%;">
 							<tr>
 								<td width="15%" valign="top"></td>
-								<td width="85%" align="left"><a href="javascript:void(0);" id="psp-wplannerfb-auto-complete" rel="<?php echo home_url(); ?>" class="psp-button blue"><?php _e( 'Auto-Complete fields from above', 'psp' ); ?></a></td>
+								<td width="85%" align="left"><a href="javascript:void(0);" id="psp-wplannerfb-auto-complete" rel="<?php echo home_url(); ?>" class="psp-form-button psp-form-button-info"><?php _e( 'Auto-Complete fields from above', 'psp' ); ?></a></td>
 							</tr>
 							<?php if( !empty($this->fb_details['inputs_available']) && in_array( 'message', $this->fb_details['inputs_available'])) { ?>
 							<tr>
@@ -597,7 +597,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 							</tr>
 							<tr>
 								<td colspan="2">
-									<a href="#" id="psp_post_planner_postNowFBbtn" class="button-primary"><?php echo _e( 'Publish now on facebook', 'psp' ); ?> </a>
+									<a href="#" id="psp_post_planner_postNowFBbtn" class="psp-form-button psp-form-button-info"><?php echo _e( 'Publish now on facebook', 'psp' ); ?> </a>
 									<span id="psp_postTOFbNow" style="display: none; border: 1px solid #dadada; text-align: center; margin: 10px 0px 0px 0px; width: 160px; padding: 3px; background-color: #dfdfdf;"><?php echo _e( 'Publishing on facebook ...', 'psp' ); ?></span>
 								</td>
 							</tr>
@@ -648,11 +648,11 @@ if (class_exists('pspFacebook_Planner') != true) {
 				'appId'  => $this->fb_details['app_id'],
 				'secret' => $this->fb_details['app_secret']
 			));
-
+			   
 			$state = isset($_REQUEST['state']) ? trim($_REQUEST['state']) : '';
 			// check if redirect from facebook to page
 			$token = $facebook->getAccessToken();  
-
+			
 			if (trim($token) != "" && trim($state) != ""){
 				$validAuth = false;
 
@@ -664,7 +664,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 				// get user pages				
 				try {
 					$user_accounts = $facebook->api('me/accounts'); 
-												
+					 						
 					if(count($user_accounts) > 0 && isset($user_accounts['data'])){
 						$validAuth = true;
 						
@@ -694,7 +694,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 					$validAuth = 0;	
 					// clean token
 					//update_option('psp_fb_planner_token', $token);
-								
+					
 					$this->the_plugin->facebook_planner_last_status(array(
 						'status' 	=> 'error',
 						'step' 		=> 'auth /fbAuth',
@@ -765,7 +765,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 		public function __fbAuth()
 		{
 			$plugin_url = admin_url('admin.php?page=psp#facebook_planner');
-			$plugin_url_ = '<a href="'.$plugin_url.'" class="psp-button blue">Go Back to the plugin facebook planner module.</a><br />';
+			$plugin_url_ = '<a href="'.$plugin_url.'" class="psp-form-button-small psp-form-button-info">Go Back to the plugin facebook planner module.</a><br />';
 
 			$facebook = new Facebook\Facebook([
 				'app_id' 					=> $this->fb_details['app_id'],
@@ -824,7 +824,6 @@ if (class_exists('pspFacebook_Planner') != true) {
 					header('HTTP/1.0 401 Unauthorized');
 					
 					echo $plugin_url_;
-					var_dump('<pre>',$error_details,'</pre>'); 
 				} else {
 					$this->the_plugin->facebook_planner_last_status(array(
 						'status' 	=> 'error',
@@ -1338,79 +1337,75 @@ if (class_exists('pspFacebook_Planner') != true) {
 			global $wpdb;
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('advanced_setup|facebook_planner')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<div id="psp-lightbox-overlay">
-				<div id="psp-lightbox-container">
-					<h1 class="psp-lightbox-headline">
-						<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
-						<span id="link-details"><?php _e('Details:', 'psp');?></span>
-						<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>"></a>
-					</h1>
-
-					<div class="psp-seo-status-container">
-						<div id="psp-lightbox-seo-report-response"></div>
-						<div style="clear:both"></div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
-
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['facebook_planner']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['facebook_planner']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['facebook_planner']['help']) ? true : false;
-					if( $has_help === true ){
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
+				
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('advanced_setup|facebook_planner')->show_menu();
+				?>
+				
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
 						
-						$help_type = isset($this->module['facebook_planner']['help']['type']) && $this->module['facebook_planner']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['facebook_planner']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['facebook_planner']['menu']['title'],
+						$this->module['facebook_planner']['description'],
+						$this->module['facebook_planner']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<?php 
-							// find if user makes the setup
-							$moduleValidateStat = $this->moduleValidation();
-							if ( !$moduleValidateStat['status'] )
-								echo $moduleValidateStat['html'];
-							else{ 
-							?>
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php /*<img src="<?php echo $this->the_plugin->cfg['paths']['plugin_dir_url'];?>/modules/Social_Stats/assets/menu_icon.png">*/ ?>
-											<?php _e('Facebook Planner Scheduled Tasks', 'psp');?>
-										</span>
-									</div>
-									<div class="psp-panel-content">
-										<form class="psp-form" id="1" action="#save_with_ajax">
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+				
+						<div id="psp-lightbox-overlay">
+							<div id="psp-lightbox-container">
+								<h1 class="psp-lightbox-headline">
+									<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
+									<span id="link-details"><?php _e('Details:', 'psp');?></span>
+									<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>"></a>
+								</h1>
+			
+								<div class="psp-seo-status-container">
+									<div id="psp-lightbox-seo-report-response"></div>
+									<div style="clear:both"></div>
+								</div>
+							</div>
+						</div>
+			
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+						
+						<?php 
+						// find if user makes the setup
+						$moduleValidateStat = $this->moduleValidation();
+						if ( !$moduleValidateStat['status'] )
+							echo $moduleValidateStat['html'];
+						else{ 
+						?>
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Facebook Planner Scheduled Tasks', 'psp');?></h2>
+						</div>
+	
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+                        			
+										<form class="psp-form psp-facebook-planner" id="1" action="#save_with_ajax">
 											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
 											<?php
 											pspAjaxListTable::getInstance( $this->the_plugin )
@@ -1528,7 +1523,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 														'delete_facebook_planner_rows' => array(
 															'value' => __('Delete selected rows', 'psp'),
 															'action' => 'do_bulk_delete_facebook_planner_rows',
-															'color' => 'blue'
+															'color' => 'info'
 														)
 													)
 												))
@@ -1539,13 +1534,10 @@ if (class_exists('pspFacebook_Planner') != true) {
 				            		</div>
 								</div>
 							</div>
-							<?php
-							} 
-							?>
-							<div class="clear"></div>
 						</div>
+						<?php } ?>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 

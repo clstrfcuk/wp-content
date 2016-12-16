@@ -20,10 +20,10 @@ if ( !function_exists('psp_getLocationsList') ) { function psp_getLocationsList(
 
 	$res = $wpdb->get_col( $sql );
 ?>
-<div class="psp-form-row">
+<div class="panel-body psp-panel-body psp-form-row">
 	<label><?php _e('Select location:', 'psp'); ?></label>
 	<div class="psp-form-item large">
-	<span class="formNote">&nbsp;</span>
+	<span class="formNote"></span>
 
 	<select id="psp-location-id" name="location_id" style="width:120px;">
 		<option value="all">All locations</option>
@@ -53,7 +53,7 @@ echo json_encode(
 				'title' 	=> __('Insert Business Shortcode', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> false, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
@@ -126,7 +126,7 @@ echo json_encode(
 				'title' 	=> __('Insert Address Shortcode', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> false, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
@@ -211,7 +211,7 @@ echo json_encode(
 				'title' 	=> __('Insert Contact Shortcode', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> false, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
@@ -284,7 +284,7 @@ echo json_encode(
 				'title' 	=> __('Insert Payment Shortcode', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> false, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
@@ -345,7 +345,7 @@ echo json_encode(
 				'title' 	=> __('Insert Opening Hours Shortcode', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> false, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
@@ -382,7 +382,7 @@ echo json_encode(
 				'title' 	=> __('Insert Full Shortcode', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> false, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
@@ -479,7 +479,7 @@ echo json_encode(
 				'title' 	=> __('Insert Google Map', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> false, // true|false
 				'style' 	=> 'panel', // panel|panel-widget

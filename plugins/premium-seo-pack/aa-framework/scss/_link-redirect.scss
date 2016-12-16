@@ -1,0 +1,50 @@
+.#{$alias} {
+	
+	##{$alias}-lightbox-container {
+		.show {
+			display: table;
+		}
+		.hide {
+			display: none;
+		}
+	}
+	.#{$alias}-add-link-form {
+		label {
+			font-weight: bold;
+		}
+		.#{$alias}-add-link-field {
+			padding: px(6) px(8);
+			width: 100%;
+		}
+		select {
+			padding: px(4) px(6);
+			height: px(28);
+		}
+		.#{$alias}-button {
+			margin: px(10) 0 px(8);
+		}
+		#new_url_redirect {
+			width: px(300);
+		}
+	}
+	.#{$alias}-update-link-form {
+		label {
+			font-weight: bold;
+		}
+		.#{$alias}-add-link-field {
+			padding: px(6) px(8);
+			width: 100%;
+		}
+		select {
+			padding: px(4) px(6);
+			height: px(28);
+		}
+		.#{$alias}-button {
+			margin: px(10) 0 px(8);
+		}
+		#new_url_redirect2 {
+			width: px(500);
+		}
+	}
+	
+}

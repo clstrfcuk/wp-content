@@ -16,7 +16,7 @@ echo json_encode(
 				'title' 	=> __('Rich Snippets', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> true, // true|false
+				'header' 	=> false, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> true, // true|false
 				'style' 	=> 'panel', // panel|panel-widget

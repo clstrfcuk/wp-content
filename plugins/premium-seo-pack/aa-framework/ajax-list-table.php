@@ -123,7 +123,7 @@ if(class_exists('pspAjaxListTable') != true) {
 				'ajax_id' 		=> isset($_REQUEST['ajax_id']) ? $_REQUEST['ajax_id'] : '',
 				'params' 		=> isset($_REQUEST['params']) ? $_REQUEST['params'] : '',
 			);
-
+			   
 			if( $request['sub_action'] == 'post_per_page' ){
 				$new_post_per_page = $request['params']['post_per_page'];
 
@@ -709,7 +709,7 @@ if(class_exists('pspAjaxListTable') != true) {
 			$total_pages = ceil( $this->items_nr / $posts_per_page );
 
 			if( $this->opt['show_pagination'] ){
-				$html[] = 	'<div class="psp-list-table-right-col">';
+				$html[] = 	'<div class="psp-list-table-right-col" id="admin-display-pagination">';
 
 
 				$html[] = 		'<div class="psp-box-show-per-pages">';
@@ -728,7 +728,7 @@ if(class_exists('pspAjaxListTable') != true) {
 				$html[] =				__('Show All', $this->the_plugin->localizationName);
 				$html[] = 				'</option>';
 				$html[] =			'</select>';
-				$html[] = 			'<label for="psp-post-per-page" style="width:57px">' . __('per pages', $this->the_plugin->localizationName) . '</label>';
+				$html[] = 			'<label for="psp-post-per-page">' . __('per pages', $this->the_plugin->localizationName) . '</label>';
 				$html[] = 		'</div>';
 
 				$html[] = 		'<div class="psp-list-table-pagination tablenav">';
@@ -755,7 +755,7 @@ if(class_exists('pspAjaxListTable') != true) {
 		public function print_header()
 		{
 			$html = array();
-			$ses = $_SESSION['pspListTable'][$this->opt['id']]['params'];
+			$ses = isset($_SESSION['pspListTable'][$this->opt['id']]['params']) ? $_SESSION['pspListTable'][$this->opt['id']]['params'] : array();
 
 			$post_type = isset($ses['post_type']) && trim($ses['post_type']) != "" ? $ses['post_type'] : '';
 
@@ -802,7 +802,7 @@ if(class_exists('pspAjaxListTable') != true) {
 
 					$search_text = isset($ses['search_text']) ? $ses['search_text'] : '';
 
-					$html[] = 	'<div class="psp-list-table-right-col">';
+					$html[] = 	'<div class="psp-list-table-right-col" id="searchbox-admin">';
 					$html[] = 		'<div class="psp-list-table-search-box">';
 					$html[] = 			'<input type="text" name="psp-search-text" id="psp-search-text" value="'.($search_text).'" class="'.($search_text!='' ? 'search-highlight' : '').'" >';
 					$html[] = 			'<input type="button" name="psp-search-btn" id="psp-search-btn" class="button" value="' . __('Search Posts', $this->the_plugin->localizationName) . '">';
@@ -844,13 +844,13 @@ if(class_exists('pspAjaxListTable') != true) {
 					$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;';
 
 					foreach ($this->opt['mass_actions'] as $key => $value){
-						$html[] = 	'<input type="button" value="' . ( $value['value'] ) . '" id="psp-' . ( $value['action'] ) . '" class="psp-button ' . ( $value['color'] ) . '">';
+						$html[] = 	'<input type="button" value="' . ( $value['value'] ) . '" id="psp-' . ( $value['action'] ) . '" class="psp-form-button-small psp-form-button-' . ( $value['color'] ) . '">';
 					}
 					$html[] = '</div>';
 				}else{
 					$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;';
-					$html[] = 	'<input type="button" value="' . __('Auto detect focus keyword for All', $this->the_plugin->localizationName) . '" id="psp-all-auto-detect-kw" class="psp-button blue">';
-					$html[] = 	'<input type="button" value="' . __('Optimize All', $this->the_plugin->localizationName) . '" id="psp-all-optimize" class="psp-button blue">';
+					$html[] = 	'<input type="button" value="' . __('Auto detect focus keyword for All', $this->the_plugin->localizationName) . '" id="psp-all-auto-detect-kw" class="psp-form-button-small psp-form-button-info">';
+					$html[] = 	'<input type="button" value="' . __('Optimize All', $this->the_plugin->localizationName) . '" id="psp-all-optimize" class="psp-form-button-small psp-form-button-info">';
 					$html[] = '</div>';
 				}
 				
@@ -880,7 +880,7 @@ if(class_exists('pspAjaxListTable') != true) {
 			$html = array();
 
 			$html[] = '<div id="psp-list-table-posts">';
-			$html[] = 	'<table class="psp-table" style="border: none;border-bottom: 1px solid #dadada;">';
+			$html[] = 	'<table class="psp-table">';
 			$html[] = 		'<thead>';
 			$html[] = 			'<tr>';
   
@@ -961,7 +961,7 @@ if(class_exists('pspAjaxListTable') != true) {
 						$focus_kw = get_post_meta( $post->ID, 'psp_kw', true );
 						$html[] = '<div class="psp-focus-kw-box">';
 						$html[] = 	'<input type="text" class="psp-text-field-kw" id="psp-focus-kw-' . ( $post->ID ) . '" value="' . ( $focus_kw ) . '" />';
-						$html[] = 	'<input type="button" class="psp-auto-detect-kw-btn psp-button gray" value="' . __('Auto detect', $this->the_plugin->localizationName) . '" />';
+						$html[] = 	'<input type="button" class="psp-auto-detect-kw-btn psp-form-button-small psp-form-button-info" value="' . __('Auto detect', $this->the_plugin->localizationName) . '" />';
 						/*$html[] = 	'<a class="psp-button green psp-suggest-kw-btn" href="#">
                                             <img src="' . ( $this->the_plugin->cfg['paths']['freamwork_dir_url'] ) . 'images/light.png">
                                         	Suggest
@@ -969,8 +969,7 @@ if(class_exists('pspAjaxListTable') != true) {
 						$html[] = '</div>';
 					}
 					elseif( $value['td'] == '%seo_report%' ){
-						$html[] = '<a class="psp-button green psp-seo-report-btn" href="#" data-itemid="' . ( $post->ID ) . '">
-                                        <img src="' . ( $this->the_plugin->cfg['paths']['freamwork_dir_url'] ) . 'images/light.png">
+						$html[] = '<a class="psp-button green psp-seo-report-btn psp-form-button-small psp-form-button-success" href="#" data-itemid="' . ( $post->ID ) . '">
                                     	' . __('SEO Report', $this->the_plugin->localizationName) . '
                                     </a>';
 					}
@@ -1018,13 +1017,28 @@ if(class_exists('pspAjaxListTable') != true) {
 					elseif( $value['td'] == '%custom_title%' ){
 						$html[] = '<i>' . ( $post['title'] ) . '</i>';
 					}
+					elseif( $value['td'] == '%serp_operation%' ){
+						if( isset($value['option']) && is_array($value['option']) && count($value['option']) > 0 ){
+							foreach ($value['option'] as $operation => $operation_value ) {
+								$_icon = $operation_value['icon'];
+								$_value = $operation_value['value'];
+								if( isset($operation_value['value_change']) ){
+									$_value = $post['publish']=='Y' ? $operation_value['value'] : $operation_value['value_change'];
+									$_icon = $post['publish']=='Y' ? $_icon : $operation_value['icon_change'];
+								}
+								
+								$html[] =	'<a href="#" class="psp-form-serp-button psp-' . ( $operation_value['action'] ) . '" title="' . ( $_value ) . '">' . ( $_icon ) . '</a>';
+							}
+						} 
+						//$html[] = 	'11111';
+					}
 					elseif( $value['td'] == '%button%' ){
 						$value['option']['color'] = isset($value['option']['color']) ? $value['option']['color'] : 'gray';
-						$html[] = 	'<input type="button" value="' . ( $value['option']['value'] ) . '" class="psp-button ' . ( $value['option']['color'] ) . ' psp-' . ( $value['option']['action'] ) . '">';
+						$html[] = 	'<input type="button" value="' . ( $value['option']['value'] ) . '" class="psp-form-button-small psp-form-button-' . ( $value['option']['color'] ) . ' psp-' . ( $value['option']['action'] ) . '">';
 					}
 					elseif( $value['td'] == '%button_publish%' ){
 						$value['option']['color'] = isset($value['option']['color']) ? $value['option']['color'] : 'gray';
-						$html[] = 	'<input type="button" value="' . ( $post['publish']=='Y' ? $value['option']['value'] : $value['option']['value_change'] ) . '" class="psp-button ' . ( $value['option']['color'] ) . ' psp-' . ( $value['option']['action'] ) . '">';
+						$html[] = 	'<input type="button" value="' . ( $post['publish']=='Y' ? $value['option']['value'] : $value['option']['value_change'] ) . '" class="psp-form-button-small psp-form-button-' . ( $value['option']['color'] ) . ' psp-' . ( $value['option']['action'] ) . '">';
 					}
 					elseif( $value['td'] == '%button_html5data%' ){
 						$__html5data = array();
@@ -1033,7 +1047,7 @@ if(class_exists('pspAjaxListTable') != true) {
 						}
 						$__html5data = ' ' . implode(' ', $__html5data) . ' ';
 						$value['option']['color'] = isset($value['option']['color']) ? $value['option']['color'] : 'gray';
-						$html[] = 	'<input type="button" value="' . ( $value['option']['value'] ) . '" class="psp-button ' . ( $value['option']['color'] ) . ' psp-' . ( $value['option']['action'] ) . '"
+						$html[] = 	'<input type="button" value="' . ( $value['option']['value'] ) . '" class="psp-form-button-small psp-form-button-' . ( $value['option']['color'] ) . ' psp-' . ( $value['option']['action'] ) . '"
 						' . $__html5data . '
 						>';
 					}
@@ -1330,14 +1344,14 @@ if(class_exists('pspAjaxListTable') != true) {
 							$html[] = '<code>' . ( $post[$key] ) . '</code>';
 						}
 						elseif( $value['td'] == '%submit_btn%' ){
-							$html[] = '<a href="' . ( $post['submit_url'] ) . '" target="_blank" class="psp-button blue psp-btn-submit-website" data-itemid="' . ( $post['id'] ) . '">' . ( __('Submit website', $this->the_plugin->localizationName) ) . '</a>';
+							$html[] = '<a href="' . ( $post['submit_url'] ) . '" target="_blank" class="psp-form-button psp-form-button-info psp-btn-submit-website" data-itemid="' . ( $post['id'] ) . '">' . ( __('Submit website', $this->the_plugin->localizationName) ) . '</a>';
 						}
 
 						elseif( $value['td'] == '%submit_status%' ){
 							// never submited / $post['status'] = 2;
-							$html_status = '<div class="psp-message" style="padding: 5px;">' . ( __('Never submit', $this->the_plugin->localizationName) ) . '</div>';
+							$html_status = '<div class="psp-message" style="padding: 5px;">' . ( __('Never submited', $this->the_plugin->localizationName) ) . '</div>';
 							if( $post['status'] == 2 ){
-								$html_status = '<div class="psp-message psp-info" style="padding: 5px;background-image: none;">' . ( __('Submit in progress', $this->the_plugin->localizationName) ) . '</div>';
+								$html_status = '<div class="psp-message psp-warning" style="padding: 5px;background-image: none;">' . ( __('Submit in progress', $this->the_plugin->localizationName) ) . '</div>';
 							}
 							elseif( $post['status'] == 3 ){
 								$html_status = '<div class="psp-message psp-error" style="padding: 5px;background-image: none;">' . ( __('Error on submit', $this->the_plugin->localizationName) ) . '</div>';
@@ -1425,7 +1439,7 @@ if(class_exists('pspAjaxListTable') != true) {
 								$html[] = 	'<table class="serp-tbody-rank">';
 								$html[] = 		'<tbody>';
 								$html[] = 			'<tr>';
-								$html[] = 					'<td width="57">';
+								$html[] = 					'<td width="83">';
 								if( $current_pos==999 ){
 									$html[] = 					'<div class="psp-rank-container-block-extra">' . ( $__icon_not100 ) . '</div>';
 								}else{
@@ -1445,7 +1459,7 @@ if(class_exists('pspAjaxListTable') != true) {
 									$html[] = 					'</div>';
 								}
 								$html[] = 					'</td>';
-								$html[] = 					'<td width="35"><div class="psp-rank-container-block-extra">' . ( $best_pos==999 ? $__icon_not100 : '#'.$best_pos ) . '</div></td>';
+								$html[] = 					'<td width="52"><div class="psp-rank-container-block-extra">' . ( $best_pos==999 ? $__icon_not100 : '#'.$best_pos ) . '</div></td>';
 								$html[] = 					'<td><div class="psp-rank-container-block-extra">' . ( $worst_pos==999 ? $__icon_not100 : '#'.$worst_pos ) . '</div></td>';
 								$html[] = 			'</tr>';
 								$html[] = 		'</tbody>';
@@ -1599,13 +1613,13 @@ if(class_exists('pspAjaxListTable') != true) {
 					$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;';
 
 					foreach ($this->opt['mass_actions'] as $key => $value){
-						$html[] = 	'<input type="button" value="' . ( $value['value'] ) . '" id="psp-' . ( $value['action'] ) . '" class="psp-button ' . ( $value['color'] ) . '">';
+						$html[] = 	'<input type="button" value="' . ( $value['value'] ) . '" id="psp-' . ( $value['action'] ) . '" class="psp-form-button-small psp-form-button-' . ( $value['color'] ) . '">';
 					}
 					$html[] = '</div>';
 				}else{
 					$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;';
-					$html[] = 	'<input type="button" value="' . __('Auto detect focus keyword for All', $this->the_plugin->localizationName) . '" id="psp-all-auto-detect-kw" class="psp-button blue">';
-					$html[] = 	'<input type="button" value="' . __('Optimize All', $this->the_plugin->localizationName) . '" id="psp-all-optimize" class="psp-button blue">';
+					$html[] = 	'<input type="button" value="' . __('Auto detect focus keyword for All', $this->the_plugin->localizationName) . '" id="psp-all-auto-detect-kw" class="psp-form-button-small psp-form-button-info">';
+					$html[] = 	'<input type="button" value="' . __('Optimize All', $this->the_plugin->localizationName) . '" id="psp-all-optimize" class="psp-form-button-small psp-form-button-info">';
 					$html[] = '</div>';
 				}
 				
@@ -1620,7 +1634,7 @@ if(class_exists('pspAjaxListTable') != true) {
 				$html[] = '</div>';
 			}
 
-			$html[] = $this->get_pagination();
+			//$html[] = $this->get_pagination();
 
 			$html[] = '</div>';
 

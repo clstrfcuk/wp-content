@@ -7,14 +7,15 @@
  * @author		Andrei Dinca, AA-Team
  * @version		1.0
  */
+global $psp;
  echo json_encode(
 	array(
 		'misc' => array(
 			'version' => '1.0',
 			'menu' => array(
 				'order' => 13,
-				'title' => __('Miscellaneous', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				'title' => __('SEO Slug Optimizer', 'psp')
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-miscellaneous"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
@@ -23,12 +24,13 @@
 			'description' => __('Usefull SEO Settings', 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
-				'type' => 'remote'
+				'type' => 'remote',
 				// subsections on the same module!
-				,'url' => array(
+				/*'url' => array(
 					'slug-optimizer' 	=> 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-slug-optimizer/',
 					'insert-code'		=> 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-insert-code/' 
-				)
+				)*/
+				'url' => 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-slug-optimizer/'
 			),
 	        'load_in' => array(
 				'backend' => array(

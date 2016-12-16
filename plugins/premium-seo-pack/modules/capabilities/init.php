@@ -113,59 +113,67 @@ if (class_exists('aaCapabilities') != true) {
 		{
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='all' />
-		<div id="psp-wrapper" class="fluid wrapper-psp">
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
+					
 			<?php
 			// show the top menu
 			pspAdminMenu::getInstance()->make_active('general|capabilities')->show_menu();
 			?>
-
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
-				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['capabilities']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['capabilities']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['capabilities']['help']) ? true : false;
-					if( $has_help === true ){
-						
-						$help_type = isset($this->module['capabilities']['help']['type']) && $this->module['capabilities']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['capabilities']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+			
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
+					
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['capabilities']['menu']['title'],
+						$this->module['capabilities']['description'],
+						$this->module['capabilities']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-					<!-- Content Area --> 
-					<div id="psp-content-area">
-						<div class="psp-grid_4">
-							<div class="psp-panel-content">
-								<form class="psp-form" action="#save_with_ajax">
-									<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
-									<?php echo implode("\n", $this->roles_html(array(
-										//'user_role'		=> 'administrator'
-									))); ?>
-							        </div>
-							    </form>
-				           </div>
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel psp-capabilities">
+						
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
 						</div>
-						<div class="clear"></div>
+	
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('Capabilities', 'psp');?></h2>
+						</div>
+	
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+	                        			
+										<form class="psp-form" action="#save_with_ajax">
+											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
+											<?php echo implode("\n", $this->roles_html(array(
+												//'user_role'		=> 'administrator'
+											))); ?>
+									        </div>
+									    </form>
+									    
+					           		</div>
+					           		
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 <?php
@@ -219,10 +227,10 @@ if (class_exists('aaCapabilities') != true) {
 				$td_cssClass = 'mod-core'; $td_content = '';
 				//if (!in_array($key, $this->the_plugin->cfg['core-modules'])) {
 					if (in_array($key, $userModules)) {
-						$td_content = '<label for="psp-item-checkbox-' . ( $key ) . '"><input type="checkbox" class="psp-item-checkbox" id="psp-item-checkbox-' . ( $key ) . '" name="psp-item-checkbox-' . ( $key ) . '" checked>';
+						$td_content = '<input type="checkbox" class="psp-item-checkbox" id="psp-item-checkbox-' . ( $key ) . '" name="psp-item-checkbox-' . ( $key ) . '" checked="checked"><label for="psp-item-checkbox-' . ( $key ) . '">';
 						$td_cssClass = 'mod-active';
 					} else {
-						$td_content = '<label for="psp-item-checkbox-' . ( $key ) . '"><input type="checkbox" class="psp-item-checkbox" id="psp-item-checkbox-' . ( $key ) . '" name="psp-item-checkbox-' . ( $key ) . '">';
+						$td_content = '<input type="checkbox" class="psp-item-checkbox" id="psp-item-checkbox-' . ( $key ) . '" name="psp-item-checkbox-' . ( $key ) . '"><label for="psp-item-checkbox-' . ( $key ) . '">';
 						$td_cssClass = 'mod-inactive';
 					}
 				//} else {
@@ -233,7 +241,7 @@ if (class_exists('aaCapabilities') != true) {
 				// activate / deactivate plugin button
 				
 				$html[] = $td_content;
-				$html[] = '&nbsp;';
+				
 				if (in_array($key, $this->the_plugin->cfg['core-modules'])) {
 					$html[] = '<i>' . $value[$key]['menu']['title'] . '&nbsp;' . '(core module)</i>';
 				} else {
@@ -250,11 +258,9 @@ if (class_exists('aaCapabilities') != true) {
 			}
 			$html[] = '</tbody>';
 			$html[] = '</table>';
+			$html[] = '</div>';
 			
-			$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px; padding-bottom: 5px;">&nbsp;';
-			$html[] = 	'<input type="button" value="' . __('Save changes', 'psp') . '" id="psp-save-changes" class="psp-button blue">';
-			$html[] = '</div>';
-			$html[] = '</div>';
+			$html[] = 	'<input type="button" value="' . __('Save changes', 'psp') . '" id="psp-save-changes" class="psp-form-button psp-form-button-success">';
 			
 			return $html;
 		}

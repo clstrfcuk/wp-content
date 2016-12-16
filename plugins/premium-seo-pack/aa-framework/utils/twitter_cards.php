@@ -426,7 +426,7 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 					$boxId => array(
 						'title' 	=> '<div style="position:relative;">' . __( $boxTitle . ' Twitter Card Options', $this->localizationName) . '<div style="position:absolute; top:0; right:0;"><a href="' . $currentCard['dev_url'] . '" target="_blank">' . __('Twitter Cards: ', $this->localizationName) . $currentCard['title'] . '</a></div></div>',
 						'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-						'header' 	=> true, // true|false
+						'header' 	=> false, // true|false
 						'toggler' 	=> false, // true|false
 						'buttons' 	=> false, // true|false
 						'style' 	=> 'panel', // panel|panel-widget

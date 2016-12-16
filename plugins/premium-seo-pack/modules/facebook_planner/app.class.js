@@ -25,7 +25,7 @@ pspFacebookPage = (function ($) {
 			maincontainer = $("#psp-wrapper #psp_facebook_share-options");
 			loading = maincontainer.find("#main-loading");
 			
-			maincontainer_tasks = $("#psp-wrapper");
+			maincontainer_tasks = $(".psp-main");
 			mainloading_tasks = maincontainer_tasks.find("#psp-main-loading");
 
 			triggers();

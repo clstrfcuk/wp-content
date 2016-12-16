@@ -15,7 +15,7 @@
 				'order' => 98,
 				'show_in_menu' => false,
 				'title' => __('301 Link Redirect', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-link_redirect"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

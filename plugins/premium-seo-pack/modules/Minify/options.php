@@ -43,7 +43,7 @@ function __pspMinifyOptions_cache( $action='default', $istab = '', $is_subtab=''
     <input type="text" style="width: 160px;" name="cache_expiration" id="cache_expiration" value="<?php echo $vals["cache_expiration"]; ?>">&nbsp;
     <span><?php _e('(value in minutes; default = 10 days)', 'psp'); ?></span>&nbsp;
     
-    <input type="button" class="psp-button blue" style="width: 160px;" id="psp-minify-cache-delete" value="<?php _e('Clear cache', 'psp'); ?>">
+    <input type="button" class="psp-button blue psp-form-button-small psp-form-button-info" style="width: 160px;" id="psp-minify-cache-delete" value="<?php _e('Clear cache', 'psp'); ?>">
     <span style="margin:0px 0px 0px 10px" class="response"><?php echo __pspMinifyOptions_cache( 'getStatus' ); ?></span>
 
     </div>
@@ -117,7 +117,7 @@ function __pspMinifyOptions_remote( $action='default', $istab = '', $is_subtab='
 <div class="psp-form-row psp-minify-cache <?php echo ($istab!='' ? ' '.$istab : ''); ?><?php echo ($is_subtab!='' ? ' '.$is_subtab : ''); ?>">
 
     <label><?php _e('Download remote files ', 'psp'); ?></label>
-    <p style="margin-top:-5px; color:#7b7b7b;">  This feature is if you have your server under password protection </p>
+    <p style="margin-top:-5px; color:#7b7b7b;">  This feature is useful if you have your server under password protection </p>
     <div class="psp-form-item large">
     <span class="formNote">&nbsp;</span>
 
@@ -187,8 +187,8 @@ function __pspMinifyOptions_excludingHtml( $action='default', $istab = '', $is_s
         ?>
     </select>&nbsp;&nbsp;
 
-    <input type="button" class="psp-button blue" style="width: 160px;" id="psp-minify-assets-reset" value="<?php _e('Reset', 'psp'); ?>">
-    <input type="button" class="psp-button blue" style="width: 160px;" id="psp-minify-assets-refresh" value="<?php _e('Refresh', 'psp'); ?>">
+    <input type="button" class="psp-button blue psp-form-button-small psp-form-button-info" style="width: 160px;" id="psp-minify-assets-reset" value="<?php _e('Reset', 'psp'); ?>">
+    <input type="button" class="psp-button blue psp-form-button-small psp-form-button-info" style="width: 160px;" id="psp-minify-assets-refresh" value="<?php _e('Refresh', 'psp'); ?>">
     <span style="margin:0px 0px 0px 10px" class="response"><?php echo __pspMinifyOptions_excludingHtml( 'getStatus' ); ?></span>
 
     </div>
@@ -347,7 +347,7 @@ echo json_encode(
                         'status'    => 'info',
                         'html'      => __('
                             <h3 style="margin: 0px 0px 5px 0px;">Excluding Assets</h3>
-                            <p>In Order to display all the CSS & JS files from your website, first you need to enable the Excluse Assets List, Next go the frontend of your website and navigate trough some pages, come back and press the Refresh button. If you click Reset button, the exclude assets lists are emptied and you can browse again through your website frontend to refill them.</p>
+                            <p>In Order to display all the CSS & JS files from your website, first you need to enable the Excluse Assets List. Next, go the frontend of your website and navigate through some pages, come back and press the Refresh button. If you click the Reset button, the exclude assets lists are emptied and you can browse again through your website frontend to refill them.</p>
                         ', 'psp')
                     ),
                     

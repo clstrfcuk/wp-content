@@ -200,10 +200,9 @@ if (class_exists('pspServerStatusAjax') != true) {
 						if ( isset($moduleInfo['url']) && !empty($moduleInfo['url']) ) {
 							$title = '<a href="' . $moduleInfo['url'] . '" class="title">' . $title . '</a>';
 						}
-						$iconUrl = $this->the_plugin->cfg['paths']['plugin_dir_url'] . "modules/$module/" . $moduleInfo['icon']; 
 						
 						$__modules[] = '<div class="active_modules">
-							<img src="' . $iconUrl . '" />'
+							' . $moduleInfo['icon']
 							. $title
 							. ',<span class="version">' . $moduleInfo['version'] . '</span>
 							<span class="description">(' . $moduleInfo['description'] . ')</span>

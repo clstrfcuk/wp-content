@@ -14,10 +14,18 @@
 
 // class names for instanceof
 // TODO move them as class constants into pspphpQuery
-define('DOMDOCUMENT', 'DOMDocument');
-define('DOMELEMENT', 'DOMElement');
-define('DOMNODELIST', 'DOMNodeList');
-define('DOMNODE', 'DOMNode');
+if ( !defined('DOMDOCUMENT') ) {
+    define('DOMDOCUMENT', 'DOMDocument');   
+}
+if ( !defined('DOMELEMENT') ) {
+    define('DOMELEMENT', 'DOMElement');
+}
+if ( !defined('DOMNODELIST') ) {
+    define('DOMNODELIST', 'DOMNodeList');
+}
+if ( !defined('DOMNODE') ) {
+    define('DOMNODE', 'DOMNode');
+}
 
 /**
  * pspDOMEvent class.
@@ -28,7 +36,6 @@ define('DOMNODE', 'DOMNode');
  * @package pspphpQuery
  * @todo implement ArrayAccess ?
  */
-
 class pspDOMEvent {
 	/**
 	 * Returns a boolean indicating whether the event bubbles up through the DOM or not.

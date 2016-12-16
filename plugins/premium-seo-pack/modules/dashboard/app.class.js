@@ -13,18 +13,9 @@ pspDashboard = (function ($) {
 	// init function, autoload
 	function init()
 	{
-		maincontainer = $("#psp-ajax-response");
+		maincontainer = $(".psp-main");
 		triggers();
-		fix_frame_preview();
 	};
-	
-	function fix_frame_preview()
-	{
-		var preview = maincontainer.find(".psp-website-preview .browser-preview");
-		maincontainer.find(".psp-website-preview .the-website-preview").load(function(){
-			maincontainer.find(".psp-borwser-frame").height( preview.height() );
-		});
-	}
 	
 	function loadAudience()
 	{
@@ -37,8 +28,20 @@ pspDashboard = (function ($) {
 			'to_date'		: graph.data('todate'),
 			'debug'			: debug
 		}, function(response) {
-			
-			if( typeof response.getAudience !== 'undefined' ){
+
+			//fixed in 2016-12-05
+			//data not received!
+			if (response.__access.status == 'invalid') {
+				//$(".psp-panel, .psp-grid_1_3").css({'display': 'none'}); //hide info panels!
+				pspFreamwork.to_ajax_loader_close();
+				if ( response.__access.isalert == 'yes' )
+					alert(response.__access.msg);
+				return false;
+			}
+
+			//fixed in 2016-12-05
+			//getAudience
+			if( response.getAudience.status == 'valid' ){
 				var data = response.getAudience.data.rows; 
 				var opts = {
 					series: {
@@ -76,7 +79,13 @@ pspDashboard = (function ($) {
 				// remove the loading
 				graph.css('background-image', 'none');
 			}else{
-				graph.parents('.psp-panel-widget').eq(0).remove();
+			    graph.html( response.getAudience.reason );
+
+                // remove the loading
+                graph.css('background-image', 'none');
+
+				//graph.parents('.psp-panel-widget').eq(0).remove();
+				graph.parents('.psp-dashboard-box-audience_overview').eq(0).remove(); //fixed in 2016-12-05
 			}
 			
 		}, 'json');
@@ -128,12 +137,13 @@ pspDashboard = (function ($) {
 	function boxLoadAjaxContent( box )
 	{
 		var allAjaxActions = [];
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		box.find('.is_ajax_content').each(function(key, value){
 			
 			var alias = $(value).text().replace( /\n/g, '').replace("{", "").replace("}", "");
 			$(value).attr('id', 'psp-row-alias-' + alias);
 			allAjaxActions.push( alias );
-		}); 
+		});
   
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspDashboardRequest',
@@ -147,6 +157,7 @@ pspDashboard = (function ($) {
 					row.html(value.html);
 					
 					row.removeClass('is_ajax_content');
+					pspFreamwork.to_ajax_loader_close();
 					
 					tooltip();
 				} 

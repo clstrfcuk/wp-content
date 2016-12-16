@@ -13,8 +13,8 @@
 			'version' => '1.0',
 			'menu' => array(
 				'order' => 30,
-				'title' => __('Modules manager', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				'title' => __('Modules Manager', 'psp')
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-modules_manager"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

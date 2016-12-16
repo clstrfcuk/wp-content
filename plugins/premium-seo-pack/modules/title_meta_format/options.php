@@ -405,7 +405,7 @@ $__psp_mfo =
                         'size'      => 'large',
                         'force_width'=> '220',
                         'title'     => __('Force Title Meta tag: ', 'psp'),
-                        'desc'      => __('force title meta tag (in some cases where you don\'t see the meta title you\'ve setted for you post, page, you need to try and see which one of this 2 options works)', 'psp'),
+                        'desc'      => __('force title meta tag (in some cases where you don\'t see the meta title you\'ve set for you post|page, you need to try and see which one of these 2 options works)', 'psp'),
                         'options'   => array(
                             'yes'   => __('parse page content and replace', 'psp'),
                             'no'    => __('use wp_title wordpress hook', 'psp')
@@ -771,7 +771,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Homepage Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'post_robots'	=> array(
@@ -780,7 +780,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Post Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'page_robots'	=> array(
@@ -789,7 +789,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Page Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'product_robots'	=> array(
@@ -798,7 +798,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Product Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'category_robots'=> array(
@@ -807,7 +807,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Category Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'tag_robots'=> array(
@@ -816,7 +816,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Tag Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'taxonomy_robots'=> array(
@@ -825,7 +825,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('custom Taxonomy Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'archive_robots'=> array(
@@ -834,7 +834,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Archives Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'author_robots'	=> array(
@@ -843,7 +843,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Author Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'search_robots'	=> array(
@@ -852,7 +852,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Search Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'404_robots'		=> array(
@@ -861,7 +861,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('404 Page Not Found Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'pagination_robots'=> array(
@@ -870,7 +870,7 @@ $__psp_mfo =
 						'size' 		=> 'small',
 						'force_width'=> '400',
 						'title' 	=> __('Pagination Meta Robots:', 'psp'),
-						'desc' 		=> __('if you do not select "noindex" => "index" is by default active; if you do not select "nofollow" => "follow" is by default active', 'psp'),
+						'desc' 		=> __('if you do not select "noindex", then "index" is by default active; if you do not select "nofollow", then "follow" is by default active', 'psp'),
 						'options'	=> $__metaRobotsList
 					),
 					'use_pagination_robots' => array(

@@ -10,7 +10,6 @@ psp404Monitor = (function ($) {
     // public
     var debug_level = 0;
     var maincontainer = null;
-    var mainloading = null;
     var lightbox = null;
     var loaded_page = 0;
 
@@ -18,8 +17,7 @@ psp404Monitor = (function ($) {
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
-			mainloading = maincontainer.find("#psp-main-loading");
+			maincontainer = $(".psp-main");
 			lightbox = $("#psp-lightbox-overlay");
 
 			triggers();
@@ -58,8 +56,8 @@ psp404Monitor = (function ($) {
 
 	function getDetails( id, sub_action )
 	{
-		mainloading.fadeIn('fast');
-			
+		pspFreamwork.to_ajax_loader('Loading...');
+		
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspGet404MonitorRequest',
@@ -68,12 +66,12 @@ psp404Monitor = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 
 				lightbox.find("#psp-lightbox-seo-report-response").html( response.data );
 				showAddNewLink();
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 
 		}, 'json');
@@ -119,14 +117,21 @@ psp404Monitor = (function ($) {
     	data_save.push({ name: "itemid", value: itemid });
 			
 		lightbox.fadeOut('fast');
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader('Loading...');
 		
 		jQuery.post(ajaxurl, data_save, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
-				window.location.reload();
+				pspFreamwork.to_ajax_loader_close();
+				if( typeof response.msg != 'undefined' && response.msg != '' ) {
+					alert(response.msg);
+				}
+			}else{
+				if( typeof response.msg != 'undefined' && response.msg != '' ) {
+					alert(response.msg);
+				}
 			}
-			mainloading.fadeOut('fast');
+			
+			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
@@ -142,7 +147,7 @@ psp404Monitor = (function ($) {
 			return false;
 		}
 		
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader('Loading...');
 
 		jQuery.post(ajaxurl, {
 			'action' 		: 'psp_do_bulk_delete_404_rows',
@@ -150,12 +155,12 @@ psp404Monitor = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');				
+				pspFreamwork.to_ajax_loader_close();				
 				//refresh page!
 				window.location.reload();
 				return false;
 			}
-			mainloading.fadeOut('fast');
+			pspFreamwork.to_ajax_loader_close();
 			alert('Problems occured while trying to delete the selected rows!');
 		}, 'json');
 	}

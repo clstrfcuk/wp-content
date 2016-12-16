@@ -14,7 +14,7 @@
 			'menu' => array(
 				'order' => 20,
 				'title' => __('Sitemap', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-sitemap"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

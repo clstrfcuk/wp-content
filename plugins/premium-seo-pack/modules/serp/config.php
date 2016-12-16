@@ -15,13 +15,13 @@ echo json_encode(
 			'menu' => array(
 				'order' => 14,
 				'title' => __('SERP', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<span class="' . ( $psp->alias ) . '-icon-serp"><span class="path1"></span><span class="path2"></span></span>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
 				'url'	=> admin_url('admin.php?page=' . $psp->alias . "_SERP")
 			),
-			'description' => __('This module reads the results from Google for you focus keywords', 'psp'),
+			'description' => __('This module reads the results from Google for your focus keywords', 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',
@@ -55,20 +55,20 @@ echo json_encode(
 				1 => __('
 					You configured Google Serp Service incorrectly. See 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue psp-show-docs-shortcut',
+						'color' => 'info psp-show-docs-shortcut',
 						'url' => 'javascript: void(0)',
 						'title' => 'here'
 					) ) ) . ' for more details on fixing it. <br />
 					Module Google Serp verification section: click Verify button and read status 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue',
+						'color' => 'info',
 						'url' => admin_url( 'admin.php?page=psp_server_status#sect-google_serp' ),
 						'title' => 'here',
 						'target' => '_blank'
 					) ) ) . '<br />
 					Setup the Google Serp module 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue',
+						'color' => 'info',
 						'url' => admin_url( 'admin.php?page=psp#serp' ),
 						'title' => 'here'
 					) ) ) . '

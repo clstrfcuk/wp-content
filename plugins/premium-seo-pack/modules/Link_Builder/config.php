@@ -14,13 +14,13 @@
 			'menu' => array(
 				'order' => 23,
 				'title' => __('Link Builder', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<span class="' . ( $psp->alias ) . '-icon-Link_Builder"><span class="path1"></span><span class="path2"></span></span>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
 				'url'	=> admin_url('admin.php?page=' . $psp->alias . "_Link_Builder")
 			),
-			'description' => __("You can create list of keywords and URLs, and they will automatically be created", 'psp'),
+			'description' => __("You can create a list of keywords and URLs, and they will be automatically created", 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',

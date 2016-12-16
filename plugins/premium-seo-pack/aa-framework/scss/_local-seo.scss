@@ -1,0 +1,44 @@
+##{$alias}_local_seo {
+	padding-left: px(25);
+	padding-top: px(50); 
+	padding-right: px(25);
+	.#{$alias}-notify-engine-ping {
+		margin-left: px(25);
+		margin-bottom: px(25);
+	}
+	.#{$alias}-form-row {
+		&:first-of-type {
+			margin-left: px(25);
+			padding-bottom: px(50);
+			label {
+				&:first-child {
+				    display: block;
+				    font-weight: $bold;
+				    font-size: px(18);
+				    color: $black;
+				    line-height: px(18);
+				    margin-bottom: px(30);
+				    margin-left: -#{px(25)};
+				}
+			}
+		}
+	}
+	a {
+		color: #e6383f;
+		&:hover {
+			color: $primary;
+		}
+	}
+	&>div {
+		&:last-child {
+			margin-left: -#{px(25)};
+			margin-right: -#{px(25)};
+		}
+	}
+	input {
+		&[type="button"] {
+			cursor: pointer;
+			margin-top: px(10);
+		}
+	}
+}

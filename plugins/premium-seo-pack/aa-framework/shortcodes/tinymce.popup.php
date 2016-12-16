@@ -80,8 +80,8 @@ if (class_exists('aafShortcodesPopup') != true) {
 				}
 			}
 			//sh_title, sh_code
-			
 			$html = '';
+
 			if ( !empty($shortcode) && is_array($options) && !empty($options) > 0 ) {
 			
 				// load the settings template class
@@ -90,22 +90,35 @@ if (class_exists('aafShortcodesPopup') != true) {
 				// Initalize the your aaInterfaceTemplates
 				$aaInterfaceTemplates = new aaInterfaceTemplates($this->the_plugin->cfg);
 				
+				// build options headings
+				if( isset($options[0]) ){
+					foreach ($options[0] as $key => $value) {
+
+						if( isset($value['title']) && isset($value['icon']) ){
+							$html .= '<div class="psp-panel-header">';
+							$html .= 	'<span class="psp-panel-title">';
+							$html .= 		'<img src="' . ( $value['icon'] ) . '">';
+							$html .= 		$value['title'];
+							$html .= 	'</span>';
+							$html .= '</div>';
+						}
+					}
+				}
+
 				// then build the html, and return it as string
-				$html = $aaInterfaceTemplates->bildThePage( $options , $this->the_plugin->alias, array(), true);
+				$html .= $aaInterfaceTemplates->bildThePage( $options , $this->the_plugin->alias, array(), true);
 				
 				// fix some URI
 				$html = str_replace('{plugin_folder_uri}', $tryed_module['folder_uri'], $html);
 			}
-
-			?>
-			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+			?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 			<html xmlns="http://www.w3.org/1999/xhtml">
 			<head></head>
 			<body>
 			
 			<script type="text/javascript" src="<?php echo $this->module_folder;?>js/tinymce.popup.js" ></script>
 			<link rel='stylesheet' href='<?php echo $this->module_folder;?>css/tinymce.popup.css' type='text/css' media='all' />
-			<div class="psp-form psp-shortcode-pop-up">
+			<div class="psp psp-form psp-shortcode-pop-up">
 			
 				<?php 
 				if ( !empty($html) ) {
@@ -115,8 +128,8 @@ if (class_exists('aafShortcodesPopup') != true) {
 					<!-- buttons for each box -->
 					<div class="psp-button-row">
 			
-						<?php echo '<input type="reset" value="' . __('Reset to default value', $psp->localizationName) . '" class="psp-button gray left" id="aff-reset-shortcode" />'; ?>
-						<?php echo '<input type="submit" value="' . __('Insert shortcode', $psp->localizationName) . '" class="psp-button green psp-saveOptions" id="aaf-insert-shortcode" />'; ?>
+						<?php echo '<input type="reset" value="' . __('Reset to default value', $psp->localizationName) . '" class="psp-form-button-small psp-form-button-info left" id="aff-reset-shortcode" />'; ?>
+						<?php echo '<input type="submit" value="' . __('Insert shortcode', $psp->localizationName) . '" class="psp-form-button-small psp-form-button-success psp-saveOptions" id="aaf-insert-shortcode" />'; ?>
 			
 					</div>
 					

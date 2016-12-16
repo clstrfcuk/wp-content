@@ -15,7 +15,7 @@
 				'order' => 94,
 				'show_in_menu' => false,
 				'title' => __('PageSpeed Insights', 'psp'),
-				'icon' => 'assets/16_pagespeed.png'
+				'icon' => '<i class="' . ( $psp->alias ) . '-icon-pagespeed_insights"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
@@ -52,20 +52,20 @@
 				1 => __('
 					You configured PageSpeed Service incorrectly. See 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue psp-show-docs-shortcut',
+						'color' => 'info psp-show-docs-shortcut',
 						'url' => 'javascript: void(0)',
 						'title' => 'here'
 					) ) ) . ' for more details on fixing it. <br />
 					Module Google Pagespeed verification section: click Verify button and read status 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue',
+						'color' => 'info',
 						'url' => admin_url( 'admin.php?page=psp_server_status#sect-google_pagespeed' ),
 						'title' => 'here',
 						'target' => '_blank'
 					) ) ) . '<br />
 					Setup the PageSpeed module 
 					' . ( $psp->convert_to_button ( array(
-						'color' => 'white_blue',
+						'color' => 'info',
 						'url' => admin_url( 'admin.php?page=psp#google_pagespeed' ),
 						'title' => 'here'
 					) ) ) . '

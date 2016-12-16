@@ -1,0 +1,76 @@
+##{$alias}_title_meta_format {
+	div {
+		&:nth-child(65) {
+			margin-bottom: px(30);
+			label {
+				margin-left: px(25);
+			}
+		}
+		&:nth-child(73),
+		&:nth-child(74) {
+			margin-left: px(25);
+			&>div {
+				margin-left: px(173) !important;
+			}
+		}
+		&:nth-child(74) {
+			select {
+				margin-bottom: px(25);
+			}
+		}
+		&##{$alias}-twittercards-app-response {
+			div {
+				&:first-child {
+					display: none;
+				}
+			}
+		}
+	}
+	.subtabsHeader {
+		@extend %side-expand !optional;
+		font-size: 0;
+		background: $light-gray;
+
+		li {
+			display: inline-block;
+			margin: 0;
+			padding: 0;
+			margin-right: px(2);
+			margin-bottom: px(0);
+
+			&.#{$alias}-section-dashboard a {
+				font-size: px(15);
+				font-weight: $bold;
+			}
+
+			a {
+				font-family: $primary_font;
+				display: inline-block;
+				font-size: px(14);
+				padding: px(20) px(24);
+				color: $black;
+				text-decoration: none;
+
+				&:hover,
+				&.active {
+					color: #e41e26;
+					background: $white;
+				}
+			}
+		}
+	}
+	.#{$alias}-message {
+		padding: px(23);
+		padding-bottom: px(30);
+		line-height: px(26);
+		&>ul {
+			margin-top: px(44);
+		}
+		&>h2 {
+			margin-top: px(12) !important;
+		}
+		&>h3 {
+			margin-top: px(46) !important;
+		}
+	}
+}

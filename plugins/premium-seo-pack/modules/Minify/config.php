@@ -14,7 +14,7 @@
 			'menu' => array(
 				'order' => 23,
 				'title' => __('Minify', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-minify"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

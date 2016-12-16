@@ -45,7 +45,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 
 			// reset as array, this will stock all the html content, and at the end return it
 			$html = array();
-
+			 
 			if(count($options) == 0) {
 				return __('Please fill whit some options content first!', $psp->localizationName);
 			}
@@ -74,30 +74,53 @@ if(class_exists('aaInterfaceTemplates') != true) {
 					if(!isset($box['buttons'])) $box['buttons']= false;
 					if(!isset($box['style'])) $box['style']= 'panel';
 
-					// container setup
-					$html[] = '<div class="psp-' . ( $box['size'] ) . '">
-                        	<div class="psp-' . ( $box['style'] ) . '">';
+					$box_show_wrappers = true;
+					if ( !isset($box['panel_setup_verification']) )
+						$box['panel_setup_verification'] = false;
+					
+					if ( $box['panel_setup_verification'] ) {
 
-					// hide panel header only if it's requested
-					if( $box['header'] == true ) {
-						$html[] = '<div class="psp-panel-header">
-							<span class="psp-panel-title">
-								' . ( isset($box['icon']) ? '<img src="' . ( $box['icon'] ) . '" />' : '' ) . '
-								' . ( $box['title'] ) . '
-							</span>
-							 ' . ( $box['toggler'] == true ? '<span class="psp-panel-toggler"></span>' : '' ) . '
-						</div>';
+						$tryLoadInterface = str_replace("{plugin_folder_path}", $module["folder_path"], $box['elements'][0]['path']);
+						
+						if(is_file($tryLoadInterface)) {
+							// Turn on output buffering
+							ob_start();
+										
+							require( $tryLoadInterface  );
+  
+							if ( isset($__module_is_setup_valid) && $__module_is_setup_valid !==true ) {
+								$box_show_wrappers = false;
+							}
+									
+							//copy current buffer contents into $message variable and delete current output buffer
+							$__error_msg_panel = ob_get_clean();
+						}
 					}
+					
+					if ( $box_show_wrappers && $box['style'] == 'panel' ) {   
+						// hide panel header only if it's requested
+						if( $box['header'] == true ) {
+							$html[] = psp()->print_section_header(
+								$module[$module['alias']]['menu']['title'],
+								$module[$module['alias']]['description'],
+								$module[$module['alias']]['help']['url']
+							);
+						}
 
-					$html[] = '<div class="psp-panel-content">';
-					if($showForm){
-						$html[] = '<form class="psp-form" id="' . ( $box_id ) . '" action="#save_with_ajax">';
+						// container setup
+						$html[] = '<div class="panel panel-default ' . ( $alias ) . '-panel ' . ( $alias ) . '-setup">';
+						//$html[] = '<div class="' . ( $alias ) . '-' . ( $box['style'] ) . '">';
+								
+						//$html[] = '<div class="panel-body ' . ( $alias ) . '-panel-body">';
+						if($showForm){
+							$html[] = '<form id="' . ( $box_id ) . '" class="psp-form" action="#save_with_ajax">';
+						}
+
+						// create a hidden input for sending the prefix
+						$html[] = '<input type="hidden" id="box_id" name="box_id" value="' . ( $box_id ) . '" />';
+
+						$html[] = '<input type="hidden" id="box_nonce" name="box_nonce" value="' . ( wp_create_nonce( $box_id . '-nonce') ) . '" />';
 					}
-
-					// create a hidden input for sending the prefix
-					$html[] = '<input type="hidden" id="box_id" name="box_id" value="' . ( $box_id ) . '" />';
-
-					$html[] = '<input type="hidden" id="box_nonce" name="box_nonce" value="' . ( wp_create_nonce( $box_id . '-nonce') ) . '" />';
 					
 					$html[] = $this->tabsHeader($box); // tabs html header
 					$html[] = $this->subtabsHeader($box); // subtabs html header
@@ -129,7 +152,6 @@ if(class_exists('aaInterfaceTemplates') != true) {
 									)
 								) {
 										$val = $settings[( $elm_id )];
-
 										// Striping slashes of non-array options
 										if ( !is_array($val) ) {
 											$val = stripslashes( $val );
@@ -146,13 +168,10 @@ if(class_exists('aaInterfaceTemplates') != true) {
 
 							if(!in_array( $value['type'], $noRowElements)){
 								// the row and the label
-								$html[] = '<div class="psp-form-row' . ($this->tabsElements($box, $elm_id)) . '">
-									   <label for="' . ( $elm_id ) . '">' . ( isset($value['title']) ? $value['title'] : '' ) . '</label>
+								$html[] = '<div class="panel-body psp-panel-body psp-form-row' . ($this->tabsElements($box, $elm_id)) . '">
+									   <label class="psp-form-label" for="' . ( $elm_id ) . '">' . ( isset($value['title']) ? $value['title'] : '' ) . '</label>
 									   <div class="psp-form-item'. ( isset($value['size']) ? " " . $value['size'] : '' ) .'">';
 							}
-
-							// the element description
-							if(isset($value['desc'])) $html[]	= '<span class="formNote">' . ( $value['desc'] ) . '</span>';
 
 							switch ( $value['type'] ) {
 
@@ -220,14 +239,14 @@ if(class_exists('aaInterfaceTemplates') != true) {
 									}
 									
 									$html[] = '<div class="psp-upload-image-wp-box">';
-									$html[] = 	'<a data-previewsize="' . ( $preview_size ) . '" class="upload_image_button_wp psp-button blue" ' . ( isset($value['force_width']) ? "style='" . ( trim($val) != "" ? 'display:none;' : '' ) . "width:" . ( $value['force_width'] ) . "px;'" : '' ) . ' href="#">' . ( $value['value'] ) . '</a>';
+									$html[] = 	'<a data-previewsize="' . ( $preview_size ) . '" class="upload_image_button_wp psp-form-button-small psp-form-button-info" ' . ( isset($value['force_width']) ? "style='" . ( trim($val) != "" ? 'display:none;' : '' ) . "width:" . ( $value['force_width'] ) . "px;'" : '' ) . ' href="#">' . ( $value['value'] ) . '</a>';
 									$html[] = 	'<input type="hidden" name="' . ( $elm_id ) . '" value="' . ( $val ) . '">';
 									$html[] = 	'<a href="' . ( $image_full ) . '" target="_blank" class="upload_image_preview" style="display: ' . ( trim($val) == "" ? 'none' : 'block' ). '">';
 									$html[] = 		'<img src="' . ( $image ) . '" style="display: ' . ( trim($val) == "" ? 'none' : 'inline-block' ). '">';	
 									$html[] = 	'</a>';
 									$html[] =	'<div class="psp-prev-buttons" style="display: ' . ( trim($val) == "" ? 'none' : 'inline-block' ). '">';
-									$html[] = 		'<span class="change_image_button_wp psp-button green">Change Image</span>';
-									$html[] = 		'<span class="remove_image_button_wp psp-button red">Remove Image</span>';
+									$html[] = 		'<span class="change_image_button_wp psp-form-button-small psp-form-button-success">Change Image</span>';
+									$html[] = 		'<span class="remove_image_button_wp psp-form-button-small psp-form-button-danger">Remove Image</span>';
 									$html[] =	'</div>';
 									$html[] = '</div>';
 								break;
@@ -266,9 +285,9 @@ if(class_exists('aaInterfaceTemplates') != true) {
 										foreach ($value['options'] as $key => $value){
 											$html[] = '<input
 												type="' . ( isset($value['type']) ? $value['type'] : '' ) . '"
-												style="width:' . ( isset($value['width']) ? $value['width'] : '' ) . '"
+												style="' . ( isset($value['width']) ? 'width:' . $value['width'] . ';' : '' ) . '"
 												value="' . ( isset($value['value']) ? $value['value'] : '' ) . '"
-												class="psp-button ' . ( isset($value['color']) ? $value['color'] : '' ) . ' ' . ( isset($value['pos']) ? $value['pos'] : '' ) . ' ' . ( isset($value['action']) ? $value['action'] : '' ) . '"
+												class="psp-form-button psp-form-button-' . ( isset($value['color']) ? $value['color'] : '' ) . ' ' . ( isset($value['pos']) ? $value['pos'] : '' ) . ' ' . ( isset($value['action']) ? $value['action'] : '' ) . '"
 											/>';
 										}
 									}
@@ -371,10 +390,10 @@ if(class_exists('aaInterfaceTemplates') != true) {
 									$html[] = '</div>';
 									$html[] = '<div style="clear:both"></div>';
 									$html[] = '<div class="multisel_l2r_btn' . ( isset($value['cssclass']) && !empty($value['cssclass']) ? ' ' . $value['cssclass'] . '' : '' ) . '" style="">';
-									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moveright" type="button" value="Move Right" class="moveright psp-button gray"></span>';
-									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moverightall" type="button" value="Move Right All" class="moverightall psp-button gray"></span>';
-									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moveleft" type="button" value="Move Left" class="moveleft psp-button gray"></span>';
-									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moveleftall" type="button" value="Move Left All" class="moveleftall psp-button gray"></span>';
+									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moveright" type="button" value="Move Right" class="moveright psp-button gray psp-form-button-small psp-form-button-info"></span>';
+									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moverightall" type="button" value="Move Right All" class="moverightall psp-button gray psp-form-button-small psp-form-button-info"></span>';
+									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moveleft" type="button" value="Move Left" class="moveleft psp-button gray psp-form-button-small psp-form-button-info"></span>';
+									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moveleftall" type="button" value="Move Left All" class="moveleftall psp-button gray psp-form-button-small psp-form-button-info"></span>';
 									$html[] = '</div>';
 								break;
 								
@@ -408,9 +427,9 @@ if(class_exists('aaInterfaceTemplates') != true) {
 											try {
 												// get user profile
 												$uid = $facebook->getUser();
-												$user_profile = $facebook->api('/'.$uid.'?fields=id,name,link');
+												$user_profile = $facebook->api('/'.$uid.'?fields=id,name,link'); 
 												//$user_profile = $facebook->api('/me');
- 
+												
 												if(count($user_profile) > 0){
 													$validAuth = true;
 													
@@ -419,12 +438,12 @@ if(class_exists('aaInterfaceTemplates') != true) {
 													// login url
 													$loginUrl = $facebook->getLoginUrl(
 														array(
-														'scope' => $fb_permissions,
-														'redirect_uri' => admin_url('admin-ajax.php?action=psp_facebookAuth')
+															'scope' => $fb_permissions,
+															'redirect_uri' => admin_url('admin-ajax.php?action=psp_facebookAuth')
 														)
 													);
 						
-													$html[] = '<a href="' . ($loginUrl) . '" style="width: 133px;" class="psp-button blue">'. (__( 'Authorize this app again', $psp->localizationName )) .'</a>';
+													$html[] = '<a href="' . ($loginUrl) . '" class="psp-form-button-small psp-form-button-info">'. (__( 'Authorize this app again', $psp->localizationName )) .'</a>';
 													
 													$psp->facebook_planner_last_status(array(
 														'status' 	=> 'success',
@@ -441,8 +460,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 													));
 												}
 												
-											} catch (psp_FacebookApiException $e) {
-												
+											} catch (psp_FacebookApiException $e) { 
 												// clean token
 												//update_option('psp_fb_planner_token', $token);
 												
@@ -453,7 +471,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 												));
 											}
 										}
-								
+										
 										if( $validAuth == false ) {
 											// login url
 											$loginUrl = $facebook->getLoginUrl(
@@ -463,7 +481,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 												)
 											);
 
-											$html[] = '<a href="' . ($loginUrl) . '" style="width: 84px;" type="button" class="psp-button blue">'. (__( 'Authorizate app', $psp->localizationName )) .'</a>';
+											$html[] = '<a href="' . ($loginUrl) . '" type="button" class="psp-form-button-small psp-form-button-info">'. (__( 'Authorizate app', $psp->localizationName )) .'</a>';
 										}
 									}
 								break;
@@ -535,7 +553,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 													// login url
 													$loginUrl = $fb_loginUrl;
 							
-													$html[] = '<a href="' . ($loginUrl) . '" style="width: 133px;" class="psp-button blue">'. (__( 'Authorize this app again', $psp->localizationName )) .'</a>';
+													$html[] = '<a href="' . ($loginUrl) . '" style="width: 133px;" class="psp-form-button-small psp-form-button-info">'. (__( 'Authorize this app again', $psp->localizationName )) .'</a>';
 													
 													$psp->facebook_planner_last_status(array(
 														'status' 	=> 'success',
@@ -562,7 +580,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 											// login url
 											$loginUrl = $fb_loginUrl;
 
-											$html[] = '<a href="' . ($loginUrl) . '" style="width: 84px;" type="button" class="psp-button blue">'. (__( 'Authorizate app', $psp->localizationName )) .'</a>';
+											$html[] = '<a href="' . ($loginUrl) . '" style="width: 84px;" type="button" class="psp-form-button-small psp-form-button-info">'. (__( 'Authorizate app', $psp->localizationName )) .'</a>';
 										}
 									}
 								break;
@@ -666,6 +684,9 @@ if(class_exists('aaInterfaceTemplates') != true) {
 
 							}
 
+							// the element description
+							if(isset($value['desc'])) $html[]	= '<span class="psp-form-note">' . ( $value['desc'] ) . '</span>';
+
 							if( !in_array( ( isset($value['type']) ? $value['type'] : '' ) , $noRowElements)){
 								// close: .psp-form-row
 								$html[] = '</div>';
@@ -677,40 +698,46 @@ if(class_exists('aaInterfaceTemplates') != true) {
 						}
 					}
 
-					// psp-message use for status message, default it's hidden
-					$html[] = '<div class="psp-message" id="psp-status-box" style="display:none;"></div>';
+					if( $box['style'] == 'panel' ) {
+						// psp-message use for status message, default it's hidden
+						$html[] = '<div class="psp-message" id="psp-status-box" style="display:none;"></div>';
 
-					if( $box['buttons'] == true && !is_array($box['buttons']) ) {
-						// buttons for each box
-						$html[] = '<div class="psp-button-row">
-							<input type="reset" value="' . __('Reset to default value', $psp->localizationName) . '" class="psp-button gray left" />
-							<input type="submit" value="' . __('Save the settings', $psp->localizationName) . '" class="psp-button green psp-saveOptions" />
-						</div>';
-					}
-					elseif( is_array($box['buttons']) ){
-						// buttons for each box
-						$html[] = '<div class="psp-button-row">';
+						if( $box['buttons'] == true && !is_array($box['buttons']) ) {
+							// buttons for each box
+							$html[] = '<div class="panel-footer ' . ( $alias ) . '-panel-footer">
+								<input type="submit" value="Save the settings" class="' . ( $alias ) . '-form-button ' . ( $alias ) . '-form-button-success psp-saveOptions" />
+							</div>';
 
-						foreach ( $box['buttons'] as $key => $value ){
-							$html[] = '<input type="submit" value="' . ( $value['value'] ) . '" class="psp-button ' . ( $value['color'] ) . ' ' . ( $value['action'] ) . '" />';
+							/*$html[] = '<div class="psp-button-row">
+								<input type="reset" value="' . __('Reset to default value', $psp->localizationName) . '" class="psp-button gray left" />
+								<input type="submit" value="' . __('Save the settings', $psp->localizationName) . '" class="psp-button green psp-saveOptions" />
+							</div>';*/
+						}
+						elseif( is_array($box['buttons']) ){
+							// buttons for each box
+							$html[] = '<div class="panel-footer ' . ( $alias ) . '-panel-footer">';
+
+							foreach ( $box['buttons'] as $key => $value ){
+								$html[] = '<input type="submit" value="' . ( $value['value'] ) . '" class="psp-form-button psp-form-button-' . ( $value['color'] ) . ' ' . ( $value['action'] ) . '" />';
+							}
+
+							$html[] = '</div>';
 						}
 
+						if($showForm){
+							// close: form
+							$html[] = '</form>';
+						}
+
+						// close: box size div
+						//$html[] = '</div>';
+
+						// close: .psp-panel
+						//$html[] = '</div>';
+
+						// close: .psp-panel-content
 						$html[] = '</div>';
 					}
-
-					if($showForm){
-						// close: form
-						$html[] = '</form>';
-					}
-
-					// close: box size div
-					$html[] = '</div>';
-
-					// close: .psp-panel
-					$html[] = '</div>';
-
-					// close: .psp-panel-content
-					$html[] = '</div>';
 				}
 			}
 
@@ -726,35 +753,26 @@ if(class_exists('aaInterfaceTemplates') != true) {
 		*/
 		public function printBaseInterface( $pluginPage='' )
 		{
+			global $psp;
 ?>
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-
-			<!-- Header -->
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->show_menu( $pluginPage );
-			?>
+		<!--div id="psp-wrapper" class="fluid wrapper-psp"-->
+		<div class="psp">
 
 			<!-- Content -->
-			<div id="psp-content">
-				<h1 class="psp-section-headline"></h1>
+			<div class="psp-content">
 
-				<!-- Container -->
-				<div class="psp-container clearfix">
+				<!-- Header -->
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->show_menu( $pluginPage );
+				?>
 
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
+				<section class="<?php echo $psp->alias;?>-main">
+					<div id="psp-ajax-response"></div>
+				</section>
 
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<!-- Content Area -->
-							<div id="psp-ajax-response"></div>
-
-							<div class="clear"></div>
-						</div>
-					</div>
-				</div>
 			</div>
+
 		</div>
 
 <?php
@@ -774,7 +792,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 
 			$__ret = '';
 			if (is_array($__tabs) && count($__tabs)>$__allowLimit) {
-				$html[] = '<ul class="' . (!empty($parent_tab) ? 'subtabsHeader ' . $parent_tab : 'tabsHeader') . '" data-parent="' . $parent_tab . '">';
+				$html[] = '<ul class="' . (!empty($parent_tab) ? 'subtabsHeader ' . $parent_tab : 'psp-tabs-header') . '" data-parent="' . $parent_tab . '">';
 				$html[] = '<li style="display:none;" class="tabsCurrent" ' . (/*!empty($parent_tab) ? 'class="tabsCurrent"' : 'id="tabsCurrent"'*/'') . ' title=""></li>'; //fake li with the current tab value!
 				foreach ($__tabs as $tabClass=>$tabElements) {
 					$html[] = '<li><a href="javascript:void(0);" title="'.$tabClass.'">'.$tabElements[0].'</a></li>';

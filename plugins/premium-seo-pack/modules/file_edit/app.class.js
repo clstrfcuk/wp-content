@@ -10,25 +10,23 @@ pspFileEdit = (function ($) {
     // public
     var debug_level = 0;
     var maincontainer = null;
-    var mainloading = null;
 
 	// init function, autoload
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
+			maincontainer = $(".psp-main");
 			if($('#robotstxt').length > 0) maincontainer.find('.psp-fe-create-robots-txt').hide();
-			mainloading = maincontainer.find("#psp-main-loading");
 			triggers();
 		});
 	})();
 	
 	function saveChanges() {
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		
 		var rtVal = '', htVal = '',
-		$__rt = $('#psp-wrapper #frm-save-changes #robotstxt'),
-		$__ht = $('#psp-wrapper #frm-save-changes #htaccess');
+		$__rt = $('.psp-main').find('#frm-save-changes #robotstxt'),
+		$__ht = $('.psp-main').find('#frm-save-changes #htaccess');
 
 		if ($__rt.length>0)
 			rtVal = $__rt.is(':disabled') ? '' : $__rt.val();
@@ -42,13 +40,13 @@ pspFileEdit = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 			}
 		}, 'json');
 	}
 	
 	function createRobotsTxt() {
-		mainloading.fadeIn('fast');
+		pspFreamwork.to_ajax_loader( "Loading..." );
 		var rtCreateVal = 'yes';
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspFileEdit',
@@ -56,7 +54,7 @@ pspFileEdit = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');
+				pspFreamwork.to_ajax_loader_close();
 				location.reload();
 			}
 		}, 'json');
@@ -78,17 +76,17 @@ pspFileEdit = (function ($) {
 			//saveChanges();
 			
 			var rtVal = '', htVal = '',
-			$__rt = $('#psp-wrapper #frm-save-changes #robotstxt'),
-			$__ht = $('#psp-wrapper #frm-save-changes #htaccess');
+			$__rt = $('.psp-main').find('#frm-save-changes #robotstxt'),
+			$__ht = $('.psp-main').find('#frm-save-changes #htaccess');
 	
 			rtVal = $__rt.is(':disabled') ? '' : $.trim( $__rt.val() );
 			htVal = $__ht.is(':disabled') ? '' : $.trim( $__ht.val() );
 
 			if (rtVal=='' && htVal=='') {
 				if ( confirm('Both robots.txt and .htaccess files are empty. Are you sure you wanna update their content?') )
-					$('#psp-wrapper #frm-save-changes').submit();
+					$('.psp-main #frm-save-changes').submit();
 			} else {
-				$('#psp-wrapper #frm-save-changes').submit();
+				$('.psp-main').find('#frm-save-changes').submit();
 			}
 		});
 		

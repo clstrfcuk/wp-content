@@ -132,8 +132,8 @@ if (class_exists('pspLinkRedirect') != true) {
 		
 		public function redirect_header(){
 			global $wpdb, $wp;
-
-			$currentUri = home_url(add_query_arg(array(), $wp->request));
+			
+			$currentUri = home_url(add_query_arg(array(), $wp->request)); 
 			$currentUri = preg_replace('/\+{2,}/imu', '+', $currentUri);
 
 			if ( !is_admin() ) {
@@ -164,6 +164,7 @@ if (class_exists('pspLinkRedirect') != true) {
 			//$sql = $wpdb->prepare( $sql, $url );
 			$sql = "SELECT a.id, a.url_redirect from " . $wpdb->prefix . "psp_link_redirect as a WHERE 1=1 and a.url regexp '^".$url."/?$';";
 			$res = $wpdb->get_row( $sql, ARRAY_A );
+			
 			return $res;
 		}
 		
@@ -409,115 +410,111 @@ if (class_exists('pspLinkRedirect') != true) {
 		{
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='all' />
-		<div id="psp-wrapper" class="fluid wrapper-psp">
-			<?php
-			// show the top menu
-			pspAdminMenu::getInstance()->make_active('off_page_optimization|Link_Redirect')->show_menu();
-			?>
+		
+		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
-			<div id="psp-lightbox-overlay">
-				<div id="psp-lightbox-container">
-					<h1 class="psp-lightbox-headline">
-						<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
-						<span id="link-title-add"><?php _e('Add new link:', 'psp');?></span>
-						<span id="link-title-upd"><?php _e('Update link:', 'psp');?></span>
-						<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>"></a>
-					</h1>
-
-					<div class="psp-seo-status-container">
-						<div id="psp-lightbox-seo-report-response">
-							<form class="psp-add-link-form">
-								<table width="100%">
-									<tr>
-										<td width="80"><label><?php _e('URL:', 'psp');?></label></td>
-										<td><input type="text" id="new_url" name="new_url" value="" class="psp-add-link-field" /></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('URL Redirect:', 'psp');?></label></td>
-										<td><input type="text" id="new_url_redirect" name="new_url_redirect" value="" class="psp-add-link-field" /></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<input type="button" class="psp-button green" value="<?php _e('Add this new link', 'psp'); ?>" id="psp-submit-to-builder">
-										</td>
-									</tr>
-								</table>
-								
-							</form>
-						</div>
-						
-						<div id="psp-lightbox-seo-report-response2">
-							<form class="psp-update-link-form">
-								<input type="hidden" id="upd-itemid" name="upd-itemid" value="" />
-								<table width="100%">
-									<tr>
-										<td width="80"><label><?php _e('URL:', 'psp');?></label></td>
-										<td><input type="text" id="new_url2" name="new_url2" value="" class="psp-add-link-field" readonly disabled="disabled" /></td>
-									</tr>
-									<tr>
-										<td><label><?php _e('URL Redirect:', 'psp');?></label></td>
-										<td><input type="text" id="new_url_redirect2" name="new_url_redirect2" value="" class="psp-add-link-field" /></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<input type="button" class="psp-button green" value="<?php _e('Update link info', 'psp'); ?>" id="psp-submit-to-builder2">
-										</td>
-									</tr>
-								</table>
-								
-							</form>
-						</div>
-						<div style="clear:both"></div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Main loading box -->
-			<div id="psp-main-loading">
-				<div id="psp-loading-overlay"></div>
-				<div id="psp-loading-box">
-					<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-					<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-				</div>
-			</div>
-
-			<!-- Content -->
-			<div id="psp-content">
+			<div class="<?php echo $this->the_plugin->alias; ?>-content">
 				
-				<h1 class="psp-section-headline">
-					<?php echo $this->module['Link_Redirect']['menu']['title'];?>
-					<span class="psp-section-info"><?php echo $this->module['Link_Redirect']['description'];?></span>
-					<?php
-					$has_help = isset($this->module['Link_Redirect']['help']) ? true : false;
-					if( $has_help === true ){
+				<?php
+				// show the top menu
+				pspAdminMenu::getInstance()->make_active('off_page_optimization|Link_Redirect')->show_menu();
+				?>
+				
+				<!-- Content -->
+				<section class="<?php echo $this->the_plugin->alias; ?>-main">
 						
-						$help_type = isset($this->module['Link_Redirect']['help']['type']) && $this->module['Link_Redirect']['help']['type'] ? 'remote' : 'local';
-						if( $help_type == 'remote' ){
-							echo '<a href="#load_docs" class="psp-show-docs" data-helptype="' . ( $help_type ) . '" data-url="' . ( $this->module['Link_Redirect']['help']['url'] ) . '">HELP</a>';
-						} 
-					} 
+					<?php 
+					echo psp()->print_section_header(
+						$this->module['Link_Redirect']['menu']['title'],
+						$this->module['Link_Redirect']['description'],
+						$this->module['Link_Redirect']['help']['url']
+					);
 					?>
-				</h1>
-
-				<!-- Container -->
-				<div class="psp-container clearfix">
-
-					<!-- Main Content Wrapper -->
-					<div id="psp-content-wrap" class="clearfix">
-
-						<!-- Content Area -->
-						<div id="psp-content-area">
-							<div class="psp-grid_4">
-	                        	<div class="psp-panel">
-	                        		<div class="psp-panel-header">
-										<span class="psp-panel-title">
-											<?php /*<img src="<?php echo $this->the_plugin->cfg['paths']['plugin_dir_url'];?>/modules/Social_Stats/assets/menu_icon.png">*/ ?>
-											<?php _e('301 Link Redirect', 'psp');?>
-										</span>
+					
+					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
+				
+						<div id="psp-lightbox-overlay">
+							<div id="psp-lightbox-container">
+								<h1 class="psp-lightbox-headline">
+									<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
+									<span id="link-title-add"><?php _e('Add new link:', 'psp');?></span>
+									<span id="link-title-upd"><?php _e('Update link:', 'psp');?></span>
+									<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>"></a>
+								</h1>
+			
+								<div class="psp-seo-status-container">
+									<div id="psp-lightbox-seo-report-response">
+										<form class="psp-add-link-form">
+											<table width="100%">
+												<tr>
+													<td width="80"><label><?php _e('URL:', 'psp');?></label></td>
+													<td><input type="text" id="new_url" name="new_url" value="" class="psp-add-link-field" /></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('URL Redirect:', 'psp');?></label></td>
+													<td><input type="text" id="new_url_redirect" name="new_url_redirect" value="" class="psp-add-link-field" /></td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<input type="button" class="psp-button green" value="<?php _e('Add this new link', 'psp'); ?>" id="psp-submit-to-builder">
+													</td>
+												</tr>
+											</table>
+											
+										</form>
 									</div>
+									
+									<div id="psp-lightbox-seo-report-response2">
+										<form class="psp-update-link-form">
+											<input type="hidden" id="upd-itemid" name="upd-itemid" value="" />
+											<table width="100%">
+												<tr>
+													<td width="80"><label><?php _e('URL:', 'psp');?></label></td>
+													<td><input type="text" id="new_url2" name="new_url2" value="" class="psp-add-link-field" readonly disabled="disabled" /></td>
+												</tr>
+												<tr>
+													<td><label><?php _e('URL Redirect:', 'psp');?></label></td>
+													<td><input type="text" id="new_url_redirect2" name="new_url_redirect2" value="" class="psp-add-link-field" /></td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<input type="button" class="psp-button green" value="<?php _e('Update link info', 'psp'); ?>" id="psp-submit-to-builder2">
+													</td>
+												</tr>
+											</table>
+											
+										</form>
+									</div>
+									<div style="clear:both"></div>
+								</div>
+							</div>
+						</div>
+			
+						<!-- Main loading box -->
+						<div id="psp-main-loading">
+							<div id="psp-loading-overlay"></div>
+							<div id="psp-loading-box">
+								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+							</div>
+						</div>
+
+						<div class="panel-heading psp-panel-heading">
+							<h2><?php _e('301 Link Redirect', 'psp');?></h2>
+						</div>
+	
+						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
+							
+							<!-- Container -->
+							<div class="psp-container clearfix">
+			
+								<!-- Main Content Wrapper -->
+								<div id="psp-content-wrap" class="clearfix">
+									
+	                        		<div class="psp-panel">
+			                        		
 									<div class="psp-panel-content">
 										<form class="psp-form" id="1" action="#save_with_ajax">
 											<div class="psp-form-row psp-table-ajax-list" id="psp-table-ajax-response">
@@ -574,7 +571,7 @@ if (class_exists('pspLinkRedirect') != true) {
 																	'option' => array(
 																		'value' => __('Update', 'psp'),
 																		'action' => 'do_item_update',
-																		'color'	=> 'blue',
+																		'color'	=> 'info',
 																	),
 																	'width' => '30'
 																),
@@ -585,7 +582,7 @@ if (class_exists('pspLinkRedirect') != true) {
 																	'option' => array(
 																		'value' => __('Delete', 'psp'),
 																		'action' => 'do_item_delete',
-																		'color'	=> 'red',
+																		'color'	=> 'danger',
 																	),
 																	'width' => '30'
 																)
@@ -594,12 +591,12 @@ if (class_exists('pspLinkRedirect') != true) {
 														'add_new_link' => array(
 															'value' => __('Add new link', 'psp'),
 															'action' => 'do_add_new_link',
-															'color' => 'blue'
+															'color' => 'info'
 														),
 														'delete_all_rows' => array(
 															'value' => __('Delete selected rows', 'psp'),
 															'action' => 'do_bulk_delete_rows',
-															'color' => 'red'
+															'color' => 'danger'
 														)
 													)
 												))
@@ -608,12 +605,13 @@ if (class_exists('pspLinkRedirect') != true) {
 								            </div>
 							            </form>
 				            		</div>
+				            		
+									</div>
 								</div>
 							</div>
-							<div class="clear"></div>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 		</div>
 <?php

@@ -14,7 +14,7 @@
 			'menu' => array(
 				'order' => 12,
 				'title' => __('SEO Friendly Images', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<span class="' . ( $psp->alias ) . '-icon-seo_friendly_images"><span class="path1"></span><span class="path2"></span><span class="path3"></span></span>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',

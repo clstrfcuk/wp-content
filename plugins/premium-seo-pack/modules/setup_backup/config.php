@@ -14,13 +14,13 @@
 			'menu' => array(
 				'order' => 31,
 				'title' => __('Setup / Backup', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-setup_backup"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/menu_icon.png',
 				'url'	=> admin_url("admin.php?page=psp#setup_backup")
 			),
-			'description' => __("Using this module you can install a default configuration for the plugin, and as well to back up settins!", 'psp'),
+			'description' => __("Using this module you can install a default configuration for the plugin, as well as backing up the settings!", 'psp'),
       	  	'help' => array(
 				'type' => 'remote',
 				'url' => 'http://docs.aa-team.com/premium-seo-pack/documentation/setup-backup-2/'

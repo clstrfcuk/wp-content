@@ -40,7 +40,6 @@ if (class_exists('pspDashboard') != true) {
 			//$this->module = $this->the_plugin->cfg['modules']['dashboard'];
 			
 			if (is_admin()) {
-	            add_action( "admin_enqueue_scripts", array( &$this, 'admin_print_styles') );
 				add_action( "admin_print_scripts", array( &$this, 'admin_load_scripts') );
 			}
 			   
@@ -51,36 +50,25 @@ if (class_exists('pspDashboard') != true) {
 			}
 			
 			if ( $this->the_plugin->is_admin === true ) {
-
-			// add the boxes
-			/*$this->addBox( 'website_preview', '', $this->website_preview(), array(
-				'size' => 'grid_4'
-			) );*/
-			
-			$this->addBox( 'dashboard_links', '', $this->links(), array(
-				'size' => 'grid_4'
-			) );
-			
-			$this->addBox( 'social', 'Social Statistics', $this->social(), array(
-				'size' => 'grid_4'
-			) );
-			
-			$this->addBox( 'audience_overview', 'Audience Overview', $this->audience_overview(), array(
-				'size' => 'grid_4'
-			) );
-			
-			$this->addBox( 'aateam_products', 'Other products by AA-Team:', $this->aateam_products(), array(
-				'size' => 'grid_4'
-			) );
-			
-			/*
-			$this->addBox( 'technologies', 'Technologies', $this->technologies(), array(
-				'size' => 'grid_4'
-			) );
-			*/
-			
-			$this->addBox( 'support', 'Need AA-Team Support?', $this->support() );
-			$this->addBox( 'changelog', 'Changelog', $this->changelog() );
+				// add the boxes
+				$this->addBox( 'plugin_dashboard_msg', '', $this->plugin_dashboard_msg(), array(
+					'size' => 'grid_4'
+				) );
+				
+				$this->addBox( 'dashboard_links', '', $this->links(), array(
+					'size' => 'grid_4'
+				) );
+				
+				$this->addBox( 'social', 'Social Statistics', $this->social(), array(
+					'size' => 'grid_4'
+				) );
+				
+				$this->addBox( 'audience_overview', 'Audience Overview', $this->audience_overview(), array(
+					'size' => 'grid_4'
+				) );
+				
+				$this->addBox( 'support', 'Need AA-Team Support?', $this->support() );
+				$this->addBox( 'changelog', 'Changelog', $this->changelog() );
 			}
         }
 
@@ -98,12 +86,6 @@ if (class_exists('pspDashboard') != true) {
 	        return self::$_instance;
 	    }
 	    
-		public function admin_print_styles()
-		{
-			wp_register_style( 'psp-DashboardBoxes', $this->module_folder . 'app.css', false, '1.0' );
-        	wp_enqueue_style( 'psp-DashboardBoxes' );
-		}
-		
 		public function admin_load_scripts()
 		{
 			wp_enqueue_script( 'psp-DashboardBoxes', $this->module_folder . 'app.class.js', array(), '1.0', true );
@@ -147,9 +129,11 @@ if (class_exists('pspDashboard') != true) {
 				
 				$box = array();
 				
-				$box[] = '<div class="psp-dashboard-status-box">';
+				$box[] = '<div class="psp-dashboard-status-box panel panel-default psp-panel psp-dashboard-box-' . ( $id ) . ' ' . ( isset($atts['size']) ? 'dashboard_' . $atts['size'] : '' ) . ' ' . ( isset($atts['noright']) ? 'dashboard_box_noright' : '' ) . '">';
 				if( isset($title) && trim($title) != "" ){
-					$box[] = 	'<h1>' . ( $title ) . '</h1>';
+					$box[] = 	'<div class="panel-heading psp-panel-heading">';
+					$box[] = 		'<h2>' . ( $title ) . '</h2>';
+					$box[] = 	'</div>';
 				}
 				$box[] = 	$html;
 				$box[] = '</div>';
@@ -182,22 +166,43 @@ if (class_exists('pspDashboard') != true) {
 			return implode("\n", $html);
 		}
 		
+		public function plugin_dashboard_msg()
+		{
+			$html = array();
+			
+			$html[] = '<div class="panel-heading ' . ( $this->the_plugin->alias ) . '-panel-heading">';
+			$html[] = 	'<h1>Dashboard</h1>';
+			$html[] = 	'Dashboard Area - Here you will find useful shortcuts to different modules inside the plugin.';
+			$html[] = 	''; // extra content here ...
+			$html[] = '</div>';
+			$html[] = '<div class="panel-body ' . ( $this->the_plugin->alias ) . '-panel-body ' . ( $this->the_plugin->alias ) . '-no-padding" >
+						<a href="http://docs.aa-team.com/products/premium-seo-pack/" target="_blank" class="' . ( $this->the_plugin->alias ) . '-tab"><span class="psp-icon-support"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span> Documentation</a>
+						<a href="http://codecanyon.net/user/aa-team/portfolio" target="_blank" class="' . ( $this->the_plugin->alias ) . '-tab"><i class="' . ( $this->the_plugin->alias ) . '-icon-heart"></i> More AA-Team Products</a>
+					</div>';
+
+			return implode("\n", $html);
+		}
+		
 		public function support()
 		{
 			$html = array();
+			$html[] = '<div class="panel-body psp-panel-body psp-changelog">';
 			$html[] = '<a href="http://support.aa-team.com" target="_blank"><img src="' . ( $this->module_folder ) . 'assets/support_banner.jpg"></a>';
+			$html[] = '</div>';
 			
 			return implode("\n", $html);
 		}
 		public function social()
 		{
 			$html = array();
+			$html[] = '<div class="panel-body psp-panel-body">';
 			$html[] = $this->formatRow( array( 
 				'id' 			=> 'social_impact',
 				'title' 		=> '',
 				'html'			=> '',
 				'ajax_content' 	=> true
 			) );
+			$html[] = '</div>';
  
 			return implode("\n", $html);
 		}
@@ -205,37 +210,18 @@ if (class_exists('pspDashboard') != true) {
 		public function audience_overview()
 		{
 			$html = array();
+			$html[] = '<div class="panel-body psp-panel-body">';
 			$html[] = '<div class="psp-audience-graph" id="psp-audience-visits-graph" data-fromdate="' . ( date('Y-m-d', strtotime("-1 week")) ) . '" data-todate="' . ( date('Y-m-d') ) . '"></div>';
-
-			return  implode("\n", $html);
-		}
-		
-		public function website_preview()
-		{
-			$html = array();
-			/*$html[] = '<div class="psp-website-preview">';
-			$html[] = 	'<div class="psp-borwser-frame">';
-			$html[] = 		'<img class="the-website-preview" src="' . ( 'http://api.snapito.com/web/ebcb5f2b3d62ccecb1ddc4caa5c5c20b01b040f4/mc?url=' . home_url() ) . '" width="800" height="640">';
-			$html[] = 		'<img src="' . ( $this->module_folder ) . 'assets/browser.png" class="browser-preview">';
-			$html[] = 	'</div>';*/
-			$html[] = '<h3>Review of: <a href="' . ( home_url() ) . '">' . ( get_bloginfo('name') ) . '</a></h3>';
-			$html[] = '<h4>Thank you for buying: <a target="_blank" href="http://codecanyon.net/item/plugin/' . ( get_option('psp_register_item_id') ) . '">' . ( get_option('psp_register_item_name') ) . '</a></h4>';
-			$html[] = '<h4>Licence: <a target="_blank" href="http://codecanyon.net/licenses/regular_extended">' . ( get_option('psp_register_licence') ) . '</a></h4>';
 			$html[] = '</div>';
-			
+
 			return  implode("\n", $html);
 		}
 		
 		public function links()
 		{
 			$html = array();
+			$html[] = '<div class="panel-body psp-panel-body psp-dashboard-icons">';
 			$html[] = '<ul class="psp-summary-links">';
-			
-			/*ob_start();
-			var_dump('<pre>',array_keys($this->the_plugin->cfg['modules']),'</pre>');
-			$__x = ob_get_contents();
-			ob_end_clean();
-			$html[]  = '<li>' . $__x .'</li>';*/
 			
 			// get all active modules
 			foreach ($this->the_plugin->cfg['modules'] as $key => $value) {
@@ -255,7 +241,7 @@ if (class_exists('pspDashboard') != true) {
 					$html[] = '
 						<li>
 							<a href="' . ( $in_dashboard['url'] ) . '">
-								<img src="' . ( $value['folder_uri']  . $in_dashboard['icon'] ) . '">
+								'. ( $value[$key]['menu']['icon'] ) .'
 								<span class="text">' . ( $value[$key]['menu']['title'] ) . '</span>
 							</a>
 						</li>';
@@ -263,72 +249,32 @@ if (class_exists('pspDashboard') != true) {
 			}
 			
 			$html[] = '</ul>';
+			$html[] = '</div>';
 			
-			return implode("\n", $html);
-		}
-
-		public function aateam_products()
-		{
-			$html = array();
-			
-			$html[] = '<ul class="psp-aa-products-tabs">';
-			$html[] = 	'<li class="on">';
-			$html[] = 		'<a href="javascript: void(0)" class="psp-aa-items-codecanyon">CodeCanyon</a>';
-			$html[] = 	'</li>';
-			$html[] = 	'<li>';
-			$html[] = 		'<a href="javascript: void(0)" class="psp-aa-items-themeforest">ThemeForest</a>';
-			$html[] = 	'</li>';
-			$html[] = 	'<li>';
-			$html[] = 		'<a href="javascript: void(0)" class="psp-aa-items-graphicriver">GraphicRiver</a>';
-			$html[] = 	'</li>';
-			$html[] = '</ul>';
-			
-			$html[] = $this->formatRow( array( 
-				'id' 			=> 'aateam_products',
-				'title' 		=> '',
-				'html'			=> '',
-				'ajax_content' 	=> true
-			) );
- 
 			return implode("\n", $html);
 		}
 		
-        public function changelog()
-        {
-            $html = array();
-            $html[] = '<textarea style="height: 500px;">';
-            $changelog_file = file_get_contents( $this->the_plugin->cfg['paths']['plugin_dir_path'] . '/changelog.txt' );
-            $html[] = $changelog_file;
-            $html[] = '</textarea>';
-            
-            return implode("\n", $html);
-        }
-
-		public function technologies()
+		public function changelog()
 		{
 			$html = array();
-			$html[] = $this->formatRow( array( 
-				'id' 			=> 'server_ip',
-				'title' 		=> 'Server IP',
-				'html'			=> '',
-				'ajax_content' 	=> true
-			) );
+
+			$html[] = '<div class="panel-body psp-panel-body psp-changelog">';
+			$html[] = 	'<article>';
+			$changelog_file = 	file_get_contents( $this->the_plugin->cfg['paths']['plugin_dir_path'] . '/changelog.txt' );
+
+			$re = "/(##.*\\n)/"; 
+			preg_match_all($re, $changelog_file, $matches);
+			if( isset($matches[0]) && count($matches) > 0 ){
+				foreach ($matches[0] as $str) {
+					//$str = trim($str);
+					$changelog_file = str_replace( $str, "<h3>" . ( $str ) . "</h3>", $changelog_file );
+				}
+			}
 			
-			$html[] = $this->formatRow( array( 
-				'id' 			=> 'technologies',
-				'title' 		=> 'Technologies',
-				'html'			=> '',
-				'ajax_content' 	=> true
-			) );
+			$html[] = nl2br($changelog_file);
+			$html[] = 	'</article>';
+			$html[] = '</div>';
 			
-			$html[] = $this->formatRow( array( 
-				'id' 			=> 'charset',
-				'title' 		=> 'Charset',
-				'html'			=> '',
-				'ajax_content' 	=> true
-			) );
-			 
- 
 			return implode("\n", $html);
 		}
 		

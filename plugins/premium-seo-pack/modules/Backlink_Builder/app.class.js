@@ -20,8 +20,8 @@ pspBacklinkBuilder = (function ($) {
 	(function init() {
 		// load the triggers
 		$(document).ready(function(){
-			maincontainer = $("#psp-wrapper");
-			mainloading = maincontainer.find("#psp-main-loading");
+			maincontainer = $(".psp-main");
+			mainloading = maincontainer.find(".psp-main");
 			
 			lightbox = $("#psp-lightbox-overlay");
 			lightboxloading = maincontainer.find("#psp-lightbox-loading");
@@ -72,13 +72,13 @@ pspBacklinkBuilder = (function ($) {
 				mainloading.fadeOut('fast');
 				
 				var containerSize = {
-					'width': 340,
+					'width': 200,
 					'height': 60
 				}
 				
 				lightbox.find("#psp-lightbox-container").css( {
-					'width': parseInt( containerSize.width * 0.8 ) + "px",
-					'height': parseInt( containerSize.height * 0.8 ) + "px",
+					// 'width': parseInt( containerSize.width * 0.8 ) + "px",
+					//'height': parseInt( containerSize.height * 0.8 ) + "px",
 					'margin-left': "-" + ( parseInt( (containerSize.width * 0.8) / 2  )) + "px",
 				});
 				
@@ -168,7 +168,7 @@ pspBacklinkBuilder = (function ($) {
 		
 		maincontainer.on('click', 'a.psp-submit-status', function(e){
 			e.preventDefault();
-
+			console.log( 'test' );
 			changeSubmitStatus( last_submit_id, $(this).data('status') );
 		});
 		

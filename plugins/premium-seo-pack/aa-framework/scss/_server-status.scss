@@ -1,0 +1,257 @@
+.#{$alias} {
+	.#{$alias}-server-status {
+		a {
+			color: $info;
+		}
+
+		.#{$alias}-begin-test-container {
+			a {
+				margin-bottom: px(20);
+			}
+		}
+
+		table {
+			
+			.active_modules {
+				i,
+				span[class^="psp-icon-"] {
+					color: $orange;
+					margin-right: px(5);
+				}
+				span {
+					&.version {
+						margin: 0 px(5);
+						font-weight: $medium;
+					}
+				}
+			}
+				
+			
+			&.#{$alias}-logs {
+				display: none;
+				    border: 0.1rem solid #bcbfc4;
+				    width: 70.9rem !important;
+				    margin: 1rem 0px 1rem 0px;
+
+				textarea {
+					&.#{$alias}-log-details {
+						border: 0.1rem solid #bcbfc4;
+					    width: 100%;
+					    height: 14rem;
+					    margin: 0.5rem 0px 0px 0px;
+					    display: none;
+					    margin-top: 3rem !important;	
+					}
+				}
+				a {
+					&.#{$alias}-form-button {
+					    position: absolute;
+					    right: -#{px(9)};
+					    margin-top: -#{px(19)};
+
+					}
+				}
+			}
+		}
+
+		.#{$alias}-message {
+	    	font-size: px(12);
+		    border-bottom: px(1) solid #d2d2d2;
+		    padding: px(15) px(8) px(15) px(45);
+		    position: relative;
+		    vertical-align: middle;
+		    cursor: default;
+		    background-color: $light-gray;
+		    background-position: px(12) px(12);
+		    background-repeat: no-repeat;
+		    margin-bottom: px(15);
+		    &.#{$alias}-success {
+	    	    background-color: $success;
+			    color: $white;
+		    }
+		    &.#{$alias}-success::before {
+		    	font-family: FontAwesome;
+			    font-size: px(18);
+			    content: "\f00c";
+			    margin-right: px(20);
+		        vertical-align: middle;
+		    }
+		    &.#{$alias}-error {
+	    	    background-color: $danger;
+			    border-color: #eb979b;
+			    color: $white;
+		    }
+		    &.#{$alias}-error::before {
+	    	    font-family: FontAwesome;
+			    font-size: px(18);
+			    content: "\f06a";
+			    margin-right: px(20);
+		        vertical-align: middle;
+		    }
+	    }
+		&>.#{$alias}-table {
+			th,
+			td {
+				text-align: left;
+				padding: px(20) px(20) 0 px(20) !important;
+				vertical-align: middle;
+			}
+			th {
+				color: $info;
+			}
+			td:nth-child(odd) {
+				color: $gray;
+				font-weight: $medium;
+			}
+			.#{$alias}-loading-ajax-details {
+				background-repeat: no-repeat;
+			    width: 100%;
+			    min-height: px(25);
+			    margin-bottom: px(15);
+			}
+		}
+
+		.#{$alias}-test-timeline {
+			width: px(700);
+			background: none repeat scroll 0 0 #ecf0f1;
+			border: px(1) solid #d7d9df;
+			margin: px(4) px(50) px(4) 0;
+			position: relative;
+			height: px(20);
+			display: none;
+			.#{$alias}-one_step {
+				border-right: px(1) solid #484848;
+				float: left;
+				height: px(18);
+				width: 33.6%;
+				position: relative;
+				margin-right: -#{px(4)};
+				&.nbsteps1 {
+					width: 100%;
+				}
+				&.nbsteps2 {
+					width: 50.3%;
+				}
+				&.nbsteps3 {
+					width: 33.6%;
+				}
+				&.nbsteps4 {
+					width: 25.4%;
+				}
+			}
+		}
+		.#{$alias}-one_step {
+			.#{$alias}-step-name {
+				position: absolute;
+				width: px(65);
+				height: px(24);
+				line-height: px(22);
+				padding: 0;
+				right: -#{px(34)};
+				top: -#{px(32)};
+				margin-left: -#{px(32)};
+				background: #7d8688;
+				text-align: center;
+				//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+				border-radius: px(4);
+				color: #fff;
+				&:after {
+					content: "";
+					position: absolute;
+					bottom: -#{px(10)};
+					left: px(25);
+					border-style: solid;
+					border-width: px(10) px(7) 0;
+					border-color: #7d8688 transparent;
+					display: block;
+					width: 0;
+					z-index: 1;
+				}
+			}
+			.#{$alias}-step-status {
+				border: px(1) solid #adb3b4;
+				width: 100%;
+				height: px(18);
+				background: #fff;
+				&.#{$alias}-loading-success {
+					background: $success;
+					position: relative;
+					color: #fff;
+					text-align: center;
+				}
+				&.#{$alias}-loading-error {
+					background: $danger;
+					position: relative;
+					color: #fff;
+					text-align: center;
+				}
+				&.#{$alias}-loading-inprogress {
+					background-image: url(../../aa-framework/images/ajax-loader.gif);
+					background-position: center center;
+					background-repeat: no-repeat;
+				}
+			}
+		}
+		.#{$alias}-log-title {
+			position: relative;
+			.#{$alias}-button {
+				position: absolute;
+				top: -#{px(4)};
+				right: 0;
+			}
+		}
+		.#{$alias}-begin-test-container {
+			width: px(600);
+			&.noheight {
+				height: auto;
+			}
+			input {
+				position: relative;
+				top: -#{px(8)};
+				width: px(120);
+			}
+			label {
+				position: relative;
+				top: -#{px(10)};
+				right: -#{px(4)};
+			}
+		}
+		.#{$alias}-loading-ajax-details {
+			background-image: url(../../aa-framework/images/ajax-loader.gif);
+			background-repeat: no-repeat;
+			background-position: center left;
+			width: 100%;
+			min-height: px(25);
+		}
+		table.#{$alias}-table {
+			tr {
+				td {
+					padding: px(7) px(10);
+				}
+				th {
+					padding: px(7) px(10);
+				}
+			}
+			.#{$alias}-row-status {
+				&.#{$alias}-loading-success {
+					background: #2ecc71;
+					border-color: #27ae60;
+					position: relative;
+					color: #fff;
+					text-align: center;
+				}
+				&.#{$alias}-loading-error {
+					background: #e74c3c;
+					border-color: #c0392b;
+					position: relative;
+					color: #fff;
+					text-align: center;
+				}
+			}
+		}
+		.#{$alias}-button.inline {
+			display: inline;
+		}
+		
+	}
+}
