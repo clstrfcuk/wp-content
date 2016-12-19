@@ -1,14 +1,14 @@
 === Transient Cleaner ===
 Contributors: dartiss
-Donate link: http://artiss.co.uk/donate
+Donate link: https://artiss.blog/donate
 Tags: cache, clean, database, housekeep, options, table, tidy, transient, update, upgrade
 Requires at least: 3.3
-Tested up to: 4.5
-Stable tag: 1.4.2
+Tested up to: 4.7
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Housekeep expired transients from your options table
+Housekeep expired transients from your options table. The original and best!
 
 == Description ==
 
@@ -20,24 +20,46 @@ Why is this a problem? Transients are often used by plugins to "cache" data (my 
 
 Meantime, this plugin is the hero that you've been waiting for. Simply activate the plugin, sit back and enjoy a much cleaner, smaller options table. It also adds the additional recommendation that after a database upgrade all transients will be cleared down.
 
-Within `Administration` -> `Tools` -> `Transients` an options screen exists allowing you to tweak which of the various housekeeping you'd like to happen, including the ability to perform an ad-hoc run, and when you'd like the to be automatically scheduled. You can even request an optimization of the options table to give your system a real "pep"!
+Technical specification...
 
-We'd like to thank WordPress Developer Andrew Nacin for his early discussion on this. Also, we'd like to acknowledge [the useful article at Everybody Staze](http://www.staze.org/wordpress-_transient-buildup/ "WordPress _transient buildup") for ensuring the proposed solution wasn't totally mad, and [W-Shadow.com](http://w-shadow.com/blog/2012/04/17/delete-stale-transients/ "Cleaning Up Stale Transients") for the cleaning code.
+* Licensed under [GPLv2 (or later)](http://wordpress.org/about/gpl/ "GNU General Public License")
+* Designed for both single and multi-site installations
+* PHP7 compatible
+* Fully internationalized, ready for translations **If you would like to add a translation to his plugin then please head to our [Translating WordPress](https://translate.wordpress.org/projects/wp-plugins/artiss-transient-cleaner "Translating WordPress") page**
+
+But, most importantly, there are no premium features and no adverts - this is 100% complete and free! See the "Other Notes" tab for how to get started as well as the more advanced features.
+
+I'd like to thank WordPress Developer Andrew Nacin for his early discussion on this. Also, I'd like to acknowledge [the useful article at Everybody Staze](http://www.staze.org/wordpress-_transient-buildup/ "WordPress _transient buildup") for ensuring the proposed solution wasn't totally mad, and [W-Shadow.com](http://w-shadow.com/blog/2012/04/17/delete-stale-transients/ "Cleaning Up Stale Transients") for the cleaning code.
+
+== The Settings Screen ==
+
+Within `Administration` -> `Tools` -> `Transients` an options screen exists allowing you to tweak which of the various housekeeping you'd like to happen, including the ability to perform an ad-hoc run, and when you'd like the to be automatically scheduled.
+
+You can even request an optimization of the options table to give your system a real "pep"!
+
+== Running in Lite mode ==
+
+A "lite" mode is available. By activating this the options screen will no longer appear and default settings will be used. The advantage? Improved performance to Admin and, especially if you're running multi-site, no chance of anybody "tinkering" with the settings.
+
+To activate, add the following to your `wp-config.php` file...
+
+`define( 'TC_LITE', true );`
 
 == Using hooks ==
 
-If you're the type of odd person who likes to code for WordPress (really?) then we've added a couple of hooks so you can call our rather spiffy housekeeping functions...
+If you're the type of odd person who likes to code for WordPress (really?) then I've added a couple of hooks so you can call our rather spiffy housekeeping functions...
 
 `housekeep_transients` - this will clear down any expired transients
 `clear_all_transients` - this will remove any and all transients, expired or otherwise
 
 == Installation ==
 
-Transient Cleaner can be found and installed via the Plugin menu within WordPress administration. Alternatively, it can be downloaded and installed manually...
+Transient Cleaner can be found and installed via the Plugin menu within WordPress administration (Plugins -> Add New). Alternatively, it can be downloaded from WordPress.org and installed manually...
 
-1. Upload the entire `artiss-transient-cleaner` folder to your wp-content/plugins/ directory.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. That's it - you're done. Options can be changed in Administration via the Tools->Transients screen.
+1. Upload the entire `artiss-transient-cleaner` folder to your `wp-content/plugins/` directory.
+2. Activate the plugin through the 'Plugins' menu in WordPress administration.
+
+Voila! It's ready to go.
 
 == Frequently Asked Questions ==
 
@@ -47,7 +69,7 @@ An attempt was made and lots of discussions ensued. Basically, some plugins don'
 
 = Does that mean this plugin could break my site? =
 
-If you have one of these badly written plugins, yes. However, we've yet to come across anybody reporting an issue.
+If you have one of these badly written plugins, yes. However, I've yet to come across anybody reporting an issue.
 
 = Have WordPress not done anything, then? =
 
@@ -63,13 +85,28 @@ It should be noted too that this will only run once the appropriate hour has pas
 
 = In the administration screen it sometimes refers to the number of transients and other times the number of records. What's the difference? =
 
-A transient may consist of one or more records (normally a timed transient - the type that expires - has two) and without checking and matching them all up it can sometimes be hard to work out. So, where possible, we'll tell you the number of transients but, where we can't, we'll refer to the number of records on the database.
+A transient may consist of one or more records (normally a timed transient - the type that expires - has two) and without checking and matching them all up it can sometimes be hard to work out. So, where possible, it'll tell you the number of transients but, where it can't, it'll refer to the number of records on the database.
 
 == Screenshots ==
 
 1. Administration screen showing contextual help screen
 
 == Changelog ==
+
+[Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
+
+= 1.5.1 =
+* Maintenance: Beware the Atom editor and it's default setting of appending extra blank lines! Extra lines have now been removed from the bottom of various files
+* Maintenance: Also took the opportunity to correct my site URLs, as my domain has recently changed (the old URLs still work as I'm smart enough to put redirects in place but, still, it's neater to do it properly)
+
+= 1.5 =
+* Enhancement: A new option has been added to allow you to run in "lite" mode, where no option screen will be present and default settings will be used. Useful for multi-site installations or just where you want to run with minimal performance impact
+* Enhancement: Re-instated the code change that I removed in 1.4.1 - this time it performs a version check and only calls the extra function if available
+* Enhancement: After WP 4.6 you no longer need to load the plugin's text domain. So I don't!
+* Enhancement: Added a links sidebar to the help drop-down
+* Maintenance: Changed the menu names so they no longer clash with other plugins
+* Maintenance: Making use of yoda conditions to ensure stability of code
+* Bug: Sorted bug which meant that changing the scheduled run time didn't work
 
 = 1.4.2 =
 * Maintenance: Updated branding, inc. adding donation links
@@ -128,38 +165,5 @@ A transient may consist of one or more records (normally a timed transient - the
 
 == Upgrade Notice ==
 
-= 1.4.2 =
-* Minor update to change branding
-
-= 1.4.1 =
-* Urgent update to fix a bug that will affect those running WordPress before version 4.4
-
-= 1.4 =
-* Lots of improved goodness, including a modifiable scheduler and better compatibility with multisite installations
-
-= 1.3.1 =
-* Minor update to add a text domain and path
-
-= 1.3 =
-* Some minor enhancements and a lot of PHP bug fixes
-
-= 1.2.4 =
-* Update to correct links on plugin meta
-
-= 1.2.3 =
-* Update to remove a pesky PHP error
-
-= 1.2.2 =
-* Update to ensure only admins can modify options
-
-= 1.2.1 =
-* Updated branding on the plugin
-
-= 1.2 =
-* Update to add new options screen and much improved housekeeping code
-
-= 1.1 =
-* Update to add housekeeping upon activation
-
-= 1.0 =
-* Initial release
+= 1.5.1 =
+* Minor release to remove some extraneous blank lines

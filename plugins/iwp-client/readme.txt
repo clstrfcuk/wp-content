@@ -48,6 +48,12 @@ Credits: [Vladimir Prelovac](http://prelovac.com/vladimir) for his worker plugin
 
 == Changelog ==
 
+= 1.6.1.1 - August 12th 2016 =
+* Fix: Bug Fix.
+* Fix: Plugins were not updated but were showing incorrectly as updated in the Process Queue.
+* Fix: Failed to restore: Error performing query "/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */; ": Variable 'character_set_client' can't be set to the value of 'NULL' error message would show during restore.
+* Fix: PHP Notice: Undefined index error would show while taking backups.
+
 = 1.6.0 - June 27th 2016 =
 * Feature: Activity log for updates and backups to be used in new version of client reporting beta will be saved and retrieved from the WP Admin instead of the IWP Admin Panel, provided the client reporting addon is active.
 * Improvement: The code in the backup_status_table has been refactored.

@@ -98,7 +98,7 @@ function seed_csp4_get_options(){
         "type" => "wpeditor",
         "id" => "description",
         "label" => __( "Message", 'coming-soon' ),
-        "desc" => __( "Tell the visitor what to expect from your site.", 'coming-soon' ),
+        "desc" => __( "Tell the visitor what to expect from your site. Check out the Pro Version if you need ShortCode support.", 'coming-soon' ),
         "class" => "large-text"
     );
 

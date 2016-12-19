@@ -3422,7 +3422,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 			foreach ($lines as $line) {
 				iwp_mmb_auto_print('restore_db_php');
 				// Skip it if it's a comment
-				if (substr($line, 0, 2) == '--' || $line == '')
+				if(substr($line, 0, 2) == '--' || $line == '' || substr($line, 0, 3) == '/*!')
 					continue;
 				
 				// Add this line to the current query

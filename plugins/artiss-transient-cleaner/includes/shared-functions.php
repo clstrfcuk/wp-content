@@ -12,7 +12,9 @@
 
 function tc_get_options() {
 
-	$options = get_option( 'transient_clean_options' );
+	if ( isset( $GLOBALS[ 'tc_lite' ] ) && $GLOBALS[ 'tc_lite' ] !== false ) { $lite = true; } else { $lite = false; }
+
+	if ( !$lite ) { $options = get_option( 'transient_clean_options' ); }
 
 	// If options don't exist, create an empty array
 
@@ -34,7 +36,7 @@ function tc_get_options() {
 
 	// Update the options, if changed, and return the result
 
-	if ( $options != $new_options ) { update_option( 'transient_clean_options', $new_options ); }
+	if ( $options != $new_options && !$lite ) { update_option( 'transient_clean_options', $new_options ); }
 
 	return $new_options;
 }

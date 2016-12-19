@@ -300,8 +300,8 @@ class wordfenceScanner {
 								break;
 						}
 							}
-					else if(strpos($file, 'lib/wordfenceScanner.php') === false) {
-							$regexMatched = false;
+					else {
+						$regexMatched = false;
 						foreach ($this->patterns['rules'] as $rule) {
 							$type = (isset($rule[4]) && !empty($rule[4])) ? $rule[4] : 'server';
 							$logOnly = (isset($rule[5]) && !empty($rule[5])) ? $rule[5] : false;
@@ -335,7 +335,7 @@ class wordfenceScanner {
 							}
 						}
 						if ($regexMatched) { break; }
-						}
+					}
 					if ($treatAsBinary && wfConfig::get('scansEnabled_highSense')) {
 							$badStringFound = false;
 						if (strpos($data, $this->patterns['badstrings'][0]) !== false) {

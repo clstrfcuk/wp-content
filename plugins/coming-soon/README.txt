@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: seedprod
 Donate link: http://www.seedprod.com
-Tags: maintenance mode, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, coming soon page, under construction page, landing page
+Tags: maintenance mode, coming soon page, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, under construction page, landing page
 Requires at least: 3.5.1
-Tested up to: 4.5.0
-Stable tag: 5.0.2
+Tested up to: 4.7.0
+Stable tag: 5.0.5
 Text Domain: coming-soon
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,11 +13,11 @@ The #1 Coming Soon Page, Under Construction & Maintenance Mode plugin for WordPr
 
 == Description ==
 
-Create simple Coming Soon and Maintenance Mode pages. Work on your site while visitors see a "Coming Soon" or "Maintenance Mode" page.
+Create a simple Coming Soon Page or Maintenance Mode Page. Work on your site in provite while visitors see a "Coming Soon" or "Maintenance Mode" page.
 
-*   [Upgrade to the Coming Soon Pro Version Now!&raquo;](http://www.seedprod.com?utm_source=wordpress.org&utm_medium=link&utm_campaign=coming-soon-pro-from-wordpress.org)
-*   [View a Coming Soon Live Demo &raquo;](http://demo.seedprod.com/coming-soon-pro/ "SeedProd Demo")
-*   [Read Reviews &raquo;](http://www.seedprod.com/testimonials/ "Ultimate Coming Soon Page WordPress Plugin")
+*   [Upgrade to the Coming Soon Pro Version Now! &raquo;](http://www.seedprod.com?utm_source=wordpress.org&utm_medium=link&utm_campaign=coming-soon-pro-from-wordpress.org "Coming Soon Page Pro Version")
+*   [View a Coming Soon Page Live Demo &raquo;](http://demo.seedprod.com/coming-soon-pro/ "Coming Soon Page Demo")
+*   [Read Reviews &raquo;](https://www.seedprod.com/testimonials/ "Ultimate Coming Soon Page WordPress Plugin")
 
 ### Benefits, Features and Options:
 
@@ -68,13 +68,6 @@ Create simple Coming Soon and Maintenance Mode pages. Work on your site while vi
 
 *   [Upgrade to the Pro Version Now!&raquo;](http://www.seedprod.com/?utm_source=wordpress.org&utm_medium=link&utm_campaign=coming-soon-from-wordpress.org)
 
-**Included Translations:**
-
-* Danish(da_DK) by [Alexander Leo-Hansen](http://alexanderleohansen.dk/)
-* Estonian(pt_BR) by [mauro.mascarenhas](https://wordpress.org/support/profile/mauromascarenhas)
-* Swedish(sv_SE) by [mepmepmep](https://wordpress.org/support/profile/mepmepmep)
-
-
 == Installation ==
 
 = Using The WordPress Dashboard =
@@ -101,10 +94,16 @@ Create simple Coming Soon and Maintenance Mode pages. Work on your site while vi
 
 
 == Frequently Asked Questions ==
+= What's the difference between Comgin Soon Page Mode and Maintenance Mode? =
+
+Coming Soon Page Mode return a http status 200 and allows your site to be indexed by Google and other searching engine. You should always using Coming Soon Page mode when your site is new. 
+
+Maintenance Mode returns a http status code 503 and should be used when you are doing short term maintenance on an existing site. This will let search engines know your site is under going maintenance and should return in 1 day when maintenance mode is finished.
 
 = Disabled Coming Soon Plugin and it still shows =
 
 This is always a caching issue. Go to the caching plugin's setting page and clear the cache.
+[More Info &raquo;](http://support.seedprod.com/article/83-how-to-clear-wp-super-caches-cache)
 
 == Screenshots ==
 
@@ -114,6 +113,17 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 4. Design Page
 
 == Changelog ==
+= 5.0.5 =
+* Disable REST API while in coming soon and maintenance mode
+
+= 5.0.4 =
+* PHP 7 Compatibility
+
+= 5.0.3 =
+* Updated ReadMe Text
+* Ensure Full Size images are selected by default when selecting an image.
+* Make sure all files are local to the plugin.
+
 = 5.0.2 =
 * More tweaks to the append html section.
 
@@ -160,6 +170,17 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 * Initial Commit
 
 == Upgrade Notice ==
+= 5.0.5 =
+* Disable REST API while in coming soon and maintenance mode
+
+= 5.0.4 =
+* PHP 7 Compatibility
+
+= 5.0.3 =
+* Ensure Full Size images are selected by default when selecting an image.
+* Make sure all files are local to the plugin.
+* Updated ReadMe Text
+
 = 5.0.2 =
 * More tweaks to the append html section.
 

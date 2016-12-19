@@ -100,7 +100,7 @@ class SEED_CSP4_ADMIN
         wp_enqueue_style( 'media-upload' );
         wp_enqueue_style( 'wp-color-picker' );
         wp_enqueue_style( 'seed_csp4-framework-css', SEED_CSP4_PLUGIN_URL . 'framework/settings-style.css', false, $this->plugin_version );
-        wp_enqueue_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css', false, $this->plugin_version );
+        wp_enqueue_style( 'font-awesome', SEED_CSP4_PLUGIN_URL . 'framework/css/font-awesome.css', false, $this->plugin_version, false, $this->plugin_version );
     }
 
     /**
@@ -186,7 +186,8 @@ class SEED_CSP4_ADMIN
             }
             echo '<a class="nav-tab seed_csp4-preview thickbox-preview" target="_blank" href="'.home_url().'?cs_preview=true&TB_iframe=true&width=640&height=632" title="'.__('&larr; Close Window','coming-soon').'"><i class="fa fa-external-link"></i> '.__('Live Preview','coming-soon').'</a>';
             if(defined('SEED_CSP_API_KEY') === false){
-                echo '<a class="nav-tab seed_csp4-support" style="background-color: #444;color: #fff" href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin" target="_blank"><i class="fa fa-star"></i> '.__('Upgrade to Pro for more Professional Features','coming-soon').'</a>';
+                echo '<a class="nav-tab seed_csp4-support" style="background-color: #444;color: #fff" href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin" target="_blank"><i class="fa fa-star"></i> '.__('Upgrade to Pro for More Features','coming-soon').'</a>';
+                //echo '<a class="nav-tab seed_csp4-support" style="background-color: #444;color: #fff" href="http://testdrive.seedprod.com?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin" target="_blank"><i class="fa fa-bolt"></i> '.__('Try the Pro Version for Free','coming-soon').'</a>';
             }
             echo '</h2>';
 
@@ -316,7 +317,7 @@ class SEED_CSP4_ADMIN
                             
 
                            
-                            <a href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank"><img src="http://static.seedprod.com/ads/coming-soon-pro-sidebar.png" /></a>
+                            <a href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank"><img src="<?php echo SEED_CSP4_PLUGIN_URL; ?>framework/coming-soon-pro-sidebar.png" /></a>
                             <br><br>
                             <div class="postbox ">
                                 <div class="handlediv" title="Click to toggle"><br /></div>
@@ -344,7 +345,7 @@ class SEED_CSP4_ADMIN
                                             <ul>
                                                 <li>&raquo; <a target="_blank" href="http://www.seedprod.com/features/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin"><?php _e('Buy It', 'coming-soon') ?></a></li>
 
-                                                <li>&raquo; <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/coming-soon?rate=5#postform"><?php _e('Rate It', 'coming-soon') ?></a></li>
+                                                <li>&raquo; <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/coming-soon?rate=5#postform"><?php _e('Rate It on WordPress.org', 'coming-soon') ?></a></li>
                                                 <li>&raquo; <a target="_blank" href="<?php echo "http://twitter.com/share?url=https%3A%2F%2Fwordpress.org%2Fplugins%2Fultimate-coming-soon-page%2F&text=Check out this awesome %23WordPress Plugin I'm using, Coming Soon Page and Maintenance Mode by SeedProd"; ?>"><?php _e('Tweet It', 'coming-soon') ?></a></li>
                                             </ul>
                                         </div>
@@ -611,4 +612,16 @@ class SEED_CSP4_ADMIN
           }
       }
 
+}
+
+add_action( 'admin_head', 'seed_csp4_set_user_settings' );
+function seed_csp4_set_user_settings() {
+  if(isset($_GET['page']) && $_GET['page'] == 'seed_csp4'){
+              $user_id = get_current_user_id();
+              $options = get_user_option( 'user-settings', $user_id );
+              parse_str($options,$user_settings);
+              $user_settings['imgsize'] = 'full';
+              update_user_option( $user_id, 'user-settings', http_build_query($user_settings), false );
+              update_user_option( $user_id, 'user-settings-time', time(), false );
+  }
 }

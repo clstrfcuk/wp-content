@@ -24,6 +24,8 @@
 <p>* <?php echo htmlspecialchars($i['shortMsg']) ?></p>
 <?php if (isset($i['tmplData']['wpURL'])): ?>
 <p><?php if ($i['tmplData']['vulnerabilityPatched']) { ?><strong>Update includes security-related fixes.</strong> <?php } echo $i['tmplData']['wpURL']; ?>/changelog</p>
+<?php elseif (isset($i['tmplData']['vulnerabilityPatched']) && $i['tmplData']['vulnerabilityPatched']): ?>
+<p><strong>Update includes security-related fixes.</strong></p>
 <?php endif ?>
 <?php if (!empty($i['tmplData']['badURL'])): ?>
 <p><img src="<?php echo WORDFENCE_API_URL_BASE_NONSEC . "?" . http_build_query(array(

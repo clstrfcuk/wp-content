@@ -27,6 +27,11 @@ class SEED_CSP4{
                     add_action( 'template_redirect', array(&$this,'render_comingsoon_page'));
                 }
                 add_action( 'admin_bar_menu',array( &$this, 'admin_bar_menu' ), 1000 );
+                // Disable the rest api in coming soon mode
+                $current_WP_version = get_bloginfo('version');
+                if ( version_compare( $current_WP_version, '4.7', '>=' ) ) {
+                    add_filter( 'rest_authentication_errors', array( &$this, 'only_allow_logged_in_rest_access') );
+                }
             }
 
             // Add this script globally so we can view the notification across the admin area
@@ -212,6 +217,16 @@ class SEED_CSP4{
         }
         exit();
 
+    }
+
+    function only_allow_logged_in_rest_access( $access ) {
+
+        if( ! is_user_logged_in() ) {
+            return new WP_Error( 'rest_cannot_access', __( 'Only authenticated users can access the REST API.', 'coming-soon' ), array( 'status' => rest_authorization_required_code() ) );
+        }
+
+        return $access;
+        
     }
 
 }

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Transient Cleaner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-15 14:19-0000\n"
-"PO-Revision-Date: 2016-04-15 14:19-0000\n"
+"POT-Creation-Date: 2016-12-15 14:15-0000\n"
+"PO-Revision-Date: 2016-12-15 14:16-0000\n"
 "Last-Translator: David Artiss <david.artiss@artiss.co.uk>\n"
 "Language-Team: \n"
 "Language: en_GB\n"
@@ -17,118 +17,118 @@ msgstr ""
 "X-Generator: Poedit 1.7.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/options-general.php:17 includes/set-admin-config.php:102
+#: includes/options-general.php:17 includes/set-admin-config.php:104
 msgid "Transient Cleaner Options"
 msgstr ""
 
-#: includes/options-general.php:54
+#: includes/options-general.php:55
 msgid "Options Saved."
 msgstr ""
 
-#: includes/options-general.php:56
+#: includes/options-general.php:57
 msgid "Transients cleared."
 msgstr ""
 
-#: includes/options-general.php:80
+#: includes/options-general.php:81
 #, php-format
 msgid "There are currently %s transients (%s records) in the database."
 msgstr ""
 
-#: includes/options-general.php:88
+#: includes/options-general.php:89
 #, php-format
 msgid "%s transient has expired."
 msgstr ""
 
-#: includes/options-general.php:90
+#: includes/options-general.php:91
 #, php-format
 msgid "%s transients have expired."
 msgstr ""
 
-#: includes/options-general.php:97
+#: includes/options-general.php:98
 msgid "Clear Expired Transients"
 msgstr ""
 
-#: includes/options-general.php:107
+#: includes/options-general.php:108
 #, php-format
 msgid "%d expired transient records were cleared on %s at %s."
 msgstr ""
 
-#: includes/options-general.php:109
+#: includes/options-general.php:110
 #, php-format
 msgid "Expired transient records were cleared on %s at %s."
 msgstr ""
 
-#: includes/options-general.php:112
+#: includes/options-general.php:113
 msgid "No expired transients have yet been cleared."
 msgstr ""
 
-#: includes/options-general.php:120 includes/options-general.php:186
+#: includes/options-general.php:121 includes/options-general.php:187
 msgid "Enable"
 msgstr ""
 
-#: includes/options-general.php:121
+#: includes/options-general.php:122
 msgid "Housekeep expired transients daily"
 msgstr ""
 
-#: includes/options-general.php:125
+#: includes/options-general.php:126
 msgid "When to run"
 msgstr ""
 
-#: includes/options-general.php:151
+#: includes/options-general.php:152
 msgid "Housekeeping will occur at this time every day."
 msgstr ""
 
-#: includes/options-general.php:155
+#: includes/options-general.php:156
 msgid "Optimize"
 msgstr ""
 
-#: includes/options-general.php:156
+#: includes/options-general.php:157
 msgid "Optimize table(s) afterward the housekeeping."
 msgstr ""
 
-#: includes/options-general.php:156
+#: includes/options-general.php:157
 msgid "Not recommended"
 msgstr ""
 
-#: includes/options-general.php:160 includes/options-general.php:196
+#: includes/options-general.php:161 includes/options-general.php:197
 msgid "Clean now"
 msgstr ""
 
-#: includes/options-general.php:161
+#: includes/options-general.php:162
 msgid "Remove all expired transients"
 msgstr ""
 
-#: includes/options-general.php:166
+#: includes/options-general.php:167
 msgid "Remove All Transients"
 msgstr ""
 
-#: includes/options-general.php:176
+#: includes/options-general.php:177
 #, php-format
 msgid "All %d transient records were removed on %s at %s."
 msgstr ""
 
-#: includes/options-general.php:178
+#: includes/options-general.php:179
 #, php-format
 msgid "All transient records removed on %s at %s."
 msgstr ""
 
-#: includes/options-general.php:187
+#: includes/options-general.php:188
 msgid "Remove all transients when a database upgrade occurs"
 msgstr ""
 
-#: includes/options-general.php:191
+#: includes/options-general.php:192
 msgid "Optimize afterwards"
 msgstr ""
 
-#: includes/options-general.php:192
+#: includes/options-general.php:193
 msgid "Optimize table(s) afterward the housekeeping"
 msgstr ""
 
-#: includes/options-general.php:197
+#: includes/options-general.php:198
 msgid "Remove all transients"
 msgstr ""
 
-#: includes/options-general.php:204
+#: includes/options-general.php:205
 msgid "Save Changes"
 msgstr ""
 
@@ -150,29 +150,41 @@ msgid ""
 "Please disable the plugin!"
 msgstr ""
 
-#: includes/set-admin-config.php:102
-msgid "Transients"
+#: includes/set-admin-config.php:104
+msgid "Transient Cleaner"
 msgstr ""
 
-#: includes/set-admin-config.php:141
+#: includes/set-admin-config.php:143
 msgid "Help"
 msgstr ""
 
-#: includes/set-admin-config.php:156
+#: includes/set-admin-config.php:160
 msgid ""
 "This screen allows you to specify the default options for the Transient "
 "Cleaner plugin."
 msgstr ""
 
-#: includes/set-admin-config.php:157
+#: includes/set-admin-config.php:161
 msgid ""
 "In addition, details of recent transient cleans are shown. Tick the 'Run "
 "Now' options to perform a clean, whether a full removal of transients or "
 "just the removal of expired tranients."
 msgstr ""
 
-#: includes/set-admin-config.php:158
+#: includes/set-admin-config.php:162
 msgid ""
 "Remember to click the Save Changes button at the bottom of the screen for "
 "new settings to take effect."
+msgstr ""
+
+#: includes/set-admin-config.php:179
+msgid "For more information:"
+msgstr ""
+
+#: includes/set-admin-config.php:180
+msgid "Instructions"
+msgstr ""
+
+#: includes/set-admin-config.php:181
+msgid "Support Forum"
 msgstr ""

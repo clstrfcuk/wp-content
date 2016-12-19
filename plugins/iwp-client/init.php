@@ -4,7 +4,7 @@ Plugin Name: InfiniteWP - Client
 Plugin URI: http://infinitewp.com/
 Description: This is the client plugin of InfiniteWP that communicates with the InfiniteWP Admin panel.
 Author: Revmakx
-Version: 1.6.0
+Version: 1.6.1.1
 Author URI: http://www.revmakx.com
 */
 /************************************************************
@@ -28,7 +28,7 @@ if(basename($_SERVER['SCRIPT_FILENAME']) == "init.php"):
     exit;
 endif;
 if(!defined('IWP_MMB_CLIENT_VERSION'))
-	define('IWP_MMB_CLIENT_VERSION', '1.6.0');
+	define('IWP_MMB_CLIENT_VERSION', '1.6.1.1');
 	
 
 
@@ -104,22 +104,25 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 		ob_start();
 		
 		global $current_user, $iwp_mmb_core, $new_actions, $wp_db_version, $wpmu_version, $_wp_using_ext_object_cache;
-		$data = base64_decode($HTTP_RAW_POST_DATA_LOCAL);
+		$data = trim(base64_decode($HTTP_RAW_POST_DATA_LOCAL));
 		if ($data){
-			//$num = @extract(unserialize($data));
-			$unserialized_data = @unserialize($data);
-			if(isset($unserialized_data['params'])){ 
-				$unserialized_data['params'] = iwp_mmb_filter_params($unserialized_data['params']);
+			@preg_match_all('/(^|;|{|})O:+?[0-9]+:(?!"stdClass")/', $data, $objectCheck);
+			if(empty($objectCheck[0])){
+				//$num = @extract(unserialize($data));
+				$unserialized_data = @unserialize($data);
+				if(isset($unserialized_data['params'])){ 
+					$unserialized_data['params'] = iwp_mmb_filter_params($unserialized_data['params']);
+				}
+				
+				$iwp_action 					= $unserialized_data['iwp_action'];
+				$params 						= $unserialized_data['params'];
+				$id 							= $unserialized_data['id'];
+				$signature 						= $unserialized_data['signature'];
+				if(isset($unserialized_data['is_save_activity_log'])) {
+					$is_save_activity_log	= $unserialized_data['is_save_activity_log'];
+				}
+				$GLOBALS['activities_log_datetime'] = $unserialized_data['activities_log_datetime'];
 			}
-			
-			$iwp_action 					= $unserialized_data['iwp_action'];
-			$params 						= $unserialized_data['params'];
-			$id 							= $unserialized_data['id'];
-			$signature 						= $unserialized_data['signature'];
-			if(isset($unserialized_data['is_save_activity_log'])) {
-				$is_save_activity_log	= $unserialized_data['is_save_activity_log'];
-			}
-			$GLOBALS['activities_log_datetime'] = $unserialized_data['activities_log_datetime'];
 		}
 		
 		if (isset($iwp_action)) {

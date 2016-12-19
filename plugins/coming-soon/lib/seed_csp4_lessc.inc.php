@@ -2420,7 +2420,7 @@ class seed_csp4_lessc_parser {
 		if ($this->unit($value)) return true;
 		if ($this->color($value)) return true;
 		if ($this->func($value)) return true;
-		if ($this->string($value)) return true;
+		if ($this->lstring($value)) return true;
 
 		if ($this->keyword($word)) {
 			$value = array('keyword', $word);
@@ -2434,7 +2434,7 @@ class seed_csp4_lessc_parser {
 		}
 
 		// unquote string (should this work on any type?
-		if ($this->literal("~") && $this->string($str)) {
+		if ($this->literal("~") && $this->lstring($str)) {
 			$value = array("escape", $str);
 			return true;
 		} else {
@@ -2562,7 +2562,7 @@ class seed_csp4_lessc_parser {
 				}
 			}
 
-			if (($tok == "'" || $tok == '"') && $this->string($str)) {
+			if (($tok == "'" || $tok == '"') && $this->lstring($str)) {
 				$content[] = $str;
 				continue;
 			}
@@ -2595,7 +2595,7 @@ class seed_csp4_lessc_parser {
 		return true;
 	}
 
-	protected function string(&$out) {
+	protected function lstring(&$out) {
 		$s = $this->seek();
 		if ($this->literal('"', false)) {
 			$delim = '"';

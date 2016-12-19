@@ -25,7 +25,7 @@ function tc_set_plugin_meta( $links, $file ) {
 	if ( strpos( $file, 'artiss-transient-cleaner.php' ) !== false ) {
 
 		$links = array_merge( $links, array( '<a href="http://wordpress.org/support/plugin/artiss-transient-cleaner">' . __( 'Support', 'artiss-transient-cleaner' ) . '</a>' ) );
-		$links = array_merge( $links, array( '<a href="http://www.artiss.co.uk/donate">' . __( 'Donate', 'artiss-transient-cleaner' ) . '</a>' ) );
+		$links = array_merge( $links, array( '<a href="https://artiss.blog/donate">' . __( 'Donate', 'artiss-transient-cleaner' ) . '</a>' ) );
 
 	}
 
@@ -93,13 +93,15 @@ function tc_menu_initialise() {
 
 	global $_wp_using_ext_object_cache;
 
-	if ( !$_wp_using_ext_object_cache ) {
+	if ( TC_LITE ) { $lite = true; } else { $lite = false; }
+
+	if ( !$_wp_using_ext_object_cache && !$lite ) {
 
 		// Add submenu to tools menu
 
 		global $tc_options_hook;
 
-		$tc_options_hook = add_submenu_page( 'tools.php', __( 'Transient Cleaner Options', 'artiss-transient-cleaner' ),  __( 'Transients', 'artiss-transient-cleaner' ), 'install_plugins', 'tc-options', 'tc_options' );
+		$tc_options_hook = add_submenu_page( 'tools.php', __( 'Transient Cleaner Options', 'artiss-transient-cleaner' ),  __( 'Transient Cleaner', 'artiss-transient-cleaner' ), 'install_plugins', 'tc-options', 'tc_options' );
 
 		add_action( 'load-' . $tc_options_hook, 'tc_add_options_help' );
 	}
@@ -139,6 +141,8 @@ function tc_add_options_help() {
 	if ( $screen->id != $tc_options_hook ) { return; }
 
 	$screen -> add_help_tab( array( 'id' => 'tc-options-help-tab', 'title'	=> __( 'Help', 'artiss-transient-cleaner' ), 'content' => tc_options_help() ) );
+
+	$screen -> set_help_sidebar( tc_options_sidebar() );
 }
 
 /**
@@ -156,6 +160,25 @@ function tc_options_help() {
 	$help_text = '<p>' . __( 'This screen allows you to specify the default options for the Transient Cleaner plugin.', 'artiss-transient-cleaner' ) . '</p>';
 	$help_text .= '<p>' . __( "In addition, details of recent transient cleans are shown. Tick the 'Run Now' options to perform a clean, whether a full removal of transients or just the removal of expired tranients.", 'artiss-transient-cleaner' ) . '</p>';
 	$help_text .= '<p>' . __( 'Remember to click the Save Changes button at the bottom of the screen for new settings to take effect.', 'artiss-transient-cleaner' ) . '</p></h4>';
+
+	return $help_text;
+}
+
+/**
+* Options Help Sidebar
+*
+* Add a links sidebar to the options help
+*
+* @since	1.5
+*
+* @return	string	Help Text
+*/
+
+function tc_options_sidebar() {
+
+	$help_text = '<p><strong>' . __( 'For more information:', 'artiss-transient-cleaner' ) . '</strong></p>';
+	$help_text .= '<p><a href="https://wordpress.org/plugins/artiss-transient-cleaner/">' . __( 'Instructions', 'artiss-transient-cleaner' ) . '</a></p>';
+	$help_text .= '<p><a href="https://wordpress.org/support/plugin/artiss-transient-cleaner">' . __( 'Support Forum', 'artiss-transient-cleaner' ) . '</a></p></h4>';
 
 	return $help_text;
 }

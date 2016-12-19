@@ -3,7 +3,7 @@
  * Plugin Name:       Coming Soon Page & Maintenance Mode by SeedProd
  * Plugin URI:        http://www.seedprod.com
  * Description:       The #1 Coming Soon Page, Under Construction & Maintenance Mode plugin for WordPress.
- * Version:           5.0.2
+ * Version:           5.0.5
  * Author:            SeedProd
  * Author URI:        http://www.seedprod.com
  * Text Domain:       coming-soon
@@ -21,7 +21,7 @@ define( 'SEED_CSP4_SHORTNAME', 'seed_csp4' ); // Used to reference namespace fun
 define( 'SEED_CSP4_SLUG', 'coming-soon/coming-soon.php' ); // Used for settings link.
 define( 'SEED_CSP4_TEXTDOMAIN', 'coming-soon' ); // Your textdomain
 define( 'SEED_CSP4_PLUGIN_NAME', __( 'Coming Soon Page & Maintenance Mode by SeedProd', 'coming-soon' ) ); // Plugin Name shows up on the admin settings screen.
-define( 'SEED_CSP4_VERSION', '5.0.2'); // Plugin Version Number. Recommend you use Semantic Versioning http://semver.org/
+define( 'SEED_CSP4_VERSION', '5.0.5'); // Plugin Version Number. Recommend you use Semantic Versioning http://semver.org/
 define( 'SEED_CSP4_PLUGIN_PATH', plugin_dir_path( __FILE__ ) ); // Example output: /Applications/MAMP/htdocs/wordpress/wp-content/plugins/seed_csp4/
 define( 'SEED_CSP4_PLUGIN_URL', plugin_dir_url( __FILE__ ) ); // Example output: http://localhost:8888/wordpress/wp-content/plugins/seed_csp4/
 define( 'SEED_CSP4_TABLENAME', 'seed_csp4_subscribers' );
@@ -50,6 +50,35 @@ function seed_csp4_activation(){
 register_activation_hook( __FILE__, 'seed_csp4_activation' );
 
 
+
+// Welcome Page
+
+register_activation_hook( __FILE__, 'seed_csp4_welcome_screen_activate' );
+function seed_csp4_welcome_screen_activate() {
+  set_transient( '_seed_csp4_welcome_screen_activation_redirect', true, 30 );
+}
+
+
+add_action( 'admin_init', 'seed_csp4_welcome_screen_do_activation_redirect' );
+function seed_csp4_welcome_screen_do_activation_redirect() {
+  // Bail if no activation redirect
+    if ( ! get_transient( '_seed_csp4_welcome_screen_activation_redirect' ) ) {
+    return;
+  }
+
+  // Delete the redirect transient
+  delete_transient( '_seed_csp4_welcome_screen_activation_redirect' );
+
+  // Bail if activating from network, or bulk
+  if ( is_network_admin() || isset( $_GET['activate-multi'] ) ) {
+    return;
+  }
+
+  // Redirect to bbPress about page
+  wp_safe_redirect( add_query_arg( array( 'page' => 'seed_csp4' ), admin_url( 'options-general.php' ) ) );
+}
+
+
 /***************************************************************************
  * Load Required Files
  ***************************************************************************/
@@ -72,3 +101,6 @@ if( is_admin() ) {
 // Public only
 
 }
+
+
+
