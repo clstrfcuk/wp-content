@@ -89,6 +89,7 @@ class wfConfig {
 			'ajaxWatcherDisabled_admin' => array('value' => false, 'autoload' => self::AUTOLOAD),
 			'wafAlertOnAttacks' => array('value' => true, 'autoload' => self::AUTOLOAD),
 			'disableWAFIPBlocking' => array('value' => false, 'autoload' => self::AUTOLOAD),
+			'showAdminBarMenu' => array('value' => true, 'autoload' => self::AUTOLOAD),
 		),
 		"otherParams" => array(
 			"scan_include_extra" => "",
@@ -122,7 +123,7 @@ class wfConfig {
 			'wafAlertThreshold' => 100,
 		)
 	);
-	public static $serializedOptions = array('lastAdminLogin', 'scanSched', 'emailedIssuesList', 'wf_summaryItems', 'adminUserList', 'twoFactorUsers', 'alertFreqTrack', 'wfStatusStartMsgs', 'vulnerabilities_plugin', 'vulnerabilities_theme');
+	public static $serializedOptions = array('lastAdminLogin', 'scanSched', 'emailedIssuesList', 'wf_summaryItems', 'adminUserList', 'twoFactorUsers', 'alertFreqTrack', 'wfStatusStartMsgs', 'vulnerabilities_plugin', 'vulnerabilities_theme', 'dashboardData');
 	public static function setDefaults() {
 		foreach (self::$defaultConfig['checkboxes'] as $key => $config) {
 			$val = $config['value'];
@@ -230,16 +231,24 @@ class wfConfig {
 		}
 		return $ret;
 	}
-	public static function parseOptions(){
+	public static function parseOptions($excludeOmitted = false) {
 		$ret = array();
-		foreach(self::$defaultConfig['checkboxes'] as $key => $val){ //value is not used. We just need the keys for validation
-			$ret[$key] = isset($_POST[$key]) ? '1' : '0';
+		foreach (self::$defaultConfig['checkboxes'] as $key => $val) { //value is not used. We just need the keys for validation
+			if ($excludeOmitted && isset($_POST[$key])) {
+				$ret[$key] = (int) $_POST[$key];
+			}
+			else if (!$excludeOmitted || isset($_POST[$key])) {
+				$ret[$key] = isset($_POST[$key]) ? '1' : '0';
+			}
 		}
-		foreach(self::$defaultConfig['otherParams'] as $key => $val){
-			if(isset($_POST[$key])){
-				$ret[$key] = stripslashes($_POST[$key]);
-			} else {
-				error_log("Missing options param \"$key\" when parsing parameters.");
+		foreach (self::$defaultConfig['otherParams'] as $key => $val) {
+			if (!$excludeOmitted || isset($_POST[$key])) {
+				if (isset($_POST[$key])) {
+					$ret[$key] = stripslashes($_POST[$key]);
+				}
+				else {
+					error_log("Missing options param \"$key\" when parsing parameters.");
+				}
 			}
 		}
 		/* for debugging only:
@@ -265,6 +274,33 @@ class wfConfig {
 			$val = 0;
 		}
 		self::set($key, $val + 1);
+		return $val + 1;
+	}
+	public static function atomicInc($key) {
+		if (!self::$tableExists) {
+			return false;
+		}
+		
+		global $wpdb;
+		$old_suppress_errors = $wpdb->suppress_errors(true);
+		$table = self::table();
+		$rowExists = false;
+		do {
+			if (!$rowExists && $wpdb->query($wpdb->prepare("INSERT INTO {$table} (name, val, autoload) values (%s, %s, %s)", $key, 1, self::DONT_AUTOLOAD))) {
+				$val = 1;
+				$successful = true;
+			}
+			else {
+				$rowExists = true;
+				$val = self::get($key, 1);
+				if ($wpdb->query($wpdb->prepare("UPDATE {$table} SET val = %s WHERE name = %s AND val = %s", $val + 1, $key, $val))) {
+					$val++;
+					$successful = true;
+				}
+			}
+		} while (!$successful);
+		$wpdb->suppress_errors($old_suppress_errors);
+		return $val;
 	}
 	public static function set($key, $val, $autoload = self::AUTOLOAD) {
 		global $wpdb;
@@ -348,7 +384,7 @@ class wfConfig {
 		return 'wordfence_chunked_' . $key . '_';
 	}
 	
-	public static function get_ser($key, $default, $cache = true) {
+	public static function get_ser($key, $default = false, $cache = true) {
 		if (self::hasCachedOption($key)) {
 			return self::getCachedOption($key);
 		}

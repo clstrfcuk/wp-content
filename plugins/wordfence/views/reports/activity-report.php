@@ -9,7 +9,7 @@
 
 <?php wfHelperString::cycle(); ?>
 
-<table class="wf-table">
+<table class="wf-striped-table">
 	<thead>
 		<tr>
 			<th>IP</th>
@@ -45,14 +45,14 @@
 </table>
 
 <p>
-	<a class="button button-primary" href="<?php echo network_admin_url('admin.php?page=WordfenceBlockedIPs') ?>">Update Blocked IPs</a>
+	<a class="button button-primary" href="<?php echo network_admin_url('admin.php?page=WordfenceWAF#top#blockedips') ?>">Update Blocked IPs</a>
 </p>
 
 <?php wfHelperString::cycle(); ?>
 
 <h2>Top <?php echo (int) $limit; ?> Countries Blocked</h2>
 
-<table class="wf-table">
+<table class="wf-striped-table">
 	<thead>
 		<tr>
 			<th>Country</th>
@@ -88,14 +88,14 @@
 </table>
 
 <p>
-	<a class="button button-primary" href="<?php echo network_admin_url('admin.php?page=WordfenceCountryBlocking') ?>">Update Blocked Countries</a>
+	<a class="button button-primary" href="<?php echo network_admin_url('admin.php?page=WordfenceWAF#top#countryblocking') ?>">Update Blocked Countries</a>
 </p>
 
 <?php wfHelperString::cycle(); ?>
 
 <h2>Top <?php echo (int) $limit; ?> Failed Logins</h2>
 
-<table class="wf-table">
+<table class="wf-striped-table">
 	<thead>
 		<tr>
 			<th>Username</th>

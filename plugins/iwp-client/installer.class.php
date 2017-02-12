@@ -202,12 +202,14 @@ class IWP_MMB_Installer extends IWP_MMB_Core
         if (!empty($upgrade_plugins)) {
             $plugin_files = $plugin_details = $premium_plugin_details = array();
             foreach ($upgrade_plugins as $plugin) {
-                if (isset($plugin->file)) {
+                $file_path = $plugin['file'];
+                $plugin_name = $plugin['name'];
+                if (isset($file_path)) {
 					$plugin_details[] = $plugin;
-                    $plugin_files[$plugin->file] = $plugin->old_version;
+                    $plugin_files[$file_path] = $plugin->old_version;
                 } else {
 					$premium_plugin_details[] = $plugin;
-                    $premium_upgrades[md5($plugin->name)] = $plugin;
+                    $premium_upgrades[md5($plugin_name)] = $plugin;
 				}
             }
             if (!empty($plugin_files)) {
@@ -290,6 +292,7 @@ class IWP_MMB_Installer extends IWP_MMB_Core
     {
 		global $iwp_activities_log_post_type, $iwp_mmb_activities_log;		
         ob_start();
+        $current = (object)$current;
 
         if (!function_exists('wp_version_check') || !function_exists('get_core_checksums'))
             include_once(ABSPATH . '/wp-admin/includes/update.php');

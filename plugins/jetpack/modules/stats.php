@@ -1,14 +1,14 @@
 <?php
 /**
  * Module Name: Site Stats
- * Module Description: Collect traffic stats and insights.
+ * Module Description: Collect valuable traffic stats and insights.
  * Sort Order: 1
  * Recommendation Order: 2
  * First Introduced: 1.1
  * Requires Connection: Yes
  * Auto Activate: Yes
  * Module Tags: Site Stats, Recommended
- * Feature: Recommended, Traffic
+ * Feature: Engagement
  * Additional Search Queries: statistics, tracking, analytics, views, traffic, stats
  */
 
@@ -21,21 +21,6 @@ defined( 'STATS_DASHBOARD_SERVER' ) or define( 'STATS_DASHBOARD_SERVER', 'dashbo
 
 add_action( 'jetpack_modules_loaded', 'stats_load' );
 
-// Tell HQ about changed settings
-Jetpack_Sync::sync_options( __FILE__,
-	'stats_options',
-	'home',
-	'siteurl',
-	'blogname',
-	'blogdescription',
-	'gmt_offset',
-	'timezone_string',
-	'page_on_front',
-	'permalink_structure',
-	'category_base',
-	'tag_base'
-);
-
 function stats_load() {
 	global $wp_roles;
 
@@ -43,14 +28,6 @@ function stats_load() {
 	Jetpack::module_configuration_load( __FILE__, 'stats_configuration_load' );
 	Jetpack::module_configuration_head( __FILE__, 'stats_configuration_head' );
 	Jetpack::module_configuration_screen( __FILE__, 'stats_configuration_screen' );
-
-	// Tell HQ about changed posts
-	$post_stati = get_post_stati( array( 'public' => true ) ); // All public post stati
-	$post_stati[] = 'private';                                 // Content from private stati will be redacted
-	Jetpack_Sync::sync_posts( __FILE__, array(
-		'post_types' => get_post_types( array( 'public' => true ) ), // All public post types
-		'post_stati' => $post_stati,
-	) );
 
 	// Generate the tracking code after wp() has queried for posts.
 	add_action( 'template_redirect', 'stats_template_redirect', 1 );
@@ -145,7 +122,7 @@ function stats_template_redirect() {
 	add_action( 'wp_footer', 'stats_footer', 101 );
 	add_action( 'wp_head', 'stats_add_shutdown_action' );
 
-	$script = set_url_scheme( '//stats.wp.com/e-' . gmdate( 'YW' ) . '.js' );
+	$script = 'https://stats.wp.com/e-' . gmdate( 'YW' ) . '.js';
 	$data = stats_build_view_data();
 	$data_stats_array = stats_array( $data );
 
@@ -204,8 +181,9 @@ function stats_footer() {
 function stats_get_options() {
 	$options = get_option( 'stats_options' );
 
-	if ( !isset( $options['version'] ) || $options['version'] < STATS_VERSION )
+	if ( ! isset( $options['version'] ) || $options['version'] < STATS_VERSION ) {
 		$options = stats_upgrade_options( $options );
+	}
 
 	return $options;
 }
@@ -227,11 +205,11 @@ function stats_set_option( $option, $value ) {
 
 	$options[$option] = $value;
 
-	stats_set_options($options);
+	return stats_set_options($options);
 }
 
 function stats_set_options($options) {
-	update_option( 'stats_options', $options );
+	return update_option( 'stats_options', $options );
 }
 
 function stats_upgrade_options( $options ) {
@@ -259,7 +237,9 @@ function stats_upgrade_options( $options ) {
 
 	$new_options['version'] = STATS_VERSION;
 
-	stats_set_options( $new_options );
+	if ( !  stats_set_options( $new_options ) ) {
+		return false;
+	}
 
 	stats_update_blog();
 
@@ -391,8 +371,18 @@ function stats_reports_page( $main_chart_only = false ) {
 </div>
 <div id="stats-loading-wrap" class="wrap">
 <p class="hide-if-no-js"><img width="32" height="32" alt="<?php esc_attr_e( 'Loading&hellip;', 'jetpack' ); ?>" src="<?php
-/** This filter is documented in modules/shortcodes/audio.php */
-echo esc_url( apply_filters( 'jetpack_static_url', "{$http}://en.wordpress.com/i/loading/loading-64.gif" ) ); ?>" /></p>
+echo esc_url(
+	/**
+	 * Sets external resource URL.
+	 *
+	 * @module stats
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param string $args URL of external resource.
+	 */
+	apply_filters( 'jetpack_static_url', "{$http}://en.wordpress.com/i/loading/loading-64.gif" )
+); ?>" /></p>
 <p style="font-size: 11pt; margin: 0;"><a href="https://wordpress.com/stats/<?php echo $domain; ?>" target="_blank"><?php esc_html_e( 'View stats on WordPress.com right now', 'jetpack' ); ?></a></p>
 <p class="hide-if-js"><?php esc_html_e( 'Your Site Stats work better with JavaScript enabled.', 'jetpack' ); ?><br />
 <a href="<?php echo esc_url( $nojs_url ); ?>"><?php esc_html_e( 'View Site Stats without JavaScript', 'jetpack' ); ?></a>.</p>
@@ -489,6 +479,11 @@ echo esc_url( apply_filters( 'jetpack_static_url', "{$http}://en.wordpress.com/i
 		$body = stats_convert_admin_urls( $body );
 		echo $body;
 	}
+
+	if ( isset( $_GET['page'] ) && 'stats' === $_GET['page'] && ! isset( $_GET['chart'] ) ) {
+		JetpackTracking::record_user_event( 'wpa_page_view', array( 'path' => 'old_stats' ) );
+	}
+
 	if ( isset( $_GET['noheader'] ) )
 		die;
 }
@@ -1199,7 +1194,7 @@ function stats_get_csv( $table, $args = null ) {
 	$args['table'] = $table;
 	$args['blog_id'] = Jetpack_Options::get_option( 'id' );
 
-	$stats_csv_url = add_query_arg( $args, 'http://stats.wordpress.com/csv.php' );
+	$stats_csv_url = add_query_arg( $args, 'https://stats.wordpress.com/csv.php' );
 
 	$key = md5( $stats_csv_url );
 

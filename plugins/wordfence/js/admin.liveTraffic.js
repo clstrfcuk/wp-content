@@ -648,6 +648,8 @@
 		liveTrafficWrapper.find('form').submit();
 		WFAD.mode = 'liveTraffic';
 
+		var legendWrapper = $('#wf-live-traffic-legend-wrapper');
+		var placeholder = $('#wf-live-traffic-legend-placeholder');
 		var legend = $('#wf-live-traffic-legend');
 		var adminBar = $('#wpadminbar');
 		var liveTrafficListings = $('#wf-lt-listings');
@@ -656,10 +658,21 @@
 		var loadingListings = false;
 		$(window).on('scroll', function() {
 			var win = $(this);
-			if (liveTrafficWrapper.offset().top < win.scrollTop() + adminBar.outerHeight() + 20) {
+			if (legendWrapper.offset().top < win.scrollTop() + adminBar.outerHeight() + 10) {
+				var legendWidth = legend.width();
+				var legendHeight = legend.height();
+				
 				legend.addClass('sticky');
+				legend.css('width', legendWidth);
+				legend.css('height', legendHeight);
+				placeholder.addClass('sticky');
+				placeholder.css('width', legendWidth);
+				placeholder.css('height', legendHeight);
 			} else {
 				legend.removeClass('sticky');
+				legend.css('width', 'auto');
+				legend.css('height', 'auto');
+				placeholder.removeClass('sticky');
 			}
 
 			var firstRow = liveTrafficListings.children().first();

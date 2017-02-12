@@ -1,5 +1,5 @@
 <?php if (!wfConfig::get('isPaid')) { ?>
-	<div class="wordfenceRightRail<?php if (isset($additionalClasses)) { echo " {$additionalClasses}"; } ?>">
+	<div id="wordfenceRightRail" class="<?php echo wfStyle::rightRailClasses(); ?>"> 
 		<ul>
 			<li><a href="https://www.wordfence.com/gnl1rightRailGetPremium/wordfence-signup/" target="_blank"><img src="<?php echo wfUtils::getBaseURL() . 'images/rr_premium.png'; ?>" alt="Upgrade your protection - Get Wordfence Premium"></a></li>
 			<li><a href="https://www.wordfence.com/gnl1rightRailSiteCleaning/wordfence-site-cleanings/" target="_blank"><img src="<?php echo wfUtils::getBaseURL() . 'images/rr_sitecleaning.jpg'; ?>" alt="Have you been hacked? Get help from Wordfence"></a></li> 

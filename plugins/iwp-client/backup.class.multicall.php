@@ -85,7 +85,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 	var $backup_url;
 	var $backup_settings_vals = array();
 	var $iwpScriptStartTime;
-	
+        
     function __construct()
     {
         
@@ -741,7 +741,8 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 			{            
 				$count = 1;                
 			}
-			
+			$table_description = $wpdb->get_results("DESCRIBE $table[0]", ARRAY_A);
+			$table_description = iwp_modify_table_description($table_description);
 			for($i = 0; $i < $count; $i++){
 				if($done_count > 0)
 				{
@@ -757,7 +758,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 				$qry       = "SELECT * FROM $table[0] LIMIT $low_limit, 100";
 				$rows      = $wpdb->get_results($qry, ARRAY_A);
 				
-				
+				$number_data_types = 'tinyint, smallint, mediumint, bigint, int, decimal, numeric, real, float, double';
 				if (is_array($rows)) {
 						foreach ($rows as $row) {
 						manual_debug('', 'eachRow', 1000);
@@ -781,10 +782,38 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 							$total_time_part = $finish_part - $this->iwpScriptStartTime;
 							
 							//$dump_data .= $count_field;
-							
+							/****************New method starts here********************/	
+							// if (empty($value) && $value != 0 || $value == '') {
+							// 	$default_value = isset($table_description[$key]['Default']) ? $table_description[$key]['Default']: NULL;
+							// 	if (@strstr(strtolower($number_data_types), substr($table_description[$key]['Type'], 0, strpos($table_description[$key]['Type'], '('))) !== false && ($default_value === NULL && $default_value != '') ) {
+							// 		if ($default_value === NULL) {
+							// 			$num_values == $j ? $dump_data .= "NULL " : $dump_data .= "NULL, ";
+							// 		} else {
+							// 			$num_values == $j ? $dump_data .= "'$default_value'" : $dump_data .= "'$default_value', ";
+							// 		}
+							// 	} else if($default_value === NULL){
+							// 		$num_values == $j ? $dump_data .= "NULL " : $dump_data .= "NULL, ";
+							// 	} else {
+							// 		$num_values == $j ? $dump_data .= "$default_value" : $dump_data .= "$default_value,";
+							// 	}
+							// } else if (@strstr(strtolower($number_data_types), substr($table_description[$key]['Type'], 0, strpos($table_description[$key]['Type'], '('))) !== false) {
+							//   	$num_values == $j ? $dump_data .= "'$value'" : $dump_data .= "'$value',";
+							// } else {
+							//     $value = addslashes($value);
+							// 	$value = str_replace("\n", "\\n", $value);
+							// 	$value = str_replace("\r", "\\r", $value);
+							// 	$num_values == $j ? $dump_data .= "'" . $value . "'" : $dump_data .= "'" . $value . "', ";
+							// }
+							//$num_values = $dump_data;
+							/*********New Method ends Here******************/	
+
+							/**********Old Method start here ************/
 							$value = addslashes($value);
 							$value = preg_replace("/\n/Ui", "\\n", $value);
+							$value = str_replace("\n", "\\n", $value);
+							$value = str_replace("\r", "\\r", $value);
 							$num_values == $j ? $dump_data .= "'" . $value . "'" : $dump_data .= "'" . $value . "', ";
+							/*************** Old Method ends here ********/
 							
 							$j++;
 							unset($value);
@@ -1097,7 +1126,6 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		$result = $this->backupFilesZIP($this -> hisID);
 		return $result;
 	}
-	
 	
 	function backupFilesZIP($historyID)
 	{
@@ -5137,7 +5165,7 @@ function ftp_backup($historyID,$args = '')
 		$requestParams = $this -> getRequiredData($historyID,"requestParams");
 		$upload_loop_break_time = $requestParams['account_info']['upload_loop_break_time'];			//darkcode changed
 		$upload_file_block_size = $requestParams['account_info']['upload_file_block_size'];
-		$upload_file_block_size = 1 *1024 *1024;
+		$upload_file_block_size = 5 *1024 *1024;
 		$del_host_file = $requestParams['args']['del_host_file'];
 		$iwp_folder_id = '';
 		$sub_folder_id = '';
@@ -5983,6 +6011,10 @@ function ftp_backup($historyID,$args = '')
 	
 	if( !function_exists('initialize_manual_debug') ){
 		function initialize_manual_debug($conditions = ''){
+			if(file_exists(WP_CONTENT_DIR . '/DE_clMemoryPeak.php')){ @unlink(WP_CONTENT_DIR . '/DE_clMemoryPeak.php');}
+			if(file_exists(WP_CONTENT_DIR . '/DE_clMemoryUsage.php')){ @unlink(WP_CONTENT_DIR . '/DE_clMemoryUsage.php');}
+			if(file_exists(WP_CONTENT_DIR . '/DE_clTimeTaken.php')){ @unlink(WP_CONTENT_DIR . '/DE_clTimeTaken.php');}
+			return true;
 			global $debug_count, $every_count;
 			$debug_count = 0;
 			$every_count = 0;
@@ -6058,7 +6090,7 @@ function ftp_backup($historyID,$args = '')
 	
 	if( !function_exists('refresh_iwp_files_db') ){
 		function refresh_iwp_files_db($this_file_id = 0, $field = 'thisFileDetails' ){
-			global $wpdb;
+			global $wpdb, $iwp_db_upgrade_error;
 			$this_table_name = $wpdb->base_prefix . 'iwp_file_list';			//in case, if we are changing table name.
 			$result = true;
                         
@@ -6067,15 +6099,15 @@ function ftp_backup($historyID,$args = '')
 			//write in db and refresh for_every_count,  all_files_detail;
 			if($wpdb->get_var("SHOW TABLES LIKE '$this_table_name'") == $this_table_name) {
 				$result = $wpdb->query('TRUNCATE TABLE ' . $this_table_name );
-				$error_msg = 'Unable to empty File list table : ' . $wpdb->last_error ;
+				$error_msg = 'Unable to empty File list table : <span style="font-weight:700;">' . $wpdb->last_error.'</span>' ;
 				if(version_compare($IWP_FILE_LIST_TABLE_VERSION, '1.1') == -1){
 					$result = iwp_create_file_list_table();
-					$error_msg = 'Unable to update File list table : ' . $wpdb->last_error ;
+					$error_msg = 'Unable to update File list table : <span style="font-weight:700;">' . $iwp_db_upgrade_error.'</span>' ;
 				}
 			}
 			else{
 				$result = iwp_create_file_list_table();
-				$error_msg = 'Unable to create File list table : ' . $wpdb->last_error ;
+				$error_msg = 'Unable to create File list table : <span style="font-weight:700;">'.$iwp_db_upgrade_error.'</span>';
 			}
 			
 			if($result === false){
@@ -6087,7 +6119,7 @@ function ftp_backup($historyID,$args = '')
 	
 	if(!function_exists('iwp_create_file_list_table')){
 		function iwp_create_file_list_table(){
-			global $wpdb;
+			global $wpdb, $iwp_db_upgrade_error;
 			if(method_exists($wpdb, 'get_charset_collate')){
 				$charset_collate = $wpdb->get_charset_collate();
 			}
@@ -6118,7 +6150,9 @@ function ftp_backup($historyID,$args = '')
 				";
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 				dbDelta($sql);
-				
+				if($wpdb->last_error !== '') {
+					$iwp_db_upgrade_error = $wpdb->last_error;
+				}
 				if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name){
 					$table_created = true;
 					update_option( "iwp_file_list_table_version", '1.1');
@@ -6221,6 +6255,7 @@ function ftp_backup($historyID,$args = '')
 					if($action == 'insert'){
 						$is_already = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix. $this_table_name . " WHERE thisFileName = '". $v['stored_filename'].$v['splitFilename']."' AND thisFileNameHash = '".md5($v['stored_filename'].$v['splitFilename'])."'" );
 						if(empty($is_already)){
+							$wpdb->query("SET @@auto_increment_increment=1");
 							$result = $wpdb->insert($wpdb->base_prefix . $this_table_name, array('thisFileDetails' => serialize($v), 'thisFileCount' => $k, 'thisFileName' => $v['stored_filename'].$v['splitFilename'],'thisFileNameHash'=>md5($v['stored_filename'].$v['splitFilename'])), array( '%s', '%d', '%s', '%s' ));
 						}
 					}
@@ -6314,7 +6349,7 @@ function ftp_backup($historyID,$args = '')
 
 	if(!function_exists('alter_iwp_filelisttable_1_1')){
 		function alter_iwp_filelisttable_1_1(){
-			global $wpdb;
+			global $wpdb, $iwp_db_upgrade_error;
 			if(method_exists($wpdb, 'get_charset_collate')){
 				$charset_collate = $wpdb->get_charset_collate();
 			}	
@@ -6344,6 +6379,7 @@ function ftp_backup($historyID,$args = '')
 				foreach($sql as $v){
 					if(!$wpdb->query($v)){
 						$failed_alter = true;
+						$iwp_db_upgrade_error = $wpdb->last_error;
 					}
 				}
 				if(!$failed_alter){
@@ -6354,7 +6390,17 @@ function ftp_backup($historyID,$args = '')
 			}
 		}
 	}
-
+if (!function_exists('iwp_modify_table_description')) {
+	
+	function iwp_modify_table_description($table_data){
+		$temp_table = array();
+		foreach ($table_data as $key => $value) {
+			$temp = $table_data[$key];
+			$temp_table[$value['Field']] = $table_data[$key];
+		}
+		return $temp_table;
+	}
+}
 /*if( function_exists('add_filter') ){
 	add_filter( 'iwp_website_add', 'IWP_MMB_Backup::readd_tasks' );
 }*/

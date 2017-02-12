@@ -181,6 +181,7 @@ class SEED_CSP4{
         // Finally check if we should show the coming soon page.
         $this->comingsoon_rendered = true;
 
+
         // set headers
         if($status == '2'){
             header('HTTP/1.1 503 Service Temporarily Unavailable');

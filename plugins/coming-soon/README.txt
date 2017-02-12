@@ -3,8 +3,8 @@ Contributors: seedprod
 Donate link: http://www.seedprod.com
 Tags: maintenance mode, coming soon page, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, under construction page, landing page
 Requires at least: 3.5.1
-Tested up to: 4.7.0
-Stable tag: 5.0.5
+Tested up to: 4.7.2
+Stable tag: 5.0.7
 Text Domain: coming-soon
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -113,6 +113,9 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 4. Design Page
 
 == Changelog ==
+= 5.0.6 =
+* Added wp review request
+
 = 5.0.5 =
 * Disable REST API while in coming soon and maintenance mode
 

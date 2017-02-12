@@ -93,7 +93,7 @@ function tc_menu_initialise() {
 
 	global $_wp_using_ext_object_cache;
 
-	if ( TC_LITE ) { $lite = true; } else { $lite = false; }
+	if ( defined( 'TC_LITE' ) && TC_LITE ) { $lite = true; } else { $lite = false; }
 
 	if ( !$_wp_using_ext_object_cache && !$lite ) {
 

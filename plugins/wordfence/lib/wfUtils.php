@@ -819,6 +819,28 @@ class wfUtils {
 		}
 		return false;
 	}
+	public static function hasTwoFactorEnabled($user = false) {
+		if (!$user) {
+			$user = get_user_by('ID', get_current_user_id());
+		}
+		
+		if (!$user) {
+			return false;
+		}
+		
+		$twoFactorUsers = wfConfig::get_ser('twoFactorUsers', array());
+		$hasActivatedTwoFactorUser = false;
+		foreach ($twoFactorUsers as &$t) {
+			if ($t[3] == 'activated') {
+				$userID = $t[0];
+				if ($userID == $user->ID && wfUtils::isAdmin($user)) {
+					$hasActivatedTwoFactorUser = true;
+				}
+			}
+		}
+		
+		return $hasActivatedTwoFactorUser;
+	}
 	public static function isWindows(){
 		if(! self::$isWindows){
 			if(preg_match('/^win/i', PHP_OS)){
@@ -1065,14 +1087,13 @@ class wfUtils {
 		return $URL;
 	}
 	public static function IP2Country($IP){
-		if(! (function_exists('geoip_open') && function_exists('geoip_country_code_by_addr') && function_exists('geoip_country_code_by_addr_v6'))){
-			require_once('wfGeoIP.php');
-		}
+		require_once('wfGeoIP.php');
+		
 		if (filter_var($IP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
-			$gi = geoip_open(dirname(__FILE__) . "/GeoIPv6.dat", GEOIP_STANDARD);
+			$gi = geoip_open(dirname(__FILE__) . "/GeoIPv6.dat", WF_GEOIP_STANDARD);
 			$country = geoip_country_code_by_addr_v6($gi, $IP);
 		} else {
-			$gi = geoip_open(dirname(__FILE__) . "/GeoIP.dat", GEOIP_STANDARD);
+			$gi = geoip_open(dirname(__FILE__) . "/GeoIP.dat", WF_GEOIP_STANDARD);
 			$country = geoip_country_code_by_addr($gi, $IP);
 		}
 		geoip_close($gi);
@@ -1420,9 +1441,13 @@ class wfUtils {
 	}
 	
 	public static function requestDetectProxyCallback($timeout = 0.01, $blocking = false, $forceCheck = false) {
+		$currentRecommendation = wfConfig::get('detectProxyRecommendation', '');
 		if (!$forceCheck) {
 			$detectProxyNextCheck = wfConfig::get('detectProxyNextCheck', false);
 			if ($detectProxyNextCheck !== false && time() < $detectProxyNextCheck) {
+				if (empty($currentRecommendation)) {
+					wfConfig::set('detectProxyRecommendation', 'DEFERRED', wfConfig::DONT_AUTOLOAD);
+				}
 				return; //Let it pull the currently-stored value
 			}
 		}
@@ -1435,7 +1460,6 @@ class wfUtils {
 			$response = wp_remote_get(sprintf(WFWAF_API_URL_SEC . "proxy-check/%d.txt", $waf->getStorageEngine()->getConfig('attackDataKey')));
 			
 			if (!is_wp_error($response)) {
-				$currentRecommendation = wfConfig::get('detectProxyRecommendation', '');
 				$okToSendBody = wp_remote_retrieve_body($response);
 				if (preg_match('/^(ok|wait),\s*(\d+)$/i', $okToSendBody, $matches)) {
 					$command = $matches[1];
@@ -1474,20 +1498,14 @@ class wfUtils {
 			'callback' => $callback,
 		);
 		
-		$siteurl = '';
-		if (function_exists('get_bloginfo')) {
-			if (is_multisite()) {
-				$siteurl = network_home_url();
-				$siteurl = rtrim($siteurl, '/'); //Because previously we used get_bloginfo and it returns http://example.com without a '/' char.
-			} else {
-				$siteurl = home_url();
-			}
-		}
+		$homeurl = wfUtils::wpHomeURL();
+		$siteurl = wfUtils::wpSiteURL();
 		
 		wp_remote_post(WFWAF_API_URL_SEC . "?" . http_build_query(array(
 				'action' => 'detect_proxy',
 				'k'      => wfConfig::get('apiKey'),
 				's'      => $siteurl,
+				'h'		 => $homeurl,
 				't'		 => microtime(true),
 			), null, '&'),
 			array(
@@ -1548,6 +1566,128 @@ class wfUtils {
 		wfConfig::set('detectProxyRecommendation', 'UNKNOWN', wfConfig::DONT_AUTOLOAD);
 		wfConfig::set('detectProxyNonce', '', wfConfig::DONT_AUTOLOAD);
 		return true;
+	}
+	
+	public static function base32_encode($rawString, $rightPadFinalBits = false, $padFinalGroup = false, $padCharacter = '=') //Adapted from https://github.com/ademarre/binary-to-text-php
+	{
+		// Unpack string into an array of bytes
+		$bytes = unpack('C*', $rawString);
+		$byteCount = count($bytes);
+		
+		$encodedString = '';
+		$byte = array_shift($bytes);
+		$bitsRead = 0;
+		$oldBits = 0;
+		
+		$chars             = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+		$bitsPerCharacter  = 5;
+		
+		$charsPerByte = 8 / $bitsPerCharacter;
+		$encodedLength = $byteCount * $charsPerByte;
+		
+		// Generate encoded output; each loop produces one encoded character
+		for ($c = 0; $c < $encodedLength; $c++) {
+			
+			// Get the bits needed for this encoded character
+			if ($bitsRead + $bitsPerCharacter > 8) {
+				// Not enough bits remain in this byte for the current character
+				// Save the remaining bits before getting the next byte
+				$oldBitCount = 8 - $bitsRead;
+				$oldBits = $byte ^ ($byte >> $oldBitCount << $oldBitCount);
+				$newBitCount = $bitsPerCharacter - $oldBitCount;
+				
+				if (!$bytes) {
+					// Last bits; match final character and exit loop
+					if ($rightPadFinalBits) $oldBits <<= $newBitCount;
+					$encodedString .= $chars[$oldBits];
+					
+					if ($padFinalGroup) {
+						// Array of the lowest common multiples of $bitsPerCharacter and 8, divided by 8
+						$lcmMap = array(1 => 1, 2 => 1, 3 => 3, 4 => 1, 5 => 5, 6 => 3, 7 => 7, 8 => 1);
+						$bytesPerGroup = $lcmMap[$bitsPerCharacter];
+						$pads = $bytesPerGroup * $charsPerByte - ceil((strlen($rawString) % $bytesPerGroup) * $charsPerByte);
+						$encodedString .= str_repeat($padCharacter, $pads);
+					}
+					
+					break;
+				}
+				
+				// Get next byte
+				$byte = array_shift($bytes);
+				$bitsRead = 0;
+				
+			} else {
+				$oldBitCount = 0;
+				$newBitCount = $bitsPerCharacter;
+			}
+			
+			// Read only the needed bits from this byte
+			$bits = $byte >> 8 - ($bitsRead + ($newBitCount));
+			$bits ^= $bits >> $newBitCount << $newBitCount;
+			$bitsRead += $newBitCount;
+			
+			if ($oldBitCount) {
+				// Bits come from seperate bytes, add $oldBits to $bits
+				$bits = ($oldBits << $newBitCount) | $bits;
+			}
+			
+			$encodedString .= $chars[$bits];
+		}
+		
+		return $encodedString;
+	}
+	
+	public static function wpHomeURL($path = '', $scheme = null) {
+		$homeurl = wfConfig::get('wp_home_url', '');
+		if (function_exists('get_bloginfo')) {
+			if (is_multisite()) {
+				if (empty($homeurl)) {
+					$homeurl = network_home_url($path, $scheme);
+					$homeurl = rtrim($homeurl, '/'); //Because previously we used get_bloginfo and it returns http://example.com without a '/' char.
+				}
+			}
+			else {
+				if (empty($homeurl)) {
+					$homeurl = home_url($path, $scheme);
+				}
+			}
+		}
+		return $homeurl;
+	}
+	
+	public static function wpSiteURL($path = '', $scheme = null) {
+		$siteurl = '';
+		if (function_exists('get_bloginfo')) {
+			if (is_multisite()) {
+				$siteurl = network_site_url($path, $scheme);
+			}
+			else {
+				$siteurl = site_url($path, $scheme);
+			}
+		}
+		return $siteurl;
+	}
+	
+	public static function wafInstallationType() {
+		try {
+			$status = (defined('WFWAF_ENABLED') && !WFWAF_ENABLED) ? 'disabled' : wfWaf::getInstance()->getStorageEngine()->getConfig('wafStatus');
+			if (defined('WFWAF_ENABLED') && !WFWAF_ENABLED) {
+				return "{$status}|const";
+			}
+			else if (defined('WFWAF_SUBDIRECTORY_INSTALL') && WFWAF_SUBDIRECTORY_INSTALL) {
+				return "{$status}|subdir";
+			}
+			else if (defined('WFWAF_AUTO_PREPEND') && WFWAF_AUTO_PREPEND) {
+				return "{$status}|extended";
+			}
+			
+			return "{$status}|basic";
+		}
+		catch (Exception $e) {
+			//Do nothing
+		}
+		
+		return 'unknown';
 	}
 }
 

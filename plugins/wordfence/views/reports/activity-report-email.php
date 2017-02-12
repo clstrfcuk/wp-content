@@ -138,26 +138,26 @@ $title = 'Wordfence Activity for the week of ' . date_i18n(get_option('date_form
 			color:#666666 !important;
 		}
 
-		table.wf-table {
+		table.wf-striped-table {
 			width: 100%;
 			max-width: 100%;
 		}
 
-		table.wf-table th,
-		table.wf-table td {
+		table.wf-striped-table th,
+		table.wf-striped-table td {
 			padding: 6px 4px;
 			border: 1px solid #cccccc;
 		}
 
-		table.wf-table thead th,
-		table.wf-table thead td {
+		table.wf-striped-table thead th,
+		table.wf-striped-table thead td {
 			background-color: #222;
 			color: #FFFFFF;
 			font-weight: bold;
 			border-color: #474747;
 		}
 
-		table.wf-table tbody tr.even td {
+		table.wf-striped-table tbody tr.even td {
 			background-color: #eeeeee;
 		}
 
@@ -301,7 +301,7 @@ $title = 'Wordfence Activity for the week of ' . date_i18n(get_option('date_form
 
 				<?php wfHelperString::cycle(); ?>
 
-				<table class="wf-table">
+				<table class="wf-striped-table">
 					<thead>
 						<tr>
 							<th>IP</th>
@@ -329,14 +329,14 @@ $title = 'Wordfence Activity for the week of ' . date_i18n(get_option('date_form
 				</table>
 
 				<p>
-					<a class="button" href="<?php echo network_admin_url('admin.php?page=WordfenceBlockedIPs') ?>">Update Blocked IPs</a>
+					<a class="button" href="<?php echo network_admin_url('admin.php?page=WordfenceWAF#top#blockedips') ?>">Update Blocked IPs</a>
 				</p>
 
 				<?php wfHelperString::cycle(); ?>
 
 				<h2>Top 10 Countries Blocked</h2>
 
-				<table class="wf-table">
+				<table class="wf-striped-table">
 					<thead>
 						<tr>
 							<th>Country</th>
@@ -364,14 +364,14 @@ $title = 'Wordfence Activity for the week of ' . date_i18n(get_option('date_form
 				</table>
 
 				<p>
-					<a class="button" href="<?php echo network_admin_url('admin.php?page=WordfenceCountryBlocking') ?>">Update Blocked Countries</a>
+					<a class="button" href="<?php echo network_admin_url('admin.php?page=WordfenceWAF#top#countryblocking') ?>">Update Blocked Countries</a>
 				</p>
 
 				<?php wfHelperString::cycle(); ?>
 
 				<h2>Top 10 Failed Logins</h2>
 
-				<table class="wf-table">
+				<table class="wf-striped-table">
 					<thead>
 						<tr>
 							<th>Username</th>
@@ -398,7 +398,7 @@ $title = 'Wordfence Activity for the week of ' . date_i18n(get_option('date_form
 
 				<h2>Recently Modified Files</h2>
 
-				<table class="wf-table">
+				<table class="wf-striped-table">
 					<thead>
 						<tr>
 							<th>Modified</th>

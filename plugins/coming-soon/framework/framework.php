@@ -317,8 +317,45 @@ class SEED_CSP4_ADMIN
                             
 
                            
-                            <a href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank"><img src="<?php echo SEED_CSP4_PLUGIN_URL; ?>framework/coming-soon-pro-sidebar.png" /></a>
-                            <br><br>
+                            <!-- <a href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank"><img src="<?php echo SEED_CSP4_PLUGIN_URL; ?>framework/coming-soon-pro-sidebar.png" /></a>
+                            <br><br> -->
+
+
+                            <div class="postbox " style="background-color:#FAE6A4;color:#333 !important; border-color:#333 !important">
+                                <div class="handlediv" title="Click to toggle"><br /></div>
+                                <h3 class="hndle" style="color:#fff !important;border-color:#333 !important; background-color:#333"><span><i class="fa fa-star"></i>&nbsp;&nbsp;<?php _e('Yo-Yo-Yo, Why Go Pro?', 'coming-soon') ?></span></h3>
+                                <div class="inside">
+                                    <div class="support-widget">
+                                      <!--   <p>
+                                            <?php _e("I'd love for you to check out what's in the Pro Version with this video Walk Through.",'coming-soon') ?>
+                                        </p> -->
+                              <!--           <iframe  width="250" height="188" src="https://www.youtube.com/embed/aMSPV4iY6Tc?rel=0" frameborder="0" allowfullscreen=""></iframe> -->
+                                        <ul>
+
+                                            <li><i class="fa fa-check"></i> <strong>Realtime Page Customizer</strong></li>
+                                            <li><i class="fa fa-check"></i> <strong>More Design Controls and Widgets</strong></li>
+                                            <li><i class="fa fa-check"></i> <strong>Pre Made Themes</strong></li>
+                                            <li><i class="fa fa-check"></i> <strong>1000's of Free Stock Images</strong></li>
+                                            <li><i class="fa fa-check"></i> <strong>Collect Emails (MailChimp, Database and other integrations)
+                                            </strong></li>
+                                            <li><i class="fa fa-check"></i> <strong>Go Viral with Social Media Integrations
+                                            </strong></li>
+                                            <li><i class="fa fa-check"></i> <strong>Shortcode Support, Google Font Support, Background Slideshow and Videos
+                                            </strong></li>
+                                            
+                                             <li><i class="fa fa-check"></i> <strong>Give clients Instant Access with a Bypass Link
+                                            </strong></li>
+                                            <li><hr style=" border-top: 1px solid #333; border-bottom: none"></li>
+                                            <li><strong>Plus lots more!</strong></li>
+                                        </ul>
+                                        <p>
+                                        <a class="button-primary" style="background-color:#05AE0E; border-color:#05AE0E; box-shadow:none; text-shadow: none; width:100%; text-align:center;" href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank">See What's In The Pro Version</a>
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="postbox ">
                                 <div class="handlediv" title="Click to toggle"><br /></div>
                                 <h3 class="hndle"><span><i class="fa fa-question-circle"></i>&nbsp;&nbsp;<?php _e('Plugin Support', 'coming-soon') ?></span></h3>
@@ -336,7 +373,7 @@ class SEED_CSP4_ADMIN
                                 </div>
                             </div>
                            
-                                <div class="postbox like-postbox">
+                               <!-- <div class="postbox like-postbox">
                                     <div class="handlediv" title="Click to toggle"><br /></div>
                                     <h3 class="hndle"><span><i class="fa fa-heart"></i>&nbsp;&nbsp;<?php _e('Show Some Love', 'coming-soon') ?></span></h3>
                                     <div class="inside">
@@ -350,7 +387,7 @@ class SEED_CSP4_ADMIN
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             
 
 

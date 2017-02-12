@@ -212,6 +212,9 @@ class wfIssues {
 		}
 		return $ret; //array of lists of issues by status
 	}
+	public function getIssueCount() {
+		return (int) $this->getDB()->querySingle("select COUNT(*) from " . $this->issuesTable . " WHERE status = 'new'");
+	}
 	public function updateSummaryItem($key, $val){
 		$arr = wfConfig::get_ser('wf_summaryItems', array());
 		$arr[$key] = $val;

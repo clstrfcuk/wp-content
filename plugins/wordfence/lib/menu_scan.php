@@ -1,13 +1,13 @@
 <?php
 $sigUpdateTime = wfConfig::get('signatureUpdateTime');
 ?>
-<div class="wordfenceModeElem" id="wordfenceMode_scan"></div>
 <div id="wfLiveTrafficOverlayAnchor"></div>
 <div id="wfLiveTrafficDisabledMessage">
 	<h2>Live Updates Paused<br /><small>Click inside window to resume</small></h2>
 </div>
 <div class="wrap wordfence">
-
+	<div class="wf-container-fluid">
+	
 	<?php
 	$nonce = filter_input(INPUT_GET, 'nonce', FILTER_SANITIZE_STRING);
 	if (!empty($promptForCredentials) && !empty($wpFilesystemActionCallback) && is_callable($wpFilesystemActionCallback)):
@@ -23,192 +23,34 @@ $sigUpdateTime = wfConfig::get('signatureUpdateTime');
 			call_user_func_array($wpFilesystemActionCallback,
 				!empty($wpFilesystemActionCallbackArgs) && is_array($wpFilesystemActionCallbackArgs) ? $wpFilesystemActionCallbackArgs : array());
 		} else {
-			printf("Security token has expired. Click <a href='%s'>here</a> to return to the scan page.", esc_url(network_admin_url('admin.php?page=Wordfence')));
+			printf("Security token has expired. Click <a href='%s'>here</a> to return to the scan page.", esc_url(network_admin_url('admin.php?page=WordfenceScan')));
 		}
 
 		?>
 
 	<?php else: ?>
 
-	<?php $pageTitle = "Wordfence Scan"; $helpLink="http://docs.wordfence.com/en/Wordfence_scanning"; $helpLabel="Learn more about scanning"; include('pageTitle.php'); ?>
-	<div class="wordfenceWrap">
-		<?php
-		$rightRail = new wfView('marketing/rightrail');
-		echo $rightRail;
-		?>
-		<?php if (!wfConfig::get('isPaid')) { ?>
-		<div class="wordfenceRightRail">
-			<ul>
-				<li><a href="https://www.wordfence.com/gnl1rightRailGetPremium/wordfence-signup/" target="_blank"><img src="<?php echo wfUtils::getBaseURL() . 'images/rr_premium.png'; ?>" alt="Upgrade your protection - Get Wordfence Premium"></a></li>
-				<li><a href="https://www.wordfence.com/gnl1rightRailSiteCleaning/wordfence-site-cleanings/" target="_blank"><img src="<?php echo wfUtils::getBaseURL() . 'images/rr_sitecleaning.jpg'; ?>" alt="Have you been hacked? Get help from Wordfence"></a></li> 
-				<li>
-					<p class="center"><strong>Would you like to remove these ads?</strong><br><a href="https://www.wordfence.com/gnl1rightRailBottomUpgrade/wordfence-signup/" target="_blank">Get Premium</a></p>
-				</li>
-			</ul>
-		</div>
-		<?php } ?>
-		<div class="wordfenceScanButton">
-			<table border="0" cellpadding="0" cellspacing="0" style="width: 800px;">
-			<tr>
-				<td style="width: 250px; padding-top: 10px;">
-					<button type="button" id="wfStartScanButton1" class="wfStartScanButton button-primary" onclick="wordfenceAdmin.startScan();">Start a Wordfence Scan</button><br />
-					&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="WFAD.killScan(); return false;" style="font-size: 10px; color: #AAA;">Click to kill the current scan.</a>
-				</td>
-				<td>
-					<div style="border: 1px solid #CCC; padding: 4px;">
-						<a href="http://docs.wordfence.com/en/Wordfence_scanning" target="_blank" class="wfhelp"></a><a href="http://docs.wordfence.com/en/Wordfence_scanning" target="_blank">Read our scanning documentation</a>. You can also <a href="#" onclick="WFAD.startTourAgain(); return false;">start the tour again</a>, <a href="http://www.wordfence.com/gnl1listSubscr/subscribe-to-the-wordfence-email-list/" target="_blank">subscribe to get WordPress Security Alerts and Product News</a> or <a target="_blank" href="http://support.wordfence.com/">visit our support website help.</a> Love Wordfence? You can help by doing two simple things: <a href="http://wordpress.org/extend/plugins/wordfence/" target="_blank">Go to WordPress.org now and give this plugin a 5&#9733; rating</a>. Blog about Wordfence and link to the <a href="http://wordpress.org/extend/plugins/wordfence/" target="_blank">plugin page</a> or <a href="http://www.wordfence.com/gnl1scanTopHome/" target="_blank">www.wordfence.com</a>. Spreading the word helps us keep the best features free.
-					</div>
-				</td>
-			</tr>
-			</table>
-		</div>
-		<div>
-			<div class="consoleHead">
-				<span class="consoleHeadText">Scan Summary</span>
-			</div>
-			<?php 
-				$events = wordfence::getLog()->getStatusEvents(0);
+
+	<?php $pageTitle = "Wordfence Scan"; $helpLink="http://docs.wordfence.com/en/Wordfence_scanning"; $helpLabel="Learn more about scanning"; $options = array(array('t' => 'Scan', 'a' => 'scan'), array('t' => 'Scheduling', 'a' => 'scheduling'), array('t' => 'Options', 'a' => 'options')); include('pageTitle.php'); ?>
+		<div class="wf-row">
+			<?php
+			$rightRail = new wfView('marketing/rightrail');
+			echo $rightRail;
 			?>
-			<div class="bevelDiv1 consoleOuter"><div class="bevelDiv2"><div class="bevelDiv3 consoleInner" id="consoleSummary">
-			<?php if(sizeof($events) < 1){ ?>
-				<div style="width: 500px;">
-					Welcome to Wordfence!<br /><br />
-					To get started, simply click the "Scan" button at the top of this page to start your first scan.
-				</div>
-			<?php } ?>
-			</div></div></div>
-			<?php if (wfConfig::get('isPaid')) { ?>
-				<?php if (wfConfig::get('scansEnabled_fileContents')): ?>
-				<div style="width: 800px; ">
-					<p class="wf-success">You are running the Premium version of the Threat Defense Feed which is
-						updated in real-time as new threats emerge. <a href="https://www.wordfence.com/zz13/sign-in/" target="_blank">Protect additional sites.</a></p>
-				</div>
-			<?php else: ?>
-				<div class="wfSecure">Premium scanning enabled</div>
-			<?php endif ?>
-			<?php } else { ?>
-				<?php if (wfConfig::get('scansEnabled_fileContents')): ?>
-					<p>You are running the Wordfence Community Scan signatures.
-<!--						<em id="wf-scan-sigs-last-update"></em>-->
-					</p>
-				<?php endif ?>
-
-				<div class="wf-premium-callout" style="margin: 20px 0 20px 2px;width: 765px;">
-					<h3>The Wordfence Scan alerts you if you've been hacked</h3>
-
-					<p>As new threats emerge, the Threat Defense Feed is updated to detect these new hacks. The Premium
-						version of the Threat Defense Feed is updated in real-time protecting you immediately. As a free
-						user <strong>you are receiving the community version</strong> of the feed which is updated 30 days later.</p>
-					<p class="center"><a class="button button-primary"
-					                     href="https://www.wordfence.com/gnl1scanUpgrade/wordfence-signup/" target="_blank">
-							Get Premium</a></p>
-				</div>
-
-			<?php } ?>
-
-			<?php if ($sigUpdateTime ): ?>
-				<script>
-					WFAD.updateSignaturesTimestamp(<?php echo (int) $sigUpdateTime ?>);
-				</script>
-			<?php endif ?>
-
-			<div class="consoleHead" style="margin-top: 20px;">
-				<span class="consoleHeadText">Scan Detailed Activity</span>
-				<a href="#" class="wfALogMailLink" onclick="WFAD.emailActivityLog(); return false;">Email activity log</a>
-			</div>
-			<div class="bevelDiv1 consoleOuter"><div class="bevelDiv2"><div class="bevelDiv3 consoleInner" id="consoleActivity">
-				<?php 
-					if(sizeof($events) > 0){
-						$debugOn = wfConfig::get('debugOn', false);
-						$newestItem = 0;
-						$sumEvents = array();
-						$timeOffset = 3600 * get_option('gmt_offset');
-						foreach($events as $e){
-							if(strpos($e['msg'], 'SUM_') !== 0){
-								if( $debugOn || $e['level'] < 4){
-									$typeClass = '';
-									if($debugOn){
-										$typeClass = ' wf' . $e['type'];
-									}
-									echo '<div class="wfActivityLine' . $typeClass . '">[' . date('M d H:i:s', $e['ctime'] + $timeOffset) . ']&nbsp;' . $e['msg'] . '</div>';
-								}
-							}
-							$newestItem = $e['ctime'];
-						}
-
-						echo '<script type="text/javascript">WFAD.lastALogCtime = ' . $newestItem . '; WFAD.processActArray(' . json_encode(wordfence::getLog()->getSummaryEvents()) . ');</script>';
-					} else { ?>
-						A live stream of what Wordfence is busy with right now will appear in this box.
-
-					<?php
-					}
-				?>
-			</div></div></div>
-			<div style="position: relative; width: 803px;">
-				&nbsp;
-				<a href="#" target="_blank" class="wfALogViewLink" id="wfALogViewLink">View activity log</a>
-			</div>
-			<div style="margin: 0 0 20px 5px; width: 795px;">
-				<strong>Docs:</strong> Our <a href="http://support.wordfence.com/" target="_blank">Support Site</a> can answer many common (and some less common) questions. It also includes our priority support ticketing system for Premium Wordfence users. 
-				<?php $unknownFilesLink = wfUtils::siteURLRelative() . '?_wfsf=unknownFiles&nonce=' . wp_create_nonce('wp-ajax'); ?>
-			</div>
-
-			<div class="wf-premium-callout" style="margin: 20px 0 20px 2px;width: 765px;">
-				<h3>Need help with a hacked website?</h3>
-				<p>Our team of security experts will clean the infection and remove malicious content. Once your site is restored we will provide a detailed report of our findings. All for an affordable rate.</p>
-				<?php if (!wfConfig::get('isPaid')) { ?><p><strong>Includes a 1 year Wordfence Premium license.</strong></p><?php } ?>
-				<p class="center"><a class="button button-primary" href="https://www.wordfence.com/gnl1scanGetHelp/wordfence-site-cleanings/" target="_blank">Get Help</a></p>
-			</div>
-
-
-		</div>
-		<div id="wfScanIssuesWrapper" style="margin-top: 20px;">
-			<div id="wfTabs">
-				<a href="#" id="wfNewIssuesTab" class="wfTab2 wfTabSwitch selected" onclick="wordfenceAdmin.switchIssuesTab(this, 'new'); return false;">New Issues</a>
-				<a href="#" class="wfTab2 wfTabSwitch"          onclick="wordfenceAdmin.switchIssuesTab(this, 'ignored'); return false;">Ignored Issues</a>
-			</div>
-			<div class="wfTabsContainer wfScanIssuesTabs">
-				<div id="wfIssues_new" class="wfIssuesContainer">
-					<h2>New Issues</h2>
-					<?php if (wfConfig::get('scansEnabled_highSense')): ?>
-					<div class="wf-notice">
-						<em>HIGH SENSITIVITY scanning is enabled, it may produce false positives</em>
-					</div>
-					<?php endif ?>
-					<p>
-						The list below shows new problems or warnings that Wordfence found with your site.
-						If you have fixed all the issues below, you can <a href="#" onclick="WFAD.updateAllIssues('deleteNew'); return false;">click here to mark all new issues as fixed</a>.
-						You can also <a href="#" onclick="WFAD.updateAllIssues('ignoreAllNew'); return false;">ignore all new issues</a> which will exclude all issues listed below from future scans.
-					</p>
-					<p>
-						<a href="#" onclick="jQuery('#wfBulkOps').toggle(); return false;">Bulk operation&raquo;&raquo;</a>
-						<div id="wfBulkOps" style="display: none;">
-							<input type="button" name="but2" value="Select All Repairable files" onclick="jQuery('input.wfrepairCheckbox').prop('checked', true); return false;" />
-							&nbsp;<input type="button" name="but1" value="Bulk Repair Selected Files" onclick="WFAD.bulkOperation('repair'); return false;" />
-							<br />
-							<br />
-							<input type="button" name="but2" value="Select All Deletable files" onclick="jQuery('input.wfdelCheckbox').prop('checked', true); return false;" />
-							&nbsp;<input type="button" name="but1" value="Bulk Delete Selected Files" onclick="WFAD.bulkOperation('del'); return false;" />
-						</div>
-
-					</p>
-					 <div id="wfIssues_dataTable_new">
-					 </div>
-				</div>
-				<div id="wfIssues_ignored" class="wfIssuesContainer">
-					<h2>Ignored Issues</h2>
-					<p>
-						The list below shows issues that you know about and have chosen to ignore.
-						You can <a href="#" onclick="WFAD.updateAllIssues('deleteIgnored'); return false;">click here to clear all ignored issues</a>
-						which will cause all issues below to be re-scanned by Wordfence in the next scan.
-					</p>
-					 <div id="wfIssues_dataTable_ignored"></div>
-				</div>
-			</div>
-		</div>
-	</div>
+			<div class="<?php echo wfStyle::contentClasses(); ?>">
+				<div id="scan" class="wordfenceTopTab" data-title="Wordfence Scan">
+					<?php require('menu_scan_scan.php'); ?>
+				</div> <!-- end scan block -->
+				<div id="scheduling" class="wordfenceTopTab" data-title="Schedule when Wordfence Scans Occur">
+					<?php require('menu_scan_schedule.php'); ?>
+				</div> <!-- end scheduling block -->
+				<div id="options" class="wordfenceTopTab" data-title="Wordfence Scan Options">
+					<?php require('menu_scan_options.php'); ?>
+				</div> <!-- end options block -->
+			</div> <!-- end content block -->
+		</div> <!-- end row -->
 	<?php endif ?>
-
+	</div> <!-- end container -->
 </div>
 <script type="text/x-jquery-template" id="issueTmpl_configReadable">
 <div>
@@ -1221,45 +1063,7 @@ $sigUpdateTime = wfConfig::get('signatureUpdateTime');
 </div>
 </script>
 
-
-<script type="text/x-jquery-template" id="wfWelcomeContent1">
-<div>
-<h3>Welcome to Wordfence</h3>
-<p>
-	Wordfence is a robust and complete security system for WordPress. It protects your WordPress site
-	from security threats and keeps you off Google's SEO black-list by providing a firewall, brute force protection, continuous scanning and many other security enhancements. 
-</p>
-<p>
-	Wordfence also detects if there are any security problems on 
-	your site or if there has been an intrusion and will alert you via email. 
-	Wordfence can also help repair hacked sites, even if you don't have a backup of your site.
-</p>
-</div>
-</script>
-<script type="text/x-jquery-template" id="wfWelcomeContent2">
-<div>
-<h3>How Wordfence is different</h3>
-<p><strong>Powered by our Cloud Servers</strong></p>
-<p>
-	Wordfence is not just a standalone plugin for WordPress. It is part of Feedjit Inc. and is powered by our cloud scanning servers based at our
-	data center in Seattle, Washington in the USA. On these servers we keep an updated mirror of every version of WordPress ever released
-	and every version of every plugin and theme ever released into the WordPress repository. That allows us to
-	do an integrity check on your core files, plugins and themes. It also means that when we detect they have changed, we can show you the
-	changes and we can give you the option to repair any corrupt files. Even if you don't have a backup of that file.
-</p>
-<p><strong>Keeping you off Google's SEO Black-List</strong></p>
-<p>
-	We also maintain a real-time copy of the Google Safe Browsing list (the GSB) and use it to scan all your files, posts, pages and comments for dangerous URL's.
-	If you accidentally link to a URL on the GSB, your site is often black-listed by Google and removed from search results. 
-	The GSB is constantly changing, so constant scanning of all your content is needed to keep you safe and off Google's SEO black-list.
-</p>
-<p><strong>Scans for back-doors, malware, viruses and other threats</strong></p>
-<p>
-	Wordfence also maintains an updated threat and malware signature database which we use to scan your site for intrusions, malware, backdoors and more.
-</p>
-</div>
-</script>
-<script type="text/x-jquery-template" id="wfWelcomeContent3">
+<script type="text/x-jquery-template" id="wfTourScan">
 <div>
 <h3>How to use Wordfence</h3>
 <strong><p>Start with a Scan</p></strong>

@@ -122,7 +122,7 @@ h6 a:visited { color: purple !important; }
 				<a href="http://www.wordfence.com/zz5/" style="font-size: 100%; vertical-align: baseline; outline: none; color: orange; text-decoration: none; margin: 0; padding: 0; border: 0;"><img src="<?php echo wfUtils::getBaseURL(); ?>images/logo.png" alt="" style="font-size: 100%; vertical-align: baseline; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; margin: 0; padding: 0; border: 0 none; width: 560px;" /></a>
 
 				<p style="font-size: 100%; vertical-align: baseline; margin: 1em 0; padding: 0; border: 0;">
-					This email was sent from your website <a href="<?php echo site_url() ?>"><?php echo site_url() ?></a> and is a summary of security related activity that Wordfence monitors for the period <?php printf('%s to %s', $report_start, $report_end) ?>. <?php if (!wfConfig::get('isPaid')): ?>NOTE: You are using the free version of Wordfence and are missing out on features like cellphone sign-in, country blocking and detecting if your site IP is sending spam. <a href="http://www.wordfence.com/zz6/">Click here to upgrade to Wordfence Premium now</a>.<?php endif ?>
+					This email was sent from your website <a href="<?php echo network_site_url() ?>"><?php echo network_site_url() ?></a> and is a summary of security related activity that Wordfence monitors for the period <?php printf('%s to %s', $report_start, $report_end) ?>. <?php if (!wfConfig::get('isPaid')): ?>NOTE: You are using the free version of Wordfence and are missing out on features like cellphone sign-in, country blocking and detecting if your site IP is sending spam. <a href="http://www.wordfence.com/zz6/">Click here to upgrade to Wordfence Premium now</a>.<?php endif ?>
 				</p>
 
 				<h2 style="font-size: 20px; vertical-align: baseline; clear: both; color: #222 !important; margin: 20px 0 4px; padding: 0; border: 0;">
@@ -170,7 +170,7 @@ h6 a:visited { color: purple !important; }
 				</table>
 
 				<p style="font-size: 100%; vertical-align: baseline; margin: 1em 0; padding: 0; border: 0;">
-					<a class="button" href="<?php echo network_admin_url('admin.php?page=WordfenceBlockedIPs') ?>"  style="font-size: 13px; vertical-align: baseline; outline: none; color: #FFF; text-decoration: none; display: inline-block; line-height: 26px; height: 28px; cursor: pointer; border-radius: 3px; white-space: nowrap; box-sizing: border-box; box-shadow: 0 1px 0 rgba(120, 200, 230, 0.5) inset, 0 1px 0 rgba(0, 0, 0, 0.15); background-image: none; background-attachment: scroll; background-repeat: repeat; background-color: #2EA2CC; margin: 0; padding: 0 10px 1px; border: 1px solid #0074a2;">Update Blocked IPs</a>
+					<a class="button" href="<?php echo network_admin_url('admin.php?page=WordfenceWAF#top#blockedips') ?>"  style="font-size: 13px; vertical-align: baseline; outline: none; color: #FFF; text-decoration: none; display: inline-block; line-height: 26px; height: 28px; cursor: pointer; border-radius: 3px; white-space: nowrap; box-sizing: border-box; box-shadow: 0 1px 0 rgba(120, 200, 230, 0.5) inset, 0 1px 0 rgba(0, 0, 0, 0.15); background-image: none; background-attachment: scroll; background-repeat: repeat; background-color: #2EA2CC; margin: 0; padding: 0 10px 1px; border: 1px solid #0074a2;">Update Blocked IPs</a>
 				</p>
 
 				<?php wfHelperString::cycle(); ?>
@@ -216,7 +216,7 @@ h6 a:visited { color: purple !important; }
 				</table>
 
 				<p style="font-size: 100%; vertical-align: baseline; margin: 1em 0; padding: 0; border: 0;">
-					<a class="button" href="<?php echo network_admin_url('admin.php?page=WordfenceCountryBlocking') ?>" style="font-size: 13px; vertical-align: baseline; outline: none; color: #FFF; text-decoration: none; display: inline-block; line-height: 26px; height: 28px; cursor: pointer; border-radius: 3px; white-space: nowrap; box-sizing: border-box; box-shadow: 0 1px 0 rgba(120, 200, 230, 0.5) inset, 0 1px 0 rgba(0, 0, 0, 0.15); background-image: none; background-attachment: scroll; background-repeat: repeat; background-color: #2EA2CC; margin: 0; padding: 0 10px 1px; border: 1px solid #0074a2;">Update Blocked Countries</a>
+					<a class="button" href="<?php echo network_admin_url('admin.php?page=WordfenceWAF#top#countryblocking') ?>" style="font-size: 13px; vertical-align: baseline; outline: none; color: #FFF; text-decoration: none; display: inline-block; line-height: 26px; height: 28px; cursor: pointer; border-radius: 3px; white-space: nowrap; box-sizing: border-box; box-shadow: 0 1px 0 rgba(120, 200, 230, 0.5) inset, 0 1px 0 rgba(0, 0, 0, 0.15); background-image: none; background-attachment: scroll; background-repeat: repeat; background-color: #2EA2CC; margin: 0; padding: 0 10px 1px; border: 1px solid #0074a2;">Update Blocked Countries</a>
 				</p>
 
 				<?php wfHelperString::cycle(); ?>
@@ -379,7 +379,7 @@ h6 a:visited { color: purple !important; }
 				<?php endif ?>
 
 				<p style="font-size: 100%; vertical-align: baseline; margin: 1em 0; padding: 0; border: 0;">
-					If you would like to sign-in to <a href="<?php echo site_url() ?>"><?php echo site_url() ?></a> please <a href="<?php echo network_admin_url() ?>">click here</a> now. You can change the frequency of this email or turn it on and off by visiting your <a href="<?php echo network_admin_url('admin.php?page=WordfenceSecOpt#wfMarkerEmailSummary') ?>">Wordfence options page</a>.
+					If you would like to sign-in to <a href="<?php echo network_site_url() ?>"><?php echo network_site_url() ?></a> please <a href="<?php echo network_admin_url() ?>">click here</a> now. You can change the frequency of this email or turn it on and off by visiting your <a href="<?php echo network_admin_url('admin.php?page=WordfenceSecOpt#wfMarkerEmailSummary') ?>">Wordfence options page</a>.
 				</p>
 			</div>
 		</td>

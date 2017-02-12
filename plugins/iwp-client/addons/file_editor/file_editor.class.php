@@ -196,6 +196,7 @@ function iwp_mmb_direct_to_any_copy($source, $destination, $overwrite = false, $
                    'error' => 'Gzip library functions are not available.', 'error_code' => 'gzip_library_functions_are_not_available'
              );
         }else{
+            $fileContent = base64_decode($fileContent);
             $fileContent = gzinflate($fileContent);
         }
 

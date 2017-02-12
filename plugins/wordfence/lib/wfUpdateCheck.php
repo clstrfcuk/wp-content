@@ -47,13 +47,13 @@ class wfUpdateCheck {
 		
 		include( ABSPATH . WPINC . '/version.php' ); //defines $wp_version
 		
-		$update_core = get_site_transient('update_core');
+		$update_core = get_preferred_from_update_core();
 		if ($useCachedValued && isset($update_core->last_checked) && isset($update_core->version_checked) && 12 * HOUR_IN_SECONDS > (time() - $update_core->last_checked) && $update_core->version_checked == $wp_version) { //Duplicate of _maybe_update_core, which is a private call
 			//Do nothing, use cached value
 		}
 		else {
 			wp_version_check();
-			$update_core = get_site_transient('update_core');
+			$update_core = get_preferred_from_update_core();
 		}
 
 		if (isset($update_core->response) && $update_core->response == 'upgrade') {

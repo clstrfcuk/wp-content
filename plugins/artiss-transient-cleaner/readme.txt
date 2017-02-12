@@ -4,7 +4,7 @@ Donate link: https://artiss.blog/donate
 Tags: cache, clean, database, housekeep, options, table, tidy, transient, update, upgrade
 Requires at least: 3.3
 Tested up to: 4.7
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -95,6 +95,9 @@ A transient may consist of one or more records (normally a timed transient - the
 
 [Learn more about my version numbering methodology](https://artiss.blog/2016/09/wordpress-plugin-versioning/ "WordPress Plugin Versioning")
 
+= 1.5.2 =
+* Bug: Oops. Although it seemed to work fine on my test system, it looks as if the code for the new 'lite' mode was causing some users errors. I've now (I hope) corrected that. Apologies.
+
 = 1.5.1 =
 * Maintenance: Beware the Atom editor and it's default setting of appending extra blank lines! Extra lines have now been removed from the bottom of various files
 * Maintenance: Also took the opportunity to correct my site URLs, as my domain has recently changed (the old URLs still work as I'm smart enough to put redirects in place but, still, it's neater to do it properly)
@@ -165,5 +168,5 @@ A transient may consist of one or more records (normally a timed transient - the
 
 == Upgrade Notice ==
 
-= 1.5.1 =
-* Minor release to remove some extraneous blank lines
+= 1.5.2 =
+* Bug fix to correct errors related to new 'lite' mode

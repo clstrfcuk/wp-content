@@ -12,7 +12,7 @@
 
 function tc_get_options() {
 
-	if ( isset( $GLOBALS[ 'tc_lite' ] ) && $GLOBALS[ 'tc_lite' ] !== false ) { $lite = true; } else { $lite = false; }
+	if ( defined( 'TC_LITE' ) && TC_LITE ) { $lite = true; } else { $lite = false; }
 
 	if ( !$lite ) { $options = get_option( 'transient_clean_options' ); }
 

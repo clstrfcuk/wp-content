@@ -73,6 +73,36 @@ class wfScanEngine {
 		return !is_wp_error($response) && ($responseBody = wp_remote_retrieve_body($response)) &&
 			stripos($responseBody, '<title>Index of') !== false;
 	}
+	
+	public static function refreshScanNotification($issuesInstance = null) {
+		if ($issuesInstance === null) {
+			$issuesInstance = new wfIssues();
+		}
+		
+		$message = wfConfig::get('lastScanCompleted', '');
+		if ($message == 'ok') {
+			$issueCount = $issuesInstance->getIssueCount();
+			if ($issueCount) {
+				new wfNotification(null, wfNotification::PRIORITY_HIGH, "<a href=\"" . network_admin_url('admin.php?page=WordfenceScan') . "\">{$issueCount} issue" . ($issueCount == 1 ? '' : 's') . ' found in most recent scan</a>', 'wfplugin_scan');
+			}
+			else {
+				$n = wfNotification::getNotificationForCategory('wfplugin_scan');
+				if ($n !== null) {
+					$n->markAsRead();
+				}
+			}
+		}
+		else {
+			$failureType = wfConfig::get('lastScanFailureType');
+			if ($failureType == 'duration') {
+				new wfNotification(null, wfNotification::PRIORITY_HIGH, '<a href="' . network_admin_url('admin.php?page=WordfenceScan') . '">Scan aborted due to duration limit</a>', 'wfplugin_scan');
+			}
+			else {
+				$trimmedError = substr($message, 0, 100) . (strlen($message) > 100 ? '...' : '');
+				new wfNotification(null, wfNotification::PRIORITY_HIGH, '<a href="' . network_admin_url('admin.php?page=WordfenceScan') . '">Scan failed: ' . esc_html($trimmedError) . '</a>', 'wfplugin_scan');
+			}
+		}
+	}
 
 	public function __sleep(){ //Same order here as above for properties that are included in serialization
 		return array('hasher', 'jobList', 'i', 'wp_version', 'apiKey', 'startTime', 'maxExecTime', 'publicScanEnabled', 'fileContentsResults', 'scanner', 'scanQueue', 'hoover', 'scanData', 'statusIDX', 'userPasswdQueue', 'passwdHasIssues', 'suspectedFiles', 'dbScanner', 'knownFilesLoader', 'metrics', 'checkHowGetIPsRequestTime');
@@ -126,6 +156,7 @@ class wfScanEngine {
 			self::checkForKill();
 			$this->doScan();
 			wfConfig::set('lastScanCompleted', 'ok');
+			wfConfig::set('lastScanFailureType', false);
 			self::checkForKill();
 			//updating this scan ID will trigger the scan page to load/reload the results.
 			$this->i->setScanTimeNow();
@@ -134,23 +165,31 @@ class wfScanEngine {
 			$this->recordMetric('scan', 'duration', (time() - $this->startTime));
 			$this->recordMetric('scan', 'memory', wfConfig::get('wfPeakMemory', 0));
 			$this->submitMetrics();
+			
+			wfScanEngine::refreshScanNotification($this->i);
 		}
 		catch (wfScanEngineDurationLimitException $e) {
 			wfConfig::set('lastScanCompleted', $e->getMessage());
+			wfConfig::set('lastScanFailureType', 'duration');
 			$this->i->setScanTimeNow();
 			
 			$this->emailNewIssues(true);
 			$this->recordMetric('scan', 'duration', (time() - $this->startTime));
 			$this->recordMetric('scan', 'memory', wfConfig::get('wfPeakMemory', 0));
 			$this->submitMetrics();
+			
+			wfScanEngine::refreshScanNotification($this->i);
 			throw $e;
 		}
 		catch(Exception $e) {
 			wfConfig::set('lastScanCompleted', $e->getMessage());
+			wfConfig::set('lastScanFailureType', 'general');
 			$this->recordMetric('scan', 'duration', (time() - $this->startTime));
 			$this->recordMetric('scan', 'memory', wfConfig::get('wfPeakMemory', 0));
 			$this->recordMetric('scan', 'failure', $e->getMessage());
 			$this->submitMetrics();
+			
+			wfScanEngine::refreshScanNotification($this->i);
 			throw $e;
 		}
 	}
@@ -369,8 +408,15 @@ class wfScanEngine {
 				$recommendation = wfConfig::get('detectProxyRecommendation', '');
 			}
 			
-			if ($recommendation == 'DEFERRED' || empty($recommendation)) { 
+			$failed = false;
+			if ($recommendation == 'DEFERRED') { 
 				//Do nothing
+				wordfence::statusEnd($this->statusIDX['checkHowGetIPs'], $haveIssues, $failed, true);
+				return;
+			}
+			else if (empty($recommendation)) {
+				$failed = true;
+				$haveIssues = true;
 			}
 			else if ($recommendation == 'UNKNOWN') {
 				$this->addIssue('checkHowGetIPs', 2, 'checkHowGetIPs', 'checkHowGetIPs' . $recommendation . WORDFENCE_VERSION, "Unable to accurately detect IPs", 'Wordfence was unable to validate a test request to your website. This can happen if your website is behind a proxy that does not use one of the standard ways to convey the IP of the request or it is unreachable publicly. IP blocking and live traffic information may not be accurate. <a href="https://docs.wordfence.com/en/Misconfigured_how_get_IPs_notice " target="_blank">Get More Information</a>', array());
@@ -395,7 +441,7 @@ class wfScanEngine {
 				$haveIssues = true;
 			}
 			
-			wordfence::statusEnd($this->statusIDX['checkHowGetIPs'], $haveIssues);
+			wordfence::statusEnd($this->statusIDX['checkHowGetIPs'], $haveIssues, $failed);
 		}
 	}
 
