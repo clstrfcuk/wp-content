@@ -45,7 +45,7 @@
 </table>
 
 <p>
-	<a class="button button-primary" href="<?php echo network_admin_url('admin.php?page=WordfenceWAF#top#blockedips') ?>">Update Blocked IPs</a>
+	<a class="button button-primary" href="<?php echo network_admin_url('admin.php?page=WordfenceBlocking#top#blockedips') ?>">Update Blocked IPs</a>
 </p>
 
 <?php wfHelperString::cycle(); ?>
@@ -88,7 +88,7 @@
 </table>
 
 <p>
-	<a class="button button-primary" href="<?php echo network_admin_url('admin.php?page=WordfenceWAF#top#countryblocking') ?>">Update Blocked Countries</a>
+	<a class="button button-primary" href="<?php echo network_admin_url('admin.php?page=WordfenceBlocking#top#countryblocking') ?>">Update Blocked Countries</a>
 </p>
 
 <?php wfHelperString::cycle(); ?>

@@ -85,7 +85,6 @@ function seed_csp4_head() {
 
 	/* Background Style */
     html{
-    	height:100%;
 		<?php if ( !empty( $bg_image ) ): ;?>
 			<?php if ( isset( $bg_cover ) && in_array( '1', $bg_cover ) ) : ?>
 				background: <?php echo $bg_color;?> url('<?php echo $bg_image; ?>') no-repeat top center fixed;
@@ -103,7 +102,6 @@ function seed_csp4_head() {
 		<?php endif;endif; ?>
     }
     .seed-csp4 body{
-    	height:100%;
 			<?php if ( !empty( $bg_effect ) ) : ?>
 				background: transparent url('<?php echo plugins_url( 'images/bg-'.$bg_effect.'.png', __FILE__ ) ; ?>') repeat;
 			<?php else: ?>
@@ -111,7 +109,7 @@ function seed_csp4_head() {
 			<?php endif; ?>
 	}
 	<?php if ( !empty( $bg_overlay ) ): ;?>
-		.seed-csp4 body{
+		#seed-csp4-page{
 			background-color: rgba(0,0,0,0.5);
 		}
 	<?php endif ?>
@@ -287,7 +285,7 @@ function seed_csp4_append_html() {
 	$output = '';
 
 	if ( !empty( $append_html) ) {
-		$output .= '<div id="coming-soon-custom-html">'.shortcode_unautop(wpautop(convert_chars(wptexturize($append_html)))).'</div>';
+		$output .= '<div id="coming-soon-custom-html">'.$append_html.'</div>';
 	}
 
 	return  $output;

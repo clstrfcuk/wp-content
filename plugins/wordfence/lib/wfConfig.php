@@ -652,8 +652,15 @@ class wfConfig {
 			return 0;
 		}
 	}
-	public static function liveTrafficEnabled(){
-		return self::get('liveTrafficEnabled');
+	public static function liveTrafficEnabled(&$overriden = null){
+		$enabled = self::get('liveTrafficEnabled');
+		if (WORDFENCE_DISABLE_LIVE_TRAFFIC || function_exists('wpe_site')) {
+			$enabled = false;
+			if ($overriden !== null) {
+				$overriden = true;
+			}
+		}
+		return $enabled;
 	}
 	public static function enableAutoUpdate(){
 		wfConfig::set('autoUpdate', '1');

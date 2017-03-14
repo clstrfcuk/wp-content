@@ -194,6 +194,29 @@ class SEED_CSP4{
             }
         }
 
+        // Prevetn Plugins from caching
+        // Disable caching plugins. This should take care of:
+        //   - W3 Total Cache
+        //   - WP Super Cache
+        //   - ZenCache (Previously QuickCache)
+        if(!defined('DONOTCACHEPAGE')) {
+          define('DONOTCACHEPAGE', true);
+        }
+        if(!defined('DONOTCDN')) {
+          define('DONOTCDN', true);
+        }
+        if(!defined('DONOTCACHEDB')) {
+          define('DONOTCACHEDB', true);
+        }
+        if(!defined('DONOTMINIFY')) {
+          define('DONOTMINIFY', true);
+        }
+        if(!defined('DONOTCACHEOBJECT')) {
+          define('DONOTCACHEOBJECT', true);
+        }
+        header('Cache-Control: max-age=0; private');
+
+
         // render template tags
         if(empty($html)){
             $template = $this->get_default_template();

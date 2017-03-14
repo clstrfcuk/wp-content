@@ -1,7 +1,17 @@
 /* Styles */
+html, 
+body {
+    height: 100%;
+}
+
+#seed-csp4-page{
+    padding:60px 20px 60px;
+    min-height: 100%; 
+}
+
 body{
+    height: 100%;
 	text-align:center;
-	padding:60px 20px 0;	
 }
 
 #seed-csp4-content{
