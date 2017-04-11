@@ -21,6 +21,19 @@
 
         // Addons Search
         var addon_search_timeout;
+
+		//prevent enter from submitting 
+        $( 'form#add-on-search input#add-on-searchbox' ).on( 'keyup keypress', function(e) {
+
+			var keyCode = e.keyCode || e.which;
+			if (keyCode === 13) { 
+				
+				e.preventDefault();
+				return false;
+			}
+		
+		});       
+        
         $( 'form#add-on-search input#add-on-searchbox' ).on( 'keyup', function() {
 
             // Clear timeout

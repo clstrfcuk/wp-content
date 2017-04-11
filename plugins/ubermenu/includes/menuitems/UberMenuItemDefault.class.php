@@ -141,7 +141,7 @@ class UberMenuItemDefault extends UberMenuItem{
 							'column' , 
 							'Auto Column' , 
 							$this->ID,
-							array( 'columns' => '1-'.$autocolumns ),
+							array( 'columns' => ( $autocolumns == 1 ? 'full' : '1-'.$autocolumns ) ),
 							array( 'ubermenu-autocolumn' )
 						);
 

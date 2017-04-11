@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 // =============================================================================
 // FUNCTIONS/GLOBAL/ADMIN/CUSTOMIZER/TRANSIENTS.PHP
@@ -21,6 +21,7 @@ function x_customizer_set_transients_before_save() {
 }
 
 add_action( 'customize_save', 'x_customizer_set_transients_before_save' );
+add_action( 'cs_theme_options_before_save', 'x_customizer_set_transients_before_save' );
 
 
 
@@ -32,3 +33,4 @@ function x_customizer_set_transients_after_save() {
 }
 
 add_action( 'customize_save_after', 'x_customizer_set_transients_after_save' );
+add_action( 'cs_theme_options_after_save', 'x_customizer_set_transients_after_save' );

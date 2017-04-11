@@ -26,9 +26,9 @@ class TCO_Validator {
   protected $is_verified = false;
   protected $has_site = false;
   protected $site_match = false;
-  protected $connection_error = false;
+  protected $response = array();
 
-  protected $base_url = 'https://community.theme.co/api-v2/validate/';
+  protected $base_url = 'https://theme.co/apex/api-v2/validate/';
   protected $errors = array();
 
   public function __construct( $code, $product ) {
@@ -38,14 +38,13 @@ class TCO_Validator {
 
   public function run() {
 
-    $result = $this->request();
+    $this->response = $this->request();
 
-    if ( is_wp_error( $result ) ) {
-      $this->connection_error = $result;
+    if ( $this->has_connection_error() ) {
       return;
     }
 
-    switch ( (int) $result ) {
+    switch ( (int) $this->response['code'] ) {
       case 2:
         $this->is_valid = false;
         break;
@@ -109,12 +108,12 @@ class TCO_Validator {
       return new WP_Error( 'tco_connection_error', json_encode( $data ) );
     }
 
-    return $data['code'];
+    return $data;
 
   }
 
   public function has_connection_error() {
-    return is_wp_error( $this->connection_error );
+    return is_wp_error( $this->response );
   }
 
   public function is_valid() {
@@ -134,7 +133,11 @@ class TCO_Validator {
   }
 
   public function connection_error_details() {
-    return ( is_wp_error( $this->connection_error ) ) ? $this->connection_error->get_error_message() : '';
+    return ( $this->has_connection_error() ) ? $this->response->get_error_message() : '';
+  }
+
+  public function get_response() {
+    return $this->response;
   }
 
 }

@@ -63,7 +63,7 @@
 	margin:0;
 }
 .uber-submit-wrap{
-	z-index:30;
+	z-index:9999;
 	position:fixed;
 	bottom:0;
 	right:20px;
@@ -195,6 +195,12 @@ h2.nav-tab-wrapper{
 	color:#999;
 	padding:1px 6px;
 	margin-left:5px;
+}
+
+.uber-field.uber-field-select .description{
+	clear:both;
+	display:block;
+	padding:5px;
 }
 
 
@@ -916,4 +922,15 @@ small code{
 
 .ubermenu-field-force-hide{
 	display:none !important;
+}
+
+
+.ubermenu-license-error{
+	border:1px solid #DA3333;
+	border-left:4px solid #DA3333;	
+	padding:3px 5px;
+	margin:3px;
+	background:#fff;
+	color:#444;
+	display:inline-block;
 }

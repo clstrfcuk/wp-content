@@ -7,10 +7,11 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Transitions
+//   01. Base
+//   02. Material
 // =============================================================================
 
-// Transitions
+// Base
 // =============================================================================
 
 $easeInQuad:        cubic-bezier(0.550, 0.085, 0.680, 0.530)  !default;
@@ -40,6 +41,33 @@ $easeInOutExpo:     cubic-bezier(1.000, 0.000, 0.000, 1.000)  !default;
 $easeInOutCirc:     cubic-bezier(0.785, 0.135, 0.150, 0.860)  !default;
 $easeInOutBack:     cubic-bezier(0.680, -0.550, 0.265, 1.550) !default;
 
-$baseTransF:        $easeOutQuint;
-$baseTransD:        0.65s;
-$baseTrans:         $baseTransF $baseTransD;
+
+
+// Material
+// =============================================================================
+
+// Notes
+// -----
+// 01. The most common easing curve. Elements quickly accelerate and slowly
+//     decelerate between on-screen locations. It applies to growing and
+//     shrinking material, among other property changes.
+// 02. Using the deceleration curve elements enter the screen at full velocity
+//     and slowly decelerate to a resting point.
+// 03. Using the acceleration curve elements leave the screen at full velocity.
+//     They do not decelerate when off-screen.
+// 04. Using the sharp curve elements quickly accelerate and decelerate. It is
+//     used by exiting elements that may return to the screen at any time.
+
+$materialStand:    cubic-bezier(0.4, 0.0, 0.2, 1.0) !default; // 01
+$materialDecel:    cubic-bezier(0.0, 0.0, 0.2, 1.0) !default; // 02
+$materialAccel:    cubic-bezier(0.4, 0.0, 1.0, 1.0) !default; // 03
+$materialSharp:    cubic-bezier(0.4, 0.0, 0.6, 1.0) !default; // 04
+
+
+
+// Global Use
+// =============================================================================
+
+// $baseTransF:        $easeOutQuint;
+// $baseTransD:        0.65s;
+// $baseTrans:         $baseTransF $baseTransD;

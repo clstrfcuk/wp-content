@@ -1,4 +1,4 @@
-// Envirabox 2.1.5
+// Envirabox 2.2.0
 ;(function (window, document, $, undefined) {
 	"use strict";
 
@@ -39,7 +39,7 @@
 
 	$.extend(F, {
 		// The current version of envirabox
-		version: '2.1.5',
+		version: '2.2.0',
 
 		defaults: {
 			padding : 15,
@@ -77,6 +77,9 @@
 			preload    : 3,
 			modal      : false,
 			loop       : true,
+
+			lightboxTheme : 'base', // 2.2.0
+			navDivsRoot: false, // 2.2.0
 
 			ajax  : {
 				dataType : 'html',
@@ -211,9 +214,13 @@
 		 *	Static methods
 		 */
 
-		open: function (group, opts) {
+		open: function (group, opts, images) {
 			if (!group) {
 				return;
+			}
+
+			if (images) {
+				group = images;
 			}
 
 			if (!$.isPlainObject(opts)) {
@@ -463,8 +470,11 @@
 		},
 
 		// Navigate to next gallery item
-		next: function ( direction ) {
-			var current = F.current;
+		next: function ( e ) {
+			if ( e && typeof e.preventDefault !== 'undefined' ) {
+				e.preventDefault();
+			}
+			var current = F.current, direction = e;
 
 			if (current) {
 				if (!isString(direction)) {
@@ -476,8 +486,11 @@
 		},
 
 		// Navigate to previous gallery item
-		prev: function ( direction ) {
-			var current = F.current;
+		prev: function ( e ) {
+			if ( e && typeof e.preventDefault !== 'undefined' ) {
+				e.preventDefault();
+			}
+			var current = F.current, direction = e;
 
 			if (current) {
 				if (!isString(direction)) {
@@ -595,7 +608,9 @@
 		hideLoading: function () {
 			D.unbind('.loading');
 
-			$('#envirabox-loading').remove();
+			setTimeout(function() {
+				$('#envirabox-loading').remove();
+			}, 0);
 		},
 
 		showLoading: function () {
@@ -603,7 +618,7 @@
 
 			F.hideLoading();
 
-			el = $('<div id="envirabox-loading"><div></div></div>').click(F.cancel).appendTo('body');
+			el = $('<div id="envirabox-loading"><div></div></div>').click(F.cancel).appendTo('.envirabox-inner');
 
 			// If user will press the escape-button, the request will be canceled
 			D.bind('keydown.loading', function(e) {
@@ -790,6 +805,10 @@
 				coming.margin = [margin, margin, margin, margin];
 			}
 
+			coming.margin = {
+				'main': coming.margin
+			};
+
 			if ($.type(padding) === 'number') {
 				coming.padding = [padding, padding, padding, padding];
 			}
@@ -932,6 +951,9 @@
 			// Reset preload image so it is later possible to check "complete" property
 			var img = F.imgPreload = new Image();
 
+			// always show loader
+			F.showLoading();
+
 			img.onload = function () {
 				this.onload = this.onerror = null;
 
@@ -949,9 +971,6 @@
 
 			img.src = F.coming.href;
 
-			if (img.complete !== true) {
-				F.showLoading();
-			}
 		},
 
 		_loadAjax: function () {
@@ -1125,7 +1144,6 @@
 					content += '<embed src="' + href + '" type="application/x-shockwave-flash" width="100%" height="100%"' + embed + '></embed></object>';
 				break;
 			}
-
 			if (!(isQuery(content) && content.parent().is(current.inner))) {
 				current.inner.append( content );
 			}
@@ -1166,6 +1184,7 @@
 				wrap       = F.wrap,
 				skin       = F.skin,
 				inner      = F.inner,
+				outer      = F.outer,
 				current    = F.current,
 				width      = current.width,
 				height     = current.height,
@@ -1175,9 +1194,8 @@
 				maxHeight  = current.maxHeight,
 				scrolling  = current.scrolling,
 				scrollOut  = current.scrollOutside ? current.scrollbarWidth : 0,
-				margin     = current.margin,
-				wMargin    = getScalar(margin[1] + margin[3]),
-				hMargin    = getScalar(margin[0] + margin[2]),
+				oMargin    = current.margin,
+				margin     = [0, 0, 0, 0],
 				wPadding,
 				hPadding,
 				wSpace,
@@ -1192,10 +1210,20 @@
 				maxWidth_,
 				maxHeight_,
 				iframe,
-				body;
+				body,
+				i;
+
+			for (i = 0; i < margin.length; ++i) {
+				$.each(oMargin, function(index, value) {
+					margin[i] += value[i];
+				});
+			}
+
+			var wMargin = getScalar(margin[1] + margin[3]), hMargin = getScalar(margin[0] + margin[2]);
+			
 
 			// Reset dimensions so we could re-check actual size
-			wrap.add(skin).add(inner).width('auto').height('auto').removeClass('envirabox-tmp');
+			wrap.add(skin).add(outer).width('auto').height('auto').removeClass('envirabox-tmp');
 
 			wPadding = getScalar(skin.outerWidth(true)  - skin.width());
 			hPadding = getScalar(skin.outerHeight(true) - skin.height());
@@ -1213,7 +1241,7 @@
 				if (current.autoHeight && iframe.data('ready') === 1) {
 					try {
 						if (iframe[0].contentWindow.document.location) {
-							inner.width( origWidth ).height(9999);
+							outer.width( origWidth ).height(9999);
 
 							body = iframe.contents().find('body');
 
@@ -1228,26 +1256,26 @@
 				}
 
 			} else if (current.autoWidth || current.autoHeight) {
-				inner.addClass( 'envirabox-tmp' );
+				outer.addClass( 'envirabox-tmp' );
 
 				// Set width or height in case we need to calculate only one dimension
 				if (!current.autoWidth) {
-					inner.width( origWidth );
+					outer.width( origWidth );
 				}
 
 				if (!current.autoHeight) {
-					inner.height( origHeight );
+					outer.height( origHeight );
 				}
 
 				if (current.autoWidth) {
-					origWidth = inner.width();
+					origWidth = outer.width();
 				}
 
 				if (current.autoHeight) {
-					origHeight = inner.height();
+					origHeight = outer.height();
 				}
 
-				inner.removeClass( 'envirabox-tmp' );
+				outer.removeClass( 'envirabox-tmp' );
 			}
 
 			width  = getScalar( origWidth );
@@ -1299,9 +1327,9 @@
 				width = Math.max(minWidth, Math.min(width, maxWidth));
 
 				if (current.autoHeight && current.type !== 'iframe') {
-					inner.width( width );
+					outer.width( width );
 
-					height = inner.height();
+					height = outer.height();
 				}
 
 				height = Math.max(minHeight, Math.min(height, maxHeight));
@@ -1309,7 +1337,7 @@
 
 			// Try to fit inside viewport (including the title)
 			if (current.fitToView) {
-				inner.width( width ).height( height );
+				outer.width( width ).height( height );
 
 				wrap.width( width + wPadding );
 
@@ -1336,7 +1364,7 @@
 							height = getScalar(width / ratio);
 						}
 
-						inner.width( width ).height( height );
+						outer.width( width ).height( height );
 
 						wrap.width( width + wPadding );
 
@@ -1354,7 +1382,7 @@
 				width += scrollOut;
 			}
 
-			inner.width( width ).height( height );
+			outer.width( width ).height( height );
 
 			wrap.width( width + wPadding );
 
@@ -1380,30 +1408,37 @@
 			});
 
 			if (!iframe && current.autoHeight && height > minHeight && height < maxHeight && !canExpand) {
-				inner.height('auto');
+				outer.height('auto');
 			}
+			
 		},
 
 		_getPosition: function (onlyAbsolute) {
 			var current  = F.current,
 				viewport = F.getViewport(),
-				margin   = current.margin,
-				width    = F.wrap.width()  + margin[1] + margin[3],
-				height   = F.wrap.height() + margin[0] + margin[2],
-				rez      = {
-					position: 'absolute',
-					top  : margin[0],
-					left : margin[3]
-				};
+				oMargin  = current.margin,
+				margin   = [0,0,0,0],
+				i;
 
-            // Check for floating title and adjust height.
-            if (current.helpers.title.type && 'float' == current.helpers.title.type) {
-                height = height + $('.envirabox-skin .envirabox-title').height();
-            }
+			for (i = 0; i < margin.length; ++i) {
+				$.each(oMargin, function(index, value) {
+					margin[i] += value[i];
+				});
+			}
+
+			var width = width = F.wrap.width()  + margin[1] + margin[3], height = F.wrap.height() + margin[0] + margin[2], rez = {
+				position: 'absolute',
+				top  : margin[0],
+				left : margin[3]
+			};
+
+			// Check for floating title and adjust height.
+			if (current.helpers.title.type && 'float' == current.helpers.title.type) {
+				height = height + $('.envirabox-skin .envirabox-title').height();
+			}
 
 			if (current.autoCenter && current.fixed && !onlyAbsolute && height <= viewport.h && width <= viewport.w) {
 				rez.position = 'fixed';
-
 			} else if (!current.locked) {
 				rez.top  += viewport.y;
 				rez.left += viewport.x;
@@ -1448,15 +1483,56 @@
 				});
 			}
 
-			// Create navigation arrows
-			if (current.arrows && F.group.length > 1) {
-				if (current.loop || current.index > 0) {
-					$(current.tpl.prev).appendTo(F.outer).bind('click.fb', F.prev);
-				}
+			// Create navigation arrows || Timeout is required to make sure this loads AFTER the title height is set
+			setTimeout(function() {
+				if (current.arrows && F.group.length > 1) {
+					var prev = $(current.tpl.prev), next = $(current.tpl.next);
+					if ( current.lightboxTheme === 'base_dark' || current.lightboxTheme === 'base_light' ) {
+						var thumbs_height = F.helpers.thumbs.list ? F.helpers.thumbs.list.parent().height() : 0,
+							title_height = F.helpers.title.title ? F.helpers.title.title.outerHeight() : 0;
+						// Previous Navigation
+						prev.css('bottom', thumbs_height);
+						prev.css('top', title_height);
 
-				if (current.loop || current.index < F.group.length - 1) {
-					$(current.tpl.next).appendTo(F.outer).bind('click.fb', F.next);
+						if ( ! F.helpers.thumbs.list ) {
+							prev.find('span').css('marginTop', - parseInt(31 + (title_height === 0 ? 0 : title_height / 2)));
+						}
+
+						// Next Navigation
+						next.css('bottom', thumbs_height);
+						next.css('top', title_height);
+
+						if ( ! F.helpers.thumbs.list ) {
+							next.find('span').css('marginTop', - parseInt(31 + (title_height === 0 ? 0 : title_height / 2)));
+						}
+					}
+					// console.log ('removing arrows - TEMPORARY SOLUTION');
+					// likely a CSS fix will make this not required but in the meantime...
+					if (current.loop || current.index > 0) {
+						if ( current.helpers.navDivsRoot == true ) { // 2.2.0
+							prev.insertBefore('.envirabox-overlay').bind('click.fb', F.prev);
+						} else {
+							prev.appendTo(F.outer).bind('click.fb', F.prev);
+						}
+					}
+
+					if (current.loop || current.index < F.group.length - 1) {
+						if ( current.helpers.navDivsRoot == true ) { // 2.2.0
+							next.insertBefore('.envirabox-overlay').bind('click.fb', F.next);
+						} else {
+							next.appendTo(F.outer).bind('click.fb', F.next);
+						}
+
+						
+					}
 				}
+			}, 0);
+
+			// Do we need to move envirabox-actions?
+
+			if ( current.helpers.actionDivRoot == true ) { // 2.2.0
+				$('.envirabox-wrap .envirabox-actions').appendTo(document.body);
+				console.log ('actionDivRoot');
 			}
 
 			F.trigger('afterShow');
@@ -1569,7 +1645,7 @@
 				value   = now - padding;
 
 				F.skin[ prop ](  getScalar( prop === 'width' ?  value : value - (wrapSpace * ratio) ) );
-				F.inner[ prop ]( getScalar( prop === 'width' ?  value : value - (wrapSpace * ratio) - (skinSpace * ratio) ) );
+				F.outer[ prop ]( getScalar( prop === 'width' ?  value : value - (wrapSpace * ratio) - (skinSpace * ratio) ) );
 			}
 		},
 
@@ -1692,7 +1768,7 @@
 			speedOut   : 200,       // duration of fadeOut animation
 			showEarly  : true,      // indicates if should be opened immediately or wait until the content is ready
 			css        : {},        // custom CSS properties
-			locked     : !isTouch,  // if true, the content will be locked into overlay
+			locked     : true,  // if true, the content will be locked into overlay
 			fixed      : true       // if false, the overlay CSS position property will not be set to "fixed"
 		},
 
@@ -1712,7 +1788,7 @@
 
 			parent = F.coming ? F.coming.parent : opts.parent;
 
-			this.overlay = $('<div class="envirabox-overlay"></div>').appendTo( parent && parent.lenth ? parent : 'body' );
+			this.overlay = $('<div class="envirabox-overlay"></div>').appendTo( parent && parent.length ? parent : 'body' );
 			this.fixed   = false;
 
 			if (opts.fixed && F.defaults.fixed) {
@@ -1862,26 +1938,34 @@
 
 	F.helpers.title = {
 		defaults : {
-			type     : 'float', // 'float', 'inside', 'outside' or 'over',
+			alwaysShow: false,
+			type     : 'float', // 'float', 'inside', 'outside' or 'over', 'fixed',
 			position : 'bottom' // 'top' or 'bottom'
 		},
+		title    : null,
 
-		beforeShow: function (opts) {
+		beforeShow: function (opts, obj) {
+
 			var current = F.current,
 				text    = current.title,
 				type    = opts.type,
+				position = opts.position,
 				title,
-				target;
+				target,
+				margin  = [0,0,0,0];
+
+			// First up, lets destroy any existing titles
+			$('.envirabox-title').remove();
 
 			if ($.isFunction(text)) {
 				text = text.call(current.element, current);
 			}
 
-			if (!isString(text) || $.trim(text) === '') {
+			if (!opts.alwaysShow && (!isString(text) || $.trim(text) === '')) {
 				return;
 			}
 
-			title = $('<div class="envirabox-title envirabox-title-' + type + '-wrap">' + text + '</div>');
+			this.title = $('<div class="envirabox-title envirabox-title-' + type + '-wrap">' + text + '</div>');
 
 			switch (type) {
 				case 'inside':
@@ -1889,35 +1973,76 @@
 				break;
 
 				case 'outside':
+				case 'fixed':
 					target = F.wrap;
 				break;
 
 				case 'over':
-					target = F.inner;
+					target = F.outer;
 				break;
 
 				default: // 'float'
 					target = F.skin;
 
-					title.appendTo('body');
+					this.title.appendTo('body');
 
 					if (IE) {
-						title.width( title.width() );
+						this.title.width( this.title.width() );
 					}
 
-					title.wrapInner('<span class="child"></span>');
+					this.title.wrapInner('<span class="child"></span>');
 
 					//Increase bottom margin so this title will also fit into viewport
-					F.current.margin[2] += Math.abs( getScalar(title.css('margin-bottom')) );
+					//margin[2] += Math.abs( getScalar(this.title.css('margin-bottom')) );
 				break;
 			}
 
-			title[ (opts.position === 'top' ? 'prependTo'  : 'appendTo') ](target);
+			this.title[ (opts.position === 'top' ? 'prependTo'  : 'appendTo') ](target);
+
+			if(type === 'fixed') {
+				// position is fixed lets adjust accordingly
+				margin[0] = this.title.outerHeight();
+
+				// Hack to allow us to alter the position of the actions when using the base dark/light themes
+				if($('.envirabox-actions').length) {
+					$('.envirabox-actions').css('top', parseInt((this.title.outerHeight() - $('.envirabox-actions').height()) / 2));
+				}
+			}
+			else {
+				if ( type !== 'inside' ) {
+					margin[ opts.position === 'top' ? 0 : 2 ] = this.title.outerHeight();
+				}
+			}
+
+			$.extend(obj.margin, {
+				'title': margin
+			});
+
+			F.current.helpers.title.title = this.title;
+
+		},
+
+		onUpdate: function(opts, obj) {
+
+			var type = opts.type;
+
+			if(type === 'fixed') {
+				// Hack to allow us to alter the position of the actions when using the base dark/light themes
+				if($('.envirabox-actions').length) {
+					$('.envirabox-actions').css('top', parseInt((this.title.outerHeight() - $('.envirabox-actions').height()) / 2));
+					$('.envirabox-title').css('paddingRight', parseInt($('.envirabox-actions').width() + 20));
+				}
+			}
+
+		},
+
+		beforeClose: function() {
+			this.title = null;
 		}
 	};
 
 	// jQuery plugin initialization
-	$.fn.envirabox = function (options) {
+	$.fn.envirabox = function (options, images) {
 		var index,
 			that     = $(this),
 			selector = this.selector || '',
@@ -1945,7 +2070,7 @@
 					options.index = idx;
 					
 					// Stop an event from bubbling if everything is fine
-					if (F.open(what, options) !== false) {
+					if (F.open(what, options, images) !== false) {
 						e.preventDefault();
 					}
 				}

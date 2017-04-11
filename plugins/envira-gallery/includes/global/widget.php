@@ -83,8 +83,16 @@ class Envira_Gallery_Widget extends WP_Widget {
         // Extract arguments into variables.
         extract( $args );
 
-        $title      = apply_filters( 'widget_title', $instance['title'] );
-        $gallery_id = $instance['envira_gallery_id'];
+        $gallery_id = $title = false;
+
+        if ( isset( $instance['title'] ) ) {
+            $title      = apply_filters( 'widget_title', $instance['title'] );
+        }
+        if ( isset( $instance['envira_gallery_id'] ) ) {
+            $gallery_id = $instance['envira_gallery_id'];
+        }
+
+        if ( !$gallery_id ) { return; }
 
         do_action( 'envira_gallery_widget_before_output', $args, $instance );
 
@@ -160,7 +168,13 @@ class Envira_Gallery_Widget extends WP_Widget {
                 <?php
                 if ( is_array( $galleries ) ) {
                     foreach ( $galleries as $gallery ) {
-                        if ( ! empty( $gallery['config']['title'] ) ) {
+
+                        // Instead of pulling the title from config, attempt to pull it from the gallery post first
+                        $gallery_post = get_post( $gallery['id'] );
+
+                        if ( ! empty( $gallery_post->post_title ) ) {
+                            $title = $gallery_post->post_title;
+                        } else if ( ! empty( $gallery['config']['title'] ) ) {
                             $title = $gallery['config']['title'];
                         } else if ( ! empty( $gallery['config']['slug'] ) ) {
                             $title = $gallery['config']['title'];

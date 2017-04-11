@@ -1,5 +1,5 @@
 <?php
- 
+
 // =============================================================================
 // FUNCTIONS/GLOBAL/ADMIN/CUSTOMIZER/OUTPUT.PHP
 // -----------------------------------------------------------------------------
@@ -16,40 +16,36 @@
 
 // CSS: Get Output
 // =============================================================================
- 
+
 function x_customizer_get_css() {
 
   $outp_path = X_TEMPLATE_PATH . '/framework/functions/global/admin/customizer/output';
 
-  require_once( $outp_path . '/variables.php' );
+  include( $outp_path . '/variables.php' );
 
   ob_start();
 
-    require_once( $outp_path . '/' . $x_stack . '.php' );
-    require_once( $outp_path . '/base.php' );
-    require_once( $outp_path . '/masthead.php' );
-    require_once( $outp_path . '/buttons.php' );
-    require_once( $outp_path . '/widgets.php' );
-    require_once( $outp_path . '/bbpress.php' );
-    require_once( $outp_path . '/buddypress.php' );
-    require_once( $outp_path . '/woocommerce.php' );
-    require_once( $outp_path . '/gravity-forms.php' );
+    include( $outp_path . '/' . $x_stack . '.php' );
+    include( $outp_path . '/base.php' );
+    include( $outp_path . '/buttons.php' );
+    include( $outp_path . '/widgets.php' );
+    include( $outp_path . '/bbpress.php' );
+    include( $outp_path . '/buddypress.php' );
+    include( $outp_path . '/woocommerce.php' );
+    include( $outp_path . '/gravity-forms.php' );
 
   $css = ob_get_clean();
 
+  if ( function_exists('cornerstone_post_process_css' ) ) {
+    $css = cornerstone_post_process_css( $css );
+  }
 
-  //
-  // 1. Remove comments.
-  // 2. Remove whitespace.
-  // 3. Remove starting whitespace.
-  //
+  return x_get_clean_css( $css );
 
-  $output = preg_replace( '#/\*.*?\*/#s', '', $css );            // 1
-  $output = preg_replace( '/\s*([{}|:;,])\s+/', '$1', $output ); // 2
-  $output = preg_replace( '/\s\s+(.*)/', '$1', $output );        // 3
+}
 
-  return $output;
-
+function x_customizer_output_css() {
+  echo x_customizer_get_css();
 }
 
 
@@ -121,7 +117,7 @@ function x_customizer_get_css() {
 function x_customizer_output_js() {
 
   $x_custom_scripts                     = x_get_option( 'x_custom_scripts' );
-  $entry_id                             = get_queried_object_id();
+  $entry_id                             = get_the_ID();
   $x_entry_bg_image_full                = get_post_meta( $entry_id, '_x_entry_bg_image_full', true );
   $x_entry_bg_image_full_fade           = get_post_meta( $entry_id, '_x_entry_bg_image_full_fade', true );
   $x_entry_bg_image_full_duration       = get_post_meta( $entry_id, '_x_entry_bg_image_full_duration', true );
@@ -138,7 +134,7 @@ function x_customizer_output_js() {
 
   <?php endif; ?>
 
-  <?php if ( $x_entry_bg_image_full ) : ?>
+  <?php if ( $x_entry_bg_image_full && is_singular() ) : ?>
 
     <?php
     $page_bg_images_output = '';

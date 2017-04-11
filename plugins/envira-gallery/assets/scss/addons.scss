@@ -26,8 +26,9 @@
         display: table;
         clear: both;
     }
-	h1 {
+	h2 {
 		float: left;
+		padding-left: 40px;		
 		@include mq(xs) {
 			float: none;
 		}

@@ -4,40 +4,48 @@ window.Huebert.localize( csHuebert );
 
 },{"../vendor/huebert":2}],2:[function(require,module,exports){
 (function (global){
+/*! huebert.js v1.0.0 | MIT License | https://github.com/themeco/huebert */
 ( function( factory ) {
 
-  var root =  ( 'object' == typeof self && self.self == self && self ) ||
-              ( 'object' == typeof global && global.global == global && global );
+  var root =  ( 'object' === typeof self && self.self === self && self ) ||
+              ( 'object' === typeof global && global.global === global && global );
 
   if ( 'undefined' !== typeof exports ) {
-    var _ = require('./underscore-shim.js'), tinycolor = require( 'tinycolor2' ), $;
+    var tinycolor, $;
     try {
+      tinycolor = require( 'tinycolor2' );
       $ = require('./jquery-shim.js');
     } catch ( e ) {}
-    factory( root, exports, _, $, tinycolor );
+    factory( root, exports, $, tinycolor );
   } else {
-    root.Huebert = factory( root, {}, root._, ( root.jQuery || root.Zepto || root.ender || root.$ ), root.tinycolor );
+    root.Huebert = factory( root, {}, ( root.jQuery || root.Zepto || root.ender || root.$ ), root.tinycolor );
   }
 
-}( function( root, Huebert, _, $, tinycolor ) {
+}( function( root, Huebert, $, tinycolor ) {
 
   var markup = {
     wrapper: '<div class="huebert huebert-single"></div>',
+    palette: '<div class="huebert-palette"></div>',
+    paletteitem: '<div class="huebert-palette-item">&nbsp;</div>',
     swatch: '<div class="huebert-swatch" tabindex="-1"><div class="huebert-swatch-indicator"></div><div class="huebert-swatch-text"></div><div class="huebert-swatch-output"><div class="huebert-swatch-output-color"></div></div></div>',
-    picker: '<div class="huebert-picker" tabindex="-1"><div class="huebert-picker-palette" tabindex="-1" data-huebert-dimension="xy"><div class="huebert-picker-palette-x"></div><div class="huebert-picker-palette-y"></div><div class="huebert-picker-palette-iris"></div><div class="huebert-picker-palette-ratio"></div></div><div class="huebert-picker-control-slider-z" tabindex="-1" data-huebert-dimension="z"><div class="huebert-picker-control-slider-handle"></div><div class="huebert-picker-control-slider-z-value"></div></div><div class="huebert-picker-control-slider-a" tabindex="-1" data-huebert-dimension="a"><div class="huebert-picker-control-slider-handle"></div><div class="huebert-picker-control-slider-a-value" ></div></div><input class="huebert-picker-control-output-value" type="text"></div>',
+    picker: '<div class="huebert-picker" tabindex="-1"><div class="huebert-picker-spectrum" tabindex="-1" data-huebert-dimension="xy"><div class="huebert-picker-spectrum-x"></div><div class="huebert-picker-spectrum-y"></div><div class="huebert-picker-spectrum-iris"></div><div class="huebert-picker-spectrum-ratio"></div></div><div class="huebert-picker-control-slider-z" tabindex="-1" data-huebert-dimension="z"><div class="huebert-picker-control-slider-handle"></div><div class="huebert-picker-control-slider-z-value"></div></div><div class="huebert-picker-control-slider-a" tabindex="-1" data-huebert-dimension="a"><div class="huebert-picker-control-slider-handle"></div><div class="huebert-picker-control-slider-a-value" ></div></div><input class="huebert-picker-control-output-value" type="text"></div>',
     button: '<button tabindex="-1" class="huebert-picker-control-button"></button>'
   };
 
   var defaults = {
     change: false,
     open: false,
+    canToggle: true,
     map: { x: 's', y: 'l', z: 'h', a: 'a' },
     outputFormat: '',
+    label: null,
     reset: 'clear',
-    float: false,
-    floatContainer: 'body',
     defaultValue: null,
-    closeOnBlur: true
+    palette: [],
+		float: true,
+		floatContainer: 'body',
+		scrollContainer: window,
+		scrollEvent: 'scroll'
   };
 
   Huebert.i18n = {
@@ -48,14 +56,14 @@ window.Huebert.localize( csHuebert );
 
   Huebert.ColorPicker = function( $el, options ) {
 
-    var hb, $wrapper, $input, $picker, $swatch, $spectrum, $iris, $z, $a, $button, $focus, controlDimensions, blank, previousColor, hueSelection;
-    hb = this;
+    var hb, $window, $body, $scrollContainer, $wrapper, $palette, $paletteitem, $input, $picker, $swatch, $spectrum, $iris, $z, $a, $button, $focus, controlDimensions, blank, previousColor, hueSelection;
 
     $el = this.$el = $el;
 
     if ( ! isValid() ) return;
 
-    var options = _.extend( defaults, options );
+    hb = this;
+    var options = $.extend({}, defaults, options );
     var open = !! options.open;
     var transparent = 'rgba(0,0,0,0)';
     var originalValue = $el.val();
@@ -69,37 +77,65 @@ window.Huebert.localize( csHuebert );
     var color = this.color = tinycolor( originalValue );
 
     render();
-    attachEventHandlers();
 
     function render() {
 
+      $window = $(window);
+      $body = $(document.body);
+      $scrollContainer = $( options.scrollContainer );
+
       $el.wrap( $( markup.wrapper ) );
-      $wrapper = this.$wrapper = $el.parent();
+      $el.addClass( 'huebert-original-input' );
+
+      $wrapper = hb.$wrapper = $el.parent();
       $picker = $( markup.picker );
       $swatch = $( markup.swatch );
-      $swatch.find( '.huebert-swatch-text' ).text( Huebert.i18n.selectColor );
+      $swatch.find( '.huebert-swatch-text' ).text( options.label ? options.label : Huebert.i18n.selectColor );
+      $wrapper.append( $swatch )
 
-      $input = $picker.find( '.huebert-picker-control-output-value' );
-      $spectrum = $picker.find( '.huebert-picker-palette' );
-      $iris = $picker.find( '.huebert-picker-palette-iris' );
-      $z = $picker.find( '.huebert-picker-control-slider-z' );
-      $a = $picker.find( '.huebert-picker-control-slider-a' );
 
-      $button = $( markup.button );
-      $button.addClass( 'default' == options.reset ? 'huebert-picker-control-button-default' : 'huebert-picker-control-button-clear' );
-      $input.before( $button );
+      if ( options.canToggle ) {
+        setTimeout(renderPicker,1);
+      } else {
+				options.float = false;
+        open = options.open = true;
+        renderPicker();
+        $swatch.hide();
+      }
 
-      $wrapper.append( $swatch ).append( $picker );
 
-      $el.addClass( 'huebert-original-input' );
-      update( { updateOriginal: false });
-      toggle( open );
+      function renderPicker() {
+        $input = $picker.find( '.huebert-picker-control-output-value' );
+        $spectrum = $picker.find( '.huebert-picker-spectrum' );
+        $iris = $picker.find( '.huebert-picker-spectrum-iris' );
+        $z = $picker.find( '.huebert-picker-control-slider-z' );
+        $a = $picker.find( '.huebert-picker-control-slider-a' );
 
+        $button = $( markup.button );
+        $button.addClass( 'default' == options.reset ? 'huebert-picker-control-button-default' : 'huebert-picker-control-button-clear' );
+        $input.before( $button );
+
+        if ( options.palette.length > 0 ) {
+          $palette = $( markup.palette );
+          options.palette.forEach( function ( item ) {
+            $paletteitem = $( markup.paletteitem );
+            $paletteitem.css( 'background-color', item.value ).data( 'id', item ).attr( 'title', item.label );
+            $palette.append( $paletteitem );
+          });
+          $a.after( $palette );
+        }
+        $wrapper.append( $picker );
+
+
+        update( { updateOriginal: false });
+        toggle( open );
+        attachEventHandlers();
+      }
     }
 
     function update( options ) {
 
-      var options = options || {};
+      options = options || {};
       previousColor = color.clone();
 
       if ( options.reset ) {
@@ -212,6 +248,14 @@ window.Huebert.localize( csHuebert );
 
       var existing = color.toHsl();
 
+      // Force alpha 1 if we try moving controls when alpha 0 is set.
+      if ( 0 >= existing.a && ! mapped.hasOwnProperty('a') ) {
+        existing.a = 1;
+        setTimeout(function(){
+          updateControls( { a: '100%' } );
+        });
+      }
+
       var updated = {};
       for ( var d in existing ) {
         updated[d] = ( d in mapped ) ? mapped[d] : existing[d];
@@ -246,31 +290,20 @@ window.Huebert.localize( csHuebert );
     }
 
     function attachEventHandlers() {
+
       $el.on( 'change', originalInputChange );
+
       $swatch.on( 'click', swatchClick );
       $input.on( 'change keyup ', inputChange );
       $spectrum.on( 'mousedown', controlClick );
       $z.on( 'mousedown', controlClick );
       $a.on( 'mousedown', controlClick );
-      $wrapper.on( 'blur', '*', loseFocus );
       $button.on( 'click', buttonClick );
-    }
+      $( '.huebert-palette-item' ).on( 'click', paletteClick );
 
-    function gainFocus( e ) {
-      $( e.currentTarget ).focus();
-    }
-
-    function loseFocus( e ) {
-      clearTimeout( timeout );
-      var timeout = setTimeout( function() {
-        if ( 0 === $wrapper.find( ':focus' ).length && options.closeOnBlur ) {
-          toggle( false );
-        }
-      }, 25 );
     }
 
     function swatchClick( e ) {
-      gainFocus( e );
       toggle();
     }
 
@@ -279,9 +312,12 @@ window.Huebert.localize( csHuebert );
       'default' == options.reset ? revertValue() : clearValue();
     }
 
+
     function originalInputChange( e, params ) {
 
       if ( params && params.huebert ) return;
+
+      // console.log($( this ).val(), params);
 
       var $this = $( this );
       var newColor = tinycolor( $this.val() );
@@ -325,6 +361,24 @@ window.Huebert.localize( csHuebert );
       }
     }
 
+    function paletteClick( e ) {
+      var $this = $( this );
+      var val = $this.data('id');
+
+      if ( '' == val ) {
+        clearValue();
+        return;
+      }
+
+      var newColor = tinycolor( val );
+
+      if ( newColor.isValid() ) {
+        update( { input: newColor } );
+				updateInputFromColor();
+      }
+    }
+
+
     function controlClick( e ) {
 
       var controlDimensions = {
@@ -336,14 +390,18 @@ window.Huebert.localize( csHuebert );
 
       e.preventDefault();
       e.stopPropagation();
-      gainFocus( e );
+      $( e.currentTarget ).focus();
 
       var dimension = $( e.currentTarget ).data( 'huebert-dimension' );
-
+			handleMouseUp();
       handleMouseMove( e );
+
+			$picker.addClass('huebert-control-down');
+
       $( window ).on({ mousemove: handleMouseMove, mouseup: handleMouseUp });
 
-      function handleMouseUp( e ) {
+      function handleMouseUp() {
+				$picker.removeClass('huebert-control-down');
         $( window ).off( 'mousemove', handleMouseMove );
       }
 
@@ -394,27 +452,47 @@ window.Huebert.localize( csHuebert );
 
     }
 
-    function updatePositioning( state ) {
+		function updatePositioning( state ) {
 
       if (state) {
         // Append to float container
         $picker.detach().appendTo($(options.floatContainer));
         $picker.css('visibility','hidden').addClass('huebert-floating');
         $wrapper.addClass( 'huebert-open' );
-        move();
         $picker.css('visibility','visible');
-        $( window ).on('resize', move );
-        $( window ).on('scroll', move );
+
+        move();
+        $window.on('resize', move );
+        $scrollContainer.on(options.scrollEvent, move );
+        $body.on('focus', '*', loseFocus );
+        $body.on('click', '*', loseFocus );
+
       } else {
+
         $wrapper.removeClass( 'huebert-open' );
         $picker.removeClass('huebert-floating huebert-floating-left huebert-floating-right')
         $picker.removeAttr('style').detach().appendTo( $wrapper );
 
-        $( window ).off('resize', move );
-        $( window ).off('scroll', move );
+      }
+
+      function loseFocus( e ) {
+
+        if ( $picker[0] === e.currentTarget ||
+             $wrapper[0] === e.currentTarget ||
+             $.contains( $picker[0], e.currentTarget ) ||
+             $.contains( $wrapper[0], e.currentTarget ) ) {
+          e.stopPropagation();
+          return;
+        }
+
+        $body.off('focus', '*', loseFocus );
+        $body.off('click', '*', loseFocus );
+
+        toggle( false );
       }
 
       function move() {
+
         var position = $swatch.find( '.huebert-swatch-output' )[0].getBoundingClientRect();
         var pickerDimensions = $picker[0].getBoundingClientRect();
 
@@ -423,16 +501,23 @@ window.Huebert.localize( csHuebert );
         update.top = position.bottom - pickerDimensions.height;
 
         var side = position.right + pickerDimensions.width > $(window).width();
-        update.left = ( side ) ? position.left - pickerDimensions.width : position.right;
+        update.left = side ? position.left - pickerDimensions.width : position.right;
 
         $picker
           .removeClass('huebert-floating-left huebert-floating-right')
-          .addClass( ( side ) ? 'huebert-floating-left' : 'huebert-floating-right' )
+          .addClass( side ? 'huebert-floating-left' : 'huebert-floating-right' )
           .css( update );
+
+        if ( ! $picker.hasClass('huebert-floating') ) {
+          $scrollContainer.off(options.scrollEvent, move );
+          $window.off('resize', move );
+        }
+
       }
 
 
     }
+
     function isValid() {
 
       if ( ! $el.is( 'input[type=text]' ) ) {
@@ -475,10 +560,11 @@ window.Huebert.localize( csHuebert );
     }
 
     function toggle( state ) {
-
       open = ( 'undefined' === typeof state ) ? ! open : state;
-
-      if (options.float) {
+      if ( open ) {
+        $input.focus();
+      }
+			if (options.float) {
         updatePositioning( open );
       } else {
         $wrapper.toggleClass( 'huebert-open', open );
@@ -516,7 +602,7 @@ window.Huebert.localize( csHuebert );
 
       if ( instance ) {
         var method = instance[options]; // First argument as method name
-        if ( _.isFunction( method ) ) {
+        if ( 'function' === typeof method ) {
           method.apply( instance, args );
         }
       } else {
@@ -540,25 +626,18 @@ window.Huebert.localize( csHuebert );
 
 }).call(this,window || {})
 
-},{"./jquery-shim.js":3,"./underscore-shim.js":4,"tinycolor2":5}],3:[function(require,module,exports){
+},{"./jquery-shim.js":3,"tinycolor2":4}],3:[function(require,module,exports){
+"use strict";
+
 window.CornerstoneShims = window.CornerstoneShims || {};
 
-if (!window.CornerstoneShims.$){
+if (!window.CornerstoneShims.$) {
 	window.CornerstoneShims.$ = window.jQuery;
 }
 
 module.exports = window.CornerstoneShims.$;
 
 },{}],4:[function(require,module,exports){
-window.CornerstoneShims = window.CornerstoneShims || {};
-
-if (!window.CornerstoneShims._){
-	window.CornerstoneShims._ = window._;
-}
-
-module.exports = window.CornerstoneShims._;
-
-},{}],5:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License

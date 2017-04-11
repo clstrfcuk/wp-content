@@ -2,11 +2,11 @@
 
 class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
-  public $dependencies = array( 'Headers' );
+  public $dependencies = array( 'Regions', 'Header_Assignments' );
   public $resources = array();
   public $name = 'headers/header';
 
-  public function setup() {
+  public function load_all() {
 
     $posts = get_posts( array(
       'post_type' => 'cs_header',
@@ -33,22 +33,32 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {
+      $this->load_all();
       return $this->make_response( $this->resources );
     }
 
     $queried = array();
     $this->included = array();
 
-    foreach ( $this->resources as $resource) {
-      if ( $this->query_match( $resource, $params['query'] ) ) {
-        $queried[] = $resource;
-      } else {
-        $this->included[] = $resource;
+    if ( isset( $params['query']['id'] ) ) {
+      try {
+        $header = new Cornerstone_Header( (int) $params['query']['id'] );
+        $queried[] = $this->to_resource( $header->serialize() );
+      } catch( Exception $e ) {
+        return $this->make_error_response( 'Header not found' );
       }
     }
 
     return $this->make_response( ( isset( $params['single'] ) && isset( $queried[0] ) ) ? $queried[0] : $queried );
 
+  }
+
+  public function make_error_response( $message, $status = 404 ) {
+    return array(
+      'errors' => array(
+        array( 'status' => $status, 'title' => 'message' )
+      )
+    );
   }
 
 
@@ -66,51 +76,16 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
   }
 
-  public function query_match( $resource, $query ) {
-
-    if ( isset( $query['id'] ) ) {
-      $query['id'] = (int) $query['id'];
-    }
-
-    foreach ( $query as $key => $value ) {
-
-      // Check relationships
-      if ( isset( $resource['relationships'][ $key ] )  ) {
-
-        if ( ! isset( $resource['relationships'][ $key ]['data'] ) ) {
-          return false;
-        }
-
-        $data = $resource['relationships'][ $key ]['data'];
-
-        if ( isset( $data['id'] ) && $value !== $data['id'] ) {
-          return false;
-        } else {
-          foreach ( $data as $child ) {
-            if ( isset( $data['id'] ) && $value === $data['id'] ) {
-              return true;
-            }
-          }
-          return false;
-        }
-
-      } else {
-        if ( ! isset( $resource[ $key ] ) || $resource[ $key ] !== $value ) {
-          return false;
-        }
-      }
-
-    }
-
-    return true;
-  }
-
   public function to_resource( $record ) {
 
     $resource = array(
       'id' => $record['id'],
       'type' => $this->name
     );
+
+    if ( empty( $record['settings'] ) ) {
+      unset($record['settings']);
+    }
 
     unset( $record['id'] );
     $resource['attributes'] = $record;
@@ -120,9 +95,24 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
   }
 
   public function create( $params ) {
+
     $atts = $this->atts_from_request( $params );
+
+    if ( isset( $atts['regions'] ) ) {
+      $atts['regions'] = $this->plugin->loadComponent('Regions')->sanitize_regions( $atts['regions'] );
+    }
+
     $header = new Cornerstone_Header( $atts );
-    return $this->make_response( $this->to_resource( $header->save() ) );
+
+    if ( isset( $atts['settings'] ) ) {
+      $header->set_settings( $this->sanitize_settings( $atts['settings'] ) );
+    }
+
+    $saved = $header->save();
+    $this->plugin->loadComponent('Regions')->reset_region_styles( 'header', $header );
+
+    return $this->make_response( $this->to_resource( $saved ) );
+
   }
 
   protected function atts_from_request( $params ) {
@@ -168,10 +158,29 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
     $header = new Cornerstone_Header( $id );
 
     if ( isset( $atts['regions'] ) ) {
-      $header->set_regions( $atts['regions'] );
+      $header->set_regions( $this->plugin->loadComponent('Regions')->sanitize_regions( $atts['regions'] ) );
     }
 
-    return $this->make_response( $this->to_resource( $header->save() ) );
+    if ( isset( $atts['settings'] ) ) {
+      $header->set_settings( $this->sanitize_settings( $atts['settings'] ) );
+    }
+
+    $saved = $header->save();
+    $this->plugin->loadComponent('Regions')->reset_region_styles( 'header', $header );
+
+    return $this->make_response( $this->to_resource( $saved ) );
+  }
+
+  public function sanitize_settings( $settings ) {
+
+    $sanitized = array();
+    $html_fields = array( 'customJS', 'customCSS' );
+
+    foreach ($settings as $key => $value) {
+      $sanitized[$key] = $this->plugin->common()->sanitize_value( $value, in_array($key, $html_fields, true ) );
+    }
+
+    return $sanitized;
   }
 
 }

@@ -26,4 +26,12 @@ return array(
 	'bg_video'          => '',
 	'bg_video_poster'   => '',
 
+	'separator_top_type'        => 'none',
+	'separator_top_height'      => '50px',
+	'separator_top_angle_point' => '50',
+
+	'separator_bottom_type'        => 'none',
+	'separator_bottom_height'      => '50px',
+	'separator_bottom_angle_point' => '50',
+
 );

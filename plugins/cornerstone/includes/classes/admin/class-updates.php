@@ -48,10 +48,10 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 
   public function script_data() {
     return array(
-      'complete'    => __( 'Nothing to report.', 'cornerstone' ),
-      'completeNew' => __( 'New version available!', 'cornerstone' ),
-      'error'       => __( 'Unable to check for updates. Try again later.', 'cornerstone' ),
-      'checking'    => __( 'Checking&hellip;', 'cornerstone' ),
+      'complete'    => csi18n('admin.plugin-update-nothing'),
+      'completeNew' => csi18n('admin.plugin-update-new'),
+      'error'       => csi18n('admin.plugin-update-error'),
+      'checking'    => csi18n('admin.plugin-update-checking'),
       'latest'      => esc_html( $this->get_latest_version() )
     );
   }
@@ -97,7 +97,7 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 			'author'  => $data['author'],
 			'version' => $data['new_version'],
 			'sections' => array(
-				'changelog' => __( 'Visit the <a href="http://theme.co/changelog/#cornerstone">Themeco Changelog</a> for more information.' )
+				'changelog' => csi18n('admin.plugin-update-changelog')
 			)
 		);
 
@@ -132,7 +132,7 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 		if ( version_compare( $remote['new_version'], $local['Version'], '>' ) ) {
 
 			if ( ! $remote['package'] ) {
-				$remote['upgrade_notice'] = sprintf( __( '<a href="%s">Validate to enable automatic updates</a>', 'cornerstone' ), $this->plugin->component( 'Admin' )->home_page_url() );
+				$remote['upgrade_notice'] = sprintf( csi18n('admin.plugin-update-notice'), $this->plugin->component( 'Admin' )->home_page_url() );
 			}
 
 			$data->response[ $this->plugin_file ] = (object) $remote;

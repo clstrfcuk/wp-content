@@ -44,17 +44,17 @@ class X_Theme_Updater {
 
     $update_cache = x_tco()->updates()->get_update_cache();
 
-    if ( !isset( $update_cache['themes'] ) || !isset( $update_cache['themes']['x'] ) ) {
+    if ( !isset( $update_cache['themes'] ) || !isset( $update_cache['themes'][X_SLUG] ) ) {
       return $data;
     }
 
     $themes = ( is_multisite() ) ? $this->multisite_get_themes() : wp_get_themes();
 
-    if ( isset( $themes['x'] ) ) {
+    if ( isset( $themes[X_SLUG] ) ) {
 
-      $remote = $update_cache['themes']['x'];
+      $remote = $update_cache['themes'][X_SLUG];
 
-      if ( version_compare( $remote['new_version'], $themes['x']->get( 'Version' ), '<=' ) ) {
+      if ( version_compare( $remote['new_version'], $themes[X_SLUG]->get( 'Version' ), '<=' ) ) {
         return $data;
       }
 
@@ -62,7 +62,7 @@ class X_Theme_Updater {
         $remote['new_version'] = $remote['new_version'] . '<br/>' . X_Addons_Updates::get_validation_html_theme_updates();
       }
 
-      $data->response[ 'x' ] = $remote;
+      $data->response[ X_SLUG ] = $remote;
 
     }
 
@@ -98,12 +98,12 @@ class X_Theme_Updater {
 
   public function customize_theme_update_html( $prepared_themes ) {
 
-    if ( isset( $prepared_themes['x'] ) ) {
+    if ( isset( $prepared_themes[X_SLUG] ) ) {
 
-      $update = $prepared_themes['x']['update'];
+      $update = $prepared_themes[X_SLUG]['update'];
       $update = preg_replace( '/(details)[^(or)]*?<em>.*?<\/em>/', '', $update );
 
-      $prepared_themes['x']['update'] = $update;
+      $prepared_themes[X_SLUG]['update'] = $update;
 
     }
 

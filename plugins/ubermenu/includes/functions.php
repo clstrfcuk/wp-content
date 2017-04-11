@@ -414,6 +414,10 @@ function ubermenu_get_nav_menu_args( $args , $integration_type , $config_id = 0 
 			$args['container_class'].= ' ubermenu-responsive-single-column';
 		}
 
+		if( ubermenu_op( 'responsive_submenu_columns' , $config_id ) == 1 ){
+			$args['container_class'].= ' ubermenu-responsive-single-column-subs';
+		}
+
 		$breakpoint = ubermenu_op( 'responsive_breakpoint' , 'general' );
 		if( !$breakpoint ){
 			$breakpoint = 'default';
@@ -505,6 +509,11 @@ function ubermenu_get_nav_menu_args( $args , $integration_type , $config_id = 0 
 	//Submenu Indicators
 	if( ubermenu_op( 'display_submenu_indicators', $config_id ) == 'on' ){
 		$args['container_class'].= ' ubermenu-sub-indicators';
+	}
+
+	//Submenu indicator alignment/position
+	if( ubermenu_op( 'style_align_submenu_indicator' , $config_id ) == 'text' ){
+		$args['container_class'].= ' ubermenu-sub-indicators-align-text';
 	}
 
 	//Retractors
@@ -1418,4 +1427,13 @@ function umbytes($size, $precision = 2){
 
 
 
+
+/*
+ * Add compatibility with Conditional Menus by Themify
+ */
+add_filter( 'conditional_menus_theme_location', 'ubermenu_restore_conditional_menus_theme_location' , 10 , 3 );
+function ubermenu_restore_conditional_menus_theme_location( $theme_loc , $new_menu, $args ){
+   //uberp( $args );
+   return $args['theme_location'];
+}
 

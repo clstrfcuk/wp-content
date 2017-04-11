@@ -6,8 +6,8 @@
           <h2 class="tco-box-title">Save</h2>
         </header>
         <div class="tco-box-content">
-          <p><?php _e( 'Once you are satisfied with your settings, click the button below to save them.', 'cornerstone' ); ?></p>
-          <button class="tco-btn tco-btn-block" type="submit" name="submit" data-tco-module-target="update"><?php _e( 'Update', 'cornerstone' ); ?></button>
+          <p><?php e_csi18n('admin.dashboard-settings-info'); ?></p>
+          <button class="tco-btn tco-btn-block" type="submit" name="submit" data-tco-module-target="update"><?php e_csi18n('admin.dashboard-settings-update'); ?></button>
         </div>
       </div>
     </div>

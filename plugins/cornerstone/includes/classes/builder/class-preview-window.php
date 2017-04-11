@@ -62,7 +62,7 @@ class Cornerstone_Preview_Window extends Cornerstone_Plugin_Component {
 	 */
 	public function inlineStyles() {
 
-		$data = array_merge( $this->plugin->settings(), $this->plugin->component( 'Customizer_Manager' )->optionData() );
+		$data = array_merge( $this->plugin->settings(), $this->plugin->common()->theme_integration_options() );
 		$styles = $this->view( 'builder/styles', false, $data, true );
 
 		ob_start();

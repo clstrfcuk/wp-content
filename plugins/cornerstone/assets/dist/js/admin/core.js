@@ -1009,8 +1009,8 @@ module.exports = function( action, data, opts ) {
 				// Switch to legacy AJAX and start over...
 				Backbone.$.ajax( {
 					type:    'POST',
-					url:     cs.config( 'fallbackAjaxUrl' ) + '?action=cs_legacy_ajax',
-					data: { enable: true, _cs_nonce: _nonce },
+					url:     cs.config( 'fallbackAjaxUrl' ),
+					data: { enable: true, _cs_nonce: _nonce, action: 'cs_legacy_ajax' },
 					complete: function() {
 						legacy = true;
 						submitRequest();
@@ -1031,18 +1031,22 @@ module.exports = function( action, data, opts ) {
 
 		function submitRequest() {
 
-      data._cs_nonce = _nonce;
-			var json = JSON.stringify( data || {} );
-			var postData = ( legacy || noPhpInput ) ? { data: Cornerstone.Vendor.Base64.encode( json ) } : json;
-			var urlBase = ( legacy ) ? 'fallbackAjaxUrl' : 'ajaxUrl';
+			var postData = {
+				_cs_nonce: _nonce,
+				action: action,
+				request: data
+			};
 
-			// Remove any query parameters so they can be moved to the end.
-			var ajaxUrl = cs.config( urlBase ).split( '?' );
-			var extra = ( ajaxUrl[1] ) ? '&' + ajaxUrl[1] : '';
+      if ( legacy || noPhpInput ) {
+        postData.request = Cornerstone.Vendor.Base64.encode( JSON.stringify( postData.request || {} ) );
+      } else {
+        postData = JSON.stringify( postData );
+      }
 
+      //console.log(postData);
 			var options = _.defaults( _.omit( opts, ['success', 'error', 'always' ] ), {
 				type:    'POST',
-				url:     ajaxUrl[0] + '?action=' + action + extra,
+				url:     cs.config( legacy ? 'fallbackAjaxUrl' : 'ajaxUrl' ),
 				context: this,
 				data: postData,
 				dataType: 'json'
@@ -1108,7 +1112,7 @@ Cornerstone.serial = require( './serial' );
 
 module.exports = Cornerstone;
 
-},{"../../vendor/FileSaver":31,"../../vendor/base64":33,"../../vendor/color":34,"../../vendor/equalize":35,"../../vendor/string_score":37,"../collections":5,"../models":18,"./../../vendor/underscore-shim.js":38,"./component-base":24,"./inspection-supervisor":26,"./post":27,"./serial":28,"backbone.marionette":40,"backbone.radio":41,"backbone.stickit":42,"bowser":43,"es6-promise":46,"fuse.js":47,"moment":48,"pikaday":49,"svg4everybody":50,"underscore-deep-extend":51}],24:[function(require,module,exports){
+},{"../../vendor/FileSaver":31,"../../vendor/base64":33,"../../vendor/color":34,"../../vendor/equalize":35,"../../vendor/string_score":37,"../collections":5,"../models":18,"./../../vendor/underscore-shim.js":38,"./component-base":24,"./inspection-supervisor":26,"./post":27,"./serial":28,"backbone.marionette":40,"backbone.radio":41,"backbone.stickit":42,"bowser":43,"es6-promise":45,"fuse.js":46,"moment":47,"pikaday":48,"svg4everybody":50,"underscore-deep-extend":51}],24:[function(require,module,exports){
 module.exports = Cornerstone.Mn.Object.extend({
 	constructor: function(options) {
 		this.options = options || {};
@@ -2630,9 +2634,11 @@ module.exports = Base64;
 
 }(jQuery));
 },{}],36:[function(require,module,exports){
+"use strict";
+
 window.CornerstoneShims = window.CornerstoneShims || {};
 
-if (!window.CornerstoneShims.$){
+if (!window.CornerstoneShims.$) {
 	window.CornerstoneShims.$ = window.jQuery;
 }
 
@@ -7489,11 +7495,11 @@ module.exports = window.CornerstoneShims._;
  * MIT License | (c) Dustin Diaz 2015
  */
 
-!function (name, definition) {
+!function (root, name, definition) {
   if (typeof module != 'undefined' && module.exports) module.exports = definition()
   else if (typeof define == 'function' && define.amd) define(name, definition)
-  else this[name] = definition()
-}('bowser', function () {
+  else root[name] = definition()
+}(this, 'bowser', function () {
   /**
     * See useragents.js for examples of navigator.userAgent
     */
@@ -7534,11 +7540,19 @@ module.exports = window.CornerstoneShims._;
       , xbox = /xbox/i.test(ua)
       , result
 
-    if (/opera|opr|opios/i.test(ua)) {
+    if (/opera/i.test(ua)) {
+      //  an old Opera
       result = {
         name: 'Opera'
       , opera: t
       , version: versionIdentifier || getFirstMatch(/(?:opera|opr|opios)[\s\/](\d+(\.\d+)?)/i)
+      }
+    } else if (/opr|opios/i.test(ua)) {
+      // a new Opera
+      result = {
+        name: 'Opera'
+        , opera: t
+        , version: getFirstMatch(/(?:opr|opios)[\s\/](\d+(\.\d+)?)/i) || versionIdentifier
       }
     }
     else if (/SamsungBrowser/i.test(ua)) {
@@ -7798,9 +7812,9 @@ module.exports = window.CornerstoneShims._;
     }
 
     // set OS flags for platforms that have multiple browsers
-    if (!result.msedge && (android || result.silk)) {
+    if (!result.windowsphone && !result.msedge && (android || result.silk)) {
       result.android = t
-    } else if (iosdevice) {
+    } else if (!result.windowsphone && !result.msedge && iosdevice) {
       result[iosdevice] = t
       result.ios = t
     } else if (mac) {
@@ -8017,6 +8031,10 @@ module.exports = window.CornerstoneShims._;
     for (var browser in minVersions) {
       if (minVersions.hasOwnProperty(browser)) {
         if (_bowser[browser]) {
+          if (typeof minVersions[browser] !== 'string') {
+            throw new Error('Browser version in the minVersion map should be a string: ' + browser + ': ' + String(minVersions));
+          }
+
           // browser version and min supported version.
           return compareVersions([version, minVersions[browser]]) < 0;
         }
@@ -8055,195 +8073,13 @@ module.exports = window.CornerstoneShims._;
 },{}],44:[function(require,module,exports){
 
 },{}],45:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],46:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   3.3.0
+ * @version   3.3.1
  */
 
 (function (global, factory) {
@@ -9394,7 +9230,7 @@ return Promise;
 
 }).call(this,require('_process'),window || {})
 
-},{"_process":45}],47:[function(require,module,exports){
+},{"_process":49}],46:[function(require,module,exports){
 /**
  * @license
  * Fuse - Lightweight fuzzy-search
@@ -9417,6 +9253,7 @@ return Promise;
 ;(function (global) {
   'use strict'
 
+  /** @type {function(...*)} */
   function log () {
     console.log.apply(console, arguments)
   }
@@ -9477,36 +9314,47 @@ return Promise;
     matchAllTokens: false,
 
     // Regex used to separate words when searching. Only applicable when `tokenize` is `true`.
-    tokenSeparator: / +/g
+    tokenSeparator: / +/g,
+
+    // Minimum number of characters that must be matched before a result is considered a match
+    minMatchCharLength: 1,
+
+    // When true, the algorithm continues searching to the end of the input even if a perfect
+    // match is found before the end of the same input.
+    findAllMatches: false
   }
 
+  /**
+   * @constructor
+   * @param {!Array} list
+   * @param {!Object<string, *>} options
+   */
   function Fuse (list, options) {
-    var i
-    var len
     var key
-    var keys
 
     this.list = list
     this.options = options = options || {}
 
-    // Add boolean type options
-    for (i = 0, keys = ['sort', 'shouldSort', 'verbose', 'tokenize'], len = keys.length; i < len; i++) {
-      key = keys[i]
-      this.options[key] = key in options ? options[key] : defaultOptions[key]
-    }
-    // Add all other options
-    for (i = 0, keys = ['searchFn', 'sortFn', 'keys', 'getFn', 'include', 'tokenSeparator'], len = keys.length; i < len; i++) {
-      key = keys[i]
-      this.options[key] = options[key] || defaultOptions[key]
+    for (key in defaultOptions) {
+      if (!defaultOptions.hasOwnProperty(key)) {
+        continue;
+      }
+      // Add boolean type options
+      if (typeof defaultOptions[key] === 'boolean') {
+        this.options[key] = key in options ? options[key] : defaultOptions[key];
+      // Add all other options
+      } else {
+        this.options[key] = options[key] || defaultOptions[key]
+      }
     }
   }
 
-  Fuse.VERSION = '2.5.0'
+  Fuse.VERSION = '2.6.2'
 
   /**
    * Sets a new list for Fuse to match against.
-   * @param {Array} list
-   * @return {Array} The newly set list
+   * @param {!Array} list
+   * @return {!Array} The newly set list
    * @public
    */
   Fuse.prototype.set = function (list) {
@@ -9909,6 +9757,8 @@ return Promise;
    *
    * Licensed under the Apache License, Version 2.0 (the "License")
    * you may not use this file except in compliance with the License.
+   *
+   * @constructor
    */
   function BitapSearcher (pattern, options) {
     options = options || {}
@@ -9986,10 +9836,10 @@ return Promise;
 
   /**
    * Compute and return the result of the search
-   * @param {String} text The text to search in
-   * @return {Object} Literal containing:
-   *                          {Boolean} isMatch Whether the text is a match or not
-   *                          {Decimal} score Overall score for the match
+   * @param {string} text The text to search in
+   * @return {{isMatch: boolean, score: number}} Literal containing:
+   *                          isMatch - Whether the text is a match or not
+   *                          score - Overall score for the match
    * @public
    */
   BitapSearcher.prototype.search = function (text) {
@@ -9997,6 +9847,7 @@ return Promise;
     var i
     var j
     var textLen
+    var findAllMatches
     var location
     var threshold
     var bestLoc
@@ -10048,6 +9899,8 @@ return Promise;
       }
     }
 
+    findAllMatches = options.findAllMatches
+
     location = options.location
     // Set starting location at beginning text and initialize the alphabet.
     textLen = text.length
@@ -10095,7 +9948,11 @@ return Promise;
       // Use the result from this iteration as the maximum for the next.
       binMax = binMid
       start = Math.max(1, location - binMid + 1)
-      finish = Math.min(location + binMid, textLen) + this.patternLen
+      if (findAllMatches) {
+        finish = textLen;
+      } else {
+        finish = Math.min(location + binMid, textLen) + this.patternLen
+      }
 
       // Initialize the bit array
       bitArr = Array(finish + 2)
@@ -10168,12 +10025,16 @@ return Promise;
         start = i
       } else if (!match && start !== -1) {
         end = i - 1
-        matchedIndices.push([start, end])
+        if ((end - start) + 1 >= this.options.minMatchCharLength) {
+            matchedIndices.push([start, end])
+        }
         start = -1
       }
     }
     if (matchMask[i - 1]) {
-      matchedIndices.push([start, i - 1])
+      if ((i-1 - start) + 1 >= this.options.minMatchCharLength) {
+        matchedIndices.push([start, i - 1])
+      }
     }
     return matchedIndices
   }
@@ -10194,9 +10055,9 @@ return Promise;
     global.Fuse = Fuse
   }
 
-})(this)
+})(this);
 
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 //! moment.js
 //! version : 2.10.6
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -13392,7 +13253,7 @@ return Promise;
     return _moment;
 
 }));
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /*!
  * Pikaday
  *
@@ -13597,6 +13458,9 @@ return Promise;
         // first day of week (0: Sunday, 1: Monday etc)
         firstDay: 0,
 
+        // the default flag for moment's strict date parsing
+        formatStrict: false,
+
         // the minimum/earliest date that can be selected
         minDate: null,
         // the maximum/latest date that can be selected
@@ -13624,6 +13488,9 @@ return Promise;
 
         // Render the month after year in the calendar title
         showMonthAfterYear: false,
+
+        // Render days of the calendar grid that fall in the next or previous month
+        showDaysInNextAndPreviousMonths: false,
 
         // how many months are visible
         numberOfMonths: 1,
@@ -13669,10 +13536,15 @@ return Promise;
 
     renderDay = function(opts)
     {
-        if (opts.isEmpty) {
-            return '<td class="is-empty"></td>';
-        }
         var arr = [];
+        var ariaSelected = 'false';
+        if (opts.isEmpty) {
+            if (opts.showDaysInNextAndPreviousMonths) {
+                arr.push('is-outside-current-month');
+            } else {
+                return '<td class="is-empty"></td>';
+            }
+        }
         if (opts.isDisabled) {
             arr.push('is-disabled');
         }
@@ -13681,6 +13553,7 @@ return Promise;
         }
         if (opts.isSelected) {
             arr.push('is-selected');
+            ariaSelected = 'true';
         }
         if (opts.isInRange) {
             arr.push('is-inrange');
@@ -13691,7 +13564,7 @@ return Promise;
         if (opts.isEndRange) {
             arr.push('is-endrange');
         }
-        return '<td data-day="' + opts.day + '" class="' + arr.join(' ') + '">' +
+        return '<td data-day="' + opts.day + '" class="' + arr.join(' ') + '" aria-selected="' + ariaSelected + '">' +
                  '<button class="pika-button pika-day" type="button" ' +
                     'data-pika-year="' + opts.year + '" data-pika-month="' + opts.month + '" data-pika-day="' + opts.day + '">' +
                         opts.day +
@@ -13725,16 +13598,16 @@ return Promise;
         for (i = 0; i < 7; i++) {
             arr.push('<th scope="col"><abbr title="' + renderDayName(opts, i) + '">' + renderDayName(opts, i, true) + '</abbr></th>');
         }
-        return '<thead>' + (opts.isRTL ? arr.reverse() : arr).join('') + '</thead>';
+        return '<thead><tr>' + (opts.isRTL ? arr.reverse() : arr).join('') + '</tr></thead>';
     },
 
-    renderTitle = function(instance, c, year, month, refYear)
+    renderTitle = function(instance, c, year, month, refYear, randId)
     {
         var i, j, arr,
             opts = instance._o,
             isMinYear = year === opts.minYear,
             isMaxYear = year === opts.maxYear,
-            html = '<div class="pika-title">',
+            html = '<div id="' + randId + '" class="pika-title" role="heading" aria-live="assertive">',
             monthHtml,
             yearHtml,
             prev = true,
@@ -13742,10 +13615,11 @@ return Promise;
 
         for (arr = [], i = 0; i < 12; i++) {
             arr.push('<option value="' + (year === refYear ? i - c : 12 + i - c) + '"' +
-                (i === month ? ' selected': '') +
-                ((isMinYear && i < opts.minMonth) || (isMaxYear && i > opts.maxMonth) ? 'disabled' : '') + '>' +
+                (i === month ? ' selected="selected"': '') +
+                ((isMinYear && i < opts.minMonth) || (isMaxYear && i > opts.maxMonth) ? 'disabled="disabled"' : '') + '>' +
                 opts.i18n.months[i] + '</option>');
         }
+
         monthHtml = '<div class="pika-label">' + opts.i18n.months[month] + '<select class="pika-select pika-select-month" tabindex="-1">' + arr.join('') + '</select></div>';
 
         if (isArray(opts.yearRange)) {
@@ -13758,7 +13632,7 @@ return Promise;
 
         for (arr = []; i < j && i <= opts.maxYear; i++) {
             if (i >= opts.minYear) {
-                arr.push('<option value="' + i + '"' + (i === year ? ' selected': '') + '>' + (i) + '</option>');
+                arr.push('<option value="' + i + '"' + (i === year ? ' selected="selected"': '') + '>' + (i) + '</option>');
             }
         }
         yearHtml = '<div class="pika-label">' + year + opts.yearSuffix + '<select class="pika-select pika-select-year" tabindex="-1">' + arr.join('') + '</select></div>';
@@ -13787,9 +13661,9 @@ return Promise;
         return html += '</div>';
     },
 
-    renderTable = function(opts, data)
+    renderTable = function(opts, data, randId)
     {
-        return '<table cellpadding="0" cellspacing="0" class="pika-table">' + renderHead(opts) + renderBody(data) + '</table>';
+        return '<table cellpadding="0" cellspacing="0" class="pika-table" role="grid" aria-labelledby="' + randId + '">' + renderHead(opts) + renderBody(data) + '</table>';
     },
 
 
@@ -13813,7 +13687,7 @@ return Promise;
             }
 
             if (!hasClass(target, 'is-disabled')) {
-                if (hasClass(target, 'pika-button') && !hasClass(target, 'is-empty')) {
+                if (hasClass(target, 'pika-button') && !hasClass(target, 'is-empty') && !hasClass(target.parentNode, 'is-disabled')) {
                     self.setDate(new Date(target.getAttribute('data-pika-year'), target.getAttribute('data-pika-month'), target.getAttribute('data-pika-day')));
                     if (opts.bound) {
                         sto(function() {
@@ -13859,6 +13733,34 @@ return Promise;
             }
         };
 
+        self._onKeyChange = function(e)
+        {
+            e = e || window.event;
+
+            if (self.isVisible()) {
+
+                switch(e.keyCode){
+                    case 13:
+                    case 27:
+                        opts.field.blur();
+                        break;
+                    case 37:
+                        e.preventDefault();
+                        self.adjustDate('subtract', 1);
+                        break;
+                    case 38:
+                        self.adjustDate('subtract', 7);
+                        break;
+                    case 39:
+                        self.adjustDate('add', 1);
+                        break;
+                    case 40:
+                        self.adjustDate('add', 7);
+                        break;
+                }
+            }
+        };
+
         self._onInputChange = function(e)
         {
             var date;
@@ -13867,7 +13769,7 @@ return Promise;
                 return;
             }
             if (hasMoment) {
-                date = moment(opts.field.value, opts.format);
+                date = moment(opts.field.value, opts.format, opts.formatStrict);
                 date = (date && date.isValid()) ? date.toDate() : null;
             }
             else {
@@ -13941,6 +13843,7 @@ return Promise;
         addEvent(self.el, 'mousedown', self._onMouseDown, true);
         addEvent(self.el, 'touchend', self._onMouseDown, true);
         addEvent(self.el, 'change', self._onChange);
+        addEvent(document, 'keydown', self._onKeyChange);
 
         if (opts.field) {
             if (opts.container) {
@@ -14077,11 +13980,11 @@ return Promise;
         },
 
         /**
-         * return a Date object of the current selection
+         * return a Date object of the current selection with fallback for the current date
          */
         getDate: function()
         {
-            return isDate(this._d) ? new Date(this._d.getTime()) : null;
+            return isDate(this._d) ? new Date(this._d.getTime()) : new Date();
         },
 
         /**
@@ -14162,6 +14065,30 @@ return Promise;
             this.adjustCalendars();
         },
 
+        adjustDate: function(sign, days) {
+
+            var day = this.getDate();
+            var difference = parseInt(days)*24*60*60*1000;
+
+            var newDay;
+
+            if (sign === 'add') {
+                newDay = new Date(day.valueOf() + difference);
+            } else if (sign === 'subtract') {
+                newDay = new Date(day.valueOf() - difference);
+            }
+
+            if (hasMoment) {
+                if (sign === 'add') {
+                    newDay = moment(day).add(days, "days").toDate();
+                } else if (sign === 'subtract') {
+                    newDay = moment(day).subtract(days, "days").toDate();
+                }
+            }
+
+            this.setDate(newDay);
+        },
+
         adjustCalendars: function() {
             this.calendars[0] = adjustCalendar(this.calendars[0]);
             for (var c = 1; c < this._o.numberOfMonths; c++) {
@@ -14217,10 +14144,18 @@ return Promise;
          */
         setMinDate: function(value)
         {
-            setToStartOfDay(value);
-            this._o.minDate = value;
-            this._o.minYear  = value.getFullYear();
-            this._o.minMonth = value.getMonth();
+            if(value instanceof Date) {
+                setToStartOfDay(value);
+                this._o.minDate = value;
+                this._o.minYear  = value.getFullYear();
+                this._o.minMonth = value.getMonth();
+            } else {
+                this._o.minDate = defaults.minDate;
+                this._o.minYear  = defaults.minYear;
+                this._o.minMonth = defaults.minMonth;
+                this._o.startRange = defaults.startRange;
+            }
+
             this.draw();
         },
 
@@ -14229,10 +14164,18 @@ return Promise;
          */
         setMaxDate: function(value)
         {
-            setToStartOfDay(value);
-            this._o.maxDate = value;
-            this._o.maxYear = value.getFullYear();
-            this._o.maxMonth = value.getMonth();
+            if(value instanceof Date) {
+                setToStartOfDay(value);
+                this._o.maxDate = value;
+                this._o.maxYear = value.getFullYear();
+                this._o.maxMonth = value.getMonth();
+            } else {
+                this._o.maxDate = defaults.maxDate;
+                this._o.maxYear = defaults.maxYear;
+                this._o.maxMonth = defaults.maxMonth;
+                this._o.endRange = defaults.endRange;
+            }
+
             this.draw();
         },
 
@@ -14259,7 +14202,8 @@ return Promise;
                 maxYear = opts.maxYear,
                 minMonth = opts.minMonth,
                 maxMonth = opts.maxMonth,
-                html = '';
+                html = '',
+                randId;
 
             if (this._y <= minYear) {
                 this._y = minYear;
@@ -14274,8 +14218,10 @@ return Promise;
                 }
             }
 
+            randId = 'pika-title-' + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 2);
+
             for (var c = 0; c < opts.numberOfMonths; c++) {
-                html += '<div class="pika-lendar">' + renderTitle(this, c, this.calendars[c].year, this.calendars[c].month, this.calendars[0].year) + this.render(this.calendars[c].year, this.calendars[c].month) + '</div>';
+                html += '<div class="pika-lendar">' + renderTitle(this, c, this.calendars[c].year, this.calendars[c].month, this.calendars[0].year, randId) + this.render(this.calendars[c].year, this.calendars[c].month, randId) + '</div>';
             }
 
             this.el.innerHTML = html;
@@ -14289,10 +14235,12 @@ return Promise;
             }
 
             if (typeof this._o.onDraw === 'function') {
-                var self = this;
-                sto(function() {
-                    self._o.onDraw.call(self);
-                }, 0);
+                this._o.onDraw(this);
+            }
+            
+            if (opts.bound) {
+                // let the screen reader user know to use arrow keys
+                opts.field.setAttribute('aria-label', 'Use the arrow keys to pick a date');
             }
         },
 
@@ -14350,7 +14298,7 @@ return Promise;
         /**
          * render HTML for a particular month
          */
-        render: function(year, month)
+        render: function(year, month, randId)
         {
             var opts   = this._o,
                 now    = new Date(),
@@ -14365,6 +14313,11 @@ return Promise;
                     before += 7;
                 }
             }
+            var previousMonth = month === 0 ? 11 : month - 1,
+                nextMonth = month === 11 ? 0 : month + 1,
+                yearOfPreviousMonth = month === 0 ? year - 1 : year,
+                yearOfNextMonth = month === 11 ? year + 1 : year,
+                daysInPreviousMonth = getDaysInMonth(yearOfPreviousMonth, previousMonth);
             var cells = days + before,
                 after = cells;
             while(after > 7) {
@@ -14377,24 +14330,41 @@ return Promise;
                     isSelected = isDate(this._d) ? compareDates(day, this._d) : false,
                     isToday = compareDates(day, now),
                     isEmpty = i < before || i >= (days + before),
+                    dayNumber = 1 + (i - before),
+                    monthNumber = month,
+                    yearNumber = year,
                     isStartRange = opts.startRange && compareDates(opts.startRange, day),
                     isEndRange = opts.endRange && compareDates(opts.endRange, day),
                     isInRange = opts.startRange && opts.endRange && opts.startRange < day && day < opts.endRange,
                     isDisabled = (opts.minDate && day < opts.minDate) ||
                                  (opts.maxDate && day > opts.maxDate) ||
                                  (opts.disableWeekends && isWeekend(day)) ||
-                                 (opts.disableDayFn && opts.disableDayFn(day)),
-                    dayConfig = {
-                        day: 1 + (i - before),
-                        month: month,
-                        year: year,
+                                 (opts.disableDayFn && opts.disableDayFn(day));
+
+                if (isEmpty) {
+                    if (i < before) {
+                        dayNumber = daysInPreviousMonth + dayNumber;
+                        monthNumber = previousMonth;
+                        yearNumber = yearOfPreviousMonth;
+                    } else {
+                        dayNumber = dayNumber - days;
+                        monthNumber = nextMonth;
+                        yearNumber = yearOfNextMonth;
+                    }
+                }
+
+                var dayConfig = {
+                        day: dayNumber,
+                        month: monthNumber,
+                        year: yearNumber,
                         isSelected: isSelected,
                         isToday: isToday,
                         isDisabled: isDisabled,
                         isEmpty: isEmpty,
                         isStartRange: isStartRange,
                         isEndRange: isEndRange,
-                        isInRange: isInRange
+                        isInRange: isInRange,
+                        showDaysInNextAndPreviousMonths: opts.showDaysInNextAndPreviousMonths
                     };
 
                 row.push(renderDay(dayConfig));
@@ -14408,7 +14378,7 @@ return Promise;
                     r = 0;
                 }
             }
-            return renderTable(opts, data);
+            return renderTable(opts, data, randId);
         },
 
         isVisible: function()
@@ -14418,7 +14388,7 @@ return Promise;
 
         show: function()
         {
-            if (!this._v) {
+            if (!this.isVisible()) {
                 removeClass(this.el, 'is-hidden');
                 this._v = true;
                 this.draw();
@@ -14478,19 +14448,204 @@ return Promise;
 
 }));
 
-},{"moment":48}],50:[function(require,module,exports){
+},{"moment":47}],49:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],50:[function(require,module,exports){
 !function(root, factory) {
     "function" == typeof define && define.amd ? // AMD. Register as an anonymous module unless amdModuleId is set
     define([], function() {
         return root.svg4everybody = factory();
-    }) : "object" == typeof exports ? module.exports = factory() : root.svg4everybody = factory();
+    }) : "object" == typeof module && module.exports ? // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory() : root.svg4everybody = factory();
 }(this, function() {
-    /*! svg4everybody v2.1.0 | github.com/jonathantneal/svg4everybody */
-    function embed(svg, target) {
+    /*! svg4everybody v2.1.7 | github.com/jonathantneal/svg4everybody */
+    function embed(parent, svg, target) {
         // if the target exists
         if (target) {
             // create a document fragment to hold the contents of the target
-            var fragment = document.createDocumentFragment(), viewBox = !svg.getAttribute("viewBox") && target.getAttribute("viewBox");
+            var fragment = document.createDocumentFragment(), viewBox = !svg.hasAttribute("viewBox") && target.getAttribute("viewBox");
             // conditionally set the viewBox on the svg
             viewBox && svg.setAttribute("viewBox", viewBox);
             // copy the contents of the clone into the fragment
@@ -14499,7 +14654,7 @@ return Promise;
                 fragment.appendChild(clone.firstChild);
             }
             // append the fragment into the svg
-            svg.appendChild(fragment);
+            parent.appendChild(fragment);
         }
     }
     function loadreadystatechange(xhr) {
@@ -14518,7 +14673,7 @@ return Promise;
                     // ensure the cached target
                     target || (target = xhr._cachedTarget[item.id] = cachedDocument.getElementById(item.id)), 
                     // embed the target into the svg
-                    embed(item.svg, target);
+                    embed(item.parent, item.svg, target);
                 });
             }
         }, // test the ready state change immediately
@@ -14530,29 +14685,35 @@ return Promise;
             for (// get the cached <use> index
             var index = 0; index < uses.length; ) {
                 // get the current <use>
-                var use = uses[index], svg = use.parentNode;
-                if (svg && /svg/i.test(svg.nodeName)) {
-                    var src = use.getAttribute("xlink:href");
-                    if (polyfill && (!opts.validate || opts.validate(src, svg, use))) {
-                        // remove the <use> element
-                        svg.removeChild(use);
-                        // parse the src and get the url and id
-                        var srcSplit = src.split("#"), url = srcSplit.shift(), id = srcSplit.join("#");
-                        // if the link is external
-                        if (url.length) {
-                            // get the cached xhr request
-                            var xhr = requests[url];
-                            // ensure the xhr request exists
-                            xhr || (xhr = requests[url] = new XMLHttpRequest(), xhr.open("GET", url), xhr.send(), 
-                            xhr._embeds = []), // add the svg and id as an item to the xhr embeds list
-                            xhr._embeds.push({
-                                svg: svg,
-                                id: id
-                            }), // prepare the xhr ready state change event
-                            loadreadystatechange(xhr);
+                var use = uses[index], parent = use.parentNode, svg = getSVGAncestor(parent);
+                if (svg) {
+                    var src = use.getAttribute("xlink:href") || use.getAttribute("href");
+                    if (polyfill) {
+                        if (!opts.validate || opts.validate(src, svg, use)) {
+                            // remove the <use> element
+                            parent.removeChild(use);
+                            // parse the src and get the url and id
+                            var srcSplit = src.split("#"), url = srcSplit.shift(), id = srcSplit.join("#");
+                            // if the link is external
+                            if (url.length) {
+                                // get the cached xhr request
+                                var xhr = requests[url];
+                                // ensure the xhr request exists
+                                xhr || (xhr = requests[url] = new XMLHttpRequest(), xhr.open("GET", url), xhr.send(), 
+                                xhr._embeds = []), // add the svg and id as an item to the xhr embeds list
+                                xhr._embeds.push({
+                                    parent: parent,
+                                    svg: svg,
+                                    id: id
+                                }), // prepare the xhr ready state change event
+                                loadreadystatechange(xhr);
+                            } else {
+                                // embed the local id into the svg
+                                embed(parent, svg, document.getElementById(id));
+                            }
                         } else {
-                            // embed the local id into the svg
-                            embed(svg, document.getElementById(id));
+                            // increase the index when the previous value was not "valid"
+                            ++index, ++numberOfSvgUseElementsToBypass;
                         }
                     }
                 } else {
@@ -14561,14 +14722,18 @@ return Promise;
                 }
             }
             // continue the interval
-            requestAnimationFrame(oninterval, 67);
+            (!uses.length || uses.length - numberOfSvgUseElementsToBypass > 0) && requestAnimationFrame(oninterval, 67);
         }
-        var polyfill, opts = Object(rawopts), newerIEUA = /\bTrident\/[567]\b|\bMSIE (?:9|10)\.0\b/, webkitUA = /\bAppleWebKit\/(\d+)\b/, olderEdgeUA = /\bEdge\/12\.(\d+)\b/;
-        polyfill = "polyfill" in opts ? opts.polyfill : newerIEUA.test(navigator.userAgent) || (navigator.userAgent.match(olderEdgeUA) || [])[1] < 10547 || (navigator.userAgent.match(webkitUA) || [])[1] < 537;
+        var polyfill, opts = Object(rawopts), newerIEUA = /\bTrident\/[567]\b|\bMSIE (?:9|10)\.0\b/, webkitUA = /\bAppleWebKit\/(\d+)\b/, olderEdgeUA = /\bEdge\/12\.(\d+)\b/, edgeUA = /\bEdge\/.(\d+)\b/, inIframe = window.top !== window.self;
+        polyfill = "polyfill" in opts ? opts.polyfill : newerIEUA.test(navigator.userAgent) || (navigator.userAgent.match(olderEdgeUA) || [])[1] < 10547 || (navigator.userAgent.match(webkitUA) || [])[1] < 537 || edgeUA.test(navigator.userAgent) && inIframe;
         // create xhr requests object
-        var requests = {}, requestAnimationFrame = window.requestAnimationFrame || setTimeout, uses = document.getElementsByTagName("use");
+        var requests = {}, requestAnimationFrame = window.requestAnimationFrame || setTimeout, uses = document.getElementsByTagName("use"), numberOfSvgUseElementsToBypass = 0;
         // conditionally start the interval if the polyfill is active
         polyfill && oninterval();
+    }
+    function getSVGAncestor(node) {
+        for (var svg = node; "svg" !== svg.nodeName.toLowerCase() && (svg = svg.parentNode); ) {}
+        return svg;
     }
     return svg4everybody;
 });

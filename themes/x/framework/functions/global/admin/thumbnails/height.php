@@ -40,6 +40,7 @@ if ( ! function_exists( 'x_post_thumbnail_cropped_height' ) ) :
 
   }
   add_action( 'customize_save', 'x_post_thumbnail_cropped_height' );
+  add_action( 'cs_theme_options_before_save', 'x_post_thumbnail_cropped_height' );
 endif;
 
 
@@ -71,4 +72,5 @@ if ( ! function_exists( 'x_post_thumbnail_cropped_height_full' ) ) :
 
   }
   add_action( 'customize_save', 'x_post_thumbnail_cropped_height_full' );
+  add_action( 'cs_theme_options_before_save', 'x_post_thumbnail_cropped_height_full' );
 endif;

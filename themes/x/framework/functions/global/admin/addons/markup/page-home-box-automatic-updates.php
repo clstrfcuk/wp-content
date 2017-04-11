@@ -85,7 +85,7 @@
     <?php endif; ?>
 
     <footer class="tco-box-footer">
-      <div class="tco-box-bg" style="background-image: url(<?php x_tco()->admin_image( 'box-automatic-updates-tco-box-bg-x.jpg' ); ?>);"></div>
+      <div class="tco-box-bg" style="background-image: url(<?php x_tco()->admin_image( 'box-automatic-updates-tco-box-bg-' . X_SLUG . '.jpg' ); ?>);"></div>
       <?php if ( ! $is_validated ) : ?>
         <?php x_addons_preview_overlay( '.tco-box-automatic-updates' ); ?>
       <?php endif; ?>

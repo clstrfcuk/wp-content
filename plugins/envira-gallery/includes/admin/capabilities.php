@@ -95,7 +95,6 @@ class Envira_Gallery_Capabilities {
                 'publish_envira_galleries'          => $role->has_cap( 'publish_posts' ),
                 'read_private_envira_galleries'     => $role->has_cap( 'read_private_posts' ),
 
-                'read'                              => $role->has_cap( 'read' ),
                 'delete_envira_galleries'           => $role->has_cap( 'delete_posts' ),
                 'delete_private_envira_galleries'   => $role->has_cap( 'delete_private_posts' ),
                 'delete_published_envira_galleries' => $role->has_cap( 'delete_published_posts' ),

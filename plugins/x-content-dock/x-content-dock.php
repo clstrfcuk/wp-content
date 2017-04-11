@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Content Dock
 Plugin URI: http://theme.co/x/
 Description: An incredibly simple and effective tool that allows you to place content or marketing offers in front of your users in an elegant, non-intrusive manner.
-Version: 1.0.0
+Version: 1.1.0
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-content-dock
 // Constants.
 //
 
-define( 'X_CONTENT_DOCK_VERSION', '1.0.0' );
+define( 'X_CONTENT_DOCK_VERSION', '1.1.0' );
 define( 'X_CONTENT_DOCK_URL', plugins_url( '', __FILE__ ) );
 define( 'X_CONTENT_DOCK_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

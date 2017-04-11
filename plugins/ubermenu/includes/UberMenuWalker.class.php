@@ -388,6 +388,11 @@ class UberMenuWalker extends Walker_Nav_Menu {
 				$this->item_stack[count($this->item_stack)-3] :
 				false;
 	}
+	function ancestor_item( $k ){
+		return isset( $this->item_stack[count($this->item_stack)-$k] ) ? 
+				$this->item_stack[count($this->item_stack)-$k] :
+				false;
+	}
 	function closest_item_type( $type ){
 		for( $k = count( $this->item_stack ) - 1 ; $k >= 0 ; $k-- ){
 			if( $this->item_stack[$k]->getType() == $type ){

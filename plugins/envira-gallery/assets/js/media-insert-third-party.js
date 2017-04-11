@@ -245,7 +245,7 @@ wp.media.view.EnviraGalleryView = wp.media.View.extend( {
 		if ( is_dir == 'true' ) {
 			// This is a folder, so update the path to match the item's ID and get items
 			this.path = id;
-			this.getItems();
+			this.getItems( false, '' );
 		} else {
 			// Add or remove item from the selection, depending on its current state
 			if ( target.hasClass( 'selected' ) ) {
@@ -365,14 +365,17 @@ wp.media.view.EnviraGalleryView = wp.media.View.extend( {
 		if ( is_search ) {
 			data.search = search_terms
 		}
-
+				
 		wp.media.ajax( action, {
 			context: this,
 			data: data,
 			success: function( items ) {
 				// Define a collection
 				var collection = new Backbone.Collection( items );
-
+				
+                // Reset the collection
+                this.collection.reset();
+                
 				// Add the collection's models (items) to this class' collection
 				this.collection.add( collection.models );
 

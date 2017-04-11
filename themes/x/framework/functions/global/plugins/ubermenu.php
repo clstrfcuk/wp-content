@@ -34,12 +34,12 @@ define('UBERMENU_PACKAGED_THEME', 'X Theme' );
 // Define notice to show in place of default updates notice, shows on the updates screen
 // =============================================================================
 
-define('UBERMENU_PACKAGED_THEME_UPDATES_NOTICE', 'Purchase not required. Your license of UberMenu is included with your X license purchase. If your X license is validated (<a href="https://community.theme.co/kb/product-validation/">explained here</a>), your copy of UberMenu will be validated as well including updates as they are made available and support directly from Themeco. <a href="https://community.theme.co/kb/integrated-plugins-ubermenu/">Find out more in this article</a>.');
+define('UBERMENU_PACKAGED_THEME_UPDATES_NOTICE', 'Purchase not required. Your license of UberMenu is included with your X license purchase. If your X license is validated (<a href="https://theme.co/apex/kb/product-validation/">explained here</a>), your copy of UberMenu will be validated as well including updates as they are made available and support directly from Themeco. <a href="https://theme.co/apex/kb/integrated-plugins-ubermenu/">Find out more in this article</a>.');
 
 // Define notice to show in the help tab linking to support article
 // =============================================================================
 
-define('UBERMENU_PACKAGED_THEME_SUPPORT_NOTICE', 'Purchase not required. Your license of UberMenu is included with your X license purchase. If your X license is validated (<a href="https://community.theme.co/kb/product-validation/">explained here</a>), your copy of UberMenu will be validated as well including updates as they are made available and support directly from Themeco. <a href="https://community.theme.co/kb/integrated-plugins-ubermenu/">Find out more in this article</a>.');
+define('UBERMENU_PACKAGED_THEME_SUPPORT_NOTICE', 'Purchase not required. Your license of UberMenu is included with your X license purchase. If your X license is validated (<a href="https://theme.co/apex/kb/product-validation/">explained here</a>), your copy of UberMenu will be validated as well including updates as they are made available and support directly from Themeco. <a href="https://theme.co/apex/kb/integrated-plugins-ubermenu/">Find out more in this article</a>.');
 
 // Define link to X support
 // =============================================================================

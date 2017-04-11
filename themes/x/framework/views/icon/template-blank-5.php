@@ -25,7 +25,13 @@
   </div>
 
   <?php x_get_view( 'icon', '_template-blank-sidebar' ); ?>
-  <?php x_get_view( 'global', '_header', 'widget-areas' ); ?>
-  <?php x_get_view( 'global', '_footer', 'scroll-top' ); ?>
 
-<?php x_get_view( 'global', '_footer' ); ?>
+<?php
+
+if ( apply_filters( 'x_legacy_cranium_footers', true ) ) {
+  x_get_view( 'global', '_footer' );
+} else {
+  get_footer();
+}
+
+?>

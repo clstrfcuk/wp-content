@@ -980,6 +980,41 @@ function ubermenu_pro_item_settings( $settings ){
 
 	);
 
+	$settings['submenu'][67] = array(
+		'id' 		=> 'submenu_item_layout',
+		'title'		=> __( 'Submenu Item Layout', 'ubermenu' ),
+		'type'		=> 'radio',
+		'type_class'=> 'ubermenu-radio-blocks',
+		'default' 	=> 'default',
+		'desc'		=> __( 'This will set the default Item Layout for any children of this item.  Useful if all your children will be uniform in layout.' , 'ubermenu' ),
+		'ops'		=> 'ubermenu_get_item_layout_ops'
+	);
+
+	$settings['submenu'][68] = array(
+		'id' 		=> 'submenu_item_content_alignment',
+		'title'		=> __( 'Submenu Item Content Alignment', 'ubermenu' ),
+		'type'		=> 'radio',
+		'scenario'	=> 'Vertically stacked layouts',
+		'default' 	=> 'default',
+		'desc'		=> __( 'This setting can be inherited by children of this item for the "Item Content Alignment" setting.  For example, setting this to "Center" will allow you to have a centered image stacked above the title on your submenu items when used in conjunction with the "Image Above" item layout' , 'ubermenu' ),
+		'ops'		=> array(
+			'group'	=> array(
+				'default'	=> array(
+					'name' 	=> __( 'Default' , 'ubermenu' ),
+				),
+				'left'		=> array(
+					'name' 	=> __( 'Left' , 'ubermenu' ),
+				),
+				'center'		=> array(
+					'name' 	=> __( 'Center' , 'ubermenu' ),
+				),
+				'right'		=> array(
+					'name' 	=> __( 'Right' , 'ubermenu' ),
+				),
+			),
+		),
+	);
+
 	$settings['submenu'][70] = array(
 		'id'		=> 'submenu_column_dividers',
 		'title'		=> __( 'Submenu Columns Dividers' , 'ubermenu' ),
@@ -1047,19 +1082,19 @@ function ubermenu_pro_item_settings( $settings ){
 					'name'	=> __( 'No Repeat' , 'ubermenu' ),
 				),
 				'repeat'	=> array(
-					'name'	=> __( 'Repeat' , 'ubemenu' ),
+					'name'	=> __( 'Repeat' , 'ubermenu' ),
 				),
 				'repeat-x'	=> array(
-					'name'	=> __( 'Repeat X (Horizontal)' , 'ubemenu' ),
+					'name'	=> __( 'Repeat X (Horizontal)' , 'ubermenu' ),
 				),
 				'repeat-y'	=> array(
-					'name'	=> __( 'Repeat Y (Vertical)' , 'ubemenu' ),
+					'name'	=> __( 'Repeat Y (Vertical)' , 'ubermenu' ),
 				),
 				'space'	=> array(
-					'name'	=> __( 'Space' , 'ubemenu' ),
+					'name'	=> __( 'Space' , 'ubermenu' ),
 				),
 				'round'	=> array(
-					'name'	=> __( 'Round' , 'ubemenu' ),
+					'name'	=> __( 'Round' , 'ubermenu' ),
 				),
 
 			),
@@ -1331,6 +1366,14 @@ function ubermenu_pro_item_settings( $settings ){
 		'desc'		=> __( 'Pad the content area so that it aligns similarly to other menu items', 'ubermenu' ),
 	);
 
+	$settings['custom_content'][30] = array(
+		'id' 		=> 'custom_content_class',
+		'title'		=> 'Custom Class',
+		'type'		=> 'text',
+		'default' 	=> '',
+		'desc'		=> __( 'A class to be applied to the custom content wrapper.' , 'ubermenu' ),
+	);
+
 
 
 	/** CUSTOM CONTENT LAYOUT **/
@@ -1357,6 +1400,8 @@ function ubermenu_pro_item_settings( $settings ){
 		'scenario'	=> __( 'Top Level Menu Items' , 'ubermenu' ),
 
 	);
+
+
 
 
 

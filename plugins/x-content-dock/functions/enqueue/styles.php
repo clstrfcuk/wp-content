@@ -20,9 +20,52 @@ function x_content_dock_output_site_styles() {
 
   require( X_CONTENT_DOCK_PATH . '/functions/options.php' );
 
-  if ( isset( $x_content_dock_enable ) && $x_content_dock_enable == 1 ) :
+  $display = false;
 
-    if ( is_page( $x_content_dock_entries_include ) || is_single( $x_content_dock_entries_include ) ) :
+  // Active for all pages
+
+  if ( is_page() && isset( $x_content_dock_all_pages_active ) && $x_content_dock_all_pages_active ) {
+    $display = true;
+  }
+
+  // Page is on the list
+
+  if ( is_page( $x_content_dock_entries_include ) ) {
+    $display = true;
+  }
+
+  // Active for all posts
+
+  if ( is_single() && isset( $x_content_dock_all_posts_active ) && $x_content_dock_all_posts_active ) {
+    $display = true;
+  }
+
+  // Post is on the list
+
+  if ( is_single( $x_content_dock_posts_include ) ) {
+    $display = true;
+  }
+
+  // Active for all WooCommerce products
+
+  if ( is_single() && isset( $x_content_dock_woo_products_include ) && $x_content_dock_woo_products_include ) {
+    $display = true;
+  }
+
+  // WooCommerce product is on the list
+
+  if ( is_single( $x_content_dock_woo_products_include ) ) {
+    $display = true;
+  }
+
+  // If x_content_dock_do_not_show cookie is set, ignore content-dock
+  if( isset( $_COOKIE['x_content_dock_do_not_show'] ) ) {
+    $display = false;
+  }
+
+  // Render conditionally
+
+  if ( $display ) :
 
     ?>
 
@@ -130,9 +173,7 @@ function x_content_dock_output_site_styles() {
         }
       }
 
-    <?php endif;
-
-  endif;
+  <?php endif;
 
 }
 

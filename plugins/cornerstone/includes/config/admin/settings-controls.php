@@ -5,7 +5,7 @@ $controls = array(
 		'type' => 'multi-select',
 		'ui' => array(
 			'title'   => __( 'Allowed Post Types', 'cornerstone' ),
-			'description' => __( 'Select which post types to enable for Cornerstone.', 'cornerstone' ),
+			'description' => __( 'Select which post types to enable for the Content Builder.', 'cornerstone' ),
 		),
 		'options' => array(
 			'placeholder' => __( 'Click to select post types.', 'cornerstone' ),
@@ -15,8 +15,8 @@ $controls = array(
 	'permitted_roles' => array(
 		'type' => 'multi-select',
 		'ui' => array(
-			'title'       => __( 'Additional Roles', 'cornerstone' ),
-			'description' => __( 'Allow editing with Cornerstone for roles other than Administrator.', 'cornerstone' ),
+			'title'       => __( 'Content Roles', 'cornerstone' ),
+			'description' => __( 'Allow content editing for roles other than Administrator.', 'cornerstone' ),
 		),
 		'options' => array(
 			'placeholder' => __( 'Click to choose additional roles.', 'cornerstone' ),
@@ -27,7 +27,7 @@ $controls = array(
 		'type' => 'checkbox',
 		'ui' => array(
 			'title'       => __( 'Show WordPress Toolbar', 'cornerstone' ),
-			'description' => __( 'While editing in Cornerstone, you may opt to display the WordPress toolbar.', 'cornerstone' ),
+			'description' => __( 'While working in the application, you may opt to display the WordPress toolbar.', 'cornerstone' ),
 		)
 	),
 	'visual_enhancements' => array(
@@ -37,10 +37,15 @@ $controls = array(
 			'description' => __( 'Turns on creative save messages.', 'cornerstone' ),
 		)
 	),
-);
+  'help_text' => array(
+		'type' => 'checkbox',
+		'ui' => array(
+			'title'       => __( 'Help Text', 'cornerstone' ),
+			'description' => __( 'Show helpful inline messaging throughout the tool to describe various features.', 'cornerstone' ),
+		)
+	),
 
-if ( apply_filters( '_cornerstone_alpha', false ) ) {
-  $controls['custom_app_slug'] = array(
+  'custom_app_slug' => array(
     'type' => 'text',
     'ui' => array(
       'title'       => __( 'Custom Path', 'cornerstone' ),
@@ -48,8 +53,16 @@ if ( apply_filters( '_cornerstone_alpha', false ) ) {
     ),
     'options' => array(
       'placeholder' => apply_filters( 'cornerstone_default_app_slug', 'cornerstone' )
+    ),
+  ),
+
+  'hide_access_path' => array(
+    'type' => 'checkbox',
+    'ui' => array(
+      'title'       => __( 'Hide Access Path', 'cornerstone' ),
+      'description' => __( 'Logged out users trying to access the interface will see a 404 instead of a login prompt.', 'cornerstone' ),
     )
-  );
-}
+  )
+);
 
 return $controls;

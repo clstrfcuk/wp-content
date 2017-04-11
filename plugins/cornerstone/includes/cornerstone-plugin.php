@@ -38,7 +38,7 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 	 * @return array
 	 */
 	public function settings() {
-		return wp_parse_args( get_option( 'cornerstone_settings', array() ), $this->config( 'common/default-settings' ) );
+		return wp_parse_args( get_option( 'cornerstone_settings', array() ), $this->config_group( 'common/default-settings' ) );
 	}
 
 	/**
@@ -115,13 +115,4 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
  */
 function CS() {
 	return Cornerstone_Plugin::instance();
-}
-
-
-/**
- * Text Domain helper method
- * @return string  text domain
- */
-function csl18n() {
-	return CS()->td();
 }

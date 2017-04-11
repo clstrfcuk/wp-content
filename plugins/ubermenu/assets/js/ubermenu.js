@@ -5,6 +5,74 @@
 *
 *  Copyright Chris Mavricos, SevenSpark http://sevenspark.com
 */
+
+//Define dependencies first because deferred scripts don't respect document ready order
+;var uber_supports = (function() {  
+	var div = document.createElement('div'),
+		vendors = 'Khtml Ms O Moz Webkit'.split(' ');
+	return function(prop) {		
+		var len = vendors.length;
+		if ( prop in div.style ) return true;
+		prop = prop.replace(/^[a-z]/, function(val) {
+			return val.toUpperCase();
+		});  
+		while(len--) {
+			if ( vendors[len] + prop in div.style ) {
+				return true;
+			}
+		}
+		return false;
+	};
+})();
+
+function uber_op( id , args , def ){
+	//If no id
+	if( !ubermenu_data.hasOwnProperty( id ) ){
+		return def;
+	}
+	var val = ubermenu_data[id];
+	if( args.hasOwnProperty( 'datatype' ) ){
+		switch( args['datatype'] ){
+			case 'numeric':
+				val = parseInt( val );
+				break;
+			
+			case 'boolean':
+				if( val == 'on' || val == 1 || val == '1' ){
+					val = true;
+				}
+				else{
+					val = false;
+				}
+				break;
+		}
+	}
+	return val;
+}
+
+;(function($,sr){
+  // debouncing function from John Hann
+  // http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
+  var debounce = function (func, threshold, execAsap) {
+      var timeout;
+      return function debounced () {
+          var obj = this, args = arguments;
+          function delayed () {
+              if (!execAsap)
+                  func.apply(obj, args);
+              timeout = null;
+          };
+          if (timeout)
+              clearTimeout(timeout);
+          else if (execAsap)
+              func.apply(obj, args);
+          timeout = setTimeout(delayed, threshold || 100);
+      };
+  }
+  jQuery.fn[sr] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
+
+})(jQuery,'ubersmartresize');
+
 ;(function ( $, window, document, undefined ) {
 	'use strict';
 	var pluginName = "ubermenu",
@@ -327,6 +395,32 @@
 
 			});
 
+
+			//Keyboard interactions - left, right, escape
+			plugin.$ubermenu.find( '.ubermenu-item-level-0' ).on( 'keydown' , function(e){
+			  //var $uber = jQuery( '.ubermenu' );
+			  //console.log( e.which );
+			  switch( e.which ){
+			      case 39:  //right
+			         plugin.closeAllSubmenus();
+			         //console.log( 'right ' + jQuery( this ).next().attr('id') );
+			         $( this ).next().find( '.ubermenu-target' ).focus();
+			         break;
+
+			      case 37: //left
+			         plugin.closeAllSubmenus();
+			         //console.log( 'left '+ jQuery( this ).prev().attr('id') );
+			         jQuery( this ).prev().find( '.ubermenu-target' ).focus();
+			         break;
+
+			      case 27:  //escape
+			         //console.log( 'esc' );
+			         //jQuery( this ).find( '.ubermenu-target' ).focus();
+			         plugin.closeAllSubmenus();
+			         break;
+			  } 
+			});
+
 			
 
 			//Mousedown - flag a mouse interaction - focus event above will be ignored if focus is result of mouse
@@ -345,7 +439,7 @@
 			});
 
 			if( this.settings.reposition_on_load ){
-				$(window).load( function(){
+				$(window).on( 'load' , function(){
 					plugin.positionSubmenus();
 				});
 			}
@@ -511,7 +605,7 @@
 			plugin.$tab_blocks = $( plugin.$tab_blocks.get().reverse() );
 
 			//When all the images load, check the tabs
-			$(window).load( function(){
+			$(window).on( 'load' , function(){
 				plugin.sizeTabs();
 			});
 
@@ -1424,7 +1518,7 @@
 
 				$li.each( function(){
 					var _$li = $(this);
-					var _$ul = _$li.find( '> ul' );
+					var _$ul = _$li.find( '> .ubermenu-submenu' );
 
 					//Remove the transition flag once the transition is completed
 					if( plugin.transitions ){
@@ -1547,7 +1641,7 @@
 	});
 
 	//Backup
-	$( window ).load( function(){
+	$( window ).on( 'load' , function(){
 		initialize_ubermenu( 'window.load' );
 	});
 
@@ -1649,86 +1743,6 @@
 	}
 
 })(jQuery);
-
-
-
-
-function uber_op( id , args , def ){
-
-	//If no id
-	if( !ubermenu_data.hasOwnProperty( id ) ){
-		return def;
-	}
-
-	var val = ubermenu_data[id];
-
-	if( args.hasOwnProperty( 'datatype' ) ){
-		switch( args['datatype'] ){
-			case 'numeric':
-				val = parseInt( val );
-				break;
-			
-			case 'boolean':
-				if( val == 'on' || val == 1 || val == '1' ){
-					val = true;
-				}
-				else{
-					val = false;
-				}
-				break;
-		}
-	}
-
-	return val;
-}
-
-
-
-(function($,sr){
-  // debouncing function from John Hann
-  // http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
-  var debounce = function (func, threshold, execAsap) {
-      var timeout;
-      return function debounced () {
-          var obj = this, args = arguments;
-          function delayed () {
-              if (!execAsap)
-                  func.apply(obj, args);
-              timeout = null;
-          };
-          if (timeout)
-              clearTimeout(timeout);
-          else if (execAsap)
-              func.apply(obj, args);
-          timeout = setTimeout(delayed, threshold || 100);
-      };
-  }
-  jQuery.fn[sr] = function(fn){  return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
-
-})(jQuery,'ubersmartresize');
-
-var uber_supports = (function() {
-	var div = document.createElement('div'),
-		vendors = 'Khtml Ms O Moz Webkit'.split(' ');		
-
-	return function(prop) {
-		
-		var len = vendors.length;
-
-		if ( prop in div.style ) return true;
-
-		prop = prop.replace(/^[a-z]/, function(val) {
-			return val.toUpperCase();
-		});
-  
-		while(len--) {
-			if ( vendors[len] + prop in div.style ) {
-				return true;
-			}
-		}
-		return false;
-	};
-})();
 
 
 /* 

@@ -45,8 +45,8 @@ class X_Addons_Updates {
 
     $updates = x_tco()->updates()->get_update_cache();
 
-    if ( isset( $updates['themes'] ) && isset( $updates['themes']['x'] ) && isset( $updates['themes']['x']['new_version'] ) ) {
-      return $updates['themes']['x']['new_version'];
+    if ( isset( $updates['themes'] ) && isset( $updates['themes'][X_SLUG] ) && isset( $updates['themes'][X_SLUG]['new_version'] ) ) {
+      return $updates['themes'][X_SLUG]['new_version'];
     }
 
     return X_VERSION;
@@ -151,8 +151,8 @@ class X_Addons_Updates {
 				}
 		}
 
-		if ( isset( $data['themes'] ) && isset( $data['themes']['x']) ) {
-				$theme_updates['x'] = (array) $data['themes']['x'];
+		if ( isset( $data['themes'] ) && isset( $data['themes'][X_SLUG]) ) {
+				$theme_updates[X_SLUG] = (array) $data['themes'][X_SLUG];
 		}
 
 		$updates['themes'] = array_merge( $updates['themes'], $theme_updates );
@@ -206,27 +206,27 @@ class X_Addons_Updates {
   //
 
   public static function get_validation_html_theme_main() {
-    return sprintf( __( '<a href="%s">Validate X to enable automatic updates</a>', '__x__' ), x_addons_get_link_home() );
+    return sprintf( __( '<a href="%s">Validate %s to enable automatic updates</a>', '__x__' ), x_addons_get_link_home(), X_TITLE );
   }
 
   public static function get_validation_html_theme_updates() {
-    return sprintf( __( '<a href="%s">Validate X to enable automatic updates</a>', '__x__' ), x_addons_get_link_home() );
+    return sprintf( __( '<a href="%s">Validate %s to enable automatic updates</a>', '__x__' ), x_addons_get_link_home(), X_TITLE );
   }
 
   public static function get_validation_html_theme_update_error() {
-    return sprintf( __( 'X is not validated. <a href="%s">Validate X to enable automatic updates</a>', '__x__' ), x_addons_get_link_home() );
+    return sprintf( __( '%s is not validated. <a href="%s">Validate %s to enable automatic updates</a>', '__x__' ), X_TITLE, x_addons_get_link_home(), X_TITLE );
   }
 
   public static function get_validation_html_plugin_main() {
-    return sprintf( __( '<a href="%s">Validate X to enable automatic updates</a>.', '__x__' ), x_addons_get_link_home() );
+    return sprintf( __( '<a href="%s">Validate %s to enable automatic updates</a>.', '__x__' ), x_addons_get_link_home(), X_TITLE );
   }
 
   public static function get_validation_html_plugin_updates() {
-    return sprintf( __( '<a href="%s">Validate X to enable automatic updates (go to "Addons" &gt; "Home" to learn more.)</a>', '__x__' ), x_addons_get_link_home() );
+    return self::get_validation_html_plugin_main();
   }
 
   public static function get_validation_html_plugin_update_error() {
-    return sprintf( __( 'X is not validated. <a href="%s">Validate X to enable automatic updates.</a>', '__x__' ), x_addons_get_link_home() );
+    return sprintf( __( '%s is not validated. <a href="%s">Validate %s to enable automatic updates.</a>', '__x__' ), X_TITLE, x_addons_get_link_home(), X_TITLE );
   }
 
 
@@ -243,7 +243,7 @@ class X_Addons_Updates {
 			if ( false === ( $addons = get_site_option( 'x_extension_list', false ) ) ) {
 				return array(
 					'error' => true,
-					'message' => __( 'Could not retrieve extensions list. For assistance, please start by reviewing our article on troubleshooting <a href="https://community.theme.co/kb/connection-issues/">connection issues.</a>', '__x__' ),
+					'message' => __( 'Could not retrieve extensions list. For assistance, please start by reviewing our article on troubleshooting <a href="https://theme.co/apex/kb/connection-issues/">connection issues.</a>', '__x__' ),
 					'verbose' => x_tco()->updates()->get_errors()
 				);
 			}

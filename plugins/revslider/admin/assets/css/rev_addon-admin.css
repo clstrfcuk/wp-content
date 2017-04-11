@@ -8,7 +8,9 @@
 .rs-dash-addons .rs-dash-margin-left-10 	{margin-left: 10px}
 .rs-dash-addons .rs-dash-title				{height:32px}
 .rs-dash-addons .rs-dash-widget 			{background-repeat: no-repeat;background-position: bottom right}
-.rs-dash-title-button						{cursor:pointer;display:none}
+.rs-dash-title-button						{display:none}
+.rs-dash-deactivate-addon					{line-height:32px;right:123px;cursor:pointer;}
+.rs-dash-deactivate-addon:hover				{background:#3498db}
 
 /**
 * SubTitle Headline

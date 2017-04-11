@@ -599,6 +599,8 @@ class RevSliderSlider extends RevSliderElementsBase{
 				
 			}
 		}
+		
+		return $lastID;
 	}
 	
 	
@@ -733,7 +735,6 @@ class RevSliderSlider extends RevSliderElementsBase{
 		if(!empty($cfw) && count($cfw) > 0){
 			foreach($cfw as $key => $slide){
 				//check if we are transparent and so on
-				
 				if(isset($slide['params']['image']) && $slide['params']['image'] != '') $usedImages[$slide['params']['image']] = true; //['params']['image'] background url
 				if(isset($slide['params']['background_image']) && $slide['params']['background_image'] != '') $usedImages[$slide['params']['background_image']] = true; //['params']['image'] background url
 				if(isset($slide['params']['slide_thumb']) && $slide['params']['slide_thumb'] != '') $usedImages[$slide['params']['slide_thumb']] = true; //['params']['image'] background url
@@ -756,6 +757,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 						if(isset($layer['animation']) && $layer['animation'] != '' && strpos($layer['animation'], 'customin') !== false) $usedAnimations[str_replace('customin-', '', $layer['animation'])] = true;
 						if(isset($layer['endanimation']) && $layer['endanimation'] != '' && strpos($layer['endanimation'], 'customout') !== false) $usedAnimations[str_replace('customout-', '', $layer['endanimation'])] = true;
 						if(isset($layer['image_url']) && $layer['image_url'] != '') $usedImages[$layer['image_url']] = true; //image_url if image caption
+						if(isset($layer['bgimage_url']) && $layer['bgimage_url'] != '') $usedImages[$layer['bgimage_url']] = true; //image_url if background layer image
 						
 						if(isset($layer['type']) && ($layer['type'] == 'video' || $layer['type'] == 'audio')){
 							
@@ -785,6 +787,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 							if($video_data['video_type'] != 'audio'){
 								$video_data['urlAudio'] = '';
 							}
+							if(isset($layer['video_image_url']) && $layer['video_image_url'] != '') $usedImages[$layer['video_image_url']] = true;
 						}
 						
 						if(isset($layer['type']) && $layer['type'] == 'svg'){
@@ -795,8 +798,14 @@ class RevSliderSlider extends RevSliderElementsBase{
 					}
 				}
 			}
+			
+			$d = array('usedSVG' => $usedSVG, 'usedImages' => $usedImages, 'usedVideos' => $usedVideos);
+			$d = apply_filters('revslider_exportSlider_usedMedia', $d, $cfw, $sliderParams, $useDummy); //  $arrSlides, $arrStaticSlide, 
+			
+			$usedSVG = $d['usedSVG'];
+			$usedImages = $d['usedImages'];
+			$usedVideos = $d['usedVideos'];
 		}
-		
 		
 		$arrSliderExport = array("params"=>$sliderParams,"slides"=>$arrSlides);
 		if(!empty($arrStaticSlide))
@@ -869,10 +878,10 @@ class RevSliderSlider extends RevSliderElementsBase{
 			$content_path = ABSPATH . 'wp-content';
 			$ud = wp_upload_dir();
 			$up_dir = $ud['baseurl'];
-			
 			foreach($usedSVG as $file => $val){
 				if(strpos($file, 'http') !== false){ //remove all up to wp-content folder
 					$checkpath = str_replace($content_url, '', $file);
+
 					$checkpath2 = str_replace($up_dir, '', $file);
 					if($checkpath2 === $file){ //we have an SVG like whiteboard, fallback to older export
 						$checkpath2 = $checkpath;
@@ -897,6 +906,8 @@ class RevSliderSlider extends RevSliderElementsBase{
 					
 				}else{ //use the real images
 					if(strpos($file, 'http') !== false){
+						//check if we are in objects folder, if yes take the original image into the zip-
+						
 						$remove = false;
 						$checkpath = str_replace(array($cont_url, $cont_url_no_www), '', $file);
 						
@@ -1010,12 +1021,16 @@ class RevSliderSlider extends RevSliderElementsBase{
 	
 	
 	/**
-	 * 
 	 * import slider from multipart form
+	 * @since: 5.3.1: $updateStatic is now deprecated
 	 */
 	public function importSliderFromPost($updateAnim = true, $updateStatic = true, $exactfilepath = false, $is_template = false, $single_slide = false, $updateNavigation = true){
 		
+		$real_slider_id = '';
 		try{
+			$upload_dir = wp_upload_dir();
+			$rem_path = $upload_dir['basedir'].'/rstemp/';
+			$d_path = $rem_path;
 			
 			$sliderID = RevSliderFunctions::getPostVariable("sliderid");
 			$sliderExists = !empty($sliderID);
@@ -1034,6 +1049,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 					case UPLOAD_ERR_INI_SIZE:
 					case UPLOAD_ERR_FORM_SIZE:
 						RevSliderFunctions::throwError(__('Exceeded filesize limit.', 'revslider'));
+						
 					default:
 					break;
 				}
@@ -1049,8 +1065,6 @@ class RevSliderSlider extends RevSliderElementsBase{
 			
 			global $wp_filesystem;
 			
-			$upload_dir = wp_upload_dir();
-			$d_path = $upload_dir['basedir'].'/rstemp/';
 			$unzipfile = unzip_file( $filepath, $d_path);
 			
 			if( is_wp_error($unzipfile) ){
@@ -1063,6 +1077,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 				$unzipfile = unzip_file( $filepath, $d_path);
 				if( is_wp_error($unzipfile) ){
 					$d_path = RS_PLUGIN_PATH.'rstemp/';
+					$rem_path = $d_path;
 					$unzipfile = unzip_file( $filepath, $d_path);
 					
 					if( is_wp_error($unzipfile) ){
@@ -1084,7 +1099,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 				}
 				$animations = ( $wp_filesystem->exists( $d_path.'custom_animations.txt' ) ) ? $wp_filesystem->get_contents( $d_path.'custom_animations.txt' ) : '';
 				$dynamic = ( $wp_filesystem->exists( $d_path.'dynamic-captions.css' ) ) ? $wp_filesystem->get_contents( $d_path.'dynamic-captions.css' ) : '';
-				$static = ( $wp_filesystem->exists( $d_path.'static-captions.css' ) ) ? $wp_filesystem->get_contents( $d_path.'static-captions.css' ) : '';
+				//$static = ( $wp_filesystem->exists( $d_path.'static-captions.css' ) ) ? $wp_filesystem->get_contents( $d_path.'static-captions.css' ) : '';
 				$navigations = ( $wp_filesystem->exists( $d_path.'navigation.txt' ) ) ? $wp_filesystem->get_contents( $d_path.'navigation.txt' ) : '';
 				
 				$uid_check = ( $wp_filesystem->exists( $d_path.'info.cfg' ) ) ? $wp_filesystem->get_contents( $d_path.'info.cfg' ) : '';
@@ -1142,11 +1157,11 @@ class RevSliderSlider extends RevSliderElementsBase{
 						//and set the current customin-oldID and customout-oldID in slider params to new ID from $id
 						$content = str_replace(array('customin-'.$animation['id'].'"', 'customout-'.$animation['id'].'"'), array('customin-'.$anim_id.'"', 'customout-'.$anim_id.'"'), $content);	
 					}
-					dmp(__("animations imported!",'revslider'));
+					//dmp(__("animations imported!",'revslider'));
 				}
 				
 				//overwrite/append static-captions.css
-				if(!empty($static)){
+				/*if(!empty($static)){
 					if($updateStatic == "true"){ //overwrite file
 						RevSliderOperations::updateStaticCss($static);
 					}elseif($updateStatic == 'none'){
@@ -1156,7 +1171,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 						$static = $static_cur."\n".$static;
 						RevSliderOperations::updateStaticCss($static);
 					}
-				}
+				}*/
 				
 				//overwrite/create dynamic-captions.css
 				//parse css to classes
@@ -1202,7 +1217,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 							$db->insert(RevSliderGlobals::$table_css, $arrInsert);
 						}
 					}
-					dmp(__("dynamic styles imported!",'revslider'));
+					//dmp(__("dynamic styles imported!",'revslider'));
 				}
 				
 				//update/insert custom animations
@@ -1232,12 +1247,12 @@ class RevSliderSlider extends RevSliderElementsBase{
 							$navi_id = $db->insert(RevSliderGlobals::$table_navigation, $navigation);
 						}
 					}
-					dmp(__("navigations imported!",'revslider'));
+					//dmp(__("navigations imported!",'revslider'));
 				}
 			}else{
 				$message = $unzipfile->get_error_message();
 				
-				$wp_filesystem->delete($d_path, true);
+				$wp_filesystem->delete($rem_path, true);
 				
 				return(array("success"=>false,"error"=>$message));
 			}
@@ -1247,7 +1262,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 			
 			$arrSlider = @unserialize($content);
 			if(empty($arrSlider)){
-				$wp_filesystem->delete($d_path, true);
+				$wp_filesystem->delete($rem_path, true);
 				RevSliderFunctions::throwError(__('Wrong export slider file format! Please make sure that the uploaded file is either a zip file with a correct slider_export.txt in the root of it or an valid slider_export.txt file.', 'revslider'));
 			}
 			
@@ -1262,7 +1277,6 @@ class RevSliderSlider extends RevSliderElementsBase{
 			
 			if(isset($sliderParams["background_image"]))
 				$sliderParams["background_image"] = RevSliderFunctionsWP::getImageUrlFromPath($sliderParams["background_image"]);
-			
 			
 			$import_statics = true;
 			if(isset($sliderParams['enable_static_layers'])){
@@ -1373,7 +1387,6 @@ class RevSliderSlider extends RevSliderElementsBase{
 					}
 				}
 				
-				
 				//convert layers images:
 				foreach($layers as $key=>$layer){					
 					//import if exists in zip folder
@@ -1381,6 +1394,10 @@ class RevSliderSlider extends RevSliderElementsBase{
 						if(isset($layer["image_url"])){
 							$layer["image_url"] = RevSliderBase::check_file_in_zip($d_path, $layer["image_url"], $sliderParams["alias"], $alreadyImported);
 							$layer["image_url"] = RevSliderFunctionsWP::getImageUrlFromPath($layer["image_url"]);
+						}
+						if(isset($layer["bgimage_url"])){
+							$layer["bgimage_url"] = RevSliderBase::check_file_in_zip($d_path, $layer["bgimage_url"], $sliderParams["alias"], $alreadyImported);
+							$layer["bgimage_url"] = RevSliderFunctionsWP::getImageUrlFromPath($layer["bgimage_url"]);
 						}
 						if(isset($layer['type']) && ($layer['type'] == 'video' || $layer['type'] == 'audio')){
 							
@@ -1416,6 +1433,9 @@ class RevSliderSlider extends RevSliderElementsBase{
 							
 							$layer['video_data'] = $video_data;
 							
+							if(isset($layer['video_image_url']) && $layer['video_image_url'] != ''){
+								$layer['video_image_url'] = RevSliderFunctionsWP::getImageUrlFromPath(RevSliderBase::check_file_in_zip($d_path, $layer["video_image_url"], $sliderParams["alias"], $alreadyImported));
+							}
 						}
 						
 						if(isset($layer['type']) && $layer['type'] == 'svg'){
@@ -1429,13 +1449,21 @@ class RevSliderSlider extends RevSliderElementsBase{
 					$layer['text'] = stripslashes($layer['text']);
 					$layers[$key] = $layer;
 				}
-				
 				$arrSlides[$sl_key]['layers'] = $layers;
 				
 				//create new slide
 				$arrCreate = array();
 				$arrCreate["slider_id"] = $sliderID;
 				$arrCreate["slide_order"] = $slide["slide_order"];
+				
+				$d = array('params' => $params, 'sliderParams' => $sliderParams, 'layers' => $layers, 'settings' => $settings, 'alreadyImported' => $alreadyImported);
+				$d = apply_filters('revslider_importSliderFromPost_modify_data', $d, 'normal', $d_path);
+				
+				$params = $d['params'];
+				$sliderParams = $d['sliderParams'];
+				$layers = $d['layers'];
+				$settings = $d['settings'];
+				$alreadyImported = $d['alreadyImported'];
 				
 				$my_layers = json_encode($layers);
 				if(empty($my_layers))
@@ -1447,8 +1475,6 @@ class RevSliderSlider extends RevSliderElementsBase{
 				if(empty($my_settings))
 					$my_settings = stripslashes(json_encode($settings));
 				
-				
-					
 				$arrCreate["layers"] = $my_layers;
 				$arrCreate["params"] = $my_params;
 				$arrCreate["settings"] = $my_settings;
@@ -1622,6 +1648,33 @@ class RevSliderSlider extends RevSliderElementsBase{
 							}
 							$layer["image_url"] = RevSliderFunctionsWP::getImageUrlFromPath($layer["image_url"]);
 						}
+						if(isset($layer["bgimage_url"])){
+							//import if exists in zip folder
+							if(trim($layer["bgimage_url"]) !== ''){
+								if(strpos($layer["bgimage_url"], 'http') !== false){
+								}else{
+									if($importZip === true){ //we have a zip, check if exists
+										$bgimage_url = $wp_filesystem->exists( $d_path.'images/'.$layer["bgimage_url"] );
+										if(!$bgimage_url){
+											echo $layer["bgimage_url"].__(' not found!<br>');
+										}else{
+											if(!isset($alreadyImported['images/'.$layer["bgimage_url"]])){
+												$importImage = RevSliderFunctionsWP::import_media($d_path.'images/'.$layer["bgimage_url"], $sliderParams["alias"].'/');
+												
+												if($importImage !== false){
+													$alreadyImported['images/'.$layer["bgimage_url"]] = $importImage['path'];
+													
+													$layer["bgimage_url"] = $importImage['path'];
+												}
+											}else{
+												$layer["bgimage_url"] = $alreadyImported['images/'.$layer["bgimage_url"]];
+											}
+										}
+									}
+								}
+							}
+							$layer["bgimage_url"] = RevSliderFunctionsWP::getImageUrlFromPath($layer["bgimage_url"]);
+						}
 						
 						$layer['text'] = stripslashes($layer['text']);
 							
@@ -1634,7 +1687,6 @@ class RevSliderSlider extends RevSliderElementsBase{
 								if(isset($video_data['urlPoster']) && $video_data['urlPoster'] != ''){
 									$video_data['urlPoster'] = RevSliderFunctionsWP::getImageUrlFromPath(RevSliderBase::check_file_in_zip($d_path, $video_data["urlPoster"], $sliderParams["alias"], $alreadyImported));
 								}
-								
 								if(isset($video_data['urlMp4']) && $video_data['urlMp4'] != ''){
 									$video_data['urlMp4'] = RevSliderFunctionsWP::getImageUrlFromPath(RevSliderBase::check_file_in_zip($d_path, $video_data["urlMp4"], $sliderParams["alias"], $alreadyImported, true));
 								}
@@ -1658,6 +1710,10 @@ class RevSliderSlider extends RevSliderElementsBase{
 							}
 							
 							$layer['video_data'] = $video_data;
+							
+							if(isset($layer['video_image_url']) && $layer['video_image_url'] != ''){
+								$layer['video_image_url'] = RevSliderFunctionsWP::getImageUrlFromPath(RevSliderBase::check_file_in_zip($d_path, $layer["video_image_url"], $sliderParams["alias"], $alreadyImported));
+							}
 						}
 						
 						if(isset($layer['type']) && $layer['type'] == 'svg'){
@@ -1720,6 +1776,14 @@ class RevSliderSlider extends RevSliderElementsBase{
 						$layers[$key] = $layer;
 					}
 					
+					$d = array('params' => $params, 'layers' => $layers, 'settings' => $settings);
+					$d = apply_filters('revslider_importSliderFromPost_modify_data', $d, 'static', $d_path);
+					
+					$params = $d['params'];
+					$layers = $d['layers'];
+					$settings = $d['settings'];
+					
+					
 					//create new slide
 					$arrCreate = array();
 					$arrCreate["slider_id"] = $sliderID;
@@ -1777,6 +1841,8 @@ class RevSliderSlider extends RevSliderElementsBase{
 				
 			}
 			
+			$real_slider_id = $sliderID;
+			
 			if($is_template !== false){ //duplicate the slider now, as we just imported the "template"
 				if($single_slide !== false){ //add now one Slide to the current Slider
 					$mslider = new RevSlider();
@@ -1808,23 +1874,25 @@ class RevSliderSlider extends RevSliderElementsBase{
 						$talias = $title . $ti;
 						$ti++;
 					}
-					$mslider->duplicateSliderFromData(array('sliderid' => $sliderID, 'title' => $talias));
+					$real_slider_id = $mslider->duplicateSliderFromData(array('sliderid' => $sliderID, 'title' => $talias));
 				}
 			}
 			
-			$wp_filesystem->delete($d_path, true);
+			$wp_filesystem->delete($rem_path, true);
 			
 			
 		}catch(Exception $e){
 			$errorMessage = $e->getMessage();
 			
-			if(isset($d_path)){
-				$wp_filesystem->delete($d_path, true);
+			if(isset($rem_path)){
+				$wp_filesystem->delete($rem_path, true);
 			}
 			return(array("success"=>false,"error"=>$errorMessage,"sliderID"=>$sliderID));
 		}
 		
-		return(array("success"=>true,"sliderID"=>$sliderID));
+		do_action('revslider_slider_imported', $real_slider_id);
+		
+		return(array("success"=>true,"sliderID"=>$real_slider_id));
 	}
 	
 	
@@ -1893,7 +1961,8 @@ class RevSliderSlider extends RevSliderElementsBase{
 		$sliderID = RevSliderFunctions::getVal($data, "sliderid");
 		RevSliderFunctions::validateNotEmpty($sliderID,"Slider ID");
 		$this->initByID($sliderID);
-		$this->duplicateSlider(RevSliderFunctions::getVal($data, "title"));
+		$slider_id = $this->duplicateSlider(RevSliderFunctions::getVal($data, "title"));
+		return $slider_id;
 	}
 
 	
@@ -1917,7 +1986,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		foreach($uids as $sliderID => $uid){
 			$slider = new RevSlider();
 			$slider->initByID($sliderID);
-			$slider->duplicateSlider(RevSliderFunctions::getVal($data, "title"), true);
+			$slider_id = $slider->duplicateSlider(RevSliderFunctions::getVal($data, "title"), true);
 		}
 		
 		return true;
@@ -2163,7 +2232,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 			}
 		}
 		
-		return $gf;
+		return apply_filters('revslider_getUsedFonts', $gf);
 	}
 	
 	
@@ -2174,6 +2243,31 @@ class RevSliderSlider extends RevSliderElementsBase{
 	public function getSlides($publishedOnly = false){
 		
 		$arrSlides = $this->getSlidesFromGallery($publishedOnly);
+		
+		return($arrSlides);
+	}
+	
+	
+	/**
+	 * get slides from gallery
+	 * get the slides raw, do not initialize them
+	 * @since: 5.3.0
+	 */
+	public function getSlidesCountRaw($publishedOnly = false){
+		
+		$arrSlides = $this->getSlidesCountFromGallery($publishedOnly);
+		
+		return($arrSlides);
+	}
+	
+	
+	/**
+	 * get first slide from gallery
+	 * @since: 5.3.0
+	 */
+	public function getFirstSlide($publishedOnly = false){
+		
+		$arrSlides = $this->getSlidesFromGallery($publishedOnly, false, true);
 		
 		return($arrSlides);
 	}
@@ -2458,9 +2552,30 @@ class RevSliderSlider extends RevSliderElementsBase{
 	
 	
 	/**
+	 * get the first slide ID of the current slider
+	 */
+	public function getFirstSlideIdFromGallery(){
+		$this->validateInited();
+		
+		$arrSlides = array();
+		$arrSlideRecords = $this->db->fetch(RevSliderGlobals::$table_slides,$this->db->prepare("slider_id = %s", array($this->id)),"slide_order",'',' LIMIT 0,1');
+		
+		foreach ($arrSlideRecords as $record){
+			$slide = new RevSlide();
+			$slide->initByData($record);
+			$slideID = $slide->getID();
+			$arrSlides[$slideID] = $slide;
+			return $arrSlides;
+		}
+		
+		return false;
+	}
+	
+	
+	/**
 	 * get slides of the current slider
 	 */
-	public function getSlidesFromGallery($publishedOnly = false, $allwpml = false){
+	public function getSlidesFromGallery($publishedOnly = false, $allwpml = false, $first = false){
 	
 		$this->validateInited();
 		
@@ -2497,6 +2612,8 @@ class RevSliderSlider extends RevSliderElementsBase{
 			$slide->setArrChildren(array());
 			
 			$arrSlides[$slideID] = $slide;
+			
+			if($first) break; //we only want the first slide!
 		}
 		
 		//add children array to the parent slides
@@ -2511,6 +2628,37 @@ class RevSliderSlider extends RevSliderElementsBase{
 
 		return($arrSlides);
 	}
+	
+	
+	/**
+	 * get slides of the current slider
+	 * @since: 5.3.0
+	 */
+	public function getSlidesFromGalleryRaw($publishedOnly = false){
+	
+		$this->validateInited();
+		
+		$arrSlideRecords = $this->db->fetch(RevSliderGlobals::$table_slides,$this->db->prepare("slider_id = %s", array($this->id)),"slide_order");
+		
+		return $arrSlideRecords;
+	}
+	
+	
+	/**
+	 * get slides of the current slider
+	 * @since: 5.3.0
+	 */
+	public function getSlidesCountFromGallery($publishedOnly = false){
+	
+		$this->validateInited();
+		
+		$sqlSelect = $this->db->prepare("select `id` from ".RevSliderGlobals::$table_slides." where `slider_id` = %s", array($this->id));
+		$arrSlideRecords = $this->db->runSqlR($sqlSelect);
+		
+		return $arrSlideRecords;
+	}
+	
+	
 	
 	/**
 	 * 
@@ -2549,13 +2697,10 @@ class RevSliderSlider extends RevSliderElementsBase{
 		
 		
 		if(RevSliderWpml::isWpmlExists() && $this->getParam('use_wpml', 'off') == 'on'){
-			global $sitepress;
-			$cur_lang = ICL_LANGUAGE_CODE;
-			$sitepress->switch_lang($lang);
-			/* NEW: 
+			$cur_lang = apply_filters( 'wpml_current_language', null );
 			$wpml_current_language = apply_filters( 'wpml_current_language', null );
 			do_action( 'wpml_switch_language', $lang );
-			*/
+			
 		}
 		
 		if($isSlidesFromPosts){
@@ -2567,11 +2712,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 		}
 		
 		if(RevSliderWpml::isWpmlExists() && $this->getParam('use_wpml', 'off') == 'on'){ //switch language back
-			global $sitepress;
-			$sitepress->switch_lang($cur_lang);
-			
-			
-			// NEW: do_action( 'wpml_switch_language', $wpml_current_language );
+			do_action( 'wpml_switch_language', $cur_lang );
 		}
 		
 		if($lang == 'all' || $isSlidesFromPosts || $isSlidesFromStream)
@@ -2687,7 +2828,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 			$arrSlidesExport[] = $slideNew;
 		}
 		
-		return($arrSlidesExport);
+		return apply_filters('revslider_getSlidesForExport', $arrSlidesExport);
 	}
 
 	
@@ -2711,7 +2852,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 			$arrSlidesExport[] = $slideNew;
 		}
 		
-		return($arrSlidesExport);
+		return apply_filters('revslider_getStaticSlideForExport', $arrSlidesExport);
 	}
 	
 	
@@ -2724,6 +2865,21 @@ class RevSliderSlider extends RevSliderElementsBase{
 			$this->getSlides($publishedOnly);
 		
 		$numSlides = count($this->arrSlides);
+		return($numSlides);
+	}
+	
+	
+	/**
+	 * get slides number
+	 */
+	public function getNumSlidesRaw($publishedOnly = false){
+		
+		if($this->arrSlides == null){
+			$ret = $this->getSlidesCountRaw($publishedOnly);
+			$numSlides = count($ret);
+		}else{
+			$numSlides = count($this->arrSlides);
+		}
 		return($numSlides);
 	}
 	
@@ -3367,6 +3523,16 @@ class RevSliderSlider extends RevSliderElementsBase{
 		$arrSildes = $this->getSlides();
 		foreach($arrSildes as $slide){
 			$slide->replaceImageUrls($urlFrom, $urlTo);
+		}
+		
+		
+		
+		$slide = new RevSlide();
+		$staticID = $slide->getStaticSlideID($sliderID);
+		
+		if($staticID !== false){
+			$slide->initByStaticID($staticID);
+			$slide->replaceImageUrls($urlFrom, $urlTo, $staticID);
 		}
 	}
 	

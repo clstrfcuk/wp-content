@@ -24,10 +24,10 @@ if($the_slidertype == 'hero'){
 }
 
 ?>
-<input type="hidden" value="<?php echo $_width; ?>" name="rs-grid-width" />
-<input type="hidden" value="<?php echo $_height; ?>" name="rs-grid-height" />
+<input type="hidden" value="<?php echo intval($_width); ?>" name="rs-grid-width" />
+<input type="hidden" value="<?php echo intval($_height); ?>" name="rs-grid-height" />
 
-<div id="slide_selector" class="slide_selector editor_buttons_wrapper  postbox unite-postbox" style="max-width:100% !important;">
+<div id="slide_selector" class="slide_selector editor_buttons_wrapper  postbox unite-postbox" style="max-width:100% !important; min-width:1200px !important">
 	<div class="inner_wrapper p10 boxsized">
 		<ul class="list_slide_links">
 			<?php
@@ -159,7 +159,7 @@ if($the_slidertype == 'hero'){
 					$c_bg_fullstyle =' style="background-image:url('.$c_urlImageForView.');'.$c_bgStyle.'" ';
 
 				if ($c_bgType == 'solid')
-					$c_bg_fullstyle =' style="background-color:'.$c_bgColor.';" ';
+					$c_bg_fullstyle =' style="background:'.TPColorpicker::get($c_bgColor).';" ';
 				if ($c_bgType == 'trans')
 					$c_bg_extraClass = 'mini-transparent';
 
@@ -356,9 +356,7 @@ if($the_slidertype == 'hero'){
 
 		// OPEN THE TEMPLATE LIST ON CLICK OF ADD SLIDE TEMPLATE
 		jQuery('#rs_copy_slide_from_slider').click(function() {
-			jQuery('#template_area').addClass("show");
-			scrollTA();
-			return true;
+			RevSliderAdmin.load_slide_template_html();
 		});
 
 	});

@@ -1,6 +1,4 @@
 <?php
-require_once( 'backup.php' );
-require_once( 'plugin-update-checker.php' );
 
 if( !defined( 'UBERMENU_UPDATES_URL' ) ){
 	define( 'UBERMENU_UPDATES_URL' , 'http://updates.sevenspark.com/ubermenu' );	//TODO
@@ -12,6 +10,12 @@ if( !defined( 'UBERMENU_UPDATES_CHECK_PERIOD' ) ){
 	define( 'UBERMENU_UPDATES_CHECK_PERIOD' , 24 );
 }
 
+require_once( 'backup.php' );
+require_once( 'updatechecker/plugin-update-checker.php' );
+require_once( 'extensions.php' );
+
+
+
 function ubermenu_update_checker(){
 
 	//$username = ubermenu_op( 'envato_username' , 'updates' );
@@ -21,7 +25,7 @@ function ubermenu_update_checker(){
 	if( is_array( $settings ) && isset( $settings['envato_username'] ) ){
 	
 		//$uber_update_checker = new PluginUpdateChecker_1_6 (
-		$uber_update_checker = new PluginUpdateChecker_3_0 (
+		$uber_update_checker = new PluginUpdateChecker_3_2 (
 			//$url,
 			UBERMENU_UPDATES_URL,
 		    UBERMENU_FILE,
@@ -141,18 +145,23 @@ add_filter( 'ubermenu_settings_panel_sections' , 'ubermenu_updates_section' , 10
 add_filter( 'ubermenu_settings_panel_fields' , 'ubermenu_updates_fields' , 100 );
 function ubermenu_updates_section( $sections ){
 	$prefix = UBERMENU_PREFIX;
-	$sections[] = array(
-		'id' => $prefix.'updates',
-		'title' => __( 'Updates', 'ubermenu' ),
-		'sub_sections'	=> array(
-			'backups'	=> array(
-				'title' 	=> __( 'Backups' , 'ubermenu' ),
-			),
-			'updates'	=> array(
-				'title' 	=> __( 'Account Info' , 'ubermenu' ),
-			),
-		),
-	);
+
+	$update_section = array(
+						'id' => $prefix.'updates',
+						'title' => __( 'Updates', 'ubermenu' ),
+						'sub_sections'	=> array(
+							'backups'	=> array(
+								'title' 	=> __( 'Backups' , 'ubermenu' ),
+							),
+							'updates'	=> array(
+								'title' 	=> __( 'Account Info' , 'ubermenu' ),
+							),
+						)
+					);
+
+	$update_section = apply_filters( 'ubermenu_updates_section' , $update_section );
+
+	$sections[] = $update_section;
 
 	return $sections;	
 }
@@ -188,8 +197,8 @@ function ubermenu_updates_fields( $fields = array() ){
 
 	$f[] = array(
 			'name'	=> 'update_settings',
-			'label' => __( 'Update Notifications' , 'ubermenu' ), //__( 'Automatic Updates' , 'ubermenu' ),
-			'desc'	=> __( 'Enter your Envato info to receive update notifications', 'ubermenu' ),
+			'label' => __( 'Updates' , 'ubermenu' ), //__( 'Automatic Updates' , 'ubermenu' ),
+			'desc'	=> __( 'Enter your Envato info to receive automatic updates', 'ubermenu' ),
 			'type'	=> 'header',
 			'group'	=> 'updates',
 		);

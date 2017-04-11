@@ -9,6 +9,7 @@
 // -----------------------------------------------------------------------------
 //   01. Plugin Specific Functionality
 //   02. Global Plugin Functionality
+//   03. Media Uploader
 // =============================================================================
 
 // Plugin Specific Functionality
@@ -86,4 +87,27 @@ jQuery(document).ready(function($) {
 
   postboxes.add_postbox_toggles(pagenow);
 
+});
+
+
+
+// Media Uploader
+// =============================================================================
+
+jQuery(document).ready(function($) {
+  $('.x-upload-btn-wl').click( function( e ) {
+      var self = $(this);
+      e.preventDefault();
+      var image = wp.media({
+        title: 'Upload Image',
+        multiple: false
+      }).open()
+      .on('select', function( e ) {
+          var uploaded_image = image.state().get( 'selection' ).first();
+          var image_url = uploaded_image.toJSON().url;
+          $('#' + self.data('id') ).val(image_url);
+          console.log('#_' + self.data('id') + '_thumb')
+          $('#_' + self.data('id') + '_thumb' ).html('<div class="x-uploader-image"><img src="' + image_url + '" alt="" /></div>');
+      });
+  });
 });

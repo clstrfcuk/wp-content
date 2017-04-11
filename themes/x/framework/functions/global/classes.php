@@ -12,13 +12,9 @@
 // -----------------------------------------------------------------------------
 //   01. Body Class
 //   02. Post Class
-//   03. Brand Class
-//   04. Masthead Class
-//   05. Navbar Class
-//   06. Navigation Item Class
-//   07. Main Content Class
-//   08. Sidebar Class
-//   09. Portfolio Entry Class
+//   03. Main Content Class
+//   04. Sidebar Class
+//   05. Portfolio Entry Class
 // =============================================================================
 
 // Body Class
@@ -64,30 +60,6 @@ if ( ! function_exists( 'x_body_class' ) ) :
       } else {
         $output[] .= 'x-integrity-light';
       }
-    }
-
-
-    //
-    // Navbar.
-    //
-
-    switch ( x_get_navbar_positioning() ) {
-      case 'static-top' :
-        $output[] .= 'x-navbar-static-active';
-        break;
-      case 'fixed-top' :
-        $output[] .= 'x-navbar-fixed-top-active';
-        break;
-      case 'fixed-left' :
-        $output[] .= 'x-navbar-fixed-left-active';
-        break;
-      case 'fixed-right' :
-        $output[] .= 'x-navbar-fixed-right-active';
-        break;
-    }
-
-    if ( x_is_one_page_navigation() ) {
-      $output[] .= 'x-one-page-navigation-active';
     }
 
 
@@ -216,12 +188,7 @@ endif;
 if ( ! function_exists( 'x_body_class_info' ) ) :
   function x_body_class_info( $output ) {
 
-    $version  = str_replace( '.', '_', X_VERSION );
-    $is_child = is_child_theme();
-
-    $output[] = 'x-v' . $version;
-
-    if ( $is_child ) {
+    if ( is_child_theme() ) {
       $output[] = 'x-child-theme-active';
     }
 
@@ -229,26 +196,6 @@ if ( ! function_exists( 'x_body_class_info' ) ) :
 
   }
   add_filter( 'body_class', 'x_body_class_info', 10000 );
-endif;
-
-
-if ( ! function_exists( 'x_admin_body_class' ) ) :
-  function x_admin_body_class( $classes ) {
-
-    $screen = get_current_screen();
-
-    $classes .= ' x-theme-active';
-    $classes .= ' x-' . x_get_stack();
-
-    if ( $screen->base == 'widgets' ) {
-      $classes .= ' x-header-widgets-' . x_header_widget_areas_count();
-      $classes .= ' x-footer-widgets-' . x_footer_widget_areas_count();
-    }
-
-    return $classes;
-
-  }
-  add_filter( 'admin_body_class', 'x_admin_body_class' );
 endif;
 
 
@@ -272,93 +219,6 @@ if ( ! function_exists( 'x_post_class' ) ) :
 
   }
   add_filter( 'post_class', 'x_post_class' );
-endif;
-
-
-
-// Brand Class
-// =============================================================================
-
-if ( ! function_exists( 'x_brand_class' ) ) :
-  function x_brand_class() {
-
-    switch ( x_get_option( 'x_logo' ) ) {
-      case '' :
-        $output = 'x-brand text';
-        break;
-      default :
-        $output = 'x-brand img';
-        break;
-    }
-
-    echo $output;
-
-  }
-endif;
-
-
-
-// Masthead Class
-// =============================================================================
-
-if ( ! function_exists( 'x_masthead_class' ) ) :
-  function x_masthead_class() {
-
-    $navbar_positioning = x_get_navbar_positioning();
-    $logo_nav_layout    = x_get_logo_navigation_layout();
-
-    if ( $logo_nav_layout == 'stacked' && ( $navbar_positioning == 'static-top' || $navbar_positioning == 'fixed-top' ) ) :
-      $output = 'masthead masthead-stacked';
-    else :
-      $output = 'masthead masthead-inline';
-    endif;
-
-    echo $output;
-
-  }
-endif;
-
-
-
-// Navbar Class
-// =============================================================================
-
-if ( ! function_exists( 'x_navbar_class' ) ) :
-  function x_navbar_class() {
-
-    switch ( x_get_navbar_positioning() ) {
-      case 'fixed-left' :
-        $output = 'x-navbar x-navbar-fixed-left';
-        break;
-      case 'fixed-right' :
-        $output = 'x-navbar x-navbar-fixed-right';
-        break;
-      default :
-        $output = 'x-navbar';
-        break;
-    }
-
-    echo $output;
-
-  }
-endif;
-
-
-
-// Navigation Item Class
-// =============================================================================
-
-if ( ! function_exists( 'x_navigation_item_class' ) ) :
-  function x_navigation_item_class( $classes, $item ) {
-
-    if ( $item->type == 'taxonomy' ) {
-      $classes[] = 'tax-item tax-item-' . $item->object_id;
-    }
-
-    return $classes;
-
-  }
-  add_filter( 'nav_menu_css_class', 'x_navigation_item_class', 10, 2 );
 endif;
 
 

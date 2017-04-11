@@ -18,6 +18,7 @@
 //   07. Upsells
 //   08. Navbar
 //   09. AJAX
+//   10. New Cranium Stuff (To Be Organized Later)
 // =============================================================================
 
 // Administration
@@ -59,14 +60,16 @@ if ( isset( $_GET['activated'] ) ) {
   add_action( 'admin_init', 'x_woocommerce_image_dimensions', 1 );
 }
 
+
 //
-// Modify variation images to use the X entry size like single simple products to avoid display issues
+// Modify variation images to use the X entry size like single simple products
+// to avoid display issues.
 //
 
 function x_woocommerce_modify_variable_image_size( $child_id, $instance, $variation ) {
-	$attachment_id = get_post_thumbnail_id( $variation->get_variation_id() );
-	$attachment = wp_get_attachment_image_src( $attachment_id, 'entry' );
-	$image_src = $attachment ? current( $attachment) : '';
+	$attachment_id         = get_post_thumbnail_id( $variation->get_variation_id() );
+	$attachment            = wp_get_attachment_image_src( $attachment_id, 'entry' );
+	$image_src             = $attachment ? current( $attachment) : '';
 	$child_id['image_src'] = $image_src;
 
 	return $child_id;
@@ -85,7 +88,7 @@ function x_woocommerce_remove_plugin_settings( $settings ) {
 
     $id = $setting['id'];
 
-    if ( $id == 'image_options' || $id == 'shop_catalog_image_size' || $id == 'shop_single_image_size' || $id == 'shop_thumbnail_image_size' ) {
+    if ( $id == 'shop_catalog_image_size' || $id == 'shop_single_image_size' ) {
       unset( $settings[$key] );
     }
 
@@ -346,7 +349,6 @@ function x_woocommerce_cart_actions() {
 
   $output = '';
 
-
   //
   // Check based off of wc_coupons_enabled(), which is only available in
   // WooCommerce v2.5+.
@@ -457,6 +459,7 @@ if ( ! function_exists( 'x_woocommerce_navbar_cart_fragment' ) ) :
   function x_woocommerce_navbar_cart_fragment( $fragments ) {
 
     $fragments['div.x-cart'] = x_woocommerce_navbar_cart();
+
     return $fragments;
 
   }
@@ -513,3 +516,30 @@ if ( ! function_exists( 'x_woocommerce_navbar_cart_ajax_notification' ) ) :
   }
   add_action( 'x_before_site_end', 'x_woocommerce_navbar_cart_ajax_notification' );
 endif;
+
+
+
+// New Cranium Stuff (To Be Organized Later)
+// =============================================================================
+
+// Fragments
+// ---------
+
+function x_woocommerce_fragment_total() {
+  return '<span data-x-wc-fragment="total">' . WC()->cart->get_cart_total() . '</span>';
+}
+
+function x_woocommerce_fragment_count() {
+  return '<span data-x-wc-fragment="count">' . WC()->cart->cart_contents_count . '</span>';
+}
+
+function x_woocommerce_fragments( $fragments ) {
+
+  $fragments['[data-x-wc-fragment="total"]'] = x_woocommerce_fragment_total();
+  $fragments['[data-x-wc-fragment="count"]'] = x_woocommerce_fragment_count();
+
+  return $fragments;
+
+}
+
+add_filter( 'woocommerce_add_to_cart_fragments', 'x_woocommerce_fragments' );

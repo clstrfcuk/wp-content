@@ -51,16 +51,10 @@ class Cornerstone_Element_Wrapper {
 
 		if ( $native ) {
 			add_filter( $this->hook_prefix . 'ui', array( $this, 'native_icons' ), 20 );
-			$this->definition->text_domain = 'cornerstone';
 		}
-
-		if ( isset( $this->definition->text_domain ) )
-			$this->text_domain = $this->definition->text_domain;
 
 		if ( isset( $this->definition->preserve_content ) )
 			$this->preserve_content = $this->definition->preserve_content;
-
-
 
 	}
 

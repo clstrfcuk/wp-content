@@ -2,7 +2,7 @@
 
 class Cornerstone_Walker {
 
-  public $child_key = 'modules';
+  public $child_key = '_modules';
   public $parent = null;
   public $data = array();
   public $items = array();

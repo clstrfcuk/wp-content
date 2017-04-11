@@ -632,7 +632,7 @@ function ubermenu_get_menu_style_top_level_padding( $field , $menu_id , &$menu_s
 
 		if( is_numeric($padding) ) $padding.= 'px';
 
-		$selector = ".ubermenu-$menu_id .ubermenu-item-level-0 > .ubermenu-target";
+		$selector = ".ubermenu-$menu_id .ubermenu-item-level-0 > .ubermenu-target, ".".ubermenu-$menu_id .ubermenu-item-level-0 > .ubermenu-custom-content.ubermenu-custom-content-padded";
 		
 		$menu_styles[$selector]['padding-top'] = $padding;
 		$menu_styles[$selector]['padding-bottom'] = $padding;
@@ -708,11 +708,11 @@ function ubermenu_get_menu_style_top_level_horiz_padding( $field , $menu_id , &$
 			if( $selector_offset < 0 ) $selector_offset = 0;
 		}
 
-		if( is_numeric( $selector_offset ) && ubermenu_op( 'style_align_submenu_indicator' , $menu_id ) == 'text' ){
-			$indicator_selector = ".ubermenu-{$menu_id}.ubermenu-sub-indicators .ubermenu-item-level-0.ubermenu-has-submenu-drop > .ubermenu-target:after";
-			$selector_offset.='px';
-			$menu_styles[$indicator_selector]['right'] = $selector_offset;
-		}
+		// if( is_numeric( $selector_offset ) && ubermenu_op( 'style_align_submenu_indicator' , $menu_id ) == 'text' ){
+		// 	$indicator_selector = ".ubermenu-{$menu_id}.ubermenu-sub-indicators .ubermenu-item-level-0.ubermenu-has-submenu-drop > .ubermenu-target:after";
+		// 	$selector_offset.='px';
+		// 	$menu_styles[$indicator_selector]['right'] = $selector_offset;
+		// }
 		
 	}
 }
@@ -890,6 +890,43 @@ function ubermenu_get_menu_style_header_font_color_current( $field , $menu_id , 
 	}
 }
 
+/*
+ * HEADER BACKGROUND COLOR
+ */
+function ubermenu_get_menu_style_header_background_color( $field , $menu_id , &$menu_styles ){
+
+	$val = ubermenu_op( $field['name'] , $menu_id );
+	if( $val ){
+		$selector = ".ubermenu-$menu_id .ubermenu-submenu .ubermenu-item-header > .ubermenu-target";		
+		$menu_styles[$selector]['background-color'] = $val;
+	}
+}
+
+/*
+ * HEADER BACKGROUND COLOR - HOVER
+ */
+function ubermenu_get_menu_style_header_background_color_hover( $field , $menu_id , &$menu_styles ){
+
+	$val = ubermenu_op( $field['name'] , $menu_id );
+	if( $val ){
+		$selector = ".ubermenu-$menu_id .ubermenu-submenu .ubermenu-item-header > .ubermenu-target:hover";	
+		$menu_styles[$selector]['background-color'] = $val;
+	}
+}
+
+/*
+ * HEADER BACKGROUND COLOR - CURRENT
+ */
+function ubermenu_get_menu_style_header_background_color_current( $field , $menu_id , &$menu_styles ){
+
+	$val = ubermenu_op( $field['name'] , $menu_id );
+	if( $val ){
+		$selector = ".ubermenu-$menu_id .ubermenu-submenu .ubermenu-item-header.ubermenu-current-menu-item > .ubermenu-target";
+		$menu_styles[$selector]['background-color'] = $val;
+	}
+}
+
+
 
 /* 
  * HEADER FONT WEIGHT
@@ -977,7 +1014,7 @@ function ubermenu_get_menu_style_normal_font_color_hover( $field , $menu_id , &$
 
 	$val = ubermenu_op( $field['name'] , $menu_id );
 	if( $val ){
-		$selector = ".ubermenu.ubermenu-$menu_id .ubermenu-item-normal > .ubermenu-target:hover, .ubermenu.ubermenu-$menu_id .ubermenu-item-normal:hover > .ubermenu-target, .ubermenu.ubermenu-$menu_id .ubermenu-item-normal.ubermenu-active > .ubermenu-target"; //removed notouch
+		$selector = ".ubermenu.ubermenu-$menu_id .ubermenu-item-normal > .ubermenu-target:hover, .ubermenu.ubermenu-$menu_id .ubermenu-item-normal.ubermenu-active > .ubermenu-target"; //removed notouch
 		$menu_styles[$selector]['color'] = $val;
 	}
 }
@@ -1090,6 +1127,18 @@ function ubermenu_get_menu_style_flyout_divider( $field , $menu_id , &$menu_styl
 
 
 
+/* 
+ * TABS FONT SIZE
+ */
+function ubermenu_get_menu_style_tabs_font_size( $field , $menu_id , &$menu_styles ){
+
+	$val = ubermenu_op( $field['name'] , $menu_id );
+	if( $val ){
+		if( is_numeric( $val ) ) $val = $val.='px';
+		$selector = ".ubermenu.ubermenu-$menu_id .ubermenu-tabs .ubermenu-tabs-group > .ubermenu-tab > .ubermenu-target";
+		$menu_styles[$selector]['font-size'] = $val;
+	}
+}
 /* 
  * TABS GROUP BACKGROUND COLOR
  */
@@ -1434,6 +1483,33 @@ function ubermenu_get_menu_style_toggle_font_size( $field , $menu_id , &$menu_st
 		$menu_styles[$selector]['font-size'] = $val;
 	}
 }
+
+/* 
+ * TOGGLE FONT WEIGHT
+ */
+function ubermenu_get_menu_style_toggle_font_weight( $field , $menu_id , &$menu_styles ){
+
+	$val = ubermenu_op( $field['name'] , $menu_id );
+	if( $val ){
+		//if( is_numeric( $val ) ) $val.='px';
+		$selector = ".ubermenu-responsive-toggle.ubermenu-responsive-toggle-$menu_id";
+		$menu_styles[$selector]['font-weight'] = $val;
+	}
+}
+
+/* 
+ * TOGGLE PADDING
+ */
+function ubermenu_get_menu_style_toggle_padding( $field , $menu_id , &$menu_styles ){
+
+	$val = ubermenu_op( $field['name'] , $menu_id );
+	if( $val ){
+		if( is_numeric( $val ) ) $val.='px';
+		$selector = ".ubermenu-responsive-toggle.ubermenu-responsive-toggle-$menu_id";
+		$menu_styles[$selector]['padding'] = $val;
+	}
+}
+
 
 
 

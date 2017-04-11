@@ -13,7 +13,7 @@
 //   02. Enqueue Admin Styles
 // =============================================================================
 
-// Output Login Styles
+// Output Login Image Styles
 // =============================================================================
 
 function x_white_label_output_login_styles() {
@@ -24,8 +24,8 @@ function x_white_label_output_login_styles() {
     if ( $x_white_label_login_image != '' ) {
 
       $image  = getimagesize( $x_white_label_login_image );
-      $width  = $image[0] . 'px';
-      $height = $image[1] . 'px';
+      $width   = ( ( $x_white_label_retina_enabled ) ? $image[0] / 2 : $image[0] ) . 'px';
+      $height  = ( ( $x_white_label_retina_enabled ) ? $image[1] / 2 : $image[1] ) . 'px';
       $size   = $width . ' ' . $height;
 
       ?>
@@ -48,6 +48,41 @@ function x_white_label_output_login_styles() {
 }
 
 add_action( 'login_enqueue_scripts', 'x_white_label_output_login_styles' );
+
+// Output Background image styles
+// =============================================================================
+
+function x_white_label_output_background_styles() {
+
+	require( X_WHITE_LABEL_PATH . '/functions/options.php' );
+
+	if ( isset( $x_white_label_enable) && $x_white_label_enable == 1 ) {
+		if ( $x_white_label_login_bg_image != '' ) {
+
+			$image	= getimagesize( $x_white_label_login_bg_image );
+			$width	= $image[0] . 'px';
+			$height	= $image[1] . 'px';
+			$size		= $width . ' ' . $height;
+
+			?>
+
+			<style id="x-white-label-background-css" type="text/css">
+
+				body.login {
+					background-image: url(<?php echo $x_white_label_login_bg_image; ?>);
+					background-repeat: no-repeat;
+					background-attachement: fixed;
+					background-position: center;
+				}
+
+			</style>
+
+		<?php }
+	}
+
+}
+
+add_action( 'login_enqueue_scripts', 'x_white_label_output_background_styles' );
 
 
 

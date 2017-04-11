@@ -389,7 +389,7 @@ LoadingImage.prototype.check = function() {
   // bind to image as well for Firefox. #191
   this.img.addEventListener( 'load', this );
   this.img.addEventListener( 'error', this );
-  this.proxyImage.src = this.img.src;
+  this.proxyImage.src = this.img.pendingSrc || this.img.currentSrc || this.img.src;
 };
 
 LoadingImage.prototype.getIsImageComplete = function() {

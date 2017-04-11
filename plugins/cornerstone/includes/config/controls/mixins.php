@@ -228,7 +228,7 @@ return array(
 				'tooltip' => __( 'Optionally add animation to your element as users scroll down the page.', 'cornerstone' ),
 			),
 			'options' => array(
-				'choices' => CS()->config( 'controls/animation-choices' )
+				'choices' => CS()->config_group( 'controls/animation-choices' )
 			)
 		),
 

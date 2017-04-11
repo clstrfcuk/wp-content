@@ -9,6 +9,8 @@ jQuery( document ).ready( function( $ ) {
 
     $("#screen-meta-links").prependTo("#envira-header-temp");
     $("#screen-meta").prependTo("#envira-header-temp");
+    // $("#wpbody a.page-title-action").appendTo("h1.wp-heading-inline");
+    // $("#wpbody .wrap h1.wp-heading-inline").css("display", "inherit");
 
 	/**
     * Copy to Clipboard

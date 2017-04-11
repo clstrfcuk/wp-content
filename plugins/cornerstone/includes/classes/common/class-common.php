@@ -13,7 +13,7 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 	 */
 	public function setup() {
 
-		$this->fontIcons = $this->plugin->config( 'common/font-icons' );
+		$this->fontIcons = $this->plugin->config_group( 'common/font-icons' );
 		add_action( 'init', array( $this, 'init' ) );
 
 		$version = CS()->version();
@@ -275,7 +275,7 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 		}
 
 		if ( ! isset( $this->cssClassMap ) ) {
-			$this->cssClassMap = $this->plugin->config( 'common/class-map' );
+			$this->cssClassMap = $this->plugin->config_group( 'common/class-map' );
 		}
 
 		if ( ! isset( $this->cssClassMap[ $group ] ) ) {
@@ -342,5 +342,76 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
     return $slug;
 
   }
+
+	public function get_launch_url() {
+
+    if ( ! $this->plugin->component( 'Router' )->is_permalink_structure_valid() ) {
+      return add_query_arg( array('cs-launch' => 1), home_url() );
+    }
+
+    return trailingslashit( home_url( $this->plugin->common()->get_app_slug() ) );
+
+	}
+
+
+	public function sanitize_value( $value, $html = false ) {
+
+    // Pass through non string values.
+    // This Preserves data types, but watch out for arrays since we don't handle nested data here.
+    if ( ! is_string( $value ) ) {
+      return $value;
+    }
+
+    // Sanitize
+    if ( $html ) {
+      return $this->sanitize_html( $value );
+    } else {
+      return sanitize_text_field( $value );
+    }
+
+	}
+
+	public function sanitize_html( $data ) {
+
+    if ( current_user_can( 'unfiltered_html' ) ) {
+      return $data;
+    }
+
+		return wp_kses( $data, $this->ksesTags() );
+	}
+
+  public function ksesTags() {
+
+		$tags = wp_kses_allowed_html( 'post' );
+
+		$tags['iframe'] = array (
+	    'align'       => true,
+	    'frameborder' => true,
+	    'height'      => true,
+	    'width'       => true,
+	    'sandbox'     => true,
+	    'seamless'    => true,
+	    'scrolling'   => true,
+	    'srcdoc'      => true,
+	    'src'         => true,
+	    'class'       => true,
+	    'id'          => true,
+	    'style'       => true,
+	    'border'      => true,
+	    'list'        => true //YouTube embeds
+		);
+
+		return $tags;
+
+	}
+
+	public function theme_integration_options() {
+		$defaults = $this->plugin->config_group( 'options/defaults' );
+    $retrieved = array();
+    foreach ($defaults as $name => $default) {
+      $retrieved[$name] = get_option( $name, $default );
+    }
+    return $retrieved;
+	}
 
 }

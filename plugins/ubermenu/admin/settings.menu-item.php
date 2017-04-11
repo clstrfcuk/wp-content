@@ -652,7 +652,7 @@ function ubermenu_menu_item_settings(){
 		'type'		=> 'radio',
 		'type_class'=> 'ubermenu-radio-blocks',
 		'default' 	=> 'default',
-		'desc'		=> __( '' , 'ubermenu' ),
+		'desc'		=> __( 'Note: You can set the default for this setting in the parent item\'s Submenu Item Layout setting.  You can also set the default Image Layout globally in the Control Panel, which will be used when this setting is set to Default and an image has been set (inheriting from the parent item takes precedence).' , 'ubermenu' ),
 		'ops'		=> 'ubermenu_get_item_layout_ops'
 	);
 
@@ -662,7 +662,7 @@ function ubermenu_menu_item_settings(){
 		'type'		=> 'radio',
 		'scenario'	=> 'Vertically stacked layouts',
 		'default' 	=> 'default',
-		'desc'		=> __( 'Setting this to "Center" will allow you to have a centered image stacked above the title when used in conjunction with the "Image Above" layout' , 'ubermenu' ),
+		'desc'		=> __( 'Setting this to "Center" will allow you to have a centered image stacked above the title when used in conjunction with the "Image Above" Item Layout.  If you leave this set to Default, the value will be inherited from the parent item\'s "Submenu Item Content Alignment" setting' , 'ubermenu' ),
 		'ops'		=> array(
 			'group'	=> array(
 				'default'	=> array(
@@ -735,7 +735,7 @@ function ubermenu_menu_item_settings(){
 		'title'		=> __( 'Auto Row' , 'ubermenu' ),
 		'type'		=> 'checkbox',
 		'default' 	=> 'on',
-		'desc'		=> __( 'Automatically start a new row every X items.  For example, if you choose a Submenu column default of 1/4, the 5th item will start a new column automatically.  Disable if you are adjusting item columns manually.' , 'ubermenu' ),
+		'desc'		=> __( 'Automatically start a new row every X items.  For example, if you choose a Submenu column default of 1/4, the 5th item will start a new row automatically.  Disable if you are adjusting item columns manually.' , 'ubermenu' ),
 		'scenario'	=> __( 'Mega Submenus' , 'ubermenu' ),
 	);
 
@@ -921,10 +921,10 @@ function ubermenu_menu_item_settings(){
 
 	$settings['submenu'][58] = array(
 		'id' 		=> 'submenu_content_align',
-		'title'		=> __( 'Submenu Content Alignment' , 'ubermenu' ),
+		'title'		=> __( 'Submenu Column Alignment' , 'ubermenu' ),
 		'type'		=> 'radio',
 		'default'	=> 'default',
-		'desc'		=> __( 'Explicitly align the submenu columns to the left, right, or center.  If in doubt, leave this set to default.  Note this is intended for use with the Submenu Position: Full Width.  If the submenu is not wider than the content, then this won\'t have much, if any, effect', 'ubermenu' ),
+		'desc'		=> __( 'Explicitly align the submenu columns to the left, right, or center, relative to the submenu container.  If in doubt, leave this set to default.  Note this is intended for use with the Submenu Position: Full Width.  If the submenu is not wider than the content, then this won\'t have much, if any, effect', 'ubermenu' ),
 		'ops'		=> array(
 			'group1' => array(
 				'default'	=> array( 'name' => __( 'Default' , 'ubermenu' ) ),
@@ -952,7 +952,7 @@ function ubermenu_menu_item_settings(){
 		'title'		=> __( 'Auto Row' , 'ubermenu' ),
 		'type'		=> 'checkbox',
 		'default' 	=> 'on',
-		'desc'		=> __( 'Automatically start a new row every X items.  For example, if you choose a Submenu column default of 1/4, the 5th item will start a new column automatically.  Disable if you are adjusting item columns manually.' , 'ubermenu' ),
+		'desc'		=> __( 'Automatically start a new row every X items.  For example, if you choose a Submenu column default of 1/4, the 5th item will start a new row automatically.  Disable if you are adjusting item columns manually.' , 'ubermenu' ),
 		'scenario'	=> __( 'Mega Submenus' , 'ubermenu' ),
 	);
 

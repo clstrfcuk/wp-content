@@ -7,7 +7,7 @@ class Cornerstone_Options_Bootstrap extends Cornerstone_Plugin_Component {
 
   public function setup() {
     if ( apply_filters( 'cornerstone_options_use_native', true ) ) {
-      $this->register_options( $this->plugin->config( 'options/defaults' ) );
+      $this->register_options( $this->plugin->config_group( 'options/defaults' ) );
     }
   }
 

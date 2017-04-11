@@ -5,7 +5,7 @@ class Cornerstone_Integration_Conflict_Resolution {
   public function __construct() {
 
     add_action( 'cornerstone_load_builder', array( $this, 'front_end' ) );
-    add_action( 'cornerstone_boot_app', array( $this, 'front_end' ) );
+    add_action( 'cornerstone_before_boot_app', array( $this, 'front_end' ) );
     add_action( 'cornerstone_before_custom_endpoint', array( $this, 'disable_caching' ) );
     add_action( 'cornerstone_before_ajax', array( $this, 'before_render' ) );
     add_action( 'cornerstone_before_load_preview', array( $this, 'before_load_preview' ) );

@@ -13,7 +13,7 @@ var EnviraGalleryImage = Backbone.Model.extend( {
         'title':    '',
         'caption':  '',
         'alt':      '',
-        'link':     '',  
+        'link':     '',
     },
 
 } );
@@ -63,12 +63,12 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
         'click .edit-media-header .left':               'loadPreviousItem',
         'click .edit-media-header .right':              'loadNextItem',
 
-        'keyup input':                                  'updateItem', 
-        'keyup textarea':                               'updateItem', 
+        'keyup input':                                  'updateItem',
+        'keyup textarea':                               'updateItem',
         'change input':                                 'updateItem',
         'change textarea':                              'updateItem',
         'blur textarea':                                'updateItem',
-        'change select':                                'updateItem', 
+        'change select':                                'updateItem',
 
         'click .actions a.envira-gallery-meta-submit':  'saveItem',
 
@@ -107,7 +107,6 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
                 this.attachment_index = count;
                 return false;
             }
-
             // Increment the index count
             count++;
         }, this );
@@ -122,7 +121,6 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
 
         // Get HTML
         this.$el.html( this.template( this.model.attributes ) );
-
         // If any child views exist, render them now
         if ( this.child_views.length > 0 ) {
             this.child_views.forEach( function( view ) {
@@ -132,7 +130,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
                 } );
 
                 // Render view within our main view
-                this.$el.find( 'div.addons' ).append( child_view.render().el );
+                this.$el.find( 'div.envira-addons' ).append( child_view.render().el );
             }, this );
         }
 
@@ -143,8 +141,8 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
         // Delay is required for the first load for some reason
         setTimeout( function() {
             quicktags( {
-                id:     'caption', 
-                buttons:'strong,em,link,ul,ol,li,close' 
+                id:     'caption',
+                buttons:'strong,em,link,ul,ol,li,close'
             } );
             QTags._buttonsInit();
         }, 500 );
@@ -161,10 +159,12 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
             // Disable right button
             this.$el.find( 'button.right' ).addClass( 'disabled' );
         }
-        
+
+        jQuery( document ).trigger( 'enviraRenderMeta' );
+
         // Return
         return this;
-        
+
     },
 
     /**
@@ -222,7 +222,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
     * Load the previous model in the collection
     */
     loadPreviousItem: function() {
-        
+
         // Decrement the index
         this.attachment_index--;
 
@@ -281,7 +281,9 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
     /**
     * Saves the image metadata
     */
-    saveItem: function() {
+    saveItem: function( event ) {
+
+	    event.preventDefault();
 
         // Tell the View we're loading
         this.trigger( 'loading' );
@@ -328,7 +330,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
             },
             error: function( error_message ) {
 
-                // Tell wp.media we've finished, but there was an error 
+                // Tell wp.media we've finished, but there was an error
                 this.trigger( 'loaded loaded:error', error_message );
 
             }
@@ -350,7 +352,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
     insertLink: function( event ) {
 
 
-    
+
     },
 
     /**
@@ -385,7 +387,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
             },
             error: function( error_message ) {
 
-                // Tell wp.media we've finished, but there was an error 
+                // Tell wp.media we've finished, but there was an error
                 this.trigger( 'loaded loaded:error', error_message );
 
             }
@@ -425,7 +427,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
             },
             error: function( error_message ) {
 
-                // Tell wp.media we've finished, but there was an error 
+                // Tell wp.media we've finished, but there was an error
                 this.trigger( 'loaded loaded:error', error_message );
 
             }
@@ -443,44 +445,11 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
 var EnviraGalleryChildViews = [];
 
 /**
-* DOM
-*/
-jQuery( document ).ready( function( $ ) {
-
-    // Edit Image
-    $( document ).on( 'click', '#envira-gallery-main a.envira-gallery-modify-image', function( e ) {
-
-        // Prevent default action
-        e.preventDefault();
-
-        // (Re)populate the collection
-        // The collection can change based on whether the user previously selected specific images
-        EnviraGalleryImagesUpdate( false );
-
-        // Get the selected attachment
-        var attachment_id = $( this ).parent().data( 'envira-gallery-image' );
-
-        // Pass the collection of images for this gallery to the modal view, as well
-        // as the selected attachment
-        EnviraGalleryModalWindow.content( new EnviraGalleryEditView( {
-            collection:     EnviraGalleryImages,
-            child_views:    EnviraGalleryChildViews,
-            attachment_id:  attachment_id,
-        } ) );
-
-        // Open the modal window
-        EnviraGalleryModalWindow.open();
-
-    } );
-
-} );
-
-/**
 * Populates the EnviraGalleryImages Backbone collection, which comprises of a set of Envira Gallery Images
 *
 * Called when images are added, deleted, reordered or selected
 *
-* @global           EnviraGalleryImages     The backbone collection of images 
+* @global           EnviraGalleryImages     The backbone collection of images
 * @param    bool    selected_only           Only populate collection with images the user has selected
 */
 function EnviraGalleryImagesUpdate( selected_only ) {
@@ -497,13 +466,13 @@ function EnviraGalleryImagesUpdate( selected_only ) {
 
         // Strip slashes from some fields
         envira_gallery_image.alt = EnviraGalleryStripslashes( envira_gallery_image.alt );
-        
+
         // Add the model to the collection
         EnviraGalleryImages.add( new EnviraGalleryImage( envira_gallery_image ) );
     } );
 
     // Update the count in the UI
-    jQuery( '#envira-gallery-main span.count' ).text( jQuery( 'ul#envira-gallery-output li.envira-gallery-image' ).length );
+   // jQuery( '#envira-gallery-main span.count' ).text( jQuery( 'ul#envira-gallery-output li.envira-gallery-image' ).length );
 
 }
 

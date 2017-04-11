@@ -16,8 +16,8 @@
 //   05. Hide X validation notice on Cornertstone home page
 //   06. Remove Cornerstone Validation Notice
 //   07. Cornerstone Home Scripts
+//   08. Label Replacements
 // =============================================================================
-
 
 // MEJS [audio]
 // =============================================================================

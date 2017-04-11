@@ -122,11 +122,12 @@ if ( ! function_exists( 'x_post_thumbnail_width' ) ) :
         }
       }
     }
-    
+
     return intval( $output );
 
   }
   add_action( 'customize_save', 'x_post_thumbnail_width' );
+  add_action( 'cs_theme_options_before_save', 'x_post_thumbnail_width' );
 endif;
 
 
@@ -191,9 +192,10 @@ if ( ! function_exists( 'x_post_thumbnail_width_full' ) ) :
     } elseif ( $site_layout == 'boxed' ) {
       $output = $site_max_width * $site_width - $p;
     }
-    
+
     return intval( $output );
 
   }
   add_action( 'customize_save', 'x_post_thumbnail_width_full' );
+  add_action( 'cs_theme_options_after_save', 'x_post_thumbnail_width_full' );
 endif;

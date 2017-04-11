@@ -66,7 +66,7 @@ function x_shortcode_recent_posts( $atts ) {
 
       // $excerpt = ( $show_excerpt ) ? '<div class="x-recent-posts-excerpt"><p>' . preg_replace('/<a.*?more-link.*?<\/a>/', '', cs_get_raw_excerpt() ) . '</p></div>' : '';
 
-      $output .= '<a class="x-recent-post' . $count . ' ' . $image_output_class . '" href="' . get_permalink( get_the_ID() ) . '" title="' . esc_attr( sprintf( __( 'Permalink to: "%s"', 'cornerstone' ), the_title_attribute( 'echo=0' ) ) ) . '">'
+      $output .= '<a class="x-recent-post' . $count . ' ' . $image_output_class . '" href="' . get_permalink( get_the_ID() ) . '" title="' . esc_attr( sprintf( csi18n('shortcodes.recent-posts-permalink'), the_title_attribute( 'echo=0' ) ) ) . '">'
                  . '<article id="post-' . get_the_ID() . '" class="' . implode( ' ', get_post_class() ) . '">'
                    . '<div class="entry-wrap">'
                      . $image_output

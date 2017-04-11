@@ -99,8 +99,43 @@
 
           <tr>
             <th>
+              <label for="x_content_dock_trigger_timeout">
+                <strong><?php _e( 'Auto trigger timeout (%)', '__x__' ); ?></strong>
+                <span><?php _e( 'Display content dock after "n" seconds if user doesn\'t reach the bottom of the page. "0" means disable this feature.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td><input name="x_content_dock_trigger_timeout" id="x_content_dock_trigger_timeout" type="number" step="1" min="0" max="120" value="<?php echo ( isset( $x_content_dock_trigger_timeout ) ) ? $x_content_dock_trigger_timeout : 0; ?>" class="small-text"> seconds</td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="x_content_dock_cookie_timeout">
+                <strong><?php _e( '"Do not show again" cookie timeout (%)', '__x__' ); ?></strong>
+                <span><?php _e( 'How many days content dock will not appear for the user if he checks "Do not show again" checkbox. "0" means disable this feature.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td><input name="x_content_dock_cookie_timeout" id="x_content_dock_cookie_timeout" type="number" step="1" min="0" max="360" value="<?php echo ( isset( $x_content_dock_cookie_timeout ) ) ? $x_content_dock_cookie_timeout : 0; ?>" class="small-text"> days</td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="x_content_dock_all_pages_active">
+                <strong><?php _e( 'Active for all pages', '__x__' ); ?></strong>
+                <span><?php _e( 'Activate for all pages (including created on the future) without to add one by one to the list below.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td>
+              <fieldset>
+                <legend class="screen-reader-text"><span>input type="checkbox"</span></legend>
+                <input type="checkbox" class="checkbox" name="x_content_dock_all_pages_active" id="x_content_dock_all_pages_active" value="1" <?php echo ( isset( $x_content_dock_all_pages_active ) && checked( $x_content_dock_all_pages_active, '1', false ) ) ? checked( $x_content_dock_all_pages_active, '1', false ) : ''; ?>>
+              </fieldset>
+            </td>
+          </tr>
+
+          <tr id="x_content_dock_entries_include_row" style="display:none">
+            <th>
               <label for="x_content_dock_entries_include">
-                <strong><?php _e( 'Include', '__x__' ); ?></strong>
+                <strong><?php _e( 'Include Pages', '__x__' ); ?></strong>
                 <span><?php _e( 'Select the pages or posts that you want the Content Dock to appear on.', '__x__' ); ?></span>
               </label>
             </th>
@@ -118,6 +153,129 @@
                 ?>
               </select>
             </td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="x_content_dock_all_posts_active">
+                <strong><?php _e( 'Active for all posts', '__x__' ); ?></strong>
+                <span><?php _e( 'Activate for all posts (including created on the future) without to add one by one to the list below.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td>
+              <fieldset>
+                <legend class="screen-reader-text"><span>input type="checkbox"</span></legend>
+                <input type="checkbox" class="checkbox" name="x_content_dock_all_posts_active" id="x_content_dock_all_posts_active" value="1" <?php echo ( isset( $x_content_dock_all_posts_active ) && checked( $x_content_dock_all_posts_active, '1', false ) ) ? checked( $x_content_dock_all_posts_active, '1', false ) : ''; ?>>
+              </fieldset>
+            </td>
+          </tr>
+
+          <tr id="x_content_dock_posts_include_row" style="display:none">
+            <th>
+              <label for="x_content_dock_posts_include">
+                <strong><?php _e( 'Include Posts', '__x__' ); ?></strong>
+                <span><?php _e( 'Select the posts that you want the Content Dock to appear on.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td>
+              <select name="x_content_dock_posts_include[]" id="x_content_dock_posts_include" multiple="multiple">
+                <?php
+                foreach ( $x_content_dock_list_post_entries_master as $key => $value ) {
+                  if ( in_array( $key, $x_content_dock_posts_include ) ) {
+                    $selected = ' selected="selected"';
+                  } else {
+                    $selected = '';
+                  }
+                  echo '<option value="' . $key . '"' . $selected . '>' . $value . '</option>';
+                }
+                ?>
+              </select>
+            </td>
+          </tr>
+
+          <?php if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) : ?>
+
+            <tr>
+              <th>
+                <label for="x_content_dock_all_woo_products_active">
+                  <strong><?php _e( 'Active for all products', '__x__' ); ?></strong>
+                  <span><?php _e( 'Activate for all products (including created on the future) without to add one by one to the list below.', '__x__' ); ?></span>
+                </label>
+              </th>
+              <td>
+                <fieldset>
+                  <legend class="screen-reader-text"><span>input type="checkbox"</span></legend>
+                  <input type="checkbox" class="checkbox" name="x_content_dock_all_woo_products_active" id="x_content_dock_all_woo_products_active" value="1" <?php echo ( isset( $x_content_dock_all_woo_products_active ) && checked( $x_content_dock_all_woo_products_active, '1', false ) ) ? checked( $x_content_dock_all_woo_products_active, '1', false ) : ''; ?>>
+                </fieldset>
+              </td>
+            </tr>
+
+            <tr id="x_content_dock_woo_products_include_row" style="display:none">
+              <th>
+                <label for="x_content_dock_woo_products_include">
+                  <strong><?php _e( 'Include WooCommerce Products', '__x__' ); ?></strong>
+                  <span><?php _e( 'Select the products that you want the Content Dock to appear on.', '__x__' ); ?></span>
+                </label>
+              </th>
+              <td>
+                <select name="x_content_dock_woo_products_include[]" id="x_content_dock_woo_products_include" multiple="multiple">
+                  <?php
+                  foreach ( $x_content_dock_list_woo_products_master as $key => $value ) {
+                    if ( in_array( $key, $x_content_dock_woo_products_include ) ) {
+                      $selected = ' selected="selected"';
+                    } else {
+                      $selected = '';
+                    }
+                    echo '<option value="' . $key . '"' . $selected . '>' . $value . '</option>';
+                  }
+                  ?>
+                </select>
+              </td>
+            </tr>
+
+          <?php endif; ?>
+
+          <tr>
+            <th>
+              <label for="x_content_dock_image_override_enable">
+                <strong><?php _e( 'Use an override image and URL', '__x__' ); ?></strong>
+                <span><?php _e( 'If enabled an image will override content dock with URL as link.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td>
+              <fieldset>
+                <legend class="screen-reader-text"><span>input type="checkbox"</span></legend>
+                <input type="checkbox" class="checkbox" name="x_content_dock_image_override_enable" id="x_content_dock_image_override_enable" value="1" <?php echo ( isset( $x_content_dock_image_override_enable ) && checked( $x_content_dock_image_override_enable, '1', false ) ) ? checked( $x_content_dock_image_override_enable, '1', false ) : ''; ?>>
+              </fieldset>
+            </td>
+          </tr>
+
+          <tr class="x_content_dock_image_override_image_row" style="display:none">
+            <th>
+              <label for="x_content_dock_image_override_image">
+                <strong><?php _e( 'Override image', '__x__' ); ?></strong>
+                <span><?php _e( 'Image to override content dock.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td>
+              <input type="text" class="file large-text" name="x_content_dock_image_override_image" id="x_content_dock_image_override_image" value="<?php echo ( isset( $x_content_dock_image_override_image ) ) ? $x_content_dock_image_override_image : ''; ?>">
+              <input type="button" id="_x_content_dock_image_override_image_image_upload_btn" data-id="x_content_dock_image_override_image" class="button-secondary x-upload-btn-cd" value="Upload Image">
+              <div class="x-meta-box-img-thumb-wrap" id="_x_content_dock_image_override_image_thumb">
+                  <?php if ( isset( $x_content_dock_image_override_image ) && ! empty( $x_content_dock_image_override_image ) ) : ?>
+                     <div class="x-uploader-image"><img src="<?php echo $x_content_dock_image_override_image ?>" alt="" /></div>
+                  <?php endif ?>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="x_content_dock_image_override_image_row" style="display:none">
+            <th>
+              <label for="x_content_dock_image_override_url">
+                <strong><?php _e( 'Override URL', '__x__' ); ?></strong>
+                <span><?php _e( 'URL for the link to override content dock.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td><input name="x_content_dock_image_override_url" id="x_content_dock_image_override_url" type="text" value="<?php echo ( isset( $x_content_dock_image_override_url ) ) ? $x_content_dock_image_override_url : ''; ?>" class="large-text"></td>
           </tr>
 
           <tr>

@@ -77,12 +77,6 @@ class RevSliderPluginUpdate {
 			self::set_version($version);
 		}
 		
-		/*if(version_compare($version, '5.2.5.4', '<')){
-			$version = '5.2.5.4';
-			
-			self::change_layers_svg_5_2_5_4();
-			self::set_version($version);
-		}*/
 		
 		if(version_compare($version, '5.2.5.5', '<')){
 			$version = '5.2.5.5';
@@ -90,6 +84,7 @@ class RevSliderPluginUpdate {
 			self::change_layers_svg_5_2_5_5();
 			self::set_version($version);
 		}
+		
 	}
 	
 	
@@ -1082,6 +1077,7 @@ class RevSliderPluginUpdate {
 			}
 		}
 	}
+	
 }
 
 /**

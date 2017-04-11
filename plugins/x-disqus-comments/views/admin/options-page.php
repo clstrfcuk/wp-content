@@ -33,6 +33,20 @@ require( X_DISQUS_COMMENTS_PATH . '/functions/options.php' );
 // Options Page Output
 // =============================================================================
 
+$x_disqus_comments_post_types_list = array();
+$post_types_list = get_post_types(
+  array(
+    'public'  => true,
+    'show_ui' => true
+  ),
+  'object'
+);
+foreach ( $post_types_list as $post_type ) {
+  if ( $post_type->name !== 'attachment' ) {
+    $x_disqus_comments_post_types_list[ $post_type->name ] = $post_type->label;
+  }
+}
+
 ?>
 
 <div class="wrap x-plugin x-disqus-comments">

@@ -4,7 +4,10 @@
 	<div class="clear_both"></div>
 
 	<div class="title_line" style="margin-bottom:10px;">
-		<div id="icon-options-general" class="icon32"></div>
+		<?php 
+			$icon_general = '<div class="icon32" id="icon-options-general"></div>';
+			echo apply_filters( 'rev_icon_general_filter', $icon_general ); 
+		?>
 		<h2><?php _e("Edit Slides",'revslider'); ?>: <?php echo $slider->getTitle(); ?></h2>
 
 		<a href="<?php echo RevSliderGlobals::LINK_HELP_SLIDE_LIST; ?>" class="button-secondary float_right mtop_10 mleft_10" target="_blank"><?php _e("Help",'revslider'); ?></a>

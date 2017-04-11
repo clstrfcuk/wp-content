@@ -188,7 +188,7 @@ class Rev_addon_Admin {
 	}
 
 	/**
-	 * Deactivates Installed Add-On/Plugin
+	 * Install Add-On/Plugin
 	 *
 	 * @since    1.0.0
 	 */
@@ -199,6 +199,9 @@ class Rev_addon_Admin {
 				$plugin_slug = basename($_REQUEST['plugin']);
 				$plugin_result = false;
 				$plugin_message = 'UNKNOWN';
+
+				if(0 !== strpos($plugin_slug, 'revslider-')) die( '-1' );
+
 				$url = 'http://updates.themepunch.tools/addons/'.$plugin_slug.'/'.$plugin_slug.'.zip';
 
 				$get = wp_remote_post($url, array(

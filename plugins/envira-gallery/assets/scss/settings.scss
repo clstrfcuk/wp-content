@@ -13,6 +13,7 @@
    ========================================================================== */
 @import "vars";
 @import "mixins";
+@import 'global';
 
 /* ==========================================================================
    Settings Styles
@@ -124,6 +125,28 @@
 	*/
 	#envira-gallery-refresh-submit {
     	vertical-align: baseline;
+	}
+	.envira-external-req{
+	    border: 1px solid $primary-color;
+	    border-radius: $border-radius;
+	    padding: 30px;
+	    h2{
+	        font-size: 20px;
+	        margin: 0;
+	        padding: 0;
+	    }
+	}
+	.envira-external-req-active{
+	    border: 1px solid $green;
+	    background-color:  $white;  
+	    border-radius: $border-radius;
+	    padding: 30px;
+	    h2{
+	        font-size: 20px;
+	        font-weight: 600;
+	        margin: 0;
+	        padding: 0;
+	    }
 	}
 }
 

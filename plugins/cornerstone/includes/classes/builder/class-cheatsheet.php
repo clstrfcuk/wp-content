@@ -14,7 +14,7 @@ class Cornerstone_Cheatsheet extends Cornerstone_Plugin_Component {
 
 		if ( ! isset( $this->sheets ) ) {
 
-			$this->config = apply_filters( 'cornerstone_cheatsheet', $this->plugin->config( 'builder/cheatsheet' ) );
+			$this->config = apply_filters( 'cornerstone_cheatsheet', $this->plugin->config_group( 'builder/cheatsheet' ) );
 			$this->sheets = array();
 
 			foreach ( $this->config as $key => $value) {

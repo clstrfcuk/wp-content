@@ -38,7 +38,7 @@ function x_addons_page_home() {
 
       <div class="tco-main">
 
-        <?php do_action( 'x_addons_main_content_start' ); ?>
+        <?php do_action( 'x_overview_main_content_start' ); ?>
 
         <?php if ( ! $is_validated ) : ?>
           <div class="tco-row">
@@ -51,10 +51,7 @@ function x_addons_page_home() {
           <?php require( 'markup/page-home-box-support.php' ); ?>
         </div>
 
-        <div class="tco-row">
-          <?php require( 'markup/page-home-box-demo-content.php' ); ?>
-          <?php require( 'markup/page-home-box-customizer-manager.php' ); ?>
-        </div>
+        <?php do_action( 'x_overview_main_content_middle' ); ?>
 
         <div class="tco-row">
           <?php require( 'markup/page-home-box-extensions.php' ); ?>
@@ -76,15 +73,14 @@ function x_addons_page_home() {
 
       <div class="tco-sidebar">
         <div class="tco-cta">
-          <a href="https://theme.co/x/" target="_blank"><?php x_tco()->x_logo( 'tco-cta-logo-product' ); ?></a>
+          <a href="https://theme.co/x/" target="_blank"><?php x_tco_product_logo( X_SLUG, 'tco-cta-logo-product' ); ?></a>
           <hr class="tco-cta-spacing">
           <a href="https://theme.co/" target="_blank"><?php x_tco()->themeco_logo( 'tco-cta-logo-company' ); ?></a>
           <hr class="tco-cta-spacing">
-          <p class="tco-cta-note"><?php _e( '<strong>NOTE:</strong> A separate license is required for each site using X. Each X purchase includes a Cornerstone license.', '__x__' ); ?></p>
+          <p class="tco-cta-note"><?php echo x_i18n('overview', 'separate-license-needed'); ?></p>
           <hr class="tco-cta-spacing">
           <div class="tco-cta-actions">
-            <a class="tco-cta-action" href="https://community.theme.co/my-licenses/" target="_blank"><?php _e( 'Manage Licenses', '__x__' ); ?></a>
-            <a class="tco-cta-action" href="https://theme.co/go/join-validation.php" target="_blank"><?php _e( 'Purchase Another License', '__x__' ); ?></a>
+            <a class="tco-cta-action" href="https://theme.co/apex/licenses/" target="_blank"><?php _e( 'Manage Licenses', '__x__' ); ?></a>
           </div>
           <?php if ( $is_validated ) : ?>
             <hr class="tco-cta-spacing">

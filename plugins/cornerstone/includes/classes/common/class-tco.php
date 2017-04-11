@@ -25,13 +25,13 @@ class Cornerstone_Tco extends Cornerstone_Plugin_Component {
 	}
 
 	public function localize_admin_js() {
-		return $this->plugin->config( 'admin/tco-admin' );
+		return $this->plugin->i18n_group( 'admin', false );
 	}
 
 	public function localize_updates( $strings ) {
 
 		$strings = array_merge( $strings, array(
-			'connection-error' => __( 'Could not establish connection. For assistance, please start by reviewing our article on troubleshooting <a href="https://community.theme.co/kb/connection-issues/">connection issues.</a>', 'cornerstone' )
+			'connection-error' => csi18n('admin.tco-connection-error')
 		) );
 
 		return $strings;

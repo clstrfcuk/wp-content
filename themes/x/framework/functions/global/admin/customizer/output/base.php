@@ -35,6 +35,10 @@ body {
   <?php endif; ?>
 }
 
+.w-b {
+  font-weight: <?php echo $x_body_font_weight; ?> !important;
+}
+
 
 
 /* Links
@@ -108,13 +112,8 @@ h6, .h6 {
 
 <?php if ( $x_layout_site == 'boxed' ) : ?>
 
-  /*
-  // The navbar container width property is overwritten in a responsive
-  // breakpoint in the masthead.php output file.
-  */
-
   .site,
-  .x-navbar.x-navbar-fixed-top.x-container.max.width {
+  .x-site {
     width: <?php echo $x_layout_site_width . '%'; ?>;
     max-width: <?php echo $x_layout_site_max_width . 'px'; ?>;
   }

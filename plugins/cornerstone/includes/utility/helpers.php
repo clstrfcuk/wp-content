@@ -1,5 +1,14 @@
 <?php
 
+
+function csi18n( $key ) {
+	return CS()->i18n( $key );
+}
+
+function e_csi18n( $key ) {
+	echo csi18n( $key );
+}
+
 /**
  * Get all the Font Awesome unicode values
  * @return array Hash list of icon aliases and unicode values
@@ -560,5 +569,5 @@ function is_cs_error( $error ) {
 }
 
 function cs_to_component_name( $name ) {
-  return ucwords( strtolower( str_replace( '-', '_', str_replace( '/', '_', $name ) ) ), '_' );
+  return str_replace( ' ', '_', ucwords( strtolower( preg_replace('/[-_:\/]/', ' ', str_replace(' ', '', $name ) ) ) ) );
 }

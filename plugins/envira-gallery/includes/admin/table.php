@@ -44,7 +44,7 @@ class Envira_Gallery_Table_Admin {
      * @var object
      */
     public $metabox;
-    
+
     /**
      * Primary class constructor.
      *
@@ -74,7 +74,7 @@ class Envira_Gallery_Table_Admin {
         }
 
     }
-    
+
     /**
      * Loads styles for all Envira-based WP_List_Table Screens.
      *
@@ -86,7 +86,7 @@ class Envira_Gallery_Table_Admin {
 
         // Get current screen.
         $screen = get_current_screen();
-        
+
         // Bail if we're not on the Envira Post Type screen.
         if ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type ) {
             return;
@@ -117,7 +117,7 @@ class Envira_Gallery_Table_Admin {
 
         // Get current screen.
         $screen = get_current_screen();
-        
+
         // Bail if we're not on the Envira Post Type screen.
         if ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type ) {
             return;
@@ -164,8 +164,8 @@ class Envira_Gallery_Table_Admin {
         // Add additional columns we want to display.
         $envira_columns = array(
             'cb'            => '<input type="checkbox" />',
+            'image'         => '',
             'title'         => __( 'Title', 'envira-gallery' ),
-            'image'         => __( '', 'envira-gallery' ),
             'shortcode'     => __( 'Shortcode', 'envira-gallery' ),
             'posts'         => __( 'Posts', 'envira-gallery' ),
             'modified'      => __( 'Last Modified', 'envira-gallery' ),
@@ -250,7 +250,7 @@ class Envira_Gallery_Table_Admin {
                         echo '<a href="' . get_permalink( $in_post_id ) . '" target="_blank">' . get_the_title( $in_post_id ).'</a><br />';
                     }
                 }
-                break; 
+                break;
 
             /**
             * Last Modified
@@ -261,7 +261,7 @@ class Envira_Gallery_Table_Admin {
         }
 
     }
-    
+
     /**
 	 * Adds Envira fields to the quick editing and bulk editing screens
 	 *
@@ -333,9 +333,9 @@ class Envira_Gallery_Table_Admin {
                 <?php
                 break;
         }
-			
+
 		wp_nonce_field( 'envira-gallery', 'envira-gallery' );
-		
+
     }
 
     /**
@@ -358,7 +358,7 @@ class Envira_Gallery_Table_Admin {
         if ( 'shortcode' !== $column_name ) {
             return;
         }
-        
+
         // Get metabox instance
         $this->metabox = Envira_Gallery_Metaboxes::get_instance();
 
@@ -371,7 +371,7 @@ class Envira_Gallery_Table_Admin {
                             <span class="title"><?php _e( 'Number of Columns', 'envira-gallery'); ?></span>
                             <select name="_envira_gallery[columns]">
                                 <option value="-1" selected><?php _e( '— No Change —', 'envira-gallery' ); ?></option>
-                                
+
                                 <?php foreach ( (array) $this->metabox->get_columns() as $i => $data ) : ?>
                                     <option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
                                 <?php endforeach; ?>
@@ -382,7 +382,7 @@ class Envira_Gallery_Table_Admin {
                             <span class="title"><?php _e( 'Gallery Theme', 'envira-gallery'); ?></span>
                             <select name="_envira_gallery[gallery_theme]">
                                 <option value="-1" selected><?php _e( '— No Change —', 'envira-gallery' ); ?></option>
-                                
+
                                 <?php foreach ( (array) $this->metabox->get_gallery_themes() as $i => $data ) : ?>
                                     <option value="<?php echo $data['value']; ?>"><?php echo $data['name']; ?></option>
                                 <?php endforeach; ?>
@@ -411,11 +411,11 @@ class Envira_Gallery_Table_Admin {
                 <?php
                 break;
         }
-            
+
         wp_nonce_field( 'envira-gallery', 'envira-gallery' );
-        
+
     }
-    
+
     /**
 	* Called every time a WordPress Post is updated
 	*
@@ -428,26 +428,26 @@ class Envira_Gallery_Table_Admin {
 	* @param int $post_ID Post ID
 	*/
     public function bulk_edit_save( $post_ID ) {
-	    
+
 	    // Check we are performing a Bulk Edit
 	    if ( !isset( $_REQUEST['bulk_edit'] ) ) {
 		    return;
 	    }
-	    
+
 	    // Bail out if we fail a security check.
         if ( ! isset( $_REQUEST['envira-gallery'] ) || ! wp_verify_nonce( $_REQUEST['envira-gallery'], 'envira-gallery' ) || ! isset( $_REQUEST['_envira_gallery'] ) ) {
             return;
         }
-        
+
         // Check Post IDs have been submitted
         $post_ids = ( ! empty( $_REQUEST[ 'post' ] ) ) ? $_REQUEST[ 'post' ] : array();
 		if ( empty( $post_ids ) || !is_array( $post_ids ) ) {
 			return;
 		}
-		
+
 		// Get metabox instance
 		$this->metabox = Envira_Gallery_Metaboxes::get_instance();
-	
+
 		// Iterate through post IDs, updating settings
 		foreach ( $post_ids as $post_id ) {
 			// Get settings
@@ -455,7 +455,7 @@ class Envira_Gallery_Table_Admin {
 	        if ( empty( $settings ) ) {
 		        continue;
 	        }
-	        
+
 	        // Update Settings, if they have values
 	        if ( ! empty( $_REQUEST['_envira_gallery']['columns'] ) && $_REQUEST['_envira_gallery']['columns'] != -1 ) {
 		        $settings['config']['columns']             = preg_replace( '#[^a-z0-9-_]#', '', $_REQUEST['_envira_gallery']['columns'] );
@@ -475,18 +475,19 @@ class Envira_Gallery_Table_Admin {
             if ( ! empty( $_REQUEST['_envira_gallery']['crop_height'] ) ) {
                 $settings['config']['crop_height']       = absint( $_REQUEST['_envira_gallery']['crop_height'] );
             }
-	        
+
 	        // Provide a filter to override settings.
 			$settings = apply_filters( 'envira_gallery_bulk_edit_save_settings', $settings, $post_id );
-			
+
 			// Update the post meta.
 			update_post_meta( $post_id, '_eg_gallery_data', $settings );
-			
+
 			// Finally, flush all gallery caches to ensure everything is up to date.
-			$this->metabox->flush_gallery_caches( $post_id, $settings['config']['slug'] );
+            $common = Envira_Gallery_Common::get_instance();
+			$common->flush_gallery_caches( $post_id, $settings['config']['slug'] );
 
 		}
-	    
+
     }
 
     /**

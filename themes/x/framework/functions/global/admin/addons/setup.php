@@ -53,9 +53,7 @@ function x_addons_preview_overlay( $box_class ) {
     <div class="tco-overlay tco-overlay-box-content">
       <a class="tco-overlay-close" href="#" data-tco-toggle="<?php echo $box_class; ?> .tco-overlay"><?php x_tco()->admin_icon( 'no' ); ?></a>
       <h4 class="tco-box-content-title"><?php _e( 'How do I unlock this feature?', '__x__' ); ?></h4>
-      <p><?php _e( 'If you have purchased X from ThemeForest already, you can find your purchase code <a href="https://community.theme.co/images/find-item-purchase-code.png" target="_blank">here</a>. If you do not have a license or need to get another, you can <a href="https://theme.co/go/join-validation.php" target="_blank">purchase</a> one.', '__x__' ); ?></p>
-      <h4 class="tco-box-content-title"><?php _e( 'Where do I enter my purchase code?', '__x__' ); ?></h4>
-      <p><?php printf( __( 'Once you have a purchase code you can <a %s href="#">enter</a> it in the input at the top of this page.', '__x__' ), 'data-tco-focus="validation-input"' ); ?></p>
+      <p><?php printf( x_i18n('overview', 'how-do-i-unlock' ), 'data-tco-focus="validation-input"'); ?></p>
     </div>
   <?php
 
@@ -84,9 +82,8 @@ require_once( $addn_path . '/demo/class-x-demo-import-processor.php' );
 require_once( $addn_path . '/modules/class-addons-home.php' );
 require_once( $addn_path . '/modules/class-addons-updates.php' );
 require_once( $addn_path . '/modules/class-addons-validation.php' );
-require_once( $addn_path . '/modules/class-addons-demo-content.php' );
-require_once( $addn_path . '/modules/class-addons-customizer-manager.php' );
 require_once( $addn_path . '/modules/class-addons-extensions.php' );
+
 require_once( $addn_path . '/page-home.php' );
 
 
@@ -94,8 +91,8 @@ require_once( $addn_path . '/page-home.php' );
 // =============================================================================
 
 function x_addons_add_menu() {
-  add_menu_page( 'X &ndash; Addons: Home', 'Addons', 'manage_options', 'x-addons-home', 'x_addons_page_home', NULL, 3 );
-  add_submenu_page( 'x-addons-home', 'X &ndash; Addons: Home', 'Home', 'manage_options', 'x-addons-home', 'x_addons_page_home' );
+  add_menu_page( 'Overview', X_TITLE, 'manage_options', 'x-addons-home', 'x_addons_page_home', 'dashicons-arrow-right-alt2', 3 );
+  add_submenu_page( 'x-addons-home', 'Overview', 'Overview', 'manage_options', 'x-addons-home', 'x_addons_page_home' );
 }
 
 add_action( 'admin_menu', 'x_addons_add_menu' );
@@ -121,12 +118,16 @@ add_action( 'admin_init', 'x_addons_theme_activation_redirect' );
 // =============================================================================
 
 if ( is_admin() ) {
+
+  // var_dump( did_action('admin_init') ); die();
+
   X_Addons_Home::instance();
-  X_Addons_Customizer_Manager::instance();
   X_Addons_Updates::instance();
-  X_Addons_Demo_Content::instance();
   X_Addons_Extensions::instance();
   X_Addons_Validation::instance();
+
+  do_action( 'x_overview_init' );
+
 }
 
 

@@ -39,12 +39,12 @@ class CSE_Responsive_Text {
 			'title' => array(
 				'type' => 'title',
 				'context' => 'content',
-		    'suggest' => __( 'Responsive Text Item', $this->text_domain ),
+		    'suggest' => __( 'Responsive Text Item', 'cornerstone' ),
 			),
 			'selector' => array(
 				'ui' => array(
-					'title'   => __( 'Selector', $this->text_domain ),
-					'tooltip' => __( 'Enter in the selector for your Responsive Text (e.g. if your class is "h-responsive" enter ".h-responsive").', $this->text_domain ),
+					'title'   => __( 'Selector', 'cornerstone' ),
+					'tooltip' => __( 'Enter in the selector for your Responsive Text (e.g. if your class is "h-responsive" enter ".h-responsive").', 'cornerstone' ),
 				),
 				'context' => 'content',
 		    'suggest' => '.h-responsive',
@@ -52,22 +52,22 @@ class CSE_Responsive_Text {
 			'compression' => array(
 				'type' => 'text',
 				'ui' => array(
-					'title'   => __( 'Compression', $this->text_domain ),
-					'tooltip' => __( 'Enter the compression for your Responsive Text. Adjust up and down to desired level in small increments (e.g. 0.95, 1.15, et cetera).', $this->text_domain ),
+					'title'   => __( 'Compression', 'cornerstone' ),
+					'tooltip' => __( 'Enter the compression for your Responsive Text. Adjust up and down to desired level in small increments (e.g. 0.95, 1.15, et cetera).', 'cornerstone' ),
 				)
 			),
 			'min_size' => array(
 				'type' => 'text',
 				'ui' => array(
-					'title'   => __( 'Minimum Size', $this->text_domain ),
-					'tooltip' => __( 'Enter the minimum size of your Responsive Text.', $this->text_domain ),
+					'title'   => __( 'Minimum Size', 'cornerstone' ),
+					'tooltip' => __( 'Enter the minimum size of your Responsive Text.', 'cornerstone' ),
 				)
 			),
 			'max_size' => array(
 				'type' => 'text',
 				'ui' => array(
-					'title'   => __( 'Maximum Size', $this->text_domain ),
-					'tooltip' => __( 'Enter the maximum size of your Responsive Text.', $this->text_domain ),
+					'title'   => __( 'Maximum Size', 'cornerstone' ),
+					'tooltip' => __( 'Enter the maximum size of your Responsive Text.', 'cornerstone' ),
 				)
 			)
 		);

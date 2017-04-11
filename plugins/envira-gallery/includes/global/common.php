@@ -114,6 +114,27 @@ class Envira_Gallery_Common {
     }
 
     /**
+     * Helper method for retrieving justified gallery themes.
+     *
+     * @since 1.1.1
+     *
+     * @return array Array of gallery theme data.
+     */
+    public function get_justified_gallery_themes() {
+
+        $themes = array(
+            array(
+                'value' => 'normal',
+                'name'  => __( 'Normal', 'envira-gallery' ),
+                'file'  => $this->base->file
+            )
+        );
+
+        return apply_filters( 'envira_gallery_justified_gallery_themes', $themes );
+
+    }
+
+    /**
      * Helper method for retrieving display description options.
      *
      * @since 1.3.7.3
@@ -224,13 +245,23 @@ class Envira_Gallery_Common {
 
         $themes = array(
             array(
-                'value' => 'base',
-                'name'  => __( 'Base', 'envira-gallery' ),
+                'value' => 'base_dark',
+                'name'  => __( 'Base (Dark)', 'envira-gallery' ),
                 'file'  => $this->base->file
             )
         );
 
-        return apply_filters( 'envira_gallery_lightbox_themes', $themes );
+        $themes = apply_filters( 'envira_gallery_lightbox_themes', $themes );
+
+        $themes[] = array(
+            'value' => 'base',
+            'name'  => __( 'Legacy', 'envira-gallery' ),
+            'file'  => $this->base->file
+        );
+
+        //$themes = apply_filters( 'envira_gallery_lightbox_themes', $themes );
+
+        return $themes;
 
     }
 
@@ -423,42 +454,42 @@ class Envira_Gallery_Common {
                 'value' => 'Swing',
                 'name'  => __( 'Swing', 'envira-gallery' )
             ),
-            array(
-                'value' => 'Quad',
-                'name'  => __( 'Quad', 'envira-gallery' )
-            ),
-            array(
-                'value' => 'Cubic',
-                'name'  => __( 'Cubic', 'envira-gallery' )
-            ),
-            array(
-                'value' => 'Quart',
-                'name'  => __( 'Quart', 'envira-gallery' )
-            ),
-            array(
-                'value' => 'Quint',
-                'name'  => __( 'Quint', 'envira-gallery' )
-            ),
-            array(
-                'value' => 'Sine',
-                'name'  => __( 'Sine', 'envira-gallery' )
-            ),
-            array(
-                'value' => 'Expo',
-                'name'  => __( 'Expo', 'envira-gallery' )
-            ),
-            array(
-                'value' => 'Circ',
-                'name'  => __( 'Circ', 'envira-gallery' )
-            ),
-            array(
-                'value' => 'Back',
-                'name'  => __( 'Back', 'envira-gallery' )
-            ),
-            array(
-                'value' => 'Bounce',
-                'name'  => __( 'Bounce', 'envira-gallery' )
-            ),
+            // array(
+            //     'value' => 'Quad',
+            //     'name'  => __( 'Quad', 'envira-gallery' )
+            // ),
+            // array(
+            //     'value' => 'Cubic',
+            //     'name'  => __( 'Cubic', 'envira-gallery' )
+            // ),
+            // array(
+            //     'value' => 'Quart',
+            //     'name'  => __( 'Quart', 'envira-gallery' )
+            // ),
+            // array(
+            //     'value' => 'Quint',
+            //     'name'  => __( 'Quint', 'envira-gallery' )
+            // ),
+            // array(
+            //     'value' => 'Sine',
+            //     'name'  => __( 'Sine', 'envira-gallery' )
+            // ),
+            // array(
+            //     'value' => 'Expo',
+            //     'name'  => __( 'Expo', 'envira-gallery' )
+            // ),
+            // array(
+            //     'value' => 'Circ',
+            //     'name'  => __( 'Circ', 'envira-gallery' )
+            // ),
+            // array(
+            //     'value' => 'Back',
+            //     'name'  => __( 'Back', 'envira-gallery' )
+            // ),
+            // array(
+            //     'value' => 'Bounce',
+            //     'name'  => __( 'Bounce', 'envira-gallery' )
+            // ),
         );
 
         return apply_filters( 'envira_gallery_easing_transition_effects', $effects );
@@ -512,7 +543,33 @@ class Envira_Gallery_Common {
         return apply_filters( 'envira_gallery_thumbnail_positions', $positions );
 
     }
+    /**
+     * Helper method for retrieving Justified Last Row.
+     *
+     * @since 1.0.0
+     *
+     * @return array Array of last data.
+     */
+    public function get_justified_last_row() {
 
+        $layouts = array(
+            array(
+                'value' => 'nojustify',
+                'name'  => __( 'Left', 'envira-gallery' )
+            ),
+            array(
+                'value' => 'justify',
+                'name'  => __( 'Fill', 'envira-gallery' )
+            ),
+             array(
+                'value' => 'hide',
+                'name'  => __( 'Hide', 'envira-gallery' )
+            )      
+        );
+
+        return apply_filters( 'envira_gallery_justified_last_row', $layouts );
+
+    }
     /**
      * Helper method for setting default config values.
      *
@@ -555,68 +612,76 @@ class Envira_Gallery_Common {
         // Prepare default values.
         $defaults = array(
             // Images Tab
-            'type'                => 'default',
+            'type'                			=> 'default',
 
             // Config Tab
-            'columns'             => '3',
-            'gallery_theme'       => 'base',
-            'display_description' => 0,
-            'description'		  => '',
-            'gutter'              => 10,
-            'margin'              => 10,
-            'random'              => 0,
-            'sorting_direction'   => 'ASC',
-            'image_size'          => 'default', // Default = uses the below crop_width and crop_height
-            'image_sizes_random'  => array(),
-            'crop_width'          => 640,
-            'crop_height'         => 480,
-            'crop'                => 0,
-            'dimensions'		  => 0,
-            'isotope'			  => 1,
-            'css_animations'	  => 1,
-            'css_opacity'         => 100,
+            'columns'            			=> '0',
+            'justified_row_height' 			=> 150, // automatic/justified layout
+            'justified_gallery_theme' 		=> 'normal',
+            'justified_margins' 			=> 1,
+            'justified_last_row' 			=> 'nojustify',
+            'gallery_theme'      			=> 'base',
+            'display_description' 			=> 0,
+            'description'		  			=> '',
+            'gutter'              			=> 10,
+            'margin'              			=> 10,
+            'random'              			=> 0,
+            'sorting_direction'   			=> 'ASC',
+            'image_size'          			=> 'default', // Default = uses the below crop_width and crop_height
+            'image_sizes_random'  			=> array(),
+            'crop_width'          			=> 640,
+            'crop_height'         			=> 480,
+            'crop'                			=> 0,
+            'dimensions'		  			=> 0,
+            'isotope'			  			=> 1,
+            'css_animations'	 			=> 1,
+            'css_opacity'         			=> 100,
 
-            // Lightbox
-            'lightbox_enabled'    => 1,
-            'lightbox_theme'      => 'base',
-            'lightbox_image_size' => 'default',
-            'title_display'       => 'float',
-            'arrows'              => 1,
-            'arrows_position'     => 'inside',
-            'keyboard'            => 1,
-            'mousewheel'          => 1,
-            'toolbar'             => 1,
-            'toolbar_title'		  => 0,
-            'toolbar_position'    => 'top',
-            'aspect'              => 1,
-            'loop'                => 1,
-            'lightbox_open_close_effect' => 'fade',
-            'effect'              => 'fade',
-            'html5'               => 0,
+            // Lightbox	
+            'lightbox_enabled'   			=> 1,
+            'lightbox_theme'      			=> 'base_dark',
+            'lightbox_image_size' 			=> 'default',
+            'title_display'       			=> 'float',
+            'arrows'              			=> 1,
+            'arrows_position'     			=> 'inside',
+            'keyboard'            			=> 1,
+            'mousewheel'          			=> 1,
+            'toolbar'             			=> 1,
+            'toolbar_title'		  			=> 0,
+            'toolbar_position'   			=> 'top',
+            'aspect'              			=> 1,
+            'loop'                			=> 1,
+            'lightbox_open_close_effect' 	=> 'fade',
+            'effect'              			=> 'fade',
+            'html5'               			=> 0,
+            'supersize'                     => 0,
 
             // Thumbnails
-            'thumbnails'          => 1,
-            'thumbnails_width'    => 75,
-            'thumbnails_height'   => 50,
-            'thumbnails_position' => 'bottom',
+            'thumbnails'          			=> 1,
+            'thumbnails_width'   			=> 75,
+            'thumbnails_height'  			=> 50,
+            'thumbnails_position' 			=> 'bottom',
 
             // Mobile
-            'mobile_columns'      => 1,
-            'mobile'              => 1,
-            'mobile_width'        => 320,
-            'mobile_height'       => 240,
-            'mobile_lightbox'     => 1,
-            'mobile_touchwipe'    => 1,
-            'mobile_touchwipe_close' => 0,
-            'mobile_arrows'       => 1,
-            'mobile_toolbar'      => 1,
-            'mobile_thumbnails'   => 1,
+          //  'mobile_columns'      => 1,
+            'mobile'              			=> 1,
+            'mobile_width'        			=> 320,
+            'mobile_height'       			=> 240,
+            'mobile_lightbox'     			=> 1,
+            'mobile_touchwipe'    			=> 1,
+            'mobile_touchwipe_close' 		=> 0,
+            'mobile_arrows'       			=> 1,
+            'mobile_toolbar'      			=> 1,
+            'mobile_thumbnails'   			=> 1,
+            'mobile_thumbnails_width'   	=> 75,
+            'mobile_thumbnails_height'  	=> 50,
+            'mobile_justified_row_height'   => 80,        
 
             // Misc
-            'title'               => '',
-            'slug'                => '',
-            'classes'             => array(),
-            'rtl'                 => 0,
+            'title'              			=> '',
+            'slug'              			=> '',
+            'classes'           			=> array(),
+            'rtl'               			=> 0,
         );
 
         // Allow devs to filter the defaults.
@@ -737,9 +802,10 @@ class Envira_Gallery_Common {
      * @param string $align    The crop position alignment.
      * @param bool $retina     Whether or not to make a retina copy of image.
      * @param array $data      Array of gallery data (optional).
+     * @param bool $force_overwrite      Forces an overwrite even if the thumbnail already exists (useful for applying watermarks)
      * @return WP_Error|string Return WP_Error on error, URL of resized image on success.
      */
-    public function resize_image( $url, $width = null, $height = null, $crop = true, $align = 'c', $quality = 100, $retina = false, $data = array() ) {
+    public function resize_image( $url, $width = null, $height = null, $crop = true, $align = 'c', $quality = 100, $retina = false, $data = array(), $force_overwrite = false ) {
 
         global $wpdb;
 
@@ -753,6 +819,13 @@ class Envira_Gallery_Common {
         // Strip ?lang=fr from blog's URL - WPML adds this on
         // and means our next statement fails
         $site_url = preg_replace( '/\?.*/', '', get_bloginfo( 'url' ) );
+
+        // WPML check - if there is a /fr or any domain in the url, then remove that from the $site_url
+        if ( defined('ICL_LANGUAGE_CODE') ) {
+            if ( strpos( $site_url, '/'.ICL_LANGUAGE_CODE ) !== false ) {
+                $site_url = str_replace( '/'.ICL_LANGUAGE_CODE, '', $site_url );
+            }
+        }
 
         if ( strpos( $url, $site_url ) === false ) {
             return $url;
@@ -769,12 +842,14 @@ class Envira_Gallery_Common {
         }
 
         // If the destination width/height values are the same as the original, don't do anything.
-        if ( $orig_width === $dest_width && $orig_height === $dest_height ) {
+        if ( !$force_overwrite && $orig_width === $dest_width && $orig_height === $dest_height ) {
             return $url;
         }
 
+
+
         // If the file doesn't exist yet, we need to create it.
-        if ( ! file_exists( $dest_file_name ) ) {
+        if ( ! file_exists( $dest_file_name ) || ( file_exists( $dest_file_name ) && $force_overwrite ) ) {
             // We only want to resize Media Library images, so we can be sure they get deleted correctly when appropriate.
             $get_attachment = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE guid='%s'", $url ) );
 
@@ -970,7 +1045,85 @@ class Envira_Gallery_Common {
         return $info;
 
     }
+    /**
+     * Sorts the gallery
+     *
+     * @since 1.5.9
+     *
+     * @return array
+     */
+	public function sort_gallery( $data, $sort_type, $sort_direction ){
+		//Return if we dont have a sort type
+		if(  empty( $sort_type ) || empty( $sort_direction ) ){
+			
+			return $data;
+		}
+		//Dont go any further if datas not set.
+		if ( empty( $data ) ){
+			return;
+		}
+		
+		//Update the sort type
+		$data['config']['sort_order'] = $sort_type;
+	 	
+	    switch( $sort_type ){
+		    case '1':
+                // Shuffle keys
+                $keys = array_keys( $data['gallery'] );
+                shuffle( $keys );
 
+                // Rebuild array in new order
+                $new = array();
+                foreach( $keys as $key ) {
+                    $new[ $key ] = $data['gallery'][ $key ];
+                }
+
+                // Assign back to gallery
+                $data['gallery'] = $new;
+                break;
+            case 'src':
+            case 'title':
+            case 'status':
+            
+                // Get metadata
+                $keys = array();
+                foreach ( $data['gallery'] as $id => $item ) {
+                    $keys[ $id ] = strip_tags( $item[ $sort_type ] );
+                }
+                
+                // Sort titles / captions
+                if ( $sorting_direction == 'ASC' ) {
+	                
+                    natcasesort( $keys );
+                
+                } else {
+                
+                    arsort( $keys );
+                
+                }
+
+                // Iterate through sorted items, rebuilding slider
+                $new_sort = array();
+                foreach( $keys as $key => $title ) {
+                    $new_sort[ $key ] = $data['gallery'][ $key ];
+                }
+
+                // Assign back to gallery
+                $data['gallery'] = $new_sort;
+                
+                break;
+
+		    break;
+			case 'date':
+			break;
+			case '0':
+			break;
+
+	    }
+
+		return $data;
+
+	}
     /**
      * Helper method to flush gallery caches once a gallery is updated.
      *
@@ -1026,6 +1179,89 @@ class Envira_Gallery_Common {
 
         // Return
         return $default;
+
+    }
+
+    /**
+     * Gets the slug from the options table. If blank or does not exist, defaults
+     * to 'envira'
+     *
+     * @since 1.5.7.3
+     *
+     * @param string $type Type (gallery|albums)
+     * @return string $slug Slug.
+     */
+    public function standalone_get_slug( $type ) {
+
+        // Get slug
+        switch ($type) {
+            case 'gallery':
+                $slug = get_option( 'envira-gallery-slug');
+                if ( !$slug OR empty( $slug ) ) {
+                    // Fallback to check for previous version option name.
+                    $slug = get_option( 'envira_standalone_slug' );
+                    if ( ! $slug || empty( $slug ) ) {
+                        $slug = 'envira';
+                    }
+                }
+                break;
+
+            case 'albums':
+                $slug = get_option( 'envira-albums-slug');
+                if ( !$slug OR empty( $slug ) ) {
+                    $slug = 'envira_album';
+                }
+                break;
+
+            default:
+                $slug = 'envira'; // Fallback
+                break;
+        }
+
+        return $slug;
+    }
+    
+	/**
+	 * Helper function to check if standalone setting is enabled.
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function is_standalone_enabled(){
+		
+		return get_option( 'envira_gallery_standalone_enabled' );
+		
+	}
+    /**
+     * Iterates through all Post Types, returning an array of reserved slugs
+     *
+     * @since 1.5.7.3
+     */
+    public function standalone_get_reserved_slugs() {
+
+        $postTypes = get_post_types();
+        if ( !is_array($postTypes) ) {
+            return; // Something went wrong fetching Post Types
+        }
+
+        $slugs = array();
+        foreach ( $postTypes as $postType ) {
+            // Skip our own post type
+            if ( $postType == 'envira' || $postType == 'envira_album' ) {
+                continue;
+            }
+
+            $postTypeObj = get_post_type_object( $postType );
+
+            if ( !isset($postTypeObj->rewrite['slug']) ) {
+                continue;
+            }
+
+            // Add slug to array
+            $slugs[] = $postTypeObj->rewrite['slug'];
+        }
+
+        return $slugs;
 
     }
 

@@ -278,7 +278,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
    * Return animation choices.
    */
   public static function animationChoices() {
-    return CS()->config( 'controls/animation-choices' );
+    return CS()->config_group( 'controls/animation-choices' );
   }
 
 }

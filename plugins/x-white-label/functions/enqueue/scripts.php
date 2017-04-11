@@ -20,7 +20,7 @@ function x_white_label_enqueue_admin_scripts( $hook ) {
   if ( $hook == 'addons_page_x-extensions-white-label' ) {
 
     wp_enqueue_script( 'x-white-label-admin-js', X_WHITE_LABEL_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
-
+    wp_enqueue_media();
   }
 
 }

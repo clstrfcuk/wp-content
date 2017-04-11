@@ -18,12 +18,15 @@
 	<div class='wrap'>
 		<div class="clear_both"></div>
 		<div class="title_line" style="margin-bottom:10px">
-			<div id="icon-options-general" class="icon32"></div>
+			<?php 
+				$icon_general = '<div class="icon32" id="icon-options-general"></div>';
+				echo apply_filters( 'rev_icon_general_filter', $icon_general ); 
+			?>
 		</div>
 		
 		<div class="title_line sub_title">
 			<div id="icon-options-configure" class="icon32"></div> 
-			<span>Install &amp; Configure Add-ons<a href="?page=rev_addon&amp;checkforupdates=true" class="rs-reload-shop"><i class="eg-icon-arrows-ccw"></i>Check for new Add-ons</a></span>
+			<span><?php _e("Install &amp; Configure Add-ons", 'revslider'); ?><a href="?page=rev_addon&amp;checkforupdates=true" class="rs-reload-shop"><i class="eg-icon-arrows-ccw"></i><?php _e("Check for new Add-ons", 'revslider'); ?></a></span>
 		</div>
 
 
@@ -42,12 +45,16 @@
 			$plugins = get_plugins();
 
 			foreach($addons as $addon){
+				if(version_compare(RevSliderGlobals::SLIDER_REVISION, $addon->version_from, '<') || version_compare(RevSliderGlobals::SLIDER_REVISION, $addon->version_to, '>')){
+					continue;
+				}
+				if( empty($addon->title) ) continue;
+				
 				$rs_dash_background_style = !empty($addon->background) ? 'style="background-image: url('.$addon->background.');"' : "";
-				if( empty($addon->title) ) exit;
-		 ?>
+				?>
 				<!-- <?php echo $addon->slug; ?> WIDGET -->
 					<div class="rs-dash-widget <?php echo $addon->slug; ?>" <?php echo $rs_dash_background_style; ?>>
-						<div class="rs-dash-title-wrap rs-status-green-wrap">
+						<div class="rs-dash-title-wrap">
 							<div class="rs-dash-title"><?php echo $addon->title; ?></div>
 							<?php 
 								//Plugin Status
@@ -70,14 +77,15 @@
 
 								if($rev_addon_validated){
 							?>
-									<div class="rs-addon-not-activated rs-dash-title-button rs-status-orange" <?php echo $rs_addon_not_activated; ?> data-plugin="<?php echo $addon->slug.'/'.$addon->slug.'.php';?>" data-alternative="<i class='icon-no-problem-found'></i>Activate"><i class="icon-update-refresh"></i>Not Active</div>
-									<div class="rs-addon-activated rs-dash-title-button rs-status-green" <?php echo $rs_addon_activated; ?> data-plugin="<?php echo $addon->slug.'/'.$addon->slug.'.php';?>" data-alternative="<i class='icon-update-refresh'></i>Deactivate"><i class="icon-no-problem-found"></i>Active</div>
-									<div class="rs-addon-not-installed rs-dash-title-button rs-status-red" <?php echo $rs_addon_not_installed; ?> data-alternative="<i class='icon-update-refresh'></i>Install" data-plugin="<?php echo $addon->slug;?>"><i class="icon-not-registered"></i>Not Installed</div>
+									<div class="rs-dash-title-button rs-status-orange" <?php echo $rs_addon_not_activated; ?> data-plugin="<?php echo $addon->slug.'/'.$addon->slug.'.php';?>" data-alternative="<i class='icon-no-problem-found'></i>Activate"><i class="icon-update-refresh"></i><?php _e("Not Active", 'revslider'); ?></div>
+									<div class="rs-dash-button-gray rs-dash-deactivate-addon rs-dash-title-button" <?php echo $rs_addon_activated; ?> data-plugin="<?php echo $addon->slug.'/'.$addon->slug.'.php';?>" data-alternative="<i class='icon-update-refresh'></i>Deactivate"><i class="icon-update-refresh"></i><?php _e("Deactivate", 'revslider'); ?></div>
+									<div class=" rs-dash-title-button rs-status-green" <?php echo $rs_addon_activated; ?> data-plugin="<?php echo $addon->slug.'/'.$addon->slug.'.php';?>" data-alternative="<i class='icon-update-refresh'></i>Deactivate"><i class="icon-no-problem-found"></i><?php _e("Active", 'revslider'); ?></div>
+									<div class=" rs-dash-title-button rs-status-red" <?php echo $rs_addon_not_installed; ?> data-alternative="<i class='icon-update-refresh'></i>Install" data-plugin="<?php echo $addon->slug;?>"><i class="icon-not-registered"></i><?php _e("Not Installed", 'revslider'); ?></div>
 							<?php } else { 
 									$rev_addon_version="";
 									$result = deactivate_plugins( $addon->slug.'/'.$addon->slug.'.php' );
 							?>
-									<div class="rs-dash-title-button rs-status-red" style="display:block"><i class="icon-not-registered"></i>Add-on locked</div>
+									<div class="rs-dash-title-button rs-status-red" style="display:block"><i class="icon-not-registered"></i><?php _e("Add-on locked", 'revslider'); ?></div>
 							<?php }
 							?>
 						</div>
@@ -145,7 +153,7 @@
 						
 					</div>
 				<!-- END OF <?php echo $addon->slug; ?> WIDGET -->
-		<?php
+				<?php
 			} // end foreach
 		?>
 

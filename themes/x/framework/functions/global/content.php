@@ -16,6 +16,8 @@
 //   05. Content More String
 //   06. Entry Navigation
 //   07. Does Not Need Entry Meta
+//   08. Scroll Top Anchor
+//   09. Legacy Header Widget Areas
 // =============================================================================
 
 // Alternate Title
@@ -173,3 +175,105 @@ if ( ! function_exists( 'x_does_not_need_entry_meta' ) ) :
 
   }
 endif;
+
+
+
+// Scroll Top Anchor
+// =============================================================================
+
+if ( ! function_exists( 'x_scroll_top_anchor' ) ) :
+  function x_scroll_top_anchor() {
+
+    if ( x_get_option( 'x_footer_scroll_top_display' ) == '1' ) : ?>
+
+      <a class="x-scroll-top <?php echo x_get_option( 'x_footer_scroll_top_position' ); ?> fade" title="<?php esc_attr_e( 'Back to Top', '__x__' ); ?>">
+        <i class="x-icon-angle-up" data-x-icon="&#xf106;"></i>
+      </a>
+
+      <script>
+
+      jQuery(document).ready(function($) {
+
+        var windowObj            = $(window);
+        var body                 = $('body');
+        var bodyOffsetBottom     = windowObj.scrollBottom();             // 1
+        var bodyHeightAdjustment = body.height() - bodyOffsetBottom;     // 2
+        var bodyHeightAdjusted   = body.height() - bodyHeightAdjustment; // 3
+        var scrollTopAnchor      = $('.x-scroll-top');
+
+        function sizingUpdate(){
+          var bodyOffsetTop = windowObj.scrollTop();
+          if ( bodyOffsetTop > ( bodyHeightAdjusted * <?php echo x_get_option( 'x_footer_scroll_top_display_unit' ) / 100; ?> ) ) {
+            scrollTopAnchor.addClass('in');
+          } else {
+            scrollTopAnchor.removeClass('in');
+          }
+        }
+
+        windowObj.bind('scroll', sizingUpdate).resize(sizingUpdate);
+        sizingUpdate();
+
+        scrollTopAnchor.click(function(){
+          $('html, body').animate({ scrollTop: 0 }, 850, 'easeInOutExpo');
+          return false;
+        });
+
+      });
+
+      </script>
+
+    <?php endif;
+
+  }
+endif;
+
+add_action( 'x_after_site_end', 'x_scroll_top_anchor' );
+
+
+
+// Legacy Header Widget Areas
+// =============================================================================
+
+if ( ! function_exists( 'x_legacy_header_widget_areas' ) ) :
+  function x_legacy_header_widget_areas() {
+
+    $n = x_get_option( 'x_header_widget_areas' );
+
+    if ( ! apply_filters( 'x_legacy_cranium_headers', true ) || $n == 0 || x_is_blank( 3 ) || x_is_blank( 6 ) || x_is_blank( 7 ) || x_is_blank( 8 ) ) {
+      return;
+    }
+
+    ?>
+
+    <div class="x-widgetbar collapse">
+      <div class="x-widgetbar-inner">
+        <div class="x-container max width">
+
+          <?php
+
+          $i = 0; while ( $i < $n ) : $i++;
+
+            $last = ( $i == $n ) ? ' last' : '';
+
+            echo '<div class="x-column x-md x-1-' . $n . $last . '">';
+              dynamic_sidebar( 'header-' . $i );
+            echo '</div>';
+
+          endwhile;
+
+          ?>
+
+        </div>
+      </div>
+    </div>
+
+    <a href="#" class="x-btn-widgetbar collapsed" data-toggle="collapse" data-target=".x-widgetbar">
+      <i class="x-icon-plus-circle" data-x-icon="&#xf055;"><span class="visually-hidden"><?php _e( 'Toggle the Widgetbar', '__x__' ); ?></span></i>
+    </a>
+
+    <?php
+
+  }
+endif;
+
+add_action( 'x_after_site_end', 'x_legacy_header_widget_areas' );

@@ -41,16 +41,20 @@ require( './jquery.cs-code-editor' );
 ( function( $ ) {
 
 	function invalidEl( el ) {
-		if ( el.is( 'textarea' ) ) return false;
+		if ( el.is( 'textarea' ) ) {
+			return false;
+		}
 		console.warn( 'csCodeEditor can only be applied to textarea elements.' );
 		return true;
 	}
 
 	$.fn.csCodeEditor = function( options ) {
 
-		var settings, defaults, $textarea, $wrapper, $label;
+		var settings, defaults, $textarea, $wrapper, $header;
 
-		if ( invalidEl( this ) ) return this;
+		if ( invalidEl( this ) ) {
+			return this;
+		}
 
 		$textarea = this;
 		defaults = $.fn.csCodeEditor.defaults;
@@ -65,10 +69,14 @@ require( './jquery.cs-code-editor' );
       $wrapper.addClass( 'cs-code-editor-active' );
     }
 
-    $textarea.csCodeEditorInstance = csCodeMirror.fromTextArea( $textarea[0], settings );
+    $textarea.csCodeEditorInstance = window.csCodeMirror.fromTextArea( $textarea[0], settings );
 
 		$header = $( defaults.header );
     $header.find('.cs-code-editor-label').text( settings.label );
+		if ( settings.runButton ) {
+			$header.find('.cs-code-editor-panel').prepend( $( defaults.runButton ) );
+		}
+
 		$textarea.csCodeEditorInstance.addPanel( $header[0] );
 		$( $textarea.csCodeEditorInstance.getWrapperElement() ).removeAttr( 'style' );
 
@@ -89,10 +97,12 @@ require( './jquery.cs-code-editor' );
       var current = $wrapper.hasClass( 'cs-code-editor-active' );
 
       // Abort if no state change
-      if ( state === current ) return;
+      if ( state === current ) {
+        return;
+      }
 
       // Infer state
-			if ( 'undefined' == typeof state ) {
+			if ( 'undefined' === typeof state ) {
 				state = ! current;
 			}
 
@@ -125,7 +135,7 @@ require( './jquery.cs-code-editor' );
 		$textarea.on( 'csCodeEditor.expand', function( e, state ) {
 
 			// Infer state
-			if ( 'undefined' == typeof state ) {
+			if ( 'undefined' === typeof state ) {
 				state = ! $wrapper.hasClass( 'cs-code-editor-expanded' );
 			}
 
@@ -152,6 +162,14 @@ require( './jquery.cs-code-editor' );
 
     } );
 
+    // Run Button
+		$wrapper.find( 'button.cs-run' ).click( function( e ) {
+			e.preventDefault();
+			e.stopPropagation();
+			$(this).blur();
+			$textarea.trigger( 'csCodeEditor.run', false );
+		});
+
 		// Close Button
 		$wrapper.find( 'button.cs-close' ).click( function( e ) {
 			e.preventDefault();
@@ -176,7 +194,9 @@ require( './jquery.cs-code-editor' );
 		// Close if esc is pressed
 		if ( settings.closeWithEsc ) {
 			$textarea.parent().keyup( function( e ) {
-				if ( 27 === e.keyCode ) $textarea.trigger( 'csCodeEditor.toggle', false );
+				if ( 27 === e.keyCode ) {
+          $textarea.trigger( 'csCodeEditor.toggle', false );
+        }
 			});
 		}
 
@@ -184,25 +204,25 @@ require( './jquery.cs-code-editor' );
 	};
 
 	$.fn.csCodeEditorShow = function() {
-		if ( invalidEl( this ) ) return this;
+		if ( invalidEl( this ) ) { return this; }
 		this.trigger( 'csCodeEditor.toggle', true );
 		return this;
 	};
 
 	$.fn.csCodeEditorHide = function() {
-		if ( invalidEl( this ) ) return this;
+		if ( invalidEl( this ) ) { return this; }
 		this.trigger( 'csCodeEditor.toggle', false );
 		return this;
 	};
 
 	$.fn.csCodeEditorToggle = function( state, silent ) {
-		if ( invalidEl( this ) ) return this;
-    if ( ! silent ) this.trigger( 'csCodeEditor.toggle', state );
+		if ( invalidEl( this ) ) { return this; }
+    if ( ! silent ) { this.trigger( 'csCodeEditor.toggle', state ); }
 		return this;
 	};
 
   $.fn.csCodeEditorOrient = function( state ) {
-    if ( invalidEl( this ) ) return this;
+    if ( invalidEl( this ) ) { return this; }
     this.trigger( 'csCodeEditor.orient', state );
     return this;
   };
@@ -210,6 +230,7 @@ require( './jquery.cs-code-editor' );
 	$.fn.csCodeEditor.defaults = {
 		wrapper: '<div class="cs-code-editor-wrapper code-editor"></div>',
 		header: '<div class="cs-code-editor-header"><div class="cs-code-editor-label"></div><div class="cs-code-editor-panel"><button class="cs-close"><span class="cs-visually-hidden">Close</span></button><button class="cs-expand"><span class="cs-visually-hidden">Expand</span></button><button class="cs-collapse"><span class="cs-visually-hidden">Collapse</span></button></div></div>',
+		runButton: '<button class="cs-run">Run</button>',
 
 		settings: {
 
@@ -221,6 +242,7 @@ require( './jquery.cs-code-editor' );
 			closeWithEsc: true,
       orientation: 'vertical',
       startOpen: false,
+			runButton: false,
 
 			//
 			// CodeMirror Settings
@@ -257,7 +279,6 @@ require( './jquery.cs-code-editor' );
 			addModeClass:                true,
 			maxHighlightLength:          10000,
 			viewportMargin:              10,
-			lineWrapping:                false,
 
 			//
 			// CodeMirror Extensions.
@@ -275,7 +296,7 @@ require( './jquery.cs-code-editor' );
 		}
 	};
 
-}( jQuery ) );
+}( window.jQuery ) );
 
 },{}],3:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others

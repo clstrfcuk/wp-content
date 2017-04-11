@@ -9,10 +9,10 @@ if( !defined( 'ABSPATH') ) exit();
 
 class RevSliderUpdate {
 
-	private $plugin_url			= 'http://codecanyon.net/item/slider-revolution-responsive-wordpress-plugin/2751380';
-	private $remote_url			= 'http://updates.themepunch.tools/check_for_updates.php';
-	private $remote_url_info	= 'http://updates.themepunch.tools/revslider/revslider.php';
-	private $remote_temp_active	= 'http://updates.themepunch.tools/temp_activate.php';
+	private $plugin_url			= 'https://codecanyon.net/item/slider-revolution-responsive-wordpress-plugin/2751380';
+	private $remote_url			= 'https://updates.themepunch.tools/check_for_updates.php';
+	private $remote_url_info	= 'https://updates.themepunch.tools/revslider/revslider.php';
+	private $remote_temp_active	= 'https://updates.themepunch.tools/temp_activate.php';
 	private $plugin_slug		= 'revslider';
 	private $plugin_path		= 'revslider/revslider.php';
 	private $version;

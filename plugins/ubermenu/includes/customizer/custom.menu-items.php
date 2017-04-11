@@ -413,7 +413,7 @@ function ubermenu_item_save_image_dimensions( $item_id , $setting , $val , &$sav
 		if( in_array( $val , array( 'natural' , 'custom' ) ) ){
 
 			$layout = $saved_settings['item_layout'];
-			if( $layout == 'default' ) $layout = 'image_left';
+			if( $layout == 'default' ) $layout = 'image_left';	//TODO cleanup - check Default Image Layout (for Configuration) and Submenu Item Layout
 
 			if( in_array( $layout , array( 'image_left' , 'image_right' /*, 'image_top' , 'image_bottom'*/ ) ) ){
 

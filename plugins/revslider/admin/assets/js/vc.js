@@ -1,8 +1,10 @@
 window.VcSliderRevolution = vc.shortcode_view.extend({
+	initialize: function() {
+		return window.VcSliderRevolution.__super__.initialize.call(this);
+	},
 	render: function () {
 		rs_cur_vc_obj = this;
 		var params = this.model.get('params');
-		
 		if(vc.add_element_block_view.$el.is(':visible')){ //hack to check if we just loaded the page or if we rendered it because of adding a new Slider element
 			rs_vc_show_overlay(params);
 		}
@@ -60,7 +62,6 @@ if(typeof(window.InlineShortcodeView) !== 'undefined'){
 }
 
 function rs_vc_show_overlay(params){
-	
 	if ( rs_cur_vc_obj !== false && rs_cur_vc_obj.model.get('cloned') === true){
 		//set cloned to false, so that the edit button will work. Then return as this is at the process where the element gets cloned
 		rs_cur_vc_obj.model.save('cloned', false);

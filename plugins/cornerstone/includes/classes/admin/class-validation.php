@@ -17,23 +17,23 @@ class Cornerstone_Validation extends Cornerstone_Plugin_Component {
 
 	public function script_data() {
 		return array(
-			'verifying'   => __( 'Verifying license&hellip;', 'cornerstone' ),
-			'error'       => __( '<strong>Uh oh</strong>, we couldn&apos;t check if this license was valid. <a data-tco-error-details href="#">Details.</a>', 'cornerstone' ),
+			'verifying'   => csi18n('admin.validation-verifying'),
+			'error'       => csi18n('admin.validation-couldnt-verify'),
 			'notices'     => array(
-				'validation-complete' => __( '<strong>Congratulations!</strong> Cornerstone is now validated for this site!', '__x__ ' )
+				'validation-complete' => csi18n('admin.validation-congrats'),
 			),
-			'errorButton' => __( 'Go Back', 'cornerstone' ),
+			'errorButton' => csi18n('admin.validation-go-back'),
 		);
 	}
 
 	public function script_data_revoke() {
 		return array(
-			'confirm'  => __( 'By revoking validation, you will no longer receive automatic updates. The site will still be linked in your Themeco account, so you can re-validate at anytime.<br/><br/> Visit "Licenses" in your Themeco account to transfer a license to another site.', 'cornerstone' ),
-			'accept'   => __( 'Yes, revoke validation', 'cornerstone' ),
-			'decline'  => __( 'Stay validated', 'cornerstone' ),
-			'revoking' => __( 'Revoking&hellip;', 'cornerstone' ),
+			'confirm'  => csi18n('admin.validation-revoke-confirm'),
+			'accept'   => csi18n('admin.validation-revoke-accept'),
+			'decline'  => csi18n('admin.validation-revoke-decline'),
+			'revoking' => csi18n('admin.validation-revoking'),
 			'notices'  => array(
-				'validation-revoked' => sprintf( __( '<strong>Validation revoked.</strong> You can re-assign licenses from <a href="%s" target="_blank">Manage Licenses</a>.', 'cornerstone' ), 'https://community.theme.co/my-licenses/' )
+				'validation-revoked' => sprintf( csi18n('admin.validation-revoked'), 'https://theme.co/apex/licenses/' )
 			)
 		);
 	}
@@ -70,8 +70,8 @@ class Cornerstone_Validation extends Cornerstone_Plugin_Component {
 		// Purchase code is not valid
 		if ( ! $validator->is_valid() ) {
 			return array(
-				'message' => __( 'We&apos;ve checked the code, but it <strong>doesn&apos;t appear to be an Cornerstone purchase code or Themeco license.</strong> Please double check the code and try again.', 'cornerstone' ),
-				'button'  => __( 'Go Back', 'cornerstone' ),
+				'message' => csi18n('admin.validation-msg-invalid'),
+				'button'  => csi18n('admin.validation-go-back'),
 				'dismiss' => true,
 			);
 		}
@@ -79,18 +79,18 @@ class Cornerstone_Validation extends Cornerstone_Plugin_Component {
 		// Valid, but the purchase code isn't associated with an account.
 		if ( ! $validator->is_verified() ) {
       return array(
-        'message' => __( 'This looks like a <strong>brand new purchase code that hasn&apos;t been added to a Themeco account yet.</strong> Login to your existing account or register a new one to continue.', 'cornerstone' ),
-        'button'  => __( 'Login or Register', 'cornerstone' ),
-        'url'     => add_query_arg( $this->out_params(), 'https://community.theme.co/product-validation/' )
+        'message' => csi18n('admin.validation-msg-new-code'),
+        'button'  => csi18n('admin.validation-login'),
+        'url'     => add_query_arg( $this->out_params(), 'https://theme.co/apex/product-validation/' )
       );
     }
 
     // Purchase code linked to an account, but doesn't have a site
     if ( ! $validator->has_site() ) {
       return array(
-        'message' => __( 'Your code is valid, but <strong>we couldn&apos;t automatically link it to your site.</strong> You can add this site from within your Themeco account.', 'cornerstone' ),
-        'button'  => __( 'Manage Licenses', 'cornerstone' ),
-        'url'     => 'https://community.theme.co/my-licenses/',
+        'message' => csi18n('admin.validation-msg-cant-link'),
+        'button'  => csi18n('admin.validation-manage-licenses'),
+        'url'     => 'https://theme.co/apex/licenses/',
         'dismiss' => true,
         'newTab'  => true
       );
@@ -99,9 +99,9 @@ class Cornerstone_Validation extends Cornerstone_Plugin_Component {
     // Purchase code linked, and site exists, but doesn't match this site.
     if ( ! $validator->site_match() ) {
       return array(
-        'message' => __( 'Your code is valid but looks like it has <strong>already been used on another site.</strong> You can revoke and re-assign within your Themeco account.', 'cornerstone' ),
-        'button'  => __( 'Manage Licenses', 'cornerstone' ),
-        'url'     => 'https://community.theme.co/my-licenses/',
+        'message' => csi18n('admin.validation-msg-in-use'),
+        'button'  => csi18n('admin.validation-manage-licenses'),
+        'url'     => 'https://theme.co/apex/licenses/',
         'dismiss' => true,
         'newTab'  => true
       );
@@ -109,7 +109,7 @@ class Cornerstone_Validation extends Cornerstone_Plugin_Component {
 
     return array(
       'complete' => true,
-      'message' => __( '<strong>Congratulations,</strong> your site is now validated!', 'cornerstone' )
+      'message' => csi18n('admin.validation-congrats')
     );
 
   }

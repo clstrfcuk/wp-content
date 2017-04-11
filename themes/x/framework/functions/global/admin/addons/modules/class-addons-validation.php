@@ -26,12 +26,12 @@ class X_Addons_Validation {
 
   public function script_data_revoke() {
     return array(
-      'confirm'  => __( 'By revoking validation, you will no longer receive automatic updates, access to demo content, or the ability to install Extensions. The site will still be linked in your Themeco account, so you can re-validate at anytime.<br/><br/> Visit "Licenses" in your Themeco account to transfer a license to another site.', '__x__' ),
+      'confirm'  => x_i18n( 'overview', 'revoke-validation'),
       'accept'   => __( 'Yes, revoke validation', '__x__' ),
       'decline'  => __( 'Stay validated', '__x__' ),
       'revoking' => __( 'Revoking&hellip;', '__x__' ),
       'notices'  => array(
-        'validation-revoked' => sprintf( __( '<strong>Validation revoked.</strong> You can re-assign licenses from <a href="%s" target="_blank">Manage Licenses</a>.', '__x__' ), 'https://community.theme.co/my-licenses/' )
+        'validation-revoked' => sprintf( __( '<strong>Validation revoked.</strong> You can re-assign licenses from <a href="%s" target="_blank">Manage Licenses</a>.', '__x__' ), 'https://theme.co/apex/licenses/' )
       )
     );
   }
@@ -45,7 +45,7 @@ class X_Addons_Validation {
     }
 
     $this->code = sanitize_text_field( $_POST['code'] );
-    $validator = new TCO_Validator( $this->code, 'x' );
+    $validator = new TCO_Validator( $this->code, X_SLUG );
 
     $validator->run();
 
@@ -54,6 +54,7 @@ class X_Addons_Validation {
     }
 
     $response = $this->get_validation_response( $validator );
+    $response['response_body'] = $validator->get_response();
 
     if ( isset( $response['complete'] ) && $response['complete'] ) {
       $this->update_validation( $this->code );
@@ -70,7 +71,7 @@ class X_Addons_Validation {
     // Purchase code is not valid
     if ( ! $validator->is_valid() ) {
       return array(
-        'message' => __( 'We&apos;ve checked the code, but it <strong>doesn&apos;t appear to be an X purchase code or Themeco license.</strong> Please double check the code and try again.', '__x__' ),
+        'message' => __( 'We&apos;ve checked your code, but it <strong>doesn&apos;t appear to be a valid license.</strong> Please double check the code and try again.', '__x__' ),
         'button'  => __( 'Go Back', '__x__' ),
         'dismiss' => true,
       );
@@ -79,9 +80,9 @@ class X_Addons_Validation {
     // Valid, but the purchase code isn't associated with an account.
     if ( ! $validator->is_verified() ) {
       return array(
-        'message' => __( 'This looks like a <strong>brand new purchase code that hasn&apos;t been added to a Themeco account yet.</strong> Login to your existing account or register a new one to continue.', '__x__' ),
+        'message' => __( 'This looks like a <strong>brand new license that hasn&apos;t been added to a Themeco account yet.</strong> Login to your existing account or register a new one to continue.', '__x__' ),
         'button'  => __( 'Login or Register', '__x__' ),
-        'url'     => add_query_arg( $this->out_params(), 'https://community.theme.co/product-validation/' )
+        'url'     => add_query_arg( $this->out_params(), 'https://theme.co/apex/product-validation/' )
       );
     }
 
@@ -90,7 +91,7 @@ class X_Addons_Validation {
       return array(
         'message' => __( 'Your code is valid, but <strong>we couldn&apos;t automatically link it to your site.</strong> You can add this site from within your Themeco account.', '__x__' ),
         'button'  => __( 'Manage Licenses', '__x__' ),
-        'url'     => 'https://community.theme.co/my-licenses/',
+        'url'     => 'https://theme.co/apex/licenses/',
         'dismiss' => true,
         'newTab'  => true
       );
@@ -101,7 +102,7 @@ class X_Addons_Validation {
       return array(
         'message' => __( 'Your code is valid but looks like it has <strong>already been used on another site.</strong> You can revoke and re-assign within your Themeco account.', '__x__' ),
         'button'  => __( 'Manage Licenses', '__x__' ),
-        'url'     => 'https://community.theme.co/my-licenses/',
+        'url'     => 'https://theme.co/apex/licenses/',
         'dismiss' => true,
         'newTab'  => true
       );

@@ -8,10 +8,15 @@
 
 ?>
 
-<?php x_get_view( 'global', '_header' ); ?>
+<?php
 
-  <?php x_get_view( 'global', '_slider-above' ); ?>
-  <?php x_get_view( 'global', '_slider-below' ); ?>
+if ( apply_filters( 'x_legacy_cranium_headers', true ) ) {
+  x_get_view( 'global', '_header' );
+} else {
+  get_header();
+}
+
+?>
 
   <div class="x-container max width offset">
     <div class="x-main full" role="main">
@@ -27,6 +32,12 @@
     </div>
   </div>
 
-  <?php x_get_view( 'global', '_footer', 'scroll-top' ); ?>
+<?php
 
-<?php x_get_view( 'global', '_footer' ); ?>
+if ( apply_filters( 'x_legacy_cranium_footers', true ) ) {
+  x_get_view( 'global', '_footer' );
+} else {
+  get_footer();
+}
+
+?>

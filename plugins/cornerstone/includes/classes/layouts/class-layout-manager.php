@@ -139,14 +139,14 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 			$post['type'] = 'block';
 
 		if ( !isset( $post['title'] ) )
-			$post['title'] = __( 'Untitled', 'cornerstone' );
+			$post['title'] = csi18n('common.untitled');
 
 		$post['slug'] = uniqid( sanitize_key( $post['title'] ) . '_' );
 
 		$title = $post['title'];
 		$duplicates = 1;
 		while ( !is_null( get_page_by_title( $title, ARRAY_N, 'cs_user_templates' ) ) ) {
-			$title = sprintf( __( '%s (%d)', 'cornerstone' ), $post['title'], $duplicates++ );
+			$title = sprintf( csi18n('common.numbered'), $post['title'], $duplicates++ );
 		}
 		$post['title'] = $title;
 

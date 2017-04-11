@@ -1,13 +1,13 @@
 /*!
- *  Font Awesome 4.5.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */
 /* FONT PATH
  * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url('../fonts/fontawesome-webfont.eot?v=4.5.0');
-  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.5.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.5.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.5.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.5.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.5.0#fontawesomeregular') format('svg');
+  src: url('../fonts/fontawesome-webfont.eot?v=4.7.0');
+  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -70,10 +70,10 @@
 .fa-icon-pull-right {
   float: right;
 }
-.fa-icon.fa-icon-pull-left {
+.fa.fa-icon-pull-left {
   margin-right: .3em;
 }
-.fa-icon.fa-icon-pull-right {
+.fa.fa-icon-pull-right {
   margin-left: .3em;
 }
 /* Deprecated as of 4.4.0 */
@@ -83,10 +83,10 @@
 .pull-left {
   float: left;
 }
-.fa-icon.pull-left {
+.fa.pull-left {
   margin-right: .3em;
 }
-.fa-icon.pull-right {
+.fa.pull-right {
   margin-left: .3em;
 }
 .fa-icon-spin {
@@ -118,31 +118,31 @@
   }
 }
 .fa-icon-rotate-90 {
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
   -webkit-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   transform: rotate(90deg);
 }
 .fa-icon-rotate-180 {
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
   -webkit-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 .fa-icon-rotate-270 {
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
   -webkit-transform: rotate(270deg);
   -ms-transform: rotate(270deg);
   transform: rotate(270deg);
 }
 .fa-icon-flip-horizontal {
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1);
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
   -webkit-transform: scale(-1, 1);
   -ms-transform: scale(-1, 1);
   transform: scale(-1, 1);
 }
 .fa-icon-flip-vertical {
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1);
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
   -webkit-transform: scale(1, -1);
   -ms-transform: scale(1, -1);
   transform: scale(1, -1);
@@ -1383,7 +1383,7 @@
 .fa-icon-digg:before {
   content: "\f1a6";
 }
-.fa-icon-pied-piper:before {
+.fa-icon-pied-piper-pp:before {
   content: "\f1a7";
 }
 .fa-icon-pied-piper-alt:before {
@@ -1509,6 +1509,7 @@
   content: "\f1ce";
 }
 .fa-icon-ra:before,
+.fa-icon-resistance:before,
 .fa-icon-rebel:before {
   content: "\f1d0";
 }
@@ -1831,6 +1832,7 @@
   content: "\f23e";
 }
 .fa-icon-battery-4:before,
+.fa-icon-battery:before,
 .fa-icon-battery-full:before {
   content: "\f240";
 }
@@ -2083,4 +2085,253 @@
 }
 .fa-icon-percent:before {
   content: "\f295";
+}
+.fa-icon-gitlab:before {
+  content: "\f296";
+}
+.fa-icon-wpbeginner:before {
+  content: "\f297";
+}
+.fa-icon-wpforms:before {
+  content: "\f298";
+}
+.fa-icon-envira:before {
+  content: "\f299";
+}
+.fa-icon-universal-access:before {
+  content: "\f29a";
+}
+.fa-icon-wheelchair-alt:before {
+  content: "\f29b";
+}
+.fa-icon-question-circle-o:before {
+  content: "\f29c";
+}
+.fa-icon-blind:before {
+  content: "\f29d";
+}
+.fa-icon-audio-description:before {
+  content: "\f29e";
+}
+.fa-icon-volume-control-phone:before {
+  content: "\f2a0";
+}
+.fa-icon-braille:before {
+  content: "\f2a1";
+}
+.fa-icon-assistive-listening-systems:before {
+  content: "\f2a2";
+}
+.fa-icon-asl-interpreting:before,
+.fa-icon-american-sign-language-interpreting:before {
+  content: "\f2a3";
+}
+.fa-icon-deafness:before,
+.fa-icon-hard-of-hearing:before,
+.fa-icon-deaf:before {
+  content: "\f2a4";
+}
+.fa-icon-glide:before {
+  content: "\f2a5";
+}
+.fa-icon-glide-g:before {
+  content: "\f2a6";
+}
+.fa-icon-signing:before,
+.fa-icon-sign-language:before {
+  content: "\f2a7";
+}
+.fa-icon-low-vision:before {
+  content: "\f2a8";
+}
+.fa-icon-viadeo:before {
+  content: "\f2a9";
+}
+.fa-icon-viadeo-square:before {
+  content: "\f2aa";
+}
+.fa-icon-snapchat:before {
+  content: "\f2ab";
+}
+.fa-icon-snapchat-ghost:before {
+  content: "\f2ac";
+}
+.fa-icon-snapchat-square:before {
+  content: "\f2ad";
+}
+.fa-icon-pied-piper:before {
+  content: "\f2ae";
+}
+.fa-icon-first-order:before {
+  content: "\f2b0";
+}
+.fa-icon-yoast:before {
+  content: "\f2b1";
+}
+.fa-icon-themeisle:before {
+  content: "\f2b2";
+}
+.fa-icon-google-plus-circle:before,
+.fa-icon-google-plus-official:before {
+  content: "\f2b3";
+}
+.fa-icon-fa:before,
+.fa-icon-font-awesome:before {
+  content: "\f2b4";
+}
+.fa-icon-handshake-o:before {
+  content: "\f2b5";
+}
+.fa-icon-envelope-open:before {
+  content: "\f2b6";
+}
+.fa-icon-envelope-open-o:before {
+  content: "\f2b7";
+}
+.fa-icon-linode:before {
+  content: "\f2b8";
+}
+.fa-icon-address-book:before {
+  content: "\f2b9";
+}
+.fa-icon-address-book-o:before {
+  content: "\f2ba";
+}
+.fa-icon-vcard:before,
+.fa-icon-address-card:before {
+  content: "\f2bb";
+}
+.fa-icon-vcard-o:before,
+.fa-icon-address-card-o:before {
+  content: "\f2bc";
+}
+.fa-icon-user-circle:before {
+  content: "\f2bd";
+}
+.fa-icon-user-circle-o:before {
+  content: "\f2be";
+}
+.fa-icon-user-o:before {
+  content: "\f2c0";
+}
+.fa-icon-id-badge:before {
+  content: "\f2c1";
+}
+.fa-icon-drivers-license:before,
+.fa-icon-id-card:before {
+  content: "\f2c2";
+}
+.fa-icon-drivers-license-o:before,
+.fa-icon-id-card-o:before {
+  content: "\f2c3";
+}
+.fa-icon-quora:before {
+  content: "\f2c4";
+}
+.fa-icon-free-code-camp:before {
+  content: "\f2c5";
+}
+.fa-icon-telegram:before {
+  content: "\f2c6";
+}
+.fa-icon-thermometer-4:before,
+.fa-icon-thermometer:before,
+.fa-icon-thermometer-full:before {
+  content: "\f2c7";
+}
+.fa-icon-thermometer-3:before,
+.fa-icon-thermometer-three-quarters:before {
+  content: "\f2c8";
+}
+.fa-icon-thermometer-2:before,
+.fa-icon-thermometer-half:before {
+  content: "\f2c9";
+}
+.fa-icon-thermometer-1:before,
+.fa-icon-thermometer-quarter:before {
+  content: "\f2ca";
+}
+.fa-icon-thermometer-0:before,
+.fa-icon-thermometer-empty:before {
+  content: "\f2cb";
+}
+.fa-icon-shower:before {
+  content: "\f2cc";
+}
+.fa-icon-bathtub:before,
+.fa-icon-s15:before,
+.fa-icon-bath:before {
+  content: "\f2cd";
+}
+.fa-icon-podcast:before {
+  content: "\f2ce";
+}
+.fa-icon-window-maximize:before {
+  content: "\f2d0";
+}
+.fa-icon-window-minimize:before {
+  content: "\f2d1";
+}
+.fa-icon-window-restore:before {
+  content: "\f2d2";
+}
+.fa-icon-times-rectangle:before,
+.fa-icon-window-close:before {
+  content: "\f2d3";
+}
+.fa-icon-times-rectangle-o:before,
+.fa-icon-window-close-o:before {
+  content: "\f2d4";
+}
+.fa-icon-bandcamp:before {
+  content: "\f2d5";
+}
+.fa-icon-grav:before {
+  content: "\f2d6";
+}
+.fa-icon-etsy:before {
+  content: "\f2d7";
+}
+.fa-icon-imdb:before {
+  content: "\f2d8";
+}
+.fa-icon-ravelry:before {
+  content: "\f2d9";
+}
+.fa-icon-eercast:before {
+  content: "\f2da";
+}
+.fa-icon-microchip:before {
+  content: "\f2db";
+}
+.fa-icon-snowflake-o:before {
+  content: "\f2dc";
+}
+.fa-icon-superpowers:before {
+  content: "\f2dd";
+}
+.fa-icon-wpexplorer:before {
+  content: "\f2de";
+}
+.fa-icon-meetup:before {
+  content: "\f2e0";
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
 }

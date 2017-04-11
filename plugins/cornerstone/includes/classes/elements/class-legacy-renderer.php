@@ -166,27 +166,4 @@ class Cornerstone_Legacy_Renderer extends Cornerstone_Plugin_Component {
 		return $data;
 	}
 
-	public function ksesTags( ) {
-
-		$tags = wp_kses_allowed_html( 'post' );
-
-		$tags['iframe'] = array (
-	    'align'       => true,
-	    'frameborder' => true,
-	    'height'      => true,
-	    'width'       => true,
-	    'sandbox'     => true,
-	    'seamless'    => true,
-	    'scrolling'   => true,
-	    'srcdoc'      => true,
-	    'src'         => true,
-	    'class'       => true,
-	    'id'          => true,
-	    'style'       => true,
-	    'border'      => true,
-	    'list'        => true //YouTube embeds
-		);
-
-		return $tags;
-	}
 }

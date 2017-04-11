@@ -7,29 +7,7 @@ class Cornerstone_Model_Headers_Header_Template extends Cornerstone_Plugin_Compo
 
   public function setup() {
 
-    $records = apply_filters( 'cornerstone_header_templates', array() );
-
-    if ( empty( $records ) ) {
-
-      // TODO: Remove <<<
-      $records[] = array(
-        'id' => 'default',
-        'title' => __( 'Sample', 'cornerstone' ),
-        'regions' => $this->plugin->config( 'headers/sample-regions' ),
-        'settings' => array()
-      );
-      // >>>
-
-      $records[] = array(
-        'id' => 'blank',
-        'title' => __( 'Blank', 'cornerstone' ),
-        'regions' => array(),
-        'settings' => array()
-      );
-
-
-
-    }
+    $records = $this->plugin->loadComponent('Regions')->get_header_templates();
 
     foreach ($records as $record) {
       $this->resources[] = $this->to_resource( $record );

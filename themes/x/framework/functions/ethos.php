@@ -351,7 +351,7 @@ if ( ! function_exists( 'x_ethos_comment' ) ) :
           <header class="x-comment-header">
             <div class="x-comment-meta">
               <?php
-              printf( '<a href="%1$s" class="x-comment-time"><time itemprop="datePublished datetime="%2$s">%3$s</time></a>',
+              printf( '<a href="%1$s" class="x-comment-time"><time itemprop="datePublished" datetime="%2$s">%3$s</time></a>',
                 esc_url( get_comment_link( $comment->comment_ID ) ),
                 get_comment_time( 'c' ),
                 sprintf( __( '%1$s', '__x__' ),

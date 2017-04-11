@@ -8,7 +8,7 @@
 	});
 
 	//Backup
-	$( window ).load( function(){
+	$( window ).on( 'load' , function(){
 		initialize_ubermenu( 'window.load' );
 	});
 

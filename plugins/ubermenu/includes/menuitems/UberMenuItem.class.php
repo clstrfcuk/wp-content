@@ -68,7 +68,6 @@ abstract class UberMenuItem{
 		//Setup settings
 		$this->settings = $this->get_settings();
 		
-		
 		$this->source_id = $this->item->db_id;
 
 		if( isset( $this->item->object ) && ( $this->item->object == 'ubermenu-custom' ) ){
@@ -201,6 +200,8 @@ abstract class UberMenuItem{
 		if( isset( $this->settings ) ) return $this->settings;
 		
 		$settings = get_post_meta( $this->item->ID, UBERMENU_MENU_ITEM_META_KEY , true );
+		if( !$settings ) $settings = array();
+
 		//Allow dummy settings to override source item settings
 		if( $this->is_dummy && isset( $this->item->settings ) ){
 			if( !is_array( $settings ) ) $settings = array();
@@ -886,6 +887,9 @@ abstract class UberMenuItem{
 		$a = '';
 		$tag = 'a';
 
+		$parent_item = false;
+		if( $this->depth >= 1 ) $parent_item = $this->walker->parent_item();
+
 		//Highlight
 		if( $this->getSetting( 'highlight' ) == 'on' ){
 			$atts['class'].= ' ubermenu-highlight';
@@ -913,24 +917,46 @@ abstract class UberMenuItem{
 
 		//Content Align
 		$content_align = $this->getSetting( 'content_alignment' );
+		//Check inherit from parent
+		if( $content_align == 'default' ){
+//if( $this->id == 604 ) echo $this->item->title;
+			//if( $parent_item && $parent_item->getType() == 'menu_segment' ) echo '<br/>['.$parent_item->getType();
+			if( $this->depth >= 1 && $submenu_item_content_alignment = $parent_item->getSetting( 'submenu_item_content_alignment' ) ){
+				if( $submenu_item_content_alignment !== 'default' ){
+					$content_align = $submenu_item_content_alignment;
+				}
+			}		
+			//if( $parent_item && $parent_item->getType() == 'menu_segment' ) echo ']';	
+		}
+		//If a content alignment has been set on this item or the parent, set the class
 		if( $content_align != 'default' ){
 			$atts['class'].= ' ubermenu-content-align-'.$content_align;
 		}
-
+//$a.= $this->getSetting( 'submenu_item_content_alignment' );
 		
 		if( $layout == 'default' ){
 
-			if( $image ){
-				$layout = 'image_left';
+			//If the layout for the individual item is set to default, and this is a child item, check the parent item's setting
+			if( $this->depth >= 1 && $submenu_item_layout = $parent_item->getSetting( 'submenu_item_layout' ) ){
+				if( $submenu_item_layout !== 'default' ){
+					$layout = $submenu_item_layout;
+				}
 			}
+
+			//If the layout hasn't been determined yet, and we're using an image, check to see if there's a default image layout
+			if( $layout == 'default' && $image ){
+				$layout = $this->get_menu_op( 'image_layout_default' );
+				if( !$layout ) $layout = 'image_left';
+			}
+			//If there's an icon, use the default icon layout
 			else if( $icon ){
 				if( function_exists( 'ubermenu_icon_layout_default' ) ){
 					$layout = ubermenu_icon_layout_default( $this );
 				}
 				else $layout = 'icon_left';
-				
 			}
-			else{
+			//If nothing else has claimed it, we default to text_only
+			else if( $layout == 'default' ){
 				$layout = 'text_only';
 			}
 
@@ -1248,8 +1274,15 @@ abstract class UberMenuItem{
 		
 		$custom_content = $this->getSetting( 'custom_content' );
 		if( $custom_content ){
-			$pad_custom_content = $this->getSetting( 'pad_custom_content' ) == 'on' ? 'ubermenu-custom-content-padded' : '' ;
-			$html.= '<div class="ubermenu-content-block ubermenu-custom-content '.$pad_custom_content.'">';
+
+			//Pad the custom content wrapper?
+			$pad_custom_content = $this->getSetting( 'pad_custom_content' ) == 'on' ? ' ubermenu-custom-content-padded' : '' ;
+
+			//Add a custom class to the custom content wrapper?
+			$custom_class = $this->getSetting( 'custom_content_class' );
+			if( $custom_class ) $custom_class = ' ' . sanitize_html_class( $custom_class );
+
+			$html.= '<div class="ubermenu-content-block ubermenu-custom-content'.$pad_custom_content.$custom_class.'">';
 			$html.= do_shortcode( $custom_content );
 			$html.= '</div>';
 		}

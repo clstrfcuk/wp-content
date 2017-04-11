@@ -29,6 +29,16 @@ function x_tco() {
   return TCO_1_0::instance();
 }
 
+function x_tco_product_logo( $product, $class = '', $style = '' ) {
+  $tco = x_tco();
+
+  if ( is_callable( array( $tco, 'product_logo') ) ) {
+    return x_tco()->product_logo( $product, $class, $style );
+  }
+
+  return x_tco()->x_logo( $class, $style );
+
+}
 
 // Initialization
 // =============================================================================
@@ -77,7 +87,7 @@ function x_tco_localize_admin_js( $strings ) {
 function x_tco_localize_updates( $strings ) {
 
   $strings = array_merge( $strings, array(
-    'connection-error' => __( 'Could not establish connection. For assistance, please start by reviewing our article on troubleshooting <a href="https://community.theme.co/kb/connection-issues/">connection issues.</a>', '__x__' )
+    'connection-error' => __( 'Could not establish connection. For assistance, please start by reviewing our article on troubleshooting <a href="https://theme.co/apex/kb/connection-issues/">connection issues.</a>', '__x__' )
   ) );
 
   return $strings;

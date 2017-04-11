@@ -1,3 +1,4 @@
+/*jshint unused: false, node: true */
 /**
  * Handles retrieving and outputting images for the Gallery Preview metabox
  *
@@ -10,7 +11,7 @@
         var envira_preview_updating = false;
 
         // Show or hide the Preview metabox, depending on the Gallery Type
-        if ( $( 'input[name="_envira_gallery[type]"]:checked' ).val() == 'default' ) {
+        if ( $( 'input[name="_envira_gallery[type]"]:checked' ).val() === 'default' ) {
             $( '#envira-gallery-preview' ).hide();
         } else {
             $( '#envira-gallery-preview' ).show();
@@ -26,7 +27,7 @@
                 envira_gallery_preview  = $( '#envira-gallery-preview-main' );
 
             // If the gallery type is default, hide the preview and return.
-            if ( envira_gallery_type == 'default' ) {
+            if ( envira_gallery_type === 'default' ) {
                 $( envira_gallery_preview ).hide();
                 return;
             }
@@ -55,7 +56,7 @@
                     nonce:   envira_gallery_metabox.preview_nonce
                 },
                 success: function ( response ) {
-
+				
                     // Inject the response into the preview area
                     $( envira_gallery_preview ).html( response );
 

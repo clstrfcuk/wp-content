@@ -23,7 +23,12 @@
     </article>
   </div>
 
-  <?php x_get_view( 'global', '_header', 'widget-areas' ); ?>
-  <?php x_get_view( 'global', '_footer', 'scroll-top' ); ?>
+<?php
 
-<?php x_get_view( 'global', '_footer' ); ?>
+if ( apply_filters( 'x_legacy_cranium_footers', true ) ) {
+  x_get_view( 'global', '_footer' );
+} else {
+  get_footer();
+}
+
+?>

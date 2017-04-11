@@ -719,7 +719,7 @@ class UberMenu_Settings_API {
 			});
 
 			//Backup
-			$( window ).load( function(){
+			$( window ).on( 'load' , function(){
 				initialize_ubermenu_settings_api( 'window.load' );
 			});
 

@@ -54,9 +54,9 @@ class Envira_Gallery_Addons {
 
         // Load the base class object.
         $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
-        
+
         // Add custom addons submenu.
-        add_action( 'admin_menu', array( $this, 'admin_menu' ), 12 );
+        add_action( 'admin_menu', array( $this, 'admin_menu' ), 15 );
 
         // Add callbacks for addons tabs.
         add_action( 'envira_gallery_addons_section', array( $this, 'addons_content' ) );
@@ -122,7 +122,7 @@ class Envira_Gallery_Addons {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
-    } 
+    }
 
     /**
      * Register and enqueue addons page specific CSS.
@@ -149,7 +149,7 @@ class Envira_Gallery_Addons {
         // List.js
         wp_register_script( $this->base->plugin_slug . '-list-script', plugins_url( 'assets/js/min/list-min.js', $this->base->file ), array( 'jquery' ), $this->base->version, true );
         wp_enqueue_script( $this->base->plugin_slug . '-list-script' );
-        
+
         // Addons
         wp_register_script( $this->base->plugin_slug . '-addons-script', plugins_url( 'assets/js/addons.js', $this->base->file ), array( 'jquery' ), $this->base->version, true );
         wp_enqueue_script( $this->base->plugin_slug . '-addons-script' );
@@ -190,7 +190,7 @@ class Envira_Gallery_Addons {
         ?>
 
         <div id="addon-heading" class="subheading clearfix">
-            <h1><?php _e( 'Envira Gallery Addons', 'envira-gallery' ); ?></h1>
+            <h2><?php _e( 'Envira Gallery Addons', 'envira-gallery' ); ?></h2>
             <form id="add-on-search">
                 <span class="spinner"></span>
                 <input id="add-on-searchbox" name="envira-addon-search" value="" placeholder="<?php _e( 'Search Envira Addons', 'envira-gallery' ); ?>" />
@@ -202,6 +202,7 @@ class Envira_Gallery_Addons {
         </div>
 
         <div id="envira-gallery-addons" class="wrap">
+          	<h1 class="envira-hideme"></h1>
             <div class="envira-gallery envira-clear">
                 <?php do_action( 'envira_gallery_addons_section' ); ?>
             </div>
@@ -241,7 +242,7 @@ class Envira_Gallery_Addons {
                     <?php _e( 'There was an issue retrieving the addons for this site. Please click on the button below the refresh the addons data.', 'envira-gallery' ); ?>
                 </p>
                 <p>
-                    <a href="<?php echo $_SERVER['REQUEST_URI']; ?>" class="button button-primary"><?php _e( 'Refresh Addons', 'envira-gallery' ); ?></a>
+                    <a href="<?php echo rawurlencode( $_SERVER['REQUEST_URI'] ); ?>" class="button button-primary"><?php _e( 'Refresh Addons', 'envira-gallery' ); ?></a>
                 </p>
             </form>
             <?php
@@ -260,7 +261,7 @@ class Envira_Gallery_Addons {
                 ?>
                 <div class="envira-addons-area licensed" class="envira-clear">
                     <h3><?php _e( 'Available Addons', 'envira-gallery' ); ?></h3>
-                    
+
                     <div id="envira-addons-licensed" class="envira-addons">
                         <!-- list container class required for list.js -->
                         <div class="list">
@@ -281,7 +282,7 @@ class Envira_Gallery_Addons {
                 <div class="envira-addons-area unlicensed" class="envira-clear">
                     <h3><?php _e( 'Unlock More Addons', 'envira-gallery' ); ?></h3>
                     <p><?php echo sprintf( __( '<strong>Want even more addons?</strong> <a href="%s">Upgrade your Envira Gallery account</a> and unlock the following addons.', 'envira-gallery' ), $upgrade_url ); ?></p>
-                    
+
                     <div id="envira-addons-unlicensed" class="envira-addons">
                         <!-- list container class required for list.js -->
                         <div class="list">
@@ -313,7 +314,7 @@ class Envira_Gallery_Addons {
         // Get license key and type.
         $key = $this->base->get_license_key();
         $type = $this->base->get_license_key_type();
-        
+
         // Get addons data from transient or perform API query if no transient.
         //if ( false === ( $addons = get_transient( '_eg_addons' ) ) ) {
             $addons = $this->get_addons_data( $key );
@@ -324,7 +325,7 @@ class Envira_Gallery_Addons {
             return false;
         }
 
-        // Iterate through Addons, to build two arrays: 
+        // Iterate through Addons, to build two arrays:
         // - Addons the user is licensed to use,
         // - Addons the user isn't licensed to use.
         $results = array(
@@ -332,9 +333,14 @@ class Envira_Gallery_Addons {
             'unlicensed'=> array(),
         );
         foreach ( (array) $addons as $i => $addon ) {
-
+			
+			//Skip over addons that have been rolled into the core.
+			if( $addon->slug == 'envira-supersize' || $addon->slug == 'envira-standalone' ) {
+				continue;
+			}
+			
             // Determine whether the user is licensed to use this Addon or not.
-            if ( 
+            if (
                 empty( $type ) ||
                 ( in_array( 'advanced', $addon->categories ) && $type != 'gold' && $type != 'platinum' ) ||
                 ( in_array( 'basic', $addon->categories ) && ( $type != 'silver' && $type != 'gold' && $type != 'platinum' ) )
@@ -366,8 +372,8 @@ class Envira_Gallery_Addons {
 
         // Get Addons
         // If the key is valid, we'll get personalised upgrade URLs for each Addon (if necessary) and plugin update information.
-        $addons = Envira_Gallery_License::get_instance()->perform_remote_request( 'get-addons-data-v15', array( 'tgm-updater-key' => $key ) ); 
-        
+        $addons = Envira_Gallery_License::get_instance()->perform_remote_request( 'get-addons-data-v15', array( 'tgm-updater-key' => $key ) );
+
         // If there was an API error, set transient for only 10 minutes.
         if ( ! $addons ) {
             set_transient( '_eg_addons', false, 10 * MINUTE_IN_SECONDS );
@@ -444,7 +450,7 @@ class Envira_Gallery_Addons {
      */
     public function addons_link( $links ) {
 
-        $addons_link = sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( array( 'post_type' => 'envira', 'page' => 'envira-gallery-addons' ), admin_url( 'edit.php' ) ) ), __( 'Addons', 'envira-gallery' ) );
+        $addons_link = sprintf( '<a href="%s">%s</a>', esc_url( add_query_arg( array( 'post_type' => 'envira', 'page' => ( class_exists( 'Envira_Gallery' ) ? 'envira-gallery-addons' : 'envira-gallery-lite-addons' ) ), admin_url( 'edit.php' ) ) ), __( 'Addons', 'envira-gallery' ) );
         array_unshift( $links, $addons_link );
 
         return $links;
@@ -469,7 +475,7 @@ class Envira_Gallery_Addons {
         if ( ! $installed_plugins ) {
             $installed_plugins = get_plugins();
         }
-       
+
         // If the Addon doesn't supply an upgrade_url key, it's because the user hasn't provided a license
         // get_upgrade_link() will return the Lite or Pro link as necessary for us.
         if ( ! isset( $addon->upgrade_url ) ) {
@@ -491,7 +497,7 @@ class Envira_Gallery_Addons {
             <p class="envira-addon-excerpt"><?php echo esc_html( $addon->excerpt ); ?></p>
 
             <?php
-            // If the Addon is unlicensed, show the upgrade button 
+            // If the Addon is unlicensed, show the upgrade button
             if ( ! $is_licensed ) {
                 ?>
                 <div class="envira-addon-active envira-addon-message">
@@ -517,7 +523,7 @@ class Envira_Gallery_Addons {
                             <div class="envira-addon-action">
                                 <a class="button button-primary envira-addon-action-button envira-install-addon" href="#" rel="<?php echo esc_url( $addon->url ); ?>">
                                     <i class="envira-cloud-download"></i>
-                                    <?php _e( 'Install', 'envira-gallery' ); ?> 
+                                    <?php _e( 'Install', 'envira-gallery' ); ?>
                                 </a>
                                 <span class="spinner envira-gallery-spinner"></span>
                             </div>
@@ -535,7 +541,7 @@ class Envira_Gallery_Addons {
                                 <div class="envira-addon-action">
                                     <a class="button button-primary envira-addon-action-button envira-deactivate-addon" href="#" rel="<?php echo esc_attr( $plugin_basename ); ?>">
                                         <i class="envira-toggle-on"></i>
-                                        <?php _e( 'Deactivate', 'envira-gallery' ); ?> 
+                                        <?php _e( 'Deactivate', 'envira-gallery' ); ?>
                                     </a>
                                     <span class="spinner envira-gallery-spinner"></span>
                                 </div>
@@ -551,7 +557,7 @@ class Envira_Gallery_Addons {
                                 <div class="envira-addon-action">
                                     <a class="button button-primary envira-addon-action-button envira-activate-addon" href="#" rel="<?php echo esc_attr( $plugin_basename ); ?>">
                                         <i class="envira-toggle-on"></i>
-                                        <?php _e( 'Activate', 'envira-gallery' ); ?> 
+                                        <?php _e( 'Activate', 'envira-gallery' ); ?>
                                     </a>
                                     <span class="spinner envira-gallery-spinner"></span>
                                 </div>

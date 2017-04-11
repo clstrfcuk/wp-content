@@ -1,6 +1,8 @@
 <?php
 
-add_action( 'wp_footer' , 'ubermenu_diagnostics_loader' , 20 );
+//Priorty is large in an attempt to go last.  If jQuery gets deferred, lack of jQuery will throw an error
+//however, the error is isolated and not fatal
+add_action( 'wp_footer' , 'ubermenu_diagnostics_loader' , 999 );
 function ubermenu_diagnostics_loader(){
 
 	//Only load for admins
@@ -11,6 +13,7 @@ function ubermenu_diagnostics_loader(){
 
 	?>
 	<script type="text/javascript">
+	//UberMenu Diagnostics only loaded for admin users
 	(function($){
 		var ubermenu_diagnostics_initialized = false;
 		window.ubermenu_diagnostics_present = false;
@@ -19,9 +22,8 @@ function ubermenu_diagnostics_loader(){
 			ubermenu_init_diagnostics();
 		});
 
-		$( window ).load( function(){
+		$( window ).on( 'load' , function(){
 			ubermenu_init_diagnostics();
-			//setTimeout( function(){ ubermenu_init_diagnostics(); } , 200 );
 		});
 	
 		function ubermenu_init_diagnostics(){
@@ -37,8 +39,29 @@ function ubermenu_diagnostics_loader(){
 			});
 		}
 		function ubermenu_load_diagnostics(){	
-			$.getScript( '<?php echo UBERMENU_URL.'pro/diagnostics/diagnostics.js'; ?>' );
+			ubermenu_load_screen( true );
+			$.getScript( '<?php echo UBERMENU_URL.'pro/diagnostics/diagnostics.js'; ?>' , function(){ ubermenu_load_screen( false ) });
 			$('head').append('<link rel="stylesheet" type="text/css" href="<?php echo UBERMENU_URL.'pro/diagnostics/diagnostics.css'; ?>">');
+		}
+
+		window.ubermenu_load_screen = function( state ){
+			if( state !== false ) state = true;
+			var $screen = $( '.ubermenu-diagnostics-loadscreen' );
+			if( state ){
+				if( !$screen.length ){
+					var container = '<div class="ubermenu-diagnostics-loadscreen">';
+					container+= '<div class="um-folding-cube"><div class="um-cube1 um-cube"></div><div class="um-cube2 um-cube"></div><div class="um-cube4 um-cube"></div><div class="um-cube3 um-cube"></div></div>';
+					container+= '</div>';
+					jQuery( 'body' ).append( container );
+				}
+				else{
+					$screen.fadeIn();
+				}
+			}
+			else{
+				$screen.fadeOut();
+			}
+
 		}
 
 		//Testing

@@ -115,6 +115,12 @@ class UberMenuItemDynamicTerms extends UberMenuItemDynamic{
 				$this->notice.= print_r( $term_args , true );
 				$this->notice.= '</pre>';
 			}
+
+			if( is_wp_error( $terms ) ){
+				// $notice = ubermenu_admin_notice( $terms->get_error_message() );
+				//Invalid
+				return;
+			}
 			
 			$term_children = array();
 
@@ -435,6 +441,10 @@ class UberMenuItemDynamicTerm extends UberMenuItemDefault{
 		$a = '';
 		$tag = 'a';
 
+		//The parent item is the Dynamic Term item, so the grandparent item is what we seek
+		$parent_item = false;
+		if( $this->depth >= 2 ) $parent_item = $this->walker->grandparent_item();
+
 		//Image
 		//$image = $this->get_image();
 		$this->settings['item_image'] = apply_filters( 'ubermenu_dt_image' , '' , $this->ID , $term );
@@ -454,30 +464,77 @@ class UberMenuItemDynamicTerm extends UberMenuItemDefault{
 		$layout = $this->getSetting( 'item_layout' );
 		$atts['class'].= ' ubermenu-item-layout-'.$layout;
 
+
+
 		//Content Align
 		$content_align = $this->getSetting( 'content_alignment' );
+		//Check inherit from parent
+		if( $content_align == 'default' ){
+
+			if( $this->depth >= 2 ){
+				$submenu_item_content_alignment = 'default';
+
+				//If this is within a menu segment and we need to inherit back further, pass true
+				if( $parent_item->getType() == 'menu_segment' ){
+					$submenu_item_content_alignment = $parent_item->getSetting( 'submenu_item_content_alignment' , true );
+				}
+				else{
+					$submenu_item_content_alignment = $parent_item->getSetting( 'submenu_item_content_alignment' );
+				}
+
+				if( $submenu_item_content_alignment !== 'default' ){
+					$content_align = $submenu_item_content_alignment;
+				}
+			}	
+		}
+		//If a content alignment has been set on this item or the parent, set the class
 		if( $content_align != 'default' ){
 			$atts['class'].= ' ubermenu-content-align-'.$content_align;
 		}
 
-		
+
+
+		//ITEM LAYOUT
 		if( $layout == 'default' ){
 
-			if( $image ){
-				$layout = 'image_left';
+			//If the layout for the individual item is set to default, and this is a child item, check the parent item's setting
+			if( $this->depth >= 2 ){
+				$submenu_item_layout = 'default';
+				if( $parent_item->getType() == 'menu_segment' ){
+					$submenu_item_layout = $parent_item->getSetting( 'submenu_item_layout' , true );
+				}
+				else{
+					$submenu_item_layout = $parent_item->getSetting( 'submenu_item_layout' );
+				}
+
+				if( $submenu_item_layout !== 'default' ){
+					$layout = $submenu_item_layout;
+				}
 			}
+
+			//If the layout hasn't been determined yet, and we're using an image, check to see if there's a default image layout
+			if( $layout == 'default' && $image ){
+				$layout = $this->get_menu_op( 'image_layout_default' );
+				if( !$layout ) $layout = 'image_left';
+			}
+			//If there's an icon, use the default icon layout
 			else if( $icon ){
 				if( function_exists( 'ubermenu_icon_layout_default' ) ){
 					$layout = ubermenu_icon_layout_default( $this );
 				}
 				else $layout = 'icon_left';
 			}
-			else{
+			//If nothing else has claimed it, we default to text_only
+			else if( $layout == 'default' ){
 				$layout = 'text_only';
 			}
 
 			$atts['class'].= ' ubermenu-item-layout-'.$layout;
 		}
+
+
+
+
 
 		$layout_order = ubermenu_get_item_layouts( $layout );
 		if( !$layout_order ){
@@ -487,6 +544,12 @@ class UberMenuItemDynamicTerm extends UberMenuItemDefault{
 		//No wrap
 		if( $this->getSetting( 'no_wrap' ) == 'on' ){
 			$atts['class'].= ' ubermenu-target-nowrap';
+		}
+
+		//Disable Submenu Indicator
+		$disable_submenu_indicator = false;
+		if( $this->getSetting( 'disable_submenu_indicator' ) == 'on' ){
+			$atts['class'].= ' ubermenu-noindicator';
 		}
 
 

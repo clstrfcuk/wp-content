@@ -32,11 +32,6 @@ class Cornerstone_Settings_Section {
 		$this->definition = $definition;
 		$this->definition->manager = $this;
 
-		if ( $native ) {
-			$this->definition->text_domain = 'cornerstone';
-		}
-
-		$this->text_domain = ( isset( $this->definition->text_domain ) ) ? $this->definition->text_domain : $this->definition->name();
 		$this->hook_prefix = "cs_settings_section_{$this->name}_";
 
 	}

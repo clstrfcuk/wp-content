@@ -434,7 +434,7 @@ class RevSliderNavigation {
 							
 							$replace = $this->check_css_convert($replace, $ph['type']);
 							
-							$css = str_replace('##'.$ph['handle'].'##', $replace, $css);
+							$css = str_replace('##'.$ph['handle'].'##', $replace, $css);							
 						}
 					}
 				break;
@@ -442,7 +442,7 @@ class RevSliderNavigation {
 					if(isset($settings['presets']) && !empty($settings['presets'])){
 						foreach($settings['presets'] as $spreset){
 							if($preset !== $spreset['handle']) continue;
-							if($spreset['type'] !== $slider_preset) continue;
+							if($spreset['type'] !== $type) continue;
 							
 							foreach($settings['placeholders'] as $ph){
 								if(empty($ph)) continue;
@@ -452,7 +452,7 @@ class RevSliderNavigation {
 									if(isset($spreset['values']['ph-'.$handle.'-'.$type.'-'.$ph['handle'].'-'.$k])){
 										$d = $this->check_css_convert($spreset['values']['ph-'.$handle.'-'.$type.'-'.$ph['handle'].'-'.$k], $ph['type']);
 										
-										$css = str_replace('##'.$ph['handle'].'##', $d, $css);
+										$css = str_replace('##'.$ph['handle'].'##', $d, $css);										
 									}
 								}
 							}
@@ -474,7 +474,25 @@ class RevSliderNavigation {
 				}
 			}
 			
-			//add slider id before class
+			//add slider id before class, now in a more proper way done
+			//$css_raw = RevSliderCssParser::parseCssToArray($css);
+			/*if(!empty($css_raw)){
+				$css_new = array();
+				foreach($css_raw as $css_class => $css_values){
+					$css_class_raw = (strpos($css_class, ',') !== false) ? explode(',', $css_class) : (array)$css_class;
+					foreach($css_class_raw as $cck => $ccv){
+						$pos = strpos($ccv, '.'.$handle);
+						if($pos !== false){
+							$ccv = substr_replace($ccv, '#'.$output->getSliderHtmlID().' .'.$handle, $pos, strlen('.'.$handle));
+							$css_class_raw[$cck] = $ccv;
+						}
+					}
+					$css_class_raw = implode(',', $css_class_raw);
+					$css_new[$css_class_raw] = $css_values;
+				}
+				$css = $css_new;
+				$css = RevSliderCssParser::parseSimpleArrayToCss($css);				
+			}*/
 			
 			$css = str_replace('.'.$handle, '#'.$output->getSliderHtmlID().' .'.$handle, $css);
 			
@@ -500,7 +518,47 @@ class RevSliderNavigation {
 	
 	/**
 	 * change rgb, rgba and hex to rgba like 120,130,50,0.5 (no () and rgb/rgba)
-	 * @since: 5.2.0
+	 * @since: 3.0.0
+	 **/
+	public static function parse_css_to_array($css){
+		
+		while(strpos($css, '/*') !== false){
+			if(strpos($css, '*/') === false) return false;
+			$start = strpos($css, '/*');
+			$end = strpos($css, '*/') + 2;
+			$css = str_replace(substr($css, $start, $end - $start), '', $css);
+		}
+		
+		//preg_match_all( '/(?ims)([a-z0-9\s\.\:#_\-@]+)\{([^\}]*)\}/', $css, $arr);
+		preg_match_all( '/(?ims)([a-z0-9\,\s\.\:#_\-@]+)\{([^\}]*)\}/', $css, $arr);
+
+		$result = array();
+		foreach ($arr[0] as $i => $x){
+			$selector = trim($arr[1][$i]);
+			if(strpos($selector, '{') !== false || strpos($selector, '}') !== false) return false;
+			$rules = explode(';', trim($arr[2][$i]));
+			$result[$selector] = array();
+			foreach ($rules as $strRule){
+				if (!empty($strRule)){
+					$rule = explode(":", $strRule);
+					if(strpos($rule[0], '{') !== false || strpos($rule[0], '}') !== false || strpos($rule[1], '{') !== false || strpos($rule[1], '}') !== false) return false;
+					
+					//put back everything but not $rule[0];
+					$key = trim($rule[0]);
+					unset($rule[0]);
+					$values = implode(':', $rule);
+					
+					$result[$selector][trim($key)] = trim(str_replace("'", '"', $values));
+				}
+			}
+		}   
+		return($result);
+	}
+	
+	
+	/**
+	 * change rgb, rgba and hex to rgba like 120,130,50,0.5 (no () and rgb/rgba)
+	 * @since: x.x.x
 	 **/
 	public function convert_any_rgb_or_rgba($css, $type){
 		if(strpos($css, 'rgb') !== false){
@@ -525,18 +583,19 @@ class RevSliderNavigation {
 	
 	/**
 	 * Check the CSS for placeholders, replace them with correspinding values
-	 * @since: 5.2.0
+	 * @since: x.x.x
 	 **/
 	public function add_placeholder_sub_modifications($css, $handle, $type, $settings, $slide, $output){
 		
 		$c_css = '';
 		
 		if(!is_array($settings)) $settings = json_decode($settings, true);
-		
+
 		if(isset($settings['placeholders']) && is_array($settings['placeholders']) && !empty($settings['placeholders'])){
 			
 			//first check for media queries, generate more than one staple
 			$marr = RevSliderCssParser::parse_media_blocks($css);
+			
 			if(!empty($marr)){//handle them separated
 				foreach($marr as $media => $mr){
 					$css = str_replace($mr, '', $css);
@@ -555,11 +614,12 @@ class RevSliderNavigation {
 					}
 				}
 			}
-			$c = RevSliderCssParser::parseCssToArray($css);
 			
+			$c = RevSliderCssParser::parseCssToArray($css);
+
 			$c_css .= $this->preset_return_array_css($c, $settings, $slide, $handle, $type, $output);
 		}
-		
+
 		return $c_css;
 	}
 	

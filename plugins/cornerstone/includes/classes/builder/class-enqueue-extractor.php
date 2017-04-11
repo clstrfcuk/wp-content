@@ -6,6 +6,7 @@ class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 	protected $script_handles;
 	protected $style_delta;
 	protected $scripts;
+  public $counter = 0;
 
 	public function setup() {
 		add_filter( 'script_loader_tag', array( $this, 'preview_script_element' ), 10, 3 );
@@ -13,10 +14,12 @@ class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 	}
 
 	public function preview_script_element( $tag, $handle, $src ) {
+    $this->counter++;
 		return str_replace('src=', 'data-cs-handle="' . esc_attr( $handle ) . '" src=', $tag );
 	}
 
 	public function preview_style_element( $tag, $handle, $href ) {
+    $this->counter++;
 		return str_replace('href=', 'data-cs-handle="' . esc_attr( $handle ) . '" href=', $tag );
 	}
 

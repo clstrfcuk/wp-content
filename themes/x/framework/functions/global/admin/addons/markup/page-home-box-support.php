@@ -51,7 +51,7 @@
       </ul>
       <?php if ( $is_validated ) : ?>
         <div class="tco-btn-group-horizontal">
-          <a class="tco-btn" href="https://community.theme.co/kb/" target="_blank"><?php _e( 'Knowledge Base', '__x__' ); ?></a><a class="tco-btn" href="https://community.theme.co/forums/group/support-center/" target="_blank"><?php _e( 'Forum', '__x__' ); ?></a>
+          <a class="tco-btn" href="https://theme.co/apex/kb/" target="_blank"><?php _e( 'Knowledge Base', '__x__' ); ?></a><a class="tco-btn" href="https://theme.co/apex/support/" target="_blank"><?php _e( 'Support', '__x__' ); ?></a>
         </div>
       <?php else : ?>
         <?php x_addons_preview_unlock( '.tco-box-support', 'Get World-Class Support' ); ?>

@@ -162,8 +162,8 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 	//Integration
 	$settings[10] = array(
 		'name'	=> 'header_integration',
-		'label'	=> __( 'Integration' , 'ubermenu' ),
-		'desc'	=> __( 'To integrate this menu, either (1) select the Theme Location(s) to automatically replace, or (2) use the provided integration code to insert wherever you like.' , 'ubermenu' ),
+		'label'	=> __( 'Automatic Integration' , 'ubermenu' ),
+		'desc'	=> __( 'To integrate UberMenu into your site, either (1) activate the Theme Location(s) below to automatically replace an existing theme menu, or (2) use the provided manual integration code to insert the menu wherever you like in your theme templates or content.<br/> Some themes may require manual integration if their CSS or Javascript interferes with the menu.' , 'ubermenu' ),
 		'type'	=> 'header',
 		'group'	=> 'integration',
 	);
@@ -183,7 +183,7 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 		'name'	=> 'disable_mobile',
 		'label'	=> __( 'Disable UberMenu on Mobile' , 'ubermenu' ),
 		'type'	=> 'checkbox',
-		'desc'	=> __( 'When a mobile device is detected via <a href="https://codex.wordpress.org/Function_Reference/wp_is_mobile" target="_blank">wp_is_mobile()</a>, UberMenu will not replace the menu via automatic integration.  By defaut this includes tablets.  <br/>- <strong>Keep in mind if you are using a cache, you must cache desktop and mobile separately in order for this to work properly</strong>.  <br/>- Remember that UberMenu Advanced Items can only be used within UberMenus, so you likely don\'t want to enable this setting if you are using them.  <br/>- To customize what is considered "mobile", you can use the <a href="http://sevenspark.com/docs/ubermenu-3/developers/php-api/filters/ubermenu_is_mobile" target="_blank"><code>ubermenu_is_mobile</code></a> filter', 'ubermenu' ),
+		'desc'	=> __( '(Automatic Integration Only).  When a mobile device is detected via <a href="https://codex.wordpress.org/Function_Reference/wp_is_mobile" target="_blank">wp_is_mobile()</a>, UberMenu will not replace the menu via automatic integration.  By defaut this includes tablets.  <br/>- <strong>Keep in mind if you are using a cache, you must cache desktop and mobile separately in order for this to work properly</strong>.  <br/>- Remember that UberMenu Advanced Items can only be used within UberMenus, so you likely don\'t want to enable this setting if you are using them.  <br/>- To customize what is considered "mobile", you can use the <a href="http://sevenspark.com/docs/ubermenu-3/developers/php-api/filters/ubermenu_is_mobile" target="_blank"><code>ubermenu_is_mobile</code></a> filter', 'ubermenu' ),
 		'default' => 'off',
 		'group'	=> 'integration',
 	);
@@ -311,6 +311,7 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 			'center'=> __( 'Center', 'ubermenu' ),
 			'right'	=> __( 'Right', 'ubermenu' ),
 		),
+		'desc'	=> __( 'The alignment of the top level menu items within the menu bar.' , 'ubermenu' ),
 		'default' 	=> 'left',
 		'group'	=> 'position',
 		'customizer'	=> true,
@@ -387,6 +388,8 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 			'off'	=> __( 'Unbounded' , 'ubermenu' ),
 		),
 		'group'		=> array( 'position' , 'submenus' ),
+		'customizer'=> true,
+		'customizer_section' => 'submenu',
 		//'custom_style' => 'bound_submenus',
 	);
 
@@ -487,7 +490,7 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 		'name'		=> 'image_height',
 		'type'		=> 'text',
 		'label'		=> __( 'Image Height' , 'ubermenu' ),
-		'desc'		=> __( 'The height attribute value for menu item images in pixels.  Do not include units.  Leave blank to use actual dimensions.' , 'ubermenu' ),
+		'desc'		=> __( 'The height attribute value for menu item images in pixels.  Do not include units.  Leave blank to use actual dimensions.  Note that this only sets the attribute; the aspect ratio of the image will be maintained based on the width of the image, which may scale depending on browser width and column width.  If you want images to appear at consistent dimensions, make sure you choose an appropriate Image Size' , 'ubermenu' ),
 		'group'		=> 'images',
 	);
 
@@ -497,6 +500,23 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 		'desc' 		=> __( 'Set the actual width and height attributes on an image if none are set manually.', 'ubermenu' ),
 		'type' 		=> 'checkbox',
 		'default' 	=> 'on',
+		'group'		=> 'images',
+	);
+
+	$settings[355] = array(
+		'name' 		=> 'image_layout_default',
+		'label' 	=> __( 'Image Layout Default', 'ubermenu' ),
+		'desc' 		=> __( 'Select the default image position (can be overridden in Menu Item Settings for specific menu items).  Don\'t forget to set the Image Width appropriately if you use the Left or Right settings.  "Left" means the image will appear to the left of the text, "Above" means the image will appear above the text, etc.', 'ubermenu' ),
+		'type'		=> 'radio',
+		'default'	=> ubermenu_new_default( $config_id , 'image_above' , 'image_left' ),
+		'options'	=> array( 
+						'image_left' => __( 'Left', 'ubermenu' ),
+						'image_above' => __( 'Above' , 'ubermenu' ),
+						'image_right' => __( 'Right' , 'ubermenu' ),
+						'image_below' => __( 'Below' , 'ubermenu' ),
+						'image_only' => __( 'Image Only' , 'ubermenu' ),
+					),
+
 		'group'		=> 'images',
 	);
 
@@ -987,7 +1007,7 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 		'name'	=> 'style_submenu_item_padding',
 		'label'	=> __( 'Submenu Item Padding' , 'ubermenu' ),
 		'type'	=> 'text',
-		'desc'	=> __( 'Use this to adjust the spacing of submenu items', 'ubermenu' ),
+		'desc'	=> __( 'Use this to adjust the spacing of submenu items.  This controls both horizontal and vertical padding, so you can enter two values - for instance, 5px 20px would set the vertical padding to 5px and the horizontal padding to 20px.  20px is the default horizontal padding.', 'ubermenu' ),
 		'group'	=> 'style_customizations',
 		'custom_style'	=> 'submenu_item_padding',
 		'customizer'	=> true,
@@ -1074,6 +1094,36 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 		'customizer'	=> true,
 		'customizer_section' => 'headers',
 	);
+
+
+	$settings[805] = array(
+		'name'	=> 'style_header_background_color',
+		'label'	=> __( 'Column Header Background Color' , 'ubermenu' ),
+		'type'	=> 'color',
+		'group'	=> 'style_customizations',
+		'custom_style'	=> 'header_background_color',
+		'customizer'	=> true,
+		'customizer_section' => 'headers',
+	);
+	$settings[806] = array(
+		'name'	=> 'style_header_background_color_hover',
+		'label'	=> __( 'Column Header Background Color [Hover]' , 'ubermenu' ),
+		'type'	=> 'color',
+		'group'	=> 'style_customizations',
+		'custom_style'	=> 'header_background_color_hover',
+		'customizer'	=> true,
+		'customizer_section' => 'headers',
+	);
+	$settings[807] = array(
+		'name'	=> 'style_header_background_color_current',
+		'label'	=> __( 'Column Header Background Color [Current]' , 'ubermenu' ),
+		'type'	=> 'color',
+		'group'	=> 'style_customizations',
+		'custom_style'	=> 'header_background_color_current',
+		'customizer'	=> true,
+		'customizer_section' => 'headers',
+	);
+
 
 
 	$settings[810] = array(
@@ -1216,7 +1266,7 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 		'customizer'	=> true,
 		'customizer_section' => 'normal',
 	);
-	$settings[860] = array(
+	$settings[861] = array(
 		'name'	=> 'style_flyout_divier',
 		'label'	=> __( 'Flyout Items Divider' , 'ubermenu' ),
 		'type'	=> 'color',
@@ -1235,6 +1285,17 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 	//Tabs
 	
 	$settings[870]	= array(
+		'name'	=> 'style_tabs_font_size',
+		'label'	=> __( 'Tab Toggles Font Size' , 'ubermenu' ),
+		'type'	=> 'text',
+		'desc'	=> __( 'Font size for the tab toggles.  If left blank, will inherit Column Header Font Size', 'ubermenu' ),
+		'group'	=> 'style_customizations',
+		'custom_style'	=> 'tabs_font_size',
+		'customizer'	=> true,
+		'customizer_section' => 'tabs',
+
+	);
+	$settings[871]	= array(
 		'name'	=> 'style_tabs_background',
 		'label'	=> __( 'Tab Toggles Background' , 'ubermenu' ),
 		'type'	=> 'color',
@@ -1439,6 +1500,32 @@ function ubermenu_pro_instance_settings( $settings , $config_id ){
 		//'desc'	=> __( '', 'ubermenu' ),
 		'group'	=> 'style_customizations',
 		'custom_style'	=> 'toggle_font_size',
+		'customizer'	=> true,
+		'customizer_section' => 'toggle',
+	);
+	$settings[941] = array(
+		'name'	=> 'style_toggle_font_weight',
+		'label'	=> __( 'Responsive Toggle Font Weight' , 'ubermenu' ),
+		'type'	=> 'select',
+		//'desc'	=> __( '' , 'ubermenu' ),
+		'options'	=> array(
+			''			=> '&mdash;',
+			'normal'	=> 'Normal',
+			'bold'		=> 'Bold',
+		),
+		'group'	=> 'style_customizations',
+		'custom_style'	=> 'toggle_font_weight',
+		'customizer'	=> true,
+		'customizer_section' => 'toggle',
+	);
+
+	$settings[945] = array(
+		'name'	=> 'style_toggle_padding',
+		'label'	=> __( 'Responsive Toggle Padding' , 'ubermenu' ),
+		'type'	=> 'text',
+		//'desc'	=> __( '', 'ubermenu' ),
+		'group'	=> 'style_customizations',
+		'custom_style'	=> 'toggle_padding',
 		'customizer'	=> true,
 		'customizer_section' => 'toggle',
 	);
@@ -2084,7 +2171,7 @@ function ubermenu_settings_panel_fields_pro( $all_fields = array() ){
 		'label'	=> __( 'Disable Custom Menus Panel Walker' , 'ubermenu' ),
 		'type'	=> 'checkbox',
 		'default'	=> 'off',
-		'desc'	=> __( 'A custom walker allows the theme or another plugin to take over control of the output of the menu item markup in Appearance > Menus.  In most cases, this is not an issue.  But certain themes choose to alter the structures within the menu items and can cause interference, breaking the UberMenu Menu Item Settings.  Enable this setting to try to disable the walker (and revert to the standard WordPress walker).', 'ubermenu' ),
+		'desc'	=> __( 'A custom walker allows the theme or another plugin to take over control of the output of the menu item markup in Appearance > Menus.  In most cases, this is not an issue.  But certain themes choose to alter the structures within the menu items and can cause interference, breaking the UberMenu Menu Item Settings.  Enable this setting to try to disable the walker (and revert to the standard WordPress walker).  Note that this would disable plugins that rely on a custom admin walker, such as Nav Menu Roles.', 'ubermenu' ),
 		'group'	=> array( 'misc' , 'theme_integration' ),
 	);
 

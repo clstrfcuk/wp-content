@@ -27,7 +27,25 @@ body.post-type-envira_album {
 		margin: 0 0 20px 0;
 		padding-left: 20px;
 	}
-
+	//make our image col smaller
+	.column-image{
+		width: 85px !important;	
+	}
+	input[type=checkbox]{
+	 background-color: $white;
+	 border: 1px solid $light-grey;
+	 box-shadow: none;
+	 margin-right: 10px;
+	
+	
+	}
+	input[type=checkbox]:checked{
+	 background-color: $green;
+	 border-color: $green;
+	}
+	input[type=checkbox]:checked:before{
+	    color: $white !important;
+	}	
 	/* ==========================================================================
 	   Post Table Form
 	   ========================================================================== */
@@ -58,7 +76,7 @@ body.post-type-envira_album {
    	Quick Edit
    	========================================================================== */
 	#wpbody-content {
-		
+
 		td.colspanchange {
 			/**
 			* Left Col (Title, Slug, Date, Password)

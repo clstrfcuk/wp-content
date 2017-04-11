@@ -23,14 +23,14 @@
   wp.customize( 'x_layout_site_max_width', function( value ) {
     value.bind( function( newval ) {
       $( 'body .x-container.max' ).css( 'max-width', newval + 'px' );
-      $( 'body.x-boxed-layout-active .site' ).css( 'max-width', newval + 'px' );
+      $( 'body.x-boxed-layout-active .x-site' ).css( 'max-width', newval + 'px' );
     } );
   } );
 
   wp.customize( 'x_layout_site_width', function( value ) {
     value.bind( function( newval ) {
       $( 'body .x-container.width' ).css( 'width', newval + '%' );
-      $( 'body.x-boxed-layout-active .site' ).css( 'width', newval + '%' );
+      $( 'body.x-boxed-layout-active .x-site' ).css( 'width', newval + '%' );
     } );
   } );
 

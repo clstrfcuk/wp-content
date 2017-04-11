@@ -21,9 +21,11 @@ function x_get_font_data( $font_family, $font_family_data_key ) {
 
   $fonts_data  = x_fonts_data();
   $font_family = sanitize_key( $font_family );
-  $font_data   = $fonts_data[$font_family][$font_family_data_key];
+  if ( isset( $fonts_data[$font_family] ) && isset( $fonts_data[$font_family][$font_family_data_key] ) ) {
+    return $fonts_data[$font_family][$font_family_data_key];
+  }
 
-  return $font_data;
+  return '';
 
 }
 

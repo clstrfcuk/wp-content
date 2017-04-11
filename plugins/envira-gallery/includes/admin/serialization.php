@@ -2,8 +2,8 @@
 /**
  * Common serialization class. Fixes issues with broken serialized strings
  * typically caused by users migrating sites + running a search/replace MySQL
- * query on the post meta table (therefore breaking Soliloquy + it 'losing'
- * all slides etc).
+ * query on the post meta table (therefore breaking Envira Gallery + it 'losing'
+ * all images etc).
  *
  * @since 1.3.1.6
  *

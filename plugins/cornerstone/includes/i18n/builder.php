@@ -7,6 +7,7 @@
 return array(
 
 	// General
+	'welcome'         => __('<strong>It&apos;s buildin&apos; time!</strong> Make a selection from the workspace to see a preview.', 'cornerstone'),
 	'section'         => __( 'Section', 'cornerstone' ),
 	'section-numeric' => __( 'Section %s', 'cornerstone' ),
 	'section-format'  => __( 'Section &ndash; %s', 'cornerstone' ),
@@ -171,8 +172,8 @@ return array(
 
 	//Confirm
 	'confirm-message'                 => __( 'Are you sure?', 'cornerstone' ),
-	'confirm-yep'                     => __( 'Yep', 'cornerstone' ),
-	'confirm-nope'                    => __( 'Nope', 'cornerstone' ),
+	'confirm-yep'                     => __( 'Yes, proceed', 'cornerstone' ),
+	'confirm-nope'                    => __( 'No, go back', 'cornerstone' ),
 	'confirm-back'                    => __( 'Back', 'cornerstone' ),
 
 	'confirm-element-delete'          => __( 'Are you sure you wish to delete this %s?', 'cornerstone' ),

@@ -8,12 +8,15 @@ class Cornerstone_Options_Manager extends Cornerstone_Plugin_Component {
   protected $controls = array();
   protected $registered = false;
   protected $custom_css_key = '';
+  protected $custom_css_selector = '';
   protected $custom_js_key = '';
 
   public function setup() {
 
     if ( apply_filters( 'cornerstone_options_use_native', true ) ) {
       add_action( 'cornerstone_options_register', array( $this, 'register_native_options' ) );
+      $this->enable_custom_css( 'cs_v1_custom_css', '#cornerstone-custom-css' );
+      $this->enable_custom_js( 'cs_v1_custom_js' );
     }
 
   }
@@ -21,22 +24,25 @@ class Cornerstone_Options_Manager extends Cornerstone_Plugin_Component {
   public function config() {
 
     return array(
-      'i18n' => $this->plugin->i18n( 'options' ),
+      'i18n' => $this->plugin->i18n_group( 'options' ),
       'customCSSKey' => $this->get_custom_css_key(),
+      'customCSSSelector' => $this->get_custom_css_selector(),
       'customJSKey' => $this->get_custom_js_key(),
-      'title' => apply_filters( 'cornerstone_options_theme_title', false ) ? 'title-theme' : 'title-default',
+      'title' => apply_filters( 'cornerstone_options_theme_title', false ) ? 'theme' : 'styling',
     );
 
   }
 
   public function register_native_options() {
-    $this->register_sections( $this->plugin->config( 'options/sections' ) );
-    $this->enable_custom_css( 'cs_v1_custom_css' );
-    $this->enable_custom_js( 'cs_v1_custom_js' );
+    $this->register_sections( $this->plugin->config_group( 'options/sections' ) );
   }
 
   public function get_custom_css_key() {
     return $this->custom_css_key;
+  }
+
+  public function get_custom_css_selector() {
+    return $this->custom_css_selector;
   }
 
   public function get_custom_js_key() {
@@ -77,8 +83,9 @@ class Cornerstone_Options_Manager extends Cornerstone_Plugin_Component {
 
   }
 
-  public function enable_custom_css( $option_name ) {
+  public function enable_custom_css( $option_name, $selector = '') {
     $this->custom_css_key = $option_name;
+    $this->custom_css_selector = $selector;
   }
 
   public function enable_custom_js( $option_name ) {
@@ -173,6 +180,17 @@ class Cornerstone_Options_Manager extends Cornerstone_Plugin_Component {
 
     $conditions = $this->normalize_conditions( $control );
     unset( $control['condition'] );
+
+    if ( isset( $control['options'] ) && isset( $control['options']['choices'] ) && is_array($control['options']['choices']) ) {
+      $keys = array_keys($control['options']['choices']);
+      if ( is_string($keys[0])) {
+        $choices = array();
+        foreach ($control['options']['choices'] as $value => $label) {
+          $choices[] = array( 'value' => $value, 'label' => $label );
+        }
+        $control['options']['choices'] = $choices;
+      }
+    }
 
     if ( ! empty( $conditions ) ) {
       $control['conditions'] = $conditions;

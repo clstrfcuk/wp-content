@@ -82,8 +82,11 @@ class RevSliderSlide extends RevSliderElementsBase{
 			$imageUrl = RevSliderFunctions::getVal($params, "image");
 			
 			$imgID = RevSliderBase::get_image_id_by_url($imageUrl);
-			if($imgID !== false){
+			if($imgID !== false && $imgID !== null){
 				$imageUrl = RevSliderFunctionsWP::getUrlAttachmentImage($imgID, $imgResolution);
+			}else{ //we may be from the object library
+				$objlib = new RevSliderObjectLibrary();
+				$imageUrl = $objlib->get_correct_size_url($imageUrl, $imgResolution); //check for size to be used
 			}
 		}
 		
@@ -117,7 +120,6 @@ class RevSliderSlide extends RevSliderElementsBase{
 		$a = apply_filters('revslider_slide_setImageByID', array('imageID' => $imageID, 'size' => $size), $this);
 		
 		$imageUrl = RevSliderFunctionsWP::getUrlAttachmentImage($a['imageID'], $a['size']);
-		
 		
 		if(!empty($imageUrl)){
 			$this->imageID = $a['imageID'];
@@ -407,6 +409,8 @@ class RevSliderSlide extends RevSliderElementsBase{
 	private function initByInstagram($sliderID){
 		$this->postData = apply_filters('revslider_slide_initByInstagram_pre', $this->postData, $sliderID, $this);
 		
+		//var_dump($this->params);
+
 		//set some slide params
 		$this->id = RevSliderFunctions::getVal($this->postData, 'id');
 		
@@ -415,7 +419,9 @@ class RevSliderSlide extends RevSliderElementsBase{
 		$this->params["title"] = RevSliderFunctions::getVal($caption, 'text');
 		
 		$link = RevSliderFunctions::getVal($this->postData, 'link');
-		
+
+		if(empty($link)) $link = 'https://www.instagram.com/p/' . RevSliderFunctions::getVal($this->postData, 'code');
+
 		if(isset($this->params['enable_link']) && $this->params['enable_link'] == "true" && isset($this->params['link_type']) && $this->params['link_type'] == "regular"){
 			$this->params["link"] = str_replace(array("%link%", '{{link}}'), $link, $this->params["link"]);
 		}
@@ -424,7 +430,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 		
 		if($this->params["background_type"] == 'trans' || $this->params["background_type"] == 'image' || $this->params["background_type"] == 'streaminstagram' || $this->params["background_type"] == 'streaminstagramboth'){ //if image is choosen, use featured image as background
 			$img_sizes = RevSliderBase::get_all_image_sizes('instagram');
-			
+
 			$imgResolution = RevSliderFunctions::getVal($this->params, 'image_source_type', reset($img_sizes));
 			if(!isset($img_sizes[$imgResolution])) $imgResolution = key($img_sizes);
 			
@@ -435,14 +441,21 @@ class RevSliderSlide extends RevSliderElementsBase{
 				$is[$k] = $im->url;
 			}
 			
-			$this->imageUrl = $is[$imgResolution];
-			$this->imageThumb = $is['thumbnail'];
-			
+			if(isset($is[$imgResolution])){
+				$this->imageUrl = $is[$imgResolution];
+				$this->imageThumb = $is['thumbnail'];
+			}
+			else {
+				$this->imageUrl = RevSliderFunctions::getVal($this->postData, 'display_src');
+				$this->imageThumb = RevSliderFunctions::getVal($this->postData, 'thumbnail_src');
+			}
+
 			//if(empty($this->imageUrl))
 			//	return(false);
 			
-			if(empty($this->imageUrl))
+			if(empty($this->imageUrl)){
 				$this->imageUrl = RS_PLUGIN_URL.'public/assets/assets/sources/ig.png';
+			}
 			
 			if(is_ssl()){
 				$this->imageUrl = str_replace("http://", "https://", $this->imageUrl);
@@ -971,6 +984,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 				$attr['link'] = RevSliderFunctions::getVal($this->postData, 'link');
 				$attr['date'] = RevSliderFunctionsWP::convertPostDate(RevSliderFunctions::getVal($this->postData, 'created_time'), true);
 				$attr['author_name'] = RevSliderFunctions::getVal($user, 'username');
+				$attr['author_name'] = empty($attr['author_name']) ? "alskjdf" : $attr['author_name'];
 				
 				$likes_raw = RevSliderFunctions::getVal($this->postData, 'likes');
 				$attr['likes'] = RevSliderFunctions::getVal($likes_raw, 'count');
@@ -1110,7 +1124,22 @@ class RevSliderSlide extends RevSliderElementsBase{
 			$image_url = $this->decode_facebook_url(RevSliderFunctions::getVal($this->postData, 'picture', ''));
 			$image_url = parse_str(parse_url($image_url, PHP_URL_QUERY), $array);
 			$image_url = explode('&', $array['url']);
-			$return = $image_url[0];
+			
+			 /* patch for when url returned as "fbstaging://" */
+	        if(strpos($image_url[0], 'fbstaging') !== false) {
+	            
+	            $new_url = RevSliderFunctions::getVal($this->postData, 'picture', '');
+	            $new_url = explode('&w=', $new_url);
+	            
+	            if(count($new_url) > 1) {
+	                
+	                $end_url = explode('&url=', $new_url[1]);                   
+	                if(count($end_url) > 1) $image_url = array($new_url[0] . '&url=' . $end_url[1]);
+	            }
+	        }
+	        /* END patch */
+	        
+	        $return = $image_url[0];
 		}
 		return apply_filters('revslider_slide_get_facebook_timeline_image', $return, $object_id, $picture, $this);
 	}
@@ -1380,6 +1409,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 		$text = str_replace(array('%catlist%', '{{catlist}}'), $catlist, $text);
 		$text = str_replace(array('%catlist_raw%', '{{catlist_raw}}'), $catlist_raw, $text);
 		$text = str_replace(array('%taglist%', '{{taglist}}'), $taglist, $text);
+		$text = str_replace(array('%id%', '{{id}}'), $post_id, $text);
 		
 		foreach($img_sizes as $img_handle => $img_name){
 			$url = (isset($attr['img_urls']) && isset($attr['img_urls'][$img_handle]) && isset($attr['img_urls'][$img_handle]['url'])) ? $attr['img_urls'][$img_handle]['url'] : '';
@@ -1897,7 +1927,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 	 */
 	public function getLayers(){
 		$this->validateInited();
-		return $this->arrLayers;
+		return apply_filters('revslider_getLayers', $this->arrLayers, $this);
 	}
 	
 	/**
@@ -2047,7 +2077,6 @@ class RevSliderSlide extends RevSliderElementsBase{
 		
 		return RevSliderFunctions::getVal($this->params, $name, $default);
 	}
-	
 	
 	/**
 	 * set parameter
@@ -2238,7 +2267,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 	 * 
 	 * update slide parameters in db
 	 */
-	protected function updateParamsInDB($arrUpdate = array()){
+	protected function updateParamsInDB($arrUpdate = array(), $static = false){
 		$this->validateInited();
 		
 		$this->params = apply_filters('revslider_slide_updateParamsInDB', array_merge($this->params,$arrUpdate), $this);
@@ -2246,8 +2275,12 @@ class RevSliderSlide extends RevSliderElementsBase{
 		$jsonParams = json_encode($this->params);
 		
 		$arrDBUpdate = array("params"=>$jsonParams);
-		
-		$this->db->update(RevSliderGlobals::$table_slides,$arrDBUpdate,array("id"=>$this->id));
+		if($static === false){
+			$this->db->update(RevSliderGlobals::$table_slides,$arrDBUpdate,array("id"=>$this->id));
+		}else{
+			
+			$this->db->update(RevSliderGlobals::$table_static_slides,$arrDBUpdate,array("id"=>$static));
+		}
 	}
 	
 	
@@ -2255,7 +2288,7 @@ class RevSliderSlide extends RevSliderElementsBase{
 	 * 
 	 * update current layers in db
 	 */
-	protected function updateLayersInDB($arrLayers = null){
+	protected function updateLayersInDB($arrLayers = null, $static = false){
 		$this->validateInited();
 		
 		if($arrLayers === null)
@@ -2266,8 +2299,11 @@ class RevSliderSlide extends RevSliderElementsBase{
 		
 		$jsonLayers = json_encode($arrLayers);
 		$arrDBUpdate = array("layers"=>$jsonLayers);
-		
-		$this->db->update(RevSliderGlobals::$table_slides,$arrDBUpdate,array("id"=>$this->id));
+		if($static === false){
+			$this->db->update(RevSliderGlobals::$table_slides,$arrDBUpdate,array("id"=>$this->id));
+		}else{
+			$this->db->update(RevSliderGlobals::$table_static_slides,$arrDBUpdate,array("id"=>$static));
+		}
 	} 
 	
 	
@@ -2754,7 +2790,6 @@ class RevSliderSlide extends RevSliderElementsBase{
 		
 		switch($slider_type){
 			case 'gallery':
-				//check if we are transparent for example
 				$imageID = RevSliderBase::getVar($params, "image_id");
 				if(empty($imageID)){
 					$thumb = RevSliderBase::getVar($params, "image");
@@ -2830,7 +2865,6 @@ class RevSliderSlide extends RevSliderElementsBase{
 			$data_urlImageForView = '';
 			$bg_extraClass = 'mini-transparent';
 			$bg_fullstyle = 'background-size: inherit; background-repeat: repeat;';
-			
 		}
 		
 		return apply_filters('revslider_slide_get_image_attributes', array(
@@ -2845,13 +2879,12 @@ class RevSliderSlide extends RevSliderElementsBase{
 	 * 
 	 * replace image url's among slide image and layer images
 	 */
-	public function replaceImageUrls($urlFrom, $urlTo){
-		
+	public function replaceImageUrls($urlFrom, $urlTo, $static = false){
 		$this->validateInited();
 		
 		$isUpdated = false;
 		
-		$check = array('image', 'background_image', 'slide_thumb', 'show_alternate_image');
+		$check = array('image', 'image_url', 'background_image', 'slide_thumb', 'show_alternate_image');
 		
 		if(isset($this->params['background_type']) && $this->params['background_type'] == 'html5'){
 			$check[] = 'slide_bg_html_mpeg';
@@ -2868,8 +2901,9 @@ class RevSliderSlide extends RevSliderElementsBase{
 			}
 		}
 		
-		if($isUpdated == true)
-			$this->updateParamsInDB();
+		if($isUpdated == true){
+			$this->updateParamsInDB(array(), $static);
+		}
 		
 		
 		// update image url in layers
@@ -2938,8 +2972,9 @@ class RevSliderSlide extends RevSliderElementsBase{
 			
 		}
 		
-		if($isUpdated == true)
-			$this->updateLayersInDB();
+		if($isUpdated == true){
+			$this->updateLayersInDB(null, $static);
+		}
 		
 		do_action('revslider_slide_replaceImageUrls', $this);
 	}
@@ -3084,7 +3119,11 @@ class RevSliderSlide extends RevSliderElementsBase{
 			'video_height',
 			'video_width',
 			'scaleX',
-			'scaleY'
+			'scaleY',
+			'margin',
+			'padding',
+			'text-align',
+			'letter-spacing'
 		));
 	}
 	

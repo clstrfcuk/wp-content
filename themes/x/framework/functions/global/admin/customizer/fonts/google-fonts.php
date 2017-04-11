@@ -187,6 +187,7 @@ function x_bust_google_fonts_cache() {
 }
 
 add_action( 'customize_save_after', 'x_bust_google_fonts_cache' );
+add_action( 'cs_theme_options_after_save', 'x_bust_google_fonts_cache' );
 
 
 
@@ -198,7 +199,7 @@ function x_enqueue_google_fonts() {
   $google_fonts_request = x_cache_google_fonts_request();
 
   if ( $google_fonts_request != '' ) {
-    wp_enqueue_style( 'x-google-fonts', $google_fonts_request, NULL, X_VERSION, 'all' );
+    wp_enqueue_style( 'x-google-fonts', $google_fonts_request, NULL, X_ASSET_REV, 'all' );
   }
 
 }

@@ -25,9 +25,9 @@ abstract class Cornerstone_Element_Base {
 
 		$this->data = wp_parse_args( $this->data(), array(
 			'name'        => '',
-			'title'       => __('Generic Element', 'cornerstone' ),
+			'title'       => 'Generic Element',
 			'section'     =>  'content',
-			'description' => __( 'Generic Element', 'cornerstone' ),
+			'description' => 'Generic Element',
 			'autofocus'   => '',
 			'controls'    => array(),
 			'empty'       => false,

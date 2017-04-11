@@ -10,7 +10,7 @@
           <div class="tco-column">
             <div class="tco-box">
               <header class="tco-box-header">
-                <h2 class="tco-box-title"><?php _e( 'Settings', 'cornerstone' ); ?></h2>
+                <h2 class="tco-box-title"><?php e_csi18n('admin.dashboard-settings-title'); ?></h2>
               </header>
               <div class="tco-box-content tco-pan"> <?php $this->settings_handler->render_form(); ?> </div>
             </div>

@@ -3,6 +3,7 @@
 	window.ubermenu_diagnostics_present = true;
 
 	if( typeof console != "undefined" ) console.log( 'Loaded UberMenu Diagnostics' );
+	//ubermenu_load_screen( false );
 
 	$( '.ubermenu-item-level-0' ).each( function(){
 
@@ -276,7 +277,9 @@
 
 	$( '#umd-tool-residualstyling-button' ).on( 'click' , function(){
 		//jQuery.get( ubermenu_data.plugin_url + '/pro/diagnostics/diagnostics.tool.residualstyling.php' , '' , function( data ){
+			ubermenu_load_screen( true );
 		jQuery.get( ubermenu_data.ajax_url , { 'action' : 'ubermenu_diagnostics_tool_residualstyling' } , function( data ){
+			ubermenu_load_screen( false );
 			$( 'body' ).addClass( 'ubermenu-diagnostics-closed' );
 			$( 'body' ).append( data );
 
@@ -404,6 +407,7 @@
 			});
 
 			$( '#umd-tool-rs-search' ).on( 'click' , function(){
+				ubermenu_load_screen( true );
 
 				var post_data = {
 					'wrappers' : wrappers,
@@ -425,6 +429,7 @@
 				$.post( ubermenu_data.ajax_url, post_data , function( data ) {
 					//console.log( data.html );
 					$( '#umd-tools-rs-search-results' ).html( data.html );
+					ubermenu_load_screen( false );
 				}, 'json' );
 			});
 

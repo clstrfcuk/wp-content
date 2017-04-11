@@ -29,7 +29,7 @@
     </ul>
     <?php if ( $is_validated ) : ?>
       <div class="tco-btn-group-horizontal">
-        <a class="tco-btn" href="https://community.theme.co/kb/" target="_blank"><?php _e( 'Knowledge Base', 'cornerstone' ); ?></a><a class="tco-btn" href="https://community.theme.co/forums/group/support-center/" target="_blank"><?php _e( 'Forum', 'cornerstone' ); ?></a>
+        <a class="tco-btn" href="https://theme.co/apex/kb/" target="_blank"><?php _e( 'Knowledge Base', 'cornerstone' ); ?></a><a class="tco-btn" href="https://theme.co/apex/support/" target="_blank"><?php _e( 'Support', 'cornerstone' ); ?></a>
       </div>
     <?php else : ?>
       <a class="tco-btn tco-btn-nope" href="#" data-tco-toggle=".tco-box-support .tco-overlay"><?php _e( 'Get World-Class Support', 'cornerstone' ); ?></a>

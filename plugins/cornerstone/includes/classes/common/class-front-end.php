@@ -7,6 +7,8 @@
 
 class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 
+	public $dependencies = array( 'Inline_Scripts' );
+
 	/**
 	 * Setup hooks
 	 */
@@ -46,8 +48,8 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 	 */
 	public function scripts() {
 
-  	wp_register_script( 'cornerstone-site-head', $this->url( 'assets/dist/js/site/cs-head.min.js' ), array( 'jquery' ), $this->plugin->version(), false );
-  	wp_register_script( 'cornerstone-site-body', $this->url( 'assets/dist/js/site/cs-body.min.js' ), array( 'cornerstone-site-head' ), $this->plugin->version(), true );
+  	wp_register_script( 'cornerstone-site-head', $this->plugin->js( 'site/cs-head' ), array( 'jquery' ), $this->plugin->version(), false );
+  	wp_register_script( 'cornerstone-site-body', $this->plugin->js( 'site/cs-body' ), array( 'cornerstone-site-head' ), $this->plugin->version(), true );
   	wp_register_script( 'vendor-ilightbox',      $this->url( 'assets/dist/js/site/vendor-ilightbox.min.js' ), array( 'jquery' ), $this->plugin->version(), true );
 	//wp_register_script( 'vendor-google-maps',    'https://maps.googleapis.com/maps/api/js?sensor=false', array( 'jquery' ) );
 
@@ -60,8 +62,12 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 
 		if ( apply_filters( '_cornerstone_front_end', true ) ) {
 			add_action( 'wp_head', array( $this,  'inlineStyles' ), 9998, 0 );
-			add_action( 'wp_footer', array( $this, 'inlineScripts' ), 9998, 0 );
+			add_action( 'wp_footer', array( $this, 'inlineScripts' ) );
 		}
+
+    $inline_scripts = $this->plugin->component('Inline_Scripts');
+		add_action( 'wp_footer', array( $inline_scripts, 'output_scripts' ), 9998, 0 );
+
 
 		$this->postSettings = $this->plugin->common()->get_post_settings( get_the_ID() );
 
@@ -86,7 +92,7 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 
 			echo '<style id="cornerstone-generated-css" type="text/css">';
 
-			$data = array_merge( $this->plugin->settings(), $this->plugin->component( 'Customizer_Manager' )->optionData() );
+			$data = array_merge( $this->plugin->settings(), $this->plugin->common()->theme_integration_options() );
     	$this->view( 'frontend/styles', true, $data, true );
 
     	do_action( 'cornerstone_head_css' );
@@ -126,18 +132,17 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 
 	public function inlineScripts() {
 
+    $inline_scripts = $this->plugin->component('Inline_Scripts');
+
 		if ( apply_filters( 'cornerstone_customizer_output', true ) ) {
 			$custom_js = get_option( 'cs_v1_custom_js', '' );
-			if ( $custom_js ) {
-				echo '<script id="cornerstone-custom-js">' . $custom_js . '</script>';
-			}
+      if ( $custom_js ) {
+        $inline_scripts->add_script('cornerstone-custom-js', $custom_js );
+      }
 		}
 
-		if ( apply_filters( '_cornerstone_custom_page_js', true ) && isset( $this->postSettings['custom_js_mini'] ) && $this->postSettings['custom_js_mini'] ) {
-			echo '<script id="cornerstone-custom-page-js">';
-				echo $this->postSettings['custom_js_mini'];
-				do_action( 'cornerstone_custom_page_js' );
-	  	echo '</script>';
+		if ( isset( $this->postSettings['custom_js_mini'] ) && $this->postSettings['custom_js_mini'] ) {
+      $inline_scripts->add_script('cornerstone-custom-page-js', $this->postSettings['custom_js_mini'] );
 		}
 
 	}

@@ -1,15 +1,6 @@
 <?php
 if( !defined( 'ABSPATH') ) exit();
 
-$tmpl = new RevSliderTemplate();
-
-$templates = $tmpl->getTemplateSlides();
-$tp_templates = $tmpl->getThemePunchTemplateSlides();
-$tp_template_slider = $tmpl->getThemePunchTemplateSliders();
-
-$tmp_slider = new RevSlider();
-$all_slider = $tmp_slider->getArrSliders();
-
 ?>
 <!-- THE TEMPLATE AREA -->
 <div id="template_area">
@@ -39,261 +30,7 @@ $all_slider = $tmp_slider->getArrSliders();
 	
 	<!-- THE REVOLUTION BASE TEMPLATES -->
 	<div class="revolution-basic-templates revolution-template-groups" style="padding-top:20px">
-		<div id="template_bigoverlay"></div>
-		<?php
-		/*if(!empty($tp_templates)){
-			foreach($tp_templates as $template){
-				$tmpl->write_template_markup($template);
-			}
-		}*/
-		
-		if(!empty($tp_template_slider)){
-			foreach($tp_template_slider as $m_slider){
-				
-				if($m_slider['cat'] != 'Revolution Base' && $m_slider['cat'] != 'Premium') continue;
-				
-				if(!empty($m_slider['filter']) && is_array($m_slider['filter'])){
-					foreach($m_slider['filter'] as $f => $v){
-						$m_slider['filter'][$f] = 'temp_'.$v;
-					}
-				}
-
-				$slidercat = $m_slider['cat'] == 'Revolution Base' ? " template_free " : " template_premium ";				
-				$etikett_a = $m_slider['cat'] == 'Revolution Base' ? "Free" : "Premium";
-				$isnew = (isset($m_slider['new_slider'])) ? true : false;
-				
-				$slidercat_new = $isnew ? " temp_newupdate " : "";
-				
-				if(!isset($m_slider['installed']) && !isset($m_slider['is_new'])){
-					
-					$c_slider = new RevSlider();
-					$c_slider->initByDBData($m_slider);
-					$c_slides = $tmpl->getThemePunchTemplateSlides(array($m_slider));
-					$c_title = $c_slider->getTitle();
-					$width = $c_slider->getParam("width",1240);
-					$height = $c_slider->getParam("height",868);
-					$version_installed = $c_slider->getParam("version",'1.0.0');
-					if ($version_installed==='') $version_installed='1.0.0';
-					$isupdate = false;
-					
-					if(version_compare($version_installed, $m_slider['version'], '<')){
-						$isupdate = true;
-						$slidercat_new = ' temp_newupdate ';
-					}
-					
-					$m_slider['plugin_require'] = (isset($m_slider['plugin_require'])) ? json_decode($m_slider['plugin_require'], true) : array();
-					if(is_array($m_slider['plugin_require']) && !empty($m_slider['plugin_require'])){
-						foreach($m_slider['plugin_require'] as $k => $pr){
-							if(!isset($plugin_list[$pr['path']])){
-								if(is_plugin_active(esc_attr($pr['path']))){
-									$plugin_list[$pr['path']] = true;
-								}else{
-									$plugin_list[$pr['path']] = false;
-								}
-							}
-							if($plugin_list[$pr['path']] === true){
-								$m_slider['plugin_require'][$k]['installed'] = true;
-							}else{
-								$m_slider['plugin_require'][$k]['installed'] = false;
-							}
-						}
-					}else{
-						$m_slider['plugin_require'] = array();
-					}
-					
-					if(!empty($c_slides)){
-						?>
-						<div style="margin-bottom:30px" class="template_group_wrappers  <?php echo $slidercat.$slidercat_new; if(isset($m_slider['filter'])){ echo implode(' ', $m_slider['filter']); } ?>">							
-							<?php
-							echo '<div class="template_slider_title">';
-							if(isset($m_slider['preview']) && $m_slider['preview'] !== ''){
-								echo '<a class="template_slide_preview" href="'.esc_attr($m_slider['preview']).'" target="_blank"><i class="eg-icon-search"></i></a>';
-							}
-							
-							echo $c_title.'</div>';
-							?>
-							<div class="temp_slides_in_slider_wrapper">
-							<?php
-							foreach($c_slides as $key => $c_slide){
-								?>
-								<div class="temp_slide_single_wrapper">
-									<?php
-									if(isset($m_slider['filter'])){
-										$c_slide['filter'] = $m_slider['filter']; //add filters 
-									}
-
-									$title = str_replace("'", "", RevSliderBase::getVar($c_slide['params'], 'title', 'Slide'));
-									
-									$c_slide['settings']['width'] = $width;
-									$c_slide['settings']['height'] = $height;
-									
-									$c_slide['uid'] = $m_slider['uid'];
-									$c_slide['number'] = $key;
-									$c_slide['zip'] = $m_slider['zip'];
-									$c_slide['current_version'] = ($version_installed !== '') ? $version_installed : __('N/A', 'revslider');
-									$c_slide['version'] = $m_slider['version'];
-									$c_slide['required'] = $m_slider['required'];
-									$c_slide['title'] = $c_title;
-									$c_slide['plugin_require'] = $m_slider['plugin_require'];
-									$c_slide['description'] = (isset($m_slider['description'])) ? $m_slider['description'] : '';
-									$c_slide['setup_notes'] = (isset($m_slider['setup_notes'])) ? $m_slider['setup_notes'] : '';
-									
-									$tmpl->write_template_markup($c_slide);
-									?>
-									<div class="template_meta_line">
-										<?php if ($isnew) { ?>
-										<span class="template_new"><?php _e("New", "revslider"); ?></span>
-										<?php } ?>
-										<?php if ($isupdate) { ?>
-										<span class="template_new"><?php _e("Update", "revslider"); ?></span>
-										<?php } ?>
-										<span class="<?php echo $slidercat;?>"><?php _e($etikett_a, "revslider");?></span>
-										<span class="template_installed"><?php _e("Installed", "revslider"); ?><i class="eg-icon-check"></i></span>
-									</div>	
-									<div class="template_thumb_title"><?php echo $title; ?></div>	
-								</div>
-							<?php 
-							}
-							?>
-							</div>
-						</div><?php
-					}
-				}else{ //not yet imported
-					
-					$c_slides = $tmpl->getThemePunchTemplateDefaultSlides($m_slider['alias']);
-					
-					if(!empty($c_slides)){
-						?>
-						<div style="margin-bottom:30px"  class="template_group_wrappers not-imported-wrapper <?php echo $slidercat.$slidercat_new; if(isset($m_slider['filter'])){ echo implode(' ', $m_slider['filter']); } ?>">
-							
-							<?php
-							echo '<div class="template_slider_title">';
-							if(isset($m_slider['preview']) && $m_slider['preview'] !== ''){
-								echo '<a class="template_slide_preview" href="'.esc_attr($m_slider['preview']).'" target="_blank"><i class="eg-icon-search"></i></a>';
-							}
-							echo $m_slider['title'].'</div>';
-							
-							foreach($c_slides as $key => $c_slide){
-								?>
-								<div class="temp_slide_single_wrapper">
-								<?php
-									if(isset($m_slider['filter'])){
-										$c_slide['filter'] = $m_slider['filter']; //add filters 
-									}
-									$c_slide['width'] = $m_slider['width'];
-									$c_slide['height'] = $m_slider['height'];
-									$c_slide['uid'] = $m_slider['uid'];
-									$c_slide['number'] = $key;
-									$c_slide['zip'] = $m_slider['zip'];	
-									$c_slide['current_version'] = isset($m_slider['current_version']) ? $m_slider['current_version'] : 'N/A';
-									$c_slide['required'] = $m_slider['required'];
-									$c_slide['title'] = $m_slider['title'];
-									$c_slide['plugin_require'] = $m_slider['plugin_require'];
-									$c_slide['description'] = (isset($m_slider['description'])) ? $m_slider['description'] : '';
-									$c_slide['setup_notes'] = (isset($m_slider['setup_notes'])) ? $m_slider['setup_notes'] : '';
-									$c_slide['version'] = isset($m_slider['version']) ? $m_slider['version'] : "N/A";		
-									
-
-									$tmpl->write_import_template_markup_slide($c_slide);
-									?>
-									<div class="template_meta_line">
-										<?php if ($isnew) { ?>
-										<span class="template_new"><?php _e("New", "revslider"); ?></span>
-										<?php } ?>
-										<?php /*if ($isupdate) { ?>
-										<span class="template_new"><?php _e("Update", "revslider"); ?></span>
-										<?php }*/ ?>
-										<span class="<?php echo $slidercat;?>"><?php _e($etikett_a, "revslider");?></span>
-										<span class="template_notinstalled"><?php _e("Not Installed", "revslider"); ?></span>
-									</div>	
-									<div class="template_thumb_title"><?php echo (isset($c_slide['title'])) ? $c_slide['title'] : ''; ?></div>
-								</div>
-							<?php 
-							}
-							?>							
-						</div><?php
-					}
-					
-				}
-			}			
-		}
-		
-		if(!empty($all_slider)){
-			foreach($all_slider as $c_slider){
-				$c_slides = $c_slider->getSlides(false);
-				//$c_slides = $c_slider->getArrSlideNames();
-				$c_title = $c_slider->getTitle();
-				$width = $c_slider->getParam("width",1240);
-				$height = $c_slider->getParam("height",868);
-				
-				/*if(!empty($c_slider['filter']) && is_array($c_slider['filter'])){
-					foreach($c_slider['filter'] as $f => $v){
-						$c_slider['filter'][$f] = 'temp_'.$v;
-					}
-				}*/
-				
-				if(!empty($c_slides)){
-					?>
-					<div class="template_group_wrappers temp_existing <?php //if(isset($c_slider['filter'])){ echo implode(' ', $c_slider['filter']); } ?>">
-						<?php
-						echo '<div class="template_slider_title">'.$c_title.'</div>';
-						foreach($c_slides as $c_slide){
-							?>
-							<div class="temp_slide_single_wrapper">
-							<?php
-								$mod_slide = array();
-								$mod_slide['id'] = $c_slide->getID();
-								$mod_slide['params'] = $c_slide->getParams();
-								//$mod_slide['layers'] = $c_slide->getLayers();
-								$mod_slide['settings'] = $c_slide->getSettings();
-								$mod_slide['settings']['width'] = $width;
-								$mod_slide['settings']['height'] = $height;
-								$mod_slide["user_template"]=true;
-								
-								$title = str_replace("'", "", RevSliderBase::getVar($mod_slide['params'], 'title', 'Slide'));
-								$tmpl->write_template_markup($mod_slide);
-								?>
-								<div class="template_meta_line">									
-									<span class="template_local"><?php _e("Local Slide", "revslider");?></span>									
-								</div>	
-								<div class="template_thumb_title"><?php echo $title; ?></div>
-							</div>
-							<?php
-						}	
-						?>						
-					</div><?php
-				}
-				echo '<div style="margin-bottom:30px" class="tp-clearfix"></div>';
-			}
-		}
-		?>		
-		<div class="template_group_wrappers temp_custom">
-			<?php
-			if(!empty($templates)){
-				?>		
-				<div class="template_slider_title"><?php _e('User Templates', 'revslider'); ?></div>
-				<div class="temp_slides_in_slider_wrapper">					
-				<?php
-				foreach($templates as $template){
-					?>
-					<div class="temp_slide_single_wrapper">
-						<?php	
-						$template["user_template"]=true;
-						$tmpl->write_template_markup($template);
-						?>
-						<div class="template_meta_line">									
-							<span class="template_local"><?php _e("User Template", "revslider");?></span>									
-						</div>	
-						<div class="template_thumb_title">Some  Title</div>						
-					</div>
-					<?php
-				}
-				?>
-				</div>
-				<?php
-			}
-			?>				
-		</div>		
+		<!-- Template Slides will be added here -->
 	</div>
 	
 	
@@ -312,9 +49,9 @@ $all_slider = $tmp_slider->getArrSliders();
 if(!isset($rs_disable_template_script)){
 ?>
 <script>
-	jQuery("document").ready(function() {		
+	/*jQuery("document").ready(function() {		
 		templateSelectorHandling();
-	});
+	});*/
 
 	function isElementInViewport(element,sctop,wh,rtgt) {		
 		var etp = parseInt(element.offset().top,0)-rtgt,
@@ -474,22 +211,25 @@ if(!isset($rs_disable_template_script)){
 	<?php
 	if(isset($_REQUEST['update_shop'])){
 		?>
-		var recalls_amount = 0;
-		function callTemplateSlider() {   
-			recalls_amount++;
-			if (recalls_amount>5000) {
-				jQuery('#waitaminute').hide();
-			} else {
-				if (jQuery('#template_area').length>0) {    
-					scrollTA();
-					jQuery('#template_area').addClass("show");
-					jQuery('#waitaminute').hide();      
+		jQuery(document).ready(function(){
+			var recalls_amount = 0;
+			function callTemplateSlider() {   
+				recalls_amount++;
+				if (recalls_amount>5000) {
+					jQuery('#waitaminute').hide();
 				} else {
-					callTemplateSlider();
-				}
-			}   
-		}
-		callTemplateSlider();  
+					if (jQuery('#template_area').length>0) {    
+						scrollTA();
+						jQuery('#template_area').addClass("show");
+						jQuery('#waitaminute').hide();      
+						RevSliderAdmin.load_slide_template_html();
+					} else {
+						callTemplateSlider();
+					}
+				}   
+			}
+			callTemplateSlider();  
+		});
 		<?php
 	}
 	?>
@@ -518,12 +258,12 @@ if(!isset($rs_disable_template_script)){
 				<td><input type="radio" name="update_animations" value="true" checked="checked"> <?php _e("overwrite",'revslider'); ?></td>
 				<td><input type="radio" name="update_animations" value="false"> <?php _e("append",'revslider'); ?></td>
 			</tr>
-			<tr>
+			<!--tr>
 				<td><?php _e("Static Styles:",'revslider'); ?></td>
 				<td><input type="radio" name="update_static_captions" value="true"> <?php _e("overwrite",'revslider'); ?></td>
 				<td><input type="radio" name="update_static_captions" value="false"> <?php _e("append",'revslider'); ?></td>
 				<td><input type="radio" name="update_static_captions" value="none" checked="checked"> <?php _e("ignore",'revslider'); ?></td>
-			</tr>
+			</tr-->
 		</table>		
 		
 	</form>
@@ -541,6 +281,16 @@ if(!isset($rs_disable_template_script)){
 		<input type="hidden" name="slider_id" class="rs-slider-id" value="">
 		<input type="hidden" name="redirect_id" class="rs-slide-id" value="">
 	</form>
+</div>
+
+<div id="dialog_import_template_slide_info" title="<?php _e('Importing Status','revslider'); ?>" class="dialog_import_template_slider_info" style="display:none;">
+	<!-- ADD INFOS HERE ON DEMAND -->
+	<div class="revslider_logo_rotating"><div class="revslidercycle"></div></div>
+	<div id="install-slider-counter-wrapper"><span id="install-slider-counter"></span></div>
+	<div id="nowinstalling_label"><?php _e('Now Installing','revslider'); ?></div>
+	<div id="import_dialog_box_action"></div>
+	<div id="import_dialog_box"></div>
+	
 </div>
 <?php
 }

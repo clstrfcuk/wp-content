@@ -19,7 +19,7 @@ if ( $this->setting->default ) {
 </label>
 
 <script>
-var options = {};
+var options = { float: false };
 <?php if ( $this->setting->default ) { ?>
 	options.reset = 'default';
 <?php } ?>

@@ -27,7 +27,7 @@ module.exports = function(grunt) {
           "/*\n"+
            " * UberMenu 3 \n" +
            " * http://wpmegamenu.com \n" +
-           " * Copyright 2011-2015 Chris Mavricos, SevenSpark \n" +
+           " * Copyright 2011-2017 Chris Mavricos, SevenSpark \n" +
            " */"
       },
       minify: {

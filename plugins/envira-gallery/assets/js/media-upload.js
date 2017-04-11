@@ -86,10 +86,14 @@
                                 $(envira_output).append(res);
                                 break;
                         }
-
+						
+						$( document ).trigger( 'enviraInsert' );
+						
                         // Repopulate the Envira Gallery Image Collection
                         EnviraGalleryImagesUpdate( false );
-
+						
+						
+						
                     },
                     'json'
                 );

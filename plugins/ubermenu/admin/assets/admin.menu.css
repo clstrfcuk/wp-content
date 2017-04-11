@@ -5,6 +5,11 @@
 #tabs-panel-ubermenu-custom{
 	max-height:none;
 }
+#ubermenu-custom-menu-metabox .button-controls:after{
+	display:table;
+	content:'';
+	clear:both;
+}
 
 #wpfooter{
 	padding-bottom:40px;
@@ -120,6 +125,7 @@ body.ubermenu-settings-panel-is-open #wpwrap{
 	transition:all .5s ease;
 
 	box-shadow:0 0 10px #111;
+	backface-visibility:hidden; /* fixed flash on hover */
 	
 }
 .ubermenu-menu-item-settings-open{

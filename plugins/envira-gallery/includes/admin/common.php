@@ -252,14 +252,23 @@ class Envira_Gallery_Common_Admin {
         // Get current screen.
         $screen = get_current_screen();
         
-        // Bail if we're not on the Envira Post Type screen.
+        // If we're not on the Envira Post Type screen, only load the modal css then bail
         if ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type ) {
+        
+            // Load necessary admin styles.
+            wp_register_style( $this->base->plugin_slug . '-admin-modal-style', plugins_url( 'assets/css/admin-modal.css', $this->base->file ), array(), $this->base->version );
+            wp_enqueue_style( $this->base->plugin_slug . '-admin-modal-style' );
             return;
-        }
+        
+        } else {
 
-        // Load necessary admin styles.
+        // Proceed loading remaining admin CSS necessary admin styles.
         wp_register_style( $this->base->plugin_slug . '-admin-style', plugins_url( 'assets/css/admin.css', $this->base->file ), array(), $this->base->version );
         wp_enqueue_style( $this->base->plugin_slug . '-admin-style' );
+        wp_register_style( $this->base->plugin_slug . '-admin-modal-style', plugins_url( 'assets/css/admin-modal.css', $this->base->file ), array(), $this->base->version );
+        wp_enqueue_style( $this->base->plugin_slug . '-admin-modal-style' );
+        
+        }
 
         // Fire a hook to load in custom admin styles.
         do_action( 'envira_gallery_admin_styles' );
@@ -483,6 +492,25 @@ class Envira_Gallery_Common_Admin {
             return;
         }
 
+        // Determine what images are inside this gallery, thanks to Envira meta-data
+        $in_gallery   = get_post_meta( $id, '_eg_in_gallery', true );
+        if ( ! is_array( $in_gallery ) ) {
+            return;
+        }
+
+        // Iterate through media, deleting - making sure to delete only images that aren't in another gallery
+        foreach ( $in_gallery as $attach_id ) {
+
+            $attachment     = get_post( $attach_id );
+            $has_gallery    = get_post_meta( $attach_id, '_eg_has_gallery', true );
+
+            // If post parent is the Gallery ID, and the image isn't in another gallery, we're OK to delete the image
+            if ( ( $attachment->post_parent == $id || in_array( $attach_id, $in_gallery ) ) && ( count( $has_gallery ) == 1 ) ) { // the "1" should mean only one gallery - the one we are deleting
+                wp_delete_attachment( $attach_id );
+            }
+        }
+
+        /* 
         // Get attached media
         $media = get_attached_media( 'image', $id );
         if ( ! is_array( $media ) ) {
@@ -493,6 +521,7 @@ class Envira_Gallery_Common_Admin {
         foreach ( $media as $image ) {
             wp_delete_attachment( $image->ID );
         }
+        */
 
     }
 

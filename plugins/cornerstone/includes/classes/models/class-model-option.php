@@ -4,6 +4,11 @@ class Cornerstone_Model_Option extends Cornerstone_Plugin_Component {
 
   public $name = 'option';
 
+  public function lookup( $option ) {
+    $default = apply_filters( "cornerstone_option_model_save_$option", apply_filters( "cornerstone_option_model_defaults_$option", null ) );
+    return apply_filters( "cornerstone_option_model_load_$option", get_option( $option, $default ) );
+  }
+
   public function query( $params ) {
 
     // Find All
@@ -12,13 +17,14 @@ class Cornerstone_Model_Option extends Cornerstone_Plugin_Component {
     }
 
     $this->validate( $params['query']['id'], 'access' );
+    $option = $params['query']['id'];
 
     return array(
       'data' => array(
         'id' => $params['query']['id'],
         'type' => 'option',
         'attributes' => array(
-          'value' => apply_filters( 'cornerstone_option_model_load_transform', get_option( $params['query']['id'], null ) )
+          'value' => $this->lookup( $option )
         )
       ),
       'meta' => array( 'request_params' => $params, 'ID' => $params['query']['id'] )
@@ -44,16 +50,17 @@ class Cornerstone_Model_Option extends Cornerstone_Plugin_Component {
       throw new Exception( 'Attempting to update option without specifying a name.' );
     }
 
-    $this->validate( $atts['id'], 'update' );
+    $option = $atts['id'];
+    $this->validate( $option, 'update' );
 
-    update_option( $atts['id'], apply_filters( 'cornerstone_option_model_save_transform', $atts['value'] ) );
+    update_option( $option, apply_filters( "cornerstone_option_model_save_$option", $atts['value'] ) );
 
     return array(
       'data' => array(
-        'id' => $atts['id'],
+        'id' => $option,
         'type' => $this->name,
         'attributes' => array(
-          'value' => apply_filters( 'cornerstone_option_model_load_transform', get_option( $atts['id'] ) )
+          'value' => apply_filters( "cornerstone_option_model_load_$option", get_option( $option ) )
         )
       )
     );

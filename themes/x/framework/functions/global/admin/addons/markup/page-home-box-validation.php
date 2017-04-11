@@ -32,7 +32,7 @@
           <?php x_tco()->admin_icon( 'unlocked', 'tco-validation-graphic-icon' ); ?>
         </div>
         <h1 class="tco-validation-title"><?php _e( 'You&apos;re almost finished!', '__x__' ); ?></h1>
-        <p class="tco-validation-text"><?php _e( 'Your license of X is <strong class="tco-c-nope">not validated</strong>. Place your Envato purchase code or Themeco license to unlock automatic updates, access to support, and Extensions. <a href="https://community.theme.co/kb/product-validation/" target="_blank">Learn more</a> about product validation or <a href="https://community.theme.co/my-licenses/" target="_blank">manage licenses</a> directly in your Themeco account.', '__x__' ); ?></p>
+        <p class="tco-validation-text"><?php echo x_i18n( 'overview', 'site-not-validated'); ?></p>
       </div>
       <span class="tco-status-text"></span>
       <div class="tco-validation-overlay" data-tco-module-target="overlay">

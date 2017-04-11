@@ -8,7 +8,7 @@
 	});
 
 	//Backup
-	$( window ).load( function(){
+	$( window ).on( 'load' , function(){
 		initialize_ubermenu_admin( 'window.load' );
 	});
 
@@ -109,7 +109,7 @@
 					if( $current_menu_item.find('.item-type').length > 1 && typeof console != "undefined" ) 
 						console.warn( '[UberMenu Notice] Multiple menu item types defined by custom nav walker.  If you are not seeing the proper settings, try enabling "Disable Custom Menus Panel Walker" in the UberMenu Control Panel > General Settings > Theme Integration' );
 					var item_type_class = item_type.replace( '[' , '' ).replace( ']' , '' ).replace( / /g , '_' ).toLowerCase();
-					console.log( item_type + ' :: ' + item_type_class );
+					//console.log( item_type + ' :: ' + item_type_class );
 					$current_panel.addClass( 'ubermenu-menu-item-panel-type-' + item_type_class );
 
 					var data_object_type = $current_menu_item.find( '.menu-item-data-object' ).val();

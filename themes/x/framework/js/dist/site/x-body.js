@@ -8,6 +8,8 @@
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
 //   01. Imports
+//   02. Anchors
+//   03. Library Initialization
 // =============================================================================
 
 // Imports
@@ -1537,191 +1539,305 @@
 
 })( window, jQuery );
 
-/*! http://mths.be/placeholder v2.0.8 by @mathias */
-;(function(window, document, $) {
+// =include "vendor/perfect-scrollbar.js"
+// =============================================================================
+// JS/SRC/SITE/INC/X-BODY-BAR.JS
+// -----------------------------------------------------------------------------
+// Site scripts.
+// =============================================================================
 
-    // Opera Mini v7 doesn’t support placeholder although its DOM seems to indicate so
-    var isOperaMini = Object.prototype.toString.call(window.operamini) == '[object OperaMini]';
-    var isInputSupported = 'placeholder' in document.createElement('input') && !isOperaMini;
-    var isTextareaSupported = 'placeholder' in document.createElement('textarea') && !isOperaMini;
-    var prototype = $.fn;
-    var valHooks = $.valHooks;
-    var propHooks = $.propHooks;
-    var hooks;
-    var placeholder;
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Bars
+// =============================================================================
 
-    if (isInputSupported && isTextareaSupported) {
+// Bars
+// =============================================================================
 
-        placeholder = prototype.placeholder = function() {
-            return this;
-        };
+jQuery(function($){
 
-        placeholder.input = placeholder.textarea = true;
+  if ( ! window.csGlobal ) {
+    return;
+  }
 
-    } else {
+  // Setup
+  // -----
+  var $window   = $(window);
+  var $body     = $('body');
+  var $site     = $('.x-site');
+  var $masthead = $('.x-masthead');
+  var $colophon = $('.x-colophon');
+  var $adminBar       = $('#wpadminbar');
+  var fixedClasses = $body.hasClass('x-boxed-layout-active') ? 'x-bar-fixed x-container max width' : 'x-bar-fixed';
 
-        placeholder = prototype.placeholder = function() {
-            var $this = this;
-            $this
-                .filter((isInputSupported ? 'textarea' : ':input') + '[placeholder]')
-                .not('.placeholder')
-                .bind({
-                    'focus.placeholder': clearPlaceholder,
-                    'blur.placeholder': setPlaceholder
-                })
-                .data('placeholder-enabled', true)
-                .trigger('blur.placeholder');
-            return $this;
-        };
+  var adminBarOffset;
+  detectAdminBarOffset();
+  $window.on('resize',detectAdminBarOffset);
 
-        placeholder.input = isInputSupported;
-        placeholder.textarea = isTextareaSupported;
+  function detectAdminBarOffset() {
+    adminBarOffset  = ( $adminBar.css('position') === 'fixed' ) ? $adminBar.outerHeight() : 0;
+  }
 
-        hooks = {
-            'get': function(element) {
-                var $element = $(element);
+  $window.on('scroll resize', updateStickyBars );
 
-                var $passwordInput = $element.data('placeholder-password');
-                if ($passwordInput) {
-                    return $passwordInput[0].value;
-                }
+  // Interpolation functions
 
-                return $element.data('placeholder-enabled') && $element.hasClass('placeholder') ? '' : element.value;
-            },
-            'set': function(element, value) {
-                var $element = $(element);
+  var shrinkInterpolate = lerp;//easeOutQuart;
+  var slideInterpolate = lerp;//easeOutQuart;
 
-                var $passwordInput = $element.data('placeholder-password');
-                if ($passwordInput) {
-                    return $passwordInput[0].value = value;
-                }
+  function easeOutQuart( a, b, f ) {
+    return jQuery.easing.easeOutQuart(null, f, a, b - a, 1 )
+  }
 
-                if (!$element.data('placeholder-enabled')) {
-                    return element.value = value;
-                }
-                if (value == '') {
-                    element.value = value;
-                    // Issue #56: Setting the placeholder causes problems if the element continues to have focus.
-                    if (element != safeActiveElement()) {
-                        // We can't use `triggerHandler` here because of dummy text/password inputs :(
-                        setPlaceholder.call(element);
-                    }
-                } else if ($element.hasClass('placeholder')) {
-                    clearPlaceholder.call(element, true, value) || (element.value = value);
-                } else {
-                    element.value = value;
-                }
-                // `set` can not return `undefined`; see http://jsapi.info/jquery/1.7.1/val#L2363
-                return $element;
-            }
-        };
+  // Begining, End, Percect complete
+  function lerp(a, b, f) {
+    return a + f * (b - a);
+  }
 
-        if (!isInputSupported) {
-            valHooks.input = hooks;
-            propHooks.value = hooks;
-        }
-        if (!isTextareaSupported) {
-            valHooks.textarea = hooks;
-            propHooks.value = hooks;
-        }
 
-        $(function() {
-            // Look for forms
-            $(document).delegate('form', 'submit.placeholder', function() {
-                // Clear the placeholder values so they don't get submitted
-                var $inputs = $('.placeholder', this).each(clearPlaceholder);
-                setTimeout(function() {
-                    $inputs.each(setPlaceholder);
-                }, 10);
-            });
-        });
+  // Initialize Bars
+  // ---------------
 
-        // Clear placeholder values upon page reload
-        $(window).bind('beforeunload.placeholder', function() {
-            $('.placeholder').each(function() {
-                this.value = '';
-            });
-        });
+  window.csGlobal.everinit( '[data-x-bar]', function(el) {
 
+    var barData    = $(el).data('x-bar');
+
+    if ( 'top' === barData.region || 'bottom' === barData.region ) {
+      computeFixedBar(el);
+      $window.on('resize',function(){
+        computeFixedBar(el);
+      })
     }
 
-    function args(elem) {
-        // Return an object of element attributes
-        var newAttrs = {};
-        var rinlinejQuery = /^jQuery\d+$/;
-        $.each(elem.attributes, function(i, attr) {
-            if (attr.specified && !rinlinejQuery.test(attr.name)) {
-                newAttrs[attr.name] = attr.value;
-            }
-        });
-        return newAttrs;
+    setTimeout(function() {
+      if ( barData.sticky && 'top' === barData.region ) {
+        setupStickyBar( el, barData);
+      }
+    },0);
+
+  });
+
+
+
+  // Compute width property for fixed bars
+  // -------------------------------------
+
+  function computeFixedBar(el) {
+
+    var style = window.getComputedStyle(el);
+
+    if ( 'fixed' !== style.position ) {
+      $(el).css({width: '', 'max-width': ''});
+      return;
     }
 
-    function clearPlaceholder(event, value) {
-        var input = this;
-        var $input = $(input);
-        if (input.value == $input.attr('placeholder') && $input.hasClass('placeholder')) {
-            if ($input.data('placeholder-password')) {
-                $input = $input.hide().next().show().attr('id', $input.removeAttr('id').data('placeholder-id'));
-                // If `clearPlaceholder` was called from `$.valHooks.input.set`
-                if (event === true) {
-                    return $input[0].value = value;
-                }
-                $input.focus();
-            } else {
-                input.value = '';
-                $input.removeClass('placeholder');
-                input == safeActiveElement() && input.select();
-            }
-        }
+    var margins = [];
+    if ( ! cssValIsZero(style['margin-left']) ) {
+      margins.push(style['margin-left'])
+    }
+    if ( ! cssValIsZero(style['margin-right']) ) {
+      margins.push(style['margin-right'])
     }
 
-    function setPlaceholder() {
-        var $replacement;
-        var input = this;
-        var $input = $(input);
-        var id = this.id;
-        if (input.value == '') {
-            if (input.type == 'password') {
-                if (!$input.data('placeholder-textinput')) {
-                    try {
-                        $replacement = $input.clone().attr({ 'type': 'text' });
-                    } catch(e) {
-                        $replacement = $('<input>').attr($.extend(args(this), { 'type': 'text' }));
-                    }
-                    $replacement
-                        .removeAttr('name')
-                        .data({
-                            'placeholder-password': $input,
-                            'placeholder-id': id
-                        })
-                        .bind('focus.placeholder', clearPlaceholder);
-                    $input
-                        .data({
-                            'placeholder-textinput': $replacement,
-                            'placeholder-id': id
-                        })
-                        .before($replacement);
-                }
-                $input = $input.removeAttr('id').hide().prev().attr('id', id).show();
-                // Note: `$input[0] != input` now!
-            }
-            $input.addClass('placeholder');
-            $input[0].value = $input.attr('placeholder');
+    var marginString = '';
+    if ( margins.length > 0 ) {
+      marginString = margins.length === 1 ? margins[0] : '(' + margins.join(' + ') + ')';
+    }
+
+    var combinedSpacerWidths = 0;
+
+    $('.x-bar-space-v').each(function(){
+      combinedSpacerWidths += $(this).width();
+    });
+
+    var width = '';
+    if ( combinedSpacerWidths > 0 ) {
+      width += ' - ' + combinedSpacerWidths + 'px';
+    }
+
+    if ( marginString ) {
+      width += ' - ' + marginString;
+    }
+
+    var update = {
+      'width': width ? 'calc(100%' + width + ')' : '100%',
+    }
+
+    var maxWidth = window.getComputedStyle($('.x-site')[0])['max-width'];
+
+    if ( 'none' !== maxWidth ) {
+      update['max-width'] = marginString ? 'calc(' + maxWidth + ' - ' + marginString + ')' : maxWidth
+    }
+
+    $(el).css(update);
+
+  }
+
+  function cssValIsZero( val ) {
+    return 0 === val.trim().split(' ').filter( function( part ) {
+      return ! part.match(/^0[a-zA-Z%]+|0$|none$/);
+    }).length;
+  }
+
+
+  // Manage stacking and triggering of sticky bars
+  // ---------------------------------------------
+
+  function setupStickyBar(el, barData) {
+    var $bar = $(el);
+    var $barContent = $bar.find('.x-bar-content');
+    var initialHeight = $bar.height();
+    var shrinkHeight = isNaN( barData.shrink ) ? initialHeight : initialHeight * barData.shrink;
+
+    var offsetMod = Number.parseInt(barData.triggerOffset);
+    offsetMod = isNaN( offsetMod ) ? 0 : offsetMod;
+
+
+    var $triggerElement = false;
+    if ( barData.triggerSelector ) {
+      $triggerElement = $(barData.triggerSelector);
+      if ( 0 !== $triggerElement.length ) {
+        $triggerElement = false;
+      }
+    }
+
+    $bar.data('xBarSticky', {
+      id: barData.id,
+      $triggerElement: $triggerElement,
+      offsetMod: offsetMod,
+      keepMargin: barData.keepMargin,
+      shrinkHeight: shrinkHeight,
+      initialHeight: initialHeight,
+      zStack: barData.zStack,
+      hideInitially: barData.hideInitially
+    } );
+
+    $bar.data('xBarStickyTop', $bar.offset().top );
+    $window.on('resize', updateOffsetTop );
+    updateOffsetTop();
+
+    function updateOffsetTop() {
+      if ( ! $bar || $bar.hasClass('x-bar-fixed') ) return;
+      $bar.data('xBarStickyTop', $bar.offset().top );
+    }
+
+  }
+
+  function updateStickyBars() {
+
+    var st = $window.scrollTop() + adminBarOffset;
+    var stackedHeight = 0;
+    var minOffset = 0;
+    var barIndex = 0;
+    var canFix = true; // Flag used to ensure bars are fixed in sequence
+
+    $('.x-bar.x-bar-top').each( function(index) {
+      var $bar = $(this);
+      var data = $bar.data('xBarSticky');
+      if ( data ) {
+        updateBar( $bar, data );
+        barIndex++;
+      }
+    });
+
+    function updateBar( $bar, barData ) {
+
+      var $space = $('.' + barData.id + '.x-bar-space');
+      var $content = $bar.find('.x-bar-content');
+      var baseOffset = barIndex > 0 ? minOffset + barData.shrinkHeight : 0;
+      var margin = Number.parseFloat($bar.css('margin-top'));
+      var marginOffset = barData.keepMargin ? margin : 0;
+
+      var offsetTop = $bar.data('xBarStickyTop');
+      var triggerOffset = 0;
+      if ( barData.$triggerElement ) {
+        triggerOffset += ( barData.$triggerElement.offset().top - adminBarOffset );
+      }
+
+      triggerOffset = Math.max( offsetTop, triggerOffset);
+
+      var snap = ( Math.max( baseOffset, triggerOffset ) - marginOffset ) + barData.offsetMod;
+
+
+      var offset = snap - stackedHeight;
+
+      if ( canFix && st > offset ) { fix(); } else { unfix(); }
+
+      function fix() {
+        canFix = true;
+        var slidePosition = null;
+
+        var height = barData.shrinkHeight;
+        if ( st <= offsetTop + barData.initialHeight && ! barData.hideInitially ) {
+          height = shrinkInterpolate(
+            barData.initialHeight,
+            barData.shrinkHeight,
+            Math.min(Math.max(0, st - offset), barData.initialHeight) / barData.initialHeight
+          );
         } else {
-            $input.removeClass('placeholder');
+          slidePosition = slideInterpolate(0,100,Math.min(Math.max(0, st - offset), height) / height);
         }
+
+        var update = {
+          top:       adminBarOffset + stackedHeight,
+          height: height
+        };
+
+        if ( ! barData.keepMargin && margin ) {
+          update.top -= margin;
+        }
+
+        if ( slidePosition ) {
+          update.transform = 'translate3d( 0, ' + ((100 - slidePosition) * -1).toPrecision(2) + '%' + ', 0)';
+        }
+
+        minOffset = snap;
+
+        if ( ! barData.zStack ) {
+          stackedHeight += update.height;
+          if ( barData.keepMargin && margin ) {
+            stackedHeight += margin;
+          }
+          minOffset += update.height;
+        }
+
+        if ( barData.hideInitially ) {
+          update.visibility = '';
+        }
+
+        $content.css({height: update.height});
+        $bar.css(update).addClass(fixedClasses);
+        computeFixedBar($bar[0]);
+        $space.show();
+
+      }
+
+      function unfix() {
+        canFix = false;
+
+        var update = {
+          top:       '',
+          transform: '',
+          height:    '',
+          width:     '',
+        }
+
+        if ( barData.hideInitially ) {
+          update.visibility = 'hidden';
+        }
+
+        $bar.css(update).removeClass(fixedClasses);
+        $content.css({height: ''});
+        $space.hide();
+
+      }
+
     }
 
-    function safeActiveElement() {
-        // Avoid IE9 `document.activeElement` of death
-        // https://github.com/mathiasbynens/jquery-placeholder/pull/99
-        try {
-            return document.activeElement;
-        } catch (exception) {}
-    }
+  }
 
-}(this, document, jQuery));
+});
 
 // =============================================================================
 // JS/SRC/SITE/INC/X-BODY-CUSTOM.JS
@@ -1741,315 +1857,154 @@
 
 jQuery(document).ready(function($) {
 
-  //
-  // Placeholder.
-  //
 
-  $('input, textarea').placeholder();
 
 });
+
 // =============================================================================
-// JS/SRC/SITE/INC/X-BODY-SCROLLSPY.JS
+// JS/SRC/SITE/INC/X-BODY-CART.JS
 // -----------------------------------------------------------------------------
-// A modified version of the Bootstrap ScrollSpy plugin. More information can
-// be found here: http://getbootstrap.com/javascript/#scrollspy
+// Site scripts.
 // =============================================================================
 
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. ScrollSpy Plugin
-//   02. Setup ScrollSpy Functionality
+//   01. Cart
 // =============================================================================
 
-// ScrollSpy Plugin
-// =============================================================================
-
-+function ($) { "use strict";
-
-  // SCROLLSPY CLASS DEFINITION
-  // ==========================
-
-  function ScrollSpy(element, options) {
-    var href
-    var process  = $.proxy(this.process, this)
-
-    this.$element       = $(element).is('body') ? $(window) : $(element)
-    this.$body          = $('body')
-    this.$scrollElement = this.$element.on('scroll.bs.scroll-spy.data-api', process)
-    this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
-    this.selector       = (this.options.target
-      || ((href = $(element).attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
-      || '') + ' .x-nav li > a'
-    this.offsets        = $([])
-    this.targets        = $([])
-    this.activeTarget   = null
-
-    this.refresh()
-    this.process()
-  }
-
-  ScrollSpy.DEFAULTS = {
-    offset: 10
-  }
-
-  ScrollSpy.prototype.refresh = function () {
-    var offsetMethod = this.$element[0] == window ? 'offset' : 'position'
-
-    this.offsets = $([])
-    this.targets = $([])
-
-    var self     = this
-    var $targets = this.$body
-      .find(this.selector)
-      .map(function () {
-        var $el   = $(this)
-        var href  = $el.data('target') || $el.attr('href')
-        var $href = /^#\w/.test(href) && $(href)
-
-        return ($href
-          && $href.length
-          && [[ $href[offsetMethod]().top + (!$.isWindow(self.$scrollElement.get(0)) && self.$scrollElement.scrollTop()), href ]]) || null
-      })
-      .sort(function (a, b) { return a[0] - b[0] })
-      .each(function () {
-        self.offsets.push(this[0])
-        self.targets.push(this[1])
-      })
-  }
-
-  ScrollSpy.prototype.process = function () {
-    var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
-    var scrollHeight = this.$scrollElement[0].scrollHeight || this.$body[0].scrollHeight
-    var maxScroll    = scrollHeight - this.$scrollElement.height()
-    var offsets      = this.offsets
-    var targets      = this.targets
-    var activeTarget = this.activeTarget
-    var i
-
-    if (scrollTop >= maxScroll) {
-      return activeTarget != (i = targets.last()[0]) && this.activate(i)
-    }
-
-    for (i = offsets.length; i--;) {
-      activeTarget != targets[i]
-        && scrollTop >= offsets[i]
-        && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
-        && this.activate( targets[i] )
-    }
-  }
-
-  ScrollSpy.prototype.activate = function (target) {
-    this.activeTarget = target
-
-    $(this.selector)
-      .parents('.current-menu-item')
-      .removeClass('current-menu-item')
-
-    var selector = this.selector
-      + '[data-target="' + target + '"],'
-      + this.selector + '[href="' + target + '"]'
-
-    var active = $(selector)
-      .parents('li')
-      .addClass('current-menu-item')
-
-    if (active.parent('.dropdown-menu').length)  {
-      active = active
-        .closest('li.dropdown')
-        .addClass('current-menu-item')
-    }
-
-    active.trigger('activate.bs.scrollspy')
-  }
-
-
-  // SCROLLSPY PLUGIN DEFINITION
-  // ===========================
-
-  var old = $.fn.scrollspy
-
-  $.fn.scrollspy = function (option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.scrollspy')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  $.fn.scrollspy.Constructor = ScrollSpy
-
-
-  // SCROLLSPY NO CONFLICT
-  // =====================
-
-  $.fn.scrollspy.noConflict = function () {
-    $.fn.scrollspy = old
-    return this
-  }
-
-
-  // SCROLLSPY DATA-API
-  // ==================
-
-  $(window).on('load', function () {
-    $('[data-spy="scroll"]').each(function () {
-      var $spy = $(this)
-      $spy.scrollspy($spy.data())
-    })
-  })
-
-}(jQuery);
-
-
-
-// Setup ScrollSpy Functionality
+// Cart
 // =============================================================================
 
 jQuery(document).ready(function($) {
 
-  var $body                = $('body');
-  var bodyHeight           = $body.outerHeight();
-  var adminbarHeight       = $('#wpadminbar').outerHeight();
-  var navbarFixedTopHeight = $('.x-navbar-fixed-top-active .x-navbar').outerHeight();
-  var locHref              = location.href;
-  var locHashIndex         = locHref.indexOf('#');
-  var locHash              = locHref.substr(locHashIndex);
-
-
-  //
-  // Calculate the offset height for various elements and remove it from
-  // the element's top offset so that fixed elements don't cover it up.
-  //
-
-  function animateOffset( element, ms, easing ) {
-    $('html, body').animate({
-      scrollTop: $(element).offset().top - adminbarHeight - navbarFixedTopHeight + 1
-    }, ms, easing);
+  if ( ! window.csGlobal ) {
+    return;
   }
 
-
-  //
-  // Page load offset (if necessary).
-  //
-
-  $(window).load(function() {
-    if ( locHashIndex !== -1 && $(locHash).length ) {
-      animateOffset(locHash, 1, 'linear');
-    }
+  window.csGlobal.everinit('.x-mini-cart', function(el) {
+    cleanCarts($(el));
   });
 
-
-  //
-  // Scroll trigger.
-  //
-
-  $('a[href*="#"]').on('touchstart click', function(e) {
-    href        = $(this).attr('href');
-    notComments = href.indexOf('#comments') === -1;
-    if ( href !== '#' && notComments ) {
-      var theId = href.split('#').pop();
-      var $el   = $('#' + theId);
-      if ( $el.length > 0 ) {
-        e.preventDefault();
-        animateOffset($el, 850, 'easeInOutExpo');
-      }
-    }
+  $(document).on('added_to_cart wc_fragments_loaded wc_fragments_refreshed', 'body', function() {
+    // console.log('X WC: "added_to_cart", "wc_fragments_loaded", or "wc_fragments_refreshed" fired!');
+    cleanCarts($('.x-mini-cart'));
   });
 
-
-  //
-  // Initialize scrollspy.
-  //
-
-  if ( $body.hasClass('x-one-page-navigation-active') ) {
-
-    $body.scrollspy({
-      target : '.x-nav-wrap.desktop',
-      offset : adminbarHeight + navbarFixedTopHeight
-    });
-
-
-    //
-    // Refresh scrollspy as needed.
-    //
-
-    $(window).resize(function() {
-      $body.scrollspy('refresh');
-    });
-
-    var timesRun = 0;
-    var interval = setInterval(function() {
-      timesRun += 1;
-      var newBodyHeight = $body.outerHeight();
-      if ( newBodyHeight !== bodyHeight ) {
-        $body.scrollspy('refresh');
-      }
-      if ( timesRun === 10 ) {
-        clearInterval(interval);
-      }
-    }, 500);
-
+  function cleanCarts( $el ) {
+    var wrapInner = '<span class="x-anchor-content" style="-webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center;"><span class="x-anchor-text"><span class="x-anchor-text-primary"></span></span></span>';
+    $el.find('.button').removeClass('button').addClass('x-anchor').wrapInner(wrapInner);
   }
 
 });
+
 // =============================================================================
-// JS/SRC/SITE/INC/X-BODY-SLIDER-SCROLL.JS
+// JS/SRC/SITE/INC/X-BODY-SEARCH.JS
 // -----------------------------------------------------------------------------
-// Includes all functionality pertaining to the scroll bottom anchor for the
-// sliders.
+// Site scripts.
 // =============================================================================
 
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Slider Scroll Bottom Anchor
+//   01. Search Scripts
 // =============================================================================
 
-// Slider Scroll Bottom Anchor
+// Search Scripts
 // =============================================================================
 
-jQuery(function($) {
+jQuery(document).ready(function($) {
 
-  //
-  // Slider above.
-  //
+  // Variables
+  // ---------
 
-  $('.x-slider-container.above .x-slider-scroll-bottom').on('touchstart click', function(e) {
+  var $body              = $('body');
+  var dataSearch         = 'data-x-search';
+  var searchForm         = '[' + dataSearch + ']';
+  var searchButtons      = '[' + dataSearch + '] button';
+  var searchButtonSubmit = '[' + dataSearch + '-submit]'
+  var searchButtonClear  = '[' + dataSearch + '-clear]'
+  var searchInput        = '[' + dataSearch + '] input';
+  var searchChildren     = searchButtons + ', ' + searchInput;
 
-    e.preventDefault();
 
-    $('html, body').animate({
-      scrollTop: $('.x-slider-container.above').outerHeight()
-    }, 850, 'easeInOutExpo');
+  // Event: focusin focusout
+  // -----------------------
+
+  $body.on('focusin focusout', searchChildren, function(e) {
+
+    var $parent = $(this).closest(searchForm)
+
+    if ( e.type === 'focusout' && $parent.data('data-x-focus-search-down') ) {
+      return;
+    }
+
+    $parent.data('data-x-focus-search-down', false);
+    $parent.toggleClass('x-search-focused', e.type === 'focusin');
 
   });
 
 
-  //
-  // Slider below.
-  //
+  // Event: mousedown
+  // ----------------
 
-  $('.x-slider-container.below .x-slider-scroll-bottom').on('touchstart click', function(e) {
+  $body.on('mousedown', searchForm, function(e) {
 
-    e.preventDefault();
+    if ( ! e.target.hasAttribute(dataSearch) ) {
+      return;
+    }
 
-    var mastheadHeight       = $('.masthead').outerHeight();
-    var navbarFixedTopHeight = $('.x-navbar-fixed-top-active .x-navbar').outerHeight();
-    var sliderAboveHeight    = $('.x-slider-container.above').outerHeight();
-    var sliderBelowHeight    = $('.x-slider-container.below').outerHeight();
-    var heightSum            = mastheadHeight + sliderAboveHeight + sliderBelowHeight - navbarFixedTopHeight;
+    var $this = $(this);
 
-    $('html, body').animate({
-      scrollTop: heightSum
-    }, 850, 'easeInOutExpo');
+    $this.addClass('x-search-focused');
+    $this.data('data-x-focus-search-down', true);
+
+    setTimeout(function() {
+      $this.find('input').focus();
+    }, 0);
+
+  });
+
+
+  // Event: input
+  // ------------
+
+  $body.on('input', searchInput, function(e) {
+
+    var $this   = $(this);
+    var $parent = $this.closest(searchForm);
+
+    if ( $this.val() !== '' ) {
+      $parent.addClass('x-search-has-content');
+    } else {
+      $parent.removeClass('x-search-has-content');
+    }
+
+  });
+
+
+  // Event: click
+  // ------------
+
+  $body.on('click', searchButtonSubmit, function(e) {
+
+    var $parent = $(this).closest(searchForm);
+
+    $parent.submit();
+
+  });
+
+  $body.on('click', searchButtonClear, function(e) {
+
+    var $parent = $(this).closest(searchForm);
+
+    $parent.find('input').val('').focus();
+    $parent.removeClass('x-search-has-content');
 
   });
 
 });
+
 // =============================================================================
 // JS/SRC/SITE/INC/X-BODY-WOOCOMMERCE.JS
 // -----------------------------------------------------------------------------
@@ -2121,5 +2076,60 @@ jQuery(document).ready(function($) {
   $container.on('mouseleave', starsLeave);
   $stars.on('click', starClick);
   $stars.on('mouseover', starOver);
+
+});
+
+
+jQuery(function($){
+
+  if ( ! window.csGlobal ) {
+    return;
+  }
+
+  // Library Initialization
+  // ===========================================================================
+
+  window.csGlobal.particle.setup();
+
+  window.csGlobal.stem( {
+    positioning: true,
+    interaction: {
+      selectors: ['.x-menu-inline .menu-item-has-children', '.x-menu-dropdown .menu-item-has-children'],
+      beforeActivate: function( el ) {
+        window.csGlobal.particle.activateAnchor($(el).find('a:first')[0])
+      },
+      beforeDeactivate: function( el ) {
+        window.csGlobal.particle.deactivateAnchor($(el).find('a:first')[0])
+      },
+      deactivateChild: function( el ) {
+        window.csGlobal.particle.deactivateAnchor($(el).find('a:first')[0]);
+      }
+    }
+  });
+
+  window.csGlobal.collapse( {
+    contentSelector: 'ul.sub-menu',
+    isLinked: function( el ) {
+      // Return true/false for if you want neighboring items to close
+      // when an item is toggled
+      //$(el).closest('.x-menu-collapsed');
+      return true;
+    },
+
+    interaction: {
+      selectors: ['.x-menu-collapsed [data-x-collapse]'],
+      indicatingSelecter: 'a.x-anchor',
+      beforeActivate: function( el ) {
+        window.csGlobal.particle.activateAnchor($(el).find('a.x-anchor:first')[0])
+      },
+      beforeDeactivate: function( el ) {
+        window.csGlobal.particle.deactivateAnchor($(el).find('a.x-anchor:first')[0])
+      },
+      deactivateChild: function( el ) {
+        window.csGlobal.particle.deactivateAnchor($(el).find('a.x-anchor:first')[0])
+      }
+    }
+
+  });
 
 });

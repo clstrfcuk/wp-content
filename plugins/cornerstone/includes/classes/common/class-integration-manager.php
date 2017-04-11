@@ -18,7 +18,12 @@ class Cornerstone_Integration_Manager extends Cornerstone_Plugin_Component {
 
 		$this->register_native_integrations();
 
-		add_action( 'plugins_loaded', array( $this, 'load' ) );
+		if ( did_action('plugins_loaded') ) {
+			$this->load();
+		} else {
+			add_action( 'plugins_loaded', array( $this, 'load' ) );
+		}
+
 		add_action( 'after_setup_theme', array( $this, 'load_theme' ) );
 
 	}
@@ -74,10 +79,21 @@ class Cornerstone_Integration_Manager extends Cornerstone_Plugin_Component {
 				$current_theme = $child_theme->Template;
 			}
 
-			if ( call_user_func( $stylesheet ) === $current_theme ) {
-				$this->instances[ $handle ] = new $class_name;
-				return;
-			}
+      $valid_stylesheets = call_user_func( $stylesheet );
+      if ( ! is_array( $valid_stylesheets ) ) {
+        $valid_stylesheets = array( $valid_stylesheets );
+      }
+
+      foreach ($valid_stylesheets as $valid_stylesheet ) {
+        if ( $valid_stylesheet === $current_theme ) {
+  				$this->instances[ $handle ] = new $class_name;
+          $theme_setup = array( $this->instances[ $handle ], 'theme_setup' );
+          if ( is_callable( $theme_setup ) ) {
+            call_user_func($theme_setup, $valid_stylesheet);
+          }
+  				break;
+  			}
+      }
 
 		}
 

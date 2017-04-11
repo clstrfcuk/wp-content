@@ -42,9 +42,10 @@ class Envira_Gallery_Posttype {
      * @since 1.0.0
      */
     public function __construct() {
-    
+
         // Load the base class object.
         $this->base = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );
+		$common = Envira_Gallery_Common::get_instance();
 
         // Build the labels for the post type.
         $labels =  array(
@@ -67,7 +68,7 @@ class Envira_Gallery_Posttype {
         $args = array(
             'labels'              => $labels,
             'public'              => false,
-            'exclude_from_search' => false,
+            'exclude_from_search' => true,
             'show_ui'             => true,
             'show_in_menu'        => true,
             'show_in_admin_bar'   => true,
@@ -78,9 +79,22 @@ class Envira_Gallery_Posttype {
             'supports'            => array( 'title' ),
         );
 
+        if ( get_option( 'envira_gallery_standalone_enabled' ) ) {
+            // Get slug
+            $slug = $common->standalone_get_slug( 'gallery' );
+
+            // Change the default post type args so that it can be publicly accessible.
+            $args['rewrite']   				= array( 'with_front' => false, 'slug' => $slug );
+            $args['query_var'] 				= true;
+            $args['exclude_from_search']    = false;
+            $args['public']    				= true;
+            $args['supports'][] 			= 'slug';
+            $args['supports'][] 			= 'author';
+        }
+
         // Define custom capaibilities if we're running Envira Gallery.
         if ( class_exists( 'Envira_Gallery' ) ) {
-            $args['capaibilities'] = array(
+            $args['capabilities'] = array(
                 // Meta caps
                 'edit_post'             => 'edit_envira_gallery',
                 'read_post'             => 'read_envira_gallery',
@@ -91,7 +105,7 @@ class Envira_Gallery_Posttype {
                 'edit_others_posts'     => 'edit_other_envira_galleries',
                 'publish_posts'         => 'publish_envira_galleries',
                 'read_private_posts'    => 'read_private_envira_galleries',
-                
+
                 // Primitive caps used within map_meta_cap()
                 'read'                  => 'read',
                 'delete_posts'          => 'delete_envira_galleries',
@@ -100,7 +114,7 @@ class Envira_Gallery_Posttype {
                 'delete_others_posts'   => 'delete_others_envira_galleries',
                 'edit_private_posts'    => 'edit_private_envira_galleries',
                 'edit_published_posts'  => 'edit_published_envira_galleries',
-                'edit_posts'            => 'create_envira_galleries',                
+                'edit_posts'            => 'create_envira_galleries',
             );
         }
 

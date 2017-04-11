@@ -40,7 +40,7 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
       'sectionNames'           => $this->get_sections(),
       'previewContentBefore' => $this->getPreviewContentBefore(),
       'previewContentAfter' => $this->getPreviewContentAfter(),
-      'strings' => CS()->i18n( 'generator', false )
+      'strings' => CS()->i18n_group( 'generator', false )
     );
   }
 

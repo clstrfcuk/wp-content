@@ -1,8 +1,8 @@
 <?php
 
 return array(
-  'builder' => array(
-    'title'       => __( 'Builder', 'cornerstone' ),
+  'content-builder' => array(
+    'title'       => __( 'Content Builder', 'cornerstone' ),
     'description' => __( 'Cornerstone attempts to follow your theme&apos;s provided styling. If suitable styling isn&apos;t found in the theme, you can use the options below to set a compatibility baseline.<br/><br/>If you notice the settings below are not making a visible difference, chances are that your theme is handling the styling in that area. Cornerstone prefers to give the theme precedence when possible.<br/><br/>Finally, changing settings here won&apos;t affect elements that you have already configured directly (buttons for example).', 'cornerstone' ),
     'sections' => array(
       'layout' => array(
@@ -123,18 +123,3 @@ return array(
     )
   )
 );
-
-
-
-// 'x_stack' => array(
-//   'type' => 'select',
-//   'title' => __( 'Select', 'cornerstone' ),
-//   'options' => array(
-//     'choices' => array(
-//       'integrity' => __( 'Integrity', 'cornerstone' ),
-//       'renew'     => __( 'Renew', 'cornerstone' ),
-//       'icon'      => __( 'Icon', 'cornerstone' ),
-//       'ethos'     => __( 'Ethos', 'cornerstone' )
-//     )
-//   )
-// ),

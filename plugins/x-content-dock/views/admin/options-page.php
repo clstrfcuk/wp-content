@@ -37,8 +37,10 @@ require( X_CONTENT_DOCK_PATH . '/functions/options.php' );
 // Setup array of all pages and posts.
 //
 
+// Pages
+
 $x_content_dock_list_entries_args   = array( 'posts_per_page' => -1 );
-$x_content_dock_list_entries_merge  = array_merge( get_pages( $x_content_dock_list_entries_args ), get_posts( $x_content_dock_list_entries_args ) );
+$x_content_dock_list_entries_merge  = get_pages( $x_content_dock_list_entries_args );
 $x_content_dock_list_entries_master = array();
 
 foreach ( $x_content_dock_list_entries_merge as $post ) {
@@ -46,6 +48,37 @@ foreach ( $x_content_dock_list_entries_merge as $post ) {
 }
 
 asort( $x_content_dock_list_entries_master );
+
+
+// Posts
+
+$x_content_dock_list_post_entries_args   = array( 'posts_per_page' => -1 );
+$x_content_dock_list_post_entries_merge  = get_posts( $x_content_dock_list_entries_args );
+$x_content_dock_list_post_entries_master = array();
+
+foreach ( $x_content_dock_list_post_entries_merge as $post ) {
+  $x_content_dock_list_post_entries_master[$post->ID] = $post->post_title;
+}
+
+asort( $x_content_dock_list_post_entries_master );
+
+
+// WooCommerce
+
+if ( is_plugin_active( 'woocommerce/woocommerce.php' ) )  {
+
+  $x_content_dock_list_woo_products_args   = array( 'posts_per_page' => -1, 'post_type' => 'product' );
+  $x_content_dock_list_woo_products_merge  = get_posts( $x_content_dock_list_woo_products_args );
+  $x_content_dock_list_woo_products_master = array();
+
+  foreach ( $x_content_dock_list_woo_products_merge as $post ) {
+    $x_content_dock_list_woo_products_master[$post->ID] = $post->post_title;
+  }
+
+  asort( $x_content_dock_list_woo_products_master );
+
+}
+
 
 
 //

@@ -10,18 +10,27 @@ class UberMenuItemMenuSegment extends UberMenuItem{
 	//protected $auto_child = 'toggle';
 	//protected $alter_structure = true;
 
-	function getSetting( $key ){
+	function getSetting( $key , $beyondgp = false ){
 
 		//Keys that should be grabbed from the grandparent item instead
-		$kickup = array( 'submenu_column_default' );
+		$kickup = array( 'submenu_column_default' , 'submenu_item_layout' , 'submenu_item_content_alignment' );
 
 		$val = '';
 		if( in_array( $key , $kickup ) && ( $gi = $this->walker->grandparent_item() ) ){	//$this->depth > 1 && 
+
+			//Check beyond the grandparent item if the grandparent is a menu segment
+			//This will happen if using Dynamic Terms, for example
+			if( $beyondgp && $gi->getType() == 'menu_segment' ){
+				$gi = $this->walker->ancestor_item( 4 );
+			}
+
 			//Prevent infinite loop
 			if( $gi->getType() == 'menu_segment' ){
 				return false;
 			}
-			else $val = $this->walker->grandparent_item()->getSetting($key);
+			else{
+				$val = $gi->getSetting($key);
+			}
 		}
 		else $val = isset( $this->settings[$key] ) ? $this->settings[$key] : $this->walker->setting_defaults[$key];
 

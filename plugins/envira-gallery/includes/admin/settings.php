@@ -62,6 +62,7 @@ class Envira_Gallery_Settings {
 
             // Add callbacks for settings tabs.
             add_action( 'envira_gallery_tab_settings_general', array( $this, 'settings_general_tab' ) );
+            add_action( 'envira_gallery_tab_settings_standalone', array( $this, 'settings_standalone_tab' ) );
 
             // Add the settings menu item to the Plugins table.
             add_filter( 'plugin_action_links_' . plugin_basename( plugin_dir_path( dirname( dirname( __FILE__ ) ) ) . 'envira-gallery.php' ), array( $this, 'settings_link' ) );
@@ -91,6 +92,7 @@ class Envira_Gallery_Settings {
             add_action( 'load-' . $this->hook, array( $this, 'maybe_fix_migration' ) );
             add_action( 'load-' . $this->hook, array( $this, 'update_image_settings' ) );
             add_action( 'load-' . $this->hook, array( $this, 'settings_page_assets' ) );
+            add_action( 'load-' . $this->hook, array( $this, 'standalone_settings_save' ) );
         }
 
     }
@@ -260,6 +262,118 @@ class Envira_Gallery_Settings {
 
     }
 
+    public function standalone_settings_save() {
+        // Check we saved some settings
+        if ( !isset($_POST) ) {
+            return;
+        }
+
+        // Check nonce exists
+        if ( !isset($_POST['envira-standalone-nonce']) ) {
+            return;
+        }
+
+        // Check nonce is valid
+        if ( !wp_verify_nonce( $_POST['envira-standalone-nonce'], 'envira-standalone-nonce' ) ) {
+            add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_nonce_notice' ) );
+            return;
+        }
+
+        $this->update_setting( 'standalone_enabled', empty( $_POST['envira-standalone-enable'] ) ? 0 : 1 );
+
+        // Get reserved slugs
+        $slugs = Envira_Gallery_Common::get_instance()->standalone_get_reserved_slugs();
+
+        // Determine which slug(s) to check - include albums if the Albums addon is enabled
+        $slugsToCheck = array(
+            'gallery',
+        );
+        if ( isset ( $_POST['envira-albums-slug'] ) ) {
+            $slugsToCheck[] = 'albums';
+        }
+
+        // Go through each slug
+        foreach ( $slugsToCheck as $slug ) {
+
+            // Check slug is valid
+            if ( empty( $_POST['envira-' . $slug . '-slug']) ) {
+                add_action( 'envira_gallery_settings_standalone_tab_notice', 'envira_standalone_settings_slug_notice' );
+                return;
+            }
+            if ( !preg_match("/^[a-zA-Z0-9_\-]+$/", $_POST['envira-' . $slug . '-slug'] ) ) {
+                add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_slug_notice' ) );
+                return;
+            }
+
+            // Check slug is not reserved
+            if ( !is_array($slugs) ) {
+                add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_slug_notice' ) );
+                return;
+            }
+
+            if ( in_array( $_POST['envira-' . $slug . '-slug'], $slugs) ) {
+                add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_slug_notice' ) );
+                return;
+            }
+
+            // If we reach this point, the slugs are good to use
+            update_option( 'envira-' . $slug . '-slug', $_POST['envira-' . $slug . '-slug'] );
+
+        }
+
+        // Set envira-standalone-flushed = false, so on the next page load, rewrite
+        // rules are flushed to prevent 404s
+        update_option( 'envira-standalone-flushed', false );
+
+        // Output success notice
+        add_action( 'envira_gallery_settings_standalone_tab_notice', array( $this, 'standalone_settings_saved_notice' ) );
+    }
+
+    /**
+     * Outputs a message to tell the user that the nonce field is invalid
+     *
+     * @since 1.5.7.3
+     */
+    public function standalone_settings_nonce_notice() {
+
+        ?>
+        <div class="notice error below-h2">
+            <p><?php echo ( __( 'The nonce field is invalid.', 'envira-standalone' ) ); ?></p>
+        </div>
+        <?php
+
+    }
+
+    /**
+     * Outputs a message to tell the user that the slug has been saved
+     *
+     * @since 1.5.7.3
+     */
+    public function standalone_settings_saved_notice() {
+
+        ?>
+        <div class="notice updated below-h2">
+            <p><?php echo ( __( 'Slug updated successfully!', 'envira-standalone' ) ); ?></p>
+        </div>
+        <?php
+
+    }
+
+    /**
+     * Outputs a message to tell the user that the slug is missing, contains invalid characters or is already taken
+     *
+     * @since 1.5.7.3
+     */
+    public function standalone_settings_slug_notice() {
+
+        ?>
+        <div class="notice error below-h2">
+            <p><?php echo ( __( 'The slug is either missing, contains invalid characters or used by a Post Type. Please enter a different slug.', 'envira-standalone' ) ); ?></p>
+        </div>
+        <?php
+
+    }
+
     /**
      * Helper method for updating a setting's value.
      *
@@ -300,7 +414,7 @@ class Envira_Gallery_Settings {
         $value = get_option( $prefixed_key );
 
         // If no value exists, fallback to the default
-        if ( ! $value ) {
+        if ( ! isset( $value ) ) {
             $value = $this->get_setting_default( $key );
         }
 
@@ -341,6 +455,7 @@ class Envira_Gallery_Settings {
         // Prepare default values.
         $defaults = array(
             'media_position' => 'after',
+            'standalone_enabled' => true
         );
 
         // Allow devs to filter the defaults.
@@ -443,7 +558,7 @@ class Envira_Gallery_Settings {
         ?>
 
         <!-- Tabs -->
-        <h1 id="envira-tabs-nav" class="envira-tabs-nav" data-container="#envira-gallery-settings" data-update-hashbang="1">
+        <h2 id="envira-tabs-nav" class="envira-tabs-nav" data-container="#envira-gallery-settings" data-update-hashbang="1">
             <?php 
             $i = 0; 
             foreach ( (array) $this->get_envira_settings_tab_nav() as $id => $title ) {
@@ -454,7 +569,7 @@ class Envira_Gallery_Settings {
                 $i++; 
             }
             ?>
-        </h1>
+        </h2>
 
         <!-- Tab Panels -->
         <div id="envira-gallery-settings" class="wrap">
@@ -491,7 +606,8 @@ class Envira_Gallery_Settings {
     public function get_envira_settings_tab_nav() {
 
         $tabs = array(
-            'general' => __( 'General', 'envira-gallery' ), // This tab is required. DO NOT REMOVE VIA FILTERING.
+            'general'    => __( 'General', 'envira-gallery' ), // This tab is required. DO NOT REMOVE VIA FILTERING.
+            'standalone' => __( 'Standalone', 'envira-gallery' )
         );
         $tabs = apply_filters( 'envira_gallery_settings_tab_nav', $tabs );
 
@@ -623,6 +739,75 @@ class Envira_Gallery_Settings {
                 <?php wp_nonce_field( 'envira-gallery-settings-nonce', 'envira-gallery-settings-nonce' ); ?>
                 <?php submit_button( __( 'Save Settings', 'envira-gallery' ), 'primary', 'envira-gallery-settings-submit', false ); ?>
             </form>
+        </div>
+        <?php
+
+    }
+
+    /**
+     * Callback for displaying the UI for standalone settings tab.
+     *
+     * @since 1.5.7.3
+     */
+    public function settings_standalone_tab() {
+
+        // Get slugs
+        $enabled = $this->get_setting( 'standalone_enabled' );
+        $slug = Envira_Gallery_Common::get_instance()->standalone_get_slug( 'gallery' );
+        $albumSlug = Envira_Gallery_Common::get_instance()->standalone_get_slug( 'albums' );
+
+        ?>
+        <div id="envira-settings-standalone">
+            <?php
+            // Output notices
+            do_action( 'envira_gallery_settings_standalone_tab_notice' );
+            ?>
+
+            <table class="form-table">
+                <tbody>
+                    <form action="edit.php?post_type=envira&page=envira-gallery-settings#!envira-tab-standalone" method="post">
+                        <tr id="envira-settings-standalone-enable">
+                            <th scope="row">
+                                <label for="envira-standalone-enable"><?php _e( 'Enable Standalone', 'envira-standalone' ); ?></label>
+                            </th>
+                            <td>
+                                <p class="description">
+                                    <label for="envira-standalone-enable">
+                                        <input type="checkbox" name="envira-standalone-enable" id="envira-standalone-enable" value="1" <?php checked( true, $enabled ); ?> />
+                                        <?php wp_nonce_field( 'envira-standalone-nonce', 'envira-standalone-nonce' ); ?>
+                                        <?php _e( 'The standalone option allows you to access galleries created through the Envira post type with unique URLs. Now your galleries can have dedicated gallery pages!', 'envira-standalone' ); ?>
+                                    </label>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <tr id="envira-settings-slug-box-gallery">
+                            <th scope="row">
+                                <label for="envira-gallery-slug"><?php _e( 'Gallery Slug ', 'envira-standalone' ); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" name="envira-gallery-slug" id="envira-gallery-slug" value="<?php echo $slug; ?>" />
+                                <p class="description"><?php _e( 'The slug to prefix to all Envira Galleries.', 'envira-standalone' ); ?></p>
+                            </td>
+                        </tr>
+
+                        <tr id="envira-settings-slug-box-albums">
+                            <th scope="row">
+                                <label for="envira-albums-slug"><?php _e( 'Album Slug ', 'envira-standalone' ); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" name="envira-albums-slug" id="envira-albums-slug" value="<?php echo $albumSlug; ?>" />
+                                <p class="description"><?php _e( 'The slug to prefix to all Envira Albums.', 'envira-standalone' ); ?></p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row"><?php submit_button( __( 'Save', 'envira-gallery' ), 'primary', 'envira-gallery-verify-submit', false ); ?></th>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </form>
+                </tbody>
+            </table>
         </div>
         <?php
 

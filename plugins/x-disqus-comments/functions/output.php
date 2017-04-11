@@ -21,21 +21,78 @@
 
 function x_disqus_comments_embed() {
 
+  GLOBAL $post;
+
   require( X_DISQUS_COMMENTS_PATH . '/functions/options.php' );
 
-  if ( is_singular() && comments_open() ) { ?>
+  if ( is_singular() && comments_open() ) :
+
+    // Page is on the list
+
+    $display = ! ( $post && in_array( $post->post_type, $x_disqus_comments_exclude_post_types ) );
+
+    if ( $display ) : ?>
 
   <script id="x-disqus-comments-embed-js" type="text/javascript">
-    var disqus_shortname = '<?php echo $x_disqus_comments_shortname; ?>';
-    (function() {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
+    function x_disqus_comments_embed () {
+      var disqus_shortname = '<?php echo $x_disqus_comments_shortname; ?>';
+      (function() {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        //  dsq.src = 'http://' + disqus_shortname + '.' + disqus_domain + '/embed.js?pname=wordpress&pver=<?php echo DISQUS_VERSION; ?>';
+      })();
+    }
+
+    <?php switch ( $x_disqus_comments_lazy_load ) :
+
+      case 'on-scroll': ?>
+        jQuery(function($){
+          var ds_loaded = false;
+          var top = $(".x-comments-area").offset().top; // WHERE TO START LOADING
+
+          function check(){
+            if ( !ds_loaded && $(window).scrollTop() + $(window).height() > top ) {
+              ds_loaded = true;
+              x_disqus_comments_embed ();
+            }
+          }
+
+          $(window).scroll(check);
+          check();
+        });
+      <?php
+        break;
+
+      case 'on-scroll-start': ?>
+        jQuery(function($){
+          var ds_loaded = false;
+
+          function check(){
+            if ( !ds_loaded ) {
+              ds_loaded = true;
+              x_disqus_comments_embed ();
+            }
+          }
+
+          $(window).scroll(check);
+          check();
+        });
+      <?php
+        break;
+
+      default:
+        case 'normal': ?>
+        x_disqus_comments_embed ();
+      <?php
+        break;
+      endswitch; ?>
   </script>
-
-  <?php }
-
+  <?php
+    endif;
+  endif;
 }
 
 

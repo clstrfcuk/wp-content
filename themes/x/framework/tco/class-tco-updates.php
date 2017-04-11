@@ -22,7 +22,7 @@ if ( ! class_exists( 'TCO_Updates' ) ) :
 		private static $instance;
 		public  static $tco;
 
-		private $base_url = 'https://community.theme.co/api-v2/packages/';
+		private $base_url = 'https://theme.co/apex/api-v2/packages/';
 		private $errors = array();
 		private $updated = false;
 		private $strings;

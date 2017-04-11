@@ -3,29 +3,179 @@
 $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(), $slide, $slider);
 ?>
 
-<script>
-	jQuery(document).ready(function(){function r(r){var i;return r=r.replace(/ /g,""),r.match(/rgba\(\d+\,\d+\,\d+\,([^\)]+)\)/)?(i=100*parseFloat(r.match(/rgba\(\d+\,\d+\,\d+\,([^\)]+)\)/)[1]).toFixed(2),i=parseInt(i)):i=100,i}function i(r,i,e,t){var n,o,c;n=i.data("a8cIris"),o=i.data("wpWpColorPicker"),n._color._alpha=r,c=n._color.toString(),i.val(c),o.toggler.css({"background-color":c}),t&&a(r,e),i.wpColorPicker("color",c)}function a(r,i){i.slider("value",r),i.find(".ui-slider-handle").text(r.toString())}Color.prototype.toString=function(r){if("no-alpha"==r)return this.toCSS("rgba","1").replace(/\s+/g,"");if(1>this._alpha)return this.toCSS("rgba",this._alpha).replace(/\s+/g,"");var i=parseInt(this._color,10).toString(16);if(this.error)return"";if(i.length<6)for(var a=6-i.length-1;a>=0;a--)i="0"+i;return"#"+i},jQuery.fn.alphaColorPicker=function(){return this.each(function(){var e,t,n,o,c,l,s,d,u,p,f;e=jQuery(this),e.wrap('<div class="alpha-color-picker-wrap"></div>'),n=e.attr("data-palette")||"true",o=e.attr("data-show-opacity")||"true",c=e.attr("data-default-color")||"",l=-1!==n.indexOf("|")?n.split("|"):"false"==n?!1:!0,t=e.val().replace(/\s+/g,""),""==t&&(t=c),s={change:function(i,a){var t,n,o,l;t=e.attr("data-customize-setting-link"),n=e.wpColorPicker("color"),c==n&&(o=r(n),u.find(".ui-slider-handle").text(o)),"undefined"!=typeof wp.customize&&wp.customize(t,function(r){r.set(n)}),l=d.find(".transparency"),l.css("background-color",a.color.toString("no-alpha"))},palettes:l},e.wpColorPicker(s),d=e.parents(".wp-picker-container:first"),jQuery('<div class="alpha-color-picker-container"><div class="min-click-zone click-zone"></div><div class="max-click-zone click-zone"></div><div class="alpha-slider"></div><div class="transparency"></div></div>').appendTo(d.find(".wp-picker-holder")),u=d.find(".alpha-slider"),p=r(t),f={create:function(r,i){var a=jQuery(this).slider("value");jQuery(this).find(".ui-slider-handle").text(a),jQuery(this).siblings(".transparency ").css("background-color",t)},value:p,range:"max",step:1,min:0,max:100,animate:300},u.slider(f),"true"==o&&u.find(".ui-slider-handle").addClass("show-opacity"),d.find(".min-click-zone").on("click",function(){i(0,e,u,!0)}),d.find(".max-click-zone").on("click",function(){i(100,e,u,!0)}),d.find(".iris-palette").on("click",function(){var i,t;i=jQuery(this).css("background-color"),t=r(i),a(t,u),100!=t&&(i=i.replace(/[^,]+(?=\))/,(t/100).toFixed(2))),e.wpColorPicker("color",i)}),d.find(".button.wp-picker-default").on("click",function(){var i=r(c);a(i,u)}),e.on("input",function(){var i=jQuery(this).val(),e=r(i);a(e,u)}),u.slider().on("slide",function(r,a){var t=parseFloat(a.value)/100;i(t,e,u,!1),jQuery(this).find(".ui-slider-handle").text(a.value)})})}});
-</script>
 
+<!-- THE CONTEXT MENU -->
+<div id="context_menu_underlay" class="ignorecontextmenu"></div>
+<nav id="context-menu" class="context-menu">
+<ul id="context-menu-first-ul" class="context-menu__items">
+  <!-- CURRENT LAYER -->
+  <li class="context-menu__item not_in_ctx_bg" id="ctx-m-activelayer">
+    <div class="ctx_item_inner"><i id="cx-selected-layer-icon" class="rs-icon-layerimage_n context-menu__link" data-action="nothing"></i><span id="cx-selected-layer-name">Black Canon DSLR</span>
+    	<span data-uniqueid="4" id="ctx-list-of-layer-links" class="ctx-list-of-layer-links">			
+    		<span id="ctx-layer-link-type-element-cs" class="ctx-layer-link-type-element ctx-layer-link-type-element-cs ctx-layer-link-type-3"></span>			
+    		<span class="ctx-list-of-layer-links-inner">				
+    			<span data-linktype="1" data-action="grouplinkchange" class="context-menu__link ctx-layer-link-type-element ctx-layer-link-type-1"></span>				
+    			<span data-linktype="2" data-action="grouplinkchange" class="context-menu__link ctx-layer-link-type-element ctx-layer-link-type-2"></span>				
+    			<span data-linktype="3" data-action="grouplinkchange" class="context-menu__link ctx-layer-link-type-element ctx-layer-link-type-3"></span>				
+    			<span data-linktype="4" data-action="grouplinkchange" class="context-menu__link ctx-layer-link-type-element ctx-layer-link-type-4"></span>				
+    			<span data-linktype="5" data-action="grouplinkchange" class="context-menu__link ctx-layer-link-type-element ctx-layer-link-type-5"></span>				
+    			<span data-linktype="0" data-action="grouplinkchange" class="context-menu__link ctx-layer-link-type-element ctx-layer-link-type-0"></span>			
+    		</span>		
+    	</span>
+    </div>
+  </li>
+  <!-- BACKGROUND CONTEXT - ADD LAYER -->
+  <li class="context-menu__item context-with-sub not_in_ctx_layer">
+  	<div class="ctx_item_inner"><div class="context-menu__link"><i class="rs-icon-addlayer2"></i><span class="cx-layer-name"><?php _e('Add Layer', 'revslider'); ?></span></div><i class="fa-icon-chevron-right"></i></div>    
+    <ul class="context-submenu">
+    	<li class="context-menu__item"><div class="ctx_item_inner"><div class="context-menu__link" data-action="addtextlayer"><i class="rs-icon-layerfont_n"></i><span class="cx-layer-name"><?php _e('Add Text/Html Layer', 'revslider'); ?></span></div></div></li>
+    	<li class="context-menu__item"><div class="ctx_item_inner"><div class="context-menu__link" data-action="addimagelayer"><i class="rs-icon-layerimage_n"></i><span class="cx-layer-name"><?php _e('Add Image Layer', 'revslider'); ?></span></div></div></li>
+    	<li class="context-menu__item"><div class="ctx_item_inner"><div class="context-menu__link" data-action="addaudiolayer"><i class="rs-icon-layeraudio_n"></i><span class="cx-layer-name"><?php _e('Add Audio Layer', 'revslider'); ?></span></div></div></li>
+    	<li class="context-menu__item"><div class="ctx_item_inner"><div class="context-menu__link" data-action="addvideolayer"><i class="rs-icon-layervideo_n"></i><span class="cx-layer-name"><?php _e('Add Video Layer', 'revslider'); ?></span></div></div></li>
+    	<li class="context-menu__item"><div class="ctx_item_inner"><div class="context-menu__link" data-action="addbuttonlayer"><i class="rs-icon-layerbutton_n"></i><span class="cx-layer-name"><?php _e('Add Button Layer', 'revslider'); ?></span></div></div></li>
+    	<li class="context-menu__item"><div class="ctx_item_inner"><div class="context-menu__link" data-action="addshapelayer"><i class="rs-icon-layershape_n"></i><span class="cx-layer-name"><?php _e('Add Shape Layer', 'revslider'); ?></span></div></div></li>
+    	<li class="context-menu__item"><div class="ctx_item_inner"><div class="context-menu__link" data-action="addobjectlayer"><i class="rs-icon-layersvg_n"></i><span class="cx-layer-name"><?php _e('Add Object Layer', 'revslider'); ?></span></div></div></li>
 
-<div class="editor_buttons_wrapper  postbox unite-postbox" style="max-width:100% !important; min-width:1152 !important;">
+		
+	</ul>
+  </li>
+  <!-- ALL LAYERS -->
+  <li class="context-menu__item ctx-m-top-divider context-with-sub" id="ctx-select-layer">
+    <div class="ctx_item_inner"><div class="context-menu__link" data-action="select layer"><i class="eg-icon-menu"></i><span class="cx-layer-name"><?php _e('Select Layer', 'revslider'); ?></span></div><i class="fa-icon-chevron-right"></i></div>
+    <ul class="context-submenu" id="ctx_list_of_layers">
+    	
+    </ul>
+  </li>
+  <!-- LAYER MANIPULATION -->
+  <li class="context-menu__item not_in_ctx_bg">
+    <div class="ctx_item_inner"><div class="context-menu__link" data-action="delete"><i class="rs-lighttrash"></i><span class="cx-layer-name"><?php _e('Delete Layer', 'revslider'); ?></span></div></div>
+  </li>
+
+  <li class="context-menu__item not_in_ctx_bg">
+    <div class="ctx_item_inner"><div class="context-menu__link" data-action="duplicate"><i class="rs-lightcopy"></i><span class="cx-layer-name"><?php _e('Duplicate Layer', 'revslider'); ?></span></div></div>
+  </li>
+  <!-- LAYER VISIBILTY AND LOCK -->
+  <li class="context-menu__item ctx-m-top-divider context-with-sub">
+    <div class="ctx_item_inner"><div class="context-menu__link"><i class="eg-icon-eye"></i><span class="cx-layer-name"><?php _e('Show Layers', 'revslider'); ?></span></div><i class="fa-icon-chevron-right"></i></div>
+    <ul class="context-submenu" id="ctx_list_of_invisibles">
+    	<li class="context-menu__item">
+		    <div class="ctx_item_inner"><div class="context-menu__link" data-action="showalllayer"><i class="fa-icon-asterisk"></i><span class="cx-layer-name"><?php _e('Show All Layers', 'revslider'); ?></span></div></div>
+		  </li>
+		<li class="context-menu__item">
+		    <div class="ctx_item_inner"><div class="context-menu__link" data-action="showonlycurrent"><i class="fa-icon-hand-o-right"></i><span class="cx-layer-name"><?php _e('Show Only Current Layer', 'revslider'); ?></span></div></div>
+		</li>
+    </ul>
+  </li>
+
+  <li class="context-menu__item not_in_ctx_bg" id="cx-selected-layer-visible">
+    <div class="ctx_item_inner"><div class="context-menu__link" data-action="showhide"><i class="eg-icon-eye-off"></i><span class="cx-layer-name"><?php _e('Hide Layer', 'revslider'); ?></span></div></div>
+  </li>
+
+  <li class="context-menu__item not_in_ctx_bg" id="cx-selected-layer-locked">
+    <div class="ctx_item_inner"><div class="context-menu__link" data-action="lockunlock"><i class="eg-icon-lock-open"></i><span class="cx-layer-name"><?php _e('Lock Layer', 'revslider'); ?></span></div></div>
+  </li>
+
+  <!-- LAYER SPECIALS -->
+  <!-- STYLE OF LAYERS -->
+  <li class="context-menu__item ctx-m-top-divider context-with-sub not_in_ctx_bg">
+  	<div class="ctx_item_inner"><div class="context-menu__link"><i class="fa-icon-paint-brush"></i><span class="cx-layer-name"><?php _e('Style', 'revslider'); ?></span></div><i class="fa-icon-chevron-right"></i></div>    
+    <ul class="context-submenu">
+    	<li class="context-menu__item">
+		    <div class="ctx_item_inner"><div class="context-menu__link" data-action="copystyle"><i class="fa-icon-cut"></i><span class="cx-layer-name"><?php _e('Copy Style', 'revslider'); ?></span></div></div>
+		</li>
+		<li class="context-menu__item">
+		    <div class="ctx_item_inner"><div class="context-menu__link" data-action="pastestyle"><i class="fa-icon-edit"></i><span class="cx-layer-name"><?php _e('Paste Style', 'revslider'); ?></span></div></div>
+		</li>
+		<li class="context-menu__item">
+		    <div class="ctx_item_inner">
+		    	<div style="display:inline-block" class="context-menu__link" data-action="nothing"><i class="fa-icon-edit"></i><span class="cx-layer-name"><?php _e('Inherit Style from', 'revslider'); ?></span></div>
+		    	<div style="display:inline-block; float:right; margin-top:3px; height:20px" data-action="nothing">
+			    	<div id="ctx-inheritdesktop" class="ctx-in-one-row context-menu__link" data-size="desktop" data-action="inheritfromdesktop"><i style="width:19px; margin:0px;" class="rs-displays-icon rs-slide-ds-desktop"></i></div>
+			    	<div id="ctx-inheritnotebook" class="ctx-in-one-row context-menu__link" data-size="notebook" data-action="inheritfromnotebook"><i style="width:26px; margin:0px;" class="rs-displays-icon rs-slide-ds-notebook"></i></div>
+			    	<div id="ctx-inherittablet" class="ctx-in-one-row context-menu__link" data-size="tablet" data-action="inheritfromtablet"><i style="width:15px; margin:0px;"class="rs-displays-icon rs-slide-ds-tablet"></i></div>
+			    	<div id="ctx-inheritmobile" class="ctx-in-one-row context-menu__link" data-size="mobile" data-action="inheritfrommobile"><i style="width:17px; margin:0px;"class="rs-displays-icon rs-slide-ds-mobile"></i></div>
+		    	</div>
+		    </div>
+		</li>
+		<li class="context-menu__item">
+		    <div class="ctx_item_inner"><div class="context-menu__link" data-action="advancedcss"><i class="fa-icon-code"></i><span class="cx-layer-name"><?php _e('Advanced Layer CSS', 'revslider'); ?></span></div></div>
+		</li>
+		<li class="context-menu__item ctx-m-top-divider _ho_image _ho_group _ho_row _ho_column _ho_svg _ho_audio _ho_video _ho_group _ho_shape _ho_button">
+		    <div class="ctx_item_inner context-menu__link noleftmargin" data-action="delegate" data-delegate="ctx_linebreak"><i class="fa-icon-level-down"></i><span class="cx-layer-name"><?php _e('Line Break', 'revslider'); ?></span><div id="ctx_linebreak" class="ctx-td-switcher context-menu__link" data-action="linebreak"></div></div>
+		</li>
+		 <li class="context-menu__item _ho_image _ho_group _ho_row _ho_column _ho_svg _ho_audio _ho_video _ho_group _ho_notincolumn">
+		    <div class="ctx_item_inner context-menu__link noleftmargin" data-action="nothing"><i class="fa-icon-text-width"></i><span class="cx-layer-name"><?php _e('Display Mode', 'revslider'); ?></span><div class="context-menu__link ctx-td-option-selector-wrapper" data-action="nothing"><div id="ctx_displayblock" class="ctx-td-option-selector context-menu__link selected" data-action="displayblock">Block</div><div id="ctx_displayinline" class="ctx-td-option-selector context-menu__link" data-action="displayinline">Inline</div></div></div>
+		</li>
+		
+		<li class="context-menu__item ctx-m-top-divider _ho_text  _ho_row _ho_column _ho_audio _ho_shape _ho_button">
+		    <div class="ctx_item_inner context-menu__link noleftmargin" data-action="delegate" data-delegate="ctx_keepaspect"><i class="fa-icon-expand"></i><span class="cx-layer-name"><?php _e('Keep Aspect Ratio', 'revslider'); ?></span><div id="ctx_keepaspect" class="ctx-td-switcher context-menu__link" data-action="aspectratio"></div></div>
+		</li>
+		<li class="context-menu__item _ho_text _ho_group _ho_row _ho_column _ho_audio _ho_video _ho_shape _ho_button">
+			<div class="ctx_item_inner"><div class="context-menu__link" data-action="resetsize"><i class="fa-icon-rotate-left"></i><span class="cx-layer-name"><?php _e('Reset Size', 'revslider'); ?></span></div></div>		    
+		</li>
+    </ul>
+  </li>
+  <!-- RESPONSIVENESS -->
+  <li class="context-menu__item context-with-sub not_in_ctx_bg">
+    <div class="ctx_item_inner"><div class="context-menu__link"><i class="fa-icon-compress"></i><span class="cx-layer-name"><?php _e('Layer Responsiveness', 'revslider'); ?></span></div><i class="fa-icon-chevron-right"></i></div>
+    <ul class="context-submenu">
+    	<li class="context-menu__item">
+		    <div class="ctx_item_inner context-menu__link" data-action="nothing"><span class="cx-layer-name"><?php _e('Alignment', 'revslider'); ?></span><div class="context-menu__link ctx-td-option-selector-wrapper" data-action="nothing"><div id="ctx_gridbased" class="ctx-td-option-selector context-menu__link selected" data-action="gridbased">Grid Based</div><div id="ctx_slidebased" class="ctx-td-option-selector context-menu__link" data-action="slidebased">Slide Based</div></div></div>
+		</li>
+    	<li class="context-menu__item _ho_row _ho_column">
+		    <div class="ctx_item_inner context-menu__link" data-action="delegate" data-delegate="ctx_autoresponsive"><span class="cx-layer-name"><?php _e('Auto Responsive', 'revslider'); ?></span><div id="ctx_autoresponsive" class="ctx-td-switcher context-menu__link" data-action="autoresponsive"></div></div>
+		</li>
+		<li class="context-menu__item _ho_row _ho_column">
+		    <div class="ctx_item_inner context-menu__link" data-action="delegate" data-delegate="ctx_childrenresponsive"><span class="cx-layer-name"><?php _e('Children Responsive', 'revslider'); ?></span><div id="ctx_childrenresponsive" class="ctx-td-switcher context-menu__link" data-action="childrenresponsive"></div></div>
+		</li>
+		<li class="context-menu__item">
+		    <div class="ctx_item_inner context-menu__link" data-action="delegate" data-delegate="ctx_responsiveoffset"><span class="cx-layer-name"><?php _e('Responsive Offset', 'revslider'); ?></span><div id="ctx_responsiveoffset" class="ctx-td-switcher context-menu__link" data-action="responsiveoffset"></div></div>
+		</li>
+    </ul>
+  </li>
+
+   <!-- VISIBILITY -->
+  <li class="context-menu__item context-with-sub not_in_ctx_bg">
+    <div class="ctx_item_inner"><div class="context-menu__link"><i class="fa-icon-eye"></i><span class="cx-layer-name"><?php _e('Visibility', 'revslider'); ?></span></div><i class="fa-icon-chevron-right"></i></div>
+    <ul class="context-submenu">    	
+    	<li class="context-menu__item">
+		    <div class="ctx_item_inner context-menu__link noleftmargin" data-action="delegate" data-delegate="ctx_showhideondesktop"><i class="rs-displays-icon rs-slide-ds-desktop"></i><span class="cx-layer-name"><?php _e('Desktop', 'revslider'); ?></span><div id="ctx_showhideondesktop" class="ctx-td-switcher context-menu__link" data-action="showhideondesktop"></div></div>
+		</li>
+		<li class="context-menu__item">
+		    <div class="ctx_item_inner context-menu__link noleftmargin" data-action="delegate" data-delegate="ctx_showhideonnotebook"><i class="rs-displays-icon rs-slide-ds-notebook"></i><span class="cx-layer-name"><?php _e('Notebook', 'revslider'); ?></span><div id="ctx_showhideonnotebook" class="ctx-td-switcher context-menu__link" data-action="showhideonnotebook"></div></div>
+		</li>
+		<li class="context-menu__item">
+		    <div class="ctx_item_inner context-menu__link noleftmargin" data-action="delegate" data-delegate="ctx_showhideontablet"><i class="rs-displays-icon rs-slide-ds-tablet"></i><span class="cx-layer-name"><?php _e('Tablet', 'revslider'); ?></span><div id="ctx_showhideontablet" class="ctx-td-switcher context-menu__link" data-action="showhideontablet"></div></div>
+		</li>
+		<li class="context-menu__item">
+		    <div class="ctx_item_inner context-menu__link noleftmargin" data-action="delegate" data-delegate="ctx_showhideonmobile"><i class="rs-displays-icon rs-slide-ds-mobile"></i><span class="cx-layer-name"><?php _e('Mobile', 'revslider'); ?></span><div id="ctx_showhideonmobile" class="ctx-td-switcher context-menu__link" data-action="showhideonmobile"></div></div>
+		</li>
+		
+    </ul>
+  </li>
+
+</ul>
+</nav>
+
+		
+<div id="slide_main_settings_wrapper" class="editor_buttons_wrapper  postbox unite-postbox">
 	<div class="box-closed tp-accordion" style="border-bottom:5px solid #ddd;">
 		<ul class="rs-slide-settings-tabs">
 			<?php
 			if(!$slide->isStaticSlide()){
 				?>
-				<li data-content="#slide-main-image-settings-content" class="selected"><i style="height:45px" class="rs-mini-layer-icon eg-icon-picture-1 rs-toolbar-icon"></i><span><?php _e("Main Background",'revslider'); ?></span></li>					
+				<li id="v_sgs_mp_1" data-content="#slide-main-image-settings-content" class="selected"><i style="height:45px" class="rs-mini-layer-icon eg-icon-picture-1 rs-toolbar-icon"></i><span><?php _e("Main Background",'revslider'); ?></span></li>					
 				<?php
 			}
 			?>				
-				<li class="<?php echo ($slide->isStaticSlide()) ? ' selected' : ''; ?>" data-content="#slide-general-settings-content"><i style="height:45px" class="rs-mini-layer-icon rs-icon-chooser-2 rs-toolbar-icon"></i><?php _e("General Settings",'revslider'); ?></li>
+				<li id="v_sgs_mp_2" class="<?php echo ($slide->isStaticSlide()) ? ' selected' : ''; ?>" data-content="#slide-general-settings-content"><i style="height:45px" class="rs-mini-layer-icon rs-icon-chooser-2 rs-toolbar-icon"></i><?php _e("General Settings",'revslider'); ?></li>
 			<?php
 			if(!$slide->isStaticSlide()){
 				?>
-				<li data-content="#slide-thumbnail-settings-content"><i style="height:45px" class="rs-mini-layer-icon eg-icon-flickr-1 rs-toolbar-icon"></i><?php _e("Thumbnail",'revslider'); ?></li>
-				<li data-content="#slide-animation-settings-content" id="slide-animation-settings-content-tab"><i style="height:45px" class="rs-mini-layer-icon rs-icon-chooser-3 rs-toolbar-icon"></i><?php _e("Slide Animation",'revslider'); ?></li>
-				<li data-content="#slide-seo-settings-content"><i style="height:45px" class="rs-mini-layer-icon rs-icon-advanced rs-toolbar-icon"></i><?php _e("Link & Seo",'revslider'); ?></li>
-				<li data-content="#slide-info-settings-content"><i style="height:45px; font-size:16px;" class="rs-mini-layer-icon eg-icon-info-circled rs-toolbar-icon"></i><?php _e("Slide Info",'revslider'); ?></li>						
+				<li id="v_sgs_mp_3" data-content="#slide-thumbnail-settings-content"><i style="height:45px" class="rs-mini-layer-icon eg-icon-flickr-1 rs-toolbar-icon"></i><?php _e("Thumbnail",'revslider'); ?></li>
+				<li id="v_sgs_mp_4" data-content="#slide-animation-settings-content" id="slide-animation-settings-content-tab"><i style="height:45px" class="rs-mini-layer-icon rs-icon-chooser-3 rs-toolbar-icon"></i><?php _e("Slide Animation",'revslider'); ?></li>
+				<li id="v_sgs_mp_5" data-content="#slide-seo-settings-content"><i style="height:45px" class="rs-mini-layer-icon rs-icon-advanced rs-toolbar-icon"></i><?php _e("Link & Seo",'revslider'); ?></li>
+				<li id="v_sgs_mp_6" data-content="#slide-info-settings-content"><i style="height:45px; font-size:16px;" class="rs-mini-layer-icon eg-icon-info-circled rs-toolbar-icon"></i><?php _e("Slide Info",'revslider'); ?></li>						
 				<li id="main-menu-nav-settings-li" data-content="#slide-nav-settings-content"><i style="height:45px; font-size:16px;" class="rs-mini-layer-icon eg-icon-magic rs-toolbar-icon"></i><?php _e("Nav. Overwrite",'revslider'); ?></li>
 				<?php
 			}
@@ -59,6 +209,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 					<ul class="rs-layer-main-image-tabs" style="display:inline-block; ">
 						<li data-content="#mainbg-sub-source" class="selected"><?php _e('Source', 'revslider'); ?></li>
 						<li class="mainbg-sub-settings-selector" data-content="#mainbg-sub-setting"><?php _e('Source Settings', 'revslider'); ?></li>					
+						<li class="mainbg-sub-filtres-selector" data-content="#mainbg-sub-filters"><?php _e('Filters', 'revslider'); ?></li>
 						<li class="mainbg-sub-parallax-selector" data-content="#mainbg-sub-parallax"><?php _e('Parallax / 3D', 'revslider'); ?></li>
 						<li class="mainbg-sub-kenburns-selector" data-content="#mainbg-sub-kenburns"><?php _e('Ken Burns', 'revslider'); ?></li>
 					</ul>
@@ -134,10 +285,12 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 							}
 							?>
 							<!-- THE BG IMAGE CHANGED DIV -->
-							<span id="tp-bgimagewpsrc" class="bgsrcchanger-div" style="display:none;margin-left:20px;">
-								<a href="javascript:void(0)" id="button_change_image" class="button-primary revblue" ><?php _e("Change Image", 'revslider'); ?></a>
+							<span id="tp-bgimagewpsrc" class="bgsrcchanger-div" style="display:none;margin-left:20px;">																
+								<a href="javascript:void(0)" id="button_change_image" class="button-primary revblue" ><i class="fa-icon-wordpress"></i><?php _e("Media Library", 'revslider'); ?></a>
+								<a href="javascript:void(0)" id="button_change_image_objlib" class="button-primary revpurple" ><i class="fa-icon-book"></i><?php _e("Object Library", 'revslider'); ?></a>
 							</span>
 							
+							</span>
 							<div class="tp-clearfix"></div>
 							
 							<!-- IMAGE FROM EXTERNAL -->
@@ -146,7 +299,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 
 							<!-- THE BG IMAGE FROM EXTERNAL SOURCE -->
 							<span id="tp-bgimageextsrc" class="bgsrcchanger-div" style="display:none;margin-left:20px;">
-								<input type="text" name="bg_external" id="slide_bg_external" value="<?php echo $slideBGExternal?>" <?php echo ($bgType != 'external') ? ' class="disabled"' : ''; ?>>
+								<input type="text" name="bg_external" id="slide_bg_external" value="<?php echo esc_url($slideBGExternal); ?>" <?php echo ($bgType != 'external') ? ' class="disabled"' : ''; ?>>
 								<a href="javascript:void(0)" id="button_change_external" class="button-primary revblue" ><?php _e("Get External",'revslider'); ?></a>
 							</span>
 							
@@ -158,12 +311,12 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 							<div class="tp-clearfix"></div>
 							
 							<!-- COLORED BACKGROUND -->
-							<label><?php _e("Solid Colored",'revslider'); ?></label>
+							<label><?php _e("Colored",'revslider'); ?></label>
 							<input type="radio" name="background_type" value="solid"  data-callid="tp-bgcolorsrc" class="bgsrcchanger" data-bgtype="solid" id="radio_back_solid" <?php checked($bgType, 'solid'); ?>>
 							
 							<!-- THE COLOR SELECTOR -->
 							<span id="tp-bgcolorsrc"  class="bgsrcchanger-div"  style="display:none;margin-left:20px;">
-								<input type="text" name="bg_color" id="slide_bg_color" class="my-color-field" value="<?php echo $slideBGColor; ?>">
+								<input type="text" data-editing="Background Color" name="bg_color" id="slide_bg_color" class="my-color-field" value="<?php echo $slideBGColor; ?>">
 							</span>
 							<div class="tp-clearfix"></div>
 
@@ -179,7 +332,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 								<?php _e('example: T8--OggjJKQ', 'revslider'); ?>
 								<div class="tp-clearfix"></div>
 								<label style="min-width:180px"><?php _e("Cover Image:",'revslider'); ?></label>
-								<span id="youtube-image-picker"></span>
+								<span id="youtube-image-picker"><a href="javascript:void(0)" id="button_change_image_yt" class="button-primary revgreen" ><i class="fa-icon-photo"></i><?php _e("YouTube Video Poster", 'revslider'); ?></a></span>
 							</span>
 							<div class="tp-clearfix"></div>
 							
@@ -379,7 +532,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 						</div>
 						
 						<div id="bg-setting-wrap">
-							<div>
+							<div id="bg-setting-bgfit-wrap">
 								<label for="slide_bg_fit"><?php _e('Background Fit:', 'revslider'); ?></label>
 								<select name="bg_fit" id="slide_bg_fit" style="margin-right:20px">
 									<option value="cover"<?php selected($bgFit, 'cover'); ?>>cover</option>
@@ -390,28 +543,29 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 								<input type="text" name="bg_fit_x" style="min-width:54px;width:54px; <?php if($bgFit != 'percentage') echo 'display: none; '; ?> width:60px;margin-right:10px" value="<?php echo $bgFitX; ?>" />
 								<input type="text" name="bg_fit_y" style="min-width:54px;width:54px;  <?php if($bgFit != 'percentage') echo 'display: none; '; ?> width:60px;margin-right:10px"  value="<?php echo $bgFitY; ?>" />
 							</div>
-							<div>
-								<label for="slide_bg_position" id="bg-position-lbl"><?php _e('Background Position:', 'revslider'); ?></label>
-								<span id="bg-start-position-wrapper">
-									<select name="bg_position" id="slide_bg_position">
-										<option value="center top"<?php selected($bgPosition, 'center top'); ?>>center top</option>
-										<option value="center right"<?php selected($bgPosition, 'center right'); ?>>center right</option>
-										<option value="center bottom"<?php selected($bgPosition, 'center bottom'); ?>>center bottom</option>
-										<option value="center center"<?php selected($bgPosition, 'center center'); ?>>center center</option>
-										<option value="left top"<?php selected($bgPosition, 'left top'); ?>>left top</option>
-										<option value="left center"<?php selected($bgPosition, 'left center'); ?>>left center</option>
-										<option value="left bottom"<?php selected($bgPosition, 'left bottom'); ?>>left bottom</option>
-										<option value="right top"<?php selected($bgPosition, 'right top'); ?>>right top</option>
-										<option value="right center"<?php selected($bgPosition, 'right center'); ?>>right center</option>
-										<option value="right bottom"<?php selected($bgPosition, 'right bottom'); ?>>right bottom</option>
-										<option value="percentage"<?php selected($bgPosition, 'percentage'); ?>>(x%, y%)</option>
-									</select>
-									<input type="text" name="bg_position_x" style="min-width:54px;width:54px; <?php if($bgPosition != 'percentage') echo 'display: none;'; ?>width:60px;margin-right:10px" value="<?php echo $bgPositionX; ?>" />
-									<input type="text" name="bg_position_y" style="min-width:54px;width:54px; <?php if($bgPosition != 'percentage') echo 'display: none;'; ?>width:60px;margin-right:10px" value="<?php echo $bgPositionY; ?>" />
-								</span>
+							<div id="bg-setting-bgpos-def-wrap">
+								<div id="bg-setting-bgpos-wrap">
+									<label for="slide_bg_position" id="bg-position-lbl"><?php _e('Background Position:', 'revslider'); ?></label>
+									<span id="bg-start-position-wrapper">
+										<select name="bg_position" id="slide_bg_position">
+											<option value="center top"<?php selected($bgPosition, 'center top'); ?>>center top</option>
+											<option value="center right"<?php selected($bgPosition, 'center right'); ?>>center right</option>
+											<option value="center bottom"<?php selected($bgPosition, 'center bottom'); ?>>center bottom</option>
+											<option value="center center"<?php selected($bgPosition, 'center center'); ?>>center center</option>
+											<option value="left top"<?php selected($bgPosition, 'left top'); ?>>left top</option>
+											<option value="left center"<?php selected($bgPosition, 'left center'); ?>>left center</option>
+											<option value="left bottom"<?php selected($bgPosition, 'left bottom'); ?>>left bottom</option>
+											<option value="right top"<?php selected($bgPosition, 'right top'); ?>>right top</option>
+											<option value="right center"<?php selected($bgPosition, 'right center'); ?>>right center</option>
+											<option value="right bottom"<?php selected($bgPosition, 'right bottom'); ?>>right bottom</option>
+											<option value="percentage"<?php selected($bgPosition, 'percentage'); ?>>(x%, y%)</option>
+										</select>
+										<input type="text" name="bg_position_x" style="min-width:54px;width:54px; <?php if($bgPosition != 'percentage') echo 'display: none;'; ?>width:60px;margin-right:10px" value="<?php echo $bgPositionX; ?>" />
+										<input type="text" name="bg_position_y" style="min-width:54px;width:54px; <?php if($bgPosition != 'percentage') echo 'display: none;'; ?>width:60px;margin-right:10px" value="<?php echo $bgPositionY; ?>" />
+									</span>
+								</div>
 							</div>
-
-							<div>
+							<div id="bg-setting-bgrep-wrap">
 								<label><?php _e("Background Repeat:",'revslider')?></label>
 								<span>
 									<select name="bg_repeat" id="slide_bg_repeat" style="margin-right:20px">
@@ -475,50 +629,114 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 						</p>
 						
 					</span>
-
-					<span id="mainbg-sub-kenburns" style="display:none">
-						<p>
+					<span id="mainbg-sub-filters" style="display:none">
+						<div style="display:none; margin-bottom: 10px;">																	
+							<select id="media-filter-type" name="media-filter-type">
+								<option value="none"><?php _e('No Filter', 'revslider'); ?></option>
+									<option <?php selected($mediafilter, '_1977'); ?> value="_1977">1977</option>
+									<option <?php selected($mediafilter, 'aden'); ?> value="aden">Aden</option>
+									<option <?php selected($mediafilter, 'brooklyn'); ?> value="brooklyn">Brooklyn</option>
+									<option <?php selected($mediafilter, 'clarendon'); ?> value="clarendon">Clarendon</option>
+									<option <?php selected($mediafilter, 'earlybird'); ?> value="earlybird">Earlybird</option>
+									<option <?php selected($mediafilter, 'gingham'); ?> value="gingham">Gingham</option>
+									<option <?php selected($mediafilter, 'hudson'); ?> value="hudson">Hudson</option>
+									<option <?php selected($mediafilter, 'inkwell'); ?> value="inkwell">Inkwell</option>
+									<option <?php selected($mediafilter, 'lark'); ?> value="lark">Lark</option>
+									<option <?php selected($mediafilter, 'lofi'); ?> value="lofi">Lo-Fi</option>
+									<option <?php selected($mediafilter, 'mayfair'); ?> value="mayfair">Mayfair</option>
+									<option <?php selected($mediafilter, 'moon'); ?> value="moon">Moon</option>
+									<option <?php selected($mediafilter, 'nashville'); ?> value="nashville">Nashville</option>
+									<option <?php selected($mediafilter, 'perpetua'); ?> value="perpetua">Perpetua</option>
+									<option <?php selected($mediafilter, 'reyes'); ?> value="reyes">Reyes</option>
+									<option <?php selected($mediafilter, 'rise'); ?> value="rise">Rise</option>
+									<option <?php selected($mediafilter, 'slumber'); ?> value="slumber">Slumber</option>
+									<option <?php selected($mediafilter, 'toaster'); ?> value="toaster">Toaster</option>
+									<option <?php selected($mediafilter, 'walden'); ?> value="walden">Walden</option>
+									<option <?php selected($mediafilter, 'willow'); ?> value="willow">Willow</option>
+									<option <?php selected($mediafilter, 'xpro2'); ?> value="xpro2">X-pro II</option>
+							</select>
+						</div>
+						<div id="inst-filter-grid">									
+							<div data-type="none" class="filter_none inst-filter-griditem selected"><div class="ifgname"><?php _e('No Filter', 'revslider'); ?></div><div class="inst-filter-griditem-img none" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="_1977" class="filter__1977 inst-filter-griditem "><div class="ifgname">1977</div><div class="inst-filter-griditem-img _1977" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="aden" class="filter_aden inst-filter-griditem "><div class="ifgname">Aden</div><div class="inst-filter-griditem-img aden" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="brooklyn" class="filter_brooklyn inst-filter-griditem "><div class="ifgname">Brooklyn</div><div class="inst-filter-griditem-img brooklyn" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="clarendon" class="filter_clarendon inst-filter-griditem "><div class="ifgname">Clarendon</div><div class="inst-filter-griditem-img clarendon" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="earlybird" class="filter_earlybird inst-filter-griditem "><div class="ifgname">Earlybird</div><div class="inst-filter-griditem-img earlybird" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="gingham" class="filter_gingham inst-filter-griditem "><div class="ifgname">Gingham</div><div class="inst-filter-griditem-img gingham"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="hudson" class="filter_hudson inst-filter-griditem "><div class="ifgname">Hudson</div><div class="inst-filter-griditem-img hudson"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="inkwell" class="filter_inkwell inst-filter-griditem "><div class="ifgname">Inkwell</div><div class="inst-filter-griditem-img inkwell"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="lark" class="filter_lark inst-filter-griditem "><div class="ifgname">Lark</div><div class="inst-filter-griditem-img lark" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="lofi" class="filter_lofi inst-filter-griditem "><div class="ifgname">Lo-Fi</div><div class="inst-filter-griditem-img lofi" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="mayfair" class="filter_mayfair inst-filter-griditem "><div class="ifgname">Mayfair</div><div class="inst-filter-griditem-img mayfair" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="moon" class="filter_moon inst-filter-griditem "><div class="ifgname">Moon</div><div class="inst-filter-griditem-img moon"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="nashville" class="filter_nashville inst-filter-griditem "><div class="ifgname">Nashville</div><div class="inst-filter-griditem-img nashville"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="perpetua" class="filter_perpetua inst-filter-griditem "><div class="ifgname">Perpetua</div><div class="inst-filter-griditem-img perpetua" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="reyes" class="filter_reyes inst-filter-griditem "><div class="ifgname">Reyes</div><div class="inst-filter-griditem-img reyes" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="rise" class="filter_rise inst-filter-griditem "><div class="ifgname">Rise</div><div class="inst-filter-griditem-img rise" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="slumber" class="filter_slumber inst-filter-griditem "><div class="ifgname">Slumber</div><div class="inst-filter-griditem-img slumber" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="toaster" class="filter_toaster inst-filter-griditem "><div class="ifgname">Toaster</div><div class="inst-filter-griditem-img toaster" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="walden" class="filter_walden inst-filter-griditem "><div class="ifgname">Walden</div><div class="inst-filter-griditem-img walden" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="willow" class="filter_willow inst-filter-griditem "><div class="ifgname">Willow</div><div class="inst-filter-griditem-img willow" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+							<div data-type="xpro2" class="filter_xpro2 inst-filter-griditem "><div class="ifgname">X-pro II</div><div class="inst-filter-griditem-img xpro2" style="visibility: inherit; opacity: 1;"></div><div class="inst-filter-griditem-img-noeff"></div></div>
+						</div>						
+					</span>
+					<div id="mainbg-sub-kenburns" style="display:none; position:relative">
+						<div>
 							<label><?php _e('Ken Burns / Pan Zoom:', 'revslider'); ?></label>
 							<input type="checkbox" class="tp-moderncheckbox withlabel" id="kenburn_effect" name="kenburn_effect" data-unchecked="off" <?php checked($kenburn_effect, 'on'); ?>>
-						</p>
-						<span id="kenburn_wrapper" <?php echo ($kenburn_effect == 'off') ? 'style="display: none;"' : ''; ?>>						
+						</div>
+						<div id="kenburn_wrapper" <?php echo ($kenburn_effect == 'off') ? 'style="display: none;"' : ''; ?>>						
+							<div id="ken_burn_example_wrapper">									
+								<div id="kenburn-playpause-wrapper"><i class="eg-icon-play"></i><span><?php _e('PLAY', 'revslider'); ?></span></div><div id="kenburn-backtoidle"></div>
+								<div id="ken_burn_example">								
+									<div id="ken_burn_slot_example" class="tp-bgimg defaultimg">									
+									</div>
+								</div>									
+							</div>
+							
 							<p>
 								<label><?php _e('Scale: (in %):', 'revslider'); ?></label>
 								<label style="min-width:40px"><?php _e('From', 'revslider'); ?></label>
-								<input style="min-width:54px;width:54px" type="text" name="kb_start_fit" value="<?php echo intval($kb_start_fit); ?>" />
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_start_fit" id="kb_start_fit" value="<?php echo intval($kb_start_fit); ?>" />
 								<label style="min-width:20px"><?php _e('To', 'revslider')?></label>
-								<input style="min-width:54px;width:54px" type="text" name="kb_end_fit" value="<?php echo intval($kb_end_fit); ?>" />
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_end_fit" id="kb_end_fit" value="<?php echo intval($kb_end_fit); ?>" />
 							</p>
 							
 							<p>
-								<label><?php _e('Horizontal Offsets:', 'revslider')?></label>
+								<label><?php _e('Horizontal Offsets (+/-):', 'revslider')?></label>
 								<label style="min-width:40px"><?php _e('From', 'revslider'); ?></label>							
-								<input style="min-width:54px;width:54px" type="text" name="kb_start_offset_x" value="<?php echo $kbStartOffsetX; ?>" />
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_start_offset_x" id="kb_start_offset_x" value="<?php echo $kbStartOffsetX; ?>" />
 								<label style="min-width:20px"><?php _e('To', 'revslider')?></label>
-								<input style="min-width:54px;width:54px" type="text" name="kb_end_offset_x" value="<?php echo $kbEndOffsetX; ?>" />
-								<span><i><?php _e('Use Negative and Positive Values to offset from the Center !', 'revslider'); ?></i></span>
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_end_offset_x" id="kb_end_offset_x" value="<?php echo $kbEndOffsetX; ?>" />								
 							</p>
 
 							<p>
-								<label><?php _e('Vertical Offsets:', 'revslider')?></label>		
+								<label><?php _e('Vertical Offsets (+/-):', 'revslider')?></label>		
 								<label style="min-width:40px"><?php _e('From', 'revslider'); ?></label>												
-								<input style="min-width:54px;width:54px" type="text" name="kb_start_offset_y" value="<?php echo $kbStartOffsetY; ?>" />
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_start_offset_y" id="kb_start_offset_y" value="<?php echo $kbStartOffsetY; ?>" />
 								<label style="min-width:20px"><?php _e('To', 'revslider')?></label>
-								<input style="min-width:54px;width:54px" type="text" name="kb_end_offset_y" value="<?php echo $kbEndOffsetY; ?>" />
-								<span><i><?php _e('Use Negative and Positive Values to offset from the Center !', 'revslider'); ?></i></span>
-							</p>
-							
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_end_offset_y" id="kb_end_offset_y" value="<?php echo $kbEndOffsetY; ?>" />								
+							</p>							
 							<p>
 								<label><?php _e('Rotation:', 'revslider')?></label>		
 								<label style="min-width:40px"><?php _e('From', 'revslider'); ?></label>												
-								<input style="min-width:54px;width:54px" type="text" name="kb_start_rotate" value="<?php echo $kbStartRotate; ?>" />
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_start_rotate" id="kb_start_rotate" value="<?php echo $kbStartRotate; ?>" />
 								<label style="min-width:20px"><?php _e('To', 'revslider')?></label>
-								<input style="min-width:54px;width:54px" type="text" name="kb_end_rotate" value="<?php echo $kbEndRotate; ?>" />
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_end_rotate" id="kb_end_rotate" value="<?php echo $kbEndRotate; ?>" />
+							</p>
+
+							<p>
+								<label><?php _e('Blur Filter:', 'revslider')?></label>
+								<label style="min-width:40px"><?php _e('From', 'revslider'); ?></label>							
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_blur_start" id="kb_blur_start" value="<?php echo $kbBlurStart; ?>" />
+								<label style="min-width:20px"><?php _e('To', 'revslider')?></label>
+								<input style="min-width:54px;width:54px" class="kb_input_values" type="text" name="kb_blur_end" id="kb_blur_end" value="<?php echo $kbBlurEnd; ?>" />								
 							</p>
 							
 							<p>
 								<label><?php _e('Easing:', 'revslider'); ?></label>
-								<select name="kb_easing">
+								<select name="kb_easing" id="kb_easing" class="kb_input_values" >
 									<option <?php selected($kb_easing, 'Linear.easeNone'); ?> value="Linear.easeNone">Linear.easeNone</option>
 									<option <?php selected($kb_easing, 'Power0.easeIn'); ?> value="Power0.easeIn">Power0.easeIn  (linear)</option>
 									<option <?php selected($kb_easing, 'Power0.easeInOut'); ?> value="Power0.easeInOut">Power0.easeInOut  (linear)</option>
@@ -558,10 +776,10 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 							</p>
 							<p>
 								<label><?php _e('Duration (in ms):', 'revslider')?></label>
-								<input type="text" name="kb_duration" value="<?php echo intval($kb_duration); ?>" />
+								<input type="text" name="kb_duration" class="kb_input_values"  id="kb_duration" value="<?php echo intval($kb_duration); ?>" />
 							</p>
-						</span>
-					</span>
+						</div>
+					</div>
 					
 					<input type="hidden" id="image_url" name="image_url" value="<?php echo $imageUrl; ?>" />
 					<input type="hidden" id="image_id" name="image_id" value="<?php echo $imageID; ?>" />
@@ -585,7 +803,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 						<p>
 							<?php $delay = RevSliderFunctions::getVal($slideParams, 'delay',''); ?>
 							<label><?php _e('Slide "Delay":','revslider'); ?></label>
-							<input type="text" class="small-text" id="delay" name="delay" value="<?php echo $delay; ?>">
+							<input type="text" class="small-text" id="delay" name="delay" value="<?php echo intval($delay); ?>">
 							<span class="description"><?php _e("A new delay value for the Slide. If no delay defined per slide, the delay defined via Options (9000ms) will be used.",'revslider'); ?></span>
 						</p>
 
@@ -896,10 +1114,10 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 							<div class="slide-trans-example">
 								<div class="slide-trans-example-inner">
 									<div class="oldslotholder" style="overflow:hidden;width:100%;height:100%;position:absolute;top:0px;left:0px;z-index:1">
-										<div class="tp-bgimg defaultimg"></div>
+										<div class="tp-bgimg defaultimg slide-transition-example"></div>
 									</div>
 									<div class="slotholder" style="overflow:hidden;width:100%;height:100%;position:absolute;top:0px;left:0px;z-index:1">
-										<div class="tp-bgimg defaultimg"></div>
+										<div class="tp-bgimg defaultimg slide-transition-example"></div>
 									</div>
 								</div>
 							</div>
@@ -914,7 +1132,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 								<label><?php _e("Slot / Box Amount:",'revslider'); ?></label>
 								<input type="text" class="small-text input-deepselects" id="slot_amount" name="slot_amount" value="<?php echo $slot_amount[0]; ?>" data-selects="1||Random||Custom||Default" data-svalues ="1||random||3||default" data-icons="thumbs-up||shuffle||wrench||key">
 								<span class="tp-clearfix"></span>
-								<span class="description"><?php _e("# of slots/boxes the slide is divided into.",'revslider'); ?></span>					
+								<span class="description"><?php _e("# of slots/boxes the slide is divided into or divided by.",'revslider'); ?></span>					
 								<span class="tp-clearfix"></span>
 								
 								<!-- ROTATION -->
@@ -1064,9 +1282,9 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 											foreach($placeholder['data'] as $k => $d){
 												$get_from = RevSliderFunctions::getVal($slideParams, 'ph-'.$ph_arr_type.'-'.$pht.'-'.$placeholder['handle'].'-'.$k.'-slide', 'off');
 												if($get_from == 'on'){ //get from Slide
-													$ph_vals[$k] = RevSliderFunctions::getVal($slideParams, 'ph-'.$ph_arr_type.'-'.$pht.'-'.$placeholder['handle'].'-'.$k, $d);											
+													$ph_vals[$k] = stripslashes(RevSliderFunctions::getVal($slideParams, 'ph-'.$ph_arr_type.'-'.$pht.'-'.$placeholder['handle'].'-'.$k, $d));											
 												}else{ ////get from Slider
-													$ph_vals[$k] = $slider->getParam('ph-'.$ph_arr_type.'-'.$pht.'-'.$placeholder['handle'].'-'.$k, $d);											
+													$ph_vals[$k] = stripslashes($slider->getParam('ph-'.$ph_arr_type.'-'.$pht.'-'.$placeholder['handle'].'-'.$k, $d));											
 												}
 											}										
 											?>
@@ -1376,7 +1594,13 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 	var rs_plugin_url = '<?php echo RS_PLUGIN_URL; ?>';
 	
 	jQuery('document').ready(function() {
-		jQuery('.my-alphacolor-field').alphaColorPicker();
+    
+		jQuery('.my-alphacolor-field').tpColorPicker({
+          mode:'single',
+          wrapper:'<span class="rev-colorpickerspan"></span>'          
+      });
+
+
 		jQuery('#enable_link').change(function(){
 			if(jQuery(this).val() == 'true'){
 				jQuery('.rs-slide-link-setting-wrapper').show();

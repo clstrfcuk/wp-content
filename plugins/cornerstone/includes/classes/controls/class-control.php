@@ -45,7 +45,7 @@ class Cornerstone_Control {
 
 	final public static function mixinFactory( $name, $config = array() ) {
 
-		$mixins = CS()->config( 'controls/mixins' );
+		$mixins = CS()->config_group( 'controls/mixins' );
 
 		$type = $config['mixin'];
 		unset( $config['mixin'] );
@@ -191,37 +191,7 @@ class Cornerstone_Control {
 	}
 
 	public static function sanitize_html( $data ) {
-
-		if ( current_user_can( 'unfiltered_html' ) )
-			return $data;
-
-		return wp_kses( $data, self::ksesTags() );
-
-	}
-
-	public static function ksesTags( ) {
-
-		$tags = wp_kses_allowed_html( 'post' );
-
-		$tags['iframe'] = array (
-	    'align'       => true,
-	    'frameborder' => true,
-	    'height'      => true,
-	    'width'       => true,
-	    'sandbox'     => true,
-	    'seamless'    => true,
-	    'scrolling'   => true,
-	    'srcdoc'      => true,
-	    'src'         => true,
-	    'class'       => true,
-	    'id'          => true,
-	    'style'       => true,
-	    'border'      => true,
-	    'list'        => true //YouTube embeds
-		);
-
-		return $tags;
-
+    return CS()->common()->sanitize_html( $data );
 	}
 
 	// Used in cases where a control doesn't specify a sanitization method,

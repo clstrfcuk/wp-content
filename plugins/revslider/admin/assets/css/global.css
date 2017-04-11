@@ -54,6 +54,8 @@ div[aria-describedby="revslider-tiny-mce-dialog"] .ui-button-icon-primary.ui-ico
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .rs-slider-modify-li:hover .rs-slider-modify-title,

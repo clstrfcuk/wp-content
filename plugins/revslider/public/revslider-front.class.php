@@ -53,6 +53,7 @@ class RevSliderFront extends RevSliderBaseFront{
 		
 		$includesGlobally = RevSliderFunctions::getVal($arrValues, "includes_globally","on");
 		$includesFooter = RevSliderFunctions::getVal($arrValues, "js_to_footer","off");
+		$load_all_javascript = RevSliderFunctions::getVal($arrValues, "load_all_javascript","off");
 		$strPutIn = RevSliderFunctions::getVal($arrValues, "pages_for_includes");
 		$isPutIn = RevSliderOutput::isPutIn($strPutIn,true);
 		
@@ -90,11 +91,23 @@ class RevSliderFront extends RevSliderBaseFront{
 		}
 		
 		
-		$ft = ($includesFooter == "off") ? false : true;
+		$ft = ($includesFooter == "on") ? true : false;
 		
 		wp_enqueue_script('tp-tools', RS_PLUGIN_URL .'public/assets/js/jquery.themepunch.tools.min.js', $waitfor, $slver, $ft);
 		wp_enqueue_script('revmin', RS_PLUGIN_URL .'public/assets/js/jquery.themepunch.revolution.min.js', 'tp-tools', $slver, $ft);
 		
+		
+		if($load_all_javascript !== 'off'){ //if on, load all libraries instead of dynamically loading them
+			wp_enqueue_script('revmin-actions', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.actions.min.js', 'tp-tools', $slver, $ft);
+			wp_enqueue_script('revmin-carousel', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.carousel.min.js', 'tp-tools', $slver, $ft);
+			wp_enqueue_script('revmin-kenburn', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.kenburn.min.js', 'tp-tools', $slver, $ft);
+			wp_enqueue_script('revmin-layeranimation', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.layeranimation.min.js', 'tp-tools', $slver, $ft);
+			wp_enqueue_script('revmin-migration', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.migration.min.js', 'tp-tools', $slver, $ft);
+			wp_enqueue_script('revmin-navigation', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.navigation.min.js', 'tp-tools', $slver, $ft);
+			wp_enqueue_script('revmin-parallax', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.parallax.min.js', 'tp-tools', $slver, $ft);
+			wp_enqueue_script('revmin-slideanims', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.slideanims.min.js', 'tp-tools', $slver, $ft);
+			wp_enqueue_script('revmin-video', RS_PLUGIN_URL .'public/assets/js/extensions/revolution.extension.video.min.js', 'tp-tools', $slver, $ft);
+		}
 		
 		add_action('wp_head', array('RevSliderFront', 'add_meta_generator'));
 		add_action("wp_footer", array('RevSliderFront',"load_icon_fonts") );
@@ -104,7 +117,7 @@ class RevSliderFront extends RevSliderBaseFront{
 		if($js_defer!='off') add_filter('clean_url', array('RevSliderFront', 'add_defer_forscript'), 11, 1);
 		
 		add_action('wp_before_admin_bar_render', array('RevSliderFront', 'add_admin_menu_nodes'));
-		add_action('wp_footer', array('RevSliderFront', 'putAdminBarMenus'));
+		add_action('wp_footer', array('RevSliderFront', 'putAdminBarMenus'), 99);
 		
 	}
 	
@@ -124,7 +137,7 @@ class RevSliderFront extends RevSliderBaseFront{
 					jQuery('.rev_slider_wrapper').each(function() {
 						aliases.push(jQuery(this).data('alias'));
 					});								
-					if 	(aliases.length>0)	
+					if(aliases.length>0)
 						jQuery('#wp-admin-bar-revslider-default li').each(function() {
 							var li = jQuery(this),
 								t = jQuery.trim(li.find('.ab-item .rs-label').data('alias')); //text()
@@ -157,7 +170,7 @@ class RevSliderFront extends RevSliderBaseFront{
 		
 		if(!empty($sliders)){
 			foreach($sliders as $id => $slider){
-				self::_add_node('<span class="rs-label" data-alias="'.esc_attr($slider['alias']).'">'.esc_attr($slider['title']).'</span>', 'revslider', admin_url('admin.php?page=revslider&view=slide&id=new&slider='.intval($id)), array('class' => 'revslider-sub-menu' ), esc_attr($slider['alias'])); //<span class="wp-menu-image dashicons-before dashicons-update"></span>
+				self::_add_node('<span class="rs-label" data-alias="'.esc_attr($slider['alias']).'">'.esc_html($slider['title']).'</span>', 'revslider', admin_url('admin.php?page=revslider&view=slide&id=new&slider='.intval($id)), array('class' => 'revslider-sub-menu' ), esc_attr($slider['alias'])); //<span class="wp-menu-image dashicons-before dashicons-update"></span>
 			}
 		}
 		
@@ -194,16 +207,18 @@ class RevSliderFront extends RevSliderBaseFront{
 	 * create db tables
 	 */
 	public static function createDBTables(){
-		self::createTable(RevSliderGlobals::TABLE_SLIDERS_NAME);
-		self::createTable(RevSliderGlobals::TABLE_SLIDES_NAME);
-		self::createTable(RevSliderGlobals::TABLE_STATIC_SLIDES_NAME);
-		self::createTable(RevSliderGlobals::TABLE_CSS_NAME);
-		self::createTable(RevSliderGlobals::TABLE_LAYER_ANIMS_NAME);
-		self::createTable(RevSliderGlobals::TABLE_NAVIGATION_NAME);
+		if(get_option('revslider_change_database', false) || get_option('rs_tables_created', false) === false){
+			self::createTable(RevSliderGlobals::TABLE_SLIDERS_NAME);
+			self::createTable(RevSliderGlobals::TABLE_SLIDES_NAME);
+			self::createTable(RevSliderGlobals::TABLE_STATIC_SLIDES_NAME);
+			self::createTable(RevSliderGlobals::TABLE_CSS_NAME);
+			self::createTable(RevSliderGlobals::TABLE_LAYER_ANIMS_NAME);
+			self::createTable(RevSliderGlobals::TABLE_NAVIGATION_NAME);
+		}
+		update_option('rs_tables_created', true);
+		update_option('revslider_change_database', false);
 		
 		self::updateTables();
-		
-		update_option('revslider_change_database', false);
 	}
 	
 	public static function load_icon_fonts(){

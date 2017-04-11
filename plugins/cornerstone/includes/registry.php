@@ -37,7 +37,7 @@ return array(
       'Updates',
       'Integration_Manager',
       'Options_Bootstrap',
-      'CLI'
+      'CLI','Debug'
     ),
     'init' => array(
       'Legacy_Elements',
@@ -45,15 +45,16 @@ return array(
       'Element_Orchestrator',
       'Core_Scripts',
       'Front_End',
-      'Customizer_Manager',
+      'App_Boot',
+      'Router',
       'Style_Loader',
-      'Headers:theme-support:cornerstone_headers'
+      'Regions:theme-support:cornerstone_regions'
     ),
     'loggedin' => array(
       'Admin',
       'Options_Manager', // MOVE
       'App',
-      'Preview_Frame',
+      'Preview_Frame_Loader',
       'Validation',
       'Revision_Manager',
       'Builder',
@@ -61,7 +62,10 @@ return array(
     ),
 
     'model/option' => array(
-      'Header_Assignments'
+      'Header_Assignments',
+      'Footer_Assignments',
+      'Font_Manager',
+      'Color_Manager'
     )
   )
 );

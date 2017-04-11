@@ -1,7 +1,5 @@
-<div data-component='global/entry-preloader' class="cs-entry-preloader cs-active">
-  <div class="cs-entry-preloader-the-circles">
-    <div class="cs-entry-preloader-circle-1"></div>
-    <div class="cs-entry-preloader-circle-2"></div>
-    <div class="cs-entry-preloader-circle-3"></div>
+<div data-cs-component='global/entry-preloader' class="cs-entry-preloader">
+  <div class="cs-pre-loader cs-pre-loader-fixed cs-active">
+    <div class="cs-loading-indicator" style="font-size: 150px;">Loading...</div>
   </div>
 </div>

@@ -23,7 +23,7 @@ class Cornerstone_Alpha extends Cornerstone_Plugin_Component {
 	}
 
 	public function keybindings( $bindings ) {
-		return array_merge( $bindings, $this->plugin->config( 'alpha/keybindings' ) );
+		return array_merge( $bindings, $this->plugin->config_group( 'alpha/keybindings' ) );
 	}
 
 	public function builder_config( $config ) {

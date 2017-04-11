@@ -71,6 +71,51 @@
             <td><input name="x_disqus_comments_shortname" id="x_disqus_comments_shortname" type="text" value="<?php echo ( isset( $x_disqus_comments_shortname ) ) ? $x_disqus_comments_shortname : ''; ?>" class="large-text"></td>
           </tr>
 
+          <tr>
+            <th>
+              <label for="x_disqus_comments_lazy_load">
+                <strong><?php _e( 'Lazy Loading', '__x__' ); ?></strong>
+                <span><?php _e( 'Configure lazy loading for better performance.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td>
+              <select name="x_disqus_comments_lazy_load" id="x_disqus_comments_lazy_load" class="large-text">
+                <?php
+                $lazy_load_options = array(
+                  'normal'          => __( 'Normal (disabled lazy loading)', '__x__'),
+                  'on-scroll'       => __( 'On Scroll', '__x__'),
+                  'on-scroll-start' => __( 'On Scroll Start', '__x__'),
+                );
+                foreach ( $lazy_load_options as $value => $label ) : ?>
+                  <option value="<?php echo $value ?>" <?php echo selected($x_disqus_comments_lazy_load, $value); ?>><?php echo $label ?></option>
+                <?php endforeach; ?>
+              </select>
+            </td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="x_disqus_comments_exclude_post_types">
+                <strong><?php _e( 'Exclude post types', '__x__' ); ?></strong>
+                <span><?php _e( 'Select the post types you do not want Disqus to appear on.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td>
+              <select name="x_disqus_comments_exclude_post_types[]" id="x_disqus_comments_exclude_post_types" multiple="multiple">
+                <?php
+                foreach ( $x_disqus_comments_post_types_list as $key => $value ) {
+                  if ( in_array( $key, $x_disqus_comments_exclude_post_types ) ) {
+                    $selected = ' selected="selected"';
+                  } else {
+                    $selected = '';
+                  }
+                  echo '<option value="' . $key . '"' . $selected . '>' . $value . '</option>';
+                }
+                ?>
+              </select>
+            </td>
+          </tr>
+
         </table>
       </div>
     </div>

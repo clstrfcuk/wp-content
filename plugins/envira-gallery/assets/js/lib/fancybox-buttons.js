@@ -1,6 +1,6 @@
  /*!
  * Buttons helper for envirabox
- * version: 1.0.5 (Mon, 15 Oct 2012)
+ * version: 1.1.0 (Mon, 15 Oct 2012)
  * @requires envirabox v2.0 or later
  *
  * Usage:
@@ -22,6 +22,7 @@
 		defaults : {
 			skipSingle : false, // disables if gallery contains single image
 			position   : 'top', // 'top' or 'bottom'
+			inline     : false,	 // if true, positioned to scroll with the content (typically set by the Comments helper)
 			tpl        : '<div id="envirabox-buttons"><ul><li><a class="btnPrev" title="Previous" href="javascript:;"></a></li><li><a class="btnPlay" title="Start slideshow" href="javascript:;"></a></li><li><a class="btnNext" title="Next" href="javascript:;"></a></li><li><a class="btnToggle" title="Toggle size" href="javascript:;"></a></li><li><a class="btnClose" title="Close" href="javascript:;"></a></li></ul></div>'
 		},
 
@@ -29,6 +30,7 @@
 		buttons: null,
 
 		beforeLoad: function (opts, obj) {
+			var margin = [0,0,0,0];
 			//Remove self if gallery do not have at least two items
 
 			if (opts.skipSingle && obj.group.length < 2) {
@@ -39,7 +41,21 @@
 			}
 
 			//Increase top margin to give space for buttons
-			obj.margin[ opts.position === 'bottom' ? 2 : 0 ] += 30;
+			margin[ opts.position === 'bottom' ? 2 : 0 ] += 30;
+
+			$.extend(obj.margin, {
+				'buttons': margin
+			});
+
+			// If both buttons and thumbnails are set to display at the top, add a CSS class to thumbnails to adjust their position.
+			if ( obj.helpers.thumbs != undefined && opts.position == 'top' && obj.helpers.thumbs.position == 'top' ) {
+				obj.helpers.thumbs.position = 'top has-other-content';
+			}
+
+			// If both buttons and thumbnails are set to display at the bottom, add a CSS class to thumbnails to adjust their position.
+			if ( obj.helpers.thumbs != undefined && opts.position == 'bottom' && obj.helpers.thumbs.position == 'bottom' ) {
+				obj.helpers.thumbs.position = 'bottom has-other-content';
+			}
 		},
 
 		onPlayStart: function () {
@@ -59,6 +75,11 @@
 
 			if (!buttons) {
 				this.list = $(opts.tpl).addClass(opts.position).appendTo('body');
+
+				// If set to inline, add a class now
+				if ( opts.inline ) {
+					this.list.addClass( 'inline' );
+				}
 
 				buttons = {
 					prev   : this.list.find('.btnPrev').click( F.prev ),

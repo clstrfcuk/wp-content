@@ -7,6 +7,7 @@ class Cornerstone_Header {
   protected $content = array();
   protected $new;
   protected $dirty;
+  protected $modified;
 
   public function __construct( $post ) {
 
@@ -93,6 +94,10 @@ class Cornerstone_Header {
 
   }
 
+  public function get_id() {
+    return $this->id;
+  }
+
   public function get_title() {
     return $this->title;
   }
@@ -111,33 +116,17 @@ class Cornerstone_Header {
     return $this->content['settings'];
   }
 
-  public function get_assignments() {
-    $assignments = isset( $this->content['settings']['assignments'] ) ? $this->content['settings']['assignments'] : array();
-    return array_map( array( $this, 'decorate_assignments' ), $assignments );
-  }
-
-  public function decorate_assignments( $assignment ) {
-
-    $parts = explode( ':', $assignment );
-    $key = $parts[0];
-    $id = ( isset( $parts[1] ) ) ? $id : null;
-    $label = '';
-
-    return array( 'type' => $key, 'label' => $label );
-  }
-
   public function serialize() {
     return array(
       'id' => $this->id,
       'title' => $this->get_title(),
       'regions'  => $this->get_regions(),
-      'settings' => $this->get_settings(),
-      'assignments' => $this->get_assignments(),
+      'settings' => $this->get_settings()
     );
   }
 
   public function set_title( $title ) {
-    return $this->title = sanitize_text_field( $title, __( 'Untitled Header', 'cornerstone' ) );
+    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.entity-header') ) );
   }
 
   public function set_settings( $settings ) {
@@ -149,6 +138,7 @@ class Cornerstone_Header {
   }
 
   public function delete() {
+    do_action('cornerstone_delete_header', $this->id );
     return wp_delete_post( $this->id, true );
   }
 }

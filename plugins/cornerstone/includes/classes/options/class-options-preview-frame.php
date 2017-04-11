@@ -5,7 +5,10 @@ class Cornerstone_Options_Preview_Frame extends Cornerstone_Plugin_Component {
   protected $updates = array();
 
   public function setup() {
-    $state = $this->plugin->component( 'Preview_Frame' )->get_state();
+
+    do_action('cs_options_preview_setup');
+
+    $state = $this->plugin->component( 'Preview_Frame_Loader' )->get_state();
 
     if ( isset( $state['updates']) && is_array( $state['updates'] ) ) {
       $this->updates = $state['updates'];
@@ -16,6 +19,8 @@ class Cornerstone_Options_Preview_Frame extends Cornerstone_Plugin_Component {
       //   x_dump($uuu);
       // });
     }
+
+
 
 
     // add_action('_cornerstone_preview_frame_debug',function() use ($state){

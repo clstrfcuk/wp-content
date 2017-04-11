@@ -19,5 +19,5 @@ require_once($folderIncludes . 'em-integration.class.php');
 require_once($folderIncludes . 'aq-resizer.class.php');
 require_once($folderIncludes . 'plugin-update.class.php');
 require_once($folderIncludes . 'addon-admin.class.php');
-
+require_once($folderIncludes . 'colorpicker.class.php');
 ?>

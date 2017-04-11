@@ -8,10 +8,15 @@
 
 ?>
 
-<?php x_get_view( 'global', '_header' ); ?>
+<?php
 
-  <?php x_get_view( 'global', '_slider-above' ); ?>
-  <?php x_get_view( 'global', '_slider-below' ); ?>
+if ( apply_filters( 'x_legacy_cranium_headers', true ) ) {
+  x_get_view( 'global', '_header' );
+} else {
+  get_header();
+}
+
+?>
 
   <div class="x-main full" role="main">
     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>

@@ -36,13 +36,26 @@ function cornerstone_theme_integration( $args ) {
 
 /**
  * Register a new element
- * @param  $class_name Name of the class you've created in definition.php
- * @param  $name       slug name of the element. "alert" for example.
- * @param  $path       Path to the folder containing a definition.php file.
+ * @param  $type       slug name of the element. "alert" for example.
+ * @param  $atts       Element definition.
  */
-function cornerstone_register_element( $class_name, $name, $path ) {
-	CS()->component( 'Element_Orchestrator' )->add( $class_name, $name, $path );
+function cornerstone_register_element( $type, $atts, $deprecated = null ) {
+
+  if ( null !== $deprecated || is_string( $atts ) ) {
+    /**
+     * Override for old method. Register a new element
+     * @param  $class_name Name of the class you've created in definition.php
+     * @param  $name       slug name of the element. "alert" for example.
+     * @param  $path       Path to the folder containing a definition.php file.
+     */
+  	CS()->component( 'Element_Orchestrator' )->add( $type, $atts, $deprecated );
+    return;
+  }
+
+  CS()->loadComponent( 'Element_Manager' )->register_element( $type, $atts );
+
 }
+
 
 /**
  * Remove a previously added element from the Builder interface.
@@ -80,13 +93,31 @@ function cornerstone_unregister_integration( $name ) {
  * generated. Should be used before `wp_head`, preferably in `template_redirect`
  * @param  array    $header          Header data object
  * @param  string   $class_prefix    CSS prefix to place before each id.
- * @param  function $template_loader Callback that will return template markup
  * @return none
  */
-function cornerstone_setup_header_styles( $header, $class_prefix, $template_loader ) {
-  $headers = CS()->loadComponent( 'Headers' );
-  if ( $headers ) {
-    $headers->add_styling( $header, $class_prefix, $template_loader );
+function cornerstone_setup_header_styles( $header ) {
+  $regions = CS()->loadComponent( 'Regions' );
+  if ( $regions ) {
+    $regions->register_header_styles( $header );
+  }
+}
+
+function cornerstone_setup_style_class_prefix( $mode, $prefix ) {
+  CS()->loadComponent( 'Element_Manager' )->set_class_prefix( $mode, $prefix );
+}
+
+
+/**
+ * Provide Cornerstone with data and a template loader so styles can be dynamically
+ * generated. Should be used before `wp_head`, preferably in `template_redirect`
+ * @param  array    $header          Footer data object
+ * @param  string   $class_prefix    CSS prefix to place before each id.
+ * @return none
+ */
+function cornerstone_setup_footer_styles( $footer ) {
+  $regions = CS()->loadComponent( 'Regions' );
+  if ( $regions ) {
+    $regions->register_footer_styles( $footer );
   }
 }
 
@@ -140,44 +171,73 @@ function cornerstone_options_unregister_control( $option_name ) {
   return CS()->loadComponent( 'Options_Manager' )->unregister_control( $option_name );
 }
 
-function cornerstone_options_enable_custom_css( $option_name ) {
-  return CS()->loadComponent( 'Options_Manager' )->enable_custom_css( $option_name );
+function cornerstone_options_enable_custom_css( $option_name, $selector = '' ) {
+  return CS()->loadComponent( 'Options_Manager' )->enable_custom_css( $option_name, $selector = '' );
 }
 
 function cornerstone_options_enable_custom_js( $option_name ) {
   return CS()->loadComponent( 'Options_Manager' )->enable_custom_js( $option_name );
 }
 
-
-function cornerstone_register_bar_modules( $modules ) {
-  return CS()->loadComponent( 'Headers' )->register_modules( $modules );
+function cornerstone_get_element( $name ) {
+  return CS()->loadComponent('Element_Manager')->get_element( $name );
 }
 
-function cornerstone_register_bar_module( $name, $atts ) {
-  return CS()->loadComponent( 'Headers' )->register_module( $name, $atts );
+function cornerstone_preview_register_zones( $zones ) {
+  CS()->loadComponent( 'App_Renderer' )->register_zones( $zones );
+  return CS()->loadComponent( 'Preview_Frame_Loader' )->register_zones( $zones );
 }
 
-function cornerstone_unregister_bar_module( $name ) {
-  return CS()->loadComponent( 'Headers' )->register_module( $name );
+function cornerstone_preview_container_output() {
+  return CS()->loadComponent( 'Preview_Frame_Loader' )->container_output();
 }
 
 /**
- * Returns the styling created by cornerstone_setup_header_styles
+ * Returns the styling generated for headers and footers
  * @return string
  */
-function cornerstone_get_header_styles() {
-  $headers = CS()->loadComponent( 'Headers' );
-  return ( $headers ) ? $headers->get_styles() : '';
+function cornerstone_get_generated_styles() {
+  $styling = CS()->loadComponent( 'Styling' );
+  return ( $styling ) ? $styling->get_generated_styles() : '';
 }
 
 /**
- * Returns the styling created by cornerstone_setup_header_styles
+ * Returns the data for header currently assigned
  * Can be called as early as template_redirect
  * @return string
  */
-function cornerstone_get_header_data() {
-  $headers = CS()->loadComponent( 'Headers' );
-  return ( $headers ) ? $headers->get_active_header_data() : '';
+function cornerstone_get_header_data( $fallback = false ) {
+  $regions = CS()->loadComponent( 'Regions' );
+  return ( $regions ) ? $regions->get_active_header_data( $fallback ) : '';
+}
+
+
+/**
+ * Returns the data for header currently assigned
+ * Can be called as early as template_redirect
+ * @return string
+ */
+function cornerstone_get_footer_data( $fallback = false ) {
+  $regions = CS()->loadComponent( 'Regions' );
+  return ( $regions ) ? $regions->get_active_footer_data( $fallback ) : '';
+}
+
+function cornerstone_enqueue_custom_script( $id, $content, $type = 'text/javascript' ) {
+	return CS()->loadComponent( 'Inline_Scripts' )->add_script( $id, $content, $type );
+}
+
+function cornerstone_dequeue_custom_script( $id ) {
+	return CS()->loadComponent( 'Inline_Scripts' )->remove_script( $id );
+}
+
+function cornerstone_post_process_css( $css, $minify = false ) {
+	CS()->loadComponent('Font_Manager');
+  CS()->loadComponent('Color_Manager');
+	return CS()->loadComponent( 'Styling' )->external_post_process( $css, $minify );
+}
+
+function cornerstone_post_process_color( $value ) {
+  return CS()->loadComponent('Color_Manager')->css_post_process_color( $value );
 }
 
 /**
@@ -185,4 +245,8 @@ function cornerstone_get_header_data() {
  */
 function cornerstone_add_element( $class_name ) {
 	CS()->component( 'Element_Orchestrator' )->add_mk1_element( $class_name );
+}
+
+function cornerstone_make_placeholder_image_uri( $height = '300', $width = '250', $color = '#eeeeee' ) {
+	return CS()->common()->placeholderImage( $height, $width, $color );
 }

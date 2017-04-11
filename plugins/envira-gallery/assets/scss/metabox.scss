@@ -1,7 +1,7 @@
 /* ==========================================================================
    metabox.css loads on any Envira Gallery and Album Create/Edit Screen
 
-   Any styles that will be used by the main Gallery / Album editor screen should be 
+   Any styles that will be used by the main Gallery / Album editor screen should be
    added to this file
    ========================================================================== */
 
@@ -10,6 +10,7 @@
    ========================================================================== */
 @import "vars";
 @import "mixins";
+@import "global";
 
 /* ==========================================================================
    Messages
@@ -23,6 +24,15 @@ body.post-type-envira_album {
     #message {
         margin: 5px 20px 15px 20px;
     }
+
+    #wp-link-wrap{
+		z-index: 180105 !important;
+	}
+
+	#wp-link-backdrop{
+		z-index: 160105 !important;
+
+	}
 }
 
 /* ==========================================================================
@@ -34,7 +44,7 @@ form#post.envira-gallery {
     * Re-establish the left and right margins, so there's spacing between the Admin Menu
     * and the content
     */
-    margin: 0 20px;   
+    margin: 0 20px;
 
     /**
      * Defined so we override WordPress' default styles
@@ -65,7 +75,24 @@ form#post.envira-gallery {
                 }
             }
         }
-
+        /**
+        * Override WordPress default checkboxes
+        */
+		input[type=checkbox]{
+		 background-color: $white;
+		 border: 1px solid $light-grey;
+		 box-shadow: none;
+		 margin-right: 10px;
+		
+		
+		}
+		input[type=checkbox]:checked{
+		 background-color: $green;
+		 border-color: $green;
+		}
+		input[type=checkbox]:checked:before{
+		    color: $white !important;
+		}	
         /**
         * Help Video
         * - Can be placed inside p.envira-intro by JS, or outside p.envira-intro when
@@ -107,7 +134,7 @@ form#post.envira-gallery {
         */
         ul.envira-gallery-images-output {
             width: 100%;
-            
+
             li {
                 position: relative;
                 display: inline-block;
@@ -193,7 +220,7 @@ form#post.envira-gallery {
                         font-weight: 400;
                     }
                 }
-                
+
                 /**
                 * Tick Icon
                 */
@@ -207,7 +234,7 @@ form#post.envira-gallery {
                     background-color: #eee;
                     -webkit-box-shadow: 0 0 0 1px #fff,0 0 0 2px rgba(0,0,0,0.15);
                     box-shadow: 0 0 0 1px #fff,0 0 0 2px rgba(0,0,0,0.15);
-                    
+
                     div.media-modal-icon {
                         display: none;
                         width: 15px;
@@ -223,7 +250,6 @@ form#post.envira-gallery {
                 a.dashicons {
                     position: absolute;
                     display: block;
-                    top: 5px;
                     left: 5px;
                     width: 25px;
                     height: 25px;
@@ -236,14 +262,32 @@ form#post.envira-gallery {
                     -webkit-border-radius: 2px;
 
                     &.envira-gallery-modify-image {
+                        top: 5px;
                         background: #0085ba;
                         color: $white;
                     }
                     &.envira-gallery-remove-image {
+                    	top: 5px;
                         left: 35px;
                         background: #e02626;
                         color: $white;
                     }
+                    &.envira-active-item,
+                    &.envira-draft-item{
+	                    bottom: 40px;
+						color: $white;
+						span:before{
+							font-size: 16px;
+							vertical-align: middle;
+						}	                    
+                    }
+                    &.envira-active-item{
+						background-color: #74b445;
+					}
+					&.envira-draft-item{
+						background-color: #ffa93b;
+
+					}
                 }
 
                 /**
@@ -305,6 +349,7 @@ form#post.envira-gallery {
                         display: inline-block;
                         width: 75px;
                         margin-left: 45px;
+                        height: auto;
                     }
 
                     /**
@@ -359,20 +404,63 @@ form#post.envira-gallery {
                         left: 15px;
                         top: 35px;
                     }
+					a.dashicons {
 
-                    a.envira-gallery-remove-image {
-                        left: auto;
-                        top: 10px;
-                        right: 10px;
-                    }
+                    	&.envira-gallery-remove-image {
+                      	  left: auto;
+					  	  top: 10px;
+					  	  right: 10px;
+					  	}
+	
+	                    &.envira-gallery-modify-image {
+	                        left: auto;
+	                        top: 10px;
+	                        right: 40px;
+	                    }
+	                    &.envira-active-item.grid-status,
+	                    &.envira-draft-item.grid-status{
+							display: none;
+	                    }                  
+					}
+					.envira-active-item.list-status,
+					.envira-draft-item.list-status{
+						display: block;
+						margin-top: 10px;
+						font-weight: 600;
+						color: black;
+						text-decoration: none;
+						&:hover{
+							text-decoration: none;
+							color: black;
+						}
 
-                    a.envira-gallery-modify-image {
-                        left: auto;
-                        top: 10px;
-                        right: 40px;
-                    }
+					}
+					.envira-active-item.list-status{
+						span{
+							margin-left: 5px;
+							border-radius: 3px;
+							padding: 3px 5px;
+							background-color: #74b445;
+							color: white;
+						}
+					}
+					.envira-draft-item.list-status{
+						span{
+							margin-left: 5px;
+							border-radius: 3px;
+							padding: 3px 5px;
+							background-color: #ffa93b;
+							color: white;
+						}
+					}                    
                 }
             }
+            /**
+	        * Grid View
+	        */
+	        &.grid{
+		        
+	        }
         }
 
         /* ==========================================================================
@@ -393,7 +481,7 @@ form#post.envira-gallery {
             .hndle {
                 display: none;
             }
-            
+
             /**
             * Tabs
             * - Move up vertically so they sit above the metabox
@@ -408,7 +496,7 @@ form#post.envira-gallery {
                 */
                 .nav-tab {
                     display: inline-block;
-                    width: 49%;
+                    width: 49.7%;
                     margin: 0;
                     padding: 15px 0;
                     text-align: center;
@@ -509,7 +597,7 @@ form#post.envira-gallery {
                                     top: 50%;
                                     left: 50%;
                                     margin: -10px 0 0 -10px;
-                                
+
                                     /**
                                     * "Drop Files here"
                                     */
@@ -571,10 +659,10 @@ form#post.envira-gallery {
                                     }
                                 }
 
-                                
+
                             }
                         }
-                        
+
                         /**
                         * Upload Progress Bar
                         */
@@ -588,7 +676,7 @@ form#post.envira-gallery {
                             border-radius: 10px;
                             background: #dfdfdf;
                             background: rgba(0,0,0,.1);
-                        
+
                             .envira-progress-bar-inner {
                                 height: 10px;
                                 min-width: 20px;
@@ -813,7 +901,54 @@ form#post.envira-gallery {
         #envira-gallery-settings,
         #envira-albums-settings {
             background: $beige_light; /* The background for tabs, full height */
-            
+			input[type="text"],
+			input[type="number"],
+			input[type="password"]{
+				background-color: $white;
+				border: 1px solid #ddd;
+				-webkit-box-shadow: none;
+				box-shadow: none;
+				color: #32373c;
+				height: $input-height;
+				outline: none;
+				-webkit-transition: 0.05s border-color ease-in-out;
+				transition: 0.05s border-color ease-in-out;
+		    	min-width: 210px;
+		    	max-width: 350px;
+				width: 92%;
+				border-radius: $border-radius;
+				padding-right: 0;
+			}			
+	        #envira-empty-gallery{
+	          position: relative;
+		        background-color: $beige_light;
+		        min-height: 350px;
+		        width: 100%;
+		        text-align: center;
+		        border-radius: $border-radius;
+				div{
+					max-width: 450px;
+					max-height: 150px;
+					margin: auto;
+					position: absolute;
+					top: 0; left: 0; bottom: 0; right: 0;
+	
+				}
+				img{
+					max-width: 300px;
+				}
+	
+	        }
+	        .envira-external-req{
+		        border: 1px solid $green;
+		        border-radius: $border-radius;
+		        padding: 30px;
+		        h2{
+			        font-size: 20px;
+			        margin: 0;
+			        padding: 0;
+		        }
+	        }
             /**
             * Clearfix
             */
@@ -985,6 +1120,12 @@ form#post.envira-gallery {
                             background-size: 16px 16px;
                         }
                     }
+                    &.envira-standalone {
+                        a {
+                            background-image: url(images/icons/standalone.svg);
+                            background-size: 16px 16px;
+                        }
+                    }
                     &.envira-slideshow {
                         a {
                             background-image: url(images/icons/slideshow.svg);
@@ -1021,6 +1162,12 @@ form#post.envira-gallery {
                             background-size: 16px 16px;
                         }
                     }
+                    &.envira-zoom {
+                        a {
+                            background-image: url(images/icons/zoom.svg);
+                            background-size: 16px 16px;
+                        }
+                    }
                     &.envira-misc {
                         a {
                             background-image: url(images/icons/misc.svg);
@@ -1029,7 +1176,7 @@ form#post.envira-gallery {
                     }
                 }
             }
-        
+
             /**
             * Settings
             */
@@ -1058,6 +1205,9 @@ form#post.envira-gallery {
 
                     &.no-margin {
                         margin: 0;
+                    }
+                    &.no-bottom-margin {
+                        margin-bottom: 0;
                     }
 
                     /**
@@ -1113,8 +1263,8 @@ form#post.envira-gallery {
                     */
                     p.description,
                     span.description {
-                        font-size: 13px; 
-                        font-style: italic; 
+                        font-size: 13px;
+                        font-style: italic;
                         color: #666;
                     }
                 }
@@ -1135,34 +1285,66 @@ form#post.envira-gallery {
                         &.envira-tab-options {
                             margin: 20px 0;
                         }
-
-                        a.dashicons {
-                            position: absolute;
-                            color: #999;
-                            
-                            &.dashicons-grid-view {
-                                right: 20px;
-                            }
-                            &.dashicons-list-view {
-                                right: 50px;
-                            }
-
-                            &.selected {
-                                color: #23282d;
-                            }
-
-                            span {
-                                display: inline-block;
-                                text-indent: -9999px;
-                            }
-                        }
-
+						ul.envira-right-options{
+							position: absolute;
+							right: 20px;
+							top: 103px;
+							display: block;
+							list-style: none;
+							li{ 
+								list-style: none;
+								display: inline-block;
+		                        a.dashicons {
+		                            color: #999;
+		
+		                            &.dashicons-grid-view {
+		                            }
+		                            &.dashicons-list-view {
+		                            }
+		
+		                            &.selected {
+		                                color: #23282d;
+		                            }
+		
+		                            span {
+		                                display: inline-block;
+		                                text-indent: -9999px;
+		                            }
+		                        }								
+							}
+							li.helper{
+								.dashicons{
+									font-size: 24px;
+									margin-top: -5px;
+									color: $light-grey;
+									&:hover{
+										color: #23282d;
+				
+									}
+								}
+							}
+							li.soliloquy-select{
+								width: 200px;
+								margin-right: 15px;
+								.chosen-container{
+									margin-top: -10px;
+								}
+							}
+							
+						}
                         /**
                         * Edit / Delete Selected
                         * - Hidden by default, shown by JS when image(s) are selected
                         */
                         &.envira-select-options {
                             display: none;
+                            .envira-label{
+	                            font-weight: 600;
+	                            margin-bottom: 12px;
+                            }
+                            a{
+	                            margin-right: 8px;
+                            }
                         }
                     }
 
@@ -1176,7 +1358,16 @@ form#post.envira-gallery {
                         }
                     }
                 }
-
+				nav.envira-tab-options{
+			        label{
+				        font-weight: 600;
+			        }
+			        .envira-clear-selected{
+				        display: none;
+				        margin-left: 15px;
+				        text-decoration: none;
+			        }					
+				}
                 /**
                 * Tab: Galleries
                 * - Used on Albums
@@ -1193,7 +1384,7 @@ form#post.envira-gallery {
                             height: 40px;
                             margin: 20px 0;
                             position: relative;
-                            
+
                             /**
                             * Add Galleries to Album Button
                             */
@@ -1309,7 +1500,7 @@ form#post.envira-gallery {
             display: none;
         }
     }
-    
+
     /**
     * Insert
     */
@@ -1362,7 +1553,7 @@ form#post.envira-gallery {
             }
         }
     }
-    
+
     /**
     * Edit
     */
@@ -1378,7 +1569,7 @@ form#post.envira-gallery {
                 margin: 0;
                 padding: 0;
                 border: none;
-        
+
                 /**
                 * Individual Setting (Title, Alt etc)
                 */
@@ -1399,7 +1590,7 @@ form#post.envira-gallery {
                     }
                     input[type="checkbox"] {
                         float: left;
-                        margin: 7px 3px 0 0;
+                        margin: 0 5px 0 0;
                     }
                     select {
                         margin: 0;
@@ -1464,7 +1655,7 @@ form#post.envira-gallery {
 /* ==========================================================================
    Retina
    ========================================================================== */
-@media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) { 
+@media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
     /**
     * WP media-views.css doesn't use .wp-core-ui for the x2 icons, therefore they never get applied
     */
@@ -1544,7 +1735,7 @@ form#post.envira-gallery {
                     width: 60px;
 
                     li {
-                        a { 
+                        a {
                             width: 60px;
                             height: 60px;
                             margin: 0;

@@ -13,8 +13,7 @@
 //   02. Get Stack
 //   03. Get Site Layout
 //   04. Get Content Layout
-//   05. Define Constants
-//   06. Customizer Settings Keys / Defaults
+//   05. Customizer Settings Keys / Defaults
 // =============================================================================
 
 // Get Option
@@ -126,31 +125,6 @@ endif;
 
 
 
-// Define Constants
-// =============================================================================
-
-define( 'X_VERSION', '4.6.4' );
-define( 'X_TEMPLATE_PATH', get_template_directory() );
-define( 'X_TEMPLATE_URL', get_template_directory_uri() );
-define( 'X_BBPRESS_IS_ACTIVE', class_exists( 'bbPress' ) );
-define( 'X_BUDDYPRESS_IS_ACTIVE', class_exists( 'BuddyPress' ) );
-define( 'X_CONTACT_FORM_7_IS_ACTIVE', class_exists( 'WPCF7_ContactForm' ) );
-define( 'X_CONVERTPLUG_IS_ACTIVE', class_exists( 'Convert_Plug' ) );
-define( 'X_ENVIRA_GALLERY_IS_ACTIVE', class_exists( 'Envira_Gallery' ) );
-define( 'X_ESSENTIAL_GRID_IS_ACTIVE', class_exists( 'Essential_Grid' ) );
-define( 'X_GRAVITY_FORMS_IS_ACTIVE', class_exists( 'GFForms' ) );
-define( 'X_LAYERSLIDER_IS_ACTIVE', class_exists( 'LS_Sliders' ) );
-define( 'X_REVOLUTION_SLIDER_IS_ACTIVE', class_exists( 'RevSlider' ) );
-define( 'X_SOLILOQUY_IS_ACTIVE', class_exists( 'Soliloquy' ) );
-define( 'X_VISUAL_COMOPSER_IS_ACTIVE', defined( 'WPB_VC_VERSION' ) );
-define( 'X_WOOCOMMERCE_IS_ACTIVE', class_exists( 'WC_API' ) );
-define( 'X_WPML_IS_ACTIVE', defined( 'ICL_SITEPRESS_VERSION' ) );
-define( 'X_UBERMENU_IS_ACTIVE', class_exists( 'UberMenu' ) );
-define( 'X_THE_GRID_IS_ACTIVE', class_exists( 'The_Grid_Plugin' ) );
-define( 'X_EP_PAYMENT_FORM_IS_ACTIVE', class_exists( 'LFB_Core' ) );
-
-
-
 // Customizer Settings Keys / Defaults
 // =============================================================================
 
@@ -159,6 +133,7 @@ define( 'X_EP_PAYMENT_FORM_IS_ACTIVE', class_exists( 'LFB_Core' ) );
 // backup files, resetting options, and for utilizing defaults if nothing is
 // brought through from the Customizer (i.e. a user doesn't change an option).
 //
+global $customizer_settings_data;
 
 $customizer_settings_data = array(
   'x_stack'                                             => 'integrity',
@@ -421,5 +396,24 @@ $customizer_settings_data = array(
   'x_icon_tile_bg_color'                                => '#ffffff',
   'x_custom_styles'                                     => '',
   'x_custom_scripts'                                    => '',
-  'x_fixed_menu_scroll'                                 => 'overflow-visible'
+  'x_fixed_menu_scroll'                                 => 'overflow-visible',
+
+  'x_enable_font_manager'                               => '0',
+  'x_body_font_family_selection'                        => 'inherit',
+  'x_body_font_weight_selection'                        => 'inherit:400',
+  'x_headings_font_family_selection'                    => 'inherit',
+  'x_headings_font_weight_selection'                    => 'inherit:400',
+  'x_logo_font_family_selection'                        => 'inherit',
+  'x_logo_font_weight_selection'                        => 'inherit:400',
+  'x_navbar_font_family_selection'                      => 'inherit',
+  'x_navbar_font_weight_selection'                      => 'inherit:400',
+  'x_body_font_italic'                                  => false,
+  'x_headings_font_italic'                              => false,
+  'x_logo_font_italic'                                  => false,
+  'x_navbar_font_italic'                                => false,
 );
+
+
+if ( function_exists( 'cornerstone_options_register_option' ) ) {
+  cornerstone_options_register_options( $customizer_settings_data );
+}

@@ -68,7 +68,48 @@
                 <span><?php _e( 'Enter the URL to an image that you would like to use in place of the standard WordPress login image (must be less than 320px wide).', '__x__' ); ?></span>
               </label>
             </th>
-            <td><input name="x_white_label_login_image" id="x_white_label_login_image" type="text" value="<?php echo ( isset( $x_white_label_login_image ) ) ? $x_white_label_login_image : ''; ?>" class="large-text"></td>
+            <td>
+              <input type="text" class="file large-text" name="x_white_label_login_image" id="x_white_label_login_image" value="<?php echo ( isset( $x_white_label_login_image ) ) ? $x_white_label_login_image : ''; ?>">
+              <input type="button" id="_x_white_label_login_image_image_upload_btn" data-id="x_white_label_login_image" class="button-secondary x-upload-btn-wl" value="Upload Image">
+              <div class="x-meta-box-img-thumb-wrap" id="_x_white_label_login_image_thumb">
+                  <?php if ( isset( $x_white_label_login_image ) && ! empty( $x_white_label_login_image ) ) : ?>
+                     <div class="x-uploader-image"><img src="<?php echo $x_white_label_login_image ?>" alt="" /></div>
+                  <?php endif ?>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <th>
+              <label for="x_white_label_retina_enabled">
+                <strong><?php _e( 'Retina support for logo', '__x__' ); ?></strong>
+                <span><?php _e( 'Enable retina support for logo. Size will be divided by 2 in non-retina devices.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td>
+              <fieldset>
+                <legend class="screen-reader-text"><span>input type="checkbox"</span></legend>
+                <input type="checkbox" class="checkbox" name="x_white_label_retina_enabled" id="x_white_label_retina_enabled" value="1" <?php checked( ! isset( $x_white_label_retina_enabled ) ? '0' : $x_white_label_retina_enabled, '1', true ); ?>>
+              </fieldset>
+            </td>
+          </tr>
+
+          <tr>
+	          <th>
+		          <label for="x_white_label_login_bg_image">
+		          	<strong><?php _e( 'Login Background Image', '__x__' ); ?></strong>
+		          	<span><?php _e( 'Enter the URL to an image that you would like to use as a background image on the WordPress login screen,', '__x__' ); ?></span>
+		          </label>
+	          </th>
+	          <td>
+              <input type="text" class="file large-text" name="x_white_label_login_bg_image" id="x_white_label_login_bg_image" value="<?php echo ( isset( $x_white_label_login_bg_image ) ) ? $x_white_label_login_bg_image : ''; ?>">
+              <input type="button" id="_x_white_label_login_bg_image_image_upload_btn" data-id="x_white_label_login_bg_image" class="button-secondary x-upload-btn-wl" value="Upload Image">
+              <div class="x-meta-box-img-thumb-wrap" id="_x_white_label_login_bg_image_thumb">
+                  <?php if ( isset( $x_white_label_login_bg_image ) && ! empty( $x_white_label_login_bg_image ) ) : ?>
+                     <div class="x-uploader-image"><img src="<?php echo $x_white_label_login_bg_image ?>" alt="" /></div>
+                  <?php endif ?>
+              </div>
+            </td>
           </tr>
 
           <tr>

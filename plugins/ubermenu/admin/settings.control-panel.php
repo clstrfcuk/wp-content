@@ -23,6 +23,7 @@ function ubermenu_get_settings_fields_instance( $config_id ){
 			'name'	=> 'skin',
 			'label'	=> __( 'Skin' , 'ubermenu' ),
 			'type'	=> 'select',
+			'desc'	=> __( 'If you disable the skin, you must provide your own custom skin.  Otherwise, use the Vanilla skin as a Customizer base.' , 'ubermenu' ). ' <br/> <a target="_blank" href="http://sevenspark.com/goods/category/ubermenu-skin-packs?src=plugin">Get more skins</a>',
 			//'options'	=> array(),
 			'options' => 'ubermenu_get_skin_ops',
 			'default' => 'black-white-2',
@@ -114,6 +115,7 @@ function ubermenu_get_settings_fields_instance( $config_id ){
 			'group'	=> array( 'basic', 'submenus' ),
 
 			'customizer' => true,
+			'customizer_section' => 'submenu',
 		),
 
 
@@ -231,8 +233,21 @@ function ubermenu_get_settings_fields_instance( $config_id ){
 
 		415 => array(
 			'name'		=> 'responsive_columns',
-			'label'		=> __( 'Responsive Columns (Tablet)' , 'ubermenu' ),
+			'label'		=> __( 'Top Level Responsive Columns (Tablet)' , 'ubermenu' ),
 			'desc'		=> __( 'By default, the top level menu items will appear in two (2) columns from 480px to your breakpoint (960 by default) - approximately tablet-size.  If you\'d like them to appear in a single column instead, you can change that here.  This will only affect top level menu items.' , 'ubermenu' ),
+			'type'		=> 'radio',
+			'options'	=> array(
+				2		=> __( 'Two (2) Columns' , 'ubermenu' ),
+				1		=> __( 'One (1) Column' , 'ubermenu' ),
+			),
+			'default'	=> 2,
+			'group'		=> 'responsive',
+		),
+
+		416 => array(
+			'name'		=> 'responsive_submenu_columns',
+			'label'		=> __( 'Submenu Responsive Columns (Tablet)' , 'ubermenu' ),
+			'desc'		=> __( 'By default, the mega submenu items will appear in two (2) columns from 480px to your breakpoint (960 by default) - approximately tablet-size.  If you\'d like them to appear in a single column instead, you can change that here.  This will only affect standard submenu items in mega submenus.' , 'ubermenu' ),
 			'type'		=> 'radio',
 			'options'	=> array(
 				2		=> __( 'Two (2) Columns' , 'ubermenu' ),
@@ -1532,3 +1547,14 @@ function ubermenu_settings_panel_fields_go_pro( $fields ){
 	return $fields;
 }
 
+
+
+function ubermenu_new_default( $config_id , $new_default , $old_default ){
+	//echo $config_id;
+	$settings_exist = get_option( UBERMENU_PREFIX.$config_id , false );
+	//uberp( $settings_exist );
+	if( $settings_exist ){ //echo 'hi'; 
+		return $old_default; }
+	else return $new_default;
+	
+}

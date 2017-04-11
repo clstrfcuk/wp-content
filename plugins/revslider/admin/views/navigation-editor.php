@@ -19,14 +19,15 @@ $rsopr = new RevSliderOperations();
 
 $font_families = $rsopr->getArrFontFamilys();
 ?>
-<script>
-	jQuery(document).ready(function(){function r(r){var i;return r=r.replace(/ /g,""),r.match(/rgba\(\d+\,\d+\,\d+\,([^\)]+)\)/)?(i=100*parseFloat(r.match(/rgba\(\d+\,\d+\,\d+\,([^\)]+)\)/)[1]).toFixed(2),i=parseInt(i)):i=100,i}function i(r,i,e,t){var n,o,c;n=i.data("a8cIris"),o=i.data("wpWpColorPicker"),n._color._alpha=r,c=n._color.toString(),i.val(c),o.toggler.css({"background-color":c}),t&&a(r,e),i.wpColorPicker("color",c)}function a(r,i){i.slider("value",r),i.find(".ui-slider-handle").text(r.toString())}Color.prototype.toString=function(r){if("no-alpha"==r)return this.toCSS("rgba","1").replace(/\s+/g,"");if(1>this._alpha)return this.toCSS("rgba",this._alpha).replace(/\s+/g,"");var i=parseInt(this._color,10).toString(16);if(this.error)return"";if(i.length<6)for(var a=6-i.length-1;a>=0;a--)i="0"+i;return"#"+i},jQuery.fn.alphaColorPicker=function(){return this.each(function(){var e,t,n,o,c,l,s,d,u,p,f;e=jQuery(this),e.wrap('<div class="alpha-color-picker-wrap"></div>'),n=e.attr("data-palette")||"true",o=e.attr("data-show-opacity")||"true",c=e.attr("data-default-color")||"",l=-1!==n.indexOf("|")?n.split("|"):"false"==n?!1:!0,t=e.val().replace(/\s+/g,""),""==t&&(t=c),s={change:function(i,a){var t,n,o,l;t=e.attr("data-customize-setting-link"),n=e.wpColorPicker("color"),c==n&&(o=r(n),u.find(".ui-slider-handle").text(o)),"undefined"!=typeof wp.customize&&wp.customize(t,function(r){r.set(n)}),l=d.find(".transparency"),l.css("background-color",a.color.toString("no-alpha"))},palettes:l},e.wpColorPicker(s),d=e.parents(".wp-picker-container:first"),jQuery('<div class="alpha-color-picker-container"><div class="min-click-zone click-zone"></div><div class="max-click-zone click-zone"></div><div class="alpha-slider"></div><div class="transparency"></div></div>').appendTo(d.find(".wp-picker-holder")),u=d.find(".alpha-slider"),p=r(t),f={create:function(r,i){var a=jQuery(this).slider("value");jQuery(this).find(".ui-slider-handle").text(a),jQuery(this).siblings(".transparency ").css("background-color",t)},value:p,range:"max",step:1,min:0,max:100,animate:300},u.slider(f),"true"==o&&u.find(".ui-slider-handle").addClass("show-opacity"),d.find(".min-click-zone").on("click",function(){i(0,e,u,!0)}),d.find(".max-click-zone").on("click",function(){i(100,e,u,!0)}),d.find(".iris-palette").on("click",function(){var i,t;i=jQuery(this).css("background-color"),t=r(i),a(t,u),100!=t&&(i=i.replace(/[^,]+(?=\))/,(t/100).toFixed(2))),e.wpColorPicker("color",i)}),d.find(".button.wp-picker-default").on("click",function(){var i=r(c);a(i,u)}),e.on("input",function(){var i=jQuery(this).val(),e=r(i);a(e,u)}),u.slider().on("slide",function(r,a){var t=parseFloat(a.value)/100;i(t,e,u,!1),jQuery(this).find(".ui-slider-handle").text(a.value)})})}});
-</script>
+
 <div class='wrap'>
 	<div class="clear_both"></div>
 
 	<div class="title_line nobgnopd" style="margin-bottom: 20px !important;">
-		<div class="icon32" id="icon-options-general"></div>
+		<?php 
+			$icon_general = '<div class="icon32" id="icon-options-general"></div>';
+			echo apply_filters( 'rev_icon_general_filter', $icon_general ); 
+		?>
 		<div class="view_title">
 			<?php _e('Navigation Editor', 'revslider'); ?>
 		</div>
@@ -132,9 +133,7 @@ $font_families = $rsopr->getArrFontFamilys();
 											<label><?php _e('Bottom', 'revslider'); ?></label>
 											<input class="rs-small-input" type="text" name="rs-border-bottom" value="1">
 											<label><?php _e('Left', 'revslider'); ?></label>
-											<input class="rs-small-input" type="text" name="rs-border-left" value="1">
-											<label><?php _e('Opacity', 'revslider'); ?></label>
-											<input class="rs-small-input" type="text" name="rs-border-opacity" value="100">
+											<input class="rs-small-input" type="text" name="rs-border-left" value="1">											
 											<span class="tp-clearfix"></span>														
 											<input type="text" name="rs-border-color" class="my-color-field" value="#000000">
 											<span class="tp-clearfix"></span>																				
@@ -148,9 +147,7 @@ $font_families = $rsopr->getArrFontFamilys();
 											<label><?php _e('Distance', 'revslider'); ?></label>
 											<input class="rs-small-input" type="text" name="rs-text-shadow-distance" value="0">
 											<label><?php _e('Blur', 'revslider'); ?></label>
-											<input class="rs-small-input" type="text" name="rs-text-shadow-blur" value="0">
-											<label><?php _e('Opacity', 'revslider'); ?></label>
-											<input class="rs-small-input" type="text" name="rs-text-shadow-opacity" value="100">
+											<input class="rs-small-input" type="text" name="rs-text-shadow-blur" value="0">											
 											<span class="tp-clearfix"></span>
 											<input type="text" name="rs-text-shadow-color" class="my-color-field" value="#000000">
 											<span class="tp-clearfix"></span>										
@@ -164,9 +161,7 @@ $font_families = $rsopr->getArrFontFamilys();
 											<label><?php _e('Distance', 'revslider'); ?></label>
 											<input class="rs-small-input" type="text" name="rs-box-shadow-distance" value="0">
 											<label><?php _e('Blur', 'revslider'); ?></label>
-											<input class="rs-small-input" type="text" name="rs-box-shadow-blur" value="0">										
-											<label><?php _e('Opacity', 'revslider'); ?></label>																				
-											<input class="rs-small-input" type="text" name="rs-box-shadow-opacity" value="100">
+											<input class="rs-small-input" type="text" name="rs-box-shadow-blur" value="0">																					
 											<span class="tp-clearfix"></span>
 											<input type="text" name="rs-box-shadow-color" class="my-color-field" value="#000000">
 											<span class="tp-clearfix"></span>										
@@ -1117,14 +1112,16 @@ $font_families = $rsopr->getArrFontFamilys();
 
 			
 			
-			jQuery('.my-color-field').alphaColorPicker({palettes:true});
-			jQuery('.bg-color-field').alphaColorPicker({
-				palettes:true,
+			
+			
+			jQuery('.my-color-field').tpColorPicker({mode:"single"});
+			jQuery('.bg-color-field').tpColorPicker({
+				mode:"single",
 				change:function() {
-					jQuery('.rs-editing-preview-overlay').css({backgroundColor:jQuery('#rs-preview-color-changer').val()})		
+					jQuery('.rs-editing-preview-overlay').css({backgroundColor:window.RevColor.get(jQuery('#rs-preview-color-changer').val())})		
 				}
 			});
-			
+
 			jQuery('input[name="rs-test-width"], input[name="rs-test-height"]').change(function(){
 				if(rs_check_if_default_nav()) return false;
 				
@@ -1526,7 +1523,7 @@ $font_families = $rsopr->getArrFontFamilys();
 				var br_r = Math.round(jQuery('input[name="rs-border-right"]').val());
 				var br_b = Math.round(jQuery('input[name="rs-border-bottom"]').val());
 				var br_l = Math.round(jQuery('input[name="rs-border-left"]').val());
-				var br_c = jQuery('input[name="rs-border-color"]').val();
+				var br_c = window.RevColor.get(jQuery('input[name="rs-border-color"]').val());
 				
 				var css = 'border-top: solid '+br_t+'px '+br_c+';';
 				css += "\n"+'border-right: solid '+br_r+'px '+br_c+';';
@@ -1543,15 +1540,15 @@ $font_families = $rsopr->getArrFontFamilys();
 				var ts_d = Math.round(jQuery('input[name="rs-text-shadow-distance"]').val());
 				var ts_b = Math.round(jQuery('input[name="rs-text-shadow-blur"]').val());
 				var ts_c = jQuery('input[name="rs-text-shadow-color"]').val();
-				var ts_o = Math.round(jQuery('input[name="rs-text-shadow-opacity"]').val()) / 100;
 				
-				ts_c = UniteAdminRev.convertHexToRGB(ts_c);
+				
+				
 				
 				ts_a = ts_a*((Math.PI)/180);
 				var x = Math.round(ts_d * Math.cos(ts_a));
 				var y = Math.round(ts_d * Math.sin(ts_a));
 				
-				var css = 'text-shadow: '+x+'px '+y+'px '+ts_b+'px  rgba('+ts_c+', '+ts_o+');';
+				var css = 'text-shadow: '+x+'px '+y+'px '+ts_b+'px  '+window.RevColor.get(jQuery('input[name="rs-text-shadow-color"]').val())+';';
 				
 				rs_cm_css_editor.replaceSelection(css+"\n","end");
 			});
@@ -1562,8 +1559,8 @@ $font_families = $rsopr->getArrFontFamilys();
 				var bs_a = Math.round(jQuery('input[name="rs-box-shadow-angle"]').val());
 				var bs_d = Math.round(jQuery('input[name="rs-box-shadow-distance"]').val());
 				var bs_b = Math.round(jQuery('input[name="rs-box-shadow-blur"]').val());
-				var bs_c = jQuery('input[name="rs-box-shadow-color"]').val();
-				var bs_o = Math.round(jQuery('input[name="rs-box-shadow-opacity"]').val()) / 100;
+				var bs_c = window.RevColor.get(jQuery('input[name="rs-box-shadow-color"]').val());
+				
 				
 				bs_c = UniteAdminRev.convertHexToRGB(bs_c);
 				
@@ -1571,7 +1568,7 @@ $font_families = $rsopr->getArrFontFamilys();
 				var x = Math.round(bs_d * Math.cos(bs_a));
 				var y = Math.round(bs_d * Math.sin(bs_a));
 				
-				var css = 'box-shadow: '+x+'px '+y+'px '+bs_b+'px rgba('+bs_c+', '+bs_o+');';
+				var css = 'box-shadow: '+x+'px '+y+'px '+bs_b+'px '+bs_c+';';
 				
 				rs_cm_css_editor.replaceSelection(css+"\n","end");
 			});

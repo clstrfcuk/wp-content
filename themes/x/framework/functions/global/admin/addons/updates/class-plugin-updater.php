@@ -202,7 +202,7 @@ class X_Plugin_Updater {
       if ( ! current_user_can( 'update_plugins' ) ) {
         printf( __( 'There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a>.' ), $plugin_name, esc_url( $details_url ), esc_attr( $plugin_name ), $r->new_version );
       } else if ( empty( $r->package ) ) {
-        printf( __( 'There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a>. %5$s' ), $plugin_name, esc_url( $details_url ), esc_attr( $plugin_name ), $r->new_version, X_Update_API::get_validation_html_plugin_main() );
+        printf( __( 'There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a>. %5$s' ), $plugin_name, esc_url( $details_url ), esc_attr( $plugin_name ), $r->new_version, X_Addons_Updates::get_validation_html_plugin_main() );
       } else {
         printf( __( 'There is a new version of %1$s available. <a href="%2$s" class="thickbox" title="%3$s">View version %4$s details</a> or <a href="%5$s">update now</a>.' ), $plugin_name, esc_url( $details_url ), esc_attr( $plugin_name ), $r->new_version, wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $file, 'upgrade-plugin_' . $file ) );
       }

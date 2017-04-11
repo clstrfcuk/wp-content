@@ -7,10 +7,7 @@
     <p class="tco-cta-note"><?php _e( '<strong>NOTE:</strong> A separate license is required for each site using Cornerstone.', 'cornerstone' ); ?></p>
     <hr class="tco-cta-spacing">
     <div class="tco-cta-actions">
-      <a class="tco-cta-action" href="https://community.theme.co/my-licenses/" target="_blank"><?php _e( 'Manage Licenses', 'cornerstone' ); ?></a>
-      <?php if ( ! apply_filters( '_cornerstone_integration_remove_purchase_link', false ) ) : ?>
-      <a class="tco-cta-action" href="https://theme.co/go/join-validation-cs.php" target="_blank" data-tco-module="cs-purchase-another-license"><?php _e( 'Purchase Another License', 'cornerstone' ); ?></a>
-      <?php endif; ?>
+      <a class="tco-cta-action" href="https://theme.co/apex/licenses/" target="_blank"><?php _e( 'Manage Licenses', 'cornerstone' ); ?></a>
     </div>
     <?php if ( $is_validated ) : ?>
       <hr class="tco-cta-spacing">

@@ -1,9 +1,11 @@
+/* global quicktags, wp, QTags */
+
 /**
 * Single Image View
 * - Renders an <li> element within the bulk edit view
 */
 var EnviraGalleryBulkEditImageView = wp.Backbone.View.extend( {
-	
+
 	/**
     * The Tag Name and Tag's Class(es)
     */
@@ -64,12 +66,12 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
     * - Functions to call when specific events occur
     */
     events: {
-        'keyup input':                                  'updateItem', 
-        'keyup textarea':                               'updateItem', 
+        'keyup input':                                  'updateItem',
+        'keyup textarea':                               'updateItem',
         'change input':                                 'updateItem',
         'change textarea':                              'updateItem',
         'blur textarea':                                'updateItem',
-        'change select':                                'updateItem', 
+        'change select':                                'updateItem',
 
         'click .actions a.envira-gallery-meta-submit':  'saveItem',
 
@@ -124,14 +126,14 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
 
         // If any child views exist, render them now
         if ( this.child_views.length > 0 ) {
-            this.child_views.forEach( function( view ) {
+            this.child_views.forEach( function( View ) {
                 // Init with model
-                var child_view = new view( {
+                var child_view = new View( {
                     model: this.model
                 } );
 
                 // Render view within our main view
-                this.$el.find( 'div.addons' ).append( child_view.render().el );
+                this.$el.find( 'div.envira-addons' ).append( child_view.render().el );
             }, this );
         }
 
@@ -139,18 +141,18 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
         // Delay is required for the first load for some reason
         setTimeout( function() {
             quicktags( {
-                id:     'caption', 
-                buttons:'strong,em,link,ul,ol,li,close' 
+                id:     'caption',
+                buttons:'strong,em,link,ul,ol,li,close'
             } );
             QTags._buttonsInit();
         }, 500 );
 
         // Init Link Searching
         wpLink.init;
-        
+
         // Return
         return this;
-        
+
     },
 
     /**
@@ -210,12 +212,12 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
     updateItem: function( event ) {
 
         // Check if the target has a name. If not, it's not a model value we want to store
-        if ( event.target.name == '' ) {
+        if ( event.target.name === '' ) {
             return;
         }
 
         // Update the model's value, depending on the input type
-        if ( event.target.type == 'checkbox' ) {
+        if ( event.target.type === 'checkbox' ) {
             value = ( event.target.checked ? 1 : 0 );
         } else {
             value = event.target.value;
@@ -229,7 +231,9 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
     /**
     * Saves the image metadata
     */
-    saveItem: function() {
+    saveItem: function( event ) {
+
+	    event.preventDefault();
 
         // Tell the View we're loading
         this.trigger( 'loading' );
@@ -261,13 +265,14 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
                         // If the value is not blank, assign the value to the image model
                         if ( value.length > 0 ) {
                             model.set( key, value );
-                        }   
+                        }
                     }
 
                     // Assign the model to the underlying image item in the DOM
                     var item = JSON.stringify( model.attributes );
                     jQuery( 'ul#envira-gallery-output li#' + model.get( 'id' ) ).attr( 'data-envira-gallery-image-model', item );
                     jQuery( 'ul#envira-gallery-output li#' + model.get( 'id' ) + ' div.title' ).text( model.get( 'title' ) );
+
 
                 }, this );
 
@@ -283,7 +288,7 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
             },
             error: function( error_message ) {
 
-                // Tell wp.media we've finished, but there was an error 
+                // Tell wp.media we've finished, but there was an error
                 this.trigger( 'loaded loaded:error', error_message );
 
             }
@@ -338,7 +343,7 @@ var EnviraGalleryBulkEditView = wp.Backbone.View.extend( {
 } );
 
 jQuery( document ).ready( function( $ ) {
-	
+
 	// Edit Images
     $( '#envira-gallery-main' ).on( 'click', 'a.envira-gallery-images-edit', function( e ) {
 

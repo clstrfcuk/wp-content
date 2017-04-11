@@ -6,7 +6,7 @@ class Cornerstone_Settings_Handler extends Cornerstone_Plugin_Component {
 	public function setup_controls() {
 
 		$this->settings = CS()->settings();
-		$controls = $this->plugin->config( 'admin/settings-controls' );
+		$controls = $this->plugin->config_group( 'admin/settings-controls' );
 
 		foreach ($controls as $key => $value) {
 			$controls[$key]['context'] = 'settings';

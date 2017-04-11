@@ -25,9 +25,11 @@ class Cornerstone_Huebert {
   public function register() {
     wp_register_style( 'cs-huebert-style' , CS()->css( 'admin/huebert' ), array(), CS()->version() );
     wp_register_script( 'cs-huebert', CS()->js( 'admin/huebert' ), array( 'underscore', 'jquery' ), CS()->version(), true );
+
     wp_localize_script( 'cs-huebert', 'csHuebert', array(
-    	'selectColor' => __( 'Select Color', 'cornerstone' ),
+    	'selectColor' => csi18n('admin.huebert-select-color')
     ) );
+
   }
 
   public static function enqueue() {

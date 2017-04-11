@@ -139,7 +139,7 @@ function x_shortcode_video_player( $atts ) {
     $video = "<video class=\"x-mejs{$advanced_controls}\"{$poster_attr}{$preload}{$autoplay}{$loop}{$muted}>{$sources}</video>";
 
   } else {
-    $video = '<span class="x-mejs-no-source">' . __( 'Video source missing', 'cornerstone' ) . '</span>';
+    $video = '<span class="x-mejs-no-source">' . csi18n('shortcodes.video-missing-source') . '</span>';
   }
 
   $output = "<div {$id} class=\"{$class}{$hide_controls}{$autoplay}{$loop}{$muted}{$no_container}{$vimeo}{$youtube}\" {$data} {$style}>"

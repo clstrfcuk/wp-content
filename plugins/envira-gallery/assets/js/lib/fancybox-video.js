@@ -99,6 +99,8 @@
 				if (opts.volume === 1) {
 					features.push('volume');
 				}
+
+				F.coming.scrolling = 'no';
 			}
 		},
 
