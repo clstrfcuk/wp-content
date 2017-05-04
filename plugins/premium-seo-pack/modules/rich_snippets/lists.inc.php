@@ -297,6 +297,15 @@ $psp_event_type = array(
 	'VisualArtsEvent' => __('Visual Arts', 'psp')
 );
 
+
+$psp_event_status = array(
+	'EventCancelled' => __('Cancelled', 'psp'),
+	'EventPostponed' => __('Postponed', 'psp'),
+	'EventRescheduled' => __('Rescheduled', 'psp'),
+	'EventScheduled' => __('Scheduled', 'psp')
+);
+
+
 /*
 (function ($) {
     var $list = $('#schema_orgtype');

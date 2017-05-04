@@ -1,0 +1,35 @@
+// =============================================================================
+// RENEW.SCSS
+// -----------------------------------------------------------------------------
+// Contains all deprecated styles for the Renew Stack.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Functions, Variables, and Mixins
+// =============================================================================
+
+// Functions, Variables, and Mixins
+// =============================================================================
+
+@import "../../../../tco/css/lib/import";
+@import "../../../../css/src/site/_scss/inc/functions";
+@import "../../../../css/src/site/_scss/inc/variables";
+@import "../../../../css/src/site/_scss/stacks/renew/inc/variables";
+@import "../../../../css/src/site/_scss/inc/mixins";
+@import "../../../../css/src/site/_scss/stacks/renew/inc/mixins";
+
+
+
+// Deprecated Styles
+// =============================================================================
+
+@import "site/renew/dropdowns";
+@import "site/renew/widgetbar";
+@import "site/renew/topbar";
+@import "site/renew/logobar";
+@import "site/navbar";
+@import "site/renew/navbar";
+@import "site/renew/megamenu";
+@import "site/renew/colophon";

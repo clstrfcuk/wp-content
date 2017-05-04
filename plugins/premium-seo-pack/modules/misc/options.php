@@ -13,7 +13,7 @@ echo json_encode(
 		$tryed_module['db_alias'] => array(
 			/* define the form_messages box */
 			'misc' => array(
-				'title' 	=> __('SEO Slug Optimizer', 'psp'),
+				'title' 	=> __('Settings', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
 				'header' 	=> true, // true|false
@@ -21,16 +21,54 @@ echo json_encode(
 				'buttons' 	=> true, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
 
+                // tabs
+                'tabs'  => array(
+                    '__tab1'    => array(__('General', 'psp'), '__help_validators, validators_html'),
+                    '__tab2'    => array(__('SEO Slug Optimizer', 'psp'), '__help_seo_slug_optimizer, slug_isactive, slug_stop_words, slug_min_chars'),
+                    '__tab3'    => array(__('SEO Insert Code', 'psp'), '__help_seo_insert_code, insert_code_isactive, insert_code_head, insert_code_footer'),
+                ),
+
 				// create the box elements array
 				'elements'	=> array(
-					/* Slug Optimizer */
-					array(
+
+					/* Validators */
+                    '__help_validators' => array(
+                        'type'      => 'message',
+                        'status'    => 'info',
+                        'html'      => __('
+                            <h3 style="margin: 0px 0px 5px 0px;">Tools</h3>
+                            <p>Some useful tools</p>
+                        ', 'psp')
+                    ),
+
+					'validators_html' => array(
+						'type' 		=> 'html',
+						'html' 		=> 
+							'<div class="panel-body psp-panel-body psp-form-row __tab1">
+								<label class="psp-form-label" for="site-items">' . __('Validators', 'psp') . '</label>
+								<div class="psp-form-item large">
+									<a id="site-items" target="_blank" href="http://www.google.com/webmasters/tools/richsnippets" style="position: relative;bottom: -6px;">Google Rich Snippets Testing Tool</a>
+								</div>
+								<div class="psp-form-item large">
+									<a id="site-items" target="_blank" href="http://linter.structured-data.org/" style="position: relative;bottom: -6px;">Structured Data Linter</a>
+								</div>
+								<div class="psp-form-item large">
+									<a id="site-items" target="_blank" href="https://developers.facebook.com/tools/debug/sharing/" style="position: relative;bottom: -6px;">Facebook Sharing Debugger</a>
+								</div>
+								<div class="psp-form-item large">
+									<a id="site-items" target="_blank" href="https://cards-dev.twitter.com/validator" style="position: relative;bottom: -6px;">Twitter Card Validator</a>
+								</div>
+							</div>'
+					),
+
+					/* SEO Slug Optimizer */
+					'__help_seo_slug_optimizer' => array(
 						'type' 		=> 'message',
-						
+						'status'    => 'info',
 						'html' 		=> __('
-							<p><strong>Slug Optimizer</strong> removes common words from the slug of a post or page</p>
+							<h3 style="margin: 0px 0px 5px 0px;">SEO Slug Optimizer</h3>
 							<ul>
-								<li><u>Info</u></li>
+								<li>- <i>removes common words from the slug of a post or page</i></li>
 								<li>- <i>post or page slug definition:</i> the part of post or page URL that is based on its title; in WordPress edit page, the slug is the yellow highlighted part of the permalink just under the title textbox.</li>
 								<li>- <i>why use Slug Optimizer:</i> because it increases keyword potency because there are less words in your URLs so their relevance is greater.</li>
 								<li>- <i>keep slug unchanged:</i> if every word in your post or page title is in the list of words to be removed or doesn\'n have the necessary limit of minimum characters (but this is a rare case), PSP Slug Optimizer will not remove the words, because you would end up with a blank slug.</li>
@@ -69,12 +107,13 @@ echo json_encode(
 						'desc' 		=> __('The minimum number of characters for every slug part!', 'psp')
 					),
 
-					/* Insert Code Content */
-					array(
+					/* SEO Insert Code */
+					'__help_seo_insert_code' => array(
 						'type' 		=> 'message',
-						
+						'status'    => 'info',
 						'html' 		=> __('
-							<p id="insert-code"><strong>Insert Code</strong> in the WP Header of Footer of your page.</a></p>
+							<h3 style="margin: 0px 0px 5px 0px;">SEO Insert Code</h3>
+							<p>- it insert the code in the WP Header of Footer of your page.</p>
 						', 'psp'),
 					),
 					'insert_code_isactive' => array(
@@ -83,7 +122,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('Activate Insert Code:', 'psp'),
-						'desc' 		=> '&nbsp;',
+						'desc' 		=> '<span style="color: red;">You must set this option to "YES" if you want to have the bellow codes inserted into your page.</span>',
 						'options'	=> array(
 							'yes' 	=> __('YES', 'psp'),
 							'no' 	=> __('NO', 'psp')

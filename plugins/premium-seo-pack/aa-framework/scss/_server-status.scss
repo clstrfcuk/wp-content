@@ -72,7 +72,7 @@
 		    &.#{$alias}-success::before {
 		    	font-family: FontAwesome;
 			    font-size: px(18);
-			    content: "\f00c";
+			    content: "\f14a"; /*"\f00c";*/
 			    margin-right: px(20);
 		        vertical-align: middle;
 		    }
@@ -104,10 +104,20 @@
 				font-weight: $medium;
 			}
 			.#{$alias}-loading-ajax-details {
-				background-repeat: no-repeat;
+					background-repeat: no-repeat;
 			    width: 100%;
 			    min-height: px(25);
 			    margin-bottom: px(15);
+			}
+			
+			.#{$alias}-check-integrity-container {
+					margin-bottom: px(15);
+					
+					.#{$alias}-response {
+						/*display: inline-block;
+						width: 90%;*/
+						margin-top: px(8);
+					}
 			}
 		}
 
@@ -186,7 +196,7 @@
 					text-align: center;
 				}
 				&.#{$alias}-loading-inprogress {
-					background-image: url(../../aa-framework/images/ajax-loader.gif);
+					background-image: url("#framework_url/images/ajax-loader.gif");
 					background-position: center center;
 					background-repeat: no-repeat;
 				}
@@ -217,7 +227,7 @@
 			}
 		}
 		.#{$alias}-loading-ajax-details {
-			background-image: url(../../aa-framework/images/ajax-loader.gif);
+			background-image: url("#framework_url/images/ajax-loader.gif");
 			background-repeat: no-repeat;
 			background-position: center left;
 			width: 100%;

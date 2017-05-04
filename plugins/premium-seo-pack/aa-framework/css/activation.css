@@ -1,28 +1,51 @@
 .aaFrm-message_activate {
 	position: relative;
 	z-index: 100;
-	overflow: hidden;
+ 	overflow: hidden;
 	padding: 10px 0 10px !important;
-	background: #fff;
+	background: #ffffff no-repeat right bottom !important;
 	margin: 10px 0px 20px 0px !important;
-
+	left: -5px;
+	border-left-color: #fd9909 !important;
 }
 .aaFrm-message_activate .squeezer {
+	max-width: 960px;
 	margin: 0;
-	padding: 0 10px;
+	padding: 0 20px;
 	text-align: left;
-	overflow: hidden;
+	overflow: hidden
 }
+.aaFrm-message_activate .squeezer.box-large {
+	max-width: initial;
+}
+	.aaFrm-message_activate .squeezer .last-requests {
+		width: 100%;
+		max-height: 150px;
+		overflow: hidden;
+		overflow-y: auto;
+	}
+		.aaFrm-message_activate .squeezer .last-requests .title {
+			display: block;
+			text-align: center;
+			font-weight: bold;
+			font-size: 14px;
+		}
 .aaFrm-message_activate h4 {
-	margin: 4px 10px 0 0;
-	font-size: 18px;
+	margin: 0 10px 0 0;
+	font-size: 16px;
 	line-height: 36px;
-	font-family: 'Roboto';
+	font-family: "Open Sans";
 	font-weight: normal;
-	color: #242c39;
+	color: #000;
 	float: left;
-	vertical-align: middle;
+	vertical-align: middle
 }
+	.aaFrm-message_activate h4 .marked {
+		font-weight: bold;
+		color: #2980b9;
+		background-color: #ecf0f1;
+		padding: 0px 10px;
+	}
 .aaFrm-message_activate p {
 	margin: 0 !important;
 	padding: 2px 0 !important;
@@ -31,30 +54,42 @@
 	vertical-align: middle
 }
 .aaFrm-message_activate p a.button-primary {
-	padding: 6px 20px 6px 23px;
-    border: none 0;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 700;
-    text-transform: uppercase;
-    text-decoration: none;
-	background: #68c64b;
-	font-family: 'Roboto';
-	text-shadow:none;
-	box-shadow:none;
-	height: auto;
-	border-radius: 0;
-}
-
-a.aaFrm-dismiss {
-	float: right;
-	color: #000;
+	font-size: 16px !important;
+	line-height: 16px !important;
+	height: 30px; 
+	margin: 0 5px 0 0;
+	padding: 6px 15px;
+	vertical-align: middle;
+	color: #fff;
+	text-align: center;
 	text-decoration: none;
-	margin-right:24px;
-	font-family: 'Roboto';
-	border:1px dashed #dadada;
-	padding:10px;
+ 	background: #fd9909;
+ 	text-shadow: none;
+ 	box-shadow: none;
+ 	border-color: transparent;
+ 	cursor: pointer;
+ 	text-transform: uppercase;
+	font-family: "Open Sans";
+	font-weight: normal;
+	border-radius: 2px;
 }
-a.aaFrm-dismiss:hover {
-	text-decoration: underline;
+.aaFrm-message_activate p a.button-primary:hover, .aaFrm-message_activate p a.button-primary:active {
+	background-color: #9c5d90;
+ 	outline: 0;
+	opacity: 1;
+	border-color: transparent;
 }
+	.aaFrm-message_activate a.aaFrm-dismiss {
+		border: 1px dashed #9c5d90;
+	    color: #9c5d90;
+	    display: block;
+	    padding: 5px 15px;
+	    position: absolute;
+	    right: 13px;
+	    top: 13px;
+	    font-family: "Open Sans";
+	}
+		.aaFrm-message_activate a.aaFrm-dismiss:hover {
+			background: #fff;
+			color: #ff9900;
+		}

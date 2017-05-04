@@ -208,6 +208,8 @@ if (class_exists('pssBacklinkBuilder') != true) {
 						
 						<!-- Container -->
 						<div class="psp-container clearfix">
+							
+<div class="psp-callout psp-callout-danger"><span>This module is deprecated since version 2.0.5. We've discontinued the maintainance of this module.</span><?php /*Please use <a href="#" class="psp-form-button-small psp-form-button-danger ">Insane Import</a> module instead.*/ ?></div>
 		
 							<!-- Main Content Wrapper -->
 							<div id="psp-content-wrap" class="clearfix">
@@ -525,6 +527,22 @@ if (class_exists('pssBacklinkBuilder') != true) {
 			// valid file content
 			global $wpdb;
 			$table_name = $wpdb->prefix . "psp_web_directories";
+			
+			$bb_table = $wpdb->get_var("SHOW TABLES LIKE '$table_name'");
+			if( !isset( $bb_table ) ) {
+				$sql = "CREATE TABLE IF NOT EXISTS `$table_name` (
+					  `id` int(11) NOT NULL AUTO_INCREMENT,
+					  `directory_name` varchar(255) DEFAULT NULL,
+					  `submit_url` varchar(255) DEFAULT NULL,
+					  `pagerank` double DEFAULT NULL,
+					  `alexa` double DEFAULT NULL,
+					  `status` smallint(1) DEFAULT '0',
+					  PRIMARY KEY (`id`),
+					  UNIQUE KEY `submit_url` (`submit_url`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+				require_once (ABSPATH. 'wp-admin/includes/upgrade.php' );
+    			dbDelta($sql); 
+			}
 
 			$total = count($rows); $c = 0;
 			foreach ($rows as $k => $v) {

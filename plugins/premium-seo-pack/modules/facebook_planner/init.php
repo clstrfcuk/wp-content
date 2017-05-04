@@ -761,7 +761,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 				));
 			}
 		}
-
+/*
 		public function __fbAuth()
 		{
 			$plugin_url = admin_url('admin.php?page=psp#facebook_planner');
@@ -982,7 +982,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 				//}
 			}
 		}
-		
+*/
 		public function fb_save_meta( $post_id ) {
 			global $wpdb;
 

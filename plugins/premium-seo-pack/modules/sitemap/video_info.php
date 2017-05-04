@@ -87,13 +87,38 @@ if (class_exists('pspVideoInfo') != true) {
 
 	    	$getdata = $getdata['body'];
 
-	    	if ( $output == 'json' )
+	    	if ( $output == 'json' ) {
 	    		$getdata = json_decode( $getdata );
-	    	else if ( $output == 'xml' )
-	    		$getdata = simplexml_load_string( $getdata, 'SimpleXMLElement', LIBXML_NOCDATA );
-	    	else if ( $output == 'serialized' )
+	    	} else if ( $output == 'xml' ) {
+
+				if (0) { // debug!
+					if (function_exists('libxml_use_internal_errors') && function_exists('libxml_get_errors')) {
+		    			libxml_use_internal_errors(true); // debug!
+					}
+				}
+
+	    		$getdata = @simplexml_load_string( $getdata, 'SimpleXMLElement', LIBXML_NOCDATA );
+
+				if ( ! $getdata ) {
+					if (0) { // debug!
+						if (function_exists('libxml_use_internal_errors') && function_exists('libxml_get_errors')) {
+							echo "Failed loading XML"."<br/>";
+		    				$errors = libxml_get_errors();
+						    foreach ($errors as $error) {
+		        				echo $error->message."<br/>";
+		    				}
+							libxml_clear_errors();
+						}
+					}
+					
+	    			return array_merge( $ret, array(
+	    				'resp' => $api_url . ' / ' . 'invalid xml response'
+	    			));
+				}
+
+	    	} else if ( $output == 'serialized' ) {
 	    		$getdata = unserialize( $getdata );
-	    	else ;
+	    	} else ;
 
 	    	return array_merge( $ret, array(
 	    		'status' => 'valid',
@@ -107,7 +132,7 @@ if (class_exists('pspVideoInfo') != true) {
 	     */
 	    private function cleanInfo( $arr=array() ) {
 	    	if ( empty($arr) ) return array();
-	    	
+//var_dump('<pre>', $arr, '</pre>');
 	    	foreach ( $arr as $key => $val ) {
 
 	    		// 'status', 'resp', 'created', 'type', 'videoid', 'tags', 'categories', 'publish_date', 'author', 'title', 'description', 'thumbnail', 'player_loc', 'duration', 'ratings', 'view_count'
@@ -130,8 +155,13 @@ if (class_exists('pspVideoInfo') != true) {
 		    			$arr[ "$key" ] = $val;
 		    		}
 		    		
-		    		if ( $key == 'description' )
-		    			$arr[ "$key" ] = substr( preg_replace( '/\s+/', ' ', $val ), 0, 350 );
+		    		if ( $key == 'description' ) {
+		    			$val = preg_replace( '/[a-zA-Z]*[:\/\/]+[A-Za-z0-9\-_]+\.+[A-Za-z0-9\.\/%&=\?\-_]+/imu', ' ', $val); // remove links
+		    			$val = preg_replace( '/\s+/', ' ', $val ); // remove spaces
+		    			$val = substr( $val, 0, 350 ); // limit number of characters
+		    			$arr[ "$key" ] = $val;
+					}
+
 	    		} else {
 	    			$val = trim( $val );
 		    		$val = strip_tags( $val );
@@ -139,6 +169,7 @@ if (class_exists('pspVideoInfo') != true) {
 		    		$arr[ "$key" ] = $val;
 	    		}
 	    	}
+//var_dump('<pre>', $arr, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;    
 	    	return $arr;
 	    }
 	    
@@ -233,11 +264,16 @@ if (class_exists('pspVideoInfo') != true) {
 	    				$__post_excerpt = $extrainfo->post_excerpt;
 	    			if ( $__post_excerpt != "" )
 						$__post_excerpt = substr( preg_replace( '/\s+/', ' ', $__post_excerpt ), 0, 350 );
-					
+
 					$video_details = get_post_meta( $__post_id, '_wp_attachment_metadata', true );
+					// duration
 					$duration = '';
-					if ( isset($video_details['length']) )
+					if ( isset($video_details['length']) && ! empty($video_details['length']) ) {
 						$duration = (string) $video_details['length'];
+					}
+					else if ( isset($video_details['length_formatted']) && ! empty($video_details['length_formatted']) ) {
+						$duration = (string) $this->duration_localhost( $video_details['length_formatted'] );
+					}
 						
 	    			$content_loc = (string) $extrainfo->guid;
 
@@ -249,7 +285,7 @@ if (class_exists('pspVideoInfo') != true) {
 				        'content_loc'			=> $content_loc
 			        ));
 			        //var_dump('<pre>orig:',$this->videoInfo ,'</pre>');
-	    		}
+	    		} // end extrainfo
 
 	    		$output = 'json';
 	    		switch ( $type ) {
@@ -259,20 +295,27 @@ if (class_exists('pspVideoInfo') != true) {
 	    			case 'localhost':
 		    				return array_merge( $this->cleanInfo( $this->videoInfo ), array(
 			    				'status'		=> 'valid',
-			    				'type' 			=> 'localhost'
+			    				'type' 		=> 'localhost'
 			    			));
 	    				break;
 	    				
 	    			case 'youtube':
-	    				$api_url = "https://gdata.youtube.com/feeds/api/videos/$video_id?v=2&alt=json";
+	    				//$api_url = "https://gdata.youtube.com/feeds/api/videos/$video_id?v=2&alt=json";
+						$api_url = "https://www.googleapis.com/youtube/v3/videos?part=snippet,status,statistics,contentDetails,player&id=$video_id&fields=items&key={key}";
+	    				if ( isset($this->atts['youtube_key']) && !empty($this->atts['youtube_key']) )
+	    					$api_url = str_replace('{key}', $this->atts['youtube_key'], $api_url);
 	    				break;
 	    				
 	    			case 'dailymotion':
-	    				$api_url = "https://api.dailymotion.com/video/$video_id?fields=title,duration,description,thumbnail_360_url,tags,created_time,owner,embed_url,views_total,rating,ratings_total";
+	    				$api_url = "https://api.dailymotion.com/video/$video_id?fields=title,duration,description,thumbnail_360_url,tags,created_time,owner,embed_url,views_total";
+						//thumbnail_large_url
+						//,rating,ratings_total : This field was deprecated on November 26, 2014
 	    				break;
-	    				
+
 	    			case 'vimeo':
 	    				$api_url = "http://vimeo.com/api/v2/video/$video_id.json";
+
+						// alternative remote url - oembed, which can be used for private videos
 	    				// $api_url = "http://vimeo.com/api/oembed.json?url=http://vimeo.com/$video_id";
 	    				break;
 	    				
@@ -316,7 +359,7 @@ if (class_exists('pspVideoInfo') != true) {
 	    				break;
 	    				
 	    			case 'flickr':
-	    				$api_url = "http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key={key}&photo_id=$video_id&format=json&nojsoncallback=1";
+	    				$api_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key={key}&photo_id=$video_id&format=json&nojsoncallback=1";
 	    				if ( isset($this->atts['flickr_key']) && !empty($this->atts['flickr_key']) )
 	    					$api_url = str_replace('{key}', $this->atts['flickr_key'], $api_url);
 	    				break;
@@ -364,22 +407,24 @@ if (class_exists('pspVideoInfo') != true) {
 
 	    		case 'youtube':
 	    			$this->videoInfo = array_merge( $this->videoInfo, array(
-						'player_loc'	=> "http://www.youtube.com/v/$video_id"
+						//'player_loc'	=> "http://www.youtube.com/v/$video_id"
+						'player_loc'	=> "http://www.youtube.com/embed/$video_id"
 					));
 	    			$ret = $this->youtube( $resp );
 	    			break;
 	    			
 	    		case 'dailymotion':
 	    			$this->videoInfo = array_merge( $this->videoInfo, array(
-						'player_loc'	=> "http://www.dailymotion.com/swf/$video_id" // swf | embed/video
+	    				//'player_loc'	=> "http://www.dailymotion.com/swf/$video_id"
+						'player_loc'	=> "http://www.dailymotion.com/embed/video/$video_id"
 					));
 	    			$ret = $this->dailymotion( $resp );
 	    			break;
 	    			
 	    		case 'vimeo':
 	    			$this->videoInfo = array_merge( $this->videoInfo, array(
-						// 'player_loc'	=> "http://player.vimeo.com/video/$video_id"
-						'player_loc'	=> "http://www.vimeo.com/moogaloop.swf?clip_id=$video_id"
+						'player_loc'	=> "https://player.vimeo.com/video/$video_id"
+						//'player_loc'	=> "http://www.vimeo.com/moogaloop.swf?clip_id=$video_id"
 					));
 	    			$ret = $this->vimeo( $resp );
 	    			break;
@@ -474,7 +519,7 @@ if (class_exists('pspVideoInfo') != true) {
 	    	}
 
 			$ret['tags'] = array();
-			$thetags = $this->format_items( array_merge($this->videoInfo['tags'], (array) $tags), 'tags', '' );
+			$thetags = $this->format_items( array_merge($this->videoInfo['tags'], ( isset($tags) ? (array) $tags : array() )), 'tags', '' );
 			if ( !empty($category) ) $ret['tags'] = array_merge($ret['tags'], (array) $category);
 			if ( !empty($thetags) ) $ret['tags'] = array_merge($ret['tags'], (array) $thetags);
 			$ret['tags'] = $this->format_items( $ret['tags'], 'tags', '' );
@@ -514,28 +559,74 @@ if (class_exists('pspVideoInfo') != true) {
 	    		( isset($this->videoInfo['player_loc']) && !empty($this->videoInfo['player_loc']) )
 	    		|| 
 	    		( isset($this->videoInfo['content_loc']) && !empty($this->videoInfo['content_loc']) ) )
-	    	)
+	    	) {
 	    		return true;
+			}
 	    	return false;
 	    }
 
-	    // youtube - json
+		// youtube - json
 	    private function youtube( $resp ) {
+	    	$resp = $resp->items[0];
+			
+			$snippet = $resp->snippet;
 
-	    	$category = (string) $resp->{'entry'}->{'media$group'}->{'media$category'}[0]->{'$t'};
+			// get categories
+			$category = '';
+			try {
+				$category_id = $snippet->categoryId;
+				$category_api_url = "https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&id=$category_id&key={key}";
+	    		if ( isset($this->atts['youtube_key']) && !empty($this->atts['youtube_key']) ) {
+	    			$category_api_url = str_replace('{key}', $this->atts['youtube_key'], $category_api_url);
+				}
+				//var_dump('<pre>', $category_api_url, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+				
+				$getdata = $this->remote_get( $category_api_url, 'json' );
+				if ( !isset($getdata) || $getdata['status'] === 'invalid' ) ;
+				else {
+					$categ_resp = $getdata['resp'];
+					//var_dump('<pre>', $categ_resp, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+					$category = (string) $categ_resp->items[0]->snippet->title;
+				}
+			}
+			catch (Exception $e) {
+			}
 
-	    	$publish_date = (string) $resp->{'entry'}->published->{'$t'};
-	    	$author = (string) $resp->{'entry'}->{'author'}[0]->{'name'}->{'$t'};
-	    	
-	    	$title = (string) $resp->{'entry'}->title->{'$t'};
-	    	$description = (string) $resp->{'entry'}->{'media$group'}->{'media$description'}->{'$t'};
-	    	$thumbnail = (string) $resp->{'entry'}->{'media$group'}->{'media$thumbnail'}[0]->url;
-	    	
-	    	$duration = (string) $resp->{'entry'}->{'media$group'}->{'media$content'}[0]->duration;
-	    	$ratings = (string) $resp->{'entry'}->{'gd$rating'}->{'average'};
-	    	$view_count = (string) $resp->{'entry'}->{'yt$statistics'}->{'viewCount'};
+			$tags = $this->format_items( (array) $snippet->tags, 'tags', '' );
 
+	    	$publish_date = (string) $snippet->publishedAt; // already is DATE_W3C
+			//$publish_date = date( DATE_W3C, $publish_date );
 
+			$author = ''; // author: I couldn't this information!	    	
+
+	    	$title = (string) $snippet->title;
+	    	$description = (string) $snippet->description;
+			
+			$formats = array( 'standard', 'medium', 'high', 'default' ); // they are order by priority in which to try to find one
+			$formats_found = array();
+			foreach ( $formats as $format ) {
+
+				if ( isset($snippet->thumbnails->$format)
+					&& ! empty( $snippet->thumbnails->$format )
+					&& is_object( $snippet->thumbnails->$format ) ) {
+
+					$thumbnail = $snippet->thumbnails->$format;
+					if ( isset($thumbnail->url) && ! empty( $thumbnail->url ) ) {
+						$formats_found[] = $thumbnail->url;
+					}
+				}
+			}
+			if ( ! empty($formats_found) ) {
+				$thumbnail = $formats_found[0];
+			}
+
+	    	$duration = (string) $resp->contentDetails->duration;
+			$duration = $this->duration_iso_8601_to_seconds( $duration );
+
+	    	$view_count = (string) $resp->statistics->viewCount;
+			$ratings = ''; // 2do feature: we can calculate using statistics->likeCount & statistics->dislikeCount
+
+			
 	    	// return array
 	    	return $this->getApiResponse( compact(
 	    		'tags', 'category', 'publish_date', 'author', 'title', 'description', 'thumbnail',
@@ -554,10 +645,10 @@ if (class_exists('pspVideoInfo') != true) {
 	    	$title = (string) $resp->title;
 	    	$description = (string) $resp->description;
 	    	$description = preg_replace('/<br \/>/iu', PHP_EOL, $description);
-	    	$thumbnail = (string) $resp->thumbnail_360_url;
+	    	$thumbnail = (string) $resp->thumbnail_360_url; //thumbnail_large_url
 	    	
 	    	$duration = (string) $resp->duration;
-	    	$ratings = (string) $resp->rating;
+	    	$ratings = ''; //(string) $resp->rating;
 	    	$view_count = (string) $resp->views_total;
 	    	
 	    	// author
@@ -620,7 +711,8 @@ if (class_exists('pspVideoInfo') != true) {
 	    	));
 	    }
 	    
-	    // metacafe - xml
+	    // metacafe - xml - DEPRECATED
+	    // 2017-march verification: api doesn't work anymore
 	    private function metacafe( $resp ) {
 
 			$category = (string) $resp->channel[0]->item->category;
@@ -685,7 +777,8 @@ if (class_exists('pspVideoInfo') != true) {
 	    	));
 	    }
 	    
-	    // screenr - json
+	    // screenr - json - DEPRECATED
+	    // 2017-march verification: Screenr was retired on November 12, 2015 http://www.screenr.com/
 	    private function screenr( $resp ) {
 
 	    	$title = (string) $resp->title;
@@ -712,7 +805,7 @@ if (class_exists('pspVideoInfo') != true) {
 	    	$description = preg_replace('/<br \/>/iu', PHP_EOL, $description);
 	    	$thumbnail = (string) $resp->thumbnail_url;
 
-	    	$duration = (string) $resp->duration;
+	    	$duration = (string) round( $resp->duration );
 	    	
 	    	$html = (string) $resp->html;
 	    	if ( preg_match( '/<iframe src=(?:\'|")(.*?)(?:\'|")/iu', $html, $match ) ) {
@@ -739,12 +832,22 @@ if (class_exists('pspVideoInfo') != true) {
 	    private function vzaar( $resp ) {
 
 	    	$title = (string) $resp->title;
-	    	$description = (string) $resp->title;
+	    	$description = isset($resp->description) ? (string) $resp->description : (string) $resp->title;
 	    	$description = preg_replace('/<br \/>/iu', PHP_EOL, $description);
-	    	$thumbnail = (string) $resp->thumbnail_url;
+	    	$thumbnail = isset($resp->framegrab_url) ? (string) $resp->framegrab_url : (string) $resp->thumbnail_url;
 
-	    	$duration = (string) $resp->duration;
-	    	
+	    	$duration = (string) round( $resp->duration );
+
+			// http://developer.vzaar.com/docs/version_1.0/public/video_details.html#notes
+			$video_status_id = (int) $resp->video_status_id;
+			if ( ! in_array($video_status_id, array(1, 2, 12)) ) {
+				return array();
+			}
+
+			$author = isset($resp->author_name) ? (string) $resp->author_name : '';
+
+			$view_count = isset($resp->play_count) ? (string) $resp->play_count : '';
+
 	    	$__player_loc = (string) $resp->video_url;
 			if ( !empty($__player_loc) )
 				$player_loc = $__player_loc;
@@ -768,22 +871,42 @@ if (class_exists('pspVideoInfo') != true) {
 	    	$tags = $this->format_items( (array) $resp['video']['tags'], 'tags', '', 'viddler' );
 	    	
 			$title = (string) $resp['video']['title'];
-			$description = (string) $resp['video']['description'];
-			$description = preg_replace('/<br \/>/iu', PHP_EOL, $description);
+
+			$description = isset($resp['video']['description']) ? (string) $resp['video']['description'] : '';
+			$description = trim($description);
+			if ( empty($description) ) $description = $title;
+			$description = preg_replace('/<br \/>/iu', PHP_EOL, $description) ;
+
 			$thumbnail = (string) $resp['video']['thumbnail_url'];
 			
 			$duration = (string) $resp['video']['length'];
 			
 			$view_count = (string) $resp['video']['view_count'];
+			
+	    	$publish_date = (string) $resp['video']['upload_time'];
+			$publish_date = date( DATE_W3C, $publish_date );
+			
+			$author = isset($resp['video']['author']) ? (string) $resp['video']['author'] : '';
 	    	
-			$files = $video['video']['files'];
+			$files = isset($video['video']['files']) ? $video['video']['files'] : array();
 			if ( isset($files) && is_array($files) && !empty($files) ) {
 				foreach ( $files as $file ) {
-					if ( $file['ext'] == 'mp4' )
-						$content_loc = $file['url'];
+					if (
+						( isset($file['ext']) && ( $file['ext'] == 'mp4' ) ) 
+						&& ( isset($file['status']) && ( $file['status'] == 'ready' ) )
+						&& ( isset($file['url']) && (string) $file['url'] != '' )
+					) {
+						$content_loc = (string) $file['url'];
+					}
 				}
 			}
-
+			if ( isset($resp['video']['url']) && (string) $resp['video']['url'] != '' ) {
+				$content_loc = $resp['video']['url'];
+			}
+			else if ( ! empty($resp['video']['html5_video_source']) ) {
+				$content_loc = $resp['video']['html5_video_source'];
+			}
+			
 
 			// return array
 	    	return $this->getApiResponse( compact(
@@ -792,7 +915,8 @@ if (class_exists('pspVideoInfo') != true) {
 	    	));
 	    }
 	    
-	    // blip - xml
+	    // blip - xml - DEPRECATED
+	    // 2017-march verification: Maker Studios To Officially Shut Down Blip.tv In August 2015. Maker Studios is closing down one of its subsidiary properties. In an email to site users, the YouTube multi-channel network announced it will shutter Blip.tv on August 20, 2015
 	    private function blip( $resp ) {
 
 	    	$tags = $this->format_items( (array) $resp->xpath('/rss/channel/item/category'), 'tags', '', 'blip' );
@@ -941,6 +1065,8 @@ if (class_exists('pspVideoInfo') != true) {
 					}
 					$ret[] = (string) trim( $val );
 				}
+				$ret = array_unique($ret);
+				$ret = array_filter($ret);
 				return $ret;
 			} else {
 				return $items;
@@ -949,6 +1075,77 @@ if (class_exists('pspVideoInfo') != true) {
 	    
 	    private function strip_shortcode( $text ) {
 	    	return preg_replace( '`\[[^\]]+\]`s', '', $text );
+	    }
+
+		private function duration_iso_8601_to_seconds( $duration ) {
+			$ret = array();
+
+			// ex. PT3M31S
+			if ( preg_match( "/^(?:P)(?:[^T]*)(?:T)?(?:(?P<hour>\d+)H)?(?:(?P<min>\d+)M)?(?:(?P<sec>\d+)S)?$/", $duration, $m ) > 0 ) {
+
+				if ( ! empty( $m['hour'] ) ) {
+					$ret[] = (int) ( $m['hour'] * 3600 );
+				}
+	
+				if ( ! empty( $m['min'] ) ) {
+					$ret[] = (int) ( $m['min'] * 60 );
+				}
+				
+				if ( ! empty( $m['sec'] ) ) {
+					$ret[] = (int) ( $m['sec'] );
+				}
+			}
+			return (int) array_sum($ret);
+		}
+
+		private function duration_localhost( $length=0 ) {
+			if ( empty($length) ) return '';
+
+			$duration = 0;
+			$time = explode( ':', $length );
+			$time_len = count( $time );
+			if ( 3 == $time_len ) {
+				$duration += $time[2];
+				$duration += $time[1] * 60;
+				$duration += $time[0] * 3600;
+			}
+			else if ( 2 == $time_len ) {
+				$duration += $time[1];
+				$duration += $time[0] * 60;
+			}
+
+			if ( $duration > 0 ) {
+				return $duration;
+			}
+			return '';
+		}
+
+		
+		/**
+		 * OLD & Deprecated
+		 */
+	    // youtube - json
+	    private function __youtube( $resp ) {
+
+	    	$category = (string) $resp->{'entry'}->{'media$group'}->{'media$category'}[0]->{'$t'};
+
+	    	$publish_date = (string) $resp->{'entry'}->published->{'$t'};
+	    	$author = (string) $resp->{'entry'}->{'author'}[0]->{'name'}->{'$t'};
+	    	
+	    	$title = (string) $resp->{'entry'}->title->{'$t'};
+	    	$description = (string) $resp->{'entry'}->{'media$group'}->{'media$description'}->{'$t'};
+	    	$thumbnail = (string) $resp->{'entry'}->{'media$group'}->{'media$thumbnail'}[0]->url;
+	    	
+	    	$duration = (string) $resp->{'entry'}->{'media$group'}->{'media$content'}[0]->duration;
+	    	$ratings = (string) $resp->{'entry'}->{'gd$rating'}->{'average'};
+	    	$view_count = (string) $resp->{'entry'}->{'yt$statistics'}->{'viewCount'};
+
+
+	    	// return array
+	    	return $this->getApiResponse( compact(
+	    		'tags', 'category', 'publish_date', 'author', 'title', 'description', 'thumbnail',
+	    		'duration', 'ratings', 'view_count', 'player_loc', 'content_loc'
+	    	));
 	    }
     }
 }

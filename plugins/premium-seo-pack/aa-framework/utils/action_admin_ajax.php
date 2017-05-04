@@ -29,15 +29,19 @@ if (class_exists('pspActionAdminAjax') != true) {
 			$this->the_plugin = $parent;
 
             if ( $this->the_plugin->is_admin ) {
+            	// search engines notify
                 add_action('wp_ajax_pspAdminAjax', array( $this, 'admin_ajax' ));
-                
+
                 // minify module
                 add_action('wp_ajax_pspMinifyAdminCache', array( $this, 'admin_minify_cache' ));
                 add_action('wp_ajax_pspMinifyAdminExcluding', array( $this, 'admin_minify_excluding' ));
+
+				// video sitemap - metas delete
+				add_action('wp_ajax_pspVideoMetas', array( $this, 'video_metas' ));
             }
 			add_action('wp_ajax_pspSocialSharing', array( $this, 'social_sharing' ));
             add_action('wp_ajax_pspTwitterCards', array( $this, 'twitter_cards' ));
-			
+
 			add_action('wp_ajax_pspSocialSharingFrontend', array( $this, 'social_sharing_frontend' ));
 			add_action('wp_ajax_nopriv_pspSocialSharingFrontend', array( $this, 'social_sharing_frontend' ));
         }
@@ -66,7 +70,13 @@ if (class_exists('pspActionAdminAjax') != true) {
 			$engine = isset($_REQUEST['engine']) ? strtolower($_REQUEST['engine']) : '';
 			$sitemap_type = isset($_REQUEST['sitemap_type']) ? $_REQUEST['sitemap_type'] : 'sitemap';
 
-			$sitemapList = array('sitemap' => 'Sitemap.xml', 'sitemap_images' => 'Sitemap-Images.xml', 'sitemap_videos' => 'Sitemap-Videos.xml');
+			$sitemapList = array(
+				'sitemap' 					=> 'Sitemap.xml',
+				'sitemap_images' 		=> 'Sitemap-Images.xml',
+				'sitemap_videos' 		=> 'Sitemap-Videos.xml',
+				'kml'							=> 'sitemap-locations.kml',
+				'xml'							=> 'sitemap-locations.xml',
+			);
 			$sitemapCurrent = $sitemapList[ "$sitemap_type" ];
 
 			$ret = array(
@@ -186,6 +196,8 @@ if (class_exists('pspActionAdminAjax') != true) {
 			$card_type = isset($_REQUEST['card_type']) ? strtolower($_REQUEST['card_type']) : '';
 			$page = isset($_REQUEST['page']) ? strtolower($_REQUEST['page']) : '';
 			$post_id = isset($_REQUEST['post_id']) ? (int) $_REQUEST['post_id'] : 0;
+			$box_taxonomy = isset($_REQUEST['box_taxonomy']) ? (string) $_REQUEST['box_taxonomy'] : '';
+			$box_termid = isset($_REQUEST['box_termid']) ? (int) $_REQUEST['box_termid'] : 0;
 
 			$ret = array(
 				'status'		=> 'invalid',
@@ -199,7 +211,13 @@ if (class_exists('pspActionAdminAjax') != true) {
 			if ( $action == 'getCardTypeOptions') {
 
 				$ret['status'] = 'valid';
-				$ret['html'] = $twc->build_options(array('card_type' => $card_type, 'page' => $page, 'post_id' => $post_id));
+				$ret['html'] = $twc->build_options(array(
+					'card_type'	=> $card_type,
+					'page' 			=> $page,
+					'post_id' 		=> $post_id,
+					'box_taxonomy' 	=> $box_taxonomy,
+					'box_termid' 			=> $box_termid
+				));
 			}
 			die(json_encode($ret));
 		}
@@ -458,7 +476,92 @@ if (class_exists('pspActionAdminAjax') != true) {
             $this->the_plugin->save_theoption('psp_Minify', $notifyStatus);
             die(json_encode($ret));
         }
-    }
+    
+	
+		/**
+		 * Video Metas
+		 */
+		public function video_metas() {
+			$action = isset($_REQUEST['sub_action']) ? $_REQUEST['sub_action'] : '';
+
+			$ret = array(
+				'status'			=> 'invalid',
+				'start_date'		=> date('Y-m-d H:i:s'),
+				'start_time'		=> 0,
+				'end_time'			=> 0,
+				'duration'			=> 0,
+				'msg'				=> '',
+				'msg_html'			=> ''
+			);
+
+			if ( $action == 'getStatus') {
+
+				$notifyStatus = $this->the_plugin->get_theoption('psp_video_metas');
+				if ( $notifyStatus === false || !isset($notifyStatus["clean"]) ) ;
+				else {
+					$ret['status'] = 'valid';
+					$ret['msg_html'] = $notifyStatus["clean"]["msg_html"];
+				}
+
+				die(json_encode($ret));
+			}
+
+			if ( in_array($action, array('clean')) ) ;
+			else {
+				$ret['msg_html'] = 'unknown request';
+				die(json_encode($ret));
+			}
+
+			if ( $action == 'clean' ) {
+				$notifyStatus = $this->the_plugin->get_theoption('psp_video_metas');
+			}
+
+			$ret['start_time'] = $this->the_plugin->microtime_float();
+
+			global $wpdb;
+	        $sql = "
+				{select}
+	             FROM " . $wpdb->prefix . "postmeta AS a
+	             WHERE 1=1
+	             {regexp}
+	             {orderby}
+				;
+	        ";
+			/*
+			$sql = str_replace( array('{select}', '{regexp}', '{orderby}'), array(
+				'SELECT count(a.meta_id) as nbfound',
+				"AND a.meta_key regexp '^psp_videos' and meta_key not regexp '_stat$'",
+				'ORDER BY a.meta_id ASC',
+			), $sql );
+			//var_dump('<pre>', $sql, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+			*/ 
+			///*
+			$sql = str_replace( array('{select}', '{regexp}', '{orderby}'), array(
+				'DELETE a.*',
+				"AND a.meta_key regexp '^psp_videos'",
+				'',
+			), $sql );
+			//*/
+			$nbfound = $wpdb->query( $sql );
+
+			$ret = array_merge($ret, array(
+				'end_time'		=> $this->the_plugin->microtime_float(),
+				'msg'			=> '',
+			));
+			$ret['duration'] = number_format( ($ret['end_time'] - $ret['start_time']), 2 );
+
+			if (1) {
+				$ret['status'] 		= 'valid';
+				$ret['msg_html']	= '<span class="success">' . (__('Last time: ', $this->the_plugin->localizationName)) . sprintf( __(' %s video metas deleted | data: %s | duration: %s seconds.', $this->the_plugin->localizationName), $nbfound, $ret['start_date'], $ret['duration'] ) . '</span>';
+			}
+			
+			$notifyStatus["clean"] = $ret;
+			if ( $action == 'clean' ) {
+				$this->the_plugin->save_theoption('psp_video_metas', $notifyStatus);
+			}
+			die(json_encode($ret));
+		}
+	}
 }
 
 // Initialize the pspActionAdminAjax class

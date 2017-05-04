@@ -25,28 +25,34 @@ if (class_exists('pspTitleMetaFormat') != true) {
 		
 		//custom attributes
 		private $plugin_settings = array();
+		private $plugin_defsettings = array();
+
 		static protected $tplChar = '{%s}';
 		protected $pageTypes = array();
 		
-		//static private $titleForce = true;
+		static private $titleForce = false;
 		
 		private $post = null; // retrieve info for a specific post!
 		
 		protected $buddypress = null;
-
+		
 
         /*
-        * Required __construct() function that initalizes the AA-Team Framework
-        */
+         * Required __construct() function that initalizes the AA-Team Framework
+         */
         public function __construct()
         {
         	global $psp;
 
         	$this->the_plugin = $psp;
 			$this->module_folder = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/title_meta_format/';
+			$this->module_folder_path = $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'modules/title_meta_format/';
 			$this->module = $this->the_plugin->cfg['modules']['title_meta_format'];
 			
 			$this->plugin_settings = $this->the_plugin->get_theoption( $this->the_plugin->alias . '_title_meta_format' );
+			if ( empty($this->plugin_settings) ) {
+				$this->plugin_defsettings = $this->load_module_options();
+			}
 
 			// buddy press utils
 			if ( $this->the_plugin->is_buddypress() ) {
@@ -54,18 +60,23 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				$this->buddypress = new pspBuddyPressTags( $this->the_plugin );
 			}
   
-            // add extra pagetypes: woocommerce product
+            // add extra pagetypes
             add_filter('premiumseo_seo_list_pagetypes', array($this, 'add_extra_list_pagetypes'), 10, 1);
             add_filter('premiumseo_seo_pagetype', array($this, 'get_extra_pagetype'), 10, 1);
 
 			foreach ( $this->the_plugin->get_wp_list_pagetypes() as $k=>$v ) { //page types
 				foreach ( array('_title', '_desc', '_kw', '_robots') as $kk=>$vv ) { //meta tags
 					$alias = $v.$vv;
-					if ( isset($this->plugin_settings[ $alias ]) )
+					if ( isset($this->plugin_settings[ $alias ]) ) {
 						$this->pageTypes[ $alias ] = $this->plugin_settings[ $alias ];
+					}
+					else if ( isset($this->plugin_defsettings[ $alias ], $this->plugin_defsettings[ $alias ]['std']) ) {
+						$this->pageTypes[ $alias ] = $this->plugin_defsettings[ $alias ]['std'];
+					}
 				}
 			}
- 
+			//var_dump('<pre>', $this->pageTypes, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+    
 			if ( !$this->the_plugin->verify_module_status( 'title_meta_format' ) ) ; //module is inactive
 			else {
 				if ( $this->the_plugin->is_admin !== true )
@@ -73,27 +84,64 @@ if (class_exists('pspTitleMetaFormat') != true) {
 			}
         }
 
+		public function load_module_options() {
+			$def = isset($this->the_plugin->title_meta_format_default) ? $this->the_plugin->title_meta_format_default : array();
+			if ( ! empty($def) ) {
+				return $def;
+			}
+
+			$options = array();
+
+			// find if we have a options.php into the same folder
+			$options_file = $this->module_folder_path . 'options.php';
+
+			clearstatcache();
+			if ( file_exists($options_file) && is_file($options_file) && is_readable($options_file) ) {
+
+				$tryed_module = $this->the_plugin->cfg['modules']['title_meta_format'];
+
+				ob_start();
+				require_once $options_file;
+
+				$content = ob_get_contents();
+				ob_clean();
+
+				if( trim($content) != "" ){
+					$options = json_decode( $content, true );
+				}
+				
+				$options = isset($options['psp_title_meta_format'], $options['psp_title_meta_format']['title_meta_format'], $options['psp_title_meta_format']['title_meta_format']['elements']) ? $options['psp_title_meta_format']['title_meta_format']['elements'] : array();
+			}
+			//var_dump('<pre>', $options, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+			$this->the_plugin->title_meta_format_default = $options;
+			return $options;
+		}
+
         public function add_extra_list_pagetypes( $pagetypes ) {
-            return array_unique( array_merge( $pagetypes, array('product')) );
+        	$new = array(); //array('product');
+        	$pagetypes = array_merge( $pagetypes, $new );
+			$pagetypes = array_unique( $pagetypes );
+            return $pagetypes;
         }
         public function get_extra_pagetype( $pagetype ) {
-            if ( $pagetype == 'post' && function_exists('is_woocommerce') && function_exists('is_product') ) {
-                if ( is_woocommerce() && is_product() ) {
-                    $pagetype = 'product';
-                }
-            }
-            return $pagetype;
+			//if ( $pagetype == 'post' && function_exists('is_woocommerce') && function_exists('is_product') ) {
+			//	if ( is_woocommerce() && is_product() ) {
+			//		$pagetype = 'product';
+			//	}
+			//}
+			return $pagetype;
         }
-        
-        public function setPostInfo( $post ) {
+
+		public function setPostInfo( $post ) {
         	$this->post = $post;
         }
         
         public function verifyPostInfo() {
-	if ( isset($this->post) && !is_null($this->post) && is_object($this->post) )
-		return true;
-	return false;
+			if ( isset($this->post) && !is_null($this->post) && is_object($this->post) )
+				return true;
+			return false;
         }
+
         
         /**
          * Head Filters & Init!
@@ -110,6 +158,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 			//if ( self::$titleForce ) {
 			$titleForce = !isset($this->plugin_settings['force_title']) ||
                 ( isset($this->plugin_settings['force_title']) && $this->plugin_settings['force_title'] == 'yes' ) ? true : false;
+			//$titleForce = self::$titleForce; //DEBUG    
 			if ( $titleForce ) {
 				add_action('template_redirect', array(&$this, 'head_before'), 0);
 				add_action('wp_head', array(&$this, 'head_after'), 9999);
@@ -117,6 +166,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				add_filter( 'wp_title', array( $this, 'the_title' ), 14 );
 			}
 		}
+
 
 		/**
 		 * Force title rewrite
@@ -184,13 +234,37 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				if ( empty($url) )
 					$url = get_term_link( $post, $post->taxonomy );
 					
+			} elseif ( is_post_type_archive() ) {
+
+				$post_type = get_query_var( 'post_type' );
+				if ( is_array($post_type) ) {
+					$post_type = reset($post_type); //get first element
+				}
+				$url = get_post_type_archive_link( $post_type );
+
 			} elseif ( is_author() ) {
 
 				$url = get_author_posts_url( $post->ID, $post->user_nicename );
 				
+			} elseif ( is_archive() ) {
+
+				if ( is_date() ) {
+					if ( is_day() ) {
+						$url = get_day_link( get_query_var( 'year' ), get_query_var( 'monthnum' ), get_query_var( 'day' ) );
+					}
+					elseif ( is_month() ) {
+						$url = get_month_link( get_query_var( 'year' ), get_query_var( 'monthnum' ) );
+					}
+					elseif ( is_year() ) {
+						$url = get_year_link( get_query_var( 'year' ) );
+					}
+				}
+
 			} else {
 
 				//treat here cases for other page types!
+				//if ( is_search() ) {
+				//}
 
 			}
 			$url = apply_filters( 'premiumseo_seo_url', $url );
@@ -253,14 +327,17 @@ if (class_exists('pspTitleMetaFormat') != true) {
 		/**
 		 * meta robots tags!
 		 */
-		public function the_meta_robots() {
+		public function the_meta_robots( $print=true ) {
         	$meta_robots = $this->the_pagetype('robots', 'format_robots_tags');
         	$m = $meta_robots;
         	$mi = isset($m['item']) ? (array) $m['item'] : array();
         	$mt = isset($m['generaltag']) ? (array) $m['generaltag'] : array();
 
         	$__meta_robots = array();
-        	if ( in_array('index', $mi) )
+			// force to use the WP settings
+			if ( '0' == get_option( 'blog_public' ) || isset($_GET['replytocom']) )
+				$__meta_robots[] = 'noindex';
+			else if ( in_array('index', $mi) )
 				$__meta_robots[] = 'index';
         	else if ( in_array('noindex', $mi) )
 				$__meta_robots[] = 'noindex';
@@ -270,7 +347,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				$__meta_robots[] = 'noindex';
 			else
 				$__meta_robots[] = 'index';
-
+			
         	if ( in_array('follow', $mi) )
 				$__meta_robots[] = 'follow';
         	else if ( in_array('nofollow', $mi) )
@@ -288,7 +365,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
         	if ( in_array('noodp', $mt) )
 				$__meta_robots_extra[] = 'noodp';
 			$__meta_robots_extra = implode(',', $__meta_robots_extra);
-				
+			
 			$__meta_robots = implode(',', $__meta_robots);
 			if ( ($found = preg_match('/^index,follow/i', $__meta_robots))!==false && $found>0 )
 				$__meta_robots = '';
@@ -299,6 +376,8 @@ if (class_exists('pspTitleMetaFormat') != true) {
 			$__meta_robots = apply_filters( 'premiumseo_seo_robots', $__meta_robots );
 			$__meta_robots = esc_attr( $__meta_robots );
 
+        	if ( $print===false )
+        		return $__meta_robots;
         	if ( !empty( $__meta_robots ) )
         		echo '<meta name="robots" content="' . $__meta_robots . '"/>' . PHP_EOL;
 		}
@@ -324,8 +403,8 @@ if (class_exists('pspTitleMetaFormat') != true) {
  			}
 
  			//pagination is active in plugin & current page has pagination
- 			$__use_pag = $this->plugin_settings[ 'use_pagination_'.$field ];
- 			$__pag = $this->plugin_settings[ 'pagination_'.$field ];
+ 			$__use_pag = isset($this->plugin_settings[ 'use_pagination_'.$field ]) ? $this->plugin_settings[ 'use_pagination_'.$field ] : 'no';
+ 			$__pag = isset($this->plugin_settings[ 'pagination_'.$field ]) ? $this->plugin_settings[ 'pagination_'.$field ] : '';
  			if ( isset($__use_pag) && $__use_pag=='yes'
  				&& isset($__pag) && !empty($__pag)
  				&& $this->is_pagination() ) {
@@ -335,9 +414,10 @@ if (class_exists('pspTitleMetaFormat') != true) {
  			} else {
 	 			//current page type!
 	 			$this->set_pagetypes();
-	 			if ( isset($this->pageTypes[ $type . '_'.$field ]) ) {
-	 				$__currentValue = $this->pageTypes[ $type . '_'.$field ];
- 					$__robots['generaltag'] = $__currentValue;
+				$__templateValue = $this->get_template_field( $type, $field );
+	 			if ( false !== $__templateValue ) {
+	 				$__currentValue = $__templateValue;
+					$__robots['generaltag'] = $__currentValue;
 	 			}
  			}
  			
@@ -368,12 +448,14 @@ if (class_exists('pspTitleMetaFormat') != true) {
         		echo '<meta name="description" content="' . $meta_desc . '"/>' . PHP_EOL;
         }
         
-        public function the_meta_keywords() {
+        public function the_meta_keywords( $print=true ) {
         	$meta_keywords = $this->the_pagetype('kw');
         	$meta_keywords = trim( $meta_keywords );
 			$meta_keywords = apply_filters( 'premiumseo_seo_meta_keywords', $meta_keywords );
         	$meta_keywords = esc_attr( strip_tags( stripslashes( $meta_keywords ) ) );
         	
+        	if ( $print===false )
+        		return $meta_keywords;
         	if ( !empty( $meta_keywords ) )
         		echo '<meta name="keywords" content="' . $meta_keywords . '"/>' . PHP_EOL;
         }
@@ -404,8 +486,9 @@ if (class_exists('pspTitleMetaFormat') != true) {
 			}
    			
  			//pagination is active in plugin & current page has pagination
- 			$__use_pag = $this->plugin_settings[ 'use_pagination_'.$field ];
- 			$__pag = $this->plugin_settings[ 'pagination_'.$field ];
+ 			$__use_pag = isset($this->plugin_settings[ 'use_pagination_'.$field ]) ? $this->plugin_settings[ 'use_pagination_'.$field ] : 'no';
+ 			$__pag = isset($this->plugin_settings[ 'pagination_'.$field ]) ? $this->plugin_settings[ 'pagination_'.$field ] : '';
+
  			if ( isset($__use_pag) && $__use_pag=='yes'
  				&& isset($__pag) && trim($__pag)!=''
  				&& $this->is_pagination() ) {
@@ -413,11 +496,12 @@ if (class_exists('pspTitleMetaFormat') != true) {
  			} else {
 	 			//current page type!
 	 			$this->set_pagetypes();
-	 			if ( isset($this->pageTypes[ $type . '_'.$field ]) ) {
-	 				$__currentValue = $this->pageTypes[ $type . '_'.$field ];
+				$__templateValue = $this->get_template_field( $type, $field );
+	 			if ( false !== $__templateValue ) {
+	 				$__currentValue = $__templateValue;
 	 			}
  			}
- 
+
  			if ( empty($__currentValue) ) return '';
 
  			//format the page title!
@@ -426,7 +510,58 @@ if (class_exists('pspTitleMetaFormat') != true) {
 
         	return $__return;
         }
-        
+
+		protected function get_template_field( $type, $field='title' ) {
+			$__currentValue = false;
+
+	 		if ( isset($this->pageTypes[ $type . '_' . $field ]) ) {
+	 			$__currentValue = $this->pageTypes[ $type . '_' . $field ];
+	 		}
+			// start compatibility with old version : posttype => post
+			else if ( ( 'posttype' == $type ) && isset($this->pageTypes[ 'post_' . $field ]) ) {
+				$__currentValue = $this->pageTypes[ 'post_' . $field ];
+			}
+			// end compatibility with old version : posttype => post
+
+			// NOT ( custom post type or custom taxonomy )
+			if ( ! in_array($type, array('posttype', 'taxonomy')) ) {
+				return $__currentValue;
+			}
+
+			// custom post type or custom taxonomy
+			$__post = null;
+
+			global $wp_query, $post;
+	 		if (is_object($post) && isset($post->ID) && !is_null($post->ID) && $post->ID>0)
+	 			$__post = $post;
+	 		if (is_object($wp_query))
+	 			$__post = $wp_query->get_queried_object(); //get the post!
+	 		//var_dump('<pre>', $__post, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
+	 		$post_type = '';
+			if (is_object($__post) && isset($__post->post_type) && $__post->post_type != '') {
+				$post_type = (string) $__post->post_type;
+			}
+			if (is_object($__post) && isset($__post->term_id) && isset($__post->taxonomy)) {
+				$post_type = (string) $__post->taxonomy;
+			}
+			//var_dump('<pre>',$post_type,$__post,'</pre>');
+			
+			$uniqueKey = "{$type}_custom";
+			$o = $this->plugin_settings;
+			if ( ! empty($post_type)
+				&& isset($o["$uniqueKey"], $o["$uniqueKey"]["$field"], $o["$uniqueKey"]["$field"]["$post_type"])
+			) {
+				$o["$uniqueKey"]["$field"]["$post_type"] = $o["$uniqueKey"]["$field"]["$post_type"];
+
+				if ( ! empty($o["$uniqueKey"]["$field"]["$post_type"]) ) {
+					$__currentValue = $o["$uniqueKey"]["$field"]["$post_type"];
+				}
+			}
+
+			return $__currentValue;
+		}
+
         protected function get_current_field( $field='title' ) {
 
 			global $wp_query;
@@ -508,7 +643,10 @@ if (class_exists('pspTitleMetaFormat') != true) {
  			if ( empty($theContent) ) return '';
  			$__return = $theContent;
 
-            $type = $type == 'product' ? 'post' : $type;
+ 			$__post = null;
+ 			$__author = null;
+
+            //$type = $type == 'product' ? 'post' : $type;
  			$__page = 'home'; //default page!
  			$__defaults = array( //default params!
  				'site_title'			=> get_bloginfo('name'), //website name
@@ -551,25 +689,23 @@ if (class_exists('pspTitleMetaFormat') != true) {
  				'totalpages'			=> '',
  				'pagenumber'			=> ''
  			);
- 
+			
  			//to be replaced params
  			$__replace = array_merge($__defaults, array(
  				'title'				=> get_bloginfo('name')
  			));
-
- 			$__post = null;
- 			$__author = null;
+			
  			$__postClean = $__defaults;
  			$__authorClean = $__defaults;
  			$__taxonomyClean = $__defaults;
- 			
+
  			//loop through all page types and set some info!
  			//::
  			
  			//page type is: post or page (or attachment)
- 			if (in_array($type, array('post', 'page'))) {
+ 			if (in_array($type, array('post', 'page', 'posttype'))) {
  				global $post;
- 				if (isset($__post->ID) && !is_null($__post->ID) && $__post->ID>0) 
+ 				if (isset($post->ID) && !is_null($post->ID) && $post->ID>0) 
  					$__post = $post;
  				else
  					$__post = $wp_query->get_queried_object(); //get the post!
@@ -598,7 +734,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
  					} else {
  						$__postClean['short_description'] = wp_html_excerpt( strip_shortcodes( $__post->post_content ), 200 );
  					}
- 					
+
  					//post parent
  					if ($__parentId = $__post->post_parent) {
  						$__parent = get_post($__parentId);
@@ -683,8 +819,11 @@ if (class_exists('pspTitleMetaFormat') != true) {
  					$__page = 'post';
  				case 'page'		:
  					$__page = 'page';
+ 				case 'posttype'	:
+ 					$__page = 'posttype';
  				case 'post'		:
  				case 'page'		:
+				case 'posttype'	:
  					$__replace = array_merge($__replace, array(
  						'title'					=> $__postClean['title'],
  						'id'					=> $__postClean['id'],
@@ -843,8 +982,8 @@ if (class_exists('pspTitleMetaFormat') != true) {
         	$__taxonomyClean = array();
         	
         	if (in_array($type, array('category', 'tag', 'taxonomy'))) {
-		$__postType = $this->getPostType();
-		if ( !empty($__postType) ) $post = $this->post;
+				$__postType = $this->getPostType();
+				if ( !empty($__postType) ) $post = $this->post;
 
 	        	$tmpTitle = '';
 	        	if ( function_exists( 'single_term_title' ) ) { //Since: 3.1.0 WP version
@@ -889,7 +1028,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 	        		$__taxonomyClean['term'] = $__taxonomyClean['title'];
 	        	}
         	}
-        	if (in_array($type, array('post', 'page'))) {
+        	if (in_array($type, array('post', 'page', 'posttype'))) {
 	        	if ( function_exists( 'get_the_terms' ) ) { //Since: 2.5.0 WP version
 	        		$categories  = get_the_terms( $obj->ID, 'category' );
 	        		$tags  = get_the_terms( $obj->ID, 'post_tag' );
@@ -927,7 +1066,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
         	foreach ( $items as $k=>$v ) {
         		if ($field=='name') $value = $v->name;
         		else if ($field=='description') $value = $v->description;
-		else $value = $v->name; //default return name!
+				else $value = $v->name; //default return name!
 				
         		if ($first) return $value;
         		$__list[] = $value;
@@ -936,9 +1075,9 @@ if (class_exists('pspTitleMetaFormat') != true) {
         }
         
         
-        		/**
-        		 * Get Post Type of the page
-        		 */
+		/**
+         * Get Post Type of the page
+         */
         private function getPostType() {
 			$__postType = '';
 			if ( $this->verifyPostInfo() ) {
@@ -952,14 +1091,9 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				}
 			}
 			return $__postType;
-        		}
+		}
 
-
-	         /**
-	          * Get Url
-	         */
 		public function get_the_url() {
-			
 			$__postType = $this->getPostType();
 			if ( !empty($__postType) ) $post = $this->post;
 
@@ -983,20 +1117,36 @@ if (class_exists('pspTitleMetaFormat') != true) {
 					$url = $canonical;
 				if ( empty($url) )
 					$url = get_term_link( $post, $post->taxonomy );
-
 			}
 			
 			return $url;
 		}
 
-	         /**
-	          * Get Title
-	         */
 	    public function get_the_title() {
-	         	$title = $this->get_the_pagetype('title');
+	         $title = $this->get_the_pagetype('title');
+			 $title = apply_filters( 'premiumseo_seo_title', $title );
+			 $title = esc_html( strip_tags( stripslashes( $title  ) ) );
 
-	         	return $title;
-	         }
+         	return $title;
+		}
+		
+	    public function get_the_meta_description() {
+	         $meta_desc = $this->get_the_pagetype('desc');
+			 $meta_desc = trim( $meta_desc );
+			 $meta_desc = apply_filters( 'premiumseo_seo_meta_description', $meta_desc );
+			 $meta_desc = esc_attr( strip_tags( stripslashes( $meta_desc ) ) );
+
+         	return $meta_desc;
+		}
+		
+	    public function get_the_meta_keywords() {
+        	$meta_keywords = $this->get_the_pagetype('kw');
+        	$meta_keywords = trim( $meta_keywords );
+			$meta_keywords = apply_filters( 'premiumseo_seo_meta_keywords', $meta_keywords );
+        	$meta_keywords = esc_attr( strip_tags( stripslashes( $meta_keywords ) ) );
+
+         	return $meta_keywords;
+		}
 	         
 	    protected function get_the_format($field, $type) {
 
@@ -1017,13 +1167,19 @@ if (class_exists('pspTitleMetaFormat') != true) {
 
 	        	//current field value!
 	        	$__currentValue = $this->get_current_field( $__field );
-	        	if ( !is_null($__currentValue) && !empty($__currentValue) && $__currentValue!='' ) return $__currentValue;
+	        	if ( !is_null($__currentValue) && !empty($__currentValue) && $__currentValue!='' ) {
+	 				$on_page_optimization = $this->the_plugin->get_theoption( $this->the_plugin->alias . '_on_page_optimization' );
+					$meta_title_sufix = isset($on_page_optimization['meta_title_sufix']) ? $on_page_optimization['meta_title_sufix'] : '';
+					if ( $field == 'title' && $type != 'home' && !empty($meta_title_sufix) ) $__currentValue .= ' ' . $meta_title_sufix;
+	 				return $__currentValue;
+				}
   
 	        	//current page type!
 	        	$this->set_pagetypes();
-	        	if ( isset($this->pageTypes[ $type . '_'.$field ]) ) {
-	        		$__currentValue = $this->pageTypes[ $type . '_'.$field ];
-	        	}
+				$__templateValue = $this->get_template_field( $type, $field );
+	 			if ( false !== $__templateValue ) {
+	 				$__currentValue = $__templateValue;
+	 			}
 
 	        	if ( empty($__currentValue) ) return '';
   
@@ -1032,45 +1188,45 @@ if (class_exists('pspTitleMetaFormat') != true) {
 	        	//var_dump('<pre>', $__return , '</pre>');
 	
 	        	return $__return;
-	        }
+		}
 	        
 	    public function get_the_pagetype($field='title', $format_func='get_the_format') {
-		// if ( is_admin() || is_feed() ) return '';
+			// if ( is_admin() || is_feed() ) return '';
+	
+			$__postType = $this->getPostType();
+			if ( !empty($__postType) ) $post = $this->post;
+	
+			if ( $__postType == 'post' ) {
 
-		$__postType = $this->getPostType();
-		if ( !empty($__postType) ) $post = $this->post;
-
-		if ( $__postType == 'post' ) {
- 
-		            if ( $post->post_type == 'page' ) {
-		            	return call_user_func( array( $this, $format_func ), $field, 'page' );
-		            }
-		            else if ( $post->post_type != 'attachment' ) {
-
-                        if ( $post->post_type == 'product' ) {
-                            return call_user_func( array( $this, $format_func ), $field, 'product' );
-                        } else {
-                            return call_user_func( array( $this, $format_func ), $field, 'post' );
-                        }
-		            }
-		            //else if ( $post->post_type == 'attachment' ) { //treated like a page!
-		            // 	return call_user_func( array( $this, $format_func ), $field, 'page' );
-		            //}
+			            if ( $post->post_type == 'page' || $post->post_type == 'attachment' ) {
+			            	return call_user_func( array( $this, $format_func ), $field, 'page' );
+			            }
+			            else if ( $post->post_type == 'post' ) {
+			            	return call_user_func( array( $this, $format_func ), $field, 'post' );
+						}
+						else {
+	                        //if ( $post->post_type == 'product' ) {
+	                        //    return call_user_func( array( $this, $format_func ), $field, 'product' );
+	                        //} else {
+	                        //    return call_user_func( array( $this, $format_func ), $field, 'post' );
+	                        //}
+                            return call_user_func( array( $this, $format_func ), $field, 'posttype' );
+			            }
+			}
+			else if ( $__postType == 'term' ) {
+	
+			            if ( $post->taxonomy == 'category' ) {
+							return call_user_func( array( $this, $format_func ), $field, 'category' );
+			            }
+			            else if ( $post->taxonomy == 'tag') {
+			            	return call_user_func( array( $this, $format_func ), $field, 'tag' );
+			            }
+			            else if ( !in_array($post->taxonomy, array('category', 'tag')) ) {
+			            	return call_user_func( array( $this, $format_func ), $field, 'taxonomy' );
+			            }
+			}
+			return '';
 		}
-		else if ( $__postType == 'term' ) {
-
-		            if ( $post->taxonomy == 'category' ) {
-				return call_user_func( array( $this, $format_func ), $field, 'category' );
-		            }
-		            else if ( $post->taxonomy == 'tag') {
-		            	return call_user_func( array( $this, $format_func ), $field, 'tag' );
-		            }
-		            else if ( !in_array($post->taxonomy, array('category', 'tag')) ) {
-		            	return call_user_func( array( $this, $format_func ), $field, 'taxonomy' );
-		            }
-		}
-		return '';
-	        }
 
 
 		/**

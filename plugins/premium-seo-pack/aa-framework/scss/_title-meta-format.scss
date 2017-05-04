@@ -1,29 +1,45 @@
 ##{$alias}_title_meta_format {
 	div {
 		&:nth-child(65) {
-			margin-bottom: px(30);
+			/*margin-bottom: px(30);
 			label {
 				margin-left: px(25);
-			}
+			}*/
 		}
-		&:nth-child(73),
-		&:nth-child(74) {
+		/*&:nth-child(74),
+		&:nth-child(75) {
 			margin-left: px(25);
 			&>div {
 				margin-left: px(173) !important;
 			}
 		}
-		&:nth-child(74) {
+		&:nth-child(75) {
 			select {
 				margin-bottom: px(25);
 			}
-		}
+		}*/
 		&##{$alias}-twittercards-app-response {
 			div {
 				&:first-child {
-					display: none;
+					display: block;
 				}
 			}
+		}
+		
+		.#{$alias}-tags-specific-availability {
+			color: #b4a49d;
+		}
+		
+		.#{$alias}-tw-cardstype-miniwrap,
+		.#{$alias}-socialmeta-opengraph-miniwrap {
+			display: inline-block;
+			margin-right: px(15);
+			margin-bottom: px(5);
+		}
+		
+		.#{$alias}-form-label > span,
+		.#{$alias}-metatags-tagtitle > span {
+			font-weight: normal;
 		}
 	}
 	.subtabsHeader {
@@ -61,10 +77,18 @@
 	}
 	.#{$alias}-message {
 		padding: px(23);
-		padding-bottom: px(30);
+		padding-bottom: px(0); /*px(30);*/
 		line-height: px(26);
 		&>ul {
-			margin-top: px(44);
+			margin-top: px(18);
+			&> li code {
+				width: px(175);
+				display: inline-block;
+			}
+		}
+		&>ul.#{$alias}-tw-helper,
+		&>ul.#{$alias}-social-helper {
+			margin-top: px(0);
 		}
 		&>h2 {
 			margin-top: px(12) !important;

@@ -338,8 +338,32 @@ pspPriceUpdateMonitor = (function ($) {
 				
 			stress_test_step1( that, that.data('module') );
 		});
-	}
+		
+		// check integrity database
+		maincontainer.on('click', '.psp-check-integrity-container > a', function(e){
+			e.preventDefault();
 
+			var that = $(this);
+				
+			ajax_operation( that, that.data('action') );
+		});
+	}
+	
+	function ajax_operation( that, action ) {
+		//return false;
+		jQuery.post(ajaxurl, {
+			'action' 		: 'pspServerStatusOperation',
+			'sub_action'	: action,
+			'debug_level'	: debug_level
+		}, function(response) {
+			if( response.status == 'valid' ) {
+				var $resp = that.parent().find('.psp-response');
+				$resp.css('background-image', 'none');
+				$resp.html( response.html );
+			}
+		}, 'json');
+	}
+	
 	// external usage
 	return {
     }

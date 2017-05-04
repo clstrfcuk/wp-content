@@ -702,13 +702,17 @@ class Http {
 	 * @param bool $post (default: false) True when sending with POST
 	 */
 	public static function curl($url, $params=array(), $post=false) {
+		$debug = true;
+		
+		$ret = array('status' => 'invalid', 'http_code' => 0, 'data' => '');
 
 		if (empty($url)) return false;
 
 		if (!$post && !empty($params)) {
 			$url = $url . "?" . http_build_query($params);
 		}
-		$curl = curl_init($url);
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $url);
 		if ($post) {
 			curl_setopt($curl, CURLOPT_POST, true);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
@@ -716,13 +720,45 @@ class Http {
 		//curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		$data = curl_exec($curl);
-		$http_code = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		// Add the status code to the json data, useful for error-checking
-		$data = preg_replace('/^{/', '{"http_code":'.$http_code.',', $data);
-		curl_close($curl);
-		return $data;
 
+		// old code
+		//$data = curl_exec($curl);
+		//$http_code = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		// Add the status code to the json data, useful for error-checking
+		//$data = preg_replace('/^{/', '{"http_code":'.$http_code.',', $data);
+		//curl_close($curl);
+
+		// refactoring/ 2017-02-01
+		if (1) {
+            $data = curl_exec($curl);
+            $http_code = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            
+            $ret = array_merge($ret, array('http_code' => $http_code));
+            if ($debug) {
+                $ret = array_merge($ret, array('debug_details' => curl_getinfo($curl)));
+            }
+            if ( $data === false || curl_errno($curl) ) { // error occurred
+                $ret = array_merge($ret, array(
+                    'data' => curl_errno($curl) . ' : ' . curl_error($curl)
+                ));
+            } else { // success
+
+                // Add the status code to the json data, useful for error-checking
+                if ( 1 ) {
+                    $data = preg_replace('/^{/', '{"http_code":'.$http_code.',', $data);
+                }
+
+                $ret = array_merge($ret, array(
+                    'status'    => 'valid',
+                    'data'       => $data
+                ));
+            }
+			curl_close($curl);
+			
+			// TO DEBUG curl result, uncomment this line
+			//var_dump('<pre>', $ret, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;    
+		}
+		return $data;
 	}
 
 }

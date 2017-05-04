@@ -417,27 +417,27 @@ if (class_exists('pspBuddyPress') != true) {
 				'elements' 	=> array()
 				,'tabs'		=> array(
 					'__tab1'	=> array(',bp_help_format_tags'),
-					'__tab2'	=> array(),
-					'__tab3'	=> array(),
-					'__tab4'	=> array(),
-					'__tab5'	=> array()
+					'__tab2'	=> array(''),
+					'__tab3'	=> array(''),
+					'__tab4'	=> array(''),
+					'__tab5'	=> array('')
 				)
 				,'subtabs'	=> array(
 					'__tab1'	=> array(
 						'__subtab2' => array(
-							__('Buddy Press', $psp->localizationName), 'bp_help_format_tags')),
+							__('Buddy Press', $this->the_plugin->localizationName), 'bp_help_format_tags')),
 					'__tab2'	=> array(
-						'__subtab2' => array(
-							__('Buddy Press', $psp->localizationName), '')),
+						'__subtab4' => array(
+							__('Buddy Press', $this->the_plugin->localizationName), '')),
 					'__tab3'	=> array(
-						'__subtab2' => array(
-							__('Buddy Press', $psp->localizationName), '')),
+						'__subtab4' => array(
+							__('Buddy Press', $this->the_plugin->localizationName), '')),
 					'__tab4'	=> array(
-						'__subtab2' => array(
-							__('Buddy Press', $psp->localizationName), '')),
+						'__subtab4' => array(
+							__('Buddy Press', $this->the_plugin->localizationName), '')),
 					'__tab5'	=> array(
-						'__subtab2' => array(
-							__('Buddy Press', $psp->localizationName), ''))
+						'__subtab4' => array(
+							__('Buddy Press', $this->the_plugin->localizationName), ''))
 				)
 			);
   
@@ -476,12 +476,12 @@ if (class_exists('pspBuddyPress') != true) {
 							$std = isset($theVal['std']) && !empty($theVal['std']) ? $theVal['std'] : $metatags_def["$vv2"];
 							
 							// title
-							$title = $theVal['title'] . ' ' . __($metatags["$vv2"], $this->the_plugin->localizationNam);
+							$title = $theVal['title'] . ' ' . __($metatags["$vv2"], $this->the_plugin->localizationName);
 							
 							// description
 							$desc = array();
-							$desc[] = sprintf( __('Component: <u>%s</u> ; Action: <u>%s</u>', $this->the_plugin->localizationNam), $component, (!empty($action) ? $action : $action));
-							$desc[] = '<br />Available here: (global availability) tags; {buddypress global availability}; (buddypress specific availability) tags: ';
+							$desc[] = sprintf( __('Component: <u>%s</u> ; Action: <u>%s</u>', $this->the_plugin->localizationName), $component, (!empty($action) ? $action : $action));
+							$desc[] = '<br />Available here: (global availability) tags; (buddypress global availability) tags; (buddypress specific availability) tags: ';
 							//if ( !empty($theVal['tags']) && is_array($theVal['tags']) )							//	$desc[] = '{' . implode('}, {', $theVal['tags']) . '}';
 							$__desc = $this->field_admin_desc_tags(
 								implode(',', $part), $vv2
@@ -506,16 +506,15 @@ if (class_exists('pspBuddyPress') != true) {
 							
 							// tabs
 							$__theTab = $metatags_tabs["$vv2"];
-							//if ( !empty($ret['tabs']["$__theTab"][0]) )
-								$ret['tabs']["$__theTab"][0] .= ',' . $key2;
-							//else 
-							//	$ret['tabs']["$__theTab"][0] .= $key2;
+							$ret['tabs']["$__theTab"][0] .= ',' . $key2;
 							
 							// subtabs
-							if ( !empty($ret['subtabs']["$__theTab"]["__subtab2"][1]) )
-								$ret['subtabs']["$__theTab"]["__subtab2"][1] .= ',' . $key2;
-							else 
-								$ret['subtabs']["$__theTab"]["__subtab2"][1] .= $key2;
+							foreach ( $ret['subtabs']["$__theTab"] as $subtabKey => $subtabVal) {
+								if ( !empty($ret['subtabs']["$__theTab"]["$subtabKey"][1]) )
+									$ret['subtabs']["$__theTab"]["$subtabKey"][1] .= ',' . $key2;
+								else 
+									$ret['subtabs']["$__theTab"]["$subtabKey"][1] .= $key2;
+							}
 						}
 					}
 				}
@@ -559,19 +558,22 @@ if (class_exists('pspBuddyPress') != true) {
 		
 		public function add_bp_settings($settings) {
 			$page_type = $this->get_bp_pagetype();
+			if ( empty($page_type) ) return $settings;
+
 			$ca = $this->buildFromPageSlug($page_type);
 			$component = isset($ca['component']) ? $ca['component'] : '';
 			$action = isset($ca['action']) ? $ca['action'] : '';
   
 			$new_settings = array();
-			if ( !$this->verifyPageSlugIsSet($component, $action, 'static,admin') ) {
+			if ( ! $this->verifyPageSlugIsSet($component, $action, 'static,admin') && ! empty($page_type) ) {
 				$fields = array('title' => "{title_default}", 'desc' => "{desc_default}", 'kw' => "{kw_default}", 'robots' => array());
 				foreach ($fields as $field => $fieldval) {
 					$new_settings["$page_type"."_".$field] = $fieldval;
 				}
 			}
    
-			$settings = array_merge($settings, (array) $new_settings);
+			$settings = array_replace_recursive($settings, (array) $new_settings);
+			//var_dump('<pre>',$settings,'</pre>');
 			return $settings;
 		}
 		

@@ -80,6 +80,18 @@ if (class_exists('pspSnippet_organization') != true) {
         	if ( !empty($description) ) {
         		$ret[]	= '<div class="schema_description" itemprop="description">' . esc_attr($description) . '</div>';
         	}
+			
+        	if ( !empty($email) ) {
+        		$ret[]	= '<div class="email" itemprop="email">' . antispambot($email) . '</div>';
+        	}
+
+        	if ( !empty($phone) ) {
+        		$ret[]	= '<div class="phone" itemprop="telephone">' . __('Phone:', 'psp') . ' ' . $phone . '</div>';
+        	}
+
+        	if ( !empty($fax) ) {
+        		$ret[]	= '<div class="fax" itemprop="faxNumber">' . __('Fax:', 'psp') . ' ' . $fax . '</div>';
+        	}
 
         	// POSTAL ADDRESS
         	if ( !empty($street) || !empty($pobox) || !empty($city) || !empty($state)
@@ -125,7 +137,7 @@ if (class_exists('pspSnippet_organization') != true) {
         	}
         	// end POSTAL ADDRESS
         	
-        	// geo location
+        	// Place: geo location
         	$ret[] = 		'<div itemscope itemtype="http://schema.org/Place">';
         	if ( $map_latitude!='' && $map_longitude!='' ) {
 
@@ -138,20 +150,8 @@ if (class_exists('pspSnippet_organization') != true) {
         	}
         	$ret[] = 		'</div>'; // end Place
 
-        	if ( !empty($email) ) {
-        		$ret[]	= '<div class="email" itemprop="email">' . antispambot($email) . '</div>';
-        	}
-
-        	if ( !empty($phone) ) {
-        		$ret[]	= '<div class="phone" itemprop="telephone">' . __('Phone:', 'psp') . ' ' . $phone . '</div>';
-        	}
-
-        	if ( !empty($fax) ) {
-        		$ret[]	= '<div class="fax" itemprop="faxNumber">' . __('Fax:', 'psp') . ' ' . $fax . '</div>';
-        	}
-
         	// close it up
-        	$sc_build .= '</div>';
+        	$ret[] .= '</div>';
 
 			// build Full html!
         	return $this->shortcode_execute( $ret, $atts, $content );

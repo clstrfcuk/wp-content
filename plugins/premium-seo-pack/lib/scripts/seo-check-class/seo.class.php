@@ -876,9 +876,9 @@ class pspSeoCheck
 			'good' 					=> __( "Great, your content has %d bold elements and at least 1 contains your most important keywords.", $this->the_plugin->localizationName )
 		);
 
-		$total_bolds = $html->find('bold,strong')->size();
+		$total_bolds = $html->find('bold,strong,b')->size();
 		if( $total_bolds > 0 ){
-			if( preg_match('/' . preg_quote($focus_kw, '/') . '/i', $html->find('bold,strong')->text()) == true ){
+			if( preg_match('/' . preg_quote($focus_kw, '/') . '/i', $html->find('bold,strong,b')->text()) == true ){
 				return array(
 					'score' 	=> 1,
 					'msg'		=> sprintf($msgs['good'], $total_bolds )

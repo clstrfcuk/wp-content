@@ -1,0 +1,5 @@
+# Ignore node.js Modules #
+node_modules/
+u.sh
+convertplug.zip
+bcore.sh

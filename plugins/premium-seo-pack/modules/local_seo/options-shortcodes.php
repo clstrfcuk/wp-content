@@ -1,47 +1,51 @@
 <?php
 
-if ( !function_exists('psp_getLocationsList') ) { function psp_getLocationsList() {
-	global $psp;
-	global $wpdb;
-
-	ob_start();
+if ( ! function_exists('psp_getLocationsList') ) {
+	function psp_getLocationsList() {
 	
-	$sqlClause = '';
-
-	$sql = "SELECT a.ID
-	            FROM " . $wpdb->prefix . "posts as a
-	            LEFT JOIN " . $wpdb->prefix . "postmeta as b
-	            ON b.post_id = a.ID
-	            WHERE 1=1 " . $sqlClause . " AND a.post_status = 'publish' AND a.post_password = ''
-	            AND a.post_type = 'psp_locations'
-	            AND (b.meta_key = 'psp_locations_meta' AND !ISNULL(b.meta_value) AND b.meta_value != '')
-	            ORDER BY a.post_title ASC
-	            LIMIT 1000;";
-
-	$res = $wpdb->get_col( $sql );
-?>
-<div class="panel-body psp-panel-body psp-form-row">
-	<label><?php _e('Select location:', 'psp'); ?></label>
-	<div class="psp-form-item large">
-	<span class="formNote"></span>
-
-	<select id="psp-location-id" name="location_id" style="width:120px;">
-		<option value="all">All locations</option>
-	<?php
-	foreach ($res as $key => $value) {
-		$val = '';
-		echo '<option value="' . ( $value ) . '" ' . ( $val == $value ? 'selected="true"' : '' ) . '>' . ( $value ) . '</option>';
-	}
+		global $psp;
+		global $wpdb;
+	
+		ob_start();
+		
+		$sqlClause = '';
+	
+		$sql = "SELECT a.ID, a.post_title
+		            FROM " . $wpdb->prefix . "posts as a
+		            LEFT JOIN " . $wpdb->prefix . "postmeta as b
+		            ON b.post_id = a.ID
+		            WHERE 1=1 " . $sqlClause . " AND a.post_status = 'publish' AND a.post_password = ''
+		            AND a.post_type = 'psp_locations'
+		            AND (b.meta_key = 'psp_locations_meta' AND !ISNULL(b.meta_value) AND b.meta_value != '')
+		            ORDER BY a.post_title ASC
+		            LIMIT 1000;";
+	
+		$res = $wpdb->get_results( $sql );
 	?>
-	</select>&nbsp;&nbsp;&nbsp;&nbsp;
-
+	<div class="panel-body psp-panel-body psp-form-row">
+		<label><?php _e('Select location:', 'psp'); ?></label>
+		<div class="psp-form-item large">
+		<span class="formNote"></span>
+	
+		<select id="psp-location-id" name="location_id" style="width:120px;">
+			<option value="all">All locations</option>
+		<?php
+		foreach ($res as $key => $value) {
+			$val = '';
+			echo '<option value="' . ( $value->ID ) . '" ' . ( $val == $value->ID ? 'selected="true"' : '' ) . '>' . ( $value->post_title ) . '</option>';
+		}
+		?>
+		</select>&nbsp;&nbsp;&nbsp;&nbsp;
+	
+		</div>
 	</div>
-</div>
-<?php
-	$output = ob_get_contents();
-	ob_end_clean();
-	return $output;
-} }
+	<?php
+		$output = ob_get_contents();
+		ob_end_clean();
+		return $output;
+	}
+}
+
 global $psp;
 echo json_encode(
 	array(

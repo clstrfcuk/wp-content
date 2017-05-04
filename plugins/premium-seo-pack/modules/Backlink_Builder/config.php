@@ -15,7 +15,7 @@ echo json_encode(
 			'menu' => array(
 				'order' => 99,
 				'show_in_menu' => false,
-				'title' => __('Backlink Builder', 'psp'),
+				'title' => __('Backlink Builder', 'psp') . sprintf( __(' - %sDeprecated%s', 'psp'), '<span style="color: #ff0000;">', '</span>' ),
 				'icon' => '<span class="' . ( $psp->alias ) . '-icon-backlink_builder"><span class="path1"></span><span class="path2"></span></span>'
 			),
 			'in_dashboard' => array(

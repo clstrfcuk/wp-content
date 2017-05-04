@@ -1,6 +1,74 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.0.5] - 07.04.2017
+- module "Backlink Builder": marked as deprecated (it will not be maintaned anymore)
+	
+- social meta facebook: post/page/post type, og:image meta tag is now retrieved based on this priority fallback queue (order by importance from top to bottom - most important are first): 1. the image set in "Page SEO Settings" box / Social Settings tab, 2. the post featured image, 3. we try to find the image from custom field (if you choose to set this field), 4. we try to use the first image in the post (page or custom post type) content (with shortcodes too), 5. the default image from "Title & Meta Format" module / Social Meta / General / "Default Image" option
+
+- social meta facebook: category/tag/custom taxonomy, og:image meta tag is now retrieved based on this priority fallback queue (order by importance from top to bottom - most important are first): 1. we try to find the image from custom field (if you choose to set this field) - As of Wordpress 4.4 a new termmeta functionality was introduced which allows you to create custom fields for categories, tags, taxonomies, 2. we try to use the first image in the category (tag or custom taxonomy) content (with shortcodes too), 3. the default image from "Title & Meta Format" module / Social Meta / General / "Default Image" option
+
+- social meta facebook: you can choose now a Facebook Image in the "Page SEO Settings" box / Social Settings tab, on the category/tag/custom taxonomy, admin edit details pages
+
+- social meta facebook: homepage default modification: If in Wordpress Settings / Reading Settings / option "Front page displays" you choose "A static page" and for "Front Page" you select a page, then the values you've completed on it's edit details "Page SEO Settings" box / Social Settings tab, will override the settings from "Title & Meta Format" module / Social Meta / Homepage.
+
+- twitter cards: made some changes so it can work better for default settings
+
+- twitter cards: we've removed the following deprecated ones: Photo Card, Gallery Card, Product Card
+
+- the "Page SEO Settings" box on each admin edit details page let you choose specific values for posts, pages, custom post types, categories, tags and custom taxonomies for: facebook social meta and twitter cards
+
+- meta tags: added a html5 placeholder for meta tags seo title, description & keywords, in "Mass Optimization" module / Quick Edit/ and also on the "Page SEO Settings" box on each admin edit details page (helps you to know the current default value for that field if you have one)
+
+- meta tags: verified with buddypress & bbpress forums
+
+- meta tags: when you activate the "Title & Meta Format" module in "Modules Manager", you will be redirected to module page and the default settings are automatically saved (if you have existent saved values for settings, they will not be overridden)
+
+- meta tags: added settings for "Custom Post Type" and "Custom Taxonomy" as sub-tabs for "Title Format", "Meta Description", "Meta Keywords", "Meta Robots"; also we've removed the following settings "Product Title Format", "Product Meta Description", "Product Meta Keywords", "Product Meta Robots" - for compatibility with old plugin versions, you can set this WooCommerce "Product" properties inside "Custom Post Type" sub-tabs
+
+## [2.0.4] - 22.03.2017
+
+- the .po & .mo files for en_GB: can be found now in premium-seo-pack/languages/
+
+- module "Server Status": added "check integrity" functionality
+
+- module "Local SEO" updated:
+		- added the posibility to enter 3 google maps api keys: for static, dynamic maps and also for geolocating (find latitude and longitude based on address); removed the link to "GoodRelations Validator" which is no longer maintained
+
+- module "Rich Snippets" updated: added mandatory fields "headline", "publisher logo", "image width", "image height" for "Article" shortcode snippet
+
+- module "Google Authorship" renamed & modified to "Google Publisher", as google authorship functionality is deactivated by Google and no longer works.
+
+- New core module "Settings" contains for now compressed options for "SEO Slug Optimizer" & "SEO Insert Code" (used existent misc module folder)
+
+- module "SEO Friendly Images" updated:
+		- added 2 new options for choosing if you want to append or prepend your new images alt/title text to current existent images alt/title
+		- added new special format tags: {keywords}, {site_title}, {date}, {short_description}, {author}, {author_username}, {author_nickname}, {author_description}, {categories}, {tags}, {terms}, {category}, {category_description}, {tag}, {tag_description}, {term}, {term_description}
+		- now you can automatically optimize links title attribute: new plugin menu option "SEO Friendly Links" 
+		- now supports featured image alt & title attributes
+
+- module "Sitemap" (including Video Sitemap) updated:
+		- added the social (facebook opengraph) meta tags for posts: article:section (contains the post first found category), article:tag (contains the post tags)
+		- fixed Video Sitemap & Video meta snippets for all current video providers (Metacafe.com, Screenr.com, Blip.tv: removed because api doesn't seem functional anymore or service retired ; added support for video links starting with flic.kr)
+		- added the video meta tags: og:video:secure_url, og:video:type, video:duration, video:release_date
+		- added option "Facebook App ID" in "Title & Meta Format" module / "Social Meta" tab / "General" subtab: remove the "The fb:app_id property should be explicitly provided..." warning from facebook debugger
+		- added option "Video metas recurrency" and functionality to delete all current cached video meta data so they can be rebuild
+
+## [2.0.3.7] - 03.02.2017
+- fixed the mass optimization bold/italic tags detection in content
+
+## [2.0.3.6] - 02.02.2017
+- module "rich snippets", fixed the location bug, added the following fields to the "Event": event status and offer (price, currency, url)
+
+## [2.0.3.5] - 13.01.2017
+- solved issue with "main-style.css"
+
+## [2.0.3.4] - 09.01.2017
+- solved a bug regarding the "local seo module": Warning: simplexml_load_file(): I/O warning : failed to load external entity "/maps.googleapis.com/maps/api/geocode/xml?..."
+
+## [2.0.3.3] - 27.12.2016
+- solved a bug regarding "main-style.css" which was generated every time (now it is refreshed daily)
+
 ## [2.0.3.2] - 05.12.2016
 - solved bug: in psp locations the google map was not loading
 

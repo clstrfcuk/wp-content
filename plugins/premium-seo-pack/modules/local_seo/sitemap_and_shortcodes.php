@@ -398,12 +398,11 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
         		$address_format = '{street} {city}, {state} {zipcode} {country}';
         	else
 	        	$address_format = $this->settings['address_format'];
-        	
+
         	if ( $format !== false )
         		$address_format = $format;
         	
         	$ret = $address_format;
-        	
         	
         	// schema.org version!
         	if ( $is_schema === true ) {
@@ -423,18 +422,19 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
         			//,'unit'			=> '<span itemprop="unit">'.$value['unit'].'</span>'
         		), $emptyValues );
         	}
-        	
+
         	// verify show attribute in shortcode!
         	if ( is_array($atts) && !empty($atts) ) {
         		foreach ( array('street', 'city', 'state', 'zipcode', 'country') as $field ) {
 
         			$attribute = 'show_'.$field;
         			if ( isset($atts[ "$attribute" ]) && $atts[ "$attribute" ] === false ) {
+        				$field = ( 'street' == $field ? 'address' : $field );
         				$value[ $field ] = '';
         			}
         		}
         	}
-        	
+
 			$ret = preg_replace('/{street}/iu', $value['address'], $ret);
 			$ret = preg_replace('/{city}/iu', $value['city'], $ret);
 			$ret = preg_replace('/{state}/iu', $value['state'], $ret);
@@ -464,15 +464,21 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
         		}
         	}
         	
+			// MAIN
+			//$ret[] = '
+			//	<div itemscope itemtype="http://schema.org/LocalBusiness">
+			//		<div itemscope itemtype="'.$btypeParent.'">
+			//			<div itemscope itemtype="'.$value['btype'].'">
+			//';
 			$ret[] = '
-				<div itemscope itemtype="http://schema.org/LocalBusiness">
-					<div itemscope itemtype="'.$btypeParent.'">
-						<div itemscope itemtype="'.$value['btype'].'">
+					<div itemscope itemtype="http://schema.org/'.$value['btype'].'">
 			';
 
 			// business base info
-			if ( isset($value['logo_image']) && !empty($value['logo_image']) )
+			if ( isset($value['logo_image']) && !empty($value['logo_image']) ) {
+				$ret[] = 	'<span itemscope itemtype="http://schema.org/ImageObject" itemprop="image"><meta itemprop="url" content="'.$value['logo_image'].'"><img src="'.$value['logo_image'].'" itemprop="image" /></span>'; // 2017-march added
 				$ret[] = 	'<span itemscope itemtype="http://schema.org/ImageObject" itemprop="logo"><img src="'.$value['logo_image'].'" itemprop="image" /></span>';
+			}
 			if ( isset($value['building_image']) && !empty($value['building_image']) )
 				$ret[] = 	'<span itemscope itemtype="http://schema.org/ImageObject" itemprop="photo"><img src="'.$value['building_image'].'" itemprop="image" /></span>';
 			if ( isset($value['url']) && !empty($value['url']) ) {
@@ -487,6 +493,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 			if ( isset($value['description']) && !empty($value['description']) )
 				$ret[] = 	'<span itemprop="description">'.$value['description'].'</span>';
 			
+			// POSTAL ADDRESS - is outside PLACE
 			// business postal address
 			$ret[] = 		'<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">';
 
@@ -503,8 +510,10 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 			if ( isset($value['email']) && !empty($value['email']) )
 				$ret[] = 		'<a href="mailto:'.$value['email'].'" itemprop="email">'.$value['email'].'</a>';
 				
-			$ret[] =		'</div>'; // end PostalAddress
+			$ret[] =		'</div>';
+			// end POSTAL ADDRESS
 
+			// PLACE - geo location & place
 			$ret[] = 		'<div itemscope itemtype="http://schema.org/Place">';
 			
 			// business geo location
@@ -521,7 +530,8 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 			// opening hours
 			$ret[] = $this->build_opening_hours( $value );
 
-			$ret[] = 		'</div>'; // end Place
+			$ret[] = 		'</div>';
+			// end PLACE
 
 			// payment
 			if ( isset($value['payment_forms']) && !empty($value['payment_forms']) )
@@ -532,10 +542,14 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 				$ret[] =	'<span itemprop="priceRange">'.$value['payment_price_range'].'</span>';
 			
 			$ret[] = 	'
-						</div>
-					</div>
 				</div>
 			';
+			//$ret[] = 	'
+			//			</div>
+			//		</div>
+			//	</div>
+			//';
+			// end MAIN
 			
 			$ret = implode('', $ret);
         	return $ret;
@@ -600,12 +614,17 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
         		$atts['maptype'] = 'roadmap';
         	if ( !isset($atts['type']) || empty($atts['type']) )
         		$atts['type'] = 'static';
-            
+
+ 			// 2017-march verification: doesn't function anymore
+			$mapurl2 = 'http://mapof.it/{address}';
+ 
         	$type = $atts['type'];
         	if ( $type == 'static' ) { // static map
+        		$mapurl = $this->get_gmap_api_url('static');
+
     			$ret = '
-		    		<a href="http://mapof.it/{address}" title="{title}">
-		    			<img src="http://maps.googleapis.com/maps/api/staticmap?center={address}&amp;zoom={zoom}&amp;size={width}x{height}&amp;maptype={maptype}&amp;sensor=false&amp;markers={address}" alt="{title}" width="{width}" height="{height}">
+		    		<a href="' . $mapurl . '" title="{title}">
+		    			<img src="' . $mapurl . '" alt="{title}" width="{width}" height="{height}">
 		    		</a>';
         	}
 			else if ( $type == 'dynamic' ) { // dynamic javascript map
@@ -618,7 +637,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 					wp_enqueue_script( 'jquery' , 'https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js' );
 				}
 				if( !wp_script_is('psp_googlemap') ) {
-					wp_enqueue_script( 'psp_googlemap' , $this->get_geo_uri_js() );
+					wp_enqueue_script( 'psp_googlemap' , $this->get_gmap_api_url('js') );
 				}
 				if( !wp_script_is('psp_custom_gmap') ) {
 					wp_enqueue_script( 'psp_custom_gmap' , $this->module_folder . '/app.frontend.js', array( 
@@ -669,9 +688,9 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 				$ret = ob_get_contents();
 				ob_end_clean();
 			}
-    		else if ( $type == 'qrcode' ) { // qr code map
+    		else if ( $type == 'qrcode' ) { // qr code map: on mobile apps
     			$ret = '
-			    	<iframe width="{width}" height="{height}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://chart.apis.google.com/chart?cht=qr&amp;chs={width}x{height}&amp;chl=http://mapof.it/{address}"></iframe>';
+			    	<iframe width="{width}" height="{height}" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://chart.apis.google.com/chart?cht=qr&amp;chs={width}x{height}&amp;chl=' . $mapurl . '"></iframe>';
     		}
     		    		
     		$ret = preg_replace('/{address}/iu', $__address, $ret);
@@ -701,31 +720,39 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
         }
         
         public function shortcode_header( $shortcode = null, $execute = true, $id = null ) {
-
         	if ( $execute !== true ) return '';
+			if ( is_null($id) || (int) $id <= 0 ) return ''; // 2017-march fix
 
         	$ret = array();
         	
         	$qId = !is_null($id) && (int) $id > 0 ? " data-itemid='psp-$shortcode-$id' " : '';
         	
+			//$ret[] = '
+			//	<!--begin psp local seo shortcode ' . ($qId != '' ? '-' . $qId : '') . '-->
+			//	<div itemscope itemtype="http://schema.org/LocalBusiness">
+			//';
 			$ret[] = '
-				<!--begin psp local seo shortcode ' . ($qId != '' ? '-' . $qId : '') . '-->
-				<div itemscope itemtype="http://schema.org/LocalBusiness">
+				<!--begin ' . $shortcode . ' psp local seo shortcode ' . ($qId != '' ? '-' . $qId : '') . '-->
+				<div class="psp-loc-' . $shortcode . '">
 			';
 			$ret = implode('', $ret);
         	return $ret;
         }
         
         public function shortcode_footer( $shortcode = null, $execute = true, $id = null ) {
-
         	if ( $execute !== true ) return '';
+			if ( is_null($id) || (int) $id <= 0 ) return ''; // 2017-march fix
 
-        	$ret = array();
+			$ret = array();
         	
 			$ret[] = 	'
 				</div>
-				<!--end psp local seo shortcode-->
+				<!--end ' . $shortcode . ' psp local seo shortcode-->
 			';
+			//$ret[] = 	'
+			//	</div>
+			//	<!--end psp local seo shortcode-->
+			//';
 			$ret = implode('', $ret);
         	return $ret;
         }
@@ -756,13 +783,13 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 					$itemid = $value->ID;
 					$value = $this->get_item_location( $value->meta_value );
 					
-					$ret[] = '<div class="psp-loc-business">';
-
 					if ( ( $header = $this->shortcode_header( 'business', true, $itemid ) ) != '' ) $ret[] = $header;
 					
 					// business base info
-					if ( $show_img_logo && isset($value['logo_image']) && !empty($value['logo_image']) )
+					if ( $show_img_logo && isset($value['logo_image']) && !empty($value['logo_image']) ) {
+						$ret[] = 	'<span itemscope itemtype="http://schema.org/ImageObject" itemprop="image"><meta itemprop="url" content="'.$value['logo_image'].'"><img src="'.$value['logo_image'].'" itemprop="image" class="psp-company-image" /></span>'; // 2017-march added
 						$ret[] = 	'<span itemscope itemtype="http://schema.org/ImageObject" itemprop="logo"><img src="'.$value['logo_image'].'" itemprop="image" class="psp-company-logo" /></span>';
+					}
 					if ( $show_name && isset($value['url']) && !empty($value['url']) ) {
 						$ret[] = 	'<a href="'.$value['url'].'" itemprop="url">';
 						if ( $show_name && isset($value['bname']) && !empty($value['bname']) )
@@ -778,9 +805,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 					if ( $show_img_building && isset($value['building_image']) && !empty($value['building_image']) )
 						$ret[] = 	'<span itemscope itemtype="http://schema.org/ImageObject" itemprop="photo"><img src="'.$value['building_image'].'" itemprop="image" /></span>';
 						
-					if ( ( $footer = $this->shortcode_footer( 'business', true ) ) != '' ) $ret[] = $footer;
-					
-					$ret[] = '</div>';
+					if ( ( $footer = $this->shortcode_footer( 'business', true, $itemid ) ) != '' ) $ret[] = $footer;
 				}
 			}
 			
@@ -821,7 +846,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 						
 					$ret[] =		'</div>';
 						
-					if ( ( $footer = $this->shortcode_footer( 'address', true ) ) != '' ) $ret[] = $footer;
+					if ( ( $footer = $this->shortcode_footer( 'address', true, $itemid ) ) != '' ) $ret[] = $footer;
 				}
 			}
 
@@ -842,7 +867,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 
 			$ret = array();
 			if ( (string) $id == 'all' && ( $header = $this->shortcode_header( 'contact', true ) ) != '' ) $ret[] = $header;
-			
+
 			// body
 			$items = $this->get_items( $id );
 			if( count($items) > 0 ) {
@@ -868,7 +893,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 
 					$ret[] =		'</div>';
 						
-					if ( ( $footer = $this->shortcode_footer( 'contact', true ) ) != '' ) $ret[] = $footer;
+					if ( ( $footer = $this->shortcode_footer( 'contact', true, $itemid ) ) != '' ) $ret[] = $footer;
 				}
 			}
 
@@ -932,7 +957,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 					
 					}
 
-					if ( ( $footer = $this->shortcode_footer( 'opening_hours', true ) ) != '' ) $ret[] = $footer;
+					if ( ( $footer = $this->shortcode_footer( 'opening_hours', true, $itemid ) ) != '' ) $ret[] = $footer;
 				}
 			}
 
@@ -971,7 +996,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 					if ( $show_pricerange && isset($value['payment_price_range']) && !empty($value['payment_price_range']) )
 						$ret[] =	'<span itemprop="priceRange">'.$value['payment_price_range'].'</span>';
 						
-					if ( ( $footer = $this->shortcode_footer( 'payment', true ) ) != '' ) $ret[] = $footer;
+					if ( ( $footer = $this->shortcode_footer( 'payment', true, $itemid ) ) != '' ) $ret[] = $footer;
 				}
 			}
 
@@ -1027,7 +1052,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 					
 					$ret[] = 		'</div>'; // end Place
 			
-					if ( ( $footer = $this->shortcode_footer( 'gmap', true ) ) != '' ) $ret[] = $footer;
+					if ( ( $footer = $this->shortcode_footer( 'gmap', true, $itemid ) ) != '' ) $ret[] = $footer;
 				}
 			}
 
@@ -1049,7 +1074,7 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 			), $atts ) ) );
 
 			$ret = array();
-			//if ( (string) $id == 'all' && ( $header = $this->shortcode_header( 'full', true ) ) != '' ) $ret[] = $header;
+			if ( (string) $id == 'all' && ( $header = $this->shortcode_header( 'full', true ) ) != '' ) $ret[] = $header;
 			
 			// body
 			$items = $this->get_items( $id );
@@ -1060,6 +1085,8 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 					$value = $this->get_item_location( $value->meta_value );
 
 					if ( ( $header = $this->shortcode_header( 'full', true, $itemid ) ) != '' ) $ret[] = $header;
+					
+					$ret[] = '<div itemscope itemtype="http://schema.org/LocalBusiness">';
 
 					if ( $show_business )
 						$ret[] = $this->sh_business( array('id' => $itemid), $content );
@@ -1078,12 +1105,14 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
 						
 					if ( $show_gmap )
 						$ret[] = $this->sh_gmap( array('id' => $itemid), $content );
+					
+					$ret[] = '</div><!-- end LocalBusiness itemtype-->';
 			
-					if ( ( $footer = $this->shortcode_footer( 'full', true ) ) != '' ) $ret[] = $footer;
+					if ( ( $footer = $this->shortcode_footer( 'full', true, $itemid ) ) != '' ) $ret[] = $footer;
 				}
 			}
 
-			//if ( (string) $id == 'all' && ( $footer = $this->shortcode_footer( 'full', true ) ) != '' ) $ret[] = $footer;
+			if ( (string) $id == 'all' && ( $footer = $this->shortcode_footer( 'full', true ) ) != '' ) $ret[] = $footer;
 			return implode("\n", $ret);
 		}
 

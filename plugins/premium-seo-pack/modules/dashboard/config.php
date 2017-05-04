@@ -12,8 +12,8 @@ echo json_encode(array(
         'version' => '1.0',
         'menu' => array(
             'order' => 1,
-            'title' => __('Dashboard', 'psp')
-            ,'icon' => 'assets/menu_icon.png'
+            'title' => __('Dashboard', 'psp'),
+            'icon' => '<i class="' . ( $psp->alias ) . '-icon-dashboard"></i>'
         ),
         'description' => "Dashboard Area - Here you will find usefull shortcuts to different modules inside the plugin.",
         'module_init' => 'init.php',

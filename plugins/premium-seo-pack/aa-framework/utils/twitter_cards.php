@@ -97,17 +97,22 @@ if (class_exists('pspTwitterCards') != true) {
 				'title'		=> 'Summary Card with Large Image',
 				'dev_url'	=> 'https://dev.twitter.com/docs/cards/large-image-summary-card',
 				'fields'		=> array(
-					'image_src'		=> array(
-						'type'		=> 'upload_image',
-						'meta'		=> 'twitter:image:src',
+					//'image_src'		=> array(
+					//	'type'		=> 'upload_image',
+					//	'meta'		=> 'twitter:image', //'twitter:image:src',
+					//	'minsize' 	=> '280x150', // width X height
+					//	'filesize' 	=> '1048576', // bytes
+					//	'title'		=> __('Image', $this->localizationName),
+					//	'desc'		=> __('URL to a unique image representing the content of the page. Do not use a generic image such as your website logo, author photo, or other image that spans multiple pages. Images for this Card should be at least 280px in width, and at least 150px in height. Image must be less than 1MB in size.', $this->localizationName)
+					//)
+					'image'		=> array(
 						'minsize' 	=> '280x150', // width X height
 						'filesize' 	=> '1048576', // bytes
-						'title'		=> __('Image', $this->localizationName),
 						'desc'		=> __('URL to a unique image representing the content of the page. Do not use a generic image such as your website logo, author photo, or other image that spans multiple pages. Images for this Card should be at least 280px in width, and at least 150px in height. Image must be less than 1MB in size.', $this->localizationName)
 					)
 				)
 			));
-			unset($twc['summary_large_image']['fields']['image']);
+			//unset($twc['summary_large_image']['fields']['image']);
 			
 			// Photo Card
 			$twc['photo'] = array_replace_recursive($twc['summary'], array(
@@ -203,7 +208,7 @@ if (class_exists('pspTwitterCards') != true) {
 						'type' 		=> 'text',
 						'meta'		=> 'twitter:player',
 						'title'		=> __('Player', $this->localizationName),
-						'desc'		=> __('HTTPS URL to iframe player. This must be a HTTPS URL which does not generate active mixed content warnings in a web browser.', $this->localizationName)
+						'desc'		=> __('HTTPS URL to iFrame player. This must be a HTTPS URL which does not generate active mixed content warnings in a web browser. The audio or video player must not require plugins such as Adobe Flash.', $this->localizationName)
 					),
 					'player_width'	=> array(
 						'type' 		=> 'text',
@@ -476,15 +481,40 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 				case 'app':
 					$options = $this->plugin_settings;
 					break;
-					
+
 				case 'post':
-					$post_meta = get_post_meta( $post_id, 'psp_meta', true );
+					$box_taxonomy 	= isset($box_taxonomy) ? (string) $box_taxonomy : 'post';
+					$box_termid			= isset($box_termid) ? (int) $box_termid : 0;
+					if ( 'post' != $box_taxonomy ) {
+						$__objTax = (object) array('term_id' => $box_termid, 'taxonomy' => $box_taxonomy);
+
+						$psp_current_taxseo = $this->the_plugin->__tax_get_post_meta( null, $__objTax );
+						if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
+							$psp_current_taxseo = array();
+
+						$post_meta = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
+					}
+					else {
+						$post_meta = get_post_meta( $post_id, 'psp_meta', true );
+					}
 					$options = $post_meta;
 					break;
 
 				case 'post-app':
-					// $options = $this->plugin_settings;
-					$post_meta = get_post_meta( $post_id, 'psp_meta', true );
+					$box_taxonomy 	= isset($box_taxonomy) ? (string) $box_taxonomy : 'post';
+					$box_termid			= isset($box_termid) ? (int) $box_termid : 0;
+					if ( 'post' != $box_taxonomy ) {
+						$__objTax = (object) array('term_id' => $box_termid, 'taxonomy' => $box_taxonomy);
+
+						$psp_current_taxseo = $this->the_plugin->__tax_get_post_meta( null, $__objTax );
+						if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
+							$psp_current_taxseo = array();
+
+						$post_meta = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
+					}
+					else {
+						$post_meta = get_post_meta( $post_id, 'psp_meta', true );
+					}
 					// if ( is_array($post_meta) && !empty($post_meta) && isset($post_meta['psp_twc_app_description']) )
 						$options = $post_meta;
 					break;
@@ -492,6 +522,7 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 
 			// then build the html, and return it as string
 			$html_options = $aaInterfaceTemplates->bildThePage( $this->set_options( $options, $pms ) , $this->the_plugin->alias, array(), false);
+			$html_options = str_replace('<div class="psp-message" id="psp-status-box" style="display:none;"></div>', '', $html_options);
 			return $html_options;
 		}
 		
@@ -531,74 +562,114 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 			return $__options;
 		}
 
-		public function get_frontend_meta($meta=array(), $page='') {
+		public function get_frontend_meta($meta=array(), $default=array(), $page='', $post=null) {
 
-			$opt = $this->plugin_settings;
+			$opt = $this->plugin_settings; //$this->the_plugin->get_theoption('psp_title_meta_format')
 			
 			$__options = array();
 
+			$app_changemeta = false;
 			switch ($page) {
 				case 'home':
-					$card_type = isset($meta['psp_twc_home_type']) ? $meta['psp_twc_home_type'] : '';
-					$app_card_type = isset($meta['psp_twc_home_app']) ? $meta['psp_twc_home_app'] : '';
+					$card_type = isset($meta['psp_twc_home_type']) ? $meta['psp_twc_home_type'] : ''; //wp_options psp_title_meta_format
+					$app_card_type = isset($meta['psp_twc_home_app']) ? $meta['psp_twc_home_app'] : ''; //wp_options psp_title_meta_format
 					break;
 
 				case 'post':
-					$card_type = isset($meta['psp_twc_post_cardtype']) ? $meta['psp_twc_post_cardtype'] : '';
-					$app_card_type = isset($meta['psp_twc_app_isactive']) ? $meta['psp_twc_app_isactive'] : '';
+				case 'taxonomy':
+					if ( 'post' == $page ) {
+						$post_type = is_object($post) && isset($post->post_type) ? $post->post_type : '';
+
+						$key_cardtype = 'psp_twc_cardstype_default';
+						$key_app = 'psp_twc_apptype_default';
+					}
+					else {
+						$post_type = is_object($post) && isset($post->taxonomy) ? $post->taxonomy : '';
+						$post_type = in_array($post_type, array('category', 'post_tag')) ? $post_type : '_custom_taxonomy';
+
+						$key_cardtype = 'psp_twc_cardstype_default_taxonomy';
+						$key_app = 'psp_twc_apptype_default_taxonomy';
+					}
+
+					$card_type = isset($meta['psp_twc_post_cardtype']) ? $meta['psp_twc_post_cardtype'] : ''; //wp_postmeta psp_meta
+					if ( empty($card_type) || ( 'default' == $card_type ) ) {
+						$card_type = 'none';
+						if ( isset($opt["$key_cardtype"], $opt["$key_cardtype"]["$post_type"]) && !empty($opt["$key_cardtype"]) ) { //wp_options psp_title_meta_format
+							$card_type = $opt["$key_cardtype"]["$post_type"];
+						}
+					}
+
+					$app_card_type = isset($meta['psp_twc_app_isactive']) ? $meta['psp_twc_app_isactive'] : ''; //wp_postmeta psp_meta
+					if ( empty($app_card_type) || in_array($app_card_type, array('default', 'default2')) ) {
+						//default = Use Website Generic App Twitter Card Type / compatibility with old version!
+						if ( 'default' == $app_card_type ) {
+							$app_card_type = 'no';
+							// we've created a Generic App Twitter Card Type
+							if ( isset($opt['psp_twc_site_app']) && !empty($opt['psp_twc_site_app']) && $opt['psp_twc_site_app']=='yes' ) { //wp_options psp_title_meta_format
+								$app_card_type = 'yes';
+							}
+						}
+						// the new and real default!
+						else {
+							$app_card_type = 'no';
+							if ( isset($opt["$key_app"], $opt["$key_app"]["$post_type"]) && !empty($opt["$key_app"]) ) { //wp_options psp_title_meta_format
+								$app_card_type = $opt["$key_app"]["$post_type"];
+							}
+						}
+
+						// default & allowed => override wp_postmeta psp_meta with wp_options psp_title_meta_format
+						if ( 'yes' == $app_card_type ) {
+							$app_changemeta = true;
+						}
+					}
 					break;
 			}
-			
+			//var_dump('<pre>',$card_type, $app_card_type,'</pre>');  
+
 			$post_cardtypes = array();
 			if ( isset($card_type) && !empty($card_type) && $card_type!='none' ) {
 				$post_cardtypes[] = $card_type;
-				$__options["twitter:card"] = $card_type;
+				$__options['twitter:card'] = $card_type;
 			}
-			if ( isset($opt['psp_twc_site_app']) && !empty($opt['psp_twc_site_app']) && $opt['psp_twc_site_app']=='yes' ) {
-				if ( isset($app_card_type) && !empty($app_card_type) && in_array($app_card_type, array('yes', 'default')) ) {
-
-					$post_cardtypes[] = 'app';
-					if ( !isset($__options["twitter:card"]) || empty($__options["twitter:card"]) ) {
-						$__options["twitter:card"] = 'app';
-					}
+			if ( isset($app_card_type) && !empty($app_card_type) && ( 'yes' == $app_card_type ) ) {
+				$post_cardtypes[] = 'app';
+				if ( !isset($__options['twitter:card']) || empty($__options['twitter:card']) ) {
+					$__options['twitter:card'] = 'app';
 				}
 			}
 
-			if ( empty($post_cardtypes) ) return array();
+			if ( empty($post_cardtypes) ) return $__options;
 
-			$__options[ 'twitter:site' ] = isset($opt['psp_twc_website_account']) ? $this->tag_special_firstchar($opt['psp_twc_website_account']) : '';
-			$__options[ 'twitter:site:id' ] = isset($opt['psp_twc_website_account_id']) ? $opt['psp_twc_website_account_id'] : '';
-			$__options[ 'twitter:creator' ] = isset($opt['psp_twc_creator_account']) ? $this->tag_special_firstchar($opt['psp_twc_creator_account']) : '';
-			$__options[ 'twitter:creator:id' ] = isset($opt['psp_twc_creator_account_id']) ? $opt['psp_twc_creator_account_id'] : '';
-  
+			$cc = 0;
 			foreach ($post_cardtypes as $kk=>$vv) {
 
 				$currentCard = $this->cardTypes["$vv"];
 				$currentCardFields = $currentCard['fields'];
-  
+
 				$theMeta = $meta;
-				if ( $vv=='app' )
-					if ( $app_card_type=='default' )
-						$theMeta = $opt;
-				
+				if ( $vv=='app' && $app_changemeta ) {
+					$theMeta = $opt;
+				}
+
 				foreach ($currentCardFields as $k => $v) {
-	
+
 					$key = self::$prefixFields . $k;
 					$meta_key = $v['meta'];
+
+					// don't overwrite with app tag if tag is already set
 					if ( $vv=='app' && isset($__options["$meta_key"]) && !empty($__options["$meta_key"]) ) ;
+					// do it
 					else {
 						$__options["$meta_key"] = isset($theMeta["$key"]) ? trim( $theMeta["$key"] ) : '';
-						//if ( empty($__options["$meta_key"]) ) unset($__options["$meta_key"]);
+						if ( $cc && ( 'psp_twc_app_description' == $key ) ) {
+							$__options["$meta_key"] = '';
+						}
 					}
 				}
+				$cc++;
 			}
-
+			//var_dump('<pre>', $__options, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;    
 			return $__options;
-		}
-		
-		private function tag_special_firstchar($tag='') {
-			if ( $tag[0] == '@' ) return $tag;
-			return '@' . $tag;
 		}
     }
 }

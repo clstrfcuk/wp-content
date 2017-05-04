@@ -96,7 +96,7 @@ html {
     }
     &.#{$alias}-info {
       background-color: $info;
-        background-image: url(images/message-info.png);
+        background-image: url("#framework_url/images/message-info.png");
         border-color: #a6d3e8;
         color: $white;
         background-repeat: no-repeat;
@@ -124,7 +124,7 @@ html {
     cursor: pointer;
     
     i {
-      background-image: url('images/checkbox.png');
+      background-image: url("#framework_url/images/checkbox.png");
       width: px(18);
       height: px(18);
       &.checked {
@@ -327,7 +327,7 @@ html {
       }
     }
     &.#{$alias}-form-button-danger {
-      color: $white;
+      color: $white !important;
       background: $danger;
       &:hover {
         background: darken($danger, 20%);
@@ -335,7 +335,7 @@ html {
     }
 
     &.#{$alias}-form-button-small {
-      padding: px(4) px(15);
+      padding: px(4) px(15) !important;
       height: px(28);
       font-size: px(10);
     }
@@ -958,4 +958,18 @@ html {
       min-height: px(30);
     }
   }
+  
+	##{$alias}-ajax-response {
+		position: relative;
+	}
+	##{$alias}-ajaxLoadingBox {
+		/*width: px(60);*/
+		padding-left: px(40);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-left: px(-40);
+		margin-top: px(-20);
+		background: #fff url("#framework_url/images/ajax-loader.gif") no-repeat px(10) center;
+	}
 }

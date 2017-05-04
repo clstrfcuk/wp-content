@@ -954,7 +954,7 @@ if (class_exists('pspSocialSharing') != true) {
 		public function getPostInfo($post, $toolbarType='') {
 
 			$isPremium = false;
-			if ( $this->the_plugin->is_plugin_active( 'premium-seo-pack/plugin.php' ) ) {
+			if ( $this->the_plugin->is_plugin_active( 'psp' ) ) {
 				$__moduleIsActive = get_option('psp_module_title_meta_format');
 				if ( isset($__moduleIsActive) && $__moduleIsActive=='true' )
 					$isPremium = true;

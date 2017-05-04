@@ -24,6 +24,7 @@ if (class_exists('pspServerStatusAjax') != true) {
 			// ajax  helper
 			add_action('wp_ajax_pspServerStatusRequest', array( $this, 'ajax_request' ));
 			add_action('wp_ajax_pspServerStatusVerify', array( $this, 'verify_step' ));
+			add_action('wp_ajax_pspServerStatusOperation', array( $this, 'ajax_operation' ));
 		}
 		
 		/*
@@ -80,12 +81,7 @@ if (class_exists('pspServerStatusAjax') != true) {
 				$status = false;
 				$msg = '';
 				// WP Remote Get Check
-				$params = array(
-					'sslverify' 	=> false,
-		        	'timeout' 		=> 20,
-		        	'body'			=> array()
-				);
-				$response = wp_remote_post( 'http://webservices.amazon.com/AWSECommerceService/AWSECommerceService.wsdl', $params );
+				$response = wp_remote_get( 'http://google.com');
 	 
 				if ( ! is_wp_error( $response ) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 ) {
 	        		$msg = __('wp_remote_get() was successful', 'psp' );
@@ -218,7 +214,7 @@ if (class_exists('pspServerStatusAjax') != true) {
 				}
 			}
 
-            // Remote GET
+            // Remote GET smushit
             if( in_array( 'smushit_remote_get', array_values($actions)) ){
                 
                 define('SMUSHIT_URL_BASE', 'http://www.smushit.com/');
@@ -251,7 +247,7 @@ if (class_exists('pspServerStatusAjax') != true) {
                 );
             }
 
-            // Remote GET
+            // Remote GET tiny compress
             if( in_array( 'tiny_compress_remote_get', array_values($actions)) ){
                 
                 define('TINYCOMPRESS_URL_BASE', 'https://api.tinypng.com/shrink');
@@ -736,23 +732,37 @@ if (class_exists('pspServerStatusAjax') != true) {
 			die(json_encode($return));
 		}
 
-		private function let_to_num( $size ) 
-		{
-		     $l      = substr( $size, -1 );
-		     $ret    = substr( $size, 0, -1 );
-		     switch( strtoupper( $l ) ) {
-		         case 'P':
-		             $ret *= 1024;
-		         case 'T':
-		             $ret *= 1024;
-		         case 'G':
-		             $ret *= 1024;
-		         case 'M':
-		             $ret *= 1024;
-		         case 'K':
-		             $ret *= 1024;
-		     }
-		     return $ret;
+		public function ajax_operation( $retType = 'die' ) {
+            $action = isset($_REQUEST['sub_action']) ? $_REQUEST['sub_action'] : '';
+
+            $ret = array(
+                'status'		=> 'invalid',
+                'html'		=> ''
+            );
+   
+            if (!in_array($action, array(
+            	'check_integrity_database',
+			))) die(json_encode($ret));
+			
+			if ( 'check_integrity_database' == $action ) {
+
+				$opStatus = $this->the_plugin->plugin_integrity_check( 'check_database', true );
+				$opStatus_stat = $this->the_plugin->plugin_integrity_get_last_status( 'check_database' );
+				
+				$check_last_msg = '';
+				if ( '' != trim($opStatus_stat['html']) ) {
+					$check_last_msg = ( $opStatus_stat['status'] == true ? '<div class="psp-message psp-success">' : '<div class="psp-message psp-error">' ) . $opStatus_stat['html'] . '</div>';
+				}
+
+				$ret = array(
+					'status'	=> 'valid', //( $opStatus_stat['status'] == true ? 'valid' : 'valid' ),
+					'html' 		=> $check_last_msg
+				);
+			}
+
+			//if ( $retType == 'die' ) die(json_encode($ret));
+			//else return $ret;
+			die(json_encode($ret));
 		}
     }
 }

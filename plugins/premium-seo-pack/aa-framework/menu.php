@@ -81,6 +81,20 @@ if(class_exists('pspAdminMenu') != true) {
 				'menu_icon' => '<i class="' . ( $this->the_plugin->alias ) . '-icon-dashboard"></i>'
 			);
 			
+			/*$this->the_menu['settings'] = array( 
+				'title' => __( 'Main Settings', 'psp' ),
+				'url' => admin_url("admin.php?page=psp#settings"),
+				'folder_uri' => $this->the_plugin->cfg['paths']['freamwork_dir_url'],
+				'menu_icon' => '<span class="' . ( $this->the_plugin->alias ) . '-icon-mass_optimization"><span class="path1"></span><span class="path2"></span></span>',
+			);*/
+			
+			$this->the_menu['misc--__tab1'] = array( 
+				'title' => __( 'Settings', 'psp' ),
+				'url' => admin_url("admin.php?page=psp#misc#tab:__tab1"),
+				'folder_uri' => $this->the_plugin->cfg['modules']['misc']['folder_uri'],
+				'menu_icon' => '<span class="' . ( $this->the_plugin->alias ) . '-icon-miscellaneous"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span>',
+			);
+
 			$this->the_menu['monitoring'] = array( 
 				'title' => __( 'Monitor', 'psp' ),
 				'url' => "#",
@@ -141,13 +155,6 @@ if(class_exists('pspAdminMenu') != true) {
 				'folder_uri' => $this->the_plugin->cfg['paths']['freamwork_dir_url'],
 				'menu_icon' => '<i class="psp-icon-on_page_optimization"></i>',
 				'submenu' => array(
-					/*'on_page_optimization' => array(
-						'title' => __( 'Mass Optimization', 'psp' ),
-						'url' => admin_url('admin.php?page=' . $this->the_plugin->alias . "_massOptimization"),
-						'folder_uri' => $this->the_plugin->cfg['modules']['on_page_optimization']['folder_uri'],
-						'menu_icon' => 'assets/menu_icon.png'
-					),*/
-					
 					'on_page_optimization' => array(
 						'title' => __( 'Mass Optimization', 'psp' ),
 						'url' => admin_url('admin.php?page=' . $this->the_plugin->alias . "_massOptimization"),
@@ -161,30 +168,61 @@ if(class_exists('pspAdminMenu') != true) {
 						)
 					),
 					
-					'title_meta_format' => array(
+					/*'title_meta_format' => array(
 						'title' => __( 'Title & Meta Format', 'psp' ),
 						'url' => admin_url("admin.php?page=psp#title_meta_format"),
 						'folder_uri' => $this->the_plugin->cfg['modules']['title_meta_format']['folder_uri'],
 						'menu_icon' => '<span class="' . ( $this->the_plugin->alias ) . '-icon-title_meta"><span class="path1"></span><span class="path2"></span></span>',
+					),*/
+					
+					'title_meta_format--__tab1' => array(
+						'title' => __( 'Title & Meta Format', 'psp' ),
+						'url' => admin_url("admin.php?page=psp#title_meta_format#tab:__tab1"),
+						'folder_uri' => $this->the_plugin->cfg['modules']['title_meta_format']['folder_uri'],
+						'menu_icon' => '<span class="' . ( $this->the_plugin->alias ) . '-icon-title_meta"><span class="path1"></span><span class="path2"></span></span>',
+						'submenu' => array(
+							'title_meta_format--__tab6' => array(
+								'title' => __( 'Facebook Social Meta', 'psp' ),
+								'url' => admin_url("admin.php?page=psp#title_meta_format#tab:__tab6"),
+							),
+							'title_meta_format--__tab7' => array(
+								'title' => __( 'Twitter Cards', 'psp' ),
+								'url' => admin_url("admin.php?page=psp#title_meta_format#tab:__tab7"),
+							),
+						)
 					),
 					
-					'sitemap' => array(
+					'sitemap--__tab1' => array(
 						'title' => __( 'Sitemap', 'psp' ),
-						'url' => admin_url("admin.php?page=psp#sitemap"),
+						'url' => admin_url("admin.php?page=psp#sitemap#tab:__tab1"),
 						'folder_uri' => $this->the_plugin->cfg['modules']['sitemap']['folder_uri'],
 						'menu_icon' => '<i class="' . ( $this->the_plugin->alias ) . '-icon-sitemap"></i>',
 					),
 					
-					'misc' => array(
+					'sitemap--__tab8' => array(
+						'title' => __( 'Video Sitemap', 'psp' ),
+						'url' => admin_url("admin.php?page=psp#sitemap#tab:__tab8"),
+						'folder_uri' => $this->the_plugin->cfg['modules']['sitemap']['folder_uri'],
+						'menu_icon' => '<i class="' . ( $this->the_plugin->alias ) . '-icon-sitemap"></i>',
+					),
+					
+					'misc--__tab2' => array(
 						'title' => __( 'SEO Slug Optimizer', 'psp' ),
-						'url' => admin_url("admin.php?page=psp#misc"),
+						'url' => admin_url("admin.php?page=psp#misc#tab:__tab2"),
 						'folder_uri' => $this->the_plugin->cfg['modules']['misc']['folder_uri'],
 						'menu_icon' => '<span class="' . ( $this->the_plugin->alias ) . '-icon-slug_optimize"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></span>',
 					),
 					
-					'seo_friendly_images' => array(
+					'seo_friendly_images--__images' => array(
 						'title' => __( 'SEO Friendly Images', 'psp' ),
-						'url' => admin_url("admin.php?page=psp#seo_friendly_images"),
+						'url' => admin_url("admin.php?page=psp#seo_friendly_images#tab:__images"),
+						'folder_uri' => $this->the_plugin->cfg['modules']['seo_friendly_images']['folder_uri'],
+						'menu_icon' => '<span class="' . ( $this->the_plugin->alias ) . '-icon-seo_friendly_images"><span class="path1"></span><span class="path2"></span><span class="path3"></span></span>',
+					),
+					
+					'seo_friendly_images--__links' => array(
+						'title' => __( 'SEO Friendly Links', 'psp' ),
+						'url' => admin_url("admin.php?page=psp#seo_friendly_images#tab:__links"),
 						'folder_uri' => $this->the_plugin->cfg['modules']['seo_friendly_images']['folder_uri'],
 						'menu_icon' => '<span class="' . ( $this->the_plugin->alias ) . '-icon-seo_friendly_images"><span class="path1"></span><span class="path2"></span><span class="path3"></span></span>',
 					),
@@ -197,7 +235,7 @@ if(class_exists('pspAdminMenu') != true) {
 					),
 					
 					'google_authorship' => array(
-						'title' => __( 'Google Authorship', 'psp' ),
+						'title' => __( 'Google Publisher', 'psp' ),
 						'url' => admin_url("admin.php?page=psp#google_authorship"),
 						'folder_uri' => $this->the_plugin->cfg['modules']['google_authorship']['folder_uri'],
 						'menu_icon' => '<i class="' . ( $this->the_plugin->alias ) . '-icon-google_authorship"></i>',
@@ -267,27 +305,13 @@ if(class_exists('pspAdminMenu') != true) {
 						'menu_icon' => '<span class="' . ( $this->the_plugin->alias ) . '-icon-W3C"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></span>',
 					),
 
-					'misc--insert-code' => array(
+					'misc--__tab3' => array(
 						'title' => __( 'SEO Insert Code', 'psp' ),
-						'url' => admin_url("admin.php?page=psp#misc#insert-code"),
+						'url' => admin_url("admin.php?page=psp#misc#tab:__tab3"),
 						'folder_uri' => $this->the_plugin->cfg['paths']['freamwork_dir_url'],
 						'menu_icon' => '<i class="' . ( $this->the_plugin->alias ) . '-icon-miscellaneous"></i>',
 					),
 
-					/*'rich_snippets' => array(
-						'title' => __( 'Rich Snippets', 'psp' ),
-						'url' => admin_url("admin.php?page=psp#rich_snippets"),
-						'folder_uri' => $this->the_plugin->cfg['paths']['freamwork_dir_url'],
-						'menu_icon' => 'assets/menu_icon.png'
-					),
-
-					'facebook_planner' => array(
-						'title' => __( 'Facebook Planner', 'psp' ),
-						'url' => admin_url("admin.php?page=psp#facebook_planner"),
-						'folder_uri' => $this->the_plugin->cfg['paths']['freamwork_dir_url'],
-						'menu_icon' => 'images/16_code.png'
-					),*/
-					
 					'facebook_planner' => array(
 						'title' => __( 'Facebook Planner', 'psp' ),
 						'url' => admin_url('admin.php?page=' . $this->the_plugin->alias . "_facebook_planner"),
@@ -437,12 +461,13 @@ if(class_exists('pspAdminMenu') != true) {
 
 		public function show_menu( $pluginPage='' )
 		{
-			$plugin_data = $this->the_plugin->details;
+			$plugin_data = psp_get_plugin_data(); //$this->the_plugin->details;
  
 			$html = array();
 			
+			//<small>beta</small>
 			$html[] = '<aside class="' . ( $this->the_plugin->alias ) . '-sidebar">';
-			$html[] = 	'<div class="' . ( $this->the_plugin->alias ) . '-title logo"><img src="' . (  $this->the_plugin->cfg['paths']['freamwork_dir_url'] . 'images/logo.png' ) . '" /> <span><i>V</i> ' . ( $plugin_data['version'] ) . ' <small>beta</small></span></div>';
+			$html[] = 	'<div class="' . ( $this->the_plugin->alias ) . '-title logo"><img src="' . (  $this->the_plugin->cfg['paths']['freamwork_dir_url'] . 'images/logo.png' ) . '" /> <span><i>V</i> ' . ( $plugin_data['version'] ) . '</span></div>';
 			$html[] = '<div class="' . ( $this->the_plugin->alias ) . '-responsive-menu hide">Menu <i class="fa fa-bars" aria-hidden="true"></i></div>';	
 			$html[] = 	'<nav class="' . ( $this->the_plugin->alias ) . '-nav">';
 								

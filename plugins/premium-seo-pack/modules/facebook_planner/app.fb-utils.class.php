@@ -124,7 +124,8 @@ class psp_fbPlannerUtils
 
 					if ( !empty($postData['picture']) ) {
 	
-						$finalImg = '{plugin_url}timthumb.php?src={img}&amp;w={thumb_w}&amp;h={thumb_h}&amp;zc={thumb_zc}';
+						//$finalImg = '{plugin_url}timthumb.php?src={img}&amp;w={thumb_w}&amp;h={thumb_h}&amp;zc={thumb_zc}';
+						$finalImg = '{plugin_url}timthumb.php?src={img}&w={thumb_w}&h={thumb_h}&zc={thumb_zc}';
 	
 						$img_size = explode('x', $this->fb_details['featured_image_size']);
 	

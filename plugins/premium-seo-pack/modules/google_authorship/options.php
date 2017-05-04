@@ -74,9 +74,11 @@ echo json_encode(
 
 				// create the box elements array
 				'elements'	=> array(
+				
+/*
 					array(
 						'type' 		=> 'message',
-						
+
 						'html' 		=> __('<div style="margin: 20px 0px 20px -20px;">
 							<h2>Setup</h2>
 		<h3>A. Link your content to your Google+ profile</h3>
@@ -137,6 +139,7 @@ echo json_encode(
 		</ul>
 							</div>', 'psp'),
 					),
+*/
 
 					array(
 						'type' 		=> 'message',
@@ -151,7 +154,20 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '500',
 						'title' 	=> __('Google+ Profile URL: ', 'psp'),
-						'desc' 		=> __('the url to your google+ profile to be linked with your website.', 'psp')
+						'desc' 		=> __('the url to your google+ profile to be linked with your website.
+						<div style="margin: 20px 0px 20px 0px;">
+		<em><u>How to find the link to your Google+ profile</u></em>
+
+		<ol class="google_authorship_help_step1">
+
+			<li>Follow this link to open your Google+ profile: <a target="_blank" href="http://plus.google.com/me">http://plus.google.com/me</a></li>
+
+			<li>
+				Copy your Google+ profile url from the address bar to clipboard (see below picture):
+				<br><img style="" alt="" src="{plugin_folder_uri}/assets/googleplus-profile.png">
+			</li>
+		</ol>
+		</div>', 'psp')
 					),
 					
 					'publisher_location' 	=> array(
@@ -180,7 +196,7 @@ echo json_encode(
 							'hidden'		=> __('Hidden', 'psp')
 						)
 					),
-
+/*
 					array(
 						'type' 		=> 'message',
 						
@@ -301,6 +317,7 @@ echo json_encode(
 						'title' 	=> __('URL Text: ', 'psp'),
 						'desc' 		=> __('generic setting for all authors: url text - to google+ profile for author.', 'psp')
 					)
+*/
 				)
 			)
 		)

@@ -12,6 +12,8 @@
 
 if(class_exists('psp') != true) {
 	class psp {
+		
+		public $version = null; // see version method for details
 
 		const VERSION = 1.0;
         
@@ -91,6 +93,17 @@ if(class_exists('psp') != true) {
         // New Settings / february 2016
         public $plugin_details = array(); // see constructor
         public $ss = array(
+			// admin css cache time ( 0 = no caching )
+			'css_cache_time'							=> 86400, // 1day / seconds  (86400 seconds = 24 hours)
+
+			// timeout to verify if all plugin tables are installed right!
+			'check_integrity'							=> array(
+				// seconds  (86400 seconds = 24 hours)
+				'check_tables'									=> 259200, // 3 days
+				'check_alter_tables'							=> 259200, // 3 days
+			),
+			
+			'add_meta_placeholder'					=> true,
 		);
 		private static $plugin_row_meta = array(
 			'buy_url'			=> 'http://codecanyon.net/item/premium-seo-pack-wordpress-plugin/6109437',
@@ -99,6 +112,10 @@ if(class_exists('psp') != true) {
 			'latest_ver_url'	=> 'http://cc.aa-team.com/apps-versions/index.php?app=',
 			'portfolio'         => 'http://codecanyon.net/user/aa-team/portfolio',
 		);
+		
+		public $plugin_tables = array('psp_link_builder', 'psp_link_redirect', 'psp_monitor_404', 'psp_web_directories', 'psp_serp_reporter', 'psp_serp_reporter2rank', 'psp_post_planner_cron');
+		
+		public $title_meta_format_default = array();
 
 
 		/**
@@ -107,7 +124,12 @@ if(class_exists('psp') != true) {
 		public function __construct($here = __FILE__)
 		{
 			$this->is_admin = is_admin() === true ? true : false;
-			$this->cfg['css_cache_time'] = 1; // seconds
+
+			// admin css cache time ( 0 = no caching )
+			$this->ss['css_cache_time'] = 86400; // seconds  (86400 seconds = 24 hours)
+			if( defined('PSP_DEV_STYLE') ){
+				$this->ss['css_cache_time'] = (int) PSP_DEV_STYLE; // seconds
+			}
             
             add_action('wp_ajax_PSP_framework_style', array( $this, 'framework_style') );
             add_action('wp_ajax_nopriv_PSP_framework_style', array( $this, 'framework_style') );
@@ -181,7 +203,8 @@ if(class_exists('psp') != true) {
 				'support',
 				'remote_support',
 				'frontend',
-				'server_status'
+				'server_status',
+				'misc'
 			));
 
 			// list of freamwork css files
@@ -194,7 +217,6 @@ if(class_exists('psp') != true) {
 				'button' => 'css/button.css',
 				'table' => 'css/table.css',
 				'tipsy' => 'css/tooltip.css',
-				//'admin' => 'css/admin-style.css',
 				'additional' => 'css/additional.css'
 			));
 
@@ -205,12 +227,12 @@ if(class_exists('psp') != true) {
 				'ajaxupload' => 'js/ajaxupload.js',
 				'tipsy'	=> 'js/tooltip.js',
 				'percentageloader-0.1' => 'js/jquery.percentageloader-0.1.min.js',
-				'flot-2.0' => 'js/jquery.flot.min.js',
-				'flot-tooltip' => 'js/jquery.flot.tooltip.min.js',
-				'flot-stack' => 'js/jquery.flot.stack.min.js',
-				'flot-pie' => 'js/jquery.flot.pie.min.js',
-				'flot-time' => 'js/jquery.flot.time.js',
-				'flot-resize' => 'js/jquery.flot.resize.min.js'
+				'flot-2.0' => 'js/jquery.flot/jquery.flot.min.js',
+				'flot-tooltip' => 'js/jquery.flot/jquery.flot.tooltip.min.js',
+				'flot-stack' => 'js/jquery.flot/jquery.flot.stack.min.js',
+				'flot-pie' => 'js/jquery.flot/jquery.flot.pie.min.js',
+				'flot-time' => 'js/jquery.flot/jquery.flot.time.js',
+				'flot-resize' => 'js/jquery.flot/jquery.flot.resize.min.js'
 			));
 
 			// plugin folder in wp-content/plugins/
@@ -355,9 +377,6 @@ if(class_exists('psp') != true) {
                 new pspAjaxListTable( $this );
             }
 			
-			// // load textdomain
-			// add_action( 'plugins_loaded', array($this, 'psp_load_textdomain') );
-			
 			// shortcodes
 			require_once($this->cfg['paths']['plugin_dir_path'] . 'aa-framework/shortcodes/shortcodes.init.php');
 			new aafShortcodes( $this );
@@ -390,7 +409,8 @@ if(class_exists('psp') != true) {
         {
             $start = microtime(true);
     		
-            require $this->cfg['paths']['freamwork_dir_path'] . "/utils/scssphp/scss.inc.php";
+			require $this->cfg['paths']['scripts_dir_path'] . "/scssphp/scss.inc.php";
+
             $scss = new scssc();
 
 			$main_file = $this->wp_filesystem->get_contents( $this->cfg['paths']['freamwork_dir_path'] . "/scss/styles.scss" );
@@ -419,14 +439,21 @@ if(class_exists('psp') != true) {
                         $buffer .= "\n" .   "------------------------------------\n";
                         $buffer .= "\n***/\n";
                     }
-                    $buffer .= $this->wp_filesystem->get_contents( $this->cfg['paths']['freamwork_dir_path'] . "/scss/" . $scss_file );
+                    
+					$has_wrote = $this->wp_filesystem->get_contents( $this->cfg['paths']['freamwork_dir_path'] . "/scss/" . $scss_file );
+					if ( !$has_wrote ) {
+						$has_wrote = file_get_contents( $this->cfg['paths']['freamwork_dir_path'] . "/scss/" . $scss_file );
+					}
+					$buffer .= $has_wrote;
                 }
             } 
                         
             $buffer = $scss->compile( $buffer );
-            
-            #$buffer = str_replace( "fonts/", $this->cfg['paths']['freamwork_dir_url'] . "fonts/", $buffer );
-            $buffer = str_replace( "images/", $this->cfg['paths']['freamwork_dir_url'] . "images/", $buffer );
+			
+			#$buffer = str_replace( "fonts/", $this->cfg['paths']['freamwork_dir_url'] . "fonts/", $buffer );
+			$buffer = str_replace( '#framework_url/', $this->cfg['paths']['freamwork_dir_url'], $buffer );
+			$buffer = str_replace( '#plugin_url', $this->cfg['paths']['plugin_dir_url'], $buffer );
+			//$buffer = str_replace( "images/", $this->cfg['paths']['freamwork_dir_url'] . "images/", $buffer );
             
             
             $time_elapsed_secs = microtime(true) - $start;
@@ -514,9 +541,6 @@ if(class_exists('psp') != true) {
 		{ 
 		    //load_plugin_textdomain( $this->alias, false, $this->cfg['paths']["plugin_dir_path"] . '/languages/');
 		} 
-		public function psp_load_textdomain() {
-			load_plugin_textdomain( 'psp', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-		}
 		*/
 		
 		public function mark_content( $content ) 
@@ -643,8 +667,10 @@ if(class_exists('psp') != true) {
 
 		public function admin_notice_install_styles()
 		{
-			wp_enqueue_style( $this->alias . '-activation', $this->cfg['paths']['freamwork_dir_url'] . 'css/activation.css');
-			
+			if( !wp_style_is($this->alias . '-activation') ) {
+				wp_enqueue_style( $this->alias . '-activation', $this->cfg['paths']['freamwork_dir_url'] . 'css/activation.css');
+			}
+
 			add_action( 'admin_notices', array( $this, 'admin_install_notice' ) );
 		}
 
@@ -701,6 +727,7 @@ if(class_exists('psp') != true) {
 			add_option('psp_do_activation_redirect', true);
 			add_option('psp_depedencies_is_valid', true);
 			add_option('psp_depedencies_do_activation_redirect', true);
+			$this->plugin_integrity_check();
 		}
 
         public function get_plugin_status ()
@@ -806,17 +833,19 @@ if(class_exists('psp') != true) {
   
 			// unserialize the request options
 			$serializedData = $_REQUEST['options'];
+
 			$serializedData = $this->fixPlusParseStr($serializedData, 'string', '&');
+
 			$serializedData = urldecode($serializedData);
 			$serializedData = $this->fixPlusParseStr($serializedData, 'string');
- 
+    
 			$savingOptionsArr = array();
 
 			parse_str($serializedData, $savingOptionsArr);
 
 			$savingOptionsArr = $this->fixPlusParseStr( $savingOptionsArr, 'array');
 			$savingOptionsArr = $this->fixPlusParseStr( $savingOptionsArr, 'array', '&');
- 
+    
 			// create save_id and remote the box_id from array
 			$save_id = $savingOptionsArr['box_id'];
 			unset($savingOptionsArr['box_id']);
@@ -868,10 +897,12 @@ if(class_exists('psp') != true) {
 						$savingOptionsArr["$vv"] = $__old_saving["$vv"];
 				}
 			}
-			
+
+			//var_dump('<pre>', $savingOptionsArr, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
 			// prepare the data for DB update
 			$savingOptionsArr = stripslashes_deep($savingOptionsArr);
- 
+     
 			$saveIntoDb = serialize( $savingOptionsArr );
 
 			// Use the function update_option() to update a named option/value pair to the options database table. The option_name value is escaped with $wpdb->escape before the INSERT statement.
@@ -1068,15 +1099,22 @@ if(class_exists('psp') != true) {
 
 			$tryed_module = $this->cfg['modules'][$request['section']];
 			if( isset($tryed_module) && count($tryed_module) > 0 ){
-				// Turn on output buffering
-				ob_start();
-   
-				$opt_file_path = $tryed_module['folder_path'] . 'options.php';
-				if( is_file($opt_file_path) ) {
-					require_once( $opt_file_path  );
+				if (1) {
+					// Turn on output buffering
+					ob_start();
+	   
+					$opt_file_path = $tryed_module['folder_path'] . 'options.php';
+					if( is_file($opt_file_path) ) {
+						// I believe there is a bug which load a module multiple times - for title & meta format module I needed to load options.php file multiple times 
+						if ( 'title_meta_format' == $request['section'] ) {
+							require( $opt_file_path  );
+						} else {
+							require_once( $opt_file_path  );
+						}
+					}
+					$options = ob_get_contents(); //copy current buffer contents into $message variable and delete current output buffer
+					ob_end_clean();
 				}
-				$options = ob_get_contents(); //copy current buffer contents into $message variable and delete current output buffer
-				ob_end_clean();
 				  
 				if(trim($options) != "") {
 					$options = json_decode($options, true);
@@ -1209,25 +1247,26 @@ if(class_exists('psp') != true) {
 		public function admin_load_styles()
 		{
 			global $wp_scripts;
-			$protocol = is_ssl() ? 'https:' : 'http:';
+			$protocol = is_ssl() ? 'https' : 'http';
+
 			$javascript = $this->admin_get_scripts();
 			
-			wp_enqueue_style( $this->alias . '-google-Roboto',  $protocol . '//fonts.googleapis.com/css?family=Roboto:400,500,400italic,500italic,700,700italic' );
-			wp_enqueue_style( $this->alias . '-font-awesome',   $protocol . '//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css' );
+			wp_enqueue_style( $this->alias . '-google-Roboto',  $protocol . '://fonts.googleapis.com/css?family=Roboto:400,500,400italic,500italic,700,700italic' );
+			wp_enqueue_style( $this->alias . '-font-awesome',   $protocol . '://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css' );
 			wp_enqueue_style( $this->alias . '-admin-font',   $this->cfg['paths']['freamwork_dir_url'] . 'css/font.css' );
 
 			$main_style = admin_url('admin-ajax.php?action=PSP_framework_style');
-            $main_style_cached = $this->cfg['paths']['freamwork_dir_path'] . 'css/main-style.css';
+            $main_style_cached = $this->cfg['paths']['freamwork_dir_path'] . 'main-style.css';
             if( is_file( $main_style_cached ) ) {
-                if( (filemtime($main_style_cached) + $this->cfg['css_cache_time']) > time() ) {  
-                    $main_style = $this->cfg['paths']['freamwork_dir_url'] . 'css/main-style.css';
+                if( (filemtime($main_style_cached) + $this->ss['css_cache_time']) > time() ) {  
+                    $main_style = $this->cfg['paths']['freamwork_dir_url'] . 'main-style.css';
                 }
             }
-            // !!! debug
-			$main_style = admin_url('admin-ajax.php?action=PSP_framework_style');
+
+            // !!! debug - please in the future, don't forget to comment it after you're finished with debugging
+			//$main_style = admin_url('admin-ajax.php?action=PSP_framework_style');
             
             wp_enqueue_style( $this->alias . '-main-style', $main_style, array( $this->alias . '-font-awesome' ) );
-
 
             /*$style_url = $this->cfg['paths']['freamwork_dir_url'] . 'load-styles.php';
             if ( is_file( $this->cfg['paths']['freamwork_dir_path'] . 'load-styles.css' ) ) {
@@ -2045,7 +2084,9 @@ if(class_exists('psp') != true) {
 				? $post_metas['robots_index'] : 'default' ;
 			$post_metas['robots_follow'] = isset($post_metas['robots_follow']) && !empty($post_metas['robots_follow'])
 				? $post_metas['robots_follow'] : 'default';
-			
+
+			$postDefault = $this->get_post_metatags( $post ); // add meta placeholder
+
 			$html = array();
 			$html[] = '<div class="psp-post-title">' . $post_title . '</div>';
 			$html[] = '<div class="psp-post-gen-desc">' . $gen_meta_desc . '</div>';
@@ -2057,6 +2098,12 @@ if(class_exists('psp') != true) {
 			$html[] = '<div class="psp-post-meta-canonical">' . $post_metas['canonical'] . '</div>';
 			$html[] = '<div class="psp-post-meta-robots-index">' . $post_metas['robots_index'] . '</div>';
 			$html[] = '<div class="psp-post-meta-robots-follow">' . $post_metas['robots_follow'] . '</div>';
+			
+			if ( ! empty($postDefault) ) {
+				foreach ( $postDefault as $key => $val) {
+					$html[] = '<div class="psp-post-default-' . $key . '">' . $val . '</div>';
+				}
+			}
 
 			return implode(PHP_EOL, $html);
 		}
@@ -2178,10 +2225,14 @@ if(class_exists('psp') != true) {
 			if ( !is_array($keyval) || empty($keyval) ) // mandatory array of (key, value) pairs!
 				return false;
 
-	    	if ( empty($psp_taxonomy_seo) )
+	    	if ( empty($psp_taxonomy_seo) ) {
 				$psp_taxonomy_seo = array();
+			}
 
-    		$psp_current_taxseo = $psp_taxonomy_seo[ "{$post->taxonomy}" ][ "{$post->term_id}" ];
+			$psp_current_taxseo = array();
+			if ( isset($psp_taxonomy_seo[ "{$post->taxonomy}" ], $psp_taxonomy_seo[ "{$post->taxonomy}" ][ "{$post->term_id}" ]) ) {
+	    		$psp_current_taxseo = $psp_taxonomy_seo[ "{$post->taxonomy}" ][ "{$post->term_id}" ];
+			}
 
     		if ( !is_array($psp_current_taxseo) )
     			$psp_current_taxseo = array();
@@ -2542,7 +2593,7 @@ if(class_exists('psp') != true) {
 		 */
 		public function admin_notice_details() {
 			$isPremium = false;
-			if ( is_plugin_active( 'premium-seo-pack/plugin.php' ) ) {
+			if ( $this->is_plugin_active( 'psp' ) ) {
 				$__moduleIsActive = get_option('psp_module_Social_Stats');
 				$__submoduleSocialShare = get_option('psp_socialsharing');
 				if ( isset($__moduleIsActive) && $__moduleIsActive=='true'
@@ -2552,8 +2603,10 @@ if(class_exists('psp') != true) {
 			
 			if ( !$isPremium ) return false;
 
-			wp_enqueue_style( $this->alias . '-activation', $this->cfg['paths']['freamwork_dir_url'] . 'css/activation.css');
-			
+			if( !wp_style_is($this->alias . '-activation') ) {
+				wp_enqueue_style( $this->alias . '-activation', $this->cfg['paths']['freamwork_dir_url'] . 'css/activation.css');
+			}
+
 			add_action( 'admin_notices', array( $this, 'admin_notice_text' ) );
 		}
 
@@ -2631,20 +2684,6 @@ if(class_exists('psp') != true) {
 			return trim($v);
 		}
 		
-		public function is_plugin_active( $plugin ) {
-			return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || $this->is_plugin_active_for_network( $plugin );
-		}
-
-		public function is_plugin_active_for_network( $plugin ) {
-			if ( !is_multisite() )
-				return false;
-	
-			$plugins = get_site_option( 'active_sitewide_plugins');
-			if ( isset($plugins[$plugin]) )
-				return true;
-			return false;
-		}
-		
 		public function print_module_error( $module=array(), $error_number, $title="" )
 		{
 			$html = array();
@@ -2709,12 +2748,34 @@ if(class_exists('psp') != true) {
 			}
 			return apply_filters( 'psp_wp_type', $wp_type );
 		}
+
         public function get_wp_pagetype() {
+        	
+			// custom post type or custom taxonomy
+			$__post = null;
+
+			global $wp_query, $post;
+	 		if (is_object($post) && isset($post->ID) && !is_null($post->ID) && $post->ID>0)
+	 			$__post = $post;
+	 		if (is_object($wp_query))
+	 			$__post = $wp_query->get_queried_object(); //get the post!
+	 		//var_dump('<pre>', $__post, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
+	 		$post_type = '';
+			if (is_object($__post) && isset($__post->post_type) && $__post->post_type != '') {
+				$post_type = (string) $__post->post_type;
+			}
+			if (is_object($__post) && isset($__post->term_id) && isset($__post->taxonomy)) {
+				$post_type = (string) $__post->taxonomy;
+			}
+			//var_dump('<pre>',$post_type,$__post,'</pre>');
+
+
         	$page_type = array(
         		'type' => ''
 			);
 
-			//loop through all page types!
+			// loop through all page types!
 			if ( is_admin() ) {
 				$page_type['type'] = 'admin';
 			}
@@ -2727,15 +2788,30 @@ if(class_exists('psp') != true) {
    			else if ( is_home() || is_front_page() ) {
             	$page_type['type'] = 'home';
             }
-            else if ( is_single() ) {
-            	$page_type['type'] = 'post';
-            }
-            else if ( is_page() ) {
-            	$page_type['type'] = 'page';
-            }
-            else if ( is_attachment() ) { //treated like a page!
-            	$page_type['type'] = 'page';
-            }
+			// start is_singular() : is_singular tag is equivalent to ( is_page || is_attachment || is_single )
+			else if ( is_singular() ) {
+	            if ( is_single() ) {
+	            	// it will check posts and any of your custom post types other then pages or attachments
+	            	$page_type['type'] = 'post';
+	            }
+	            else if ( is_page() ) {
+	            	$page_type['type'] = 'page';
+	            }
+	            else if ( is_attachment() ) {
+					// treated like a page!
+	            	$page_type['type'] = 'page';
+	            }
+				else {
+					// default case
+	            	$page_type['type'] = 'post';
+	            }
+				
+				// custom post type
+				if ( ( 'post' == $page_type['type'] ) && ! empty($post_type) && ! in_array($post_type, array('post', 'page', 'attachment')) ) {
+					$page_type['type'] = 'posttype';
+				}
+			}
+			// end is_singular()
             else if ( is_category() ) {
 				$page_type['type'] = 'category';
             }
@@ -2745,11 +2821,12 @@ if(class_exists('psp') != true) {
             else if ( is_tax() ) {
             	$page_type['type'] = 'taxonomy';
             }
+            else if ( is_author() ) {
+            	// is_author must be called is_archive, because they are both for archives pages 
+            	$page_type['type'] = 'author';
+            }
             else if ( is_archive() ) {
             	$page_type['type'] = 'archive';
-            }
-            else if ( is_author() ) {
-            	$page_type['type'] = 'author';
             }
             else if ( is_404() ) { 
 				$page_type['type'] = '404';
@@ -2760,17 +2837,31 @@ if(class_exists('psp') != true) {
 				$page_type['type'] = 'page'; // archive
 			}
 
-
 			$page_type = $page_type['type'];
 			return apply_filters( 'premiumseo_seo_pagetype', $page_type );
         }
 
 		public function get_wp_list_pagetypes() {
 
-			$arr = array('home', 'post', 'page', 'category', 'tag', 'taxonomy', 'archive', 'author', 'search', '404');
+			$arr = array('home', 'post', 'page', 'posttype', 'category', 'tag', 'taxonomy', 'archive', 'author', 'search', '404');
 			return apply_filters( 'premiumseo_seo_list_pagetypes', $arr );
 		}
         
+		/**
+		 * is woocommerce shop page?
+		 * Products / Display / Shop & Product Page / "Shop Page" option
+		 * wp_options / get_option('woocommerce_shop_page_id') 
+		 */
+		public function is_shop() {
+			//if ( class_exists('Woocommerce') ) {
+			if ( function_exists('is_woocommerce') && function_exists('is_product') ) {
+        		if ( is_shop() ) {
+					return true;
+				}
+			}
+			return false;
+		}
+
         public function get_wp_user_roles( $translate = false ) {
             global $wp_roles;
             if ( !isset( $wp_roles ) ) {
@@ -2795,19 +2886,6 @@ if(class_exists('psp') != true) {
                 return $roles;
             }
         }
-
-		// is woocommerce shop page?
-		// Products / Display / Shop & Product Page / "Shop Page" option
-		// wp_options / get_option('woocommerce_shop_page_id')
-		public function is_shop() {
-			//if ( class_exists('Woocommerce') ) {
-			if ( function_exists('is_woocommerce') && function_exists('is_product') ) {
-        		if ( is_shop() ) {
-					return true;
-				}
-			}
-			return false;
-		}
 
 
 		/**
@@ -2857,17 +2935,17 @@ if(class_exists('psp') != true) {
         <?php
     	}
 		
-		// current page is assigned to display the site static front page
+		// current page is : the site static front page
 		public function _is_static_front_page() {
 			return ( is_front_page() && 'page' == get_option( 'show_on_front' ) && is_page( get_option( 'page_on_front' ) ) );
 		}
 		
-		// current page is the blog posts index page and shows posts
+		// current page is : the blog posts index page as homepage and shows posts
 		public function _is_home_blog_posts_page() {
 			return ( is_home() && 'page' != get_option( 'show_on_front' ) );
 		}
 
-		// current page is assigned to display the blog posts index page
+		// current page is : the blog posts index page and it's not homepage
 		public function _is_blog_posts_page() {
 			return ( is_home() && 'page' == get_option( 'show_on_front' ) );
 		}
@@ -3167,23 +3245,6 @@ if(class_exists('psp') != true) {
 			return 'success' == $status ? 'valid' : 'invalid';
 		}
 	
-        public function is_woocommerce_installed() {
-            if ( in_array( 'envato-wordpress-toolkit/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) || in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) || is_multisite() )
-            {
-                return true;
-            } else {
-                $active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
-                if ( !empty($active_plugins) && is_array($active_plugins) ) {
-                    foreach ( $active_plugins as $key => $val ) {
-                        if ( ($status = preg_match('/^woocommerce[^\/]*\/woocommerce\.php$/imu', $val))!==false && $status > 0 ) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-		
 		public function load_woocommerce_taxonomies() {
 			if ( !$this->is_woocommerce_installed() ) return;
 			if( class_exists( 'WooCommerce' ) ) {
@@ -3194,42 +3255,416 @@ if(class_exists('psp') != true) {
 				WC_Post_types::register_post_types();
 			}
 		}
-	}
-}
 
-if ( !function_exists('array_replace_recursive') ) {
-	function array_replace_recursive($base, $replacements)
-	{
-		foreach (array_slice(func_get_args(), 1) as $replacements) {
-			$bref_stack = array(&$base);
-			$head_stack = array($replacements);
 
-			do {
-				end($bref_stack);
+		/** 
+		 * Plugin is ACTIVE
+		 */
+		// verify plugin is ACTIVE (the right way)
+		public function is_plugin_active( $plugin_name, $pms=array() ) {
+			$pms = array_replace_recursive(array(
+				'verify_active_for_network_only'		=> false,
+				'verify_network_only_plugin'				=> false,
+				'plugin_file'										=> array(), // verification is made by OR between items
+				'plugin_class'										=> array(), // verification is made by OR between items
+			), $pms);
+			extract( $pms );
 
-				$bref = &$bref_stack[key($bref_stack)];
-				$head = array_pop($head_stack);
+			switch ( strtolower($plugin_name) ) {
+				case 'woocommerce':
+					$plugin_file = array( 'woocommerce/woocommerce.php', 'envato-wordpress-toolkit/woocommerce.php' );
+					$plugin_class = array( 'WooCommerce' );
+					break;
 
-				unset($bref_stack[key($bref_stack)]);
+				case 'woozone':
+					$plugin_file = array( 'woozone/plugin.php' );
+					$plugin_class = array( 'WooZone' );
+					break;
+					
+				case 'psp':
+					$plugin_file = array( 'premium-seo-pack/plugin.php' );
+					$plugin_class = array( 'psp' );
+					break;
+					
+				default:
+					break;
+			}
 
-				foreach (array_keys($head) as $key) {
-					if (isset($key, $bref, $bref[$key], $head[$key]) && is_array($bref[$key]) && is_array($head[$key])) {
-						$bref_stack[] = &$bref[$key];
-						$head_stack[] = $head[$key];
-					} else {
-						$bref[$key] = $head[$key];
+			$is_active = array();
+
+			// verify plugin is active base on plugin main file 
+			if ( ! empty($plugin_file) ) {
+				if ( ! is_array($plugin_file) )
+					$plugin_file = array( $plugin_file );
+
+				include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+				$cc = false;
+				foreach ($plugin_file as $_plugin_file) {
+					// check if a plugin is site wide or network active only
+					if ( $verify_active_for_network_only ) {
+						if ( is_plugin_active_for_network( $_plugin_file ) )
+							$cc = true;
+					}
+					// check if a plugin is a Network-Only-Plugin
+					else if ( $verify_network_only_plugin ) {
+						if ( is_network_only_plugin( $_plugin_file ) )
+							$cc = true;
+					}
+					// check if a plugin is active (the right way)
+					else {
+						if ( is_plugin_active( $_plugin_file ) )
+							$cc = true;
 					}
 				}
-			} while(count($head_stack));
+				$is_active[] = $cc;
+			}
+
+			// verify plugin class exists!
+			if ( ! empty($plugin_class) ) {
+				if ( ! is_array($plugin_class) )
+					$plugin_class = array( $plugin_class );
+
+				$cc = false;
+				foreach ($plugin_class as $_plugin_class) {
+					if ( class_exists( $_plugin_class ) )
+						$cc = true;
+				}
+				$is_active[] = $cc;
+			}
+
+			// final verification
+			if ( empty($is_active) ) return false;
+			foreach ($is_active as $_is_active) {
+				if ( ! $_is_active ) return false;
+			}
+			return true;
+		}
+		public function is_plugin_active_for_network_only( $plugin_name, $pms=array() ) {
+			$pms = array_replace_recursive(array(
+				'verify_active_for_network_only'		=> true,
+			), $pms);
+			return $this->is_plugin_active( $plugin_name, $pms );
+		}
+		public function is_plugin_network_only_plugin( $plugin_name, $pms=array() ) {
+			$pms = array_replace_recursive(array(
+				'verify_network_only_plugin'				=> true,
+			), $pms);
+			return $this->is_plugin_active( $plugin_name, $pms );
+		}
+		
+		public function is_woocommerce_installed() {
+			if ( in_array( 'envato-wordpress-toolkit/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) || in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) || is_multisite() )
+			{
+				return true;
+			} else {
+				$active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
+				if ( !empty($active_plugins) && is_array($active_plugins) ) {
+					foreach ( $active_plugins as $key => $val ) {
+						if ( ($status = preg_match('/^woocommerce[^\/]*\/woocommerce\.php$/imu', $val))!==false && $status > 0 ) {
+							return true;
+						}
+					}
+				}
+				return false;
+			}
 		}
 
-		return $base;
-	}
-}
 
-if ( !function_exists('psp') ) {
-	function psp() {
-		global $psp;
-		return $psp;
+		/**
+		 * Plugin Version
+		 */
+		// latest code version
+		public function version() {
+			if ( defined('PSP_VERSION') ) {
+				$this->version = (string) PSP_VERSION;
+				return $this->version;
+			}
+
+			$path = $this->cfg['paths']['plugin_dir_path'] . 'plugin.php';
+			if ( function_exists('get_plugin_data') ) {
+				$plugin_data = get_plugin_data( $path );
+			}
+			else {
+				$plugin_data = psp_get_plugin_data();
+			}
+
+			$latest_version = '1.0';
+			if( isset($plugin_data) && is_array($plugin_data) && !empty($plugin_data) ){
+				if ( isset($plugin_data['Version']) ) {
+					$latest_version = (string)$plugin_data['Version'];
+				}
+				else if ( isset($plugin_data['version']) ) {
+					$latest_version = (string)$plugin_data['version'];
+				}
+			}
+
+			$this->version = $latest_version;
+			return $this->version;
+		}
+
+		private function check_if_table_exists( $force=false ) {
+			$need_check_tables = $this->plugin_integrity_need_verification('check_tables');
+			if ( ! $need_check_tables['status'] && ! $force ) {
+				return true; // don't need verification yet!
+			}
+
+			// default sql - tables & tables data!
+			require_once( $this->cfg['paths']['plugin_dir_path'] . 'modules/setup_backup/default-sql.php' );
+
+			// retrieve all database tables & clean prefix
+			$dbTables = $this->db->get_results( "show tables;", OBJECT_K );
+			$dbTables = array_keys( $dbTables );
+			if ( empty($dbTables) || ! is_array($dbTables) ) {
+
+				$this->plugin_integrity_update_time('check_tables', array(
+					'status'		=> 'invalid',
+					'html'		=> __('Check plugin tables: error requesting tables list.', $this->localizationName),
+				));
+				return false; //something was wrong!
+			}
+
+			$dbTables_ = array();
+			foreach ((array) $dbTables as $table) {
+				$table_noprefix = str_replace($this->db->prefix, '', $table);
+				$dbTables_[] = $table_noprefix;
+			}
+
+			// our plugin tables
+			$dbTables_own = $this->plugin_tables;
+			
+			// did we find all our plugin tables?
+			$dbTables_found = (array) array_intersect($dbTables_, $dbTables_own);
+			$dbTables_missing = array_diff($dbTables_own, $dbTables_found);
+			//var_dump('<pre>', $dbTables_own, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+			if ( ! $dbTables_missing ) {
+
+				$this->plugin_integrity_update_time('check_tables', array(
+					'timeout'	=> time(),
+					'status'		=> 'valid',
+					'html'		=> __('Check plugin tables: all installed ( ' . implode(', ', $dbTables_found) . ' ).', $this->localizationName),
+				));
+				return true; // all is fine!
+			}
+
+			$this->plugin_integrity_update_time('check_tables', array(
+				'status'		=> 'invalid',
+				'html'		=> __('Check plugin tables: missing ( ' . implode(', ', $dbTables_missing) . ' ).', $this->localizationName),
+			));
+			return false; //something was wrong!
+		}
+
+		private function update_db_version( $version=null ) {
+			delete_option( 'psp_db_version' );
+			$version = empty($version) ? $this->version() : $version;
+			add_option( 'psp_db_version', $version );
+		}
+		
+		public function update_db( $force=false )  {
+			// current installed db version
+			//$current_db_version = get_option( 'psp_db_version' );
+			//$current_db_version = !empty($current_db_version) ? (string)$current_db_version : '1.0';
+
+			// default db structure - integrity verification is done in function
+			$this->check_if_table_exists( $force );
+
+			//$need_check_alter_tables = $this->plugin_integrity_need_verification('check_alter_tables');
+
+			// installed version less than 2.0.4 / ex. 2.0.3.8
+			//if ( version_compare( $current_db_version, '2.0.4', '<' ) ) {
+			if (1) {
+				//if ( $need_check_alter_tables['status'] || $force ) {
+				//}
+				
+				$this->update_db_version('9.0');
+			}
+
+			// update installed version to latest
+			$this->update_db_version();
+			return true;
+		}
+
+		public function _update_db_tables( $pms=array() )  {
+			//require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+			//$status = dbDelta($sql);
+			
+			extract( $pms );
+
+			global $wpdb;
+			foreach ( (array) $queries as $skey => $sql ) {
+				if ( ! isset($sql['main']) ) continue 1;
+
+				$do_main = 'add';
+				if ( isset($sql['verify']) ) {
+					$status = $wpdb->get_row( $sql['verify'], ARRAY_A );
+					if ( ! empty($status) && isset($status['Field'], $status['Type']) ) {
+
+						//'image_sizes' == strtolower($status['Field'])
+						if ( isset($sql['field_type']) ) {
+							if ( $sql['field_type'] == strtolower( $status['Type'] ) )
+								$do_main = false;
+							else
+								$do_main = 'modify';
+						}
+					}
+				} // end if verify
+
+				if ( !empty($do_main) ) {
+					$sql['main'] = sprintf( $sql['main'], strtoupper( $do_main ) );
+					$status = $wpdb->query( $sql['main'] );
+					//var_dump('<pre>', $sql, $status, '</pre>');
+				}
+			} // end foreach
+			
+			$this->plugin_integrity_update_time('check_alter_tables', array(
+				'timeout'	=> time(),
+				'status'		=> 'valid',
+				'html'		=> __('Check plugin tables (alter): OK.', $this->localizationName),
+			));
+		}
+
+
+		/**
+		 * check plugin integrity: 2017-feb-28
+		 */
+		// what: check_database (includes: check_tables, check_alter_tables)
+		public function plugin_integrity_check( $what='all', $force=false ) {
+			$what = ! is_array($what) ? array('check_database') : $what;
+
+			if ( in_array('check_database', $what) ) {
+				$this->update_db( $force );
+			}
+		}
+
+		public function plugin_integrity_get_last_status( $what ) {
+			$ret = array(
+				'status'				=> true,
+				'html'				=> '',
+			);
+
+			// verify plugin integrity
+			$plugin_integrity = get_option( 'psp_integrity_check', array() );
+			$plugin_integrity = is_array($plugin_integrity) ? $plugin_integrity : array();
+
+			$_status = true; $_html = array();
+			if ( isset($plugin_integrity[ "$what" ]) && ! empty($plugin_integrity[ "$what" ]) ) {
+				$__ = $plugin_integrity[ "$what" ];
+				$_status = isset($__['status']) && 'valid' == $__['status'] ? true : false;
+				$_html[] = $__['html'];
+			}
+			else {
+				if ( 'check_database' == $what ) {
+					foreach ($plugin_integrity as $key => $val) {
+						if ( ! in_array($key, array('check_tables', 'check_alter_tables')) ) {
+							continue 1;
+						}
+
+						$_status = $_status && ( isset($val['status']) && 'valid' == $val['status'] ? true : false );
+						if ( ! empty($val['html']) ) {
+							$_html[] = $val['html'];
+						}
+					}
+				}
+			}
+
+			//$html = '<div><div>' . implode('</div><div>', $_html) . '</div></div>';
+			$html = implode('&nbsp;&nbsp;&nbsp;&nbsp;', $_html);
+			$ret = array_merge( $ret, array('status' => $_status, 'html' => $html) );
+			return $ret;
+		}
+
+		// what: check_tables, check_alter_tables
+		public function plugin_integrity_need_verification( $what ) {
+			$ret = array(
+				'status'				=> false,
+				'data'				=> array(),
+			);
+
+			// verify plugin integrity
+			$plugin_integrity = get_option( 'psp_integrity_check', array() );
+			$plugin_integrity = is_array($plugin_integrity) ? $plugin_integrity : array();
+			$ret = array_merge( $ret, array('data' => $plugin_integrity) );
+
+			if ( isset($plugin_integrity[ "$what" ]) && ! empty($plugin_integrity[ "$what" ]) ) {
+				if ( ( $plugin_integrity[ "$what" ]['timeout'] + $this->ss['check_integrity'][ "$what" ] ) > time() ) {
+					$ret = array_merge( $ret, array('status' => false) ); // don't need verification yet!
+					//var_dump('<pre>',$ret,'</pre>'); 
+					return $ret;
+				}
+			}
+
+			$ret = array_merge( $ret, array('status' => true) );
+			return $ret;
+		}
+
+		public function plugin_integrity_update_time( $what, $data=array() ) {
+			$plugin_integrity = get_option( 'psp_integrity_check', array() );
+			$plugin_integrity = is_array($plugin_integrity) ? $plugin_integrity : array();
+
+			$data = ! is_array($data) ? array() : $data;
+
+			if ( ! isset($plugin_integrity[ "$what" ]) ) {
+				$plugin_integrity[ "$what" ] = array(
+					'timeout'	=> time(),
+					'status'		=> 'invalid',
+					'html'		=> '',
+				);
+			}
+			$plugin_integrity[ "$what" ] = array_replace_recursive($plugin_integrity[ "$what" ], $data);
+			update_option( 'psp_integrity_check', $plugin_integrity );
+		}
+	
+	
+		/**
+		 * 2017 march - april
+		 */
+		public function get_post_metatags( $post ) {
+			$postDefault = array();
+			if ( ! is_object($post) ) {
+				return $postDefault;
+			}
+			
+			$modStatus = $this->verify_module_status( 'title_meta_format' ); //module is inactive
+
+			if ( $this->ss['add_meta_placeholder'] && $modStatus ) {
+				require_once( $this->cfg['paths']['plugin_dir_path'] . 'modules/title_meta_format/init.php');
+				$info = new pspTitleMetaFormat();
+
+				$info->setPostInfo( $post );
+
+				$shareInfo = (object) array(
+					'info'			=> $info,
+					//'infoFb'		=> isset($infoFb) ? $infoFb : array(),
+					//'infoTw'		=> isset($infoTw) ? $infoTw : array()
+				);
+
+				$postDefault = array(
+					'the_title'								=> $shareInfo->info->get_the_title(),
+					'the_meta_description'			=> $shareInfo->info->get_the_meta_description(),
+					'the_meta_keywords'			=> $shareInfo->info->get_the_meta_keywords(),
+				);
+			} // end if
+			return $postDefault;
+		}
+
+		public function get_taxonomy_nice_name($categ_name) {
+			$ret = $categ_name;
+
+			//$special = array('DVD' => 'DVD', 'MP3Downloads' => 'MP3 Downloads', 'PCHardware' => 'PC Hardware', 'VHS' => 'VHS');
+			$special = array('MP3Downloads' => 'MP3 Downloads');
+			if ( ! in_array($categ_name, array_keys($special)) ) {
+				//$ret = preg_replace('/([A-Z])/', ' $1', $categ_name);
+				$ret = preg_replace('/([A-Z])(?:[^A-Z ])/', ' $0', $categ_name);
+			} else {
+				$ret = $special["$categ_name"];
+			}
+
+			$ret = preg_replace('/\s\s+/i', ' ', $ret);
+			$ret = trim($ret);
+			return $ret;
+		}
 	}
 }
+// __DIR__ - uses PHP 5.3 or higher
+// require_once( __DIR__ . '/functions.php');
+require_once( dirname(__FILE__) . '/functions.php');

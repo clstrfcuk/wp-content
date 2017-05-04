@@ -68,22 +68,29 @@ if (class_exists('pspSocialTwitterCards') != true) {
 		//tags
 		public function twitter_cards_tags($ret=false) {
 			global $wp_query;
-			
+
+			$metatags = array();
+			$opt = $this->plugin_settings; //$this->the_plugin->get_theoption('psp_title_meta_format');
 			$post = $wp_query->get_queried_object();
-
-			$opt = $this->plugin_settings;
-			
+			$is_blog_posts_page = $this->the_plugin->_is_blog_posts_page();
 			$pm = array();
-			// meta info!
-			if ( is_singular() || $this->the_plugin->_is_blog_posts_page() ) {
-				
-				$pm = get_post_meta( $post->ID, 'psp_meta', true );
-				
-			} else if ( is_home() || is_front_page() ) { //homepage
 
-				$pm = $this->the_plugin->get_theoption('psp_title_meta_format');
+			//if twitter cards are deactivated!
+			if ( isset($opt['psp_twc_use_meta']) && $opt['psp_twc_use_meta']=='no' )
+				return false;
+
+			// meta info!
+			if ( is_singular() || $is_blog_posts_page ) {
+
+				if ( ! is_object($post) || ! isset($post->ID) ) {
+					$post_id = $is_blog_posts_page ? get_option( 'page_for_posts' ) : get_the_ID();
+					$post = get_post( $post_id );
+				}
+
+				$pm = get_post_meta( $post->ID, 'psp_meta', true );
+
 			} else if ( is_category() || is_tag() || is_tax() ) { //taxonomy data!
-				
+
 				$__objTax = (object) array('term_id' => $post->term_id, 'taxonomy' => $post->taxonomy);
 
 				$psp_current_taxseo = $this->the_plugin->__tax_get_post_meta( null, $__objTax );
@@ -92,55 +99,73 @@ if (class_exists('pspSocialTwitterCards') != true) {
 
 				$pm = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
 			}
-  
-			//if twitter cards are deactivated!
-			if ( isset($opt['psp_twc_use_meta']) && $opt['psp_twc_use_meta']=='no' )
-				return false;
-			
+			$pm = is_array($pm) ? $pm : array();
+
 			// Twitter Cards ajax action & public methods!
 			require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'utils/twitter_cards.php' );
 			$twc = new pspTwitterCards( $this->the_plugin );
-			
-			$metatags = array();
-			if ( is_singular() || $this->the_plugin->_is_blog_posts_page() ) { //post|page|post_type
-				
-				$metatags = $twc->get_frontend_meta($pm, 'post');
 
-			} else if ( is_home() || is_front_page() ) { //homepage
-			
-				$metatags = $twc->get_frontend_meta($pm, 'home');
+			if ( is_singular() || $is_blog_posts_page ) { //post|page|post_type
+
+				$metatags = $twc->get_frontend_meta($pm, array(), 'post', $post);
 
 			} else if ( is_category() || is_tag() || is_tax() ) {
-				
-				$metatags = $twc->get_frontend_meta($pm, 'post');
 
-			} else if ( is_author() ) {
-	
-			} else {
-
+				$metatags = $twc->get_frontend_meta($pm, array(), 'taxonomy', $post);
 			}
-			
-			$metatags['twitter:url'] = $this->the_url();
-  
-			$metatags = $this->default_meta($metatags, $post, $pm);
-			
+			else {
+				$metatags = array(
+					'twitter:title'					=> '',
+					'twitter:description'		=> '',
+					'twitter:image'				=> '',
+				);
+			}
+			//var_dump('<pre>', $metatags, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
+ 			if ( is_home() || is_front_page() ) { //homepage
+				$pm_home = $opt;
+
+				$metatags_home = $twc->get_frontend_meta($pm_home, array(), 'home', $post);
+				$metatags = $this->__array_replace( $metatags_home, $metatags );
+			}
+
+			$metatags = $this->default_meta($metatags, $post);
+			$metatags = $this->image2thumb($metatags, $pm);
+
+			if ( ! empty($metatags) ) {
+				$metatags = array_replace_recursive( array(
+					'twitter:site' 				=> isset($opt['psp_twc_website_account']) ? $this->tag_special_firstchar($opt['psp_twc_website_account']) : '',
+					'twitter:site:id'			=> isset($opt['psp_twc_website_account_id']) ? $opt['psp_twc_website_account_id'] : '',
+					'twitter:creator'			=> isset($opt['psp_twc_creator_account']) ? $this->tag_special_firstchar($opt['psp_twc_creator_account']) : '',
+					'twitter:creator:id' 	=> isset($opt['psp_twc_creator_account_id']) ? $opt['psp_twc_creator_account_id'] : '',
+					'twitter:url'			 	=> $this->the_url(),
+				), $metatags );
+			}
+			//var_dump('<pre>', $metatags, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
 			// hooks - in case may need to modify this tags!
 			//...
-			
+
+			// clean empty values
+			foreach ($metatags as $__tag => $val) {
+				if ( empty($val) ) unset($metatags[ "$__tag" ]);
+			}
+
 			// retrieve metatags
 			if ( isset($ret) && $ret===true ) {
 				return $metatags;
 			}
-			
 			if ( empty($metatags) ) return false;
-			
+
 			//make Tags List
 			$__listTags = array();
 			foreach ($metatags as $__tag => $val) {
-				if ( in_array($__tag, array('twitter:image', 'twitter:image:src', 'twitter:image0', 'twitter:image1', 'twitter:image2', 'twitter:image3')) )
-					$val = esc_url( $val );
-				else
+				if ( in_array($__tag, array('twitter:image', 'twitter:image:src', 'twitter:image0', 'twitter:image1', 'twitter:image2', 'twitter:image3')) ) {
+					$val = str_replace('http__', 'http', $val);
+					//$val = esc_url( $val ); // need to work with timthumb, so now url encoding!
+				} else {
 					$val = esc_attr( $val );
+				}
 
 				if ( !empty($val) )
 					$__listTags[] = '<meta name="' . ($__tag). '" content="' . ($val) . '"/>';
@@ -150,102 +175,152 @@ if (class_exists('pspSocialTwitterCards') != true) {
 			echo $__listTags . PHP_EOL;
 		}
 		
-		private function default_meta($metatags, $post, $psp_meta) {
-			
+		private function default_meta($metatags, $post) {
 			$opt = $this->plugin_settings;
-  
+
+			if ( isset($post->ID) && $post->ID ) {
+				$what_type = 'posttype';
+				$post_id = $post->ID;
+				$content = isset($post->post_content) ? $post->post_content : '';
+				$unique_key = 'psp_twc_image_find';
+				$unique_key2 = 'psp_twc_image_customfield';
+			}
+			else if ( isset($post->term_id) && $post->term_id ) {
+				$what_type = 'taxonomy';
+				$post_id = $post->term_id;
+				$content = isset($post->description) ? $post->description : '';
+				$unique_key = 'psp_twc_image_find_taxonomy';
+				$unique_key2 = 'psp_twc_image_customfield_taxonomy';
+			}
+
 			//title
-			if ( isset($metatags[ 'twitter:title' ]) && empty($metatags[ 'twitter:title' ]) )
+			if ( isset($metatags[ 'twitter:title' ]) && empty($metatags[ 'twitter:title' ]) ) {
 				$metatags[ 'twitter:title' ] = $this->the_title('');
-				
+			}
+
 			//description
 			if ( isset($metatags[ 'twitter:description' ]) && empty($metatags[ 'twitter:description' ]) ) {
 				$metatags[ 'twitter:description' ] = $this->the_meta_description( false );
 			}
-				
-			$img_alias = 'twitter:image';
-			if ( isset($metatags[ 'twitter:card' ]) && $metatags[ 'twitter:card' ] == 'summary_large_image' ) {
-				$img_alias = 'twitter:image:src'; 
-			}
-  
-			//image
-			if ( isset($metatags[ "$img_alias" ]) && empty($metatags[ "$img_alias" ]) ) {
-				if ( isset($opt['psp_twc_default_img']) && !empty($opt['psp_twc_default_img']) )
-					$metatags[ "$img_alias" ] = $opt['psp_twc_default_img'];
 
- 				if (isset($opt['psp_twc_image_find']) && !empty($opt['psp_twc_image_find']) ) {
+			//image
+			$img_alias = 'twitter:image';
+			//if ( isset($metatags['twitter:card']) && ( 'summary_large_image' == $metatags['twitter:card'] ) ) {
+			//	$img_alias = 'twitter:image:src';
+			//}
+
+			if ( isset($metatags[ "$img_alias" ]) && empty($metatags[ "$img_alias" ]) ) {
+				if ( isset($opt['psp_twc_default_img']) && !empty($opt['psp_twc_default_img']) ) {
+					$metatags[ "$img_alias" ] = $opt['psp_twc_default_img'];
+				}
+
+ 				if (isset($unique_key, $opt["$unique_key"]) && !empty($opt["$unique_key"]) ) {
+					$image_fallback = array();
+
 	 				// featured image
-	 				if ( $opt['psp_twc_image_find'] == 'featured' ) {
-						if ( function_exists( 'has_post_thumbnail' ) && has_post_thumbnail( $post->ID ) ) {
-							$__featured_image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' );
+	 				if ( $opt["$unique_key"] == 'featured' || empty($image_fallback) ) {
+						if ( function_exists( 'has_post_thumbnail' ) && has_post_thumbnail( $post_id ) ) {
+							$__featured_image = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id ), 'single-post-thumbnail' );
 							$__featured_image = $__featured_image[0];
-							if ( isset($__featured_image) && !empty($__featured_image) )
+							if ( isset($__featured_image) && !empty($__featured_image) ) {
+								$image_fallback[] = $__featured_image;
 								$metatags[ "$img_alias" ] = $__featured_image;
+							}
+						}
+	 				}
+					// first image in post content
+	 				if ( $opt["$unique_key"] == 'content' || empty($image_fallback) ) {
+	 					$__first_image = $this->get_content_first_image($content);
+	 					
+						if ( isset($__first_image) && !empty($__first_image) ) {
+							$image_fallback[] = $__first_image;
+							$metatags[ "$img_alias" ] = $__first_image;
 						}
 	 				}
 	 				// custom field image
-	 				else if ( $opt['psp_twc_image_find'] == 'customfield' ) {
-	 					$__custom_image = get_post_meta($post->ID, $opt['psp_twc_image_customfield'], true);
-	
-						if ( isset($__custom_image) && !empty($__custom_image) )
-							$metatags[ "$img_alias" ] = $__custom_image;
+	 				if ( $opt["$unique_key"] == 'customfield' || empty($image_fallback) ) {
+	 					if ( isset($opt["$unique_key2"]) && ! empty($opt["$unique_key2"]) ) {
+	 						if ( 'posttype' == $what_type ) {
+		 						$__custom_image = get_post_meta($post->ID, $opt["$unique_key2"], true);
+							}
+							else if ( 'taxonomy' == $what_type ) {
+								$__custom_image = get_term_meta($post->ID, $opt["$unique_key2"], true);
+							}
+		
+							if ( isset($__custom_image) && !empty($__custom_image) ) {
+								$image_fallback[] = $__custom_image;
+								$metatags[ "$img_alias" ] = $__custom_image;
+							}
+						}
 	 				}
-	 				else if ( $opt['psp_twc_image_find'] == 'content' ) {
-	 					$__first_image = $this->get_content_first_image($post);
-	 					
-						if ( isset($__first_image) && !empty($__first_image) )
-							$metatags[ "$img_alias" ] = $__first_image;
-	 				}
- 				}
+ 				} // end $unique_key
 			}
-			
+			return $metatags;
+		}
+
+		private function image2thumb($metatags, $psp_meta) {
+			$opt = $this->plugin_settings;
+
+			$img_alias = 'twitter:image';
+			//if ( isset($metatags[ 'twitter:card' ]) && ( 'summary_large_image' == $metatags[ 'twitter:card' ] ) ) {
+			//	$img_alias = 'twitter:image:src'; 
+			//}
+
 			//thumb
 			if ( isset($metatags[ "$img_alias" ]) && !empty($metatags[ "$img_alias" ]) ) {
 				$__do_thumb = 'none';
-				if ( isset($opt['psp_twc_thumb_sizes']) && !empty($opt['psp_twc_thumb_sizes']) )
+				if ( isset($opt['psp_twc_thumb_sizes']) && !empty($opt['psp_twc_thumb_sizes']) ) {
 					$__do_thumb = $opt['psp_twc_thumb_sizes'];
-				if ( isset($psp_meta['psp_twc_post_thumbsize']) && !empty($psp_meta['psp_twc_post_thumbsize']) )
-					$__do_thumb = $psp_meta['psp_twc_post_thumbsize'];
-					
+				}
+				if ( isset($psp_meta['psp_twc_post_thumbsize']) && !empty($psp_meta['psp_twc_post_thumbsize']) ) {
+					if ( 'default' != $psp_meta['psp_twc_post_thumbsize'] ) {
+						$__do_thumb = $psp_meta['psp_twc_post_thumbsize'];
+					}
+				}
+
 				if ( !empty($__do_thumb) && $__do_thumb!='none' ) {
 					$metatags[ "$img_alias" ] = $this->build_thumb($metatags[ "$img_alias" ], $__do_thumb);
 				}
-					
 			}
-
+			//var_dump('<pre>',$metatags,'</pre>');  
 			return $metatags;
 		}
 		
-		private function get_content_first_image($post) {
-			$res = preg_match('/<img.*src=[\'"]([^\'"]+)[\'"].*\/?>/iu', $post->post_content, $matches);
+		private function get_content_first_image($content) {
+			if ( empty($content) ) return '';
+			$content = do_shortcode($content);
+
+			$res = preg_match('/<img.*src=[\'"]([^\'"]+)[\'"].*\/?>/iu', $content, $matches);
 			$img = isset($matches[1]) ? $matches[1] : '';
 			return $img;
 		}
-		
+
 		private function build_thumb($image, $size) {
-			
+
 			$opt = $this->plugin_settings;
-			
-			$finalImg = '{plugin_url}timthumb.php?src={img}&amp;w={thumb_w}&amp;h={thumb_h}&amp;zc={thumb_zc}';
+
+			//$finalImg = '{plugin_url}timthumb.php?src={img}&amp;w={thumb_w}&amp;h={thumb_h}&amp;zc={thumb_zc}';
+			$finalImg = '{plugin_url}timthumb.php?src={img}&w={thumb_w}&h={thumb_h}&zc={thumb_zc}';
 
 			$img_size = explode('x', $size);
 			if ( !is_array($img_size) || count($img_size)!=2 ) {
 				$img_size = '120x120';
 				$img_size = explode('x', $img_size);
 			}
-				
-			$iscrop = isset($opt['psp_twc_thumb_crop']) && $opt['psp_twc_thumb_crop']=='yes' ? true : false;
+
+			$iscrop = ! isset($opt['psp_twc_thumb_crop']) || $opt['psp_twc_thumb_crop']=='yes' ? true : false;
 
 			$finalImg = str_replace('{plugin_url}', $this->the_plugin->cfg['paths']['plugin_dir_url'], $finalImg);
 			$finalImg = str_replace('{img}', $image, $finalImg);
 			$finalImg = str_replace('{thumb_w}', (isset($img_size[0]) ? $img_size[0] : 120), $finalImg);
 			$finalImg = str_replace('{thumb_h}', (isset($img_size[1]) ? $img_size[1] : 120), $finalImg);
 			$finalImg = str_replace('{thumb_zc}', ($iscrop ? 1 : 2), $finalImg);
+			//var_dump('<pre>',$finalImg,'</pre>');
 
 			return $finalImg;
 		}
-		
-		
+
+
 		/**
 	    * Singleton pattern
 	    *
@@ -259,7 +334,30 @@ if (class_exists('pspSocialTwitterCards') != true) {
 
 	        return self::$_instance;
 	    }
-    }
+
+
+		/**
+		 * Utils
+		 */
+		private function tag_special_firstchar($tag='') {
+			$tag = trim($tag);
+			if ( '' == $tag ) return '';
+
+			if ( $tag[0] == '@' ) return $tag;
+			return '@' . $tag;
+		}
+
+		public function __array_replace($arr1, $arr2) {
+			$tmp = $arr1;
+			foreach ($arr2 as $key => $val) {
+				if ( empty($val) ) {
+					continue 1;
+				}
+				$tmp["$key"] = $val;
+			}
+			return $tmp;
+		}
+	}
 }
 
 // Initialize the pspSocialTwitterCards class

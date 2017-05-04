@@ -13,8 +13,8 @@
 			'version' => '1.0',
 			'menu' => array(
 				'order' => 23,
-				'title' => __('Rich Snippets', 'psp')
-				,'icon' => 'assets/menu_icon.png'
+				'title' => __('Rich Snippets', 'psp'),
+				'icon' => '<i class="' . ( $psp->alias ) . '-icon-rich_snippets"></i>'
 			),
 			'description' => __('Rich Snippets - Schema.org', 'psp'),
 			'module_init' => 'init.php',

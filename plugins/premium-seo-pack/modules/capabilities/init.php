@@ -221,18 +221,18 @@ if (class_exists('aaCapabilities') != true) {
 				if (is_file($value["folder_path"] . $value[$key]['menu']['icon'])) {
 					$icon = $value["folder_uri"] . $value[$key]['menu']['icon'];
 				}
-				
+
 				if ( $cc == 0 ) $html[] = '<tr class="' . ($cc % 2 ? 'odd' : 'even') . '">'; // first row
-				
-				$td_cssClass = 'mod-core'; $td_content = '';
+
+				$td_cssClass = 'mod-core'; $td_content = ''; $is_chk = '';
 				//if (!in_array($key, $this->the_plugin->cfg['core-modules'])) {
 					if (in_array($key, $userModules)) {
-						$td_content = '<input type="checkbox" class="psp-item-checkbox" id="psp-item-checkbox-' . ( $key ) . '" name="psp-item-checkbox-' . ( $key ) . '" checked="checked"><label for="psp-item-checkbox-' . ( $key ) . '">';
+						$is_chk = ' checked="checked"';
 						$td_cssClass = 'mod-active';
 					} else {
-						$td_content = '<input type="checkbox" class="psp-item-checkbox" id="psp-item-checkbox-' . ( $key ) . '" name="psp-item-checkbox-' . ( $key ) . '"><label for="psp-item-checkbox-' . ( $key ) . '">';
 						$td_cssClass = 'mod-inactive';
 					}
+					$td_content = '<input type="checkbox" class="psp-item-checkbox" id="psp-item-checkbox-' . ( $key ) . '" name="psp-item-checkbox-' . ( $key ) . '" ' . $is_chk . '><label for="psp-item-checkbox-' . ( $key ) . '">';
 				//} else {
 				//	$td_content = ""; // core module
 				//}

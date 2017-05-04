@@ -76,6 +76,7 @@
 				([\w\-]+)
 			'
 		)
+		/*
 		,'screenr'		=> array(
 			'mysql'		=> 'screenr\.com',
 			'default'	=> '
@@ -86,42 +87,7 @@
 				([\w\-]+)
 			'
 		)
-		,'blip'			=> array(
-			'mysql'		=> 'blip\.tv',
-			'default'	=> '
-				(?:
-					blip\.tv\/
-					(?:
-						play\/
-						|
-						[\w\-]+\/[\w\-]+\-
-						|
-					)
-					([\w\-]+)
-				)
-			'
-		)
-		,'dotsub'		=> array(
-			'mysql'		=> 'dotsub\.com',
-			'default'	=> '
-				(?:
-					dotsub\.com\/
-					(?:view|media)\/
-				)
-				([\w\-]+)
-				(?:\/embed\/|)
-			'
-		)
-		,'viddler'		=> array(
-			'mysql'		=> 'viddler\.com',
-			'default'	=> '
-				(?:
-					viddler\.com
-					(?:\/v|\/embed)\/
-				)
-				([\w\-]+)
-			'
-		)
+		*/
 		,'wistia'		=> array(
 			'mysql'		=> 'wistia\.com',
 			'default'	=> '
@@ -129,7 +95,7 @@
 					(?:
 						fast\.wistia\.com\/embed\/iframe
 						|
-						home\.wistia\.com\/medias
+						(?:home|support)\.wistia\.com\/medias
 					)
 					\/
 				)
@@ -147,20 +113,61 @@
 					)
 					\/
 					([\w\-]+)
-					(video|player|download|flashplayer)\/?
+					\/
+					(video|player|download|flashplayer|mobile)\/?
 				)
 			'
 		)
+		,'viddler'		=> array(
+			'mysql'		=> 'viddler\.com',
+			'default'	=> '
+				(?:
+					viddler\.com
+					(?:\/v|\/embed)\/
+				)
+				([\w\-]+)
+			'
+		)
+		/*
+		,'blip'			=> array(
+			'mysql'		=> 'blip\.tv',
+			'default'	=> '
+				(?:
+					blip\.tv\/
+					(?:
+						play\/
+						|
+						[\w\-]+\/[\w\-]+\-
+						|
+					)
+					([\w\-]+)
+				)
+			'
+		)
+		*/
+		,'dotsub'		=> array(
+			'mysql'		=> 'dotsub\.com',
+			'default'	=> '
+				(?:
+					dotsub\.com\/
+					(?:view|media)\/
+				)
+				([\w\-]+)
+				(?:\/embed\/|)
+			'
+		)
 		,'flickr'		=> array(
-			'mysql'		=> 'flickr\.com',
+			'mysql'		=> 'flickr\.com|flic\.kr',
 			'default'	=> '
 				(?:
 					(?:
 						flickr\.com\/.*
+						|
+						flic\.kr\/p
 					)
 					\/
-					(\d+)
-					\/
+					([a-z0-9_-]+)
+					(?:\/|$|[\/#\?])
 				)
 			'
 		)

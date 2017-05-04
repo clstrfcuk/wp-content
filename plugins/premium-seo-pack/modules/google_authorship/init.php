@@ -71,12 +71,15 @@ if (class_exists('pspGoogleAuthorship') != true) {
    
 			if (is_admin()) {
 				// add_action('admin_menu', array( &$this, 'adminMenu' ));
-   
+
+				/*
+				// removed in 2017-march
 				add_action('edit_user_profile', array( $this, 'user_profile_metabox' ));
 				add_action('show_user_profile', array( $this, 'user_profile_metabox' ));
 				
 				add_action('personal_options_update', array( $this, 'user_profile_save_metabox' ));
 				add_action('edit_user_profile_update', array( $this, 'user_profile_save_metabox' ));
+				*/
 			}
 			
 			if ( $this->the_plugin->is_admin === true ) {
@@ -87,8 +90,8 @@ if (class_exists('pspGoogleAuthorship') != true) {
 
 				add_action( 'premiumseo_head', array( $this, 'the_header' ), 11 );
 				add_action( 'premiumseo_footer', array( $this, 'the_footer' ), 11 );
-				add_filter( 'the_content', array( $this, 'the_content' ), 11 );
-				add_filter( 'author_link', array( $this, 'author_link_filter' ), 999, 3 );
+				//add_filter( 'the_content', array( $this, 'the_content' ), 11 ); // removed in 2017-march
+				//add_filter( 'author_link', array( $this, 'author_link_filter' ), 999, 3 ); // removed in 2017-march
 			}
 		}
 		
@@ -110,9 +113,11 @@ if (class_exists('pspGoogleAuthorship') != true) {
 				}
 					
 				// authorship
-				$authors = $this->google_authorship('home');
+				//$authors = $this->google_authorship('home');
 			}
-			
+
+			/*
+			// removed in 2017-march
 			// authorship
 			if ( is_category() ) {
 				$pageHasAuthor = true;
@@ -138,6 +143,7 @@ if (class_exists('pspGoogleAuthorship') != true) {
 				if ( isset($authors['header']) && !empty($authors['header']) )
 					echo implode(PHP_EOL, $authors['header']) . PHP_EOL;
 			}
+			*/
 		}
 		
 		public function the_footer() {
@@ -155,9 +161,11 @@ if (class_exists('pspGoogleAuthorship') != true) {
 				}
 
 				// authorship
-				$authors = $this->google_authorship('home');
+				//$authors = $this->google_authorship('home');
 			}
 			
+			/*
+			// removed in 2017-march
 			// authorship
 			if ( is_category() ) {
 				$pageHasAuthor = true;
@@ -183,9 +191,16 @@ if (class_exists('pspGoogleAuthorship') != true) {
 				if ( isset($authors['footer']) && !empty($authors['footer']) )
 					echo implode(PHP_EOL, $authors['footer']) . PHP_EOL;
 			}
+			*/ 
 		}
 		
 		public function the_content( $content ) {
+
+			/*
+			// removed in 2017-march
+			*/
+			return true;
+
 
 			$authors = array();
 			if ( !is_singular() ) {
@@ -290,7 +305,7 @@ if (class_exists('pspGoogleAuthorship') != true) {
 				$users = array($post->post_author);
 				
 				// co authors plus integration!
-				if ( $this->the_plugin->is_plugin_active( 'co-authors-plus/co-authors-plus.php' ) ) {
+				if ( $this->the_plugin->is_plugin_active( 'co-authors-plus', array('plugin_file' => 'co-authors-plus/co-authors-plus.php') ) ) {
 					if ( function_exists('get_coauthors') ) {
 						$cousers = get_coauthors( $post->ID );
 						if ( is_array($cousers) && !empty($cousers) ) {

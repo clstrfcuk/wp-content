@@ -518,6 +518,9 @@ $x = $this->get_robots_values(array(
         	$mt = isset($m['generaltag']) ? (array) $m['generaltag'] : array();
 
         	$__meta_robots = array();
+			// force to use the WP settings
+			if ( '0' == get_option( 'blog_public' ) || isset($_GET['replytocom']) )
+				$__meta_robots[] = 'noindex';
         	if ( in_array('index', $mi) )
 				$__meta_robots[] = 'index';
         	else if ( in_array('noindex', $mi) )

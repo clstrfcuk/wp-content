@@ -92,7 +92,7 @@ if (class_exists('pspSnippet_recipe') != true) {
 
         	if ( !empty($yield) || !empty($prephours) || !empty($prepmins) || !empty($cookhours) || !empty($cookmins) ) {
 
-        		$sc_build .= '<div>';
+        		$ret[] = '<div>';
 
         		// PREPARATION: hours and minutes
         		if( !empty($prephours) && !empty($prepmins) ) {

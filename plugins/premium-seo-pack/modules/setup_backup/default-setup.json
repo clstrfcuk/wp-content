@@ -144,33 +144,36 @@
         "page_title": "{title} | {site_title}",
         "category_title": "{title} | {site_title}",
         "tag_title": "{title} | {site_title}",
-        "taxonomy_title": "{title} | {site_title}",
         "archive_title": "{title} Archives | {site_title}",
         "author_title": "{title} | {site_title}",
         "search_title": "Search for {search_keyword} | {site_title}",
         "404_title": "Page Not Found | {site_title}",
         "pagination_title": "{title} - Page {pagenumber} of {totalpages} | {site_title}",
         "use_pagination_title": "no",
+		"posttype_title": "{title} | {site_title}",
+		"taxonomy_title": "{title} | {site_title}",
         "home_desc": "{site_description}",
-        "post_desc": "{description} | {site_description}",
-        "page_desc": "{description} | {site_description}",
+        "post_desc": "{short_description} | {site_description}",
+        "page_desc": "{short_description} | {site_description}",
         "category_desc": "{category_description}",
         "tag_desc": "{tag_description}",
-        "taxonomy_desc": "{term_description}",
         "archive_desc": "",
         "author_desc": "{author_description}",
         "pagination_desc": "Page {pagenumber}",
         "use_pagination_desc": "no",
+        "posttype_desc": "{short_description} | {site_description}",
+        "taxonomy_desc": "{term_description}",
         "home_kw": "{keywords}",
         "post_kw": "{keywords}",
         "page_kw": "{keywords}",
         "category_kw": "{keywords}",
         "tag_kw": "{keywords}",
-        "taxonomy_kw": "{keywords}",
         "archive_kw": "",
         "author_kw": "",
         "pagination_kw": "",
         "use_pagination_kw": "no",
+        "posttype_kw": "{keywords}",
+        "taxonomy_kw": "{keywords}",
         "archive_robots": [
             "noindex",
             "nofollow",
@@ -205,14 +208,39 @@
         "social_use_meta": "yes",
         "social_include_extra": "yes",
         "social_validation_type": "opengraph",
+        "social_fb_app_id": "966242223397117",
         "social_home_type": "website",
         "social_opengraph_default": {
             "post": "article",
             "page": "article"
         },
+        "social_opengraph_default_taxonomy": {
+            "category": "object",
+            "post_tag": "object"
+        },
+        "psp_twc_use_meta": "yes",
+        "psp_twc_thumb_sizes": "none",
+  		"psp_twc_thumb_crop": "no",
         "psp_twc_cardstype_default": {
             "post": "summary",
             "page": "summary"
-        }
+        },
+        "psp_twc_apptype_default": {
+            "post": "no",
+            "page": "no"
+        },
+        "psp_twc_image_find": "featured",
+        "psp_twc_cardstype_default_taxonomy": {
+            "category": "summary",
+            "post_tag": "summary"
+        },
+        "psp_twc_apptype_default_taxonomy": {
+            "category": "no",
+            "post_tag": "no"
+        },
+        "psp_twc_image_find_taxonomy": "customfield",
+        "psp_twc_site_app": "no",
+  		"psp_twc_home_app": "no",
+  		"psp_twc_home_type": "summary"
     }
 }

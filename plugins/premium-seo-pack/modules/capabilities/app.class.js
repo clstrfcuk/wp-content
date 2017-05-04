@@ -123,9 +123,22 @@ pspModulesManager = (function ($) {
 			} 
 
 		});
-
-
 	}
+	
+	var checkit = (function () {
+		var maincontainer			= maincontainer;
+		
+		function init() {
+		};
+		
+		function triggers() {
+			
+		};
+		
+		return {
+			init		: init
+		};
+	});
 
 	// external usage
 	return {

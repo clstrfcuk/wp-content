@@ -14,7 +14,7 @@ global $psp;
 			'version' => '1.0',
 			'menu' => array(
 				'order' => 13,
-				'title' => __('SEO Slug Optimizer', 'psp')
+				'title' => __('Settings', 'psp')
 				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-miscellaneous"></i>'
 			),
 			'in_dashboard' => array(
@@ -26,11 +26,12 @@ global $psp;
       	  	'help' => array(
 				'type' => 'remote',
 				// subsections on the same module!
-				/*'url' => array(
-					'slug-optimizer' 	=> 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-slug-optimizer/',
-					'insert-code'		=> 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-insert-code/' 
-				)*/
-				'url' => 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-slug-optimizer/'
+				//'url' => array(
+				//	'slug-optimizer' 	=> 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-slug-optimizer/',
+				//	'insert-code'		=> 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-insert-code/' 
+				//)
+				//'url' => 'http://docs.aa-team.com/premium-seo-pack/documentation/seo-slug-optimizer/'
+				'url' => 'http://docs.aa-team.com/premium-seo-pack/documentation/settings-2/'
 			),
 	        'load_in' => array(
 				'backend' => array(

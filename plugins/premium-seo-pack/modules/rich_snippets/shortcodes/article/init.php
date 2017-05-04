@@ -66,7 +66,15 @@ if (class_exists('pspSnippet_article') != true) {
         	if ( !empty($image) ) {
 
         		$imgalt = isset($name) ? $name : __($type.' Image', 'psp');
-        		$ret[]	= '<img class="schema_image" itemprop="image" src="' . esc_url($image) . '" alt="' . $imgalt . '" />';
+        		//$ret[]	= '<img class="schema_image" itemprop="image" src="' . esc_url($image) . '" alt="' . $imgalt . '" />';
+				$ret[] = 	'<span itemscope itemtype="http://schema.org/ImageObject" itemprop="image"><meta itemprop="url" content="'.esc_url($image).'"><img src="'.esc_url($image).'" alt="' . $imgalt . '" itemprop="image" />'; // 2017-march added
+				if ( !empty($image_width) ) {
+					$ret[]		= '<meta itemprop="width" content="' .  $image_width . '">';
+				}
+				if ( !empty($image_height) ) {
+					$ret[]		= '<meta itemprop="height" content="' .  $image_height . '">';
+				}
+				$ret[] = '</span>';
         	}
 
         	if ( !empty($name) && !empty($url) ) {
@@ -78,6 +86,10 @@ if (class_exists('pspSnippet_article') != true) {
 
         		$ret[]	= '<div class="schema_name" itemprop="name">' . $name . '</div>';
         	}
+			
+			if ( !empty($headline) ) {
+        		$ret[]	= '<div class="schema_headline" itemprop="headline">' . esc_attr($headline) . '</div>';
+        	}
 
         	if ( !empty($description) ) {
         		$ret[]	= '<div class="schema_description" itemprop="description">' . esc_attr($description) . '</div>';
@@ -88,8 +100,14 @@ if (class_exists('pspSnippet_article') != true) {
         	}
         	
         	if ( !empty($publisher) ) {
-        		$ret[]	= '<div itemprop="publisher" itemscope itemtype="http://schema.org/Organization">' . __('Published by:', 'psp') . ' <span itemprop="name">' . $publisher . '</span></div>';
-        	}
+        		$ret[]	= '<div itemprop="publisher" itemscope itemtype="http://schema.org/Organization">' . __('Published by:', 'psp') . ' <span itemprop="name">' . $publisher . '</span>';
+				
+				if ( isset($publisher_logo) && !empty($publisher_logo) ) {
+					$ret[] = 	'<span itemscope itemtype="http://schema.org/ImageObject" itemprop="logo"><meta itemprop="url" content="'.esc_url($publisher_logo).'"><img src="'.esc_url($publisher_logo).'" itemprop="image" /></span>'; // 2017-march added
+				}
+				
+				$ret[] = '</div>';
+			}
 
         	if ( !empty($pubdate) ) {
         		$ret[]	= '<div class="bday"><meta itemprop="datePublished" content="' . $pubdate . '">' . __('Date Published:', 'psp') . ' ' . date('m/d/Y', strtotime($pubdate)) . '</div>';

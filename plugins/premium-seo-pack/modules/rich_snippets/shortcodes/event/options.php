@@ -32,6 +32,15 @@ echo json_encode(
 						'title' 	=> __('Event Type:', 'psp'),
 						'desc' 		=> 'select event type',
 						'options'	=> $psp_event_type
+					),
+					'status' => array(
+						'type' 		=> 'select',
+						'std' 		=> '',
+						'size' 		=> 'large',
+						'force_width'=> '200',
+						'title' 	=> __('Event status:', 'psp'),
+						'desc' 		=> 'select event status',
+						'options'	=> array_merge( array('none' => __('Choose event status', 'psp')), $psp_event_status )
 					)
 					,'name' 	=> array(
 						'type' 		=> 'text',
@@ -175,6 +184,31 @@ echo json_encode(
 						'force_width'=> '400',
 						'title' 	=> __('Longitude:', 'psp'),
 						'desc' 		=> __('enter longitude', 'psp')
+					)
+					
+					,'price' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> '',
+						'size' 		=> 'large',
+						'force_width'=> '400',
+						'title' 	=> __('Offer/ Price:', 'psp'),
+						'desc' 		=> __('enter offer price', 'psp')
+					)
+					,'currency' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> '',
+						'size' 		=> 'large',
+						'force_width'=> '400',
+						'title' 	=> __('Offer/ Currency:', 'psp'),
+						'desc' 		=> __('ex: USD, CAD, GBP (full list is on <a href="http://en.wikipedia.org/wiki/ISO_4217" target="_blank">Wikipedia</a>', 'psp')
+					)
+					,'offer_url' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> '',
+						'size' 		=> 'large',
+						'force_width'=> '400',
+						'title' 	=> __('Offer/ Website URL:', 'psp'),
+						'desc' 		=> __('enter offer website url', 'psp')
 					)
 
 				)

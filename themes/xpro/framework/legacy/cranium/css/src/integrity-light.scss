@@ -1,0 +1,35 @@
+// =============================================================================
+// INTEGRITY-LIGHT.SCSS
+// -----------------------------------------------------------------------------
+// Contains all deprecated styles for the Integrity Stack (light version).
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Functions, Variables, and Mixins
+// =============================================================================
+
+// Functions, Variables, and Mixins
+// =============================================================================
+
+@import "../../../../tco/css/lib/import";
+@import "../../../../css/src/site/_scss/inc/functions";
+@import "../../../../css/src/site/_scss/inc/variables";
+@import "../../../../css/src/site/_scss/stacks/integrity/inc/variables-light";
+@import "../../../../css/src/site/_scss/inc/mixins";
+@import "../../../../css/src/site/_scss/stacks/integrity/inc/mixins";
+
+
+
+// Deprecated Styles
+// =============================================================================
+
+@import "site/integrity/dropdowns";
+@import "site/integrity/widgetbar";
+@import "site/integrity/topbar";
+@import "site/integrity/logobar";
+@import "site/navbar";
+@import "site/integrity/navbar";
+@import "site/integrity/megamenu";
+@import "site/integrity/colophon";

@@ -59,10 +59,9 @@ class pspSeoSitemap
     /**
      * Images & Video sitemap
      */
-    const VIDEOAPI_FORCE_SITEMAP = false;
-    const VIDEOAPI_FORCE_CONTENT = false;
-    static private $metaLifetime = 1209600; // lifetime in seconds! - 2 weeks
-    static private $metaRandomLifetime = 43200;
+    const VIDEOAPI_FORCE_SITEMAP = false; // true = if you want to DEBUG
+    const VIDEOAPI_FORCE_CONTENT = false; // true = if you want to DEBUG
+    static private $metaLifetime = 604800; // default video metas lifetime in seconds! - 1 week
     static private $imageIdentifiers = array(
         'default'   => '[\'\"]((?:http|https):\/\/.[^\'\"]+\.(?:jpe?g|png|gif))[\'\"]',
         'mysql'     => '[\'\"](http|https):\/\/.[^\'\"]+\.(jpe?g|png|gif)[\'\"]',
@@ -116,7 +115,6 @@ class pspSeoSitemap
                     .'.*\.(?:mp?4|avi|flv|wmv|mov|mpg|m4p|mkv|3GPP|ogv|MPEGPS|wmv|3gp|WebM|divx|rm|mpe|mpeg|mpeg2|mpeg4|DAT)$'
             )
         ));
-        self::$metaRandomLifetime = range(43200, 432000, 43200); // random range in seconds!
         
         if ( !$this->the_plugin->verify_module_status( 'sitemap' ) ) ; //module is inactive
         else {
@@ -635,11 +633,13 @@ class pspSeoSitemap
     
     private function clause_post_type( $post_type='post,page', $dbAlias='a' ) {
         if ( empty($post_type) ) return '';
-        
+
         $clause = " AND ( {$dbAlias}.post_status = 'publish' AND {$dbAlias}.post_password = '' ";
         $clause .= "AND {$dbAlias}.post_author != 0 AND {$dbAlias}.post_date != '0000-00-00 00:00:00' ";
 
-        $post_type = explode(',', $post_type);
+		if ( is_string($post_type) ) {
+        	$post_type = explode(',', $post_type);
+		}
         $post_type = array_map( array($this, 'prepareForInList'), $post_type);
         $post_type2 = implode(',', $post_type);
 
@@ -847,6 +847,7 @@ class pspSeoSitemap
              LIMIT 1
             ;
         ";
+		//var_dump('<pre>', $sql, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
         $sql = $wpdb->prepare($sql, $guid);
         $res = $wpdb->get_row( $sql );
         return $res;
@@ -1092,9 +1093,10 @@ class pspSeoSitemap
 
         require($this->module_folder_path . 'video_info.php');
         $pspVideoInfo = new pspVideoInfo( array(
-            'vzaar_domain'          => $this->settings['vzaar_domain'],
-            'viddler_key'           => $this->settings['viddler_key'],
-            'flickr_key'            => $this->settings['flickr_key']
+            'vzaar_domain'         => $this->settings['vzaar_domain'],
+            'viddler_key'           	=> $this->settings['viddler_key'],
+            'flickr_key'            		=> $this->settings['flickr_key'],
+            'youtube_key'      		=> $this->settings['youtube_key']
         ));
 
         $current_metas = array_merge( array(), $this->getVideoMetas( $post_id ) );
@@ -1109,10 +1111,10 @@ class pspSeoSitemap
             }
         }
 
-        foreach ( $videos as $k => $v ) {
+        foreach ( $videos as $k => $v ) { // main foreach
 
-            if ( is_array($v) && !empty($v) ) {
-                foreach ( $v as $key => $val ) {
+            if ( is_array($v) && !empty($v) ) { // main if
+                foreach ( $v as $key => $val ) { // secondary foreach
 
                     $videoLocalDetails = array();
                     if ( $k == 'localhost' && !empty($extrainfo) && isset($extrainfo[ "$k" ][ "$key" ]) )
@@ -1132,23 +1134,35 @@ class pspSeoSitemap
                     $__doRequestInfo = false;
                     if ( isset($vid_meta['status']) && isset($vid_meta['created']) ) {
 
-                        srand();
-                        $__rand = rand(0, count(self::$metaRandomLifetime)-1);
-                        $__lifetime = (int) ( self::$metaLifetime + self::$metaRandomLifetime[$__rand] );
+        				//$metaRandomLifetime = range(43200, 432000, 43200); // random range in seconds!
+                        //srand();
+                        //$__rand = rand(0, count($metaRandomLifetime)-1);
+                        //$__lifetime = (int) ( $metaLifetime + $metaRandomLifetime[$__rand] );
+						$__lifetime = self::$metaLifetime;
+						if ( isset($this->settings['video_recurrence']) && ! empty($this->settings['video_recurrence']) ) {
+							$__lifetime = (int) ( $this->settings['video_recurrence'] * 3600 );
+						}
 
-                        if ( $recheckVideos || $vid_meta['status'] != 'valid'
-                        || ( (int) ($vid_meta['created'] + $__lifetime) < time() ) )
+						// force re-check
+						if (
+                        	( (int) ($vid_meta['created'] + $__lifetime) < time() )
+                        	|| $recheckVideos
+                        	|| $vid_meta['status'] != 'valid'
+						) {
                             $__doRequestInfo = true;
-                        else
+                        } else {
                             $ret[ "$k" ][ "$key" ] = $vid_meta;
-                    } else
+						}
+					} else {
                         $__doRequestInfo = true;
-                    
+					}
+
                     if ( $__doRequestInfo ) {
                         $ret[ "$k" ][ "$key" ] = $pspVideoInfo->getVideoInfo( $val, $k, array(
                             'post'          => $post,
                             'extrainfo'     => $videoLocalDetails
                         ));
+
                         $remoteThumb = $this->saveVideoThumbnail( $post_id, $current_alias, $ret[ "$k" ][ "$key" ]['thumbnail'] );
                         if ( $remoteThumb['status'] == 'valid' ) // update with remote thumb
                             $ret[ "$k" ][ "$key" ]['thumbnail'] = $remoteThumb['resp'];
@@ -1158,9 +1172,10 @@ class pspSeoSitemap
                     }
                     
                     $ret[ "$k" ][ "$key" ] = array_merge( $ret[ "$k" ][ "$key" ], $this->video_info_check( $ret[ "$k" ][ "$key" ] ) );
-                }
-            }
-        }
+                } // end secondary foreach
+            } // end main if
+        } // end main foreach
+
         return $ret;
     }
 
@@ -1183,9 +1198,16 @@ class pspSeoSitemap
             foreach ( $res as $key => $val ) {
 
                 if ( isset($val->meta_value) ) {
+
+					if ( $found = preg_match('/_stat$/imu', $val->meta_key) ) {
+						continue 1;						
+					}
+
                     $meta_value = $val->meta_value;
-					if ( !empty($meta_value) )
-                    	$meta_value = unserialize( $meta_value );
+					if ( !empty($meta_value) ) {
+                    	$meta_value = maybe_unserialize( $meta_value );
+                    	$meta_value = maybe_unserialize( $meta_value );
+					}
 
                     if ( isset($meta_value['resp']) )
                         unset( $meta_value['resp'] );
@@ -1194,6 +1216,7 @@ class pspSeoSitemap
                 }
             }
         }
+        //var_dump('<pre>',$ret,'</pre>'); 
         return $ret;
     }
     
@@ -1280,6 +1303,7 @@ class pspSeoSitemap
 
         $ret = array();
         $current_metas = array_merge( array(), $this->getVideoMetas( $post_id ) );
+		//var_dump('<pre>',$current_metas,'</pre>');
         if ( !empty($current_metas) ) {
             foreach ( $current_metas as $k => $v ) {
                 $alias = str_replace('psp_videos_', '', $k);
@@ -1300,13 +1324,28 @@ class pspSeoSitemap
 						$key = 0;
                         $ret[ "$k" ][ "$key" ] = $vid_meta;
                     }
+
+					// verify if re-check is necessary ?
+					$__lifetime = self::$metaLifetime;
+					if ( isset($this->settings['video_recurrence']) && ! empty($this->settings['video_recurrence']) ) {
+						$__lifetime = (int) ( $this->settings['video_recurrence'] * 3600 );
+					}
+					//$__lifetime = 1; // DEBUG
+
+					// force re-check
+					if (
+                       	( (int) ($vid_meta['created'] + $__lifetime) < time() )
+                       	//|| $recheckVideos
+                       	//|| $vid_meta['status'] != 'valid'
+					) {
+						$recheckVideos = true;
+					}
                 }
             }
         }
         $__videoInfo = $ret;
         
         if ( empty($__videoInfo) || $recheckVideos ) {
-            
             $images = $this->get_videos( '', $post_id );
             $images_tmp = $this->filter_videos( $images );
             $images = !empty($images_tmp) && isset($images_tmp['videos']) ? $images_tmp['videos'] : array();
@@ -1343,7 +1382,7 @@ class pspSeoSitemap
         // validations!
         if ( is_home() || is_archive() || is_tax() || is_tag() || is_category() || is_feed() )
             return $content;
-
+   
         if ( !is_object($post) || !isset($post->ID) )
             return $content;
 
@@ -1357,10 +1396,11 @@ class pspSeoSitemap
         foreach ( $videosInfo as $type => $videos ) {
             foreach ( $videos as $key => $video ) {
 
+				//var_dump('<pre>',$video, $this->isVideoValid( $video ),'</pre>');
                 if ( !$this->isVideoValid( $video ) ) continue 1;
-                        
+
                 $ret[] = '
-                <!--begin psp video snippet : ' . ($type) . '-->
+	<!--begin psp video snippet : ' . ($type) . '-->
                 ';
                 $ret[] = '<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">';
     
@@ -1378,7 +1418,7 @@ class pspSeoSitemap
     
                 $ret[] = '</div>';
                 $ret[] = '
-                <!--end psp video snippet : ' . ($type) . '-->
+	<!--end psp video snippet : ' . ($type) . '-->
                 ';
             }
         }
@@ -1394,7 +1434,11 @@ class pspSeoSitemap
         $validate = array();
         $validate[0] = (bool) ( !isset($video['title']) || empty($video['title']) );
         $validate[1] = (bool) ( !isset($video['description']) || empty($video['description']) );
-        $validate[2] = (bool) ( !isset($video['thumbnail']) || empty($video['thumbnail']) );
+
+		// I've removed the thumbnail validation
+		//$validate[2] = (bool) ( !isset($video['thumbnail']) || empty($video['thumbnail']) );
+        $validate[2] = false;
+
         $validate[3] = (bool) ( !isset($video['player_loc']) || empty($video['player_loc']) );
         $validate[4] = (bool) ( !isset($video['content_loc']) || empty($video['content_loc']) );
         if ( $validate[0] || $validate[1] || $validate[2] || ( $validate[3] && $validate[4] ) )
@@ -1427,21 +1471,36 @@ class pspSeoSitemap
             foreach ( $videos as $key => $video ) {
 
                 if ( !$this->isVideoValid( $video ) ) continue 1;
-                if ( !isset($video['player_loc']) || empty($video['player_loc']) ) continue 1;
-                
+                if ( !isset($video['player_loc']) || empty($video['player_loc']) ) {
+                	if ( isset($video['content_loc']) && ! empty($video['content_loc']) ) {
+                		$video['player_loc'] = $video['content_loc'];
+					} else {
+                		continue 1;
+					}
+				}
+
                 return $video;
             }
         }
         return array();
-    }
+	}
     public function video_opengraph() {
         $video = $this->video_opengraph_first_found();
+
         if ( !isset($video) || empty($video) ) return false;
 
         $ret = array();
         $ret[] = '<meta property="og:video" content="' . $video['player_loc'] . '" />';
-        $ret[] = '<meta name="medium" content="video" />';
+		$ret[] = '<meta property="og:video:secure_url" content="' . str_replace( 'http://', 'https://', $video['player_loc'] ) . '" />';
+		$ret[] = '<meta property="og:video:type" content="application/x-shockwave-flash" />'; //content="text/html"
+		if ( isset($video['duration']) && ! empty($video['duration'])) {
+			$ret[] = '<meta property="video:duration" content="' . $video['duration'] . '" />';
+		}
+		if ( isset($video['publish_date']) && ! empty($video['publish_date']) ) {
+			$ret[] = '<meta property="video:release_date" content="' . $video['publish_date'] . '" />';
+		}
         $ret[] = '<meta name="video_type" content="application/x-shockwave-flash" />';
+        $ret[] = '<meta name="medium" content="video" />';
         $ret[] = '<link rel="image_src" href="' . $video['thumbnail'] . '" />';
         $ret[] = '<link rel="video_src" href="' . $video['player_loc'] . '" />';
         echo implode(PHP_EOL, $ret) . PHP_EOL;
@@ -1449,7 +1508,7 @@ class pspSeoSitemap
     public function video_opengraph_type( $val = '' ) {
         $video = $this->video_opengraph_first_found();
         if ( isset($video) && !empty($video) )
-            return 'video';
+            return 'video.other'; //'video'
         return $val;
     }
     public function video_opengraph_title( $val = '' ) {
@@ -2709,6 +2768,7 @@ class pspSeoSitemap
     private function is_url_relative( $url ) {
         return ( strpos( $url, 'http' ) !== 0 && strpos( $url, '//' ) !== 0 );
     }
+
     // ISO 8601 compatible duration! length <= 24 hours
     private function duration_iso_8601( $duration ) {
 
@@ -2729,6 +2789,26 @@ class pspSeoSitemap
         }
         return implode('', $ret);
     }
+	
+	private function duration_iso_8601_to_seconds( $duration ) {
+		$ret = array();
+
+		// ex. PT3M31S
+		if ( preg_match( "/^(?:P)(?:[^T]*)(?:T)?(?:(?P<hour>\d+)H)?(?:(?P<min>\d+)M)?(?:(?P<sec>\d+)S)?$/", $duration, $m ) > 0 ) {
+			if ( ! empty( $m['hour'] ) ) {
+				$ret[] = (int) ( $m['hour'] * 3600 );
+			}
+
+			if ( ! empty( $m['min'] ) ) {
+				$ret[] = (int) ( $m['min'] * 60 );
+			}
+			
+			if ( ! empty( $m['sec'] ) ) {
+				$ret[] = (int) ( $m['sec'] );
+			}
+		}
+		return (int) array_sum($ret);
+	}
 
     private function strip_shortcode( $text ) {
         return preg_replace( '`\[[^\]]+\]`s', '', $text );

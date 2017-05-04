@@ -485,7 +485,8 @@ if(class_exists('aaInterfaceTemplates') != true) {
 										}
 									}
 								break;
-								
+
+/*
 								// Facebook/ Basic authorization button
 								case 'authorization_button_fbv4':
 
@@ -584,7 +585,8 @@ if(class_exists('aaInterfaceTemplates') != true) {
 										}
 									}
 								break;
-								
+*/
+
 								case 'date':
 
 									$html[] = '<input ' . ( isset($value['readonly']) && $value['readonly'] == true ? 'readonly ' : '' ) . ' ' . ( isset($value['force_width']) ? "style='width:" . ( $value['force_width'] ) . "px;'" : '' ) . ' id="' . esc_attr( $elm_id ) . '" name="' . esc_attr( $option_name . $elm_id ) . '" type="text" value="' . esc_attr( $val ) . '" />';

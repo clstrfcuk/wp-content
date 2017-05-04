@@ -22,6 +22,9 @@ if (class_exists('pspSetupBackup') != true) {
 		
 		private $settings = array();
 		
+		private $wp_filesystem = null;
+		private $paths = array();
+		
 		static protected $_instance;
 		
 
@@ -32,12 +35,32 @@ if (class_exists('pspSetupBackup') != true) {
         {
         	global $psp;
 			
-        	$this->the_plugin = $psp;
-			$this->module_folder = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/setup_backup/';
-			$this->module_folderPath = $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'modules/setup_backup/';
+			// load WP_Filesystem 
+			include_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+			global $wp_filesystem;
+			$this->wp_filesystem = $wp_filesystem;
 			
-			$this->settings = $this->the_plugin->getAllSettings( 'array', 'setup_backup' );
-			
+			// paths
+			$this->paths = array(
+				// http://codex.wordpress.org/Function_Reference/plugin_dir_url
+				'plugin_dir_url' => str_replace('modules/setup_backup/', '', plugin_dir_url( (__FILE__)  )),
+
+				// http://codex.wordpress.org/Function_Reference/plugin_dir_path
+				'plugin_dir_path' => str_replace('modules/setup_backup/', '', plugin_dir_path( (__FILE__) ))
+			);
+
+			if ( ! is_null($psp) ) {
+	        	$this->the_plugin = $psp;
+				$this->module_folder = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/setup_backup/';
+				$this->module_folderPath = $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'modules/setup_backup/';
+				$this->settings = $this->the_plugin->getAllSettings( 'array', 'setup_backup' );
+			}
+			else {
+				$this->module_folder = $this->paths['plugin_dir_url'] . 'modules/setup_backup/';
+				$this->module_folderPath = $this->paths['plugin_dir_path'] . 'modules/setup_backup/';
+			}
+
 
 			@ini_set('memory_limit', '512M');
 			@set_time_limit ( 0 );
@@ -51,14 +74,21 @@ if (class_exists('pspSetupBackup') != true) {
 
 
         public function install_tables( $filename ) {
-			if ( $this->the_plugin->verifyFileExists( $filename ) ) { //verify file existance!
+			if ( $this->verifyFileExists( $filename ) ) { //verify file existance!
 
 				global $wpdb;
 				require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 				$wpdb->show_errors();
 
-				$sql = file_get_contents( $filename );
+				//$sql = file_get_contents( $filename );
+				$wp_filesystem = $this->wp_filesystem;
+                $has_wrote = $wp_filesystem->get_contents( $filename );
+                if ( !$has_wrote ) {
+                    $has_wrote = file_get_contents($filename);
+                }
+				$sql = $has_wrote;
+
 				if ( $sql === false ) return false;
 
 				$sql = str_replace('{wp_prefix}', $wpdb->prefix, $sql);
@@ -71,7 +101,7 @@ if (class_exists('pspSetupBackup') != true) {
         }
 
         public function install_tables_data( $filename ) {
-			if ( $this->the_plugin->verifyFileExists( $filename ) ) { //verify file existance!
+			if ( $this->verifyFileExists( $filename ) ) { //verify file existance!
 
         		global $wpdb;
 
@@ -100,6 +130,28 @@ if (class_exists('pspSetupBackup') != true) {
         	}
         	return array();
         }
+		
+		
+		/**
+		 * Utils
+		 */
+        // verify if file exists!
+        public function verifyFileExists($file, $type='file') {
+            clearstatcache();
+            if ($type=='file') {
+                if (!file_exists($file) || !is_file($file) || !is_readable($file)) {
+                    return false;
+                }
+                return true;
+            } else if ($type=='folder') {
+                if (!is_dir($file) || !is_readable($file)) {
+                    return false;
+                }
+                return true;
+            }
+            // invalid type
+            return 0;
+        }
 
 
 		/**
@@ -119,4 +171,4 @@ if (class_exists('pspSetupBackup') != true) {
 }
 
 // Initialize the pspSetupBackup class
-$pspSetupBackup = new pspSetupBackup();
+$pspSetupBackup = pspSetupBackup::getInstance();

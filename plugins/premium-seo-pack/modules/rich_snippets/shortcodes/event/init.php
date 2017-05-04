@@ -76,9 +76,13 @@ if (class_exists('pspSnippet_event') != true) {
 
         		$ret[]	= '<div class="schema_name" itemprop="name">' . $name . '</div>';
         	}
-
+			
         	if ( !empty($description) ) {
         		$ret[]	= '<div class="schema_description" itemprop="description">' . esc_attr($description) . '</div>';
+        	}
+
+        	if ( !empty($status) ) {
+        		$ret[]	= '<div><meta itemprop="eventStatus" content="http://schema.org/' . $status . '"></div>';
         	}
 
         	if ( !empty($startdate) && !empty($starttime) ) {
@@ -106,9 +110,28 @@ if (class_exists('pspSnippet_event') != true) {
         		$ret[]	= '<div><meta itemprop="duration" content="0000-00-00T' . $duration . '">' . __('Duration:', 'psp') . ' ' . $hours . $minutes . '</div>';
         	}
 
-        	$ret[]	= '</div>';
 
-        	// POSTAL ADDRESS
+
+        	// PLACE - geo location & place
+        	$ret[] = 		'<div itemprop="location" itemscope itemtype="http://schema.org/Place">';
+			
+			
+            
+            if ( !empty($place_name) ) {
+                $ret[]  = '<div class="schema_name" itemprop="name">' . $place_name . '</div>';
+            }
+			
+        	if ( $map_latitude!='' && $map_longitude!='' ) {
+
+        		$ret[] = 		'<div itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">';
+        		if ( isset($map_latitude) && !empty($map_latitude) )
+        			$ret[] = 		'<meta itemprop="latitude" content="' . $map_latitude . '" />';
+        		if ( isset($map_longitude) && !empty($map_longitude) )
+        			$ret[] = 		'<meta itemprop="longitude" content="' . $map_longitude . '" />';
+        		$ret[] = 		'</div>';
+        	}
+			
+        	// POSTAL ADDRESS - is inside PLACE
         	if(	!empty($street) || !empty($pobox) || !empty($city) || !empty($state)
         		|| !empty($postalcode) || !empty($country) ) {
         		
@@ -156,21 +179,44 @@ if (class_exists('pspSnippet_event') != true) {
         	}
         	// end POSTAL ADDRESS
 
-        	// geo location & place
-        	$ret[] = 		'<div itemscope itemtype="http://schema.org/Place">';
-            if ( !empty($place_name) ) {
-                $ret[]  = '<div class="schema_name" itemprop="name">' . $place_name . '</div>';
-            }
-        	if ( $map_latitude!='' && $map_longitude!='' ) {
+        	
+      	
+        	$ret[] = 		'</div>';
+        	// end PLACE
 
-        		$ret[] = 		'<div itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">';
-        		if ( isset($map_latitude) && !empty($map_latitude) )
-        			$ret[] = 		'<meta itemprop="latitude" content="' . $map_latitude . '" />';
-        		if ( isset($map_longitude) && !empty($map_longitude) )
-        			$ret[] = 		'<meta itemprop="longitude" content="' . $map_longitude . '" />';
-        		$ret[] = 		'</div>';
+        	
+        	
+        	// OFFER
+        	if ( !empty($price) && ( !empty($offer_url) ) ) {
+
+        		$ret[]	= '<div class="offers" itemprop="offers" itemscope itemtype="http://schema.org/Offer">';
+				
+        		$ret[]	= 	'<span class="price" itemprop="price">' . $price . '</span>';
+        		
+        		$currency = !empty($currency) ? $currency : 'USD';
+        		if ( !empty($currency) ) {
+	        		$ret[]	= 	'<span class="price_currency" itemprop="priceCurrency">' . $currency . '</span>';
+        		}
+
+	        	if ( 1 ) {
+	
+	        		$ret[]	= '<a class="schema_url" target="_blank" itemprop="url" href="' . esc_url($offer_url) . '">';
+	        		$ret[]	= 	__('Tickets', 'psp');
+	        		$ret[]	= '</a>';
+	        	}
+
+        		$ret[]	= '</div>';
         	}
-        	$ret[] = 		'</div>'; // end Place
+        	if ( ( empty($offer_url) ) && !empty ($price) ) {
+        		
+        		$currency = !empty($currency) ? $currency : 'USD';
+
+        		$ret[]	= '<div class="offers" itemprop="offers" itemscope itemtype="http://schema.org/Offer"><span class="price" itemprop="price">' . $price . '</span><span class="price_currency" itemprop="priceCurrency">' . $currency . '</span></div>';
+        	} // end OFFER
+        	
+        	
+        	
+        	$ret[]	= '</div>'; // end html EVENT
 
 			// build Full html!
         	return $this->shortcode_execute( $ret, $atts, $content );

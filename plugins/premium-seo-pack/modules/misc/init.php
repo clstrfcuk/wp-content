@@ -43,13 +43,15 @@ if (class_exists('pspMisc') != true) {
 			$this->settings = $this->the_plugin->getAllSettings( 'array', 'misc' );
 
 			$this->setStringFunc(); //string function per encoding!
-			
+
 			if ( !$this->the_plugin->verify_module_status( 'misc' ) ) ; //module is inactive
 			else {
-				if ( $this->settings['slug_isactive'] == 'yes' )
+				// SEO Slug Optimizer
+				if ( isset($this->settings['slug_isactive']) && $this->settings['slug_isactive'] == 'yes' )
 					if ( $this->the_plugin->is_admin === true )
 						$this->slug_init();
-				if ( $this->settings['insert_code_isactive'] == 'yes' )
+				// SEO Insert Code
+				if ( isset($this->settings['insert_code_isactive']) && $this->settings['insert_code_isactive'] == 'yes' )
 					if ( $this->the_plugin->is_admin !== true )
 						$this->insert_code_init();
 			}

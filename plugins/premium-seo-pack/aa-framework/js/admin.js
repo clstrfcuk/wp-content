@@ -74,39 +74,27 @@ pspFreamwork = (function ($) {
 	
 	function makeRequest( callback )
 	{
-		// fix for duble loading of js function
-		if( in_loading_section == section ){
-			return false;
-		}
-		in_loading_section = section;
-
-		// do not exect the request if we are not into our ajax request pages
-		if( ajaxBox.size() == 0 ) return false;
-
-		ajax_loading( "Loading section: " + section );
-		var data = {
-			'action' 		: 'pspLoadSection',
-			'section' 		: section,
-			'subsection'	: subsection
-		};
-		
-		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
-		$.post(ajaxurl, data, function(response) {
-			if(response.status == 'ok'){
-				$("h1.psp-section-headline").html(response.headline);
-				ajaxBox.html(response.html);
-				
-				makeTabs();
-				makeActiveMenu();
-				
-				if( typeof pspDashboard != "undefined" ){
-					pspDashboard.init();
+		function mark_section() {
+				var _subsection = '';
+				if ( subsection != '' ) {
+					_subsection = '--' + subsection;
+					if ( sub_istab != '' ) {
+						_subsection = '--' + sub_istab;
+						switch (section) {
+							case 'title_meta_format':
+								_subsection = '--__tab1';
+								break;
+						}
+					}
 				}
-				
+				console.log( 'section: '+section, 'subsection: '+_subsection, 'sub_istab: '+sub_istab );
+
 				// find new open
-                var new_open = topMenu.find('li#psp-sub-nav-' + section + (subsection != '' && sub_istab == '' ? '--' + subsection : ''));
+                //var new_open = topMenu.find('li#psp-sub-nav-' + section + (subsection != '' && sub_istab == '' ? '--' + subsection : ''));
+                //var new_open = topMenu.find( '.psp-section-' + section + (subsection != '' ? (sub_istab != '' ? '--' + sub_istab : '--' + subsection) : '') );
+				var new_open = topMenu.find( '.psp-section-' + section + _subsection );
                 var in_submenu = new_open.parent('.psp-sub-menu');
-                
+
                 // close current open menu
                 var current_open = topMenu.find(">li.active");
                 if( current_open != in_submenu.parent('li') ){
@@ -142,7 +130,40 @@ pspFreamwork = (function ($) {
 						callback[0]( callback[1] );
 					}
 				}
-					
+		};
+ 
+		// fix for duble loading of js function
+		if( in_loading_section == section ){
+			mark_section()
+			return false;
+		}
+		in_loading_section = section;
+
+		// do not expect the request if we are not into our ajax request pages
+		if( ajaxBox.size() == 0 ) return false;
+
+		ajax_loading( "Loading section: " + section );
+		var data = {
+			'action' 		: 'pspLoadSection',
+			'section' 		: section,
+			'subsection'	: subsection
+		};
+		
+		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+		$.post(ajaxurl, data, function(response) {
+			if(response.status == 'ok'){
+				$("h1.psp-section-headline").html(response.headline);
+				ajaxBox.html(response.html);
+				
+				makeTabs();
+				makeActiveMenu();
+				
+				if( typeof pspDashboard != "undefined" ){
+					pspDashboard.init();
+				}
+				
+				mark_section();
+
 				multiselect_left2right();
 				init_custom_checkbox();
 			}
@@ -265,15 +286,18 @@ pspFreamwork = (function ($) {
 	
 	function saveOptions($btn)
 	{
-		var theForm 		= $btn.parents('form').eq(0),
-			value 			= $btn.val(),
-			statusBoxHtml 	= theForm.find('div#psp-status-box');
+		var theForm 				= $btn.parents('form').eq(0),
+			  theForm_id			= theForm.attr('id'),
+			  value 					= $btn.val(),
+			  statusBoxHtml 	= theForm.find('div#psp-status-box');
 		// replace the save button value with loading message
 		$btn.val('saving setings ...').removeClass('green').addClass('gray');
 
 		multiselect_left2right(true);
 		
 		var options       = theForm.serializeArray();
+		//console.log( $.param( options ) ); return false;
+
 		// Because serializeArray() ignores unset checkboxes and radio buttons, also empty selects
 		var el            = { inputs: null, selects: null };
         el.inputs         = theForm.find('input[type=checkbox]:not(:checked)');
@@ -281,8 +305,11 @@ pspFreamwork = (function ($) {
         el.selects_m      = theForm.find('select[multiple]:not(:selected)');
         //for (var kk = 0, arr = ['inputs', 'selects'], len = arr.length; kk < len; kk++) {
         //    var vv = arr[kk], $vv = el[vv];
-  
+        
         for (var kk in el) {
+        	if ( 'psp_title_meta_format' == theForm_id ) {
+        		continue;
+        	}
             if ( $.inArray(kk, ['selects_m']) > -1 ) {
                 options = options.concat(el[kk].map(
                     function() {
@@ -291,6 +318,7 @@ pspFreamwork = (function ($) {
                 );
             }
         }
+        //console.log( $.param( options ) ); return false;
 
 		if(theForm.length > 0) {
 			// serialiaze the form and send to saving data
@@ -321,10 +349,13 @@ pspFreamwork = (function ($) {
 	
 	function moduleChangeStatus($btn)
 	{
-		var value = $btn.text(),
-			the_status = $btn.hasClass('psp_activate') ? 'true' : 'false';
+		var module		= $btn.attr('rel'),
+			  value 			= $btn.text(),
+			  the_status 	= $btn.hasClass('psp_activate') ? 'true' : 'false';
+
 		// replace the save button value with loading message
 		$btn.text('saving setings ...');
+
 		var data = {
 			'action' 		: 'pspModuleChangeStatus',
 			'module' 		: $btn.attr('rel'),
@@ -333,7 +364,45 @@ pspFreamwork = (function ($) {
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		$.post(ajaxurl, data, function(response) {
 			if(response.status == 'ok'){
-				window.location.reload();
+
+				// title & meta format activation => save its options
+				if ( 'title_meta_format' == module && 'true' == the_status ) {
+					var currentLoc 	= window.location.href,
+						newLoc		= currentLoc.indexOf('#') > 0
+							? currentLoc.replace(/#.*$/, '#title_meta_format#tab:__tab1') : currentLoc + '#title_meta_format#tab:__tab1';
+					
+					window.location.replace( newLoc );
+
+					function _check_loaded() {
+						// _max_step & _interval => verify for maximum _interval * _max_step seconds ( mili seconds / 1000 )
+						var _check_el 		= null,
+							  _timer				= null,
+							  _max_step		= 50,
+							  _current_step = 0,
+							  _interval			= 600; // in miliseconds
+
+						function _check() {
+							_timer = setTimeout(function() {
+								_check_el = $('body .psp-saveOptions');
+								_current_step++;
+
+								if ( ! _check_el.length && _current_step < _max_step ) {
+									_check();
+								}
+								else {
+									clearTimeout( _timer );
+									_timer = null;
+									_check_el.trigger('click');
+								}
+							}, _interval);
+						};
+						_check();
+					};
+					_check_loaded();
+				}
+				else {
+					window.location.reload();
+				}
 			}
 		}, 'json');
 	}
@@ -654,7 +723,7 @@ pspFreamwork = (function ($) {
 			return ( $(this).data('parent') == active_tab.attr('title') );
 		});
 
-			$('ul.subtabsHeader').hide();
+		$('ul.subtabsHeader').hide();
 		if ( $subtabsWrapper.length > 0 ) {
 
 			$subtabsWrapper.show();
@@ -676,10 +745,12 @@ pspFreamwork = (function ($) {
 
 	function makeActiveMenu()
 	{
+		//console.log( section, subsection, sub_istab );
 		topMenu.find('.active').removeClass('active');
 
 		// try to find the first child menu of current section
-		var current_section = topMenu.find( '.psp-section-' + section + (subsection != '' && sub_istab == '' ? '--' + subsection : ''));
+		var current_section = topMenu.find( '.psp-section-' + section + (subsection != '' ? (sub_istab != '' ? '--' + sub_istab : '--' + subsection) : ''));
+		//console.log( current_section ); 
  
 		// is submenu item, loop parent
 		if( current_section.parent('ul').hasClass('psp-sub-menu') ){
@@ -821,7 +892,7 @@ pspFreamwork = (function ($) {
 					subsection = section.substr( __tmp+1 );
 					section = section.slice( 0, __tmp );
 				}
-	 
+
     			if ( subsection != '' ) {
     			    var __re = /tab:([0-9a-zA-Z_-]*)/gi; //new RegExp("tab:([0-9a-zA-Z_-]*)", "gi");
     			    if ( __re.test(subsection) ) {
@@ -829,9 +900,10 @@ pspFreamwork = (function ($) {
                         sub_istab = typeof (__match[0]) != 'undefined' ? __match[0].replace('tab:', '') : '';
 
                         if ( sub_istab == '' ) return false;
+ 
                         makeRequest([
-                            function (s) { 
-                                $('.tabsHeader').find('a[title="'+s+'"]').click();
+                            function (s) {
+                                $('.psp-tabs-header').find('a[title="'+s+'"]').click();
                             },
                             sub_istab
                         ]);

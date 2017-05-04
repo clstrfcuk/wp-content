@@ -52,6 +52,22 @@ echo json_encode(
 						),
 						'desc' 		=> 'select article image'
 					)
+					,'image_width' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> '',
+						'size' 		=> 'large',
+						'force_width'=> '400',
+						'title' 	=> __('Image Width:', 'psp'),
+						'desc' 		=> __('enter image width (positive number) - The width of the image, in pixels. Images should be at least 696 pixels wide.', 'psp')
+					)
+					,'image_height' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> '',
+						'size' 		=> 'large',
+						'force_width'=> '400',
+						'title' 	=> __('Image Height:', 'psp'),
+						'desc' 		=> __('enter image height (positive number) - The height of the image, in pixels.', 'psp')
+					)
 					,'description' 	=> array(
 						'type' 		=> 'textarea',
 						'std' 		=> '',
@@ -75,6 +91,18 @@ echo json_encode(
 						'force_width'=> '400',
 						'title' 	=> __('Publisher:', 'psp'),
 						'desc' 		=> __('enter publisher', 'psp')
+					)
+					,'publisher_logo' => array(
+						'type' 		=> 'upload_image',
+						'size' 		=> 'large',
+						'title' 	=> 'Publisher Logo',
+						'value' 	=> 'Upload image',
+						'thumbSize' => array(
+							'w' => '100',
+							'h' => '100',
+							'zc' => '2',
+						),
+						'desc' 		=> 'An associated logo.'
 					)
 					,'pubdate' => array(
 						'type' 		=> 'date',
@@ -100,7 +128,14 @@ echo json_encode(
 						'title' 	=> __('Article Section:', 'psp'),
 						'desc' 		=> __('enter article section', 'psp')
 					)
-
+					,'headline' 	=> array(
+						'type' 		=> 'textarea',
+						'std' 		=> '',
+						'size' 		=> 'large',
+						'force_width'=> '400',
+						'title' 	=> __('Headline:', 'psp'),
+						'desc' 		=> __('Headline of the article.', 'psp')
+					)
 				)
 			) // end shortcode
 			

@@ -1,0 +1,35 @@
+// =============================================================================
+// ETHOS.SCSS
+// -----------------------------------------------------------------------------
+// Contains all deprecated styles for the Ethos Stack.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Functions, Variables, and Mixins
+// =============================================================================
+
+// Functions, Variables, and Mixins
+// =============================================================================
+
+@import "../../../../tco/css/lib/import";
+@import "../../../../css/src/site/_scss/inc/functions";
+@import "../../../../css/src/site/_scss/inc/variables";
+@import "../../../../css/src/site/_scss/stacks/ethos/inc/variables";
+@import "../../../../css/src/site/_scss/inc/mixins";
+@import "../../../../css/src/site/_scss/stacks/ethos/inc/mixins";
+
+
+
+// Deprecated Styles
+// =============================================================================
+
+@import "site/ethos/dropdowns";
+@import "site/ethos/widgetbar";
+@import "site/ethos/topbar";
+@import "site/ethos/logobar";
+@import "site/navbar";
+@import "site/ethos/navbar";
+@import "site/ethos/megamenu";
+@import "site/ethos/colophon";

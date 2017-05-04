@@ -26,9 +26,11 @@ if (class_exists('pspLocalSEO') != true) {
 		
 		static protected $_instance;
 		
-		static protected $geo_uri = '//maps.googleapis.com/maps/api/geocode/{output}?address={address}&sensor=false';
-		static protected $geo_uri_js = '//maps.google.com/maps/api/js?v=3.exp&sensor=false';
 		static protected $slug = 'psplocation';
+		
+		static protected $gmap_api_url_geocode = 'https://maps.googleapis.com/maps/api/geocode/{output}?{keycode}address={address}';
+		static protected $gmap_api_url_js = '//maps.google.com/maps/api/js?{keycode}v=3.exp';
+		static protected $gmap_api_url_static = 'http://maps.googleapis.com/maps/api/staticmap?{keycode}center={address}&amp;zoom={zoom}&amp;size={width}x{height}&amp;maptype={maptype}&amp;markers={address}';
 		
 	
         /*
@@ -806,7 +808,7 @@ if (class_exists('pspLocalSEO') != true) {
 			}
 		?>
 
-		<script type="text/javascript" src="<?php echo $this->get_geo_uri_js(); ?>" ></script>
+		<script type="text/javascript" src="<?php echo $this->get_gmap_api_url('js'); ?>" ></script>
 		<div class="panel-body psp-panel-body psp-form-row">
 			<label><?php _e('Google Map Preview:', 'psp'); ?>	</label>
 			<!--<span class="formNote">You can verify latitude and longitude <a href="http://www.geo-tag.de/generator/en.html" target="_blank">here</a> (only if you think that automatically generated map by using Googles api from the address you've entered, isn't right)</span>-->
@@ -822,8 +824,34 @@ if (class_exists('pspLocalSEO') != true) {
 			return $output;
 		}
 
-		protected function get_geo_uri_js() {
-			return self::$geo_uri_js;
+		protected function get_gmap_api_url($api='static') {
+			switch ($api) {
+				case 'static':
+					$key = isset($this->settings['google_map_api_key']) ? (string) $this->settings['google_map_api_key'] : '';
+					$url = self::$gmap_api_url_static;
+					break;
+					
+				case 'js':
+					$key = isset($this->settings['google_map_api_key_js']) ? (string) $this->settings['google_map_api_key_js'] : '';
+					$url = self::$gmap_api_url_js;
+					break;
+					
+				case 'geocode':
+					$key = isset($this->settings['google_map_api_key_geocode']) ? (string) $this->settings['google_map_api_key_geocode'] : '';
+					$url = self::$gmap_api_url_geocode;
+					break;
+
+				// default: static
+				default:
+					$key = isset($this->settings['google_map_api_key']) ? (string) $this->settings['google_map_api_key'] : '';
+					$url = self::$gmap_api_url_static;
+					break;
+			}
+
+			$key = trim($key);
+			$keycode = ( '' != $key ? 'key=' . $key . '&' : '' );
+			$url = str_replace('{keycode}', $keycode, $url);
+			return $url;
 		}
 
 		public function get_geo_location( $location=array(), $output='xml' )
@@ -851,18 +879,35 @@ if (class_exists('pspLocalSEO') != true) {
 			
 			if ( empty($address) ) return $ret;
 			
-			$uri = self::$geo_uri;
+			$uri = $this->get_gmap_api_url('geocode');
 			$uri = str_replace('{output}', $output, $uri);
 			$uri = str_replace('{address}', rawurlencode($address), $uri);
+			//var_dump('<pre>', $uri, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;    
 
+			$gresp = false;
 			if( ini_get('allow_url_fopen') ) {
 				$gresp = simplexml_load_file( $uri );
 			} else {
-				$curl = curl_init( $uri );
-				curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-				$data = curl_exec( $uri );
-				$gresp = simplexml_load_string($data);
+	            $input_params = array(
+	            );
+	            $output_params = array(
+	            );
+	            $curl_resp = $this->the_plugin->curl( $uri, $input_params, $output_params, true );
+				//var_dump('<pre>', $curl_resp, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+				if ( 'valid' == $curl_resp['status'] ) {    
+					$data = $curl_resp['data'];
+					$gresp = simplexml_load_string($data);
+				}
+
+				if (0) {
+					$curl = curl_init();
+					curl_setopt($curl, CURLOPT_URL, $uri);
+					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+					$data = curl_exec( $curl );
+					$gresp = simplexml_load_string($data);
+				}
 			}
+			//var_dump('<pre>', $gresp, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
         
 			if ( !$gresp ) return $ret;
 			if ( $gresp->status != 'OK' ) return $ret;

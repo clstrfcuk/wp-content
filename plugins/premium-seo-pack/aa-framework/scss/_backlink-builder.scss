@@ -1,5 +1,10 @@
 .#{$alias} {
 	.#{$alias}-backlink-builder {
+		
+		.psp-callout.psp-callout-danger > span {
+			color: #ff0000;
+			font-size: 1.6rem;
+		}
 
 		##{$alias}-list-table-posts {
 		margin-top: px(21);

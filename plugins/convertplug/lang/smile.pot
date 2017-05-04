@@ -1,0 +1,5449 @@
+# Copyright (C) 2017 Brainstorm Force
+# This file is distributed under the same license as the ConvertPlug package.
+msgid ""
+msgstr ""
+"Project-Id-Version: ConvertPlug 2.3.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convertplug\n"
+"POT-Creation-Date: 2017-01-24 12:58:41+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
+"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Country: United States\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-Bookmarks: \n"
+"X-Textdomain-Support: yes\n"
+
+#: framework/functions/component_social_media.php:115
+msgid "1"
+msgstr ""
+
+#: framework/functions/component_social_media.php:116
+msgid "2"
+msgstr ""
+
+#: framework/functions/component_social_media.php:117
+msgid "3"
+msgstr ""
+
+#: framework/functions/component_social_media.php:118
+msgid "4"
+msgstr ""
+
+#: framework/functions/component_social_media.php:119
+msgid "5"
+msgstr ""
+
+#: framework/functions/component_social_media.php:120
+msgid "6"
+msgstr ""
+
+#: admin/ajax-actions.php:545
+msgid "Unable to delete the style. Please Try again."
+msgstr ""
+
+#: admin/ajax-actions.php:568
+msgid "Modules Updated!"
+msgstr ""
+
+#: admin/ajax-actions.php:572 admin/ajax-actions.php:1757
+#: admin/ajax-actions.php:1778
+msgid "No settings were updated. Try again!"
+msgstr ""
+
+#: admin/ajax-actions.php:590 admin/contacts/views/dashboard.php:418
+msgid "Something went wrong! Please try again."
+msgstr ""
+
+#: admin/ajax-actions.php:681
+msgid "Campaign with same name already exists"
+msgstr ""
+
+#: admin/ajax-actions.php:714
+#: modules/info_bar/functions/functions.common.php:1181
+#: modules/modal/functions/functions.common.php:2002
+#: modules/slide_in/functions/functions.common.php:2175
+msgid "Please enter correct email address."
+msgstr ""
+
+#: admin/ajax-actions.php:715 admin/ajax-actions.php:779
+#: modules/info_bar/functions/functions.common.php:1083
+#: modules/modal/functions/functions.common.php:1918
+#: modules/slide_in/functions/functions.common.php:2091
+msgid "Thank you."
+msgstr ""
+
+#: admin/ajax-actions.php:769 admin/settings.php:115
+msgid "Already Subscribed...!"
+msgstr ""
+
+#: admin/ajax-actions.php:946
+msgid "No contacts available to export."
+msgstr ""
+
+#: admin/ajax-actions.php:1753 admin/ajax-actions.php:1774
+msgid "Settings Updated!"
+msgstr ""
+
+#: admin/bsf-core/BSF_License_Manager.php:242
+msgid "Product id is missing."
+msgstr ""
+
+#: admin/bsf-core/BSF_License_Manager.php:308
+msgid "Your license is valid!"
+msgstr ""
+
+#: admin/bsf-core/BSF_Update_Manager.php:462
+msgid ""
+" <br>This plugin is came bundled with the <i>%1$s</i>. For receiving "
+"updates, you need to register license of <i>%2$s</i> <a "
+"href=\"%3$s\">here</a>."
+msgstr ""
+
+#: admin/bsf-core/BSF_Update_Manager.php:464
+msgid " <i>Click <a href=\"%1$s\">here</a> to activate your license.</i>"
+msgstr ""
+
+#: admin/bsf-core/BSF_Update_Manager.php:497
+#: admin/bsf-core/BSF_Update_Manager.php:519
+msgid ""
+"Click <a target=\"_blank\" href=\"%1s\">here</a> to activate license of "
+"<i>%2s</i> to receive automatic updates."
+msgstr ""
+
+#: admin/bsf-core/BSF_Update_Manager.php:503
+msgid ""
+"This plugin is came bundled with the <i>%1s</i>. For receiving updates, you "
+"need to register license of <i>%2s</i> <a target=\"_blank\" "
+"href=\"%3s\">here</a>."
+msgstr ""
+
+#: admin/bsf-core/auto-update/admin-functions.php:612
+msgid "Please"
+msgstr ""
+
+#: admin/bsf-core/auto-update/admin-functions.php:612
+msgid "activate"
+msgstr ""
+
+#: admin/bsf-core/auto-update/admin-functions.php:612
+msgid "your copy of the"
+msgstr ""
+
+#: admin/bsf-core/auto-update/admin-functions.php:612
+msgid "to get update notifications, access to support features & other resources!"
+msgstr ""
+
+#: admin/bsf-core/auto-update/admin-functions.php:657
+msgid "Something went wrong. Please try again!"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:23
+msgid "Upgrading Extension"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:40
+msgid "Back to Registration"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:234
+msgid "Let's Get Started!"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:237
+msgid ""
+"Please register using the form below and get instant access to our support "
+"portal, updates, extensions and more!"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:248
+#: modules/info_bar/functions/functions.common.php:2331
+msgid "Your Name"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:253
+msgid "Your Email Address"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:259
+msgid "Verify Email Address"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:266
+msgid "Receive important news, updates & freebies on email."
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:273
+msgid "Register and Proceed"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:280
+msgid "We respect your privacy & of course you can unsubscribe at any time."
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:328
+msgid "Welcome to %s"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:331
+msgid ""
+"Validate your purchase keys and get eligible for receiving one click "
+"updates, extensions and freebies."
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:391
+msgid "Licenses"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:394
+msgid "Help"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:398 admin/cp_import.php:190
+#: admin/debug.php:60 admin/get_started.php:37 admin/knowledge_base.php:24
+#: admin/modules.php:55 admin/registration.php:26 admin/settings.php:60
+msgid "Debug"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:400
+msgid "System Info"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:625
+msgid "Enable Developer access"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:626
+msgid "Read more about developer access "
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:628
+msgid "here"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:637
+msgid "Activate your license to enable!"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:662
+msgid "Check if there are updates available of plugins by %s."
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:667
+msgid "Check Updates Now"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:677
+msgid ""
+"Having any trouble using our products? Head to our support center to get "
+"your issues resolved."
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:680
+msgid "Request Support"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:701
+msgid "Reset %s Registration"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:714
+msgid "Check Bundled Products"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:723
+msgid "%s Menu in Settings?"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:725
+msgid "Move the %s menu to WordPress settings?"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:728
+msgid "Update"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:742
+msgid "WordPress Environment"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:847
+msgid "Server Environment"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:922
+msgid "Theme Information"
+msgstr ""
+
+#: admin/bsf-core/auto-update/index.php:942
+msgid "Installed Plugins"
+msgstr ""
+
+#: admin/bsf-core/index.php:152 admin/bsf-core/index.php:153
+msgid "Extensions"
+msgstr ""
+
+#: admin/bsf-core/index.php:289
+msgid "iMedica Extensions"
+msgstr ""
+
+#: admin/bsf-core/index.php:794
+msgid " requires following plugins to be active : "
+msgstr ""
+
+#: admin/bsf-core/index.php:804
+msgid " requires following plugins to be installed and activated : "
+msgstr ""
+
+#: admin/bsf-core/index.php:813
+msgid "Begin activating plugins"
+msgstr ""
+
+#: admin/bsf-core/index.php:817
+msgid "Begin installing plugins"
+msgstr ""
+
+#: admin/bsf-core/index.php:820
+msgid "Dismiss This Notice"
+msgstr ""
+
+#: admin/bsf-core/index.php:847
+msgid ""
+"Looks like you are on a WordPress Multisite, you will need to install and "
+"network activate %1$s Brainstorm Updater for Multisite %2$s plugin. "
+"Download it from %3$s here %4$s"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/admin-functions.php:165
+msgid "You do not have sufficient permissions to install plugins for this site."
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/admin-functions.php:223
+msgid "Error! Can't connect to filesystem"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/admin-functions.php:234
+msgid "Downloading package from Server"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/admin-functions.php:235
+msgid "Removing old plugin, if exists"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:11
+msgid "Installing Extension"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:18
+msgid "Manage plugin here"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:61
+msgid "Extensions "
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:67
+msgid "Available Extensions"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:137
+#: admin/bsf-core/plugin-installer/index.php:253
+msgid "Downloading"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:178
+#: admin/bsf-core/plugin-installer/index.php:293
+msgid "Install"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:184
+#: admin/bsf-core/plugin-installer/index.php:298 admin/registration.php:50
+msgid "Validate Purchase"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:196
+#: admin/bsf-core/plugin-installer/index.php:310
+msgid "Installed"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:208
+msgid "All available extensions have been installed!"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:216
+msgid "Installed Extensions"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:322
+msgid "No extensions installed yet!"
+msgstr ""
+
+#: admin/bsf-core/plugin-installer/index.php:331
+msgid "No extensions available yet!"
+msgstr ""
+
+#: admin/contacts/views/analytics.php:32 admin/contacts/views/contacts.php:109
+#: admin/contacts/views/dashboard.php:121
+#: admin/contacts/views/dashboard.php:242
+#: admin/contacts/views/dashboard.php:268 admin/get_started.php:68
+#: modules/info_bar/views/main.php:156 modules/info_bar/views/main.php:367
+#: modules/info_bar/views/main.php:368
+#: modules/info_bar/views/variant/variant.php:65
+#: modules/modal/views/main.php:157 modules/modal/views/main.php:370
+#: modules/modal/views/main.php:371 modules/modal/views/variant/variant.php:65
+#: modules/slide_in/views/main.php:156 modules/slide_in/views/main.php:367
+#: modules/slide_in/views/main.php:368
+#: modules/slide_in/views/variant/variant.php:65
+msgid "Analytics"
+msgstr ""
+
+#: admin/contacts/views/analytics.php:32
+#: admin/contacts/views/contact-details.php:136
+#: admin/contacts/views/contacts.php:103
+msgid "Back to Campaigns List"
+msgstr ""
+
+#: admin/contacts/views/analytics.php:55
+msgid "Select Campaign"
+msgstr ""
+
+#: admin/contacts/views/analytics.php:57
+msgid "All Campaigns"
+msgstr ""
+
+#: admin/contacts/views/analytics.php:64
+#: modules/info_bar/views/analytics.php:68 modules/modal/views/analytics.php:68
+#: modules/slide_in/views/analytics.php:69
+msgid "Start Date <span class=\"cp-analatics-italic\">(dd-mm-yyyy)</span>"
+msgstr ""
+
+#: admin/contacts/views/analytics.php:68
+#: modules/info_bar/views/analytics.php:72 modules/modal/views/analytics.php:72
+#: modules/slide_in/views/analytics.php:73
+msgid "End Date <span class=\"cp-analatics-italic\">(dd-mm-yyyy)</span>"
+msgstr ""
+
+#: admin/contacts/views/analytics.php:72
+#: modules/info_bar/views/analytics.php:76 modules/modal/views/analytics.php:76
+#: modules/slide_in/views/analytics.php:77
+msgid "Graph Type"
+msgstr ""
+
+#: admin/contacts/views/contact-details.php:136
+msgid "Subscriber Details"
+msgstr ""
+
+#: admin/contacts/views/contact-details.php:160
+msgid "Email Address"
+msgstr ""
+
+#: admin/contacts/views/contact-details.php:164
+msgid "Date"
+msgstr ""
+
+#: admin/contacts/views/contacts.php:106
+msgid "Export CSV"
+msgstr ""
+
+#: admin/contacts/views/contacts.php:114 admin/contacts/views/dashboard.php:126
+#: modules/info_bar/views/main.php:164 modules/modal/views/main.php:165
+#: modules/modal/views/main.php:399 modules/slide_in/views/main.php:164
+#: modules/slide_in/views/main.php:396
+msgid "Search"
+msgstr ""
+
+#: admin/contacts/views/contacts.php:136
+msgid "Name"
+msgstr ""
+
+#: admin/contacts/views/contacts.php:140
+msgid "Email"
+msgstr ""
+
+#: admin/contacts/views/contacts.php:144
+msgid "Subscribed On"
+msgstr ""
+
+#: admin/contacts/views/contacts.php:171 modules/info_bar/views/main.php:343
+#: modules/modal/views/main.php:346 modules/slide_in/views/main.php:343
+msgid "No results available."
+msgstr ""
+
+#: admin/contacts/views/contacts.php:171
+msgid "Back to Contact List"
+msgstr ""
+
+#: admin/contacts/views/contacts.php:175
+msgid "No contacts available."
+msgstr ""
+
+#: admin/contacts/views/contacts.php:191 admin/contacts/views/dashboard.php:291
+msgid "Search Contacts:"
+msgstr ""
+
+#: admin/contacts/views/contacts.php:204 admin/contacts/views/dashboard.php:160
+msgid "Contacts"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:115
+#: admin/contacts/views/dashboard.php:132 admin/resources.php:27
+#: convertplug.php:740 convertplug.php:741
+msgid "Connects"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:115
+#: admin/contacts/views/dashboard.php:254
+msgid "Create new campaign"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:115
+#: admin/contacts/views/dashboard.php:118
+#: admin/contacts/views/dashboard.php:267 admin/contacts/views/new-list.php:5
+msgid "Create New Campaign"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:116
+msgid ""
+"Connects is a tool to capture, sync, manage & analyze your contacts all in "
+"one place. Create campaigns & integrate them with your favorite CRM "
+"software. It comes with built-in analytics as well."
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:145
+msgid "Service"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:150
+msgid "Campaign"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:155
+msgid "List"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:163 modules/info_bar/views/main.php:193
+#: modules/info_bar/views/variant/variant.php:90
+#: modules/modal/views/main.php:194 modules/modal/views/variant/variant.php:90
+#: modules/slide_in/views/main.php:193
+#: modules/slide_in/views/variant/variant.php:90
+msgid "Actions"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:183
+msgid "Contact list is empty."
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:241
+msgid "Export"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:243
+msgid "Delete"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:252
+msgid "No results available. "
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:252
+msgid "back to campaign list"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:254 modules/info_bar/views/main.php:348
+#: modules/modal/views/main.php:351 modules/slide_in/views/main.php:348
+msgid "First time being here?"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:254
+msgid "Awesome! Let's start with your first campaign"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:267
+msgid "Create new list"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:333
+msgid "Are you sure?"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:334
+msgid "You will not be able to recover this list!"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:338
+msgid "Yes, delete it!"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:339
+msgid "No, cancel it!"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:348
+msgid "Cancelled"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:348
+msgid "Your campaign is safe :)"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:377
+#: admin/contacts/views/dashboard.php:417 admin/contacts/views/new-list.php:353
+#: admin/contacts/views/new-list.php:366 admin/debug.php:238
+#: admin/settings.php:443
+msgid "Error!"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:379
+msgid "You can not delete this campaign as it is being used in "
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:379
+msgid "Please change submission settings of above and try again."
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:409
+msgid "Removed!"
+msgstr ""
+
+#: admin/contacts/views/dashboard.php:410
+msgid "The campaign list you have selected is removed."
+msgstr ""
+
+#: admin/contacts/views/new-list.php:57
+msgid "Campaign Name"
+msgstr ""
+
+#: admin/contacts/views/new-list.php:70
+msgid "Do you want to sync connects with any third party software?"
+msgstr ""
+
+#: admin/contacts/views/new-list.php:105
+msgid "Where to find this?"
+msgstr ""
+
+#: admin/contacts/views/new-list.php:117
+msgid "Previous"
+msgstr ""
+
+#: admin/contacts/views/new-list.php:123
+msgid "Create Campaign"
+msgstr ""
+
+#: admin/contacts/views/new-list.php:128
+msgid "Next"
+msgstr ""
+
+#: admin/contacts/views/new-list.php:232
+msgid "Authenticate ' + jQuery(this).attr('data-mailerslug') + '"
+msgstr ""
+
+#: admin/contacts/views/new-list.php:345
+msgid "Added!"
+msgstr ""
+
+#: admin/contacts/views/new-list.php:346
+msgid "The campaign you just created, is added to the list."
+msgstr ""
+
+#: admin/contacts/views/new-list.php:354 admin/contacts/views/new-list.php:367
+msgid "Error adding the campaign to the list. Please try again."
+msgstr ""
+
+#: admin/cp_import.php:168
+msgid "ConvertPlug - Import!"
+msgstr ""
+
+#: admin/cp_import.php:169
+msgid "Import style templates!"
+msgstr ""
+
+#: admin/cp_import.php:172 admin/debug.php:44 admin/get_started.php:17
+#: admin/knowledge_base.php:8 admin/modules.php:36 admin/registration.php:8
+#: admin/settings.php:43 convertplug.php:963
+msgid "Version"
+msgstr ""
+
+#: admin/cp_import.php:179 admin/debug.php:51 admin/get_started.php:25
+#: admin/knowledge_base.php:16 admin/modules.php:43 admin/registration.php:16
+#: admin/settings.php:50
+msgid "About"
+msgstr ""
+
+#: admin/cp_import.php:181 admin/debug.php:52 admin/get_started.php:26
+#: admin/knowledge_base.php:17 admin/modules.php:44 admin/registration.php:17
+#: admin/settings.php:51
+msgid "Modules"
+msgstr ""
+
+#: admin/cp_import.php:183 admin/get_started.php:28 admin/modules.php:46
+#: admin/registration.php:19 modules/info_bar/views/main.php:537
+#: modules/modal/views/main.php:538 modules/slide_in/views/main.php:538
+msgid "Import"
+msgstr ""
+
+#: admin/cp_import.php:186 admin/debug.php:54 admin/get_started.php:31
+#: admin/knowledge_base.php:19 admin/modules.php:49 admin/registration.php:21
+#: admin/settings.php:54
+msgid "Registration"
+msgstr ""
+
+#: admin/cp_import.php:203
+msgid "Import Styles"
+msgstr ""
+
+#: admin/debug.php:39
+msgid "ConvertPlug &mdash; Debugging"
+msgstr ""
+
+#: admin/debug.php:40
+msgid ""
+"Below are some settings that will help you to debug the js and css and some "
+"extra functionality.\r\n"
+msgstr ""
+
+#: admin/debug.php:57 admin/get_started.php:34 admin/knowledge_base.php:21
+#: admin/modules.php:52 admin/registration.php:23 admin/settings.php:57
+msgid "knowledge Base"
+msgstr ""
+
+#: admin/debug.php:57 admin/get_started.php:34 admin/knowledge_base.php:21
+#: admin/modules.php:52 admin/registration.php:23 admin/settings.php:57
+#: convertplug.php:788 convertplug.php:789
+msgid "Knowledge Base"
+msgstr ""
+
+#: admin/debug.php:76
+msgid "Developer Mode"
+msgstr ""
+
+#: admin/debug.php:77
+msgid "Enable developer mode to load all beautified CSS and JS."
+msgstr ""
+
+#: admin/debug.php:97
+msgid "Fixed Header Class / ID"
+msgstr ""
+
+#: admin/debug.php:98
+msgid ""
+"For effective execution of push page down functionality of Info Bar, please "
+"enter class / ID of fixed header of your theme. e.g. #ID, .class"
+msgstr ""
+
+#: admin/debug.php:105
+msgid "Top Offset Class / ID"
+msgstr ""
+
+#: admin/debug.php:106
+msgid ""
+"For effective execution of push page down functionality of Info Bar, please "
+"enter class / ID of Top offset container of your theme. e.g. #ID, .class"
+msgstr ""
+
+#: admin/debug.php:124
+msgid "Predefine Contact Form 7 Style"
+msgstr ""
+
+#: admin/debug.php:125
+msgid "Enable Predefined Style to your Contact Form 7."
+msgstr ""
+
+#: admin/debug.php:146
+msgid "After Content Scroll %"
+msgstr ""
+
+#: admin/debug.php:147
+msgid "Page scroll % to trigger the modal after content."
+msgstr ""
+
+#: admin/debug.php:151
+msgid " %"
+msgstr ""
+
+#: admin/debug.php:157
+msgid "Hide Admin Bar Using"
+msgstr ""
+
+#: admin/debug.php:158
+msgid ""
+"Depending on your selection, the WordPress admin bar will be hidden for you "
+"in customizer."
+msgstr ""
+
+#: admin/debug.php:163
+msgid "CSS"
+msgstr ""
+
+#: admin/debug.php:164
+msgid "WordPress Filter"
+msgstr ""
+
+#: admin/debug.php:176
+msgid "Default Action - when user is already subscribed"
+msgstr ""
+
+#: admin/debug.php:177
+msgid ""
+"Depending on your selection, action will be taken if user is already "
+"subscribed."
+msgstr ""
+
+#: admin/debug.php:182
+msgid "Show message as already subscribed"
+msgstr ""
+
+#: admin/debug.php:183
+msgid "Update and process as success"
+msgstr ""
+
+#: admin/debug.php:195
+msgid "Display Debug Info"
+msgstr ""
+
+#: admin/debug.php:196
+msgid "Enable this option to display debug info in HTML comments."
+msgstr ""
+
+#: admin/debug.php:209 admin/settings.php:370
+msgid "Save Settings"
+msgstr ""
+
+#: admin/debug.php:233 admin/settings.php:438
+msgid "Updated!"
+msgstr ""
+
+#: admin/get_started.php:13 admin/modules.php:32
+msgid "Welcome to ConvertPlug!"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Welcome to ConvertPlug - the easiest WordPress plugin to convert website "
+"traffic into leads. ConvertPlug will help you build email lists, drive "
+"traffic, promote videos, offer coupons and much more!"
+msgstr ""
+
+#: admin/get_started.php:49
+msgid "Same traffic, but more conversions!"
+msgstr ""
+
+#: admin/get_started.php:50
+msgid "Let's see how ConvertPlug works and some use cases -"
+msgstr ""
+
+#: admin/get_started.php:58
+msgid "Build Email List"
+msgstr ""
+
+#: admin/get_started.php:63
+msgid "Promote Videos"
+msgstr ""
+
+#: admin/get_started.php:73
+msgid "Drive Traffic"
+msgstr ""
+
+#: admin/get_started.php:78
+msgid "Offer Coupons"
+msgstr ""
+
+#: admin/get_started.php:83
+msgid "Share Updates"
+msgstr ""
+
+#: admin/get_started.php:123 admin/registration.php:74
+msgid "LET'S GET STARTED"
+msgstr ""
+
+#: admin/import-ajax.php:51 admin/import-ajax.php:307 admin/import-ajax.php:576
+#: framework/Ultimate_Icon_Manager.php:373
+msgid "Unable to extract the file."
+msgstr ""
+
+#: admin/import-ajax.php:100 admin/import-ajax.php:626
+msgid ""
+"Seems that the file is different from the exported modal zip. Please try "
+"with another zip file."
+msgstr ""
+
+#: admin/import-ajax.php:216 admin/import-ajax.php:484
+#: admin/import-ajax.php:728
+msgid "Style Already Exists! Please try importing another style."
+msgstr ""
+
+#: admin/import-ajax.php:247 admin/import-ajax.php:515
+#: admin/import-ajax.php:759
+msgid "imported successfully!"
+msgstr ""
+
+#: admin/import-ajax.php:254 admin/import-ajax.php:522
+#: admin/import-ajax.php:766
+msgid "Something went wrong! Please try again with different file."
+msgstr ""
+
+#: admin/import-ajax.php:358
+msgid ""
+"Seems that the file is different from the exported info bar zip. Please try "
+"with another zip file."
+msgstr ""
+
+#: admin/knowledge_base.php:4
+msgid "ConvertPlug &mdash; Knowledge Base"
+msgstr ""
+
+#: admin/knowledge_base.php:5
+msgid ""
+" We are here to help you solve all your doubts, queries and issues you "
+"might face while using ConvertPlug. In case of a problem, you can peep into "
+"our knowledge base and find a quick solution for it."
+msgstr ""
+
+#: admin/modules.php:96
+msgid "Save Modules"
+msgstr ""
+
+#: admin/modules.php:97
+msgid "Advanced Settings"
+msgstr ""
+
+#: admin/registration.php:4
+msgid "ConvertPlug &mdash; Registration"
+msgstr ""
+
+#: admin/registration.php:5
+msgid ""
+"When you register your copy of ConvertPlug, instant access to our support "
+"portal, one click updates, extensions and many other addon freebies will be "
+"unlocked to you. It is a one time process and will take less than a minute!."
+msgstr ""
+
+#: admin/registration.php:39
+msgid "Register"
+msgstr ""
+
+#: admin/registration.php:42
+msgid ""
+"Register with your email address which instantly creates your account on "
+"our support portal."
+msgstr ""
+
+#: admin/registration.php:53
+msgid ""
+"Once registered, enter your purchase code and validate your license to get "
+"eligible for one click updates."
+msgstr ""
+
+#: admin/registration.php:61
+msgid "That's All!"
+msgstr ""
+
+#: admin/registration.php:64
+msgid ""
+"You will have access to our support portal, one click updates, extensions "
+"and many other addon freebies."
+msgstr ""
+
+#: admin/registration.php:80
+msgid ""
+"Thank you for choosing ConvertPlug. We are thrilled and committed to make "
+"your WordPress experience better."
+msgstr ""
+
+#: admin/resources.php:5
+msgid "Resources!"
+msgstr ""
+
+#: admin/resources.php:39 convertplug.php:1328 convertplug.php:1329
+msgid "Addons"
+msgstr ""
+
+#: admin/resources.php:54
+msgid "Font Icon Manager"
+msgstr ""
+
+#: admin/resources.php:70 framework/Ultimate_Font_Manager.php:178
+msgid "Google Fonts Manager"
+msgstr ""
+
+#: admin/resources.php:83
+msgid "WP Comment Form"
+msgstr ""
+
+#: admin/resources.php:96
+msgid "WP Registration Form"
+msgstr ""
+
+#: admin/resources.php:109
+msgid "WooCommerce Checkout Form"
+msgstr ""
+
+#: admin/resources.php:122
+msgid "Contact Form 7"
+msgstr ""
+
+#: admin/settings.php:38
+msgid "ConvertPlug &mdash; Settings"
+msgstr ""
+
+#: admin/settings.php:39
+msgid ""
+"Below are some global settings that are applied to the elements designed "
+"with ConvertPlug. If you're just getting started, you probably don't need "
+"to do anything here right now.\r\n"
+msgstr ""
+
+#: admin/settings.php:52
+msgid "Settings"
+msgstr ""
+
+#: admin/settings.php:78
+msgid "MX Record Validation For Email"
+msgstr ""
+
+#: admin/settings.php:79
+msgid "Enable / disable MX lookup email validation method."
+msgstr ""
+
+#: admin/settings.php:102
+msgid "Display Your Customized Error Message"
+msgstr ""
+
+#: admin/settings.php:103
+msgid "If turned OFF, third party mailer error message will be displayed."
+msgstr ""
+
+#: admin/settings.php:118
+msgid "Enter Custom Message"
+msgstr ""
+
+#: admin/settings.php:119
+msgid "Enter your custom message to display when user is already subscribed."
+msgstr ""
+
+#: admin/settings.php:136
+msgid "Double Optin Enable"
+msgstr ""
+
+#: admin/settings.php:137
+msgid "Enable double optin for MailChimp, Benchmark, MyMail."
+msgstr ""
+
+#: admin/settings.php:156
+msgid "Subscriber Notification"
+msgstr ""
+
+#: admin/settings.php:157
+msgid "Enable Subscriber Notification For Default Campaign."
+msgstr ""
+
+#: admin/settings.php:172
+msgid "Enter Email Id"
+msgstr ""
+
+#: admin/settings.php:173
+msgid "Enter your email address to get notification when user is subscribed."
+msgstr ""
+
+#: admin/settings.php:190 convertplug.php:780
+#: modules/info_bar/functions/functions.common.php:24
+#: modules/modal/functions/functions.common.php:27
+#: modules/slide_in/functions/functions.common.php:85
+msgid "Google Fonts"
+msgstr ""
+
+#: admin/settings.php:191
+msgid "Load Google Fonts at front end."
+msgstr ""
+
+#: admin/settings.php:220
+msgid "Set Timezone"
+msgstr ""
+
+#: admin/settings.php:221
+msgid ""
+"Depending on your selection, input will be taken for timer based features "
+"in ConvertPlug."
+msgstr ""
+
+#: admin/settings.php:226
+msgid "WordPress Timezone"
+msgstr ""
+
+#: admin/settings.php:227
+msgid "System Default Time"
+msgstr ""
+
+#: admin/settings.php:235
+msgid "User Inactivity Time"
+msgstr ""
+
+#: admin/settings.php:236
+msgid ""
+"Module can be trigger for idle user on your website. This setting helps you "
+"control that idle time."
+msgstr ""
+
+#: admin/settings.php:240
+msgid " Seconds"
+msgstr ""
+
+#: admin/settings.php:253
+msgid "Display Style Edit Link On Front End"
+msgstr ""
+
+#: admin/settings.php:254
+msgid ""
+"Enable style edit link on frontend at bottom right corner of the module, so "
+"a user can easily navigate to edit style window. This link will be visible "
+"to users who have access to ConvertPlug backend."
+msgstr ""
+
+#: admin/settings.php:275
+msgid "Third Party Plugin Support"
+msgstr ""
+
+#: admin/settings.php:276
+msgid ""
+"Enable this option if you are facing any issues to access ConvertPlug "
+"customizer ( edit module screen ). After enabling this option, ConvertPlug "
+"will try to resolve all possible JS errors automatically."
+msgstr ""
+
+#: admin/settings.php:293
+msgid "Disable Modal Impression Count For"
+msgstr ""
+
+#: admin/settings.php:294
+msgid ""
+"This setting is used while generating analytics data. For selected "
+"WordPress user roles, impressions will not be counted."
+msgstr ""
+
+#: admin/settings.php:339
+msgid "Allow ConvertPlug Dashboard Access For"
+msgstr ""
+
+#: admin/settings.php:340
+msgid ""
+"ConvertPlug dashboard access will be provided to selected user roles. By "
+"default, Administrator user role has complete access of ConvertPlug & it "
+"can not be changed."
+msgstr ""
+
+#: convertplug.php:750 convertplug.php:751
+msgid "Resources"
+msgstr ""
+
+#: convertplug.php:779
+msgid "Google Font Manager"
+msgstr ""
+
+#: convertplug.php:1451
+msgid ""
+"License registration and extensions are not part of plugin/theme anymore. "
+"Kindly download and install \"BSF CORE\" plugin to manage your licenses and "
+"extensins."
+msgstr ""
+
+#: convertplug.php:1493
+msgid ""
+"You've just installed ConvertPlug 2.1.0 As we've made important changes in "
+"this version, you are strongly advised to read the changelog <a "
+"target='_blank' "
+"href='https://changelog.brainstormforce.com/convertplug/author/"
+"brainstormforce/'>here</a>."
+msgstr ""
+
+#: convertplug.php:1497
+msgid ""
+"You've just updated ConvertPlug 2.1.0 As we've made important changes in "
+"this version, you are strongly advised to read the changelog <a "
+"target='_blank' "
+"href='https://changelog.brainstormforce.com/convertplug/author/"
+"brainstormforce/'>here</a>."
+msgstr ""
+
+#: convertplug.php:1521
+msgid ""
+"Your server seems to be running outdated, unsupported and vulnerable "
+"version of PHP. You are advised to contact your host and upgrade to PHP 5.6 "
+"or greater."
+msgstr ""
+
+#: framework/Ultimate_Font_Manager.php:179
+msgid "Refresh Font List"
+msgstr ""
+
+#: framework/Ultimate_Font_Manager.php:184
+msgid "Search font.."
+msgstr ""
+
+#: framework/Ultimate_Font_Manager.php:192
+msgid "Your Font Collection"
+msgstr ""
+
+#: framework/Ultimate_Font_Manager.php:261
+msgid "Update font"
+msgstr ""
+
+#: framework/Ultimate_Font_Manager.php:318
+msgid ""
+"Fonts could not be downloaded as there might be some issue with "
+"file_get_contents or wp_remote_get due to your server configuration."
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:97
+#: framework/Ultimate_Icon_Manager.php:98
+msgid "Icon Manager"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:131
+msgid "Icon Fonts Manager"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:132
+msgid "Upload/Select Fontello Font Zip"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:132
+msgid "Insert Fonts Zip File"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:133
+msgid "Upload New Icons"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:152
+msgid "No font icons uploaded. Upload some font icons to display here."
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:247
+msgid "Default Icons"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:305
+msgid ""
+"Using this feature is reserved for Super Admins. You unfortunately don't "
+"have the necessary permissions."
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:320
+msgid "Was not able to retrieve the Font name from your Uploaded Folder"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:322
+msgid "smile_font_added:"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:334
+msgid "smile_font_removed"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:336
+msgid "Was not able to remove Font"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:348
+msgid "Wasn't able to create temp folder"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:383
+msgid "Wasn't able to work with Zip Archive"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:395
+msgid ""
+"selection.json or SVG file not found. Was not able to create the necessary "
+"config files"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:421
+msgid ""
+"It seems that the font with the same name is already exists! Please upload "
+"the font with different name."
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:426
+msgid ""
+"Uploaded font is not from IcoMoon. Please upload fonts created with the "
+"IcoMoon App Only."
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:473
+#: framework/Ultimate_Icon_Manager.php:481
+msgid "Was not able to write a config file"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:505
+msgid "Unable to write css. Upload icons downloaded only from icomoon"
+msgstr ""
+
+#: framework/Ultimate_Icon_Manager.php:532
+msgid "Unable to add this font. Please try again."
+msgstr ""
+
+#: framework/classes/class.style-framework.php:352
+msgid "Start Customizing"
+msgstr ""
+
+#: framework/classes/class.style-framework.php:389
+msgid "Use This"
+msgstr ""
+
+#: framework/classes/class.style-framework.php:393
+msgid "Import This"
+msgstr ""
+
+#: framework/classes/class.style-framework.php:408
+msgid "Live Preview"
+msgstr ""
+
+#: framework/classes/class.style-framework.php:415
+msgid "Customize"
+msgstr ""
+
+#: framework/classes/class.style-framework.php:536
+msgid "Name This Design"
+msgstr ""
+
+#: framework/classes/class.style-framework.php:538
+msgid ""
+"A unique & descriptive name will help you in future as it would appear in "
+"the dashboard, analytics, etc."
+msgstr ""
+
+#: framework/classes/class.style-framework.php:606
+msgid ""
+"Responsive preview here is roughly displayed and might not be 100% correct. "
+"For accurate preview, please check output on the actual device."
+msgstr ""
+
+#: framework/classes/class.style-framework.php:620
+#: modules/info_bar/views/new-style.php:9 modules/modal/views/new-style.php:10
+#: modules/slide_in/views/new-style.php:9
+msgid "Search Template"
+msgstr ""
+
+#: framework/cp-widgets.php:9
+msgid "ConvertPlug Widget"
+msgstr ""
+
+#: framework/cp-widgets.php:12
+msgid "A widget to display modules inline as a part of sidebar area."
+msgstr ""
+
+#: framework/cp-widgets.php:96
+msgid "Title:"
+msgstr ""
+
+#: framework/cp-widgets.php:101
+msgid "Active Modules:"
+msgstr ""
+
+#: framework/cp-widgets.php:117 framework/cp-widgets.php:134
+#: framework/cp-widgets.php:151
+msgid "Style Name:"
+msgstr ""
+
+#: framework/functions/component_count_down.php:34
+msgid "Enable Countdown Timer"
+msgstr ""
+
+#: framework/functions/component_count_down.php:36
+#: framework/functions/component_multi_form.php:202
+#: framework/functions/component_multi_form.php:303
+#: framework/functions/component_multi_form.php:562
+#: framework/functions/component_social_media.php:154
+#: framework/functions/component_social_media.php:276
+#: framework/functions/component_social_media.php:395
+#: framework/functions/component_social_media.php:411
+#: modules/info_bar/functions/functions.common.php:89
+#: modules/info_bar/functions/functions.common.php:284
+#: modules/info_bar/functions/functions.common.php:299
+#: modules/info_bar/functions/functions.common.php:315
+#: modules/info_bar/functions/functions.common.php:359
+#: modules/info_bar/functions/functions.common.php:402
+#: modules/info_bar/functions/functions.common.php:460
+#: modules/info_bar/functions/functions.common.php:475
+#: modules/info_bar/functions/functions.common.php:508
+#: modules/info_bar/functions/functions.common.php:541
+#: modules/info_bar/functions/functions.common.php:570
+#: modules/info_bar/functions/functions.common.php:586
+#: modules/info_bar/functions/functions.common.php:620
+#: modules/info_bar/functions/functions.common.php:649
+#: modules/info_bar/functions/functions.common.php:709
+#: modules/info_bar/functions/functions.common.php:761
+#: modules/info_bar/functions/functions.common.php:1068
+#: modules/info_bar/functions/functions.common.php:1337
+#: modules/info_bar/functions/functions.common.php:1563
+#: modules/info_bar/functions/functions.common.php:1613
+#: modules/info_bar/functions/functions.common.php:1629
+#: modules/info_bar/functions/functions.common.php:1700
+#: modules/info_bar/functions/functions.common.php:1757
+#: modules/info_bar/functions/functions.common.php:1941
+#: modules/info_bar/functions/functions.common.php:2073
+#: modules/modal/functions/functions.common.php:412
+#: modules/modal/functions/functions.common.php:695
+#: modules/modal/functions/functions.common.php:743
+#: modules/modal/functions/functions.common.php:900
+#: modules/modal/functions/functions.common.php:971
+#: modules/modal/functions/functions.common.php:1158
+#: modules/modal/functions/functions.common.php:1172
+#: modules/modal/functions/functions.common.php:1276
+#: modules/modal/functions/functions.common.php:1291
+#: modules/modal/functions/functions.common.php:1324
+#: modules/modal/functions/functions.common.php:1357
+#: modules/modal/functions/functions.common.php:1386
+#: modules/modal/functions/functions.common.php:1402
+#: modules/modal/functions/functions.common.php:1436
+#: modules/modal/functions/functions.common.php:1465
+#: modules/modal/functions/functions.common.php:1525
+#: modules/modal/functions/functions.common.php:1577
+#: modules/modal/functions/functions.common.php:1903
+#: modules/modal/functions/functions.common.php:2118
+#: modules/modal/functions/functions.common.php:2150
+#: modules/modal/functions/functions.common.php:2165
+#: modules/modal/functions/functions.common.php:2184
+#: modules/modal/functions/functions.common.php:2420
+#: modules/slide_in/functions/functions.common.php:246
+#: modules/slide_in/functions/functions.common.php:589
+#: modules/slide_in/functions/functions.common.php:657
+#: modules/slide_in/functions/functions.common.php:673
+#: modules/slide_in/functions/functions.common.php:747
+#: modules/slide_in/functions/functions.common.php:777
+#: modules/slide_in/functions/functions.common.php:954
+#: modules/slide_in/functions/functions.common.php:1031
+#: modules/slide_in/functions/functions.common.php:1175
+#: modules/slide_in/functions/functions.common.php:1355
+#: modules/slide_in/functions/functions.common.php:1369
+#: modules/slide_in/functions/functions.common.php:1453
+#: modules/slide_in/functions/functions.common.php:1468
+#: modules/slide_in/functions/functions.common.php:1501
+#: modules/slide_in/functions/functions.common.php:1534
+#: modules/slide_in/functions/functions.common.php:1563
+#: modules/slide_in/functions/functions.common.php:1579
+#: modules/slide_in/functions/functions.common.php:1613
+#: modules/slide_in/functions/functions.common.php:1643
+#: modules/slide_in/functions/functions.common.php:1702
+#: modules/slide_in/functions/functions.common.php:1753
+#: modules/slide_in/functions/functions.common.php:2076
+#: modules/slide_in/functions/functions.common.php:2270
+#: modules/slide_in/functions/functions.common.php:2558
+msgid "YES"
+msgstr ""
+
+#: framework/functions/component_count_down.php:37
+#: framework/functions/component_multi_form.php:203
+#: framework/functions/component_multi_form.php:304
+#: framework/functions/component_multi_form.php:563
+#: framework/functions/component_social_media.php:155
+#: framework/functions/component_social_media.php:277
+#: framework/functions/component_social_media.php:396
+#: framework/functions/component_social_media.php:412
+#: modules/info_bar/functions/functions.common.php:90
+#: modules/info_bar/functions/functions.common.php:285
+#: modules/info_bar/functions/functions.common.php:300
+#: modules/info_bar/functions/functions.common.php:316
+#: modules/info_bar/functions/functions.common.php:360
+#: modules/info_bar/functions/functions.common.php:403
+#: modules/info_bar/functions/functions.common.php:461
+#: modules/info_bar/functions/functions.common.php:476
+#: modules/info_bar/functions/functions.common.php:509
+#: modules/info_bar/functions/functions.common.php:542
+#: modules/info_bar/functions/functions.common.php:571
+#: modules/info_bar/functions/functions.common.php:587
+#: modules/info_bar/functions/functions.common.php:621
+#: modules/info_bar/functions/functions.common.php:650
+#: modules/info_bar/functions/functions.common.php:710
+#: modules/info_bar/functions/functions.common.php:762
+#: modules/info_bar/functions/functions.common.php:1069
+#: modules/info_bar/functions/functions.common.php:1338
+#: modules/info_bar/functions/functions.common.php:1564
+#: modules/info_bar/functions/functions.common.php:1614
+#: modules/info_bar/functions/functions.common.php:1630
+#: modules/info_bar/functions/functions.common.php:1701
+#: modules/info_bar/functions/functions.common.php:1758
+#: modules/info_bar/functions/functions.common.php:1942
+#: modules/info_bar/functions/functions.common.php:2074
+#: modules/modal/functions/functions.common.php:413
+#: modules/modal/functions/functions.common.php:696
+#: modules/modal/functions/functions.common.php:744
+#: modules/modal/functions/functions.common.php:901
+#: modules/modal/functions/functions.common.php:972
+#: modules/modal/functions/functions.common.php:1159
+#: modules/modal/functions/functions.common.php:1173
+#: modules/modal/functions/functions.common.php:1277
+#: modules/modal/functions/functions.common.php:1292
+#: modules/modal/functions/functions.common.php:1325
+#: modules/modal/functions/functions.common.php:1358
+#: modules/modal/functions/functions.common.php:1387
+#: modules/modal/functions/functions.common.php:1403
+#: modules/modal/functions/functions.common.php:1437
+#: modules/modal/functions/functions.common.php:1466
+#: modules/modal/functions/functions.common.php:1526
+#: modules/modal/functions/functions.common.php:1578
+#: modules/modal/functions/functions.common.php:1904
+#: modules/modal/functions/functions.common.php:2119
+#: modules/modal/functions/functions.common.php:2151
+#: modules/modal/functions/functions.common.php:2166
+#: modules/modal/functions/functions.common.php:2185
+#: modules/modal/functions/functions.common.php:2421
+#: modules/slide_in/functions/functions.common.php:247
+#: modules/slide_in/functions/functions.common.php:590
+#: modules/slide_in/functions/functions.common.php:658
+#: modules/slide_in/functions/functions.common.php:674
+#: modules/slide_in/functions/functions.common.php:748
+#: modules/slide_in/functions/functions.common.php:778
+#: modules/slide_in/functions/functions.common.php:955
+#: modules/slide_in/functions/functions.common.php:1032
+#: modules/slide_in/functions/functions.common.php:1176
+#: modules/slide_in/functions/functions.common.php:1356
+#: modules/slide_in/functions/functions.common.php:1370
+#: modules/slide_in/functions/functions.common.php:1454
+#: modules/slide_in/functions/functions.common.php:1469
+#: modules/slide_in/functions/functions.common.php:1502
+#: modules/slide_in/functions/functions.common.php:1535
+#: modules/slide_in/functions/functions.common.php:1564
+#: modules/slide_in/functions/functions.common.php:1580
+#: modules/slide_in/functions/functions.common.php:1614
+#: modules/slide_in/functions/functions.common.php:1644
+#: modules/slide_in/functions/functions.common.php:1703
+#: modules/slide_in/functions/functions.common.php:1754
+#: modules/slide_in/functions/functions.common.php:2077
+#: modules/slide_in/functions/functions.common.php:2271
+#: modules/slide_in/functions/functions.common.php:2559
+msgid "NO"
+msgstr ""
+
+#: framework/functions/component_count_down.php:48
+msgid "Countdown Timer"
+msgstr ""
+
+#: framework/functions/component_count_down.php:61
+msgid "Countdown Timer Style"
+msgstr ""
+
+#: framework/functions/component_count_down.php:64
+msgid "Style 1"
+msgstr ""
+
+#: framework/functions/component_count_down.php:65
+msgid "Style 2"
+msgstr ""
+
+#: framework/functions/component_count_down.php:77
+msgid "Counter Font"
+msgstr ""
+
+#: framework/functions/component_count_down.php:91
+msgid "Countdown Background Color"
+msgstr ""
+
+#: framework/functions/component_count_down.php:104
+msgid "Digit Color"
+msgstr ""
+
+#: framework/functions/component_count_down.php:121
+msgid "Digit Border Color"
+msgstr ""
+
+#: framework/functions/component_count_down.php:137
+msgid "Digit Font Size"
+msgstr ""
+
+#: framework/functions/component_count_down.php:157
+msgid "Time Unit Color"
+msgstr ""
+
+#: framework/functions/component_count_down.php:173
+msgid "Time Unit Font Size"
+msgstr ""
+
+#: framework/functions/component_count_down.php:192
+msgid "Select Time Units To Display In Countdown Timer"
+msgstr ""
+
+#: framework/functions/component_count_down.php:195
+msgid "Years"
+msgstr ""
+
+#: framework/functions/component_count_down.php:196
+msgid "Months"
+msgstr ""
+
+#: framework/functions/component_count_down.php:197
+msgid "Weeks"
+msgstr ""
+
+#: framework/functions/component_count_down.php:198
+msgid "Days"
+msgstr ""
+
+#: framework/functions/component_count_down.php:199
+msgid "Hours"
+msgstr ""
+
+#: framework/functions/component_count_down.php:200
+msgid "Minutes"
+msgstr ""
+
+#: framework/functions/component_count_down.php:201
+msgid "Seconds"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:37
+#: modules/slide_in/functions/functions.common.php:1419
+#: modules/slide_in/functions/functions.common.php:2282
+msgid "Button Title"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:39
+#: modules/slide_in/functions/functions.common.php:688
+#: modules/slide_in/functions/functions.common.php:1421
+#: modules/slide_in/functions/functions.common.php:2284
+msgid "Enter the button title."
+msgstr ""
+
+#: framework/functions/component_multi_form.php:98
+#: framework/functions/component_social_media.php:86
+msgid "Layout"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:101
+msgid "cp-form-layout-1"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:102
+msgid "cp-form-layout-2"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:103
+msgid "cp-form-layout-3"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:104
+msgid "cp-form-layout-4"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:108
+#: framework/functions/component_multi_form.php:183
+#: framework/functions/component_social_media.php:96
+#: modules/info_bar/functions/functions.common.php:1419
+#: modules/modal/functions/functions.common.php:478
+#: modules/modal/functions/functions.common.php:2287
+#: modules/slide_in/functions/functions.common.php:410
+msgid "title-0"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:109
+#: framework/functions/component_multi_form.php:184
+#: framework/functions/component_social_media.php:97
+#: modules/info_bar/functions/functions.common.php:1420
+#: modules/modal/functions/functions.common.php:479
+#: modules/modal/functions/functions.common.php:2288
+#: modules/slide_in/functions/functions.common.php:411
+msgid "title-1"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:110
+#: framework/functions/component_multi_form.php:185
+#: framework/functions/component_social_media.php:98
+#: modules/info_bar/functions/functions.common.php:1421
+#: modules/modal/functions/functions.common.php:480
+#: modules/modal/functions/functions.common.php:2289
+#: modules/slide_in/functions/functions.common.php:412
+msgid "title-2"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:111
+#: framework/functions/component_social_media.php:99
+#: modules/info_bar/functions/functions.common.php:1422
+#: modules/modal/functions/functions.common.php:481
+#: modules/modal/functions/functions.common.php:2290
+#: modules/slide_in/functions/functions.common.php:413
+msgid "title-3"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:138
+msgid "Button Link"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:139
+msgid ""
+"Provide a link to submit button. Please add http / https prefix to URL. "
+"<br/><br/> e.g. http://convertplug.com"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:153
+msgid "Button Link Target"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:154
+msgid "The button link target specifies where to open the button link."
+msgstr ""
+
+#: framework/functions/component_multi_form.php:157
+msgid "Open in New Window (_blank)"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:158
+msgid "Open in Same Window (_self)"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:173
+msgid "Grid Structure"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:174
+msgid "Change submit button size depends on your grid selection."
+msgstr ""
+
+#: framework/functions/component_multi_form.php:177
+msgid "cp-form-grid-structure-1"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:178
+msgid "cp-form-grid-structure-2"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:179
+msgid "cp-form-grid-structure-3"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:199
+msgid "Submit & Input box connected"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:200
+msgid ""
+"Enable this option to attach input field & submit button. <br/>Note - This "
+"option will work for only one input field form."
+msgstr ""
+
+#: framework/functions/component_multi_form.php:232
+msgid "Form Text Alignment"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:238
+#: framework/functions/component_multi_form.php:622
+#: framework/functions/component_social_media.php:137
+#: framework/lib/fields/background/background.php:36
+#: framework/lib/fields/border/border.php:149
+#: framework/lib/fields/margin/margin.php:80
+#: framework/lib/fields/padding/padding.php:80
+msgid "Left"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:239
+#: framework/functions/component_multi_form.php:623
+#: framework/functions/component_social_media.php:138
+#: framework/lib/fields/background/background.php:37
+#: framework/lib/fields/border/border.php:157
+#: framework/lib/fields/margin/margin.php:88
+#: framework/lib/fields/padding/padding.php:88
+msgid "Right"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:240
+#: framework/functions/component_multi_form.php:621
+#: framework/functions/component_social_media.php:136
+#: framework/lib/fields/background/background.php:35
+msgid "Center"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:253
+msgid "Input Box Text Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:269
+#: modules/modal/functions/functions.common.php:1234
+msgid "Input Box Background Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:285
+#: modules/modal/functions/functions.common.php:1246
+msgid "Input Box Border Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:301
+msgid "Input Field Shadow"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:317
+#: framework/lib/fields/box-shadow/box-shadow.php:100
+msgid "Shadow Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:330
+msgid "Input Border Radius"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:347
+msgid "Input Box Font Name"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:364
+msgid "Input Box Font Size"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:386
+msgid "Input Box Vertical Padding"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:406
+msgid "Input Box Horizontal Padding"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:428
+msgid "Label Visibility"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:430
+msgid "Enable"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:431
+msgid "Disable"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:443
+msgid "Label Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:458
+msgid "Label Font Name"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:474
+msgid "Label Font Size"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:509
+#: modules/info_bar/functions/functions.common.php:1971
+msgid "Button Style"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:511
+#: modules/info_bar/functions/functions.common.php:1973
+msgid "Style your button with nice effects."
+msgstr ""
+
+#: framework/functions/component_multi_form.php:513
+#: framework/functions/component_social_media.php:244
+#: modules/info_bar/functions/functions.common.php:1975
+msgid "Flat"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:514
+#: framework/functions/component_social_media.php:245
+#: modules/info_bar/functions/functions.common.php:1976
+msgid "3D"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:515
+#: modules/info_bar/functions/functions.common.php:1977
+msgid "Outline"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:516
+#: modules/info_bar/functions/functions.common.php:1978
+msgid "Gradient"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:528
+msgid "Button Background Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:543
+#: framework/lib/fields/border/border.php:187
+#: modules/info_bar/functions/functions.common.php:2056
+msgid "Border Radius"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:560
+#: modules/info_bar/functions/functions.common.php:2071
+msgid "Button Shadow"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:577
+#: modules/info_bar/functions/functions.common.php:2003
+msgid "Submit Button Text Hover Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:592
+#: framework/functions/component_social_media.php:442
+#: modules/info_bar/functions/functions.common.php:1715
+#: modules/info_bar/functions/functions.common.php:2016
+#: modules/slide_in/functions/functions.common.php:332
+#: modules/slide_in/functions/functions.common.php:2324
+msgid "Button BG Hover Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:605
+#: framework/functions/component_social_media.php:455
+#: modules/info_bar/functions/functions.common.php:1728
+#: modules/info_bar/functions/functions.common.php:2029
+#: modules/slide_in/functions/functions.common.php:345
+#: modules/slide_in/functions/functions.common.php:2337
+msgid "Button Gradient Color"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:618
+msgid "Button Alignment"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:624
+msgid "Full"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:639
+msgid "Button Vertical Padding"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:657
+msgid "Button Horizontal Padding"
+msgstr ""
+
+#: framework/functions/component_multi_form.php:676
+#: modules/slide_in/functions/functions.common.php:1434
+msgid ""
+"Note - Above settings apply to only Built-In Forms. These won't be "
+"effective with Custom Forms."
+msgstr ""
+
+#: framework/functions/component_social_media.php:30
+#: framework/functions/component_social_media.php:37
+#: framework/functions/component_social_media.php:204
+msgid "Normal"
+msgstr ""
+
+#: framework/functions/component_social_media.php:31
+#: modules/info_bar/functions/functions.common.php:345
+#: modules/info_bar/functions/functions.common.php:357
+#: modules/modal/functions/functions.common.php:984
+#: modules/slide_in/functions/functions.common.php:1044
+#: modules/slide_in/functions/functions.common.php:1188
+msgid "Border"
+msgstr ""
+
+#: framework/functions/component_social_media.php:32
+msgid "Flip"
+msgstr ""
+
+#: framework/functions/component_social_media.php:33
+msgid "Grow"
+msgstr ""
+
+#: framework/functions/component_social_media.php:38
+msgid "Slide"
+msgstr ""
+
+#: framework/functions/component_social_media.php:89
+msgid "cp-icon-style-left"
+msgstr ""
+
+#: framework/functions/component_social_media.php:90
+msgid "cp-icon-style-right"
+msgstr ""
+
+#: framework/functions/component_social_media.php:91
+msgid "cp-icon-style-simple"
+msgstr ""
+
+#: framework/functions/component_social_media.php:92
+msgid "cp-icon-style-rectangle"
+msgstr ""
+
+#: framework/functions/component_social_media.php:111
+msgid "Number of Columns"
+msgstr ""
+
+#: framework/functions/component_social_media.php:114
+msgid "Auto Width"
+msgstr ""
+
+#: framework/functions/component_social_media.php:122
+msgid "Select grid to display social icons"
+msgstr ""
+
+#: framework/functions/component_social_media.php:133
+msgid " Icon Container Alignment"
+msgstr ""
+
+#: framework/functions/component_social_media.php:140
+msgid "Select alignment for icon container"
+msgstr ""
+
+#: framework/functions/component_social_media.php:152
+msgid "Remove Icon Spacing"
+msgstr ""
+
+#: framework/functions/component_social_media.php:156
+msgid "Remove gap / spacing between two social icons"
+msgstr ""
+
+#: framework/functions/component_social_media.php:180
+msgid "Icon Container Border Radius"
+msgstr ""
+
+#: framework/functions/component_social_media.php:189
+msgid "Apply border radius to icon container."
+msgstr ""
+
+#: framework/functions/component_social_media.php:201
+msgid "Icon Shape"
+msgstr ""
+
+#: framework/functions/component_social_media.php:205
+msgid "Square"
+msgstr ""
+
+#: framework/functions/component_social_media.php:206
+msgid "Circle"
+msgstr ""
+
+#: framework/functions/component_social_media.php:207
+msgid "Custom"
+msgstr ""
+
+#: framework/functions/component_social_media.php:209
+msgid "Provide shape to your icon."
+msgstr ""
+
+#: framework/functions/component_social_media.php:220
+msgid "Icon Border Radius"
+msgstr ""
+
+#: framework/functions/component_social_media.php:229
+msgid "Apply border radius to actual icon."
+msgstr ""
+
+#: framework/functions/component_social_media.php:241
+msgid "Icon Effect"
+msgstr ""
+
+#: framework/functions/component_social_media.php:246
+msgid "Overlay"
+msgstr ""
+
+#: framework/functions/component_social_media.php:248
+msgid "Style your icon container with nice effects."
+msgstr ""
+
+#: framework/functions/component_social_media.php:259
+msgid "Icon Hover Effect"
+msgstr ""
+
+#: framework/functions/component_social_media.php:262
+msgid "Apply slide / normal hover effect to icon."
+msgstr ""
+
+#: framework/functions/component_social_media.php:274
+msgid "Use Custom Colors"
+msgstr ""
+
+#: framework/functions/component_social_media.php:278
+msgid "Style your icons with custom colors."
+msgstr ""
+
+#: framework/functions/component_social_media.php:290
+msgid "Icon Color"
+msgstr ""
+
+#: framework/functions/component_social_media.php:306
+#: modules/info_bar/functions/functions.common.php:1668
+#: modules/slide_in/functions/functions.common.php:715
+msgid "Text Color"
+msgstr ""
+
+#: framework/functions/component_social_media.php:319
+#: modules/info_bar/functions/functions.common.php:71
+#: modules/info_bar/functions/functions.common.php:1683
+#: modules/modal/functions/functions.common.php:200
+#: modules/modal/functions/functions.common.php:2583
+#: modules/modal/functions/functions.common.php:2668
+#: modules/slide_in/functions/functions.common.php:231
+#: modules/slide_in/functions/functions.common.php:730
+msgid "Background Color"
+msgstr ""
+
+#: framework/functions/component_social_media.php:335
+msgid "Icon Hover Color"
+msgstr ""
+
+#: framework/functions/component_social_media.php:351
+msgid "Text Hover Color"
+msgstr ""
+
+#: framework/functions/component_social_media.php:364
+msgid "Background Hover Color"
+msgstr ""
+
+#: framework/functions/component_social_media.php:393
+msgid "Display Network Names"
+msgstr ""
+
+#: framework/functions/component_social_media.php:397
+msgid "Show / hide social network name."
+msgstr ""
+
+#: framework/functions/component_social_media.php:409
+msgid "Display Share Counts"
+msgstr ""
+
+#: framework/functions/component_social_media.php:413
+msgid "Show / hide share counts."
+msgstr ""
+
+#: framework/functions/component_social_media.php:424
+msgid "Minimum Count Display"
+msgstr ""
+
+#: framework/functions/component_social_media.php:429
+msgid ""
+"Display minimum share count number until actual count increases. Actual "
+"count will display only on front end."
+msgstr ""
+
+#: framework/lib/fields/background/background.php:28
+msgid "No Repeat"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:29
+msgid "Repeat"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:30
+msgid "X Repeat"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:31
+msgid "Y Repeat"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:41
+msgid "Cover"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:42
+msgid "Contain"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:43
+#: framework/lib/fields/google-fonts/typography.php:91
+#: framework/lib/fields/media/media.php:90
+msgid "Default"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:52
+msgid "Background Repeat"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:62
+msgid "Background Position"
+msgstr ""
+
+#: framework/lib/fields/background/background.php:72
+msgid "Background Size"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:72
+msgid "Solid"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:73
+msgid "Dotted"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:74
+msgid "Dashed"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:75
+msgid "Double"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:76
+msgid "Groove"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:77
+msgid "Ridge"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:78
+msgid "Inset"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:79
+msgid "Outset"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:80
+#: modules/info_bar/functions/functions.common.php:152
+#: modules/info_bar/functions/functions.common.php:1834
+#: modules/modal/functions/functions.common.php:236
+#: modules/modal/functions/functions.common.php:298
+#: modules/modal/functions/functions.common.php:2326
+#: modules/modal/functions/functions.common.php:2481
+#: modules/modal/functions/functions.common.php:2603
+#: modules/modal/functions/functions.common.php:2688
+#: modules/slide_in/functions/functions.common.php:279
+#: modules/slide_in/functions/functions.common.php:2444
+msgid "None"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:93
+msgid "Border Style"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:108
+#: modules/info_bar/functions/functions.common.php:373
+#: modules/slide_in/functions/functions.common.php:2403
+msgid "Border Color"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:117
+msgid "Border Width"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:141
+#: framework/lib/fields/margin/margin.php:72
+#: framework/lib/fields/padding/padding.php:72
+msgid "Top"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:165
+#: framework/lib/fields/margin/margin.php:96
+#: framework/lib/fields/padding/padding.php:96
+msgid "Bottom"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:203
+#: modules/info_bar/functions/functions.common.php:1546
+#: modules/modal/functions/functions.common.php:609
+#: modules/slide_in/functions/functions.common.php:518
+#: modules/slide_in/functions/functions.common.php:993
+msgid "Top Left"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:211
+#: modules/info_bar/functions/functions.common.php:1547
+#: modules/modal/functions/functions.common.php:610
+#: modules/slide_in/functions/functions.common.php:519
+#: modules/slide_in/functions/functions.common.php:995
+msgid "Top Right"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:219
+#: modules/slide_in/functions/functions.common.php:996
+#: modules/slide_in/functions/functions.common.php:1144
+msgid "Bottom Left"
+msgstr ""
+
+#: framework/lib/fields/border/border.php:227
+#: modules/slide_in/functions/functions.common.php:998
+#: modules/slide_in/functions/functions.common.php:1143
+msgid "Bottom Right"
+msgstr ""
+
+#: framework/lib/fields/box-shadow/box-shadow.php:73
+#: modules/info_bar/functions/functions.common.php:1371
+#: modules/modal/functions/functions.common.php:430
+#: modules/slide_in/functions/functions.common.php:362
+msgid "Type"
+msgstr ""
+
+#: framework/lib/fields/box-shadow/box-shadow.php:108
+msgid "Horizontal Length"
+msgstr ""
+
+#: framework/lib/fields/box-shadow/box-shadow.php:116
+msgid "Vertical Length"
+msgstr ""
+
+#: framework/lib/fields/box-shadow/box-shadow.php:126
+msgid "Blur Radius"
+msgstr ""
+
+#: framework/lib/fields/box-shadow/box-shadow.php:134
+msgid "Spread Radius"
+msgstr ""
+
+#: framework/lib/fields/google-fonts/typography.php:37
+#: modules/info_bar/functions/functions.common.php:1654
+#: modules/slide_in/functions/functions.common.php:699
+msgid "Font Name"
+msgstr ""
+
+#: framework/lib/fields/mailer/mailer.php:55
+msgid "It seems that you don't have any campaigns yet!"
+msgstr ""
+
+#: framework/lib/fields/mailer/mailer.php:55
+msgid "Click here"
+msgstr ""
+
+#: framework/lib/fields/margin/margin.php:62
+#: framework/lib/fields/padding/padding.php:62
+msgid "All Sides"
+msgstr ""
+
+#: framework/lib/fields/media/media.php:39
+msgid "Change Image"
+msgstr ""
+
+#: framework/lib/fields/media/media.php:39
+msgid "Select Image"
+msgstr ""
+
+#: framework/lib/fields/media/media.php:75
+msgid "No Image Selected"
+msgstr ""
+
+#: framework/lib/fields/media/media.php:88
+msgid "Remove"
+msgstr ""
+
+#: framework/lib/fields/media/media.php:97
+msgid "Select Size"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:85
+msgid "Field Type"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:112
+msgid "Field Label"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:118
+msgid "Field Name (Required)"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:127
+msgid "Placeholder"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:132
+msgid "Enter Your Options Here"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:136
+msgid "Dropdown Choice Options"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:147
+msgid "Textarea Height"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:155
+msgid "Required Field"
+msgstr ""
+
+#: framework/lib/fields/multi-box/multi-box.php:163
+msgid "Field Value"
+msgstr ""
+
+#: framework/lib/fields/pages/pages.php:23
+msgid "Pages"
+msgstr ""
+
+#: framework/lib/fields/pages/pages.php:36
+msgid "Posts"
+msgstr ""
+
+#: framework/lib/fields/post-types/post-types.php:47
+msgid "Post Types -"
+msgstr ""
+
+#: framework/lib/fields/post-types/post-types.php:54
+msgid "Taxonomies -"
+msgstr ""
+
+#: framework/lib/fields/social-media/social-media.php:122
+msgid "Select Social Network"
+msgstr ""
+
+#: framework/lib/fields/social-media/social-media.php:139
+msgid "Network Name"
+msgstr ""
+
+#: framework/lib/fields/social-media/social-media.php:147
+msgid "Select Action"
+msgstr ""
+
+#: framework/lib/fields/social-media/social-media.php:172
+msgid "Profile Link"
+msgstr ""
+
+#: framework/lib/fields/social-media/social-media.php:179
+msgid "Share URL"
+msgstr ""
+
+#: framework/lib/fields/social-media/social-media.php:193
+#: modules/info_bar/functions/functions.common.php:150
+#: modules/info_bar/functions/functions.common.php:164
+#: modules/info_bar/functions/functions.common.php:1391
+#: modules/info_bar/functions/functions.common.php:1439
+#: modules/info_bar/functions/functions.common.php:1832
+#: modules/info_bar/functions/functions.common.php:1846
+#: modules/modal/functions/functions.common.php:234
+#: modules/modal/functions/functions.common.php:248
+#: modules/modal/functions/functions.common.php:296
+#: modules/modal/functions/functions.common.php:310
+#: modules/modal/functions/functions.common.php:450
+#: modules/modal/functions/functions.common.php:498
+#: modules/modal/functions/functions.common.php:2324
+#: modules/modal/functions/functions.common.php:2338
+#: modules/modal/functions/functions.common.php:2601
+#: modules/modal/functions/functions.common.php:2615
+#: modules/modal/functions/functions.common.php:2686
+#: modules/modal/functions/functions.common.php:2700
+#: modules/slide_in/functions/functions.common.php:277
+#: modules/slide_in/functions/functions.common.php:291
+#: modules/slide_in/functions/functions.common.php:382
+#: modules/slide_in/functions/functions.common.php:430
+#: modules/slide_in/functions/functions.common.php:2442
+#: modules/slide_in/functions/functions.common.php:2456
+msgid "Custom URL"
+msgstr ""
+
+#: framework/lib/fields/social-media/social-media.php:207
+msgid "Image URL"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:38
+msgid "Info Bar Title"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:40
+#: modules/info_bar/functions/functions.common.php:54
+#: modules/info_bar/functions/functions.common.php:2044
+#: modules/modal/functions/functions.common.php:42
+#: modules/slide_in/functions/functions.common.php:100
+msgid "Enter the main heading title."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:52
+msgid "Info Bar Description"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:73
+msgid "Select the background color for info bar."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:87
+#: modules/info_bar/functions/functions.common.php:1699
+#: modules/slide_in/functions/functions.common.php:244
+#: modules/slide_in/functions/functions.common.php:745
+msgid "Enable Gradient Background"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:91
+#: modules/slide_in/functions/functions.common.php:248
+msgid "Enhance your background with gradient effect."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:103
+#: modules/slide_in/functions/functions.common.php:260
+msgid "Gradient Lighten"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:105
+#: modules/info_bar/functions/functions.common.php:120
+#: modules/info_bar/functions/functions.common.php:135
+#: modules/info_bar/functions/functions.common.php:1795
+#: modules/info_bar/functions/functions.common.php:2089
+#: modules/info_bar/functions/functions.common.php:2104
+#: modules/modal/functions/functions.common.php:111
+#: modules/slide_in/functions/functions.common.php:142
+#: modules/slide_in/functions/functions.common.php:262
+msgid "Enter the short description of this optin.(HTML is Allowed)"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:118
+#: modules/info_bar/functions/functions.common.php:133
+#: modules/info_bar/functions/functions.common.php:2087
+#: modules/info_bar/functions/functions.common.php:2102
+msgid "Button Darken"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:147
+#: modules/modal/functions/functions.common.php:231
+#: modules/slide_in/functions/functions.common.php:274
+msgid "Background Image source"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:151
+#: modules/info_bar/functions/functions.common.php:1392
+#: modules/info_bar/functions/functions.common.php:1833
+#: modules/info_bar/functions/functions.common.php:1860
+#: modules/modal/functions/functions.common.php:235
+#: modules/modal/functions/functions.common.php:297
+#: modules/modal/functions/functions.common.php:324
+#: modules/modal/functions/functions.common.php:451
+#: modules/modal/functions/functions.common.php:2325
+#: modules/modal/functions/functions.common.php:2352
+#: modules/modal/functions/functions.common.php:2602
+#: modules/modal/functions/functions.common.php:2687
+#: modules/slide_in/functions/functions.common.php:278
+#: modules/slide_in/functions/functions.common.php:383
+#: modules/slide_in/functions/functions.common.php:2443
+#: modules/slide_in/functions/functions.common.php:2470
+msgid "Upload Image"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:166
+#: modules/info_bar/functions/functions.common.php:1848
+#: modules/modal/functions/functions.common.php:250
+#: modules/modal/functions/functions.common.php:312
+#: modules/modal/functions/functions.common.php:2340
+#: modules/modal/functions/functions.common.php:2617
+#: modules/modal/functions/functions.common.php:2702
+#: modules/slide_in/functions/functions.common.php:293
+#: modules/slide_in/functions/functions.common.php:2458
+msgid "Enter custom URL for your image."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:178
+#: modules/modal/functions/functions.common.php:262
+#: modules/modal/functions/functions.common.php:2629
+#: modules/modal/functions/functions.common.php:2714
+#: modules/slide_in/functions/functions.common.php:305
+msgid "Background Image"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:183
+msgid ""
+"You can provide an image that would be appear behind the content in the "
+"Info Bar area. For this setting to work, the background color you've chosen "
+"must be transparent."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:208
+msgid "Size"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:221
+msgid "Height"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:227
+msgid "Set the height for info bar? (value in px)."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:240
+msgid "Width"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:246
+msgid "Set the width for info bar? (value in px)."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:266
+msgid "Info Bar Position"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:269
+msgid "Top of the page"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:270
+msgid "Bottom of the page"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:282
+msgid "Sticky"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:286
+msgid "Enable to stick the info bar at its position and follow the scroll."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:297
+msgid "Push Page"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:301
+msgid "Enable to push the page down and display the info bar above the page."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:313
+msgid "Animate Push Page"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:317
+msgid "Enable to animate page towards down while loading Info Bar."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:361
+msgid "Enable Border"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:388
+#: modules/info_bar/functions/functions.common.php:400
+msgid "Shadow"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:404
+msgid "Enable Shadow"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:416
+#: modules/modal/functions/functions.common.php:1102
+#: modules/slide_in/functions/functions.common.php:1097
+#: modules/slide_in/functions/functions.common.php:1241
+msgid "Custom Code"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:428
+#: modules/modal/functions/functions.common.php:1114
+#: modules/slide_in/functions/functions.common.php:1109
+#: modules/slide_in/functions/functions.common.php:1253
+msgid "Custom CSS"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:430
+msgid "Enter your custom css code for this Info Bar here."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:458
+#: modules/modal/functions/functions.common.php:1274
+#: modules/slide_in/functions/functions.common.php:1451
+msgid "Before User Leaves / Exit Intent"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:462
+msgid ""
+"If enabled, Info Bar will load right before user is about to leave your "
+"website."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:473
+#: modules/modal/functions/functions.common.php:1289
+#: modules/slide_in/functions/functions.common.php:1466
+msgid "After Few Seconds"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:477
+msgid "If enabled, Info Bar will load automatically after few seconds."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:488
+#: modules/modal/functions/functions.common.php:1304
+#: modules/slide_in/functions/functions.common.php:1481
+msgid "Load After Seconds"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:494
+msgid ""
+"How long the Info Bar should take to be displayed after the page is loaded? "
+"(value in seconds)."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:506
+#: modules/modal/functions/functions.common.php:1322
+#: modules/slide_in/functions/functions.common.php:1499
+msgid "After User Scrolls"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:510
+msgid "If enabled, Info Bar will load as user scrolls down on the page."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:521
+#: modules/modal/functions/functions.common.php:1337
+#: modules/slide_in/functions/functions.common.php:1514
+msgid "Load After Scroll %"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:527
+msgid ""
+"How much should the user scroll the page to display the Info Bar? (value in "
+"%)."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:539
+#: modules/modal/functions/functions.common.php:1355
+#: modules/slide_in/functions/functions.common.php:1532
+msgid "When User Is Inactive"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:543
+msgid ""
+"If enabled, a Info Bar will be displayed to visitor if he is idle on page "
+"for certain time."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:568
+#: modules/modal/functions/functions.common.php:1384
+#: modules/slide_in/functions/functions.common.php:1561
+msgid "Launch after content"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:572
+msgid "Info Bar will be triggered when user scrolls to the end of post."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:584
+#: modules/info_bar/functions/functions.common.php:694
+#: modules/modal/functions/functions.common.php:1400
+#: modules/modal/functions/functions.common.php:1510
+#: modules/slide_in/functions/functions.common.php:1577
+#: modules/slide_in/functions/functions.common.php:1688
+msgid "Display Inline"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:588
+#: modules/modal/functions/functions.common.php:1404
+#: modules/slide_in/functions/functions.common.php:1581
+msgid "If enabled, module will display inline as a part of page / post content."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:599
+#: modules/modal/functions/functions.common.php:1415
+#: modules/slide_in/functions/functions.common.php:1592
+msgid "Display Inline Position"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:601
+#: modules/modal/functions/functions.common.php:1417
+#: modules/slide_in/functions/functions.common.php:1594
+msgid "Select the position, where you want to display module inline."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:603
+#: modules/modal/functions/functions.common.php:1419
+#: modules/slide_in/functions/functions.common.php:1596
+msgid "Before Post"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:604
+#: modules/modal/functions/functions.common.php:1420
+#: modules/slide_in/functions/functions.common.php:1597
+msgid "After Post"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:605
+#: modules/modal/functions/functions.common.php:1421
+#: modules/slide_in/functions/functions.common.php:1598
+msgid "Both"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:618
+#: modules/modal/functions/functions.common.php:1434
+#: modules/slide_in/functions/functions.common.php:1611
+msgid "After Scroll To Certain ID / Class"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:622
+msgid "Inof Bar will be triggered when user scrolls to certain css class or id."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:633
+#: modules/modal/functions/functions.common.php:1449
+#: modules/slide_in/functions/functions.common.php:1626
+msgid "Enter Class Name/Id"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:635
+#: modules/modal/functions/functions.common.php:1451
+#: modules/slide_in/functions/functions.common.php:1628
+msgid ""
+"Enter CSS Class / ID <br/>[ You can enter multiple values here by "
+"separating with comma. Class name should start with '.' & id name should "
+"start with '#', example => #id, .class ]"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:647
+#: modules/info_bar/functions/functions.common.php:663
+#: modules/modal/functions/functions.common.php:1463
+#: modules/modal/functions/functions.common.php:1479
+#: modules/slide_in/functions/functions.common.php:1641
+#: modules/slide_in/functions/functions.common.php:1657
+msgid "Launch With CSS Class"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:651
+msgid ""
+"Info Bar can be triggered on click of any UI element. Just provide the "
+"unique CSS class of that element here and Info Bar will be trigger when you "
+"click on that element."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:665
+msgid ""
+"<br>Info Bar can be triggered on click of any UI element. Just provide the "
+"unique CSS class of that element here and Info Bar will be trigger when you "
+"click on that element.<br> If you have multiple classes, separate them with "
+"comma. Example - widget-title, site-description<br>"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:676
+#: modules/modal/functions/functions.common.php:1492
+#: modules/slide_in/functions/functions.common.php:1670
+msgid "Your Content"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:679
+#: modules/modal/functions/functions.common.php:1495
+#: modules/slide_in/functions/functions.common.php:1673
+msgid "Launch With Shortcode"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:680
+msgid ""
+"Place your text, image or HTML in-between the provided shortcode to launch "
+"the Info Bar."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:695
+msgid ""
+"Use this shortcode to display Info Bar popup inline as a part of page "
+"content / Widget."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:707
+#: modules/modal/functions/functions.common.php:1523
+#: modules/slide_in/functions/functions.common.php:1700
+msgid "Enable Cookies"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:711
+msgid ""
+"ConvertPlug can check user history and limit repeat occurrence of Info Bar "
+"when cookies are enabled. No more annoying Info Bars!"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:722
+#: modules/modal/functions/functions.common.php:1538
+#: modules/slide_in/functions/functions.common.php:1715
+msgid "Do Not Show After Conversion"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:728
+msgid ""
+"How many days this Info Bar should not be displayed after user submits the "
+"form?"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:740
+#: modules/modal/functions/functions.common.php:1556
+#: modules/slide_in/functions/functions.common.php:1733
+msgid "Do Not Show After Closing"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:746
+msgid ""
+"How many days this Info Bar should not be displayed after user closes the "
+"Info Bar?"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:759
+#: modules/modal/functions/functions.common.php:1575
+#: modules/slide_in/functions/functions.common.php:1751
+msgid "Enable On Complete Site"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:763
+msgid ""
+"If set YES, code of this Info Bar will be added throughout the website so "
+"it can function anywhere. If set NO - select the specific areas where you "
+"want the Info Bar to function and code will be automatically embedded there."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:774
+#: modules/modal/functions/functions.common.php:1590
+#: modules/slide_in/functions/functions.common.php:1766
+msgid "Enable Only On"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:775
+msgid "Enable Info Bar on selected pages, posts, custom posts, special pages."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:789
+msgid ""
+"Enable Info Bar on all single posts of particular custom post types, "
+"taxonomies."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:802
+msgid ""
+"You can select the exceptional areas, where you want this Info Bar to "
+"function."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:816
+#: modules/modal/functions/functions.common.php:1632
+#: modules/slide_in/functions/functions.common.php:1808
+msgid "Exceptionally, Disable On"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:817
+msgid ""
+"Exceptionally disable Info Bar on selected pages, posts, custom posts, "
+"special pages."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:831
+msgid ""
+"Exceptionally disable Info Bar on all single posts of particular custom "
+"post types, taxonomies."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:844
+msgid "You can select the areas, where you do not want this Info Bar to function."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:858
+#: modules/modal/functions/functions.common.php:1676
+#: modules/slide_in/functions/functions.common.php:1850
+msgid "Logged-in Users"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:862
+msgid ""
+"If your website has login functionality, should the Info Bar be visible to "
+"logged users?"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:873
+#: modules/modal/functions/functions.common.php:1691
+#: modules/slide_in/functions/functions.common.php:1865
+msgid "First Time Users"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:877
+msgid "When user visits your site for the first time, should Info Bar be visible?"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:888
+#: modules/modal/functions/functions.common.php:1707
+#: modules/slide_in/functions/functions.common.php:1880
+msgid "Hide on Devices"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:891
+#: modules/modal/functions/functions.common.php:1710
+#: modules/slide_in/functions/functions.common.php:1883
+msgid "Desktop"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:892
+#: modules/modal/functions/functions.common.php:1711
+#: modules/slide_in/functions/functions.common.php:1884
+msgid "Tablet"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:893
+#: modules/modal/functions/functions.common.php:1712
+#: modules/slide_in/functions/functions.common.php:1885
+msgid "Mobile"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:905
+msgid ""
+"By default, this Info Bar will be effective for all. However using controls "
+"above, you can hide it for certain visitors."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:918
+#: modules/modal/functions/functions.common.php:1737
+#: modules/slide_in/functions/functions.common.php:1910
+msgid "Referrer Detection"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:920
+#: modules/modal/functions/functions.common.php:1739
+#: modules/slide_in/functions/functions.common.php:1912
+msgid "Display To"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:921
+#: modules/modal/functions/functions.common.php:1740
+#: modules/slide_in/functions/functions.common.php:1913
+msgid "Hide From"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:922
+msgid ""
+"Info Bar can be displayed when the user is came from a website you would "
+"like to track. Eg. If you set to track google.com, all users coming from "
+"google will see this popup."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:933
+#: modules/modal/functions/functions.common.php:1752
+#: modules/slide_in/functions/functions.common.php:1925
+msgid "Display only to -"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:946
+#: modules/modal/functions/functions.common.php:1765
+#: modules/slide_in/functions/functions.common.php:1938
+msgid "Hide only from -"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:959
+msgid "Enable Info Bar On Site"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:961
+#: modules/modal/functions/functions.common.php:1780
+#: modules/slide_in/functions/functions.common.php:1953
+msgid "LIVE"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:962
+#: modules/modal/functions/functions.common.php:1781
+#: modules/slide_in/functions/functions.common.php:1954
+msgid "PAUSE"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:963
+msgid "When Info Bar set as pause, it won't be effective on your website."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:978
+#: modules/modal/functions/functions.common.php:1798
+#: modules/slide_in/functions/functions.common.php:1971
+msgid "Collect Leads Using -"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:990
+#: modules/modal/functions/functions.common.php:1810
+#: modules/slide_in/functions/functions.common.php:1983
+msgid "Paste HTML Code"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:992
+#: modules/modal/functions/functions.common.php:1812
+#: modules/slide_in/functions/functions.common.php:1985
+msgid ""
+"Paste the HTML code of your form, that you can get in your CRM Software "
+"like MailChimp"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1018
+#: modules/modal/functions/functions.common.php:1852
+#: modules/slide_in/functions/functions.common.php:2025
+msgid "Successful Submission "
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1021
+#: modules/modal/functions/functions.common.php:1855
+#: modules/slide_in/functions/functions.common.php:2028
+msgid "Display a message"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1022
+#: modules/modal/functions/functions.common.php:1856
+#: modules/slide_in/functions/functions.common.php:2029
+msgid "Redirect user"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1035
+#: modules/modal/functions/functions.common.php:1869
+#: modules/slide_in/functions/functions.common.php:2042
+msgid "Redirect URL"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1037
+#: modules/modal/functions/functions.common.php:1871
+#: modules/slide_in/functions/functions.common.php:2044
+msgid ""
+"Enter the URL where you would like to redirect the user after successfully "
+"added to the list.<br/><br/> Please add http / https prefix to URL. e.g. "
+"http://convertplug.com"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1049
+#: modules/modal/functions/functions.common.php:1883
+#: modules/slide_in/functions/functions.common.php:2056
+msgid "Redirect User To"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1052
+#: modules/modal/functions/functions.common.php:1886
+#: modules/slide_in/functions/functions.common.php:2059
+msgid "Same Tab"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1053
+#: modules/modal/functions/functions.common.php:1888
+#: modules/slide_in/functions/functions.common.php:2061
+msgid "Download File"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1066
+#: modules/modal/functions/functions.common.php:1901
+#: modules/slide_in/functions/functions.common.php:2074
+msgid "Pass Lead Data To Redirect URL"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1070
+#: modules/modal/functions/functions.common.php:1905
+#: modules/slide_in/functions/functions.common.php:2078
+msgid ""
+"Passes the lead email (and name if enabled) as query arguments to redirect "
+"URL."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1082
+#: modules/modal/functions/functions.common.php:1917
+#: modules/slide_in/functions/functions.common.php:2090
+msgid "Message After Success"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1084
+#: modules/modal/functions/functions.common.php:1919
+#: modules/slide_in/functions/functions.common.php:2092
+msgid ""
+"Enter the message you would like to display the user after successfully "
+"added to the list.<br/>This input field supports HTML too."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1096
+msgid "Message Text Color"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1098
+msgid "Select the text color for success message."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1111
+#: modules/modal/functions/functions.common.php:1932
+#: modules/slide_in/functions/functions.common.php:2105
+msgid "Action After Submission"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1114
+#: modules/modal/functions/functions.common.php:1935
+#: modules/slide_in/functions/functions.common.php:2108
+msgid "Reappear Form"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1115
+#: modules/modal/functions/functions.common.php:1936
+#: modules/slide_in/functions/functions.common.php:2109
+msgid "Hide Form"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1116
+#: modules/modal/functions/functions.common.php:1937
+#: modules/slide_in/functions/functions.common.php:2110
+msgid "Do Nothing"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1118
+msgid "Select how your Info Bar behaves after successful form submission."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1130
+#: modules/modal/functions/functions.common.php:1951
+#: modules/slide_in/functions/functions.common.php:2124
+msgid "Reappear Form After 'x' Seconds of Submission"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1136
+#: modules/modal/functions/functions.common.php:1957
+#: modules/slide_in/functions/functions.common.php:2130
+msgid "Reappear form after successful form submission."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1148
+msgid "Hide Info Bar After 'x' Seconds of Submission"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1154
+msgid "Hide Info Bar after successful form submission."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1167
+#: modules/info_bar/functions/functions.common.php:1180
+#: modules/modal/functions/functions.common.php:1988
+#: modules/modal/functions/functions.common.php:2001
+#: modules/slide_in/functions/functions.common.php:2161
+#: modules/slide_in/functions/functions.common.php:2174
+msgid "Failed Submission"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1182
+#: modules/modal/functions/functions.common.php:2003
+msgid ""
+"Enter the message you would like to display the user for invalid email "
+"address.<br/>This input field supports HTML too."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1293
+msgid "Entry Animation"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1294
+msgid "Select the entry level animation for info bar."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1307
+msgid "Exit Animation"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1308
+msgid "Select the exit level animation for info bar."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1321
+#: modules/slide_in/functions/functions.common.php:623
+msgid "Button Animation"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1322
+msgid "Select the exit level animation for info bar submit button ."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1335
+#: modules/modal/functions/functions.common.php:898
+#: modules/slide_in/functions/functions.common.php:952
+msgid "Disable Animation on Small Screens"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1339
+#: modules/modal/functions/functions.common.php:902
+#: modules/slide_in/functions/functions.common.php:956
+msgid "On smaller screens like mobile, disable animation with this setting."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1351
+#: modules/modal/functions/functions.common.php:914
+#: modules/slide_in/functions/functions.common.php:968
+msgid "Disable When Browser Width Is Below -"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1356
+msgid ""
+"When width of the browser is below provided value, the Info Bar animation "
+"will disable."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1374
+#: modules/modal/functions/functions.common.php:433
+#: modules/slide_in/functions/functions.common.php:365
+msgid "Image"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1375
+#: modules/modal/functions/functions.common.php:434
+#: modules/slide_in/functions/functions.common.php:366
+msgid "Text"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1376
+#: modules/modal/functions/functions.common.php:435
+#: modules/slide_in/functions/functions.common.php:367
+msgid "Do Not Close"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1388
+#: modules/info_bar/functions/functions.common.php:1829
+#: modules/modal/functions/functions.common.php:293
+#: modules/modal/functions/functions.common.php:447
+#: modules/modal/functions/functions.common.php:2321
+#: modules/modal/functions/functions.common.php:2598
+#: modules/modal/functions/functions.common.php:2683
+#: modules/slide_in/functions/functions.common.php:379
+#: modules/slide_in/functions/functions.common.php:2439
+msgid "Image source"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1393
+#: modules/modal/functions/functions.common.php:452
+#: modules/slide_in/functions/functions.common.php:384
+msgid "Predefined Icons"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1423
+#: modules/modal/functions/functions.common.php:482
+#: modules/modal/functions/functions.common.php:2291
+#: modules/slide_in/functions/functions.common.php:414
+msgid "title-4"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1424
+#: modules/modal/functions/functions.common.php:483
+#: modules/modal/functions/functions.common.php:2292
+#: modules/slide_in/functions/functions.common.php:415
+msgid "title-5"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1425
+#: modules/modal/functions/functions.common.php:484
+#: modules/modal/functions/functions.common.php:2293
+#: modules/slide_in/functions/functions.common.php:416
+msgid "title-6"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1426
+#: modules/modal/functions/functions.common.php:485
+#: modules/modal/functions/functions.common.php:2294
+#: modules/slide_in/functions/functions.common.php:417
+msgid "title-7"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1452
+#: modules/slide_in/functions/functions.common.php:990
+#: modules/slide_in/functions/functions.common.php:1140
+msgid "Position"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1453
+msgid "Inline position will look good for smaller width Info Bar."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1469
+#: modules/modal/functions/functions.common.php:511
+#: modules/slide_in/functions/functions.common.php:443
+msgid "Close Text"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1482
+#: modules/modal/functions/functions.common.php:524
+#: modules/slide_in/functions/functions.common.php:456
+msgid "Close Text Color"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1494
+#: modules/modal/functions/functions.common.php:536
+#: modules/slide_in/functions/functions.common.php:468
+msgid "Close Text Font Name"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1511
+#: modules/modal/functions/functions.common.php:553
+#: modules/slide_in/functions/functions.common.php:485
+msgid "Choose Image"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1524
+#: modules/modal/functions/functions.common.php:568
+#: modules/slide_in/functions/functions.common.php:498
+msgid "Close Image Width"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1543
+#: modules/modal/functions/functions.common.php:606
+#: modules/slide_in/functions/functions.common.php:515
+msgid "Close Image Position"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1549
+#: modules/modal/functions/functions.common.php:612
+#: modules/slide_in/functions/functions.common.php:521
+msgid "Choose position for close button."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1561
+#: modules/modal/functions/functions.common.php:693
+#: modules/slide_in/functions/functions.common.php:587
+msgid "Display Close After Few Seconds"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1565
+#: modules/modal/functions/functions.common.php:697
+#: modules/slide_in/functions/functions.common.php:591
+msgid "If enabled, close image / text will display after few seconds."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1577
+#: modules/modal/functions/functions.common.php:709
+#: modules/slide_in/functions/functions.common.php:603
+msgid "Display After Seconds"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1583
+msgid ""
+"How long the close image / text to be displayed after Info Bar is loaded? "
+"(value in seconds)."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1597
+#: modules/slide_in/functions/functions.common.php:641
+#: modules/slide_in/functions/functions.common.php:2268
+msgid "Toggle Button"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1610
+#: modules/slide_in/functions/functions.common.php:654
+msgid "Enable Toggle Button"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1611
+msgid "Enable toggle button that will show or hide Info Bar on click event."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1626
+#: modules/slide_in/functions/functions.common.php:670
+msgid "Initially Display Toggle Button"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1627
+#: modules/slide_in/functions/functions.common.php:671
+msgid "Display toggle button by default."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1642
+#: modules/slide_in/functions/functions.common.php:686
+msgid "Button Text"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1702
+msgid "Enhance your button background with gradient effect."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1742
+#: modules/modal/functions/functions.common.php:728
+#: modules/slide_in/functions/functions.common.php:762
+msgid "Auto Close Module"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1755
+#: modules/modal/functions/functions.common.php:741
+#: modules/slide_in/functions/functions.common.php:775
+msgid "Autoclose Module"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1759
+msgid ""
+"If enabled, Info Bar will close automatically after 'x' seconds when user "
+"is inactive on webpage."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1771
+#: modules/modal/functions/functions.common.php:757
+#: modules/slide_in/functions/functions.common.php:791
+msgid "Autoclose Duration"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1777
+msgid ""
+"How long the Info Bar should take to be close after its loaded? (value in "
+"seconds)."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1793
+msgid "Info Bar Content"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1794
+#: modules/info_bar/functions/functions.common.php:2221
+msgid ""
+"BLANK style is purely built for customization. This style supports text, "
+"images, shortcodes, HTML etc. Use Source button from Rich Text Editor "
+"toolbar & customize your Info Bar effectively."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1811
+msgid "Seperator Border Color"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1813
+msgid "Select the Seperator color for info bar."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1862
+#: modules/modal/functions/functions.common.php:326
+#: modules/modal/functions/functions.common.php:2354
+#: modules/slide_in/functions/functions.common.php:2472
+msgid ""
+"Upload an image that will be displayed inside the content area.Image size "
+"will not bigger than its container."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1874
+#: modules/modal/functions/functions.common.php:338
+#: modules/modal/functions/functions.common.php:2365
+#: modules/slide_in/functions/functions.common.php:2484
+msgid "Resize Image"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1882
+#: modules/modal/functions/functions.common.php:346
+#: modules/modal/functions/functions.common.php:2373
+#: modules/slide_in/functions/functions.common.php:2492
+msgid "The maximum size of an image is limited to the size of its container."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1894
+#: modules/modal/functions/functions.common.php:358
+#: modules/slide_in/functions/functions.common.php:2504
+msgid "Image Position"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1908
+#: modules/modal/functions/functions.common.php:373
+#: modules/modal/functions/functions.common.php:2384
+#: modules/slide_in/functions/functions.common.php:2519
+msgid "Horizontal Position"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1923
+#: modules/modal/functions/functions.common.php:391
+#: modules/modal/functions/functions.common.php:2401
+#: modules/slide_in/functions/functions.common.php:2537
+msgid "Vertical Position"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1939
+#: modules/modal/functions/functions.common.php:410
+#: modules/modal/functions/functions.common.php:2418
+#: modules/slide_in/functions/functions.common.php:2556
+msgid "Hide Image on Small Screens"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1943
+msgid ""
+"On smaller screens like mobile, smaller Info Bars look more beautiful. To "
+"reduce the size of the Info Bar, you may hide the image with this setting."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1959
+msgid "CTA Button Options"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:1990
+msgid "Submit Button Background Color"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2042
+msgid "Submit Button Title"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2246
+#: modules/modal/functions/functions.common.php:3134
+#: modules/modal/functions/functions.common.php:3164
+#: modules/modal/functions/functions.common.php:3609
+msgid "Enter Your Name"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2247
+#: modules/info_bar/functions/functions.common.php:2332
+msgid "Your Email"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2268
+msgid "$25 Off "
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2268
+msgid " when you complete your order today."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2297
+msgid ""
+"Merry Christmas! Enjoy all time low prices and discount this festival "
+"season."
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2321
+msgid "GROW YOUR BUSINESS!"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2322
+msgid ""
+"ConvertPlug&trade; is all-in-one software to generate more leads & drive "
+"more sales with onsite targeting. "
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2359
+msgid "Get the week&rsquo;s best articles right in your inbox"
+msgstr ""
+
+#: modules/info_bar/functions/functions.common.php:2387
+msgid "Share this Awesome Stuff with your Friends!"
+msgstr ""
+
+#: modules/info_bar/views/analytics.php:22
+msgid "Info Bar Analytics"
+msgstr ""
+
+#: modules/info_bar/views/analytics.php:22
+#: modules/info_bar/views/variant/variant.php:59
+#: modules/info_bar/views/variant/variant.php:68
+msgid "Back to Info Bar List"
+msgstr ""
+
+#: modules/info_bar/views/analytics.php:45
+msgid "Select Info Bar"
+msgstr ""
+
+#: modules/info_bar/views/analytics.php:85 modules/modal/views/analytics.php:85
+#: modules/slide_in/views/analytics.php:86
+msgid "Comparison Factor"
+msgstr ""
+
+#: modules/info_bar/views/edit.php:18
+msgid "Edit Info Bar Style"
+msgstr ""
+
+#: modules/info_bar/views/edit.php:19 modules/modal/views/edit.php:19
+#: modules/slide_in/views/edit.php:19
+msgid "Go to main page"
+msgstr ""
+
+#: modules/info_bar/views/edit.php:19 modules/modal/views/edit.php:19
+#: modules/slide_in/views/edit.php:19
+msgid "Back to Main Page"
+msgstr ""
+
+#: modules/info_bar/views/main.php:147
+msgid "Info Bar Designer"
+msgstr ""
+
+#: modules/info_bar/views/main.php:148 modules/info_bar/views/main.php:153
+#: modules/info_bar/views/main.php:348 modules/info_bar/views/main.php:364
+#: modules/info_bar/views/main.php:365
+msgid "Create New Info Bar"
+msgstr ""
+
+#: modules/info_bar/views/main.php:158 modules/modal/views/main.php:159
+#: modules/slide_in/views/main.php:158
+msgid "Upload Your Exported file"
+msgstr ""
+
+#: modules/info_bar/views/main.php:158 modules/modal/views/main.php:159
+#: modules/slide_in/views/main.php:158
+msgid "Import Style"
+msgstr ""
+
+#: modules/info_bar/views/main.php:159 modules/info_bar/views/main.php:531
+msgid "Import Info Bar"
+msgstr ""
+
+#: modules/info_bar/views/main.php:184
+msgid "Info Bar Name"
+msgstr ""
+
+#: modules/info_bar/views/main.php:188
+#: modules/info_bar/views/variant/variant.php:86
+#: modules/modal/views/main.php:189 modules/modal/views/variant/variant.php:86
+#: modules/slide_in/views/main.php:188
+#: modules/slide_in/views/variant/variant.php:86
+msgid "Impressions"
+msgstr ""
+
+#: modules/info_bar/views/main.php:191
+#: modules/info_bar/views/variant/variant.php:88
+#: modules/modal/views/main.php:192 modules/modal/views/variant/variant.php:88
+#: modules/slide_in/views/main.php:191
+#: modules/slide_in/views/variant/variant.php:88
+msgid "Status"
+msgstr ""
+
+#: modules/info_bar/views/main.php:244 modules/info_bar/views/main.php:272
+#: modules/info_bar/views/variant/variant.php:116
+#: modules/info_bar/views/variant/variant.php:124
+#: modules/info_bar/views/variant/variant.php:180
+#: modules/info_bar/views/variant/variant.php:188
+#: modules/modal/views/main.php:246 modules/modal/views/main.php:274
+#: modules/modal/views/variant/variant.php:116
+#: modules/modal/views/variant/variant.php:124
+#: modules/modal/views/variant/variant.php:180
+#: modules/modal/views/variant/variant.php:188
+#: modules/slide_in/views/main.php:244 modules/slide_in/views/main.php:272
+#: modules/slide_in/views/variant/variant.php:116
+#: modules/slide_in/views/variant/variant.php:124
+#: modules/slide_in/views/variant/variant.php:180
+#: modules/slide_in/views/variant/variant.php:188
+msgid "Live"
+msgstr ""
+
+#: modules/info_bar/views/main.php:246 modules/info_bar/views/main.php:275
+#: modules/info_bar/views/variant/variant.php:118
+#: modules/info_bar/views/variant/variant.php:127
+#: modules/info_bar/views/variant/variant.php:182
+#: modules/info_bar/views/variant/variant.php:191
+#: modules/modal/views/main.php:248 modules/modal/views/main.php:277
+#: modules/modal/views/variant/variant.php:118
+#: modules/modal/views/variant/variant.php:127
+#: modules/modal/views/variant/variant.php:182
+#: modules/modal/views/variant/variant.php:191
+#: modules/slide_in/views/main.php:246 modules/slide_in/views/main.php:275
+#: modules/slide_in/views/variant/variant.php:118
+#: modules/slide_in/views/variant/variant.php:127
+#: modules/slide_in/views/variant/variant.php:182
+#: modules/slide_in/views/variant/variant.php:191
+msgid "Pause"
+msgstr ""
+
+#: modules/info_bar/views/main.php:262
+#: modules/info_bar/views/variant/variant.php:120
+#: modules/info_bar/views/variant/variant.php:184
+#: modules/modal/views/main.php:264 modules/modal/views/variant/variant.php:120
+#: modules/modal/views/variant/variant.php:184
+#: modules/modules-functions.php:548 modules/slide_in/views/main.php:262
+#: modules/slide_in/views/variant/variant.php:120
+#: modules/slide_in/views/variant/variant.php:184
+msgid "Scheduled"
+msgstr ""
+
+#: modules/info_bar/views/main.php:278
+#: modules/info_bar/views/variant/variant.php:130
+#: modules/info_bar/views/variant/variant.php:194
+#: modules/modal/views/main.php:280 modules/modal/views/variant/variant.php:130
+#: modules/modal/views/variant/variant.php:194
+#: modules/slide_in/views/main.php:278
+#: modules/slide_in/views/variant/variant.php:130
+#: modules/slide_in/views/variant/variant.php:194
+msgid "Schedule"
+msgstr ""
+
+#: modules/info_bar/views/main.php:295 modules/modal/views/main.php:297
+#: modules/slide_in/views/main.php:295
+msgid "See Variants"
+msgstr ""
+
+#: modules/info_bar/views/main.php:297 modules/modal/views/main.php:299
+#: modules/slide_in/views/main.php:297
+msgid "Create Variant"
+msgstr ""
+
+#: modules/info_bar/views/main.php:302
+msgid "Duplicate Info bar"
+msgstr ""
+
+#: modules/info_bar/views/main.php:322
+#: modules/info_bar/views/variant/variant.php:145
+#: modules/info_bar/views/variant/variant.php:208
+#: modules/modal/views/main.php:324 modules/modal/views/variant/variant.php:145
+#: modules/modal/views/variant/variant.php:208
+#: modules/slide_in/views/main.php:322
+#: modules/slide_in/views/variant/variant.php:145
+#: modules/slide_in/views/variant/variant.php:208
+msgid "View Analytics"
+msgstr ""
+
+#: modules/info_bar/views/main.php:325 modules/modal/views/main.php:327
+#: modules/slide_in/views/main.php:324
+msgid "Export Settings"
+msgstr ""
+
+#: modules/info_bar/views/main.php:332
+#: modules/info_bar/views/variant/variant.php:149
+msgid "Delete Info Bar"
+msgstr ""
+
+#: modules/info_bar/views/main.php:343
+msgid "Back to info_bar list"
+msgstr ""
+
+#: modules/info_bar/views/main.php:344
+msgid "Back to Info Bar list"
+msgstr ""
+
+#: modules/info_bar/views/main.php:349
+msgid "Awesome! Let's start with your first info bar"
+msgstr ""
+
+#: modules/info_bar/views/main.php:394 modules/modal/views/main.php:397
+#: modules/slide_in/views/main.php:394
+msgid "Search Contacts"
+msgstr ""
+
+#: modules/info_bar/views/main.php:437
+#: modules/info_bar/views/variant/variant.php:246
+msgid "Schedule This Info Bar"
+msgstr ""
+
+#: modules/info_bar/views/main.php:447
+#: modules/info_bar/views/variant/variant.php:256
+#: modules/modal/views/main.php:448 modules/modal/views/variant/variant.php:256
+#: modules/slide_in/views/main.php:448
+#: modules/slide_in/views/variant/variant.php:256
+msgid "Enter Starting Time"
+msgstr ""
+
+#: modules/info_bar/views/main.php:461
+#: modules/info_bar/views/variant/variant.php:270
+#: modules/modal/views/main.php:462 modules/modal/views/variant/variant.php:270
+#: modules/slide_in/views/main.php:462
+#: modules/slide_in/views/variant/variant.php:270
+msgid "Enter Ending Time"
+msgstr ""
+
+#: modules/info_bar/views/main.php:482
+#: modules/info_bar/views/variant/variant.php:291
+msgid "Schedule Info Bar"
+msgstr ""
+
+#: modules/info_bar/views/main.php:485
+#: modules/info_bar/views/variant/variant.php:294
+#: modules/modal/views/main.php:486 modules/modal/views/variant/variant.php:294
+#: modules/slide_in/views/main.php:486
+#: modules/slide_in/views/variant/variant.php:294
+msgid "Cancel"
+msgstr ""
+
+#: modules/info_bar/views/variant/edit.php:19
+#: modules/modal/views/variant/edit.php:19
+#: modules/slide_in/views/variant/edit.php:19
+msgid "Edit Variant Style"
+msgstr ""
+
+#: modules/info_bar/views/variant/edit.php:20
+#: modules/modal/views/variant/edit.php:20
+#: modules/slide_in/views/variant/edit.php:20
+msgid "Back to Variant Tests"
+msgstr ""
+
+#: modules/info_bar/views/variant/new.php:5
+#: modules/modal/views/variant/new.php:5
+#: modules/slide_in/views/variant/new.php:5
+msgid "Create new variant for"
+msgstr ""
+
+#: modules/info_bar/views/variant/new.php:7
+#: modules/modal/views/variant/new.php:7
+#: modules/slide_in/views/variant/new.php:7
+msgid "Back to Variant's List"
+msgstr ""
+
+#: modules/info_bar/views/variant/new.php:8
+#: modules/modal/views/variant/new.php:8
+#: modules/slide_in/views/variant/new.php:8
+msgid "Back to Variants List"
+msgstr ""
+
+#: modules/info_bar/views/variant/new.php:12
+#: modules/modal/views/variant/new.php:12
+#: modules/slide_in/views/variant/new.php:12
+msgid ""
+"Give a name to your variant and hit enter. Don't worry - you can change "
+"this in future if you don't like it anymore."
+msgstr ""
+
+#: modules/info_bar/views/variant/new.php:17
+#: modules/modal/views/variant/new.php:17
+#: modules/slide_in/views/variant/new.php:17
+msgid "Enter title for new variant"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:50
+#: modules/modal/views/variant/variant.php:50
+#: modules/slide_in/views/variant/variant.php:50
+msgid "Variants for"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:57
+#: modules/info_bar/views/variant/variant.php:62
+#: modules/info_bar/views/variant/variant.php:231
+#: modules/modal/views/variant/variant.php:57
+#: modules/modal/views/variant/variant.php:62
+#: modules/modal/views/variant/variant.php:231
+#: modules/slide_in/views/variant/variant.php:57
+#: modules/slide_in/views/variant/variant.php:62
+#: modules/slide_in/views/variant/variant.php:231
+msgid "Create New Variant"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:84
+#: modules/modal/views/variant/variant.php:84
+#: modules/slide_in/views/variant/variant.php:84
+msgid "Variant Name"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:142
+msgid "Duplicate Info Bar"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:205
+msgid "Duplicate Variant"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:212
+msgid "Delete  Variant"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:221
+#: modules/modal/views/variant/variant.php:221
+#: modules/slide_in/views/variant/variant.php:221
+msgid "FIRST TIME BEING HERE?"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:222
+#: modules/modal/views/variant/variant.php:222
+#: modules/slide_in/views/variant/variant.php:222
+msgid "Awesome! Let's start with your first variant"
+msgstr ""
+
+#: modules/info_bar/views/variant/variant.php:230
+#: modules/modal/views/variant/variant.php:230
+#: modules/slide_in/views/variant/variant.php:230
+msgid "Create New variant"
+msgstr ""
+
+#: modules/modal/functions/config/social_media_with_form.php:23
+#: modules/modal/functions/config/webinar.php:23
+#: modules/slide_in/functions/config/free_widget.php:24
+#: modules/slide_in/functions/config/optin.php:24
+#: modules/slide_in/functions/config/optin_widget.php:24
+#: modules/slide_in/functions/config/social_widget_box.php:24
+msgid "Middle Description"
+msgstr ""
+
+#: modules/modal/functions/config/social_media_with_form.php:24
+msgid "For more details click on the below link."
+msgstr ""
+
+#: modules/modal/functions/config/webinar.php:24
+#: modules/slide_in/functions/config/free_widget.php:25
+#: modules/slide_in/functions/config/optin.php:25
+#: modules/slide_in/functions/config/optin_widget.php:25
+#: modules/slide_in/functions/config/social_widget_box.php:25
+msgid "With John Doe"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:40
+#: modules/slide_in/functions/functions.common.php:98
+msgid "Main Title"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:41
+msgid "LEARN HOW TO ACQUIRE 15,000 NEW VISITORS EVERY MONTH"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:54
+#: modules/modal/functions/functions.common.php:68
+#: modules/slide_in/functions/functions.common.php:112
+msgid "Short Description"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:55
+#: modules/slide_in/functions/functions.common.php:113
+msgid ""
+"Download this free eBook to learn how to get 15,000 new, unique visitors "
+"per month with our proven techniques."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:56
+#: modules/modal/functions/functions.common.php:70
+#: modules/slide_in/functions/functions.common.php:114
+msgid "Enter the short description that displays under the main title."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:82
+#: modules/slide_in/functions/functions.common.php:126
+msgid "Notice / Tip Under Form"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:83
+#: modules/modal/functions/functions.common.php:97
+msgid "Written by John Doe, well versed writer at Brainstorm Publication."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:84
+#: modules/slide_in/functions/functions.common.php:128
+msgid "Enter the notice / tip that displays under the subscription form."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:96
+msgid "Count Down Title"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:109
+msgid "Modal Content"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:110
+#: modules/slide_in/functions/functions.common.php:141
+msgid ""
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis viverra, urna "
+"vitae vehicula congue, purus nibh vestibulum lacus, sit amet tristique ante "
+"odio viverra orci. Nullam consectetur mollis lacinia."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:126
+#: modules/slide_in/functions/functions.common.php:157
+msgid "Secondary Title"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:127
+msgid "[Revised and Updated for November 2015]"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:128
+#: modules/slide_in/functions/functions.common.php:159
+msgid "Enter the secondary heading title."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:140
+msgid "Modal Secondary Title Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:142
+#: modules/slide_in/functions/functions.common.php:173
+msgid "Select the secondary title text color."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:158
+#: modules/modal/functions/functions.common.php:2514
+msgid "Modal Title Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:160
+#: modules/modal/functions/functions.common.php:2516
+#: modules/slide_in/functions/functions.common.php:191
+msgid "Select the title text color."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:172
+#: modules/modal/functions/functions.common.php:2528
+#: modules/slide_in/functions/functions.common.php:203
+msgid "Description Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:174
+#: modules/modal/functions/functions.common.php:2530
+#: modules/slide_in/functions/functions.common.php:205
+msgid "Select the description text color."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:186
+#: modules/modal/functions/functions.common.php:2542
+#: modules/slide_in/functions/functions.common.php:217
+msgid "Notice / Tip Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:188
+#: modules/modal/functions/functions.common.php:2544
+#: modules/slide_in/functions/functions.common.php:219
+msgid "Select the text color for Notice / Tip under the form."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:202
+msgid "Choose the background color for modal box area."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:216
+#: modules/modal/functions/functions.common.php:2556
+msgid "Overlay Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:220
+#: modules/modal/functions/functions.common.php:2560
+msgid "Provide the overlay color that appears behind modal box area."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:264
+#: modules/modal/functions/functions.common.php:2716
+msgid ""
+"You can provide an image that would be appear behind the content in the "
+"modal box area. For this setting to work, the background color you've "
+"chosen must be transparent."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:360
+#: modules/slide_in/functions/functions.common.php:2506
+msgid "RIGHT"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:361
+#: modules/slide_in/functions/functions.common.php:2507
+msgid "LEFT"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:414
+#: modules/modal/functions/functions.common.php:2422
+#: modules/slide_in/functions/functions.common.php:2560
+msgid ""
+"On smaller screens like mobile, smaller modals look more beautiful. To "
+"reduce the size of the modal, you may hide the image with this setting."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:587
+msgid "Close Image Area"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:590
+msgid "Outside Modal"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:591
+msgid "On Modal Edge"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:592
+msgid "Inside Modal"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:594
+msgid "Select the close button placement area."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:624
+msgid "Close Modal By Clicking On -"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:626
+msgid "Close Button & Overlay"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:627
+msgid "Close Button Only"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:639
+#: modules/slide_in/functions/functions.common.php:533
+msgid "Display Tooltip On Hover"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:641
+#: modules/modal/functions/functions.common.php:1051
+#: modules/slide_in/functions/functions.common.php:535
+#: modules/slide_in/functions/functions.common.php:1285
+msgid "Yes"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:642
+#: modules/modal/functions/functions.common.php:1052
+#: modules/slide_in/functions/functions.common.php:536
+#: modules/slide_in/functions/functions.common.php:1286
+msgid "No"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:654
+#: modules/slide_in/functions/functions.common.php:548
+msgid "Tooltip Text"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:655
+msgid "Note: Modals are displayed only once!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:667
+#: modules/slide_in/functions/functions.common.php:561
+msgid "Tooltip Text  Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:680
+#: modules/slide_in/functions/functions.common.php:574
+msgid "Tooltip Background Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:715
+msgid ""
+"How long the close image / text to be displayed after Modal is loaded? "
+"(value in seconds)."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:745
+msgid ""
+"If enabled, Modal will close automatically after 'x' seconds when user is "
+"inactive on webpage."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:763
+msgid ""
+" How long the Modal should take to be close after its loaded? (value in "
+"seconds)."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:780
+#: modules/slide_in/functions/functions.common.php:834
+msgid "Entry Animation Effect"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:782
+msgid "Animation effect while the modal appears."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:849
+#: modules/slide_in/functions/functions.common.php:903
+msgid "Exit Animation Effect"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:851
+msgid "Animation effect while the modal disappears."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:919
+msgid ""
+"When width of the browser is below provided value, the modal animation will "
+"disable."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:935
+msgid "Modal Size"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:937
+msgid ""
+"Provide custom size of your choice or make this modal cover entire screen "
+"area."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:939
+msgid "Full Screen"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:940
+msgid "Custom Width"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:952
+msgid "Modal Width"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:969
+#: modules/slide_in/functions/functions.common.php:1029
+#: modules/slide_in/functions/functions.common.php:1173
+msgid "Remove Default Padding"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:973
+msgid "Remove the default padding between content area and modal box edges."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1000
+msgid ""
+"Using very customizable settings below, you can apply a border around the "
+"modal box."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1011
+#: modules/slide_in/functions/functions.common.php:1071
+#: modules/slide_in/functions/functions.common.php:1215
+msgid "Box Shadow"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1037
+#: modules/slide_in/functions/functions.common.php:1271
+msgid "Affiliate Link"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1049
+#: modules/slide_in/functions/functions.common.php:1283
+msgid "Become a ConvertPlug Affiliate"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1063
+#: modules/slide_in/functions/functions.common.php:1297
+msgid "Envato Username"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1076
+#: modules/slide_in/functions/functions.common.php:1310
+msgid "Affilate title"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1089
+#: modules/slide_in/functions/functions.common.php:1323
+msgid ""
+"Did you know that you can earn 30% for each sale you refer to ConvertPlug? "
+"Just enter your Envato username and get started!</br></br><a "
+"style=\"text-decoration:none;\" "
+"href=\"http://themeforest.net/legal/affiliate\" target=\"_blank\">Curious "
+"how does it work?</a>"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1116
+msgid "Enter your custom css code for this modal here."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1144
+#: modules/slide_in/functions/functions.common.php:1341
+msgid "Form Options"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1156
+#: modules/slide_in/functions/functions.common.php:1353
+msgid "Enable Name Field"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1170
+#: modules/slide_in/functions/functions.common.php:1367
+msgid "Display Button On Next Line"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1185
+#: modules/slide_in/functions/functions.common.php:1382
+msgid "Placeholder Text for Name"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1198
+#: modules/slide_in/functions/functions.common.php:1395
+msgid "Placeholder Text for Email"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1210
+msgid "Placeholder Text Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1221
+msgid "Placeholder Font"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1258
+#: modules/slide_in/functions/functions.common.php:1407
+msgid "Button Options"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1278
+msgid ""
+"If enabled, modal will load right before user is about to leave your "
+"website."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1293
+msgid "If enabled, modal will load automatically after few seconds."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1310
+msgid ""
+"How long the modal should take to be displayed after the page is loaded? "
+"(value in seconds)."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1326
+msgid "If enabled, modal will load as user scrolls down on the page."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1343
+msgid "How much should the user scroll the page to display the modal? (value in %)."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1359
+msgid ""
+"If enabled, a modal will be displayed to visitor if he is idle on page for "
+"certain time."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1388
+msgid "Modal will be triggered when user scrolls to the end of post."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1438
+msgid "Modal will be triggered when user scrolls to certain css class or id."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1467
+msgid ""
+"Modal can be triggered on click of any UI element. Just provide the unique "
+"CSS class of that element here and modal will be trigger when you click on "
+"that element."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1481
+msgid ""
+"<br>Modal can be triggered on click of any UI element. Just provide the "
+"unique CSS class of that element here and modal will be trigger when you "
+"click on that element.<br> If you have multiple classes, separate them with "
+"comma. Example - widget-title, site-description<br>"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1496
+msgid ""
+"Place your text, image or HTML in-between the provided shortcode to launch "
+"the modal."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1511
+msgid ""
+"Use this shortcode to display modal popup inline as a part of page content "
+"/ Widget."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1527
+msgid ""
+"ConvertPlug can check user history and limit repeat occurrence of modal "
+"when cookies are enabled. No more annoying modals!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1544
+msgid ""
+"How many days this modal should not be displayed after user submits the "
+"form?"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1562
+msgid ""
+"How many days this modal should not be displayed after user closes the "
+"modal?"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1579
+msgid ""
+"If set YES, code of this modal will be added throughout the website so it "
+"can function anywhere. If set NO - select the specific areas where you want "
+"the modal to function and code will be automatically embedded there."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1591
+msgid "Enable module on selected pages, posts, custom posts, special pages."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1605
+msgid ""
+"Enable module on all single posts of particular custom post types, "
+"taxonomies."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1618
+msgid "You can select the exceptional areas, where you want this modal to function."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1633
+msgid ""
+"Exceptionally disable module on selected pages, posts, custom posts, "
+"special pages."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1647
+msgid ""
+"Exceptionally disable module on all single posts of particular custom post "
+"types, taxonomies."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1661
+msgid "You can select the areas, where you do not want this modal to function."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1678
+#: modules/modal/functions/functions.common.php:1693
+#: modules/slide_in/functions/functions.common.php:1852
+#: modules/slide_in/functions/functions.common.php:1867
+msgid "SHOW"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1679
+#: modules/modal/functions/functions.common.php:1694
+#: modules/slide_in/functions/functions.common.php:1853
+#: modules/slide_in/functions/functions.common.php:1868
+msgid "HIDE"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1680
+msgid ""
+"If your website has login functionality, should the modal be visible to "
+"logged users?"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1695
+msgid "When user visits your site for the first time, should modal be visible?"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1724
+msgid ""
+"By default, this modal will be effective for all. However using controls "
+"above, you can hide it for certain visitors."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1741
+msgid ""
+"Modal can be displayed when the user is came from a website you would like "
+"to track. Eg. If you set to track google.com, all users coming from google "
+"will see this popup."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1778
+msgid "Enable Modal On Site"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1782
+msgid "When modal set as pause, it won't be effective on your website."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1824
+#: modules/slide_in/functions/functions.common.php:1997
+msgid ""
+"Preview of the custom form might not be accurate here. For the best "
+"accuracy, please check output on the frontend."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1939
+msgid "Select how your Modal behaves after successful form submission."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1969
+msgid "Hide Modal After 'x' Seconds of Submission"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:1975
+msgid "Hide Modal after successful form submission."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2019
+msgid "Form Background Styling"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2031
+msgid "Form Background Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2045
+#: modules/slide_in/functions/functions.common.php:2354
+msgid "Form Border Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2064
+#: modules/slide_in/functions/functions.common.php:2232
+msgid "Title Background Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2068
+msgid "Choose the background color for modal title area."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2083
+#: modules/modal/functions/functions.common.php:2256
+#: modules/slide_in/functions/functions.common.php:2249
+msgid "Description Background Color"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2087
+msgid "Choose the background color for modal description area."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2103
+msgid "Video ID"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2105
+msgid ""
+"Enter YouTube video ID you will find in the url. e.g. If video url is "
+"<em>youtube.com/watch?v=P5yHEKqx86U</em> then 'P5yHEKqx86U' is the video ID."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2116
+msgid "Autoplay YouTube video."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2120
+msgid "This will Autoplay the video on modal show."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2131
+msgid "Video Start Time"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2132
+msgid "You will change the start time of YouTube video."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2148
+msgid "Show Video Title And Player Actions"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2152
+msgid "This will display / hide the player title bar and actions."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2163
+msgid "Show Player Controls"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2167
+msgid "Would you like to display player controls in the video?."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2182
+msgid "Enable Form"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2196
+msgid "CTA Delay"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2197
+msgid "Amount of time to pass (in seconds) after CTA appears."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2218
+msgid "Modal Height"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2220
+msgid "CUSTOM"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2221
+msgid "AUTO"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2222
+msgid "Provide custom height of your choice to this modal ."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2233
+msgid "Change Height"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2306
+msgid "Form Column Width"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2308
+msgid "1/3"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2309
+msgid "1/2"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2310
+msgid "Select column width"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2433
+msgid "Short Title"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2434
+msgid "Subscribe"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2435
+msgid "Enter the main short title."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2447
+msgid "Short note"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2448
+msgid "We respect your privacy."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2449
+msgid "Enter the note."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2461
+msgid "Short note 2"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2462
+msgid "<super>*</super>Terms and conditions apply."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2463
+msgid "Enter the note 2."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2478
+msgid "Form Separator"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2482
+msgid "Triangle"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2483
+msgid "Clouds"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2484
+msgid "Round Split"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2496
+msgid "Part Of"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2571
+msgid "Form Background"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2585
+msgid "Choose the background color for form"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2631
+msgid ""
+"You can provide an image that would be appear behind the form in the modal "
+"box area. For this setting to work, the background color you've chosen must "
+"be transparent."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2656
+msgid "Content Background"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:2670
+msgid "Choose the background color for content"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3064
+msgid ""
+"BLANK style is purely built for customization. This style supports text, "
+"images, shortcodes, HTML etc. Use Source button from Rich Text Editor "
+"toolbar & customize your Modal effectively."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3081
+#: modules/modal/functions/functions.common.php:3230
+msgid "Enter Your Email Address"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3117
+msgid "Register for a FREE Webinar!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3118
+msgid "Learn Art of Conversion Optimization and Science Behind It."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3120
+#: modules/modal/functions/functions.common.php:3594
+msgid "TODAY – 8.00 PM to 8.35 PM (EST)"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3123
+msgid "JOIN US TONIGHT!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3133
+#: modules/modal/functions/functions.common.php:3303
+#: modules/modal/functions/functions.common.php:3608
+msgid "Enter Your Email Here"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3148
+msgid "Subscribe To Newsletter"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3149
+msgid "DON&rsquo;T MISS OUT!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3150
+msgid "Give it a try, you can unsubscribe anytime."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3151
+msgid ""
+"Be the first to get latest updates and exclusive content straight to your "
+"email inbox."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3153
+msgid "Stay Updated"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3163
+msgid "Enter your email address"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3183
+msgid "Flat 20% Off Today!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3184
+msgid "Hurry up! Offer valid till stocks last."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3185
+msgid "Dramatically maintain clicks-and-mortar solutions without functional errors."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3187
+msgid "AVAIL NOW"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3188
+msgid "Enter Your Email"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3211
+msgid "We&rsquo;ve a Special Offer today!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3212
+msgid "on all electronic & mobile devices."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3213
+msgid "Hurry up! Offer valid till stock last."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3214
+msgid "FLAT 50% OFF"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3216
+msgid "GET COUPON"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3220
+msgid "Powered by ConvertPlug<sup>&trade;</sup>"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3249
+#: modules/modal/functions/functions.common.php:3252
+#: modules/modal/functions/functions.common.php:3323
+msgid "FLAT 30% OFF"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3250
+#: modules/modal/functions/functions.common.php:3321
+msgid "Coupon Code - GET30"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3251
+#: modules/modal/functions/functions.common.php:3322
+msgid "* Terms & Conditions Apply"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3254
+#: modules/modal/functions/functions.common.php:3325
+msgid "SHOP NOW"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3280
+msgid "Premium Content Locked!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3282
+msgid "Enter Your Email Below to Unlock Your Exclusive Content"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3284
+msgid "Get Instant Access"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3320
+msgid "Independence Day Sale"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3345
+msgid "How to Convert Traffic into Leads with ConvertPlug"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3346
+msgid ""
+"Seperate CRO facts from fiction & stop wasting your time on outdated "
+"strategies that do not work."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3348
+msgid "FEATURED DOWNLOAD -"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3350
+msgid "DOWNLOAD NOW"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3377
+msgid "Last Minute Vacations Package"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3378
+msgid "Enter Your Email To Find Discount On Your Dream Vacations!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3379
+msgid "Hurry up, Limited Deals Available!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3380
+msgid "SAVE UP TO 80%"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3382
+msgid "GET MY DISCOUNT OFFER"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3392
+msgid "Enter your name."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3393
+msgid "Whats your email address?"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3410
+msgid "Convert"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3410
+msgid "Traffic"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3411
+msgid ""
+"1. How to add powerful call to actions<br>2. Secrets of industry "
+"experts<br>3. A/B Testing & Optimization Methods"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3413
+msgid "Download this free eBook and learn:"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3415
+msgid "DOWNLOAD YOUR FREE COPY"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3436
+msgid "SPECIAL OFFER!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3437
+msgid "Apply Coupon Code BOGO & Upto 50% Off!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3439
+msgid "Offer Expires In:"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3440
+msgid "This Offer is Limited! Grab your Discount!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3442
+msgid "GET MY OFFER!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3464
+msgid "Share this post with your friends"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3465
+msgid "Sharing is Awesome, Do It!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3535
+msgid "STAY IN TOUCH"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3556
+msgid "Enjoyed this article? Please spread the word."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3591
+msgid "Join over 4000 of Your Peers!"
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3592
+msgid "Signup For Access To Free WordPress Tips & Resources."
+msgstr ""
+
+#: modules/modal/functions/functions.common.php:3597
+msgid "GET IT NOW!"
+msgstr ""
+
+#: modules/modal/views/analytics.php:22
+msgid "Modal Analytics"
+msgstr ""
+
+#: modules/modal/views/analytics.php:22
+#: modules/modal/views/variant/variant.php:59
+#: modules/modal/views/variant/variant.php:68
+msgid "Back to Modal List"
+msgstr ""
+
+#: modules/modal/views/analytics.php:45
+msgid "Select Modal"
+msgstr ""
+
+#: modules/modal/views/analytics.php:88 modules/slide_in/views/analytics.php:89
+msgid "Impression Vs Conversion"
+msgstr ""
+
+#: modules/modal/views/analytics.php:90 modules/slide_in/views/analytics.php:91
+msgid "Impression"
+msgstr ""
+
+#: modules/modal/views/analytics.php:91 modules/slide_in/views/analytics.php:92
+msgid "Conversion"
+msgstr ""
+
+#: modules/modal/views/analytics.php:92 modules/slide_in/views/analytics.php:93
+msgid "Conversion Rate"
+msgstr ""
+
+#: modules/modal/views/edit.php:18
+msgid "Edit Modal Style"
+msgstr ""
+
+#: modules/modal/views/main.php:148
+msgid "Modal Designer"
+msgstr ""
+
+#: modules/modal/views/main.php:149 modules/modal/views/main.php:154
+#: modules/modal/views/main.php:351 modules/modal/views/main.php:367
+#: modules/modal/views/main.php:368
+msgid "Create New Modal"
+msgstr ""
+
+#: modules/modal/views/main.php:160 modules/modal/views/main.php:532
+msgid "Import Modal"
+msgstr ""
+
+#: modules/modal/views/main.php:185
+msgid "Modal Name"
+msgstr ""
+
+#: modules/modal/views/main.php:304 modules/modal/views/variant/variant.php:142
+#: modules/modal/views/variant/variant.php:205
+msgid "Duplicate Modal"
+msgstr ""
+
+#: modules/modal/views/main.php:335 modules/modal/views/variant/variant.php:149
+#: modules/modal/views/variant/variant.php:212
+msgid "Delete Modal"
+msgstr ""
+
+#: modules/modal/views/main.php:346 modules/modal/views/main.php:347
+msgid "Back to modal list"
+msgstr ""
+
+#: modules/modal/views/main.php:352
+msgid "Awesome! Let's start with your first modal"
+msgstr ""
+
+#: modules/modal/views/main.php:438 modules/modal/views/variant/variant.php:246
+msgid "Schedule This Modal"
+msgstr ""
+
+#: modules/modal/views/main.php:483 modules/modal/views/variant/variant.php:291
+msgid "Schedule Modal"
+msgstr ""
+
+#: modules/modal/views/variant/variant.php:221
+#: modules/slide_in/views/variant/variant.php:221
+msgid "Create new variant Test"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:99
+msgid "Stay Connected!"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:127
+msgid ""
+"Written by John Doe, who is well versed for his writings in Brainstorm "
+"Publication."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:140
+msgid "Slide In Content"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:158
+msgid "Get on our mailing list"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:171
+msgid "Slide In Secondary Title Color"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:189
+msgid "Slide In Title Color"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:233
+msgid "Choose the background color for Slide In box area."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:307
+msgid ""
+"You can provide an image that would be appear behind the content in the "
+"Slide In box area. For this setting to work, the background color you've "
+"chosen must be transparent."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:549
+msgid "Note: Slide Ins are displayed only once!"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:609
+msgid ""
+"How long the close image / text to be displayed after Slide In is loaded? "
+"(value in seconds)."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:624
+msgid "Select the exit level animation for Slide In submit button ."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:655
+msgid "Enable toggle button that will show or hide Slide In on click event."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:779
+msgid ""
+"If enabled, Slide In will close automatically after 'x' seconds when user "
+"is inactive on webpage."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:797
+msgid ""
+"How long the Slide In should take to be close after its loaded? (value in "
+"seconds)."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:814
+msgid "Initial Appearance"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:816
+msgid "Minimize"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:817
+msgid "Open"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:818
+msgid ""
+" Select how your module appears after page loads. You can minimize or open "
+"it for initial view."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:836
+msgid "Animation effect while the Slide In appears."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:905
+msgid "Animation effect while the Slide In disappears."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:973
+msgid ""
+"When width of the browser is below provided value, the Slide In animation "
+"will disable."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:994
+msgid "Top Center"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:997
+msgid "Bottom Center"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:999
+msgid "Center Left"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1000
+msgid "Center Right"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1012
+#: modules/slide_in/functions/functions.common.php:1156
+msgid "Slide In Width"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1033
+#: modules/slide_in/functions/functions.common.php:1177
+msgid "Remove the default padding between content area and Slide In box edges."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1060
+#: modules/slide_in/functions/functions.common.php:1204
+msgid ""
+"Using very customizable settings below, you can apply a border around the "
+"Slide In box."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1111
+#: modules/slide_in/functions/functions.common.php:1255
+msgid "Enter your custom css code for this Slide In here."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1455
+msgid ""
+"If enabled, Slide In will load right before user is about to leave your "
+"website."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1470
+msgid "If enabled, Slide In will load automatically after few seconds."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1487
+msgid ""
+"How long the Slide In should take to be displayed after the page is loaded? "
+"(value in seconds)."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1503
+msgid "If enabled, Slide In will load as user scrolls down on the page."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1520
+msgid ""
+"How much should the user scroll the page to display the Slide In? (value in "
+"%)."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1536
+msgid ""
+"If enabled, a Slide In will be displayed to visitor if he is idle on page "
+"for certain time."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1565
+msgid "Slide In will be triggered when user scrolls to the end of post."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1615
+msgid "Slide In will be triggered when user scrolls to certain css class or id."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1645
+msgid ""
+"Slide In can be triggered on click of any UI element. Just provide the "
+"unique CSS class of that element here and Slide In will be trigger when you "
+"click on that element."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1659
+msgid ""
+"<br>Slide In can be triggered on click of any UI element. Just provide the "
+"unique CSS class of that element here and Slide In will be trigger when you "
+"click on that element.<br> If you have multiple classes, separate them with "
+"comma. Example - widget-title, site-description<br>"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1674
+msgid ""
+"Place your text, image or HTML in-between the provided shortcode to launch "
+"the Slide In."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1689
+msgid ""
+"Use this shortcode to display Slide In inline as a part of page content / "
+"Widget."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1704
+msgid ""
+"ConvertPlug can check user history and limit repeat occurrence of Slide In "
+"when cookies are enabled. No more annoying Slide Ins!"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1721
+msgid ""
+"How many days this Slide In should not be displayed after user submits the "
+"form?"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1739
+msgid ""
+"How many days this Slide In should not be displayed after user closes the "
+"Slide In?"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1755
+msgid ""
+"If set YES, code of this Slide In will be added throughout the website so "
+"it can function anywhere. If set NO - select the specific areas where you "
+"want the Slide In to function and code will be automatically embedded there."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1767
+msgid "Enable Slide In on selected pages, posts, custom posts, special pages."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1781
+msgid ""
+"Enable Slide In on all single posts of particular custom post types, "
+"taxonomies."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1794
+msgid ""
+"You can select the exceptional areas, where you want this Slide In to "
+"function."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1809
+msgid ""
+"Exceptionally disable Slide In on selected pages, posts, custom posts, "
+"special pages."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1823
+msgid ""
+"Exceptionally disable Slide In on all single posts of particular custom "
+"post types, taxonomies."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1836
+msgid "You can select the areas, where you do not want this Slide In to function."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1854
+msgid ""
+"If your website has login functionality, should the Slide In be visible to "
+"logged users?"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1869
+msgid "When user visits your site for the first time, should Slide In be visible?"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1897
+msgid ""
+"By default, this Slide In will be effective for all. However using controls "
+"above, you can hide it for certain visitors."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1914
+msgid ""
+"Slide In can be displayed when the user is came from a website you would "
+"like to track. Eg. If you set to track google.com, all users coming from "
+"google will see this popup."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1951
+msgid "Enable Slide In On Site"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:1955
+msgid "When Slide In set as pause, it won't be effective on your website."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2112
+msgid "Select how your Slide In behaves after successful form submission."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2142
+msgid "Hide Slide In After 'x' Seconds of Submission"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2148
+msgid "Hide Slide In after successful form submission."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2176
+msgid ""
+"Enter the message you would like to display the user for invalid email "
+"address<br/>This input field supports HTML too.."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2192
+msgid "Optin Area"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2204
+msgid "Optin Area Border Color"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2216
+msgid "Optin Area Background Color"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2234
+msgid "Choose the background color for Slide In title area."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2251
+msgid "Choose the background color for Slide In description area."
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2296
+msgid "Slide Button Text Color"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2310
+msgid " Button Background Color"
+msgstr ""
+
+#: modules/slide_in/functions/functions.common.php:2368
+#: modules/slide_in/functions/functions.common.php:2417
+msgid "Border Size"
+msgstr ""
+
+#: modules/slide_in/views/analytics.php:23
+msgid "Slide In Analytics"
+msgstr ""
+
+#: modules/slide_in/views/analytics.php:23
+#: modules/slide_in/views/variant/variant.php:59
+#: modules/slide_in/views/variant/variant.php:68
+msgid "Back to Slide In List"
+msgstr ""
+
+#: modules/slide_in/views/analytics.php:46
+msgid "Select Slide In"
+msgstr ""
+
+#: modules/slide_in/views/edit.php:18
+msgid "Edit SlideIn Style"
+msgstr ""
+
+#: modules/slide_in/views/main.php:147
+msgid "Slide In Designer"
+msgstr ""
+
+#: modules/slide_in/views/main.php:148 modules/slide_in/views/main.php:153
+#: modules/slide_in/views/main.php:348 modules/slide_in/views/main.php:364
+#: modules/slide_in/views/main.php:365
+msgid "Create New Slide In"
+msgstr ""
+
+#: modules/slide_in/views/main.php:159 modules/slide_in/views/main.php:532
+msgid "Import Slide In"
+msgstr ""
+
+#: modules/slide_in/views/main.php:184
+msgid "Slide In Name"
+msgstr ""
+
+#: modules/slide_in/views/main.php:302
+#: modules/slide_in/views/variant/variant.php:142
+#: modules/slide_in/views/variant/variant.php:205
+msgid "Duplicate Slide In"
+msgstr ""
+
+#: modules/slide_in/views/main.php:332
+#: modules/slide_in/views/variant/variant.php:149
+#: modules/slide_in/views/variant/variant.php:212
+msgid "Delete Slide In"
+msgstr ""
+
+#: modules/slide_in/views/main.php:343 modules/slide_in/views/main.php:344
+msgid "Back to Slide In list"
+msgstr ""
+
+#: modules/slide_in/views/main.php:349
+msgid "Awesome! Let's start with your first Slide In"
+msgstr ""
+
+#: modules/slide_in/views/main.php:438
+#: modules/slide_in/views/variant/variant.php:246
+msgid "Schedule This Slide In"
+msgstr ""
+
+#: modules/slide_in/views/main.php:483
+#: modules/slide_in/views/variant/variant.php:291
+msgid "Schedule Slide In"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "ConvertPlug"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://convertplug.com/"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Brainstorm Force"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://www.brainstormforce.com"
+msgstr ""

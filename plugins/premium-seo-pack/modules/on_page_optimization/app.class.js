@@ -497,10 +497,11 @@ pspOnPageOptimization = (function ($) {
 			$("#psp_onpage_optimize_meta_box .psp-meta-box-container").hide();
 
 			var $boxData = $('.psp-meta-box-container #psp-inline-row-data')
-			var theTrigger = ( __type=='post' ? $('#psp_twc_post_cardtype') : $('#psp_twc_app_isactive') ), theTriggerVal = theTrigger.val();
+			var theTrigger = ( __type=='post' ? $('#psp_twc_post_cardtype') : $('#psp_twc_app_isactive') ),
+				  theTriggerVal = theTrigger.val();
 			var theResp = ( __type=='post' ? $('#psp-twittercards-post-response') : $('#psp-twittercards-app-response') );
 
-			if ( $.inArray(theTriggerVal, ['none', 'no']) > -1 ) {
+			if ( $.inArray(theTriggerVal, ['none', 'no', 'default', 'default2']) > -1 ) {
 				theResp.html('').hide();
 				$("#psp_onpage_optimize_meta_box #psp-meta-box-preload").hide();
 				$("#psp_onpage_optimize_meta_box .psp-meta-box-container").show();
@@ -511,12 +512,19 @@ pspOnPageOptimization = (function ($) {
 				return false;
 			}
 
+			var $box_type 			= $('#psp_onpage_optimize_meta_box .psp-mb-setts'),
+				  $box_taxonomy = $box_type.find('.psp-mb-taxonomy'),
+				  box_taxonomy	= $box_taxonomy.length ? $.trim( $box_taxonomy.text() ) : '',
+				  $box_termid 		= $box_type.find('.psp-mb-termid'),
+				  box_termid			= $box_termid.length ? $.trim( $box_termid.text() ) : '';
 			$.post(ajaxurl, {
-				'action' 		: 'pspTwitterCards',
-				'sub_action'		: 'getCardTypeOptions',
-				'card_type'		: __type=='post' ? $('#psp_twc_post_cardtype').val() : 'app',
+				'action' 			: 'pspTwitterCards',
+				'sub_action'	: 'getCardTypeOptions',
+				'card_type'	: __type=='post' ? $('#psp_twc_post_cardtype').val() : 'app',
 				'page'			: __type=='post' ? 'post' : 'post-app',
-				'post_id'		: parseInt( $boxData.find('.psp-post-postId').text() )
+				'post_id'		: parseInt( $boxData.find('.psp-post-postId').text() ),
+				'box_taxonomy'	: box_taxonomy,
+				'box_termid'			: box_termid
 			}, function(response) {
 
 				$("#psp_onpage_optimize_meta_box #psp-meta-box-preload").hide();
@@ -703,6 +711,22 @@ pspOnPageOptimization = (function ($) {
 			$box.find('input[name="psp-editpost-meta-canonical"]').val( postData.canonical );
 			$box.find('select[name="psp-editpost-meta-robots-index"]').val( postData.rindex );
 			$box.find('select[name="psp-editpost-meta-robots-follow"]').val( postData.rfollow );
+			
+			var postDefault = {};
+			postDefault.the_title 							= $boxData.find('.psp-post-default-the_title').length ?
+				$boxData.find('.psp-post-default-the_title').text() : '';
+			postDefault.the_meta_description		= $boxData.find('.psp-post-default-the_meta_description').length ?
+				$boxData.find('.psp-post-default-the_meta_description').text() : '';
+			postDefault.the_meta_keywords		= $boxData.find('.psp-post-default-the_meta_keywords').length ?
+				$boxData.find('.psp-post-default-the_meta_keywords').text() : '';
+			console.log( postDefault ); 
+
+			$box.find('input[name="psp-editpost-meta-title"]').attr( "placeholder", postDefault.the_title );
+			$box.find('input[name="psp-editpost-meta-title"]').attr( "title", postDefault.the_title );
+			$box.find('textarea[name="psp-editpost-meta-description"]').attr( "placeholder", postDefault.the_meta_description );
+			$box.find('textarea[name="psp-editpost-meta-description"]').attr( "title", postDefault.the_meta_description );
+			$box.find('textarea[name="psp-editpost-meta-keywords"]').attr( "placeholder", postDefault.the_meta_keywords );
+			$box.find('textarea[name="psp-editpost-meta-keywords"]').attr( "title", postDefault.the_meta_keywords );
 
 			if ( autofocus ) {
 				//if ( $.trim( $box.find('input[name="psp-editpost-meta-focus-kw"]').val() ) == '' )
@@ -850,7 +874,7 @@ pspOnPageOptimization = (function ($) {
 
 	    opts.source = function (request, response) {
 	        $.ajax({
-	            url: 'http' + (opts.secure ? 's' : '') + '://www.google.com/complete/search',
+	            url: (window.location.protocol == 'https:' ? 'https' : 'http') + '://www.google.com/complete/search',
 	            dataType: 'jsonp',
 	            data: {
 	                q: request.term,

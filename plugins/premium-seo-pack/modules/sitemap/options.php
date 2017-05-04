@@ -10,18 +10,18 @@
 
 $__psp_video_include = array(
 	'localhost'			=> 'Self Hosted'
-	,'blip'				=> 'Blip.tv'
+	,'youtube'			=> 'Youtube.com'
 	,'dailymotion'		=> 'Dailymotion.com'
+	,'vimeo'			=> 'Vimeo.com'
+	//,'metacafe'			=> 'Metacafe.com' // 2017-march verification: api doesn't work anymore
+	,'veoh'				=> 'Veoh.com'
+	//,'screenr'			=> 'Screenr.com' // 2017-march verification: Screenr was retired on November 12, 2015 http://www.screenr.com/
+	,'wistia'			=> 'Wistia.com'
+	,'vzaar'			=> 'Vzaar.com'
+	,'viddler'			=> 'Viddler.com'	
+	//,'blip'				=> 'Blip.tv' // 2017-march verification: Maker Studios To Officially Shut Down Blip.tv In August 2015. Maker Studios is closing down one of its subsidiary properties. In an email to site users, the YouTube multi-channel network announced it will shutter Blip.tv on August 20, 2015
 	,'dotsub'			=> 'Dotsub.com'
 	,'flickr'			=> 'Flickr.com'
-	,'metacafe'			=> 'Metacafe.com'
-	,'screenr'			=> 'Screenr.com'
-	,'veoh'				=> 'Veoh.com'
-	,'viddler'			=> 'Viddler.com'
-	,'vimeo'			=> 'Vimeo.com'
-	,'vzaar'			=> 'Vzaar.com'
-	,'youtube'			=> 'Youtube.com'
-	,'wistia'			=> 'Wistia.com'
 );
 
 function psp_postTypes_priority( $istab = '', $is_subtab='' ) {
@@ -293,6 +293,99 @@ function psp_categories_get() {
 	return $ret;
 }
 
+function __pspCheckVideoMetas( $action='default', $istab = '', $is_subtab='' ) {
+	global $psp;
+
+	$req = array();
+	$req['action'] = $action;
+
+	if ( $req['action'] == 'getStatus' ) {
+		$notifyStatus = $psp->get_theoption('psp_video_metas');
+		if ( $notifyStatus === false || !isset($notifyStatus["clean"]) )
+			return '';
+
+		return $notifyStatus["clean"]['msg_html'];
+	}
+
+	$html = array();
+
+	$html[] = '<div class="panel-body psp-panel-body psp-form-row psp-clean-video-metas ' . ($istab!='' ? ' '.$istab : '') . ($is_subtab!='' ? ' '.$is_subtab : '') . '" style="">';
+
+	$html[] = '	<div class="psp-form-item large" style="margin-left: 0px; margin-bottom: 7px;">';
+	$html[] = '		<label for="site-items" style="margin-bottom: 0px; width: 18rem;">' . __('Video metas recurrency', 'psp') . ':</label>';
+
+	if (1) {
+		//$html[] = '<div style="padding-bottom: 8px;">' . '' . '</div>';
+	}
+	
+	$current_recurrency = $psp->get_theoption('psp_sitemap');
+	$current_recurrency = isset($current_recurrency['video_recurrence']) ? (string) $current_recurrency['video_recurrence'] : 24;
+
+	ob_start();
+?>
+		<select id="video_recurrence" name="video_recurrence" style="width:160px;">
+			<?php
+            $sync_recurrence = array(
+                24      => __('Every single day', $psp->localizationName),
+                48      => __('Every 2 days', $psp->localizationName),
+                72      => __('Every 3 days', $psp->localizationName),
+                96      => __('Every 4 days', $psp->localizationName),
+                120     => __('Every 5 days', $psp->localizationName),
+                144     => __('Every 6 days', $psp->localizationName),
+                168     => __('Every 1 week', $psp->localizationName),
+                336     => __('Every 2 weeks', $psp->localizationName),
+                504     => __('Every 3 weeks', $psp->localizationName),
+                720     => __('Every 1 month', $psp->localizationName), // ~ 4 weeks + 2 days
+            );
+			foreach ($sync_recurrence as $kk => $vv){
+				echo '<option value="' . ( $kk ) . '" ' . ( $kk == $current_recurrency ? 'selected="true"' : '' ) . '>' . ( $vv ) . '</option>';
+			} 
+			?>
+		</select>&nbsp;&nbsp;
+<?php
+	$selectSitemap = ob_get_contents();
+	ob_end_clean();
+	$html[] = $selectSitemap;
+	
+	$html[] = '<input type="button" class="psp-form-button psp-form-button-info psp-button blue" style="width: 260px;" id="psp-clean-video-metas" value="' . ( __('Delete video metas for all posts NOW', 'psp') ) . '">
+	<span style="margin:0px 0px 0px 10px" class="response">' . __pspCheckVideoMetas( 'getStatus' ) . '</span>';
+	
+	$html[] = '<div style="margin-left: 18rem;"><span class="psp-form-note">' . sprintf( __('With recurrency you can set the "timeout" for our cached video meta data (info about the videos we found in each post content).<br/> You can also use the "Delete video metas for all posts NOW" button, to delete all video meta data we\'ve cached till now, so they will be rebuild.<br/> Then, if you don\'t have too many videos (let\'s say - around maximum 1000 videos in all your posts), you can can access the link %s, because it will search through all your posts, find the videos and generate the coresponding videos meta data.<br/> The video meta data are also generated (if it isn\'t done yet) when you access a post details page on website frontend.', 'psp'), '<a id="site-items" target="_blank" href="' . ( home_url('/sitemap-videos.xml') ) . '" style="position: relative;">' . ( home_url('/sitemap-videos.xml') ) . '</a>' ) . '</span></div>';
+
+	$html[] = '	</div>';
+	$html[] = '</div>';
+
+	// view page button
+	ob_start();
+?>
+	<script>
+	(function($) {
+		var ajaxurl = '<?php echo admin_url('admin-ajax.php');?>';
+
+		$("body").on("click", "#psp-clean-video-metas", function() {
+
+			$.post(ajaxurl, {
+				'action' 		: 'pspVideoMetas',
+				'sub_action'	: 'clean',
+			}, function(response) {
+
+				var $box = $('.psp-clean-video-metas'), $res = $box.find('.response');
+				$res.html( response.msg_html );
+				if ( response.status == 'valid' )
+					return true;
+				return false;
+			}, 'json');
+		});
+   	})(jQuery);
+	</script>
+<?php
+	$__js = ob_get_contents();
+	ob_end_clean();
+	$html[] = $__js;
+
+	return implode( "\n", $html );
+}
+
 
 global $psp;
 echo json_encode(
@@ -317,7 +410,7 @@ echo json_encode(
                     '__tab5'    => array(__('Excluding', 'psp'), 'help_exclude, exclude_categories, exclude_posts_ids'),
                     '__tab6'    => array(__('Other settings', 'psp'), 'help_other_settings, author_roles, archive_type, taxonomies_zero_posts'),
                     '__tab7'    => array(__('Formatting', 'psp'), 'help_formatting, priority, changefreq'),
-                    '__tab8'    => array(__('Video', 'psp'), 'help_video_sitemap, video_title_prefix, video_social_force, thumb_default, video_include, vzaar_domain, viddler_key, flickr_key')
+                    '__tab8'    => array(__('Video', 'psp'), 'help_video_sitemap, video_title_prefix, video_social_force, thumb_default, video_include, vzaar_domain, viddler_key, flickr_key, youtube_key')
                 ),
                 
 				// create the box elements array
@@ -356,19 +449,19 @@ echo json_encode(
 						'type' 		=> 'html',
 						'html' 		=> 
 							'<div class="psp-form-row __tab1 __subtab1">
-								<label for="site-items">' . __('<a href="https://support.google.com/webmasters/answer/75712?hl=en&ref_topic=4581190" target="_blank">Index sitemap</a>:', 'psp') . '</label>
-						   		<div class="psp-form-item large">
-									<a id="site-items" target="_blank" href="' . ( home_url('/sitemap.xml') ) . '" style="position: relative;bottom: -6px;">' . ( home_url('/sitemap.xml') ) . '</a>
+						   		<div class="psp-form-item large" style="margin-left: 0px; margin-bottom: 7px;">
+									<label for="site-items" style="margin-bottom: 0px; width: 18rem;">' . __('<a href="https://support.google.com/webmasters/answer/75712?hl=en&ref_topic=4581190" target="_blank">Index sitemap</a>:', 'psp') . '</label>
+									<a id="site-items" target="_blank" href="' . ( home_url('/sitemap.xml') ) . '" style="position: relative;bottom: -2px;">' . ( home_url('/sitemap.xml') ) . '</a>
 								</div>
 								
-								<label for="site-items">' . __('Images sitemap:', 'psp') . '</label>
-						   		<div class="psp-form-item large">
-									<a id="site-items" target="_blank" href="' . ( home_url('/sitemap-images.xml') ) . '" style="position: relative;bottom: -6px;">' . ( home_url('/sitemap-images.xml') ) . '</a>
+						   		<div class="psp-form-item large" style="margin-left: 0px; margin-bottom: 7px;">
+									<label for="site-items" style="margin-bottom: 0px; width: 18rem;">' . __('Images sitemap:', 'psp') . '</label>
+									<a id="site-items" target="_blank" href="' . ( home_url('/sitemap-images.xml') ) . '" style="position: relative;bottom: -2px;">' . ( home_url('/sitemap-images.xml') ) . '</a>
 								</div>
 								
-								<label for="site-items">' . __('Videos sitemap:', 'psp') . '</label>
-						   		<div class="psp-form-item large">
-									<a id="site-items" target="_blank" href="' . ( home_url('/sitemap-videos.xml') ) . '" style="position: relative;bottom: -6px;">' . ( home_url('/sitemap-videos.xml') ) . '</a>
+						   		<div class="psp-form-item large" style="margin-left: 0px; margin-bottom: 7px;">
+									<label for="site-items" style="margin-bottom: 0px; width: 18rem;">' . __('Videos sitemap:', 'psp') . '</label>
+									<a id="site-items" target="_blank" href="' . ( home_url('/sitemap-videos.xml') ) . '" style="position: relative;bottom: -2px;">' . ( home_url('/sitemap-videos.xml') ) . '</a>
 								</div>
 							</div>'
 					),
@@ -625,7 +718,7 @@ echo json_encode(
 						'size' 		=> 'small',
 						//'force_width'=> '400',
 						'title' 	=> __('Exclude posts, pages, post types:', 'psp'),
-						'desc' 		=> __('(option for sitemap-posttype-[posttype].xml files) Exclude posts, pages, post types ( list of IDs, separated by comma )', 'psp'),
+						'desc' 		=> __('(option for sitemap-posttype-[posttype].xml files) Exclude posts, pages, post types ( <span style="color: red; font-weight: bold;">LIST OF <u>IDs</u>, SEPARATED BY COMMA</span> )', 'psp'),
 						'height'	=> '200px',
 						'width'		=> '100%'
 					),
@@ -710,6 +803,17 @@ echo json_encode(
 							<p>Settings available for video sitemap!</p>
 						', 'psp')
 					),
+					
+					'xmlsitemap_video_html' => array(
+						'type' 		=> 'html',
+						'html' 		=> 
+							'<div class="psp-form-row __tab8 __subtab1">
+						   		<div class="psp-form-item large" style="margin-left: 0px; margin-bottom: 7px;">
+									<label for="site-items" style="margin-bottom: 0px; width: 18rem;">' . __('Videos sitemap:', 'psp') . '</label>
+									<a id="site-items" target="_blank" href="' . ( home_url('/sitemap-videos.xml') ) . '" style="position: relative;bottom: -2px;">' . ( home_url('/sitemap-videos.xml') ) . '</a>
+								</div>
+							</div>'
+					),
 
 					'video_title_prefix' 	=> array(
 						'type' 		=> 'text',
@@ -758,32 +862,47 @@ echo json_encode(
 						'options' 	=> $__psp_video_include
 					),
 					
-					'vzaar_domain' 	=> array(
+					'check_video_metas' => array(
+						'type' => 'html',
+						'html' => __pspCheckVideoMetas( 'default', '__tab8', '' )
+					),
+					
+					'youtube_key' 	=> array(
 						'type' 		=> 'text',
-						'std' 		=> 'vzaar.com/videos',
+						'std' 		=> '',
 						'size' 		=> 'large',
-						'force_width'=> '150',
-						'title' 	=> __('Vzaar domain: ', 'psp'),
-						'desc' 		=> __('enter vzaar domain.', 'psp')
+						'force_width'=> '350',
+						'title' 	=> __('Youtube key: ', 'psp'),
+						'desc' 		=> __('Enter youtube key. You need to get a <a href="https://console.developers.google.com/project" target="_blank">Google API Key</a> and enable "YouTube Data API v3"', 'psp')
 					),
 					
 					'viddler_key' 	=> array(
 						'type' 		=> 'text',
 						'std' 		=> '',
 						'size' 		=> 'large',
-						'force_width'=> '150',
+						'force_width'=> '350',
 						'title' 	=> __('Viddler key: ', 'psp'),
-						'desc' 		=> __('enter viddler key.', 'psp')
+						'desc' 		=> __('Enter viddler key.', 'psp')
 					),
 					
 					'flickr_key' 	=> array(
 						'type' 		=> 'text',
 						'std' 		=> '',
 						'size' 		=> 'large',
-						'force_width'=> '150',
+						'force_width'=> '350',
 						'title' 	=> __('Flickr key: ', 'psp'),
-						'desc' 		=> __('enter flickr key.', 'psp')
+						'desc' 		=> __('Enter flickr key.', 'psp')
 					),
+					
+					'vzaar_domain' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> 'vzaar.com/videos',
+						'size' 		=> 'large',
+						'force_width'=> '350',
+						'title' 	=> __('Vzaar domain: ', 'psp'),
+						'desc' 		=> __('Enter vzaar domain.', 'psp')
+					),
+
 				)
 			)
 		)

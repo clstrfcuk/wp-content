@@ -469,48 +469,49 @@ if (class_exists('pspOnPageOptimization') != true) {
 			}
 
 			//facebook is active
-			$fb_isactive = 'yes';
-			if ( isset($psp_option['social_use_meta']) && !empty($psp_option['social_use_meta']) )
-				$fb_isactive = $psp_option['social_use_meta'];
+			$fb_isactive = 'default';
+			//if ( isset($psp_option['social_use_meta']) && !empty($psp_option['social_use_meta']) )
+			//	$fb_isactive = $psp_option['social_use_meta'];
 			if ( isset($psp_meta['facebook_isactive']) && !empty($psp_meta['facebook_isactive']) )
 				$fb_isactive = $psp_meta['facebook_isactive'];
 
 			//open graph type   
 			$fb_opengraph = 'default';
-			if ( isset($psp_option['social_opengraph_default']) && !empty($psp_option['social_opengraph_default'])
-				&& !$this->the_plugin->__tax_istax( $tax ) )
-				if( isset($psp_option['social_opengraph_default']["{$post_type}"]) ) {
-					$ogdef  = $psp_option['social_opengraph_default']["{$post_type}"];
-				}
-			if ( isset($ogdef) && !empty($ogdef) )
-				$fb_opengraph = $ogdef;
+			//if ( isset($psp_option['social_opengraph_default']) && !empty($psp_option['social_opengraph_default'])
+			//	&& ! $this->the_plugin->__tax_istax( $tax ) ) {
+			//	if( isset($psp_option['social_opengraph_default']["{$post_type}"]) ) {
+			//		$ogdef  = $psp_option['social_opengraph_default']["{$post_type}"];
+			//	}
+			//}
+			//if ( isset($ogdef) && !empty($ogdef) )
+			//	$fb_opengraph = $ogdef;
 			if ( isset($psp_meta['facebook_opengraph_type']) && !empty($psp_meta['facebook_opengraph_type']) )
 				$fb_opengraph = $psp_meta['facebook_opengraph_type'];
 				
 			$ret = array_merge($ret, array(
 				'fb_default_img'			=> $fb_default_img,
 				'fb_isactive'				=> $fb_isactive,
-				'fb_opengraph'				=> $fb_opengraph
+				'fb_opengraph'			=> $fb_opengraph
 			));
 			
 			// post has twitter app card type
-			$twc_app_isactive = 'no';
+			$twc_app_isactive = 'default2';
 			//if ( isset($psp_option['psp_twc_site_app']) && !empty($psp_option['psp_twc_site_app']) )
 			//	$twc_app_isactive = $psp_option['psp_twc_site_app'];
 			if ( isset($psp_meta['psp_twc_app_isactive']) && !empty($psp_meta['psp_twc_app_isactive']) )
 				$twc_app_isactive = $psp_meta['psp_twc_app_isactive'];
 				
 			// post twitter card type
-			$twc_post_cardtype = 'none';
-			if ( isset($psp_option['psp_twc_cardstype_default'], $psp_option['psp_twc_cardstype_default']["{$post_type}"]) && !empty($psp_option['psp_twc_cardstype_default']) )
-				$twc_post_cardtype = $psp_option['psp_twc_cardstype_default']["{$post_type}"];
+			$twc_post_cardtype = 'default';
+			//if ( isset($psp_option['psp_twc_cardstype_default'], $psp_option['psp_twc_cardstype_default']["{$post_type}"]) && !empty($psp_option['psp_twc_cardstype_default']) )
+			//	$twc_post_cardtype = $psp_option['psp_twc_cardstype_default']["{$post_type}"];
 			if ( isset($psp_meta['psp_twc_post_cardtype']) && !empty($psp_meta['psp_twc_post_cardtype']) )
 				$twc_post_cardtype = $psp_meta['psp_twc_post_cardtype'];
 
 			// post twitter card thumb size
-			$twc_post_thumbsize = 'none';
-			if ( isset($psp_option['psp_twc_thumb_sizes']) && !empty($psp_option['psp_twc_thumb_sizes']) )
-				$twc_post_thumbsize = $psp_option['psp_twc_thumb_sizes'];
+			$twc_post_thumbsize = 'default';
+			//if ( isset($psp_option['psp_twc_thumb_sizes']) && !empty($psp_option['psp_twc_thumb_sizes']) )
+			//	$twc_post_thumbsize = $psp_option['psp_twc_thumb_sizes'];
 			if ( isset($psp_meta['psp_twc_post_thumbsize']) && !empty($psp_meta['psp_twc_post_thumbsize']) )
 				$twc_post_thumbsize = $psp_meta['psp_twc_post_thumbsize'];
 
@@ -528,8 +529,10 @@ if (class_exists('pspOnPageOptimization') != true) {
 		{
 			$ret = $this->makePrintBoxParams( $tax );
 			extract( $ret );
-			
-			if( isset($post_id) && $post_id > 0 ){
+
+			if ( isset($post_id) && $post_id > 0 ) {
+				
+				$postDefault = $this->the_plugin->get_post_metatags( $post ); // add meta placeholder
 ?>
 			<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
 			<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
@@ -544,6 +547,10 @@ if (class_exists('pspOnPageOptimization') != true) {
 			</div>
 			
 			<div class="psp psp-meta-box-container" style="display:none;">
+				<div class="psp-mb-setts" style="display: none;">
+					<div class="psp-mb-taxonomy"><?php echo ( $__istax ? $tax->taxonomy : 'post' ); ?></div>
+					<div class="psp-mb-termid"><?php echo ( $__istax ? (int) $tax->term_id : $post_id ); ?></div>
+				</div>
 				<!-- box Tab Menu -->
 				<div class="psp-tab-menu">
 					<a href="#dashboard" class="open"><?php _e('Dashboard', 'psp');?></a>
@@ -704,7 +711,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 												<label for="psp-field-title"><?php _e('SEO Title:', 'psp');?></label>
 											</td>
 											<td>
-												<input type="text" class="large-text" value="<?php echo ( isset($psp_meta['title']) ? $psp_meta['title'] : '' );?>" name="psp-field-title" id="psp-field-title" maxlength="70">
+												<input type="text" class="large-text" value="<?php echo ( isset($psp_meta['title']) ? $psp_meta['title'] : '' );?>" name="psp-field-title" id="psp-field-title" maxlength="70" placeholder="<?php echo $postDefault['the_title']; ?>">
 												<br>
 												<p><?php _e('Title display in search engines is limited to 70 chars, <span id="psp-field-title-length"  class="psp-chars-left"></span> chars left.', 'psp');?></p>
 											</td>
@@ -714,7 +721,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 												<label for="psp-field-metadesc"><?php _e('Meta Description:', 'psp');?></label>
 											</td>
 											<td>
-												<textarea name="psp-field-metadesc" id="psp-field-metadesc" rows="3" class="large-text" maxlength="160"><?php echo isset($psp_meta['description']) ? $psp_meta['description'] : '';?></textarea>
+												<textarea name="psp-field-metadesc" id="psp-field-metadesc" rows="3" class="large-text" maxlength="160" placeholder="<?php echo $postDefault['the_meta_description']; ?>"><?php echo isset($psp_meta['description']) ? $psp_meta['description'] : '';?></textarea>
 												<p><?php _e('The meta description will be limited to 160 chars, <span id="psp-field-metadesc-length"  class="psp-chars-left"></span> chars left.', 'psp');?> </p>
 											</td>
 										</tr>
@@ -723,7 +730,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 												<label for="psp-field-metakeywords"><?php _e('Meta Keywords:', 'psp');?></label>
 											</td>
 											<td>
-												<textarea name="psp-field-metakewords" id="psp-field-metakeywords" rows="3" class="large-text" maxlength="160"><?php echo isset($psp_meta['keywords']) ? $psp_meta['keywords'] : '';?></textarea>
+												<textarea name="psp-field-metakewords" id="psp-field-metakeywords" rows="3" class="large-text" maxlength="160" placeholder="<?php echo $postDefault['the_meta_keywords']; ?>"><?php echo isset($psp_meta['keywords']) ? $psp_meta['keywords'] : '';?></textarea>
 												<p><?php _e('The meta metakewords will be limited to 160 chars, <span id="psp-field-metakeywords-length" class="psp-chars-left"></span> chars left.', 'psp');?> </p>
 											</td>
 										</tr>
@@ -771,7 +778,10 @@ if (class_exists('pspOnPageOptimization') != true) {
 											<p><?php _e('Add a custom description for your post. This will be used to post on an user\'s wall when they share this post on Facebook.', 'psp');?></p>
 										</td>
 									</tr>
-									<?php if ( !$__istax ) { ?>
+									<?php 
+										if (1) {
+										// if ( !$__istax ) {
+									?>
 									<tr>
 										<td valign="top">
 											<label for="psp-field-facebook-image"><?php _e('Facebook Image:', 'psp');?></label>
@@ -979,6 +989,7 @@ $twc = new pspTwitterCards( $this->the_plugin );
 										</td>
 										<td colspan="2">
 							<select name="psp_twc_app_isactive" id="psp_twc_app_isactive" style="width:300px;">
+								<option value="default2" <?php echo $twc_app_isactive=='default2' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
 								<option value="default" <?php echo $twc_app_isactive=='default' ? 'selected="true"' : ''; ?> ><?php _e('Use Website Generic App Twitter Card Type', 'psp');?></option>
 								<option value="yes" <?php echo $twc_app_isactive=='yes' ? 'selected="true"' : ''; ?> ><?php _e('Yes', 'psp');?></option>
 								<option value="no" <?php echo $twc_app_isactive=='no' ? 'selected="true"' : ''; ?> ><?php _e('No', 'psp');?></option>
@@ -1735,7 +1746,7 @@ $twc = new pspTwitterCards( $this->the_plugin );
 			//ob_start();
 			$html = '
 			';
-				$val = '';
+				$val = 'default';
 				if( isset($db_meta_name) ){
 					$val = $db_meta_name;
 				}
@@ -1767,6 +1778,9 @@ $twc = new pspTwitterCards( $this->the_plugin );
 							'video.tv_show'			=> __('TV Show', 'psp'),
 							'video.other'			=> __('Video', 'psp')
 						),
+						'Object' => array(
+							'object'			=> __('Object', 'psp')
+						)
 					);
 					foreach ($opengraph_defaults as $k => $v){
 						$html .= '<optgroup label="' . $k . '">';
@@ -1787,22 +1801,26 @@ $twc = new pspTwitterCards( $this->the_plugin );
 			//ob_start();
 			$html = '
 			';
-				$val = '';
+				$val = 'default';
 				if( isset($db_meta_name) ){
 					$val = $db_meta_name;
+				}
+				if ( ! in_array($val, array('default', 'none', 'summary', 'summary_large_image', 'player')) ) {
+					$val = 'summary';
 				}
 
 				$html .= '
 				<select id="' . $field_name . '" name="' . $field_name . '" style="width:120px;">
+					<option value="default" ' . ($val=='default' ? 'selected="true"' : '') . '>' . __('Default Setting', 'psp') . '</option>
 					<option value="none" ' . ($val=='none' ? 'selected="true"' : '') . '>' . __('None', 'psp') . '</option>
 				';
 					$opengraph_defaults = array(
 							'summary'				=> __('Summary Card', 'psp'),
 							'summary_large_image'		=> __('Summary Card with Large Image', 'psp'),
-							'photo'					=> __('Photo Card', 'psp'),
-							'gallery'				=> __('Gallery Card', 'psp'),
+							//'photo'					=> __('Photo Card', 'psp'),
+							//'gallery'				=> __('Gallery Card', 'psp'),
 							'player'				=> __('Player Card', 'psp'),
-							'product'				=> __('Product Card', 'psp')
+							//'product'				=> __('Product Card', 'psp')
 					);
 					foreach ($opengraph_defaults as $k => $v){
 						$html .= 	'<option value="' . ( $k ) . '" ' . ( $val == $k ? 'selected="true"' : '' ) . '>' . ( $v ) . '</option>';
@@ -1819,13 +1837,14 @@ $twc = new pspTwitterCards( $this->the_plugin );
 			//ob_start();
 			$html = '
 			';
-				$val = '';
+				$val = 'default';
 				if( isset($db_meta_name) ){
 					$val = $db_meta_name;
 				}
 
 				$html .= '
 				<select id="' . $field_name . '" name="' . $field_name . '" style="width:120px;">
+					<option value="default" ' . ($val=='default' ? 'selected="true"' : '') . '>' . __('Default Setting', 'psp') . '</option>
 					<option value="none" ' . ($val=='none' ? 'selected="true"' : '') . '>' . __('Don\'t make a thumbnail from the image', 'psp') . '</option>
 				';
 					$opengraph_defaults = array(

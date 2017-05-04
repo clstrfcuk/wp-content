@@ -1,9 +1,21 @@
 ##{$alias}_misc {
-	.#{$alias}-message { 
+	/*.#{$alias}-message { 
 		p {
 			&#insert-code {
 				margin-top: px(50);
 			}
 		}
 	}
+	&>div {
+		&:last-child {
+			margin-left: -#{px(25)};
+			margin-right: -#{px(25)};
+		}
+	}
+	&>ul {
+		&:first-of-type {
+			margin-left: -#{px(25)};
+			margin-right: -#{px(25)};
+		}
+	}*/
 }

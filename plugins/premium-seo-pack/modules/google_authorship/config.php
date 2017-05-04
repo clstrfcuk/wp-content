@@ -13,14 +13,14 @@
 			'version' => '1.0',
 			'menu' => array(
 				'order' => 30,
-				'title' => __('Google Authorship', 'psp')
+				'title' => __('Google Publisher', 'psp')
 				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-google_authorship"></i>'
 			),
 			'in_dashboard' => array(
 				'icon' 	=> 'assets/32.png',
 				'url'	=> admin_url('admin.php?page=psp#google_authorship')
 			),
-			'description' => __("Google Publisher & Authorship module.", 'psp'),
+			'description' => __("Google Publisher module.", 'psp'),
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',

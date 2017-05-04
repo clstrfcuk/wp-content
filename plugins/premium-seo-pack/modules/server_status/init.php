@@ -74,8 +74,8 @@ if (class_exists('pspServerStatus') != true) {
     	{ 
     		add_submenu_page(
     			$this->the_plugin->alias,
-    			$this->the_plugin->alias . " " . __('Check System status', 'psp'),
-	            __('System Status', 'psp'),
+    			$this->the_plugin->alias . " " . __('Check System status', $this->the_plugin->localizationName),
+	            __('System Status', $this->the_plugin->localizationName),
 	            'manage_options',
 	            $this->the_plugin->alias . "_server_status",
 	            array($this, 'display_index_page')
@@ -207,7 +207,7 @@ if (class_exists('pspServerStatus') != true) {
 						<div id="psp-main-loading">
 							<div id="psp-loading-overlay"></div>
 							<div id="psp-loading-box">
-								<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+								<div class="psp-loading-text"><?php _e('Loading', $this->the_plugin->localizationName);?></div>
 								<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
 							</div>
 						</div>
@@ -228,16 +228,45 @@ if (class_exists('pspServerStatus') != true) {
 												
 												<thead>
 													<tr>
-														<th colspan="2"><?php _e( 'Modules', 'psp' ); ?></th>
+														<th colspan="2"><?php _e( 'Modules', $this->the_plugin->localizationName); ?></th>
 													</tr>
 												</thead>
 										
 												<tbody>
 										         	<tr>
-										         		<td><?php _e( 'Active Modules','psp' ); ?>:</td>
+										         		<td><?php _e( 'Active Modules',$this->the_plugin->localizationName); ?>:</td>
 										         		<td><div class="psp-loading-ajax-details" data-action="active_modules"></div></td>
 										         	</tr>
 												</tbody>
+												
+												
+												<?php
+													$opStatus_stat = $this->the_plugin->plugin_integrity_get_last_status( 'check_database' );
+													
+													$check_last_msg = '';
+													if ( '' != trim($opStatus_stat['html']) ) {
+														$check_last_msg = ( $opStatus_stat['status'] == true ? '<div class="psp-message psp-success">' : '<div class="psp-message psp-error">' ) . $opStatus_stat['html'] . '</div>';
+													}
+												?>
+												<thead>
+													<tr>
+														<th colspan="2"><?php _e( 'Plugin Integrity', $this->the_plugin->localizationName ); ?></th>
+													</tr>
+												</thead>
+										
+												<tbody>
+										         	<tr>
+										         		<td><?php _e( 'Database', $this->the_plugin->localizationName ); ?>:</td>
+										         		<td>
+										         			<?php /*<div class="psp-loading-ajax-details" data-action="check_integrity_database"></div>*/ ?>
+										         			<div class="psp-check-integrity-container">
+										         				<a href="#check_integrity_database" class="psp-form-button psp-form-button-info" data-action="check_integrity_database">Check</a>
+										         				<div class="psp-response"><?php echo $check_last_msg; ?></div>
+										         			</div>
+										         		</td>
+										         	</tr>
+												</tbody>
+												
 												
 												<?php
 												// Google Analytics module
@@ -246,13 +275,13 @@ if (class_exists('pspServerStatus') != true) {
 					
 												<thead>
 													<tr>
-														<th colspan="2"><a id="sect-google_analytics" name="sect-google_analytics"></a><?php _e( 'Module Google Analytics:', 'psp' ); ?></th>
+														<th colspan="2"><a id="sect-google_analytics" name="sect-google_analytics"></a><?php _e( 'Module Google Analytics:', $this->the_plugin->localizationName); ?></th>
 													</tr>
 												</thead>
 										
 												<tbody>
 													<tr>
-										                <td width="190"><?php _e( 'Your client id','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Your client id',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php
 															if ( isset($analytics_settings['client_id']) && !empty($analytics_settings['client_id']) ) {
@@ -267,7 +296,7 @@ if (class_exists('pspServerStatus') != true) {
 														</td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Your client secret','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Your client secret',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($analytics_settings['client_secret']) && !empty($analytics_settings['client_secret']) ) {
@@ -282,7 +311,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Redirect URI','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Redirect URI',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($analytics_settings['redirect_uri']) && !empty($analytics_settings['redirect_uri']) ) {
@@ -297,7 +326,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Profile ID','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Profile ID',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($analytics_settings['profile_id']) && !empty($analytics_settings['profile_id']) ) {
@@ -311,7 +340,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Authorize','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Authorize',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<div class="psp-begin-test-container noheight">
 															<?php
@@ -326,20 +355,20 @@ if (class_exists('pspServerStatus') != true) {
 																if ( $pspGoogleAnalytics->makeoAuthLogin() ) {
 															?>
 																
-																<a href="#google-analytics/authorize" class="psp-form-button psp-form-button-info pspStressTest inline psp-google-authorize-app" data-saveform="no">Re-Authorize app</a>&nbsp;(<?php _e( 'app is authorized','psp' ); ?>)
+																<a href="#google-analytics/authorize" class="psp-form-button psp-form-button-info pspStressTest inline psp-google-authorize-app" data-saveform="no">Re-Authorize app</a>&nbsp;(<?php _e( 'app is authorized',$this->the_plugin->localizationName); ?>)
 															
 														<?php
 															} else {
 														?>
 															
 																<a href="#google-analytics/authorize" class="psp-form-button-small psp-form-button-info pspStressTest inline psp-google-authorize-app" data-saveform="no">Authorize app</a>
-																<span style="margin-left: 10px;">(<?php _e( 'app is not authorized yet','psp' ); ?>)</span>
+																<span style="margin-left: 10px;">(<?php _e( 'app is not authorized yet',$this->the_plugin->localizationName); ?>)</span>
 															<?php
 																}
 															} else {
 															?>
 																<div class="psp-message psp-error">
-																	<?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can authorize the app!','psp' ); ?>
+																	<?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can authorize the app!',$this->the_plugin->localizationName); ?>
 																</div>
 															<?php
 															}
@@ -376,8 +405,8 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 1:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Set mandatory fields: client id, client secret, redirect uri', 'psp' ); ?>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<?php _e( 'Set mandatory fields: client id, client secret, redirect uri', $this->the_plugin->localizationName); ?>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -387,9 +416,9 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 2:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Authorize app on Google APIs Console:', 'psp' ); ?>
+																				<?php _e( 'Authorize app on Google APIs Console:', $this->the_plugin->localizationName); ?>
 																				<a target="_blank" href="https://code.google.com/apis/console/">https://code.google.com/apis/console/</a>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -399,8 +428,8 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 3:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Get profile ID', 'psp' ); ?>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<?php _e( 'Get profile ID', $this->the_plugin->localizationName); ?>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -410,14 +439,14 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 4:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Make a test request from Google Analytics', 'psp' ); ?>
+																				<?php _e( 'Make a test request from Google Analytics', $this->the_plugin->localizationName); ?>
 																				<?php
 																				$today = date( 'Y-m-d' );
 																				$from_date 	= date( 'Y-m-d', strtotime( "-1 week", strtotime( $today ) ) );
 																				$to_date 	= date( 'Y-m-d', strtotime( $today ) );
 																				echo " (from $from_date to $to_date)";
 																				?>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -442,13 +471,13 @@ if (class_exists('pspServerStatus') != true) {
 												?>
 												<thead>
 													<tr>
-														<th colspan="2"><a id="sect-google_serp" name="sect-google_serp"></a><?php _e( 'Module Google SERP:', 'psp' ); ?></th>
+														<th colspan="2"><a id="sect-google_serp" name="sect-google_serp"></a><?php _e( 'Module Google SERP:', $this->the_plugin->localizationName); ?></th>
 													</tr>
 												</thead>
 										
 												<tbody>
 													<tr>
-										                <td width="190"><?php _e( 'Google Developer Key','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Google Developer Key',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php
 															if ( isset($serp_settings['developer_key']) && !empty($serp_settings['developer_key']) ) {
@@ -465,7 +494,7 @@ if (class_exists('pspServerStatus') != true) {
 														</td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Custom Search Engine ID','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Custom Search Engine ID',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($serp_settings['custom_search_id']) && !empty($serp_settings['custom_search_id']) ) {
@@ -482,7 +511,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Google location','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Google location',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($serp_settings['google_country']) && !empty($serp_settings['google_country']) ) {
@@ -499,7 +528,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Status','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Status',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<div class="psp-begin-test-container noheight">
 															<?php
@@ -513,13 +542,13 @@ if (class_exists('pspServerStatus') != true) {
 															if ( $mandatoryValid ) {
 															?>
 																<div class="psp-message psp-success">
-																	<?php _e( 'all mandatory module settings are set!','psp' ); ?>
+																	<?php _e( 'all mandatory module settings are set!',$this->the_plugin->localizationName); ?>
 																</div>
 															<?php
 															} else {
 															?>
 																<div class="psp-message psp-error">
-																	<?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can make a serp request!','psp' ); ?>
+																	<?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can make a serp request!',$this->the_plugin->localizationName); ?>
 																</div>
 															<?php
 															}
@@ -548,8 +577,8 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 1:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Set mandatory fields: google developer key, custom search engine id, google location', 'psp' ); ?>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<?php _e( 'Set mandatory fields: google developer key, custom search engine id, google location', $this->the_plugin->localizationName); ?>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -559,13 +588,13 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 2:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Make a test request from Google SERP', 'psp' ); ?>
+																				<?php _e( 'Make a test request from Google SERP', $this->the_plugin->localizationName); ?>
 																				<?php
 																				$serp_keyword 	= 'test';
 																				$serp_link		= 'www.test.com';
 																				echo " (keyword: $serp_keyword , url: $serp_link)";
 																				?>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -590,13 +619,13 @@ if (class_exists('pspServerStatus') != true) {
 												?>
 												<thead>
 													<tr>
-														<th colspan="2"><a id="sect-google_pagespeed" name="sect-google_pagespeed"></a><?php _e( 'Module Google Pagespeed:', 'psp' ); ?></th>
+														<th colspan="2"><a id="sect-google_pagespeed" name="sect-google_pagespeed"></a><?php _e( 'Module Google Pagespeed:', $this->the_plugin->localizationName); ?></th>
 													</tr>
 												</thead>
 										
 												<tbody>
 													<tr>
-										                <td width="190"><?php _e( 'Google Developer Key','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Google Developer Key',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php
 															if ( isset($pagespeed_settings['developer_key']) && !empty($pagespeed_settings['developer_key']) ) {
@@ -613,7 +642,7 @@ if (class_exists('pspServerStatus') != true) {
 														</td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Google language','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Google language',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($pagespeed_settings['google_language']) && !empty($pagespeed_settings['google_language']) ) {
@@ -630,7 +659,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Status','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Status',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<div class="psp-begin-test-container noheight">
 															<?php
@@ -644,13 +673,13 @@ if (class_exists('pspServerStatus') != true) {
 															if ( $mandatoryValid ) {
 															?>
 																<div class="psp-message psp-success">
-																	<?php _e( 'all mandatory module settings are set!', 'psp' ); ?>
+																	<?php _e( 'all mandatory module settings are set!', $this->the_plugin->localizationName); ?>
 																</div>
 															<?php
 															} else {
 															?>
 																<div class="psp-message psp-error">
-																	<?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can make a serp request!','psp' ); ?>
+																	<?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can make a serp request!',$this->the_plugin->localizationName); ?>
 																</div>
 															<?php
 															}
@@ -679,8 +708,8 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 1:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Set mandatory fields: google developer key, google language', 'psp' ); ?>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<?php _e( 'Set mandatory fields: google developer key, google language', $this->the_plugin->localizationName); ?>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -690,12 +719,12 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 2:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Make a test request from Google Pagespeed', 'psp' ); ?>
+																				<?php _e( 'Make a test request from Google Pagespeed', $this->the_plugin->localizationName); ?>
 																				<?php
 																				$serp_link		= 'www.test.com';
 																				echo " (url: $serp_link)";
 																				?>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -720,13 +749,13 @@ if (class_exists('pspServerStatus') != true) {
 												?>
 												<thead>
 													<tr>
-														<th colspan="2"><a id="sect-facebook_planner" name="sect-facebook_planner"></a><?php _e( 'Module Facebook:', 'psp' ); ?></th>
+														<th colspan="2"><a id="sect-facebook_planner" name="sect-facebook_planner"></a><?php _e( 'Module Facebook:', $this->the_plugin->localizationName); ?></th>
 													</tr>
 												</thead>
 										
 												<tbody>
 													<tr>
-										                <td width="190"><?php _e( 'Facebook App ID','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Facebook App ID',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php
 															if ( isset($facebook_settings['app_id']) && !empty($facebook_settings['app_id']) ) {
@@ -743,7 +772,7 @@ if (class_exists('pspServerStatus') != true) {
 														</td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Facebook App Secret','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Facebook App Secret',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($facebook_settings['app_secret']) && !empty($facebook_settings['app_secret']) ) {
@@ -760,7 +789,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Redirect URI','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Redirect URI',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($facebook_settings['redirect_uri']) && !empty($facebook_settings['redirect_uri']) ) {
@@ -777,7 +806,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Facebook Language','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Facebook Language',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<?php 
 															if ( isset($facebook_settings['language']) && !empty($facebook_settings['language']) ) {
@@ -794,7 +823,7 @@ if (class_exists('pspServerStatus') != true) {
 										                </td>
 										            </tr>
 													<tr>
-										                <td width="190"><?php _e( 'Authorize','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Authorize',$this->the_plugin->localizationName); ?>:</td>
 										                <td>
 															<div class="psp-begin-test-container noheight">
 															<?php
@@ -809,18 +838,31 @@ if (class_exists('pspServerStatus') != true) {
 																if ( $pspFacebook_Planner->makeoAuthLogin() ) {
 															?>
 																<a href="#facebook-planner/authorize" class="psp-form-button psp-form-button-info pspStressTest inline psp-facebook-authorize-app" data-saveform="no">Re-Authorize app</a>
-															&nbsp;(<?php _e( 'app is authorized for: ','psp' ); ?><a target="_blank" href="<?php echo $facebook_settings['auth_foruser_link']; ?>"><?php echo $facebook_settings['auth_foruser_name']; ?></a>)
+															&nbsp;(
+															<?php
+																$__fbauthor = __( 'app is authorized ',$this->the_plugin->localizationName);
+																if ( isset($facebook_settings['auth_foruser_name']) ) {
+ 																	if ( isset($facebook_settings['auth_foruser_link']) ) {
+ 																		$__fbauthor = __( 'app is authorized for: ',$this->the_plugin->localizationName) . '<a target="_blank" href="' . $facebook_settings['auth_foruser_link'] . '">' . $facebook_settings['auth_foruser_name'] . '</a>';
+ 																	}
+																	else {
+																		$__fbauthor = __( 'app is authorized for: ',$this->the_plugin->localizationName) . $facebook_settings['auth_foruser_name'];
+																	}
+																}
+																echo $__fbauthor;
+															?>
+															)
 															<?php
 																} else {
 															?>
 																<a href="#facebook-planner/authorize" class="psp-form-button-small psp-form-button-info pspStressTest inline psp-facebook-authorize-app" data-saveform="no">Authorize app</a>
-																<span style="margin-left: 10px;">(<?php _e( 'app is not authorized yet','psp' ); ?>)</span>
+																<span style="margin-left: 10px;">(<?php _e( 'app is not authorized yet',$this->the_plugin->localizationName); ?>)</span>
 															<?php
 																}
 															} else {
 															?>
 																<div class="psp-message psp-error">
-																	<?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can authorize the app!','psp' ); ?>
+																	<?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can authorize the app!',$this->the_plugin->localizationName); ?>
 																</div>
 															<?php
 															}
@@ -849,8 +891,8 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 1:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Set mandatory fields: app id, app secret, redirect uri, language', 'psp' ); ?>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<?php _e( 'Set mandatory fields: app id, app secret, redirect uri, language', $this->the_plugin->localizationName); ?>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -860,9 +902,9 @@ if (class_exists('pspServerStatus') != true) {
 																		<td width="50">Step 2:</td>
 																		<td>
 																			<div class="psp-log-title">
-																				<?php _e( 'Authorize app on Facebook Developers:', 'psp' ); ?>
+																				<?php _e( 'Authorize app on Facebook Developers:', $this->the_plugin->localizationName); ?>
 																				<a target="_blank" href="http://developers.facebook.com/">http://developers.facebook.com/</a>
-																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+																				<a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 																			</div>
 																			
 																			<textarea class="psp-log-details"></textarea>
@@ -887,13 +929,13 @@ if (class_exists('pspServerStatus') != true) {
 												?>
 	                                            <thead>
 	                                                <tr>
-	                                                    <th colspan="2">                                            <a id="sect-tiny_compress" name="sect-tiny_compress"></a><?php _e( 'Module Tiny Compress:', 'psp' ); ?></th>
+	                                                    <th colspan="2">                                            <a id="sect-tiny_compress" name="sect-tiny_compress"></a><?php _e( 'Module Tiny Compress:', $this->the_plugin->localizationName); ?></th>
 	                                                </tr>
 	                                            </thead>
 	                                    
 	                                            <tbody>
 	                                                <tr>
-	                                                    <td width="190"><?php _e( 'Tiny Compress API Key','psp' ); ?>:</td>
+	                                                    <td width="190"><?php _e( 'Tiny Compress API Key',$this->the_plugin->localizationName); ?>:</td>
 	                                                    <td>
 															<?php
 															if ( isset($tinycompress_settings['tiny_key']) && !empty($tinycompress_settings['tiny_key']) ) {
@@ -910,7 +952,7 @@ if (class_exists('pspServerStatus') != true) {
 	                                                    </td>
 	                                                </tr>
 	                                                <tr>
-	                                                    <td width="190"><?php _e( 'Selected Image Sizes','psp' ); ?>:</td>
+	                                                    <td width="190"><?php _e( 'Selected Image Sizes',$this->the_plugin->localizationName); ?>:</td>
 	                                                    <td>
 															<?php 
 															if ( isset($tinycompress_settings['image_sizes']) && !empty($tinycompress_settings['image_sizes']) ) {
@@ -927,7 +969,7 @@ if (class_exists('pspServerStatus') != true) {
 	                                                    </td>
 	                                                </tr>
 	                                                <tr>
-	                                                    <td width="190"><?php _e( 'Status','psp' ); ?>:</td>
+	                                                    <td width="190"><?php _e( 'Status',$this->the_plugin->localizationName); ?>:</td>
 	                                                    <td>
 															<div class="psp-begin-test-container noheight">
 															<?php
@@ -941,13 +983,13 @@ if (class_exists('pspServerStatus') != true) {
 															if ( $mandatoryValid ) {
 															?>
 															    <div class="psp-message psp-success">
-															        <?php _e( 'all mandatory module settings are set!', 'psp' ); ?>
+															        <?php _e( 'all mandatory module settings are set!', $this->the_plugin->localizationName); ?>
 															    </div>
 															<?php
 															} else {
 															?>
 															    <div class="psp-message psp-error">
-															        <?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can make a tiny compress request!','psp' ); ?>
+															        <?php _e( 'some mandatory module settings are missing or not valid, so first fill them and then you can make a tiny compress request!',$this->the_plugin->localizationName); ?>
 															    </div>
 															<?php
 															}
@@ -957,7 +999,7 @@ if (class_exists('pspServerStatus') != true) {
 	                                                </tr>
 	
 	                                                <tr>
-	                                                    <td><?php _e('Monthly limit','psp' ); ?>:</td>
+	                                                    <td><?php _e('Monthly limit',$this->the_plugin->localizationName); ?>:</td>
 	                                                    <td>
 	                                                        <?php
 	                                                            $compress_limits = $pspTinyCompress->get_compress_limits();
@@ -988,8 +1030,8 @@ if (class_exists('pspServerStatus') != true) {
 	                                                                    <td width="50">Step 1:</td>
 	                                                                    <td>
 	                                                                        <div class="psp-log-title">
-	                                                                            <?php _e( 'Set mandatory fields: tiny api key, image sizes', 'psp' ); ?>
-	                                                                            <a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+	                                                                            <?php _e( 'Set mandatory fields: tiny api key, image sizes', $this->the_plugin->localizationName); ?>
+	                                                                            <a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 	                                                                        </div>
 	                                                                        
 	                                                                        <textarea class="psp-log-details"></textarea>
@@ -999,8 +1041,8 @@ if (class_exists('pspServerStatus') != true) {
 	                                                                    <td width="50">Step 2:</td>
 	                                                                    <td>
 	                                                                        <div class="psp-log-title">
-	                                                                            <?php _e( 'Connection status to TinyPNG.com API', 'psp' ); //Make a test request from Tiny API ?>
-	                                                                            <a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', 'psp' ); ?></a>
+	                                                                            <?php _e( 'Connection status to TinyPNG.com API', $this->the_plugin->localizationName); //Make a test request from Tiny API ?>
+	                                                                            <a href="#" class="psp-form-button psp-form-button-info"><?php _e( 'View details +', $this->the_plugin->localizationName); ?></a>
 	                                                                        </div>
 	                                                                        
 	                                                                        <textarea class="psp-log-details"></textarea>
@@ -1020,89 +1062,89 @@ if (class_exists('pspServerStatus') != true) {
 												
 												<thead>
 													<tr>
-														<th colspan="2"><?php _e( 'Environment', 'psp' ); ?></th>
+														<th colspan="2"><?php _e( 'Environment', $this->the_plugin->localizationName); ?></th>
 													</tr>
 												</thead>
 										
 												<tbody>
 													<tr>
-										                <td width="190"><?php _e( 'Home URL','psp' ); ?>:</td>
+										                <td width="190"><?php _e( 'Home URL',$this->the_plugin->localizationName); ?>:</td>
 										                <td><?php echo home_url(); ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e( 'psp Version','psp' ); ?>:</td>
+										                <td><?php _e( 'psp Version',$this->the_plugin->localizationName); ?>:</td>
 										                <td><?php echo $plugin_data['Version'];?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e( 'WP Version','psp' ); ?>:</td>
+										                <td><?php _e( 'WP Version',$this->the_plugin->localizationName); ?>:</td>
 										                <td><?php if ( is_multisite() ) echo 'WPMU'; else echo 'WP'; ?> <?php bloginfo('version'); ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e( 'Web Server Info','psp' ); ?>:</td>
+										                <td><?php _e( 'Web Server Info',$this->the_plugin->localizationName); ?>:</td>
 										                <td><?php echo esc_html( $_SERVER['SERVER_SOFTWARE'] );  ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e( 'PHP Version','psp' ); ?>:</td>
+										                <td><?php _e( 'PHP Version',$this->the_plugin->localizationName); ?>:</td>
 										                <td><?php if ( function_exists( 'phpversion' ) ) echo esc_html( phpversion() ); ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e( 'MySQL Version','psp' ); ?>:</td>
-										                <td><?php if ( function_exists( 'mysql_get_server_info' ) ) echo esc_html( mysql_get_server_info() ); ?></td>
+										                <td><?php _e( 'MySQL Version',$this->the_plugin->localizationName); ?>:</td>
+										                <td><?php if ( function_exists( 'mysql_get_server_info' ) ) echo esc_html( (is_resource($wpdb->dbh)) ? mysql_get_server_info( $wpdb->dbh ) : $wpdb->db_version() ); ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e( 'WP Memory Limit','psp' ); ?>:</td>
+										                <td><?php _e( 'WP Memory Limit',$this->the_plugin->localizationName); ?>:</td>
 										                <td><div class="psp-loading-ajax-details" data-action="check_memory_limit"></div></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e( 'WP Debug Mode','psp' ); ?>:</td>
-										                <td><?php if ( defined('WP_DEBUG') && WP_DEBUG ) echo __( 'Yes', 'psp' ); else echo __( 'No', 'psp' ); ?></td>
+										                <td><?php _e( 'WP Debug Mode',$this->the_plugin->localizationName); ?>:</td>
+										                <td><?php if ( defined('WP_DEBUG') && WP_DEBUG ) echo __( 'Yes', $this->the_plugin->localizationName); else echo __( 'No', $this->the_plugin->localizationName); ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e( 'WP Max Upload Size','psp' ); ?>:</td>
+										                <td><?php _e( 'WP Max Upload Size',$this->the_plugin->localizationName); ?>:</td>
 										                <td><?php echo size_format( wp_max_upload_size() ); ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e('PHP Post Max Size','psp' ); ?>:</td>
-										                <td><?php if ( function_exists( 'ini_get' ) ) echo size_format( $this->woocommerce_let_to_num( ini_get('post_max_size') ) ); ?></td>
+										                <td><?php _e('PHP Post Max Size',$this->the_plugin->localizationName); ?>:</td>
+										                <td><?php if ( function_exists( 'ini_get' ) ) echo size_format( $this->let_to_num( ini_get('post_max_size') ) ); ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e('PHP Time Limit','psp' ); ?>:</td>
+										                <td><?php _e('PHP Time Limit',$this->the_plugin->localizationName); ?>:</td>
 										                <td><?php if ( function_exists( 'ini_get' ) ) echo ini_get('max_execution_time'); ?></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e('WP Remote GET','psp' ); ?>:</td>
+										                <td><?php _e('WP Remote GET',$this->the_plugin->localizationName); ?>:</td>
 										                <td><div class="psp-loading-ajax-details" data-action="remote_get"></div></td>
 										            </tr>
 										            <tr>
-										                <td><?php _e('SOAP Client','psp' ); ?>:</td>
+										                <td><?php _e('SOAP Client',$this->the_plugin->localizationName); ?>:</td>
 										                <td><div class="psp-loading-ajax-details" data-action="check_soap"></div></td>
 										            </tr>
 												</tbody>
 										
 												<thead>
 													<tr>
-														<th colspan="2"><?php _e( 'Plugins', 'psp' ); ?></th>
+														<th colspan="2"><?php _e( 'Plugins', $this->the_plugin->localizationName); ?></th>
 													</tr>
 												</thead>
 										
 												<tbody>
 										         	<tr>
-										         		<td><?php _e( 'Installed Plugins','psp' ); ?>:</td>
+										         		<td><?php _e( 'Installed Plugins',$this->the_plugin->localizationName); ?>:</td>
 										         		<td><div class="psp-loading-ajax-details" data-action="active_plugins"></div></td>
 										         	</tr>
 												</tbody>
 										
 												<thead>
 													<tr>
-														<th colspan="2"><?php _e( 'Settings', 'psp' ); ?></th>
+														<th colspan="2"><?php _e( 'Settings', $this->the_plugin->localizationName); ?></th>
 													</tr>
 												</thead>
 										
 												<tbody>
 										
 										            <tr>
-										                <td><?php _e( 'Force SSL','psp' ); ?>:</td>
-														<td><?php echo get_option( 'woocommerce_force_ssl_checkout' ) === 'yes' ? __( 'Yes', 'psp' ) : __( 'No', 'psp' ); ?></td>
+										                <td><?php _e( 'Force SSL',$this->the_plugin->localizationName); ?>:</td>
+														<td><?php echo get_option( 'woocommerce_force_ssl_checkout' ) === 'yes' ? __( 'Yes', $this->the_plugin->localizationName) : __( 'No', $this->the_plugin->localizationName); ?></td>
 										            </tr>
 												</tbody>
 											</table>
@@ -1138,13 +1180,10 @@ if (class_exists('pspServerStatus') != true) {
 			$sync->updateTheProduct( $asin, $request['id'] );
 		}
 		
-		
-		/**
-		 * UTILS
-		 */
-		function woocommerce_let_to_num($size) {
-			if ( function_exists('woocomerce_let_to_num') )
-				return function_exists('woocomerce_let_to_num');
+		public function let_to_num($size) {
+			if ( function_exists('wc_let_to_num') ) {
+				return wc_let_to_num( $size );
+			}
 
 			$l = substr($size, -1);
 			$ret = substr($size, 0, -1);

@@ -1,0 +1,35 @@
+// =============================================================================
+// ICON.SCSS
+// -----------------------------------------------------------------------------
+// Contains all deprecated styles for the Icon Stack.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Functions, Variables, and Mixins
+// =============================================================================
+
+// Functions, Variables, and Mixins
+// =============================================================================
+
+@import "../../../../tco/css/lib/import";
+@import "../../../../css/src/site/_scss/inc/functions";
+@import "../../../../css/src/site/_scss/inc/variables";
+@import "../../../../css/src/site/_scss/stacks/icon/inc/variables";
+@import "../../../../css/src/site/_scss/inc/mixins";
+@import "../../../../css/src/site/_scss/stacks/icon/inc/mixins";
+
+
+
+// Deprecated Styles
+// =============================================================================
+
+@import "site/icon/dropdowns";
+@import "site/icon/widgetbar";
+@import "site/icon/topbar";
+@import "site/icon/logobar";
+@import "site/navbar";
+@import "site/icon/navbar";
+@import "site/icon/megamenu";
+@import "site/icon/colophon";
