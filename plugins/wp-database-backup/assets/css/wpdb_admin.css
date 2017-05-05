@@ -1,0 +1,15 @@
+body{
+  background: transparent !important;
+}
+.wpdb-header{
+  background-color: #dff0d8;
+}
+.panel {
+  margin-bottom: 0 !important;
+}
+#collapseDocumentation ul{
+    margin-left: 25px !important;
+}
+#collapseDocumentation ul li{
+    list-style-type: circle  !important;
+}
