@@ -38,7 +38,7 @@ function x_legacy_cranium_enqueue_styles() {
 
 }
 
-add_action( 'wp_enqueue_scripts', 'x_legacy_cranium_enqueue_styles', 99999 );
+add_action( 'x_enqueue_styles', 'x_legacy_cranium_enqueue_styles' );
 
 
 

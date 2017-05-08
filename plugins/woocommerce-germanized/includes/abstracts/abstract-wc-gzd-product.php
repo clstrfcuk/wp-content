@@ -71,7 +71,7 @@ class WC_GZD_Product {
 			if ( '' === $value )
 				$value = $this->gzd_variation_level_meta[ $key ];
 		
-		} else if ( $this->child->is_type( 'variation' ) && in_array( $key, $this->gzd_variation_inherited_meta_data ) ) {
+		} elseif ( $this->child->is_type( 'variation' ) && in_array( $key, $this->gzd_variation_inherited_meta_data ) ) {
 			
 			$value = wc_gzd_get_crud_data( $this->child, $key ) ? wc_gzd_get_crud_data( $this->child, $key ) : '';
 
@@ -80,7 +80,7 @@ class WC_GZD_Product {
 				$value = wc_gzd_get_crud_data( wc_get_product( wc_gzd_get_crud_data( $this->child, 'parent' ) ), $key );
 			}
 		
-		} else if ( $key == 'delivery_time' ) {
+		} elseif ( $key == 'delivery_time' ) {
 			
 			$value = $this->get_delivery_time();
 		
@@ -104,7 +104,7 @@ class WC_GZD_Product {
 	public function __isset( $key ) {
 		if ( $this->child->is_type( 'variation' ) && in_array( $key, array_keys( $this->gzd_variation_level_meta ) ) ) {
 			return metadata_exists( 'post', wc_gzd_get_crud_data( $this->child, 'id' ), '_' . $key );
-		} else if ( $this->child->is_type( 'variation' ) && in_array( $key, array_keys( $this->gzd_variation_inherited_meta_data ) ) ) {	
+		} elseif ( $this->child->is_type( 'variation' ) && in_array( $key, array_keys( $this->gzd_variation_inherited_meta_data ) ) ) {
 			return metadata_exists( 'post', wc_gzd_get_crud_data( $this->child, 'id' ), '_' . $key ) || metadata_exists( 'post', wc_gzd_get_crud_data( $this->child, 'parent' ), '_' . $key );
 		} else {
 			return metadata_exists( 'post', wc_gzd_get_crud_data( $this->child, 'id' ), '_' . $key );
@@ -164,23 +164,23 @@ class WC_GZD_Product {
 		
 		preg_match( "/<del>(.*?)<\\/del>/si", $price_html, $match_regular );
 		preg_match( "/<ins>(.*?)<\\/ins>/si", $price_html, $match_sale );
+		preg_match( "/<small .*>(.*?)<\\/small>/si", $price_html, $match_suffix );
 
 		if ( empty( $match_sale ) || empty( $match_regular ) ) {
             return $price_html;
         }
 
-		$new_price_regular = ( isset( $match_regular[1] ) ? $match_regular[1] : $match_regular[0] );
-		$new_price_sale = ( isset( $match_sale[1] ) ? $match_sale[1] : $match_sale[0] );
+		$new_price_regular = $match_regular[0];
+		$new_price_sale = $match_sale[0];
+		$new_price_suffix = ( empty( $match_suffix ) ? '' : ' ' . $match_suffix[0] );
 
 		if ( ! empty( $sale_label ) && isset( $match_regular[1] ) )
-			$new_price_regular = '<span class="wc-gzd-sale-price-label">' . $sale_label . '</span> <del>' . $match_regular[1] . '</del>';
+			$new_price_regular = '<span class="wc-gzd-sale-price-label">' . $sale_label . '</span> ' . $match_regular[0];
 
 		if ( ! empty( $sale_regular_label ) && isset( $match_sale[1] ) )
-			$new_price_sale = '<span class="wc-gzd-sale-price-label wc-gzd-sale-price-regular-label">' . $sale_regular_label . '</span> <ins>' . $match_sale[1] . '</ins>';
+			$new_price_sale = '<span class="wc-gzd-sale-price-label wc-gzd-sale-price-regular-label">' . $sale_regular_label . '</span> ' . $match_sale[0];
 
-		$price_html = $new_price_regular . $new_price_sale;
-
-		return $price_html;
+		return apply_filters( 'woocommerce_gzd_product_sale_price_with_labels_html', $new_price_regular . ' ' . $new_price_sale . $new_price_suffix, $org_price_html, $this );
 	}
 
 	public function get_price_html_from_to( $from, $to, $show_labels = true ) {

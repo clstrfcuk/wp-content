@@ -55,7 +55,8 @@ class WC_GZD_Admin {
 		
 		add_filter( 'woocommerce_addons_section_data', array( $this, 'set_addon' ), 10, 2 );
 		add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'set_order_parcel_delivery_opted_in' ), 10, 1 );
-	}
+
+    }
 
 	public function status_tab() {
 		WC_GZD_Admin_Status::output();
@@ -205,12 +206,12 @@ class WC_GZD_Admin {
 		
 			wp_safe_redirect( remove_query_arg( array( 'hide', 'tour', '_wpnonce' ) ) );
 		
-		} else if ( isset( $_GET[ 'tour' ] ) && isset( $_GET[ 'enable' ] ) && isset( $_GET[ '_wpnonce' ] ) && check_admin_referer( 'wc-gzd-tour-enable' ) ) {
+		} elseif ( isset( $_GET[ 'tour' ] ) && isset( $_GET[ 'enable' ] ) && isset( $_GET[ '_wpnonce' ] ) && check_admin_referer( 'wc-gzd-tour-enable' ) ) {
 		
 			$setting_sections = array_merge( array( 
 				'general' => '', 
 				'display' => '', 
-				'emails' => '' ), 
+				'email' => '' ),
 			apply_filters( 'woocommerce_gzd_settings_sections', array() ) );
 			
 			delete_option( 'woocommerce_gzd_hide_tour' );
@@ -276,7 +277,7 @@ class WC_GZD_Admin {
 
 		if ( isset( $_GET[ 'delete-version-cache' ] ) && isset( $_GET[ '_wpnonce' ] ) && check_admin_referer( 'wc-gzd-delete-version-cache' ) ) {
 
-            WC_GZD_Dependencies::instance()->delete_cached_plugin_header_data();
+			wc_gzd_get_dependencies()->delete_cached_plugin_header_data();
 
             do_action( 'woocommerce_gzd_deleted_cached_plugin_header_data' );
 		}
@@ -331,6 +332,46 @@ class WC_GZD_Admin {
  			)
  		);
  	}
+
+ 	public function get_shipping_method_instances() {
+
+	    if ( ! class_exists( 'WC_Shipping_Zones' ) ) {
+		    $instances = WC()->shipping->get_shipping_methods();
+        } else {
+		    $zones = WC_Shipping_Zones::get_zones();
+		    $worldwide = new WC_Shipping_Zone( 0 );
+
+		    $instances = $worldwide->get_shipping_methods( true );
+
+		    foreach( $zones as $id => $zone ) {
+			    $zone = new WC_Shipping_Zone( $id );
+			    $instances = $instances + $zone->get_shipping_methods( true );
+		    }
+        }
+
+        return $instances;
+    }
+
+    public function get_shipping_method_instances_options() {
+
+	    $methods = $this->get_shipping_method_instances();
+	    $shipping_methods_options = array();
+
+	    foreach ( $methods as $key => $method ) {
+
+	        if ( method_exists( $method, 'get_rate_id' ) ) {
+		        $key = $method->get_rate_id();
+            } else {
+	            $key = $method->id;
+            }
+
+		    $title = $method->get_title();
+
+		    $shipping_methods_options[ $key ] = ( empty( $title ) ? $method->get_method_title() : $title );
+	    }
+
+	    return $shipping_methods_options;
+    }
 
 }
 

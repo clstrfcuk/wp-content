@@ -80,25 +80,7 @@ class Jetpack_XMLRPC_Server {
 	function authorize_xmlrpc_methods() {
 		return array(
 			'jetpack.remoteAuthorize' => array( $this, 'remote_authorize' ),
-			'jetpack.activateManage'    => array( $this, 'activate_manage' ),
 		);
-	}
-
-	function activate_manage( $request ) {
-		foreach( array( 'secret', 'state' ) as $required ) {
-			if ( ! isset( $request[ $required ] ) || empty( $request[ $required ] ) ) {
-				return $this->error( new Jetpack_Error( 'missing_parameter', 'One or more parameters is missing from the request.', 400 ) );
-			}
-		}
-		$verified = $this->verify_action( array( 'activate_manage', $request['secret'], $request['state'] ) );
-		if ( is_a( $verified, 'IXR_Error' ) ) {
-			return $verified;
-		}
-		$activated = Jetpack::activate_module( 'manage', false, false );
-		if ( false === $activated || ! Jetpack::is_module_active( 'manage' ) ) {
-			return $this->error( new Jetpack_Error( 'activation_error', 'There was an error while activating the module.', 500 ) );
-		}
-		return 'active';
 	}
 
 	function remote_authorize( $request ) {
@@ -130,12 +112,9 @@ class Jetpack_XMLRPC_Server {
 		if ( is_wp_error( $result ) ) {
 			return $this->error( $result );
 		}
-		// Creates a new secret, allowing someone to activate the manage module for up to 1 day after authorization.
-		$secrets = Jetpack::init()->generate_secrets( 'activate_manage', DAY_IN_SECONDS );
-		@list( $secret ) = explode( ':', $secrets );
+
 		$response = array(
 			'result' => $result,
-			'activate_manage' => $secret,
 		);
 		return $response;
 	}
@@ -300,7 +279,7 @@ class Jetpack_XMLRPC_Server {
 		error_log( "VERIFY: $verify" );
 		*/
 
-		$jetpack_token = Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
+		$jetpack_token = Jetpack_Data::get_access_token( $user_id );
 
 		$api_user_code = get_user_meta( $user_id, "jetpack_json_api_$client_id", true );
 		if ( !$api_user_code ) {
@@ -326,7 +305,7 @@ class Jetpack_XMLRPC_Server {
 	* @return boolean
 	*/
 	function disconnect_blog() {
-		
+
 		// For tracking
 		if ( ! empty( $this->user->ID ) ) {
 			wp_set_current_user( $this->user->ID );

@@ -145,23 +145,6 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 			array(	'title' => __( 'General', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'general_options' ),
 
 			array(
-				'title' 	=> __( 'Small-Enterprise-Regulation', 'woocommerce-germanized' ),
-				'desc' 		=> __( 'VAT based on &#167;19 UStG', 'woocommerce-germanized' ),
-				'id' 		=> 'woocommerce_gzd_small_enterprise',
-				'default'	=> 'no',
-				'type' 		=> 'checkbox',
-				'desc_tip'	=> sprintf( __( 'set this Option if you have chosen <a href="%s" target="_blank">&#167;19 UStG</a>', 'woocommerce-germanized' ), esc_url( 'http://www.gesetze-im-internet.de/ustg_1980/__19.html' ) )
-			),
-
-			array(
-				'title' 	=> __( 'Show no VAT notice', 'woocommerce-germanized' ),
-				'desc' 		=> __( 'Show no VAT &#167;19 UStG notice on single product', 'woocommerce-germanized' ),
-				'id' 		=> 'woocommerce_gzd_display_product_detail_small_enterprise',
-				'type' 		=> 'checkbox',
-				'default'	=> 'no',
-			),
-
-			array(
 				'title' 	=> __( 'Submit Order Button Text', 'woocommerce-germanized' ),
 				'desc' 		=> __( 'This text serves as Button text for the Order Submit Button.', 'woocommerce-germanized' ),
 				'desc_tip'	=> true,
@@ -343,6 +326,37 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 			),
 
 			array( 'type' => 'sectionend', 'id' => 'complaints_options' ),
+
+			array( 'title' => __( 'Small Businesses', 'woocommerce-germanized' ), 'type' => 'title', 'desc' => '', 'id' => 'small_business_options' ),
+
+			array(
+				'title' 	=> __( 'Small-Enterprise-Regulation', 'woocommerce-germanized' ),
+				'desc' 		=> __( 'VAT based on &#167;19 UStG', 'woocommerce-germanized' ),
+				'id' 		=> 'woocommerce_gzd_small_enterprise',
+				'default'	=> 'no',
+				'type' 		=> 'checkbox',
+				'desc_tip'	=> sprintf( __( 'set this Option if you have chosen <a href="%s" target="_blank">&#167;19 UStG</a>', 'woocommerce-germanized' ), esc_url( 'http://www.gesetze-im-internet.de/ustg_1980/__19.html' ) )
+			),
+
+			array(
+				'title' 	=> __( 'Show no VAT notice', 'woocommerce-germanized' ),
+				'desc' 		=> __( 'Show no VAT &#167;19 UStG notice on single product', 'woocommerce-germanized' ),
+				'id' 		=> 'woocommerce_gzd_display_product_detail_small_enterprise',
+				'type' 		=> 'checkbox',
+				'default'	=> 'no',
+			),
+
+			array(
+				'title' 	=> __( 'Notice Text', 'woocommerce-germanized' ),
+				'desc' 		=> __( 'You may want to adjust the small buisness notice text to meet your criteria.', 'woocommerce-germanized' ),
+				'desc_tip'  => true,
+                'id' 		=> 'woocommerce_gzd_small_enterprise_text',
+				'type' 		=> 'textarea',
+				'default'	=> __( 'Value added tax is not collected, as small businesses according to §19 (1) UStG.', 'woocommerce-germanized' ),
+				'css' 		=> 'width:100%; height: 50px;',
+			),
+
+			array( 'type' => 'sectionend', 'id' => 'small_business_options' ),
 
 			array( 'title' => __( 'Delivery Times', 'woocommerce-germanized' ), 'type' => 'title', 'desc' => '', 'id' => 'delivery_times_options' ),
 
@@ -584,8 +598,16 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 		$email_templates 	= $mailer->get_emails();
 		$email_select 		= array();
 
-		foreach ( $email_templates as $email )
-			$email_select[ $email->id ] = empty( $email->title ) ? ucfirst( $email->id ) : ucfirst( $email->title );
+		foreach ( $email_templates as $email ) {
+
+		    $customer = false;
+
+		    if ( is_callable( array( $email, 'is_customer_email' ) ) ) {
+		        $customer = $email->is_customer_email();
+            }
+
+			$email_select[ $email->id ] = empty( $email->title ) ? ucfirst( $email->id ) : ucfirst( $email->title ) . ' (' . ( $customer ? __( 'Customer', 'woocommerce-germanized' ) : __( 'Admin', 'woocommerce-germanized' ) ) . ')';
+		}
 
 		$email_order = wc_gzd_get_email_attachment_order();
 
@@ -624,6 +646,15 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 
 		$settings = array_merge( $settings, array(
 
+			array(
+				'title' 	=> __( 'Hide Username', 'woocommerce-germanized' ),
+				'desc' 		=> __( 'Hide username from email content if password or password reset link is embedded.', 'woocommerce-germanized' ),
+				'desc_tip'  => __( 'Trusted Shops advises to not show the username together with an account password or password reset link. This option hides (or masks) the username in those specific cases.', 'woocommerce-germanized' ),
+				'id' 		=> 'woocommerce_gzd_hide_username_with_password',
+				'default'	=> 'yes',
+				'type' 		=> 'checkbox',
+			),
+
 			array( 'type' => 'sectionend', 'id' => 'email_options' ),
 
 			array(	'title' => __( 'Email Attachment Options', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'email_attachment_options', 'desc' => '<div class="notice inline notice-warning"><p>' . sprintf( __( 'Want to attach automatically generated PDF files to emails instead of plain text? %sUpgrade to %spro%s%s', 'woocommerce-germanized' ), '<a style="margin-left: 1em" href="https://vendidero.de/woocommerce-germanized" class="button">', '<span class="wc-gzd-pro">', '</span>', '</a>' ) . '</p></div>' ),
@@ -653,13 +684,7 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 			'virtual'		=> __( 'Virtual Product', 'woocommerce-germanized' ),
 		), $product_types );
 
-		$shipping_methods = WC()->shipping->get_shipping_methods();
-		$shipping_methods_options = array();
-		
-		foreach ( $shipping_methods as $key => $method ) {
-			$title = $method->get_title();
-			$shipping_methods_options[ $key ] = ( empty( $title ) ? $method->get_method_title() : $title );
-		}
+		$shipping_methods_options = WC_GZD_Admin::instance()->get_shipping_method_instances_options();
 
 		$settings = array(
 
@@ -888,6 +913,42 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 			array(	'title' => __( 'Checkout & Cart', 'woocommerce-germanized' ), 'type' => 'title', 'id' => 'checkout_options' ),
 
 			array(
+				'title' 	=> __( 'DHL Parcel Shops', 'woocommerce-germanized' ),
+				'desc' 		=> __( 'Allow customers to choose a DHL parcel shop or packing station as delivery address.', 'woocommerce-germanized' ),
+				'id' 		=> 'woocommerce_gzd_dhl_parcel_shops',
+				'default'	=> 'no',
+				'type' 		=> 'checkbox',
+				'desc_tip'	=> __( 'This option adds a checkbox to your checkout shipping fields which allows the customer to optionally choose a DHL packing station or parcel shop for delivery. A PostNumber is required.', 'woocommerce-germanized' ),
+			),
+
+			array(
+				'title' 	=> __( 'Supported Countries', 'woocommerce-germanized' ),
+				'id' 		=> 'woocommerce_gzd_dhl_parcel_shop_supported_countries',
+				'default'	=> array( 'DE', 'AT' ),
+				'type' 		=> 'multi_select_countries',
+				'desc_tip'	=> __( 'Choose countries which support Parcel Shop delivery.', 'woocommerce-germanized' ),
+			),
+
+			array(
+				'title' 	=> __( 'Disabled Methods', 'woocommerce-germanized' ),
+				'id' 		=> 'woocommerce_gzd_dhl_parcel_shop_disabled_shipping_methods',
+				'default'	=> array(),
+				'class' 	=> 'chosen_select',
+				'type'      => 'multiselect',
+				'options'   => $shipping_methods_options,
+				'desc_tip'	=> __( 'Optionally choose methods for which DHL Parcel Shop Delivery should be disabled. Does only work if you have disabled choosing shipping methods within checkout.', 'woocommerce-germanized' ),
+			),
+
+			array(
+				'title' 	=> __( 'Parcel Shop Finder', 'woocommerce-germanized' ),
+				'desc' 		=> __( 'Enable DHL Parcel Shop Finder to let customers choose a parcel shop nearby.', 'woocommerce-germanized' ),
+				'id' 		=> 'woocommerce_gzd_dhl_parcel_shop_finder',
+				'default'	=> 'no',
+				'type' 		=> 'checkbox',
+				'desc_tip'	=> sprintf( __( 'You may enable this option to add a <a href="%s" target="_blank">Parcel Shop Finder</a> to your checkout. Adds an link next to the checkbox. The finder (DHL API) opens in an overlay and lets the customer find and choose a parcel shop or packing station nearby.', 'woocommerce-germanized' ), 'https://parcelshopfinder.dhlparcel.com/' ),
+			),
+
+			array(
 				'title' 	=> __( 'Fallback Mode', 'woocommerce-germanized' ),
 				'desc' 		=> __( 'Enable to make sure default checkout template is not being overriden by theme.', 'woocommerce-germanized' ),
 				'id' 		=> 'woocommerce_gzd_display_checkout_fallback',
@@ -1109,7 +1170,7 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 				'desc' 		=> __( 'Select shipping methods which are applicable for the Opt-In Checkbox.', 'woocommerce-germanized' ),
 				'desc_tip'	=> true,
 				'id' 		=> 'woocommerce_gzd_checkout_legal_parcel_delivery_checkbox_methods',
-				'default'	=> array( 'downloadable' ),
+				'default'	=> array(),
 				'class'		=> 'chosen_select',
 				'options'	=> $shipping_methods_options,
 				'type' 		=> 'multiselect',
@@ -1219,7 +1280,7 @@ class WC_GZD_Settings_Germanized extends WC_Settings_Page {
 						update_option( 'woocommerce_calc_taxes', 'yes' );
 						update_option( 'woocommerce_prices_include_tax', 'yes' );
 					}
-				} else if ( $setting[ 'id' ] == 'woocommerce_gzd_enable_virtual_vat' ) {
+				} elseif ( $setting[ 'id' ] == 'woocommerce_gzd_enable_virtual_vat' ) {
 					if ( get_option( 'woocommerce_gzd_enable_virtual_vat' ) != 'yes' && ! empty( $_POST[ 'woocommerce_gzd_enable_virtual_vat' ] ) ) {
 						if ( ! empty( $_POST[ 'woocommerce_gzd_small_enterprise' ] ) )
 							continue;

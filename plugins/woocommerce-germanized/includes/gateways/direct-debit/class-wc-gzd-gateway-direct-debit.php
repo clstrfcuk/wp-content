@@ -150,7 +150,7 @@ Please notice: Period for pre-information of the SEPA direct debit is shortened 
 			if ( isset( $_GET['sepa_start_date'] ) || isset( $_GET['sepa_end_date'] ) ) {
 				$args['start_date'] = ( isset( $_GET['sepa_start_date'] ) ? sanitize_text_field( $_GET['sepa_start_date'] ) : '' );
 				$args['end_date'] = ( isset( $_GET['sepa_end_date'] ) ? sanitize_text_field( $_GET['sepa_end_date'] ) : '' );
-			} else if ( isset( $_GET[ 'sepa_order_id' ] ) ) {
+			} elseif ( isset( $_GET[ 'sepa_order_id' ] ) ) {
 				$args['order_id'] = absint( $_GET['sepa_order_id'] );
 			}
 		}
@@ -349,7 +349,7 @@ Please notice: Period for pre-information of the SEPA direct debit is shortened 
 
     	$order = wc_get_order( $order_id );
 
-    	if ( ! wc_gzd_get_crud_data( $order, 'payment_method' ) == $this->id )
+    	if ( ! ( wc_gzd_get_crud_data( $order, 'payment_method' ) === $this->id ) )
     		return;
 
     	$holder 	= ( isset( $_POST[ 'direct_debit_account_holder' ] ) ? wc_clean( $_POST[ 'direct_debit_account_holder' ] ) : '' );

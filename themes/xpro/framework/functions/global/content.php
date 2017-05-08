@@ -18,6 +18,8 @@
 //   07. Does Not Need Entry Meta
 //   08. Scroll Top Anchor
 //   09. Legacy Header Widget Areas
+//   10. Legacy Slider Below with New Masthead
+//   11. Legacy Slider Above with New Masthead
 // =============================================================================
 
 // Alternate Title
@@ -225,9 +227,8 @@ if ( ! function_exists( 'x_scroll_top_anchor' ) ) :
     <?php endif;
 
   }
+  add_action( 'x_after_site_end', 'x_scroll_top_anchor' );
 endif;
-
-add_action( 'x_after_site_end', 'x_scroll_top_anchor' );
 
 
 
@@ -274,6 +275,29 @@ if ( ! function_exists( 'x_legacy_header_widget_areas' ) ) :
     <?php
 
   }
+  add_action( 'x_after_site_end', 'x_legacy_header_widget_areas' );
 endif;
 
-add_action( 'x_after_site_end', 'x_legacy_header_widget_areas' );
+
+
+// Legacy Slider Below with New Masthead
+// =============================================================================
+
+if ( ! function_exists( 'x_legacy_slider_above_with_new_masthead' ) ) :
+  function x_legacy_slider_above_with_new_masthead() {
+    x_get_view( 'global', '_slider-above' );
+  }
+  add_action( 'x_before_masthead_begin', 'x_legacy_slider_above_with_new_masthead' );
+endif;
+
+
+
+// Legacy Slider Above with New Masthead
+// =============================================================================
+
+if ( ! function_exists( 'x_legacy_slider_below_with_new_masthead' ) ) :
+  function x_legacy_slider_below_with_new_masthead() {
+    x_get_view( 'global', '_slider-below' );
+  }
+  add_action( 'x_after_masthead_end', 'x_legacy_slider_below_with_new_masthead' );
+endif;

@@ -389,22 +389,3 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
   }
 
 }
-
-// function x_nav_menu_classes( $text ) {
-
-//   $sub_menu_classes = ( preg_match( '(x-menu-inline|x-menu-dropdown)', $text ) === 1 ) ? 'x-sub-menu x-dropdown sub-menu' : 'x-sub-menu sub-menu';
-
-//   $replace = array(
-//     'current-menu-item'      => 'x-active current-menu-item',
-//     'current-menu-parent'    => 'x-active current-menu-parent',
-//     'menu-item-has-children' => 'x-has-sub menu-item-has-children',
-//     'sub-menu'               => $sub_menu_classes
-//   );
-
-//   $text = str_replace( array_keys( $replace ), $replace, $text );
-
-//   return $text;
-
-// }
-
-// add_filter( 'wp_nav_menu', 'x_nav_menu_classes', 10, 1 );

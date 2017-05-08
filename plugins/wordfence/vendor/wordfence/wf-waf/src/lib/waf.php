@@ -571,17 +571,26 @@ PHP
 			if (isset($rules[$key]) && is_array($rules[$key])) {
 				/** @var wfWAFRuleParserURLParam $urlParam */
 				foreach ($rules[$key] as $urlParam) {
-					if ($urlParam->getRules()) {
-						$url = array(
-							'url'   => $urlParam->getUrl(),
-							'rules' => $urlParam->getRules(),
-						);
-					} else {
-						$url = $urlParam->getUrl();
+					if ($urlParam->getConditional()) {
+						
+						$exportedCode .= sprintf("\$this->{$key}[%s][] = array(\n%s => %s,\n%s => %s,\n%s => %s\n);\n", var_export($urlParam->getParam(), true), 
+							var_export('url', true), var_export($urlParam->getUrl(), true),
+							var_export('rules', true), var_export($urlParam->getRules(), true),
+							var_export('conditional', true), $urlParam->getConditional()->render());
 					}
-
-					$exportedCode .= sprintf("\$this->{$key}[%s][] = %s;\n", var_export($urlParam->getParam(), true),
-						var_export($url, true));
+					else {
+						if ($urlParam->getRules()) {
+							$url = array(
+								'url'   => $urlParam->getUrl(),
+								'rules' => $urlParam->getRules(),
+							);
+						} else {
+							$url = $urlParam->getUrl();
+						}
+						
+						$exportedCode .= sprintf("\$this->{$key}[%s][] = %s;\n", var_export($urlParam->getParam(), true), 
+							var_export($url, true));
+					}
 				}
 				$exportedCode .= "\n";
 			}
@@ -810,11 +819,12 @@ HTML
 		$this->getStorageEngine()->logAttack($e->getFailedRules(), $e->getParamKey(), $e->getParamValue(), $e->getRequest(), $e->getRequest()->getMetadata());
 		
 		if ($redirect) {
-			wfWAFUtils::redirect($redirect); // exits
+			wfWAFUtils::redirect($redirect); // exits and emits no cache headers
 		}
 		
 		if ($httpCode == 503) {
 			wfWAFUtils::statusHeader(503);
+			wfWAFUtils::doNotCache();
 			if ($secsToGo = $e->getRequest()->getMetadata('503Time')) {
 				header('Retry-After: ' . $secsToGo);
 			}
@@ -822,6 +832,7 @@ HTML
 		}
 		
 		header('HTTP/1.0 403 Forbidden');
+		wfWAFUtils::doNotCache();
 		exit($this->getBlockedMessage($template));
 	}
 
@@ -834,11 +845,12 @@ HTML
 		$this->getStorageEngine()->logAttack($e->getFailedRules(), $e->getParamKey(), $e->getParamValue(), $e->getRequest(), $e->getRequest()->getMetadata());
 		
 		if ($redirect) {
-			wfWAFUtils::redirect($redirect); // exits
+			wfWAFUtils::redirect($redirect); // exits and emits no cache headers
 		}
 		
 		if ($httpCode == 503) {
 			wfWAFUtils::statusHeader(503);
+			wfWAFUtils::doNotCache();
 			if ($secsToGo = $e->getRequest()->getMetadata('503Time')) {
 				header('Retry-After: ' . $secsToGo);
 			}
@@ -846,6 +858,7 @@ HTML
 		}
 		
 		header('HTTP/1.0 403 Forbidden');
+		wfWAFUtils::doNotCache();
 		exit($this->getBlockedMessage());
 	}
 	
@@ -963,6 +976,9 @@ HTML
 			foreach ($this->whitelistedParams[$paramKey] as $urlRegex) {
 				if (is_array($urlRegex)) {
 					if (!in_array($ruleID, $urlRegex['rules'])) {
+						continue;
+					}
+					if (isset($urlRegex['conditional']) && !$urlRegex['conditional']->evaluate()) {
 						continue;
 					}
 					$urlRegex = $urlRegex['url'];
@@ -1097,6 +1113,9 @@ HTML
 			foreach ($this->blacklistedParams[$paramKey] as $urlRegex) {
 				if (is_array($urlRegex)) {
 					if (!in_array($ruleID, $urlRegex['rules'])) {
+						continue;
+					}
+					if (isset($urlRegex['conditional']) && !$urlRegex['conditional']->evaluate()) {
 						continue;
 					}
 					$urlRegex = $urlRegex['url'];

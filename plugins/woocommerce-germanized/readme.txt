@@ -3,7 +3,7 @@ Contributors: vendidero
 Tags: woocommerce, german market, german, germany, deutsch, deutschland, de, de_DE, shop, commerce, e-commerce, ecommerce, woothemes, sepa, invoice
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.8.3
+Stable tag: 1.8.10
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -39,6 +39,7 @@ Furthermore we have customized the checkout to make your WooCommerce Shop meet t
 * Payment Gateway Fees
 * Online Revocation Form
 * Sale Price Labels
+* Delivery to DHL Parcel Shops or Pick-Up Stations
 
 = Certified by Trusted Shops =
 WooCommerce Germanized has been approved by Trusted Shops and therefor offers best technical conditions to operate a legally certain Online Shop in Germany. 
@@ -88,6 +89,10 @@ Starting with version 1.6 one may deactivate the checkout for inactive customers
 By default WooCommerce does not offer a distinction between receiving and confirming the order. WooCommerce Germanized Pro offers a feature to manually examine orders before confirming them to the customer.
 Shop managers may check order details and then manually confirm the order through a Button in the WooCommerce Backend.
 
+= Delivery to DHL Parcel Shops =
+You may optionally choose to offer delivery to DHL parcel shops or pick-up stations. Customers may find a parcel shop nearby by embedding an overlay of the DHL search API.
+On choosing a parcel shop within the overlay the corresponding data is automatically added to the checkout fields.
+
 = eKomi Integration =
 Shop managers who are using eKomi as a Review Management Service may easily integrate it's features within WooCommerce. 
 Easily set up eKomi by adapting a few Settings within WooCommerce Germanized.
@@ -98,7 +103,7 @@ Easily set up eKomi by adapting a few Settings within WooCommerce Germanized.
 
 * WordPress 3.8 or newer
 * WooCommerce 2.4 (newest version recommended)
-* PHP Version 5.2.4 or newer
+* PHP Version 5.3 or newer
 
 = Automatic Installation =
 
@@ -147,6 +152,11 @@ Professional Support via Ticket is being offered to [Professional Users](https:/
 Unfortunately not every Theme does implement WooCommerce in the way it's meant to be or differs from the original structure which leads to layout and/or compatibility 
 issues. Out of that reason we have developed [VendiPro](https://vendidero.de/vendipro) which perfectly fits all Germanized Options and is optimized for German Market.
 
+= Email Attachments not showing in Order Confirmation Email =
+
+In most times you have a wrong configuration within your Germanized Email settings. The order confirmation email sent to the customer after an order has been made is called "Processing Order". The email called "New Order" is the email
+sent to the Administrator which serves as a notification only - so make sure you have "Processing Order" selected within the Germanized settings.
+
 = Want to file a Bug or improve Germanized? =
 
 Bug reports may be filed via our [GitHub repository](https://github.com/vendidero/woocommerce-germanized).
@@ -156,6 +166,54 @@ Bug reports may be filed via our [GitHub repository](https://github.com/vendider
 1. WooCommerce Germanized Settings
 
 == Changelog ==
+
+= 1.8.10 =
+* Improvement - Better E-Mail-Template naming (renamed processing order to order confirmation)
+* Fix - WC 3.0 unit prices (from-to) for variations
+* Fix - Unit price bulk saving fallback
+* Fix - rate_id within order tax totals (using get_shop_base_rate)
+* Fix - tour email explanations, WC 3.0 preparations
+
+= 1.8.9 =
+* Feature - Allow DHL parcel shop delivery for certain shipping rates only
+* Improvement - woocommerce_gzd_add_to_cart_variation_params filter to adjust wrapper name
+* Improvement - better shipping rate choosing options (choose instances instead of methods) for parcel delivery checkbox
+* Fix - Double Opt In WooCommerce 3.0
+* Fix - Use get_rate_code for order item totals
+* Fix - WooCommerce 3.0 stock reducing
+* Fix - Order Item Meta CRUD - better product instance check
+* Fix - Disable Paid for Order Email for direct debit and invoice gateway
+
+= 1.8.8 =
+* Feature - Better product data saving
+* Feature - Allow setting a custom Small Business notice text
+* Feature - REST API WC 3.0 v2 support
+
+= 1.8.7 =
+* Fix - Small Business VAT total tax removal (as Trusted Shops advised)
+* Fix - FontAwesome Update to latest version
+* Fix - Use frontend options filter for admin billing_title field
+* Fix - By default remove username from password reset, new account mail if password or reset link is included (Trusted Shops advised)
+
+= 1.8.6 =
+* Fix - plugin_locale filter in WC_GZD_Install
+* Fix - Support Parcel Shop Delivery in My Account - Edit Address
+* Fix - Parcel Shop Delivery JS better event check
+
+= 1.8.5 =
+* Feature - DHL Parcel Shop or Pick-Up Station delivery
+* Fix - Parcel Shop empty address placeholder
+* Fix - Sale Price Labels Price Suffixes HTML
+* Fix - Partial refunded order email legal item information
+* Fix - Hook priority for product units in loop
+* Fix - Parcel delivery checkbox validation
+
+= 1.8.4 =
+* Feature - DHL Parcel Shop or Pick-Up Station delivery
+* Fix - Sale Price Labels Price Suffixes HTML
+* Fix - Partial refunded order email legal item information
+* Fix - Hook priority for product units in loop
+* Fix - Parcel delivery checkbox validation
 
 = 1.8.3 =
 * Fix - Is empty check in 1.8.2

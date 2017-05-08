@@ -58,17 +58,31 @@ class wfSchema {
 	KEY k2(IP, ctime)
 ) default charset=latin1",
 "wfIssues" => "(
-	id int UNSIGNED NOT NULL auto_increment PRIMARY KEY,
-	time int UNSIGNED NOT NULL,
-	status varchar(10) NOT NULL,
-	type varchar(20) NOT NULL,
-	severity tinyint UNSIGNED NOT NULL,
-	ignoreP char(32) NOT NULL,
-	ignoreC char(32) NOT NULL,
-	shortMsg varchar(255) NOT NULL,
-	longMsg text,
-	data text
-) default charset=utf8",
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `time` int(10) unsigned NOT NULL,
+  `status` varchar(10) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `severity` tinyint(3) unsigned NOT NULL,
+  `ignoreP` char(32) NOT NULL,
+  `ignoreC` char(32) NOT NULL,
+  `shortMsg` varchar(255) NOT NULL,
+  `longMsg` text,
+  `data` text,
+  PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8",
+"wfPendingIssues" => "(
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `time` int(10) unsigned NOT NULL,
+  `status` varchar(10) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `severity` tinyint(3) unsigned NOT NULL,
+  `ignoreP` char(32) NOT NULL,
+  `ignoreC` char(32) NOT NULL,
+  `shortMsg` varchar(255) NOT NULL,
+  `longMsg` text,
+  `data` text,
+  PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8",
 "wfLeechers" => "(
 	eMin int UNSIGNED NOT NULL,
 	IP int UNSIGNED NOT NULL,
@@ -143,7 +157,7 @@ class wfSchema {
 	owner text,
 	host text,
 	path text,
-	hostKey binary(4),
+	hostKey varbinary(124),
 	KEY k2(hostKey)
 ) default charset=utf8",
 'wfFileMods' => "(
@@ -151,7 +165,9 @@ class wfSchema {
 	filename varchar(1000) NOT NULL,
 	knownFile tinyint UNSIGNED NOT NULL,
 	oldMD5 binary(16) NOT NULL,
-	newMD5 binary(16) NOT NULL
+	newMD5 binary(16) NOT NULL,
+	stoppedOnSignature varchar(255) NOT NULL DEFAULT '',
+	stoppedOnPosition int(10) unsigned NOT NULL DEFAULT '0'
 ) default charset=utf8",
 'wfBlocksAdv' => "(
 	id int UNSIGNED NOT NULL auto_increment PRIMARY KEY,
@@ -163,12 +179,13 @@ class wfSchema {
 	lastBlocked int UNSIGNED default 0
 ) default charset=utf8",
 'wfBlockedIPLog' => "(
-	IP int UNSIGNED NOT NULL,
-	countryCode VARCHAR(2) NOT NULL,
-	blockCount int UNSIGNED NOT NULL DEFAULT 0,
-	unixday int UNSIGNED NOT NULL,
-	PRIMARY KEY(IP, unixday)
-) default charset=utf8",
+  `IP` binary(16) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
+  `countryCode` varchar(2) NOT NULL,
+  `blockCount` int(10) unsigned NOT NULL DEFAULT '0',
+  `unixday` int(10) unsigned NOT NULL,
+  `blockType` varchar(50) NOT NULL DEFAULT 'generic',
+  PRIMARY KEY (`IP`,`unixday`,`blockType`)
+) DEFAULT CHARSET=utf8",
 'wfSNIPCache' => "(
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `IP` varchar(45) NOT NULL DEFAULT '',

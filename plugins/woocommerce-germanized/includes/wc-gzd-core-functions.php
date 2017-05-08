@@ -12,6 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 include( 'wc-gzd-product-functions.php' );
 
+function wc_gzd_get_dependencies( $instance = null ) {
+	return apply_filters( 'woocommerce_gzd_dependencies_instance', WC_GZD_Dependencies::instance( $instance ) );
+}
+
 function wc_gzd_send_instant_order_confirmation() {
     return ( apply_filters( 'woocommerce_gzd_instant_order_confirmation', true ) && ( 'yes' !== get_option( 'woocommerce_gzd_disable_instant_order_confirmation' ) ) );
 }
@@ -35,7 +39,7 @@ function wc_gzd_is_customer_activated( $user_id = '' ) {
 	if ( empty( $user_id ) || ! $user_id )
 		return false;
 
-	return ( get_user_meta( $user_id, '_woocommerce_activation' ) ? false : true );
+	return ( get_user_meta( $user_id, '_woocommerce_activation', true ) ? false : true );
 }
 
 function wc_gzd_get_hook_priority( $hook ) {
@@ -87,7 +91,7 @@ if ( ! function_exists( 'is_payment_methods' ) ) {
 }
 
 function wc_gzd_get_small_business_notice() {
-	return apply_filters( 'woocommerce_gzd_small_business_notice', __( 'Because of the small business owner state according to &#167; 19 UStG the seller does not levy nor state the German value added tax.', 'woocommerce-germanized' ) );
+	return apply_filters( 'woocommerce_gzd_small_business_notice', get_option( 'woocommerce_gzd_small_enterprise_text', __( 'Value added tax is not collected, as small businesses according to §19 (1) UStG.', 'woocommerce-germanized' ) ) );
 }
 
 function wc_gzd_help_tip( $tip, $allow_html = false ) {
@@ -98,7 +102,7 @@ function wc_gzd_help_tip( $tip, $allow_html = false ) {
 	return '<a class="tips" data-tip="' . ( $allow_html ? esc_html( $tip ) : $tip ) . '" href="#">[?]</a>';
 }
 
-function wc_gzd_is_parcel_delivery_data_transfer_checkbox_enabled( $method_ids = array() ) {
+function wc_gzd_is_parcel_delivery_data_transfer_checkbox_enabled( $rate_ids = array() ) {
 	$supported = get_option( 'woocommerce_gzd_checkout_legal_parcel_delivery_checkbox_methods', array() );
 	
 	if ( ! is_array( $supported ) )
@@ -107,9 +111,9 @@ function wc_gzd_is_parcel_delivery_data_transfer_checkbox_enabled( $method_ids =
 	if ( get_option( 'woocommerce_gzd_checkout_legal_parcel_delivery_checkbox' ) !== 'yes' )
 		return false; 
 
-	if ( ! empty( $method_ids ) ) {
-		foreach ( $method_ids as $method_id ) {
-			if ( ! in_array( $method_id, $supported ) )
+	if ( ! empty( $rate_ids ) ) {
+		foreach ( $rate_ids as $rate_id ) {
+			if ( ! in_array( $rate_id, $supported ) )
 				return false;
 		}
 	}

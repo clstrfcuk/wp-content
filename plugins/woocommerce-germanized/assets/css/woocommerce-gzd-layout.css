@@ -12,6 +12,11 @@
 .includes_tax, .tax_label {
 	display: none !important;
 }
+.wc-gzd-small-business-includes-tax {
+	display: inline !important;
+	font-size: 0.9em;
+	padding-left: 3px;
+}
 #order_review_heading {
 	display: none;
 }
@@ -116,4 +121,8 @@ table.product-details-inner tr td:last-child {
 #eKomiSeal_default img {
 	width: 100% !important;
 	height: 100% !important;
+}
+.wc-gzd-parcel-finder-open-button {
+	display: inline;
+	margin-left: 5px;
 }

@@ -21,9 +21,9 @@ function wc_gzd_get_crud_data( $object, $key ) {
 	$getter = substr( $key, 0, 3 ) === "get" ? $key : "get_$key";
 	$key = substr( $key, 0, 3 ) === "get" ? substr( $key, 3 ) : $key;
 
-	if ( 'id' === $key && is_callable( array( $object, 'is_type' ) ) && $object->is_type( 'variation' ) && ! WC_GZD_Dependencies::instance()->woocommerce_version_supports_crud() ) {
+	if ( 'id' === $key && is_callable( array( $object, 'is_type' ) ) && $object->is_type( 'variation' ) && ! wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
 		$key = 'variation_id';
-	} else if ( 'parent' === $key && is_callable( array( $object, 'is_type' ) ) && $object->is_type( 'variation' ) && ! WC_GZD_Dependencies::instance()->woocommerce_version_supports_crud() ) {
+	} elseif ( 'parent' === $key && is_callable( array( $object, 'is_type' ) ) && $object->is_type( 'variation' ) && ! wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
 	    // Set getter to parent so that it is not being used for pre 2.7
 	    $key = 'id';
 	    $getter = 'parent';
@@ -46,7 +46,7 @@ function wc_gzd_get_crud_data( $object, $key ) {
 		if ( $reflection->isPublic() ) {
 			$value = $object->{$getter}();
 		}
-	} else if ( WC_GZD_Dependencies::instance()->woocommerce_version_supports_crud() ) {
+	} elseif ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
 		if ( substr( $key, 0, 1 ) !== '_' )
 			$key = '_' . $key;
 
@@ -57,6 +57,47 @@ function wc_gzd_get_crud_data( $object, $key ) {
 	}
 
 	return $value;
+}
+
+function wc_gzd_set_crud_meta_data( $object, $key, $value ) {
+	if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
+		$object->update_meta_data( $key, $value );
+	} else {
+		update_post_meta( wc_gzd_get_crud_data( $object, 'id' ), $key, $value );
+	}
+	return $object;
+}
+
+function wc_gzd_unset_crud_meta_data( $object, $key ) {
+	if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
+		$object->delete_meta_data( $key );
+	} else {
+		delete_post_meta( wc_gzd_get_crud_data( $object, 'id' ), $key );
+	}
+	return $object;
+}
+
+function wc_gzd_set_crud_term_data( $object, $term, $taxonomy ) {
+
+	$term_data = ( ! is_numeric( $term ) ? sanitize_text_field( $term ) : absint( $term ) );
+
+	if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
+		$object->update_meta_data( '_' . $taxonomy, $term );
+	} else {
+		wp_set_object_terms( wc_gzd_get_crud_data( $object, 'id' ), $term_data, $taxonomy );
+	}
+
+	return $object;
+}
+
+function wc_gzd_unset_crud_term_data( $object, $taxonomy ) {
+	if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
+		$object->update_meta_data( '_delete_' . $taxonomy, true );
+	} else {
+		wp_delete_object_term_relationships( wc_gzd_get_crud_data( $object, 'id' ), $taxonomy );
+	}
+
+	return $object;
 }
 
 function wc_gzd_get_variable_visible_children( $product ) {
@@ -78,19 +119,19 @@ function wc_gzd_get_price_excluding_tax( $product, $args = array() ) {
 }
 
 function wc_gzd_get_variation( $parent, $variation ) {
-	if ( WC_GZD_Dependencies::instance()->woocommerce_version_supports_crud() )
+	if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() )
 		return wc_get_product( $variation );
 	return $parent->get_child( $variation );
 }
 
 function wc_gzd_get_order_currency( $order ) {
-	if ( WC_GZD_Dependencies::instance()->woocommerce_version_supports_crud() )
+	if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() )
 		return $order->get_currency();
 	return $order->get_order_currency();
 }
 
 function wc_gzd_reduce_order_stock( $order_id ) {
-    if ( WC_GZD_Dependencies::instance()->woocommerce_version_supports_crud() ) {
+    if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
         wc_reduce_stock_levels($order_id);
     } else {
         $order = wc_get_order( $order_id );

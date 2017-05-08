@@ -221,8 +221,14 @@ if ( ! function_exists( 'woocommerce_gzd_parcel_delivery_checkbox' ) ) {
 		$titles = array();
 
 		foreach ( $rates as $rate ) {
-			array_push( $ids, $rate->method_id );
-			array_push( $titles, $rate->get_label() );
+
+			array_push( $ids, $rate->id );
+
+			if ( method_exists( $rate, 'get_label' ) ) {
+				array_push( $titles, $rate->get_label() );
+			} else {
+				array_push( $titles, $rate->label );
+			}
 		}	
 		
 		if ( wc_gzd_is_parcel_delivery_data_transfer_checkbox_enabled( $ids ) ) {
@@ -268,7 +274,7 @@ if ( ! function_exists( 'woocommerce_gzd_checkout_validation' ) ) {
 			if ( get_option( 'woocommerce_gzd_checkout_legal_service_checkbox' ) === 'yes' && $is_service && ! isset( $_POST[ 'service-revocate' ] ) )
 				wc_add_notice( wc_gzd_get_legal_text_service_error(), 'error' );
 
-			if ( ( wc_gzd_is_parcel_delivery_data_transfer_checkbox_enabled() && get_option( 'woocommerce_gzd_checkout_legal_parcel_delivery_checkbox_required' ) === 'yes' ) && ! isset( $_POST[ 'parcel-delivery' ] ) )
+			if ( ( wc_gzd_is_parcel_delivery_data_transfer_checkbox_enabled( wc_gzd_get_chosen_shipping_rates( array( 'value' => 'id' ) ) ) && get_option( 'woocommerce_gzd_checkout_legal_parcel_delivery_checkbox_required' ) === 'yes' ) && ! isset( $_POST[ 'parcel-delivery' ] ) )
 				wc_add_notice( __( 'Please accept our parcel delivery agreement', 'woocommerce-germanized' ), 'error' );
 		}
 	}
@@ -413,7 +419,12 @@ if ( ! function_exists( 'woocommerce_gzd_template_order_pay_now_button' ) ) {
 	 * Pay now button on success page
 	 */
 	function woocommerce_gzd_template_order_pay_now_button( $order_id ) {
-		WC_GZD_Checkout::instance()->add_payment_link( $order_id );
+
+		$show = ( isset( $_GET[ 'retry' ] ) && $_GET[ 'retry' ] );
+
+		if ( apply_filters( 'woocommerce_gzd_show_pay_now_button', $show, $order_id ) ) {
+			WC_GZD_Checkout::instance()->add_payment_link( $order_id );
+		}
 	}
 
 }
@@ -562,10 +573,28 @@ if ( ! function_exists( 'woocommerce_gzd_template_sale_price_label_html' ) ) {
 
 		if ( ! is_product() && get_option( 'woocommerce_gzd_display_listings_sale_price_labels' ) === 'no' )
 			return $price;
-		else if ( is_product() && get_option( 'woocommerce_gzd_display_product_detail_sale_price_labels' ) === 'no' )
+		elseif ( is_product() && get_option( 'woocommerce_gzd_display_product_detail_sale_price_labels' ) === 'no' )
 			return $price;
 
 		return wc_gzd_get_gzd_product( $product )->add_labels_to_price_html( $price );
+	}
+
+}
+
+if ( ! function_exists( 'woocommerce_gzd_template_small_business_total_vat_notice' ) ) {
+
+	function woocommerce_gzd_template_small_business_total_vat_notice( $total ) {
+		return $total . ' <span class="includes_tax wc-gzd-small-business-includes-tax">' . __( 'incl. VAT', 'woocommerce-germanized' ) . '</span>';
+	}
+
+}
+
+if ( ! function_exists( 'woocommerce_gzd_template_order_item_hooks' ) ) {
+
+	function woocommerce_gzd_template_order_item_hooks() {
+		add_filter( 'woocommerce_order_item_name', 'wc_gzd_cart_product_units', wc_gzd_get_hook_priority( 'order_product_units' ), 3 );
+		add_filter( 'woocommerce_order_item_name', 'wc_gzd_cart_product_delivery_time', wc_gzd_get_hook_priority( 'order_product_delivery_time' ), 3 );
+		add_filter( 'woocommerce_order_item_name', 'wc_gzd_cart_product_item_desc', wc_gzd_get_hook_priority( 'order_product_item_desc' ), 3 );
 	}
 
 }

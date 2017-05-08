@@ -4,7 +4,7 @@ Plugin Name: InfiniteWP - Client
 Plugin URI: http://infinitewp.com/
 Description: This is the client plugin of InfiniteWP that communicates with the InfiniteWP Admin panel.
 Author: Revmakx
-Version: 1.6.3.2
+Version: 1.6.4
 Author URI: http://www.revmakx.com
 */
 /************************************************************
@@ -28,7 +28,7 @@ if(basename($_SERVER['SCRIPT_FILENAME']) == "init.php"):
     exit;
 endif;
 if(!defined('IWP_MMB_CLIENT_VERSION'))
-	define('IWP_MMB_CLIENT_VERSION', '1.6.3.2');
+	define('IWP_MMB_CLIENT_VERSION', '1.6.4');
 	
 
 
@@ -108,28 +108,22 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 			$request_data_array = explode('_IWP_JSON_PREFIX_', $HTTP_RAW_POST_DATA_LOCAL);
 			$request_raw_data = $request_data_array[1];
 			$data = trim(base64_decode($request_raw_data));
-			$request_data = NULL;
 			$GLOBALS['IWP_JSON_COMMUNICATION'] = 1;
-		} else{
+		}else{
 			$request_raw_data = $HTTP_RAW_POST_DATA_LOCAL;
 			$data = trim(base64_decode($request_raw_data));
 			if (is_serialized($data)) {
-				if ((strpos($data, 'get_stats') || strpos($data, 'add_site') || strpos($data, 'remove_site')) && (strpos($data,'2.10.1') || strpos($data,'2.10.0') || strpos($data,'2.10.0.1'))) {
-					$request_data = iwp_mmb_safe_unserialize($data);
-				}else{
-					iwp_mmb_response(array('error' => 'Please update your IWP Admin Panel to version 2.10.1', 'error_code' => 'update_panel'), false, true);
-				}
+					iwp_mmb_response(array('error' => 'Please update your IWP Admin Panel to latest version', 'error_code' => 'update_panel'), false, true);
 			}else{
 				return false;
 			}
 		}
+		
 		if ($data){
 
 			//$num = @extract(unserialize($data));
-			if (!isset($request_data) && $request_data['iwp_action'] != 'add_site' && $request_data['iwp_action'] != 'get_stats' && $request_data['iwp_action'] != 'remove_site') {
-				$request_data = json_decode($data, true);
-			}
-			
+			$request_data = json_decode($data, true);
+		
 			if(isset($request_data['params'])){ 
 				$request_data['params'] = iwp_mmb_filter_params($request_data['params']);
 			}

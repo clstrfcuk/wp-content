@@ -606,9 +606,7 @@ class wfWAFUtils {
 		$is_apache = (strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false || strpos($_SERVER['SERVER_SOFTWARE'], 'LiteSpeed') !== false);
 		$is_IIS = !$is_apache && (strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== false || strpos($_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer') !== false);
 		
-		header("Pragma: no-cache");
-		header("Cache-Control: no-cache, must-revalidate, private");
-		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); //In the past
+		self::doNotCache();
 		
 		if (!$is_IIS && PHP_SAPI != 'cgi-fcgi') {
 			self::statusHeader($status); // This causes problems on IIS and some FastCGI setups
@@ -698,6 +696,16 @@ class wfWAFUtils {
 		@header($header, true, $code);
 	}
 	
+	public static function doNotCache() {
+		header("Pragma: no-cache");
+		header("Cache-Control: no-cache, must-revalidate, private");
+		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); //In the past
+		if (!defined('DONOTCACHEPAGE')) { define('DONOTCACHEPAGE', true); }
+		if (!defined('DONOTCACHEDB')) { define('DONOTCACHEDB', true); }
+		if (!defined('DONOTCDN')) { define('DONOTCDN', true); }
+		if (!defined('DONOTCACHEOBJECT')) { define('DONOTCACHEOBJECT', true); }
+	}
+	
 	/**
 	 * Check if an IP address is in a network block
 	 *
@@ -758,5 +766,26 @@ class wfWAFUtils {
 			$data =& $HTTP_RAW_POST_DATA;
 		}
 		return $data;
+	}
+	
+	/**
+	 * Returns the current timestamp, adjusted as needed to get close to what we consider a true timestamp. We use this
+	 * because a significant number of servers are using a drastically incorrect time.
+	 * 
+	 * @return int
+	 */
+	public static function normalizedTime() {
+		$offset = 0;
+		try {
+			$offset = wfWAF::getInstance()->getStorageEngine()->getConfig('timeoffset_ntp', false);
+			if ($offset === false) {
+				$offset = wfWAF::getInstance()->getStorageEngine()->getConfig('timeoffset_wf', false);
+				if ($offset === false) { $offset = 0; }
+			}
+		}
+		catch (Exception $e) {
+			//Ignore
+		}
+		return time() + $offset;
 	}
 }

@@ -21,7 +21,8 @@ class WC_GZD_Install {
 		'1.5.0' => 'updates/woocommerce-gzd-update-1.5.0.php',
 		'1.6.0' => 'updates/woocommerce-gzd-update-1.6.0.php',
 		'1.6.3' => 'updates/woocommerce-gzd-update-1.6.3.php',
-        '1.8.0' => 'updates/woocommerce-gzd-update-1.8.0.php'
+        '1.8.0' => 'updates/woocommerce-gzd-update-1.8.0.php',
+		'1.8.9' => 'updates/woocommerce-gzd-update-1.8.9.php'
 	);
 
 	/**
@@ -110,7 +111,7 @@ class WC_GZD_Install {
 		}
 		
 		// Load Translation for default options
-		$locale = apply_filters( 'plugin_locale', get_locale() );
+		$locale = apply_filters( 'plugin_locale', get_locale(), 'woocommerce-germanized' );
 		$mofile = WC_germanized()->plugin_path() . '/i18n/languages/woocommerce-germanized.mo';
 		
 		if ( file_exists( WC_germanized()->plugin_path() . '/i18n/languages/woocommerce-germanized-' . $locale . '.mo' ) )
@@ -118,7 +119,7 @@ class WC_GZD_Install {
 		
 		load_textdomain( 'woocommerce-germanized', $mofile );
 		
-		if ( ! WC_GZD_Dependencies::instance()->is_woocommerce_activated() ) {
+		if ( ! wc_gzd_get_dependencies()->is_woocommerce_activated() ) {
 			deactivate_plugins( WC_GERMANIZED_PLUGIN_FILE );
 			wp_die( sprintf( __( 'Please install <a href="%s" target="_blank">WooCommerce</a> before installing WooCommerce Germanized. Thank you!', 'woocommerce-germanized' ), 'http://wordpress.org/plugins/woocommerce/' ) );
 		}
@@ -307,16 +308,17 @@ class WC_GZD_Install {
 		wp_schedule_event( time(), 'daily', 'woocommerce_gzd_ekomi' );
 	}
 
-	private static function create_units() {
-		$units = include_once( WC_Germanized()->plugin_path() . '/i18n/units.php' );
+	public static function create_units() {
+		$units = include( WC_Germanized()->plugin_path() . '/i18n/units.php' );
 		if ( ! empty( $units ) ) {
-			foreach ( $units as $slug => $unit )
+			foreach ( $units as $slug => $unit ) {
 				wp_insert_term( $unit, 'product_unit', array( 'slug' => $slug ) );
+			}
 		}
 	}
 
-	private static function create_labels() {
-		$labels = include_once( WC_Germanized()->plugin_path() . '/i18n/labels.php' );
+	public static function create_labels() {
+		$labels = include( WC_Germanized()->plugin_path() . '/i18n/labels.php' );
 		if ( ! empty( $labels ) ) {
 			foreach ( $labels as $slug => $unit )
 				wp_insert_term( $unit, 'product_price_label', array( 'slug' => $slug ) );

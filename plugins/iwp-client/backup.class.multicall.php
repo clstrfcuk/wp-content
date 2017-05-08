@@ -191,7 +191,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		if(!empty($params))
 		{
 			initialize_manual_debug();
-			
+			$this->cleanup();
 			$initialize_result = refresh_iwp_files_db();
 			if(is_array($initialize_result) && isset($initialize_result['error'])){
 				return $initialize_result;
@@ -994,10 +994,28 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		
 		
 		//Always remove backup folders    
-        $remove = array(
+      $remove = array(
             trim(basename(WP_CONTENT_DIR)) . "/infinitewp/backups",
             trim(basename(WP_CONTENT_DIR)) . "/" . md5('iwp_mmb-client') . "/iwp_backups",
 			trim(basename(WP_CONTENT_DIR)) . "/cache",
+			trim(basename(WP_CONTENT_DIR)) . "/managewp/backups",
+			trim(basename(WP_CONTENT_DIR)) . "/backupwordpress",
+			trim(basename(WP_CONTENT_DIR)) . "/contents/cache",
+			trim(basename(WP_CONTENT_DIR)) . "/content/cache",
+			trim(basename(WP_CONTENT_DIR)) . "/old-cache",
+			trim(basename(WP_CONTENT_DIR)) . "/cmscommander/backups",
+			trim(basename(WP_CONTENT_DIR)) . "/gt-cache",
+			trim(basename(WP_CONTENT_DIR)) . "/wfcache",
+			trim(basename(WP_CONTENT_DIR)) . "/bps-backup",
+			trim(basename(WP_CONTENT_DIR)) . "/old-cache",
+			trim(basename(WP_CONTENT_DIR)) . "/nfwlog",
+			trim(basename(WP_CONTENT_DIR)) . "/upgrade",
+			trim(basename(WP_CONTENT_DIR)) . "/nfwlog",
+			trim(basename(WP_CONTENT_DIR)) . "/wflogs",
+			trim(basename(WP_CONTENT_DIR)) . "/debug.log",
+			trim(basename(WP_CONTENT_DIR)) . "/wptouch-data/infinity-cache/",
+			trim(basename(WP_CONTENT_DIR)) . "/mysql.sql",
+			trim(basename(WP_CONTENT_DIR)) . "/wishlist-backup",
 			trim(basename(WP_CONTENT_DIR)) . "/w3tc",
 			trim(basename(WP_CONTENT_DIR)) . "/logs",
 			trim(basename(WP_CONTENT_DIR)) . "/widget_cache",
@@ -1006,8 +1024,39 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 			trim(basename(WP_CONTENT_DIR)) . "/updraftplus",
 			trim(basename(WP_CONTENT_DIR)) . "/backups",
 			trim(basename(WP_CONTENT_DIR)) . "/uploads/wp-clone",
-			trim(basename(WP_CONTENT_DIR)) . "/uploads/db-backup",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/uploads/db-backup",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/ithemes-security/backups",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/mainwp/backup",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/backupbuddy_backups",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/vcf",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/pb_backupbuddy",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/sucuri",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/aiowps_backups",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/mainwp",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/snapshots",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/wp_system",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/wpcf7_captcha",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/wc-logs",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/siteorigin-widgets",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/wp-hummingbird-cache",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/wp-security-audit-log",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/backwpup-12b462-backups",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/backwpup-12b462-logs",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/backwpup-12b462-temp",
+			trim(basename(WP_CONTENT_DIR)) . "/Dropbox_Backup",
 			trim(basename(WP_PLUGIN_DIR)) . "/cache",
+			"wp-admin/error_log",
+            "wp-admin/php_errorlog",
+            "error_log",
+            "error.log",
+            "debug.log",
+            "WS_FTP.LOG",
+            "security.log",
+            "wp-tcapsule-bridge.zip",
+            "dbcache",
+            "pgcache",
+            "objectcache",
+            "wp-snapshots",
         );
 		manual_debug('', 'beforeExclude', 0);
 		if((!empty($exclude_file_size))||(!empty($exclude_extensions)))
@@ -2308,7 +2357,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		return $fieldParams;	
 	}
 	
-	function get_all_tasks(){
+	function get_all_tasks($isNeedRequestParams =false){
 		/*global $wpdb;
 	
 		$stats = array();
@@ -2331,16 +2380,20 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		$stats = array();
 		$table_name = $wpdb->base_prefix . "iwp_backup_status";
 		
-		$rows = $wpdb->get_results("SELECT ID, taskName, taskResults FROM ".$table_name." ORDER BY ID DESC",  ARRAY_A);
+		$rows = $wpdb->get_results("SELECT ID, taskName, taskResults, requestParams FROM ".$table_name." ORDER BY ID DESC",  ARRAY_A);
 		$this->cleanup_failed_backups($rows);
 		$task_res = array();
 		foreach($rows as $key => $value){
 			$task_results = unserialize($value['taskResults']);
-			
-			if(!empty($task_results['task_results']))
-			foreach($task_results['task_results'] as $key => $data){
-				
-				$task_res[$value['taskName']]['task_results'][$key] = $data;
+			$requestParams = unserialize($value['requestParams']);
+			if(!empty($task_results['task_results'])){
+				foreach($task_results['task_results'] as $key => $data){
+					if ($isNeedRequestParams===true && !empty($requestParams)) {
+						$task_res[$value['taskName']]['requestParams'][$key] = $requestParams;
+					}else{
+						$task_res[$value['taskName']]['task_results'][$key] = $data;
+					}
+				}
 			}
 		}
 			
@@ -2369,6 +2422,13 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
         global $wpdb;
         $table_name = $wpdb->base_prefix . "iwp_backup_status";
         $delete_query = "DELETE FROM ".$table_name." WHERE ID = '".$ID."' ";
+        $deleteRes = $wpdb->query($delete_query);
+    }
+
+    function remove_failed_backups_by_hisID($ID){
+        global $wpdb;
+        $table_name = $wpdb->base_prefix . "iwp_backup_status";
+        $delete_query = "DELETE FROM ".$table_name." WHERE historyID IN (".implode(', ', $ID).") ";
         $deleteRes = $wpdb->query($delete_query);
     }
 
@@ -4341,7 +4401,6 @@ function ftp_backup($historyID,$args = '')
 						$result_arr['nextFunc'] = 'dropbox_backup';
 						$result_arr['dropboxArgs'] = $tempArgs;
 						$result_arr['current_file_num'] = $current_file_num;
-						
 						//updating offset and uploadid values for relooping.
 						$offset = isset($chunkResult['offset']) ? $chunkResult['offset'] : 0;
 						$uploadid = isset($chunkResult['upload_id']) ? $chunkResult['upload_id'] : 0; 
@@ -4362,6 +4421,7 @@ function ftp_backup($historyID,$args = '')
 						}
 						else
 						{
+
 							$reloop = true;
 							$chunkCount++;
 						}
@@ -4410,6 +4470,26 @@ function ftp_backup($historyID,$args = '')
 					
 				} 
 				catch (Exception $e) {
+					if (preg_match("/Submitted input out of alignment: got \[(\d+)\] expected \[(\d+)\]/i", $e->getMessage(), $matches)) {
+						// Try the indicated offset
+						$we_tried = $matches[1];
+						$offset = $matches[2];
+						$chunkResult = $dropbox->chunked_upload($backup_file, $dropbox_destination, true, $uploadid, $offset, $readsize, $isCommit);
+						$result_arr = array();
+						$result_arr['response_data'] = $chunkResult;
+						$result_arr['nextFunc'] = 'dropbox_backup';
+						$result_arr['dropboxArgs'] = $tempArgs;
+						$offset = isset($chunkResult['offset']) ? $chunkResult['offset'] : 0;
+						$uploadid = isset($chunkResult['upload_id']) ? $chunkResult['upload_id'] : 0; 
+						$resArray = array (
+						  'backupParentHID' => $historyID,
+						);
+						$result_arr['nextFunc'] = 'dropbox_backup';
+						$result_arr['current_file_num'] = $current_file_num;
+						$result_arr['status'] = 'partiallyCompleted';
+						$this->statusLog($historyID, array('stage' => 'dropboxMultiCall', 'status' => 'completed', 'statusMsg' => 'nextCall','nextFunc' => 'dropbox_backup', 'task_result' => $task_result,  'responseParams' => $result_arr));
+						return $resArray;
+					}
 					$this->_log($e->getMessage());
 					return array(
 						'error' => $e->getMessage(),
@@ -5722,7 +5802,8 @@ function ftp_backup($historyID,$args = '')
 	function cleanup()
     {
 		$tasks = $this->get_all_tasks(); //all backups task results array.
-		
+		$requestParams = $this->get_all_tasks(true);
+		$thisTask = $this->get_this_tasks();
         $backup_folder     = WP_CONTENT_DIR . '/' . md5('iwp_mmb-client') . '/iwp_backups/';
         $backup_folder_new = IWP_BACKUP_DIR . '/';
 		$backup_temp_folder = IWP_PCLZIP_TEMPORARY_DIR;
@@ -5765,23 +5846,32 @@ function ftp_backup($historyID,$args = '')
         
         if (is_array($files) && count($files)) {
             $results = array();
+            $cloudFailedBackup = array();
+            $failedBackupHisID = array();
             if (!empty($tasks)) {
-                foreach ((array) $tasks as $task) {
+                foreach ((array) $tasks as $taskName => $task) {
                     //if (isset($task) && count($task)) {
                     //    foreach ($task as $backup) {
 					if (isset($task['task_results']) && count($task['task_results'])) {
-                        foreach ($task['task_results'] as $backup) {
+                        foreach ($task['task_results'] as $historyID => $backup) {
                             if (isset($backup['server'])) {
 								$this_backup_file = $backup['server']['file_path'];
 								if(is_array($this_backup_file))
 								{
 									foreach($this_backup_file as $single_backup_file)
-									{
+									{	if (!empty($requestParams[$taskName]['requestParams'][$historyID]['account_info']) && $thisTask['historyID'] != $historyID) {
+											$cloudFailedBackup[]= $single_backup_file;
+											$failedBackupHisID[$historyID]=$historyID;
+										}
 										$results[] = $single_backup_file;
 									}
 								}
 								else
 								{
+									if (!empty($requestParams[$taskName]['requestParams'][$historyID]['account_info']) && $thisTask['historyID'] != $historyID) {
+										$cloudFailedBackup[]= $this_backup_file;
+										$failedBackupHisID[$historyID]=$historyID;
+									}
 									$results[] = $this_backup_file;
 								}
                             }
@@ -5790,14 +5880,17 @@ function ftp_backup($historyID,$args = '')
                 }
             }
             $num_deleted = 0;
-			
             foreach ($files as $file) {
-                if (!in_array($file, $results) && basename($file) != 'index.php') {
+                if ((!in_array($file, $results) || in_array($file, $failedBackupHisID)) && basename($file) != 'index.php') {
                     @unlink($file);
                     //$deleted[] = basename($file);
 					$deleted[] = $file;
                     $num_deleted++;
                 }
+            }
+
+            if (!empty($failedBackupHisID)) {
+            	$this->remove_failed_backups_by_hisID($failedBackupHisID);
             }
         }
         return $deleted;

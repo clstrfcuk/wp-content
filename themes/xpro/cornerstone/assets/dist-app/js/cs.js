@@ -20604,11 +20604,17 @@ define('cornerstone/components/forms/unit-slider/component', ['exports', 'ember'
         });
 
         el.noUiSlider.on('change', (function () {
+          if (this.isDestroyed) {
+            return;
+          }
           this.set('isSliding', false);
           this.sliderChanged(el.noUiSlider.get(), 'change', el.noUiSlider);
         }).bind(_this));
 
         el.noUiSlider.on('slide', (function () {
+          if (this.isDestroyed) {
+            return;
+          }
           this.set('isSliding', true);
           this.sliderChanged(el.noUiSlider.get(), 'slide', el.noUiSlider);
         }).bind(_this));
@@ -37895,14 +37901,13 @@ define('cornerstone/helpers/bar-module-markup', ['exports', 'ember'], function (
   });
 });
 define('cornerstone/helpers/base64content', ['exports', 'ember', 'cornerstone/util/base64'], function (exports, _ember, _cornerstoneUtilBase64) {
-  exports.faIcon = faIcon;
+  exports.base64Content = base64Content;
 
-  function faIcon(params) {
-    var content = _cornerstoneUtilBase64['default'].decode(params[0]);
-    return _ember['default'].String.htmlSafe(content);
+  function base64Content(params) {
+    return _ember['default'].String.htmlSafe(_cornerstoneUtilBase64['default'].decode(params[0]));
   }
 
-  exports['default'] = _ember['default'].Helper.helper(faIcon);
+  exports['default'] = _ember['default'].Helper.helper(base64Content);
 });
 define('cornerstone/helpers/camelize', ['exports', 'ember-composable-helpers/helpers/camelize'], function (exports, _emberComposableHelpersHelpersCamelize) {
   Object.defineProperty(exports, 'default', {
@@ -47049,30 +47054,17 @@ define('cornerstone/transforms/controls/video', ['exports'], function (exports) 
 });
 define("cornerstone/transforms/prefab", ["exports"], function (exports) {});
 // import Ember from 'ember';
-define('cornerstone/util/base64', ['exports', 'npm:base64-js'], function (exports, _npmBase64Js) {
-
-  function stringToByteArray(str) {
-    var bytes = [];
-    for (var i = 0; i < str.length; i++) {
-      bytes.push(str.charCodeAt(i));
-    }
-    return bytes;
-  }
-
-  function byteArrayToString(bytes) {
-    return bytes.reduce(function (memo, byte) {
-      return memo + String.fromCharCode(byte);
-    }, '');
-  }
+define('cornerstone/util/base64', ['exports', 'npm:base64-js', 'npm:js-base64'], function (exports, _npmBase64Js, _npmJsBase64) {
+  // String operations
 
   var Base64 = {
 
     encode: function encode(str) {
-      return _npmBase64Js['default'].fromByteArray(stringToByteArray(str));
+      return _npmJsBase64['default'].Base64.encode(str);
     },
 
     decode: function decode(str) {
-      return byteArrayToString(this.decodeToByteArray(str));
+      return _npmJsBase64['default'].Base64.decode(str);
     },
 
     encodeFromByteArray: function encodeFromByteArray(str) {
@@ -47086,6 +47078,7 @@ define('cornerstone/util/base64', ['exports', 'npm:base64-js'], function (export
 
   exports['default'] = Base64;
 });
+// Binary operations
 define('cornerstone/util/coalescence-client', ['exports', 'ember', 'cornerstone/util/string-like'], function (exports, _ember, _cornerstoneUtilStringLike) {
   exports['default'] = compile;
 
@@ -49049,7 +49042,7 @@ define('cornerstone/xfr/service', ['exports', 'ember'], function (exports, _embe
 /* jshint ignore:start */
 
 define('cornerstone/config/environment', ['ember'], function(Ember) {
-  var exports = {'default': {"modulePrefix":"cornerstone","environment":"development","baseURL":"/","EmberENV":{"FEATURES":{}},"i18n":{"defaultLocale":"en"},"APP":{"name":"cornerstone","version":"1.0.0+df0a3b36"},"browserify":{"transform":[["aliasify",{"global":true}]]},"exportApplicationGlobal":true}};Object.defineProperty(exports, '__esModule', {value: true});return exports;
+  var exports = {'default': {"modulePrefix":"cornerstone","environment":"development","baseURL":"/","EmberENV":{"FEATURES":{}},"i18n":{"defaultLocale":"en"},"APP":{"name":"cornerstone","version":"1.0.0+0b2dd4ad"},"browserify":{"transform":[["aliasify",{"global":true}]]},"exportApplicationGlobal":true}};Object.defineProperty(exports, '__esModule', {value: true});return exports;
 });
 
 /* jshint ignore:end */
@@ -49057,7 +49050,7 @@ define('cornerstone/config/environment', ['ember'], function(Ember) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("cornerstone/app")["default"].create({"name":"cornerstone","version":"1.0.0+df0a3b36"});
+  require("cornerstone/app")["default"].create({"name":"cornerstone","version":"1.0.0+0b2dd4ad"});
 }
 
 /* jshint ignore:end */

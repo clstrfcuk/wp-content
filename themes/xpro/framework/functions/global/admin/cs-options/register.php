@@ -101,6 +101,7 @@ function x_cornerstone_options_map() {
               'condition' => array( 'x_integrity_blog_header_enable' => true )
             ),
           ),
+          'condition' => array( 'virtual:classic_headers' => true )
         ),
         'portfolio' => array(
           'title'       => __( 'Portfolio Options', '__x__' ),
@@ -115,6 +116,7 @@ function x_cornerstone_options_map() {
               'title' => __( 'Portfolio Index Sharing', '__x__' )
             ),
           ),
+          'condition' => array( 'virtual:classic_headers' => true )
         ),
         'shop' => array(
           'title'       => __( 'Shop Options', '__x__' ),
@@ -136,6 +138,7 @@ function x_cornerstone_options_map() {
               'condition' => array( 'x_integrity_shop_header_enable' => true )
             ),
           ),
+          'condition' => array( 'virtual:classic_headers' => true )
         )
       )
     ),
@@ -209,7 +212,8 @@ function x_cornerstone_options_map() {
           'controls' => array(
             'x_renew_blog_title' => array(
               'type' => 'text',
-              'title' => __( 'Blog Title', '__x__' )
+              'title' => __( 'Blog Title', '__x__' ),
+              'condition' => array( 'virtual:classic_headers' => true )
             ),
             'x_renew_entry_icon_color' => array(
               'type' => 'color',
@@ -247,6 +251,7 @@ function x_cornerstone_options_map() {
               'title' => __( 'Shop Title', '__x__' )
             ),
           ),
+          'condition' => array( 'virtual:classic_headers' => true )
         )
       )
     ),
@@ -370,6 +375,7 @@ function x_cornerstone_options_map() {
               'title' => __( 'Shop Title', '__x__' )
             ),
           ),
+          'condition' => array( 'virtual:classic_headers' => true ),
         )
       )
     ),
@@ -534,6 +540,7 @@ function x_cornerstone_options_map() {
               'title' => __( 'Shop Title', '__x__' )
             ),
           ),
+          'condition' => array( 'virtual:classic_headers' => true ),
         )
       )
     ),
@@ -1648,6 +1655,7 @@ function x_cornerstone_options_map() {
               'title' => __( 'Navbar Menu', '__x__' )
             ),
           ),
+          'condition' => array( 'virtual:classic_headers' => true )
         )
       )
     ),
@@ -1675,6 +1683,7 @@ function x_cornerstone_options_map() {
               'title' => __( 'Navbar Menu', '__x__' )
             ),
           ),
+          'condition' => array( 'virtual:classic_headers' => true )
         ),
         'component-titles' => array(
           'title'       => __( 'Component Titles', '__x__' ),
@@ -1746,12 +1755,16 @@ function x_cornerstone_options_map() {
       'controls' => array(
         'x_woocommerce_header_menu_enable' => array(
           'type' => 'toggle',
-          'title' => __( 'Navbar Menu', '__x__' )
+          'title' => __( 'Navbar Menu', '__x__' ),
+          'condition' => array( 'virtual:classic_headers' => true ),
         ),
         'x_woocommerce_header_cart_info' => array(
           'type' => 'select',
           'title' => __( 'Cart Information', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true ),
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
           'options' => array(
             'choices' => array(
               'inner'       => __( 'Single (Inner)', '__x__' ),
@@ -1764,7 +1777,10 @@ function x_cornerstone_options_map() {
         'x_woocommerce_header_cart_style' => array(
           'type' => 'select',
           'title' => __( 'Cart Style', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true ),
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
           'options' => array(
             'choices' => array(
               'square'  => __( 'Square', '__x__' ),
@@ -1775,7 +1791,10 @@ function x_cornerstone_options_map() {
         'x_woocommerce_header_cart_layout' => array(
           'type' => 'select',
           'title' => __( 'Cart Layout', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true ),
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
           'options' => array(
             'choices' => array(
               'inline'  => __( 'Inline', '__x__' ),
@@ -1786,12 +1805,18 @@ function x_cornerstone_options_map() {
         'x_woocommerce_header_cart_adjust' => array(
           'type' => 'text',
           'title' => __( 'Cart Alignment (px)', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true )
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
         ),
         'x_woocommerce_header_cart_content_inner' => array(
           'type' => 'select',
           'title' => __( 'Cart Content &ndash; Inner', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true ),
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
           'options' => array(
             'choices' => $list_woocommerce_navbar_cart_content
           )
@@ -1799,7 +1824,10 @@ function x_cornerstone_options_map() {
         'x_woocommerce_header_cart_content_outer' => array(
           'type' => 'select',
           'title' => __( 'Cart Content &ndash; Outer', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true ),
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
           'options' => array(
             'choices' => $list_woocommerce_navbar_cart_content
           )
@@ -1807,22 +1835,34 @@ function x_cornerstone_options_map() {
         'x_woocommerce_header_cart_content_inner_color' => array(
           'type' => 'color',
           'title' => __( 'Cart Content &ndash; Inner Color', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true )
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
         ),
         'x_woocommerce_header_cart_content_inner_color_hover' => array(
           'type' => 'color',
           'title' => __( 'Cart Content &ndash; Inner Color Hover', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true )
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
         ),
         'x_woocommerce_header_cart_content_outer_color' => array(
           'type' => 'color',
           'title' => __( 'Cart Content &ndash; Outer Color', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true )
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
         ),
         'x_woocommerce_header_cart_content_outer_color_hover' => array(
           'type' => 'color',
           'title' => __( 'Cart Content &ndash; Outer Color Hover', '__x__' ),
-          'condition' => array( 'x_woocommerce_header_menu_enable' => true )
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true )
+          ),
         ),
       ),
       'sections' => array(

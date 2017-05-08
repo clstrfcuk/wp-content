@@ -36,11 +36,69 @@ class WC_GZD_Emails {
             add_filter( 'woocommerce_checkout_no_payment_needed_redirect', array( $this, 'send_order_confirmation_mails' ), 0, 2 );
         }
 
+        // Disable paid order email for certain gateways (e.g. COD or invoice)
+		add_action( 'woocommerce_order_status_processing', array( $this, 'maybe_disable_order_paid_email_notification_2_6' ), 0, 1 );
+        add_filter( 'woocommerce_allow_send_queued_transactional_email', array( $this, 'maybe_disable_order_paid_email_notification'), 10, 3 );
+
         // Change email template path if is germanized email template
 		add_filter( 'woocommerce_template_directory', array( $this, 'set_woocommerce_template_dir' ), 10, 2 );
+		// Map partially refunded order mail template to correct email instance
+        add_filter( 'woocommerce_gzd_email_template_id_comparison', array( $this, 'check_for_partial_refund_mail' ), 10, 3 );
+        // Hide username if an email contains a password or password reset link (TS advises to do so)
+        if ( 'yes' === get_option( 'woocommerce_gzd_hide_username_with_password' ) )
+            add_filter( 'woocommerce_before_template_part', array( $this, 'maybe_set_gettext_username_filter' ), 10, 4 );
 
         if ( is_admin() )
 		    $this->admin_hooks();
+	}
+
+	public function maybe_set_gettext_username_filter( $template_name, $template_path, $located, $args ) {
+
+		$templates = array(
+			'emails/customer-reset-password.php' => 'maybe_hide_username_password_reset',
+			'emails/plain/customer-reset-password.php' => 'maybe_hide_username_password_reset',
+		);
+
+		// If the password is generated automatically and sent by email, hide the username
+		if ( 'yes' === get_option( 'woocommerce_registration_generate_password' ) ) {
+			$templates = array_merge( $templates, array(
+				'emails/customer-new-account.php' => 'maybe_hide_username_new_account',
+				'emails/plain/customer-new-account.php' => 'maybe_hide_username_new_account'
+			) );
+		}
+
+		if ( isset( $templates[ $template_name ] ) ) {
+			add_filter( 'gettext', array( $this, $templates[ $template_name ] ), 10, 3 );
+		}
+	}
+
+	public function maybe_hide_username_password_reset( $translated, $original, $domain ) {
+		if ( 'woocommerce' === $domain ) {
+			if ( 'Someone requested that the password be reset for the following account:' === $original ) {
+				return __( 'Someone requested a password reset for your account.', 'woocommerce-germanized' );
+			} elseif ( 'Username: %s' === $original ) {
+				remove_filter( 'gettext', array( $this, 'maybe_hide_username_password_reset' ), 10, 3 );
+				return '';
+			}
+		}
+
+		return $translated;
+	}
+
+	public function maybe_hide_username_new_account( $translated, $original, $domain ) {
+		if ( 'woocommerce' === $domain && 'Thanks for creating an account on %s. Your username is <strong>%s</strong>' === $original ) {
+			remove_filter( 'gettext', array( $this, 'maybe_hide_username_new_account' ), 10, 3 );
+			return __( 'Thanks for creating an account on %s.', 'woocommerce-germanized' );
+		}
+		return $translated;
+	}
+
+	public function check_for_partial_refund_mail( $result, $mail_id, $tpl ) {
+
+		if ( $mail_id === 'customer_partially_refunded_order' && $tpl === 'customer_refunded_order' )
+			return true;
+
+		return $result;
 	}
 
     private function set_mailer( $mailer = null ) {
@@ -98,6 +156,48 @@ class WC_GZD_Emails {
         // Pay now button
         add_action( 'woocommerce_email_before_order_table', array( $this, 'email_pay_now_button' ), 0, 1 );
         add_action( 'woocommerce_email_after_order_table', array( $this, 'email_digital_revocation_notice' ), 0, 3 );
+    }
+
+	public function get_gateways_disabling_paid_for_order_mail() {
+		return apply_filters( 'woocommerce_gzd_disable_gateways_paid_order_email', array( 'cod', 'invoice' ) );
+	}
+
+    public function maybe_disable_order_paid_email_notification_2_6( $order_id ) {
+
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order ) {
+			return;
+		}
+
+		$method = wc_gzd_get_crud_data( $order, 'payment_method' );
+		$current_status = $order->get_status();
+		$disable_for_gateways = $this->get_gateways_disabling_paid_for_order_mail();
+
+		if ( in_array( $method, $disable_for_gateways ) ) {
+			// Remove action
+			if ( WC_germanized()->emails->get_email_instance_by_id( 'customer_paid_for_order' ) ) {
+				remove_action( 'woocommerce_order_status_pending_to_processing_notification', array( WC_germanized()->emails->get_email_instance_by_id( 'customer_paid_for_order' ), 'trigger' ), 30 );
+			}
+		}
+    }
+
+    public function maybe_disable_order_paid_email_notification( $send, $filter, $args ) {
+		if ( isset( $args[0] ) && is_numeric( $args[0] ) ) {
+			$order = wc_get_order( absint( $args[0] ) );
+
+			if ( $order ) {
+
+				$method = wc_gzd_get_crud_data( $order, 'payment_method' );
+				$current_status = $order->get_status();
+				$disable_for_gateways = $this->get_gateways_disabling_paid_for_order_mail();
+
+				if ( in_array( $method, $disable_for_gateways ) && $filter === 'woocommerce_order_status_pending_to_processing' ) {
+					return false;
+				}
+			}
+		}
+		return $send;
     }
 	
 	public function resend_order_emails( $emails ) {
@@ -191,6 +291,9 @@ class WC_GZD_Emails {
 				foreach ( $items as $item ) {
 					
 					$_product = apply_filters( 'woocommerce_order_item_product', $order->get_product_from_item( $item ), $item );
+
+					if ( ! $_product )
+						continue;
 					
 					if ( wc_gzd_is_revocation_exempt( $_product ) || apply_filters( 'woocommerce_gzd_product_is_revocation_exception', false, $_product, 'digital' ) )
 						$is_downloadable = true;
@@ -315,7 +418,7 @@ class WC_GZD_Emails {
 	}
 
 	public function get_current_email_object() {
-		
+
 		if ( isset( $GLOBALS[ 'wc_gzd_template_name' ] ) && ! empty( $GLOBALS[ 'wc_gzd_template_name' ] ) ) {
 			
 			$object = $this->get_email_instance_by_tpl( $GLOBALS[ 'wc_gzd_template_name' ] );
@@ -338,21 +441,30 @@ class WC_GZD_Emails {
 	        $this->set_mailer();
 
 	    $found_mails = array();
+		$mails = $this->mailer->get_emails();
 
 	    foreach ( $tpls as $tpl ) {
 
 	        $tpl = apply_filters( 'woocommerce_germanized_email_template_name',  str_replace( array( 'admin-', '-' ), array( '', '_' ), basename( $tpl, '.php' ) ), $tpl );
-			$mails = $this->mailer->get_emails();
 
 			if ( ! empty( $mails ) ) {
+
 				foreach ( $mails as $mail ) {
-					if ( is_object( $mail ) && $mail->id == $tpl )
-						array_push( $found_mails, $mail );
+
+					if ( is_object( $mail ) ) {
+
+						if ( apply_filters( 'woocommerce_gzd_email_template_id_comparison', ( $mail->id === $tpl ), $mail->id, $tpl ) ) {
+							array_push( $found_mails, $mail );
+						}
+					}
 				}
 			}
 		}
-		if ( ! empty( $found_mails ) )
+
+		if ( ! empty( $found_mails ) ) {
 			return $found_mails[ sizeof( $found_mails ) - 1 ];
+		}
+
 		return null;
 	}
 

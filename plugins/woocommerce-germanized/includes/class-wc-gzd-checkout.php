@@ -33,13 +33,13 @@ class WC_GZD_Checkout {
 
 	public function __construct() {
 		
-		add_action( 'init', array( $this, 'init_fields' ) );
+		add_action( 'init', array( $this, 'init_fields' ), 30 );
 		add_filter( 'woocommerce_billing_fields', array( $this, 'set_custom_fields' ), 0, 1 );
 		add_filter( 'woocommerce_shipping_fields', array( $this, 'set_custom_fields_shipping' ), 0, 1 );
 		
 		// Add Fields to Order Edit Page
-		add_filter( 'woocommerce_admin_billing_fields', array( $this, 'set_custom_fields_admin' ), 0, 1 );
-		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'set_custom_fields_admin' ), 0, 1 );
+		add_filter( 'woocommerce_admin_billing_fields', array( $this, 'set_custom_fields_admin_billing' ), 0, 1 );
+		add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'set_custom_fields_admin_shipping' ), 0, 1 );
 		
 		// Save Fields on order
 		add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'save_fields' ) );
@@ -48,13 +48,16 @@ class WC_GZD_Checkout {
 		add_filter( 'woocommerce_order_formatted_billing_address', array( $this, 'set_formatted_billing_address' ), 0, 2 );
 		add_filter( 'woocommerce_order_formatted_shipping_address', array( $this, 'set_formatted_shipping_address' ), 0, 2 );
 		add_filter( 'woocommerce_formatted_address_replacements', array( $this, 'set_formatted_address' ), 0, 2 );
-		
+
+		// Support Checkout Field Managers (which are unable to map options to values)
+		add_filter( 'woocommerce_gzd_custom_title_field_value', array( $this, 'set_title_field_mapping_editors' ), 10, 1 );
+
 		// Add item desc to order
-		if ( WC_GZD_Dependencies::instance()->woocommerce_version_supports_crud() ) {
+		if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
 			add_action( 'woocommerce_new_order_item', array( $this, 'set_order_item_meta_crud' ), 0, 3 );
 		} else {
 			add_action( 'woocommerce_order_add_product', array( $this, 'set_order_meta' ), 0, 5 );
-		}	
+		}
 
 		add_filter( 'woocommerce_hidden_order_itemmeta', array( $this, 'set_order_meta_hidden' ), 0 );
 		
@@ -71,6 +74,10 @@ class WC_GZD_Checkout {
 			add_filter( 'user_has_cap', array( $this, 'disallow_user_order_cancellation' ), 15, 3 );
 			add_action( 'woocommerce_germanized_order_confirmation_sent', array( $this, 'maybe_reduce_order_stock' ), 5, 1 );
 			add_filter( 'woocommerce_my_account_my_orders_actions', array( $this, 'remove_cancel_button' ), 10, 2 );
+
+			// Woo 3.0 stock reducing checks - mark order as stock-reduced so that stock reducing fails upon second attempt
+			add_action( 'woocommerce_reduce_order_stock', array( $this, 'set_order_stock_reduced_meta' ), 10, 1 );
+			add_filter( 'woocommerce_can_reduce_order_stock', array( $this, 'maybe_disallow_order_stock_reducing' ), 10, 2 );
 		}
 		
 		// Free Shipping auto select
@@ -87,7 +94,7 @@ class WC_GZD_Checkout {
 		if ( wc_gzd_is_parcel_delivery_data_transfer_checkbox_enabled() )
 			add_action( 'woocommerce_checkout_update_order_meta', array( $this, 'order_parcel_delivery_data_transfer' ), 10, 2 );
 	}
-	
+
 	public function remove_cancel_button( $actions, $order ) {
 
 		if ( isset( $actions[ 'cancel' ] ) )
@@ -123,7 +130,10 @@ class WC_GZD_Checkout {
 			$order_id = absint( $wp->query_vars[ 'order-pay' ] );
 			$order = wc_get_order( $order_id );
 
-			if ( ! $order || wc_gzd_get_crud_data( $order, 'order_key' ) != $order_key )
+			if ( ! $order )
+				return;
+
+			if ( wc_gzd_get_crud_data( $order, 'order_key' ) != $order_key )
 				return;
 
 			// Check if gateway is available - otherwise don't force redirect - would lead to errors in pay_action
@@ -206,13 +216,39 @@ class WC_GZD_Checkout {
 	}
 
 	public function maybe_reduce_order_stock( $order_id ) {
-		$order = wc_get_order( $order_id );
-		if ( $order ) {
-			// Reduce order stock for non-cancellable orders
-			if ( apply_filters( 'woocommerce_payment_complete_reduce_order_stock', ! get_post_meta( $order->id, '_order_stock_reduced', true ), wc_gzd_get_crud_data( $order, 'id' ) ) ) {
-				$order->reduce_order_stock();
+		if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
+			wc_reduce_stock_levels( $order_id );
+		} else {
+			$order = wc_get_order( $order_id );
+
+			if ( $order ) {
+				// Reduce order stock for non-cancellable orders
+				if ( apply_filters( 'woocommerce_payment_complete_reduce_order_stock', ! get_post_meta( $order->id, '_order_stock_reduced', true ), wc_gzd_get_crud_data( $order, 'id' ) ) ) {
+					$order->reduce_order_stock();
+				}
 			}
 		}
+	}
+
+	public function set_order_stock_reduced_meta( $order ) {
+		if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
+			$order = wc_gzd_set_crud_meta_data( $order, '_order_stock_reduced', '1' );
+			$order->save();
+		}
+	}
+
+	public function maybe_disallow_order_stock_reducing( $reduce_stock, $order ) {
+		if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
+			if ( wc_gzd_get_crud_data( $order, '_order_stock_reduced' ) ) {
+
+				// Delete the meta so that third party plugins may reduce/change order stock later
+				$order = wc_gzd_unset_crud_meta_data( $order, '_order_stock_reduced' );
+				$order->save();
+
+				return false;
+			}
+		}
+		return $reduce_stock;
 	}
 
 	public function disallow_user_order_cancellation( $allcaps, $caps, $args ) {
@@ -237,7 +273,7 @@ class WC_GZD_Checkout {
 		if ( $search && isset( $matches[1] ) ) {
 			$order_id = absint( $matches[1] );
 			$order = wc_get_order( $order_id );
-			$return = $order->get_checkout_order_received_url();
+			$return = apply_filters( 'woocommerce_gzd_attempt_order_cancellation_url', add_query_arg( array( 'retry' => true ), $order->get_checkout_order_received_url(), $order ) );
 		}
 		
 		return $return;
@@ -258,9 +294,9 @@ class WC_GZD_Checkout {
 			$this->custom_fields_admin[ 'title' ] = array(
 				'before'   => 'first_name',
 				'type'     => 'select',
-				'options'  => array( 1 => __( 'Mr.', 'woocommerce-germanized' ), 2 => __( 'Ms.', 'woocommerce-germanized' ) ),
-				'show'     => false,
+				'options'  => apply_filters( 'woocommerce_gzd_title_options', array( 1 => __( 'Mr.', 'woocommerce-germanized' ), 2 => __( 'Ms.', 'woocommerce-germanized' ) ) ),
 				'label'    => __( 'Title', 'woocommerce-germanized' ),
+				'show'     => false,
 			);
 
 		}
@@ -275,6 +311,22 @@ class WC_GZD_Checkout {
 			);
 
 		}
+
+		$this->custom_fields_admin = apply_filters( 'woocommerce_gzd_custom_checkout_admin_fields', $this->custom_fields_admin, $this );
+		$this->custom_fields = apply_filters( 'woocommerce_gzd_custom_checkout_fields', $this->custom_fields, $this );
+	}
+
+	public function set_title_field_mapping_editors( $val ) {
+
+		$values = array(
+			__( 'Mr.', 'woocommerce-germanized' ) => 1,
+			__( 'Ms.', 'woocommerce-germanized' ) => 2,
+		);
+
+		if ( isset( $values[ $val ] ) )
+			return $values[ $val ];
+
+		return $val;
 	}
 
 	/**
@@ -361,7 +413,16 @@ class WC_GZD_Checkout {
 	}
 
 	public function set_order_item_meta_crud( $item_id, $item, $order_id ) {
-		if ( 'line_item' === $item->get_type() ) {
+
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order ) {
+			return;
+		}
+
+		$item = $order->get_item( $item_id );
+
+		if ( 'line_item' === $item->get_type() && $item->get_product() ) {
 			$this->set_order_meta( $order_id, $item_id, $item->get_product(), $item->get_quantity(), array() );
 		}
 	}
@@ -386,6 +447,7 @@ class WC_GZD_Checkout {
 
 		if ( wc_gzd_get_crud_data( $order, 'billing_title' ) )
 			$fields[ 'title' ] = $this->get_customer_title( wc_gzd_get_crud_data( $order, 'billing_title' ) );
+
 		return $fields;
 	}
 
@@ -414,56 +476,99 @@ class WC_GZD_Checkout {
 	}
 
 	public function set_custom_fields( $fields = array(), $type = 'billing' ) {
-		$new = array();
+
 		if ( ! empty( $this->custom_fields ) ) {
+
 			foreach ( $this->custom_fields as $key => $custom_field ) {
+
+				$new = array();
+
 				if ( in_array( $type, $custom_field[ 'group' ] ) ) {
+
 					if ( ! empty( $fields ) ) {
+
 						foreach ( $fields as $name => $field ) {
-							if ( $name == $type . '_' . $custom_field[ 'before' ] && ! isset( $custom_field[ 'override' ] ) )
+
+							if ( $name == $type . '_' . $custom_field[ 'before' ] && ! isset( $custom_field[ 'override' ] ) ) {
 								$new[ $type . '_' . $key ] = $custom_field;
+							}
+
 							$new[ $name ] = $field;
-							if ( $name == $type . '_' . $key && isset( $custom_field[ 'override' ] ) )
+
+							if ( $name == $type . '_' . $key && isset( $custom_field[ 'override' ] ) ) {
 								$new[ $name ] = array_merge( $field, $custom_field );
+							}
 						}
 					}
 				}
+
+				if ( ! empty( $new ) ) {
+					$fields = $new;
+				}
 			}
 		}
-		return ( ! empty( $new ) ? $new : $fields );
+
+		return $fields;
 	}
 
 	public function set_custom_fields_shipping( $fields ) {
 		return $this->set_custom_fields( $fields, 'shipping' );
 	}
 
-	public function set_custom_fields_admin( $fields = array() ) {
+	public function set_custom_fields_admin( $fields = array(), $type = 'billing' ) {
 		$new = array();
+
 		if ( ! empty( $this->custom_fields_admin ) ) {
+
 			foreach ( $this->custom_fields_admin as $key => $custom_field ) {
+
+				$new = array();
+
+				if ( isset( $custom_field[ 'address_type' ] ) && $custom_field[ 'address_type' ] !== $type )
+					continue;
+
 				if ( ! empty( $fields ) ) {
+
 					foreach ( $fields as $name => $field ) {
 						if ( $name == $custom_field[ 'before' ] && ! isset( $custom_field[ 'override' ] ) )
 							$new[ $key ] = $custom_field;
+
 						$new[ $name ] = $field;
 					}
 				}
+
+				if ( ! empty( $new ) ) {
+					$fields = $new;
+				}
 			}
 		}
-		return ( ! empty( $new ) ? $new : $fields );
+
+		return $fields;
+	}
+
+	public function set_custom_fields_admin_billing( $fields = array() ) {
+		return $this->set_custom_fields_admin( $fields, 'billing' );
+	}
+
+	public function set_custom_fields_admin_shipping( $fields = array() ) {
+		return $this->set_custom_fields_admin( $fields, 'shipping' );
 	}
 
 	public function save_fields( $order_id ) {
 		$checkout = WC()->checkout();
+
 		if ( ! empty( $this->custom_fields ) ) {
 			foreach ( $this->custom_fields as $key => $custom_field ) {
 				if ( ! empty( $custom_field[ 'group' ] ) && ! isset( $custom_field[ 'override' ] ) ) {
 					foreach ( $custom_field[ 'group' ] as $group ) {
+
 						$val = ( isset( $checkout->posted[ $group . '_' . $key ] ) ? $checkout->posted[ $group . '_' . $key ] : '' );
+
 						if ( $group == 'shipping' || $group == 'billing' )
 							$val = $checkout->get_posted_address_data( $key, $group );
+
 						if ( ! empty( $val ) )
-							update_post_meta( $order_id, '_' . $group . '_' . $key, sanitize_text_field( $val ) );
+							update_post_meta( $order_id, '_' . $group . '_' . $key, apply_filters( 'woocommerce_gzd_custom_' . $key . '_field_value', sanitize_text_field( $val ) ) );
 					}
 				}
 			}

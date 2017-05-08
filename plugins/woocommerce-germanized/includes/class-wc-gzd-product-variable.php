@@ -84,6 +84,16 @@ class WC_GZD_Product_Variable extends WC_GZD_Product {
         return apply_filters( 'woocommerce_get_price_html', $price, $this );
     }
 
+	public function get_price_html_from_to( $from, $to, $show_labels = true ) {
+
+		$sale_label = ( $show_labels ? $this->get_sale_price_label() : '' );
+		$sale_regular_label = ( $show_labels ? $this->get_sale_price_regular_label() : '' );
+
+		$price = ( ! empty( $sale_label ) ? '<span class="wc-gzd-sale-price-label">' . $sale_label . '</span>' : '' ) . ' <del>' . ( ( is_numeric( $from ) ) ? wc_price( $from ) : $from ) . '</del> ' . ( ! empty( $sale_regular_label ) ? '<span class="wc-gzd-sale-price-label wc-gzd-sale-price-regular-label">' . $sale_regular_label . '</span> ' : '' ) . '<ins>' . ( ( is_numeric( $to ) ) ? wc_price( $to ) : $to ) . '</ins>';
+
+		return apply_filters( 'woocommerce_germanized_get_price_html_from_to', $price, $from, $to, $this );
+	}
+
 	/**
 	 * Returns the price in html format.
 	 *
@@ -104,7 +114,7 @@ class WC_GZD_Product_Variable extends WC_GZD_Product {
 			$min_price = current( $prices['price'] );
 			$max_price = end( $prices['price'] );
 
-			if ( WC_GZD_Dependencies::instance()->woocommerce_version_supports_crud() ) {
+			if ( wc_gzd_get_dependencies()->woocommerce_version_supports_crud() ) {
 
                 if ( $min_price !== $max_price ) {
                     $price = apply_filters( 'woocommerce_gzd_variable_unit_price_html', wc_format_price_range( $min_price, $max_price ), $this );
@@ -129,7 +139,7 @@ class WC_GZD_Product_Variable extends WC_GZD_Product {
             if ( strpos( $text, '{price}' ) !== false ) {
                 $price = str_replace( '{price}', $price . apply_filters( 'wc_gzd_unit_price_seperator', ' / ' ) . $this->get_unit_base(), $text );
             } else {
-                $price = str_replace( array( '{base_price}', '{unit}', '{base}' ), array( $price, '<span class="unit">' . $this->get_unit() . '</span>', ( $this->unit_base != apply_filters( 'wc_gzd_unit_base_min_amount_to_show', 1 ) ? '<span class="unit-base">' . $this->unit_base . '</span>' : '' ) ), $text );
+                $price = str_replace( array( '{base_price}', '{unit}', '{base}' ), array( $price, '<span class="unit">' . $this->get_unit() . '</span>', $this->get_unit_base() ), $text );
             }
 		}
 
@@ -152,7 +162,7 @@ class WC_GZD_Product_Variable extends WC_GZD_Product {
 
 		global $wp_filter;
 
-		$transient_name = 'wc_gzd_var_unit_prices_' . $this->id;
+		$transient_name = 'wc_gzd_var_unit_prices_' . wc_gzd_get_crud_data( $this, 'id' );
 
 		/**
 		 * Create unique cache key based on the tax location (affects displayed/cached prices), product version and active price filters.
