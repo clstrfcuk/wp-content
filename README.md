@@ -14,5 +14,10 @@ This repo is then added to the fresh WordPress installation Vagrant builds. Then
 
 For this setup I use:
 
-- Vagrant
-- [Varying Vagrant Vagrants]: https://github.com/Varying-Vagrant-Vagrants/VVV
+- Vagrant (https://www.vagrantup.com/)
+- VVV (Varying Vagrant Vagrants): https://github.com/Varying-Vagrant-Vagrants/VVV
+- VirtualBox (https://www.virtualbox.org/)
+
+And basically this method:
+
+http://wpbeaches.com/setting-up-a-wordpress-vvv-vagrant-workflow/
