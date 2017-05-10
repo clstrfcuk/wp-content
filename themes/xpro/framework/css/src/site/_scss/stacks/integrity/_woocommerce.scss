@@ -88,7 +88,7 @@
       .price {
         > .amount,
         > ins > .amount {
-          @include font-size(1.8);
+          font-size: 18px;
         }
       }
 
@@ -100,7 +100,7 @@
         margin: 0;
         padding: 0.45em 0.5em 0.575em;
         display: block;
-        @include font-size(1.4);
+        font-size: 14px;
         opacity: 0;
       }
     }
@@ -180,12 +180,12 @@
       .price {
         > del,
         > .from {
-          @include font-size(1.8);
+          font-size: 18px;
         }
 
         > .amount,
         > ins > .amount {
-          @include font-size(2.4);
+          font-size: 24px;
         }
       }
 
@@ -362,7 +362,7 @@
         margin: 0;
         width: 25px;
         height: 25px;
-        @include font-size(1.8);
+        font-size: 18px;
         line-height: 25px;
         text-align: center;
         opacity: 0;
@@ -387,7 +387,7 @@
     border: 1px solid $widgetBorderColorRgba;
     border-bottom: 0;
     padding: 7px;
-    @include font-size(1.1);
+    font-size: 11px;
     line-height: 1.1;
     text-align: center;
     text-transform: uppercase;
@@ -407,7 +407,7 @@
       margin: 0;
       border: 0;
       padding: 7px;
-      @include font-size(1.1);
+      font-size: 11px;
       line-height: 1.1;
       text-align: center;
       text-shadow: none;
@@ -532,7 +532,7 @@
       border: 1px solid $widgetBorderColor;
       border: 1px solid $widgetBorderColorRgba;
       padding: 7px;
-      @include font-size(1.1);
+      font-size: 11px;
       line-height: 1.1;
       text-align: center;
       text-shadow: none;
@@ -619,7 +619,7 @@
     display: block;
     width: 42px;
     height: 42px;
-    @include font-size(1.4);
+    font-size: 14px;
     letter-spacing: 0;
     line-height: 40px;
     text-align: center;
@@ -740,7 +740,7 @@
   border: 1px solid $widgetBorderColor;
   border: 1px solid $widgetBorderColorRgba;
   line-height: 2.5em;
-  @include font-size(1.1);
+  font-size: 11px;
   border-radius: 4px;
   box-shadow: $widgetWooButtonStyledBoxShadow;
 }
@@ -751,7 +751,7 @@
   select {
     width: 100%;
     margin-bottom: 0;
-    @include font-size(1.1);
+    font-size: 11px;
     box-shadow: $widgetWooButtonStyledBoxShadow;
   }
 }

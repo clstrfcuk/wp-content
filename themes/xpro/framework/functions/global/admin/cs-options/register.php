@@ -652,6 +652,89 @@ function x_cornerstone_options_map() {
         )
       ),
       'sections' => array(
+        'root-font-size' => array(
+          'title'       => __('Root Font Size', '__x__' ),
+          'description' => __( 'Select the method for outputting your site\'s root font size, then adjust the settings to suit your design. "Stepped" mode allows you to set a font size at each of your site\'s breakpoints, whereas "Scaling" will dymaically scale between a range of minimum and maximum font sizes and breakpoints that you specify.', '__x__' ),
+          'controls'    => array(
+            'x_root_font_size_mode' => array(
+              'type' => 'select',
+              'title' => __( 'Root Font Size Mode', '__x__' ),
+              'options' => array(
+                'choices' => array(
+                  'stepped' => __( 'Stepped', '__x__' ),
+                  'scaling' => __( 'Scaling', '__x__' )
+                )
+              )
+            ),
+            'x_root_font_size_stepped_unit' => array(
+              'type' => 'select',
+              'title' => __( 'Font Size Unit', '__x__' ),
+              'options' => array(
+                'choices' => array(
+                  'px' => __( 'px', '__x__' ),
+                  'em' => __( 'em', '__x__' )
+                )
+              ),
+              'condition' => array( 'x_root_font_size_mode' => 'stepped' )
+            ),
+            'x_root_font_size_stepped_xs' => array(
+              'type' => 'text',
+              'title' => __( 'Font Size (xs)', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'stepped' )
+            ),
+            'x_root_font_size_stepped_sm' => array(
+              'type' => 'text',
+              'title' => __( 'Font Size (sm)', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'stepped' )
+            ),
+            'x_root_font_size_stepped_md' => array(
+              'type' => 'text',
+              'title' => __( 'Font Size (md)', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'stepped' )
+            ),
+            'x_root_font_size_stepped_lg' => array(
+              'type' => 'text',
+              'title' => __( 'Font Size (lg)', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'stepped' )
+            ),
+            'x_root_font_size_stepped_xl' => array(
+              'type' => 'text',
+              'title' => __( 'Font Size (xl)', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'stepped' )
+            ),
+            'x_root_font_size_scaling_unit' => array(
+              'type' => 'select',
+              'title' => __( 'Font Size Unit', '__x__' ),
+              'options' => array(
+                'choices' => array(
+                  'px' => __( 'px', '__x__' ),
+                  'em' => __( 'em', '__x__' )
+                )
+              ),
+              'condition' => array( 'x_root_font_size_mode' => 'scaling' )
+            ),
+            'x_root_font_size_scaling_min' => array(
+              'type' => 'text',
+              'title' => __( 'Minimum Font Size', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'scaling' )
+            ),
+            'x_root_font_size_scaling_max' => array(
+              'type' => 'text',
+              'title' => __( 'Maximum Font Size', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'scaling' )
+            ),
+            'x_root_font_size_scaling_lower_limit' => array(
+              'type' => 'text',
+              'title' => __( 'Lower Limit (Breakpoint)', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'scaling' )
+            ),
+            'x_root_font_size_scaling_upper_limit' => array(
+              'type' => 'text',
+              'title' => __( 'Upper Limit (Breakpoint)', '__x__' ),
+              'condition' => array( 'x_root_font_size_mode' => 'scaling' )
+            ),
+          ),  
+        ),
         'google-subsets' => array(
           'title' => __('Google Subsets', '__x__' ),
           'controls' => array(
@@ -688,7 +771,7 @@ function x_cornerstone_options_map() {
         ),
         'body-and-content' => array(
           'title'       => __( 'Body and Content', '__x__' ),
-          'description' => __( '"Body Font Size (px)" will affect the sizing of all copy outside of a post or page content area. "Content Font Size (px)" will affect the sizing of all copy inside a post or page content area. Headings are set with percentages and sized proportionally to these settings.', '__x__' ),
+          'description' => __( '"Content Font Size (rem)" will affect the sizing of all copy inside a post or page content area. It uses rems, which are a unit relative to your root font size. For example, if your root font size is 10px and you want your content font size to be 12px, you would enter "1.2" as a value. Headings are set with percentages and sized proportionally to these settings.', '__x__' ),
           'controls' => array(
             'x_body_font_family_selection' => array(
               'type' => 'font-family',
@@ -707,13 +790,9 @@ function x_cornerstone_options_map() {
               'type' => 'color',
               'title' => __( 'Body Font Color', '__x__' )
             ),
-            'x_body_font_size' => array(
-              'type' => 'text',
-              'title' => __( 'Body Font Size (px)', '__x__' )
-            ),
             'x_content_font_size' => array(
               'type' => 'text',
-              'title' => __( 'Content Font Size (px)', '__x__' )
+              'title' => __( 'Content Font Size (rem)', '__x__' )
             ),
             'x_body_font_weight_selection' => array(
               'type' => 'font-weight',

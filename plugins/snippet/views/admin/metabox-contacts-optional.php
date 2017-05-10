@@ -35,7 +35,9 @@
       <select class="select" id="<?php echo $plugin_slug . '_contact_option'; ?>">
         <?php if ( empty( $contact_option_list ) ) : ?>
           <option><?php _e( 'No Lists Found', '__x__' ); ?></option>
-        <?php else : ?>
+        <?php else :
+          $contact_option = isset($contact_option) ? $contact_option : '';
+          ?>
           <option value="" <?php echo ( '' == $contact_option ) ? 'selected' : ''; ?>><?php echo _e( '-- Select an option --', '__x__' ); ?></option>
           <?php foreach ( $contact_option_list as $value => $label ) : ?>
             <option value="<?php echo $value; ?>">
@@ -58,7 +60,9 @@
       <select class="select" id="<?php echo $plugin_slug . '_contact_area_served'; ?>">
         <?php if ( empty( $country_list ) ) : ?>
           <option><?php _e( 'No Lists Found', '__x__' ); ?></option>
-        <?php else : ?>
+        <?php else :
+          $contact_area_served = isset($contact_area_served) ? $contact_area_served : '';
+          ?>
           <option value="" <?php echo ( '' == $contact_area_served ) ? 'selected' : ''; ?>><?php echo _e( '-- Select a country --', '__x__' ); ?></option>
           <?php foreach ( $country_list as $value => $label ) : ?>
             <option value="<?php echo $value; ?>">
@@ -81,7 +85,9 @@
       <select class="select" id="<?php echo $plugin_slug . '_contact_available_language'; ?>">
         <?php if ( empty( $language_list ) ) : ?>
           <option><?php _e( 'No Lists Found', '__x__' ); ?></option>
-        <?php else : ?>
+        <?php else :
+          $contact_available_language = isset($contact_available_language) ? $contact_available_language : '';
+          ?>
           <option value="" <?php echo ( '' == $contact_available_language ) ? 'selected' : ''; ?>><?php echo _e( '-- Select a language --', '__x__' ); ?></option>
           <?php foreach ( $language_list as $value ) : ?>
             <option value="<?php echo $value; ?>">
@@ -101,21 +107,23 @@
       </label>
     </th>
     <td>
-      <ul id="snippet_hours_list"></ul>
       <div id="snippet_hours_add_widget">
-        from <input type="text" class="small-text snippet-time" id="snippet_hours_start" />
-        to <input type="text" class="small-text snippet-time" id="snippet_hours_end" /> on:<br/>
-        <input type="checkbox" class="snippet_hours_weekday" value="Mo" />Mon
+        From <input type="text" class="small-text snippet-time" id="snippet_hours_start" />
+        to <input type="text" class="small-text snippet-time" id="snippet_hours_end" /><br/>
+        on: <input type="checkbox" class="snippet_hours_weekday" value="Mo" />Mon
         <input type="checkbox" class="snippet_hours_weekday" value="Tu" />Tue
         <input type="checkbox" class="snippet_hours_weekday" value="We" />Wed
         <input type="checkbox" class="snippet_hours_weekday" value="Th" />Thu
         <input type="checkbox" class="snippet_hours_weekday" value="Fr" />Fri
         <input type="checkbox" class="snippet_hours_weekday" value="Sa" />Sat
-        <input type="checkbox" class="snippet_hours_weekday" value="Su" />Sun<br/>
+        <input type="checkbox" class="snippet_hours_weekday" value="Su" />Sun
         <input type="hidden" class="large-text" id="snippet_hours_id'; ?>" />
-        <a href="#" id="snippet_hours_add">Add</a>
+        <a href="#" class="button button-primary" id="snippet_hours_add" style="margin-top: -10px;">Add Entry</a>
       </div>
-     <input type="hidden" class="large-text" id="<?php echo $plugin_slug . '_contact_hours_available'; ?>" value="" />
+      <hr/>
+      <ul id="snippet_hours_list">
+      </ul>
+      <input type="hidden" class="large-text" id="<?php echo $plugin_slug . '_contact_hours_available'; ?>" value="" />
     </td>
   </tr>
 

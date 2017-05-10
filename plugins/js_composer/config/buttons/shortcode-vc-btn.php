@@ -1,5 +1,7 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
 /**
  * New button implementation
  * array_merge is needed due to merging other shortcode data into params.
@@ -10,12 +12,12 @@ $pixel_icons = vc_pixel_icons();
 require_once vc_path_dir( 'CONFIG_DIR', 'content/vc-icon-element.php' );
 
 $icons_params = vc_map_integrate_shortcode( vc_icon_element_params(), 'i_', '', array(
-		'include_only_regex' => '/^(type|icon_\w*)/',
-		// we need only type, icon_fontawesome, icon_blabla..., NOT color and etc
-	), array(
-		'element' => 'add_icon',
-		'value' => 'true',
-	) );
+	'include_only_regex' => '/^(type|icon_\w*)/',
+	// we need only type, icon_fontawesome, icon_blabla..., NOT color and etc
+), array(
+	'element' => 'add_icon',
+	'value' => 'true',
+) );
 // populate integrated vc_icons params.
 if ( is_array( $icons_params ) && ! empty( $icons_params ) ) {
 	foreach ( $icons_params as $key => $param ) {
@@ -309,6 +311,12 @@ $params = array_merge( array(
 	), array(
 		vc_map_add_css_animation( true ),
 		array(
+			'type' => 'el_id',
+			'heading' => __( 'Element ID', 'js_composer' ),
+			'param_name' => 'el_id',
+			'description' => sprintf( __( 'Enter element ID (Note: make sure it is unique and valid according to <a href="%s" target="_blank">w3c specification</a>).', 'js_composer' ), 'http://www.w3schools.com/tags/att_global_id.asp' ),
+		),
+		array(
 			'type' => 'textfield',
 			'heading' => __( 'Extra class name', 'js_composer' ),
 			'param_name' => 'el_class',
@@ -336,7 +344,8 @@ $params = array_merge( array(
 			'param_name' => 'css',
 			'group' => __( 'Design Options', 'js_composer' ),
 		),
-	) );
+	)
+);
 /**
  * @class WPBakeryShortCode_VC_Btn
  */

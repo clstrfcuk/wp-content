@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Custom 404
 Plugin URI: http://theme.co/x/
 Description: Redirect all of your site's 404 errors to a custom page that you have complete control over. Easily create any layout you want using page templates, shortcodes, and more!
-Version: 1.1.1
+Version: 1.1.3
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-custom-404
 // Constants.
 //
 
-define( 'X_CUSTOM_404_VERSION', '1.1.1' );
+define( 'X_CUSTOM_404_VERSION', '1.1.3' );
 define( 'X_CUSTOM_404_URL', plugins_url( '', __FILE__ ) );
 define( 'X_CUSTOM_404_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 
@@ -88,7 +88,7 @@ function x_custom_404_init() {
   //
 
   require( 'functions/output.php' );
-  
+
 }
 
 add_action( 'init', 'x_custom_404_init' );

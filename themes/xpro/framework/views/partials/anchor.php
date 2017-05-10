@@ -49,6 +49,7 @@ if ( isset( $anchor_nofollow ) && $anchor_nofollow == true ) {
 }
 
 if ( $anchor_type == 'toggle' ) {
+  // $atts['tabindex']          = 0;
   $atts['data-x-toggle']     = true;
   $atts['data-x-toggleable'] = $mod_id;
   $atts['aria-label']        = __( 'Toggle', '__x__' );

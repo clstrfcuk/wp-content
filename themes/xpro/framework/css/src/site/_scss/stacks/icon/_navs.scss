@@ -67,7 +67,7 @@
 
     > a {
       padding: 0.75em 0.75em 0.95em;
-      @include font-size(1.4);
+      font-size: 14px;
       line-height: 1.3;
       color: darken($baseModBackground, 17.5%);
       background-color: darken($baseModBackground, 2%);

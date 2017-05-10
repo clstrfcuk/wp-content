@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Google Analytics
 Plugin URI: http://theme.co/x/
 Description: Simply drop in your Google Analytics code snippet, select where you'd like it to be output, and you're good to go! Google Analytics made easy.
-Version: 1.0.0
+Version: 1.0.3
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-google-analytics
 // Constants.
 //
 
-define( 'X_GOOGLE_ANALYTICS_VERSION', '1.0.0' );
+define( 'X_GOOGLE_ANALYTICS_VERSION', '1.0.3' );
 define( 'X_GOOGLE_ANALYTICS_URL', plugins_url( '', __FILE__ ) );
 define( 'X_GOOGLE_ANALYTICS_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

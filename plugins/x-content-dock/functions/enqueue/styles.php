@@ -186,7 +186,7 @@ add_action( 'x_head_css', 'x_content_dock_output_site_styles' );
 
 function x_content_dock_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-content-dock' ) {
+  if ( $hook == 'addons_page_x-extensions-content-dock' || $hook == 'theme_page_x-extensions-content-dock' || $hook === 'x_page_x-extensions-content-dock' || $hook == 'x-pro_page_x-extensions-content-dock' ) {
 
     wp_enqueue_style( 'x-content-dock-admin-css', X_CONTENT_DOCK_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 

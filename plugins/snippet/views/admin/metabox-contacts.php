@@ -20,7 +20,7 @@
 
 <p>
   <?php _e( 'At least one entry is required to properly generate the schema for the contact of your organization.', '__x__' ); ?>
-   - <a href="#" id="snippet-contacts-add"><?php _e( 'Add', '__x__'); ?></a>
+   - <a href="#" id="snippet-contacts-add" class="button button-primary"><?php _e( 'Add', '__x__'); ?></a>
 </p>
 
 <table class="form-table" id="snippet-contacts-list">

@@ -17,7 +17,7 @@
 
 function x_olark_integration_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-olark-integration' ) {
+  if ( $hook == 'addons_page_x-extensions-olark-integration' || $hook == 'theme_page_x-extensions-olark-integration' || $hook == 'x-pro_page_x-extensions-olark-integration' ) {
 
     wp_enqueue_style( 'x-olark-integration-admin-css', X_OLARK_INTEGRATION_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 

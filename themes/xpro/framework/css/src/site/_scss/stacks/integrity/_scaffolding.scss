@@ -23,13 +23,12 @@
 .x-boxed-layout-active .site,
 .x-boxed-layout-active .x-site {
   margin: 0 auto;
-  border: 1px solid #d5d5d5;
   border: 1px solid $siteBorderColor;
   border-top: 0;
   border-bottom: 0;
   background-color: $siteBackground;
   box-shadow: $siteBoxShadow;
-  @include box-sizing(#{content-box});
+  box-sizing: content-box;
 }
 
 
@@ -38,8 +37,6 @@
 // =============================================================================
 
 body {
-  margin: 0;
-  overflow-x: hidden;
   line-height: $baseLineHeight;
 }
 

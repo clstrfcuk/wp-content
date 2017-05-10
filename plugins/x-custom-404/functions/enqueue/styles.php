@@ -17,7 +17,7 @@
 
 function x_custom_404_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-custom-404' ) {
+  if ( $hook == 'addons_page_x-extensions-custom-404' || $hook == 'theme_page_x-extensions-custom-404' || $hook == 'x-pro_page_x-extensions-custom-404') {
 
     wp_enqueue_style( 'x-disqus-comments-admin-css', X_CUSTOM_404_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 

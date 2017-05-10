@@ -31,10 +31,6 @@
   pointer-events: none;
   z-index: 99999998;
 
-  &:focus {
-    outline: 0;
-  }
-
   &.x-active {
     visibility: visible;
     transition-delay: 0s;
@@ -87,10 +83,6 @@
   transition-property: color, opacity, transform;
   transition-timing-function: $materialStand;
   z-index: 3;
-
-  &:focus {
-    outline: 0;
-  }
 
   span {
     display: block;

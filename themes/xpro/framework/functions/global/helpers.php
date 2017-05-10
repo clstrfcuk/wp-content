@@ -476,7 +476,7 @@ function x_css_block( $css = array(), $breakpoint = false, $scoped = false, $id 
 // =============================================================================
 
 function x_post_css_value( $value, $designation ) {
-  return "%%post $designation%%$value%%/post%%";
+  return ( function_exists('cornerstone_post_process_color') ) ? "%%post $designation%%$value%%/post%%" : $value;
 }
 
 function x_post_process_color( $value ) {

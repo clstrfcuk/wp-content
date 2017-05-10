@@ -136,6 +136,7 @@ endif;
 global $customizer_settings_data;
 
 $customizer_settings_data = array(
+
   'x_stack'                                             => 'integrity',
   'x_integrity_design'                                  => 'light',
   'x_integrity_topbar_transparency_enable'              => '',
@@ -221,14 +222,25 @@ $customizer_settings_data = array(
   'x_design_bg_image_pattern'                           => '',
   'x_design_bg_image_full'                              => '',
   'x_design_bg_image_full_fade'                         => '750',
+  'x_root_font_size_mode'                               => 'stepped',
+  'x_root_font_size_stepped_unit'                       => 'px',
+  'x_root_font_size_stepped_xs'                         => '14',
+  'x_root_font_size_stepped_sm'                         => '14',
+  'x_root_font_size_stepped_md'                         => '14',
+  'x_root_font_size_stepped_lg'                         => '14',
+  'x_root_font_size_stepped_xl'                         => '14',
+  'x_root_font_size_scaling_unit'                       => 'px',
+  'x_root_font_size_scaling_min'                        => '14',
+  'x_root_font_size_scaling_max'                        => '14',
+  'x_root_font_size_scaling_lower_limit'                => '500',
+  'x_root_font_size_scaling_upper_limit'                => '1000',
   'x_google_fonts_subsets'                              => '',
   'x_google_fonts_subset_cyrillic'                      => '',
   'x_google_fonts_subset_greek'                         => '',
   'x_google_fonts_subset_vietnamese'                    => '',
   'x_body_font_family'                                  => 'Lato',
   'x_body_font_color'                                   => '#999999',
-  'x_body_font_size'                                    => '14',
-  'x_content_font_size'                                 => '14',
+  'x_content_font_size_rem'                             => '1',
   'x_body_font_weight'                                  => '400',
   'x_headings_font_family'                              => 'Lato',
   'x_headings_font_color'                               => '#272727',
@@ -396,6 +408,7 @@ $customizer_settings_data = array(
   'x_icon_tile_bg_color'                                => '#ffffff',
   'x_custom_styles'                                     => '',
   'x_custom_scripts'                                    => '',
+
   'x_fixed_menu_scroll'                                 => 'overflow-visible',
 
   'x_enable_font_manager'                               => '0',
@@ -411,6 +424,7 @@ $customizer_settings_data = array(
   'x_headings_font_italic'                              => false,
   'x_logo_font_italic'                                  => false,
   'x_navbar_font_italic'                                => false,
+
 );
 
 

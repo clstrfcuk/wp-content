@@ -25,7 +25,7 @@
   .p-info {
     float: left;
     margin: 13px 0 0;
-    @include font-size(1.1);
+    font-size: 11px;
     line-height: 1.3;
     color: $navbarLinkColor;
     @include break(middle-bear) {
@@ -57,13 +57,13 @@
 
     a {
       margin-left: 7px;
-      @include font-size(2.4);
+      font-size: 24px;
       @include break(middle-bear) {
         margin: 0 1.5%;
       }
 
       &.foursquare {
-        @include font-size(2.2);
+        font-size: 22px;
       }
 
       i {

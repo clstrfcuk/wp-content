@@ -9,8 +9,8 @@
 ?>
 
 <!DOCTYPE html>
-<!--[if IE 9]><html class="no-js ie9" <?php language_attributes(); ?>><![endif]-->
-<!--[if gt IE 9]><!--><html class="no-js" <?php language_attributes(); ?>><!--<![endif]-->
+
+<html class="no-js" <?php language_attributes(); ?>>
 
 <head>
   <?php wp_head(); ?>
@@ -18,8 +18,10 @@
 
 <body <?php body_class(); ?>>
 
-  <?php do_action( 'x_before_site_begin' ); ?>
+  <div id="x-root" class="x-root">
 
-  <div id="top" class="site">
+    <?php do_action( 'x_before_site_begin' ); ?>
 
-  <?php do_action( 'x_after_site_begin' ); ?>
+    <div id="top" class="site">
+
+    <?php do_action( 'x_after_site_begin' ); ?>

@@ -25,6 +25,7 @@ jQuery(document).ready(function($) {
   var $pluginSettings    = $('#meta-box-settings');
   var $customSettings    = $('#meta-box-custom-settings');
   var $whitelistSettings = $('#meta-box-whitelist-settings');
+  var $bypassSettings    = $('#meta-box-bypass-settings');
   var $socialSettings    = $('#meta-box-social-settings');
   var $useCustom         = $('#x_under_construction_use_custom');
   var $pageCustom        = $('#x_under_construction_custom_row');
@@ -35,15 +36,20 @@ jQuery(document).ready(function($) {
       $customSettings.show();
       $whitelistSettings.show();
       $socialSettings.show();
+      $bypassSettings.show();
     } else {
       $pluginSettings.hide();
       $customSettings.hide();
       $whitelistSettings.hide();
       $socialSettings.hide();
+      $bypassSettings.hide();
     }
   }
 
   function toggleCustomSettings() {
+    if ( ! $pluginEnable.is(':checked') ) {
+      return;
+    }
     if ( $useCustom.is(':checked') ) {
       $pluginSettings.hide();
       $pageCustom.show();

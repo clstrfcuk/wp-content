@@ -187,13 +187,13 @@
 
 .close {
   float: right;
-  @include font-size(1.8);
+  font-size: 18px;
   font-weight: bold;
   line-height: $baseLineHeight;
   color: $black;
   text-shadow: $alertTextShadow;
   opacity: 0.4;
-  @include transition(#{opacity 0.3s ease});
+  transition: opacity 0.3s ease;
   
   &:hover {
     color: $black;
@@ -223,7 +223,7 @@ button.close {
   margin-bottom: $baseMargin;
   border: 1px solid $warningBorder;
   padding: $alertPadding;
-  @include font-size(1.4);
+  font-size: 14px;
   line-height: $alertLineHeight;
   text-shadow: $alertTextShadow;
   color: $warningText;
@@ -233,7 +233,7 @@ button.close {
 
   .h-alert {
     margin: $alertHeadingMargin;
-    @include font-size(1.8);
+    font-size: 18px;
     letter-spacing: -1px;
     line-height: 1.3;
     text-transform: none;
@@ -328,7 +328,7 @@ button.close {
 
 .h-skill-bar {
   margin-top: 0;
-  @include font-size(1.1);
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
   line-height: 1;
@@ -430,8 +430,8 @@ a.x-img {
 }
 
 a.x-img:not(.x-img-thumbnail) {
-  @include transform(#{translate3d(0, 0, 0)});
-  @include transition(#{opacity 0.3s ease});
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.3s ease;
 
   &:hover {
     opacity: 0.75;
@@ -564,7 +564,7 @@ a.x-img-thumbnail:hover {
 
       &:before {
         color: $shortcodeAccordionBeforeColor;
-        @include transform(#{rotate(0)});
+        transform: rotate(0deg);
       }
     }
 
@@ -584,8 +584,8 @@ a.x-img-thumbnail:hover {
       margin-right: 10px;
       font-size: 74%;
       color: $shortcodeAccordionBeforeColor;
-      @include transform(#{rotate(45deg)});
-      @include transition(#{all 0.3s ease});
+      transform: rotate(45deg);
+      transition: all 0.3s ease;
       @include font-awesome();
     }
   }
@@ -657,7 +657,7 @@ a.x-img-thumbnail:hover {
 
   label {
     margin: 0.75em 0 0;
-    @include font-size(1.6);
+    font-size: 16px;
   }
 
   input[type="text"],
@@ -669,7 +669,7 @@ a.x-img-thumbnail:hover {
 }
 
 .h-protect {
-  @include font-size(2.4);
+  font-size: 24px;
   line-height: 1.2;
   color: $headingsColor;
 }
@@ -701,7 +701,7 @@ a.x-img-thumbnail:hover {
     background-color: $shortcodeRecentPostsBackground;
     border-radius: 3px;
     box-shadow: $baseShortcodeBoxShadow;
-    @include transform(#{translate3d(0, 0, 0)});
+    transform: translate3d(0, 0, 0);
 
     &:last-child {
       margin-right: 0;
@@ -815,7 +815,7 @@ a.x-img-thumbnail:hover {
       display: block;
       position: absolute;
       opacity: 0;
-      @include transition(#{opacity 0.3s ease});
+      transition: opacity 0.3s ease;
     }
 
     &:before {
@@ -824,7 +824,7 @@ a.x-img-thumbnail:hover {
       left: 50%;
       width: 60px;
       height: 60px;
-      @include font-size(3.2);
+      font-size: 32px;
       line-height: 60px;
       text-align: center;
       color: $white;
@@ -872,14 +872,14 @@ a.x-img-thumbnail:hover {
 
   .h-recent-posts {
     margin: -1px 0 5px;
-    @include font-size(1.7);
+    font-size: 17px;
     line-height: 1.2;
-    @include transition(#{color 0.3s ease});
+    transition: color 0.3s ease;
   }
 
   .x-recent-posts-date {
     margin: 0;
-    @include font-size(1.0);
+    font-size: 10px;
     line-height: 1;
     text-transform: uppercase;
     color: rgba(0, 0, 0, 0.65);
@@ -968,14 +968,14 @@ a.x-img-thumbnail:hover {
     padding: 20px 20px 25px;
     letter-spacing: 0;
     line-height: 1.1;
-    @include font-size(3.2);
+    font-size: 32px;
     color: $textColor;
     background-color: darken($baseModBackground, 1.5%);
 
     span {
       display: block;
       margin-top: 5px;
-      @include font-size(1.3);
+      font-size: 13px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: $black;
@@ -1016,14 +1016,14 @@ a.x-img-thumbnail:hover {
 
   .x-price {
     margin: 0;
-    @include font-size(5.4);
+    font-size: 54px;
     letter-spacing: -3px;
   }
 
   span {
     display: block;
     margin-top: -4px;
-    @include font-size(1.2);
+    font-size: 12px;
     color: lighten($textColor, 25%);
   }
 
@@ -1037,7 +1037,7 @@ a.x-img-thumbnail:hover {
     > li {
       border-bottom: 1px solid darken($baseModBackground, 8%);
       padding: 10px 40px 11px;
-      @include font-size(1.6);
+      font-size: 16px;
       line-height: 1.4;
 
       [class*="#{$fa-css-prefix}-"] {
@@ -1070,15 +1070,15 @@ a.x-img-thumbnail:hover {
   margin: $baseMargin 0;
   border: 1px solid darken($baseModBackground, 8%);
   padding: 2.35em;
-  @include font-size(2.1);
+  font-size: 21px;
   background-color: darken($baseModBackground, 3%);
   border-radius: 0.5em;
   box-shadow: $shortcodeCalloutBoxShadowOuter;
   @include break(cubs) {
-    @include font-size(1.8);
+    font-size: 18px;
   }
   @include break(baby-bear) {
-    @include font-size(1.6);
+    font-size: 16px;
   }
 
   &:before {
@@ -1152,7 +1152,7 @@ a.x-img-thumbnail:hover {
     margin: 0 0 0.925em;
     border-bottom: 1px solid darken($baseModBackground, 5%);
     padding-bottom: 0.45em;
-    @include font-size(1.2);
+    font-size: 12px;
     font-weight: 300;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -1183,7 +1183,7 @@ a.x-img-thumbnail:hover {
   .x-author-social {
     display: inline-block;
     margin-right: 1em;
-    @include font-size(1.3);
+    font-size: 13px;
     white-space: nowrap;
 
     [class*="x-social"] {
@@ -1237,7 +1237,7 @@ a.x-img-thumbnail:hover {
 
   &.x-prompt-section-message {
     width: 46%;
-    @include font-size(1.6);
+    font-size: 16px;
     line-height: 1.4;
   }
 
@@ -1248,7 +1248,7 @@ a.x-img-thumbnail:hover {
 
 .h-prompt {
   margin-top: 0;
-  @include font-size(2.8);
+  font-size: 28px;
   line-height: 1.1;
 }
 
@@ -1303,7 +1303,7 @@ a.x-img-thumbnail:hover {
 
   p {
     margin: 8px 0 10px;
-    @include font-size(1.2);
+    font-size: 12px;
     font-weight: 400;
     text-transform: uppercase;
   }
@@ -1313,7 +1313,7 @@ a.x-img-thumbnail:hover {
     margin: 0 0.05em;
     width: 45px;
     height: 45px;
-    @include font-size(2.4);
+    font-size: 24px;
     line-height: 45px;
     border-radius: 2px;
 
@@ -1339,7 +1339,7 @@ a.x-img-thumbnail:hover {
   border: 1px solid $shortcodeBorderColor;
   border: 1px solid $shortcodeBorderColorRgba;
   padding: 15px;
-  @include font-size(1.1);
+  font-size: 11px;
   background-color: $shortcodeTOCBackground;
   border-radius: 3px;
   box-shadow: $baseShortcodeBoxShadow;
@@ -1368,7 +1368,7 @@ a.x-img-thumbnail:hover {
 
 .h-toc {
   margin: 0 0 10px;
-  @include font-size(1.4);
+  font-size: 14px;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -1419,7 +1419,7 @@ a.x-img-thumbnail:hover {
 
 .x-toc-item {
   margin-bottom: 10px;
-  @include font-size(1.4);
+  font-size: 14px;
   line-height: 1.3;
 
   a {

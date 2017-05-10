@@ -447,7 +447,7 @@ class WPBMap {
 		if ( isset( self::$sc[ $name ], self::$sc[ $name ]['params'] ) && is_array( self::$sc[ $name ]['params'] ) ) {
 			foreach ( self::$sc[ $name ]['params'] as $index => $param ) {
 				if ( $param['param_name'] == $attribute_name ) {
-					unset( self::$sc[ $name ][ 'params' ][ $index ] );
+					unset( self::$sc[ $name ]['params'][ $index ] );
 					self::$sc[ $name ]['params'] = array_merge( self::$sc[ $name ]['params'] ); // fix indexes
 					return true;
 				}
@@ -758,6 +758,8 @@ class WPBMap {
 		self::$sc[ $tag ]['base'] = $tag;
 		self::$init_elements[ $tag ] = true;
 		vc_mapper()->callElementActivities( $tag );
+
+		return true;
 	}
 
 	/**

@@ -12,7 +12,7 @@ class Cornerstone_Integration_X_Theme {
    * This will be matched with get_stylesheet() to determine if the integration will load
    */
   public static function stylesheet() {
-    return array( 'x', 'xpro' );
+    return array( 'x', 'pro', 'xpro' );
   }
 
   /**

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
+
 return array(
 	'name' => __( 'Inner Row', 'js_composer' ),
 	//Inner Row
@@ -20,7 +24,7 @@ return array(
 			'heading' => __( 'Equal height', 'js_composer' ),
 			'param_name' => 'equal_height',
 			'description' => __( 'If checked columns will be set to equal height.', 'js_composer' ),
-			'value' => array( __( 'Yes', 'js_composer' ) => 'yes' )
+			'value' => array( __( 'Yes', 'js_composer' ) => 'yes' ),
 		),
 		array(
 			'type' => 'dropdown',
@@ -58,7 +62,8 @@ return array(
 		array(
 			'type' => 'checkbox',
 			'heading' => __( 'Disable row', 'js_composer' ),
-			'param_name' => 'disable_element', // Inner param name.
+			'param_name' => 'disable_element',
+			// Inner param name.
 			'description' => __( 'If checked the row won\'t be visible on the public side of your website. You can switch it back any time.', 'js_composer' ),
 			'value' => array( __( 'Yes', 'js_composer' ) => 'yes' ),
 		),

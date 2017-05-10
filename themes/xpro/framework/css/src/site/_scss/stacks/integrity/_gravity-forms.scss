@@ -250,7 +250,7 @@ body .gform_wrapper .instruction {
 
 body .gform_wrapper .gfield_radio li label,
 body .gform_wrapper .gfield_checkbox li label {
-  @include font-size(1.3);
+  font-size: 13px;
 }
 
 
@@ -303,7 +303,7 @@ body .gform_wrapper textarea {
   margin: 3px 0;
   padding: 0 0.65em;
   line-height: 2.65em;
-  @include font-size(1.3);
+  font-size: 13px;
 }
 
 body .gform_wrapper select[multiple],

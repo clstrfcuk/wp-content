@@ -37,7 +37,7 @@ add_action( 'wp_enqueue_scripts', 'x_smooth_scroll_enqueue_site_scripts' );
 
 function x_smooth_scroll_enqueue_admin_scripts( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-smooth-scroll' ) {
+  if ( $hook == 'addons_page_x-extensions-smooth-scroll' || $hook == 'theme_page_x-extensions-smooth-scroll' || $hook == 'x-pro_page_x-extensions-smooth-scroll' ) {
 
     wp_enqueue_script( 'x-smooth-scroll-admin-js', X_SMOOTH_SCROLL_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
 

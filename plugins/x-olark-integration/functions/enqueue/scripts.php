@@ -17,7 +17,7 @@
 
 function x_olark_integration_enqueue_admin_scripts( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-olark-integration' ) {
+  if ( $hook == 'addons_page_x-extensions-olark-integration' || $hook == 'theme_page_x-extensions-olark-integration' || $hook == 'x-pro_page_x-extensions-olark-integration' ) {
 
     wp_enqueue_script( 'x-olark-integration-admin-js', X_OLARK_INTEGRATION_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
 

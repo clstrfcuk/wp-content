@@ -1696,9 +1696,9 @@ jQuery(function($){
 
     var $triggerElement = false;
     if ( barData.triggerSelector ) {
-      $triggerElement = $(barData.triggerSelector);
-      if ( 0 !== $triggerElement.length ) {
-        $triggerElement = false;
+      var $findTriggerElement = $(barData.triggerSelector);
+      if ( 0 !== $findTriggerElement.length ) {
+        $triggerElement = $findTriggerElement.first();
       }
     }
 
@@ -1857,10 +1857,17 @@ jQuery(function($){
 
 jQuery(document).ready(function($) {
 
+  $('a, button, input, [tabindex]').on('focus', function() {
+    $(this).css({'outline' : 'none'});
+  });
 
+  $('a, button, input, [tabindex]').on('keyup', function(e) {
+    if ( e.keyCode === 9 ) {
+      $(this).css({'outline' : ''});
+    }
+  });
 
 });
-
 // =============================================================================
 // JS/SRC/SITE/INC/X-BODY-CART.JS
 // -----------------------------------------------------------------------------

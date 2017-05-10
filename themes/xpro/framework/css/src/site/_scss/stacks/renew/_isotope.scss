@@ -79,7 +79,7 @@
 
 .x-iso-container {
   margin: -1em;
-  @include box-sizing(content-box);
+  box-sizing: content-box;
 }
 
 
@@ -144,7 +144,7 @@
   height: 29px;
   margin: 0;
   padding: 0;
-  @include font-size(1.4);
+  font-size: 14px;
   letter-spacing: -1px;
   line-height: 29px;
   text-align: center;

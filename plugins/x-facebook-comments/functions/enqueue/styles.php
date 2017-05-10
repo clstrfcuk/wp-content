@@ -17,7 +17,7 @@
 
 function x_facebook_comments_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-facebook-comments' ) {
+  if ( $hook == 'addons_page_x-extensions-facebook-comments' || $hook == 'theme_page_x-extensions-facebook-comments' || $hook == 'x-pro_page_x-extensions-facebook-comments') {
 
     wp_enqueue_style( 'x-facebook-comments-admin-css', X_FACEBOOK_COMMENTS_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 

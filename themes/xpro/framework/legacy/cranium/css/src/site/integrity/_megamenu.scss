@@ -30,7 +30,7 @@
 
       > a {
         margin: 0;
-        @include font-size(1.4);
+        font-size: 14px;
         text-transform: uppercase;
         color: $navbarLinkColorHover;
         background-color: transparent;

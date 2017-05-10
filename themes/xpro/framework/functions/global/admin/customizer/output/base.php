@@ -9,8 +9,8 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Body
-//   02. Links
+//   01. <html>
+//   02. <body>
 //   03. Headings
 //   04. Container Sizing
 //   05. Content
@@ -20,11 +20,65 @@
 
 ?>
 
-/* Body
+/* <html>
+// ========================================================================== */
+
+<?php if ( $x_root_font_size_mode == 'stepped' ) : ?>
+
+  html {
+    font-size: <?php echo $x_root_font_size_stepped_xs . $x_root_font_size_stepped_unit; ?>;
+  }
+
+  @media (min-width: 480px) {
+    html {
+      font-size: <?php echo $x_root_font_size_stepped_sm . $x_root_font_size_stepped_unit; ?>;
+    }
+  }
+
+  @media (min-width: 767px) {
+    html {
+      font-size: <?php echo $x_root_font_size_stepped_md . $x_root_font_size_stepped_unit; ?>;
+    }
+  }
+
+  @media (min-width: 979px) {
+    html {
+      font-size: <?php echo $x_root_font_size_stepped_lg . $x_root_font_size_stepped_unit; ?>;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    html {
+      font-size: <?php echo $x_root_font_size_stepped_xl . $x_root_font_size_stepped_unit; ?>;
+    }
+  }
+
+<?php elseif ( $x_root_font_size_mode == 'scaling' ) : ?>
+
+  html {
+    font-size: <?php echo $x_root_font_size_scaling_min . $x_root_font_size_scaling_unit; ?>;
+  }
+
+  @media (min-width: <?php echo $x_root_font_size_scaling_lower_limit . $x_root_font_size_scaling_unit; ?>) {
+    html {
+      font-size: calc(<?php echo $x_root_font_size_scaling_min . $x_root_font_size_scaling_unit; ?> + (<?php echo $x_root_font_size_scaling_max; ?> - <?php echo $x_root_font_size_scaling_min; ?>) * ((100vw - <?php echo $x_root_font_size_scaling_lower_limit . $x_root_font_size_scaling_unit; ?>) / (<?php echo $x_root_font_size_scaling_upper_limit; ?> - <?php echo $x_root_font_size_scaling_lower_limit; ?>)));
+    }
+  }
+
+  @media (min-width: <?php echo $x_root_font_size_scaling_upper_limit . $x_root_font_size_scaling_unit; ?>) {
+    html {
+      font-size: <?php echo $x_root_font_size_scaling_max . $x_root_font_size_scaling_unit; ?>;
+    }
+  }
+
+<?php endif; ?>
+
+
+
+/* <body>
 // ========================================================================== */
 
 body {
-  font-size: <?php echo $x_body_font_size . 'px'; ?>;
   font-style: <?php echo ( $x_body_font_is_italic ) ? 'italic' : 'normal'; ?>;
   font-weight: <?php echo $x_body_font_weight; ?>;
   color: <?php echo $x_body_font_color; ?>;
@@ -37,22 +91,6 @@ body {
 
 .w-b {
   font-weight: <?php echo $x_body_font_weight; ?> !important;
-}
-
-
-
-/* Links
-// ========================================================================== */
-
-a:focus,
-select:focus,
-input[type="file"]:focus,
-input[type="radio"]:focus,
-input[type="submit"]:focus,
-input[type="checkbox"]:focus {
-  outline: thin dotted #333;
-  outline: 5px auto <?php echo $x_site_link_color; ?>;
-  outline-offset: -1px;
 }
 
 
@@ -145,7 +183,7 @@ h6, .h6 {
 
 .entry-header,
 .entry-content {
-  font-size: <?php echo $x_content_font_size . 'px'; ?>;
+  font-size: <?php echo $x_content_font_size_rem . 'rem'; ?>;
 }
 
 
@@ -186,16 +224,3 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, h1 a, h2 a, h3 a, h4 a, h5
 .cfc-b-tx { color:            <?php echo $x_body_font_color; ?> !important; }
 .cfc-b-bd { border-color:     <?php echo $x_body_font_color; ?> !important; }
 .cfc-b-bg { background-color: <?php echo $x_body_font_color; ?> !important; }
-
-
-/*
-// Site links.
-//
-// .cfc-l-tx  { color:            <?php echo $x_site_link_color; ?> !important; }
-// .cfc-l-bd  { border-color:     <?php echo $x_site_link_color; ?> !important; }
-// .cfc-l-bg  { background-color: <?php echo $x_site_link_color; ?> !important; }
-//
-// .cfc-lh-tx { color:            <?php echo $x_site_link_color_hover; ?> !important; }
-// .cfc-lh-bd { border-color:     <?php echo $x_site_link_color_hover; ?> !important; }
-// .cfc-lh-bg { background-color: <?php echo $x_site_link_color_hover; ?> !important; }
-*/

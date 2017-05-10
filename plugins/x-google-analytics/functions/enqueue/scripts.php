@@ -17,7 +17,7 @@
 
 function x_google_analytics_enqueue_admin_scripts( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-google-analytics' ) {
+  if ( $hook == 'addons_page_x-extensions-google-analytics' || $hook == 'theme_page_x-extensions-google-analytics' || $hook == 'x-pro_page_x-extensions-google-analytics') {
 
     wp_enqueue_script( 'x-google-analytics-admin-js', X_GOOGLE_ANALYTICS_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
 

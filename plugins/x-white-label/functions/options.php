@@ -64,12 +64,11 @@ $x_white_label_options = apply_filters( 'x_white_label_options', get_option( 'x_
 
 if ( $x_white_label_options != '' ) {
 
-  $x_white_label_enable               = $x_white_label_options['x_white_label_enable'];
-  $x_white_label_login_image          = $x_white_label_options['x_white_label_login_image'];
-  $x_white_label_login_bg_image				= $x_white_label_options['x_white_label_login_bg_image'];
-  $x_white_label_retina_enabled       = $x_white_label_options['x_white_label_retina_enabled'];
-  $x_white_label_addons_home_heading  = $x_white_label_options['x_white_label_addons_home_heading'];
-  $x_white_label_addons_home_content  = $x_white_label_options['x_white_label_addons_home_content'];
-  $x_white_label_addons_home_position = $x_white_label_options['x_white_label_addons_home_position'];
-
+  $x_white_label_enable               = isset($x_white_label_options['x_white_label_enable']) ? $x_white_label_options['x_white_label_enable'] : false;
+  $x_white_label_login_image          = isset($x_white_label_options['x_white_label_login_image']) ? $x_white_label_options['x_white_label_login_image'] : null;
+  $x_white_label_login_bg_image				= isset($x_white_label_options['x_white_label_login_bg_image']) ? $x_white_label_options['x_white_label_login_bg_image'] : null;
+  $x_white_label_retina_enabled       = isset($x_white_label_options['x_white_label_retina_enabled']) ? $x_white_label_options['x_white_label_retina_enabled'] : null;
+  $x_white_label_addons_home_heading  = isset($x_white_label_options['x_white_label_addons_home_heading']) ? $x_white_label_options['x_white_label_addons_home_heading'] : null;
+  $x_white_label_addons_home_content  = isset($x_white_label_options['x_white_label_addons_home_content']) ? $x_white_label_options['x_white_label_addons_home_content'] : null;
+  $x_white_label_addons_home_position = isset($x_white_label_options['x_white_label_addons_home_position']) ? $x_white_label_options['x_white_label_addons_home_position'] : null;
 }

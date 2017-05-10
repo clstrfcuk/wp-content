@@ -133,7 +133,7 @@
       .activity {
         display: block;
         margin: 10px 0 0;
-        @include font-size(0.9);
+        font-size: 9px;
         opacity: 0.5;
       }
     }
@@ -185,7 +185,7 @@
   .message-metadata {
     margin-bottom: $bpSpacingSm;
     height: 25px;
-    @include font-size(1.2);
+    font-size: 12px;
     line-height: 25px;
     @include text-overflow();
 
@@ -262,7 +262,7 @@
   padding: 3px 4px;
   line-height: 1;
   text-align: center;
-  @include font-size(0.9);
+  font-size: 9px;
   color: $white;
   background-color: $accentColor;
   z-index: 5;
@@ -335,7 +335,7 @@
 
   > h4 {
     margin: $bpSpacingLg 0 10px;
-    @include font-size(2.4);
+    font-size: 24px;
     line-height: 1.3;
   }
 
@@ -344,7 +344,7 @@
   > .register-section:first-of-type > h4 {
     &:first-of-type {
       margin-top: 0;
-      @include font-size(2.4);
+      font-size: 24px;
     }
   }
 
@@ -357,7 +357,7 @@
     margin: 0 10px 0 0;
     border: 0;
     padding: 0 0.5em;
-    @include font-size(1.3);
+    font-size: 13px;
     line-height: 1;
     text-shadow: none;
     color: $white;
@@ -515,7 +515,7 @@
     margin: 0;
     border: 0;
     padding: 0 0.65em;
-    @include font-size(1.3);
+    font-size: 13px;
     line-height: 1;
     text-shadow: none;
     color: $white;
@@ -629,7 +629,7 @@
         right: 0;
         bottom: 0;
         padding: 6px;
-        @include font-size(0.9);
+        font-size: 9px;
         letter-spacing: 1px;
         line-height: 1;
         text-transform: uppercase;
@@ -641,7 +641,7 @@
     .activity {
       display: block;
       margin: $bpSpacingSm 0 0;
-      @include font-size(0.9);
+      font-size: 9px;
       letter-spacing: 1px;
       line-height: 1.3;
       text-transform: uppercase;
@@ -684,7 +684,7 @@
     > h3 {
       margin: 5px 0;
       float: left;
-      @include font-size(0.9);
+      font-size: 9px;
       letter-spacing: 1px;
       line-height: 1;
       text-transform: uppercase;
@@ -938,7 +938,7 @@
         margin: 0;
         border: 0;
         padding: 7px 12px;
-        @include font-size(1.2);
+        font-size: 12px;
         line-height: 1;
         text-shadow: none;
         color: $textColor;
@@ -979,7 +979,7 @@
           margin: 0;
           border-top: $bpBorder;
           padding: $bpSpacingSm;
-          @include font-size(1.2);
+          font-size: 12px;
         }
 
         ul {
@@ -1079,7 +1079,7 @@
 
 .buddypress .x-list-item-header {
   margin-bottom: $bpSpacingSm;
-  @include font-size(1.2);
+  font-size: 12px;
   @include cf();
 
   .x-list-item-avatar-wrap {
@@ -1144,7 +1144,7 @@
   > .generic-button > a,
   > .meta {
     padding: 9px $bpSpacingSm;
-    @include font-size(1.1);
+    font-size: 11px;
     line-height: 1.2;
     text-align: center;
     color: $textColor;
@@ -1212,7 +1212,7 @@
 .buddypress .bp-widget {
   h4 {
     margin-bottom: 10px;
-    @include font-size(2.4);
+    font-size: 24px;
     line-height: 1.3;
   }
 }
@@ -1237,7 +1237,7 @@
       display: block;
       margin: 5px 5px 0 0;
       padding: 5px 6px;
-      @include font-size(1.1);
+      font-size: 11px;
       line-height: 1;
       text-align: center;
       color: $white;
@@ -1279,7 +1279,7 @@
   display: inline-block;
   margin: 0;
   padding: 5px 6px;
-  @include font-size(1.1);
+  font-size: 11px;
   line-height: 1;
   text-align: center;
   color: $white;

@@ -17,7 +17,7 @@
 
 function x_typekit_enqueue_admin_scripts( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-typekit' ) {
+  if ( $hook == 'addons_page_x-extensions-typekit' || $hook == 'theme_page_x-extensions-typekit' || $hook == 'x-pro_page_x-extensions-typekit' ) {
 
     wp_enqueue_script( 'x-typekit-admin-js', X_TYPEKIT_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
 

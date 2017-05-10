@@ -29,9 +29,17 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 	}
 
 	public function init() {
+
 		if ( !is_user_logged_in() ) {
 			add_action( 'template_redirect', array( $this, 'loginRedirect' ) );
 		}
+
+		register_post_status( 'tco-data', array(
+			'label'                     => 'Data',
+			'label_count'               => 'Data (%s)',
+			'internal'                  => true,
+		) );
+
 	}
 
 	/**

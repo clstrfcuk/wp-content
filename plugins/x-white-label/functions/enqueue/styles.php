@@ -91,7 +91,7 @@ add_action( 'login_enqueue_scripts', 'x_white_label_output_background_styles' );
 
 function x_white_label_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-white-label' ) {
+  if ( $hook == 'addons_page_x-extensions-white-label' || $hook == 'theme_page_x-extensions-white-label' || $hook === 'x_page_x-extensions-white-label' || $hook == 'x-pro_page_x-extensions-white-label' ) {
 
     wp_enqueue_style( 'x-white-label-admin-css', X_WHITE_LABEL_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 

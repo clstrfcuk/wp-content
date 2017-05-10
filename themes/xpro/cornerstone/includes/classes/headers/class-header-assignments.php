@@ -213,6 +213,9 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
       $match = $assignments['global'];
       $post = get_post();
 
+      // Allow integrations to detect assignments
+      $match = apply_filters( 'cs_locate_header_assignment', $match, $assignments, $post );
+
       if ( is_front_page() && isset( $assignments['indexes']['front'] ) ) {
         $match = $assignments['indexes']['front'];
       } elseif ( is_home() && isset( $assignments['indexes']['home'] ) ) {
@@ -228,6 +231,12 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
         }
 
       }
+
+      // Allow integrations for force assigments. Unless you have a specific
+      // reason, it is better to use the `cs_locate_header_assignment` filter above.
+      // It allows individual posts to take precedence.
+      $match = apply_filters( 'cs_match_header_assignment', $match, $assignments, $post );
+
 
       // Fallback to the oldest header
       if ( $fallback && null === $match ) {

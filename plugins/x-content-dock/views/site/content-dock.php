@@ -66,6 +66,12 @@ if( isset( $_COOKIE['x_content_dock_do_not_show'] ) ) {
   $display = false;
 }
 
+// If Under construction is enable, do not display
+$x_under_construction_options = apply_filters( 'x_under_construction_options', get_option( 'x_under_construction' ) );
+if (isset( $x_content_dock_options['x_under_construction_enable'] ) && $x_content_dock_options['x_under_construction_enable']) {
+  $display = false;
+}
+
 // Render conditionally
 
 if ( $display ) :
@@ -123,11 +129,14 @@ if ( $display ) :
           var data = {
           		'action': 'x_content_dock_do_not_show',
           		'x_content_dock_do_not_show': 1
-          	};
-          	// We can also pass the url value separately from ajaxurl for front end AJAX implementations
-          	$.post( '<?php echo admin_url( 'admin-ajax.php' ); ?>', data, function( response ) {
-          		// done silently
-          	});
+        	};
+        	// We can also pass the url value separately from ajaxurl for front end AJAX implementations
+        	$.post(
+            '<?php echo admin_url( 'admin-ajax.php' ); ?>',
+            data,
+            function( response ) {
+        		// done silently
+        	});
         });
         <?php endif; ?>
 

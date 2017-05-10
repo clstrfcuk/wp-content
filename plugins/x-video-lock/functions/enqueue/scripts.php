@@ -17,7 +17,7 @@
 
 function x_video_lock_enqueue_admin_scripts( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-video-lock' ) {
+  if ( $hook == 'addons_page_x-extensions-video-lock' || $hook == 'theme_page_x-extensions-video-lock' || $hook == 'x-pro_page_x-extensions-video-lock' ) {
 
     wp_enqueue_script( 'x-video-lock-admin-js', X_VIDEO_LOCK_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
 

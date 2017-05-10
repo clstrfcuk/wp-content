@@ -158,8 +158,9 @@
     xCustomizerText( 'x_ethos_post_slider_archive_enable',              'Post Slider &ndash; Archives',         'The archive "Post Slider" is located at the top of all archive pages, which allows you to showcase your posts in various formats. If "Featured" is selected, you can choose which posts you would like to appear in this location in the post meta options.' );
     xCustomizerText( 'x_ethos_filterable_index_enable',                 'Blog Options',                         'Enabling the filterable index will bypass the standard output of your blog page, allowing you to specify categories to highlight. Upon selecting this option, a text input will appear to enter in the IDs of the categories you would like to showcase. This input accepts a list of numeric IDs separated by a comma (e.g. 14, 1, 817).' );
     xCustomizerText( 'x_ethos_shop_title',                              'Shop Options',                         'Provide a title you would like to use for your shop. This will show up on the index page as well as in your breadcrumbs.' );
-    xCustomizerText( 'x_google_fonts_subsets',                          false,                                  'Here you will find global typography options for your body copy and headings, while more specific typography options for elements like your navbar are found grouped with that element to make customization more streamlined. If you are using Google Fonts, you can also enable custom subsets here for expanded character sets.' );
-    xCustomizerText( 'x_body_font_family',                              'Body and Content',                     '"Body Font Size (px)" will affect the sizing of all copy outside of a post or page content area. "Content Font Size (px)" will affect the sizing of all copy inside a post or page content area. Headings are set with percentages and sized proportionally to these settings.' );
+    xCustomizerText( 'x_root_font_size_mode',                           false,                                  'Select the method for outputting your site\'s root font size, then adjust the settings to suit your design. "Stepped" mode allows you to set a font size at each of your site\'s breakpoints, whereas "Scaling" will dymaically scale between a range of minimum and maximum font sizes and breakpoints that you specify.' );
+    xCustomizerText( 'x_google_fonts_subsets',                          'Google Fonts Subsets',                 'Here you will find global typography options for your body copy and headings, while more specific typography options for elements like your navbar are found grouped with that element to make customization more streamlined. If you are using Google Fonts, you can also enable custom subsets here for expanded character sets.' );
+    xCustomizerText( 'x_body_font_family',                              'Body and Content',                     '"Content Font Size (rem)" will affect the sizing of all copy inside a post or page content area. It uses rems, which are a unit relative to your root font size. For example, if your root font size is 10px and you want your content font size to be 12px, you would enter "1.2" as a value. Headings are set with percentages and sized proportionally to these settings.' );
     xCustomizerText( 'x_headings_font_family',                          'Headings',                             'The letter spacing controls for each heading level will only affect that heading if it does not have a "looks like" class or if the "looks like" class matches that level. For example, if you have an &lt;h1&gt; with no modifier class, the &lt;h1&gt; slider will affect that heading. However, if your &lt;h1&gt; has an .h2 modifier class, then the &lt;h2&gt; slider will take over as it is supposed to appear as an &lt;h2&gt;.' );
     xCustomizerText( 'x_site_link_color',                               'Site Links',                           'Site link colors are also used as accents for various elements throughout your site, so make sure to select something you really enjoy and keep an eye out for how it affects your design.' );
     xCustomizerText( 'x_button_style',                                  false,                                  'Retina ready, limitless colors, and multiple shapes. The buttons available in X are fun to use, simple to implement, and look great on all devices no matter the size.' );
@@ -494,6 +495,17 @@
     //
     // Typography.
     //
+
+    var $typeBaseFontSizeModeInit = $('#customize-control-x_root_font_size_mode input:checked').val();
+    var $typeBaseFontSizeModeOpts = $('#customize-control-x_root_font_size_mode input');
+    var $typeBaseFontSizeModeTarg = [
+      { key : 'stepped', target : '#customize-control-x_root_font_size_stepped_unit, #customize-control-x_root_font_size_stepped_xs, #customize-control-x_root_font_size_stepped_sm, #customize-control-x_root_font_size_stepped_md, #customize-control-x_root_font_size_stepped_lg, #customize-control-x_root_font_size_stepped_xl' },
+      { key : 'scaling', target : '#customize-control-x_root_font_size_scaling_unit, #customize-control-x_root_font_size_scaling_min, #customize-control-x_root_font_size_scaling_max, #customize-control-x_root_font_size_scaling_lower_limit, #customize-control-x_root_font_size_scaling_upper_limit' }
+    ];
+
+    xCustomizerInitialDisplay( $typeBaseFontSizeModeInit, $typeBaseFontSizeModeTarg );
+    xCustomizerChangeDisplay( $typeBaseFontSizeModeOpts, $typeBaseFontSizeModeTarg );
+
 
     var $typeFontSubsetsInit = $('#customize-control-x_google_fonts_subsets input:checked').val();
     var $typeFontSubsetsOpts = $('#customize-control-x_google_fonts_subsets input');

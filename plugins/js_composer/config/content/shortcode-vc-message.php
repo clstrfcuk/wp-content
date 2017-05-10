@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
+
 /* Message box 2
 ---------------------------------------------------------- */
 $pixel_icons = vc_pixel_icons();
@@ -259,11 +263,14 @@ return array(
 			'type' => 'iconpicker',
 			'heading' => __( 'Icon', 'js_composer' ),
 			'param_name' => 'icon_monosocial',
-			'value' => 'vc-mono vc-mono-fivehundredpx', // default value to backend editor admin_label
+			'value' => 'vc-mono vc-mono-fivehundredpx',
+			// default value to backend editor admin_label
 			'settings' => array(
-				'emptyIcon' => false, // default true, display an "EMPTY" icon?
+				'emptyIcon' => false,
+				// default true, display an "EMPTY" icon?
 				'type' => 'monosocial',
-				'iconsPerPage' => 4000, // default 100, how many icons per/page to display
+				'iconsPerPage' => 4000,
+				// default 100, how many icons per/page to display
 			),
 			'dependency' => array(
 				'element' => 'icon_type',
@@ -280,6 +287,12 @@ return array(
 			'value' => __( '<p>I am message box. Click edit button to change this text.</p>', 'js_composer' ),
 		),
 		vc_map_add_css_animation( false ),
+		array(
+			'type' => 'el_id',
+			'heading' => __( 'Element ID', 'js_composer' ),
+			'param_name' => 'el_id',
+			'description' => sprintf( __( 'Enter element ID (Note: make sure it is unique and valid according to <a href="%s" target="_blank">w3c specification</a>).', 'js_composer' ), 'http://www.w3schools.com/tags/att_global_id.asp' ),
+		),
 		array(
 			'type' => 'textfield',
 			'heading' => __( 'Extra class name', 'js_composer' ),

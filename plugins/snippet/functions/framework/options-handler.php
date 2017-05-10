@@ -152,13 +152,13 @@ class Snippet_Options_Handler {
 
     foreach ( $this->options as $key => $old_value ) {
       if ( isset( $_POST[$this->key][$key] ) ) {
-        $value = $this->deep_array_sanitize ( $_POST[$this->key][$key] );
-        $this->set( $key, $value );
+        $value = $this->deep_array_sanitize ($key, $_POST[$this->key][$key] );
+        $this->set( $key, $value, true );
       }
     }
   }
 
-  function deep_array_sanitize ( $value ) {
+  function deep_array_sanitize ( $key, $value ) {
     if ( ! is_array( $value ) ) {
       $value = sanitize_text_field( $value );
       $validate = $this->validate_option( $key, $value );
@@ -170,7 +170,7 @@ class Snippet_Options_Handler {
     }
     foreach ( $value as $k => $v ) {
       if ( ! empty( $v ) ) {
-          $value[ $k ] = $this->deep_array_sanitize( $v );
+          $value[ $k ] = $this->deep_array_sanitize( $k, $v );
       }
     }
 

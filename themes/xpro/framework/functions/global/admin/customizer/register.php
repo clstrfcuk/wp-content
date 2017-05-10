@@ -95,6 +95,16 @@ function x_customizer_options_register( $wp_customize ) {
     'featured'       => __( 'Featured', '__x__' )
   );
 
+  $list_root_font_size_modes = array(
+    'stepped' => __( 'Stepped', '__x__' ),
+    'scaling' => __( 'Scaling', '__x__' )
+  );
+
+  $list_root_font_size_units = array(
+    'px' => __( 'px', '__x__' ),
+    'em' => __( 'em', '__x__' )
+  );
+
   $list_button_styles = array(
     'real'        => __( '3D', '__x__' ),
     'flat'        => __( 'Flat', '__x__' ),
@@ -642,6 +652,48 @@ function x_customizer_options_register( $wp_customize ) {
   // Options - Typography.
   //
 
+
+      $x['set'][] = array( 'x_root_font_size_mode', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_mode', 'radio', __( 'Root Font Size Mode', '__x__' ), $list_root_font_size_modes, 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_stepped_unit', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_stepped_unit', 'radio', __( 'Font Size Unit', '__x__' ), $list_root_font_size_units, 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_stepped_xs', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_stepped_xs', 'text', __( 'Font Size (sm)', '__x__' ), 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_stepped_sm', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_stepped_sm', 'text', __( 'Font Size (xs)', '__x__' ), 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_stepped_md', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_stepped_md', 'text', __( 'Font Size (md)', '__x__' ), 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_stepped_lg', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_stepped_lg', 'text', __( 'Font Size (lg)', '__x__' ), 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_stepped_xl', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_stepped_xl', 'text', __( 'Font Size (xl)', '__x__' ), 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_scaling_unit', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_scaling_unit', 'radio', __( 'Font Size Unit', '__x__' ), $list_root_font_size_units, 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_scaling_min', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_scaling_min', 'text', __( 'Minimum Font Size', '__x__' ), 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_scaling_max', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_scaling_max', 'text', __( 'Maximum Font Size', '__x__' ), 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_scaling_lower_limit', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_scaling_lower_limit', 'text', __( 'Lower Limit (Breakpoint)', '__x__' ), 'x_customizer_section_typography' );
+
+      $x['set'][] = array( 'x_root_font_size_scaling_upper_limit', 'refresh' );
+      $x['con'][] = array( 'x_root_font_size_scaling_upper_limit', 'text', __( 'Upper Limit (Breakpoint)', '__x__' ), 'x_customizer_section_typography' );
+
+
+      //
+      // Google Fonts subsets.
+      //
+
       $x['set'][] = array( 'x_google_fonts_subsets', 'refresh' );
       $x['con'][] = array( 'x_google_fonts_subsets', 'radio', __( 'Google Fonts Subsets', '__x__' ), $list_on_off, 'x_customizer_section_typography' );
 
@@ -665,11 +717,8 @@ function x_customizer_options_register( $wp_customize ) {
       $x['set'][] = array( 'x_body_font_color', 'refresh' );
       $x['con'][] = array( 'x_body_font_color', 'color', __( 'Body Font Color', '__x__' ), 'x_customizer_section_typography' );
 
-      $x['set'][] = array( 'x_body_font_size', 'refresh' );
-      $x['con'][] = array( 'x_body_font_size', 'text', __( 'Body Font Size (px)', '__x__' ), 'x_customizer_section_typography' );
-
-      $x['set'][] = array( 'x_content_font_size', 'refresh' );
-      $x['con'][] = array( 'x_content_font_size', 'text', __( 'Content Font Size (px)', '__x__' ), 'x_customizer_section_typography' );
+      $x['set'][] = array( 'x_content_font_size_rem', 'refresh' );
+      $x['con'][] = array( 'x_content_font_size_rem', 'text', __( 'Content Font Size (rem)', '__x__' ), 'x_customizer_section_typography' );
 
       $x['set'][] = array( 'x_body_font_weight', 'refresh' );
       $x['con'][] = array( 'x_body_font_weight', 'radio', __( 'Body Font Weight', '__x__' ), $list_all_font_weights, 'x_customizer_section_typography' );

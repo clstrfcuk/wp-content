@@ -17,7 +17,7 @@
 
 function x_facebook_comments_enqueue_admin_scripts( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-facebook-comments' ) {
+  if ( $hook == 'addons_page_x-extensions-facebook-comments' || $hook == 'theme_page_x-extensions-facebook-comments' || $hook == 'x-pro_page_x-extensions-facebook-comments') {
 
     wp_enqueue_script( 'x-facebook-comments-admin-js', X_FACEBOOK_COMMENTS_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
 

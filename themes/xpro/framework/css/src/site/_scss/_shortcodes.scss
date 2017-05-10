@@ -285,7 +285,7 @@
   }
 
   &.bg {
-    @include transition(#{opacity 1s ease});
+    transition: opacity 1s ease;
 
     &,
     & .x-video-inner {
@@ -488,7 +488,7 @@
 
     .x-card-inner {
       -webkit-transition: -webkit-transform 1.25s $easeOutQuint;
-              transition: transform 1.25s $easeOutQuint;
+              transition:         transform 1.25s $easeOutQuint;
       @include transform-style(preserve-3d);
     }
 
@@ -504,14 +504,14 @@
     }
 
     &.flip-from-left .back,
-    &.flip-from-right .back                 { @include transform(#{rotateY(180deg)});  }
-    &.flip-from-left.flipped .x-card-inner  { @include transform(#{rotateY(180deg)});  }
-    &.flip-from-right.flipped .x-card-inner { @include transform(#{rotateY(-180deg)}); }
+    &.flip-from-right .back                 { transform: rotateY(180deg);  }
+    &.flip-from-left.flipped .x-card-inner  { transform: rotateY(180deg);  }
+    &.flip-from-right.flipped .x-card-inner { transform: rotateY(-180deg); }
 
     &.flip-from-top .back,
-    &.flip-from-bottom .back                 { @include transform(#{rotateX(180deg)});  }
-    &.flip-from-top.flipped .x-card-inner    { @include transform(#{rotateX(-180deg)}); }
-    &.flip-from-bottom.flipped .x-card-inner { @include transform(#{rotateX(180deg)});  }
+    &.flip-from-bottom .back                 { transform: rotateX(180deg);  }
+    &.flip-from-top.flipped .x-card-inner    { transform: rotateX(-180deg); }
+    &.flip-from-bottom.flipped .x-card-inner { transform: rotateX(180deg);  }
   }
 }
 
@@ -528,11 +528,11 @@
   text-align: center;
   text-decoration: none;
   box-shadow: none;
-  @include transition(#{background-color 0.3s ease});
+  transition: background-color 0.3s ease;
 
   > span {
     display: block;
-    @include transition(#{all 0.65s $easeOutQuint});
+    transition: all 0.65s $easeOutQuint;
 
     &.text {
       line-height: 1.2;
@@ -548,7 +548,7 @@
 
       > i,
       > img {
-        @include transition(#{all 0.65s $easeOutQuint});
+        transition: all 0.65s $easeOutQuint;
       }
     }
   }
@@ -558,10 +558,10 @@
     > span.graphic { opacity: 1; }
   }
 
-  &.slide-top    { &:hover { > span.text { @include transform(#{translate(0, -150%)}); } } }
-  &.slide-left   { &:hover { > span.text { @include transform(#{translate(-80%, 0)});  } } }
-  &.slide-right  { &:hover { > span.text { @include transform(#{translate(80%, 0)});   } } }
-  &.slide-bottom { &:hover { > span.text { @include transform(#{translate(0, 150%)});  } } }
+  &.slide-top    { &:hover { > span.text { transform: translate(0, -150%); } } }
+  &.slide-left   { &:hover { > span.text { transform: translate(-80%, 0);  } } }
+  &.slide-right  { &:hover { > span.text { transform: translate(80%, 0);   } } }
+  &.slide-bottom { &:hover { > span.text { transform: translate(0, 150%);  } } }
 }
 
 
@@ -659,9 +659,7 @@
 }
 
 .x-feature-box-graphic-inner.badge {
-  -webkit-transform: scale(0.725) rotate(15deg);
-      -ms-transform: scale(0.725) rotate(15deg);
-          transform: scale(0.725) rotate(15deg);
+  transform: scale(0.725) rotate(15deg);
 
   &:before,
   &:after {
@@ -676,11 +674,11 @@
   }
 
   &:before {
-    @include transform(#{rotate(30deg)});
+    transform: rotate(30deg);
   }
 
   &:after {
-    @include transform(#{rotate(60deg)});
+    transform: rotate(60deg);
   }
 
   i {
@@ -688,9 +686,7 @@
     z-index: 2;
 
     &:before {
-      -webkit-transform: scale(1.275) rotate(-15deg);
-          -ms-transform: scale(1.275) rotate(-15deg);
-              transform: scale(1.275) rotate(-15deg);
+      transform: scale(1.275) rotate(-15deg);
     }
   }
 }

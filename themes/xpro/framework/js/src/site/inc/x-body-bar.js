@@ -154,9 +154,9 @@ jQuery(function($){
 
     var $triggerElement = false;
     if ( barData.triggerSelector ) {
-      $triggerElement = $(barData.triggerSelector);
-      if ( 0 !== $triggerElement.length ) {
-        $triggerElement = false;
+      var $findTriggerElement = $(barData.triggerSelector);
+      if ( 0 !== $findTriggerElement.length ) {
+        $triggerElement = $findTriggerElement.first();
       }
     }
 

@@ -24,7 +24,7 @@
   .p-info {
     float: left;
     margin: 8px 0 0;
-    @include font-size(1.1);
+    font-size: 11px;
     letter-spacing: 1px;
     line-height: 1.3;
     color: $navbarLinkColor;
@@ -57,13 +57,13 @@
       height: 32px;
       line-height: 32px;
       text-align: center;
-      @include font-size(1.8);
+      font-size: 18px;
       @include break(middle-bear) {
         margin: 0 1%;
       }
 
       &.foursquare {
-        @include font-size(1.7);
+        font-size: 17px;
       }
     }
   }

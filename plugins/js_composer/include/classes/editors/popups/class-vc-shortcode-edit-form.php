@@ -81,7 +81,7 @@ class Vc_Shortcode_Edit_Form implements Vc_Render {
 	 * @use Vc_Shortcode_Edit_Form::renderFields
 	 */
 	public function build() {
-		// _deprecated_function( 'Vc_Shortcode_Edit_Form::build', '4.4 (will be removed in 4.10)', 'Vc_Shortcode_Edit_Form::renderFields' );
+		_deprecated_function( 'Vc_Shortcode_Edit_Form::build', '4.4 (will be removed in 5.1)', 'Vc_Shortcode_Edit_Form::renderFields' );
 
 		$tag = vc_post_param( 'element' );
 		vc_user_access()

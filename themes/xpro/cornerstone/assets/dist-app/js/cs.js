@@ -2996,8 +2996,10 @@ define('cornerstone/components/common/cs-picker/component', ['exports', 'ember',
         $body.off('focus', '*', loseFocus);
         $body.off('click', '*', loseFocus);
 
-        _this.set('open', false);
-        _this.sendAction('onStateChange', false);
+        if (!_this.isDestroyed) {
+          _this.set('open', false);
+          _this.sendAction('onStateChange', false);
+        }
       };
 
       var move = function move() {
@@ -4343,6 +4345,18 @@ define('cornerstone/components/common/preview-frame/component', ['exports', 'emb
         var action = _ref4.action;
         return _this.get('ui.primaryRoute').send(action);
       });
+
+      this.componentListenTo('preview:error-message', function (_ref5) {
+        var key = _ref5.key;
+
+        console.log('preview-error.' + key);
+        _this.get('ui').notify({
+          type: 'error',
+          message: _this.get('i18n').t('app.preview-error.' + key),
+          timeout: 15000,
+          extendedTimeout: 650
+        });
+      });
     },
 
     didInsertElement: function didInsertElement() {
@@ -4375,9 +4389,9 @@ define('cornerstone/components/common/preview-frame/component', ['exports', 'emb
         }
       };
 
-      this.requestHTML(_ember['default'].copy(this.get('state'))).then(function (_ref5) {
-        var html = _ref5.html;
-        var state = _ref5.state;
+      this.requestHTML(_ember['default'].copy(this.get('state'))).then(function (_ref6) {
+        var html = _ref6.html;
+        var state = _ref6.state;
 
         if (_this2.isDestroyed) {
           return;
@@ -5160,6 +5174,7 @@ define('cornerstone/components/common/scroll-box/component', ['exports', 'ember'
         return;
       }
 
+      // Note: improper use of run.debounce
       _ember['default'].run.debounce(this, function () {
         this.sendAction('onScroll', this, this.get('element'), e.type);
       }, 25);
@@ -5289,6 +5304,7 @@ define('cornerstone/components/common/scroll-box/component', ['exports', 'ember'
 
       var el = this.get('element');
 
+      // Note: improper use of run.debounce
       _ember['default'].run.debounce(this, function () {
 
         _ember['default'].run.scheduleOnce('afterRender', function () {
@@ -19331,7 +19347,8 @@ define('cornerstone/components/forms/styled-select/styled-option/component', ['e
     }),
 
     selected: _ember['default'].computed('select.value', function () {
-      return this.get('select.value') === this.get('value');
+      // Not checking strictly because it's ok to accept values that are "close enough" in this case
+      return this.get('select.value') == this.get('value'); // eslint-disable-line eqeqeq
     })
   });
 });
@@ -26132,6 +26149,7 @@ define('cornerstone/components/preview/region-manager/component', ['exports', 'e
             model: region
           });
         } else {
+          _this.get('preview').notateMissingZone(zone);
           console.log('Could not render region ' + regionName + ' into ' + zone);
         }
       });
@@ -27532,6 +27550,7 @@ define("cornerstone/components/regions/hf-create/template", ["exports"], functio
   })());
 });
 define('cornerstone/components/regions/hf-index/component', ['exports', 'ember'], function (exports, _ember) {
+  var _slice = Array.prototype.slice;
   exports['default'] = _ember['default'].Component.extend({
     classNames: ['cs-hf-index'],
 
@@ -27561,6 +27580,9 @@ define('cornerstone/components/regions/hf-index/component', ['exports', 'ember']
         this.set('selected', null);
 
         this.set('defaultSelected', !this.get('defaultSelected'));
+      },
+      titleUpdate: function titleUpdate() {
+        this.sendAction.apply(this, ['onTitleUpdate'].concat(_slice.call(arguments)));
       }
     }
   });
@@ -27577,7 +27599,7 @@ define("cornerstone/components/regions/hf-index/template", ["exports"], function
             "column": 0
           },
           "end": {
-            "line": 37,
+            "line": 38,
             "column": 0
           }
         },
@@ -27616,7 +27638,7 @@ define("cornerstone/components/regions/hf-index/template", ["exports"], function
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["content", "yield", ["loc", [null, [1, 0], [1, 9]]], 0, 0, 0, 0], ["inline", "regions/hf-create", [], ["context", ["subexpr", "@mut", [["get", "context", ["loc", [null, [4, 10], [4, 17]]], 0, 0, 0, 0]], [], [], 0, 0], "templateOptions", ["subexpr", "@mut", [["get", "templateOptions", ["loc", [null, [5, 18], [5, 33]]], 0, 0, 0, 0]], [], [], 0, 0], "selection", ["subexpr", "@mut", [["get", "selectedTemplate", ["loc", [null, [6, 12], [6, 28]]], 0, 0, 0, 0]], [], [], 0, 0], "heading", ["subexpr", "@mut", [["get", "createLabels.heading", ["loc", [null, [7, 10], [7, 30]]], 0, 0, 0, 0]], [], [], 0, 0], "previewMessage", ["subexpr", "@mut", [["get", "createLabels.previewMessage", ["loc", [null, [8, 17], [8, 44]]], 0, 0, 0, 0]], [], [], 0, 0], "createMessage", ["subexpr", "@mut", [["get", "createLabels.createMessage", ["loc", [null, [9, 16], [9, 42]]], 0, 0, 0, 0]], [], [], 0, 0], "templatePlaceholder", ["subexpr", "@mut", [["get", "createLabels.templatePlaceholder", ["loc", [null, [10, 22], [10, 54]]], 0, 0, 0, 0]], [], [], 0, 0], "titlePlaceholder", ["subexpr", "@mut", [["get", "createLabels.titlePlaceholder", ["loc", [null, [11, 19], [11, 48]]], 0, 0, 0, 0]], [], [], 0, 0], "createLabel", ["subexpr", "@mut", [["get", "createLabels.createLabel", ["loc", [null, [12, 14], [12, 38]]], 0, 0, 0, 0]], [], [], 0, 0], "onCreate", ["subexpr", "@mut", [["get", "onCreate", ["loc", [null, [13, 11], [13, 19]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [3, 0], [14, 2]]], 0, 0], ["inline", "regions/hf-manage", [], ["context", ["subexpr", "@mut", [["get", "context", ["loc", [null, [17, 10], [17, 17]]], 0, 0, 0, 0]], [], [], 0, 0], "assignContexts", ["subexpr", "@mut", [["get", "assignContexts", ["loc", [null, [18, 17], [18, 31]]], 0, 0, 0, 0]], [], [], 0, 0], "assignments", ["subexpr", "@mut", [["get", "assignments", ["loc", [null, [19, 14], [19, 25]]], 0, 0, 0, 0]], [], [], 0, 0], "sortedEntries", ["subexpr", "@mut", [["get", "sortedEntries", ["loc", [null, [20, 16], [20, 29]]], 0, 0, 0, 0]], [], [], 0, 0], "onAction", ["subexpr", "@mut", [["get", "onAction", ["loc", [null, [21, 11], [21, 19]]], 0, 0, 0, 0]], [], [], 0, 0], "editRoute", ["subexpr", "@mut", [["get", "editRoute", ["loc", [null, [22, 12], [22, 21]]], 0, 0, 0, 0]], [], [], 0, 0], "onSelect", ["subexpr", "action", ["selectEntry"], [], ["loc", [null, [23, 11], [23, 33]]], 0, 0], "onSelectDefault", ["subexpr", "action", ["selectDefault"], [], ["loc", [null, [24, 18], [24, 42]]], 0, 0], "defaultSelected", ["subexpr", "@mut", [["get", "defaultSelected", ["loc", [null, [25, 18], [25, 33]]], 0, 0, 0, 0]], [], [], 0, 0], "selected", ["subexpr", "@mut", [["get", "selected", ["loc", [null, [26, 11], [26, 19]]], 0, 0, 0, 0]], [], [], 0, 0], "defaultItemLabel", ["subexpr", "@mut", [["get", "manageLabels.defaultItem", ["loc", [null, [27, 19], [27, 43]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [16, 0], [28, 2]]], 0, 0], ["inline", "regions/hf-assign", [], ["context", ["subexpr", "@mut", [["get", "context", ["loc", [null, [31, 10], [31, 17]]], 0, 0, 0, 0]], [], [], 0, 0], "assignments", ["subexpr", "@mut", [["get", "assignments", ["loc", [null, [32, 14], [32, 25]]], 0, 0, 0, 0]], [], [], 0, 0], "selectedEntry", ["subexpr", "@mut", [["get", "selected", ["loc", [null, [33, 16], [33, 24]]], 0, 0, 0, 0]], [], [], 0, 0], "assignContexts", ["subexpr", "@mut", [["get", "assignContexts", ["loc", [null, [34, 17], [34, 31]]], 0, 0, 0, 0]], [], [], 0, 0], "labels", ["subexpr", "@mut", [["get", "assignLabels", ["loc", [null, [35, 9], [35, 21]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [30, 0], [36, 2]]], 0, 0]],
+      statements: [["content", "yield", ["loc", [null, [1, 0], [1, 9]]], 0, 0, 0, 0], ["inline", "regions/hf-create", [], ["context", ["subexpr", "@mut", [["get", "context", ["loc", [null, [4, 10], [4, 17]]], 0, 0, 0, 0]], [], [], 0, 0], "templateOptions", ["subexpr", "@mut", [["get", "templateOptions", ["loc", [null, [5, 18], [5, 33]]], 0, 0, 0, 0]], [], [], 0, 0], "selection", ["subexpr", "@mut", [["get", "selectedTemplate", ["loc", [null, [6, 12], [6, 28]]], 0, 0, 0, 0]], [], [], 0, 0], "heading", ["subexpr", "@mut", [["get", "createLabels.heading", ["loc", [null, [7, 10], [7, 30]]], 0, 0, 0, 0]], [], [], 0, 0], "previewMessage", ["subexpr", "@mut", [["get", "createLabels.previewMessage", ["loc", [null, [8, 17], [8, 44]]], 0, 0, 0, 0]], [], [], 0, 0], "createMessage", ["subexpr", "@mut", [["get", "createLabels.createMessage", ["loc", [null, [9, 16], [9, 42]]], 0, 0, 0, 0]], [], [], 0, 0], "templatePlaceholder", ["subexpr", "@mut", [["get", "createLabels.templatePlaceholder", ["loc", [null, [10, 22], [10, 54]]], 0, 0, 0, 0]], [], [], 0, 0], "titlePlaceholder", ["subexpr", "@mut", [["get", "createLabels.titlePlaceholder", ["loc", [null, [11, 19], [11, 48]]], 0, 0, 0, 0]], [], [], 0, 0], "createLabel", ["subexpr", "@mut", [["get", "createLabels.createLabel", ["loc", [null, [12, 14], [12, 38]]], 0, 0, 0, 0]], [], [], 0, 0], "onCreate", ["subexpr", "@mut", [["get", "onCreate", ["loc", [null, [13, 11], [13, 19]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [3, 0], [14, 2]]], 0, 0], ["inline", "regions/hf-manage", [], ["context", ["subexpr", "@mut", [["get", "context", ["loc", [null, [17, 10], [17, 17]]], 0, 0, 0, 0]], [], [], 0, 0], "assignContexts", ["subexpr", "@mut", [["get", "assignContexts", ["loc", [null, [18, 17], [18, 31]]], 0, 0, 0, 0]], [], [], 0, 0], "assignments", ["subexpr", "@mut", [["get", "assignments", ["loc", [null, [19, 14], [19, 25]]], 0, 0, 0, 0]], [], [], 0, 0], "sortedEntries", ["subexpr", "@mut", [["get", "sortedEntries", ["loc", [null, [20, 16], [20, 29]]], 0, 0, 0, 0]], [], [], 0, 0], "onAction", ["subexpr", "@mut", [["get", "onAction", ["loc", [null, [21, 11], [21, 19]]], 0, 0, 0, 0]], [], [], 0, 0], "editRoute", ["subexpr", "@mut", [["get", "editRoute", ["loc", [null, [22, 12], [22, 21]]], 0, 0, 0, 0]], [], [], 0, 0], "onSelect", ["subexpr", "action", ["selectEntry"], [], ["loc", [null, [23, 11], [23, 33]]], 0, 0], "onSelectDefault", ["subexpr", "action", ["selectDefault"], [], ["loc", [null, [24, 18], [24, 42]]], 0, 0], "onTitleUpdate", ["subexpr", "action", ["titleUpdate"], [], ["loc", [null, [25, 16], [25, 38]]], 0, 0], "defaultSelected", ["subexpr", "@mut", [["get", "defaultSelected", ["loc", [null, [26, 18], [26, 33]]], 0, 0, 0, 0]], [], [], 0, 0], "selected", ["subexpr", "@mut", [["get", "selected", ["loc", [null, [27, 11], [27, 19]]], 0, 0, 0, 0]], [], [], 0, 0], "defaultItemLabel", ["subexpr", "@mut", [["get", "manageLabels.defaultItem", ["loc", [null, [28, 19], [28, 43]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [16, 0], [29, 2]]], 0, 0], ["inline", "regions/hf-assign", [], ["context", ["subexpr", "@mut", [["get", "context", ["loc", [null, [32, 10], [32, 17]]], 0, 0, 0, 0]], [], [], 0, 0], "assignments", ["subexpr", "@mut", [["get", "assignments", ["loc", [null, [33, 14], [33, 25]]], 0, 0, 0, 0]], [], [], 0, 0], "selectedEntry", ["subexpr", "@mut", [["get", "selected", ["loc", [null, [34, 16], [34, 24]]], 0, 0, 0, 0]], [], [], 0, 0], "assignContexts", ["subexpr", "@mut", [["get", "assignContexts", ["loc", [null, [35, 17], [35, 31]]], 0, 0, 0, 0]], [], [], 0, 0], "labels", ["subexpr", "@mut", [["get", "assignLabels", ["loc", [null, [36, 9], [36, 21]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [31, 0], [37, 2]]], 0, 0]],
       locals: [],
       templates: []
     };
@@ -27702,8 +27724,8 @@ define('cornerstone/components/regions/hf-manage/component', ['exports', 'ember'
       select: function select() {
         this.sendAction.apply(this, ['onSelect'].concat(_slice.call(arguments)));
       },
-      titleUpdate: function titleUpdate(entry) {
-        console.log(entry.get('title'));
+      titleUpdate: function titleUpdate() {
+        this.sendAction.apply(this, ['onTitleUpdate'].concat(_slice.call(arguments)));
       },
       selectDefault: function selectDefault() {
         this.sendAction('onSelectDefault');
@@ -33860,6 +33882,7 @@ define('cornerstone/element/model', ['exports', 'ember', 'ember-data/relationshi
     parent: (0, _emberDataRelationships.belongsTo)('element', { inverse: 'children' }),
 
     setup: function setup() {
+      this.set('definition', this.get('store').peekRecord('element/definition', this.getWithDefault('atts._type', 'undefined')));
       this.setDefaults();
     },
 
@@ -33922,10 +33945,6 @@ define('cornerstone/element/model', ['exports', 'ember', 'ember-data/relationshi
 
       return this;
     },
-
-    definition: _ember['default'].computed('atts._type', function () {
-      return this.get('store').peekRecord('element/definition', this.getWithDefault('atts._type', 'undefined'));
-    }),
 
     duplicate: function duplicate(atts) {
       var _this = this;
@@ -35849,15 +35868,16 @@ define('cornerstone/footers/route', ['exports', 'ember', 'cornerstone/mixins/rou
             settings: data.data.attributes.settings
           });
 
-          var self = _this2;
-
+          _this2.get('ui').beginSaveProgress();
           footer.save().then(function (saved) {
             footerEntry.set('id', saved.id);
             footerEntry.save();
-            self.get('ui').notify('Footer duplicated', 'success');
+            _this2.get('ui').notify('Footer duplicated', 'success');
+            _this2.get('ui').endSaveProgress();
           })['catch'](function (reason) {
             _ember['default'].Logger.warn('Could not create new footer', reason);
-            self.get('ui').notify('Unable to duplicate footer.', 'error');
+            _this2.get('ui').notify('Unable to duplicate footer.', 'error');
+            _this2.get('ui').endSaveProgress();
           });
         });
       },
@@ -35884,7 +35904,25 @@ define('cornerstone/footers/route', ['exports', 'ember', 'cornerstone/mixins/rou
             });
           }
         });
+      },
+
+      entryTitleUpdate: function entryTitleUpdate(entry) {
+        var _this4 = this;
+
+        this.get('store').findRecord('footers/footer', entry.get('id')).then(function (record) {
+
+          record.set('title', entry.get('title'));
+          _this4.get('ui').beginSaveProgress();
+
+          record.save().then(function () {
+            _this4.get('ui').endSaveProgress();
+          }, function (reason) {
+            _ember['default'].Logger.warn('Could not update footer title', reason);
+            _this4.get('ui').notify('Unable to update footer title.', 'error');
+          });
+        });
       }
+
     }
 
   });
@@ -36192,7 +36230,7 @@ define("cornerstone/footers/template", ["exports"], function (exports) {
                 "column": 2
               },
               "end": {
-                "line": 52,
+                "line": 53,
                 "column": 2
               }
             },
@@ -36222,7 +36260,7 @@ define("cornerstone/footers/template", ["exports"], function (exports) {
             morphs[1] = dom.createMorphAt(fragment, 3, 3, contextualElement);
             return morphs;
           },
-          statements: [["inline", "regions/hf-index", [], ["context", "footers", "assignContexts", ["subexpr", "@mut", [["get", "flattenedAssignContexts", ["loc", [null, [25, 21], [25, 44]]], 0, 0, 0, 0]], [], [], 0, 0], "assignments", ["subexpr", "@mut", [["get", "model.assignments", ["loc", [null, [26, 18], [26, 35]]], 0, 0, 0, 0]], [], [], 0, 0], "entries", ["subexpr", "@mut", [["get", "model.entries", ["loc", [null, [27, 14], [27, 27]]], 0, 0, 0, 0]], [], [], 0, 0], "selected", ["subexpr", "@mut", [["get", "selected", ["loc", [null, [28, 15], [28, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "selectedTemplate", ["subexpr", "@mut", [["get", "selectedTemplate", ["loc", [null, [29, 23], [29, 39]]], 0, 0, 0, 0]], [], [], 0, 0], "defaultSelected", ["subexpr", "@mut", [["get", "defaultSelected", ["loc", [null, [30, 22], [30, 37]]], 0, 0, 0, 0]], [], [], 0, 0], "templateOptions", ["subexpr", "@mut", [["get", "templateOptions", ["loc", [null, [31, 22], [31, 37]]], 0, 0, 0, 0]], [], [], 0, 0], "onAction", ["subexpr", "route-action", ["doEntryAction"], [], ["loc", [null, [32, 15], [32, 45]]], 0, 0], "editRoute", "footers.footer", "onCreate", ["subexpr", "route-action", ["createNew"], [], ["loc", [null, [34, 15], [34, 41]]], 0, 0], "assignLabels", ["subexpr", "hash", [], ["globalMessage", "This footer is currently assigned as your global (default) footer.", "blankMessage", "Click a footer to manage assignments."], ["loc", [null, [35, 19], [38, 7]]], 0, 0], "createLabels", ["subexpr", "hash", [], ["heading", "Create Footer", "previewMessage", "Select a template to begin. Your choice will be previewed above.", "createMessage", "To start building with this footer, name it below and click <strong>Create.</strong>", "templatePlaceholder", "Choose Template", "titlePlaceholder", "", "createLabel", "Create"], ["loc", [null, [39, 19], [46, 7]]], 0, 0], "manageLabels", ["subexpr", "hash", [], ["defaultItem", "Default Footer"], ["loc", [null, [47, 19], [49, 7]]], 0, 0]], ["loc", [null, [23, 4], [50, 6]]], 0, 0], ["content", "outlet", ["loc", [null, [51, 4], [51, 14]]], 0, 0, 0, 0]],
+          statements: [["inline", "regions/hf-index", [], ["context", "footers", "assignContexts", ["subexpr", "@mut", [["get", "flattenedAssignContexts", ["loc", [null, [25, 21], [25, 44]]], 0, 0, 0, 0]], [], [], 0, 0], "assignments", ["subexpr", "@mut", [["get", "model.assignments", ["loc", [null, [26, 18], [26, 35]]], 0, 0, 0, 0]], [], [], 0, 0], "entries", ["subexpr", "@mut", [["get", "model.entries", ["loc", [null, [27, 14], [27, 27]]], 0, 0, 0, 0]], [], [], 0, 0], "selected", ["subexpr", "@mut", [["get", "selected", ["loc", [null, [28, 15], [28, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "selectedTemplate", ["subexpr", "@mut", [["get", "selectedTemplate", ["loc", [null, [29, 23], [29, 39]]], 0, 0, 0, 0]], [], [], 0, 0], "defaultSelected", ["subexpr", "@mut", [["get", "defaultSelected", ["loc", [null, [30, 22], [30, 37]]], 0, 0, 0, 0]], [], [], 0, 0], "templateOptions", ["subexpr", "@mut", [["get", "templateOptions", ["loc", [null, [31, 22], [31, 37]]], 0, 0, 0, 0]], [], [], 0, 0], "onAction", ["subexpr", "route-action", ["doEntryAction"], [], ["loc", [null, [32, 15], [32, 45]]], 0, 0], "editRoute", "footers.footer", "onCreate", ["subexpr", "route-action", ["createNew"], [], ["loc", [null, [34, 15], [34, 41]]], 0, 0], "onTitleUpdate", ["subexpr", "route-action", ["entryTitleUpdate"], [], ["loc", [null, [35, 20], [35, 53]]], 0, 0], "assignLabels", ["subexpr", "hash", [], ["globalMessage", "This footer is currently assigned as your global (default) footer.", "blankMessage", "Click a footer to manage assignments."], ["loc", [null, [36, 19], [39, 7]]], 0, 0], "createLabels", ["subexpr", "hash", [], ["heading", "Create Footer", "previewMessage", "Select a template to begin. Your choice will be previewed above.", "createMessage", "To start building with this footer, name it below and click <strong>Create.</strong>", "templatePlaceholder", "Choose Template", "titlePlaceholder", "", "createLabel", "Create"], ["loc", [null, [40, 19], [47, 7]]], 0, 0], "manageLabels", ["subexpr", "hash", [], ["defaultItem", "Default Footer"], ["loc", [null, [48, 19], [50, 7]]], 0, 0]], ["loc", [null, [23, 4], [51, 6]]], 0, 0], ["content", "outlet", ["loc", [null, [52, 4], [52, 14]]], 0, 0, 0, 0]],
           locals: [],
           templates: []
         };
@@ -36237,7 +36275,7 @@ define("cornerstone/footers/template", ["exports"], function (exports) {
               "column": 0
             },
             "end": {
-              "line": 54,
+              "line": 55,
               "column": 0
             }
           },
@@ -36269,7 +36307,7 @@ define("cornerstone/footers/template", ["exports"], function (exports) {
           dom.insertBoundary(fragment, 0);
           return morphs;
         },
-        statements: [["block", "global/cs-canvas", [], [], 0, null, ["loc", [null, [2, 2], [21, 23]]]], ["block", "workspace/cs-workspace", [], [], 1, null, ["loc", [null, [22, 2], [52, 29]]]], ["inline", "common/confirm-modal", [], ["screen", "footers"], ["loc", [null, [53, 2], [53, 43]]], 0, 0]],
+        statements: [["block", "global/cs-canvas", [], [], 0, null, ["loc", [null, [2, 2], [21, 23]]]], ["block", "workspace/cs-workspace", [], [], 1, null, ["loc", [null, [22, 2], [53, 29]]]], ["inline", "common/confirm-modal", [], ["screen", "footers"], ["loc", [null, [54, 2], [54, 43]]], 0, 0]],
         locals: [],
         templates: [child0, child1]
       };
@@ -36284,7 +36322,7 @@ define("cornerstone/footers/template", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 55,
+            "line": 56,
             "column": 0
           }
         },
@@ -36307,7 +36345,7 @@ define("cornerstone/footers/template", ["exports"], function (exports) {
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "global/cs-window", [], ["screen", "footers"], 0, null, ["loc", [null, [1, 0], [54, 21]]]]],
+      statements: [["block", "global/cs-window", [], ["screen", "footers"], 0, null, ["loc", [null, [1, 0], [55, 21]]]]],
       locals: [],
       templates: [child0]
     };
@@ -37403,15 +37441,16 @@ define('cornerstone/headers/route', ['exports', 'ember', 'cornerstone/mixins/rou
             settings: data.data.attributes.settings
           });
 
-          var self = _this2;
-
+          _this2.get('ui').beginSaveProgress();
           header.save().then(function (saved) {
             headerEntry.set('id', saved.id);
             headerEntry.save();
-            self.get('ui').notify('Header duplicated', 'success');
+            _this2.get('ui').notify('Header duplicated', 'success');
+            _this2.get('ui').endSaveProgress();
           })['catch'](function (reason) {
             _ember['default'].Logger.warn('Could not create new header', reason);
-            self.get('ui').notify('Unable to duplicate header.', 'error');
+            _this2.get('ui').notify('Unable to duplicate header.', 'error');
+            _this2.get('ui').endSaveProgress();
           });
         });
       },
@@ -37438,7 +37477,25 @@ define('cornerstone/headers/route', ['exports', 'ember', 'cornerstone/mixins/rou
             });
           }
         });
+      },
+
+      entryTitleUpdate: function entryTitleUpdate(entry) {
+        var _this4 = this;
+
+        this.get('store').findRecord('headers/header', entry.get('id')).then(function (record) {
+
+          record.set('title', entry.get('title'));
+          _this4.get('ui').beginSaveProgress();
+
+          record.save().then(function () {
+            _this4.get('ui').endSaveProgress();
+          }, function (reason) {
+            _ember['default'].Logger.warn('Could not update header title', reason);
+            _this4.get('ui').notify('Unable to update header title.', 'error');
+          });
+        });
       }
+
     }
 
   });
@@ -37740,7 +37797,7 @@ define("cornerstone/headers/template", ["exports"], function (exports) {
                 "column": 2
               },
               "end": {
-                "line": 52,
+                "line": 53,
                 "column": 2
               }
             },
@@ -37770,7 +37827,7 @@ define("cornerstone/headers/template", ["exports"], function (exports) {
             morphs[1] = dom.createMorphAt(fragment, 3, 3, contextualElement);
             return morphs;
           },
-          statements: [["inline", "regions/hf-index", [], ["context", "headers", "assignContexts", ["subexpr", "@mut", [["get", "flattenedAssignContexts", ["loc", [null, [25, 21], [25, 44]]], 0, 0, 0, 0]], [], [], 0, 0], "assignments", ["subexpr", "@mut", [["get", "model.assignments", ["loc", [null, [26, 18], [26, 35]]], 0, 0, 0, 0]], [], [], 0, 0], "entries", ["subexpr", "@mut", [["get", "model.entries", ["loc", [null, [27, 14], [27, 27]]], 0, 0, 0, 0]], [], [], 0, 0], "selected", ["subexpr", "@mut", [["get", "selected", ["loc", [null, [28, 15], [28, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "selectedTemplate", ["subexpr", "@mut", [["get", "selectedTemplate", ["loc", [null, [29, 23], [29, 39]]], 0, 0, 0, 0]], [], [], 0, 0], "defaultSelected", ["subexpr", "@mut", [["get", "defaultSelected", ["loc", [null, [30, 22], [30, 37]]], 0, 0, 0, 0]], [], [], 0, 0], "templateOptions", ["subexpr", "@mut", [["get", "templateOptions", ["loc", [null, [31, 22], [31, 37]]], 0, 0, 0, 0]], [], [], 0, 0], "editRoute", "headers.header", "onAction", ["subexpr", "route-action", ["doEntryAction"], [], ["loc", [null, [33, 15], [33, 45]]], 0, 0], "onCreate", ["subexpr", "route-action", ["createNew"], [], ["loc", [null, [34, 15], [34, 41]]], 0, 0], "assignLabels", ["subexpr", "hash", [], ["globalMessage", "This header is currently assigned as your global (default) header.", "blankMessage", "Click a header to manage assignments."], ["loc", [null, [35, 19], [38, 7]]], 0, 0], "createLabels", ["subexpr", "hash", [], ["heading", "Create Header", "previewMessage", "Select a template to begin. Your choice will be previewed above.", "createMessage", "To start building with this header, name it below and click <strong>Create.</strong>", "templatePlaceholder", "Choose Template", "titlePlaceholder", "", "createLabel", "Create"], ["loc", [null, [39, 19], [46, 7]]], 0, 0], "manageLabels", ["subexpr", "hash", [], ["defaultItem", "Default Header"], ["loc", [null, [47, 19], [49, 7]]], 0, 0]], ["loc", [null, [23, 4], [50, 6]]], 0, 0], ["content", "outlet", ["loc", [null, [51, 4], [51, 14]]], 0, 0, 0, 0]],
+          statements: [["inline", "regions/hf-index", [], ["context", "headers", "assignContexts", ["subexpr", "@mut", [["get", "flattenedAssignContexts", ["loc", [null, [25, 21], [25, 44]]], 0, 0, 0, 0]], [], [], 0, 0], "assignments", ["subexpr", "@mut", [["get", "model.assignments", ["loc", [null, [26, 18], [26, 35]]], 0, 0, 0, 0]], [], [], 0, 0], "entries", ["subexpr", "@mut", [["get", "model.entries", ["loc", [null, [27, 14], [27, 27]]], 0, 0, 0, 0]], [], [], 0, 0], "selected", ["subexpr", "@mut", [["get", "selected", ["loc", [null, [28, 15], [28, 23]]], 0, 0, 0, 0]], [], [], 0, 0], "selectedTemplate", ["subexpr", "@mut", [["get", "selectedTemplate", ["loc", [null, [29, 23], [29, 39]]], 0, 0, 0, 0]], [], [], 0, 0], "defaultSelected", ["subexpr", "@mut", [["get", "defaultSelected", ["loc", [null, [30, 22], [30, 37]]], 0, 0, 0, 0]], [], [], 0, 0], "templateOptions", ["subexpr", "@mut", [["get", "templateOptions", ["loc", [null, [31, 22], [31, 37]]], 0, 0, 0, 0]], [], [], 0, 0], "editRoute", "headers.header", "onAction", ["subexpr", "route-action", ["doEntryAction"], [], ["loc", [null, [33, 15], [33, 45]]], 0, 0], "onCreate", ["subexpr", "route-action", ["createNew"], [], ["loc", [null, [34, 15], [34, 41]]], 0, 0], "onTitleUpdate", ["subexpr", "route-action", ["entryTitleUpdate"], [], ["loc", [null, [35, 20], [35, 53]]], 0, 0], "assignLabels", ["subexpr", "hash", [], ["globalMessage", "This header is currently assigned as your global (default) header.", "blankMessage", "Click a header to manage assignments."], ["loc", [null, [36, 19], [39, 7]]], 0, 0], "createLabels", ["subexpr", "hash", [], ["heading", "Create Header", "previewMessage", "Select a template to begin. Your choice will be previewed above.", "createMessage", "To start building with this header, name it below and click <strong>Create.</strong>", "templatePlaceholder", "Choose Template", "titlePlaceholder", "", "createLabel", "Create"], ["loc", [null, [40, 19], [47, 7]]], 0, 0], "manageLabels", ["subexpr", "hash", [], ["defaultItem", "Default Header"], ["loc", [null, [48, 19], [50, 7]]], 0, 0]], ["loc", [null, [23, 4], [51, 6]]], 0, 0], ["content", "outlet", ["loc", [null, [52, 4], [52, 14]]], 0, 0, 0, 0]],
           locals: [],
           templates: []
         };
@@ -37785,7 +37842,7 @@ define("cornerstone/headers/template", ["exports"], function (exports) {
               "column": 0
             },
             "end": {
-              "line": 54,
+              "line": 55,
               "column": 0
             }
           },
@@ -37817,7 +37874,7 @@ define("cornerstone/headers/template", ["exports"], function (exports) {
           dom.insertBoundary(fragment, 0);
           return morphs;
         },
-        statements: [["block", "global/cs-canvas", [], [], 0, null, ["loc", [null, [2, 2], [21, 23]]]], ["block", "workspace/cs-workspace", [], [], 1, null, ["loc", [null, [22, 2], [52, 29]]]], ["inline", "common/confirm-modal", [], ["screen", "headers"], ["loc", [null, [53, 2], [53, 43]]], 0, 0]],
+        statements: [["block", "global/cs-canvas", [], [], 0, null, ["loc", [null, [2, 2], [21, 23]]]], ["block", "workspace/cs-workspace", [], [], 1, null, ["loc", [null, [22, 2], [53, 29]]]], ["inline", "common/confirm-modal", [], ["screen", "headers"], ["loc", [null, [54, 2], [54, 43]]], 0, 0]],
         locals: [],
         templates: [child0, child1]
       };
@@ -37832,7 +37889,7 @@ define("cornerstone/headers/template", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 55,
+            "line": 56,
             "column": 0
           }
         },
@@ -37855,7 +37912,7 @@ define("cornerstone/headers/template", ["exports"], function (exports) {
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "global/cs-window", [], ["screen", "headers"], 0, null, ["loc", [null, [1, 0], [54, 21]]]]],
+      statements: [["block", "global/cs-window", [], ["screen", "headers"], 0, null, ["loc", [null, [1, 0], [55, 21]]]]],
       locals: [],
       templates: [child0]
     };
@@ -39044,6 +39101,12 @@ define('cornerstone/icons/interface/js', ['exports'], function (exports) {
     return 'JS';
   };
 });
+define('cornerstone/icons/interface/logo-pro', ['exports'], function (exports) {
+  exports['default'] = function () {
+
+    return '<svg width="100%" height="100%" viewBox="0 0 301 301" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><defs><radialGradient cx="50.0002681%" cy="50.007793%" fx="50.0002681%" fy="50.007793%" r="49.992207%" gradientTransform="translate(0.500003,0.500078),rotate(90.000000),scale(1.000000,0.996541),translate(-0.500003,-0.500078)" id="proRadialGradient-1"><stop stop-color="#72B3EB" offset="0%"></stop><stop stop-color="#2160AB" offset="100%"></stop></radialGradient></defs><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Desktop-HD" transform="translate(-720.000000, -574.000000)" fill-rule="nonzero"><g id="PRO" transform="translate(720.000000, 574.000000)"><circle id="Oval" fill="url(#proRadialGradient-1)" cx="150.5" cy="150.5" r="150.5"></circle><path d="M68.0721829,131.680864 L68.0721829,154.303526 L86.1297337,154.303526 C101.549665,154.303526 101.448218,131.680864 86.1297337,131.680864 L68.0721829,131.680864 Z M86.1297337,120.217363 C117.375383,120.217363 117.47683,165.462687 86.1297337,165.462687 L68.0721829,165.462687 L68.0721829,184.230366 L56,184.230366 L56,120.31881 C66.0432446,120.31881 76.0864891,120.217363 86.1297337,120.217363 Z M174.388549,183.418791 L174.388549,184.230366 L160.084535,184.230366 L141.418302,162.825067 L129.853354,162.825067 L129.853354,184.230366 L117.781171,184.230366 L117.781171,120.217363 C127.925863,120.217363 138.070554,120.31881 148.215245,120.31881 C163.330836,120.420257 171.243695,130.463501 171.243695,141.521215 C171.243695,150.24565 167.185819,159.172978 155.113636,161.607704 L174.388549,183.418791 Z M148.215245,131.579417 L129.853354,131.579417 L129.853354,152.071694 L148.215245,152.071694 C155.925211,152.071694 159.171512,146.999348 159.171512,141.825556 C159.171512,136.651763 155.823764,131.579417 148.215245,131.579417 Z M209.387735,119 C231.401716,119 242.357982,135.840188 242.155089,152.578929 C241.952195,169.114776 231.807503,185.650623 209.387735,185.650623 C186.967967,185.650623 176.518935,169.520564 176.518935,152.680376 C176.518935,135.840188 187.272308,119 209.387735,119 Z M209.387735,129.956267 C194.373592,129.956267 188.083883,142.129897 188.388224,152.88327 C188.692564,163.433749 194.373592,174.592909 209.387735,174.592909 C224.503325,174.592909 230.082906,163.230855 230.2858,152.781823 C230.488693,142.02845 224.401878,129.956267 209.387735,129.956267 Z" id="path-2_13_" fill="#2463AD"></path><path d="M73.6,130.2 L73.6,152.5 L91.4,152.5 C106.6,152.5 106.5,130.2 91.4,130.2 L73.6,130.2 Z M91.4,118.9 C122.2,118.9 122.3,163.5 91.4,163.5 L73.6,163.5 L73.6,182 L61.7,182 L61.7,119 C71.6,119 81.5,118.9 91.4,118.9 Z M178.4,181.2 L178.4,182 L164.3,182 L145.9,160.9 L134.5,160.9 L134.5,182 L122.6,182 L122.6,118.9 C132.6,118.9 142.6,119 152.6,119 C167.5,119.1 175.3,129 175.3,139.9 C175.3,148.5 171.3,157.3 159.4,159.7 L178.4,181.2 Z M152.6,130.1 L134.5,130.1 L134.5,150.3 L152.6,150.3 C160.2,150.3 163.4,145.3 163.4,140.2 C163.4,135.1 160.1,130.1 152.6,130.1 Z M212.9,117.7 C234.6,117.7 245.4,134.3 245.2,150.8 C245,167.1 235,183.4 212.9,183.4 C190.8,183.4 180.5,167.5 180.5,150.9 C180.5,134.3 191.1,117.7 212.9,117.7 Z M212.9,128.5 C198.1,128.5 191.9,140.5 192.2,151.1 C192.5,161.5 198.1,172.5 212.9,172.5 C227.8,172.5 233.3,161.3 233.5,151 C233.7,140.4 227.7,128.5 212.9,128.5 Z" id="path-2_13_" fill="#FFFFFF"></path></g></g></g></svg>';
+  };
+});
 define('cornerstone/icons/styled/something', ['exports'], function (exports) {
   exports['default'] = function () {
     return 'yup';
@@ -39466,7 +39529,7 @@ define("cornerstone/lab4/template", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 6,
+            "line": 3,
             "column": 0
           }
         },
@@ -39478,19 +39541,7 @@ define("cornerstone/lab4/template", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1, "class", "");
-        dom.setAttribute(el1, "style", "width: 300px; height:50px;position:absolute;left:500px;bottom:0;");
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
+        var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
@@ -39501,14 +39552,13 @@ define("cornerstone/lab4/template", ["exports"], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element0 = dom.childAt(fragment, [0]);
-        var morphs = new Array(3);
-        morphs[0] = dom.createMorphAt(element0, 1, 1);
-        morphs[1] = dom.createMorphAt(element0, 3, 3);
-        morphs[2] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["inline", "forms/expandable-text-editor", [], ["placeholder", "Write something...", "value", ["subexpr", "@mut", [["get", "textContent", ["loc", [null, [2, 72], [2, 83]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [2, 2], [2, 85]]], 0, 0], ["inline", "textarea", [], ["value", ["subexpr", "@mut", [["get", "textContent", ["loc", [null, [3, 19], [3, 30]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [3, 2], [3, 32]]], 0, 0], ["content", "outlet", ["loc", [null, [5, 0], [5, 10]]], 0, 0, 0, 0]],
+      statements: [["inline", "partial", ["iframe-loaders/options"], [], ["loc", [null, [1, 0], [1, 36]]], 0, 0], ["content", "outlet", ["loc", [null, [2, 0], [2, 10]]], 0, 0, 0, 0]],
       locals: [],
       templates: []
     };
@@ -41113,11 +41163,18 @@ define('cornerstone/options/service', ['exports', 'ember'], function (exports, _
       }
 
       if (params.id) {
-        if (params.dirty) {
-          state.updates[params.id] = params.value;
-        } else {
-          delete state.updates[params.id];
-        }
+        state.updates[params.id] = params.value;
+
+        // Removing this. Dirty doesn't actually correspond to
+        // what's saved because we're using a custom save instead of the models
+        // so this ends up messing up the state. It would be nice to only send
+        // changed values, but we'll need to track that somehow first.
+
+        // if ( params.dirty ) {
+        //   state.updates[params.id] = params.value;
+        // } else {
+        //   delete state.updates[params.id];
+        // }
       }
 
       this.set('ui.unsavedData', true);
@@ -41797,6 +41854,7 @@ define('cornerstone/preview/service', ['exports', 'ember', 'cornerstone/xfr/mixi
     ready: false,
     xfrOrigin: 'preview',
     radio: _ember['default'].inject.service('global/radio'),
+    missingZones: [],
     isPreview: _ember['default'].computed(function () {
       return window.csAppData.isPreview && 'false' !== window.csAppData.isPreview;
     }),
@@ -42007,6 +42065,25 @@ define('cornerstone/preview/service', ['exports', 'ember', 'cornerstone/xfr/mixi
       this.get('radio').trigger('element:remote:query', {
         type: 'observer:end',
         element: id
+      });
+    },
+
+    notateMissingZone: function notateMissingZone(zone) {
+
+      var missing = this.get('missingZones');
+      if (!missing.contains(zone)) {
+        missing.push(zone);
+      }
+
+      _ember['default'].run.debounce(this, this.missingZoneNotification, 1000);
+    },
+
+    missingZoneNotification: function missingZoneNotification() {
+      var _this8 = this;
+
+      this.removePreloader(true);
+      this.get('missingZones').forEach(function (zone) {
+        _this8.message('preview:error-message', { key: 'missing-zone.' + zone });
       });
     }
 
@@ -42645,6 +42722,7 @@ define('cornerstone/services/inspector', ['exports', 'ember'], function (exports
     controlGroups: _ember['default'].computed.alias('inspecting.definition.controlGroupTiers'),
 
     breadcrumbs: _ember['default'].computed('inspecting', function () {
+
       var breadcrumbs = [];
       var current = this.get('inspecting');
 
@@ -42774,7 +42852,7 @@ define('cornerstone/services/ui', ['exports', 'ember'], function (exports, _embe
 
     optionsLogoPath: _ember['default'].computed('isX', 'isPro', function () {
       if (this.get('isPro')) {
-        return 'interface/logo-x-pro';
+        return 'interface/logo-pro';
       }
 
       if (this.get('isX')) {
@@ -42785,14 +42863,14 @@ define('cornerstone/services/ui', ['exports', 'ember'], function (exports, _embe
     }),
 
     optionsLogoExtra: _ember['default'].computed('isPro', function () {
-      if (this.get('isPro')) {
-        return '<defs><radialGradient cx="51.6966164%" cy="50%" fx="51.6966164%" fy="50%" r="49.2436623%" id="x-pro-background"><stop stop-color="#49A1EB" offset="0%"></stop><stop stop-color="#3D79C0" offset="100%"></stop></radialGradient></defs>';
-      }
+      // if ( this.get('isPro') ) {
+      //   return '<defs><radialGradient cx="51.6966164%" cy="50%" fx="51.6966164%" fy="50%" r="49.2436623%" id="pro-background"><stop stop-color="#49A1EB" offset="0%"></stop><stop stop-color="#3D79C0" offset="100%"></stop></radialGradient></defs>';
+      // }
       return '';
     }),
 
     isPro: _ember['default'].computed(function () {
-      return 'xpro' === window.csAppData.integration_mode;
+      return 'pro' === window.csAppData.integration_mode;
     }),
 
     isX: _ember['default'].computed(function () {
@@ -43105,7 +43183,7 @@ define('cornerstone/services/ui', ['exports', 'ember'], function (exports, _embe
       }, {
         name: 'terminologies',
         label: 'Terminologies',
-        content: '<h3>Global</h3>' + '<dl>' + '<dt>The Bar</dt>' + '<dd>The skinny vertical bar that is your way of getting around. The icons at the bottom are contextually relevant to the screen you are on.</dd>' + '<dt>Header Builder</dt>' + '<dd>The place you create and customize headers for your site. Labeled "Headers" in The Bar.</dd>' + '<dt>Content Builder</dt>' + '<dd>The place you create and customize the page content of your site (the space between your header and footer). Labeled "Content" in The Bar.</dd>' + '<dt>Footer Builder</dt>' + '<dd>The place you create and customize footers for your site. Labeled "Footers" in The Bar.</dd>' + '<dt>Elements</dt>' + '<dd>Each of the above builders have Elements. There are some Elements that only work in a particular context (for example, in the header), and you&apos;ll notice that the Elements in Headers and Footers have significant customization options. Over time, we will be adding these same advanced controls to Elements in the Content Builder.</dd>' + '<dt>Templates</dt>' + '<dd>Starting points for your header, content, or footers. We are working on a new "Library" that will bring management of all templates together in one place. There will be no Expanded Demos in X Pro, but you can think of Templates as a demo of sorts for the respective builders. We have native ones built-in, and you can create your own.</dd>' + '<dt>Presets</dt>' + '<dd>Customized styles for individual Elements. Once the new "Library" is launched under Templates you&apos;ll be able to manage all your presets, templates, and more in one place.</dd>' + '<dt>Font Manager</dt>' + '<dd>Under Templates, this is the place to manage all native, TypeKit, and custom fonts. You can create families and then update in only one place and have it instantly push out to all uses of that font throughout your site!</dd>' + '<dt>Cheatsheet</dt>' + '<dd>What you&apos;re looking at right now! This is opened by clicking the question mark icon in "The Bar." This will house quick blurbs of information in different tabs.</dd>' + '</dl>'
+        content: '<h3>Global</h3>' + '<dl>' + '<dt>The Bar</dt>' + '<dd>The skinny vertical bar that is your way of getting around. The icons at the bottom are contextually relevant to the screen you are on.</dd>' + '<dt>Header Builder</dt>' + '<dd>The place you create and customize headers for your site. Labeled "Headers" in The Bar.</dd>' + '<dt>Content Builder</dt>' + '<dd>The place you create and customize the page content of your site (the space between your header and footer). Labeled "Content" in The Bar.</dd>' + '<dt>Footer Builder</dt>' + '<dd>The place you create and customize footers for your site. Labeled "Footers" in The Bar.</dd>' + '<dt>Elements</dt>' + '<dd>Each of the above builders have Elements. There are some Elements that only work in a particular context (for example, in the header), and you&apos;ll notice that the Elements in Headers and Footers have significant customization options. Over time, we will be adding these same advanced controls to Elements in the Content Builder.</dd>' + '<dt>Templates</dt>' + '<dd>Starting points for your header, content, or footers. We are working on a new "Library" that will bring management of all templates together in one place. There will be no Expanded Demos in Pro, but you can think of Templates as a demo of sorts for the respective builders. We have native ones built-in, and you can create your own.</dd>' + '<dt>Presets</dt>' + '<dd>Customized styles for individual Elements. Once the new "Library" is launched under Templates you&apos;ll be able to manage all your presets, templates, and more in one place.</dd>' + '<dt>Font Manager</dt>' + '<dd>Under Templates, this is the place to manage all native, TypeKit, and custom fonts. You can create families and then update in only one place and have it instantly push out to all uses of that font throughout your site!</dd>' + '<dt>Cheatsheet</dt>' + '<dd>What you&apos;re looking at right now! This is opened by clicking the question mark icon in "The Bar." This will house quick blurbs of information in different tabs.</dd>' + '</dl>'
       }]);
     })
   });
@@ -49042,7 +49120,7 @@ define('cornerstone/xfr/service', ['exports', 'ember'], function (exports, _embe
 /* jshint ignore:start */
 
 define('cornerstone/config/environment', ['ember'], function(Ember) {
-  var exports = {'default': {"modulePrefix":"cornerstone","environment":"development","baseURL":"/","EmberENV":{"FEATURES":{}},"i18n":{"defaultLocale":"en"},"APP":{"name":"cornerstone","version":"1.0.0+0b2dd4ad"},"browserify":{"transform":[["aliasify",{"global":true}]]},"exportApplicationGlobal":true}};Object.defineProperty(exports, '__esModule', {value: true});return exports;
+  var exports = {'default': {"modulePrefix":"cornerstone","environment":"development","baseURL":"/","EmberENV":{"FEATURES":{}},"i18n":{"defaultLocale":"en"},"APP":{"name":"cornerstone","version":"1.0.0+485fa6d2"},"browserify":{"transform":[["aliasify",{"global":true}]]},"exportApplicationGlobal":true}};Object.defineProperty(exports, '__esModule', {value: true});return exports;
 });
 
 /* jshint ignore:end */
@@ -49050,7 +49128,7 @@ define('cornerstone/config/environment', ['ember'], function(Ember) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("cornerstone/app")["default"].create({"name":"cornerstone","version":"1.0.0+0b2dd4ad"});
+  require("cornerstone/app")["default"].create({"name":"cornerstone","version":"1.0.0+485fa6d2"});
 }
 
 /* jshint ignore:end */

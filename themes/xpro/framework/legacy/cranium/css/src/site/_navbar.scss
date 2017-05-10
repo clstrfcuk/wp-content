@@ -90,7 +90,7 @@
 
 .x-btn-navbar {
   display: none;
-  @include font-size(2.4);
+  font-size: 24px;
   line-height: 1;
 }
 
@@ -189,7 +189,7 @@
   li > a {
     display: block;
     position: relative;
-    @include font-size(1.4);
+    font-size: 14px;
     line-height: 1.5;
     white-space: normal;
   }
@@ -222,7 +222,7 @@
     top: 50%;
     width: 100%;
     margin-top: -9px;
-    @include font-size(1.8);
+    font-size: 18px;
     letter-spacing: 0;
     line-height: 1;
   }

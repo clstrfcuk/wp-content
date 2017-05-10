@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Smooth Scroll
 Plugin URI: http://theme.co/x/
 Description: Enabling smooth scrolling on your website allows you to manage the physics of your scroll bar! This fun effect is great if you happen to have a lot users who utilize a mousewheel.
-Version: 1.0.2
+Version: 1.0.4
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-smooth-scroll
 // Constants.
 //
 
-define( 'X_SMOOTH_SCROLL_VERSION', '1.0.1' );
+define( 'X_SMOOTH_SCROLL_VERSION', '1.0.4' );
 define( 'X_SMOOTH_SCROLL_URL', plugins_url( '', __FILE__ ) );
 define( 'X_SMOOTH_SCROLL_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

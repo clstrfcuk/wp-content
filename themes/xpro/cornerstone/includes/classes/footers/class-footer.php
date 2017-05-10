@@ -69,8 +69,9 @@ class Cornerstone_Footer {
   public function save() {
 
     $args = array(
-      'post_title' => $this->get_title(),
-      'post_type'  => 'cs_footer',
+      'post_title'   => $this->get_title(),
+      'post_type'    => 'cs_footer',
+      'post_status'  => 'tco-data',
       'post_content' => wp_slash( json_encode( array(
         'regions' => $this->get_regions(),
         'settings' => $this->get_settings()

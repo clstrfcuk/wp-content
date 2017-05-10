@@ -69,13 +69,13 @@
 
 .ilightbox-toolbar.light a.ilightbox-close:before {
   content: "\f00d";
-  @include font-size(1.5);
+  font-size: 15px;
   line-height: 22px;
 }
 
 .ilightbox-toolbar.light a.ilightbox-fullscreen:before {
   content: "\f0c8";
-  @include font-size(1.1);
+  font-size: 11px;
   line-height: 23px;
 }
 
@@ -303,17 +303,17 @@
   max-width: 100%;
   margin: 0 auto;
   padding: 5px 10px;
-  @include font-size(1.2);
+  font-size: 12px;
   line-height: 150%;
   word-wrap: break-word;  
   text-align: center;
   @include box-sizing(border-box);
   z-index: 20003;
   @include break(cubs) {
-    @include font-size(1.0);
+    font-size: 10px;
   }
   @include break(baby-bear) {
-    @include font-size(0.8);
+    font-size: 8px;
   }
 }
 

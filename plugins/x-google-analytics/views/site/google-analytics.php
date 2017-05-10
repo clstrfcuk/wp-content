@@ -23,4 +23,7 @@ require( X_GOOGLE_ANALYTICS_PATH . '/functions/options.php' );
 // Output
 // =============================================================================
 
-echo $x_google_analytics_code;
+// Check if has admin capabilities
+if ( ! ( is_user_logged_in() && current_user_can( 'update_core' ) ) ) {
+  echo $x_google_analytics_code;
+}

@@ -20,7 +20,7 @@ $screen = get_current_screen();
 
 wp_enqueue_style( $plugin_title . '-jquery-timepicker-css', $plugin_url . '/js/jquery-timepicker/jquery.timepicker.css', NULL, NULL, 'all' );
 
-if ( $screen->id == 'addons_page_x-extensions-snippet' ) {
+if ( $screen->id == 'addons_page_x-extensions-snippet' || $screen->id == 'snippet' || $screen->id == 'theme_page_x-extensions-snippet' || $screen->id === 'x_page_x-extensions-snippet' || $screen->id == 'x-pro_page_x-extensions-snippet' ) {
 
   wp_enqueue_style( $plugin_title . '-admin-css', $plugin_url . '/css/admin/style.css', NULL, NULL, 'all' );
 

@@ -19,7 +19,7 @@ $screen = get_current_screen();
 
 wp_enqueue_script( $plugin_title . '-jquery-timepicker-js', $plugin_url . '/js/jquery-timepicker/jquery.timepicker.js', array( 'jquery' ), NULL, true );
 
-if ( $screen->id == 'addons_page_x-extensions-snippet' || $screen->id == 'snippet' ) {
+if ( $screen->id == 'addons_page_x-extensions-snippet' || $screen->id == 'snippet' || $screen->id == 'theme_page_x-extensions-snippet' || $screen->id === 'x_page_x-extensions-snippet' || $screen->id == 'x-pro_page_x-extensions-snippet' ) {
 
   wp_enqueue_script( $plugin_title . '-admin-js', $plugin_url . '/js/admin/main.js', array( 'jquery' ), NULL, true );
   wp_enqueue_media();

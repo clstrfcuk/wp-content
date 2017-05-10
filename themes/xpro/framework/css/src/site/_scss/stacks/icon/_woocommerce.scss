@@ -93,7 +93,7 @@
       .price {
         > .amount,
         > ins > .amount {
-          @include font-size(1.8);
+          font-size: 18px;
         }
       }
 
@@ -105,7 +105,7 @@
         margin: 0;
         padding: 0.45em 0.5em 0.575em;
         display: block;
-        @include font-size(1.4);
+        font-size: 14px;
         opacity: 0;
         @include text-overflow();
       }
@@ -183,12 +183,12 @@
       .price {
         > del,
         > .from {
-          @include font-size(1.8);
+          font-size: 18px;
         }
 
         > .amount,
         > ins > .amount {
-          @include font-size(2.4);
+          font-size: 24px;
         }
       }
 
@@ -353,7 +353,7 @@
         margin: 0;
         width: 25px;
         height: 25px;
-        @include font-size(1.8);
+        font-size: 18px;
         line-height: 25px;
         text-align: center;
         opacity: 0;
@@ -379,7 +379,7 @@
     border-top: 0;
     border-bottom: 0;
     padding: 7px;
-    @include font-size(1.1);
+    font-size: 11px;
     line-height: 1.1;
     text-align: center;
     text-transform: uppercase;
@@ -399,7 +399,7 @@
       margin: 0;
       border: 0;
       padding: 7px;
-      @include font-size(1.1);
+      font-size: 11px;
       line-height: 1.1;
       text-align: center;
       text-shadow: none;
@@ -509,7 +509,7 @@
       margin: 0;
       border: 1px solid $widgetBorderColor;
       padding: 7px;
-      @include font-size(1.1);
+      font-size: 11px;
       line-height: 1.1;
       text-align: center;
       text-shadow: none;
@@ -599,7 +599,7 @@
     height: 80px;
     border: 1px solid $baseBorderSolid;
     border: 1px solid $baseBorderRgba;
-    @include font-size(1.8);
+    font-size: 18px;
     line-height: 120px;
     text-align: center;
     text-transform: uppercase;
@@ -696,7 +696,7 @@
       }
 
       .x-comment-author {
-        @include font-size(2.1);
+        font-size: 21px;
       }
 
       .star-rating-container {
@@ -704,12 +704,12 @@
         margin: 5px 0 4px;
 
         .star-rating {
-          @include font-size(1.0);
+          font-size: 10px;
         }
       }
 
       .x-comment-time {
-        @include font-size(1.2);
+        font-size: 12px;
       }
 
       .comment-edit-link {
@@ -718,7 +718,7 @@
     }
 
     .x-comment-content {
-      @include font-size(1.4);
+      font-size: 14px;
     }
 
     .x-comment-img {
@@ -753,7 +753,7 @@
   border: 1px solid $baseBorderSolid;
   border: 1px solid $baseBorderRgba;
   line-height: 2.35em;
-  @include font-size(1.1);
+  font-size: 11px;
 }
 
 .woocommerce-ordering {
@@ -763,7 +763,7 @@
     width: 100%;
     margin-bottom: 0;
     line-height: 2.65em;
-    @include font-size(1.1);
+    font-size: 11px;
   }
 }
 

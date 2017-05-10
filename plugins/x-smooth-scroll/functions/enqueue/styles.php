@@ -44,7 +44,7 @@ add_action( 'x_head_css', 'x_smooth_scroll_output_site_styles' );
 
 function x_smooth_scroll_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-smooth-scroll' ) {
+  if ( $hook == 'addons_page_x-extensions-smooth-scroll' || $hook == 'theme_page_x-extensions-smooth-scroll' || $hook == 'x-pro_page_x-extensions-smooth-scroll' ) {
 
     wp_enqueue_style( 'x-smooth-scroll-admin-css', X_SMOOTH_SCROLL_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 

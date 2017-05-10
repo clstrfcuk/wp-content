@@ -69,24 +69,24 @@
     }
   }
 
-  .featured-meta { @include font-size(1.8); }
-  .h-featured    { @include font-size(4.2); }
-  .featured-view { @include font-size(1.6); }
+  .featured-meta { font-size: 18px; }
+  .h-featured    { font-size: 42px; }
+  .featured-view { font-size: 16px; }
 
   @include break(cubs) {
-    .featured-meta { @include font-size(1.6); }
-    .h-featured    { @include font-size(3.2); }
-    .featured-view { @include font-size(1.4); }
+    .featured-meta { font-size: 16px; }
+    .h-featured    { font-size: 32px; }
+    .featured-view { font-size: 14px; }
   }
 
   @include break(middle-bear) {
     .featured-meta { display: none; }
-    .h-featured    { @include font-size(2.4); }
-    .featured-view { @include font-size(1.0); }
+    .h-featured    { font-size: 24px; }
+    .featured-view { font-size: 10px; }
   }
 
   @include break(baby-bear) {
-    .h-featured    { @include font-size(1.6); }
+    .h-featured    { font-size: 16px; }
     .featured-view { display: none; }
   }
 }

@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Olark Integration
 Plugin URI: http://theme.co/x/
 Description: Sign up for an Olark account and experience the easiest way to boost your sales, help solve issues, and understand your customers with live chat.
-Version: 1.0.0
+Version: 1.0.2
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-olark-integration
 // Constants.
 //
 
-define( 'X_OLARK_INTEGRATION_VERSION', '1.0.0' );
+define( 'X_OLARK_INTEGRATION_VERSION', '1.0.2' );
 define( 'X_OLARK_INTEGRATION_URL', plugins_url( '', __FILE__ ) );
 define( 'X_OLARK_INTEGRATION_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

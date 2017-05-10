@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $tab = preg_replace( '/^vc\-/', '', $page->getSlug() );
 $use_custom = get_option( vc_settings()->getFieldPrefix() . 'use_custom' );
 $css = ( ( 'color' === $tab ) && $use_custom ) ? ' color_enabled' : '';
-$dev_environment = Vc_License::isDevEnvironment();
+$dev_environment = vc_license()->isDevEnvironment();
 $license_key = vc_license()->getLicenseKey();
 
 $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr( $css );
@@ -19,7 +19,7 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 	<div class="updated vc_updater-result-message">
 		<p>
 			<strong>
-				<?php _e( 'It is optional to activate license on localhost development environment. You can still activate license on localhost to receive plugin updates.', 'js_composer' ) ?>
+				<?php _e( 'It is optional to activate license on localhost development environment. You can still activate license on localhost to receive plugin updates and get access to template library.', 'js_composer' ) ?>
 			</strong>
 		</p>
 	</div>
@@ -75,8 +75,7 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 	<?php if ( 'updater' === $tab ) : ?>
 
 		<div class="vc_settings-activation-deactivation">
-			<?php if ( vc_license()->isActivated() ): ?>
-
+			<?php if ( vc_license()->isActivated() ) : ?>
 				<p>
 					<?php echo __( 'You have activated Visual Composer version which allows you to access all the customer benefits. Thank you for choosing Visual Composer as your page builder. If you do not wish to use Visual Composer on this WordPress site you can deactivate your license below.', 'js_composer' ) ?>
 				</p>
@@ -96,10 +95,10 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 						id="vc_updater-spinner" width="16" height="16" alt="spinner"/>
 				</p>
 
-			<?php else: ?>
+			<?php else : ?>
 
 				<p>
-					<?php echo __( 'In order to receive all benefits of Visual Composer you need to activate your copy of plugin. By activating Visual Composer license you will unlock premium options - <strong>direct plugin updates</strong> and <strong>access to official support.</strong>', 'js_composer' ) ?>
+					<?php echo __( 'In order to receive all benefits of Visual Composer, you need to activate your copy of the plugin. By activating Visual Composer license you will unlock premium options - <strong>direct plugin updates</strong>, access to <strong>template library</strong> and <strong>official support.</strong>', 'js_composer' ) ?>
 				</p>
 
 				<br/>
@@ -118,7 +117,7 @@ $classes = 'vc_settings-tab-content vc_settings-tab-content-active ' . esc_attr(
 				</p>
 
 				<p class="description">
-					<?php echo sprintf( __( 'Don\'t have valid license yet? <a href="%s" target="_blank">Purchase Visual Composer license</a>.', 'js_composer' ), esc_url( 'http://bit.ly/vcomposer' ) ) ?>
+					<?php echo sprintf( __( 'Don\'t have direct license yet? <a href="%s" target="_blank">Purchase Visual Composer license</a>.', 'js_composer' ), esc_url( 'http://bit.ly/vcomposer' ) ) ?>
 				</p>
 
 			<?php endif ?>

@@ -89,7 +89,7 @@
 
 .flex-viewport {
   max-height: 2000px;
-  @include transition(#{all 1s ease});
+  transition: all 1s ease;
 }
 
 .loading .flex-viewport {
@@ -109,13 +109,13 @@
   height: 30px;
   width: 30px;
   border: 0;
-  @include font-size(1.4);
+  font-size: 14px;
   line-height: 30px;
   text-align: center;
   color: $white !important;
   background-color: $accentColor;
   opacity: 0.5;
-  @include transition(#{opacity 0.3s ease});
+  transition: opacity 0.3s ease;
   z-index: 10;
 
   [class*="#{$fa-css-prefix}-"] {
@@ -144,17 +144,51 @@
 
 .flex-control-nav {
   position: absolute;
-  padding: 0 4px;
-  top: 14px;
-  right: 14px;
   line-height: 1;
   text-align: center;
-  background-color: $baseModBackground;
+
+  &:not(.flex-control-thumbs) {
+    top: 14px;
+    right: 14px;
+    border-radius: 100em;
+    padding: 0 4px;
+    background-color: $baseModBackground;
+
+    li {
+      margin: 7px 4px 6px;
+      text-indent: -9999px;
+    }
+  }
+
+  &.flex-control-thumbs {
+    top: 0;
+    right: 0;
+    padding: 1em;
+
+    li {
+      background-color: $black;
+      box-shadow: 0 0.15em 0.625em rgba(0, 0, 0, 0.215);
+
+      &:not(:first-child) {
+        margin-left: 0.5em;
+      }
+    }
+
+    img {
+      width: auto;
+      height: 1.5em;
+      vertical-align: top;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
+
+      &:not(:hover):not(.flex-active) {
+        opacity: 0.65;
+      }
+    }
+  }
 
   li {
-    margin: 7px 4px 6px;
     display: inline-block;
-    text-indent: -9999px;
   }
 
   a {

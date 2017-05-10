@@ -218,7 +218,7 @@ add_action( 'x_head_css', 'x_video_lock_output_site_styles' );
 
 function x_video_lock_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-video-lock' ) {
+  if ( $hook == 'addons_page_x-extensions-video-lock' || $hook == 'theme_page_x-extensions-video-lock' || $hook == 'x-pro_page_x-extensions-video-lock' ) {
 
     wp_enqueue_style( 'x-video-lock-admin-css', X_VIDEO_LOCK_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 

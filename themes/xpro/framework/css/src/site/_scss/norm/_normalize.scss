@@ -9,11 +9,10 @@
 // -----------------------------------------------------------------------------
 //   01. HTML5 Display Definitions
 //   02. Base
-//   03. Links
-//   04. Typography
-//   05. Embedded Content
-//   06. Forms
-//   07. Iframes
+//   03. Typography
+//   04. Embedded Content
+//   05. Forms
+//   06. Iframes
 // =============================================================================
 
 // HTML5 Display Definitions
@@ -70,35 +69,13 @@ audio:not([controls]) {
 // =============================================================================
 
 //
-// 1. Sets font-size to base 10.
-// 2. Prevents iOS text size adjust after orientation change, without disabling
+// 1. Prevents iOS text size adjust after orientation change, without disabling
 //    user zoom.
 //
 
 html {
-  overflow-x: hidden;
-  font-size: $baseFontSize; // 1
   -webkit-text-size-adjust: 100%; // 2
       -ms-text-size-adjust: 100%; // 2
-}
-
-
-
-// Links
-// =============================================================================
-
-a {
-  text-decoration: none;
-  background-color: transparent;
-
-  &:focus {
-    @include tab-focus();
-  }
-
-  &:hover,
-  &:active {
-    outline: 0 !important;
-  }
 }
 
 
@@ -187,9 +164,7 @@ input[type="submit"] {
 }
 
 input[type="search"] {
-  // -webkit-box-sizing: content-box; // 3
-  //    -moz-box-sizing: content-box;
-  //         box-sizing: content-box; // 3
+  // box-sizing: content-box; // 3
   -webkit-appearance: textfield;   // 3
 }
 

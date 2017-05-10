@@ -106,7 +106,7 @@
     SETTINGS
     -->
 
-    <div id="meta-box-settings" class="postbox" style="display: <?php echo ( isset( $x_under_construction_enable ) && $x_under_construction_enable == 1 &&  isset( $x_under_construction_use_custom ) && $x_under_construction_use_custom == 0 ) ? 'block' : 'none'; ?>;">
+    <div id="meta-box-settings" class="postbox" style="display: <?php echo ( isset( $x_under_construction_enable ) && $x_under_construction_enable == 1 ) ? 'block' : 'none'; ?>;">
       <div class="handlediv" title="<?php _e( 'Click to toggle', '__x__' ); ?>"><br></div>
       <h3 class="hndle"><span><?php _e( 'Settings', '__x__' ); ?></span></h3>
       <div class="inside">
@@ -244,6 +244,31 @@
     </div>
 
     <!--
+    BY PASS SETTINGS
+    -->
+
+    <div id="meta-box-bypass-settings" class="postbox" style="display: <?php echo ( isset( $x_under_construction_enable ) && $x_under_construction_enable == 1 ) ? 'block' : 'none'; ?>;">
+      <div class="handlediv" title="<?php _e( 'Click to toggle', '__x__' ); ?>"><br></div>
+      <h3 class="hndle"><span><?php _e( 'By Pass Settings', '__x__' ); ?></span></h3>
+      <div class="inside">
+        <p><?php _e( 'Define a password so nnot logged in users can by pass Under Construction using cookies.', '__x__' ); ?></p>
+        <table class="form-table">
+
+          <tr>
+            <th>
+              <label for="x_under_construction_bypass_password">
+                <strong><?php _e( 'By Pass Password', '__x__' ); ?></strong>
+                <span><?php _e( 'A password to access the website normally. A key icon will appear on bottom right corner of the page.', '__x__' ); ?></span>
+              </label>
+            </th>
+            <td><input name="x_under_construction_bypass_password" id="x_under_construction_bypass_password" type="text" value="<?php echo ( isset( $x_under_construction_bypass_password ) ) ? $x_under_construction_bypass_password : ''; ?>"  class="large-text"></td>
+          </tr>
+
+        </table>
+      </div>
+    </div>
+
+    <!--
     WHITE LIST SETTINGS
     -->
 
@@ -272,7 +297,7 @@
     SOCIAL MEDIA SETTINGS
     -->
 
-    <div id="meta-box-social-settings" class="postbox" style="display: <?php echo ( isset( $x_under_construction_enable ) && $x_under_construction_enable == 1 &&  isset( $x_under_construction_use_custom ) && $x_under_construction_use_custom == 0 ) ? 'block' : 'none'; ?>;">
+    <div id="meta-box-social-settings" class="postbox" style="display: <?php echo ( isset( $x_under_construction_enable ) && $x_under_construction_enable == 1 ) ? 'block' : 'none'; ?>;">
       <div class="handlediv" title="<?php _e( 'Click to toggle', '__x__' ); ?>"><br></div>
       <h3 class="hndle"><span><?php _e( 'Social media settings', '__x__' ); ?></span></h3>
       <div class="inside">

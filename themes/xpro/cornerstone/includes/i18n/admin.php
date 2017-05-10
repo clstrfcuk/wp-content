@@ -9,8 +9,8 @@ $decline = __( 'No, take me back', 'cornerstone' );
 
 return array(
 
-  // 'integration-mode'         => 'xpro',
-  'editor-tab-logo-path'        => 'svg/logo-flat-custom', // X Pro: 'svg/logo-flat-content'
+  // 'integration-mode'         => 'pro',
+  'editor-tab-logo-path'        => 'svg/logo-flat-custom', // Pro: 'svg/logo-flat-content'
 	'edit-with-cornerstone'       => __( 'Edit with Cornerstone', 'cornerstone' ),
   'visual-tab'                  => __( 'Visual', 'cornerstone' ),
   'text-tab'                    => __( 'Text', 'cornerstone' ),

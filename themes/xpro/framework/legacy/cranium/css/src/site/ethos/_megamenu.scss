@@ -28,7 +28,7 @@
       > a {
         border-top: 2px solid $navbarLinkBorderColor;
         padding: 10px 0 5px;
-        @include font-size(1.7);
+        font-size: 17px;
         text-transform: uppercase;
         color: $navbarLinkColorHover;
 

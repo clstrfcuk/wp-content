@@ -5533,6 +5533,9 @@ textarea[class*="cs-control-input-list-input-height"] {
 .cs-window-options.horizontal .cs-control + .cs-control {
   padding-top: 0; }
 
+.cs-window-options.horizontal .cs-control.cs-hide:first-child + .cs-control {
+  padding-top: 20px; }
+
 .cs-search-section {
   display: table;
   position: relative;
@@ -6505,6 +6508,7 @@ textarea[class*="cs-control-input-list-input-height"] {
   display: flex;
   -webkit-flex: 1;
   flex: 1;
+  height: 100%;
   position: relative;
   min-width: 1px; }
 

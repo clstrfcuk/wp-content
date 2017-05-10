@@ -34,9 +34,22 @@ $x_design_bg_image_full_fade           = x_get_option( 'x_design_bg_image_full_f
 // Typography
 // =============================================================================
 
+$x_root_font_size_mode                 = x_get_option( 'x_root_font_size_mode' );
+$x_root_font_size_stepped_unit         = x_get_option( 'x_root_font_size_stepped_unit' );
+$x_root_font_size_stepped_xs           = x_get_option( 'x_root_font_size_stepped_xs' );
+$x_root_font_size_stepped_sm           = x_get_option( 'x_root_font_size_stepped_sm' );
+$x_root_font_size_stepped_md           = x_get_option( 'x_root_font_size_stepped_md' );
+$x_root_font_size_stepped_lg           = x_get_option( 'x_root_font_size_stepped_lg' );
+$x_root_font_size_stepped_xl           = x_get_option( 'x_root_font_size_stepped_xl' );
+$x_root_font_size_scaling_unit         = x_get_option( 'x_root_font_size_scaling_unit' );
+$x_root_font_size_scaling_min          = x_get_option( 'x_root_font_size_scaling_min' );
+$x_root_font_size_scaling_max          = x_get_option( 'x_root_font_size_scaling_max' );
+$x_root_font_size_scaling_lower_limit  = x_get_option( 'x_root_font_size_scaling_lower_limit' );
+$x_root_font_size_scaling_upper_limit  = x_get_option( 'x_root_font_size_scaling_upper_limit' );
 $x_body_font_size                      = x_get_option( 'x_body_font_size' );
 $x_body_font_color                     = x_post_css_value( x_get_option( 'x_body_font_color' ), 'color' );
 $x_content_font_size                   = x_get_option( 'x_content_font_size' );
+$x_content_font_size_rem               = x_get_option( 'x_content_font_size_rem' );
 $x_headings_font_color                 = x_post_css_value( x_get_option( 'x_headings_font_color' ), 'color' );
 $x_h1_letter_spacing                   = x_get_option( 'x_h1_letter_spacing' );
 $x_h2_letter_spacing                   = x_get_option( 'x_h2_letter_spacing' );
@@ -59,8 +72,6 @@ $x_navbar_font_size                    = x_get_option( 'x_navbar_font_size' );
 $x_navbar_link_color                   = x_post_css_value( x_get_option( 'x_navbar_link_color' ), 'color' );
 $x_navbar_link_color_hover             = x_post_css_value( x_get_option( 'x_navbar_link_color_hover' ), 'color' );
 $x_navbar_letter_spacing               = x_get_option( 'x_navbar_letter_spacing' );
-
-
 
 if ( x_get_option( 'x_enable_font_manager' ) ) {
 

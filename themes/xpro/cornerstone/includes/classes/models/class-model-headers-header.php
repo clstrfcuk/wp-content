@@ -157,6 +157,10 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
     $header = new Cornerstone_Header( $id );
 
+    if ( isset( $atts['title'] ) ) {
+      $header->set_title( $atts['title'] );
+    }
+
     if ( isset( $atts['regions'] ) ) {
       $header->set_regions( $this->plugin->loadComponent('Regions')->sanitize_regions( $atts['regions'] ) );
     }

@@ -92,13 +92,11 @@ if ( ! function_exists( 'x_setup_theme' ) ) :
     // WooCommerce
     // -----------
     // Theme support for the WooCommerce plugin.
-    // 
-    // 01. Look into supporting these later.
 
     add_theme_support( 'woocommerce' );
-    // add_theme_support( 'wc-product-gallery-zoom' ); // 01
+    add_theme_support( 'wc-product-gallery-zoom' );
     add_theme_support( 'wc-product-gallery-lightbox' );
-    // add_theme_support( 'wc-product-gallery-slider' ); // 01
+    add_theme_support( 'wc-product-gallery-slider' );
 
 
     // Allow Shortcodes in Widgets

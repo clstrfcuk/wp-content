@@ -32,7 +32,7 @@
     min-width: 200px;
     margin: 0;
     padding: $dropdownPadding;
-    @include font-size(1.4);
+    font-size: 14px;
     list-style: none;
     background-color: $dropdownBackground;
     z-index: $zindexDropdown;

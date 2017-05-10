@@ -45,6 +45,12 @@ require( X_UNDER_CONSTRUCTION_PATH . '/functions/options.php' );
       <div class="x-under-construction-wrap-inner">
         <div class="x-under-construction">
 
+          <?php if ( isset( $x_under_construction_bypass_password ) && !empty ( $x_under_construction_bypass_password ) ) {
+
+            require X_UNDER_CONSTRUCTION_PATH . '/views/site/bypass.php';
+
+          } ?>
+
           <?php if ( ! empty ( $x_under_construction_logo_image ) ) : ?>
             <div class="x-under-construction-logo">
               <img class="" src="<?php echo esc_attr( $x_under_construction_logo_image ) ?>" alt="logo image" />
@@ -92,7 +98,7 @@ require( X_UNDER_CONSTRUCTION_PATH . '/functions/options.php' );
               }
             }
             ?>
-            <?php if ( $social ) : ?><div class="x-under-construction-social"><?php endif; ?>
+            <?php if ( isset($social) && $social ) : ?><div class="x-under-construction-social"><?php endif; ?>
               <?php foreach ( $social_medias as $key => $sc ) :
                 $key = "x_under_construction_{$key}";
                 $url = $$key;
@@ -102,8 +108,7 @@ require( X_UNDER_CONSTRUCTION_PATH . '/functions/options.php' );
               <?php
                 endif;
               endforeach; ?>
-            <?php if ( $social ) : ?></div><?php endif; ?>
-
+            <?php if ( isset($social) && $social ) : ?></div><?php endif; ?>
 
         </div>
       </div>

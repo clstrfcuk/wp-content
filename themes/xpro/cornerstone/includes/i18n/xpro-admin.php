@@ -5,7 +5,7 @@
  */
 
 return array(
-	'edit-with-cornerstone'      => __( 'Edit with X Pro', 'cornerstone' ),
-	'cornerstone-tab'            => __( 'X Pro', 'cornerstone' ),
+	'edit-with-cornerstone'      => __( 'Edit with Pro', 'cornerstone' ),
+	'cornerstone-tab'            => __( 'Pro', 'cornerstone' ),
 	'default-title'              => __( 'Content Draft', 'cornerstone')
 );

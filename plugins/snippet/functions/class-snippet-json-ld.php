@@ -97,11 +97,16 @@ class Snippet_Json_Ld {
       return null;
     }
 
+    if ( empty($data['organization_image']) || empty($data['organization_image']) ) {
+      return null;
+    }
+
     $json_ld = array(
       '@context' => 'http://schema.org/',
       '@type'    => strip_tags( $data['organization_type'] ),
       'name'     => strip_tags( $data['organization_name'] ),
       'url'      => strip_tags( $data['organization_url'] ),
+      'image'    => strip_tags( $data['organization_image'] ),
     );
 
     if ( array_key_exists('organization_logo', $data) && ! empty($data['organization_logo']) ) {

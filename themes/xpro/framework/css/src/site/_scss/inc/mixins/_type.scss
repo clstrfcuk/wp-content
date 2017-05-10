@@ -84,22 +84,6 @@
 
 
 
-// Font Size
-// =============================================================================
-
-//
-// Provides rem unit sizing with a px fallback.
-// Must set html font-size to 62.5% since base 10 is used for px fallback.
-// 1. $sizeValue of 1.6 results in 16px and 1.6rem.
-//
-
-@mixin font-size($sizeValue: 1.6) { // 1
-  font-size: ($sizeValue * 10) + px;
-  // font-size: $sizeValue + rem;
-}
-
-
-
 // Text Overflow
 // =============================================================================
 

@@ -36,6 +36,8 @@ endif;
 
 if ( ! function_exists( 'x_facebook_sdk' ) ) :
   function x_facebook_sdk() {
+  global $locale;
+  $x_fb_locale = esc_html( $locale ); 
 
     require( X_FACEBOOK_COMMENTS_PATH . '/functions/options.php' ); ?>
 
@@ -54,7 +56,7 @@ if ( ! function_exists( 'x_facebook_sdk' ) ) :
          var js, fjs = d.getElementsByTagName(s)[0];
          if (d.getElementById(id)) {return;}
          js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/sdk.js";
+         js.src = "//connect.facebook.net/'.$x_fb_locale.'/sdk.js";
          fjs.parentNode.insertBefore(js, fjs);
        }(document, 'script', 'facebook-jssdk'));
     </script>

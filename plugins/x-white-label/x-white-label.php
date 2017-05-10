@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; White Label
 Plugin URI: http://theme.co/x/
 Description: Customize the WordPress login screen, Addons home page, and much more. This is a great tool to use if handing X off to a client to provide them with tailored content right in the WordPress admin area.
-Version: 1.3.0
+Version: 1.3.4
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-white-label
 // Constants.
 //
 
-define( 'X_WHITE_LABEL_VERSION', '1.3.0' );
+define( 'X_WHITE_LABEL_VERSION', '1.3.4' );
 define( 'X_WHITE_LABEL_URL', plugins_url( '', __FILE__ ) );
 define( 'X_WHITE_LABEL_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

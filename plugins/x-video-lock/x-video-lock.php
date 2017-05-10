@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Video Lock
 Plugin URI: http://theme.co/x/
 Description: You've never seen a video marketing tool quite like Video Lock. Place offers and a call to action in front of your users without any fuss.
-Version: 1.1.1
+Version: 1.1.3
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-video-lock
 // Constants.
 //
 
-define( 'X_VIDEO_LOCK_VERSION', '1.1.1' );
+define( 'X_VIDEO_LOCK_VERSION', '1.1.3' );
 define( 'X_VIDEO_LOCK_URL', plugins_url( '', __FILE__ ) );
 define( 'X_VIDEO_LOCK_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

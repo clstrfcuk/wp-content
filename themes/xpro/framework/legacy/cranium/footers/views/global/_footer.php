@@ -8,11 +8,13 @@
 
 ?>
 
-  <?php do_action( 'x_before_site_end' ); ?>
+    <?php do_action( 'x_before_site_end' ); ?>
 
-  </div> <!-- END .x-site -->
+    </div> <!-- END .x-site -->
 
-  <?php do_action( 'x_after_site_end' ); ?>
+    <?php do_action( 'x_after_site_end' ); ?>
+
+  </div> <!-- END .x-root -->
 
 <?php wp_footer(); ?>
 

@@ -67,7 +67,10 @@ class Snippet_Meta_Box {
       return ( array_key_exists( $args[1], $array ) && ! empty( $array[ $args[1] ] ) ) ;
     }
 
-    $args[0] = $array[ $args[1] ];
+    if ( isset($array[ $args[1] ]) ) {
+      $args[0] = $array[ $args[1] ];
+    }
+
     unset($args[1]);
 
     return call_user_func_array( array(  $this, 'array_deep_key_exists'), $args );

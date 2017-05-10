@@ -26,7 +26,7 @@
   <tr>
     <th>
       <label for="<?php echo $plugin_slug . '_organization_type'; ?>">
-        <strong><?php _e( 'Type', '__x__' ); ?></strong>
+        <strong><?php _e( 'Type', '__x__' ); ?></strong><?php echo $organization_type ?>
         <span><?php _e( 'Type of organization. You can select a generic type or a more refined one. ', '__x__' ); ?></span>
       </label>
     </th>
@@ -44,11 +44,10 @@
               <option value="<?php echo $org['name'] ?>" <?php echo ( $org['name'] == $organization_type ) ? 'selected' : ''; ?> class="organization_type_option" data-description="<?php echo $org['description']; ?>"><?php _e( $org['label'], '__x__' ); ?> (<?php _e( 'generic', '__x__' ); ?>)</option>
               <?php foreach ($org['children'] as $org2) : ?>
                 <?php if (isset($org2['children'])) : ?>
-                  <option value="<?php echo $org2['name']; ?>" class="organization_type_option" data-description="<?php echo $org2['description']; ?>"><?php _e( $org2['label'], '__x__' ); ?> (generic)</option>
+                  <option value="<?php echo $org2['name']; ?>" class="organization_type_option" data-description="<?php echo $org2['description']; ?>" <?php echo ( $org2['name'] == $organization_type ) ? 'selected' : ''; ?> ><?php _e( $org2['label'], '__x__' ); ?> (generic)</option>
                   <?php foreach ($org2['children'] as $org3) : ?>
                     <option value="<?php echo $org3['name'] ?>" <?php echo ( $org3['name'] == $organization_type ) ? 'selected' : ''; ?> data-description="<?php echo $org3['description']; ?>"><?php _e( $org2['label'], '__x__' ); ?> => <?php _e( $org3['label'], '__x__' ); ?></option>
                   <?php endforeach; ?>
-                  </optgroup>
                   <?php continue; ?>
                 <?php endif; ?>
                 <option value="<?php echo $org2['name'] ?>" <?php echo ( $org2['name'] == $organization_type ) ? 'selected' : ''; ?>><?php _e( $org2['name'], '__x__' ); ?></option>
@@ -92,5 +91,20 @@
       value="<?php echo esc_attr( $organization_url ); ?>">
     </td>
   </tr>
+
+  <tr>
+    <th>
+      <label for="<?php echo $plugin_slug . '_organization_image'; ?>">
+        <strong><?php _e( 'Image', '__x__' ); ?></strong>
+        <span><?php _e( 'URL for the image of your organization. For some types is mandatory, for some it\'s not.', '__x__' ); ?></span>
+      </label>
+    </th>
+    <td>
+      <input type="text" class="large-text" name="<?php echo $plugin_slug; ?>[organization_image]"
+      id="<?php echo $plugin_slug . '_organization_image'; ?>"
+      value="<?php echo esc_attr( $organization_image ); ?>">
+    </td>
+  </tr>
+
 
 </table>

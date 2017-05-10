@@ -26,9 +26,10 @@ $tabs = array (
   ),
   'organization' => array(
     'required' => array(
-      'organization_type' => 'Type',
-      'organization_name' => 'Name / Business Name',
-      'organization_url'  => 'Website URL',
+      'organization_type'  => 'Type',
+      'organization_name'  => 'Name / Business Name',
+      'organization_url'   => 'Website URL',
+      'organization_image' => 'Website Image',
     ),
     'suggested' => array (
       'organization_logo'        => 'Logo URL',
@@ -82,7 +83,7 @@ foreach ($tabs as $tab_key => $tab)  {
         </p>
         <ul>
           <?php foreach ( $required as $tab_key => $tab) : ?>
-            <li><?php echo sprintf( __('Check <a href="admin.php?page=snippet&tab=%s">%s tab</a> for <strong>required</strong> fields', '__x__'), $tab_key, ucwords($tab_key) ) ?>: <strong><?php echo implode(', ', $tab) ?></strong></li>
+            <li><?php echo sprintf( __('Check <a href="admin.php?page=x-extensions-snippet&tab=%s">%s tab</a> for <strong>required</strong> fields', '__x__'), $tab_key, ucwords($tab_key) ) ?>: <strong><?php echo implode(', ', $tab) ?></strong></li>
           <?php endforeach; ?>
         </ul>
         <?php endif; ?>
@@ -94,7 +95,7 @@ foreach ($tabs as $tab_key => $tab)  {
         </p>
         <ul>
           <?php foreach ( $suggested as $tab_key => $tab) : ?>
-            <li><?php echo sprintf( __('Check <a href="admin.php?page=snippet&tab=%s">%s tab</a> for <em>suggested</em> fields', '__x__'), $tab_key, ucwords($tab_key) ) ?>: <strong><?php echo implode(', ', $tab) ?></strong></li>
+            <li><?php echo sprintf( __('Check <a href="admin.php?page=x-extensions-snippet&tab=%s">%s tab</a> for <em>suggested</em> fields', '__x__'), $tab_key, ucwords($tab_key) ) ?>: <strong><?php echo implode(', ', $tab) ?></strong></li>
           <?php endforeach; ?>
         </ul>
         <?php endif; ?>

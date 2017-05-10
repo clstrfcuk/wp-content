@@ -48,6 +48,7 @@ if ( $menu_is_dropdown ) {
   $atts['data-x-stem']       = NULL;
   $atts['data-x-stem-top']   = NULL;
   $atts['data-x-toggleable'] = $mod_id;
+  $atts['tabindex']          = -1;
 
   if ( $_region === 'left' ) {
     $atts['data-x-stem-top'] = 'h';

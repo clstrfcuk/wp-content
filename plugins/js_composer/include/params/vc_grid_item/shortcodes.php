@@ -40,6 +40,17 @@ $zone_params = array(
 		'description' => __( 'Note: Featured image overwrites background image and color from "Design Options".', 'js_composer' ),
 	),
 	array(
+		'type' => 'textfield',
+		'heading' => __( 'Image size', 'js_composer' ),
+		'param_name' => 'img_size',
+		'value' => 'large',
+		'description' => __( 'Enter image size (Example: "thumbnail", "medium", "large", "full" or other sizes defined by theme). Alternatively enter size in pixels (Example: 200x100 (Width x Height)).', 'js_composer' ),
+		'dependency' => array(
+			'element' => 'featured_image',
+			'not_empty' => true,
+		),
+	),
+	array(
 		'type' => 'css_editor',
 		'heading' => __( 'CSS box', 'js_composer' ),
 		'param_name' => 'css',
@@ -210,7 +221,7 @@ $list = array(
 		'post_type' => Vc_Grid_Item_Editor::postType(),
 	),
 	'vc_gitem_zone_a' => array(
-		'name' => __( 'Normal Block', 'js_composer' ),
+		'name' => __( 'Normal', 'js_composer' ),
 		'base' => 'vc_gitem_zone_a',
 		'content_element' => false,
 		'is_container' => true,
@@ -250,7 +261,7 @@ $list = array(
 		'post_type' => Vc_Grid_Item_Editor::postType(),
 	),
 	'vc_gitem_zone_b' => array(
-		'name' => __( 'Hover Block', 'js_composer' ),
+		'name' => __( 'Hover', 'js_composer' ),
 		'base' => 'vc_gitem_zone_b',
 		'content_element' => false,
 		'is_container' => true,
@@ -264,7 +275,7 @@ $list = array(
 		'post_type' => Vc_Grid_Item_Editor::postType(),
 	),
 	'vc_gitem_zone_c' => array(
-		'name' => __( 'Additional Block', 'js_composer' ),
+		'name' => __( 'Additional', 'js_composer' ),
 		'base' => 'vc_gitem_zone_c',
 		'content_element' => false,
 		'is_container' => true,
@@ -350,6 +361,17 @@ $list = array(
 				'param_name' => 'featured_image',
 				'value' => array( __( 'Yes', 'js_composer' ) => 'yes' ),
 				'description' => __( 'Note: Featured image overwrites background image and color from "Design Options".', 'js_composer' ),
+			),
+			array(
+				'type' => 'textfield',
+				'heading' => __( 'Image size', 'js_composer' ),
+				'param_name' => 'img_size',
+				'value' => 'large',
+				'description' => __( 'Enter image size (Example: "thumbnail", "medium", "large", "full" or other sizes defined by theme). Alternatively enter size in pixels (Example: 200x100 (Width x Height)).', 'js_composer' ),
+				'dependency' => array(
+					'element' => 'featured_image',
+					'not_empty' => true,
+				),
 			),
 			array(
 				'type' => 'css_editor',
@@ -655,22 +677,41 @@ $shortcode_vc_column_text = WPBMap::getShortCode( 'vc_column_text' );
 if ( is_array( $shortcode_vc_column_text ) && isset( $shortcode_vc_column_text['base'] ) ) {
 	$list['vc_column_text'] = $shortcode_vc_column_text;
 	$list['vc_column_text']['post_type'] = Vc_Grid_Item_Editor::postType();
+	$remove = array( 'el_id' );
+	foreach ( $list['vc_column_text']['params'] as $k => $v ) {
+		if ( in_array( $v['param_name'], $remove ) ) {
+			unset( $list['vc_column_text']['params'][ $k ] );
+		}
+	}
 }
 $shortcode_vc_separator = WPBMap::getShortCode( 'vc_separator' );
 if ( is_array( $shortcode_vc_separator ) && isset( $shortcode_vc_separator['base'] ) ) {
 	$list['vc_separator'] = $shortcode_vc_separator;
 	$list['vc_separator']['post_type'] = Vc_Grid_Item_Editor::postType();
+	$remove = array( 'el_id' );
+	foreach ( $list['vc_separator']['params'] as $k => $v ) {
+		if ( in_array( $v['param_name'], $remove ) ) {
+			unset( $list['vc_separator']['params'][ $k ] );
+		}
+	}
 }
 $shortcode_vc_text_separator = WPBMap::getShortCode( 'vc_text_separator' );
 if ( is_array( $shortcode_vc_text_separator ) && isset( $shortcode_vc_text_separator['base'] ) ) {
 	$list['vc_text_separator'] = $shortcode_vc_text_separator;
 	$list['vc_text_separator']['post_type'] = Vc_Grid_Item_Editor::postType();
+
+	$remove = array( 'el_id' );
+	foreach ( $list['vc_text_separator']['params'] as $k => $v ) {
+		if ( in_array( $v['param_name'], $remove ) ) {
+			unset( $list['vc_text_separator']['params'][ $k ] );
+		}
+	}
 }
 $shortcode_vc_icon = WPBMap::getShortCode( 'vc_icon' );
 if ( is_array( $shortcode_vc_icon ) && isset( $shortcode_vc_icon['base'] ) ) {
 	$list['vc_icon'] = $shortcode_vc_icon;
 	$list['vc_icon']['post_type'] = Vc_Grid_Item_Editor::postType();
-	$list['vc_icon']['params'] = vc_map_integrate_shortcode( 'vc_icon', '', '', array( 'exclude' => array( 'link' ) ) );
+	$list['vc_icon']['params'] = vc_map_integrate_shortcode( 'vc_icon', '', '', array( 'exclude' => array( 'link', 'el_id' ) ) );
 }
 $list['vc_single_image'] = array(
 	'name' => __( 'Single Image', 'js_composer' ),
@@ -717,7 +758,7 @@ $list['vc_single_image'] = array(
 				'value' => 'external_link',
 			),
 		),
-		vc_add_css_animation(),
+		vc_map_add_css_animation(),
 		array(
 			'type' => 'textfield',
 			'heading' => __( 'Image size', 'js_composer' ),
@@ -781,13 +822,19 @@ if ( is_array( $shortcode_vc_btn ) && isset( $shortcode_vc_btn['base'] ) ) {
 	$list['vc_btn'] = $shortcode_vc_btn;
 	$list['vc_btn']['post_type'] = Vc_Grid_Item_Editor::postType();
 	unset( $list['vc_btn']['params'][1] );
+	$remove = array( 'el_id' );
+	foreach ( $list['vc_btn']['params'] as $k => $v ) {
+		if ( in_array( $v['param_name'], $remove ) ) {
+			unset( $list['vc_btn']['params'][ $k ] );
+		}
+	}
 }
 $shortcode_vc_custom_heading = WPBMap::getShortCode( 'vc_custom_heading' );
 if ( is_array( $shortcode_vc_custom_heading ) && isset( $shortcode_vc_custom_heading['base'] ) ) {
 	$list['vc_custom_heading'] = $shortcode_vc_custom_heading;
 	$list['vc_custom_heading']['post_type'] = Vc_Grid_Item_Editor::postType();
 
-	$remove = array( 'link', 'source' );
+	$remove = array( 'link', 'source', 'el_id' );
 	foreach ( $list['vc_custom_heading']['params'] as $k => $v ) {
 		if ( in_array( $v['param_name'], $remove ) ) {
 			unset( $list['vc_custom_heading']['params'][ $k ] );
@@ -803,6 +850,12 @@ $shortcode_vc_empty_space = WPBMap::getShortCode( 'vc_empty_space' );
 if ( is_array( $shortcode_vc_empty_space ) && isset( $shortcode_vc_empty_space['base'] ) ) {
 	$list['vc_empty_space'] = $shortcode_vc_empty_space;
 	$list['vc_empty_space']['post_type'] = Vc_Grid_Item_Editor::postType();
+	$remove = array( 'el_id' );
+	foreach ( $list['vc_empty_space']['params'] as $k => $v ) {
+		if ( in_array( $v['param_name'], $remove ) ) {
+			unset( $list['vc_empty_space']['params'][ $k ] );
+		}
+	}
 }
 foreach ( array( 'vc_icon', 'vc_button2', 'vc_btn', 'vc_custom_heading', 'vc_single_image' ) as $key ) {
 	if ( isset( $list[ $key ] ) ) {
@@ -835,6 +888,11 @@ foreach ( array( 'vc_icon', 'vc_button2', 'vc_btn', 'vc_custom_heading', 'vc_sin
 		}
 		// Add link dropdown
 		array_unshift( $list[ $key ]['params'], $vc_gitem_add_link_param );
+	}
+}
+foreach ( $list as $key => $value ) {
+	if ( isset( $list[ $key ]['params'] ) ) {
+		$list[ $key ]['params'] = array_values( $list[ $key ]['params'] );
 	}
 }
 

@@ -149,6 +149,10 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
 
     $footer = new Cornerstone_Footer( $id );
 
+    if ( isset( $atts['title'] ) ) {
+      $footer->set_title( $atts['title'] );
+    }
+
     if ( isset( $atts['regions'] ) ) {
       $footer->set_regions( $this->plugin->loadComponent('Regions')->sanitize_regions( $atts['regions'] ) );
     }

@@ -23,8 +23,17 @@ $atts = array(
   'class'             => $classes,
   'data-x-stem'       => NULL,
   'data-x-stem-top'   => NULL,
-  'data-x-toggleable' => $mod_id
+  'data-x-toggleable' => $mod_id,
+  'tabindex'          => -1
 );
+
+if ( isset( $_region ) && $_region === 'left' ) {
+  $atts['data-x-stem-top'] = 'h';
+}
+
+if ( isset( $_region ) && $_region === 'right' ) {
+  $atts['data-x-stem-top'] = 'rh'; 
+}
 
 if ( isset( $id ) && ! empty( $id ) ) {
   $atts['id'] = $id . '-dropdown';

@@ -87,7 +87,7 @@
   border: 1px solid $baseBorderSolid;
   border: 1px solid $baseBorderRgba;
   font-family: $altFontFamily;
-  @include font-size(1.8);
+  font-size: 18px;
   font-weight: 400;
   letter-spacing: 0;
   line-height: 48px;
@@ -99,7 +99,7 @@
   @include break(middle-bear) {
     width: 38px;
     height: 38px;
-    @include font-size(1.4);
+    font-size: 14px;
     line-height: 36px;
   }
 
@@ -137,7 +137,7 @@
     left: 50%;
     width: 70px;
     height: 70px;
-    @include font-size(4.2);
+    font-size: 42px;
     line-height: 72px;
     text-align: center;
     vertical-align: middle;
@@ -266,7 +266,7 @@ a.entry-thumb:hover {
 }
 
 .entry-sharing {
-  @include font-size(1.6);
+  font-size: 16px;
   line-height: 1;
 
   .entry-share {
@@ -295,14 +295,14 @@ a.entry-thumb:hover {
     .meta-comments {
       width: 42px;
       height: 42px;
-      @include font-size(1.6);
+      font-size: 16px;
       line-height: 40px;
       @include break(cubs) {
         top: 8px;
         right: 8px;
         width: 30px;
         height: 30px;
-        @include font-size(1.1);
+        font-size: 11px;
         line-height: 28px;
       }
     }
@@ -335,14 +335,14 @@ a.entry-thumb:hover {
     .meta-comments {
       width: 35px;
       height: 35px;
-      @include font-size(1.3);
+      font-size: 13px;
       line-height: 35px;
       @include break(cubs) {
         top: 8px;
         right: 8px;
         width: 30px;
         height: 30px;
-        @include font-size(1.1);
+        font-size: 11px;
         line-height: 28px;
       }
     }

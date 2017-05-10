@@ -18,7 +18,7 @@
 
 function x_content_dock_output() {
 
-  require( X_CONTENT_DOCK_PATH . '/views/site/content-dock.php' );
+    require( X_CONTENT_DOCK_PATH . '/views/site/content-dock.php' );
 
 }
 

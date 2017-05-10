@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Terms of Use
 Plugin URI: http://theme.co/x/
 Description: This plugin will allow you to add a simple terms of use that visitors must agree to before completing user registration.
-Version: 1.0.0
+Version: 1.0.12
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-terms-of-use
 // Constants.
 //
 
-define( 'X_TERMS_OF_USE_VERSION', '1.0.0' );
+define( 'X_TERMS_OF_USE_VERSION', '1.0.2' );
 define( 'X_TERMS_OF_USE_URL', plugins_url( '', __FILE__ ) );
 define( 'X_TERMS_OF_USE_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

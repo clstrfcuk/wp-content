@@ -6,23 +6,6 @@ class Cornerstone_Debug extends Cornerstone_Plugin_Component {
     add_action( 'parse_request', array( $this, 'detect_load' ) );
   }
 
-
-  public function content() {
-
-    echo '<div style="position:absolute;top:100px; left: 200px; right: 200px; bottom: 100px;">';
-    wp_editor( '%%PLACEHOLDER%%','cswpeditor', array(
-      'quicktags' => false,
-      'tinymce'=> array(
-        'toolbar1' => 'bold,italic,strikethrough,underline,bullist,numlist,forecolor,wp_adv',
-        'toolbar2' => 'link,unlink,alignleft,aligncenter,alignright,alignjustify,outdent,indent',
-        'toolbar3' => 'formatselect,pastetext,removeformat,charmap,undo,redo'
-      ),
-      'editor_class' => 'cs-wp-editor',
-      'drag_drop_upload' => true
-    ) );
-    echo '</div>';
-  }
-
   public function detect_load( $wp ) {
 
     if ( ! ( current_user_can('manage_options') && isset( $_GET['cs-debug'] ) && '1' === $_GET['cs-debug'] ) ) {
@@ -70,7 +53,7 @@ class Cornerstone_Debug extends Cornerstone_Plugin_Component {
     </head>
     <body<?php $this->body_classes(); ?>>
     <?php
-      $this->content();
+      do_action('cs_debug');
       wp_print_footer_scripts();
       wp_admin_bar_render();
     ?>
@@ -101,83 +84,3 @@ class Cornerstone_Debug extends Cornerstone_Plugin_Component {
 
   }
 }
-
-// add_action('init', function(){
-//
-//   return;
-//   $stack = 'Renew';
-//
-//   $name = strtolower($stack);
-//   $data = json_decode( file_get_contents("/Users/rohmann/Desktop/presets-$name-cs-header.json"), true );
-//
-//   // $header = new Cornerstone_Header( 57 );
-//   //
-//   // $header->set_regions( $elements['regions'] );
-//   // $header->save();
-//   //
-//   // var_dump($header->serialize());die();
-//
-//
-//   $presets_file = "/Users/rohmann/repos/themeco/x/x/framework/functions/bars/sample/presets.php";
-//
-//   $presets = file_exists($presets_file) ? include($presets_file) : null;
-//
-//   if ( ! is_array( $presets ) ) {
-//     $presets = array();
-//   }
-//
-//   $unique_presets = array();
-//   foreach ($presets as $preset) {
-//     $key = $preset['element'] . ':' . $preset['title'];
-//     $unique_presets[$key] = $preset;
-//   }
-//
-//
-//   $manager = CS()->loadComponent('Element_Manager');
-//
-//   $types = $manager->sort_into_types( $data['regions']['top'] );
-//
-//   foreach ($types as $type => $elements) {
-//     if ( 'container' === $type ) {
-//       continue;
-//     }
-//
-//     $definition = $manager->get_element($type);
-//     $defaults = $definition->get_defaults();
-//     $count = 0;
-//
-//     foreach ($elements as $element) {
-//
-//       unset( $element['_type'] );
-//       unset( $element['_region'] );
-//       foreach ($element as $key => $value) {
-//         if ( ! isset($defaults[$key]) || $defaults[$key] === $value ) {
-//           unset( $element[$key] );
-//         }
-//       }
-//       $unique_presets["$type:$stack"] = array(
-//         'element' => $type,
-//         'title' => $stack,
-//         'atts'  => json_encode( $element )
-//       );
-//     }
-//   }
-//
-//
-//   $output_presets = array_values( $unique_presets);
-//   $total = count( $output_presets );
-//
-// 	ob_start();
-//   echo '<?php return array(';
-//
-//     foreach ($output_presets as $index => $preset) {
-//       echo "\n";
-//       var_export($preset);
-//       if ( $total > $index + 1 ) echo ',';
-//     }
-//
-//   echo ');';
-//   $output = ob_get_clean();
-//   file_put_contents($presets_file, $output );
-//   var_dump($output);die();
-// },9999);

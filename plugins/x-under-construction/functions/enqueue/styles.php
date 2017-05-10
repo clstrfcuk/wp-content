@@ -28,14 +28,20 @@ function x_under_construction_output_site_styles() {
 
       if ( in_array( $_SERVER['REMOTE_ADDR'], $allowed_ips) ) {
 
-        return false;
+        return null;
 
       }
 
     }
 
+    wp_enqueue_style( 'dashicons' );
+
     $admin_bar_is_showing = is_admin_bar_showing();
 
+    if (
+      ! isset( $_COOKIE['x_under_construction_bypass'] )
+      && ! ( isset( $x_under_construction_use_custom ) && $x_under_construction_use_custom == 1 )
+    ) {
     ?>
 
     /*
@@ -229,8 +235,52 @@ function x_under_construction_output_site_styles() {
       }
     }
 
-  <?php }
+    <?php
+    }
 
+    if ( isset( $x_under_construction_bypass_password ) && !empty ( $x_under_construction_bypass_password ) ) {
+      ?>
+    #x-under-construction-bypass {
+      z-index: 10000;
+      position: fixed;
+      right: 10px;
+      bottom: 20px;
+      padding: 10px;
+      width: 350px;
+      height: 30px;
+    }
+
+    #x-under-construction-bypass-toggle {
+      float: right;
+      padding-left: 10px;
+      cursor: pointer;
+    }
+
+    #x-under-construction-bypass-form {
+      float: right;
+      display: none;
+    }
+
+    #x-under-construction-bypass span {
+      font-size: 30px;
+      width: 30px;
+      height: 30px;
+    }
+
+    #x-under-construction-bypass input {
+      font-size: 12px;
+      width: 160px;
+      height: 30px;
+    }
+
+    #x-under-construction-bypass button {
+      margin: -10px 0 0 0;
+      width: 80px;
+      height: 30px;
+    }
+    <?php
+    }
+  }
 }
 
 add_action( 'x_head_css', 'x_under_construction_output_site_styles' );
@@ -242,7 +292,7 @@ add_action( 'x_head_css', 'x_under_construction_output_site_styles' );
 
 function x_under_construction_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-under-construction' ) {
+  if ( $hook == 'addons_page_x-extensions-under-construction' || $hook == 'theme_page_x-extensions-under-construction' || $hook === 'x_page_x-extensions-under-construction' || $hook == 'x-pro_page_x-extensions-under-construction' ) {
 
     wp_enqueue_style( 'x-under-construction-admin-css', X_UNDER_CONSTRUCTION_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 

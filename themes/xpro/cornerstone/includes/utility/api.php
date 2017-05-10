@@ -240,6 +240,10 @@ function cornerstone_post_process_color( $value ) {
   return CS()->loadComponent('Color_Manager')->css_post_process_color( $value );
 }
 
+function cornerstone_cleanup_generated_styles() {
+  return CS()->loadComponent('Cleanup')->clean_generated_styles();
+}
+
 /**
  * Deprecated
  */

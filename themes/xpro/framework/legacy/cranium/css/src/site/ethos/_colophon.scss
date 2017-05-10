@@ -49,7 +49,7 @@
 
   &.bottom {
     padding: $layoutSpacing 0;
-    @include font-size(1.1);
+    font-size: 11px;
     text-align: center;
     text-transform: uppercase;
     color: $textColor;
@@ -103,10 +103,10 @@
 
       a {
         margin: 0 1%;
-        @include font-size(1.8);
+        font-size: 18px;
 
         &.foursquare {
-          @include font-size(1.7);
+          font-size: 17px;
         }
       }
     }

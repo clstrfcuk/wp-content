@@ -17,7 +17,7 @@
 
 function x_custom_404_enqueue_admin_scripts( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-custom-404' ) {
+  if ( $hook == 'addons_page_x-extensions-custom-404' || $hook == 'theme_page_x-extensions-custom-404' || $hook == 'x-pro_page_x-extensions-custom-404') {
 
     wp_enqueue_script( 'x-custom-404-admin-js', X_CUSTOM_404_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
 

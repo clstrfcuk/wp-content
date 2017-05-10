@@ -87,9 +87,5 @@
     @include flex-direction(inherit);
     @include justify-content(inherit);
     @include align-items(inherit);
-
-    > a {
-      @include flex-basis(100% !important);
-    }
   }
 }

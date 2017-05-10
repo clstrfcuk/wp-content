@@ -61,6 +61,7 @@ if ( isset( $_POST['x_under_construction_form_submitted'] ) ) {
     $x_under_construction_options['x_under_construction_date_color']       = sanitize_text_field( $_POST['x_under_construction_date_color'] );
     $x_under_construction_options['x_under_construction_social_color']     = sanitize_text_field( $_POST['x_under_construction_social_color'] );
     $x_under_construction_options['x_under_construction_whitelist']        = sanitize_text_field( $_POST['x_under_construction_whitelist'] );
+    $x_under_construction_options['x_under_construction_bypass_password']  = sanitize_text_field( $_POST['x_under_construction_bypass_password'] );
 
     foreach ( $social_medias as $key => $sc ) {
       $key = "x_under_construction_{$key}";
@@ -96,6 +97,7 @@ if ( $x_under_construction_options != '' ) {
   $x_under_construction_date_color       = $x_under_construction_options['x_under_construction_date_color'];
   $x_under_construction_social_color     = $x_under_construction_options['x_under_construction_social_color'];
   $x_under_construction_whitelist        = $x_under_construction_options['x_under_construction_whitelist'];
+  $x_under_construction_bypass_password  = $x_under_construction_options['x_under_construction_bypass_password'];
 
   foreach ( $social_medias as $key => $sc ) {
     $key = "x_under_construction_{$key}";

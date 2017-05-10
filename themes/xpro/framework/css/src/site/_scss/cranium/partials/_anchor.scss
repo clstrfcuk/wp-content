@@ -18,8 +18,8 @@
 // Variables
 // =============================================================================
 
-$tdYep:     0.3s;
-$tdNope:    0s;
+$transitionDurationYep:     0.3s;
+$transitionDurationNope:    0s;
 
 
 
@@ -33,10 +33,6 @@ $tdNope:    0s;
   min-width: 1px;
   cursor: pointer;
   transition-property: border-color, background-color, box-shadow;
-
-  &:focus {
-    outline: 0;
-  }
 }
 
 .x-anchor-content {
@@ -59,17 +55,17 @@ $tdNope:    0s;
 .x-anchor-graphic-image,
 .x-anchor-graphic-toggle,
 .x-anchor-sub-indicator {
-  transition-duration: $tdYep;
+  transition-duration: $transitionDurationYep;
   transition-timing-function: $materialStand;
 }
 
 [data-x-anchor-anim] {
-  animation-duration: $tdYep;
+  animation-duration: $transitionDurationYep;
   animation-fill-mode: forwards;
   animation-timing-function: $materialStand;
 
   &[class*="secondary"] {
-    animation-duration: $tdYep * 1.5;
+    animation-duration: $transitionDurationYep * 1.5;
   }
 }
 
@@ -79,13 +75,14 @@ $tdNope:    0s;
   i,
   ul,
   ol,
+  img,
   div,
   span,
   button {
-    animation-delay: 0s !important;
-    transition-delay: 0s !important;
-    animation-duration: 0s !important;
-    transition-duration: 0s !important;
+    animation-delay: $transitionDurationNope !important;
+    transition-delay: $transitionDurationNope !important;
+    animation-duration: $transitionDurationNope !important;
+    transition-duration: $transitionDurationNope !important;
   }
 }
 

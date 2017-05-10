@@ -42,9 +42,7 @@ if ( isset( $atts['link'] ) ) {
 	}
 }
 
-$link = apply_filters( 'vc_gitem_post_data_get_link_link', 'a ' . $link, $atts, $css_class )
-		. apply_filters( 'vc_gitem_post_data_get_link_target', $target, $atts )
-        . apply_filters( 'vc_gitem_post_data_get_link_rel', $rel, $atts );
+$link = apply_filters( 'vc_gitem_post_data_get_link_link', 'a ' . $link, $atts, $css_class ) . apply_filters( 'vc_gitem_post_data_get_link_target', $target, $atts ) . apply_filters( 'vc_gitem_post_data_get_link_rel', $rel, $atts );
 
 if ( $align ) {
 	$wrapper_css_class .= ' vc_button-2-align-' . $align;

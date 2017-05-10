@@ -63,7 +63,7 @@
   small {
     display: block;
     margin-top: 5px;
-    @include font-size(1.2);
+    font-size: 12px;
     letter-spacing: 0;
     text-transform: none;
   }
@@ -231,7 +231,7 @@ article.comment {
   float: left;
   display: inline-block;
   font-family: $altFontFamily;
-  @include font-size(1.2);
+  font-size: 12px;
   line-height: 1;
   text-transform: uppercase;
   color: $textColor;
@@ -258,7 +258,7 @@ article.comment {
   display: block;
   margin-right: 1em;
   float: right;
-  @include font-size(1.2);
+  font-size: 12px;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -271,7 +271,7 @@ article.comment {
 .comment-reply-link {
   position: relative;
   float: right;
-  @include font-size(1.2);
+  font-size: 12px;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -327,7 +327,7 @@ article.comment {
     width: 100%;
     clear: left;
     margin-top: 5px;
-    @include font-size(1.1);
+    font-size: 11px;
     line-height: 1.2;
     text-align: center;
     opacity: 0.65;

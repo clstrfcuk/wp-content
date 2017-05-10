@@ -60,7 +60,7 @@
         <?php if ( empty( $schema_list ) ) : ?>
           <option><?php _e( 'No Lists Found', '__x__' ); ?></option>
         <?php else : ?>
-          <option value=" <?php selected( $value, $default_schema ) ?>"><?php _e( '-- Select a schema --', '__x__' ); ?></option>
+          <option value=" <?php selected( '', $default_schema ) ?>"><?php _e( '-- Select a schema --', '__x__' ); ?></option>
           <?php foreach ( $schema_list as $value => $label ) : ?>
             <option value="<?php echo $value; ?>" <?php selected( $value, $default_schema ) ?>><?php echo $label; ?></option>
           <?php endforeach; ?>
@@ -83,11 +83,20 @@
        <select class="select" name="<?php echo $plugin_slug; ?>[schema][<?php echo $post_type->name; ?>]" id="<?php echo $plugin_slug . '_schema_' . $post_type->name; ?>">
          <?php if ( empty( $schema_list ) ) : ?>
            <option><?php _e( 'No Lists Found', '__x__' ); ?></option>
-         <?php else : ?>
-           <option value="default" <?php selected( 'default', $schema[ $post_type->name ] ) ?>><?php echo _e( '-- Use default --', '__x__' ); ?></option>
-           <option value="disabled" <?php selected( 'disabled', $schema[ $post_type->name ] ) ?>><?php echo _e( '-- disabled --', '__x__' ); ?></option>
-           <?php foreach ( $schema_list as $value => $label ) : ?>
-             <option value="<?php echo $value; ?>" <?php selected( $value, $schema[ $post_type->name ] ) ?>><?php echo $label; ?></option>
+         <?php else :
+
+           if (isset($schema[ $post_type->name ])) :
+             ?>
+             <option value="default" <?php selected( 'default', $schema[ $post_type->name ] ) ?>><?php echo _e( '-- Use default --', '__x__' ); ?></option>
+             <option value="disabled" <?php selected( 'disabled', $schema[ $post_type->name ] ) ?>><?php echo _e( '-- disabled --', '__x__' ); ?></option>
+           <?php else : ?>
+             <option value="default" selected><?php echo _e( '-- Use default --', '__x__' ); ?></option>
+             <option value="disabled"><?php echo _e( '-- disabled --', '__x__' ); ?></option>
+           <?php endif ?>
+           <?php foreach ( $schema_list as $value => $label ) :
+             $schema_post_type = isset($schema[ $post_type->name ]) ? $schema[ $post_type->name ] : 'null';
+           ?>
+             <option value="<?php echo $value; ?>" <?php selected( $value, $schema_post_type ) ?>><?php echo $label; ?></option>
            <?php endforeach; ?>
          <?php endif; ?>
        </select>

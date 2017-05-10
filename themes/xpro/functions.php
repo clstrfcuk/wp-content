@@ -76,7 +76,6 @@ function x_boot() {
     $admn_path . '/widgets.php',
     $admn_path . '/custom-post-types.php',
     $admn_path . '/cs-options/setup.php',
-    $admn_path . '/menus/setup.php',
     $admn_path . '/customizer/setup.php',
     $admn_path . '/addons/setup.php',
 

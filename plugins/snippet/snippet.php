@@ -5,7 +5,7 @@
 Plugin Name: Snippet
 Plugin URI: http://theme.co/x/
 Description: Add Schema.Org for SEO improvement
-Version: 1.0.0
+Version: 1.0.3
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: snippet
 // Constants.
 //
 
-if (!defined('SNIPPET_VERSION')) define( 'SNIPPET_VERSION', '1.0.0' );
+if (!defined('SNIPPET_VERSION')) define( 'SNIPPET_VERSION', '1.0.3' );
 if (!defined('SNIPPET_IS_LOADED')) define( 'SNIPPET_IS_LOADED', true );
 if (!defined('SNIPPET_URL')) define( 'SNIPPET_URL', plugins_url( '', __FILE__ ) );
 if (!defined('SNIPPET_PATH')) define( 'SNIPPET_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );

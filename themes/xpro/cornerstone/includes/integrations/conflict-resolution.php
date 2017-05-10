@@ -135,7 +135,7 @@ class Cornerstone_Integration_Conflict_Resolution {
     return get_post( icl_object_id( $post->ID, 'post', false, $sitepress->get_current_language() ) );
   }
 
-  public function wpml_title( $title, $id ) {
+  public function wpml_title( $title, $id = null ) {
 
     $wpml_post = $this->wpml_post();
 

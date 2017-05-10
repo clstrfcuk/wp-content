@@ -37,7 +37,9 @@
       <select class="select" id="<?php echo $plugin_slug . '_contact_type'; ?>">
         <?php if ( empty( $contact_type_list ) ) : ?>
           <option><?php _e( 'No Lists Found', '__x__' ); ?></option>
-        <?php else : ?>
+        <?php else :
+          $contact_type = isset($contact_type) ? $contact_type : '';
+          ?>
           <option value="" <?php echo ( '' == $contact_type ) ? 'selected' : ''; ?>><?php echo _e( '-- Select a type --', '__x__' ); ?></option>
           <?php foreach ( $contact_type_list as $value ) : ?>
             <option value="<?php echo $value; ?>">

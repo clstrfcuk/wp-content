@@ -5,7 +5,7 @@
 Plugin Name: X &ndash; Typekit
 Plugin URI: http://theme.co/x/
 Description: Create beautiful designs by incorporating Typekit fonts into your website. Our custom Extension makes this premium service easy to setup and use.
-Version: 1.0.1
+Version: 1.0.3
 Author: Themeco
 Author URI: http://theme.co/
 Text Domain: __x__
@@ -28,7 +28,7 @@ X Plugin: x-typekit
 // Constants.
 //
 
-define( 'X_TYPEKIT_VERSION', '1.0.1' );
+define( 'X_TYPEKIT_VERSION', '1.0.3' );
 define( 'X_TYPEKIT_URL', plugins_url( '', __FILE__ ) );
 define( 'X_TYPEKIT_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 

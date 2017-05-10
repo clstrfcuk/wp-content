@@ -134,9 +134,7 @@
 }
 
 .x-bar-scroll-inner {
-  -webkit-box-sizing: content-box !important;
-     -moz-box-sizing: content-box !important;
-          box-sizing: content-box !important;
+  box-sizing: content-box !important;
   -webkit-overflow-scrolling: touch !important;
   -ms-overflow-style: -ms-autohiding-scrollbar !important;
 }
@@ -245,6 +243,7 @@
 
 .x-mod-container {
   @include display(flex);
+  @include flex-direction(inherit);
   @include align-items(inherit);
   position: relative;
 }

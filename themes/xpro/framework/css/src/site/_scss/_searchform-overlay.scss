@@ -22,7 +22,7 @@
   height: 100%;
   z-index: $zindexNavbar + 1000;
   background-color: rgba($baseModBackground, 0.925);
-  @include transition(#{top 0.3s ease});
+  transition: top 0.3s ease;
 
   &.in {
     display: table;
@@ -30,7 +30,7 @@
 
   .form-search {
     padding-bottom: 2em;
-    @include font-size(1.0);
+    font-size: 10px;
 
     &:before {
       display: none;
@@ -62,11 +62,11 @@
     }
 
     @include break(middle-bear) {
-      @include font-size(0.8);
+      font-size: 8px;
     }
 
     @include break(baby-bear) {
-      @include font-size(0.6);
+      font-size: 6px;
     }
   }
 }

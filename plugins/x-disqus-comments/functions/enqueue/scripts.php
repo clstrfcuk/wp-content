@@ -17,7 +17,7 @@
 
 function x_disqus_comments_enqueue_admin_scripts( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-disqus-comments' ) {
+  if ( $hook == 'addons_page_x-extensions-disqus-comments' || $hook == 'theme_page_x-extensions-disqus-comments' || $hook === 'x_page_x-extensions-disqus-comments' || $hook == 'x-pro_page_x-extensions-disqus-comments') {
 
     wp_enqueue_script( 'x-disqus-comments-admin-js', X_DISQUS_COMMENTS_URL . '/js/admin/main.js', array( 'jquery' ), NULL, true );
 

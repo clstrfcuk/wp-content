@@ -132,18 +132,6 @@ ol ul {
   margin-bottom: 0;
 }
 
-ul {
-  list-style: disc;
-}
-
-ol {
-  list-style: decimal;
-}
-
-li {
-  line-height: $baseLineHeight;
-}
-
 ul.unstyled,
 ol.unstyled {
   margin-left: 0;
@@ -169,11 +157,6 @@ ol.inline {
 
 dl {
   margin-bottom: $baseMargin;
-}
-
-dt,
-dd {
-  line-height: $baseLineHeight;
 }
 
 dt {
@@ -211,11 +194,6 @@ abbr[title] {
   border-bottom: 1px dotted $grayLight;
 }
 
-abbr.initialism {
-  font-size: .9em;
-  text-transform: uppercase;
-}
-
 
 //
 // Blockquotes.
@@ -251,8 +229,6 @@ blockquote:after {
 //
 
 address {
-  display: block;
   margin-bottom: $baseMargin;
   font-style: normal;
-  line-height: $baseLineHeight;
 }

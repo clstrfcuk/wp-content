@@ -74,21 +74,22 @@
       </label>
     </th>
     <td>
-      <ul id="snippet_hours_list">
-      </ul>
       <div id="snippet_hours_add_widget">
-        from <input type="text" class="small-text snippet-time" id="snippet_hours_start" />
-        to <input type="text" class="small-text snippet-time" id="snippet_hours_end" /> on:<br/>
-        <input type="checkbox" class="snippet_hours_weekday" value="Mo" />Mon
+        From <input type="text" class="small-text snippet-time" id="snippet_hours_start" />
+        to <input type="text" class="small-text snippet-time" id="snippet_hours_end" /><br/>
+        on: <input type="checkbox" class="snippet_hours_weekday" value="Mo" />Mon
         <input type="checkbox" class="snippet_hours_weekday" value="Tu" />Tue
         <input type="checkbox" class="snippet_hours_weekday" value="We" />Wed
         <input type="checkbox" class="snippet_hours_weekday" value="Th" />Thu
         <input type="checkbox" class="snippet_hours_weekday" value="Fr" />Fri
         <input type="checkbox" class="snippet_hours_weekday" value="Sa" />Sat
-        <input type="checkbox" class="snippet_hours_weekday" value="Su" />Sun<br/>
+        <input type="checkbox" class="snippet_hours_weekday" value="Su" />Sun
         <input type="hidden" class="large-text" id="snippet_hours_id'; ?>" />
-        <a href="#" id="snippet_hours_add">Add</a>
+        <a href="#" class="button button-primary" id="snippet_hours_add" style="margin-top: -10px;">Add Entry</a>
       </div>
+      <hr/>
+      <ul id="snippet_hours_list">
+      </ul>
       <input type="hidden" class="large-text" name="<?php echo $plugin_slug; ?>[organization_operation_hours]" placeholder="Mo-Fr 09:00-17:00&#10;Mo,We,Fr 18:00-22:00"
       id="<?php echo $plugin_slug . '_organization_operation_hours'; ?>" value="<?php echo esc_attr( $organization_operation_hours ); ?>" />
     </td>

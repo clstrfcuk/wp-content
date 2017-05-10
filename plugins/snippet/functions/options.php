@@ -40,6 +40,7 @@ return array(
 
   'organization_type'            => '',
   'organization_name'            => '',
+  'organization_image'           => '',
   'organization_url'             => get_option('siteurl'),
   'organization_logo'            => '',
   'organization_additional_type' => '',

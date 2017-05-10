@@ -64,7 +64,7 @@ add_action( 'x_head_css', 'x_typekit_output_site_styles' );
 
 function x_typekit_enqueue_admin_styles( $hook ) {
 
-  if ( $hook == 'addons_page_x-extensions-typekit' ) {
+  if ( $hook == 'addons_page_x-extensions-typekit' || $hook == 'theme_page_x-extensions-typekit' || $hook == 'x-pro_page_x-extensions-typekit' ) {
 
     wp_enqueue_style( 'x-typekit-admin-css', X_TYPEKIT_URL . '/css/admin/style.css', NULL, NULL, 'all' );
 
