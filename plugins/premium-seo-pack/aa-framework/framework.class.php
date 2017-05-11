@@ -117,6 +117,13 @@ if(class_exists('psp') != true) {
 		
 		public $title_meta_format_default = array();
 
+		// old = use old facebook sdk || fbv4 = use new facebook sdk (only authorization is implemented )
+		public $facebook_sdk_version = 'fbv4'; // old | fbv4
+		public $facebook_sdk_settings = array( // made for fbv4
+			'default_graph_version' 	=> 'v2.4',
+			'persistent_data_handler'	=> 'session'
+		);
+
 
 		/**
 		 * The constructor
@@ -389,9 +396,9 @@ if(class_exists('psp') != true) {
 			
 			if ( !$this->is_admin ) {
 				if ( isset($_POST['ispspreq']) && in_array( $_POST['ispspreq'], array('tax', 'post') ) ) {
-					if ( $_POST['ispspreq'] == 'post' )
+					if ( $_POST['ispspreq'] == 'post' ) {
 						add_filter( 'the_content', array( $this, 'mark_content' ), 0, 1 );
-					else if ( $_POST['ispspreq'] == 'tax' ) {
+					} else if ( $_POST['ispspreq'] == 'tax' ) {
 						add_filter( 'term_description', 'do_shortcode' );
 						add_filter( 'term_description', array( $this, 'mark_content' ), 0, 1 );
 					}
@@ -551,11 +558,11 @@ if(class_exists('psp') != true) {
 		public function getPageContent( $post=null, $oldcontent='', $istax=false ) 
 		{
 			$optimizeSettings = $this->getAllSettings( 'array', 'on_page_optimization' );
-			
+
 			if ( !isset($optimizeSettings['parse_shortcodes']) 
 				|| ( isset($optimizeSettings['parse_shortcodes']) && $optimizeSettings['parse_shortcodes'] != 'yes' ) ) {
 				return $oldcontent;
-			} 
+			}
 
 			//if ( !is_singular() ) return false;
 			if ( !$this->is_admin ) return $oldcontent;
@@ -587,15 +594,15 @@ if(class_exists('psp') != true) {
 			//$content = file_get_contents( $url );
 			if ( !isset($content) || $content['status'] === 'invalid' ) return $oldcontent;
 			$content = $content['body'];*/
-			
+
 			//var_dump('<pre>',$url,'</pre>'); die;  
-			
+
 			// check if will be redirected
 			$headers = @get_headers( $url, 1 );
 			if(isset($headers['Location'])) {
-        		$url = $headers['Location']; // string
+				$url = $headers['Location']; // string
 			}
-			
+
 			$resp = wp_remote_post( $url, array(
 				'method' => 'POST',
 				'timeout' => 45,
@@ -612,26 +619,33 @@ if(class_exists('psp') != true) {
 				return $oldcontent;
 			}
 			$content = wp_remote_retrieve_body( $resp );
-  
+			//var_dump('<pre>', $content , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
 			//$pattern = "/\[pspmark\].*\[\/pspmark\]/imu";
 			//$ret = preg_match($pattern, $content, $matches);
-  
+
 			// php query class
 			require_once( $this->cfg['paths']['scripts_dir_path'] . '/php-query/php-query.php' );
 			if ( !empty($this->charset) )
 				$doc = pspphpQuery::newDocument( $content, $this->charset );
 			else
 				$doc = pspphpQuery::newDocument( $content );
-			
+
 			$content = pspPQ('#psp-content-mark');
+			//var_dump('<pre>', $content , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
 			$content = $content->html();
-  
+			//var_dump('<pre>', $content , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
+			//$title = pspPQ('h1:first');
+			//$title = $title->html();
+			//$title = '<h1 id="psp-title-mark">'.$title.'</h1>';
+			//$content = $title . $content;
+
 			return $content;
 		}
 
 		public function clean_header() 
 		{
-
             remove_action('wp_head', 'feed_links_extra', 3); // This is the main code that removes unwanted RSS Feeds
             remove_action('wp_head', 'feed_links', 2); // Removes Post and Comment Feeds
             remove_action('wp_head', 'rsd_link'); // Removes link to RSD + XML
@@ -1032,7 +1046,7 @@ if(class_exists('psp') != true) {
 
 					// @at plugin/module activation - setup cron
 					//wp_schedule_event(time(), 'hourly', 'pspwplannerhourlyevent');
-					//add_action('pspwplannerhourlyevent', array( $this, 'fb_wplanner_do_this_hourly' ));
+					//add_action('pspwplannerhourlyevent', array( $this, 'facebook_wplanner_do_this_hourly' ));
 				} else if ( $_REQUEST['the_status'] == 'false' ) {
 
 					// @at plugin/module deactivation - clean the scheduler on plugin deactivation
@@ -2016,26 +2030,31 @@ if(class_exists('psp') != true) {
 				$post = $tax;
 
 				$post_id = (int) $post->term_id;
+				$post_title = $post->name;
 				if( $post_content == 'empty' ){
 					$post_content = $this->getPageContent( $post, $post->description, true );
 				}
-				$post_title = $post->name;
-				
+				if ( empty($post_content) ) {
+					$post_content = $post->description;
+				}
+
 				$psp_current_taxseo = $this->__tax_get_post_meta( null, $post );
 				if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
 					$psp_current_taxseo = array();
 
 				$post_metas = $this->__tax_get_post_meta( $psp_current_taxseo, $post, 'psp_meta' );
-			} else {
-
-				// global $post;
+			}
+			else {
 				$post = get_post($post_id);
 				if ( isset($post) && is_object($post) ) {
 					$post_id = (int) $post->ID;
+					$post_title = $post->post_title;
 					if( $post_content == 'empty' ){
 						$post_content = $this->getPageContent( $post, $post->post_content );
 					}
-					$post_title = $post->post_title;
+					if ( empty($post_content) ) {
+						$post_content = $post->post_content;
+					}
 				} else {
 					$post_id = 0;
 					$post_content = '';
@@ -2043,12 +2062,7 @@ if(class_exists('psp') != true) {
 				}
 				$post_metas = get_post_meta( $post_id, 'psp_meta', true );
 			}
-			//$post = get_post( $post_id, ARRAY_A);
-			//$post_metas = get_post_meta( $post_id, 'psp_meta', true);
-			//$post_title = $post['post_title'];
-			//$post_content = $post['post_content'];
-			//$post_content = $this->getPageContent( $post, $post['post_content'] );
-			
+
 			$post_metas = array_merge(array(
 				'title'			=> '',
 				'description'		=> '',
@@ -2065,20 +2079,22 @@ if(class_exists('psp') != true) {
 				$seo = pspSeoCheck::getInstance();
 			}
 
-  
 			// meta description
-			$first_ph = $seo->get_first_paragraph( $post_content );
-			$gen_meta_desc = $seo->gen_meta_desc( $first_ph );
+			$first_paragraph = $seo->get_first_paragraph( $post_content );
+			$get_meta_desc = $seo->get_meta_desc( $first_paragraph );
 
 			// meta keywords
-			$gen_meta_keywords = array();
-			//if ( !empty($post_metas['focus_keyword']) )
-			//	$gen_meta_keywords[] = $post_metas['focus_keyword'];
+			$get_meta_keywords = array();
 			// focus keyword add to keywords is implemented in js file!
-			$__tmp = $seo->gen_meta_keywords( $post_content );
-			if ( !empty($__tmp) )
-				$gen_meta_keywords[] = $__tmp;
-			$gen_meta_keywords = implode(', ', $gen_meta_keywords);
+			//if ( !empty($post_metas['focus_keyword']) ) {
+			//	$get_meta_keywords[] = $post_metas['focus_keyword'];
+			//}
+			$__tmp = $seo->get_meta_keywords( $post_content );
+			if ( !empty($__tmp) ) {
+				//$get_meta_keywords[] = $__tmp;
+				$get_meta_keywords[] = implode(", ", $__tmp );
+			}
+			$get_meta_keywords = implode(', ', $get_meta_keywords);
 			
 			$post_metas['robots_index'] = isset($post_metas['robots_index']) && !empty($post_metas['robots_index'])
 				? $post_metas['robots_index'] : 'default' ;
@@ -2089,8 +2105,8 @@ if(class_exists('psp') != true) {
 
 			$html = array();
 			$html[] = '<div class="psp-post-title">' . $post_title . '</div>';
-			$html[] = '<div class="psp-post-gen-desc">' . $gen_meta_desc . '</div>';
-			$html[] = '<div class="psp-post-gen-keywords">' . $gen_meta_keywords . '</div>';
+			$html[] = '<div class="psp-post-gen-desc">' . $get_meta_desc . '</div>';
+			$html[] = '<div class="psp-post-gen-keywords">' . $get_meta_keywords . '</div>';
 			$html[] = '<div class="psp-post-meta-title">' . $post_metas['title'] . '</div>';
 			$html[] = '<div class="psp-post-meta-description">' . $post_metas['description'] . '</div>';
 			$html[] = '<div class="psp-post-meta-keywords">' . $post_metas['keywords'] . '</div>';
@@ -2479,12 +2495,6 @@ if(class_exists('psp') != true) {
 			return $randomString;
 		}
 
-		// Cron - facebook post planner
-		public function fb_wplanner_do_this_hourly() {
-			// Plugin cron class loading
-			require_once ( $this->cfg['paths']['plugin_dir_path'] . 'modules/facebook_planner/app.cron.class.php' );
-		}
-		
 		/**
 		 * User Roles - Capabilities
 		 */
@@ -2759,7 +2769,6 @@ if(class_exists('psp') != true) {
 	 			$__post = $post;
 	 		if (is_object($wp_query))
 	 			$__post = $wp_query->get_queried_object(); //get the post!
-	 		//var_dump('<pre>', $__post, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
 
 	 		$post_type = '';
 			if (is_object($__post) && isset($__post->post_type) && $__post->post_type != '') {
@@ -3205,46 +3214,6 @@ if(class_exists('psp') != true) {
             return $utils;
         }
     
-		/**
-		 * pms = array(
-		 * 		status		: (string) success | error
-		 * 		step		: (string)
-		 * 		msg			: (string)
-		 * )
-		 */
-		public function facebook_planner_last_status( $pms=array() ) {
-			extract($pms);
-
-			$fb_details = $this->getAllSettings('array', 'facebook_planner');
-		
-			$msg_ = $msg;
-			if ( is_object($msg) ) {
-				$msg_ = (array) $msg;
-			}
-			if ( is_array($msg) ) {
-				$msg_ = serialize( $msg );
-			}
-			
-			//$msg_ = substr($msg_, 0, 150);
-			$msg_ = serialize( $msg_ );	
-			$last_status = array('last_status' => array('status' => $status, 'step' => $step, 'data' => date("Y-m-d H:i:s"), 'msg' => $msg_));
-			$this->save_theoption( $this->alias . '_facebook_planner_last_status', $last_status );
-
-			$extra_info = array();
-			if ( isset($msg) && is_array($msg) ) {
-
-				if ( isset($msg['link'], $msg['name']) ) {
-					$extra_info = array(
-						'auth_foruser_link' 	=> $msg['link'],
-						'auth_foruser_name' 	=> $msg['name']
-					);
-				}
-			}
-			$this->save_theoption( $this->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status, $extra_info ) );
-			
-			return 'success' == $status ? 'valid' : 'invalid';
-		}
-	
 		public function load_woocommerce_taxonomies() {
 			if ( !$this->is_woocommerce_installed() ) return;
 			if( class_exists( 'WooCommerce' ) ) {
@@ -3616,7 +3585,7 @@ if(class_exists('psp') != true) {
 	
 	
 		/**
-		 * 2017 march - april
+		 * 2017 march - may
 		 */
 		public function get_post_metatags( $post ) {
 			$postDefault = array();
@@ -3644,6 +3613,7 @@ if(class_exists('psp') != true) {
 					'the_meta_keywords'			=> $shareInfo->info->get_the_meta_keywords(),
 				);
 			} // end if
+			//var_dump('<pre>',$postDefault ,'</pre>'); 
 			return $postDefault;
 		}
 
@@ -3661,6 +3631,687 @@ if(class_exists('psp') != true) {
 
 			$ret = preg_replace('/\s\s+/i', ' ', $ret);
 			$ret = trim($ret);
+			return $ret;
+		}
+
+		public function get_content_analyzing_rules() {
+			$ret = array(
+				'title'						=> 'SEO Title: verify the allowed number of characters and if seo title contains/begins with your focus keyword',
+				'title_enough_words'		=> 'SEO Title Words: verify seo title minimum number of words',
+				'page_title'				=> 'Page Title: verify the allowed number of characters and if seo title contains/begins with your focus keyword',
+				'meta_description'			=> 'Meta Description: verify the allowed number of characters and if meta description contains/begins with your focus keyword',
+				'meta_keywords'				=> 'Meta Keywords: verify if any exists and if meta keywords contains with your focus keyword',
+				'permalink'					=> 'Permalink: verify if post permalink contains your focus keyword',
+				'first_paragraph'			=> 'First Paragraph: verify if first paragraph of the page content contains with your focus keyword',
+				'embedded_content'			=> 'Embedded Content: verify if the page content contains frames, iframes, flash or video objects',
+				'enough_words'				=> 'Enought Words: verify the page content minimum number of words',
+				'images_alt'				=> 'Images: verify if the posts content has images and if they contains your focus keyword in alt attribute',
+				'html_bold'					=> 'Mark as Bold: verify if the page content has at least one bold element',
+				'html_italic'				=> 'Mark as Italic: verify if the page content has at least one italic element',
+				'html_underline'			=> 'Mark as Underline: verify if the page content has at least one underlined element',
+				'subheadings'				=> 'Subheading Tags: verify if the page content has any subheading tags (h1, h2, h3) and if they contains your focus keyword (also verify if h1 begins with your focus keyword)',
+				'first100words'				=> 'First 100 Words: verify if the page content contains your focus keyword in the first 100 words',
+				'last100words'				=> 'Last 100 Words: verify if the page content contains your focus keyword in the last 100 words',
+				'links_external'			=> 'External Links: verify if the page content has any external links (and if they have nofollow rel attribute)',
+				'links_internal'			=> 'Internal Links: verify if the page content has any internal links (and if they have nofollow rel attribute)',
+				'links_competing'			=> 'Competing Links: verify if the page content has any potential competing links (which contains your focus keyword)',
+				'kw_density'				=> 'Keyword density: verify the allowed number of focus keyword occurences in the content compared to the number of words in the content',
+			);
+			return $ret;
+		}
+
+		public function get_content_analyzing_allowed_rules( $pms=array() ) {
+			if ( ! isset($pms['settings']) || empty($pms['settings']) ) {
+				$pms['settings'] = $this->get_theoption('psp_on_page_optimization');
+			}
+
+			$pms = array_replace_recursive(array(
+				'settings'	=> array(),
+				'istax'		=> false,
+			), $pms);
+			extract($pms);
+
+			$what = 'post_allowed_rules';
+			if ( $istax ) {
+				$what = 'category_allowed_rules';
+			}
+
+			$rules_allowed = array_keys( $this->get_content_analyzing_rules() );
+
+			$allowed = isset($settings["$what"]) && ! empty($settings["$what"])
+				? $settings["$what"] : array();
+			$allowed = array_filter( array_unique( $allowed ) );
+
+			if ( ! empty($allowed) ) {
+				$rules_allowed = $allowed;
+			}
+			return $rules_allowed;
+		}
+
+
+		/**
+		 * FACEBOOK
+		 */
+		// Facebook: cronjob
+		public function facebook_wplanner_do_this_hourly() {
+			// Plugin cron class loading
+			require_once ( $this->cfg['paths']['plugin_dir_path'] . 'modules/facebook_planner/app.cron.class.php' );
+		}
+
+		// Facebook: save operation last status
+		public function facebook_planner_last_status( $pms=array() ) {
+			extract($pms);
+
+			$fb_details = $this->getAllSettings('array', 'facebook_planner');
+			//var_dump('<pre>', $fb_details , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
+			if ( 'exception' == $status ) {
+				$e = $msg;
+				if (isset($e->faultcode)) { // error occured!
+					$msg = $e->faultcode .  ' : ' . (isset($e->faultstring) ? $e->faultstring : $e->getMessage());
+				} else {
+					$msg = $e->getMessage();
+				}
+			}
+			else if ( in_array($status, array('success', 'error')) ) {
+				if ( is_object($msg) ) {
+					$msg = (array) $msg;
+				}
+			}
+			$msg = serialize( $msg );
+
+			$last_status = array('last_status' => array(
+				'status'	=> $status,
+				'data'		=> date("Y-m-d H:i:s"),
+				'from_file' => $from_file,
+				'from_func' => $from_func,
+				'from_line' => $from_line,
+				'msg'		=> $msg,
+			));
+			$this->save_theoption( $this->alias . '_facebook_planner_last_status', $last_status );
+
+			$extra_info = array();
+			if ( isset($msg) && is_array($msg) ) {
+				if ( isset($msg['link'], $msg['name']) ) {
+					$extra_info = array(
+						'auth_foruser_link' 	=> $msg['link'],
+						'auth_foruser_name' 	=> $msg['name']
+					);
+				}
+			}
+			$this->save_theoption( $this->alias . '_facebook_planner', array_merge( (array) $fb_details, $last_status, $extra_info ) );
+			return 'success' == $status ? 'valid' : 'invalid';
+		}
+
+		// Facebook: load new SKD
+		public function facebook_load_sdk() {
+			if ( !defined('FACEBOOK_SDK_V4_SRC_DIR') ) {
+				define( 'FACEBOOK_SDK_V4_SRC_DIR', $this->cfg['paths']['scripts_dir_path'] . '/facebook-v5-5.0.0/' );
+			}
+			require_once( $this->cfg['paths']['scripts_dir_path'] . '/facebook-v5-5.0.0/autoload.php' );
+		}
+
+		// Facebook: call default params
+		public function facebook_call_default_params( $pms=array() ) {
+			if ( ! isset($pms['fb_details']) || empty($pms['fb_details']) ) {
+				$pms['fb_details'] = $this->getAllSettings('array', 'facebook_planner');
+			}
+			if ( ! isset($pms['facebook']) || is_null($pms['facebook']) ) {
+				$fb_details = $pms['fb_details'];
+				if( (isset($fb_details['app_id']) && trim($fb_details['app_id']) != '') && ( isset($fb_details['app_secret']) && trim($fb_details['app_secret']) != '') ) {
+
+					$fbInitParams = array_replace_recursive(array(
+						'app_id' 					=> $fb_details['app_id'],
+						'app_secret' 				=> $fb_details['app_secret'],
+					), $this->facebook_sdk_settings);
+					$facebook = new Facebook\Facebook( $fbInitParams );
+					$pms['facebook'] = $facebook;
+				}
+			}
+			return $pms;
+		}
+
+		public function facebook_call_plugin_default() {
+			$def = array();
+			$def['plugin_url'] = admin_url('admin.php?page=psp#facebook_planner');
+			$def['plugin_url_'] = '<a href="'.$def['plugin_url'].'" class="psp-form-button-small psp-form-button-info">' . __('Go Back to the plugin facebook planner module and try again.', $this->localizationName) . '</a><br />';
+			return $def;
+		}
+
+		// Facebook: get authorization url 
+		public function facebook_get_authorization_url( $pms=array() ) {
+			$pms = $this->facebook_call_default_params($pms);
+			$pms = array_merge(array(
+				'facebook'			=> null,
+				'fb_details'		=> array(),
+				'psp_redirect_url'	=> '',
+				'text'				=> __('Authorize app', $this->localizationName),
+			), $pms);
+			extract($pms);
+
+			$ret = array(
+				'html'				=> '',
+				'url'				=> '#something-is-wrong',
+			);
+
+			if( isset($facebook) && ! is_null($facebook) ) {
+				$fb_helper = $facebook->getRedirectLoginHelper();
+				$fb_permissions = ['email','publish_actions','manage_pages','publish_pages', 'user_managed_groups']; // optional
+
+				$fb_loginUrl = admin_url('admin-ajax.php?action=psp_facebookAuth%s');
+				if ( $psp_redirect_url != '' ) {
+					$fb_loginUrl = sprintf( $fb_loginUrl, '&psp_redirect_url='.$psp_redirect_url );
+				} else {
+					$fb_loginUrl = sprintf( $fb_loginUrl, '' );
+				}
+				$fb_loginUrl = $fb_helper->getLoginUrl($fb_loginUrl, $fb_permissions);
+
+				$ret['url'] = $fb_loginUrl;
+			}
+
+			$ret['html'] = '<a href="' . $ret['url'] . '" class="psp-form-button psp-form-button-info pspStressTest inline" data-saveform="no">' . $text . '</a>';
+
+			return $ret;
+		}
+
+		// Facebook: Authorization STEP 1 - new SDK
+		// used in /aa-framework/settings-template.class.php , option 'authorization_button_fbv4'
+		// used in /modules/facebook_planner/init.php , method 'makeoAuthLogin_fbv4'
+		// used also here in this file
+		public function facebook_do_authorization( $pms=array() ) {
+			$pms = $this->facebook_call_default_params($pms);
+			$pms = array_merge(array(
+				'facebook'			=> null,
+				'fb_details'		=> array(),
+				'psp_redirect_url'	=> '',
+			), $pms);
+			extract($pms);
+
+			$validAuth = false;
+			$html = array();
+			$user_profile = array();
+
+			$ret = array(
+				'validAuth'			=> $validAuth,
+				'html'				=> $html,
+				'user_profile'		=> $user_profile,
+			);
+
+			// load the facebook SDK
+			$this->facebook_load_sdk();
+
+			// :: Facebook Authorization STEP 1 - new SDK
+			// see modules/facebook_planner/init.php , method 'fbAuth_fbv4' for step 2
+			if( isset($facebook) && ! is_null($facebook) ) {
+				$dbToken = get_option('psp_fb_planner_token');
+				//var_dump('<pre>', $dbToken, '</pre>'); die('debug...');
+
+				$getAuthUrl = $this->facebook_get_authorization_url(array(
+					'facebook'			=> $facebook,
+					'fb_details'		=> $fb_details,
+					'psp_redirect_url'	=> $psp_redirect_url,
+					'text'				=> __('Authorize app', $this->localizationName),
+				));
+				$fb_loginUrl = $getAuthUrl['url'];
+
+				if ( !empty($dbToken) ) {
+					$facebook->setDefaultAccessToken($dbToken);
+
+					$fb_response = null;
+					try {
+						// Returns a `Facebook\FacebookResponse` object
+						$fb_response = $facebook->get('/me?fields=id,name,link');
+					} catch(Facebook\Exceptions\FacebookResponseException $e) {
+						$html[] = '<p>Graph returned an error: ' . $e->getMessage() . '</p>';
+
+						$this->facebook_planner_last_status(array(
+							'status' 	=> 'exception',
+							'msg' 		=> $e,
+							'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+							'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+							'from_line' => __LINE__,
+						));
+					} catch(Facebook\Exceptions\FacebookSDKException $e) {
+						$html[] = '<p>Facebook SDK returned an error: ' . $e->getMessage() . '</p>';
+						
+						$this->facebook_planner_last_status(array(
+							'status' 	=> 'exception',
+							'msg' 		=> $e,
+							'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+							'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+							'from_line' => __LINE__,
+						));
+					}
+
+					if ( !empty($fb_response) ) {
+						$user_profile = $fb_response->getGraphUser();
+						if (count($user_profile) > 0){
+							$validAuth = true;
+								
+							$html[] = '<p>This plugin is <b>authorized</b> for: <a target="_blank" href="' . ( $user_profile['link'] ) . '">' . $user_profile['name'] . '</a></p>';
+								
+							$html[] = '<a href="' . ($fb_loginUrl) . '" style="width: 133px;" class="psp-form-button-small psp-form-button-info">'. (__( 'Authorize this app again', $this->localizationName )) .'</a>';
+							
+							$this->facebook_planner_last_status(array(
+								'status' 	=> 'success',
+								'msg' 		=> $user_profile,
+								'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+								'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+								'from_line' => __LINE__,
+							));
+						} else {
+							$this->facebook_planner_last_status(array(
+								'status' 	=> 'error',
+								'msg' 		=> $user_profile,
+								'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+								'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+								'from_line' => __LINE__,
+							));
+						}
+					} else {
+						$this->facebook_planner_last_status(array(
+							'status' 	=> 'error',
+							'msg' 		=> 'empty response when /me?fields=id,name,link',
+							'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+							'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+							'from_line' => __LINE__,
+						));
+					}
+				}
+
+				if( $validAuth == false ) {
+					$html[] = '<a href="' . ($fb_loginUrl) . '" style="width: 84px;" type="button" class="psp-form-button-small psp-form-button-info">'. (__( 'Authorizate app', $this->localizationName )) .'</a>';
+				}
+			}
+
+			$ret = array(
+				'validAuth'			=> $validAuth,
+				'html'				=> implode('', $html),
+				'user_profile'		=> $user_profile,
+			);
+			return $ret;
+		}
+
+		// Facebook: Authorization STEP 2 - new SDK
+		// used in /modules/facebook_planner/init.php , method 'fbAuth_fbv4' for step 2
+		public function facebook_do_login( $pms=array() ) {
+			$def = $this->facebook_call_plugin_default();
+			$pms = $this->facebook_call_default_params($pms);
+			$pms = array_merge(array(
+				'facebook'			=> null,
+				'fb_details'		=> array(),
+				'plugin_url'		=> $def['plugin_url'],
+				'plugin_url_'		=> $def['plugin_url_'],
+				//'dbToken'			=> '',
+			), $pms);
+			extract($pms);
+
+			$ret = array(
+				'opStatus'		=> false,
+				'opMsg'			=> '',
+				'facebook'		=> null,
+				'accessToken'	=> '',
+			);
+
+			if( isset($facebook) && ! is_null($facebook) ) {
+				//if ( $dbToken != '' ) {
+				//	$facebook->setDefaultAccessToken($dbToken);
+				//}
+				$fb_helper = $facebook->getRedirectLoginHelper();
+			}
+			else {
+				$ret['opMsg'] = 'Invalid Facebook object!';
+				return $ret;
+			}
+ 
+			try {
+				$accessToken = $fb_helper->getAccessToken();
+			} catch(Facebook\Exceptions\FacebookResponseException $e) {
+				$this->facebook_planner_last_status(array(
+					'status' 	=> 'exception',
+					'msg' 		=> $e,
+					'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+					'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+					'from_line' => __LINE__,
+				));
+
+				// When Graph returns an error
+				$ret['opMsg'] = $plugin_url_.'<br/>' . 'Graph returned an error: ' . $e->getMessage();
+				return $ret;
+			} catch(Facebook\Exceptions\FacebookSDKException $e) {
+				$this->facebook_planner_last_status(array(
+					'status' 	=> 'exception',
+					'msg' 		=> $e,
+					'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+					'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+					'from_line' => __LINE__,
+				));
+
+				// When validation fails or other local issues
+				$ret['opMsg'] = $plugin_url_.'<br/>' . 'Facebook SDK returned an error: ' . $e->getMessage();
+				return $ret;
+			}
+
+			if ( !isset($accessToken) ) {
+				$is_error = $fb_helper->getError() || $fb_helper->getErrorCode();
+				if ($is_error) {
+					$error_details = array(
+						'error'				=> $fb_helper->getError(),
+						'error_code'		=> $fb_helper->getErrorCode(),
+						'error_reason'		=> $fb_helper->getErrorReason(),
+						'error_desc'		=> $fb_helper->getErrorDescription() || (isset($_GET['error_message']) ? $_GET['error_message']  : null),
+					);
+					$error_details = array_filter($error_details);
+
+					$this->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'msg' 		=> $error_details,
+						'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+						'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+						'from_line' => __LINE__,
+					));
+
+					//header('HTTP/1.0 401 Unauthorized');
+					$ret['opMsg'] = $plugin_url_.'<br/>' . 'HTTP/1.0 401 Unauthorized';
+					return $ret;
+				} else {
+					$this->facebook_planner_last_status(array(
+						'status' 	=> 'error',
+						'msg' 		=> 'Bad request',
+						'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+						'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+						'from_line' => __LINE__,
+					));
+
+					//header('HTTP/1.0 400 Bad Request');
+					$ret['opMsg'] = $plugin_url_.'<br/>' . 'HTTP/1.0 400 Bad Request';
+					return $ret;
+				}
+			}
+
+			// Logged in
+			//echo '<h3>Access Token</h3>';
+			//var_dump($accessToken->getValue());
+			
+			// The OAuth 2.0 client handler helps us manage access tokens
+			$oAuth2Client = $facebook->getOAuth2Client();
+			
+			// Get the access token metadata from /debug_token
+			$tokenMetadata = $oAuth2Client->debugToken( $accessToken );
+			//echo '<h3>Metadata</h3>';
+			//var_dump('<pre>',$accessToken,$tokenMetadata,'</pre>');
+			  
+			// Validation (these will throw FacebookSDKException's when they fail)
+			$tokenMetadata->validateAppId( $fb_details['app_id']);
+			// If you know the user ID this access token belongs to, you can validate it here
+			//$tokenMetadata->validateUserId('123');
+			//$tokenMetadata->validateExpiration();
+ 
+			if ( !$accessToken->isLongLived() ) {
+				// Exchanges a short-lived access token for a long-lived one
+				try {
+					$accessToken = $oAuth2Client->getLongLivedAccessToken( $accessToken );
+				} catch (Facebook\Exceptions\FacebookSDKException $e) {
+					$this->facebook_planner_last_status(array(
+						'status' 	=> 'exception',
+						'msg' 		=> $e,
+						'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+						'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+						'from_line' => __LINE__,
+					));
+
+					$ret['opMsg'] = $plugin_url_.'<br/>' . 'Error getting long-lived access token: ' . $e->getMessage();
+					return $ret;
+				}
+				//echo '<h3>Long-lived</h3>';
+				//var_dump($accessToken->getValue());
+			}
+
+			// SUCCESS
+			// User is logged in with a long-lived access token.
+			// You can redirect them to a members-only page.
+
+			$this->facebook_planner_last_status(array(
+				'status' 	=> 'success',
+				'msg' 		=> 'Successfull login.',
+				'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+				'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+				'from_line' => __LINE__,
+			));
+
+			// saving offline session into DB
+			update_option('psp_fb_planner_token', $accessToken);
+			$facebook->setDefaultAccessToken($accessToken);
+
+			$ret['opMsg'] = 'Successfull login.';
+			$ret['opStatus'] = true;
+			$ret['facebook'] = $facebook;
+			$ret['accessToken'] = $accessToken;
+			return $ret;
+		}
+
+		// Facebook: is user loggedin? if not, you need re-authorization
+		public function facebook_is_loggedin( $pms=array() ) {
+			$fbAuth = $this->facebook_do_authorization($pms);
+			$validAuth = $fbAuth['validAuth'];
+			return isset($validAuth) && $validAuth ? true : false;
+		}
+
+		// Facebook: get user profile
+		public function facebook_get_user_profile( $pms=array() ) {
+			$result = array();
+			$ret = array(
+				'opStatus'		=> false,
+				'opMsg'			=> '',
+				'result'		=> $result,
+			);
+
+			$fbAuth = $this->facebook_do_authorization($pms);
+			$validAuth = $fbAuth['validAuth'];
+			$is_loggedin = isset($validAuth) && $validAuth ? true : false;
+
+			$ret['opStatus'] = $fbAuth['validAuth'];
+			$ret['opMsg'] = $fbAuth['html'];
+			$ret['result'] = $fbAuth['user_profile'];
+
+			if ( ! $is_loggedin ) {
+				//$ret['opMsg'] = 'User is not loggedin or app authorized yet.';
+			}
+			return $ret;
+		}
+
+		// Facebook: get user pages / groups
+		public function facebook_get_user_pages( $pms=array() ) {
+			$def = $this->facebook_call_plugin_default();
+			$pms = $this->facebook_call_default_params($pms);
+			$pms = array_merge(array(
+				'facebook'			=> null,
+				'fb_details'		=> array(),
+				'plugin_url'		=> $def['plugin_url'],
+				'plugin_url_'		=> $def['plugin_url_'],
+				'do_authorize'		=> false,
+				'what'				=> 'pages' // pages | groups
+			), $pms);
+			extract($pms);
+
+			$result = array();
+			$ret = array(
+				'opStatus'		=> false,
+				'opMsg'			=> '',
+				'result'		=> $result,
+			);
+
+			if ( $do_authorize ) {
+				$is_loggedin = $this->facebook_is_loggedin($pms);
+				if ( ! $is_loggedin ) {
+					$ret['opMsg'] = 'User is not loggedin or app authorized yet.';
+					return $ret;
+				}
+			}
+
+			$fbReq = '';
+			$logMsg = '';
+			switch( $what ) {
+				case 'pages':
+					$fbReq = '/me/accounts';
+					$logMsg = 'User Pages - ';
+					break;
+
+				case 'groups':
+					$fbReq = '/me/groups';
+					$logMsg = 'User Groups - ';
+					break;
+			}
+
+			if (1) {
+				try {
+					// Returns a `Facebook\FacebookResponse` object
+					$response = $facebook->get( $fbReq );
+				} catch(Facebook\Exceptions\FacebookResponseException $e) {
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'exception',
+						'msg' 		=> $e,
+						'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+						'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+						'from_line' => __LINE__,
+					));
+
+					$ret['opMsg'] = $plugin_url_.'<br/>' . $logMsg.'Graph returned an error: ' . $e->getMessage();
+					return $ret;
+				} catch(Facebook\Exceptions\FacebookSDKException $e) {
+					$this->the_plugin->facebook_planner_last_status(array(
+						'status' 	=> 'exception',
+						'msg' 		=> $e,
+						'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+						'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+						'from_line' => __LINE__,
+					));
+
+					$ret['opMsg'] = $plugin_url_.'<br/>' . $logMsg.'Facebook SDK returned an error: ' . $e->getMessage();
+					return $ret;
+				}
+ 
+				$feedEdge = $response->getGraphEdge(); // Page 1
+				$cc = 0;
+				do {
+					foreach ($feedEdge as $status) {
+						$status = $status->asArray();
+
+						$cond = 1;
+						if ( 'pages' == $what ) {
+							$cond = 1//'app page' == strtolower($status['category']) && (isset($status['perms'])
+								&& in_array('CREATE_CONTENT', $status['perms']);
+						}
+						if ( $cond ) {
+							$result[] = $status;
+						}
+					} // end foreach
+
+					$feedEdge = $facebook->next($feedEdge); // Next Page
+					$cc++;
+				}
+				while( $feedEdge );
+			}
+
+			$this->facebook_planner_last_status(array(
+				'status' 	=> 'success',
+				'msg' 		=> 'Successfull operation.',
+				'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+				'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+				'from_line' => __LINE__,
+			));
+
+			$ret['opMsg'] = 'Successfull operation.';
+			$ret['opStatus'] = true;
+			$ret['result'] = $result;
+			return $ret;
+		}
+
+		// Facebook: publish to wall (pages, groups, profile)
+		public function facebook_publish( $pms=array() ) {
+			$def = $this->facebook_call_plugin_default();
+			$pms = $this->facebook_call_default_params($pms);
+			$pms = array_merge(array(
+				'facebook'			=> null,
+				'fb_details'		=> array(),
+				'plugin_url'		=> $def['plugin_url'],
+				'plugin_url_'		=> $def['plugin_url_'],
+				'do_authorize'		=> false,
+				'wall'				=> '',
+				'fields'			=> array(),
+			), $pms);
+			extract($pms);
+
+			$result = array();
+			$ret = array(
+				'opStatus'		=> false,
+				'opMsg'			=> '',
+				'result'		=> $result,
+			);
+
+			if ( $do_authorize ) {
+				$is_loggedin = $this->facebook_is_loggedin($pms);
+				if ( ! $is_loggedin ) {
+					$ret['opMsg'] = 'User is not loggedin or app authorized yet.';
+					return $ret;
+				}
+			}
+
+			// access token - if you want to post on a page as it's owner/admin - messager are in the page center as on the all
+			// othewise they are displaye in a bottom right box named "visitors posts"
+			$access_token = '';
+			if ( isset($fields['access_token']) && ('' != $fields['access_token']) ) {
+				$access_token = $fields['access_token'];
+				unset( $fields['access_token'] );
+			}
+
+			if (1) {
+				try {
+					// Returns a `Facebook\FacebookResponse` object
+					if ( '' != $access_token ) {
+						$response = $facebook->post( $wall, $fields, $access_token );
+					}
+					else {
+						$response = $facebook->post( $wall, $fields );
+					}
+				} catch(Facebook\Exceptions\FacebookResponseException $e) {
+					$this->facebook_planner_last_status(array(
+						'status' 	=> 'exception',
+						'msg' 		=> $e,
+						'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+						'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+						'from_line' => __LINE__,
+					));
+
+					$ret['opMsg'] = $plugin_url_.'<br/>' . 'Graph returned an error: ' . $e->getMessage();
+					return $ret;
+				} catch(Facebook\Exceptions\FacebookSDKException $e) {
+					$this->facebook_planner_last_status(array(
+						'status' 	=> 'exception',
+						'msg' 		=> $e,
+						'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+						'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+						'from_line' => __LINE__,
+					));
+
+					$ret['opMsg'] = $plugin_url_.'<br/>' . 'Facebook SDK returned an error: ' . $e->getMessage();
+					return $ret;
+				}
+			}
+
+			$graphNode = $response->getGraphNode();
+
+			$this->facebook_planner_last_status(array(
+				'status' 	=> 'success',
+				'msg' 		=> 'Posted successfull with id: ' . $graphNode['id'],
+				'from_file' => str_replace($this->cfg['paths']['plugin_dir_path'], '', __FILE__),
+				'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+				'from_line' => __LINE__,
+			));
+
+			$ret['opMsg'] = 'Posted successfull with id: ' . $graphNode['id'];
+			$ret['opStatus'] = true;
+			$ret['result'] = $graphNode['id'];
 			return $ret;
 		}
 	}

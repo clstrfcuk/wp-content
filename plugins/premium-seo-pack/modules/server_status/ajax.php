@@ -613,8 +613,15 @@ if (class_exists('pspServerStatusAjax') != true) {
 				} // end step 1
 
 				if ( $action == 'step2' ) {
-					
-					$auth = $pspFacebook_Planner->makeoAuthLogin();
+
+					if ( 'fbv4' == $this->the_plugin->facebook_sdk_version ) {
+						$auth = $pspFacebook_Planner->makeoAuthLogin_fbv4(array(
+							'psp_redirect_url'		=> 'server_status',
+						));
+					}
+					//else {
+					//	$auth = $pspFacebook_Planner->makeoAuthLogin();
+					//}
 					
 					$msg = isset($facebook_settings['last_status']) ? $facebook_settings['last_status'] : 'no message logged yet!';
 					
@@ -624,37 +631,6 @@ if (class_exists('pspServerStatusAjax') != true) {
 						'execution_time' => number_format( microtime(true) - $start, 2)
 					);
 				} // end step 2
-				
-				if ( $action == 'step3' ) {
-					
-					$today = date( 'Y-m-d' );
-
-					$_REQUEST['return']			= 'array';
-					$_REQUEST['sub_action'] 	= 'getAudience';
-					$_REQUEST['from_date'] 		= date( 'Y-m-d', strtotime( "-1 week", strtotime( $today ) ) );
-					$_REQUEST['to_date'] 		= date( 'Y-m-d', strtotime( $today ) );
-					
-					$getGraph = $pspGoogleAnalytics->ajax_request();
-  
-					$isGraph = false;
-					if ( isset($getGraph['getAudience']['status']) ) {
-						$isGraph = true;
-						
-						if ( isset($getGraph['getAudience']['data']) ) {
-							$msg = $getGraph['getAudience']['data'];
-						} else {
-							$msg = $getGraph['getAudience']['reason'];
-						}
-					} else {
-						$msg = $getGraph['__access']['msg'];
-					}
-
-					$return = array(
-						'status'	=> $isGraph ? 'valid' : 'invalid',
-						'log' 		=> $msg,
-						'execution_time' => number_format( microtime(true) - $start, 2)
-					);
-				} // end step 3
 				
 			}
 

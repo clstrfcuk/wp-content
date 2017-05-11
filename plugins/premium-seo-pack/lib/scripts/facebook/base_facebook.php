@@ -344,6 +344,7 @@ abstract class Basepsp_Facebook
    */
   public function setAccessToken($access_token) {
     $this->accessToken = $access_token;
+	//$this->setExtendedAccessToken();
     return $this;
   }
 
@@ -353,6 +354,7 @@ abstract class Basepsp_Facebook
    * for the workaround.
    */
   public function setExtendedAccessToken() {
+
     try {
       // need to circumvent json_decode by calling _oauthRequest
       // directly, since response isn't JSON format.
@@ -388,6 +390,9 @@ abstract class Basepsp_Facebook
     $this->setPersistentData(
       'access_token', $response_params['access_token']
     );
+
+    $this->accessToken = $response_params['access_token'];
+    return $this;
   }
 
   /**

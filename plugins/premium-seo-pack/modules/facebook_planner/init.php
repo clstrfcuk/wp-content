@@ -6,21 +6,15 @@
 */
 !defined('ABSPATH') and exit;
 if (class_exists('pspFacebook_Planner') != true) {
-    class pspFacebook_Planner
-    {
+	class pspFacebook_Planner {
         /*
-        * Some required plugin information
-        */
+         * Some required plugin information
+         */
         const VERSION = '1.0';
-		
-		// 4 = use new facebook api (only authorization in method '__fbAuth' is implemented )
-		// 1 = use old facebook api
-		const FACEBOOK_API_VERSION = 1;
-		
 
         /*
-        * Store some helpers config
-        */
+         * Store some helpers config
+         */
 		public $the_plugin = null;
 
 		private $module_folder = '';
@@ -37,9 +31,10 @@ if (class_exists('pspFacebook_Planner') != true) {
 		
 		public $fb = null;
 
+
         /*
-        * Required __construct() function that initalizes the AA-Team Framework
-        */
+         * Required __construct() function that initalizes the AA-Team Framework
+         */
         public function __construct()
         {
         	global $psp;
@@ -65,25 +60,25 @@ if (class_exists('pspFacebook_Planner') != true) {
 		        "FRIENDS_OF_FRIENDS" => __('Friends of Friends', 'psp'),
 		        "CUSTOM" => __('Private (only me)', 'psp')
 		    );
-			
-			if ( self::FACEBOOK_API_VERSION == 4 ) {
-				// load the facebook SDK
-				if ( !defined('FACEBOOK_SDK_V4_SRC_DIR') ) {
-					define( 'FACEBOOK_SDK_V4_SRC_DIR', $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook-v4-5.0.0/' );
-				}
 
+			if ( 'fbv4' == $this->the_plugin->facebook_sdk_version ) {
 				// load the facebook SDK
-				require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook-v4-5.0.0/autoload.php' );
+				$this->the_plugin->facebook_load_sdk();
 			}
-			else {
-				require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook/facebook.php' );
-			}
+			//else {
+			//	require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/facebook/facebook.php' );
+			//}
 
 			$this->fb_details = $this->the_plugin->getAllSettings('array', 'facebook_planner');
 
 			if( (isset($this->fb_details['app_id']) && trim($this->fb_details['app_id']) != '') && ( isset($this->fb_details['app_secret']) && trim($this->fb_details['app_secret']) != '') ) {
 
-				add_action('wp_ajax_psp_facebookAuth', array( $this, 'fbAuth' ));
+				if ( 'fbv4' == $this->the_plugin->facebook_sdk_version ) {
+					add_action('wp_ajax_psp_facebookAuth', array( $this, 'fbAuth_fbv4' ));
+				}
+				//else {
+				//	add_action('wp_ajax_psp_facebookAuth', array( $this, 'fbAuth' ));
+				//}
 			}
 			
 			add_action('wp_ajax_psp_publish_fb_now', array( $this, 'fb_postFB_callback' ));
@@ -97,7 +92,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 			// wp_schedule_event(time(), 'hourly', 'pspwplannerhourlyevent');
 			// @at plugin/module deactivation - clean the scheduler on plugin deactivation
 			// wp_clear_scheduled_hook('pspwplannerhourlyevent');
-			// add_action('pspwplannerhourlyevent', array( $this, 'fb_wplanner_do_this_hourly' ));
+			// add_action('pspwplannerhourlyevent', array( $this, 'facebook_wplanner_do_this_hourly' ));
 
 			//delete bulk rows!
 			add_action('wp_ajax_psp_do_bulk_delete_rows', array( $this, 'delete_bulk_rows' ));
@@ -106,15 +101,19 @@ if (class_exists('pspFacebook_Planner') != true) {
 			//require_once ( 'app.cron.class.php' );
 			
 			// ajax handler
-			add_action('wp_ajax_pspFacebookAuthorizeApp', array( &$this, 'facebookAuthorizeApp' ));
-			if ( $this->the_plugin->capabilities_user_has_module('facebook_planner') ) {
-				add_action('init', array( &$this, 'check_auth_callback' ));
+			if ( 'fbv4' == $this->the_plugin->facebook_sdk_version ) {
+			}
+			else {
+				//add_action('wp_ajax_pspFacebookAuthorizeApp', array( &$this, 'facebookAuthorizeApp' ));
+				//if ( $this->the_plugin->capabilities_user_has_module('facebook_planner') ) {
+				//	add_action('init', array( &$this, 'check_auth_callback' ));
+				//}
 			}
         }
 		
 		/**
-	    * Hooks
-	    */
+	     * Hooks
+	     */
 	    static public function adminMenu()
 	    {
 	       self::getInstance()
@@ -123,8 +122,8 @@ if (class_exists('pspFacebook_Planner') != true) {
 	    }
 		
 		/**
-	    * Register plug-in admin metaboxes
-	    */
+	     * Register plug-in admin metaboxes
+	     */
 	    protected function _registerMetaBoxes()
 	    {
 			// find if user makes the setup
@@ -159,8 +158,8 @@ if (class_exists('pspFacebook_Planner') != true) {
 	    }
 
 	    /**
-	    * Register plug-in module admin pages and menus
-	    */
+	     * Register plug-in module admin pages and menus
+	     */
 		protected function _registerAdminPages()
     	{
     		if ( $this->the_plugin->capabilities_user_has_module('facebook_planner') ) {
@@ -258,10 +257,11 @@ if (class_exists('pspFacebook_Planner') != true) {
 					<a href="#page_scheduler"><?php _e('Page Scheduler', 'psp');?></a>
 					<a href="#page_postnow"><?php _e('Post Now', 'psp');?></a>
 				</div>
-				
+
+				<!-- start: psp-tab-container -->
 				<div class="psp-tab-container">
 
-					<!-- tab publish_on_facebook -->
+					<!-- TAB publish_on_facebook -->
 					<div id="psp-tab-div-id-publish_on_facebook" style="display:block;">
 						<div class="psp-dashboard-box span_3_of_3">
 							<!-- Creating the option fields -->
@@ -350,9 +350,9 @@ if (class_exists('pspFacebook_Planner') != true) {
 							})(jQuery);
 							</script>
 						</div>	
-					</div><!-- end: tab publish_on_facebook -->
+					</div><!-- end: TAB publish_on_facebook -->
 					
-					<!-- tab page_scheduler -->
+					<!-- TAB page_scheduler -->
 					<?php 
 					$post_to_check = unserialize( $this->fb_schedule_value('post_to') );
 					?>
@@ -384,10 +384,14 @@ if (class_exists('pspFacebook_Planner') != true) {
 											if( count($this->fb_details['available_pages']) > 0 ) {
 												echo '<optgroup label="' . __( 'Pages', 'psp' ) . '">';
 												//orig: foreach ($this->fb_details['available_pages'] as $key => $status) {
-												foreach ($this->fb_details['available_pages'] as $status => $key) {
-													//if( $status == 1 ) {
-														echo '<option value="page##'.($allPages->pages->$key->id).'##'.($allPages->pages->$key->access_token).'" '.($post_to_check['page_group'] == "page##".($allPages->pages->$key->id).'##'.($allPages->pages->$key->access_token) ? 'selected="selected"' : '').'>' . ($allPages->pages->$key->name) . '</option>';
-													//}
+												//foreach ($this->fb_details['available_pages'] as $status => $key) {
+												//	//if( $status == 1 ) {
+												//		echo '<option value="page##'.($allPages->pages[$key]->id).'##'.($allPages->pages[$key]->access_token).'" '.($post_to_check['page_group'] == "page##".($allPages->pages[$key]->id).'##'.($allPages->pages[$key]->access_token) ? 'selected="selected"' : '').'>' . ($allPages->pages[$key]->name) . '</option>';
+												//	//}
+												//}
+												foreach ($allPages->pages as $key => $value) {
+													if ( ! in_array($value->id, $this->fb_details['available_pages']) ) continue 1;
+													echo '<option value="page##'.( $value->id ).'##'.( $allPages->pages[$key]->access_token ).'" '.($post_to_check['page_group'] == "page##".($value->id) .'##'.($allPages->pages[$key]->access_token) ? 'selected="selected"' : '').'>' . ($value->name) . '</option>';
 												}
 												echo '</optgroup>';
 											}
@@ -395,7 +399,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 											if( isset($allPages) && is_object($allPages) && count($allPages->pages) > 0) {
 												echo '<optgroup label="' . __( 'Pages', 'psp' ) . '">';
 												foreach ($allPages->pages as $key => $value) {
-													echo '<option value="page##'.( $value->id ).'##'.( $allPages->pages->$key->access_token ).'" '.($post_to_check['page_group'] == "page##".($value->id) .'##'.($allPages->pages->$key->access_token) ? 'selected="selected"' : '').'>' . ($value->name) . '</option>';
+													echo '<option value="page##'.( $value->id ).'##'.( $allPages->pages[$key]->access_token ).'" '.($post_to_check['page_group'] == "page##".($value->id) .'##'.($allPages->pages[$key]->access_token) ? 'selected="selected"' : '').'>' . ($value->name) . '</option>';
 												}
 												echo '</optgroup>';
 											}
@@ -405,10 +409,14 @@ if (class_exists('pspFacebook_Planner') != true) {
 											if(count($this->fb_details['available_groups']) > 0) {
 												echo '<optgroup label="' . __( 'Groups', 'psp' ) . '">';
 												//orig: foreach ($this->fb_details['available_groups'] as $key => $status) {
-												foreach ($this->fb_details['available_groups'] as $status => $key) {
-													//if( $status == 1 ) {
-														echo '<option value="group##'.($allPages->groups->$key->id).'" '.($post_to_check['page_group'] == "group##".$allPages->groups->$key->id ? 'selected="selected"' : '').'>' . ($allPages->groups->$key->name) . '</option>';
-													//}
+												//foreach ($this->fb_details['available_groups'] as $status => $key) {
+												//	//if( $status == 1 ) {
+												//		echo '<option value="group##'.($allPages->groups[$key]->id).'" '.($post_to_check['page_group'] == "group##".$allPages->groups[$key]->id ? 'selected="selected"' : '').'>' . ($allPages->groups[$key]->name) . '</option>';
+												//	//}
+												//}
+												foreach ($allPages->groups as $key => $value) {
+													if ( ! in_array($value->id, $this->fb_details['available_groups']) ) continue 1;
+													echo '<option value="group##'.($value->id).'" '.($post_to_check['page_group'] == "group##".$value->id ? 'selected="selected"' : '').'>' . ($value->name) . '</option>';
 												}
 												echo '</optgroup>';
 											}
@@ -430,10 +438,10 @@ if (class_exists('pspFacebook_Planner') != true) {
 									<?php echo _e( 'Privacy:', 'psp' ); ?>
 									<select id="psp_wplannerfb_post_privacy" name="psp_wplannerfb_post_privacy">
 									<?php
-									if ( !isset($this->post_privacy_options['default_privacy_option']) )
-										$this->post_privacy_options['default_privacy_option'] = '';
+									$default_privacy_option = isset($this->fb_details['default_privacy_option'])
+										? $this->fb_details['default_privacy_option'] : '';
 									foreach($this->post_privacy_options as $key => $value) {
-										echo '<option value="'.($key).'" '.($this->fb_schedule_value('post_privacy') != '' ? ($this->fb_schedule_value('post_privacy') == $key ? 'selected="selected"' : '') : ($this->post_privacy_options['default_privacy_option'] == $key ? 'selected="selected"' : '')).'>'.($value).'</option>';
+										echo '<option value="'.($key).'" '.($this->fb_schedule_value('post_privacy') != '' ? ($this->fb_schedule_value('post_privacy') == $key ? 'selected="selected"' : '') : ($default_privacy_option == $key ? 'selected="selected"' : '')).'>'.($value).'</option>';
 									}
 									?>
 									</select>
@@ -451,7 +459,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 											$run_date = date('m/d/Y', strtotime($run_date[0])) .' @ '. $run_date_hour[0];
 										}
 									?>
-									<input type="text" id="psp_wplannerfb_date_hour" name="psp_wplannerfb_date_hour" value="<?php echo $run_date; ?>" size="13" autocomplete="off"/>
+									<input type="text" id="psp_wplannerfb_date_hour" name="psp_wplannerfb_date_hour" value="<?php echo $run_date; ?>" size="13" autocomplete="off" class="psp_wplannerfb_date_hour" />
 									<script type="text/javascript">
 									// Display DateTimePicker
 									jQuery('#psp_wplannerfb_date_hour').datetimepicker({
@@ -507,9 +515,9 @@ if (class_exists('pspFacebook_Planner') != true) {
 							})(jQuery);
 							</script>
 						</div>	
-					</div><!-- end: tab page_scheduler -->
+					</div><!-- end: TAB page_scheduler -->
 					
-					<!-- tab page_postnow -->
+					<!-- TAB page_postnow -->
 					<div id="psp-tab-div-id-page_postnow" style="display:none;">
 						<div class="psp-dashboard-box span_3_of_3">
 							<!-- Creating the scheduler fields -->
@@ -538,10 +546,14 @@ if (class_exists('pspFacebook_Planner') != true) {
 											if( count($this->fb_details['available_pages']) > 0 ) {
 												echo '<optgroup label="' . __( 'Pages', 'psp' ) . '">';
 												//orig: foreach ($this->fb_details['available_pages'] as $key => $status) {
-												foreach ($this->fb_details['available_pages'] as $status => $key) {
-													//if( $status == 1 ) {
-														echo '<option value="page##' . ( $allPages->pages->$key->id ) . '##' . ( $allPages->pages->$key->access_token ) . '">' . ( $allPages->pages->$key->name ) . '</option>';
-													//}
+												//foreach ($this->fb_details['available_pages'] as $status => $key) {
+												//	//if( $status == 1 ) {
+												//		echo '<option value="page##' . ( $allPages->pages[$key]->id ) . '##' . ( $allPages->pages[$key]->access_token ) . '">' . ( $allPages->pages[$key]->name ) . '</option>';
+												//	//}
+												//}
+												foreach ($allPages->pages as $key => $value) {
+													if ( ! in_array($value->id, $this->fb_details['available_pages']) ) continue 1;
+													echo '<option value="page##' . ( $value->id ) . '##' . ( $allPages->pages[$key]->access_token ) . '">' . ( $value->name ) . '</option>';
 												}
 												echo '</optgroup>';
 											}
@@ -549,7 +561,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 											if( isset($allPages) && is_object($allPages) && count($allPages->pages) > 0) {
 												echo '<optgroup label="' . __( 'Pages', 'psp' ) . '">';
 												foreach ($allPages->pages as $key => $value) {
-													echo '<option value="page##' . ( $value->id ) . '##' . ( $allPages->pages->$key->access_token ) . '">' . ( $value->name ) . '</option>';
+													echo '<option value="page##' . ( $value->id ) . '##' . ( $allPages->pages[$key]->access_token ) . '">' . ( $value->name ) . '</option>';
 												}
 												echo '</optgroup>';
 											}
@@ -559,15 +571,19 @@ if (class_exists('pspFacebook_Planner') != true) {
 											if(count($this->fb_details['available_groups']) > 0) {
 												echo '<optgroup label="' . __( 'Groups', 'psp' ) . '">';
 												//orig: foreach ($this->fb_details['available_groups'] as $key => $status) {
-												foreach ($this->fb_details['available_groups'] as $status => $key) {
-													//if( $status == 1 ) {
-														echo '<option value="group##' . ( $allPages->groups->$key->id ) . '">' . ( $allPages->groups->$key->name ) . '</option>';
-													//}
+												//foreach ($this->fb_details['available_groups'] as $status => $key) {
+												//	//if( $status == 1 ) {
+												//		echo '<option value="group##' . ( $allPages->groups[$key]->id ) . '">' . ( $allPages->groups[$key]->name ) . '</option>';
+												//	//}
+												//}
+												foreach ($allPages->groups as $key => $value) {
+													if ( ! in_array($value->id, $this->fb_details['available_groups']) ) continue 1;
+													echo '<option value="group##' . ( $value->id ) . '">' . ( $value->name ) . '</option>';
 												}
 												echo '</optgroup>';
 											}
 										}else{
-											if( isset($allPages) && is_object($allPages->groups) && count($allPages->groups) > 0) {
+											if( isset($allPages) && is_object($allPages) && count($allPages->groups) > 0) {
 												echo '<optgroup label="' . __( 'Groups', 'psp' ) . '">';
 												foreach ($allPages->groups as $key => $value) {
 													echo '<option value="group##' . ( $value->id ) . '">' . ( $value->name ) . '</option>';
@@ -584,9 +600,10 @@ if (class_exists('pspFacebook_Planner') != true) {
 									<?php echo _e( 'Privacy:', 'psp' ); ?>
 									<select id="psp_wplannerfb_now_post_privacy" name="psp_wplannerfb_now_post_privacy">
 									<?php
-									if ( !isset($this->fb_details['default_privacy_option']) ) $this->fb_details['default_privacy_option'] = '';
+									$default_privacy_option = isset($this->fb_details['default_privacy_option'])
+										? $this->fb_details['default_privacy_option'] : '';
 									foreach($this->post_privacy_options as $key => $value) {
-										echo '<option value="'.($key).'" '.($this->fb_details['default_privacy_option'] == $key || $this->fb_schedule_value('post_privacy') == $key ? 'selected="selected"' : '' ).'>'.($value).'</option>';
+										echo '<option value="'.($key).'" '.($default_privacy_option == $key || $this->fb_schedule_value('post_privacy') == $key ? 'selected="selected"' : '' ).'>'.($value).'</option>';
 									}
 									?>
 									</select>
@@ -596,9 +613,12 @@ if (class_exists('pspFacebook_Planner') != true) {
 								<td colspan="2"><input type="checkbox" id="psp_wplannerfb_now_publish_at_save" name="psp_wplannerfb_now_publish_at_save" value="psp_wplannerfb_now_publish_at_save" /> <label for="psp_wplannerfb_now_publish_at_save"><?php echo _e( 'Send to Facebook after publish / update', 'psp' ); ?></label></td>
 							</tr>
 							<tr>
-								<td colspan="2">
+								<td>
 									<a href="#" id="psp_post_planner_postNowFBbtn" class="psp-form-button psp-form-button-info"><?php echo _e( 'Publish now on facebook', 'psp' ); ?> </a>
 									<span id="psp_postTOFbNow" style="display: none; border: 1px solid #dadada; text-align: center; margin: 10px 0px 0px 0px; width: 160px; padding: 3px; background-color: #dfdfdf;"><?php echo _e( 'Publishing on facebook ...', 'psp' ); ?></span>
+								</td>
+								<td>
+									<div style="display: none;" class="psp_post_planner_postNowFBLog"></div>
 								</td>
 							</tr>
 							</table>
@@ -619,9 +639,9 @@ if (class_exists('pspFacebook_Planner') != true) {
 							})(jQuery);
 							</script>
 						</div>	
-					</div><!-- end: tab page_postnow -->
+					</div><!-- end: TAB page_postnow -->
 				
-				</div> <!-- end: psp-tab-container -->
+				</div><!-- end: psp-tab-container -->
 				<div style="clear:both"></div>
 			</div>
 		<?php
@@ -640,19 +660,20 @@ if (class_exists('pspFacebook_Planner') != true) {
 			global $wpdb, $post;
 			return $wpdb->get_var( "SELECT `" . ( $field ) . "` FROM `" . ( $wpdb->prefix . 'psp_post_planner_cron' ) . "` WHERE 1=1 AND id_post=" . $post->ID );
 		}
-		
-		// :: Facebook Authorization STEP 2
+
+/*
+		// :: Facebook Authorization STEP 2 - old SDK
 		public function fbAuth()
 		{
 			$facebook = new psp_Facebook(array(
 				'appId'  => $this->fb_details['app_id'],
 				'secret' => $this->fb_details['app_secret']
 			));
-			   
+
 			$state = isset($_REQUEST['state']) ? trim($_REQUEST['state']) : '';
 			// check if redirect from facebook to page
-			$token = $facebook->getAccessToken();  
-			
+			$token = $facebook->getAccessToken();
+
 			if (trim($token) != "" && trim($state) != ""){
 				$validAuth = false;
 
@@ -661,10 +682,10 @@ if (class_exists('pspFacebook_Planner') != true) {
 				
 				$userPages = array();
 
-				// get user pages				
+				// get user pages
 				try {
 					$user_accounts = $facebook->api('me/accounts'); 
-					 						
+
 					if(count($user_accounts) > 0 && isset($user_accounts['data'])){
 						$validAuth = true;
 						
@@ -679,18 +700,14 @@ if (class_exists('pspFacebook_Planner') != true) {
 							'status' 	=> 'success',
 							'step' 		=> 'auth /fbAuth',
 							'msg' 		=> $user_accounts,
+							'msg_stat'	=> 'auth_fbAuth',
+							'msg_elem'	=> array('user_pages' => $userPages),
 						));
 					} else {
-
-						//$this->the_plugin->facebook_planner_last_status(array(
-						//	'status' 	=> 'error',
-						//	'step' 		=> 'auth /fbAuth',
-						//	'msg' 		=> $user_accounts,
-						//));
 					}
 												
 				} catch (psp_FacebookApiException $e) {
-											
+
 					$validAuth = 0;	
 					// clean token
 					//update_option('psp_fb_planner_token', $token);
@@ -699,6 +716,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 						'status' 	=> 'error',
 						'step' 		=> 'auth /fbAuth',
 						'msg' 		=> $e,
+						'msg_stat'	=> 'exception',
 					));
 				}
 
@@ -718,14 +736,10 @@ if (class_exists('pspFacebook_Planner') != true) {
 							'status' 	=> 'success',
 							'step' 		=> 'auth /fbAuth',
 							'msg' 		=> $user_groups,
+							'msg_stat'	=> 'auth_fbAuth',
+							'msg_elem'	=> array('user_groups' => $userPages),
 						));
 					} else {
-
-						//$this->the_plugin->facebook_planner_last_status(array(
-						//	'status' 	=> 'error',
-						//	'step' 		=> 'auth /fbAuth',
-						//	'msg' 		=> $user_groups,
-						//));
 					}
 												
 				} catch (psp_FacebookApiException $e) {
@@ -738,6 +752,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 						'status' 	=> 'error',
 						'step' 		=> 'auth /fbAuth',
 						'msg' 		=> $e,
+						'msg_stat'	=> 'exception',
 					));
 				}
 			
@@ -748,6 +763,8 @@ if (class_exists('pspFacebook_Planner') != true) {
 						'status' 	=> 'success',
 						'step' 		=> 'auth /fbAuth',
 						'msg' 		=> $userPages,
+						'msg_stat'	=> 'auth_fbAuth',
+						'msg_elem'	=> array('user_pages' => $userPages),
 					));
 
 					header( 'location: ' . admin_url('admin.php?page=psp#facebook_planner') );
@@ -758,231 +775,86 @@ if (class_exists('pspFacebook_Planner') != true) {
 					'status' 	=> 'error',
 					'step' 		=> 'auth /fbAuth',
 					'msg' 		=> array('token' => $token, 'state' => $state),
+					'msg_stat'	=> 'auth_fbAuth',
+					'msg_elem'	=> array('token' => $token, 'state' => $state),
 				));
-			}
-		}
-/*
-		public function __fbAuth()
-		{
-			$plugin_url = admin_url('admin.php?page=psp#facebook_planner');
-			$plugin_url_ = '<a href="'.$plugin_url.'" class="psp-form-button-small psp-form-button-info">Go Back to the plugin facebook planner module.</a><br />';
-
-			$facebook = new Facebook\Facebook([
-				'app_id' 					=> $this->fb_details['app_id'],
-				'app_secret' 				=> $this->fb_details['app_secret'],
-				'default_graph_version' 	=> 'v2.4',
-				'persistent_data_handler'	=> 'session'
-			]);
-			
-			if( isset($facebook) ) {
-				$fb_helper = $facebook->getRedirectLoginHelper();
-			}
- 
-			try {
-				$accessToken = $fb_helper->getAccessToken();
-			} catch(Facebook\Exceptions\FacebookResponseException $e) {
-				$this->the_plugin->facebook_planner_last_status(array(
-					'status' 	=> 'error',
-					'step' 		=> 'auth /fbAuth',
-					'msg' 		=> $e,
-				));
-
-				// When Graph returns an error
-				echo $plugin_url_;
-				echo 'Graph returned an error: ' . $e->getMessage();
-				exit;
-			} catch(Facebook\Exceptions\FacebookSDKException $e) {
-				$this->the_plugin->facebook_planner_last_status(array(
-					'status' 	=> 'error',
-					'step' 		=> 'auth /fbAuth',
-					'msg' 		=> $e,
-				));
-
-				// When validation fails or other local issues
-				echo $plugin_url_;
-				echo 'Facebook SDK returned an error: ' . $e->getMessage();
-				exit;
-			}
-
-			if ( !isset($accessToken) ) {
-				$is_error = $fb_helper->getError() || $fb_helper->getErrorCode();
-				if ($is_error) {
-					$error_details = array(
-						'error'				=> $fb_helper->getError(),
-						'error_code'		=> $fb_helper->getErrorCode(),
-						'error_reason'		=> $fb_helper->getErrorReason(),
-						'error_desc'		=> $fb_helper->getErrorDescription() || (isset($_GET['error_message']) ? $_GET['error_message']  : null),
-					);
-					$error_details = array_filter($error_details);
-
-					$this->the_plugin->facebook_planner_last_status(array(
-						'status' 	=> 'error',
-						'step' 		=> 'auth /fbAuth',
-						'msg' 		=> $error_details,
-					));
-
-					header('HTTP/1.0 401 Unauthorized');
-					
-					echo $plugin_url_;
-				} else {
-					$this->the_plugin->facebook_planner_last_status(array(
-						'status' 	=> 'error',
-						'step' 		=> 'auth /fbAuth',
-						'msg' 		=> 'Bad request',
-					));
-
-					header('HTTP/1.0 400 Bad Request');
-					
-					echo $plugin_url_;
-					echo 'Bad request';
-				}
-				exit;
-			}
-   
-			// Logged in
-			//echo '<h3>Access Token</h3>';
-			//var_dump($accessToken->getValue());
-			
-			// The OAuth 2.0 client handler helps us manage access tokens
-			$oAuth2Client = $facebook->getOAuth2Client();
-			
-			// Get the access token metadata from /debug_token
-			$tokenMetadata = $oAuth2Client->debugToken( $accessToken );
-			//echo '<h3>Metadata</h3>';
-			//var_dump('<pre>',$accessToken,$tokenMetadata,'</pre>');
-			  
-			// Validation (these will throw FacebookSDKException's when they fail)
-			$tokenMetadata->validateAppId( $this->fb_details['app_id']);
-			// If you know the user ID this access token belongs to, you can validate it here
-			//$tokenMetadata->validateUserId('123');
-			//$tokenMetadata->validateExpiration();
- 
-			if ( !$accessToken->isLongLived() ) {
-				// Exchanges a short-lived access token for a long-lived one
-				try {
-					$accessToken = $oAuth2Client->getLongLivedAccessToken( $accessToken );
-				} catch (Facebook\Exceptions\FacebookSDKException $e) {
-					$this->the_plugin->facebook_planner_last_status(array(
-						'status' 	=> 'error',
-						'step' 		=> 'auth /fbAuth',
-						'msg' 		=> $e,
-					));
-
-					echo $plugin_url_;
-					echo "<p>Error getting long-lived access token: " . $helper->getMessage() . "</p>\n\n";
-					exit;
-				}
-				//echo '<h3>Long-lived</h3>';
-				//var_dump($accessToken->getValue());
-			}
-			
-			// User is logged in with a long-lived access token.
-			// You can redirect them to a members-only page.
-			{
-				// saving offline session into DB
-				update_option('psp_fb_planner_token', $accessToken);
-				$facebook->setDefaultAccessToken($accessToken);
-
-				$userPages = array();
-  
-				// get user pages
-				try {
-					// Returns a `Facebook\FacebookResponse` object
-					$response = $facebook->get('/me/accounts');
-				} catch(Facebook\Exceptions\FacebookResponseException $e) {
-					$this->the_plugin->facebook_planner_last_status(array(
-						'status' 	=> 'error',
-						'step' 		=> 'auth /fbAuth',
-						'msg' 		=> $e,
-					));
-
-					echo $plugin_url_;
-					echo 'User Pages: Graph returned an error: ' . $e->getMessage();
-					exit;
-				} catch(Facebook\Exceptions\FacebookSDKException $e) {
-					$this->the_plugin->facebook_planner_last_status(array(
-						'status' 	=> 'error',
-						'step' 		=> 'auth /fbAuth',
-						'msg' 		=> $e,
-					));
-
-					echo $plugin_url_;
-					echo 'User Pages: Facebook SDK returned an error: ' . $e->getMessage();
-					exit;
-				}
- 
-				$feedEdge = $response->getGraphEdge(); // Page 1
-				$cc = 0;
-				do {
-					foreach ($feedEdge as $status) {
-						$status = $status->asArray();
-						if ( 1//'app page' == strtolower($status['category'])
-							&& (isset($status['perms']) && in_array('CREATE_CONTENT', $status['perms'])) ){
-							$userPages['pages'][] = $status;
-						}
-					}
-
-					$feedEdge = $facebook->next($feedEdge); // Next Page
-					$cc++;
-				}
-				while( $feedEdge );
-				
-				// get user groups
-				try {
-					// Returns a `Facebook\FacebookResponse` object
-					$response = $facebook->get('/me/groups');
-				} catch(Facebook\Exceptions\FacebookResponseException $e) {
-					$this->the_plugin->facebook_planner_last_status(array(
-						'status' 	=> 'error',
-						'step' 		=> 'auth /fbAuth',
-						'msg' 		=> $e,
-					));
-
-					echo $plugin_url_;
-					echo 'User Groups: Graph returned an error: ' . $e->getMessage();
-					exit;
-				} catch(Facebook\Exceptions\FacebookSDKException $e) {
-					$this->the_plugin->facebook_planner_last_status(array(
-						'status' 	=> 'error',
-						'step' 		=> 'auth /fbAuth',
-						'msg' 		=> $e,
-					));
-					
-					echo $plugin_url_;
-					echo 'User Groups: Facebook SDK returned an error: ' . $e->getMessage();
-					exit;
-				}
-
-				$feedEdge = $response->getGraphEdge(); // Page 1
-				$cc = 0;
-				do {
-					foreach ($feedEdge as $status) {
-						$status = $status->asArray();
-						if ( 1 ){
-							$userPages['groups'][] = $status;
-						}
-					}
-
-					$feedEdge = $facebook->next($feedEdge); // Next Page
-					$cc++;
-				}
-				while( $feedEdge );
-
-				//if (count($userPages) > 0) {
-					update_option('psp_fb_planner_user_pages', json_encode($userPages));
-					
-					$this->the_plugin->facebook_planner_last_status(array(
-						'status' 	=> 'success',
-						'step' 		=> 'auth /fbAuth',
-						'msg' 		=> $userPages,
-					));
-					
-					header( 'location: ' . admin_url('admin.php?page=psp#facebook_planner') );
-					exit();
-				//}
 			}
 		}
 */
+
+		// :: Facebook Authorization STEP 2 - new SDK
+		// see aa-framework/settings-template.class.php , option 'authorization_button_fbv4' for step 1
+		public function fbAuth_fbv4()
+		{
+			$plugin_url = admin_url('admin.php?page=psp#facebook_planner');
+			if ( isset($_REQUEST['psp_redirect_url']) && ( $_REQUEST['psp_redirect_url'] != '' ) ) {
+				if ( 'server_status' == $_REQUEST['psp_redirect_url'] ) {
+					$plugin_url = admin_url('admin.php?page=psp_server_status');
+				}
+			}
+			$plugin_url_ = '<a href="'.$plugin_url.'" class="psp-form-button-small psp-form-button-info">' . __('Go Back to the plugin facebook planner module and try again.', $this->the_plugin->localizationName) . '</a><br />';
+
+			$retLogin = $this->the_plugin->facebook_do_login(array(
+				'fb_details'		=> $this->fb_details,
+				'plugin_url'		=> $plugin_url,
+				'plugin_url_'		=> $plugin_url_,
+			));
+			extract($retLogin);
+
+			if ( ! $retLogin['opStatus'] ) {
+				echo $retLogin['opMsg'];
+				exit;
+			}
+
+			// SUCCESS
+			// User is logged in with a long-lived access token.
+			// You can redirect them to a members-only page.
+			if (1) {
+				$userPages = array();
+
+				$retGetPages = $this->the_plugin->facebook_get_user_pages(array(
+					'facebook'			=> isset($facebook) ? $facebook : null,
+					'fb_details'		=> $this->fb_details,
+					'plugin_url'		=> $plugin_url,
+					'plugin_url_'		=> $plugin_url_,
+					'do_authorize'		=> false,
+					'what'				=> 'pages' // pages | groups
+				));
+				if ( ! $retGetPages['opStatus'] ) {
+					echo $retGetPages['opMsg'];
+					exit;
+				}
+				$userPages['pages'] = $retGetPages['result'];
+
+				$retGetGroups = $this->the_plugin->facebook_get_user_pages(array(
+					'facebook'			=> isset($facebook) ? $facebook : null,
+					'fb_details'		=> $this->fb_details,
+					'plugin_url'		=> $plugin_url,
+					'plugin_url_'		=> $plugin_url_,
+					'do_authorize'		=> false,
+					'what'				=> 'groups' // pages | groups
+				));
+				if ( ! $retGetGroups['opStatus'] ) {
+					echo $retGetGroups['opMsg'];
+					exit;
+				}
+				$userPages['groups'] = $retGetGroups['result'];
+				
+				update_option('psp_fb_planner_user_pages', json_encode($userPages));
+					
+				$this->the_plugin->facebook_planner_last_status(array(
+					'status' 	=> 'success',
+					'msg' 		=> $userPages,
+					'from_file' => str_replace($this->the_plugin->cfg['paths']['plugin_dir_path'], '', __FILE__),
+					'from_func' => __FUNCTION__ != __METHOD__ ? __METHOD__ : __FUNCTION__,
+					'from_line' => __LINE__,
+				));
+					
+				header( 'location: ' . $plugin_url );
+				exit();
+			}
+		}
+
 		public function fb_save_meta( $post_id ) {
 			global $wpdb;
 
@@ -1129,19 +1001,20 @@ if (class_exists('pspFacebook_Planner') != true) {
 		
 		public function fb_postFB_callback () {
 
-			$id 		= (int)$_POST['postId'];
-			$wherePost 	= serialize($_POST['postTo']);
-			$privacy 	= $_POST['privacy'];
-			
+			$req = $_REQUEST; //$_POST;
+			$id 		= (int) $req['postId'];
+			$wherePost 	= serialize($req['postTo']);
+			$privacy 	= $req['privacy'];
+
 			$postData = array(
-				'name' 			=> isset($_POST['psp_wplannerfb_title']) ? $_POST['psp_wplannerfb_title'] : '',
-				'link' 			=> isset($_POST['psp_wplannerfb_permalink']) && trim($_POST['psp_wplannerfb_permalink'])
-					== 'custom_link' ? trim($_POST['psp_wplannerfb_permalink_value']) : get_permalink($id),
-				'description' 	=> isset($_POST['psp_wplannerfb_description']) ? $_POST['psp_wplannerfb_description'] : '',
-				'caption' 		=> isset($_POST['psp_wplannerfb_caption']) ? $_POST['psp_wplannerfb_caption'] : '',
-				'message' 		=> isset($_POST['psp_wplannerfb_message']) ? $_POST['psp_wplannerfb_message'] : '',
-				'picture'	 	=> isset($_POST['psp_wplannerfb_image']) ? $_POST['psp_wplannerfb_image'] : '',
-				'use_picture' 	=> isset($_POST['psp_wplannerfb_useimage']) ? $_POST['psp_wplannerfb_useimage'] : ''
+				'name' 			=> isset($req['psp_wplannerfb_title']) ? $req['psp_wplannerfb_title'] : '',
+				'link' 			=> isset($req['psp_wplannerfb_permalink']) && trim($req['psp_wplannerfb_permalink'])
+					== 'custom_link' ? trim($req['psp_wplannerfb_permalink_value']) : get_permalink($id),
+				'description' 	=> isset($req['psp_wplannerfb_description']) ? $req['psp_wplannerfb_description'] : '',
+				'caption' 		=> isset($req['psp_wplannerfb_caption']) ? $req['psp_wplannerfb_caption'] : '',
+				'message' 		=> isset($req['psp_wplannerfb_message']) ? $req['psp_wplannerfb_message'] : '',
+				'picture'	 	=> isset($req['psp_wplannerfb_image']) ? $req['psp_wplannerfb_image'] : '',
+				'use_picture' 	=> isset($req['psp_wplannerfb_useimage']) ? $req['psp_wplannerfb_useimage'] : ''
 			);
 
 			// Plugin facebook utils load
@@ -1151,16 +1024,16 @@ if (class_exists('pspFacebook_Planner') != true) {
 			$fbUtils = psp_fbPlannerUtils::getInstance();
 			$publishToFBResponse = $fbUtils->publishToWall($id, $wherePost, $privacy, $postData);
 				
-			if($publishToFBResponse === true){
-				echo 'OK';
+			if ( isset($publishToFBResponse, $publishToFBResponse['opStatus']) && ($publishToFBResponse['opStatus'] == 'valid') ) {
+				//echo 'OK';
 			}else{
-				echo 'ERROR';
+				//echo 'ERROR';
 			}
-
-			die(); // this is required to return a proper result
+			//die(); // this is required to return a proper result
+			die(json_encode($publishToFBResponse));
 		}
-		
-		public function fb_wplanner_do_this_hourly() {
+
+		public function facebook_wplanner_do_this_hourly() {
 			// Plugin cron class loading
 			require_once ( 'app.cron.class.php' );
 		}
@@ -1327,11 +1200,11 @@ if (class_exists('pspFacebook_Planner') != true) {
 		}
 		
 		/*
-		* printBaseInterface, method
-		* --------------------------
-		*
-		* this will add the base DOM code for you options interface
-		*/
+		 * printBaseInterface, method
+		 * --------------------------
+		 *
+		 * this will add the base DOM code for you options interface
+		 */
 		private function printBaseInterface()
 		{
 			global $wpdb;
@@ -1595,55 +1468,38 @@ if (class_exists('pspFacebook_Planner') != true) {
 			)) );
 		}
 
-		/**
-		 * Authorize app
-		 */
-		 
-		/*
-		* facebookAuthorizeApp, method
-		* --------------------------
-		*
-		* oauth step 1: redirecting a browser (popup, or full page if needed) to a Facebook URL
-		* this will return a link to facebook auth and save data into wp_option
-		*/
+
+/*
+		// :: Server Status module / oauth step 1 - old SDK
+		// oauth step 1: redirecting a browser (popup, or full page if needed) to a Facebook URL
+		// this will return a link to facebook auth and save data into wp_option
 		public function facebookAuthorizeApp()
 		{
 			$saveform = isset($_REQUEST['saveform']) ? trim($_REQUEST['saveform']) : 'no';
 
 			if ( $saveform == 'yes' ) {
+				$params = isset($_REQUEST['params']) ? $_REQUEST['params'] : '';
+				parse_str( $params, $arr_params );
 
-			$params = isset($_REQUEST['params']) ? $_REQUEST['params'] : '';
-			parse_str( $params, $arr_params );
+				$saveID = $arr_params['box_id'];
 
-			//if( (isset($params['app_id']) && trim($params['app_id']) != '') && ( isset($params['app_secret']) && trim($params['app_secret']) != '') ) {
-			//}
+				// clean up array before save into DB 
+				unset($arr_params['box_id']);
+				unset($arr_params['box_nonce']);
 
-			// setup the wrapper
-			$this->fb = new psp_Facebook(array(
-				'appId'  => $arr_params['app_id'],
-				'secret' => $arr_params['app_secret']
-			));
-
-			$saveID = $arr_params['box_id'];
-
-			// clean up array before save into DB 
-			unset($arr_params['box_id']);
-			unset($arr_params['box_nonce']);
-
-			$this->the_plugin->save_theoption( $saveID, $arr_params);
+				$this->the_plugin->save_theoption( $saveID, $arr_params);
 			} else {
-
-			$arr_params = $this->the_plugin->getAllSettings('array', 'facebook_planner');
-  
-			// setup the wrapper
-			$this->fb = new psp_Facebook(array(
-				'appId'  => $arr_params['app_id'],
-				'secret' => $arr_params['app_secret']
-			));
+				$arr_params = $this->the_plugin->getAllSettings('array', 'facebook_planner');
 			}
-  
-            // publish_actions instead of publish_stream | offline_access - deprecated
-            $fb_permissions = 'email,publish_actions,manage_pages,user_groups'; // optional
+
+				// setup the wrapper
+				$this->fb = new psp_Facebook(array(
+					'appId'  => $arr_params['app_id'],
+					'secret' => $arr_params['app_secret']
+				));
+
+			// publish_actions instead of publish_stream | offline_access - deprecated
+			$fb_permissions = 'email,publish_actions,manage_pages,user_groups'; // optional
 			$loginUrl = $this->fb->getLoginUrl(
 				array(
 					'scope' => $fb_permissions,
@@ -1658,14 +1514,12 @@ if (class_exists('pspFacebook_Planner') != true) {
 			)));
 		}
 
-		/*
-		* check_auth_callback, method
-		* oauth step 2: receiving the authorization code, the application can exchange the code for an access token and a refresh token
-		* ---------------------------
-		*/
+		// :: Server Status module / oauth step 2 - old SDK
+		// oauth step 2: receiving the authorization code, the application can exchange the code for an access token and a refresh token
 		public function check_auth_callback()
 		{
 			// check in the server request uri if the keyword psp_seo_oauth exists!
+			//var_dump('<pre>', $_SERVER["REQUEST_URI"] , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
 			if( preg_match("/psp_seo_fb_oauth/i", $_SERVER["REQUEST_URI"] ) ){
 				$code = isset($_GET['state']) ? $_GET['state'] : '';
 				
@@ -1679,7 +1533,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 							'secret' => $fb_details['app_secret']
 						));
 					}
-									
+
 					if( isset($facebook) ) {
 						$validAuth = false;
 						// $state = isset($_REQUEST['state']) ? trim($_REQUEST['state']) : '';
@@ -1693,7 +1547,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 							try {
 								// get user profile
 								$user_profile = $facebook->api('/me');
-												
+
 								if(count($user_profile) > 0){
 									$validAuth = true;
 									
@@ -1701,6 +1555,8 @@ if (class_exists('pspFacebook_Planner') != true) {
 										'status' 	=> 'success',
 										'step' 		=> 'profile',
 										'msg' 		=> $user_profile,
+										'msg_stat'	=> 'profile',
+										'msg_elem'	=> '--psp--',
 									));
 								} else {
 								
@@ -1708,11 +1564,13 @@ if (class_exists('pspFacebook_Planner') != true) {
 										'status' 	=> 'error',
 										'step' 		=> 'profile',
 										'msg' 		=> $user_profile,
+										'msg_stat'	=> 'profile',
+										'msg_elem'	=> '--psp--',
 									));
 								}
 												
 							} catch (psp_FacebookApiException $e) {
-											
+
 								$validAuth = 0;	
 								// clean token
 								//update_option('psp_fb_planner_token', $token);
@@ -1721,6 +1579,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 									'status' 	=> 'error',
 									'step' 		=> 'profile',
 									'msg' 		=> $e,
+									'msg_stat'	=> 'exception',
 								));
 							}
 						}
@@ -1731,30 +1590,36 @@ if (class_exists('pspFacebook_Planner') != true) {
 								'status' 	=> 'error',
 								'step' 		=> 'auth',
 								'msg' 		=> 'no db token',
+								'msg_stat'	=> 'auth',
+								'msg_elem'	=> 'no db token',
 							));
 						}
 					}
 
-					die('<script>
+					die('
+					<script>
 					window.onunload = function() {
-					    if (window.opener && !window.opener.closed) {
-					        window.opener.pspPopUpClosed();
-					    }
+						if (window.opener && !window.opener.closed) {
+							window.opener.pspPopUpClosed();
+						}
 					};
-					
 					window.close();
-					</script>;');
+					</script>;
+					');
 
 				} else {
 					$this->the_plugin->facebook_planner_last_status(array(
 						'status' 	=> 'error',
 						'step' 		=> 'code',
 						'msg' 		=> $code,
+						'msg_stat'	=> 'code',
+						'msg_elem'	=> 'code',
 					));
 				}
 			}
 		}
 
+		// :: Server Status module / validate login - old SDK
 		public function makeoAuthLogin() {
 			$fb_details = $this->the_plugin->getAllSettings('array', 'facebook_planner');
 			
@@ -1786,6 +1651,8 @@ if (class_exists('pspFacebook_Planner') != true) {
 								'status' 	=> 'success',
 								'step' 		=> 'profile',
 								'msg' 		=> $user_profile,
+								'msg_stat'	=> 'profile',
+								'msg_elem'	=> '--psp--',
 							));
 						} else {
 								
@@ -1793,6 +1660,8 @@ if (class_exists('pspFacebook_Planner') != true) {
 								'status' 	=> 'error',
 								'step' 		=> 'profile',
 								'msg' 		=> $user_profile,
+								'msg_stat'	=> 'profile',
+								'msg_elem'	=> '--psp--',
 							));
 						}
 												
@@ -1806,6 +1675,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 							'status' 	=> 'error',
 							'step' 		=> 'profile',
 							'msg' 		=> $e,
+							'msg_stat'	=> 'exception',
 						));
 					}
 				}
@@ -1816,33 +1686,47 @@ if (class_exists('pspFacebook_Planner') != true) {
 						'status' 	=> 'error',
 						'step' 		=> 'auth',
 						'msg' 		=> 'no db token',
+						'msg_stat'	=> 'auth',
+						'msg_elem'	=> 'no db token',
 					));
 				}
 			}
 
 			return $validAuth ? true : false;
 		}
+*/
+
+		// facebook authorization validation - new SDK
+		// used in /modules/server_status/init.php , /modules/server_status/ajax.php
+		public function makeoAuthLogin_fbv4( $pms=array() ) {
+			$pms = array_merge(array(
+				'fb_details'		=> $this->fb_details,
+				'psp_redirect_url'	=> '',
+			), $pms);
+			extract($pms);
+
+			$is_loggedin = $this->the_plugin->facebook_is_loggedin($pms);
+			return $is_loggedin;
+		}
 
 		/**
-	    * Singleton pattern
-	    *
-	    * @return pspFacebook_Planner Singleton instance
-	    */
-	    static public function getInstance()
-	    {
-	        if (!self::$_instance) {
-	            self::$_instance = new self;
-	        }
-
-	        return self::$_instance;
-	    }
-    }
+	     * Singleton pattern
+	     *
+	     * @return pspFacebook_Planner Singleton instance
+	     */
+		static public function getInstance() {
+			if (!self::$_instance) {
+				self::$_instance = new self;
+			}
+			return self::$_instance;
+		}
+	}
 }
 
 function pspFP_cronPostWall_event() {
 	// Initialize the pspFacebook_Planner class
 	$pspFacebook_Planner = pspFacebook_Planner::getInstance();
-	$pspFacebook_Planner->fb_wplanner_do_this_hourly();
+	$pspFacebook_Planner->facebook_wplanner_do_this_hourly();
 }
 
 // Initialize the pspFacebook_Planner class

@@ -151,14 +151,14 @@ class psp_PlannerCron
 				if(isset($task['status']) && $task['status'] != '2') {
 
 					// get data from DB and convert to unix time
-		            $expiration_date = strtotime($task['run_date']); 
-		            if (self::$now >= $expiration_date) {
+					$expiration_date = strtotime($task['run_date']);
+					if (self::$now >= $expiration_date) {
 						// set start date
 						self::$db->query("UPDATE " . ( self::$utils['cron']['table'] ) . " set started_at=NOW(), status=2 WHERE id_post=" . $task['id_post']);
 
 						// send post to wall, update DB
 						$publishToFBResponse = self::$fbUtils->publishToWall($task['id_post'], $task['post_to'], $task['post_privacy']);
-						if(isset($publishToFBResponse) && $publishToFBResponse === true) {
+						if ( isset($publishToFBResponse, $publishToFBResponse['opStatus']) && ($publishToFBResponse['opStatus'] == 'valid') ) {
 							$updateStatus = ($task['repeat_status'] == 'off' ? 1 : 0);
 
 							// patch/ 2014.02.24
@@ -200,9 +200,9 @@ class psp_PlannerCron
 						}else{
 							
 							// patch/ 2014.02.24
-							// self::$db->query(self::$db->prepare("UPDATE " . ( self::$utils['cron']['table'] ) . " set attempts=attempts+1, run_date=DATE_ADD(DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00'), INTERVAL ".$task['repeat_interval']." HOUR), status=3, ended_at='".(date('Y-m-d H:i:s', self::$now))."', response='" . ($publishToFBResponse) . "' WHERE id_post = %d", $task['id_post']));
-							self::$db->query(self::$db->prepare("UPDATE " . ( self::$utils['cron']['table'] ) . " set attempts=attempts+1, run_date=DATE_ADD(DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00'), INTERVAL repeat_interval HOUR), status=3, ended_at='".(date('Y-m-d H:i:s', self::$now))."', response='" . ($publishToFBResponse) . "' WHERE id_post = %d", $task['id_post']));
-							//self::$db->query(self::$db->prepare("UPDATE " . ( self::$utils['cron']['table'] ) . " set attempts=attempts+1, run_date=DATE_ADD(DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00'), INTERVAL repeat_interval HOUR), status=3, ended_at=DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), response='" . ($publishToFBResponse) . "' WHERE id_post = %d", $task['id_post']));
+							// self::$db->query(self::$db->prepare("UPDATE " . ( self::$utils['cron']['table'] ) . " set attempts=attempts+1, run_date=DATE_ADD(DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00'), INTERVAL ".$task['repeat_interval']." HOUR), status=3, ended_at='".(date('Y-m-d H:i:s', self::$now))."', response='" . ($publishToFBResponse['opMsg']) . "' WHERE id_post = %d", $task['id_post']));
+							self::$db->query(self::$db->prepare("UPDATE " . ( self::$utils['cron']['table'] ) . " set attempts=attempts+1, run_date=DATE_ADD(DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00'), INTERVAL repeat_interval HOUR), status=3, ended_at='".(date('Y-m-d H:i:s', self::$now))."', response='" . ($publishToFBResponse['opMsg']) . "' WHERE id_post = %d", $task['id_post']));
+							//self::$db->query(self::$db->prepare("UPDATE " . ( self::$utils['cron']['table'] ) . " set attempts=attempts+1, run_date=DATE_ADD(DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00'), INTERVAL repeat_interval HOUR), status=3, ended_at=DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), response='" . ($publishToFBResponse['opMsg']) . "' WHERE id_post = %d", $task['id_post']));
 							
 							if( isset(self::$utils['email_message_lock']) && self::$utils['email_message_lock'] === 0 ) {
 								self::$utils['email_message_lock'] = 1;

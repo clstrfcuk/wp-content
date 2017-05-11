@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.0.6] - 10.05.2017
+- "facebook planner" metabox: bug fixes
+- "facebook planner" module now works with latest "php facebook sdk" - version 5.5 (it requires php version >= 5.4)
+
+- added new options in "Mass Optimization Settings" menu (ex.: Word Min Chars: The minimum number of characters for a word to be considered valid.)
+
+- chages to seo optimization rules and improvments
+
+	- content analysis use now 20 rules, almost double as before, and you can choose in "Mass Optimization Settings" menu, which of them you want to use on your website
+
+	- fixed some issues when counting the number of words in content and when calculating focus keyword density
+
+	- added support for <span> tag having a style attribute with either of these properties: text-decoration: underline, font-style: italic, font-weight: bold, when verifing for bold, italic or underline elements
+	
+	- old "title" rule now is split in 2 rules: one for "seo meta title" and one for "post/page title" (both new rules verify characters length and if it contains keyword - at the begining too)
+
+	- new rule: verify if content has any underlined elements
+	- new rule: "seo meta title" minimum number of words
+	- new rule: verify if content has subheading tags ( <h1>, <h2>, <h3> )
+	- new rule: verify if content contains your focus keyword in the first 100 words
+	- new rule: verify if content contains your focus keyword in the last 100 words
+	- new rule: verify if content contains external links (their href has a different domain than yours)
+	- new rule: verify if content contains internal links (their href has the same domain with yours)
+	- new rule: verify if content contains competing links (their text contains your current focus keyword)
+
 ## [2.0.5] - 07.04.2017
 - module "Backlink Builder": marked as deprecated (it will not be maintaned anymore)
 	

@@ -9,23 +9,24 @@ if (class_exists('pspOnPageOptimization') != true) {
     class pspOnPageOptimization
     {
         /*
-        * Some required plugin information
-        */
+         * Some required plugin information
+         */
         const VERSION = '1.0';
 
         /*
-        * Store some helpers config
-        */
+         * Store some helpers config
+         */
 		public $the_plugin = null;
 
 		private $module_folder = '';
 		private $module = '';
 
 		static protected $_instance;
-	
+
+
         /*
-        * Required __construct() function that initalizes the AA-Team Framework
-        */
+         * Required __construct() function that initalizes the AA-Team Framework
+         */
         public function __construct()
         {
         	global $psp;
@@ -47,12 +48,12 @@ if (class_exists('pspOnPageOptimization') != true) {
 				add_action('wp_ajax_pspQuickEdit', array( &$this, 'quick_edit_post' ));
 			}
         }
-        
+
+
         /**
          * add Custom Coloumns to pages | posts | custom post types - listing!
          *
          */
-
         public function page_seo_info() 
         {
 	    	$post_types = get_post_types(array(
@@ -208,11 +209,11 @@ if (class_exists('pspOnPageOptimization') != true) {
 			$html[] = '</select>';
 			echo implode('', $html);
         }
-        
+
 
 		/**
-	    * Hooks
-	    */
+	     * Hooks
+	     */
 	    static public function adminMenu()
 	    {
 	       self::getInstance()
@@ -221,8 +222,8 @@ if (class_exists('pspOnPageOptimization') != true) {
 	    }
 
 	    /**
-	    * Register plug-in module admin pages and menus
-	    */
+	     * Register plug-in module admin pages and menus
+	     */
 		protected function _registerAdminPages()
     	{
     		if ( $this->the_plugin->capabilities_user_has_module('on_page_optimization') ) {
@@ -240,8 +241,8 @@ if (class_exists('pspOnPageOptimization') != true) {
 		}
 
 		/**
-	    * Register plug-in admin metaboxes
-	    */
+	     * Register plug-in admin metaboxes
+	     */
 	    protected function _registerMetaBoxes()
 	    {
 	    	if ( $this->the_plugin->capabilities_user_has_module('on_page_optimization') ) {
@@ -298,14 +299,14 @@ if (class_exists('pspOnPageOptimization') != true) {
 		{
 			$this->printBaseInterface();
 		}
-		
+
 
 		/*
-		* printBoxInterface, method
-		* -------------------------
-		*
-		* this will add the base DOM code for you options interface
-		*/
+		 * printBoxInterface, method
+		 * -------------------------
+		 *
+		 * this will add the base DOM code for you options interface
+		 */
 		private function makePrintBoxParams( $tax=false ) 
 		{
 			$ret = array(
@@ -528,14 +529,20 @@ if (class_exists('pspOnPageOptimization') != true) {
 		private function printBoxInterface( $tax=false )
 		{
 			$ret = $this->makePrintBoxParams( $tax );
+			//var_dump('<pre>', $ret, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
 			extract( $ret );
 
-			if ( isset($post_id) && $post_id > 0 ) {
+			if ( isset($post_id) && $post_id > 0 ) { // if post_id
 				
 				$postDefault = $this->the_plugin->get_post_metatags( $post ); // add meta placeholder
+
+				// Twitter Cards ajax action & public methods!
+				require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'utils/twitter_cards.php' );
+				$twc = new pspTwitterCards( $this->the_plugin );
 ?>
 			<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
 			<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
+
 			<div id="psp-meta-box-preload" style="height:200px; position: relative;">
 				<!-- Main loading box -->
 				<div id="psp-main-loading" style="display:block;">
@@ -557,8 +564,8 @@ if (class_exists('pspOnPageOptimization') != true) {
 					<a href="#page_meta"><?php _e('The Meta', 'psp');?></a>
 					<a href="#page_status"><?php _e('Page Status', 'psp');?></a>
 					<a href="#social_settings"><?php _e('Social Settings', 'psp');?></a>
-					<a href="#advance_seo"><?php _e('Advanced SEO', 'psp');?></a>
 					<a href="#twitter_cards"><?php _e('Twitter Cards', 'psp');?></a>
+					<a href="#advance_seo"><?php _e('Advanced SEO', 'psp');?></a>
 				</div>
 				
 				<!-- box Data -->
@@ -572,7 +579,8 @@ if (class_exists('pspOnPageOptimization') != true) {
 				</div>
 
 				<div class="psp-tab-container">
-				
+
+
 					<!-- box Dashboard -->
 					<div id="psp-tab-div-id-dashboard" style="display:block;">
 						<div class="psp psp-dashboard-box span_3_of_3" rel="psp-box-id-visits-and-serp">
@@ -671,8 +679,8 @@ if (class_exists('pspOnPageOptimization') != true) {
 								</table>
 							</div>
 						</div>
+					</div><!-- end box Dashboard -->
 
-					</div>
 
 					<!-- box Page Meta Tags -->
 					<div id="psp-tab-div-id-page_meta" style="display:none;">
@@ -738,99 +746,9 @@ if (class_exists('pspOnPageOptimization') != true) {
 								</table>
 							</div>
 						</div>
-					</div>
-
-					<!-- box Social Settings -->
-					<div id="psp-tab-div-id-social_settings" style="display:none;">
-						<div class="psp-dashboard-box span_3_of_3">
-						<h1><?php _e('Social settings', 'psp');?></h1>
-						<div class="psp-dashboard-box-content">
-							<table class="form-table">
-								<tbody>
-									<tr>
-										<td valign="top">
-											<label for="psp-field-facebook-isactive"><?php _e('Use Facebook Meta:', 'psp');?></label>
-										</td>
-										<td>
-											<select name="psp-field-facebook-isactive" id="psp-field-facebook-isactive">
-												<option value="default" <?php echo $fb_isactive=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
-												<option value="yes" <?php echo $fb_isactive=='yes' ? 'selected="true"' : ''; ?> ><?php _e('Yes', 'psp');?></option>
-												<option value="no" <?php echo $fb_isactive=='no' ? 'selected="true"' : ''; ?> ><?php _e('No', 'psp');?></option>
-											</select>
-											<p><?php _e('Choose Yes if you want to use Facebook Meta Tags on your page', 'psp');?></p>
-										</td>
-									</tr>
-									<tr>
-										<td valign="top">
-											<label for="psp-field-facebook-titlu"><?php _e('Facebook Title:', 'psp');?></label>
-										</td>
-										<td>
-											<input type="text" class="large-text" style="width: 300px;" value="<?php echo !empty($psp_meta['facebook_titlu']) ? $psp_meta['facebook_titlu'] : ''/*$psp_meta['title']*/;?>" name="psp-field-facebook-titlu" autocomplete="off" id="psp-field-facebook-titlu">
-											<p><?php _e('Add a custom title for your post. This will be used to post on an user\'s wall when they like/share this post on Facebook.', 'psp');?></p>
-										</td>
-									</tr>
-									<tr>
-										<td valign="top">
-											<label for="psp-field-facebook-desc"><?php _e('Facebook Description:', 'psp');?></label>
-										</td>
-										<td>
-											<textarea name="psp-field-facebook-desc" id="psp-field-facebook-desc" rows="3" class="large-text"><?php echo !empty($psp_meta['facebook_desc']) ? $psp_meta['facebook_desc'] : ''/*$psp_meta['description']*/;?></textarea>
-											<p><?php _e('Add a custom description for your post. This will be used to post on an user\'s wall when they share this post on Facebook.', 'psp');?></p>
-										</td>
-									</tr>
-									<?php 
-										if (1) {
-										// if ( !$__istax ) {
-									?>
-									<tr>
-										<td valign="top">
-											<label for="psp-field-facebook-image"><?php _e('Facebook Image:', 'psp');?></label>
-										</td>
-										<td>
-										<?php
-											echo $this->uploadImage( 
-												array(
-												 	'psp-field-facebook-image' => array(
-												 		'db_value'	=> isset($psp_meta['facebook_image']) ? $psp_meta['facebook_image'] : '',
-
-														'type' 		=> 'upload_image',
-														//'std'		=> $fb_default_img,
-														'size' 		=> 'large',
-														'title' 	=> 'Facebook image',
-														'value' 	=> 'Upload image',
-														'thumbSize' => array(
-															'w' => '100',
-															'h' => '100',
-															'zc' => '2',
-														),
-														'desc' 		=> __('Choose the image', 'psp')
-													)
-												));
-										?>
-											<p><?php _e('Add a custom image for your post. This will be used to post on an user\'s wall when they share this post on Facebook.', 'psp');?></p>
-										</td>
-									</tr>
-									<?php } ?>
-									<tr>
-										<td valign="top">
-											<label for="psp-field-facebook-opengraph-type"><?php _e('Open Graph Type:', 'psp');?></label>
-										</td>
-										<td>
-										<?php
-											echo $this->OpenGraphTypes( 
-												'psp-field-facebook-opengraph-type',
-												$fb_opengraph
-											);
-										?>
-										<!--<p><?php _e('Choose Open Graph Type.', 'psp');?></p>-->
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-
+					</div><!-- end box Page Meta Tags -->
+					
+					
 					<!-- box Page Status -->
 					<div id="psp-tab-div-id-page_status" style="display:none;">
 						<div class="psp-dashboard-box span_3_of_3">
@@ -841,8 +759,172 @@ if (class_exists('pspOnPageOptimization') != true) {
 								?>
 							</div>
 						</div>
-					</div>
-	
+					</div><!-- end box Page Status -->
+
+
+					<!-- box Social Settings -->
+					<div id="psp-tab-div-id-social_settings" style="display:none;">
+						<div class="psp-dashboard-box span_3_of_3">
+							<h1><?php _e('Social settings', 'psp');?></h1>
+							<div class="psp-dashboard-box-content">
+								<table class="form-table">
+									<tbody>
+										<tr>
+											<td valign="top">
+												<label for="psp-field-facebook-isactive"><?php _e('Use Facebook Meta:', 'psp');?></label>
+											</td>
+											<td>
+												<select name="psp-field-facebook-isactive" id="psp-field-facebook-isactive">
+													<option value="default" <?php echo $fb_isactive=='default' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
+													<option value="yes" <?php echo $fb_isactive=='yes' ? 'selected="true"' : ''; ?> ><?php _e('Yes', 'psp');?></option>
+													<option value="no" <?php echo $fb_isactive=='no' ? 'selected="true"' : ''; ?> ><?php _e('No', 'psp');?></option>
+												</select>
+												<p><?php _e('Choose Yes if you want to use Facebook Meta Tags on your page', 'psp');?></p>
+											</td>
+										</tr>
+										<tr>
+											<td valign="top">
+												<label for="psp-field-facebook-titlu"><?php _e('Facebook Title:', 'psp');?></label>
+											</td>
+											<td>
+												<input type="text" class="large-text" style="width: 300px;" value="<?php echo !empty($psp_meta['facebook_titlu']) ? $psp_meta['facebook_titlu'] : ''/*$psp_meta['title']*/;?>" name="psp-field-facebook-titlu" autocomplete="off" id="psp-field-facebook-titlu">
+												<p><?php _e('Add a custom title for your post. This will be used to post on an user\'s wall when they like/share this post on Facebook.', 'psp');?></p>
+											</td>
+										</tr>
+										<tr>
+											<td valign="top">
+												<label for="psp-field-facebook-desc"><?php _e('Facebook Description:', 'psp');?></label>
+											</td>
+											<td>
+												<textarea name="psp-field-facebook-desc" id="psp-field-facebook-desc" rows="3" class="large-text"><?php echo !empty($psp_meta['facebook_desc']) ? $psp_meta['facebook_desc'] : ''/*$psp_meta['description']*/;?></textarea>
+												<p><?php _e('Add a custom description for your post. This will be used to post on an user\'s wall when they share this post on Facebook.', 'psp');?></p>
+											</td>
+										</tr>
+										<?php 
+											if (1) {
+											// if ( !$__istax ) {
+										?>
+										<tr>
+											<td valign="top">
+												<label for="psp-field-facebook-image"><?php _e('Facebook Image:', 'psp');?></label>
+											</td>
+											<td>
+											<?php
+												echo $this->uploadImage( 
+													array(
+														'psp-field-facebook-image' => array(
+															'db_value'	=> isset($psp_meta['facebook_image']) ? $psp_meta['facebook_image'] : '',
+
+															'type' 		=> 'upload_image',
+															//'std'		=> $fb_default_img,
+															'size' 		=> 'large',
+															'title' 	=> 'Facebook image',
+															'value' 	=> 'Upload image',
+															'thumbSize' => array(
+																'w' => '100',
+																'h' => '100',
+																'zc' => '2',
+															),
+															'desc' 		=> __('Choose the image', 'psp')
+														)
+													));
+											?>
+												<p><?php _e('Add a custom image for your post. This will be used to post on an user\'s wall when they share this post on Facebook.', 'psp');?></p>
+											</td>
+										</tr>
+										<?php } ?>
+										<tr>
+											<td valign="top">
+												<label for="psp-field-facebook-opengraph-type"><?php _e('Open Graph Type:', 'psp');?></label>
+											</td>
+											<td>
+											<?php
+												echo $this->OpenGraphTypes( 
+													'psp-field-facebook-opengraph-type',
+													$fb_opengraph
+												);
+											?>
+											<!--<p><?php _e('Choose Open Graph Type.', 'psp');?></p>-->
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div><!-- end box Social Settings -->
+
+
+					<!-- box Twitter Cards -->
+					<div id="psp-tab-div-id-twitter_cards" style="display:none;">
+						<div class="psp-dashboard-box span_3_of_3">
+							<h1><?php _e('Twitter Cards', 'psp');?></h1>
+							<div class="psp-dashboard-box-content psp-seo-status-container">
+								<table class="form-table">
+									<tbody>
+										<tr>
+											<td valign="top">
+												<label for="psp_twc_post_thumbsize"><?php _e('Image thumb size:', 'psp');?></label>
+											</td>
+											<td>
+											<?php
+												echo $this->TwitterCardThumbSize( 
+													'psp_twc_post_thumbsize',
+													$twc_post_thumbsize
+												);
+											?>
+												<span><?php _e('Choose Post|Page Image Thumb Size', 'psp');?></span>
+											</td>
+										</tr>
+										<tr>
+											<td valign="top">
+												<label for="psp_twc_post_cardtype"><?php _e('Add Post|Page Twitter Card Type:', 'psp');?></label>
+											</td>
+											<td>
+											<?php
+												echo $this->TwitterCardTypes( 
+													'psp_twc_post_cardtype',
+													$twc_post_cardtype
+												);
+											?>
+												<span><?php _e('Choose Post|Page Twitter Card Type', 'psp');?></span>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">
+								<!-- ajax response - Creating the option fields -->
+								<div class="psp-form" id="psp-twittercards-post-response">
+								</div>
+											</td>
+										</tr>
+										
+										<tr>
+											<td valign="top">
+												<label for="psp-field-twc-app-isactive"><?php _e('Add Twitter App Card Type:', 'psp');?></label>
+											</td>
+											<td colspan="2">
+								<select name="psp_twc_app_isactive" id="psp_twc_app_isactive" style="width:300px;">
+									<option value="default2" <?php echo $twc_app_isactive=='default2' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
+									<option value="default" <?php echo $twc_app_isactive=='default' ? 'selected="true"' : ''; ?> ><?php _e('Use Website Generic App Twitter Card Type', 'psp');?></option>
+									<option value="yes" <?php echo $twc_app_isactive=='yes' ? 'selected="true"' : ''; ?> ><?php _e('Yes', 'psp');?></option>
+									<option value="no" <?php echo $twc_app_isactive=='no' ? 'selected="true"' : ''; ?> ><?php _e('No', 'psp');?></option>
+								</select>
+								<!--<span><?php _e('Choose Yes if you want to add Twitter App Card Type', 'psp');?></span>-->
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">
+								<!-- ajax response - Creating the option fields -->
+								<div class="psp-form" id="psp-twittercards-app-response">
+								</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div><!-- end box Twitter Cards -->
+
+
 					<!-- box Advanced SEO -->
 					<div id="psp-tab-div-id-advance_seo" style="display:none;">
 					<div class="psp-dashboard-box span_3_of_3">
@@ -933,84 +1015,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 							</table>
 						</div>
 					</div>
-				</div>
-				
-					<!-- box Twitter Cards -->
-<?php
-// Twitter Cards ajax action & public methods!
-require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'utils/twitter_cards.php' );
-$twc = new pspTwitterCards( $this->the_plugin );
-?>
-					<div id="psp-tab-div-id-twitter_cards" style="display:none;">
-						<div class="psp-dashboard-box span_3_of_3">
-						
-						<div class="psp-dashboard-box-content psp-seo-status-container">
-							<table class="form-table">
-								<tbody>
-									<tr>
-										<td valign="top">
-											<label for="psp_twc_post_thumbsize"><?php _e('Image thumb size:', 'psp');?></label>
-										</td>
-										<td>
-										<?php
-											echo $this->TwitterCardThumbSize( 
-												'psp_twc_post_thumbsize',
-												$twc_post_thumbsize
-											);
-										?>
-											<span><?php _e('Choose Post|Page Image Thumb Size', 'psp');?></span>
-										</td>
-									</tr>
-									<tr>
-										<td valign="top">
-											<label for="psp_twc_post_cardtype"><?php _e('Add Post|Page Twitter Card Type:', 'psp');?></label>
-										</td>
-										<td>
-										<?php
-											echo $this->TwitterCardTypes( 
-												'psp_twc_post_cardtype',
-												$twc_post_cardtype
-											);
-										?>
-											<span><?php _e('Choose Post|Page Twitter Card Type', 'psp');?></span>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-							<!-- ajax response - Creating the option fields -->
-							<div class="psp-form" id="psp-twittercards-post-response">
-							</div>
-										</td>
-									</tr>
-									
-									<tr>
-										<td valign="top">
-											<label for="psp-field-twc-app-isactive"><?php _e('Add Twitter App Card Type:', 'psp');?></label>
-										</td>
-										<td colspan="2">
-							<select name="psp_twc_app_isactive" id="psp_twc_app_isactive" style="width:300px;">
-								<option value="default2" <?php echo $twc_app_isactive=='default2' ? 'selected="true"' : ''; ?> ><?php _e('Default Setting', 'psp');?></option>
-								<option value="default" <?php echo $twc_app_isactive=='default' ? 'selected="true"' : ''; ?> ><?php _e('Use Website Generic App Twitter Card Type', 'psp');?></option>
-								<option value="yes" <?php echo $twc_app_isactive=='yes' ? 'selected="true"' : ''; ?> ><?php _e('Yes', 'psp');?></option>
-								<option value="no" <?php echo $twc_app_isactive=='no' ? 'selected="true"' : ''; ?> ><?php _e('No', 'psp');?></option>
-							</select>
-							<!--<span><?php _e('Choose Yes if you want to add Twitter App Card Type', 'psp');?></span>-->
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-							<!-- ajax response - Creating the option fields -->
-							<div class="psp-form" id="psp-twittercards-app-response">
-							</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-						</div>
-					</div>
-				
+				</div><!-- end box Advanced SEO -->
 				
 				</div>
 			<div style="clear:both"></div>
@@ -1019,12 +1024,13 @@ $twc = new pspTwitterCards( $this->the_plugin );
 			} //end if post_id
 		}
 
+
 		/*
-		* printBaseInterface, method
-		* --------------------------
-		*
-		* this will add the base DOM code for you options interface
-		*/
+		 * printBaseInterface, method
+		 * --------------------------
+		 *
+		 * this will add the base DOM code for you options interface
+		 */
 		private function printBaseInterface()
 		{
 ?>
@@ -1173,14 +1179,15 @@ $twc = new pspTwitterCards( $this->the_plugin );
 <?php
 		}
 
+
 		/*
-		* get_seo_report, method
-		* ----------------------
-		*
-		* this will return a SEO score, as HTML
-		*/
+		 * get_seo_report, method
+		 * ----------------------
+		 *
+		 * this will return a SEO score, as HTML
+		 */
 		public function get_seo_report( $id=0, $kw='', $returnAs='die', $data='large' )
-		{ 
+		{
 			$html = array();
 			$summary = array();
 			$score = 0;
@@ -1206,11 +1213,14 @@ $twc = new pspTwitterCards( $this->the_plugin );
 				$post_seo_status = get_post_meta( $request['id'], 'psp_status', true);
 			}
 
-			if( !isset($post_seo_status) || count($post_seo_status) == 0 || @trim($post_seo_status) == ""
+			// || @trim($post_seo_status) == ""
+			if( !isset($post_seo_status) || !is_array($post_seo_status) || empty($post_seo_status)
 				|| $this->the_plugin->__tax_istax( $request['id'] ) ) { //for taxonomy refresh psp_status!
 
 				$seo = pspSeoCheck::getInstance();
-				$post_seo_status = $seo->get_seo_score( $request['id'], $request['kw'], 'array');
+				$seo->set_current_post( $request['id'] );
+				$seo->set_current_keyword( $request['kw'] );
+				$post_seo_status = $seo->get_seo_score( 'array');
 
 				$__seo_status = $post_seo_status;
 				$this->save_seo_score( $request['id'], $__seo_status['data'], $__seo_status['score'], $__seo_status['kw'] );
@@ -1218,13 +1228,19 @@ $twc = new pspTwitterCards( $this->the_plugin );
 			}
 
 			if( is_array($post_seo_status) && count($post_seo_status) > 0 ) {
+
+				$rules_allowed = $this->the_plugin->get_content_analyzing_allowed_rules( array(
+					'settings'	=> array(),
+					'istax'		=> $this->the_plugin->__tax_istax( $request['id'] ),
+				));
 				
-				if ( $this->the_plugin->__tax_istax( $request['id'] ) ) { //taxonomy data!
-					foreach ( array('images_alt', 'html_italic', 'html_bold') as $k=>$v )
-						unset( $post_seo_status["$v"] );
-				}
+				//if ( $this->the_plugin->__tax_istax( $request['id'] ) ) { //taxonomy data!
+				//	foreach ( array('images_alt', 'html_italic', 'html_bold', 'html_underline') as $k=>$v )
+				//		unset( $post_seo_status["$v"] );
+				//}
 					 	
 				foreach ($post_seo_status as $key => $value) { //get score
+					if ( ! in_array($key, $rules_allowed) ) continue 1;
 					$score = $score + $value["score"];
 				}
 
@@ -1255,8 +1271,13 @@ $twc = new pspTwitterCards( $this->the_plugin );
 				
 				$html[] = '</div>';
 					
-				foreach ($post_seo_status as $key => $value) {
-					
+				foreach ($post_seo_status as $key => $value) { // main foreach
+
+					if ( is_null($value) ) continue 1;
+					if ( ! in_array($key, $rules_allowed) ) continue 1;
+
+					if ( !isset($value['debug']) ) $value['debug'] = array('str' => '');
+
 					$score_html_class = 'bad';
 					if( $value["score"] > 0 && $value["score"] < 1 ){
 						$score_html_class = 'poor';
@@ -1264,10 +1285,10 @@ $twc = new pspTwitterCards( $this->the_plugin );
 						$score_html_class = 'good';
 					}
 					if (is_null($value)) $score_html_class = '';
-					
-					 if ( $this->the_plugin->__tax_istax( $request['id'] )
-					 	&& in_array( $key, array('images_alt', 'html_italic', 'html_bold') ) ) //taxonomy data!
-					 	continue 1;
+
+					//if ( $this->the_plugin->__tax_istax( $request['id'] )
+					//	&& in_array( $key, array('images_alt', 'html_italic', 'html_bold', 'html_underline') ) ) //taxonomy data!
+					//	continue 1;
 
 					if (!is_null($value)) {
 						$html[] = '<div class="psp-seo-rule-row">';
@@ -1275,15 +1296,11 @@ $twc = new pspTwitterCards( $this->the_plugin );
 						$html[] = 		'<span class="psp-seo-status-icon ' . ( $score_html_class ) . '"></span>';
 						$html[] = 	'</div>';
 					}
-					
-					 if ( is_null($value) ) continue 1;
-					 
-					 if ( !isset($value['debug']) ) $value['debug'] = array('str' => '');
-					 
+
 					if( $key == 'kw_density' ){
 						$html[] = 	'<div class="middle-col">' . ( __('Keyword density', 'psp') ) . '</div>';
 						$html[] = 	'<div class="right-col">';
-						//$html[] = 		'<p>' . ( $value['debug']['str'] ) . '</p>';
+						//$html[] = 	'<p>' . ( $value['debug']['str'] ) . '</p>';
 						$html[] = 		'<p>Keyword density: <strong>' . ( (string) $value['details']['density'] ) . '%</strong>. Number of content words: <strong>' . ( (string) $value['details']['nb_words'] ) . '</strong>. Keyword occurences in content: <strong>' . ( (string) $value['details']['kw_occurences'] ) . '</strong></p>';
 						$html[] = 	'</div>';
 						$html[] = 	'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
@@ -1291,8 +1308,28 @@ $twc = new pspTwitterCards( $this->the_plugin );
 						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
 					}
 
-					if( $key == 'title' ){
-						$html[] = 	'<div class="middle-col">' . ( __('Title', 'psp') ) . '</div>';
+					else if( $key == 'title' ){
+						$html[] = 	'<div class="middle-col">' . ( __('SEO Title', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<p>' . ( $value['debug']['str'] ) . '</p>';
+						$html[] = 		'<p><strong>Length:</strong> ' . ( $this->the_plugin->utf8->strlen($value['debug']['str']) ) . ' character(s)</p>';
+						$html[] = 	'</div>';
+						$html[] = 	'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'title_enough_words' ){
+						$html[] = 	'<div class="middle-col">' . ( __('SEO Title Words', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'page_title' ){
+						$html[] = 	'<div class="middle-col">' . ( __('Page Title', 'psp') ) . '</div>';
 						$html[] = 	'<div class="right-col">';
 						$html[] = 		'<p>' . ( $value['debug']['str'] ) . '</p>';
 						$html[] = 		'<p><strong>Length:</strong> ' . ( $this->the_plugin->utf8->strlen($value['debug']['str']) ) . ' character(s)</p>';
@@ -1333,15 +1370,6 @@ $twc = new pspTwitterCards( $this->the_plugin );
 						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
 					}
 
-					else if( $key == 'images_alt' ){
-						$html[] = 	'<div class="middle-col">' . ( __('Images', 'psp') ) . '</div>';
-						$html[] = 	'<div class="right-col">';
-						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
-						$html[] = 	'</div>';
-
-						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
-					}
-
 					else if( $key == 'first_paragraph' ){
 						$html[] = 	'<div class="middle-col">' . ( __('First Paragraph', 'psp') ) . '</div>';
 						$html[] = 	'<div class="right-col">';
@@ -1370,8 +1398,8 @@ $twc = new pspTwitterCards( $this->the_plugin );
 						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
 					}
 
-					else if( $key == 'html_italic' ){
-						$html[] = 	'<div class="middle-col">' . ( __('Mark as Italic', 'psp') ) . '</div>';
+					else if( $key == 'images_alt' ){
+						$html[] = 	'<div class="middle-col">' . ( __('Images', 'psp') ) . '</div>';
 						$html[] = 	'<div class="right-col">';
 						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
 						$html[] = 	'</div>';
@@ -1388,10 +1416,82 @@ $twc = new pspTwitterCards( $this->the_plugin );
 						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
 					}
 
+					else if( $key == 'html_italic' ){
+						$html[] = 	'<div class="middle-col">' . ( __('Mark as Italic', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'html_underline' ){
+						$html[] = 	'<div class="middle-col">' . ( __('Mark as Underline', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'subheadings' ){
+						$html[] = 	'<div class="middle-col">' . ( __('Subheading Tags', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'first100words' ){
+						$html[] = 	'<div class="middle-col">' . ( __('First 100 Words', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'last100words' ){
+						$html[] = 	'<div class="middle-col">' . ( __('Last 100 Words', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'links_external' ){
+						$html[] = 	'<div class="middle-col">' . ( __('External Links', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'links_internal' ){
+						$html[] = 	'<div class="middle-col">' . ( __('Internal Links', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
+					else if( $key == 'links_competing' ){
+						$html[] = 	'<div class="middle-col">' . ( __('Competing Links', 'psp') ) . '</div>';
+						$html[] = 	'<div class="right-col">';
+						$html[] = 		'<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+						$html[] = 	'</div>';
+
+						$summary[] = '<div class="message-box ' . ( $score_html_class ) . '">' . ( $value['msg'] ) . '</div>';
+					}
+
 					if (!is_null($value)) {
 						$html[] = '</div>';
 					}
-				}
+				} // end main foreach
 
 				$ret = array(
 					'status' 	=> 'valid',
@@ -1423,11 +1523,11 @@ $twc = new pspTwitterCards( $this->the_plugin );
 		}
 
 		/*
-		* optimize_page, method
-		* ---------------------
-		*
-		* this will create force optimization of your page, and return a SEO score
-		*/
+		 * optimize_page, method
+		 * ---------------------
+		 *
+		 * this will create force optimization of your page, and return a SEO score
+		 */
 		public function optimize_page( $id="", $kw="" )
 		{
 			$request = array(
@@ -1523,22 +1623,24 @@ $twc = new pspTwitterCards( $this->the_plugin );
 				if( !isset($post_metas['description']) || trim($post_metas['description']) == "" ){
 
 					// meta description
-					$first_ph = $seo->get_first_paragraph( $post_content );
-					$gen_meta_desc = $seo->gen_meta_desc( $first_ph );
+					$first_paragraph = $seo->get_first_paragraph( $post_content );
+					$get_meta_desc = $seo->get_meta_desc( $first_paragraph );
 
-					$post_metas['description'] = $gen_meta_desc;
+					$post_metas['description'] = $get_meta_desc;
 				}
 				if( !isset($post_metas['keywords']) || trim($post_metas['keywords']) == "" ){
 
 					// meta keywords
-					$gen_meta_keywords = array();
-					if ( !empty($post_metas['focus_keyword']) )
-						$gen_meta_keywords[] = $post_metas['focus_keyword'];
-					$__tmp = $seo->gen_meta_keywords( $post_content );
-					if ( !empty($__tmp) )
-						$gen_meta_keywords[] = $__tmp;
-					
-					$post_metas['keywords'] = implode(', ', $gen_meta_keywords);
+					$get_meta_keywords = array();
+					if ( !empty($post_metas['focus_keyword']) ) {
+						$get_meta_keywords[] = $post_metas['focus_keyword'];
+					}
+					$__tmp = $seo->get_meta_keywords( $post_content );
+					if ( !empty($__tmp) ) {
+						//$get_meta_keywords[] = $__tmp;
+						$get_meta_keywords[] = implode(", ", $__tmp );
+					}
+					$post_metas['keywords'] = implode(', ', $get_meta_keywords);
 				}
 
 				if ( $request['action']=='pspOptimizePage' ) { //ajax request from plugin module!
@@ -1604,17 +1706,16 @@ $twc = new pspTwitterCards( $this->the_plugin );
 						'psp_kw'		=> $post_metas['focus_keyword'],
 						'psp_meta'		=> $post_metas
 					));
-					
 				} else {
 
 					update_post_meta( $request['id'], 'psp_kw', $post_metas['focus_keyword'] );
 					update_post_meta( $request['id'], 'psp_meta', $post_metas );
-
 				}
 				
 				// get SEO score
-				$retType = 'array';
-				$post_seo_status = $seo->get_seo_score( $request['id'], $post_metas['focus_keyword'], $retType, $post_content );
+				$seo->set_current_post( $request['id'], $post_content );
+				$seo->set_current_keyword( $post_metas['focus_keyword'] );
+				$post_seo_status = $seo->get_seo_score( 'array' );
 				$__seo_status = $post_seo_status;
 
 				$this->save_seo_score( $request['id'], $__seo_status['data'], $__seo_status['score'], $__seo_status['kw'] );
@@ -1628,17 +1729,15 @@ $twc = new pspTwitterCards( $this->the_plugin );
 					die(json_encode($post_seo_status));
 				}
 
-				if ( $retType=='array' )
-					$post_seo_status = $post_seo_status['data'];
-				return $post_seo_status;
+				return $post_seo_status['data'];
 			}
 		}
 		
 		/**
-		* Save score
-		*
-		* @return string
-		*/
+		 * Save score
+		 *
+		 * @return string
+		 */
 		public function save_seo_score( $p=0, $status=array(), $score=0, $kw='' )
 		{
 			if ( $this->the_plugin->__tax_istax( $p ) ) //taxonomy data!
@@ -1930,10 +2029,10 @@ $twc = new pspTwitterCards( $this->the_plugin );
 		}
 		
 		/**
-	    * Singleton pattern
-	    *
-	    * @return pspOnPageOptimization Singleton instance
-	    */
+	     * Singleton pattern
+	     *
+	     * @return pspOnPageOptimization Singleton instance
+	     */
 	    static public function getInstance()
 	    {
 	        if (!self::$_instance) {
@@ -1954,8 +2053,8 @@ $twc = new pspTwitterCards( $this->the_plugin );
 	     */
 	    
 		/**
-	    * Register plug-in admin metaboxes
-	    */
+	     * Register plug-in admin metaboxes
+	     */
 		public function _customMetaBox()
 		{
 			$taxonomy = isset( $_GET['taxonomy'] ) ? $_GET['taxonomy'] : null;

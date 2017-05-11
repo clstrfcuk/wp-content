@@ -49,7 +49,6 @@ echo json_encode(
 							'yes' => 'YES',
 							'no' => 'NO'
 						)
-						
 					),
 					
 					'charset' 	=> array(
@@ -58,7 +57,7 @@ echo json_encode(
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Server Charset:', 'psp'),
-						'desc' 		=> __('Server Charset (used by the php-query class)', 'psp')
+						'desc' 		=> __('Server Charset (used internal by the php-query class)', 'psp')
 					),
 					
 					'meta_title_sufix' 	=> array(
@@ -66,19 +65,83 @@ echo json_encode(
 						'std' 		=> '',
 						'size' 		=> 'large',
 						'force_width'=> '400',
-						'title' 	=> __('Meta title text append to:', $psp->localizationName),
+						'title' 	=> __('Meta title - text append to:', $psp->localizationName),
 						'desc' 		=> __('Append this text to the end of the meta title value from the database', $psp->localizationName)
 					),
 					
 					'meta_keywords_stop_words' 	=> array(
 						'type' 		=> 'textarea',
-						'std' 		=> '',
+						'std' 		=> 'a, you, if',
 						'size' 		=> 'large',
 						'force_width'=> '400',
-						'title' 	=> __('Meta Keywords Stop List:', 'psp'),
-						'desc' 		=> __('The list of stop words (comma separated)', 'psp'),
+						'title' 	=> __('Stop Words List:', 'psp'),
+						'desc' 		=> __('Used default at optimize to auto generate <span style="font-style: bold; color: red;">Meta Keywords</span>
+							<br/>The list of stop words (comma separated) which are not taken into consideration when analyzing the content. Default list: <strong>a, you, if</strong>', 'psp'),
 						'height'	=> '200px'
 					),
+					'meta_keywords_stop_words_content' => array(
+						'type' 		=> 'select',
+						'std' 		=> 'yes',
+						'size' 		=> 'large',
+						'force_width'=> '120',
+						'title' 	=> __('Stop Words List - Content:', 'psp'),
+						'desc' 		=> __('Choose "yes" if you want to use the "Stop Words List" for <span style="font-style: bold; color: red;">SEO Content Analysis rules</span> too (to determine keyword density and if the page content or meta seo title has enough words).', 'psp'),
+						'options'	=> array(
+							'yes' => 'YES',
+							'no' => 'NO'
+						)
+					),
+
+					'word_min_chars' 	=> array(
+						'type' 		=> 'select',
+						'std' 		=> '4',
+						'size' 		=> 'large',
+						'title' 	=> __('Word Min Chars:', 'psp'),
+						'force_width'=> '100',
+						'desc' 		=> __('Used default at optimize to auto generate <span style="font-style: bold; color: red;">Meta Keywords</span>
+							<br/>The minimum number of characters for a word to be considered valid.', 'psp'),
+						'options'	=> $psp->doRange( range(0, 10, 1) )
+					),
+					'word_min_chars_content' => array(
+						'type' 		=> 'select',
+						'std' 		=> 'yes',
+						'size' 		=> 'large',
+						'force_width'=> '120',
+						'title' 	=> __('Word Min Chars - Content:', 'psp'),
+						'desc' 		=> __('Choose "yes" if you want to use the "Word Min Chars" for <span style="font-style: bold; color: red;">SEO Content Analysis rules</span> too (to determine keyword density and if the page content or meta seo title has enough words).', 'psp'),
+						'options'	=> array(
+							'yes' => 'YES',
+							'no' => 'NO'
+						)
+					),
+
+					'post_allowed_rules' 	=> array(
+						'type' 		=> 'multiselect_left2right',
+						'std' 		=> array_keys( $psp->get_content_analyzing_rules() ), //array(),
+						'size' 		=> 'large',
+						'rows_visible'	=> 10,
+						'title' 	=> __('Post: Allowed Rules', $psp->localizationName),
+						'desc' 		=> __('here you can choose which rules you want to use when analyzing content for <span style="font-style: bold; color: red;">posts, pages, custom post types</span>.<br/>to view a rule\'s full text, hover over it.', $psp->localizationName),
+						'info'		=> array(
+							'left' => __('All Rules list', $psp->localizationName),
+							'right' => __('Your chosen rules from list', $psp->localizationName),
+						),
+						'options' 	=> $psp->get_content_analyzing_rules(),
+					),
+
+					'category_allowed_rules' 	=> array(
+						'type' 		=> 'multiselect_left2right',
+						'std' 		=> array_keys( $psp->get_content_analyzing_rules() ), //array(),
+						'size' 		=> 'large',
+						'rows_visible'	=> 10,
+						'title' 	=> __('Category: Allowed Rules', $psp->localizationName),
+						'desc' 		=> __('here you can choose which rules you want to use when analyzing content for <span style="font-style: bold; color: red;">categories, tags, custom taxonomies</span>.<br/>to view a rule\'s full text, hover over it.', $psp->localizationName),
+						'info'		=> array(
+							'left' => __('All Rules list', $psp->localizationName),
+							'right' => __('Your chosen rules from list', $psp->localizationName),
+						),
+						'options' 	=> $psp->get_content_analyzing_rules(),
+					)
 				)
 			)
 		)

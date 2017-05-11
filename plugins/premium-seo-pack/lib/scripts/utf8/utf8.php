@@ -97,10 +97,10 @@ class pspUtf8
 	 */
     public function str_word_count($string, $format = 0, $charlist = null) {
     	if ($charlist === null) {
-    		$regex = '/\\pL[\\pL\\p{Mn}\'-]*/u';
+    		$regex = '/(?:\\pL|\\pN)[\\pL\\pN\\p{Mn}\'-]*/ui';
     	} else {
-    		$split = array_map( 'preg_quote', preg_split('//u', $charlist, -1, PREG_SPLIT_NO_EMPTY) );
-    		$regex = sprintf( '/(\\pL|%1$s)([\\pL\\p{Mn}\'-]|%1$s)*/u', implode('|', $split) );
+    		$split = array_map( 'preg_quote', preg_split('//ui', $charlist, -1, PREG_SPLIT_NO_EMPTY) );
+    		$regex = sprintf( '/(?:\\pL|\\pN|%1$s)(?:[\\pL\\pN\\p{Mn}\'-]|%1$s)*/ui', implode('|', $split) );
     	}
 
     	$ret = false;

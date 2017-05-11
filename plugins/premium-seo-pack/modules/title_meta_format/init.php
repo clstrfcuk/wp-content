@@ -208,9 +208,14 @@ if (class_exists('pspTitleMetaFormat') != true) {
 		 * page URL (also use canonical if it's the case)
 		 */
 		public function the_url() {
-			global $wp_query;
-			
-			$post = $wp_query->get_queried_object();
+			global $wp_query, $post;
+
+			//$post = $wp_query->get_queried_object();
+			if (isset($post->ID) && !is_null($post->ID) && $post->ID>0) 
+				$__post = $post;
+			else
+				$__post = $wp_query->get_queried_object(); //get the post!
+
 
 			$url = '';
 
@@ -220,7 +225,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				if ( isset($canonical) && !empty($canonical) )
 					$url = $canonical;
 				if ( empty($url) )
-					$url = get_permalink( $post->ID );
+					$url = get_permalink( $__post->ID );
 
 			} else if ( is_home() || is_front_page() ) { //homepage
 
@@ -232,7 +237,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				if ( isset($canonical) && !empty($canonical) )
 					$url = $canonical;
 				if ( empty($url) )
-					$url = get_term_link( $post, $post->taxonomy );
+					$url = get_term_link( $__post, $__post->taxonomy );
 					
 			} elseif ( is_post_type_archive() ) {
 
@@ -244,7 +249,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 
 			} elseif ( is_author() ) {
 
-				$url = get_author_posts_url( $post->ID, $post->user_nicename );
+				$url = get_author_posts_url( $__post->ID, $__post->user_nicename );
 				
 			} elseif ( is_archive() ) {
 
@@ -287,22 +292,27 @@ if (class_exists('pspTitleMetaFormat') != true) {
 		}
 		
 		protected function format_canonical() {
-			global $wp_query;
+			global $wp_query, $post;
 			
-			$post = $wp_query->get_queried_object();
-			
+			//$post = $wp_query->get_queried_object();
+			if (isset($post->ID) && !is_null($post->ID) && $post->ID>0) 
+				$__post = $post;
+			else
+				$__post = $wp_query->get_queried_object(); //get the post!
+
 			$__postType = $this->getPostType();
-			if ( !empty($__postType) ) $post = $this->post;
+			if ( !empty($__postType) ) $__post = $this->post;
+
 
 			$canonical = '';
 
         	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop() || $__postType == 'post' ) {
 
-				$__theMeta = get_post_meta( $post->ID, 'psp_meta', true );
+				$__theMeta = get_post_meta( $__post->ID, 'psp_meta', true );
         	}
         	else if ( is_category() || is_tag() || is_tax() || $__postType == 'term' ) {
 
-				$__objTax = (object) array('term_id' => $post->term_id, 'taxonomy' => $post->taxonomy);
+				$__objTax = (object) array('term_id' => $__post->term_id, 'taxonomy' => $__post->taxonomy);
 
 				$psp_current_taxseo = $this->the_plugin->__tax_get_post_meta( null, $__objTax );
 				if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
@@ -563,32 +573,38 @@ if (class_exists('pspTitleMetaFormat') != true) {
 		}
 
         protected function get_current_field( $field='title' ) {
+			global $wp_query, $post;
 
-			global $wp_query;
-			if ( ($section = $this->the_plugin->is_buddypress_section()) && !empty($section) ) {
-				if ( isset($section['action']) && !empty($section['action']) )
-					global $post;
-				else
-					$post = $wp_query->get_queried_object();
-			} else
-				$post = $wp_query->get_queried_object();
+			//$post = $wp_query->get_queried_object();
+			if (isset($post->ID) && !is_null($post->ID) && $post->ID>0) 
+				$__post = $post;
+			else
+				$__post = $wp_query->get_queried_object(); //get the post!
+
+			//if ( ($section = $this->the_plugin->is_buddypress_section()) && !empty($section) ) {
+			//	if ( isset($section['action']) && !empty($section['action']) )
+			//		global $post;
+			//	else
+			//		$post = $wp_query->get_queried_object();
+			//} else
+			//	$post = $wp_query->get_queried_object();
 
 			$__postType = $this->getPostType();
-			if ( !empty($__postType) ) $post = $this->post;
+			if ( !empty($__postType) ) $__post = $this->post;
 
 			$value = '';
 
 			$__theMeta = array();
         	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop() || $__postType == 'post' ) {
      
-				$post_id = (int) $post->ID;
+				$post_id = (int) $__post->ID;
 
 				if ( $post_id > 0 )
-					$__theMeta = get_post_meta( $post->ID, 'psp_meta', true );
+					$__theMeta = get_post_meta( $__post->ID, 'psp_meta', true );
         	}
         	else if ( is_category() || is_tag() || is_tax() || $__postType == 'term' ) {
 
-				$__objTax = (object) array('term_id' => $post->term_id, 'taxonomy' => $post->taxonomy);
+				$__objTax = (object) array('term_id' => $__post->term_id, 'taxonomy' => $__post->taxonomy);
 
 				$psp_current_taxseo = $this->the_plugin->__tax_get_post_meta( null, $__objTax );
 				if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
@@ -980,7 +996,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
         protected function get_taxonomy($type, $obj) {
         	global $wp_query;
         	$__taxonomyClean = array();
-        	
+
         	if (in_array($type, array('category', 'tag', 'taxonomy'))) {
 				$__postType = $this->getPostType();
 				if ( !empty($__postType) ) $post = $this->post;
@@ -1000,27 +1016,52 @@ if (class_exists('pspTitleMetaFormat') != true) {
 	        		$__taxonomyClean['category_description'] = $tmpDesc!='' ? $tmpDesc : category_description();
 	        		if ( $__postType == 'term' ) {
 	        			$__category = get_the_category(); $__categ = array('name' => '', 'desc' => '');
-	        			if ($__category[0]) {
+	        			if (isset($__category[0]) && $__category[0]) {
 	        				$__categ['name'] = $__category[0]->cat_name;
 	        				$__categ['desc'] = $__category[0]->description;
+
+							if ( $__categ['name']!='' ) {
+								$__taxonomyClean['title'] = $__categ['name'];
+							}
+							if ( $__categ['desc']!='' ) {
+								$__taxonomyClean['category_description'] = $__categ['desc'];
+							}
 	        			}
-	        			
-	        			$__taxonomyClean['title'] = $tmpTitle!='' ? $tmpTitle : $__categ['name'];
-	        			$__taxonomyClean['category_description'] = $tmpDesc!='' ? $tmpDesc : $__categ['desc'];
 	        		}
+
+					if ( $__taxonomyClean['title']=='' ) {
+						$__taxonomyClean['title'] = $obj->name;
+					}
+					if ( $__taxonomyClean['category_description']=='' ) {
+						$__taxonomyClean['category_description'] = $obj->description;
+					}
+					//var_dump('<pre>',$__category[0], single_term_title( '', false ), single_cat_title( '', false ), $obj ,'</pre>');
 	        		$__taxonomyClean['category'] = $__taxonomyClean['title'];
 	        	} else if ($type=='tag') {
 	        		$__taxonomyClean['title'] = $tmpTitle!='' ? $tmpTitle : single_tag_title( '', false );
 	        		$__taxonomyClean['tag_description'] = $tmpDesc!='' ? $tmpDesc : tag_description();
 	        		if ( $__postType == 'term' ) {
 	        			$__category = get_tags(); $__categ = array('name' => '', 'desc' => '');
-	        			if ($__category[0]) {
+	        			if (isset($__category[0]) && $__category[0]) {
 	        				$__categ['name'] = $__category[0]->name;
 	        				$__categ['desc'] = $__category[0]->description;
+
+							if ( $__categ['name']!='' ) {
+								$__taxonomyClean['title'] = $__categ['name'];
+							}
+							if ( $__categ['desc']!='' ) {
+								$__taxonomyClean['tag_description'] = $__categ['desc'];
+							}
 	        			}
-	        			$__taxonomyClean['title'] = $tmpTitle!='' ? $tmpTitle : $__categ['name'];
-	        			$__taxonomyClean['tag_description'] = $tmpDesc!='' ? $tmpDesc : $__categ['desc'];
 	        		}
+
+					if ( $__taxonomyClean['title']=='' ) {
+						$__taxonomyClean['title'] = $obj->name;
+					}
+					if ( $__taxonomyClean['tag_description']=='' ) {
+						$__taxonomyClean['tag_description'] = $obj->description;
+					}
+					//var_dump('<pre>',$__category[0], single_term_title( '', false ), single_tag_title( '', false ), $obj ,'</pre>');
 	        		$__taxonomyClean['tag'] = $__taxonomyClean['title'];
 	        	} else {
 	        		$__taxonomyClean['title'] = $tmpTitle!='' ? $tmpTitle : $obj->name;
@@ -1173,7 +1214,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 					if ( $field == 'title' && $type != 'home' && !empty($meta_title_sufix) ) $__currentValue .= ' ' . $meta_title_sufix;
 	 				return $__currentValue;
 				}
-  
+
 	        	//current page type!
 	        	$this->set_pagetypes();
 				$__templateValue = $this->get_template_field( $type, $field );

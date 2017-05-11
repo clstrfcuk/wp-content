@@ -500,6 +500,20 @@
             background-color: $danger;
             color: #fff;
         }
+		ul.#{$alias}-competing-links {
+			list-style-type: none;
+			display: block;
+			margin: 3px 0px;
+			padding: 0px;
+			li {
+				margin-left: 10px;
+				margin-bottom: 3px;
+				a {
+					text-decoration: none;
+					color: #bdc3c7;
+				}
+			}
+		}
     }
     .#{$alias}-seo-status-icon {
         &.good {

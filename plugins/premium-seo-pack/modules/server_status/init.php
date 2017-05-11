@@ -835,9 +835,25 @@ if (class_exists('pspServerStatus') != true) {
 																}
 															}
 															if ( $mandatoryValid ) {
-																if ( $pspFacebook_Planner->makeoAuthLogin() ) {
+																if ( 'fbv4' == $this->the_plugin->facebook_sdk_version ) {
+																	$authFb = $pspFacebook_Planner->makeoAuthLogin_fbv4(array(
+																		'psp_redirect_url'		=> 'server_status',
+																	));
+																}
+																//else {
+																//	$authFb = $pspFacebook_Planner->makeoAuthLogin();
+																//}
+																if ( $authFb ) {
+																	$facebook_settings = $this->the_plugin->get_theoption( $this->the_plugin->alias . '_facebook_planner' );
 															?>
-																<a href="#facebook-planner/authorize" class="psp-form-button psp-form-button-info pspStressTest inline psp-facebook-authorize-app" data-saveform="no">Re-Authorize app</a>
+																<?php
+																	$btnFb = $this->fb_auth_url(array(
+																		'text'				=> __('Re-Authorize app', $this->the_plugin->localizationName),
+																		'fb_details'		=> $facebook_settings,
+																		'psp_redirect_url'	=> 'server_status',
+																	));
+																	echo $btnFb['html'];
+																?>
 															&nbsp;(
 															<?php
 																$__fbauthor = __( 'app is authorized ',$this->the_plugin->localizationName);
@@ -855,7 +871,14 @@ if (class_exists('pspServerStatus') != true) {
 															<?php
 																} else {
 															?>
-																<a href="#facebook-planner/authorize" class="psp-form-button-small psp-form-button-info pspStressTest inline psp-facebook-authorize-app" data-saveform="no">Authorize app</a>
+																<?php
+																	$btnFb = $this->fb_auth_url(array(
+																		'text'				=> __('Authorize app', $this->the_plugin->localizationName),
+																		'fb_details' 		=> $facebook_settings,
+																		'psp_redirect_url'	=> 'server_status',
+																	));
+																	echo $btnFb['html'];
+																?>
 																<span style="margin-left: 10px;">(<?php _e( 'app is not authorized yet',$this->the_plugin->localizationName); ?>)</span>
 															<?php
 																}
@@ -1199,6 +1222,31 @@ if (class_exists('pspServerStatus') != true) {
 				case 'K' :
 					$ret *= 1024;
 			}
+			return $ret;
+		}
+
+		public function fb_auth_url( $pms=array() ) {
+			$pms = array_merge(array(
+				'facebook'			=> null,
+				'fb_details'		=> array(),
+				'psp_redirect_url'	=> '',
+				'text'				=> __('Authorize app', $this->the_plugin->localizationName),
+			), $pms);
+			extract($pms);
+
+			$ret = array(
+				'html'				=> '',
+				'url'				=> '',
+			);
+
+			if ( 'fbv4' == $this->the_plugin->facebook_sdk_version ) {
+				$ret = array_merge( $ret, $this->the_plugin->facebook_get_authorization_url( $pms ) );
+			}
+			//else {
+			//	$ret['url'] = '#facebook-planner/authorize';
+			//	$ret['html'] = '<a href="' . $link_href . '" class="psp-form-button psp-form-button-info pspStressTest inline psp-facebook-authorize-app" data-saveform="no">' . $text . '</a>';
+			//}
+
 			return $ret;
 		}
 	}

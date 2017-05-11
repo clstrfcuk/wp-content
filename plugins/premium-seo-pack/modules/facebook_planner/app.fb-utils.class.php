@@ -54,11 +54,14 @@ class psp_fbPlannerUtils
 		); 
 
 		// try to login on fb with static facebook key
-		if(!$this->fb_login()){
-			die('Invalid FB login!');
+		if ( ! $this->fb_login() ) {
+			//die('Invalid FB login!');
+			die('User is not loggedin or app authorized yet.');
 		}
+		//$this->getFbUserData();
 	}
-	
+
+/*
 	public function fb_login() {
 		// Create our Application instance (replace this with your appId and secret).
 		$this->fb = new psp_Facebook(array(
@@ -77,7 +80,17 @@ class psp_fbPlannerUtils
 		
 		return true;
 	}
-	
+*/
+	public function fb_login() {
+		$pms = array(
+			'fb_details'		=> $this->fb_details,
+			//'psp_redirect_url'	=> $psp_redirect_url,
+		);
+		$is_loggedin = $this->the_plugin->facebook_is_loggedin($pms);
+		return $is_loggedin;
+	}
+
+/*
 	public function getFbUserData() {
 		if($this->fb_login()){
 			return $this->fb->api('/me');
@@ -85,8 +98,73 @@ class psp_fbPlannerUtils
 			return array();
 		}
 	}
-	
+*/
+	public function getFbUserData() {
+		$pms = array(
+			'fb_details'		=> $this->fb_details,
+			//'psp_redirect_url'	=> $psp_redirect_url,
+		);
+		$retUserData = $this->the_plugin->facebook_get_user_profile($pms);
+		//var_dump('<pre>', $retUserData, $retUserData['result']['name'], '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+		return $retUserData;
+	}
+
+/*
+	public function fb_publish( $pms=array() ) {
+		$pms = array_merge(array(
+			'wall'			=> '',
+			'fields'		=> array(),
+		), $pms);
+		extract($pms);
+
+		try {
+			$ret = $this->fb->api(
+				$wall, 
+				'post',
+				$fields
+			);
+		} catch (psp_FacebookApiException $e) {
+			if (isset($e->faultcode)) { // error occured!
+				$msg = $e->faultcode .  ' : ' . (isset($e->faultstring) ? $e->faultstring : $e->getMessage());
+			} else {
+				$msg = $e->getMessage();
+			}
+			var_dump('<pre>', $msg ,'</pre>'); die;
+			return false;
+		}
+		return true;
+	}
+*/
+	public function fb_publish( $pms=array() ) {
+		$pms = array_merge(array(
+			'facebook'			=> null,
+			'fb_details'		=> $this->fb_details,
+			//'plugin_url'		=> '',
+			//'plugin_url_'		=> '',
+			'do_authorize'		=> true,
+			'wall'			=> '',
+			'fields'		=> array(),
+		), $pms);
+		$retPublish = $this->the_plugin->facebook_publish($pms);
+		//if ( ! $retPublish['opStatus'] ) {
+		//	echo $retPublish['opMsg'];
+		//	exit;
+		//}
+		//var_dump('<pre>', $retPublish , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+		return $retPublish;
+	}
+
 	public function publishToWall($id, $whereToPost, $postPrivacy, $postData = NULL) {
+
+		$ret = array(
+			'opStatus'		=> 'invalid',
+			'opMsg'			=> '',
+			'opDetails'		=> array(
+				'profile'		=> array(),
+				'page_group'	=> array(),
+			),
+		);
+		$html = array();
 
 		// retrive WP post metadata
 		if( is_null($postData) ) {
@@ -96,11 +174,15 @@ class psp_fbPlannerUtils
 		// where to publish post
 		$whereToPost = unserialize($whereToPost);
 		
-		if(trim($whereToPost['profile']) == '' && trim($whereToPost['page_group']) == '')
-			return false;
+		if(trim($whereToPost['profile']) == '' && trim($whereToPost['page_group']) == '') {
+			$ret['opMsg'] = '<span style="color: red; font-weight: bold;">' . __( 'You need to select Facebook Profile or Page / Group, where you want to post.', 'psp' ) . '</span>';
+
+			//return false;
+			return $ret;
+		}
 
 		if(count($postData) > 0) {
-			try {
+			//try {
 				$post_link = trim($postData['link']) == 'post_link' ? get_permalink($id) : $postData['link'];
 				
 				if($postPrivacy == 'CUSTOM') {
@@ -140,7 +222,7 @@ class psp_fbPlannerUtils
 				$arrFbData = array(
 					'link'			=> $post_link,
 					'name' 			=> stripslashes($postData['name']),
-					'description' 	=> stripslashes($postData['description'])
+					'description' 	=> substr( stripslashes($postData['description']), 0, 2000 ),
 				);
 				
 				if ( is_array(self::$utils['inputs_available']) && !empty(self::$utils['inputs_available']) ) {
@@ -151,20 +233,31 @@ class psp_fbPlannerUtils
 					));
 				}
 
+				// post on profile
 				if( trim($whereToPost['profile']) == 'on' ) {
 					$arrFbData['privacy'] = $q_postPrivacy;
  					
-					$statusUpdate = $this->fb->api(
-						'/me/feed', 
-						'post',
-						$arrFbData
-					); 
- 
+					$statusUpdate = $this->fb_publish(array(
+						'wall'		=> '/me/feed', 
+						'fields'	=> $arrFbData,
+					));
+					$ret['opDetails']['profile'] = array(
+						'status'	=> $statusUpdate['opStatus'] ? 'valid' : 'invalid',
+						'msg'		=> $statusUpdate['opStatus']
+							? __( 'The post was published successfully on your facebook profile!', 'psp' )
+							: '<span style="color: red; font-weight: bold;">' . __( 'Error on publishing the post on your facebook profile. Please try again later!', 'psp' ) . '</span>',
+					);
+				} else {
+					$ret['opDetails']['profile'] = array(
+						'status'	=> 'valid',
+						'msg'		=> '',
+					);
 				}
+				$html[] = $ret['opDetails']['profile']['msg'];
 
+				// post on page / group
 				if ( trim($whereToPost['page_group']) != '' ) {
 					unset( $arrFbData['privacy'] );
-					$args = $arrFbData;					
 
 					$page_access_token = null;
 					$whereToPost = explode('##', $whereToPost['page_group']);
@@ -173,25 +266,47 @@ class psp_fbPlannerUtils
 					
 					if($postTo_ident == 'page') {
 						$page_access_token = $whereToPost[2];
-						
 						if( !empty($page_access_token) ) {
-							$args['access_token'] = $page_access_token;
+							$arrFbData['access_token'] = $page_access_token;
 						}
 					}
-					
-					$statusUpdate = $this->fb->api(
-						'/' . $postTo_id . '/feed', 
-						'post',
-						$args
+
+					$statusUpdate = $this->fb_publish(array(
+						'wall'		=> "/$postTo_id/feed", 
+						'fields'	=> $arrFbData,
+					));
+					$ret['opDetails']['page_group'] = array(
+						'status'	=> $statusUpdate['opStatus'] ? 'valid' : 'invalid',
+						'msg'		=> $statusUpdate['opStatus']
+							? __( 'The post was published successfully on your selected facebook page / group!', 'psp' )
+							: '<span style="color: red; font-weight: bold;">' . __( 'Error on publishing the post on your selected facebook page / group. Please try again later!', 'psp' ) . '</span>',
+					);
+				} else {
+					$ret['opDetails']['page_group'] = array(
+						'status'	=> 'valid',
+						'msg'		=> '',
 					);
 				}
-				
-				return true;
-			} catch (psp_FacebookApiException $e) {
-				var_dump('<pre>',$e ,'</pre>'); die; 
-				return false;
-			}
+				$html[] = $ret['opDetails']['page_group']['msg'];
+
+				$ret['opStatus'] =
+					( 'valid' == $ret['opDetails']['profile']['status'] ) && ( 'valid' == $ret['opDetails']['page_group']['status'] )
+					? 'valid' : 'invalid';
+				$x = 1;
+				$ret['opMsg'] = 'valid' == $ret['opStatus']
+					? __( 'The post was published on facebook OK!', 'psp' )
+					//: '<span style="color: red; font-weight: bold;">' . __( 'Error on publishing. Please try again later!', 'psp' ) . '</span>';
+					: implode('<br/>', $html);
+
+				//return true;
+				return $ret;
+			//} catch (psp_FacebookApiException $e) {
+			//	var_dump('<pre>', $e ,'</pre>'); die;
+			//	return false;
+			//}
 		}
+		//return false;
+		return $ret;
 	}
 	
 	public function getPostByID($id){

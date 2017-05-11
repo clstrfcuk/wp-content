@@ -3128,6 +3128,9 @@ body .psp .psp-sub-panel-content {
     margin-bottom: 2.5rem;
     margin-top: 2.5rem; }
 
+.psp-meta-box-container .psp_wplannerfb_date_hour {
+  min-width: 14rem; }
+
 .psp-html-validator .psp-list-table-right-col:nth-of-type(3), .psp-facebook-planner .psp-list-table-right-col:nth-of-type(3) {
   margin-top: 0; }
   .psp-html-validator .psp-list-table-right-col .psp-box-show-per-pages, .psp-facebook-planner .psp-list-table-right-col .psp-box-show-per-pages {
@@ -3760,6 +3763,17 @@ body .psp .psp-sub-panel-content {
   .psp-seo-status-container .message-box.bad {
     background-color: #d9534f;
     color: #fff; }
+  .psp-seo-status-container .message-box ul.psp-competing-links {
+    list-style-type: none;
+    display: block;
+    margin: 3px 0px;
+    padding: 0px; }
+  .psp-seo-status-container .message-box ul.psp-competing-links li {
+    margin-left: 10px;
+    margin-bottom: 3px; }
+  .psp-seo-status-container .message-box ul.psp-competing-links li a {
+    text-decoration: none;
+    color: #bdc3c7; }
   .psp-seo-status-container .psp-seo-status-icon.good {
     background: #68c64b; }
   .psp-seo-status-container .psp-seo-status-icon.poor {
@@ -7174,4 +7188,4 @@ html {
         width: 100%; } }
 
 
-/*** Compile time: 1.9564979076385 */
+/*** Compile time: 1.966548204422 */

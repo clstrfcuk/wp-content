@@ -570,13 +570,18 @@ if (class_exists('pspSocialTags') != true) {
 			$filename = self::$fb_locale_path;
 		
 			// cache file needs refresh!
-			if ( ($statCache = $this->isCacheRefresh($filename))===true || $statCache===0 ) {
+			if ( ($statCache = $this->isCacheRefresh($filename))===true || $statCache===0 || 1 ) {
 				$response = wp_remote_get( self::$fb_locale_remoteurl, array( 'timeout' => 15 ) );
 				if ( is_wp_error( $response ) ) ; //if there's error -> try to get old cache
 				else {
 					$data = wp_remote_retrieve_body( $response );
-					// write new local cached file!
-					$this->writeCacheFile($filename, $data);
+					if ( !empty($data) ) {
+						$xml = $this->queryContent( $data, '/locales/locale/codes/code/standard/representation' );
+						if ($xml && $xml->length>0) {
+							// write new local cached file!
+							$this->writeCacheFile($filename, $data);
+						}
+					}
 				}
 			}
 
@@ -680,7 +685,7 @@ if (class_exists('pspSocialTags') != true) {
 			$this->__dom = new DOMDocument;
 			// We don't want to bother with white spaces
 			$this->__dom->preserveWhiteSpace = false;
-			if ($this->__dom->loadXML($content)) {
+			if (@$this->__dom->loadXML($content)) {
 				$this->__xpath = new DOMXPath($this->__dom);
 				return $this->__xpath;
 			}

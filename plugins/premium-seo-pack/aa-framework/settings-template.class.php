@@ -396,8 +396,10 @@ if(class_exists('aaInterfaceTemplates') != true) {
 									$html[] = '<span style="display: inline-block; width: 24.1%; text-align: center;"><input id="' . esc_attr( $elm_id ) . '-moveleftall" type="button" value="Move Left All" class="moveleftall psp-button gray psp-form-button-small psp-form-button-info"></span>';
 									$html[] = '</div>';
 								break;
-								
-								// Facebook/ Basic authorization button - old API
+
+/*
+								// :: Facebook Authorization STEP 1 - old SDK
+								// publish_actions instead of publish_stream | offline_access - deprecated
 								case 'authorization_button':
    
 									// load the facebook SDK
@@ -412,7 +414,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 										));
 									} 
 									
-									// :: Facebook Authorization STEP 1 - old API
+									// :: Facebook Authorization STEP 1 - old SDK
 									// publish_actions instead of publish_stream | offline_access - deprecated
 									if( isset($facebook) ) {
 										$fb_permissions = 'email,publish_actions,manage_pages,publish_pages,user_managed_groups'; // optional
@@ -449,6 +451,8 @@ if(class_exists('aaInterfaceTemplates') != true) {
 														'status' 	=> 'success',
 														'step' 		=> 'profile',
 														'msg' 		=> $user_profile,
+														'msg_stat'	=> 'profile',
+														'msg_elem'	=> '--psp--',
 													));
 									
 												} else {
@@ -457,6 +461,8 @@ if(class_exists('aaInterfaceTemplates') != true) {
 														'status' 	=> 'error',
 														'step' 		=> 'profile',
 														'msg' 		=> $user_profile,
+														'msg_stat'	=> 'profile',
+														'msg_elem'	=> '--psp--',
 													));
 												}
 												
@@ -468,6 +474,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 													'status' 	=> 'error',
 													'step' 		=> 'profile',
 													'msg' 		=> $e,
+													'msg_stat'	=> 'exception',
 												));
 											}
 										}
@@ -485,107 +492,17 @@ if(class_exists('aaInterfaceTemplates') != true) {
 										}
 									}
 								break;
-
-/*
-								// Facebook/ Basic authorization button
-								case 'authorization_button_fbv4':
-
-   									if ( !defined('FACEBOOK_SDK_V4_SRC_DIR') ) {
-   										define( 'FACEBOOK_SDK_V4_SRC_DIR', $this->cfg['paths']['scripts_dir_path'] . '/facebook-v4-5.0.0/' );
-									}
-
-									// load the facebook SDK
-									require_once( $this->cfg['paths']['scripts_dir_path'] . '/facebook-v4-5.0.0/autoload.php' );
-								
-									$fb_details = $psp->getAllSettings('array', 'facebook_planner');
-
-									if( (isset($fb_details['app_id']) && trim($fb_details['app_id']) != '') && ( isset($fb_details['app_secret']) && trim($fb_details['app_secret']) != '') ) {
-										$facebook = new Facebook\Facebook([
-											'app_id' 					=> $fb_details['app_id'],
-											'app_secret' 				=> $fb_details['app_secret'],
-											'default_graph_version' 	=> 'v2.4',
-											'persistent_data_handler'	=> 'session'
-										]);
-									}
-									
-									// :: Facebook Authorization STEP 1
-									// see modules/facebook_planner/init.php , method 'fbAuth' for step 2
-									if( isset($facebook) ) {
-										$fb_helper = $facebook->getRedirectLoginHelper();
-										$fb_permissions = ['email','publish_actions','manage_pages','publish_pages', 'user_managed_groups']; // optional
-										$fb_loginUrl = $fb_helper->getLoginUrl(admin_url('admin-ajax.php?action=psp_facebookAuth'), $fb_permissions);
-
-										$validAuth = false;
-										$dbToken = get_option('psp_fb_planner_token');
-										//var_dump('<pre>', $dbToken, '</pre>'); die('debug...'); 
-										
-										if ( !empty($dbToken) ) {
-											$facebook->setDefaultAccessToken($dbToken);
-
-											$fb_response = null;
-											try {
-												// Returns a `Facebook\FacebookResponse` object
-												$fb_response = $facebook->get('/me?fields=id,name,link');
-											} catch(Facebook\Exceptions\FacebookResponseException $e) {
-												$html[] = '<p>Graph returned an error: ' . $e->getMessage() . '</p>';
-
-												$psp->facebook_planner_last_status(array(
-													'status' 	=> 'error',
-													'step' 		=> 'profile',
-													'msg' 		=> $e,
-												));
-											} catch(Facebook\Exceptions\FacebookSDKException $e) {
-												$html[] = '<p>Facebook SDK returned an error: ' . $e->getMessage() . '</p>';
-												
-												$psp->facebook_planner_last_status(array(
-													'status' 	=> 'error',
-													'step' 		=> 'profile',
-													'msg' 		=> $e,
-												));
-											}
-											
-											if ( !empty($fb_response) ) {
-												$user_profile = $fb_response->getGraphUser();
-												if (count($user_profile) > 0){
-													$validAuth = true;
-														
-													$html[] = '<p>This plugin is <b>authorized</b> for: <a target="_blank" href="' . ( $user_profile['link'] ) . '">' . $user_profile['name'] . '</a></p>';
-														
-													// login url
-													$loginUrl = $fb_loginUrl;
-							
-													$html[] = '<a href="' . ($loginUrl) . '" style="width: 133px;" class="psp-form-button-small psp-form-button-info">'. (__( 'Authorize this app again', $psp->localizationName )) .'</a>';
-													
-													$psp->facebook_planner_last_status(array(
-														'status' 	=> 'success',
-														'step' 		=> 'profile',
-														'msg' 		=> $user_profile,
-													));
-												} else {
-													$psp->facebook_planner_last_status(array(
-														'status' 	=> 'error',
-														'step' 		=> 'profile',
-														'msg' 		=> $user_profile,
-													));
-												}
-											} else {
-												$psp->facebook_planner_last_status(array(
-													'status' 	=> 'error',
-													'step' 		=> 'profile',
-													'msg' 		=> 'empty response when /me?fields=id,name,link',
-												));
-											}
-										}
-								
-										if( $validAuth == false ) {
-											// login url
-											$loginUrl = $fb_loginUrl;
-
-											$html[] = '<a href="' . ($loginUrl) . '" style="width: 84px;" type="button" class="psp-form-button-small psp-form-button-info">'. (__( 'Authorizate app', $psp->localizationName )) .'</a>';
-										}
-									}
-								break;
 */
+
+								// :: Facebook Authorization STEP 1 - new SDK
+								// see modules/facebook_planner/init.php , method 'fbAuth_fbv4' for step 2
+								case 'authorization_button_fbv4':
+									$fbAuth = $psp->facebook_do_authorization(array(
+										//'fb_details'		=> array(),
+										//'psp_redirect_url'	=> '',
+									));
+									$html[] = $fbAuth['html'];
+									break;
 
 								case 'date':
 

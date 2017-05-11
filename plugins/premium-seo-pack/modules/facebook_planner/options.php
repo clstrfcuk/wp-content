@@ -56,7 +56,7 @@ if ( !function_exists( 'psp_wplanner_fb_options' ) ) {
 		// Facebook privacy options
 		$wplannerfb_post_privacy_options = array(
 			"EVERYONE" => __( 'Everyone', 'psp' ), 
-			"EVERYONE" => __( 'Everyone', 'psp' ), 
+			//"EVERYONE" => __( 'Everyone', 'psp' ), 
 			"ALL_FRIENDS" => __( 'All Friends', 'psp' ), 
 			"NETWORKS_FRIENDS" => __( 'Networks Friends', 'psp' ), 
 			"FRIENDS_OF_FRIENDS" => __( 'Friends of Friends', 'psp' ),
@@ -171,7 +171,7 @@ if ( !function_exists( 'psp_wplanner_fb_options' ) ) {
 			'auth' => array(
 				"title" => __( "Authorization", 'psp' ),
 				"desc" => __( "Facebook Application authorization for cron job.", 'psp' ),
-				"type" => "authorization_button", //authorization_button | authorization_button_fbv4
+				"type" => "authorization_button_fbv4", //authorization_button | authorization_button_fbv4
 				'size' 	=> 'large',
 				'value' =>  __( "Authorization facebook app", 'psp' )
 			),

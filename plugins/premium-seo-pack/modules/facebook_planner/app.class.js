@@ -32,6 +32,22 @@ pspFacebookPage = (function ($) {
 		});
 	})();
 
+	function triggers()
+	{
+		fixMetaBoxLayout();
+		
+		maincontainer_tasks.on('click', '#psp-do_bulk_delete_facebook_planner_rows', function(e){
+			e.preventDefault();
+
+			if (confirm('Are you sure you want to delete the selected rows?'))
+				delete_bulk_rows();
+		});
+	}
+	
+	function setLangMsg( atts ) {
+		langmsg = $.extend(langmsg, atts);
+	}
+
 	function fixMetaBoxLayout()
 	{
 		//meta boxes
@@ -140,11 +156,15 @@ pspFacebookPage = (function ($) {
 	}
 	
 	function fb_postnow(atts) {
-		
+
 		var atts = atts;
 
 		var postNowBtn = jQuery('#psp_post_planner_postNowFBbtn');
+		var wrappLog = jQuery('.psp_post_planner_postNowFBLog');
+
 		postNowBtn.click(function() {
+			wrappLog.html('').hide();
+
 			// Auto-Complete fields with data from above (title, permalink, content) if empty
 			if( jQuery('#psp_wplannerfb_title').val() == '' ||
 				//jQuery('#psp_wplannerfb_permalink').val() == '' ||
@@ -155,7 +175,8 @@ pspFacebookPage = (function ($) {
 				if(c == true) {
 					fb_planner_post({'action': 'autocomplete'});
 				}else{
-					alert(langmsg.publish_cancel);
+					//alert(langmsg.publish_cancel);
+					wrappLog.html( langmsg.publish_cancel ).show();
 					return false;
 				}
 			}
@@ -195,6 +216,7 @@ pspFacebookPage = (function ($) {
 
 			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 			jQuery.post(ajaxurl, data, function(response) {
+				/*
 				if(jQuery.trim(response) == 'OK'){
 					postTOFbNow.hide();
 					alert( langmsg.publish_success );
@@ -203,7 +225,14 @@ pspFacebookPage = (function ($) {
 					alert( langmsg.publish_error );
 					postNowBtn.show();
 				}
-			});
+				*/
+				postTOFbNow.hide();
+				wrappLog.html( response.opMsg ).show();
+				postNowBtn.show();
+			}, 'json')
+			.fail(function() { postNowBtn.show(); })
+			.done(function() {})
+			.always(function() {});
 			return false;
 		});
 	}
@@ -264,22 +293,6 @@ pspFacebookPage = (function ($) {
 			mainloading_tasks.fadeOut('fast');
 			alert('Problems occured while trying to delete the selected rows!');
 		}, 'json');
-	}
-	
-	function triggers()
-	{
-		fixMetaBoxLayout();
-		
-		maincontainer_tasks.on('click', '#psp-do_bulk_delete_facebook_planner_rows', function(e){
-			e.preventDefault();
-
-			if (confirm('Are you sure you want to delete the selected rows?'))
-				delete_bulk_rows();
-		});
-	}
-	
-	function setLangMsg( atts ) {
-		langmsg = $.extend(langmsg, atts);
 	}
 	
 	// external usage

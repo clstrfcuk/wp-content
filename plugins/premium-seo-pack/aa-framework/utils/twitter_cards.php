@@ -534,7 +534,7 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 			$thumbsize = isset($_REQUEST['psp_twc_post_thumbsize']) ? $_REQUEST['psp_twc_post_thumbsize'] : 'none';
 			
 			$post_cardtypes = array();
-			if ( isset($card_type) && !empty($card_type) && $card_type!='none' ) {
+			if ( isset($card_type) && !empty($card_type) && !in_array($card_type, array('default', 'none')) ) {
 				$post_cardtypes[] = $card_type;
 			}
 			if ( isset($app_card_type) && !empty($app_card_type) && $app_card_type=='yes' ) {
@@ -547,7 +547,7 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 			$__options['psp_twc_post_thumbsize'] = $thumbsize;
 			
 			if ( empty($post_cardtypes) ) return $__options;
-			
+
 			foreach ($post_cardtypes as $kk=>$vv) {
 
 				$currentCard = $this->cardTypes["$vv"];

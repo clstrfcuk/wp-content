@@ -913,16 +913,17 @@ if(class_exists('pspAjaxListTable') != true) {
 					$html[] = '<tr><td colspan=15 style="height: 37px; text-align: left;">' . $this->opt['notices']['default'] . '</td></tr>';
 				}
 			}
- 
-			foreach ($this->items as $post){
+
+			foreach ($this->items as $post) { // main foreach
 				if( isset($post->ID) ){
 					$item_data = array(
 						'score' 	=> get_post_meta( $post->ID, 'psp_score', true )
 					);
 				}
+				//continue 1; //DEBUG
 
 				$html[] = 			'<tr data-itemid="' . ( ( isset($post->ID) ? $post->ID : $post['id'] ) ) . '">';
-				foreach ($this->opt['columns'] as $key => $value){
+				foreach ($this->opt['columns'] as $key => $value) { // columns foreach
 
 					$html[] = '<td style="'
 						. ( isset($value['align']) && $value['align'] != "" ? 'text-align:' . ( $value['align'] ) . ';' : '' ) . ''
@@ -1593,10 +1594,10 @@ if(class_exists('pspAjaxListTable') != true) {
 					}
 
 					$html[] = '</td>';
-				}
+				} // end columns foreach
 
 				$html[] = 			'</tr>';
-			}
+			} // end main foreach
 
 			$html[] = 		'</tbody>';
 
