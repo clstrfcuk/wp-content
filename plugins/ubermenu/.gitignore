@@ -1,0 +1,11 @@
+.DS_Store
+
+custom/custom.css
+custom/custom.js
+languages/ubermenu-pt_PT.po
+languages/ubermenu-pt_PT.mo
+
+npm-debug.log
+node_modules
+
+*.report.txt
