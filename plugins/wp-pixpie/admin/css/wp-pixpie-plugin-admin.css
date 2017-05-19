@@ -1,0 +1,66 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+
+/* Hide plugin inactive warning when on settings page */
+.wp-pixpie-plugin_page_wp-pixpie-plugin_settings .plugin_not_configured_admin_notice {
+	display: none;
+}
+
+ /* Hide convent image notice when on convert image page */
+ .wp-pixpie-plugin_page_wp-pixpie-plugin-convert-all .wp-pixpie-plugin-notice-compress-images,
+ .toplevel_page_wp-pixpie-plugin .wp-pixpie-plugin-notice-compress-images
+ {
+ 	display: none;
+ }
+
+
+
+ .convert-all-link-wrapper {
+ 	display: none;
+ }
+
+
+table.wp-pixpie-plugin-dashboard-stats {}
+
+table.wppp_log_table {width: 100%;}
+table.wppp_log_table th {font-size: 11px;}
+table.wppp_log_table tr {}
+table.wppp_log_table tr.trace td {color: #555;}
+table.wppp_log_table tr.debug td {color: #000;}
+table.wppp_log_table tr.info td {color: #7799FF;}
+table.wppp_log_table tr.warning td {color: #EECC33;}
+table.wppp_log_table tr.error td {color: red; font-weight: bold;}
+table.wppp_log_table tr td {font-size: 11px; border-top: 1px solid #CCC;}
+table.wppp_log_table tr td.id {width: 50px;}
+table.wppp_log_table tr td.time {width: 150px;}
+table.wppp_log_table tr td.attachment_id {width: 50px;}
+table.wppp_log_table tr td.file_name {width: 150px;}
+table.wppp_log_table tr td.size_name {width: 50px;}
+table.wppp_log_table tr td.step {width: 50px;}
+table.wppp_log_table tr td.level {width: 50px;}
+table.wppp_log_table tr td.message {}
+
+table.wppp-settings-table input.bundle-id {width: 25%;}
+table.wppp-settings-table input.secret-key {width: 75%;}
+
+
+
+.wppp-settings-page .no-account a.expand {display: block;}
+.wppp-settings-page .no-account a.expand.hidden {display: none;}
+.wppp-settings-page .no-account .collapsible {display: block;}
+.wppp-settings-page .no-account .collapsible.hidden {display: none;}
+
+
+
+table.wppp-settings-table input.wppp-new-account-email {width: 50%;}
+table.wppp-settings-table input.wppp-new-account-password {width: 50%;}
+
+
+.wppp-settings-plugin-status {font-size: 14px;}
+.wppp-settings-plugin-status-active {color: #33AA33;}
+.wppp-settings-plugin-status-failed {color: #AA3333;}
+.wppp-settings-plugin-status-inactive {color: #AA3333;}
+
