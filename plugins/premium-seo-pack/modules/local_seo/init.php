@@ -57,6 +57,9 @@ if (class_exists('pspLocalSEO') != true) {
 					$this->init_postType();
 				}
 			}
+
+			// ajax requests metabox
+			add_action('wp_ajax_psp_metabox_localseo', array( $this, 'ajax_requests_metabox') );
         }
         
         public function register_postType() {
@@ -132,28 +135,86 @@ if (class_exists('pspLocalSEO') != true) {
 	    */
 	    protected function _registerMetaBoxes()
 	    {
-	    	$screens = array(
-	    		'psp_locations' => __( 'PSP Locations Details', 'psp' )
-	    	);
-		    foreach ($screens as $key => $screen) {
-		    	$screen = str_replace("_", " ", $screen);
+			$screens = array('psp_locations' => 'psp_locations');
+			foreach ($screens as $key => $screen) {
+				$screen = str_replace("_", " ", $screen);
 				$screen = ucfirst($screen);
-		        add_meta_box(
-		            'psp_locations_meta_box',
-		            $screen,
-		            array($this, 'custom_metabox'),
-		            $key,
-		            'normal'
-		        );
-		    }
-	        return $this;
-	    }
-		
-		public function custom_metabox() {
-
-			global $post;
-			$post_id = (int) $post->ID;
+				add_meta_box(
+					'psp_locations_meta_box',
+					$screen . ' - ' . __('Details', 'psp'),
+					array($this, 'display_meta_box'),
+					$key,
+					'normal'
+				);
+			}
 			
+			return $this;
+		}
+
+		public function display_meta_box() {
+			global $post;
+
+			$post_id = isset($post->ID) ? $post->ID : 0;
+		?>
+
+			<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
+			<?php /*<link rel='stylesheet' href='<?php echo $this->module_folder;?>jquery-ui-1.10.3.custom.min.css' type='text/css' media='screen' />
+			<script type="text/javascript" src="<?php echo $this->module_folder;?>jquery-ui-1.10.3.custom.min.js"></script>*/ ?>
+			<script type="text/javascript" src="<?php echo $this->get_gmap_api_url('js'); ?>" ></script>
+			<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
+			
+			<div id="psp-meta-box-preload" style="height:200px; position: relative;">
+				<!-- Main loading box -->
+				<div id="psp-main-loading" style="display:block;">
+					<div id="psp-loading-box" style="top: 50px">
+						<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
+						<div class="psp-meter psp-animate" style="width:86%; margin: 4px 0px 0px 7%;"><span style="width:100%"></span></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="psp-meta-box-container psp" style="display:none;" data-post_id="<?php echo $post_id; ?>">
+
+				<?php
+					// Lang Messages
+					$lang = array(
+					);
+					// Settings
+					$settings = array(
+					);
+				?>
+				<!-- Lang Messages -->
+				<div id="psp-meta-boxlang-translation" style="display: none;"><?php echo htmlentities(json_encode( $lang )); ?></div>
+				<!-- Params / Settings -->
+				<div id="psp-meta-box-settings" style="display: none;"><?php echo htmlentities(json_encode( $settings )); ?></div>
+
+				<!-- box Tab Menu -->
+				<div class="psp-tab-menu">
+					<a href="#business_information" class="open"><?php _e('Business Information', 'psp');?></a>
+					<a href="#business_contact"><?php _e('Business Contact and Google Map', 'psp');?></a>
+					<a href="#opening_hours"><?php _e('Opening Hours', 'psp');?></a>
+					<a href="#other_details"><?php _e('Other details', 'psp');?></a>
+				</div>
+
+				<!-- start: psp-tab-container -->
+				<div class="psp-tab-container">
+
+					<?php //LOADED BY AJAX ?>
+
+				</div><!-- end: psp-tab-container -->
+				<div style="clear:both"></div>
+			</div>
+
+		<?php
+		}
+
+		public function display_page_options( $pms=array() ) {
+
+			$pms = array_replace_recursive(array(
+				'post_id'		=> 0,
+			), $pms);
+			extract($pms);
+
 			// load the settings template class
 			require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'settings-template.class.php' );
 			
@@ -171,32 +232,9 @@ if (class_exists('pspLocalSEO') != true) {
 			$html_opening_hours = $aaInterfaceTemplates->bildThePage( $this->opening_hours_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
 			
 			$html_other_details = $aaInterfaceTemplates->bildThePage( $this->other_details_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
+
+			ob_start();
 		?>
-			<link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' />
-			<?php /*<link rel='stylesheet' href='<?php echo $this->module_folder;?>jquery-ui-1.10.3.custom.min.css' type='text/css' media='screen' />
-			<script type="text/javascript" src="<?php echo $this->module_folder;?>jquery-ui-1.10.3.custom.min.js"></script>*/ ?>
-			<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-			
-			<div id="psp-meta-box-preload" style="height:200px; position: relative;">
-				<!-- Main loading box -->
-				<div id="psp-main-loading" style="display:block;">
-					<div id="psp-loading-box" style="top: 50px">
-						<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-						<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="psp-meta-box-container psp" style="display:none;">
-				<!-- box Tab Menu -->
-				<div class="psp-tab-menu">
-					<a href="#business_information" class="open"><?php _e('Business Information', 'psp');?></a>
-					<a href="#business_contact"><?php _e('Business Contact and Google Map', 'psp');?></a>
-					<a href="#opening_hours"><?php _e('Opening Hours', 'psp');?></a>
-					<a href="#other_details"><?php _e('Other details', 'psp');?></a>
-				</div>
-				
-				<div class="psp-tab-container">
 
 					<div id="psp-tab-div-id-business_information" style="display:block;">
 						<div class="psp-dashboard-box span_3_of_3">
@@ -233,11 +271,10 @@ if (class_exists('pspLocalSEO') != true) {
 							</div>
 						</div>
 					</div>
-					
-				</div>
-				<div style="clear:both"></div>
-			</div>
+
 		<?php
+			$html = ob_get_clean();
+			return $html;
 		}
 		
 		public function business_information_options( $defaults=array() )
@@ -797,18 +834,26 @@ if (class_exists('pspLocalSEO') != true) {
 			return $output;
 		}
 		
-		public function google_map_preview( $map_pms ) {
+		public function google_map_preview( $map_pms=array() ) {
+			$map_pms = array_replace_recursive(array(
+				'include_js'		=> false,
+			), $map_pms);
+			extract($map_pms);
+
 			ob_start();
 			
 			require($this->module_folder_path . 'lists.inc.php');
 			
 			$val = '';
-			if( isset($db_meta_name) ){
-				$val = $db_meta_name;
-			}
+			//if( isset($db_meta_name) ){
+			//	$val = $db_meta_name;
+			//}
 		?>
 
+		<?php if ( $include_js ) { ?>
 		<script type="text/javascript" src="<?php echo $this->get_gmap_api_url('js'); ?>" ></script>
+		<?php } ?>
+
 		<div class="panel-body psp-panel-body psp-form-row">
 			<label><?php _e('Google Map Preview:', 'psp'); ?>	</label>
 			<!--<span class="formNote">You can verify latitude and longitude <a href="http://www.geo-tag.de/generator/en.html" target="_blank">here</a> (only if you think that automatically generated map by using Googles api from the address you've entered, isn't right)</span>-->
@@ -1052,6 +1097,41 @@ if (class_exists('pspLocalSEO') != true) {
 		        th#date {width: 190px;}
 		        </style>
 			";
+		}
+
+		public function ajax_requests_metabox() {
+			$action = isset($_REQUEST['sub_action']) ? $_REQUEST['sub_action'] : 'none';
+
+			$allowed_action = array( 'load_box' );
+
+			if( !in_array($action, $allowed_action) ){
+				die(json_encode(array(
+					'status'		=> 'invalid',
+					'html'			=> 'Invalid action!'
+				)));
+			}
+
+			
+			if ( 'load_box' == $action ) {
+				$req = array(
+					'post_id'		=> isset($_REQUEST['post_id']) ? (int) $_REQUEST['post_id'] : 0,
+				);
+				extract($req);
+				//var_dump('<pre>', $req, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
+				$pms = $req;
+				$html = $this->display_page_options($pms);
+
+				die(json_encode(array(
+					'status'	=> 'valid',
+					'html'		=> $html,
+				)));
+			}
+			
+			die(json_encode(array(
+				'status' 		=> 'invalid',
+				'html'		=> 'Invalid action!'
+			)));
 		}
     }
 }

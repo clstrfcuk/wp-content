@@ -1812,7 +1812,7 @@ class pspSeoSitemap
                 //verify per item is included!
                 //if ( isset($sitemap_isincluded) && trim($sitemap_isincluded) == "never_include" ) continue 1;
 
-                //$sitemap_settings = get_post_meta( $value->ID, 'psp_meta', true );
+                //$sitemap_settings = $this->the_plugin->get_psp_meta( $value->ID );
 
                 // permalink
                 $pms = array();
@@ -2262,7 +2262,7 @@ class pspSeoSitemap
         
         $sm = array(); $post_type = $sitemap_type['mod'];
         if ( in_array($post_type, array('posttype')) ) {
-            $sm = get_post_meta( $post->ID, 'psp_meta', true );
+            $sm = $this->the_plugin->get_psp_meta( $post->ID );
             $post_type = $post->post_type;
         } else if ( $post_type == 'taxonomy' ) {
             $post_type = !empty($sitemap_type['submod']) && in_array($sitemap_type['submod'], array('category', 'post_tag')) ? $sitemap_type['submod'] : $post_type;
@@ -2287,7 +2287,7 @@ class pspSeoSitemap
   
         $sm = array(); $post_type = $sitemap_type['mod'];
         if ( in_array($post_type, array('posttype')) ) {
-            $sm = get_post_meta( $post->ID, 'psp_meta', true );
+            $sm = $this->the_plugin->get_psp_meta( $post->ID );
             $post_type = $post->post_type;
         } else if ( $post_type == 'taxonomy' ) {
             $post_type = !empty($sitemap_type['submod']) && in_array($sitemap_type['submod'], array('category', 'post_tag')) ? $sitemap_type['submod'] : $post_type;

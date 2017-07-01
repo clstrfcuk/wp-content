@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.1] - 04.06.2017
+- NEW FUNCTIONALITY : you can now enter multiple focus keywords in masss optimization module or in admin edit post details metabox
+- added Seo Score to post type admin edit page, in the publish/update wordpress top right box
+- all 3 plugin meta boxes are loaded now by ajax (local seo, facebook planner, seo settings) to decrease the loading time when you are in admin / edit post/page details
+- post types admin listing page: joined the 3 seo columns into only one named PSP Info
+- fixed some issues regarding the lightbox used in modules: link builder, 301 link redirect, 404 monitor, serp, mass optimization
+- fixed issue occuring in some page builders, for social meta (facebook & twitter) image tags, content images urls changed from relative path to absolute path
+- settings/new fixes tab: new option Fix/ Use WP do_shortcode - only set to "NO" in special cases where pages html is malformed (some themes may do this)
+- setup backup / import from Yoast Wordpress SEO : let you import all multiple focus keywords from yoast into PSP
+- new format tag available in Title & Meta Format module: {multi_focus_keywords} which represents a list of the focus keywords you've defined for the post; also the old format tab {focus_keywords} contains only the primary (first one from the multiple focus keywords list) focus keyword for that post
+- mass optimization module / quick edit box have now 2 more fields: Include in Sitemap, Sitemap Priority
+
 ## [2.0.6] - 10.05.2017
 - "facebook planner" metabox: bug fixes
 - "facebook planner" module now works with latest "php facebook sdk" - version 5.5 (it requires php version >= 5.4)

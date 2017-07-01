@@ -145,7 +145,7 @@ if (class_exists('pspLinkBuilder') != true) {
 		
 		public function do_link($content) {
 			// use in this way for work with the shortcodes too
-			$theContent = do_shortcode( $content );
+			$theContent = $this->the_plugin->do_shortcode( $content );
 
 			// get phrases to be replaced!
 			$phrases = $this->getLinks();

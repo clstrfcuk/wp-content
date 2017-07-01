@@ -1,8 +1,57 @@
+th##{$alias}_info,
+td.#{$alias}_info {
+	width: 200px;
+}
+.column-psp_info .#{$alias}-info-column {
+	h2 {
+		display: none;
+	}
+}
+
+.#{$alias}-info-column {
+
+	h2 {
+		border-bottom: 1px solid #dadada;
+		font-weight: bold !important;
+		margin-bottom: 15px !important;
+		padding-left: 0px !important;
+	}
+	i {
+		margin-right: 10px;
+	}
+	.#{$alias}-progress {
+		margin-left: 0px;
+		height:6px;
+	}
+
+	.#{$alias}-progress-bar {
+		height:5px;
+	}
+
+	
+
+	> div:hover {
+		background-color: #fff;
+	}
+}
+.#{$alias}-info-column .#{$alias}-progress .#{$alias}-progress-score {
+		top: -5px;
+	}
+
+
+##{$alias}-tab-div-id-page_meta {
+	.form-table td p {
+		margin-top: 0px;
+		margin-bottom: 15px;
+	}
+}
+
 .#{$alias}-mass-optimization {
 	// Pop-up box
 	.#{$alias}-lightbox-headline {
   		background: $info;
   		border: none !important;
+  		z-index: 9999;
   	}
 	.#{$alias}-seo-status-container {
 		margin: px(60) px(10) 0px px(10);
@@ -11,7 +60,7 @@
 		font-family: $primary_font;
 		font-size: px(14);
 		line-height: px(26.5);
-	  	.#{$alias}-seo-status-icon {
+		.#{$alias}-seo-status-icon {
 			width: px(16);
 			height: px(16);
 			background: #fff;
@@ -26,10 +75,10 @@
 		    padding: px(10) 0px px(10) 0px;
 		    float: left;
 		    margin: 0px 0px 0px px(30);
+		    width: auto !important;
 		    &:last-child {
 				border: none;
 		    }
-		    	width: px(832);
 		    p {
 				margin: 0px 0px px(10) 0px;
 		    }
@@ -56,32 +105,41 @@
 				padding: px(5) 0px 0px 0px;
 			}
 		}
-		.message-box {
-			border: 1px solid #ccc;
+		.message-box { 
 			padding: px(2);
+			padding-left: 20px;
 			background-color: #fff;
 			width: 100%;
 			float: left;
 			font-weight: normal;
+
+			&:before {
+	            position: absolute;
+	            font-family: 'seo-checks';
+	            content: "\e900";
+	            color: #fff;
+	            top: 0;
+	            left: 0;
+	            font-size: 13px;
+	            display: inline-block;
+	        }
 	    	strong {
-				background-color: #95a5a6;
+				background-color: #c10202;
 				padding: px(2) px(4) px(2) px(4);
 				margin-top: -#{px(2)};
+				color:#fff;
 	   		}
 		    &.good {
-				border-color: #16a085;
-				background-color: $success;
-				color: #fff;
+				content: "\e902";
+				color: $success;
 		    }
 		    &.poor {
-				border-color: #f39c12;
-				background-color: $warning;
-				color: #fff;
+				content: "\e900";
+            	color: $warning;
 		    }
 		    &.bad {
-				border-color: #c0392b;
-				background-color: $danger;
-				color: #fff;
+				content: "\e901";
+           		color: $danger;
 		    }
 		}
 		.#{$alias}-seo-status-icon {
@@ -141,6 +199,12 @@
 		margin-top: px(21);
 		color: $black;
 		.form-inline-editpost {
+			.hwt-backdrop {
+				text-align: left;
+				top: 13px !important;
+				left: 14px !important;
+				padding-right: 105px !important;
+			}
 			##{$alias}-inline-btn-save {
 				cursor: pointer;
 				padding: px(3) px(18) px(1) px(18);
@@ -168,13 +232,39 @@
 					background: darken(#969696, 25%);
 				}
 			}
+			textarea {
+				height: px(188);
+				padding-left: px(14);
+				padding-top: px(13);
+				border: 1px solid #dbdbdb;
+				border-radius: px(3);
+			}
+			input,
+			select {
+				height: px(38);
+				padding-left: px(7);
+				border: 1px solid #dbdbdb;
+				border-radius: px(3);
+			}
+			th {
+				strong {
+					padding-left: px(7);
+				}
+				&:nth-child(1),
+				&:nth-child(2),
+				&:nth-child(3) {
+					padding-left: px(13);
+					
+				}	
+			}
 			td {
 				font-family: $primary_font;
 				font-size: px(14);
 				font-weight: $normal;
 				line-height: px(26);
+				padding: px(9) !important;
 			}
-			tr {
+			/*> table > tbody > tr {
 				&:nth-child(1) {
 					td {
 						&:nth-child(1) {
@@ -182,64 +272,75 @@
 							input,
 							select {
 								width: 70%;
-								height: px(38);
 								margin-bottom: px(10);
 								float: right;
-								padding-left: px(7);
-								border: 1px solid #dbdbdb;
-								border-radius: px(3);
 							}
-						}
-						textarea {
-							height: px(188);
-							padding-left: px(14);
-							padding-top: px(13);
-							border: 1px solid #dbdbdb;
-							border-radius: px(3);
 						}
 						padding: px(19) !important;
 					}
 				}
+			}*/
+			> table > thead > tr > th:last-child,
+			> table > tbody > tr > td:last-child {
+				border-right: 0.1rem solid #dbdbdb;
 			}
-			th {
-				strong {
-					padding-left: px(7);
-				}
-				&:nth-child(2),
-				&:nth-child(3) {
-					padding-left: px(13);
-					
-				}	
-			}
-			div {
+			div.psp-inline-meta-wrapp {
 				text-align: left;
+				> div,
 				span {
 					font-family: $primary_font;
 					font-size: px(14);
 					font-weight: $bold;
 					line-height: px(26.5);
 					margin-left: px(7);
-					float: left;
-					clear: both;
 					margin-top: px(7);
+					/*float: left;
+					clear: both;*/
+				}
+				> div {
+					/*float: none;*/
+					display: inline-block;
+					margin-left: 0px;
 				}
 			}
+			> table table tr:nth-child(1) td {
+				> div {
+					display: table;
+					width: 100%;
+					text-align: left;
+					span {
+						display: table-cell;
+						font-weight: $bold;
+					}
+					input {
+						display: table-cell;
+						width: 100%;
+					}
+				}
+
+			}
 		}
+		.#{$alias}-focus-kw-box {
+			.tokenfield.form-control {
+				height: auto;
+				/*width: 100%;*/
+			}
+		}
+
+		/* Progress Bar */
 		.#{$alias}-progress {
 		    position: relative;
 		    width: px(44);
-		    border: 1px solid #d7d9df;
+		    border: 1px solid #f2f2f2;
 		    margin: px(4);
-		    background: #ecf0f1;
+		    background: #fff;
 		    margin-right: px(50);
 		    text-align: left;
+		    height:10px;
 		}
-		.#{$alias}-progress-bar {
-		    display: inline-block;
-		    height: px(19);
+		.#{$alias}-progress-bar { 
+		    height:5px;
 		    position: relative;
-		    top: px(3);
-		    left: px(2);
 		    -webkit-transition: 0.4s linear;
 		    -moz-transition: 0.4s linear;
 		    -o-transition: 0.4s linear;
@@ -252,40 +353,39 @@
 		    div {
 		    	display: inline-block;
 		    }
-		    &.size_80_100 {
-			    background-color: #2ecc71;
-			}
-			&.size_60_80 {
-			    background-color: #f1c40f;
-			}
-			&.size_40_60 {
-			    background-color: #f1c40f;
+			/* define the progress bar colors by sizes */
+			&.size_0_20 {
+				background-color: #e74c3c;
 			}
 			&.size_20_40 {
-			    background-color: #e67e22;
+				background-color: #e67e22;
 			}
-			&.size_0_20 {
-			    background-color: #e74c3c;
+			&.size_40_60,
+			&.size_60_80 {
+				background-color: #f1c40f;
+			}
+			&.size_80_100 {
+				background-color: #2ecc71;
 			}
 		}
 		.#{$alias}-progress-score {
 	        width: px(38);
 		    height: px(30);
-		    background: #bdc3c7;
+		    background: #fff;
 		    text-align: center;
 		    cursor: default;
-		    position: absolute;
-		    line-height: px(21);
+		    position: absolute; 
 		    vertical-align: middle;
-		    color: #fff;
+		    color: #2d2d2d;
 		    padding-bottom: px(23);
 		    padding-top: px(3);
 		    font-weight: bold;
-		    top: -#{px(1)};
+		    top: -#{px(8)};
 		    font-size: px(11);
 		    right: -#{px(39)};
 		    font-family: $primary-font;
 		}
+
 		th {
 			padding-top: px(14) !important;
 			color: $black;
@@ -306,7 +406,7 @@
 				cursor: pointer;
 			}
 			.#{$alias}-text-field-kw {
-				width: px(240);
+				width: 100%; /*px(240);*/
 				padding: px(5);
 				font-family: $primary-font;
 				border-radius: px(3);

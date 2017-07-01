@@ -463,7 +463,7 @@ if (class_exists('pspBuddyPressTags') != true) {
 			}
 			
 			if ( $post_id > 0 ) {
-				$the_info = get_post_meta( $post_id, 'psp_meta', true );
+				$the_info = $this->the_plugin->get_psp_meta( $post_id );
   
 				foreach (array('title', 'description', 'keywords', 'robots') as $v) {
 					if ( $field == $v ) {

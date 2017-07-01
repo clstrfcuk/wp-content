@@ -1,9 +1,9 @@
 <?php
 /*
-* Define class pspFacebook_Planner
-* Make sure you skip down to the end of this file, as there are a few
-* lines of code that are very important.
-*/
+ * Define class pspFacebook_Planner
+ * Make sure you skip down to the end of this file, as there are a few
+ * lines of code that are very important.
+ */
 !defined('ABSPATH') and exit;
 if (class_exists('pspFacebook_Planner') != true) {
 	class pspFacebook_Planner {
@@ -23,7 +23,6 @@ if (class_exists('pspFacebook_Planner') != true) {
 
 		static protected $_instance;
 		private $post_privacy_options = array();
-		private $post = 0;
 		
 		private $fb_details = null;
 		
@@ -109,6 +108,9 @@ if (class_exists('pspFacebook_Planner') != true) {
 				//	add_action('init', array( &$this, 'check_auth_callback' ));
 				//}
 			}
+
+			// ajax requests metabox
+			add_action('wp_ajax_psp_metabox_fb', array( $this, 'ajax_requests_metabox') );
         }
 		
 		/**
@@ -138,24 +140,24 @@ if (class_exists('pspFacebook_Planner') != true) {
 		    	//unset media - images | videos are treated as belonging to post, pages, custom post types
 		    	unset($this->post_types['attachment'], $this->post_types['revision']);
 	
-		    	$screens = $this->post_types;
-			    foreach ($screens as $key => $screen) {
-			    	$screen = str_replace("_", " ", $screen);
+				$screens = $this->post_types;
+
+				foreach ($screens as $key => $screen) {
+					$screen = str_replace("_", " ", $screen);
 					$screen = ucfirst($screen);
-					// Create the options meta box
-	                add_meta_box(
-	                	'psp_facebook_share-options', 
-	                	$screen . ' - ' . __('Publish on Facebook ?', 'psp'), 
-	                	array($this, 'display_page_options'),
-	                	$key,
-	                	'normal', 
-	                	'high'
+					add_meta_box(
+						'psp_facebook_share-options',
+						$screen . ' - ' . __('Publish on Facebook ?', 'psp'),
+						array($this, 'display_meta_box'),
+						$key,
+						'normal',
+						'high'
 					);
-			    }
-	    	}
-		    
-	        return $this;
-	    }
+				}
+			}
+
+			return $this;
+		}
 
 	    /**
 	     * Register plug-in module admin pages and menus
@@ -232,12 +234,13 @@ if (class_exists('pspFacebook_Planner') != true) {
 		{
 			$this->printBaseInterface();
 		}
-		
-		public function display_page_options()
-		{
+
+		public function display_meta_box() {
 			global $post;
-			$this->post = $post; 
+
+			$post_id = isset($post->ID) ? $post->ID : 0;
 		?>
+
 			<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
 			
 			<div id="psp-meta-box-preload" style="height:200px; position: relative;">
@@ -245,12 +248,43 @@ if (class_exists('pspFacebook_Planner') != true) {
 				<div id="psp-main-loading" style="display:block;">
 					<div id="psp-loading-box" style="top: 50px">
 						<div class="psp-loading-text"><?php _e('Loading', 'psp');?></div>
-						<div class="psp-meter psp-animate" style="width:86%; margin: 34px 0px 0px 7%;"><span style="width:100%"></span></div>
+						<div class="psp-meter psp-animate" style="width:86%; margin: 4px 0px 0px 7%;"><span style="width:100%"></span></div>
 					</div>
 				</div>
 			</div>
 			
-			<div class="psp-meta-box-container psp" style="display:none;">
+			<div class="psp-meta-box-container psp" style="display:none;" data-post_id="<?php echo $post_id; ?>">
+
+				<?php
+					// Lang Messages
+					$lang = array(
+						'mandatory2'		=> __( "Your mandatory fields were empty. Auto-Complete was done using your current post/page data. Please check before submiting.", 'psp' ),
+						'mandatory'			=> __( "Your mandatory fields are empty. Do you want to auto-complete and then publish to Facebook?", 'psp' ),
+						'publish_cancel'	=> __( "Publish canceled.", 'psp' ),
+						'publish_success'	=> __( 'The post was published on facebook OK!', 'psp' ),
+						'publish_error'		=> __( 'Error on publishing. Please try again later!', 'psp' ),
+
+						'timeOnlyTitle'		=> __( 'Choose Time', 'psp' ),
+						'timeText'			=> __( 'At', 'psp' ),
+						'hourText'			=> __( 'Hour', 'psp' ),
+						'currentText'		=> __( 'Now', 'psp' ),
+						'closeText'			=> __( 'Done', 'psp' ),
+					);
+					// Settings
+					$settings = array(
+						'post_id'			=> $post_id,
+						'plugin_url' 		=> $this->the_plugin->cfg['paths']['plugin_dir_url'],
+						'thumb_w' 			=> isset($img_size[0]) ? $img_size[0] : 450,
+						'thumb_h' 			=> isset($img_size[1]) ? $img_size[1] : 320,
+						'thumb_zc' 			=> isset($this->fb_details['featured_image_size_crop'])
+							&& $this->fb_details['featured_image_size_crop'] == 'true' ? 1 : 2,
+					);
+				?>
+				<!-- Lang Messages -->
+				<div id="psp-meta-boxlang-translation" style="display: none;"><?php echo htmlentities(json_encode( $lang )); ?></div>
+				<!-- Params / Settings -->
+				<div id="psp-meta-box-settings" style="display: none;"><?php echo htmlentities(json_encode( $settings )); ?></div>
+
 				<!-- box Tab Menu -->
 				<div class="psp-tab-menu">
 					<a href="#publish_on_facebook" class="open"><?php _e('What do you want to publish on facebook ?', 'psp');?></a>
@@ -261,6 +295,24 @@ if (class_exists('pspFacebook_Planner') != true) {
 				<!-- start: psp-tab-container -->
 				<div class="psp-tab-container">
 
+					<?php //LOADED BY AJAX ?>
+
+				</div><!-- end: psp-tab-container -->
+				<div style="clear:both"></div>
+			</div>
+
+		<?php
+		}
+		
+		public function display_page_options( $pms=array() )
+		{
+			$pms = array_replace_recursive(array(
+				'post_id'		=> 0,
+			), $pms);
+			extract($pms);
+
+			ob_start();
+		?>
 					<!-- TAB publish_on_facebook -->
 					<div id="psp-tab-div-id-publish_on_facebook" style="display:block;">
 						<div class="psp-dashboard-box span_3_of_3">
@@ -272,51 +324,51 @@ if (class_exists('pspFacebook_Planner') != true) {
 							</tr>
 							<?php if( !empty($this->fb_details['inputs_available']) && in_array( 'message', $this->fb_details['inputs_available'])) { ?>
 							<tr>
-								<td valign="top"><?php echo _e( 'Message:', 'psp' ); ?></td>
-								<td><textarea id="psp_wplannerfb_message" name="psp_wplannerfb_message" rows="4" style="width:100%;"><?php echo $this->fb_post_meta('message'); ?></textarea></td>
+								<td valign="top"><?php _e( 'Message:', 'psp' ); ?></td>
+								<td><textarea id="psp_wplannerfb_message" name="psp_wplannerfb_message" rows="4" style="width:100%;"><?php echo $this->fb_post_meta('message', $post_id); ?></textarea></td>
 							</tr>
 							<?php } ?>
 							<tr>
-								<td><?php echo _e( 'Title:', 'psp' ); ?></td>
-								<td><input type="text" id="psp_wplannerfb_title" name="psp_wplannerfb_title" value="<?php echo $this->fb_post_meta('title'); ?>" style="width:100%;"/></td>
+								<td><?php _e( 'Title:', 'psp' ); ?></td>
+								<td><input type="text" id="psp_wplannerfb_title" name="psp_wplannerfb_title" value="<?php echo $this->fb_post_meta('title', $post_id); ?>" style="width:100%;"/></td>
 							</tr>
 							<tr>
-								<td><?php echo _e( 'Permalink:', 'psp' ); ?></td>
+								<td><?php _e( 'Permalink:', 'psp' ); ?></td>
 								<td>
-									<input type="radio" name="psp_wplannerfb_permalink" id="psp_wplannerfb_post_link" value="post_link" <?php echo $this->fb_post_meta('permalink') != '' && $this->fb_post_meta('permalink') == 'post_link' ? 'checked="checked"' : 'checked="checked"'; ?> onclick="jQuery('#psp_wplannerfb_permalink_value').hide();"/> &nbsp; <label for="psp_wplannerfb_post_link"><?php _e( 'Use post link', 'psp' ); ?></label> &nbsp;&nbsp; 
-									<input type="radio" name="psp_wplannerfb_permalink" id="psp_wplannerfb_custom_link" value="custom_link" <?php echo $this->fb_post_meta('permalink') != '' && $this->fb_post_meta('permalink') != 'post_link' ? 'checked="checked"' : ''; ?> onclick="jQuery('#psp_wplannerfb_permalink_value').show();"/> &nbsp; <label for="psp_wplannerfb_custom_link"><?php _e( 'Use custom link', 'psp' ); ?></label>
-									<input type="text" id="psp_wplannerfb_permalink_value" name="psp_wplannerfb_permalink_value" value="<?php echo $this->fb_post_meta('permalink') != 'post_link' ? $this->fb_post_meta('permalink') : ''; ?>" style="display:<?php echo $this->fb_post_meta('permalink') != 'post_link' ? 'block' : 'none'; ?>; float:right; width:75%;"/>
+									<input type="radio" name="psp_wplannerfb_permalink" id="psp_wplannerfb_post_link" value="post_link" <?php echo $this->fb_post_meta('permalink', $post_id) != '' && $this->fb_post_meta('permalink', $post_id) == 'post_link' ? 'checked="checked"' : 'checked="checked"'; ?> onclick="jQuery('#psp_wplannerfb_permalink_value').hide();"/> &nbsp; <label for="psp_wplannerfb_post_link"><?php _e( 'Use post link', 'psp' ); ?></label> &nbsp;&nbsp; 
+									<input type="radio" name="psp_wplannerfb_permalink" id="psp_wplannerfb_custom_link" value="custom_link" <?php echo $this->fb_post_meta('permalink', $post_id) != '' && $this->fb_post_meta('permalink', $post_id) != 'post_link' ? 'checked="checked"' : ''; ?> onclick="jQuery('#psp_wplannerfb_permalink_value').show();"/> &nbsp; <label for="psp_wplannerfb_custom_link"><?php _e( 'Use custom link', 'psp' ); ?></label>
+									<input type="text" id="psp_wplannerfb_permalink_value" name="psp_wplannerfb_permalink_value" value="<?php echo $this->fb_post_meta('permalink', $post_id) != 'post_link' ? $this->fb_post_meta('permalink', $post_id) : ''; ?>" style="display:<?php echo $this->fb_post_meta('permalink', $post_id) != 'post_link' ? 'block' : 'none'; ?>; float:right; width:75%;"/>
 								</td>
 							</tr>
 							<?php if( !empty($this->fb_details['inputs_available']) && in_array( 'caption', $this->fb_details['inputs_available'])) { ?>
 							<tr>
-								<td width="15%"><?php echo _e( 'Caption:', 'psp' ); ?></td>
-								<td width="85%"><input type="text" id="psp_wplannerfb_caption" name="psp_wplannerfb_caption" value="<?php echo $this->fb_post_meta('caption'); ?>" style="width:100%;"/></td>
+								<td width="15%"><?php _e( 'Caption:', 'psp' ); ?></td>
+								<td width="85%"><input type="text" id="psp_wplannerfb_caption" name="psp_wplannerfb_caption" value="<?php echo $this->fb_post_meta('caption', $post_id); ?>" style="width:100%;"/></td>
 							</tr>
 							<?php } ?>
 							<tr>
-								<td valign="top"><?php echo _e( 'Description:', 'psp' ); ?></td>
-								<td><textarea id="psp_wplannerfb_description" name="psp_wplannerfb_description" rows="4" style="width:100%;"><?php echo $this->fb_post_meta('description'); ?></textarea></td>
+								<td valign="top"><?php _e( 'Description:', 'psp' ); ?></td>
+								<td><textarea id="psp_wplannerfb_description" name="psp_wplannerfb_description" rows="4" style="width:100%;"><?php echo $this->fb_post_meta('description', $post_id); ?></textarea></td>
 							</tr>
 							<?php if( !empty($this->fb_details['inputs_available']) && in_array( 'image', $this->fb_details['inputs_available'])) { ?>
 							<tr>
-								<td><?php echo _e( 'Publish Image:', 'psp' ); ?></td>
+								<td><?php _e( 'Publish Image:', 'psp' ); ?></td>
 								<td>
 									<select id="psp_wplannerfb_useimage" name="psp_wplannerfb_useimage">
-										<option value="yes" <?php echo $this->fb_post_meta('useimage') != '' && $this->fb_post_meta('useimage') == 'yes' ? 'selected="selected"' : ''; ?>><?php echo _e( 'Yes', 'psp' ); ?></option>
-										<option value="no" <?php echo $this->fb_post_meta('useimage') != '' && $this->fb_post_meta('useimage') == 'no' ? 'selected="selected"' : ''; ?>><?php echo _e( 'No', 'psp' ); ?></option>
+										<option value="yes" <?php echo $this->fb_post_meta('useimage', $post_id) != '' && $this->fb_post_meta('useimage', $post_id) == 'yes' ? 'selected="selected"' : ''; ?>><?php _e( 'Yes', 'psp' ); ?></option>
+										<option value="no" <?php echo $this->fb_post_meta('useimage', $post_id) != '' && $this->fb_post_meta('useimage', $post_id) == 'no' ? 'selected="selected"' : ''; ?>><?php _e( 'No', 'psp' ); ?></option>
 									</select>
-									<?php echo _e( 'If you chose yes and you don\'t provide an image, feature image is used if found.', 'psp' ); ?>
+									<?php _e( 'If you chose yes and you don\'t provide an image, feature image is used if found.', 'psp' ); ?>
 								</td>
 							</tr>
 							<tr id="psp_wplannerfb_upload">
-								<td valign="top"><?php echo _e( 'Image:', 'psp' ); ?></td>
+								<td valign="top"><?php _e( 'Image:', 'psp' ); ?></td>
 								<td><?php 
 									$img_size = explode('x', $this->fb_details['featured_image_size']);
-									echo $this->uploadImage( 
+									echo $this->uploadImage(
 										array(
 										 	'psp_wplannerfb_image' => array(
-										 		'db_value'	=> $this->fb_post_meta('image'),
+										 		'db_value'	=> $this->fb_post_meta('image', $post_id),
 				
 												'type' 		=> 'upload_image',
 												'size' 		=> 'large',
@@ -334,13 +386,14 @@ if (class_exists('pspFacebook_Planner') != true) {
 							</tr>
 							<?php } ?>
 							</table>
-							
+
+							<?php /*
 							<script type="text/javascript">
 							// (POST) Facebook Planner
 							(function ($) {
 								$(document).ready(function() {
 									pspFacebookPage.fb_planner_post( {
-										'post_id'		: <?php echo $this->post->ID; ?>,
+										'post_id'		: <?php echo $post_id; ?>,
 										'plugin_url' 	: '<?php echo $this->the_plugin->cfg['paths']['plugin_dir_url']; ?>',
 										'thumb_w' 		: '<?php echo isset($img_size[0]) ? $img_size[0] : 450; ?>',
 										'thumb_h' 		: '<?php echo isset($img_size[1]) ? $img_size[1] : 320; ?>',
@@ -349,12 +402,13 @@ if (class_exists('pspFacebook_Planner') != true) {
 								});
 							})(jQuery);
 							</script>
+							*/ ?>
 						</div>	
 					</div><!-- end: TAB publish_on_facebook -->
 					
 					<!-- TAB page_scheduler -->
 					<?php 
-					$post_to_check = unserialize( $this->fb_schedule_value('post_to') );
+					$post_to_check = unserialize( $this->fb_schedule_value('post_to', $post_id) );
 					?>
 					<div id="psp-tab-div-id-page_scheduler" style="display:none;">
 						<div class="psp-dashboard-box span_3_of_3">
@@ -362,11 +416,11 @@ if (class_exists('pspFacebook_Planner') != true) {
 							<table width="100%" cellspacing="5" cellpadding="2" border="0">
 							<tr>
 								<td colspan="2">
-									<?php echo _e( 'Publish on:', 'psp' ); ?>
+									<?php _e( 'Publish on:', 'psp' ); ?>
 									&nbsp;
-									<input type="checkbox" id="psp_wplannerfb_post_toprofile" name="psp_wplannerfb_post_toprofile" <?php echo isset($post_to_check['profile']) && trim($post_to_check['profile']) == 'on' ? 'checked="checked"' : ''; ?> /> <label for="psp_wplannerfb_post_toprofile"><?php echo _e( 'Profile', 'psp' ); ?></label>
+									<input type="checkbox" id="psp_wplannerfb_post_toprofile" name="psp_wplannerfb_post_toprofile" <?php echo isset($post_to_check['profile']) && trim($post_to_check['profile']) == 'on' ? 'checked="checked"' : ''; ?> /> <label for="psp_wplannerfb_post_toprofile"><?php _e( 'Profile', 'psp' ); ?></label>
 									&nbsp;
-									<input type="checkbox" id="psp_wplannerfb_post_topage_group" name="psp_wplannerfb_post_topage_group" <?php echo $post_to_check['page_group'] ? 'checked="checked"' : ''; ?> onclick="jQuery('#psp_wplannerfb_post_to_page_group').toggle();" /> <label for="psp_wplannerfb_post_topage_group"><?php echo _e( 'Page / Group', 'psp' ); ?></label>
+									<input type="checkbox" id="psp_wplannerfb_post_topage_group" name="psp_wplannerfb_post_topage_group" <?php echo $post_to_check['page_group'] ? 'checked="checked"' : ''; ?> onclick="jQuery('#psp_wplannerfb_post_to_page_group').toggle();" /> <label for="psp_wplannerfb_post_topage_group"><?php _e( 'Page / Group', 'psp' ); ?></label>
 								</td>
 							</tr>
 							<tr>
@@ -435,13 +489,13 @@ if (class_exists('pspFacebook_Planner') != true) {
 							</tr>
 							<tr>
 								<td colspan="2">
-									<?php echo _e( 'Privacy:', 'psp' ); ?>
+									<?php _e( 'Privacy:', 'psp' ); ?>
 									<select id="psp_wplannerfb_post_privacy" name="psp_wplannerfb_post_privacy">
 									<?php
 									$default_privacy_option = isset($this->fb_details['default_privacy_option'])
 										? $this->fb_details['default_privacy_option'] : '';
 									foreach($this->post_privacy_options as $key => $value) {
-										echo '<option value="'.($key).'" '.($this->fb_schedule_value('post_privacy') != '' ? ($this->fb_schedule_value('post_privacy') == $key ? 'selected="selected"' : '') : ($default_privacy_option == $key ? 'selected="selected"' : '')).'>'.($value).'</option>';
+										echo '<option value="'.($key).'" '.($this->fb_schedule_value('post_privacy', $post_id) != '' ? ($this->fb_schedule_value('post_privacy', $post_id) == $key ? 'selected="selected"' : '') : ($default_privacy_option == $key ? 'selected="selected"' : '')).'>'.($value).'</option>';
 									}
 									?>
 									</select>
@@ -449,10 +503,10 @@ if (class_exists('pspFacebook_Planner') != true) {
 							</tr>
 							<tr><td colspan="2"><hr/></td></tr>
 							<tr>
-								<td><?php echo _e( 'Publish date/hour:', 'psp' ); ?></td>
+								<td><?php _e( 'Publish date/hour:', 'psp' ); ?></td>
 								<td>
 									<?php
-										$run_date = $this->fb_schedule_value('run_date');
+										$run_date = $this->fb_schedule_value('run_date', $post_id);
 										if( $run_date != '' ) {
 											$run_date = explode(' ', $run_date);
 											$run_date_hour = explode(':', $run_date[1]);
@@ -460,6 +514,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 										}
 									?>
 									<input type="text" id="psp_wplannerfb_date_hour" name="psp_wplannerfb_date_hour" value="<?php echo $run_date; ?>" size="13" autocomplete="off" class="psp_wplannerfb_date_hour" />
+									<?php /*
 									<script type="text/javascript">
 									// Display DateTimePicker
 									jQuery('#psp_wplannerfb_date_hour').datetimepicker({
@@ -467,41 +522,46 @@ if (class_exists('pspFacebook_Planner') != true) {
 										separator: ' @ ',
 										showMinute: false,
 										ampm: false,
-										timeOnlyTitle: '<?php echo _e( 'Choose Time', 'psp' ); ?>',
-										timeText: '<?php echo _e( 'At', 'psp' ); ?>',
-										hourText: '<?php echo _e( 'Hour', 'psp' ); ?>',
-										currentText: '<?php echo _e( 'Now', 'psp' ); ?>',
-										closeText: '<?php echo _e( 'Done', 'psp' ); ?>'
 										//addSliderAccess: true,
-										//sliderAccessArgs: { touchonly: false }
+										//sliderAccessArgs: { touchonly: false },
+										timeOnlyTitle: '<?php _e( 'Choose Time', 'psp' ); ?>',
+										timeText: '<?php _e( 'At', 'psp' ); ?>',
+										hourText: '<?php _e( 'Hour', 'psp' ); ?>',
+										currentText: '<?php _e( 'Now', 'psp' ); ?>',
+										closeText: '<?php _e( 'Done', 'psp' ); ?>'
 									});
 									</script>
+									*/ ?>
 								</td>
 							</tr>
 							<tr>
 								<td colspan="2">
-									<input type="checkbox" id="psp_wplannerfb_repeating" name="psp_wplannerfb_repeating"  onclick="jQuery('#psp_wplannerfb_repeating_wrapper').toggle();" <?php echo $this->fb_schedule_value('repeat_status') == 'on' ? 'checked="checked"' : ''; ?> /> <label for="psp_wplannerfb_repeating"><?php echo _e( 'Repeating', 'psp' ); ?></label>
+									<input type="checkbox" id="psp_wplannerfb_repeating" name="psp_wplannerfb_repeating"  onclick="jQuery('#psp_wplannerfb_repeating_wrapper').toggle();" <?php echo $this->fb_schedule_value('repeat_status', $post_id) == 'on' ? 'checked="checked"' : ''; ?> /> <label for="psp_wplannerfb_repeating"><?php _e( 'Repeating', 'psp' ); ?></label>
 									<br />
-									<div id="psp_wplannerfb_repeating_wrapper" style="<?php echo $this->fb_schedule_value('repeat_status') == 'on' ? 'display:block;' : 'display:none;'; ?>">
-									<input type="text" id="psp_wplannerfb_repeating_interval" name="psp_wplannerfb_repeating_interval" value="<?php echo $this->fb_schedule_value('repeat_interval'); ?>" size="2"> <?php echo _e( 'hour(s) or', 'psp' ); ?> 
+									<div id="psp_wplannerfb_repeating_wrapper" style="<?php echo $this->fb_schedule_value('repeat_status', $post_id) == 'on' ? 'display:block;' : 'display:none;'; ?>">
+									<input type="text" id="psp_wplannerfb_repeating_interval" name="psp_wplannerfb_repeating_interval" value="<?php echo $this->fb_schedule_value('repeat_interval', $post_id); ?>" size="2"> <?php _e( 'hour(s) or', 'psp' ); ?> 
 									<select id="psp_wplannerfb_repeating_interval_sel" name="psp_wplannerfb_repeating_interval_sel" onchange="jQuery('#psp_wplannerfb_repeating_interval').val(jQuery(this).val());">
-										<option value="" disabled="disabled">-- <?php echo _e( 'select interval', 'psp' ); ?> --</option>
-										<option value="24">Every day</option>
-										<option value="168">Every week</option>
-										<option value="730">Every month</option>
-										<option value="8766">Every year</option>
+										<option value="" disabled="disabled">-- <?php _e( 'select interval', 'psp' ); ?> --</option>
+										<option value="24"><?php _e( 'Every day', 'psp' ); ?></option>
+										<option value="168"><?php _e( 'Every week', 'psp' ); ?></option>
+										<option value="730"><?php _e( 'Every month', 'psp' ); ?></option>
+										<option value="8766"><?php _e( 'Every year', 'psp' ); ?></option>
 									</select>
 									</div>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2"><input type="checkbox" id="psp_wplannerfb_email_at_post" name="psp_wplannerfb_email_at_post" <?php echo $this->fb_schedule_value('email_at_post') == 'on' ? 'checked="checked"' : ''; ?> /> <label for="psp_wplannerfb_email_at_post"><?php echo _e( 'Email me when it\'s published on facebook', 'psp' ); ?></label></td>
+								<td colspan="2"><input type="checkbox" id="psp_wplannerfb_email_at_post" name="psp_wplannerfb_email_at_post" <?php echo $this->fb_schedule_value('email_at_post', $post_id) == 'on' ? 'checked="checked"' : ''; ?> /> <label for="psp_wplannerfb_email_at_post"><?php _e( 'Email me when it\'s published on facebook', 'psp' ); ?></label></td>
 							</tr>
 							<tr>
-								<td colspan="2"><input type="checkbox" id="psp_wplannerfb_publish_at_save" name="psp_wplannerfb_publish_at_save" value="psp_wplannerfb_publish_at_save" /> <label for="psp_wplannerfb_publish_at_save"><?php echo _e( 'Send to Facebook after publish / update', 'psp' ); ?></label></td>
+								<td><input type="checkbox" id="psp_wplannerfb_publish_at_save" name="psp_wplannerfb_publish_at_save" value="psp_wplannerfb_publish_at_save" /> <label for="psp_wplannerfb_publish_at_save"><?php _e( 'Send to Facebook after publish / update', 'psp' ); ?></label></td>
+								<td>
+									<div style="display: none;" class="psp_wplannerfb_FBLog"></div>
+								</td>
 							</tr>
 							</table>
 							
+							<?php /*
 							<script type="text/javascript">
 							// (POST) Facebook Planner
 							(function ($) {
@@ -514,6 +574,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 								});
 							})(jQuery);
 							</script>
+							*/ ?>
 						</div>	
 					</div><!-- end: TAB page_scheduler -->
 					
@@ -524,11 +585,11 @@ if (class_exists('pspFacebook_Planner') != true) {
 							<table width="100%" cellspacing="5" cellpadding="2" border="0">
 							<tr>
 								<td colspan="2">
-									<?php echo _e( 'Publish on:', 'psp' ); ?>
+									<?php _e( 'Publish on:', 'psp' ); ?>
 									&nbsp;
-									<input type="checkbox" id="psp_wplannerfb_now_post_to_me" name="psp_wplannerfb_now_post_toprofile" checked="checked" /> <label for="psp_wplannerfb_now_post_to_me"><?php echo _e( 'Profile', 'psp' ); ?></label>
+									<input type="checkbox" id="psp_wplannerfb_now_post_to_me" name="psp_wplannerfb_now_post_toprofile" checked="checked" /> <label for="psp_wplannerfb_now_post_to_me"><?php _e( 'Profile', 'psp' ); ?></label>
 									&nbsp;
-									<input type="checkbox" id="psp_wplannerfb_now_post_to_page" name="psp_wplannerfb_now_post_topage_group" onclick="jQuery('#psp_wplannerfb_now_post_to_page_group').toggle();" /> <label for="psp_wplannerfb_now_post_to_page"><?php echo _e( 'Page / Group', 'psp' ); ?></label>
+									<input type="checkbox" id="psp_wplannerfb_now_post_to_page" name="psp_wplannerfb_now_post_topage_group" onclick="jQuery('#psp_wplannerfb_now_post_to_page_group').toggle();" /> <label for="psp_wplannerfb_now_post_to_page"><?php _e( 'Page / Group', 'psp' ); ?></label>
 								</td>
 							</tr>
 							<tr>
@@ -597,25 +658,25 @@ if (class_exists('pspFacebook_Planner') != true) {
 							</tr>
 							<tr>
 								<td colspan="2">
-									<?php echo _e( 'Privacy:', 'psp' ); ?>
+									<?php _e( 'Privacy:', 'psp' ); ?>
 									<select id="psp_wplannerfb_now_post_privacy" name="psp_wplannerfb_now_post_privacy">
 									<?php
 									$default_privacy_option = isset($this->fb_details['default_privacy_option'])
 										? $this->fb_details['default_privacy_option'] : '';
 									foreach($this->post_privacy_options as $key => $value) {
-										echo '<option value="'.($key).'" '.($default_privacy_option == $key || $this->fb_schedule_value('post_privacy') == $key ? 'selected="selected"' : '' ).'>'.($value).'</option>';
+										echo '<option value="'.($key).'" '.($default_privacy_option == $key || $this->fb_schedule_value('post_privacy', $post_id) == $key ? 'selected="selected"' : '' ).'>'.($value).'</option>';
 									}
 									?>
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2"><input type="checkbox" id="psp_wplannerfb_now_publish_at_save" name="psp_wplannerfb_now_publish_at_save" value="psp_wplannerfb_now_publish_at_save" /> <label for="psp_wplannerfb_now_publish_at_save"><?php echo _e( 'Send to Facebook after publish / update', 'psp' ); ?></label></td>
+								<td colspan="2"><input type="checkbox" id="psp_wplannerfb_now_publish_at_save" name="psp_wplannerfb_now_publish_at_save" value="psp_wplannerfb_now_publish_at_save" /> <label for="psp_wplannerfb_now_publish_at_save"><?php _e( 'Send to Facebook after publish / update', 'psp' ); ?></label></td>
 							</tr>
 							<tr>
 								<td>
-									<a href="#" id="psp_post_planner_postNowFBbtn" class="psp-form-button psp-form-button-info"><?php echo _e( 'Publish now on facebook', 'psp' ); ?> </a>
-									<span id="psp_postTOFbNow" style="display: none; border: 1px solid #dadada; text-align: center; margin: 10px 0px 0px 0px; width: 160px; padding: 3px; background-color: #dfdfdf;"><?php echo _e( 'Publishing on facebook ...', 'psp' ); ?></span>
+									<a href="#" id="psp_post_planner_postNowFBbtn" class="psp-form-button psp-form-button-info"><?php _e( 'Publish now on facebook', 'psp' ); ?> </a>
+									<span id="psp_postTOFbNow" style="display: none; border: 1px solid #dadada; text-align: center; margin: 10px 0px 0px 0px; width: 160px; padding: 3px; background-color: #dfdfdf;"><?php _e( 'Publishing on facebook ...', 'psp' ); ?></span>
 								</td>
 								<td>
 									<div style="display: none;" class="psp_post_planner_postNowFBLog"></div>
@@ -623,6 +684,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 							</tr>
 							</table>
 							
+							<?php /*
 							<script type="text/javascript">
 							// (POST) Facebook Planner
 							(function ($) {
@@ -630,35 +692,32 @@ if (class_exists('pspFacebook_Planner') != true) {
 									var langmsg = {
 										'mandatory'			: "<?php _e( "Your mandatory fields are empty. Do you want to auto-complete and then publish to Facebook?", 'psp' ); ?>",
 										'publish_cancel'	: '<?php _e( "Publish canceled.", 'psp' ); ?>',
-										'publish_success'	: '<?php echo _e( 'The post was published on facebook OK!', 'psp' ); ?>',
-										'publish_error'		: '<?php echo _e( 'Error on publishing. Please try again later!', 'psp' ); ?>'
+										'publish_success'	: '<?php _e( 'The post was published on facebook OK!', 'psp' ); ?>',
+										'publish_error'		: '<?php _e( 'Error on publishing. Please try again later!', 'psp' ); ?>'
 									};
 									pspFacebookPage.setLangMsg( langmsg );
 									pspFacebookPage.fb_postnow( {'post_id': <?php echo $post->ID;?>} );
 								});
 							})(jQuery);
 							</script>
+							*/ ?>
 						</div>	
 					</div><!-- end: TAB page_postnow -->
-				
-				</div><!-- end: psp-tab-container -->
-				<div style="clear:both"></div>
-			</div>
 		<?php
+			$html = ob_get_clean();
+			return $html;
 		}
 		
 		// Retrieve Wordpress Planner metadata values if they exist
-		private function fb_post_meta( $field='' )
-		{
-			$base = get_post_meta($this->post->ID, 'psp_wplannerfb_' . $field, true);
-
+		private function fb_post_meta( $field, $post_id ) {
+			$base = get_post_meta($post_id, 'psp_wplannerfb_' . $field, true);
 			return htmlentities($base, ENT_QUOTES, 'UTF-8');
 		}
 		
 		// Retrieve scheduling values if they exist
-		private function fb_schedule_value($field) {
-			global $wpdb, $post;
-			return $wpdb->get_var( "SELECT `" . ( $field ) . "` FROM `" . ( $wpdb->prefix . 'psp_post_planner_cron' ) . "` WHERE 1=1 AND id_post=" . $post->ID );
+		private function fb_schedule_value( $field, $post_id ) {
+			global $wpdb;
+			return $wpdb->get_var( "SELECT `" . ( $field ) . "` FROM `" . ( $wpdb->prefix . 'psp_post_planner_cron' ) . "` WHERE 1=1 AND id_post=" . $post_id );
 		}
 
 /*
@@ -1707,6 +1766,41 @@ if (class_exists('pspFacebook_Planner') != true) {
 
 			$is_loggedin = $this->the_plugin->facebook_is_loggedin($pms);
 			return $is_loggedin;
+		}
+
+		public function ajax_requests_metabox() {
+			$action = isset($_REQUEST['sub_action']) ? $_REQUEST['sub_action'] : 'none';
+
+			$allowed_action = array( 'load_box' );
+
+			if( !in_array($action, $allowed_action) ){
+				die(json_encode(array(
+					'status'		=> 'invalid',
+					'html'			=> 'Invalid action!'
+				)));
+			}
+
+			
+			if ( 'load_box' == $action ) {
+				$req = array(
+					'post_id'		=> isset($_REQUEST['post_id']) ? (int) $_REQUEST['post_id'] : 0,
+				);
+				extract($req);
+				//var_dump('<pre>', $req, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+
+				$pms = $req;
+				$html = $this->display_page_options($pms);
+
+				die(json_encode(array(
+					'status'	=> 'valid',
+					'html'		=> $html,
+				)));
+			}
+			
+			die(json_encode(array(
+				'status' 		=> 'invalid',
+				'html'		=> 'Invalid action!'
+			)));
 		}
 
 		/**

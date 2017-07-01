@@ -18,6 +18,92 @@ html {
   font-size: $html-font-size + px;
 }
 
+.#{$alias}-numtoordinal {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    color: #fff;
+    background-color: #37474F;
+    border-radius: 3px;
+    padding: 7px 5px 5px 5px;
+    font-size: 13px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+##{$alias}-lightbox-seo-report-response .#{$alias}-multikw-tab-menu {
+  height: 60px;
+}
+
+
+##{$alias}-lightbox-container .#{$alias}-seo-status-container {
+    margin: 20px 10px 0px 10px;
+}
+
+##{$alias}-lightbox-container .#{$alias}-multikw .#{$alias}-dashboard-box {
+  padding-top:5px;
+}
+
+/* Progress Bar */
+.#{$alias}-progress-small {
+	display: inline-block;
+	position: relative;
+	width: px(200); 
+	margin: px(4);
+	background: #fff;
+	margin-right: px(50);
+	text-align: left;
+  height:9px;
+  border: 1px solid #f2f2f2;
+
+	.#{$alias}-progress-bar {
+		display: block;
+		height: px(3);
+		position: relative;
+		-webkit-transition: 0.4s linear;
+		-moz-transition: 0.4s linear;
+		-o-transition: 0.4s linear;
+		transition: 0.4s linear;
+		width: px(45);
+		-webkit-transition-property: width, background-color;
+		-moz-transition-property: width, background-color;
+		-o-transition-property: width, background-color;
+		transition-property: width, background-color;
+		div {
+			display: inline-block;
+		}
+		/* define the progress bar colors by sizes */
+		&.size_0_20 {
+			background-color: #f44336;
+		}
+		&.size_20_40 {
+			background-color: #e67e22;
+		}
+		&.size_40_60,
+		&.size_60_80 {
+			background-color: #f1c40f;
+		}
+		&.size_80_100 {
+			background-color: #4caf50;
+		}
+	}
+	.#{$alias}-progress-score {
+		width: px(38);
+		background: #fff;
+		text-align: center;
+		cursor: default;
+		position: absolute;
+		line-height: px(14);
+		vertical-align: middle;
+		color: #2d2d2d;
+		font-weight: bold;
+		font-size: px(13);
+		font-family: $primary-font;
+    border:none;
+    top:-3px;
+	}
+}
+
 .#{$alias} {
   font-family: $primary_font;
 
@@ -103,15 +189,15 @@ html {
         padding: px(19) 0 px(19) px(62);
         background-position: px(25) px(17);
         margin-left: 0px;
-        margin-top: px(2);
+        border-radius: 3px;
         h3 {
           font-weight: $medium;
-          color: $black;
+          color: $white;
           font-size: px(18);
           line-height: px(39);
         }
         p {
-            margin: 0;
+          margin: 0;
           margin-top: -#{px(18)};
           font-weight: $normal;
           font-size: px(14);
@@ -157,16 +243,18 @@ html {
     }
   }
   ##{$alias}-lightbox-overlay {
-    border-radius: 4px !important;
-    height: 100.2% !important;
-    width: 100.2% !important;
-    border: 1px solid transparent;
-    left: -#{px(1.5)} !important;
-    top: -#{px(1)} !important;  
+    position:fixed;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	
     ##{$alias}-lightbox-container {
-      left: 15% !important;
-      top: px(120) !important;
-      h1 {
+      left:50%;
+	  top:50%;
+	  position:fixed;
+	  transform: translate(-50%, -50%);
+      > h1 {
         width: px(1001) !important;
         i {
           color: $white;
@@ -225,7 +313,7 @@ html {
     }
   }
   .panel {
-    // margin-bottom: px(38);
+    border: none !important;
   }
 
   a {
@@ -290,11 +378,11 @@ html {
   
   .#{$alias}-form-button,
   .#{$alias}-form-button-small {
-    padding: px(10) px(16);
+    padding: 12px 30px;
     border: none 0;
     border-radius: px($border-radius);
     cursor: pointer;
-    font-size: px(11);
+    font-size: px(12);
     font-weight: $bold;
     text-transform: uppercase;
     text-decoration: none;
@@ -467,7 +555,6 @@ html {
               font-weight: $bold;
               line-height: px(30);
               text-decoration: none;
-              text-shadow: 0 1px 2px rgba(0,0,0,.25);
               
               i, & > span:first-child {
                 margin-right: px(9);
@@ -972,4 +1059,136 @@ html {
 		margin-top: px(-20);
 		background: #fff url("#framework_url/images/ajax-loader.gif") no-repeat px(10) center;
 	}
+
+##{$alias}-tab-div-id-page_status .#{$alias}-multikw-tab-menu{
+  height:59px;
+ }
+  /* Multi Keywords - sub tabs */
+  .#{$alias}-multikw {
+	.#{$alias}-multikw-tab-menu {
+		width: 98%;
+		height: 90px;
+    background: #fff;
+		margin: 0px 0px 0px 0px;
+    border-radius:3px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -30px;
+    border: 1px solid #f2f2f2;
+
+		a {
+			display: inline-block;
+		  padding: 8px 21px 7px 12px;
+			font: normal 13px Arial, Helvetica, sans-serif;
+			text-decoration: none;
+			color: $black;
+			margin: 10px;
+			float: left;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+      border-radius:3px;
+
+			&:hover,
+      &.open {
+        color: #fff;
+        background-color: #34495e;
+
+        .#{$alias}-progress-score {
+          color: #fff;
+        }
+
+        .#{$alias}-numtoordinal {
+          background: #2c3e50
+        }
+			}
+			&:active, &:focus, &:active {
+  			outline: none;
+  		}
+
+
+      .#{$alias}-progress {
+        width: px(120);
+        margin-left: 0;
+
+        .#{$alias}-progress-score {
+          background: none;
+        }
+      }
+		}
+	}
+
+
+	.#{$alias}-multikw-tab-container {
+		width: 98%;
+		margin: 0% 1% 1% 1%;
+	}
+  .#{$alias}-multikw-meta-box-container {
+    background-color:#f2f2f2;
+    margin-top:50px;
+  }
+	.#{$alias}-dashboard-box {
+		border-radius: 3px;
+		-webkit-box-shadow: 0 1px 0 1px #fff;
+		-moz-box-shadow: 0 1px 0 1px #fff;
+		box-shadow: 0 1px 0 1px #fff;
+		float: left;
+		margin: -18px 0 1% 1.6%;
+		min-height: 140px;
+		background-color: #fff;
+    padding-top:20px;
+		&:first-child {
+		margin-left: 0px;
+		}
+		&.span_3_of_3 {
+		width: 100%;
+		}
+		&.span_2_of_3 {
+		width: 66.1%;
+		}
+		&.span_2_of_1 {
+		width: 32.2%;
+		}
+		&.span_2_of_2 {
+		width: 49%;
+		}
+
+		h1 {
+			color: #2d2d2d;
+			position: relative;
+			font: bold 16px Arial, Helvetica, sans-serif !important;
+			width: 97%;
+			display: block;
+			border-bottom: 1px solid #f2f2f2;
+			padding: 0px 0px 8px 0px;
+			margin: 10px 1.5% 10px 1.5%;
+     
+			a {
+				display: block;
+				width: 17px;
+				height: 15px;
+				position: absolute;
+				top: 0px;
+				right: 0px;
+			}
+
+
+		}
+     h1:before {
+         font-family: 'seo-checks';
+         font-size: px(16);
+         content: "\e903";
+         margin-right: 10px;
+      }
+	}
+		.#{$alias}-dashboard-box-content {
+			margin: 10px 1.5% 10px 1.5%;
+			width: 97%;
+			
+			> table.form-table > tbody > tr > td:nth-child(1) {
+				width: 25%;
+			}
+		}
+  }
 }

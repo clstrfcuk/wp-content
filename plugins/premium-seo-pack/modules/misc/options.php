@@ -26,6 +26,7 @@ echo json_encode(
                     '__tab1'    => array(__('General', 'psp'), '__help_validators, validators_html'),
                     '__tab2'    => array(__('SEO Slug Optimizer', 'psp'), '__help_seo_slug_optimizer, slug_isactive, slug_stop_words, slug_min_chars'),
                     '__tab3'    => array(__('SEO Insert Code', 'psp'), '__help_seo_insert_code, insert_code_isactive, insert_code_head, insert_code_footer'),
+					'__tab4'    => array(__('Fixes', 'psp'), 'fix_use_wp_do_shortcode'),
                 ),
 
 				// create the box elements array
@@ -145,7 +146,21 @@ echo json_encode(
 						'title' 	=> __('Insert code in wp footer:', 'psp'),
 						'desc' 		=> __('Insert code in wp footer', 'psp'),
 						'height'	=> '200px'
-					)
+					),
+
+					/* Fixes */
+					'fix_use_wp_do_shortcode' => array(
+						'type' 		=> 'select',
+						'std' 		=> 'yes',
+						'size' 		=> 'large',
+						'force_width'=> '120',
+						'title' 	=> __('Fix/ Use WP do_shortcode:', 'psp'),
+						'desc' 		=> '<span style="color: red;">(plugin developers only): choose yes if you want to use the do_shortcode wp function - cause some issues with malformed html.</span>',
+						'options'	=> array(
+							'yes' 	=> __('YES', 'psp'),
+							'no' 	=> __('NO', 'psp')
+						)
+					),
 				)
 			)
 			

@@ -439,7 +439,7 @@ if (class_exists('pspLinkRedirect') != true) {
 									<img class="psp-lightbox-icon" src="<?php echo $this->the_plugin->cfg['paths']['freamwork_dir_url'];?>images/light-bulb.png">
 									<span id="link-title-add"><?php _e('Add new link:', 'psp');?></span>
 									<span id="link-title-upd"><?php _e('Update link:', 'psp');?></span>
-									<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>"></a>
+									<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', $this->the_plugin->localizationName); ?>"><i class="<?php echo $this->the_plugin->alias; ?>-icon-close"></i></a>
 								</h1>
 			
 								<div class="psp-seo-status-container">

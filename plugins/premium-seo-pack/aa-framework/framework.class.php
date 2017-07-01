@@ -123,6 +123,8 @@ if(class_exists('psp') != true) {
 			'default_graph_version' 	=> 'v2.4',
 			'persistent_data_handler'	=> 'session'
 		);
+		
+		public $updater_dev = null;
 
 
 		/**
@@ -132,10 +134,24 @@ if(class_exists('psp') != true) {
 		{
 			$this->is_admin = is_admin() === true ? true : false;
 
+			// get the globals utils
+			global $wpdb;
+
+			// store database instance
+			$this->db = $wpdb;
+
+			$miscSettings = $this->getAllSettings( 'array', 'misc' );
+			$this->use_wp_do_shortcode = isset($miscSettings['fix_use_wp_do_shortcode'])
+				&& 'no' == $miscSettings['fix_use_wp_do_shortcode'] ? false : true;
+
 			// admin css cache time ( 0 = no caching )
 			$this->ss['css_cache_time'] = 86400; // seconds  (86400 seconds = 24 hours)
 			if( defined('PSP_DEV_STYLE') ){
 				$this->ss['css_cache_time'] = (int) PSP_DEV_STYLE; // seconds
+			}
+			
+			if( defined('UPDATER_DEV') ) {
+				$this->updater_dev = (string) UPDATER_DEV;
 			}
             
             add_action('wp_ajax_PSP_framework_style', array( $this, 'framework_style') );
@@ -159,12 +175,6 @@ if(class_exists('psp') != true) {
 
 			// set the freamwork alias
 			$this->buildConfigParams('default', array( 'alias' => $this->alias ));
-
-			// get the globals utils
-			global $wpdb;
-
-			// store database instance
-			$this->db = $wpdb;
 
 			// instance new WP_ERROR - http://codex.wordpress.org/Function_Reference/WP_Error
 			$this->errors = new WP_Error();
@@ -399,7 +409,7 @@ if(class_exists('psp') != true) {
 					if ( $_POST['ispspreq'] == 'post' ) {
 						add_filter( 'the_content', array( $this, 'mark_content' ), 0, 1 );
 					} else if ( $_POST['ispspreq'] == 'tax' ) {
-						add_filter( 'term_description', 'do_shortcode' );
+						add_filter( 'term_description', array( $this, 'do_shortcode' ) );
 						add_filter( 'term_description', array( $this, 'mark_content' ), 0, 1 );
 					}
 					add_action( 'wp', array( $this, 'clean_header' ) );
@@ -409,6 +419,23 @@ if(class_exists('psp') != true) {
 			$is_installed = get_option( $this->alias . "_is_installed" );
 			if( $this->is_admin && $is_installed === false ) {
 				add_action( 'admin_print_styles', array( $this, 'admin_notice_install_styles' ) );
+			}
+			
+			// product updater
+			add_action( 'admin_init', array($this, 'product_updater') );
+		}
+		
+		/**
+		 * Gets updater instance.
+		 *
+		 * @return AATeam_Product_Updater
+		 */
+		public function product_updater() {
+			require_once( $this->cfg['paths']['plugin_dir_path'] . 'aa-framework/utils/class-updater.php' );
+			
+			if( class_exists('PSP_AATeam_Product_Updater') ){
+				$product_data = get_plugin_data( $this->cfg['paths']['plugin_dir_path'] . 'plugin.php', false ); 
+				new PSP_AATeam_Product_Updater( $this, $product_data['Version'], 'premium-seo-pack', 'premium-seo-pack/plugin.php' );
 			}
 		}
 
@@ -550,6 +577,13 @@ if(class_exists('psp') != true) {
 		} 
 		*/
 		
+		public function do_shortcode( $content ) {
+			if ( $this->use_wp_do_shortcode ) {
+				$content = do_shortcode( $content );
+			}
+			return $content;
+		}
+
 		public function mark_content( $content ) 
 		{
 			return '<div id="psp-content-mark">' . $content . '</div>';
@@ -1268,6 +1302,7 @@ if(class_exists('psp') != true) {
 			wp_enqueue_style( $this->alias . '-google-Roboto',  $protocol . '://fonts.googleapis.com/css?family=Roboto:400,500,400italic,500italic,700,700italic' );
 			wp_enqueue_style( $this->alias . '-font-awesome',   $protocol . '://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css' );
 			wp_enqueue_style( $this->alias . '-admin-font',   $this->cfg['paths']['freamwork_dir_url'] . 'css/font.css' );
+			wp_enqueue_style( $this->alias . '-seo-checks',   $this->cfg['paths']['freamwork_dir_url'] . 'css/seo-checks.css' );
 
 			$main_style = admin_url('admin-ajax.php?action=PSP_framework_style');
             $main_style_cached = $this->cfg['paths']['freamwork_dir_path'] . 'main-style.css';
@@ -2042,7 +2077,7 @@ if(class_exists('psp') != true) {
 				if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
 					$psp_current_taxseo = array();
 
-				$post_metas = $this->__tax_get_post_meta( $psp_current_taxseo, $post, 'psp_meta' );
+				$post_metas = $this->get_psp_meta( $post, $psp_current_taxseo );
 			}
 			else {
 				$post = get_post($post_id);
@@ -2060,17 +2095,23 @@ if(class_exists('psp') != true) {
 					$post_content = '';
 					$post_title = '';
 				}
-				$post_metas = get_post_meta( $post_id, 'psp_meta', true );
+				$post_metas = $this->get_psp_meta( $post_id );
+
+				if ( is_array($post_metas) && ! empty($post_metas) ) {
+					$post_metas['sitemap_isincluded'] = get_post_meta( $post_id, 'psp_sitemap_isincluded', true );
+				}
 			}
 
 			$post_metas = array_merge(array(
-				'title'			=> '',
-				'description'		=> '',
-				'keywords'		=> '',
-				'focus_keyword'	=> '',
-				'canonical'		=> '',
-				'robots_index'	=> '',
-				'robots_follow'	=> ''
+				'title'					=> '',
+				'description'			=> '',
+				'keywords'				=> '',
+				'focus_keyword'			=> '',
+				'canonical'				=> '',
+				'robots_index'			=> '',
+				'robots_follow'			=> '',
+				'priority'				=> '',
+				'sitemap_isincluded' 	=> '',
 			), (array) $post_metas);
 
 			if ( is_null($seo) || !is_object($seo) ) {
@@ -2101,7 +2142,10 @@ if(class_exists('psp') != true) {
 			$post_metas['robots_follow'] = isset($post_metas['robots_follow']) && !empty($post_metas['robots_follow'])
 				? $post_metas['robots_follow'] : 'default';
 
-			$postDefault = $this->get_post_metatags( $post ); // add meta placeholder
+			$post_metas['priority'] = isset($post_metas['priority']) && !empty($post_metas['priority'])
+				? $post_metas['priority'] : '-' ;
+			$post_metas['sitemap_isincluded'] = isset($post_metas['sitemap_isincluded']) && !empty($post_metas['sitemap_isincluded'])
+				? $post_metas['sitemap_isincluded'] : 'default';
 
 			$html = array();
 			$html[] = '<div class="psp-post-title">' . $post_title . '</div>';
@@ -2114,7 +2158,16 @@ if(class_exists('psp') != true) {
 			$html[] = '<div class="psp-post-meta-canonical">' . $post_metas['canonical'] . '</div>';
 			$html[] = '<div class="psp-post-meta-robots-index">' . $post_metas['robots_index'] . '</div>';
 			$html[] = '<div class="psp-post-meta-robots-follow">' . $post_metas['robots_follow'] . '</div>';
-			
+			$html[] = '<div class="psp-post-priority-sitemap">' . $post_metas['priority'] . '</div>';
+			$html[] = '<div class="psp-post-include-sitemap">' . $post_metas['sitemap_isincluded'] . '</div>';
+
+			$fieldsParams = array(
+				'mfocus_keyword' => isset($post_metas['mfocus_keyword']) ? $post_metas['mfocus_keyword'] : ''
+			);
+			$html[] = '<div class="psp-post-meta-fields-params" style="display: none;">' . htmlentities(json_encode( $fieldsParams )). '</div>';
+
+			// post default - placeholder
+			$postDefault = $this->get_post_metatags( $post ); // add meta placeholder
 			if ( ! empty($postDefault) ) {
 				foreach ( $postDefault as $key => $val) {
 					$html[] = '<div class="psp-post-default-' . $key . '">' . $val . '</div>';
@@ -2125,6 +2178,28 @@ if(class_exists('psp') != true) {
 		}
 		
 		public function edit_post_inline_boxtpl() {
+
+			// sitemap priority
+			$sitemap_priority = array();
+			$__range = range(0, 1, 0.1);
+			$__range2 = array();
+			for ($i=(count($__range)-1); $i>=0; $i--) {
+				$__range2[] = $__range[ $i ];
+			}
+			foreach ($__range2 as $kk => $vv) {
+				$__priorityText = '';
+				$vv = (string) $vv;
+				if ( $vv=='1' )
+					$__priorityText = ' - ' . __('Highest priority', 'psp');
+				else if ( $vv=='0.5' )
+					$__priorityText = ' - ' . __('Medium priority', 'psp');
+				else if ( $vv=='0.1' )
+					$__priorityText = ' - ' . __('Lowest priority', 'psp');
+					
+				$sitemap_priority[] = '<option value="' . ( $vv ) . '">' . ( $vv . $__priorityText ) . '</option>';
+			}
+			$sitemap_priority = implode(PHP_EOL, $sitemap_priority);
+
 			/*
 					<div>
 						<span>Focus Keyword: </span>
@@ -2135,44 +2210,84 @@ if(class_exists('psp') != true) {
 	<table class="psp-inline-edit-post form-table" style="border: 1px solid #dadada;">
 		<thead>
 			<tr>
-				<th width="45%"><strong>PSP Quick SEO Edit</strong></th>
-				<th width="30%">' . __('Meta Description', $this->localizationName) . '</th>
-				<th width="25%">' . __('Meta Keywords', $this->localizationName) . '</th>
+				<th>' . __('Meta Description', $this->localizationName) . '</th>
+				<th>' . __('Meta Keywords', $this->localizationName) . '</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td width="45%">
+				<td width="49.99%">
 					<div>
-						<span>' . __('Meta Title:', $this->localizationName) . '</span>
-						<input type="text" class="" style="" value="" name="psp-editpost-meta-title" id="psp-editpost-meta-title">
-					</div>
-					<div>
-						<span>' . __('Canonical URL:', $this->localizationName) . '</span>
-						<input type="text" class="" style="" value="" name="psp-editpost-meta-canonical" id="psp-editpost-meta-canonical">
-					</div>
-					<div>
-						<span>' . __('Meta Robots Index:', $this->localizationName) . '</span>
-						<select name="psp-editpost-meta-robots-index" id="psp-editpost-meta-robots-index">
-							<option value="default" selected="true">' . __('Default Setting', $this->localizationName) . '</option>
-							<option value="index">' . __('Index', $this->localizationName) . '</option>
-							<option value="noindex">' . __('NO Index', $this->localizationName) . '</option>
-						</select>
-					</div>
-					<div>
-						<span>' . __('Meta Robots Follow:', $this->localizationName) . '</span>
-						<select name="psp-editpost-meta-robots-follow" id="psp-editpost-meta-robots-follow">
-							<option value="default" selected="true">Default Setting</option>
-							<option value="follow">Follow</option>
-							<option value="nofollow">NO Follow</option>
-						</select>
+						<textarea name="psp-editpost-meta-description" id="psp-editpost-meta-description" rows="3" class="large-text"></textarea>
 					</div>
 				</td>
-				<td>
-					<textarea name="psp-editpost-meta-description" id="psp-editpost-meta-description" rows="3" class="large-text"></textarea>
+				<td width="49.99%">
+					<div>
+						<textarea name="psp-editpost-meta-keywords" id="psp-editpost-meta-keywords" rows="3" class="large-text"></textarea>
+					</div>
 				</td>
-				<td>
-					<textarea name="psp-editpost-meta-keywords" id="psp-editpost-meta-keywords" rows="3" class="large-text"></textarea>
+			</tr>
+			<tr>
+				<td colspan=3>
+					<table class="form-table" style="border: 1px solid #dadada;">
+						<tbody>
+							<tr>
+								<td colspan=2 width="50%">
+									<div>
+										<span>' . __('Meta Title:', $this->localizationName) . '</span>
+										<input type="text" class="" style="" value="" name="psp-editpost-meta-title" id="psp-editpost-meta-title">
+									</div>
+								</td>
+								<td colspan=2 width="50%">
+									<div>
+										<span>' . __('Canonical URL:', $this->localizationName) . '</span>
+										<input type="text" class="" style="" value="" name="psp-editpost-meta-canonical" id="psp-editpost-meta-canonical">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="psp-inline-meta-wrapp">
+										<div>' . __('Meta Robots Index:', $this->localizationName) . '</div>
+										<select name="psp-editpost-meta-robots-index" id="psp-editpost-meta-robots-index">
+											<option value="default" selected="true">' . __('Default Setting', $this->localizationName) . '</option>
+											<option value="index">' . __('Index', $this->localizationName) . '</option>
+											<option value="noindex">' . __('NO Index', $this->localizationName) . '</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									<div class="psp-inline-meta-wrapp">
+										<div>' . __('Meta Robots Follow:', $this->localizationName) . '</div>
+										<select name="psp-editpost-meta-robots-follow" id="psp-editpost-meta-robots-follow">
+											<option value="default" selected="true">Default Setting</option>
+											<option value="follow">Follow</option>
+											<option value="nofollow">NO Follow</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									<div class="psp-inline-meta-wrapp">
+										<div>' . __('Include in Sitemap:', $this->localizationName) . '</div>
+										<select name="psp-editpost-include-sitemap" id="psp-editpost-include-sitemap">
+											<option value="default" selected="true">' . __('Default Setting', $this->localizationName) . '</option>
+											<option value="always_include">' . __('Always include', $this->localizationName) . '</option>
+											<option value="never_include">' . __('Never include', $this->localizationName) . '</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									<div class="psp-inline-meta-wrapp">
+										<div>' . __('Sitemap Priority:', $this->localizationName) . '</div>
+										<select name="psp-editpost-priority-sitemap" id="psp-editpost-priority-sitemap">
+											<option value="-" selected="true">Automatic</option>
+											' . $sitemap_priority . '
+										</select>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</td>
 			</tr>
 			<tr>
@@ -3588,11 +3703,18 @@ if(class_exists('psp') != true) {
 		 * 2017 march - may
 		 */
 		public function get_post_metatags( $post ) {
-			$postDefault = array();
+			$postDefault = array(
+					'the_title'								=> '',
+					'the_meta_description'			=> '',
+					'the_meta_keywords'			=> '',
+			);
+			if ( is_array($post) ) {
+				$post = (object) $post; 
+			}
 			if ( ! is_object($post) ) {
 				return $postDefault;
 			}
-			
+
 			$modStatus = $this->verify_module_status( 'title_meta_format' ); //module is inactive
 
 			if ( $this->ss['add_meta_placeholder'] && $modStatus ) {
@@ -3613,7 +3735,7 @@ if(class_exists('psp') != true) {
 					'the_meta_keywords'			=> $shareInfo->info->get_the_meta_keywords(),
 				);
 			} // end if
-			//var_dump('<pre>',$postDefault ,'</pre>'); 
+			//var_dump('<pre>', $postDefault, '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
 			return $postDefault;
 		}
 
@@ -4313,6 +4435,86 @@ if(class_exists('psp') != true) {
 			$ret['opStatus'] = true;
 			$ret['result'] = $graphNode['id'];
 			return $ret;
+		}
+
+
+		/**
+		 * Multi Keywords
+		 */
+		public function mkw_get_keywords( $str ) {
+			if ( is_array($str) ) {
+				return $str;
+			}
+
+			$str = trim($str);
+			if ( '' == $str ) {
+				return array();
+			}
+
+			$__ = explode("\n", $str);
+			if ( is_array($__) ) {
+				$__ = array_map('trim', $__);
+				$__ = array_map('strtolower', $__);
+				$__ = array_map('strip_tags', $__);
+				$__ = array_map('stripslashes', $__);
+
+				$__ = array_filter($__);
+				$__ = array_unique($__);
+				return $__;
+			}
+			return array();
+		}
+
+		public function mkw_get_main_keyword( $str ) {
+			$__ = $this->mkw_get_keywords( $str );
+			if ( empty($__) || ! is_array($__) ) {
+				return '';
+			}
+			return $__[0];
+		}
+
+		public function get_psp_meta_default( $psp_meta=array() ) {
+			if ( ! is_array($psp_meta) ) {
+				$psp_meta = array();
+			}
+
+			if ( ! isset($psp_meta['mfocus_keyword']) || empty($psp_meta['mfocus_keyword']) ) {
+				$psp_meta['mfocus_keyword'] = '';
+				if ( isset($psp_meta['focus_keyword']) ) { // || empty($psp_meta['mfocus_keyword'])
+					$psp_meta['mfocus_keyword'] = $psp_meta['focus_keyword']; //$focus_kw
+				}
+			}
+			return $psp_meta;
+		}
+
+		public function get_psp_meta( $post, $current_taxseo=array() ) {
+			if ( $this->__tax_istax($post) ) {
+				$psp_meta = $this->__tax_get_post_meta( $current_taxseo, $post, 'psp_meta' );
+			}
+			else {
+				$psp_meta = get_post_meta( $post, 'psp_meta', true);
+			}
+
+			$psp_meta = $this->get_psp_meta_default( $psp_meta );
+
+			return $psp_meta;
+		}
+
+		public function fk_missing_message( $str, $type='short', $markup=true ) {
+			$str = trim($str);
+			if ( '' == $str ) {
+				if ( 'short' == $type ) {
+					$str = __('missing focus keyword', $this->localizationName);
+				}
+				else {
+					$str = __('missing focus keyword - you must create one...', $this->localizationName);
+				}
+				
+				if ( $markup) {
+					$str = '<span style="color: red;">' . $str . '</span>';
+				}
+			}
+			return $str;
 		}
 	}
 }

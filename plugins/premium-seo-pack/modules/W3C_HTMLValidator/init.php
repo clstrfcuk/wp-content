@@ -85,16 +85,6 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 			return $this;
 		}
 
-		/*public function auto_optimize_on_save()
-		{
-			global $post;
-			$postID = isset($post->ID) && (int) $post->ID > 0 ? $post->ID : 0;
-			if( $postID > 0 ){
-				$focus_kw = isset($_REQUEST['psp-field-focuskw']) ? $_REQUEST['psp-field-focuskw'] : '';
-				$this->optimize_page( $postID, $focus_kw );
-			}
-		}*/
-
 		public function display_index_page()
 		{
 			$this->printBaseInterface();

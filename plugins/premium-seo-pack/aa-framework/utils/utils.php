@@ -248,7 +248,6 @@ if (class_exists('psp_Utils') != true) {
         }
 
 
-
 		// Replace last occurance of a String
 		public function str_replace_last( $search , $replace , $str ) {
 		    if ( ( $pos = strrpos( $str , $search ) ) !== false ) {
@@ -322,5 +321,52 @@ if (class_exists('psp_Utils') != true) {
     
             return $output;
         }
+
+
+		// convert relative URLs to absolute URLs
+		function rel2abs( $rel, $base ) {
+
+			if ( empty($rel) ) {
+				return $rel;
+			}
+
+			// parse base URL  and convert to local variables: $scheme, $host,  $path
+			extract( parse_url( $base ) );
+
+			if ( strpos( $rel,"//" ) === 0 ) {
+				return $scheme . ':' . $rel;
+			}
+
+			// return if already absolute URL
+			if ( parse_url( $rel, PHP_URL_SCHEME ) != '' ) {
+				return $rel;
+			}
+
+			// queries and anchors
+			if ( $rel[0] == '#' || $rel[0] == '?' ) {
+				return $base . $rel;
+			}
+
+			// remove non-directory element from path
+			$path = preg_replace( '#/[^/]*$#', '', $path );
+
+			// destroy path if relative url points to root
+			if ( $rel[0] ==  '/' ) {
+				$path = '';
+			}
+
+			// dirty absolute URL
+			$abs = $host . $path . "/" . $rel;
+
+			// replace '//' or  '/./' or '/foo/../' with '/'
+			$abs = preg_replace( "/(\/\.?\/)/", "/", $abs );
+			$abs = preg_replace( "/\/(?!\.\.)[^\/]+\/\.\.\//", "/", $abs );
+
+			// fix if base was site home
+			$abs = preg_replace( "/\/\.\.\//", "/", $abs );
+
+			// absolute URL is ready!
+			return $scheme . '://' . $abs;
+		}
 	}
 }

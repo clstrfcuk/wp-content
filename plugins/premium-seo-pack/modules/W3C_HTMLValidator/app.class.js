@@ -110,35 +110,6 @@ pspHTMLValidation = (function ($) {
 		}
 	}
 
-	function getSeoReport( id, kw, row )
-	{
-		var lightbox = $("#psp-lightbox-overlay");
-
-		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
-		jQuery.post(ajaxurl, {
-			'action' 		: 'pspGetSeoReport',
-			'id'			: id,
-			'kw'			: kw,
-			'debug_level'	: debug_level
-		}, function(response) {
-
-			if( response.status == 'valid' ){
-				lightbox.find(".psp-lightbox-headline i").text( response.post_id );
-				lightbox.find("#psp-lightbox-seo-report-response").html( response.html );
-				lightbox.fadeIn('fast');
-			}
-
-			row_loading(row, 'hide');
-
-		}, 'json');
-
-
-		lightbox.find("a.psp-close-btn").click(function(e){
-			e.preventDefault();
-			lightbox.fadeOut('fast');
-		});
-	}
-
 	function triggers()
 	{
 		maincontainer.on('click', 'input.psp-do_item_html_validation', function(e){
@@ -147,7 +118,6 @@ pspHTMLValidation = (function ($) {
 			var that 	= $(this),
 				row 	= that.parents("tr").eq(0),
 				itemID	= row.data('itemid'),
-				field 	= row.find('input.psp-text-field-kw'),
 				title   = row.find('input#psp-item-title-' + itemID);
 
 			row_loading(row, 'show');
@@ -155,7 +125,7 @@ pspHTMLValidation = (function ($) {
 			if( $.trim(title.val()) == "" ){
 
 				row_loading(row, 'hide');
-				alert('Your post dosen\'t have Focus Keyword.'); return false;
+				alert('Your post don\'t have a title.'); return false;
 			}
 
 			verifyPage(itemID, row);

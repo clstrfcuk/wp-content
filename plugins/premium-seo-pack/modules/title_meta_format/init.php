@@ -308,7 +308,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 
         	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop() || $__postType == 'post' ) {
 
-				$__theMeta = get_post_meta( $__post->ID, 'psp_meta', true );
+				$__theMeta = $this->the_plugin->get_psp_meta( $__post->ID );
         	}
         	else if ( is_category() || is_tag() || is_tax() || $__postType == 'term' ) {
 
@@ -318,7 +318,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
 					$psp_current_taxseo = array();
 
-				$__theMeta = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
+				$__theMeta = $this->the_plugin->get_psp_meta( $__objTax, $psp_current_taxseo );
         	}
         	
         	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop()
@@ -600,7 +600,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				$post_id = (int) $__post->ID;
 
 				if ( $post_id > 0 )
-					$__theMeta = get_post_meta( $__post->ID, 'psp_meta', true );
+					$__theMeta = $this->the_plugin->get_psp_meta( $__post->ID );
         	}
         	else if ( is_category() || is_tag() || is_tax() || $__postType == 'term' ) {
 
@@ -610,7 +610,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 				if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
 					$psp_current_taxseo = array();
 
-				$__theMeta = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
+				$__theMeta = $this->the_plugin->get_psp_meta( $__objTax, $psp_current_taxseo );
         	}
 
         	if ( is_singular() || $this->the_plugin->_is_blog_posts_page() || $this->the_plugin->is_shop()
@@ -701,6 +701,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 
  				'keywords'				=> '',
  				'focus_keywords'		=> '',
+				'multi_focus_keywords'	=> '',
  				
  				'totalpages'			=> '',
  				'pagenumber'			=> ''
@@ -765,13 +766,21 @@ if (class_exists('pspTitleMetaFormat') != true) {
 	 				$__taxonomyClean = array_merge($__taxonomyClean, 
 	 					$this->get_taxonomy($type, $__wpquery)
 	 				);
-	 				
+   
 	 				//post custom - keywords & focus keyword!
-	 				$__tmpKeywords = get_post_meta( $__postClean['id'], 'psp_meta', true );
-	 				$__postClean['keywords'] = isset($__tmpKeywords['keywords']) ? $__tmpKeywords['keywords'] : '';
-	 				$__postClean['focus_keywords'] = get_post_meta( $__postClean['id'], 'psp_kw', true );
-					if (empty($__postClean['keywords']) && !empty($__postClean['focus_keywords']))
+	 				$psp_meta = $this->the_plugin->get_psp_meta( $__postClean['id'] );
+
+	 				$__postClean['keywords'] = isset($psp_meta['keywords']) ? $psp_meta['keywords'] : '';
+
+					//$__postClean['focus_keywords'] = get_post_meta( $__postClean['id'], 'psp_kw', true );
+					$__postClean['focus_keywords'] = isset($psp_meta['focus_keyword']) ? $psp_meta['focus_keyword'] : '';
+
+					$__postClean['multi_focus_keywords'] = isset($psp_meta['mfocus_keyword']) ? $psp_meta['mfocus_keyword'] : '';
+					$__postClean['multi_focus_keywords'] = implode(', ', $this->the_plugin->mkw_get_keywords($__postClean['multi_focus_keywords']));
+
+					if (empty($__postClean['keywords']) && !empty($__postClean['focus_keywords'])) {
 						$__postClean['keywords'] = $__postClean['focus_keywords'];
+					}
  				}
  			}
  			
@@ -865,7 +874,8 @@ if (class_exists('pspTitleMetaFormat') != true) {
  						'term_description'		=> $__taxonomyClean['term_description'],
  						
  						'keywords'				=> $__postClean['keywords'],
- 						'focus_keywords'		=> $__postClean['focus_keywords']
+ 						'focus_keywords'		=> $__postClean['focus_keywords'],
+ 						'multi_focus_keywords'	=> $__postClean['multi_focus_keywords']
  					));
  					break;
 
@@ -1070,6 +1080,9 @@ if (class_exists('pspTitleMetaFormat') != true) {
 	        	}
         	}
         	if (in_array($type, array('post', 'page', 'posttype'))) {
+        		if ( ! is_object($obj) || ! isset($obj->ID) ) {
+        			return $__taxonomyClean;
+        		}
 	        	if ( function_exists( 'get_the_terms' ) ) { //Since: 2.5.0 WP version
 	        		$categories  = get_the_terms( $obj->ID, 'category' );
 	        		$tags  = get_the_terms( $obj->ID, 'post_tag' );
@@ -1082,7 +1095,7 @@ if (class_exists('pspTitleMetaFormat') != true) {
 	        			$taxonomies = get_the_terms( $obj->ID, $taxonomy_slug );
 	        		}
 
-	        		$__taxonomyClean = array(	
+	        		$__taxonomyClean = array(
 		 				'categories'			=> $this->getTaxonomyItems( $categories ),
 		 				'tags'					=> $this->getTaxonomyItems( $tags ),
 		 				'taxonomies'			=> $this->getTaxonomyItems( $taxonomies ),

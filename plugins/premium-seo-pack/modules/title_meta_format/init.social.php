@@ -130,7 +130,7 @@ if (class_exists('pspSocialTags') != true) {
 					$post = get_post( $post_id );
 				}
 
-				$pm = get_post_meta( $post->ID, 'psp_meta', true );
+				$pm = $this->the_plugin->get_psp_meta( $post->ID );
 				
 			} else if ( is_category() || is_tag() || is_tax() ) { //taxonomy data!
 				
@@ -140,7 +140,7 @@ if (class_exists('pspSocialTags') != true) {
 				if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
 					$psp_current_taxseo = array();
 
-				$pm = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
+				$pm = $this->the_plugin->get_psp_meta( $__objTax, $psp_current_taxseo );
 
 			}
 
@@ -527,6 +527,7 @@ if (class_exists('pspSocialTags') != true) {
 					$res = ' prefix="'.implode(' ', $res).'" ';
 					break;
 			}
+			//$res = ' itemscope itemtype="http://schema.org/WebSite"' . $res;
 			return trim( $original . $res );
 		}
 		
@@ -742,10 +743,11 @@ if (class_exists('pspSocialTags') != true) {
 
 		private function get_content_first_image($content) {
 			if ( empty($content) ) return '';
-			$content = do_shortcode($content);
+			$content = $this->the_plugin->do_shortcode($content);
 
 			$res = preg_match('/<img.*src=[\'"]([^\'"]+)[\'"].*\/?>/iu', $content, $matches);
 			$img = isset($matches[1]) ? $matches[1] : '';
+			$img = $this->the_plugin->u->rel2abs( $img, get_home_url() );
 			return $img;
 		}
     }

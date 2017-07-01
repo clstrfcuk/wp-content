@@ -959,20 +959,25 @@ if(class_exists('pspAjaxListTable') != true) {
 						$html[] = '</div>';
 					}
 					elseif( $value['td'] == '%focus_keyword%' ){
-						$focus_kw = get_post_meta( $post->ID, 'psp_kw', true );
+						$focus_kw = ''; //get_post_meta( $post->ID, 'psp_kw', true );
+						$psp_meta = $this->the_plugin->get_psp_meta( $post->ID );
+						$fieldsParams = array(
+							'mfocus_keyword'			=> isset($psp_meta['mfocus_keyword']) ? $psp_meta['mfocus_keyword'] : ''
+						);
+
 						$html[] = '<div class="psp-focus-kw-box">';
-						$html[] = 	'<input type="text" class="psp-text-field-kw" id="psp-focus-kw-' . ( $post->ID ) . '" value="' . ( $focus_kw ) . '" />';
-						$html[] = 	'<input type="button" class="psp-auto-detect-kw-btn psp-form-button-small psp-form-button-info" value="' . __('Auto detect', $this->the_plugin->localizationName) . '" />';
-						/*$html[] = 	'<a class="psp-button green psp-suggest-kw-btn" href="#">
-                                            <img src="' . ( $this->the_plugin->cfg['paths']['freamwork_dir_url'] ) . 'images/light.png">
-                                        	Suggest
-                                        </a>';*/
+						$html[] = 	'<div class="psp-fields-params" style="display: none;">' . htmlentities(json_encode( $fieldsParams )). '</div>';
+						$html[] = 	'<input type="text" class="psp-text-field-kw" id="psp-focus-kw-' . ( $post->ID ) . '" value="' . ( $focus_kw ) . '" placeholder="type something and hit enter or tab" />';
+						//$html[] = '<input type="button" class="psp-auto-detect-kw-btn psp-form-button-small psp-form-button-info" value="' . __('Auto detect', $this->the_plugin->localizationName) . '" />';
 						$html[] = '</div>';
 					}
 					elseif( $value['td'] == '%seo_report%' ){
 						$html[] = '<a class="psp-button green psp-seo-report-btn psp-form-button-small psp-form-button-success" href="#" data-itemid="' . ( $post->ID ) . '">
                                     	' . __('SEO Report', $this->the_plugin->localizationName) . '
                                     </a>';
+					}
+					elseif( $value['td'] == '%auto_detect%' ){
+						$html[] = '<input type="button" class="psp-auto-detect-kw-btn psp-form-button-small psp-form-button-info" value="' . __('Auto detect', $this->the_plugin->localizationName) . '" />';
 					}
 					elseif( strtolower($value['td']) == '%id%' ){
 						$html[] = is_object($post) ? (isset($post->ID) ? $post->ID : $post->id) : (isset($post['ID']) ? $post['ID'] : $post['id']);
@@ -1031,7 +1036,6 @@ if(class_exists('pspAjaxListTable') != true) {
 								$html[] =	'<a href="#" class="psp-form-serp-button psp-' . ( $operation_value['action'] ) . '" title="' . ( $_value ) . '">' . ( $_icon ) . '</a>';
 							}
 						} 
-						//$html[] = 	'11111';
 					}
 					elseif( $value['td'] == '%button%' ){
 						$value['option']['color'] = isset($value['option']['color']) ? $value['option']['color'] : 'gray';

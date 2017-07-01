@@ -16,8 +16,9 @@ pspFreamwork = (function ($) {
 		sub_istab   = '',
 		in_loading_section = null,
 		topMenu 	= null;
-		
+
 	var upload_popup_parent = null;
+
 
 	// init function, autoload
 	(function init() {
@@ -189,51 +190,55 @@ pspFreamwork = (function ($) {
 			// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 			$.post(ajaxurl, data_nb, function(response) {
 
-				var nbrows = parseInt( response.nbrows );
+				var nbrows = response.nbposts; //parseInt( response.nbrows );
 
 				if(response.status == 'valid' && nbrows > 0 ) {
 					
 					statusBoxHtml.removeClass('psp-error').addClass('psp-success').html(response.html).fadeIn();
 					
-					importSEOData_loop($btn, 0, nbrows);
+					//importSEOData_loop($btn, 0, nbrows);
+					importSEOData_loop($btn, 0);
 				} else {
 
-					statusBoxHtml.delay(10000).fadeOut();
+					statusBoxHtml.delay(15000).fadeOut();
 				}
 			}, 'json');
 		}
 	}
 	
-	function importSEOData_loop($btn, step, nbrows) {
-	    
-	    var step_increase = 10; // DEBUG
+	//importSEOData_loop($btn, step, nbrows)
+	function importSEOData_loop($btn, last_id) {
+
+		//var step_increase = 10; // DEBUG
 
 		var theForm 		= $btn.parents('form').eq(0),
 			value 			= $btn.val(),
 			statusBoxHtml 	= theForm.find('div.psp-message');
 
-		if ( nbrows <= step ) {
+		//if ( nbrows <= step ) {
+		if ( last_id == -1 ) {
 		
-			statusBoxHtml.delay(3000).fadeOut();
+			statusBoxHtml.delay(30000).fadeOut();
 
 			// replace the save button value with default message
 			$btn.val( value ).removeClass('gray').addClass('blue');
-            
-            //return false; // DEBUG!
-			
+
+			//return false; // DEBUG!
+
 			setTimeout(function(){
 				window.location.reload();
-			}, 3000);
+			}, 30000);
 			return true;
 		}
 
 		// serialiaze the form and send to saving data
 		var data = {
-			'action' 	: 'pspimportSEOData',
-			'options' 	: theForm.serialize(),
-			'from'		: theForm.find('#from').val(),
-			'step'		: step,
-			'rowsperstep'	: step_increase
+			'action' 		: 'pspimportSEOData',
+			'options' 		: theForm.serialize(),
+			'from'			: theForm.find('#from').val(),
+			//'step'			: step,
+			//'rowsperstep'	: step_increase
+			'last_id'		: last_id
 		};
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		$.post(ajaxurl, data, function(response) {
@@ -245,8 +250,13 @@ pspFreamwork = (function ($) {
 			}else{
 				statusBoxHtml.removeClass('psp-success').addClass('psp-error').html(__newResHtml).fadeIn();
 			}
-				
-			importSEOData_loop($btn, step + step_increase, nbrows);
+
+			last_id = response.last_id;
+
+			//importSEOData_loop($btn, step + step_increase, nbrows);
+			setTimeout(function() {
+				importSEOData_loop($btn, last_id);
+			}, 1000);
 		}, 'json');
 	}
 	
@@ -481,13 +491,17 @@ pspFreamwork = (function ($) {
 				{
 					$("#psp-table-ajax-response").html( response.html );
 					init_custom_checkbox();
-					
-					//SERP module case!
-					var ajax_id = $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val();
-					if ( 'pspSERPKeywords' == ajax_id )
-						pspSERP.wait_time();
-					
+
 					take_over_ajax_loader_close();
+
+					//special cases
+					var ajax_id = $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val();
+					if ( 'pspSERPKeywords' == ajax_id ) {
+						pspSERP.wait_time();
+					}
+					else if ( 'pspPageOptimization' == ajax_id ) {
+						pspOnPageOptimization.multi_keywords.load({});
+					}
 				}
 			}, 'json');
 		}
@@ -965,6 +979,9 @@ pspFreamwork = (function ($) {
 		googleAuthorizeApp();
 		facebookAuthorizeApp();
 		init_custom_checkbox();
+
+		multikw_tabs.triggers();
+		//multikw_tabs.load( '.psp-multikw' );
 		
 		$('body').on('click', '.psp-custom-checkbox .checkbox', function(e) {
 			e.preventDefault();
@@ -1096,6 +1113,75 @@ pspFreamwork = (function ($) {
         multiselect_left2right();
     }
     
+	/* Multi Keywords - sub tabs */
+	var multikw_tabs = (function() {
+		var mkwtabs = {
+			main		: null,
+			preload		: null,
+			box			: null,
+			boxmenu		: null,
+			boxcontent	: null
+		};
+
+		function triggers() {
+			$('body').on('click', '.psp-multikw .psp-multikw-tab-menu a', function(e) {
+				e.preventDefault();
+
+				var that 			= $(this);
+
+				mkwtabs.main 		= that.parents(".psp-multikw:first");
+				if ( mkwtabs.main && mkwtabs.main.length ) {
+					mkwtabs.preload 	= mkwtabs.main.find(".psp-multikw-meta-box-preload:first");
+					mkwtabs.box		 	= mkwtabs.main.find(".psp-multikw-meta-box-container:first");
+				}
+				if ( mkwtabs.box && mkwtabs.box.length ) {
+					mkwtabs.boxmenu 	= mkwtabs.box.find(".psp-multikw-tab-menu:first");
+					mkwtabs.boxcontent 	= mkwtabs.box.find(".psp-multikw-tab-container:first");
+				}
+				//console.log( 'admin', mkwtabs );
+
+				if ( mkwtabs.box && mkwtabs.box.length ) ;
+				else return false;
+
+				var open 			= mkwtabs.boxmenu.find("a.open"),
+					href 			= that.attr('href').replace('#', '');
+
+				mkwtabs.box.hide();
+
+				mkwtabs.boxcontent.find("#psp-tab-div-id-" + href ).show();
+
+				// close current opened tab
+				var rel_open = open.attr('href').replace('#', '');
+
+				mkwtabs.boxcontent.find("#psp-tab-div-id-" + rel_open ).hide();
+
+				mkwtabs.preload.show();
+				mkwtabs.preload.hide();
+
+				mkwtabs.box.fadeIn('fast');
+
+				open.removeClass('open');
+				that.addClass('open');
+			});
+		}
+
+		function load( container ) {
+			if ( container && container.length ) {
+				mkwtabs.preload 	= container.find(".psp-multikw-meta-box-preload:first");
+				mkwtabs.box 		= container.find('.psp-multikw-meta-box-container:first');
+				//console.log( 'admin', mkwtabs );
+
+				mkwtabs.preload.hide();
+				mkwtabs.box.fadeIn('fast');
+			}
+		}
+
+		return {
+			'triggers'	: triggers,
+			'load'		: load
+		};
+	})();
+
     function scrollToElement(selector, time, verticalOffset) 
     {
     	time = typeof(time) != 'undefined' ? time : 1000;
@@ -1119,32 +1205,32 @@ pspFreamwork = (function ($) {
     function substr_utf8_bytes(str, startInBytes, lengthInBytes) {
 
     	/* this function scans a multibyte string and returns a substring.
-    	* arguments are start position and length, both defined in bytes.
-    	*
-    	* this is tricky, because javascript only allows character level
-    	* and not byte level access on strings. Also, all strings are stored
-    	* in utf-16 internally - so we need to convert characters to utf-8
-    	* to detect their length in utf-8 encoding.
-    	*
-    	* the startInBytes and lengthInBytes parameters are based on byte
-    	* positions in a utf-8 encoded string.
-    	* in utf-8, for example:
-    	*       "a" is 1 byte,
-    	"ü" is 2 byte,
-    	and  "你" is 3 byte.
-    	*
-    	* NOTE:
-    	* according to ECMAScript 262 all strings are stored as a sequence
-    	* of 16-bit characters. so we need a encode_utf8() function to safely
-    	* detect the length our character would have in a utf8 representation.
-    	*
-    	* http://www.ecma-international.org/publications/files/ecma-st/ECMA-262.pdf
-    	* see "4.3.16 String Value":
-    	* > Although each value usually represents a single 16-bit unit of
-    	* > UTF-16 text, the language does not place any restrictions or
-    	* > requirements on the values except that they be 16-bit unsigned
-    	* > integers.
-    	*/
+    	 * arguments are start position and length, both defined in bytes.
+    	 *
+    	 * this is tricky, because javascript only allows character level
+    	 * and not byte level access on strings. Also, all strings are stored
+    	 * in utf-16 internally - so we need to convert characters to utf-8
+    	 * to detect their length in utf-8 encoding.
+    	 *
+    	 * the startInBytes and lengthInBytes parameters are based on byte
+    	 * positions in a utf-8 encoded string.
+    	 * in utf-8, for example:
+    	 *       "a" is 1 byte,
+    	 "ü" is 2 byte,
+    	 and  "你" is 3 byte.
+    	 *
+    	 * NOTE:
+    	 * according to ECMAScript 262 all strings are stored as a sequence
+    	 * of 16-bit characters. so we need a encode_utf8() function to safely
+    	 * detect the length our character would have in a utf8 representation.
+    	 *
+    	 * http://www.ecma-international.org/publications/files/ecma-st/ECMA-262.pdf
+    	 * see "4.3.16 String Value":
+    	 * > Although each value usually represents a single 16-bit unit of
+    	 * > UTF-16 text, the language does not place any restrictions or
+    	 * > requirements on the values except that they be 16-bit unsigned
+    	 * > integers.
+    	 */
 
     	var resultStr = '';
     	var startInChars = 0;
@@ -1190,7 +1276,8 @@ pspFreamwork = (function ($) {
 		'to_ajax_loader'        	: take_over_ajax_loader,
 		'to_ajax_loader_close'  	: take_over_ajax_loader_close,
 		'init_custom_checkbox'		: init_custom_checkbox,
-		'multiselect_left2right'	: multiselect_left2right
+		'multiselect_left2right'	: multiselect_left2right,
+		'multikw_tabs_load'			: multikw_tabs.load
     }
     
 })(jQuery);

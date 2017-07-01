@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'pspicon';
-  src:  url('../fonts/pspicon.eot?sh4zs0');
-  src:  url('../fonts/pspicon.eot?sh4zs0#iefix') format('embedded-opentype'),
-    url('../fonts/pspicon.ttf?sh4zs0') format('truetype'),
-    url('../fonts/pspicon.woff?sh4zs0') format('woff'),
-    url('../fonts/pspicon.svg?sh4zs0#pspicon') format('svg');
+  src:  url('../fonts/pspicon.eot');
+  src:  url('../fonts/pspicon.eo') format('embedded-opentype'),
+    url('../fonts/pspicon.ttf') format('truetype'),
+    url('../fonts/pspicon.woff') format('woff'),
+    url('../fonts/pspicon.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }

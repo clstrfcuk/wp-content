@@ -72,8 +72,24 @@
 	}
 }
 
-@media (max-width: 1320px) {
-	
+@media (max-width: 1440px) {
+
+.#{$alias}-numtoordinal {
+	    margin-right: 2px;
+	    width: 20px;
+	    height: 20px;
+	    font-size:10px;
+	}
+
+.psp .psp-multikw .psp-multikw-tab-menu a {
+    padding: 10px 5px 7px 5px;
+    font: normal 11px Arial, Helvetica, sans-serif;
+    margin: 10px 2px;
+}	
+.psp .psp-multikw .psp-multikw-tab-menu {
+	height:60px;
+}
+
 }
 
 /* Large devices (large desktops, px(1200) and down) */
@@ -266,7 +282,8 @@
 		}
 		
 		.#{$alias}-serp { 
-			##{$alias}-serp-container {				.#{$alias}-top-filters {
+			##{$alias}-serp-container {
+				.#{$alias}-top-filters {
 					.#{$alias}-select-engine-wrapper {
 						float: left;
 					}

@@ -63,10 +63,10 @@ if (class_exists('pspSEOImages') != true) {
 		// add image title and alt to post content
 		public function add_images_tags( $the_content ) {
 			// use in this way for work with the shortcodes too
-			//$the_content = do_shortcode( $the_content );
+			//$the_content = $this->the_plugin->do_shortcode( $the_content );
 
 			if ( trim($the_content) == "" ) {
-				return do_shortcode($the_content);
+				return $this->the_plugin->do_shortcode($the_content);
 			}
 
 			// setup the default settings
@@ -121,10 +121,10 @@ if (class_exists('pspSEOImages') != true) {
 				}
 
 			    //echo __FILE__ . ":" . __LINE__;die . PHP_EOL;   
-				return do_shortcode($doc->html());
+				return $this->the_plugin->do_shortcode($doc->html());
 
 			//}else{
-			//	return do_shortcode($the_content);
+			//	return $this->the_plugin->do_shortcode($the_content);
 			//}
 		}
 
@@ -229,7 +229,7 @@ if (class_exists('pspSEOImages') != true) {
 				    } // end pspPQ('img')
 				    
 				    //echo __FILE__ . ":" . __LINE__;die . PHP_EOL;   
-					$html = do_shortcode($doc->html());
+					$html = $this->the_plugin->do_shortcode($doc->html());
 				}
 			}
 			return $html;
@@ -508,7 +508,7 @@ if (class_exists('pspSEOImages') != true) {
 					);
 					if ( ! empty( $exists ) ) {
 		 				//post custom - keywords & focus keyword!
-		 				$__tmpKeywords = get_post_meta( $__postClean['id'], 'psp_meta', true );
+		 				$__tmpKeywords = $this->the_plugin->get_psp_meta( $__postClean['id'] );
 		 				$__postClean['keywords'] = isset($__tmpKeywords['keywords']) ? $__tmpKeywords['keywords'] : '';
 						$__postClean['focus_keyword'] = isset($__tmpKeywords['focus_keyword']) ? $__tmpKeywords['focus_keyword'] : '';
 						//if ( empty($__postClean['focus_keyword']) ) {

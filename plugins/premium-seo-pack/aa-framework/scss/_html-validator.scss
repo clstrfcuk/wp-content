@@ -1,3 +1,15 @@
+##{$alias}_facebook_share-options .#{$alias}-dashboard-box > table tbody tr td:first-child {
+	width: 30%;
+}
+
+##{$alias}_locations_meta_box ##{$alias}-panel-content-dom .#{$alias}-form-row {
+	min-height: 70px;
+}
+##{$alias}_locations_meta_box ##{$alias}-panel-content-dom .#{$alias}-form-row:hover {
+	background-color: #ecf0f1;
+	cursor: move;
+}
+
 .#{$alias}-meta-box-container {
 	.#{$alias}_wplannerfb_date_hour {
 		min-width: 14rem;

@@ -492,10 +492,10 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 						if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
 							$psp_current_taxseo = array();
 
-						$post_meta = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
+						$post_meta = $this->the_plugin->get_psp_meta( $__objTax, $psp_current_taxseo );
 					}
 					else {
-						$post_meta = get_post_meta( $post_id, 'psp_meta', true );
+						$post_meta = $this->the_plugin->get_psp_meta( $post_id );
 					}
 					$options = $post_meta;
 					break;
@@ -510,10 +510,10 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 						if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
 							$psp_current_taxseo = array();
 
-						$post_meta = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $__objTax, 'psp_meta' );
+						$post_meta = $this->the_plugin->get_psp_meta( $__objTax, $psp_current_taxseo );
 					}
 					else {
-						$post_meta = get_post_meta( $post_id, 'psp_meta', true );
+						$post_meta = $this->the_plugin->get_psp_meta( $post_id );
 					}
 					// if ( is_array($post_meta) && !empty($post_meta) && isset($post_meta['psp_twc_app_description']) )
 						$options = $post_meta;

@@ -103,6 +103,11 @@ class pspSeoCheck
 	}
 
 
+	// get rules settings
+	public function get_rules_settings() {
+		return $this->rules_settings;
+	}
+
 	// set current post to be analyzed
 	public function set_current_post( $p=0, $post_content='empty' ) {
 		if ( $this->the_plugin->__tax_istax( $p ) ) //taxonomy data!
@@ -140,7 +145,7 @@ class pspSeoCheck
 				if ( is_null($psp_current_taxseo) || !is_array($psp_current_taxseo) )
 					$psp_current_taxseo = array();
 
-				$post_metas = $this->the_plugin->__tax_get_post_meta( $psp_current_taxseo, $p, 'psp_meta' );
+				$post_metas = $this->the_plugin->get_psp_meta( $p, $psp_current_taxseo );
 			}
 		}
 		else {
@@ -158,7 +163,7 @@ class pspSeoCheck
 			if ( count($post) > 0 ) {
 				$post_isvalid = true;
 
-				$post_metas = get_post_meta( (int) $p, 'psp_meta', true);
+				$post_metas = $this->the_plugin->get_psp_meta( (int) $p );
 			}
 		}
 
@@ -178,6 +183,10 @@ class pspSeoCheck
 	// set current keyword to be analyzed
 	public function set_current_keyword( $keyword='' ) {
 		$this->current_keyword = $keyword;
+
+		if ( is_array($this->current_keyword) && empty($this->current_keyword) ) {
+			$this->current_keyword = array(''); // add fake '' string
+		}
 	}
 
 	// get current (post, keyword) pair score
@@ -189,8 +198,12 @@ class pspSeoCheck
 		$ret = array(
 			'status' 		=> 'invalid',
 			'post_id'		=> $post_id,
-			'score'			=> '',
+			'mkw'			=> array(), // each focus keyword with all details (text, score, checked rules)
+			'multikw_list'	=> array(), // only each focus keyword name
+
 			'kw'			=> '',
+			'score'			=> '',
+			'density'		=> array(),
 			'data'			=> array(),
 		);
 
@@ -302,26 +315,35 @@ class pspSeoCheck
 				}
 
 				$multiple_status["$kw"] = array(
-					'score'			=> $score,
 					'kw'			=> $kw,
-					'data'			=> $rules_status
+					'score'			=> $score,
+					'density'		=> array(
+						'nb_words' 		=> $keyword_density['nb_words'],
+						'kw_occurences' => $keyword_density['kw_occurences'],
+						'density'		=> $keyword_density['density'],
+					),
+					'data'			=> $rules_status,
 				);
 			} // end foreach multiple keyword
+
+			reset($multiple_status);
+			$first = current($multiple_status);
+			if ( false !== $first ) {
+				$ret = array_merge($ret, $first);
+			}
 
 			if ( $is_multiple_kw ) {
 				$ret = array_merge($ret, array(
 					'status' 		=> 'valid',
 					'post_id'		=> $post_id,
 					'mkw'			=> $multiple_status,
+					'multikw_list'	=> array_keys( $multiple_status ),
 				));
 			}
 			else {
 				$ret = array_merge($ret, array(
 					'status' 		=> 'valid',
 					'post_id'		=> $post_id,
-					'score'			=> $score,
-					'kw'			=> $kw,
-					'data'			=> $rules_status
 				));
 			}
 		} // end post is valid
@@ -1883,6 +1905,9 @@ class pspSeoCheck
 		$forContent = 'yes' == $forContent ? true : false;
 
 		// keyword_density, enough_words, meta_keywords
+		if ( in_array($from, array('first100_words', 'last100_words')) ) {
+			return $stopwords;
+		}
 		if ( in_array($from, array('keyword_density', 'enough_words', 'seo_title_enough_words', 'first100_words', 'last100_words')) && ! $forContent ) {
 			return $stopwords;
 		}
@@ -1909,6 +1934,9 @@ class pspSeoCheck
 		$forContent = 'yes' == $forContent ? true : false;
 
 		// keyword_density, enough_words, meta_keywords
+		if ( in_array($from, array('first100_words', 'last100_words')) ) {
+			return 0;
+		}
 		if ( in_array($from, array('keyword_density', 'enough_words', 'seo_title_enough_words', 'first100_words', 'last100_words')) && ! $forContent ) {
 			return 0;
 		}

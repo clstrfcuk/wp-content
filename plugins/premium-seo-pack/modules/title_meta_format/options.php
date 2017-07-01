@@ -524,7 +524,7 @@ function psp_CustomPosttypeTaxonomyMeta( $istab = '', $is_subtab='', $params=arr
 		//unset media - images | videos /they are treated as belonging to post, pages, custom post types
 		unset($post_types['attachment'], $post_types['revision'], $post_types['nav_menu_item']);
 		
-		$field_desc = __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>';
+		$field_desc = __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>';
 	}
 	else {
 		$uniqueKey = 'taxonomy_custom';
@@ -749,8 +749,9 @@ $__psp_mfo =
 								<li><code>{term}</code> : the term name or the post first found custom taxonomy term name (specific availability)</li>
 								<li><code>{term_description}</code> : the term description or the post first found custom taxonomy term description (specific availability)</li>
 								<li><code>{search_keyword}</code> : the word(s) used for search (specific availability)</li>
-								<li><code>{keywords}</code> : the post|page keywords already defined (specific availability)</li>
-								<li><code>{focus_keywords}</code> : the post|page focus keywords already defined (specific availability)</li>
+								<li><code>{keywords}</code> : the post|page meta keywords already defined (specific availability)</li>
+								<li><code>{focus_keywords}</code> : the post|page primary focus keyword (first one from the list of focus keywords) already defined (specific availability)</li>
+								<li><code>{multi_focus_keywords}</code> : the post|page list of focus keywords already defined separated by comma (specific availability)</li>
 								<li><code>{totalpages}</code> : the total number of pages (if pagination is used), default value is 1 (specific availability)</li>
 								<li><code>{pagenumber}</code> : the page number (if pagination is used), default value is 1 (specific availability)</li>
 							</ul><br />
@@ -775,7 +776,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Post <br/><span>Title Format:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					'page_title'	=> array(
 						'type' 		=> 'text',
@@ -783,7 +784,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Page <br/><span>Title Format:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					'category_title'=> array(
 						'type' 		=> 'text',
@@ -860,7 +861,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('--Generic-- <br/><span>Title Format:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					/*'product_title'	=> array(
 						'type' 		=> 'text',
@@ -868,7 +869,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Product <br/><span>Title Format:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),*/
 					'posttype_custom_title_html' => array(
 						'type' 		=> 'html',
@@ -910,7 +911,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Post <br/><span>Meta Description:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					'page_desc'	=> array(
 						'type' 		=> 'textarea',
@@ -918,7 +919,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Page <br/><span>Meta Description:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					'category_desc'=> array(
 						'type' 		=> 'textarea',
@@ -979,7 +980,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('--Generic-- <br/><span>Meta Description:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					/*'product_desc'	=> array(
 						'type' 		=> 'textarea',
@@ -987,7 +988,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Product <br/><span>Meta Description:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),*/
 					'posttype_custom_desc_html' => array(
 						'type' 		=> 'html',
@@ -1029,7 +1030,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Post <br/><span>Meta Keywords:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					'page_kw'	=> array(
 						'type' 		=> 'text',
@@ -1037,7 +1038,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Page <br/><span>Meta Keywords:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					'category_kw'=> array(
 						'type' 		=> 'text',
@@ -1098,7 +1099,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('--Generic-- <br/><span>Meta Keywords:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),
 					/*'product_kw'	=> array(
 						'type' 		=> 'text',
@@ -1106,7 +1107,7 @@ $__psp_mfo =
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Product <br/><span>Meta Keywords:</span>', 'psp'),
-						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords}' . '</span>'
+						'desc' 		=> __('Available here: (global availability) tags; (specific availability) tags:<span class="psp-tags-specific-availability">', 'psp') . ' {id} {date} {description} {short_description} {parent} {author} {author_username} {author_nickname} {categories} {tags} {terms} {category} {category_description} {tag} {tag_description} {term} {term_description} {keywords} {focus_keywords} {multi_focus_keywords}' . '</span>'
 					),*/
 					'posttype_custom_kw_html' => array(
 						'type' 		=> 'html',
