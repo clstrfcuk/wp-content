@@ -2,8 +2,8 @@
 Contributors: mmaunder 
 Tags: security, secure, security plugin, wordpress security, login security, firewall, malware, antivirus, web application firewall, block hackers, country blocking
 Requires at least: 3.9
-Tested up to: 4.7.4
-Stable tag: 6.3.8
+Tested up to: 4.8.1
+Stable tag: 6.3.15
 
 Secure your website with the most comprehensive WordPress security plugin. Firewall, malware scan, blocking, live traffic, login security & more.
 
@@ -159,6 +159,83 @@ Secure your website with Wordfence.
 7. The Advanced Options page allows technically-minded users fine-tune their security settings.
 
 == Changelog ==
+
+= 6.3.15 =
+* Improvement: Reduced memory usage on scan forking and during the known files scan stage.
+* Improvement: Added additional scan options to allow for disabling the blacklist checks while still allowing malware scanning to be enabled.
+* Improvement: Added a Wordfence Application Firewall code block for the lsapi variant of LiteSpeed.
+* Improvement: Updated the bundled GeoIP database.
+* Fix: Added a validation check to IP range whitelisting to avoid log warnings if they're malformed.
+
+= 6.3.14 =
+* Improvement: Introduced smart scan distribution. Scan times are now distributed intelligently across servers to provide consistent server performance. 
+* Improvement: Introduced light-weight scan that runs frequently to perform checks that do not use any server resources. 
+* Improvement: If unable to successfully look up the status of an IP claiming to be Googlebot, the hit is now allowed.
+* Improvement: Scan issue results for abandoned plugins and unpatched vulnerabilities include more info.
+* Fix: Suppressed PHP notice with time formatting when a microtimestamp is passed.
+* Fix: Improved binary data to HTML entity conversion to avoid wpdb stripping out-of-range UTF-8 sequences.
+* Fix: Added better detection to SSL status, particularly for IIS.
+* Fix: Fixed PHP notice in the diff renderer.
+* Fix: Fixed typo in lockout alert.
+
+= 6.3.12 =
+* Improvement: Adjusted the password audit to use a better cryptographic padding option.
+* Improvement: Improved the option value entry process for the modified files exclusion list.
+* Improvement: Added rel="noopener noreferrer" to all external links from the plugin for better interoperability with other scanners.
+* Improvement: Added support to the WAF for validating URLs for future use in rules.
+* Fix: Time formatting will now correctly handle :30 and :45 time zone offsets.
+* Fix: Hosts using mod_lsapi will now be detected as Litespeed for WAF optimization.
+* Fix: Added an option to allow automatic updates to function on Litespeed servers that have the global noabort set rather than site-local.
+* Fix: Fixed a PHP notice that could occur when running a scan immediately after removing a plugin.
+
+= 6.3.11 =
+* Improvement: The scan will alert for plugins that have not been updated in 2+ years or have been removed from the wordpress.org directory. It will also indicate if there is a known vulnerability.
+* Improvement: Added a self-check to the scan to detect if it has stalled.
+* Improvement: If WordPress auto-updates while a scan is running, the scan will self-abort and reschedule itself to try again later.
+* Improvement: IP-based filtering in Live Traffic can now use wildcards.
+* Improvement: Updated the bundled GeoIP database.
+* Improvement: Added an anti-crawler feature to the lockout page to avoid crawlers erroneously following the unlock link.
+* Improvement: The live traffic "Group By" options now dynamically show the results in a more useful format depending on the option selected.
+* Improvement: Improved the unknown core files check to include all extra files in core locations regardless of whether or not the "Scan images, binary, and other files as if they were executable" option is on.
+* Improvement: Better wording for the whitelisting IP range error message.
+* Fix: Addressed a performance issue on databases with tens of thousands of tables when trying to load the diagnostics page.
+* Fix: All dashboard and activity report email times are now displayed in the time zone configured for the WordPress installation.
+
+= 6.3.10 =
+* Improvement: Reduction in overall memory usage and peak memory usage for the scanner.
+* Improvement: Support for exporting a list of all blocked and locked out IP addresses.
+* Improvement: Updated the WAF's CA certificate bundle.
+* Improvement: Updated the browscap database.
+* Improvement: Suppressed the automatic HTTP referer added by WordPress for API calls to reduce overall bandwidth usage.
+* Improvement: When all issues for a scan stage have been previously ignored, the results now indicate this rather than saying problems were found.
+* Fix: Worked around an issue with WordPress caching to allow password audits to succeed on sites with tens of thousands of users.
+* Fix: Fixed an IPv6 detection issue with one form of IPv6 address.
+* Fix: An empty ignored IP list for WAF alerts no longer creates a PHP notice.
+* Fix: Better detection for when to use secure cookies.
+* Fix: Fixed a couple issue types that were not able to be permanently ignored.
+* Fix: Adjusted the changelog link in the scan results email to work for the new wordpress.org repository.
+* Fix: Fixed some broken links in the activity summary email.
+* Fix: Fixed a typo in the scan summary text.
+* Fix: The increased attack rate emails now correctly identify blacklist blocks.
+* Fix: Fixed an issue with the dashboard where it could show the last scan failed when one has never ran.
+* Fix: Brute force records are now coalesced when possible prior to sending.
+
+= 6.3.9 =
+* Improvement: Malware signature checking has been better optimized to improve overall speed.
+* Improvement: Updated the bundled GeoIP database.
+* Improvement: The memory tester now tests up to the configured scan limit rather than a fixed value.
+* Improvement: Added a test to the diagnostics page that verifies permissions to the WAF config location.
+* Improvement: The diagnostics page now contains a callback test for the server itself.
+* Improvement: Updated the styling of dashboard notifications for better separation.
+* Improvement: Added additional constants to the diagnostics page.
+* Change: Wordfence now enters a read-only mode with its configuration files when run via the 'cli' PHP SAPI on a misconfigured web server to avoid file ownership changing.
+* Change: Changed how administrator accounts are detected to compensate for managed WordPress sites that do not have the standard permissions.
+* Change: The table list on the diagnostics page is now limited in length to avoid being exceedingly large on big multisite installations.
+* Fix: Improved updating of WAF config values to minimize writing to disk.
+* Fix: The blacklist's blocked IP records are now correctly trimmed when expired.
+* Fix: Added error suppression to the WAF attack data functions to prevent corrupt records from breaking the no-cache headers.
+* Fix: Fixed some incorrect documentation links on the diagnostics page.
+* Fix: Fixed a typo in a constant on the diagnostics page.
 
 = 6.3.8 =
 * Fix: Addressed an issue that could cause scans to time out on sites with tens of thousands of potential URLs in files, comments, and posts.

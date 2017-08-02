@@ -88,10 +88,18 @@ function seed_csp4_head() {
 		<?php if ( !empty( $bg_image ) ): ;?>
 			<?php if ( isset( $bg_cover ) && in_array( '1', $bg_cover ) ) : ?>
 				background: <?php echo $bg_color;?> url('<?php echo $bg_image; ?>') no-repeat top center fixed;
+				<?php if ( isset( $bg_size ) && $bg_size == 'contain' ) : ?>
+				-webkit-background-size: contain;
+				-moz-background-size: contain;
+				-o-background-size: contain;
+				background-size: contain;
+				<?php else : ?>
+				
 				-webkit-background-size: cover;
 				-moz-background-size: cover;
 				-o-background-size: cover;
 				background-size: cover;
+				<?php endif ?>
 			<?php else: ?>
 				background: <?php echo $bg_color;?> url('<?php echo $bg_image; ?>') <?php echo $bg_repeat;?> <?php echo $bg_position;?> <?php echo $bg_attahcment;?>;
 			<?php endif ?>

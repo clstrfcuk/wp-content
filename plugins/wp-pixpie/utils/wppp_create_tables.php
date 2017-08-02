@@ -34,7 +34,7 @@ function wppp_plugin_create_log_table() {
 		$table_name_sql = $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" );
 		if( $table_name_sql != $table_name ) {
 			error_log( 'WPPP - wp_pixpie_plugin_create_log_table - cannot create log table' );
-			wppp_send_error_by_email( 'Activation error - cannot create log table ', '' );
+//			wppp_send_error_by_email( 'Activation error - cannot create log table ', '' );
 		} 	
 
 	} else {

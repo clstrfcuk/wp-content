@@ -16,7 +16,7 @@
  * Plugin Name:       WP Pixpie Plugin
  * Plugin URI:        https://pixpie.atlassian.net/wiki/display/DOC/Wordpress+plugin
  * Description:       Compress all images via Pixpie service
- * Version:           1.1.2
+ * Version:           1.2.0
  * Author:            Pixpie.co
  * Author URI:        https://www.pixpie.co/
  * License:           LGPLv2.1
@@ -90,7 +90,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wp-pixpie-plugin.php';
 function run_wp_pixpie_plugin() {
 
 	$plugin = new WP_Pixpie_Plugin();
-	$plugin->run();
+	$plugin -> run();
 
 }
 run_wp_pixpie_plugin();

@@ -23,7 +23,7 @@ class WPDBBackupEmail {
             $wp_db_backup_email_attachment_file = get_option('wp_db_backup_email_attachment');
             if ($wp_db_backup_email_attachment_file == "yes" && $filesze <= 209700000) {               
                 $attachments = $args[1];
-                $logMessageAttachment = " with attached backup file.";
+                $logMessageAttachment = " with attached backup file.";                
             } else
                 $attachments = "";
             if(wp_mail($to, $subject, $message, $headers, $attachments)){
@@ -31,6 +31,10 @@ class WPDBBackupEmail {
             }
             $logMessage=" Send Backup Mail to:" . $to;
             $logMessage.=$logMessageAttachment;
+            $wp_db_remove_local_backup = get_option('wp_db_remove_local_backup');
+                if ($wp_db_remove_local_backup == 1) {
+                   $logMessage.= " Removed local backup file.";
+                }
         }
     }
     

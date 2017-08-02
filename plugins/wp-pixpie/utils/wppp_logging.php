@@ -28,16 +28,16 @@ function wppp_log( $level, $message, $attachment_id=0, $file_name='', $size_name
 
 		if ( ( $insert_res == false ) || ( $insert_res == 0 ) ) {
 			error_log( "Error in wppp_log, insert returned zero value" );
-			wppp_send_error_by_email( 'Log writing error - cannot write logs',
-				'Insert returned zero value. Original message: ' . $message );        
+//			wppp_send_error_by_email( 'Log writing error - cannot write logs',
+//				'Insert returned zero value. Original message: ' . $message );
 		}
 
 		return $insert_res;
 
     } catch ( Exception $e ) {
         error_log( "Error in wppp_log: " . print_r( $e, true ) );
-		wppp_send_error_by_email( 'Log writing error - cannot write logs',
-			'Exception: ' . print_r( $e, true ) . '   Original message: ' . $message );        
+		/*wppp_send_error_by_email( 'Log writing error - cannot write logs',
+			'Exception: ' . print_r( $e, true ) . '   Original message: ' . $message );        */
     }	
 
 }

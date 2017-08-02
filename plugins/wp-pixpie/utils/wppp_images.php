@@ -13,7 +13,6 @@ function wppp_get_image_id( $image_url ) {
     return $attachment[0]; 
 }
 
-
 /*
 Wordpress images sizes 
 */

@@ -26,19 +26,24 @@
  */
 
 // If uninstall not called from WordPress, then exit.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if ( ! defined ( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
-
 
 /*
 Delete options
 */
-delete_option( 'wppp_option_bundle_id' );
-delete_option( 'wppp_option_secret_key' );
-delete_option( 'wppp_option_keep_original' );
-delete_option( 'wppp_option_status' );
-delete_option( 'wppp_db_version' );
+delete_option ( 'wppp_option_bundle_id' );
+delete_option ( 'wppp_option_secret_key' );
+delete_option ( 'wppp_option_keep_original' );
+delete_option ( 'wppp_option_status' );
+delete_option ( 'wppp_option_imgs_size' );
+delete_option ( 'wppp_db_version' );
+delete_option ( 'wppp_option_sid' );
+delete_option ( 'wppp_db_ver_stat' );
+delete_option ( 'WPPP_OPTION_NAME_STATUS' );
+delete_option ( 'wppp_action_available_status' );
+delete_option ( 'wppp_hide_time' );
 
 
 /*
@@ -47,7 +52,7 @@ Delete tables
 global $wpdb;
 $tables = array( 'wppp_log', 'wppp_converted_images', 'wppp_convert_all' );
 foreach ( $tables as $key => $table_name ) {
-	$table_name = $wpdb->prefix . $table_name;
+	$table_name = $wpdb -> prefix . $table_name;
 	$sql = "DROP TABLE IF EXISTS $table_name";
-	$wpdb->query( $sql );
-}
+	$wpdb -> query ( $sql );
+} ?>

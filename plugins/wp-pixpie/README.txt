@@ -3,8 +3,8 @@ Contributors: pixpie
 Donate link: https://www.pixpie.co
 Tags: pixpie, optimize, compress, shrink, resize, faster, fit, scale, improve, images, jpeg, jpg, png, lossy, minify, smush, save, bandwidth, website, speed, performance, panda, wordpress app, optimize image, resize image, crop image, lossless
 Requires at least: 4.4
-Tested up to: 4.7
-Stable tag: 1.1.3
+Tested up to: 4.8
+Stable tag: 1.2.0
 License: LGPLv2.1 or later
 License URI: https://www.gnu.org/licenses/lgpl-2.1.html
 
@@ -41,6 +41,8 @@ The exact result depends on the number of thumbnail sizes that are in use in you
 Each time you upload an image to your WordPress site, it is sent to the Pixpie Cloud. Cloud analyzes you picture using artificial intelligence algorithms and applies best possible optimization.
 The result is saved in your WordPress Media Library. The original image can be automatically backed up or replaced by optimized image. Average JPEG file is compressed by 40%, PNG file by 50%, without visible loss in quality.
 Your website will load faster, have a higher ranking in search engines, save bandwidth, and storage space!
+As we want to make the plugin as much as possible compatible with others plugins and WP / PHP version, since plugin is activated it can provide Pixpie with the information about blog's server address, port, PHP version, current WP version, admin email, site url, information about the errors (that could happen during compression) and already installed plugins.
+This information simplifies improvement of plugin as Pixpie knows more about issues and environments where these issues have happened and how to contact the blog owner if it's needed.
 
 == Optimizing all your images ==
 
@@ -56,12 +58,11 @@ Got questions or feedback? Let us know! Contact us at support@pixpie.co or find 
 
 == Screenshots ==
 
-1. Dashboard: See optimization metrics
-2. Plugin Settings: Setup Pixpie API Key & Secret
-3. See All Images: Compare original and optimized images
-4. Convert All images: bulk optimization of all site images
-5. Roll Back Screen: Revert unwanted changes
-6. Log Screen: See Plugin Execution Log
+1. Stats: See optimization metrics
+2. Settings: Sign up or sign in
+3. Compress All images: bulk optimization of all site images
+4. Revert All images: Revert unwanted changes
+5. Billing: manage, cancel or renew subscription
 
 == Contributors ==
 
@@ -75,17 +76,19 @@ Want to contribute? Check out the [Pixpie WordPress plugin on GitHub](https://gi
 2. Search for 'pixpie' and press the 'Install Now' button for the plugin named 'Pixpie – Intelligent Image Compression' by 'Pixpie'.
 3. Activate the plugin from your Plugins page.
 4. Go to the *WP Pixpie Plugin > Settings* page and register a new Pixpie account.
-5. Or enter the Bundle ID and Secret key if you already have an account (https://pixpie.atlassian.net/wiki/display/DOC/WordPress+plugin#WordPressplugin-activation).
-6. Go to *WP Pixpie Plugin > Convert All Images* and convert all your images!
+5. Or enter the Bundle ID and Secret key if you already have an account.
+6. Check [plugin documentation](https://pixpie.atlassian.net/wiki/display/DOC/WordPress+plugin#WordPressplugin-activation) for details.
+7. Go to *WP Pixpie Plugin > Convert All Images* and convert all your images!
 
 = From WordPress.org =
 
 1. Download the plugin named 'Pixpie – Intelligent Image Compression' by 'Pixpie'.
-2. Upload the `wp-pixpie-plugin` directory to your `/wp-content/plugins/` directory, using your favorite method (ftp, sftp, scp, etc...)
+2. Upload the `wp-pixpie` directory to your `/wp-content/plugins/` directory, using your favorite method (ftp, sftp, scp, etc...)
 3. Activate the plugin from your Plugins page.
 4. Go to the *WP Pixpie Plugin > Settings* page and register a new Pixpie account.
-5. Or enter the Bundle ID and Secret key if you already have an account (https://pixpie.atlassian.net/wiki/display/DOC/WordPress+plugin#WordPressplugin-activation).
-6. Go to *WP Pixpie Plugin > Convert All Images* and convert all your images!
+5. Or enter the Bundle ID and Secret key if you already have an account.
+6. Check [plugin documentation](https://pixpie.atlassian.net/wiki/display/DOC/WordPress+plugin#WordPressplugin-activation) for details.
+7. Go to *WP Pixpie Plugin > Convert All Images* and convert all your images!
 
 == Frequently Asked Questions ==
 
@@ -95,8 +98,33 @@ Please read up-to-date [FAQ](https://blog.pixpie.co/faq/) on [pixpie.co](https:/
 Coming soon...
 
 == Changelog ==
+= 1.2.0 =
+* Fixed a lot of bugs.
+* Added new metrics.
+* Added payment.
+
+= 1.1.8 =
+* Fix for default selected sizes.
+
+= 1.1.7 =
+* Hotfix for wrong path to plugin files in JS file.
+* Naming convention fix.
+
+= 1.1.6 =
+* Updated "How does it work?" description.
+* Added user friendly UI for *Dashboard, Settings and Convert All Images* pages.
+* Provided editor with possibility to choose the sizes(thumbnails) that should be compressed.
+
+= 1.1.5 =
+* Added analytics.
+
+= 1.1.4 =
+* Count all unprocessed images thumbnails (max possible value) for Convert All page.
+* Send latest 300 log messages in attachment when convert error fails.
+* Added active plugins to email report; check if original file exists before converting.
+
 = 1.1.3 =
-* Fixing issue with update.
+* Fixing issue with update. Added email and password validations for sign-up form.
 
 = 1.1.2 =
 * Fixed UX issues on Settings page.

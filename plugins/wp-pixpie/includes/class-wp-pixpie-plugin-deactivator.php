@@ -30,14 +30,16 @@ class WP_Pixpie_Plugin_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-		wppp_sent_deactivation_notification();
+//		wppp_sent_deactivation_notification();
+		$bodyDeactivation = wppp_get_server_details_for( 2 );
+		wppp_deactivation_plugin( $bodyDeactivation );
 
 		$server_details = wppp_get_server_details();
-		$server_details_printed = print_r( $server_details, true );		
+		$server_details_printed = print_r( $server_details, true );
 		wppp_log_info(
 			'Plugin Deactivated - ' . $server_details_printed,
 			0,'','','activation'
-			);
+		);
 
 	}
 

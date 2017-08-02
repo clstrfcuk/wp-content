@@ -1,221 +1,171 @@
 <div class="wrap">
 
-	<h1><?= WPPP_PLUGIN_NAME ?> <small> &mdash; Convert All Images</small></h1>
-
-	<hr/>
+    <h1><?= WPPP_PLUGIN_NAME ?> <small> &mdash; Compress All Images</small></h1>
 
 	<?php
+	$payment = get_option ( 'wppp_update_payment' );
 
-	$action = sanitize_text_field( $_GET["action"] );
-    wppp_log_trace('sanitized action: ' . $action,0,'','','convert-all' );
-	if ( isset( $action ) && ( 'convert' == $action ) ) {
+	if ( get_option ( 'wppp_action_available_status' ) != 'AVAILABLE' && strlen ( get_option ( 'wppp_action_available_status' ) ) > 0 && empty( $payment ) ) {
 
-		$total_todo = sanitize_text_field( $_GET["total_todo"] );
-        wppp_log_trace('sanitized total_todo: ' . $total_todo,0,'','','convert-all' );
-        if ( isset( $total_todo ) ) {
+		$auth_url = 'http://' . WPPP_SAFE_REDIRECT_CLOUD_HOST . 'payment/status';
+		wppp_log_trace (
+			'dashboard payment auth url: ' . $auth_url,
+			0, '', '', 'settings_payment_check'
+		);
 
-            // safe
-		    $total_todo = intval( $total_todo );
-		    if ( $total_todo <= 0 ){
-                wppp_log_error('sanitized total_todo <= 0: ' . $total_todo,0,'','','convert-all' );
-                die();
-            }
+		$headers = wppp_get_common_headers ();
 
-			/* 
-			kind of initialize section 
-			*/
-			$total_done = sanitize_text_field( $_GET["total_done"] );
-            wppp_log_trace('sanitized total_done: ' . $total_done,0,'','','convert-all' );
-			if ( ! isset( $total_done ) || ( ! $total_done ) ) {
-				$total_done = 0;
+		wppp_log_trace (
+			'dashboard payment header: ' . print_r ( $headers, true ),
+			0, '', '', 'settings_payment_check'
+		);
 
-				// Initialize
-                wppp_log_info('Convert All started',0,'','','convert-all' );
-                wppp_init_convert_all();
-			} else {
-			    // safe
-                $total_done = intval( $total_done );
-                if ($total_done < 0){
-                    wppp_log_error('sanitized total_done < 0: ' . $total_done,0,'','','convert-all' );
-                    die();
-                }
-            }
+		$args = array(
+			'body'        => '',
+			'timeout'     => '120',
+			'redirection' => '10',
+			'httpversion' => '1.0',
+			'blocking'    => true,
+			'headers'     => $headers,
+			'cookies'     => array()
+		);
 
-            if ($total_done > $total_todo){
-                wppp_log_error('sanitized total_done > total_todo',0,'','','convert-all' );
-			    die();
-            }
+		$response = wp_remote_post ( $auth_url, $args );
 
-			$total_size_raw = sanitize_text_field($_GET["total_size_raw"]);
-			if ( ! isset( $total_size_raw ) || ( ! $total_size_raw ) ) {
-				$total_size_raw = 0;
-			} else {
-                // safe
-                $total_size_raw = intval($total_size_raw);
-                if ($total_size_raw < 0){
-                    wppp_log_error('sanitized total_size_raw < 0: ' . $total_size_raw,0,'','','convert-all' );
-                    die();
-                }
-            }
-			
-			$total_size_comp = sanitize_text_field($_GET["total_size_comp"]);
-			if ( ! isset( $total_size_comp ) || ( ! $total_size_comp ) ) {
-				$total_size_comp = 0;
-			} else {
-                // safe
-                $total_size_comp = intval($total_size_comp);
-                if ($total_size_comp < 0){
-                    wppp_log_error('sanitized total_size_comp < 0: ' . $total_size_comp,0,'','','convert-all' );
-                    die();
-                }
-            }
+		wppp_log_trace (
+			'dashboard payment response: ' . print_r ( $response, true ),
+			0, '', '', 'dashboard_payment_check'
+		);
 
-			// Process
-			$image_id = wppp_convert_all_pop();
+		$action_available_status = json_decode ( $response['body'] ) -> actionAvailableStatus;
 
-			wppp_log_trace(
-				'Convert All - processing next image: ' . $image_id,
-				0,'','','convert-all'
-				);				
+		$response_status = json_decode ( $response ['body'] ) -> responseMessage;
 
-			if ( isset( $image_id ) && ( $image_id != -1 ) ) {
+		$response_agree_form = json_decode ( $response['body'] ) -> shortResponseMessage;
 
-				$meta = wp_get_attachment_metadata( $image_id );
 
-				// if it was already compressed but not in our table
-				$pixpie_compressed = $meta['pixpie_compressed'];
-				if ( isset( $pixpie_compressed ) && ( $pixpie_compressed == true ) ) {
-					$filename = $meta['file'];
-					$size_before = $meta['pixpie_raw_sizes'];
-					$size_after = $meta['pixpie_compressed_sizes'];
-					wppp_log_warning(
-						'image not present in converted images, but has pixpie_compressed true, just add to converted images',
-						$image_id,'','','convert-all'
-						);
-					wppp_add_image($image_id,$filename,$size_before,$size_after);
+		update_option ( 'wppp_action_available_status', $action_available_status );
+
+		wppp_log_trace (
+			'dashboard payment response: ' . $action_available_status,
+			0, '', '', 'dashboard_payment_check'
+		);
+
+		wppp_log_trace (
+			'change action status : ' . $action_available_status,
+			0, '', '', 'dashboard_payment_check'
+		);
+
+		wppp_log_trace (
+			'change action status : ' . $response_status,
+			0, '', '', 'dashboard_payment_check'
+		);
+
+		if ( get_option ( 'wppp_action_available_status' ) != 'AVAILABLE' && strlen ( get_option ( 'wppp_action_available_status' ) ) > 0 ) {
+
+			?>
+
+            <div class="error" id="ErrorPixpie">
+				<?php
+				if ( strlen ( $response_status ) > 0 ) {
+					echo $response_status;
 				} else {
-					$meta = wppp_generate_compressed_images( $meta );
-					wp_update_attachment_metadata( $image_id, $meta );
+					echo 'Your subscription is not active.';
 				}
-
-				// Recalculate
-				$total_done = $total_done + 1;
-
-				$filesizes_before = $meta['pixpie_raw_sizes'];
-				$total_size_raw = $total_size_raw + $filesizes_before;
-
-				$filesizes_after = $meta['pixpie_compressed_sizes'];
-				$total_size_comp = $total_size_comp + $filesizes_after;
-
-				$total_size_raw_display = wppp_get_display_file_size( $total_size_raw );
-                $total_size_comp_display = wppp_get_display_file_size( $total_size_comp );
-
-				if ( $total_size_raw > 0 ) {
-
-                    $size_reduced = 100 - ( $total_size_comp * 100 / $total_size_raw );
-                    $size_reduced = number_format( (float) $size_reduced, 2, '.', '' );
-
-				}
-
 				?>
 
+            </div>
 
-					<div class="wp-pixpie-plugin-convert-all__statistics">
-						Processed images: <?php echo $total_done ?> / <?php echo $total_todo ?>
-					</div>
+            <div id="wpppAgree" >
+                <h3><?php echo $response_agree_form;?></h3>
+                <span class="wpppYes">Agree</span>
+                <span class="wpppNo">Dismiss</span>
+            </div>
 
-					<div class="wp-pixpie-plugin-convert-all__statistics">
-						Size before: <?php echo $total_size_raw_display ?> / Size after: <?php echo $total_size_comp_display ?>
-					</div>
-
-					<?php
-						if ( $total_size_raw > 0 ) {
-					?>
-					<div class="wp-pixpie-plugin-convert-all__statistics">
-						Size reduced by: <?php echo $size_reduced ?>%
-					</div>
-					<?php
-						}
-					?>
-
-					<?php 
-						if ( $total_done < $total_todo ) {
-					?>
-
-						<div class="link convert-all-link-wrapper">
-							<a id="convert-all-link"
-							href="<?php echo ( get_admin_url() . 'admin.php?page=' . WPPP_PLUGIN_PAGE_ID_CONVERT_ALL ); ?>&action=convert&total_todo=<?php echo $total_todo ?>&total_done=<?php echo $total_done ?>&total_size_raw=<?php echo $total_size_raw ?>&total_size_comp=<?php echo $total_size_comp ?>">Next</a>
-						</div>
-
-						<div>
-							<b>Performing converting, please do not close this window until done</b>
-						</div>
-
-					<?php
-						} else {
-					?>
-
-						<div>
-						<b>Done!</b>
-						</div>
-
-					<?php
-						} 
-					?>
-
-				<?php
-
-			} else {
-                wppp_log_error('image_id not set or incorrect',0,'','','convert-all' );
-                die();
-            }
-
-		} else {
-            wppp_log_error('total_todo not set or incorrect',0,'','','convert-all' );
-			die();
+			<?php
 		}
-
-	?>
-
-
-	<?php
-
-	} else {
-
-	$images_to_convert = wppp_get_all_images_to_convert();
-	$unprocessed_count = count( $images_to_convert );
-
-	?>
-
-		<p>You have <b><?php echo $unprocessed_count ?></b> unprocessed image(s)</p>
-
-        <?php if ( 0 < $unprocessed_count ) { ?>
-
-            <p style="color: red; font-weight: bold;">
-                The button below will start conversion of all images, that are uploaded in media library. Be careful, it can take a lot of time to process all images.
-            </p>
-
-            <?php if ( wppp_is_plugin_activated() ){ ?>
-
-                <a href="<?php echo ( get_admin_url() . 'admin.php?page=' . WPPP_PLUGIN_PAGE_ID_CONVERT_ALL ); ?>&action=convert&total_todo=<?php echo $unprocessed_count ?>" class="button-primary">Convert all existing images</a>
-
-            <?php } else { ?>
-
-                <b>Plese set up the plugin settings first.</b>
-
-            <?php } ?>
-
-        <?php } // end if > 0 ?>
-
-	<?php
-
 	}
 
-
 	?>
 
+    <hr/>
+
+	<?php
+
+	global $post, $wpdb;
+
+	$total_img = $wpdb -> get_results ( "SELECT COUNT(*) FROM `wp_posts` WHERE post_status = 'inherit' AND post_type = 'attachment' AND (post_mime_type = 'image/jpeg' OR post_mime_type = 'image/png')" );
+
+	$total_compress_img = $wpdb -> get_results ( "SELECT COUNT(*) FROM `wp_wppp_converted_images` " );
 
 
+	$COUNT_wpdb = 'COUNT(*)';
+
+	$COUNT = $total_img[0] -> $COUNT_wpdb;
+
+	$COUNT_compressed = $total_compress_img[0] -> $COUNT_wpdb;
+
+
+	$images_to_convert = wppp_get_all_images_to_convert ();
+	$unprocessed_count = count ( $images_to_convert );
+	//	$compressed_count = $COUNT - $unprocessed_count;
+
+	// count all thumbnails sizes (max)
+	$unprocessed_resolutions_count = 0;
+	if ( $unprocessed_count > 0 ) {
+		$all_sizes = wppp_get_image_sizes ();
+		$resolutions_count = count_original_resolutions ( $all_sizes );
+		$unprocessed_resolutions_count = $unprocessed_count * $resolutions_count;
+	}
+	?>
+
+    <p>You have <span style="font-weight: bold" id="unprocessedNumber" ><?php echo ($COUNT - $COUNT_compressed); ?></span> unprocessed image(s)</p>
+
+
+    <div class="wppp_optimize">
+        <div class="wppp_progressbar" id="wppp_compression-progress-bar">
+            <div id="wppp_progress-size" class="wppp_progress
+                <?php if( $unprocessed_count > 0 ) echo 'wppp_animate_progress' ?>" >
+            </div>
+            <div class="wppp_numbers">
+                <span id="wppp_optimized-current"><?php echo $COUNT_compressed ?></span>
+                /
+                <span id="wppp_optimized-total"><?php echo $COUNT ?></span>
+                <span id="wppp_percentage">0%</span>
+            </div>
+        </div>
+    </div>
+
+
+	<?php if ( 0 < $unprocessed_count ) { ?>
+
+		<?php if ( wppp_is_plugin_activated () && ! get_option ( 'wppp_overlimit' ) && get_option ( 'wppp_action_available_status' ) == 'AVAILABLE' ) { ?>
+
+            <p>Overall number of different image sizes might be up to
+                <b><?php echo $unprocessed_resolutions_count ?></b></p>
+
+            <p>If you start the process &mdash; you could be charged up to
+                <b><?php echo $unprocessed_resolutions_count ?></b> compressions.<br/></p>
+
+            <p style="color: red; font-weight: bold;">
+                The button below will start compression of all images, that are uploaded in media library. Be careful, it can take a lot of time to process all images.
+            </p>
+
+            <a href="<?php echo ( get_admin_url() . 'admin.php?page=' . WPPP_PLUGIN_PAGE_ID_CONVERT_ALL ); ?>&action=convert&total_todo=<?php echo $unprocessed_count ?>" class="button-primary" id="convertAllImgages">Compress all existing images</a>
+
+            <span id="admin" style="display: none;"><?php echo WPPP_PLUGIN_PAGE_ID_CONVERT_ALL ?></span>
+
+            <span id="total_todo" style="display: none;"><?php echo $unprocessed_count ?></span>
+
+            <div id="answer"></div>
+
+		<?php } else { ?>
+
+            <b>Plese set up the plugin settings first.</b>
+
+		<?php } ?>
+
+	<?php } // end if > 0 ?>
 </div>
 
 

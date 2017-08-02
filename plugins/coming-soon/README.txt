@@ -3,8 +3,8 @@ Contributors: seedprod
 Donate link: http://www.seedprod.com
 Tags: maintenance mode, coming soon page, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, under construction page, landing page
 Requires at least: 3.5.1
-Tested up to: 4.7.2
-Stable tag: 5.0.9
+Tested up to: 4.8.0
+Stable tag: 5.0.10
 Text Domain: coming-soon
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -94,7 +94,7 @@ Create a simple Coming Soon Page or Maintenance Mode Page. Work on your site in 
 
 
 == Frequently Asked Questions ==
-= What's the difference between Comgin Soon Page Mode and Maintenance Mode? =
+= What's the difference between Coming Soon Page Mode and Maintenance Mode? =
 
 Coming Soon Page Mode return a http status 200 and allows your site to be indexed by Google and other searching engine. You should always using Coming Soon Page mode when your site is new. 
 
@@ -113,6 +113,9 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 4. Design Page
 
 == Changelog ==
+= 5.0.10 =
+* Added the ability to make the bg image stay contained within the browser window.
+
 = 5.0.9 =
 * Fixed CSS issues
 
@@ -179,6 +182,9 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 * Initial Commit
 
 == Upgrade Notice ==
+= 5.0.10 =
+* Added the ability to make the bg image stay contained within the browser window.
+
 = 5.0.9 =
 * Fixed CSS issues
 

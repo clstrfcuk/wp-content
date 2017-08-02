@@ -2,7 +2,7 @@
 Contributors: infinitewp
 Tags: admin, administration, amazon, api, authentication, automatic, dashboard, dropbox, events, integration, manage, multisite, multiple, notification, performance, s3, security, seo, stats, tracking, infinitewp, updates, backup, restore, iwp, infinite
 Requires at least: 3.1
-Tested up to: 4.7.4
+Tested up to: 4.8
 Stable tag: trunk
 
 Install this plugin on unlimited sites and manage them all from a central dashboard.
@@ -47,6 +47,12 @@ Credits: [Vladimir Prelovac](http://prelovac.com/vladimir) for his worker plugin
 5. One-click updates
 
 == Changelog ==
+= 1.6.4.2 - Jul 10th 2017 =
+* Improvement: Dropbox API V2 has been integrated with InfiniteWP.
+* Fix: While uploading the backup to Dropbox some users get Dropbox verification failed: File may be corrupted error.
+* Fix: File exceeds 150MB upload limit error while uploading the backups to Dropbox using Single call back method.
+* Fix: Path error if the Dropbox folder have trailing spaces.
+
 = 1.6.4 - May 2nd 2017 =
 * Improvement: JSON communication implementation between Admin Panel and Client plugin has been completed.
 * Improvement: Unwanted files and folders will be automatically excluded from backups.

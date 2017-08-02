@@ -200,6 +200,17 @@ function seed_csp4_get_options(){
     );
 
     $seed_csp4_options[ ] = array(
+        "type" => "select",
+        "id" => "bg_size",
+        "desc" => __('Cover (most users will use this setting), this setting will crop parts of the background that do not fit, Contain, this will force the background image to stay contained within the browser and parts that don\'t fit will show the background color.', 'coming-soon' ),
+        "label" => __( "Responsive Size", 'coming-soon' ),
+        "option_values" => array(
+            'cover' => __( 'Cover', 'coming-soon' ),
+            'contain' => __( 'Contain', 'coming-soon' ),
+        )
+    );
+
+    $seed_csp4_options[ ] = array(
         "type" => "checkbox",
         "id" => "bg_overlay",
         "label" => __( "Dim Background", 'coming-soon' ),

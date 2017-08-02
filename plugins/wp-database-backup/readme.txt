@@ -5,7 +5,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: Database backup,db backup, backup,database, WordPress Database Backup, WP db backup,wp database backup,wp backup,wordpress backup, mysql backup,automatically database backup,website backup,website database backup,restore database backup,Store database backup on dropbox,backup on google drive,backup on amazon s3,ftp,email notification.
 Requires at least: 3.1+
-Tested up to: 4.6.1
+Tested up to: 4.8
 Stable tag: trunk
 
 Create & Restore Database Backup easily on single click. Manual or automated backups (backup to Dropbox,Google drive,Amazon s3,FTP,Email).
@@ -13,7 +13,7 @@ Create & Restore Database Backup easily on single click. Manual or automated bac
 == Description ==
 
 = Pro Version =
-* http://www.wpseeds.com/product/wp-all-backup/
+<a target="_blank" href="http://www.wpseeds.com/product/wp-all-backup">http://www.wpseeds.com/product/wp-all-backup/</a>
 
 WP Database Backup plugin helps you to create Database Backup and Restore Database Backup easily on single click.Manual or Automated Database Backups And also store database backup on safe place- Dropbox,FTP,Email,Google drive, Amazon S3
 
@@ -104,16 +104,16 @@ WP Database Backup plugin helps you to Restore Database Backup easily on single 
 </ul>
 
 = Pro Version =
-* http://www.wpseeds.com/product/wp-all-backup/
+* <a target="_blank" href="http://www.wpseeds.com/product/wp-all-backup">http://www.wpseeds.com/product/wp-all-backup/</a>
 
 = Documentation =
-* www.wpseeds.com/documentation/docs/wp-database-backup
+* <a target="_blank" href="http://www.wpseeds.com/documentation/docs/wp-database-backup">www.wpseeds.com/documentation/docs/wp-database-backup</a>
 
 = Screenshots =
-* http://www.wpseeds.com/documentation/docs/wp-database-backup/screenshots/
+* <a target="_blank" href="http://www.wpseeds.com/documentation/docs/wp-database-backup/screenshots">http://www.wpseeds.com/documentation/docs/wp-database-backup/screenshots/</a>
 
 = Support =
-* http://www.wpseeds.com/support/
+* <a target="_blank" href="http://www.wpseeds.com/support">http://www.wpseeds.com/support/</a>
 
 == Installation ==
 1. Download the plugin file, unzip and place it in your wp-content/plugins/ folder. You can alternatively upload it via the WordPress plugin backend.
@@ -281,6 +281,15 @@ WP Database Backup plugin helps you to Restore Database Backup easily on single 
 * 06-12-2016
 * Changed label Minimum Local Backups to Maximum Local Backups in Setting Tab
 
+= 4.3.8 = 
+* 01-06-2017
+* Changed icon 
+
+= 4.4 = 
+* 02-08-2017
+* Added Setting : Remove local backup 
+* If Checked then it will remove local backup. 
+
 == Frequently Asked Questions ==
 
  Q-How to  create database Backup?
@@ -327,8 +336,8 @@ Also Please make sure that you have write permission to Backup folder and also c
   
 == Upgrade Notice ==
 
-=4.3.7= 
-* Changed label Minimum Local Backups to Maximum Local Backups in Setting Tab
+=4.4= 
+* Added Setting : Remove local backup 
 
 == Official Site ==
 * http://www.wpseeds.com/documentation/docs/wp-database-backup

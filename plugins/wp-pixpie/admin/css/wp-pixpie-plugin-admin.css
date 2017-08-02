@@ -3,64 +3,558 @@
  * included in this file.
  */
 
-
 /* Hide plugin inactive warning when on settings page */
 .wp-pixpie-plugin_page_wp-pixpie-plugin_settings .plugin_not_configured_admin_notice {
-	display: none;
+    display: none;
 }
 
- /* Hide convent image notice when on convert image page */
- .wp-pixpie-plugin_page_wp-pixpie-plugin-convert-all .wp-pixpie-plugin-notice-compress-images,
- .toplevel_page_wp-pixpie-plugin .wp-pixpie-plugin-notice-compress-images
- {
- 	display: none;
- }
+/* Hide convent image notice when on convert image page */
+.wp-pixpie-plugin_page_wp-pixpie-plugin-convert-all .wp-pixpie-plugin-notice-compress-images,
+.toplevel_page_wp-pixpie-plugin .wp-pixpie-plugin-notice-compress-images {
+    display: none;
+}
 
+#pixpieUpgradeLink {
+    cursor: pointer;
+}
 
+.convert-all-link-wrapper {
+    display: none;
+}
 
- .convert-all-link-wrapper {
- 	display: none;
- }
+table.wp-pixpie-plugin-dashboard-stats {
+}
 
+table.wppp_log_table {
+    width: 100%;
+}
 
-table.wp-pixpie-plugin-dashboard-stats {}
+table.wppp_log_table th {
+    font-size: 11px;
+}
 
-table.wppp_log_table {width: 100%;}
-table.wppp_log_table th {font-size: 11px;}
-table.wppp_log_table tr {}
-table.wppp_log_table tr.trace td {color: #555;}
-table.wppp_log_table tr.debug td {color: #000;}
-table.wppp_log_table tr.info td {color: #7799FF;}
-table.wppp_log_table tr.warning td {color: #EECC33;}
-table.wppp_log_table tr.error td {color: red; font-weight: bold;}
-table.wppp_log_table tr td {font-size: 11px; border-top: 1px solid #CCC;}
-table.wppp_log_table tr td.id {width: 50px;}
-table.wppp_log_table tr td.time {width: 150px;}
-table.wppp_log_table tr td.attachment_id {width: 50px;}
-table.wppp_log_table tr td.file_name {width: 150px;}
-table.wppp_log_table tr td.size_name {width: 50px;}
-table.wppp_log_table tr td.step {width: 50px;}
-table.wppp_log_table tr td.level {width: 50px;}
-table.wppp_log_table tr td.message {}
+table.wppp_log_table tr {
+}
 
-table.wppp-settings-table input.bundle-id {width: 25%;}
-table.wppp-settings-table input.secret-key {width: 75%;}
+table.wppp_log_table tr.trace td {
+    color: #555;
+}
 
+table.wppp_log_table tr.debug td {
+    color: #000;
+}
 
+table.wppp_log_table tr.info td {
+    color: #7799FF;
+}
 
-.wppp-settings-page .no-account a.expand {display: block;}
-.wppp-settings-page .no-account a.expand.hidden {display: none;}
-.wppp-settings-page .no-account .collapsible {display: block;}
-.wppp-settings-page .no-account .collapsible.hidden {display: none;}
+table.wppp_log_table tr.warning td {
+    color: #EECC33;
+}
 
+table.wppp_log_table tr.error td {
+    color: red;
+    font-weight: bold;
+}
 
+table.wppp_log_table tr td {
+    font-size: 11px;
+    border-top: 1px solid #CCC;
+}
 
-table.wppp-settings-table input.wppp-new-account-email {width: 50%;}
-table.wppp-settings-table input.wppp-new-account-password {width: 50%;}
+table.wppp_log_table tr td.id {
+    width: 50px;
+}
 
+table.wppp_log_table tr td.time {
+    width: 150px;
+}
 
-.wppp-settings-plugin-status {font-size: 14px;}
-.wppp-settings-plugin-status-active {color: #33AA33;}
-.wppp-settings-plugin-status-failed {color: #AA3333;}
-.wppp-settings-plugin-status-inactive {color: #AA3333;}
+table.wppp_log_table tr td.attachment_id {
+    width: 50px;
+}
 
+table.wppp_log_table tr td.file_name {
+    width: 150px;
+}
+
+table.wppp_log_table tr td.size_name {
+    width: 50px;
+}
+
+table.wppp_log_table tr td.step {
+    width: 50px;
+}
+
+table.wppp_log_table tr td.level {
+    width: 50px;
+}
+
+table.wppp_log_table tr td.message {
+}
+
+table.wppp-settings-table input.bundle-id {
+    width: 25%;
+}
+
+table.wppp-settings-table input.secret-key {
+    width: 75%;
+}
+
+.wppp-settings-page .no-account a.expand {
+    display: block;
+}
+
+.wppp-settings-page .no-account a.expand.hidden {
+    display: none;
+}
+
+.wppp-settings-page .no-account .collapsible {
+    display: block;
+}
+
+.wppp-settings-page .no-account .collapsible.hidden {
+    display: none;
+}
+
+table.wppp-settings-table input.wppp-new-account-email {
+    width: 50%;
+}
+
+table.wppp-settings-table input.wppp-new-account-password {
+    width: 50%;
+}
+
+.wppp-settings-plugin-status {
+    font-size: 14px;
+}
+
+.wppp-settings-plugin-status-active {
+    color: #33AA33;
+}
+
+.wppp-settings-plugin-status-failed {
+    color: #AA3333;
+}
+
+.wppp-settings-plugin-status-inactive {
+    color: #AA3333;
+}
+
+.wppp-signup-form-error {
+    color: #AA3333;
+    font-size: 12px !important;
+    font-style: italic;
+}
+
+/*page setting */
+.numberCompressImgs {
+    font-weight: bold;
+}
+
+/*Convert All Images*/
+
+#wppp_optimization-chart {
+    /*float: left;*/
+    position: relative;
+    width: 30%;
+    margin-top: 20px;
+    text-align: center;
+    display: block;
+}
+
+.configDashbord {
+    margin-top: 30px;
+    width: 30%;
+    text-align: center;
+}
+
+.configDashbord a {
+    font-size: 16px;
+    padding: 0 10px;
+    text-decoration: none;
+}
+
+.ie8 #wppp_optimization-chart {
+    margin: 0;
+}
+
+#wppp_optimization-chart svg circle.main {
+    fill: #ebebeb;
+    animation: shwoosh 2s ease;
+    transition: stroke-dasharray 1s ease;
+}
+
+div.wppp_chart svg circle.main {
+    /*stroke: #78ca44;*/
+    stroke: #9ecb5a;
+    /*stroke:#d54e21 ;*/
+}
+
+#wppp_optimization-chart svg circle.inner {
+    fill: #fff;
+    /*fill: #7d8998;*/
+}
+
+div.wppp_savings div.wppp_chart div.wppp_value {
+    /*color: #78ca44;*/
+    /*color: #fff;*/
+    color: #7d8998;
+    /*text-shadow: 1px 2px 3px #000;*/
+}
+
+#wppp_optimization-chart div.wppp_value {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+#wppp_optimization-chart div.wppp_value div.wppp_percentage {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 85px;
+    font-size: 2.1em;
+    line-height: 1em;
+}
+
+table.wp-pixpie-plugin-dashboard-stats {
+    margin-top: 20px;
+}
+
+.subHeadSeattings {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+#wppp_optimization-chart div.wppp_value div.wppp_label {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.4em;
+    line-height: 1.2em;
+}
+
+@media only screen and (max-width: 400px) {
+    #wppp_optimization-chart {
+        float: none;
+        width: 100%;
+    }
+}
+
+/*download bar*/
+
+@keyframes progress-bar-stripes {
+    from {
+        background-position: -40px 0;
+    }
+    to {
+        background-position: 0 0;
+    }
+}
+
+div.wppp_optimize {
+    margin: 4px 23px 32px;
+    text-align: center;
+    clear: both;
+}
+
+div.wppp_optimize div.wppp_progressbar div.wppp_progress {
+    background: #0074aa linear-gradient(77deg, #7acb44 0%, #7acb44 15%, #5f8f27 15%, #5f8f27 30%, #7acb44 50%, #7acb44 70%, #5f8f27 75%, #5f8f27 100%);
+}
+
+.wppp_animate_progress {
+    animation: progress-bar-stripes 2s infinite linear;
+}
+
+div.wppp_optimize div.wppp_progressbar {
+    position: relative;
+    height: 32px;
+    margin-bottom: 32px;
+    line-height: 32px;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #ebebeb;
+    overflow: hidden;
+}
+
+div.wppp_optimize div.wppp_progressbar div.wppp_progress {
+    position: absolute;
+    left: 0;
+    min-width: 5px;
+    width: 0;
+    height: 32px;
+    z-index: 2;
+    border-radius: 5px;
+    transition: width 1s ease;
+    background-size: 40px 80px;
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000px;
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes progress-bar {
+    to {
+        background-position: 3200px 0;
+    }
+}
+
+#tiny-bulk-optimization > div.dashboard > div.statistics td.item.costs > div.cost-currency {
+    display: inline-block;
+}
+
+div.wppp_optimize div.wppp_progressbar div.wppp_numbers {
+    position: relative;
+    z-index: 3;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+div.wppp_optimize div.optimization-buttons input.button-hero {
+    display: none;
+}
+
+div.wppp_optimize div.optimization-buttons input.button-hero.visible {
+    display: inline;
+}
+
+div.wppp_optimize div.optimization-buttons input.button-hero {
+    min-width: 230px;
+}
+
+div.wppp_optimize div.optimization-buttons input.button-hero.red {
+    /* WP < 3.8 */
+    background-image: none;
+    border-color: #920011;
+    background-color: #d0021b;
+    box-shadow: 0 2px 0 #920011 !important;
+    text-shadow: 0 -1px 1px #920011, 1px 0 1px #920011, 0 1px 1px #920011, -1px 0 1px #920011;
+}
+
+div.wppp_optimize div.optimization-buttons input.button-hero.red:focus,
+div.wppp_optimize div.optimization-buttons input.button-hero.red:hover {
+    background-color: #e00016;
+}
+
+div.wppp_optimize div.optimization-buttons input.button-hero.red:active {
+    background-color: #d0021b;
+    box-shadow: 0 3px 0 #920011 inset !important;
+}
+
+div.wppp_optimize div#optimization-spinner {
+    position: absolute;
+    display: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 15px;
+    background-size: 20px 20px;
+}
+
+table.whitebox {
+    min-width: 750px;
+    margin-top: 16px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    background-color: #fff;
+}
+
+@media only screen and (max-width: 799px) {
+    table.whitebox {
+        min-width: 250px;
+    }
+}
+
+table.whitebox th.column-author {
+    /* WP 3.1-4.2 */
+    width: auto;
+}
+
+table.whitebox thead th.thumbnail {
+    width: 30px;
+}
+
+table.whitebox thead th.savings {
+    width: 70px;
+}
+
+table.whitebox thead th.status {
+}
+
+table.whitebox th.thumbnail {
+    width: 30px;
+    height: 32px;
+    padding-top: 6px;
+    vertical-align: top;
+}
+
+table.whitebox td {
+    padding-top: 12px;
+}
+
+table.whitebox td.name,
+table.whitebox td.status {
+    padding-bottom: 12px;
+}
+
+table.whitebox td.column-primary button {
+    margin-top: 6px;
+}
+
+button.toggle-row {
+    /* WP < 4.3 */
+    display: none;
+}
+
+table.whitebox tr.success button.toggle-row:before {
+    color: #7acb44;
+    content: "\f147"; /* yes */
+}
+
+table.whitebox tr.failed button.toggle-row:before {
+    color: #d54e21;
+    content: "\f158"; /* more compatibility*/
+}
+
+table.whitebox tr.failed.is-expanded span.icon {
+    display: none;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.wppp_loader {
+    border: 5px solid #ccc;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 5px solid #0085ba;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+
+#wpppFeedback {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #f2f2f2;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+#wpppAgree {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #f2f2f2;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    z-index:1000;
+    display: none;
+}
+
+#wpppAgree span {
+    height: 30px;
+    padding: 10px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    width: 100px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 16px;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+#wpppAgree h3{
+    font-size: 18px;
+    text-align: center;
+}
+
+#wpppAgree span:hover{
+    background: #cdcdcd;
+
+}
+
+.wpppYes {
+    float: left;
+    margin-left: 20%;
+}
+
+.wpppNo {
+    float: right;
+    margin-right: 20%;
+}
+
+#wpppFeedback textarea {
+    width: 90%;
+    margin: 10px auto;
+    display: block;
+    height: 100px;
+    resize: none;
+    outline: none;
+
+}
+
+#wpppFeedback h2 {
+    width: 80%;
+    margin: 10px auto;
+    text-align: center;
+}
+
+#wpppFeedback h3 {
+    padding: 20px;
+}
+
+#wpppFeedback button {
+    width: 40%;
+    margin: 10px 0;
+    outline: none;
+    background: #f4f4f4;
+    padding: 5px;
+    float: right;
+    cursor: pointer;
+
+}
+
+#wpppFeedback button:last-child {
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+}
+
+#wpppFeedback button:first-child {
+    float: left;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+#wpppFeedback .wpppButtonWrapper {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.warning {
+    border-left-color: orange;
+}
+
+#wpppHideMsg {
+    cursor: pointer;
+}

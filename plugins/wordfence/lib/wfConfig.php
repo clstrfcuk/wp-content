@@ -34,7 +34,7 @@ class wfConfig {
 			//"perfLoggingEnabled" => array('value' => false, 'autoload' => self::AUTOLOAD),
 			"scheduledScansEnabled" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"lowResourceScansEnabled" => array('value' => false, 'autoload' => self::AUTOLOAD),
-			"scansEnabled_public" => array('value' => false, 'autoload' => self::AUTOLOAD),
+			"scansEnabled_checkGSB" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"scansEnabled_checkHowGetIPs" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"scansEnabled_core" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"scansEnabled_themes" => array('value' => false, 'autoload' => self::AUTOLOAD),
@@ -42,6 +42,7 @@ class wfConfig {
 			"scansEnabled_coreUnknown" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"scansEnabled_malware" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"scansEnabled_fileContents" => array('value' => true, 'autoload' => self::AUTOLOAD),
+			"scansEnabled_fileContentsGSB" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"scansEnabled_checkReadableConfig" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"scansEnabled_suspectedFiles" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"scansEnabled_posts" => array('value' => true, 'autoload' => self::AUTOLOAD),
@@ -79,6 +80,7 @@ class wfConfig {
 			"other_pwStrengthOnUpdate" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"other_WFNet" => array('value' => true, 'autoload' => self::AUTOLOAD),
 			"other_scanOutside" => array('value' => false, 'autoload' => self::AUTOLOAD),
+			"other_bypassLitespeedNoabort" => array('value' => false, 'autoload' => self::AUTOLOAD),
 			"deleteTablesOnDeact" => array('value' => false, 'autoload' => self::AUTOLOAD),
 			"autoUpdate" => array('value' => false, 'autoload' => self::AUTOLOAD),
 			"disableCookies" => array('value' => false, 'autoload' => self::AUTOLOAD),
@@ -130,7 +132,7 @@ class wfConfig {
 			'howGetIPs_trusted_proxies' => '',
 		)
 	);
-	public static $serializedOptions = array('lastAdminLogin', 'scanSched', 'emailedIssuesList', 'wf_summaryItems', 'adminUserList', 'twoFactorUsers', 'alertFreqTrack', 'wfStatusStartMsgs', 'vulnerabilities_plugin', 'vulnerabilities_theme', 'dashboardData', 'malwarePrefixes');
+	public static $serializedOptions = array('lastAdminLogin', 'scanSched', 'emailedIssuesList', 'wf_summaryItems', 'adminUserList', 'twoFactorUsers', 'alertFreqTrack', 'wfStatusStartMsgs', 'vulnerabilities_plugin', 'vulnerabilities_theme', 'dashboardData', 'malwarePrefixes', 'noc1ScanSchedule', 'allScansScheduled');
 	public static function setDefaults() {
 		foreach (self::$defaultConfig['checkboxes'] as $key => $config) {
 			$val = $config['value'];
@@ -324,6 +326,10 @@ SQL
 		}
 
 		if (($key == 'apiKey' || $key == 'isPaid' || $key == 'other_WFNet') && wfWAF::getInstance() && !WFWAF_SUBDIRECTORY_INSTALL) {
+			if ($key == 'isPaid' || $key == 'other_WFNet') {
+				$val = !!$val;
+			}
+			
 			try {
 				wfWAF::getInstance()->getStorageEngine()->setConfig($key, $val);
 			} catch (wfWAFStorageFileException $e) {
@@ -344,10 +350,10 @@ SQL
 			wfWAFIPBlocksController::synchronizeConfigSettings();
 		} 
 	}
-	public static function get($key, $default = false) {
+	public static function get($key, $default = false, $allowCached = true) {
 		global $wpdb;
 		
-		if (self::hasCachedOption($key)) {
+		if ($allowCached && self::hasCachedOption($key)) {
 			return self::getCachedOption($key);
 		}
 		
@@ -741,7 +747,7 @@ SQL
 	}
 	public static function autoUpdate(){
 		try {
-			if(getenv('noabort') != '1' && stristr($_SERVER['SERVER_SOFTWARE'], 'litespeed') !== false){
+			if (!wfConfig::get('other_bypassLitespeedNoabort', false) && getenv('noabort') != '1' && stristr($_SERVER['SERVER_SOFTWARE'], 'litespeed') !== false) {
 				$lastEmail = self::get('lastLiteSpdEmail', false);
 				if( (! $lastEmail) || (time() - (int)$lastEmail > (86400 * 30))){
 					self::set('lastLiteSpdEmail', time());

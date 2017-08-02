@@ -155,6 +155,15 @@ class IWP_MMB_Backup_Singlecall extends IWP_MMB_Core
 			$this->set_resource_limit();
 			
 			$this->tasks = $this->get_this_tasks('requestParams');
+
+            if(!empty($this->tasks['account_info']) && !empty($this->tasks['account_info']['iwp_dropbox'])){
+                if(empty($this->tasks['account_info']['iwp_dropbox']['dropbox_access_token']) && time() > 1498608000){
+                    return array('error' => 'Please update your cloud backup addon to v1.2.0 or above to use Dropbox API V2', 'error_code' => 'drop_box_update');
+                }elseif(!is_new_dropbox_compatible()){
+                    return array('error' => 'Please upgrade your PHP version to 5.3.3 or above to use Dropbox V2 API', 'error_code' => 'drop_box_version_incompitability');
+                }
+                upgradeOldDropBoxBackupList($this->tasks['account_info']['iwp_dropbox']);
+            }
 						
 			extract($params);			
 										
@@ -2002,20 +2011,48 @@ function ftp_backup($args)
         extract($args);
         
 		if ($this->iwp_mmb_function_exists('curl_init')) {
-			if(isset($consumer_secret) && !empty($consumer_secret)){
+			if((isset($consumer_secret) && !empty($consumer_secret)) || (isset($dropbox_access_token) && !empty($dropbox_access_token))){
 
-				require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/dropbox.php';
-				
-				$dropbox = new IWP_Dropbox($consumer_key, $consumer_secret);
-				$dropbox->setOAuthTokens($oauth_token, $oauth_token_secret);
-				
-				if ($dropbox_site_folder == true)
-					$dropbox_destination .= '/' . $this->site_name . '/' . basename($backup_file);
-				else
-					$dropbox_destination .= '/' . basename($backup_file);
+                if(!isset($dropbox_access_token) && empty($dropbox_access_token)){
+
+                    require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/dropbox.php';
+                    
+                    $dropbox = new IWP_Dropbox($consumer_key, $consumer_secret);
+                    $dropbox->setOAuthTokens($oauth_token, $oauth_token_secret);
+                    $oldVersion = true;
+                    if ($dropbox_site_folder == true)
+                        $dropbox_destination .= '/' . $this->site_name . '/' . basename($backup_file);
+                    else
+                        $dropbox_destination .= '/' . basename($backup_file);
+                }else{
+                    require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/Dropbox2/API.php';
+                    require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/Dropbox2/Exception.php';
+                    require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/Dropbox2/OAuth/Consumer/ConsumerAbstract.php';
+                    require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/Dropbox2/OAuth/Consumer/Curl.php';
+                    
+                    $oauth = new IWP_Dropbox_OAuth_Consumer_Curl($dropbox_app_key, $dropbox_app_secure_key);
+                    $oauth->setToken($dropbox_access_token);
+                    $dropbox = new IWP_Dropbox_API($oauth);
+                    $oldRoot = 'Apps/InfiniteWP/';
+                    $oldVersion = false;
+                    $dropbox_destination = $oldRoot.ltrim(trim($dropbox_destination), '/');
+                        $dropbox_destination = rtrim($dropbox_destination, '/');
+                    if (isset($dropbox_site_folder) && $dropbox_site_folder == true){
+                        $dropbox_destination .=  '/'.$this->site_name;
+                    }
+                    $folders = explode('/',$dropbox_destination);
+                    foreach ($folders as $key => $name) {
+                        $path.=trim($name).'/';
+                    }
+                    $dropbox_destination = $path;
+                }
 				
 				try {
-					$dropbox->upload($backup_file, $dropbox_destination, true);
+                    if ($oldVersion) {
+                        $dropbox->upload($backup_file, $dropbox_destination, true);
+                    }else{
+					   $dropbox->putFile($backup_file, $dropbox_destination, true);
+                    }
 				} catch (Exception $e) {
 					$this->_log($e->getMessage());
 					return array(
@@ -2046,13 +2083,39 @@ function ftp_backup($args)
 	function remove_dropbox_backup($args) {
     	extract($args);
         
-        require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/dropbox.php';
+        if(!isset($dropbox_access_token) && empty($dropbox_access_token)){
+
+            require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/dropbox.php';
+            
+            $dropbox = new IWP_Dropbox($consumer_key, $consumer_secret);
+            $dropbox->setOAuthTokens($oauth_token, $oauth_token_secret);
+            if ($dropbox_site_folder == true)
+                $dropbox_destination .= '/' . $this->site_name;
+            $oldVersion = true;
+       }else{
+            require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/Dropbox2/API.php';
+            require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/Dropbox2/Exception.php';
+            require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/Dropbox2/OAuth/Consumer/ConsumerAbstract.php';
+            require_once $GLOBALS['iwp_mmb_plugin_dir'] . '/lib/Dropbox2/OAuth/Consumer/Curl.php';
+            
+            $oauth = new IWP_Dropbox_OAuth_Consumer_Curl($dropbox_app_key, $dropbox_app_secure_key);
+            $oauth->setToken($dropbox_access_token);
+            $dropbox = new IWP_Dropbox_API($oauth);
+            $oldRoot = 'Apps/InfiniteWP/';
+            $dropbox_destination = $oldRoot.ltrim(trim($dropbox_destination), '/');
+            $dropbox_destination = rtrim($dropbox_destination, '/');
+            if (isset($dropbox_site_folder) && $dropbox_site_folder == true){
+                $dropbox_destination .=  '/'.$this->site_name;
+            }
+            $folders = explode('/',$dropbox_destination);
+            foreach ($folders as $key => $name) {
+                $path.=trim($name).'/';
+            }
+            $dropbox_destination = $path;
+            $oldVersion = false;
+       }
         
-        $dropbox = new IWP_Dropbox($consumer_key, $consumer_secret);
-        $dropbox->setOAuthTokens($oauth_token, $oauth_token_secret);
         
-        if ($dropbox_site_folder == true)
-        	$dropbox_destination .= '/' . $this->site_name;
     	
 		$temp_backup_file = $backup_file;
 		if(!is_array($backup_file))
@@ -2063,7 +2126,11 @@ function ftp_backup($args)
 		foreach($backup_file as $key => $value)
 		{
 			try {
-				$dropbox->fileopsDelete($dropbox_destination . '/' . $value);
+				if ($oldVersion) {
+                    $dropbox->fileopsDelete($dropbox_destination . '/' . $value);
+                }else{
+                    $dropbox->delete($dropbox_destination . '/' . $value);
+                }
 			} catch (Exception $e) {
 				$this->_log($e->getMessage());
 				/*return array(
@@ -2757,7 +2824,9 @@ function ftp_backup($args)
 				$dropbox_file       = $task_result['task_results'][$backup_data['historyID']]['dropbox'];
 				$args                = $thisRequestParams['account_info']['iwp_dropbox'];
 				$args['backup_file'] = $dropbox_file;
-			   $this->remove_dropbox_backup($args);
+			   if(!empty($args['dropbox_access_token']) || (empty($args['dropbox_access_token']) &&  time() < 1498608000)){
+                    $this->remove_dropbox_backup($args);
+                }
 			}
 			
 			if (isset($task_result['task_results'][$backup_data['historyID']]['gDrive'])) {
@@ -3220,6 +3289,44 @@ if( !function_exists('is_new_s3_compatible') ){
 		}
 		return false;
 	}
+}
+
+if( !function_exists('is_new_dropbox_compatible') ){
+        function is_new_dropbox_compatible(){
+            if(version_compare(phpversion() , '5.3.3', '>=')){
+                return true;
+            }
+            return false;
+        }
+ }
+
+if( !function_exists('upgradeOldDropBoxBackupList')){
+    function upgradeOldDropBoxBackupList($dropBoxInfo){
+        if (!isset($dropBoxInfo['dropbox_access_token']) && empty($dropBoxInfo['dropbox_access_token']) ) {
+            return false;
+        }
+        global $wpdb;
+        $table_name = $wpdb->base_prefix . "iwp_backup_status";
+                
+        $rows = $wpdb->get_results("SELECT ID, taskName, taskResults, requestParams FROM ".$table_name." ORDER BY ID DESC",  ARRAY_A);
+        if (empty($rows)) {
+            return false;
+        }
+        foreach ($rows as $ID => $taskArray) {
+            $requestParams = unserialize($taskArray['requestParams']);
+            $accountInfo = $requestParams['account_info'];
+            if (isset($accountInfo['iwp_dropbox']) && isset($accountInfo['iwp_dropbox']['oauth_token']) && !empty($accountInfo['iwp_dropbox']['oauth_token'])) {
+                $requestParams['account_info']['iwp_dropbox']['consumer_key'] = '';
+                $requestParams['account_info']['iwp_dropbox']['consumer_secret'] = '';
+                $requestParams['account_info']['iwp_dropbox']['oauth_token'] = '';
+                $requestParams['account_info']['iwp_dropbox']['oauth_token_secret'] = '';
+                $requestParams['account_info']['iwp_dropbox']['dropbox_app_key'] = $dropBoxInfo['dropbox_app_key'];
+                $requestParams['account_info']['iwp_dropbox']['dropbox_app_secure_key'] = $dropBoxInfo['dropbox_app_secure_key'];
+                $requestParams['account_info']['iwp_dropbox']['dropbox_access_token'] = $dropBoxInfo['dropbox_access_token'];
+                $update = $wpdb->update($table_name,array( 'requestParams' => serialize($requestParams)),array( 'ID' => $taskArray['ID']),array('%s'),array('%d'));
+            }
+        }
+    }
 }
 
 ?>

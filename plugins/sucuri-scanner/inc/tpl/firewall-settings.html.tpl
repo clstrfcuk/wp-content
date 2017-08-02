@@ -1,65 +1,77 @@
 
-<div class="sucuriscan-panelstuff">
-    <div class="postbox">
-        <h3>Firewall Settings</h3>
+<script type="text/javascript">
+/* global jQuery */
+/* jshint camelcase: false */
+jQuery(document).ready(function ($) {
+    $.post('%%SUCURI.AjaxURL.Firewall%%', {
+        action: 'sucuriscan_ajax',
+        sucuriscan_page_nonce: '%%SUCURI.PageNonce%%',
+        form_action: 'firewall_settings',
+    }, function (data) {
+        if (data.ok) {
+            var value;
+            $('#firewall-settings-table tbody').html('');
+            for (var name in data.settings) {
+                if (data.settings.hasOwnProperty(name) &&
+                    typeof data.settings[name] === 'string'
+                ) {
+                    value = data.settings[name];
+                    $('#firewall-settings-table tbody').append('<tr>' +
+                    '<td><label>' + name + '</label></td>' +
+                    '<td><span class="sucuriscan-monospace">' +
+                    value + '</span></td></tr>');
+                }
+            }
+        } else {
+            $('#firewall-settings-table tbody')
+            .html('<tr><td colspan="2">' + data.error + '</td></tr>');
+        }
+    });
+});
+</script>
 
-        <div class="inside">
-            <p>
-                A powerful <b>WAF</b> <em>(Web Application Firewall)</em> and <b>Intrusion
-                Prevention</b> system for any WordPress user and many other platforms. This page
-                will help you to configure and monitor your site through <strong>Sucuri
-                CloudProxy</strong>. Once enabled, our firewall will act as a shield, protecting
-                your site from attacks and preventing malware infections and reinfections. It
-                will block SQL injection attempts, brute force attacks, XSS, RFI, backdoors and
-                many other threats against your site.
-            </p>
+<div class="sucuriscan-panel">
+    <h3 class="sucuriscan-title">@@SUCURI.FirewallSettingsTitle@@</h3>
 
-            <div class="sucuriscan-inline-alert-info sucuriscan-%%SUCURI.Firewall.APIKeyFormVisibility%%">
-                <p>
-                    Add your <a href="https://waf.sucuri.net/?settings&panel=api" target="_blank">
-                    CloudProxy API key</a> in the form below to start communicating with the firewall
-                    API service.
-                </p>
-            </div>
+    <div class="inside">
+        <p>@@SUCURI.FirewallSettingsInfo@@</p>
 
-            <div class="sucuriscan-hstatus sucuriscan-hstatus-2 sucuriscan-firewall-apikey sucuriscan-%%SUCURI.Firewall.APIKeyVisibility%%">
-                <span class="sucuriscan-monospace">%%SUCURI.Firewall.APIKey%%</span>
-                <form action="%%SUCURI.URL.Firewall%%" method="post">
-                    <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
-                    <button type="submit" name="sucuriscan_delete_wafkey" class="button-primary button-danger">Delete</button>
-                </form>
-            </div>
-
-            <form action="%%SUCURI.URL.Firewall%%" method="post" class="sucuriscan-%%SUCURI.Firewall.APIKeyFormVisibility%%">
-                <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
-                <span class="sucuriscan-input-group">
-                    <label>CloudProxy API Key:</label>
-                    <input type="text" name="sucuriscan_cloudproxy_apikey" class="input-text" />
-                </span>
-                <button type="submit" class="button-primary">Save</button>
-            </form>
-
-            <table class="wp-list-table widefat sucuriscan-table sucuriscan-firewall-settings sucuriscan-%%SUCURI.Firewall.SettingsVisibility%%">
-                <thead>
-                    <tr>
-                        <th>Setting Name</th>
-                        <th>Setting Value</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    %%%SUCURI.Firewall.SettingOptions%%%
-                </tbody>
-            </table>
-
-            <p>
-                <em>[1]</em> More information about <a href="https://sucuri.net/website-firewall/"
-                target="_blank">CloudProxy</a>, features and pricing.<br>
-                <em>[2]</em> Instructions and videos in the official <a href="https://kb.sucuri.net/cloudproxy"
-                target="_blank">Knowledge Base</a> site.<br>
-                <em>[3]</em> <a href="https://login.sucuri.net/signup2/create?CloudProxy" target="_blank">
-                Sign up</a> for a new account and start protecting your site with CloudProxy.
-            </p>
+        <div class="sucuriscan-inline-alert-info sucuriscan-%%SUCURI.Firewall.APIKeyFormVisibility%%">
+            <p>@@SUCURI.FirewallAddKey@@</p>
         </div>
+
+        <div class="sucuriscan-hstatus sucuriscan-hstatus-2 sucuriscan-firewall-apikey sucuriscan-%%SUCURI.Firewall.APIKeyVisibility%%">
+            <strong>@@SUCURI.FirewallKey@@:</strong>
+            <span class="sucuriscan-monospace">%%SUCURI.Firewall.APIKey%%</span>
+            <form action="%%SUCURI.URL.Firewall%%" method="post">
+                <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
+                <button type="submit" name="sucuriscan_delete_wafkey" class="button button-primary">@@SUCURI.Delete@@</button>
+            </form>
+        </div>
+
+        <form action="%%SUCURI.URL.Firewall%%" method="post" class="sucuriscan-%%SUCURI.Firewall.APIKeyFormVisibility%%">
+            <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
+            <fieldset class="sucuriscan-clearfix">
+                <label>@@SUCURI.FirewallKey@@:</label>
+                <input type="text" name="sucuriscan_cloudproxy_apikey" />
+                <button type="submit" class="button button-primary">@@SUCURI.Save@@</button>
+            </fieldset>
+            <br>
+        </form>
+
+        <table class="wp-list-table widefat sucuriscan-table" id="firewall-settings-table">
+            <thead>
+                <tr>
+                    <th>@@SUCURI.Name@@</th>
+                    <th>@@SUCURI.Value@@</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr><td colspan="2">@@SUCURI.Loading@@</td></tr>
+            </tbody>
+        </table>
+
+        <p>@@SUCURI.FirewallFootNote@@</p>
     </div>
 </div>
