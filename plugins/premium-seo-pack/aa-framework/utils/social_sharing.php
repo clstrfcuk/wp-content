@@ -73,7 +73,7 @@ if (class_exists('pspSocialSharing') != true) {
 		
 		public function the_styles() {
 			if( !wp_style_is('psp_socialshare_css') ) {
-				wp_enqueue_style( 'psp_socialshare_css' , $this->module_folder . '/social_sharing.css' );
+				wp_enqueue_style( 'psp_socialshare_css' , $this->module_folder . 'social_sharing.css' );
 			}
 		}
 		public function the_scripts() {
@@ -81,7 +81,7 @@ if (class_exists('pspSocialSharing') != true) {
 				wp_enqueue_script( 'jquery' , 'https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js' );
 			}
 			if( !wp_script_is('psp_socialshare_js') ) {
-				wp_enqueue_script( 'psp_socialshare_js' , $this->module_folder . '/social_sharing.js', array(
+				wp_enqueue_script( 'psp_socialshare_js' , $this->module_folder . 'social_sharing.js', array(
 					'jquery'
 				) );
 				wp_localize_script( 'psp_socialshare_js', 'pspSocialSharing_ajaxurl', admin_url('admin-ajax.php') );
@@ -154,8 +154,8 @@ if (class_exists('pspSocialSharing') != true) {
 			);
 			
 			$this->pageTypes = array(
-				'home' 		=> __('Homepage', $this->the_plugin->localizationName),
-				'front_page' 		=> __('Posts Front Page', $this->the_plugin->localizationName),
+				'home' 			=> __('Homepage', $this->the_plugin->localizationName),
+				'front_page' 	=> __('Posts Front Page', $this->the_plugin->localizationName),
 				'single' 		=> __('Posts', $this->the_plugin->localizationName),
 				'page' 			=> __('Pages', $this->the_plugin->localizationName),
 				'category' 		=> __('Category Pages', $this->the_plugin->localizationName),
@@ -164,22 +164,24 @@ if (class_exists('pspSocialSharing') != true) {
 			);
 
 			$this->socialNetworks = array(
-				'print' 			=> array('title' => __('Print', $this->the_plugin->localizationName)),
-				'email' 			=> array('title' => __('Email', $this->the_plugin->localizationName)),
-				// 'more' 			=> array('title' => __('More', $this->the_plugin->localizationName)),
+				//'more' 		=> array('title' => __('More', $this->the_plugin->localizationName)),
+				'print' 		=> array('title' => __('Print', $this->the_plugin->localizationName)),
+				'email' 		=> array('title' => __('Email', $this->the_plugin->localizationName)),
 				'facebook' 		=> array('title' => __('Facebook', $this->the_plugin->localizationName)),
-				'twitter' 		=> array('title' => __('Twitter', $this->the_plugin->localizationName)),
 				'plusone' 		=> array('title' => __('Plusone', $this->the_plugin->localizationName)),
 				'linkedin' 		=> array('title' => __('Linkedin', $this->the_plugin->localizationName)),
 				'stumbleupon' 	=> array('title' => __('Stumble Upon', $this->the_plugin->localizationName)),
-				// 'digg' 			=> array('title' => __('Digg', $this->the_plugin->localizationName)),
-				'delicious' 		=> array('title' => __('Delicious', $this->the_plugin->localizationName)),
-				'pinterest' 		=> array('title' => __('Pinterest', $this->the_plugin->localizationName)),
-				// 'xing' 			=> array('title' => __('Xing', $this->the_plugin->localizationName)),
+				'pinterest' 	=> array('title' => __('Pinterest', $this->the_plugin->localizationName)),
 				'buffer' 		=> array('title' => __('Buffer', $this->the_plugin->localizationName)), // @js errors
-				'flattr' 			=> array('title' => __('Flattr', $this->the_plugin->localizationName)),
-				// 'tumblr' 		=> array('title' => __('Tumblr', $this->the_plugin->localizationName)),
-				'reddit' 		=> array('title' => __('Reddit', $this->the_plugin->localizationName))
+				'twitter' 	=> array('title' => __('Twitter', $this->the_plugin->localizationName)),
+				'flattr' 		=> array('title' => __('Flattr', $this->the_plugin->localizationName)),
+				'reddit' 		=> array('title' => __('Reddit', $this->the_plugin->localizationName)),
+				'digg' 		=> array('title' => __('Digg', $this->the_plugin->localizationName)),
+				'xing' 		=> array('title' => __('Xing', $this->the_plugin->localizationName)),
+				'tumblr' 		=> array('title' => __('Tumblr', $this->the_plugin->localizationName)),
+
+				//2017-june not working anymore
+				//'delicious' 	=> array('title' => __('Delicious', $this->the_plugin->localizationName)),
 			);
 		}
 		
@@ -310,14 +312,14 @@ if (class_exists('pspSocialSharing') != true) {
 			// load the settings template class
 			require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'settings-template.class.php' );
 			
-			// Initalize the your aaInterfaceTemplates
-			$aaInterfaceTemplates = new aaInterfaceTemplates($this->the_plugin->cfg);
+			// Initalize the your psp_aaInterfaceTemplates
+			$psp_aaInterfaceTemplates = new psp_aaInterfaceTemplates($this->the_plugin->cfg);
 			
 			$options = array();
 			$options = $this->plugin_settings;
 			
 			// then build the html, and return it as string
-			$html_options = $aaInterfaceTemplates->bildThePage( $this->set_toolbar_options( $options, $pms ) , $this->the_plugin->alias, array(), false);
+			$html_options = $psp_aaInterfaceTemplates->bildThePage( $this->set_toolbar_options( $options, $pms ) , $this->the_plugin->alias, array(), false);
 			return $html_options;
 		}
 		
@@ -553,8 +555,9 @@ if (class_exists('pspSocialSharing') != true) {
 				$selectedBtn = explode(',', $db_meta_name[$__theKey]);
 			}
 			$selectedBtn = (array) $selectedBtn;
-			
+
 			$availableBtn = array_keys( $this->socialNetworks );
+			$selectedBtn = array_intersect($availableBtn, $selectedBtn);
 			$availableBtn = array_diff( $availableBtn, $selectedBtn );
 		?>
 <div class="psp-panel-body panel-body psp-form-row">
@@ -976,7 +979,7 @@ if (class_exists('pspSocialSharing') != true) {
 				}
 				
 				if ( !isset($url) || empty($url) ) {
-					$url = (!empty($_SERVER['HTTPS'])) ? "https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] : "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+					$url = $this->the_plugin->get_current_page_url(array());
 				}
 				if ( !isset($title) || empty($title) ) {
 					$title = wp_title('', false);
@@ -1061,155 +1064,19 @@ if (class_exists('pspSocialSharing') != true) {
 		/**
 		 * get COUNT
 		 */
-		public function getSocialsData( $website_url='', $itemid=0, $force_refresh_cache=false )
+		public function getSocialsData( $website_url='', $itemid=0 )
 		{
-			$cache_life_time = 60 * 10; // in seconds
-			$the_db_cache = get_post_meta( $itemid, 'psp_socialsharing_count', true);
-			
-			// check if cache NOT expires 
-			if( isset($the_db_cache['_cache_date']) && ( time() <= ( $the_db_cache['_cache_date'] + $cache_life_time ) ) && $force_refresh_cache == false ) {
-				$the_db_cache['facebook'] = 0;
-				if ( isset($the_db_cache['facebook']['share_count']) )
-					$the_db_cache['facebook'] = $the_db_cache['facebook']['share_count'];
-				return $the_db_cache;
-			}
-			
-			$db_cache = array();
-			$db_cache['_cache_date'] = time();
-			
-			// Facebook
-			$fql  = "SELECT url, normalized_url, share_count, like_count, comment_count, ";
-			$fql .= "total_count, commentsbox_count, comments_fbid, click_count FROM ";
-			$fql .= "link_stat WHERE url = '{$website_url}'";
-			$apiQuery = "https://api.facebook.com/method/fql.query?format=json&query=" . urlencode($fql);
-			$fb_data = $this->getRemote( $apiQuery );
-			$fb_data = $fb_data[0];
-			
-			// Twitter
-			$apiQuery = "http://urls.api.twitter.com/1/urls/count.json?url=" . $website_url;
-			$tw_data = $this->getRemote( $apiQuery );
-			
-			// LinkedIn
-			$apiQuery = "http://www.linkedin.com/countserv/count/share?format=json&url=" . $website_url;
-			$ln_data = $this->getRemote( $apiQuery );
-			
-			// Pinterest
-			$apiQuery = "http://api.pinterest.com/v1/urls/count.json?callback=receiveCount&url=" . $website_url;
-			$pn_data = $this->getRemote( $apiQuery );
-			
-			// StumbledUpon
-			$apiQuery = "http://www.stumbleupon.com/services/1.01/badge.getinfo?url=" . $website_url;
-			$st_data = $this->getRemote( $apiQuery );
-			
-			// Delicious
-			$apiQuery = "http://feeds.delicious.com/v2/json/urlinfo/data?url=" . $website_url;
-			$de_data = $this->getRemote( $apiQuery ); 
-			$de_data = $de_data[0];
-			
-			// Google Plus
-			$apiQuery = "https://plusone.google.com/_/+1/fastbutton?bsv&size=tall&hl=it&url=" . $website_url;			
-			$go_data = $this->getRemote( $apiQuery, false ); 
-			
-			if ( isset($go_data) && !empty($go_data) ) {
-				require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/php-query/php-query.php' );
-				if ( !empty($this->the_plugin->charset) )
-					$html = pspphpQuery::newDocumentHTML( $go_data, $this->the_plugin->charset );
-				else
-					$html = pspphpQuery::newDocumentHTML( $go_data );
-				$go_data = $html->find("#aggregateCount")->text();
-			}
-			
-			// Buffer
-			$apiQuery = "https://api.bufferapp.com/1/links/shares.json?url=" . $website_url;
-			$buffer_data = $this->getRemote( $apiQuery );
-			
-			// Reddit
-			$apiQuery = "http://www.reddit.com/api/info.json?url=" . $website_url;
-			$reddit_data = $this->getRemote( $apiQuery );
-			if ( isset($reddit_data['data']['children'][0]['data']) )
-				$reddit_data = $reddit_data['data']['children'][0]['data'];
-			else $reddit_data = array('score' => 0);
-			
-			// Flattr
-			$apiQuery = "https://api.flattr.com/rest/v2/things/lookup/?url=" . $website_url;
-			$flattr_data = $this->getRemote( $apiQuery );
-			if ( isset($flattr_data['message']) && $flattr_data['message'] != 'found' ) 
-				$flattr_data['flattrs'] = 0;
-			
-			// Tumblr
-			// api: http://www.tumblr.com/docs/en/api/v2#blog-likes
-			// @info: needs an api key!
-			
-			// Digg
-			// no valid api found!
-			
-			// Xing
-			// api: https://dev.xing.com/docs
-			// @info: needs an api key! - can't find the number of likes/bookmarks!
-			
-			// store for feature cache
-			$db_cache['facebook'] = array(
-				'share_count' => isset($fb_data['share_count']) ? $fb_data['share_count'] : 0,
-				'like_count' => isset($fb_data['like_count']) ? $fb_data['like_count'] : 0,
-				'comment_count' => isset($fb_data['comment_count']) ? $fb_data['comment_count'] : 0,
-				'click_count' => isset($fb_data['click_count']) ? $fb_data['click_count'] : 0
-			);
-			
-			$db_cache['twitter'] = isset($tw_data['count']) ? $tw_data['count'] : 0;
-			$db_cache['linkedin'] = isset($ln_data['count']) ? $ln_data['count'] : 0;
-			$db_cache['pinterest'] = isset($pn_data['count']) ? $pn_data['count'] : 0;
-			$db_cache['stumbleupon'] = isset($st_data['result']['views']) ? $st_data['result']['views'] : 0;
-			$db_cache['delicious'] = isset($de_data['total_posts']) ? $de_data['total_posts'] : 0;
-			$db_cache['plusone'] = isset($go_data) ? $go_data : 0;
-			$db_cache['buffer'] = isset($buffer_data['shares']) ? $buffer_data['shares'] : 0;
-			$db_cache['reddit'] = isset($reddit_data['score']) ? $reddit_data['score'] : 0;
-			$db_cache['flattr'] = isset($flattr_data['flattrs']) ? $flattr_data['flattrs'] : 0;
-			
-			if ( !empty($db_cache) ) {
-				foreach ($db_cache as $k => $v) {
-					if ( $k == 'plusone' ) ;
-					else if ( $k == 'facebook') {
-						foreach ($v as $key => $value) {
-							$db_cache["$k"]["$key"] = (int) $value;							
-						}
-					} else {
-						$db_cache["$k"] = (int) $v;
-					}
-				}
-			}
-			
-			// create a DB cache of this
-			update_post_meta( $itemid, 'psp_socialsharing_count', $db_cache );
-			
-			$db_cache['facebook'] = $db_cache['facebook']['share_count'];
-			return $db_cache; 
+			$socialData = $this->the_plugin->social_get_stats(array(
+				//'providers'				=> array(),
+				'from'					=> 'toolbar',
+				'cache_life_time'		=> 600, // in seconds
+				'website_url'			=> $website_url,
+				'postid'				=> $itemid,
+			));
+			return $socialData;
 		}
 
-		private function getRemote( $the_url, $parse_as_json=true )
-		{ 
-			$response = wp_remote_get( $the_url, array('user-agent' => "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0", 'timeout' => 10) ); 
-			// If there's error
-            if ( is_wp_error( $response ) ){
-            	return array(
-					'status' => 'invalid'
-				);
-            }
-        	$body = wp_remote_retrieve_body( $response );
-			
-			if( $parse_as_json == true ){
-				// trick for pinterest
-				if( preg_match('/receiveCount/i', $body)){
-					$body = str_replace("receiveCount(", "", $body);
-					$body = str_replace(")", "", $body);
-				}
-				
-	        	return json_decode( $body, true );
-			}
-			
-			return $body;
-		}
-		
-		
+
 		/**
 		 * Toolbar exclude
 		 */

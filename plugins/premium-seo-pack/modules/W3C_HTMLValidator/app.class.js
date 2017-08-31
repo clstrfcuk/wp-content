@@ -33,20 +33,27 @@ pspHTMLValidation = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 
-			if( response.status == 'valid' ){
-				row.find('strong.status').text( response.arr.status );
-				if( response.arr.status == 'Invalid' ){
-					row.find('strong.status').css('color', 'red');
-				}else if( response.arr.status == 'Valid' ){
-					row.find('strong.status').css('color', 'green');
+			var nr_of_errors 	= misc.hasOwnProperty(response, 'nr_of_errors') ? response.nr_of_errors : '-',
+				nr_of_warning 	= misc.hasOwnProperty(response, 'nr_of_warning') ? response.nr_of_warning : '-',
+				last_check_at 	= misc.hasOwnProperty(response, 'last_check_at') ? response.last_check_at : 'Never Checked';
+
+			var current_status 	= misc.hasOwnProperty(response, 'status') ? response.status : '-';
+			if ( misc.hasOwnProperty(response, 'msg') ) {
+				if ( $.trim(response.msg) != '' ) {
+					current_status = response.msg;
 				}
-				row.find('i.nr_of_errors').text( response.arr.nr_of_errors );
-				row.find('i.nr_of_warning').text( response.arr.nr_of_warning );
-				row.find('i.last_check_at').text( response.arr.last_check_at );
-			} else {
-			    row.find('strong.status').text( response.msg );
-			    row.find('strong.status').css('color', 'red');
 			}
+
+			if ( response.status == 'invalid' ) {
+				row.find('strong.status').css('color', 'red');
+			} else if( response.status == 'valid' ) {
+				row.find('strong.status').css('color', 'green');
+			}
+			row.find('strong.status').text( current_status );
+
+			row.find('i.nr_of_errors').text( nr_of_errors );
+			row.find('i.nr_of_warning').text( nr_of_warning );
+			row.find('i.last_check_at').text( last_check_at );
 
 			row_loading(row, 'hide');
 
@@ -125,7 +132,7 @@ pspHTMLValidation = (function ($) {
 			if( $.trim(title.val()) == "" ){
 
 				row_loading(row, 'hide');
-				alert('Your post don\'t have a title.'); return false;
+				swal('Your post doesn\'t have a title.'); return false;
 			}
 
 			verifyPage(itemID, row);
@@ -137,6 +144,17 @@ pspHTMLValidation = (function ($) {
 			verifyAllPages();
 		});
 	}
+
+	// :: MISC
+	var misc = {
+
+		hasOwnProperty: function(obj, prop) {
+			var proto = obj.__proto__ || obj.constructor.prototype;
+			return (prop in obj) &&
+			(!(prop in proto) || proto[prop] !== obj[prop]);
+		}
+
+	};
 
 	// external usage
 	return {

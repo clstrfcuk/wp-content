@@ -231,14 +231,13 @@ class pspSeoSitemap
 
         $parts = parse_url($siteurl);
         $path = isset($parts['path']) ? $parts['path'] : ''; //uncomment this if the sitemap is not generated
- 
-        $uri = $_SERVER['REQUEST_URI'];
         $path_len = strlen($path);
-        //var_dump('<pre>', $siteurl, $uri, $path, '</pre>'); die('debug...');
 
-        if(strlen($uri) > $path_len && substr($uri, 0, $path_len) == $path) {
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
-            $request = substr($uri,$path_len);
+        if(strlen($request_uri) > $path_len && substr($request_uri, 0, $path_len) == $path) {
+
+            $request = substr($request_uri,$path_len);
             $parts = parse_url($request);
 
             // 'index', 'images', 'videos', 'site', 'external', 'misc', 'author', 'archive', 'taxonomy', 'posttype'
@@ -1736,6 +1735,7 @@ class pspSeoSitemap
     private function cdataElement( $key='', $val='', $forceEmpty=true ) {
         if ( !$forceEmpty ) return false;
 
+        $val = $this->the_plugin->xml_entities( $val );
         $val = '<![CDATA[' . $val . ']]>';
         $this->getWriter()->writeElement( $key, $val );
     }

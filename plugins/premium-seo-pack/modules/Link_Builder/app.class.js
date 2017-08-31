@@ -10,6 +10,8 @@ pspLinkBuilder = (function ($) {
     var debug_level = 0;
     var maincontainer = null;
     var lightbox = null;
+    var current_row = null;
+
 
 	// init function, autoload
 	(function init() {
@@ -17,6 +19,7 @@ pspLinkBuilder = (function ($) {
 		$(document).ready(function(){
 			maincontainer = $(".psp-main");
 			lightbox = $("#psp-lightbox-overlay");
+
 			triggers();
 		});
 	})();
@@ -45,6 +48,7 @@ pspLinkBuilder = (function ($) {
 		lightbox.find("a.psp-close-btn").click(function(e){
 			e.preventDefault();
 			lightbox.fadeOut('fast');
+			pspFreamwork.row_loading(current_row, 'hide');
 		});
 	}
 	
@@ -62,6 +66,7 @@ pspLinkBuilder = (function ($) {
 		lightbox.find("a.psp-close-btn").click(function(e){
 			e.preventDefault();
 			lightbox.fadeOut('fast');
+			pspFreamwork.row_loading(current_row, 'hide');
 		});
 	}
 	
@@ -79,30 +84,44 @@ pspLinkBuilder = (function ($) {
 		lightbox.find("a.psp-close-btn").click(function(e){
 			e.preventDefault();
 			lightbox.fadeOut('fast');
+			pspFreamwork.row_loading(current_row, 'hide');
 		});
 	}
 	
 	function getDetails( itemid )
 	{
 		pspFreamwork.to_ajax_loader( "Loading..." );
+		pspFreamwork.row_loading(current_row, 'show');
 			
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspGetUpdateDataBuilder',
+			'sub_action'	: 'get_details',
 			'itemid'		: itemid,
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				pspFreamwork.to_ajax_loader_close();
+				//pspFreamwork.to_ajax_loader_close();
 				
-				var r = response.data, $details = $('#psp-lightbox-seo-report-response-details');
+				var r 			= response.data,
+					$details 	= $('#psp-lightbox-seo-report-response-details'),
 
-				$details.find('#details_url').text( r.url );
-				$details.find('#details_text').text( r.phrase );
-				$details.find('#details_title').text( r.title );
-				$details.find('#details_rel').text( r.rel );
-				$details.find('#details_target').text( r.target );
-				$details.find('#details_max_replacements').text( r.max_replacements );
+					phrase 		= typeof r.phrase != 'undefined' && r.phrase ? r.phrase : '',
+					url 		= typeof r.url != 'undefined' && r.url ? r.url : '',
+					title 		= typeof r.title != 'undefined' && r.title ? r.title : '',
+					rel 		= typeof r.rel != 'undefined' && r.rel ? r.rel : '',
+					target 		= typeof r.target != 'undefined' && r.target ? r.target : '',
+					attr_title 	= typeof r.attr_title != 'undefined' && r.attr_title ? r.attr_title : '',
+					maxreplace 	= r.max_replacements,
+					maxreplace2 = maxreplace == -1 ? 'all' : maxreplace;
+
+				$details.find('#details_text').text( phrase );
+				$details.find('#details_url').text( url );
+				$details.find('#details_title').text( title );
+				$details.find('#details_rel').text( rel );
+				$details.find('#details_target').text( target );
+				$details.find('#details_attr_title').text( attr_title );
+				$details.find('#details_max_replacements').text( maxreplace2 );
 
 				showDetails();
 			}
@@ -117,19 +136,26 @@ pspLinkBuilder = (function ($) {
 		lightbox.fadeOut('fast');
 		pspFreamwork.to_ajax_loader( "Loading..." );
 		
-		var url = $form.find('#new_url'), url_val = url.val();
-		if (!url_val.match("^http?://")) url.val("http://" + url_val);
+		var url = $form.find('#new_url'),
+			url_val = url.val();
+
+		if ( ! url_val.match("^https?://") ) {
+			url.val("http://" + url_val);
+		}
 
 		var data_save = $form.serializeArray();
     	data_save.push({ name: "action", value: "pspAddToBuilder" });
+    	//data_save.push({ name: "sub_action", value: sub_action });
+    	data_save.push({ name: "ajax_id", value: $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val() });
     	data_save.push({ name: "debug_level", value: debug_level });
     	data_save.push({ name: "itemid", value: 0 });
 
 		jQuery.post(ajaxurl, data_save, function(response) {
 			if( response.status == 'valid' ) {
-				setFlagAdd(1);
-				pspFreamwork.to_ajax_loader_close();
-				window.location.reload();
+				//setFlagAdd(1);
+				//pspFreamwork.to_ajax_loader_close();
+				//window.location.reload();
+				$("#psp-table-ajax-response").html( response.html );
 			}
 			pspFreamwork.to_ajax_loader_close();
 			return false;
@@ -138,14 +164,18 @@ pspLinkBuilder = (function ($) {
 	
 	function getUpdateData( itemid ) {
 		pspFreamwork.to_ajax_loader( "Loading..." );
+		pspFreamwork.row_loading(current_row, 'show');
 
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspGetUpdateDataBuilder',
+			'sub_action'	: 'get_details',
 			'itemid'		: itemid,
 			'debug_level'	: debug_level
 		}, function(response) {
+
+			//pspFreamwork.row_loading(row, 'hide');
 			if( response.status == 'valid' ){
-				pspFreamwork.to_ajax_loader_close();
+				//pspFreamwork.to_ajax_loader_close();
 
 				setUpdateForm( response.data );
 				showUpdateLink();
@@ -157,103 +187,100 @@ pspLinkBuilder = (function ($) {
 
 	function setUpdateForm( data ) {
 		var $form = $('.psp-update-link-form'),
-		itemid = data.id, phrase = data.phrase, url = data.url, title = data.title,
-		rel = data.rel, target = data.target, max_replacements = data.max_replacements;
+			itemid = data.id,
+			phrase = data.phrase,
+			url = data.url,
+			title = data.title,
+			rel = data.rel,
+			target = data.target,
+			attr_title = data.attr_title,
+			max_replacements = data.max_replacements;
 
 		$form.find('input#upd-itemid').val( itemid ); //hidden field to indentify used row for update!
 		$form.find('input#new_text2').val( phrase );
 		$form.find('input#new_url2').val( url );
 		$form.find('input#new_title2').val( title );
+		$form.find('input#new_attr_title2').val( attr_title );
 		$form.find('select#rel2').val( rel );
 		$form.find('select#target2').val( target );
+		$form.find('input#new_attr_title2').val( attr_title );
 		$form.find('select#max_replacements2').val( max_replacements );
 	}
 	
-	function updateToBuilder( itemid, subaction )
+	function updateToBuilder( itemid, sub_action )
 	{
-		subaction = subaction || '';
+		var sub_action = sub_action || '';
 		
 		var $form = $('.psp-update-link-form');
 		
 		var data_save = $form.serializeArray();
     	data_save.push({ name: "action", value: "pspUpdateToBuilder" });
-    	data_save.push({ name: "subaction", value: subaction });
+    	data_save.push({ name: "sub_action", value: sub_action });
+    	data_save.push({ name: "ajax_id", value: $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val() });
     	data_save.push({ name: "debug_level", value: debug_level });
     	data_save.push({ name: "itemid", value: itemid });
 			
 		lightbox.fadeOut('fast');
 		pspFreamwork.to_ajax_loader( "Loading..." );
+		//pspFreamwork.row_loading(current_row, 'show');
 		
 		jQuery.post(ajaxurl, data_save, function(response) {
-			if( response.status == 'valid' ){
-				setFlagAdd(1);
-				
-				if ( subaction == 'publish' ) ;
-				else
-					pspFreamwork.to_ajax_loader_close();
 
-				window.location.reload();
+			pspFreamwork.row_loading(current_row, 'hide');
+			if( response.status == 'valid' ){
+				//setFlagAdd(1);
+				
+				if ( sub_action == 'publish' ) ;
+				else {
+					//pspFreamwork.to_ajax_loader_close();
+				}
+
+				//window.location.reload();
+				$("#psp-table-ajax-response").html( response.html );
 			}
 			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
 	
-	function deleteFromBuilder( itemid )
+
+
+	function doVerify( itemid, row )
 	{
-		lightbox.fadeOut('fast');
 		pspFreamwork.to_ajax_loader( "Loading..." );
-		
+		pspFreamwork.row_loading(row, 'show');
+			
+		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		jQuery.post(ajaxurl, {
-			'action' 		: 'pspRemoveFromBuilder',
+			'action' 		: 'pspGetUpdateDataBuilder',
+			'sub_action'	: 'verify_posts',
+			'ajax_id'		: $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val(),
 			'itemid'		: itemid,
 			'debug_level'	: debug_level
 		}, function(response) {
-			if( response.status == 'valid' ){
-				setFlagAdd(1);
-				pspFreamwork.to_ajax_loader_close();
-				window.location.reload();
-			}
-			pspFreamwork.to_ajax_loader_close();
-			return false;
-		}, 'json');
-	}
-	
-	function delete_bulk_rows() {
-		var ids = [], __ck = $('.psp-form .psp-table input.psp-item-checkbox:checked');
-		__ck.each(function (k, v) {
-			ids[k] = $(this).attr('name').replace('psp-item-checkbox-', '');
-		});
-		ids = ids.join(',');
-		if (ids.length<=0) {
-			alert('You didn\'t select any rows!');
-			return false;
-		}
-		
-		pspFreamwork.to_ajax_loader( "Loading..." );
 
-		jQuery.post(ajaxurl, {
-			'action' 		: 'pspLinkBuilder_do_bulk_delete_rows',
-			'id'			: ids,
-			'debug_level'	: debug_level
-		}, function(response) {
+			pspFreamwork.row_loading(row, 'hide');
 			if( response.status == 'valid' ){
-				pspFreamwork.to_ajax_loader_close();
-				setFlagAdd(1);
-				//refresh page!
-				window.location.reload();
-				return false;
+				//pspFreamwork.to_ajax_loader_close();
+				
+				var hits 		= typeof response.data != 'undefined' && response.data ? response.data : '',
+					$hits 		= row.find('.psp-hits');
+
+				$hits.text( hits );
+
+				$("#psp-table-ajax-response").html( response.html );
 			}
 			pspFreamwork.to_ajax_loader_close();
-			alert('Problems occured while trying to delete the selected rows!');
+			return false;
+
 		}, 'json');
 	}
-	
+
 	function triggers()
 	{
 		// add form lightbox
-		if (getFlagAdd()==0) ;//showAddNewLink();
-		setFlagAdd(0);
+		//if (getFlagAdd()==0) ;//showAddNewLink();
+		//setFlagAdd(0);
 
 		maincontainer.on("click", '#psp-do_add_new_link', function(e){
 			e.preventDefault();
@@ -264,13 +291,14 @@ pspLinkBuilder = (function ($) {
 			e.preventDefault();
 
 			var that 	= $(this),
+				row = that.parents('tr').eq(0),
 				itemID	= that.data('itemid');
 
-			//getDetails( itemID, that.attr('href').replace("#", '') );
+			current_row = row;
 			getDetails( itemID );
 		});
 		
-		// add row
+		// add row - but first verify founds!
 		$('body').on('click', ".psp-add-link-form input#psp-submit-to-builder", function(e){
 			e.preventDefault();
 			
@@ -280,11 +308,12 @@ pspLinkBuilder = (function ($) {
 			title = $form.find('#new_title').val(),
 			rel = $form.find('#rel').val(),
 			target = $form.find('#target').val(),
+			attr_title = $form.find('#new_attr_title').val(),
 			max_replacements = $form.find('#max_replacements').val();
 			
 			//maybe some validation!
-			if ($.trim(phrase)=='' || $.trim(url)=='' || $.trim(title)=='') {
-				alert('You didn\'t complete the necessary fields!');
+			if ($.trim(phrase)=='' || $.trim(url)=='') {
+				swal('You didn\'t complete the necessary fields!', '', 'error');
 				return false;
 			}
 			
@@ -301,11 +330,12 @@ pspLinkBuilder = (function ($) {
 
 						var $new_hits = $form.find('#new_hits');
 						$new_hits.val( response.data );
-						if ($new_hits.val()<=0) {
-							alert('No possible occurences for the text you\'ve entered!');
+						if ( $new_hits.val()<=0 && ('no' == response.allow_future_linking) ) {
+							swal('No possible occurences for the text you\'ve entered!');
 							return false;
 						}
-						
+
+						// add row
 						addToBuilder( $form );
 					}
 					return false;
@@ -330,21 +360,23 @@ pspLinkBuilder = (function ($) {
 					return false;
 			}, 'json');
 		});
-		
-		// delete row		
+
+		/*
+		// delete row
 		$('body').on('click', ".psp-do_item_delete", function(e){
 			e.preventDefault();
 			var that = $(this),
 				row = that.parents('tr').eq(0),
 				id	= row.data('itemid'),
-				key = row.find('td').eq(3).find('input').val(),
-				url = row.find('td').eq(4).find('input').val();
+				key = row.find('td').eq(3).text(),//.find('input').val(),
+				url = row.find('td').eq(4).text();//.find('input').val();
 
 			//row.find('code').eq(0).text()
-			if(confirm('Delete (' + key + ', ' + url  + ') pair from builder? This action can\t be rollback!' )){
+			if(confirm('Delete row with ID = ' + id + ' from builder? This action can\'t be rollback!' )){
 				deleteFromBuilder( id );
 			}
 		});
+		*/
 		
 		// update row info
 		$('body').on('click', ".psp-do_item_update", function(e){
@@ -354,6 +386,7 @@ pspLinkBuilder = (function ($) {
 				row = that.parents('tr').eq(0),
 				id	= row.data('itemid');
 
+			current_row = row;
 			getUpdateData( id );
 		});
 		$('body').on('click', ".psp-update-link-form input#psp-submit-to-builder2", function(e){
@@ -363,35 +396,40 @@ pspLinkBuilder = (function ($) {
 			itemid = $form.find('input#upd-itemid').val(),
 			title = $form.find('input#new_title2').val();
 	
-			//maybe some validation!
-			if ($.trim(title)=='') {
-				alert('You didn\'t complete the necessary fields!');
-				return false;
-			}
+			
 			updateToBuilder( itemid );
 		});
 		
-		// publish / unpublish row
-		$('body').on('click', ".psp-do_item_publish", function(e){
+		//all checkboxes are checked by default!
+		//$('.psp-form .psp-table input.psp-item-checkbox').attr('checked', 'checked');
+
+		// verify row
+		$('body').on('click', ".psp-do_item_verify", function(e){
 			e.preventDefault();
 			var that = $(this),
 				row = that.parents('tr').eq(0),
 				id	= row.data('itemid');
 				
-			updateToBuilder( id, 'publish' );
+			doVerify( id, row );
 		});
-		
-		maincontainer.on('click', '#psp-do_bulk_delete_rows', function(e){
-			e.preventDefault();
-
-			if (confirm('Are you sure you want to delete the selected rows?'))
-				delete_bulk_rows();
-		});
-		
-		//all checkboxes are checked by default!
-		$('.psp-form .psp-table input.psp-item-checkbox').attr('checked', 'checked');
-		
 	}
+
+
+	// :: MISC
+	var misc = {
+
+		hasOwnProperty: function(obj, prop) {
+			var proto = obj.__proto__ || obj.constructor.prototype;
+			return (prop in obj) &&
+			(!(prop in proto) || proto[prop] !== obj[prop]);
+		},
+
+		isNormalInteger: function(str, positive) {
+			//return /^\+?(0|[1-9]\d*)$/.test(str);
+			return /^(0|[1-9]\d*)$/.test(str);
+		}
+
+	};
 
 	// external usage
 	return {

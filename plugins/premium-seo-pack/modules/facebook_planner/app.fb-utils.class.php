@@ -10,7 +10,7 @@
 
 // Plugin facebook SDK load
 global $psp;
-require_once ( $psp->cfg['paths']['scripts_dir_path'] . '/facebook/facebook.php' );
+//require_once ( $psp->cfg['paths']['scripts_dir_path'] . '/facebook/facebook.php' );
 
 class psp_fbPlannerUtils
 {

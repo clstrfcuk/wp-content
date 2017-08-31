@@ -43,7 +43,10 @@
 				'flot-stack',
 				'flot-pie',
 				'flot-time',
-				'flot-resize'
+				'chart-bundle',
+				'utils',
+				'flot-resize',
+				'sweetalert'
 			),
 			'css' => array(
 				'admin'
@@ -69,7 +72,8 @@
 						'url' => admin_url( 'admin.php?page=psp#google_pagespeed' ),
 						'title' => 'here'
 					) ) ) . '
-					', 'psp'),
+					', 'psp'
+				),
 			)
 		)
 	)

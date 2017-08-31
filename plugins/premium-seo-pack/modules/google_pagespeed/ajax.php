@@ -15,7 +15,7 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
     	public $the_plugin = null;
 		private $module_folder = null;
 		private $file_cache_directory = '/psp-page-speed';
-		private $cache_lifetime = 60; // in seconds
+		private $cache_lifetime = 3600; // in seconds - 1 minute
 		
 		/*
         * Required __construct() function that initalizes the AA-Team Framework
@@ -41,22 +41,24 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 			$actions = isset($_REQUEST['sub_actions']) ? explode(",", $_REQUEST['sub_actions']) : '';
 			
 			$retType = isset($_REQUEST['return']) ? $_REQUEST['return'] : '';
-			
+
+			// checkPage
 			if( in_array( 'checkPage', array_values($actions)) ){
 				
 				// get page id by URL
 				$page_url = get_permalink( (int) $_REQUEST['id'] );
 				
-				$ret = $this->check_page( $page_url, (int) $_REQUEST['id'] );
+				$checkPageRet = $this->check_page( $page_url, (int) $_REQUEST['id'] );
 				
 				$return['checkPage'] = array(
 					'status' => 'valid',
-					'desktop_score' => $ret['desktop_score'],
-					'mobile_score' => $ret['mobile_score'],
+					'desktop_score' => $checkPageRet['desktop_score'],
+					'mobile_score' => $checkPageRet['mobile_score'],
 					'msg'	=> 'Both returned desktop and mobile scores are 0. Please verify first that you\'ve setted the Google Developer Key.'
 				);
 			}	
-			 
+
+			// viewSpeedRaportById
 			if( in_array( 'viewSpeedRaportById', array_values($actions)) ){
 				$html = array();
 				$page_id = isset($_REQUEST['id']) ? (int) $_REQUEST['id'] : 0;
@@ -64,20 +66,20 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 				$upload_dir = wp_upload_dir();
 				// get page id by URL
 				$page_url = get_permalink( $page_id );
-				
+
 				// update the speed score
-				$this->check_page( $page_url, $page_id );
-				
+				$checkPageRet = $this->check_page( $page_url, $page_id );
+
 				$speed_scores = array();
-				
+
 				$settings = $this->the_plugin->getAllSettings( 'array', 'pagespeed' );
-				
+
 				if ( !isset($settings['report_type']) ) $settings['report_type'] = '';
-				
+
 				if( $settings['report_type'] == 'both' || $settings['report_type'] == 'desktop' ){
 					$speed_scores['desktop'] = get_post_meta( $page_id, 'psp_desktop_pagespeed', true );  
 				}
-				
+
 				if( $settings['report_type'] == 'both' || $settings['report_type'] == 'mobile' ){
 					$speed_scores['mobile'] = get_post_meta( $page_id, 'psp_mobile_pagespeed', true );  
 				}
@@ -88,7 +90,7 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 					
 					$cc = 0;
 					foreach ($speed_scores as $key_device => $value_device) {
-							
+
 						if ( !isset($value_device['pageStats']) || !isset($value_device['score']) ) {
 							continue 1;
 						}
@@ -100,18 +102,21 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 						$size_class = 'size_';
 						if ( $score >= 20 && $score < 40 ){
 							$size_class .= '20_40';
-						}elseif ( $score >= 40 && $score < 60 ){
+						}
+						elseif ( $score >= 40 && $score < 60 ){
 							$size_class .= '40_60';
 						}
 						elseif ( $score >= 60 && $score < 80 ){
 							$size_class .= '60_80';
-						}elseif ( $score >= 80 && $score <= 100 ){
+						}
+						elseif ( $score >= 80 && $score <= 100 ){
 							$size_class .= '80_100';
-						}else{
+						}
+						else{
 							$size_class .= '0_20';
 						}
 						
-						$html[] = 	'<div class="psp-tab-item ' . ( $cc == 0 ? 'on' : '' ) . '" data-rel="' . ( $key_device ) . '">';
+						$html[] = 	'<div class="psp-tab-item type-' . ( $key_device ) . ' ' . ( $cc == 0 ? 'on' : '' ) . '" data-rel="' . ( $key_device ) . '">';
 						$html[] = 		'<table>';
 						$html[] = 			'<tr>';
 						$html[] = 				'<td>';
@@ -121,24 +126,28 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 						$html[] = 					'</div>';
 						$html[] = 				'</td>';
 						$html[] = 				'<td class="psp-tab-title">';
-						$html[] = 					ucfirst($key_device);
+						if ($key_device == "desktop") {
+							$html[] = '<i class="psp-checks-display"></i>';
+						} else {
+							$html[] = '<i class="psp-checks-mobile"></i>';
+						}
 						$html[] = 				'</td>';
 						$html[] = 			'</tr>';
 						$html[] = 		'</table>';
 						$html[] = 	'</div>';
 						
 						$cc++;
-					}
+					} // end foreach
 					
 					
-					$html[] = 	'<a href="#" class="psp-button red psp-close-page-detail psp-form-button-small psp-form-button-danger"> ' . ( __('Close Page Report', 'psp') ) . '</a>';
-					
+					$html[] = 	'<a href="#" class="psp-close-page-detail"><i class="psp-checks-cross2"></i></a>';
+
 					$html[] = '</div>';
 					
 					$html[] = '<div class="psp-pagespeed-page-content">';
 					$cc = 0;
 					foreach ($speed_scores as $key_device => $value_device) { // foreach content
-					
+
 						if ( !isset($value_device['pageStats']) || !isset($value_device['score']) ) {
 							continue 1;
 						}
@@ -157,16 +166,16 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 						$html[] = 			'<div class="psp-grid_4">';
 						$html[] = 				'<div class="psp-panel">';
 						$html[] = 					'<div class="psp-panel-header">';
-						$html[] = 						'<div class="psp-panel-title">' . ( __('Suggestions Summary', 'psp') ) .'</div>';
+						$html[] = 						'<div class="psp-panel-title"><h1>' . ( __('Suggestions Summary', 'psp') ) .'</h1></div>';
 						$html[] = 					'</div>';
 						$html[] = 				'<div class="psp-panel-content psp-summary-box">';
 						$html[] = 					'<div class="psp-sub-panel-content">';
 						$html[] = 						'<table class="psp-what-to-do">';
-						
-						if( count($rule_results) > 0 ){
+
+						if ( count($rule_results) > 0 ) { // if rule_results
 							foreach ($rule_results as $key_rule => $value_rule) {
 								
-								//if( $key_rule != "MinimizeRenderBlockingResources") continue;
+								//if( $key_rule != "MinifyCss") continue;
 								
 								$html[] = 					'<tr>';
 								$html[] = 						'<td class="psp-icon-status">';
@@ -181,45 +190,47 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 								$html[] = 						'</td>';
 								$html[] = 						'<td>';
 								$html[] = 							'<a href="#" class="psp-criteria">' . ( $value_rule['localizedRuleName'] ) . '</a>';
-								if( count($value_rule['urlBlocks']) > 0 ){
+
+								if ( count($value_rule['urlBlocks']) > 0 ) {
 									
-									$html[] = 					'<div class="psp-desc-complete">';
-										$html[] = 						'<ul class="can-do">';
-									foreach ($value_rule['urlBlocks'] as $key_blocks => $value_blocks) {
-										
+									$html[] = 						'<div class="psp-desc-complete">';
+									$html[] = 							'<ul class="can-do">';
+
+									foreach ($value_rule['urlBlocks'] as $key_blocks => $value_blocks) { 
 										$header_format = $value_blocks['header']['format'];
 										$hyperlink = '';
-					                    if(isset($value_blocks['header']['args'])) {
+
+					                    if (isset($value_blocks['header']['args'])) {
 					                        $cc = 1;
-					                        foreach($value_blocks['header']['args'] as $arg)
-					                        {
+					                        foreach ($value_blocks['header']['args'] as $arg) {
 					                            $header_format = str_replace('$' . $cc, $arg['value'], $header_format);
 					                            if($arg['type'] == 'HYPERLINK') {
-					                                $hyperlink = $arg['value'];
+					                                $hyperlink = $arg['value']; 
 					                            }
 												
 					                            $cc++;
 					                        }
 					                    }
-										
-										if(isset($value_blocks['urls'])) {
+
+										if (isset($value_blocks['urls'])) {
 											$html[] = '<ul>';
-											foreach ($value_blocks['urls'] as $key_url => $value_url)
-											{
+											foreach ($value_blocks['urls'] as $key_url => $value_url) {
 												$link_format = $value_url['result']['format'];
-												$cc = 1;	
-												foreach($value_url['result']['args'] as $arg)
-						                        {
-						                        	$link_format = str_replace('$' . $cc, $arg['value'], $link_format);
-													$html[] = '<li>' . ( $link_format ) . '</li>';
-													
-													$cc++;
-												}
+
+												if (isset($value_url['result']['args'])) {
+													$cc = 1;	
+													foreach ($value_url['result']['args'] as $arg) {
+							                        	$link_format = str_replace('$' . $cc, $arg['value'], $link_format);
+														
+														$cc++;
+													}
+												} 
+												$html[] = '<li>' . ( $link_format ) . '</li>';
 											}
 											$html[] = '</ul>';
 										}
-										
-					                    
+
+
 										$html[] = '<li>';
 										$html[] = 	'<p>' . $header_format . '<p>';
 										if( trim($hyperlink) != "" ){
@@ -227,110 +238,162 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 										}
 										$html[] = '</li>';
 										
-									}
+									} // end foreach
 
-										$html[] = 						'</ul>';
-										$html[] = 					'</div>';
+									$html[] = 							'</ul>';
+									$html[] = 						'</div>';
 								}
-								
-								
+
+
 								$html[] = 						'</td>';
 								$html[] = 					'</tr>';
-							}
-						}
-						
+							} // end foreach
+						} // end if rule_results
+
 						$html[] = 						'</table>';
 						$html[] = 					'</div>';
 						$html[] = 				'</div>';
 						$html[] = 			'</div>';
 						$html[] = 		'</div>';
-						
-					  
+
+
+						$html[] = '<div class="psp-grid_4">';
+						$html[] = 	'<div class="psp-panel">';
+						$html[] = 		'<div class="psp-panel-header">';
+						$html[] = 			'<div class="psp-panel-title"><h1>' . ( __('Page Resources Usages', 'psp') ) . '</h1></div>';
+						$html[] = 		'</div>';
+						$html[] = 		'<div class="psp-panel-content psp-resources-box">';
+						$html[] = 			'<div class="psp-sub-panel-content">';
+						//$html[] = 				'<div id="psp-' . ( $key_device ) . '-graph" style="height: 200px;width: 100%; "></div>';
+
+						$html[] = 				'<div id="canvas-holder" style="width: 100%;display:inline-block;">';
+						$html[] = 					'<canvas id="psp-' . ( $key_device ) . '-graph-bytes" style="height:30px;" />';
+						$html[] = 				'</div>';
+
+
+
 						$html[] = '
-						<div class="psp-grid_4">
-							<div class="psp-panel">
-								<div class="psp-panel-header">
-									<div class="psp-panel-title">' . ( __('Understanding the Rule Icons', 'psp') ) . '</div>
-								</div>
-								<div class="psp-panel-content psp-statistics-box">
-									<div class="psp-sub-panel-content">
-										<table class="psp-table">
-											<tbody>
-												<tr>
-													<td class="psp-icon-status">
-														<i class="psp-status-icon is_error fa fa-times" aria-hidden="true"></i>
-													</td>
-													<td>' . ( __('red exclamation point', 'psp') ) . '</td>
-													<td>' . ( __('Fixing this would have a measurable impact on page performance.', 'psp') ) . '</td>
-												</tr>
-												<tr>
-													<td class="psp-icon-status">
-														<i class="psp-status-icon is_warning fa fa-exclamation" aria-hidden="true"></i>
-													</td>
-													<td>' . ( __('yellow exclamation point', 'psp') ) . '</td>
-													<td>' . ( __('Consider fixing this if it is not an onerous amount of work.', 'psp') ) . '</td>
-												</tr>
-												<tr>
-													<td class="psp-icon-status">
-														<i class="psp-status-icon is_success fa fa-check" aria-hidden="true"></i>
-													</td>
-													<td>' . ( __('green check mark', 'psp') ) . '</td>
-													<td>' . ( __('No significant issues found. Good job!', 'psp') ) . '</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-						</div>
+							<script>
+								(function($){
+
+									var config = {
+										type: "pie", 
+										data: {
+											datasets: [{
+												data: [
+													' . ( $stats['htmlResponseBytes'] ) . ',
+													' . ( $stats['cssResponseBytes'] ) . ',
+													' . ( $stats['javascriptResponseBytes'] ) . ',
+													' . ( $stats['otherResponseBytes'] ) . ',
+													' . ( $stats['imageResponseBytes'] ) . '
+												],
+												backgroundColor: [
+													"#9966ff",
+													"#ff9f40",
+													"#4bc0c0", 
+													"#ffcd56",
+													"#36a2eb"
+												],
+												label: "Size of Resources Dataset",
+
+											}],
+											labels: [
+												"HTML",
+												"CSS",
+												"JavaScript",
+												"Others",
+												"Image"
+											]
+										},
+										options: {
+											responsive: true,
+											legend: {
+												position: "right",
+												labels: {
+													padding: 25,
+													boxWidth: 65,
+													padding: 25,
+													fontSize: 16,
+												}
+											},
+
+											tooltips: {
+												enabled: true,
+												mode: "single",
+												callbacks: {
+													label: function(tooltipItems, data) {
+														return data.labels[tooltipItems.index] + ": " + psp_humanFileSize(data.datasets[0].data[tooltipItems.index]);
+													}
+												}
+											},
+										}, 
+									};
+									var ctx = document.getElementById("psp-' . ( $key_device ) . '-graph-bytes").getContext("2d");
+									window.myPie = new Chart(ctx, config);
+								})(jQuery);
+							</script>
 						';
+						$html[] = 			'</div>';
+						$html[] = 		'</div>';
+						$html[] = 	'</div>';
+						$html[] = '</div> <!-- Close here -->';
 						
 						$html[] = 	'</div>';
 						
 						$html[] = 	'<div class="right">';
 						$html[] = 		'<div class="psp-grid_4">';
 						$html[] = 			'<div class="' . ( $key_device ) . '-display">';
-						$html[] = 				'<img src="' . ( $img ) . '" width="320">';
+						$html[] = 				'<img src="' . ( $img ) . '" width="312">';
 						$html[] = 				'<span class="php-the-mask"></span>';
 						$html[] = 			'</div>';
 						$html[] = 		'</div>';
 						$html[] = 		'<div class="psp-grid_4">';
 						$html[] = 			'<div class="psp-panel">';
-						$html[] = 				'<div class="psp-panel-header">';
-						$html[] = 					'<div class="psp-panel-title">';
-						$html[] = 						__('Page Score:', 'psp');
+						$html[] = 				'<div class="psp-panel-header psp-score-box">';
+						// $html[] = 					'<div class="psp-panel-title">';
+						// $html[] = 						__('Page Score:', 'psp');
 						
 						$score = (int)$value_device['score'];
 						$size_class = 'size_';
+						$score_text ='';
 						if ( $score >= 20 && $score < 40 ){
 							$size_class .= '20_40';
-						}elseif ( $score >= 40 && $score < 60 ){
+							$score_text = __('Poor', 'psp');
+						}
+						elseif ( $score >= 40 && $score < 60 ){
 							$size_class .= '40_60';
+							$score_text = __('Needs Work', 'psp');
 						}
 						elseif ( $score >= 60 && $score < 80 ){
 							$size_class .= '60_80';
-						}elseif ( $score >= 80 && $score <= 100 ){
+							$score_text = __('Needs Work', 'psp');
+						}
+						elseif ( $score >= 80 && $score <= 100 ){
 							$size_class .= '80_100';
-						}else{
+							$score_text = __('Very Good', 'psp');
+						}
+						else{
 							$size_class .= '0_20';
+							$score_text = __('Very Poor', 'psp');
 						}
 
 						if( !isset($item_data['score']) || trim($item_data['score']) == "" ){
 							$item_data['score'] = 0;
 						}
 
-						$html[] = 					'<div class="psp-progress">';
-						$html[] = 						'<div style="width:' . ( $score ) . '%" class="psp-progress-bar ' . ( $size_class ) . '"></div>';
+						$html[] = 						'<h1 class="psp-score-text ' . $size_class . '">' . $score_text . '</h1>';
+						// $html[] = 					'<div class="psp-progress">';
+						// $html[] = 						'<div style="width:' . ( $score ) . '%" class="psp-progress-bar ' . ( $size_class ) . '"></div>';
 						$html[] = 						'<div class="psp-progress-score">' . ( $score ) . '/100</div>';
-						$html[] = 					'</div>';
-						$html[] = 				'</div>';
+						// $html[] = 					'</div>';
+						// $html[] = 				'</div>';
 						$html[] = 			'</div>';
 						$html[] = 		'</div>';
 						$html[] = 	'</div>';
 						$html[] = 	'<div class="psp-grid_4">';
 						$html[] = 		'<div class="psp-panel">';
 						$html[] = 			'<div class="psp-panel-header">';
-						$html[] = 				'<div class="psp-panel-title">' . ( __('Page Statistics', 'psp') ) . '</div>';
+						$html[] = 				'<div class="psp-panel-title"><h1>' . ( __('Page Statistics', 'psp') ) . '</h1></div>';
 						$html[] = 			'</div>';
 						$html[] = 		'<div class="psp-panel-content psp-statistics-box">';
 						$html[] = 			'<div class="psp-sub-panel-content">';
@@ -362,53 +425,9 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 						$html[] = 				'</table>';
 						$html[] = 			'</div>';
 						$html[] = 		'</div>';
-						$html[] = 	'</div>';
-						$html[] = '</div>';
-						
-						$html[] = '<div class="psp-grid_4">';
-						$html[] = 	'<div class="psp-panel">';
-						$html[] = 		'<div class="psp-panel-header">';
-						$html[] = 			'<div class="psp-panel-title">' . ( __('Page Resources Usages', 'psp') ) . '</div>';
-						$html[] = 		'</div>';
-						$html[] = 		'<div class="psp-panel-content psp-resources-box">';
-						$html[] = 			'<div class="psp-sub-panel-content">';
-						$html[] = 				'<div id="psp-' . ( $key_device ) . '-graph" style="height: 200px;width: 100%; "></div>';
-						$html[] = '
-							<script>
-								data = [];
-								data[0] = {
-									label: "HTML - ' . ( $this->formatBytes( isset($stats['htmlResponseBytes']) ? $stats['htmlResponseBytes'] : 0 ) ) . '",
-									data: ' . ( isset($stats['htmlResponseBytes']) ? $stats['htmlResponseBytes'] : 0 ) . '
-								};
-								data[1] = {
-									label: "CSS - ' . ( $this->formatBytes( isset($stats['cssResponseBytes']) ? $stats['cssResponseBytes'] : 0 ) ) . '",
-									data: ' . ( isset($stats['cssResponseBytes']) ? $stats['cssResponseBytes'] : 0 ) . '
-								};
-								data[2] = {
-									label: "Images - ' . ( $this->formatBytes( isset($stats['imageResponseBytes']) ? $stats['imageResponseBytes'] : 0 ) ) . '",
-									data: ' . ( isset($stats['imageResponseBytes']) ? $stats['imageResponseBytes'] : 0 ) . '
-								};
-								data[3] = {
-									label: "JavaScript - ' . ( $this->formatBytes( isset($stats['javascriptResponseBytes']) ? $stats['javascriptResponseBytes'] : 0 ) ) . '",
-									data: ' . ( isset($stats['javascriptResponseBytes']) ? $stats['javascriptResponseBytes'] : 0 ) . '
-								};
-								data[4] = {
-									label: "Others - ' . ( $this->formatBytes( isset($stats['otherResponseBytes']) ? $stats['otherResponseBytes'] : 0 ) ) . '",
-									data: ' . ( isset($stats['otherResponseBytes']) ? $stats['otherResponseBytes'] : 0 ) . '
-								};
-								
-								jQuery.plot(jQuery("#psp-' . ( $key_device ) . '-graph"), data,
-								{
-							        series: {
-							            pie: {
-							                show: true
-							            }
-							        }
-								});
-							</script>
-						';
-						$html[] = 			'</div>';
-						$html[] = 		'</div>';
+		/*				$html[] = 				'<div id="canvas-holder" style="width: 100%;display:inline-block;margin-top:20px;">';
+						$html[] = 					'Number of resources: <canvas id="psp-' . ( $key_device ) . '-graph-numbers" style="height:30px;" />';
+						$html[] = 				'</div>';*/
 						$html[] = 	'</div>';
 						$html[] = '</div>';
 						
@@ -422,6 +441,8 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 
 				$return['viewSpeedRaportById'] = array(
 					'status'	=> 'valid',
+					'desktop_score' => $checkPageRet['desktop_score'],
+					'mobile_score' => $checkPageRet['mobile_score'],
 					'html' 		=> implode("\n", $html)
 				);
 			}
@@ -442,7 +463,8 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 			if ( !isset($settings['report_type']) ) $settings['report_type'] = '';
 			
 			$google_api_url = sprintf( 'https://www.googleapis.com/pagespeedonline/v1/runPagespeed?url=%s&screenshot=true&snapshots=true&key=%s&locale=%s', urlencode($url), $settings['developer_key'], $settings['google_language'] );
-   
+			//var_dump('<pre>',$google_api_url, $url ,'</pre>');
+
 			if( $settings['report_type'] == 'both' || $settings['report_type'] == 'desktop' ){
 
 				// try to get from cache
@@ -494,7 +516,8 @@ if (class_exists('pspPageSpeedInsightsAjax') != true) {
 			}
 			
 			return array(
-				'status'		=> isset($response['id']) && isset($response['responseCode']) && $response['responseCode']=='200' ? 'valid' : 'invalid',
+				'status'		=> isset($response['id']) && isset($response['responseCode'])
+					&& $response['responseCode']=='200' ? 'valid' : 'invalid',
 				'desktop_score' => $desktop_score,
 				'mobile_score' 	=> $mobile_score
 			);

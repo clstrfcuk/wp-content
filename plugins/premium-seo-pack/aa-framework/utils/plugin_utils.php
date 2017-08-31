@@ -70,35 +70,43 @@ if (class_exists('psp_PluginUtils') != true) {
             return $data;  
         }
 
-		public function update_plugin_notifier_menu() {
+		/*public function update_plugin_notifier_menu() {
 			if (function_exists('simplexml_load_string')) { // Stop if simplexml_load_string funtion isn't available
+
+				// Don't display notification in admin bar if it's disabled or the current user isn't an administrator
+				//if ( !is_super_admin() )
+				//return;
 
 				// Get the latest remote XML file on our server
 				$xml = $this->get_latest_plugin_version( $this->the_plugin->notifier_cache_interval() );
 				$latest_version = (string)$xml->latest_version;
   
-				// Read plugin current version from the main plugin file
-				$plugin_data = get_plugin_data( $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'plugin.php' );
-				$current_version = (string)$plugin_data['Version'];
-							
-				if( isset($plugin_data) && count($plugin_data) > 0 ){
+  				if ( is_admin() ) {
+					// Read plugin current version from the main plugin file
+					$plugin_data = get_plugin_data( $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'plugin.php' );
+	
+					if( isset($plugin_data) && count($plugin_data) > 0 ){
+						$current_version = (string)$plugin_data['Version'];
+	
+						// Compare current plugin version with the remote XML version
+						//if (1) { //DEBUG
+						if ( version_compare( $latest_version, $current_version, '>' ) ) {
+						//if ( $latest_version > $current_version ) {
 
-					// Compare current plugin version with the remote XML version
-					if ( version_compare( $latest_version, $current_version, '>' ) ) {
-					//if ( $latest_version > $current_version ) {
-						$short_name = explode(' ', $plugin_data['Name']);
-						$short_name = isset($short_name[0]) ? $short_name[0] : '';
-						$short_name = $this->the_plugin->pluginName;
-   
-						add_dashboard_page(
-							$short_name . __(' Plugin Updates', $this->the_plugin->localizationName),
-							$short_name . __(' <span class="update-plugins count-1"><span class="update-count">New Updates</span></span>', $this->the_plugin->localizationName),
-							'administrator',
-							$this->the_plugin->alias . '-plugin-update-notifier',
-							array( $this, 'update_notifier' )
-						);
+							$short_name = explode(' ', $plugin_data['Name']);
+							$short_name = isset($short_name[0]) ? $short_name[0] : '';
+							$short_name = $this->the_plugin->pluginName;
+	
+							add_dashboard_page(
+								$short_name . __(' Plugin Updates', $this->the_plugin->localizationName),
+								$short_name . __(' <span class="update-plugins count-1"><span class="update-count">New Updates</span></span>', $this->the_plugin->localizationName),
+								'administrator',
+								$this->the_plugin->alias . '-plugin-update-notifier',
+								array( $this, 'update_notifier' )
+							);
+						}
 					}
-				}
+				} // end is_admin
 			}
 		}
 
@@ -110,7 +118,7 @@ if (class_exists('psp_PluginUtils') != true) {
 			$plugin_folder = $this->the_plugin->plugin_details['folder'];
 		?>
 
-			<style>
+			<style type="text/css">
 			.update-nag { display: none; }
 			#instructions {max-width: 670px;}
 			h3.title {margin: 30px 0 0 0; padding: 30px 0 0 0; border-top: 1px solid #ddd;}
@@ -137,7 +145,7 @@ if (class_exists('psp_PluginUtils') != true) {
 
 		public function update_notifier_bar_menu() {
 			if (function_exists('simplexml_load_string')) { // Stop if simplexml_load_string funtion isn't available
-				global $wp_admin_bar, $wpdb;
+				global $wp_admin_bar;
 
 				// Don't display notification in admin bar if it's disabled or the current user isn't an administrator
 				if ( !is_super_admin() || !is_admin_bar_showing() )
@@ -146,15 +154,19 @@ if (class_exists('psp_PluginUtils') != true) {
 				// Get the latest remote XML file on our server
 				// The time interval for the remote XML cache in the database (21600 seconds = 6 hours)
 				$xml = $this->get_latest_plugin_version( $this->the_plugin->notifier_cache_interval() );
+				$latest_version = (string)$xml->latest_version;
 
 				if ( is_admin() )
 				 	// Read plugin current version from the main plugin file
 					$plugin_data = get_plugin_data( $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'plugin.php' );
 
 					if( isset($plugin_data) && count($plugin_data) > 0 ){
+						$current_version = (string)$plugin_data['Version'];
 
 						// Compare current plugin version with the remote XML version
-						if( (string)$xml->latest_version > (string)$plugin_data['Version']) {
+						//if (1) { //DEBUG
+						if ( version_compare( $latest_version, $current_version, '>' ) ) {
+						//if ( $latest_version > $current_version ) {
 
 						$short_name = explode(' ', $plugin_data['Name']);
 						$short_name = isset($short_name[0]) ? $short_name[0] : '';
@@ -168,7 +180,7 @@ if (class_exists('psp_PluginUtils') != true) {
 							)
 						);
 					}
-				}
+				} // end is_admin
 			}
 		}
 
@@ -213,7 +225,7 @@ if (class_exists('psp_PluginUtils') != true) {
 
 			if ( 'xml' == $responseType ) {}
 			else {
-				$notifier_data = unserialize( base64_decode( $notifier_data ) );
+				$notifier_data = @unserialize( @base64_decode( $notifier_data ) );
 				$notifier_data = '<?xml version="1.0" encoding="UTF-8"?><notifier><latest_version>' . ( isset($notifier_data['latest_version']) ? (string)$notifier_data['latest_version'] : '1.0' ) . '</latest_version><changelog></changelog></notifier>';
 			}
 			
@@ -238,7 +250,7 @@ if (class_exists('psp_PluginUtils') != true) {
 			$html[] = '</textarea>';
 			
 			return implode("\n", $html);
-		}
+		}*/
 		
 		public function plugin_row_meta_filter( $links, $file ) {
 			$plugin_folder = $this->the_plugin->plugin_details['folder_index'];
@@ -255,7 +267,7 @@ if (class_exists('psp_PluginUtils') != true) {
 			return (array) $links;
 		}
 		
-		public function update_plugins_overwrite( $transient ) {
+		/*public function update_plugins_overwrite( $transient ) {
 	   
 			if ( empty($transient->checked) ) {
 				return $transient;
@@ -393,6 +405,6 @@ if (class_exists('psp_PluginUtils') != true) {
 				//echo '<a href="' . wp_nonce_url( admin_url( 'update.php?action=upgrade-plugin&plugin=' . $plugin_folder ), 'upgrade-plugin_' . $plugin_folder ) . '">' . sprintf( __( 'Update %s now.', $this->the_plugin->localizationName ), $this->the_plugin->pluginName ) . '</a>';
 				echo ' <a href="' . $this->the_plugin->plugin_row_meta('buy_url') . '">' . sprintf( __( 'Download %s from Envato now.', $this->the_plugin->localizationName ), $this->the_plugin->pluginName ) . '</a>';
 			}
-		}
+		}*/
 	}
 }

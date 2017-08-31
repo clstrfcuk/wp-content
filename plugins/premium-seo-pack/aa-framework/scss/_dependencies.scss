@@ -21,23 +21,21 @@
 			background-color: $white;
 			h1.#{$alias}-lightbox-headline {
 				@include border-radius(5px 5px 0 0);
-				background: $info;
+				background: #fff;
 				display: block;
-				top: -#{px(2)};
-				position: absolute;
-				color: #fff;
-				width: px(798);
-				height: px(40);
+				color: #646464;
+				height: px(60);
 				margin: 0;
 				padding: 0;
+				border-bottom: 1px solid #eee !important;
 				span {
 					display: block;
-					font-size: px(14);
+					font-size: px(16);
 					font-family: Arial, Helvetica, sans-serif;
 					font-weight: bold;
 					position: absolute;
-					top: px(11);
-					left: px(40);
+					top: px(20);
+					left: px(20);
 				}
 				img.#{$alias}-lightbox-icon {
 					position: relative;
@@ -59,7 +57,7 @@
 			}
 			.#{$alias}-seo-status-container {
 				background: $white;
-				padding: px(60) px(41) px(20) px(41);
+				//padding: px(60) px(41) px(20) px(41);
 				max-height: px(520);
 				overflow-y: auto;
 				font-family: $primary_font;
@@ -168,7 +166,7 @@
 				left: px(45);
 				sup {
 					position: absolute;
-					top: -#{px(8)};
+					top: -0.2rem;
 					font-size: px(12);
 					font-weight: bold;
 				}
@@ -270,7 +268,7 @@
 			transition: width .4s ease-in-out;
 			background-size: px(30) px(30);
 			background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
-			background-color: #218ab1;
+			background-color: #ff9f40;
 		}
 		&.#{$alias}-animate span {
 			-webkit-animation: animate-stripes 3s linear infinite;

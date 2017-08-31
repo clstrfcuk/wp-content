@@ -30,7 +30,7 @@
 				'backend' => array(
 					'admin.php?page=psp_tiny_compress',
 					'admin-ajax.php',
-					//'upload.php',
+					'async-upload.php', //'upload.php'
 					'media-new.php'
 				),
 				'frontend' => false

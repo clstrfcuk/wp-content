@@ -347,7 +347,7 @@ function __pspCheckVideoMetas( $action='default', $istab = '', $is_subtab='' ) {
 	ob_end_clean();
 	$html[] = $selectSitemap;
 	
-	$html[] = '<input type="button" class="psp-form-button psp-form-button-info psp-button blue" style="width: 260px;" id="psp-clean-video-metas" value="' . ( __('Delete video metas for all posts NOW', 'psp') ) . '">
+	$html[] = '<input type="button" class="psp-form-button psp-form-button-info psp-button blue" style="width: 280px;" id="psp-clean-video-metas" value="' . ( __('Delete video metas for all posts NOW', 'psp') ) . '">
 	<span style="margin:0px 0px 0px 10px" class="response">' . __pspCheckVideoMetas( 'getStatus' ) . '</span>';
 	
 	$html[] = '<div style="margin-left: 18rem;"><span class="psp-form-note">' . sprintf( __('With recurrency you can set the "timeout" for our cached video meta data (info about the videos we found in each post content).<br/> You can also use the "Delete video metas for all posts NOW" button, to delete all video meta data we\'ve cached till now, so they will be rebuild.<br/> Then, if you don\'t have too many videos (let\'s say - around maximum 1000 videos in all your posts), you can can access the link %s, because it will search through all your posts, find the videos and generate the coresponding videos meta data.<br/> The video meta data are also generated (if it isn\'t done yet) when you access a post details page on website frontend.', 'psp'), '<a id="site-items" target="_blank" href="' . ( home_url('/sitemap-videos.xml') ) . '" style="position: relative;">' . ( home_url('/sitemap-videos.xml') ) . '</a>' ) . '</span></div>';
@@ -429,6 +429,7 @@ echo json_encode(
 						'type' 		=> 'message',
 						'status' 	=> 'info',
 						'html' 		=> __('
+							<span class="psp-message-icon psp-icon-miscellaneous"></span>
 							<h3 style="margin: 0px 0px 5px 0px;">General Settings</h3>
 							<p>Settings available for the sitemap module!</p>
 						', 'psp')

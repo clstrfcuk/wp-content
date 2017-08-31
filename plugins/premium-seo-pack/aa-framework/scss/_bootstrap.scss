@@ -759,6 +759,7 @@
     .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
       float: left;
     }
+   
     .col-lg-12 {
       width: 100%;
     }
@@ -907,7 +908,7 @@
       margin-left: 16.66666667%;
     }
     .col-lg-offset-1 {
-      margin-left: 8.33333333%;
+      margin-left: 3.9%;
     }
     .col-lg-offset-0 {
       margin-left: 0%;
@@ -1896,7 +1897,7 @@
   }
   .panel-heading {
     padding: 10px 15px;
-    border-bottom: 1px solid transparent;
+    border-bottom: 1px solid #f2f2f2;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
   }
@@ -2124,17 +2125,17 @@
   .panel-default > .panel-heading {
     color: #333333;
     background-color: #f5f5f5;
-    border-color: #dddddd;
+    border-color: #f2f2f2;
   }
   .panel-default > .panel-heading + .panel-collapse > .panel-body {
-    border-top-color: #dddddd;
+    border-top-color: #f2f2f2;
   }
   .panel-default > .panel-heading .badge {
     color: #f5f5f5;
     background-color: #333333;
   }
   .panel-default > .panel-footer + .panel-collapse > .panel-body {
-    border-bottom-color: #dddddd;
+    border-bottom-color: #f2f2f2;
   }
   .panel-primary {
     border-color: #337ab7;

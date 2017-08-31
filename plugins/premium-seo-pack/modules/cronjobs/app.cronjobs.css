@@ -1,0 +1,67 @@
+.psp #psp_cronjobs {
+}
+	.psp #psp_cronjobs .psp-form-row .psp-message {
+		padding: 0.8rem 0.4rem 0.8rem 0.8rem !important;
+		background-image: none !important;
+	}
+	.psp #psp_cronjobs .psp-form-row .psp-error:before {
+		content: none !important;
+	}
+	.psp-cj-list {
+		margin-top: 5rem !important;
+	}
+
+/* Cronjobs module */
+.psp-form .psp-form-row.psp-cj-help {
+	padding-top: 10px;	
+}
+
+.psp-cj-list #psp-cj-table .psp-row-loading-marker {
+    position: relative;
+    left: 5px;
+    top: -5px;
+    padding: 0;
+}
+.psp-cj-list #psp-cj-table .psp-row-loading {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+	margin-left: -10px;
+	margin-top: -12px;
+	padding: 0px;
+	background-color: #484848;
+	background-color: rgba(207, 222, 247, 0.8);
+}
+
+.psp-cj-list {
+	position: relative;
+}
+	.psp-cj-list #psp-main-loading {
+		top: 0;
+		left: 0;
+	}
+		.psp-cj-list #psp-main-loading #psp-loading-box {
+			top: 50px;
+		}
+.psp-cj-list #psp-cj-reload {
+	float: right;
+	margin-bottom: 5px;
+}
+.psp-cj-list #psp-cj-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+	.psp-cj-list #psp-cj-table, #psp-cj-table th, #psp-cj-table td {
+		border: 1px solid green;
+		text-align: left;
+		vertical-align: bottom;
+	}
+	.psp-cj-list #psp-cj-table th, #psp-cj-table td {
+		padding: 5px;
+	}
+	.psp-cj-list #psp-cj-table tr.cut td:first-child {
+		text-decoration: line-through;
+	}

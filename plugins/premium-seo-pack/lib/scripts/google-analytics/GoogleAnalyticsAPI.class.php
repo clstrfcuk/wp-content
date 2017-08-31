@@ -69,7 +69,6 @@ class GoogleAnalyticsAPI {
 			'end-date' => date('Y-m-d'),
 			'metrics' => 'ga:visits',
 		);
-
 	}
 
 	public function __set($key, $value) {
@@ -377,7 +376,6 @@ class GoogleAnalyticsAPI {
 
 
 	protected function _query($params=array()){
- 
 		if (!$this->accessToken || !$this->accountId) {
 			throw new Exception('You must provide the accessToken and an accountId');
 		}
@@ -574,7 +572,7 @@ class GoogleOauthWeb extends GoogleOauth {
 	public function __construct($clientId='', $clientSecret='', $redirectUri='') {
 		$this->clientId = $clientId;
 		$this->clientSecret = $clientSecret;
-		$this->redirectUri = $redirectUri;
+		$this->redirectUri = 'urn:ietf:wg:oauth:2.0:oob';
 	}
 
 	public function setClientSecret($secret) {

@@ -34,14 +34,14 @@ echo json_encode(
 						
 						'html' 		=> '<div class="panel-heading psp-panel-heading">' . __('<h2>Basic Setup</h2>', 'psp') . '</div>',
 					),
-					
+
 					'developer_key' 	=> array(
 						'type' 		=> 'text',
-						'std' 		=> '',
+						'std' 		=> 'AIzaSyCt1tsWk-2xsgivuZZUrGbYBSdL-ik5xs8',
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('API Key:', 'psp'),
-						'desc' 		=> __('API Key - get it from Google Console - read more in the documentation in how to setup', 'psp')
+						'desc' 		=> __('API Key - manually create one in Google Console - the default value is a working key that has a limit of 25000 requests per day', 'psp')
 					),
 					
 					'google_language' 	=> array(
@@ -108,15 +108,30 @@ echo json_encode(
 							'mobile' => 'Mobile'
 						)
 					),
-					
-					'last_status' 	=> array(
+
+						'last_status' 	=> array(
 						'type' 		=> 'textarea-array',
 						'std' 		=> '',
 						'size' 		=> 'large',
 						'force_width'=> '400',
 						'title' 	=> __('Request Last Status:', 'psp'),
 						'desc' 		=> __('Last Status retrieved from Google, for the Request operation', 'psp')
+					),
+
+					array(
+						'type' 		=> 'html',
+						
+						'html' 		=> '<div class="panel-body psp-panel-body"><div class="psp-callout psp-callout-primary">' . __('
+							<ol>
+								<li>Create a Project in the Google APIs Console: <a href="https://console.developers.google.com" target="_blank">https://console.developers.google.com</a></li>
+								<li>Enable the PageSpeed Insights API from the <a href="https://console.developers.google.com/apis/library" target="_blank" > Library </a></li>
+								<li>After Enabling the API go to -> <a href="https://console.developers.google.com/apis/credentials" target="_blank"> Credentials </a> -> Create Credentials Button -> API key</li>
+							</ol>', 'psp') . '</div></div>',
 					)
+					
+					
+					
+				
 				)
 			)
 		)

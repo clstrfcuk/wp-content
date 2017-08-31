@@ -87,8 +87,8 @@ if (class_exists('aafShortcodesPopup') != true) {
 				// load the settings template class
 				require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'settings-template.class.php' );
 				
-				// Initalize the your aaInterfaceTemplates
-				$aaInterfaceTemplates = new aaInterfaceTemplates($this->the_plugin->cfg);
+				// Initalize the your psp_aaInterfaceTemplates
+				$psp_aaInterfaceTemplates = new psp_aaInterfaceTemplates($this->the_plugin->cfg);
 				
 				// build options headings
 				if( isset($options[0]) ){
@@ -106,7 +106,7 @@ if (class_exists('aafShortcodesPopup') != true) {
 				}
 
 				// then build the html, and return it as string
-				$html .= $aaInterfaceTemplates->bildThePage( $options , $this->the_plugin->alias, array(), true);
+				$html .= $psp_aaInterfaceTemplates->bildThePage( $options , $this->the_plugin->alias, array(), true);
 				
 				// fix some URI
 				$html = str_replace('{plugin_folder_uri}', $tryed_module['folder_uri'], $html);

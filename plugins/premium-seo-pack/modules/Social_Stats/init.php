@@ -96,52 +96,6 @@ if (class_exists('pspSocialStats') != true) {
 			return $this;
 		}
 		
-		public function socialstats_scripts( $socialServices=array() )
-		{
-			if( count($socialServices) > 220 ){
-				foreach ($socialServices as $key => $value){
-					if( $value == 'twitter' ){
-						echo '<script type="text/javascript" src="http://platform.twitter.com/widgets.js?' . ( time() ) . '"></script>';
-					}
-					elseif( $value == 'google' ){
-						echo '<script type="text/javascript" src="http://apis.google.com/js/plusone.js?' . ( time() ) . '"></script>';
-					}
-					elseif( $value == 'digg' ){
-					?>
-						<script type="text/javascript">
-							(function() {
-							  var s = document.createElement('SCRIPT'), s1 = document.getElementsByTagName('SCRIPT')[0];
-							  s.type = 'text/javascript';
-							  s.async = true;
-							  s.src = 'http://widgets.digg.com/buttons.js';
-							  s1.parentNode.insertBefore(s, s1);
-							})();
-						</script>
-					<?php
-					}
-					elseif( $value == 'linkedin' ){
-						echo '<script type="text/javascript" src="http://platform.linkedin.com/in.js?' . ( time() ) . '"></script>';
-					}
-
-					elseif( $value == 'stumbleupon' ){
-					?>
-						<script type="text/javascript">
-						  (function() {
-						    var li = document.createElement('script'); li.type = 'text/javascript'; li.async = true;
-						    li.src = ('https:' == document.location.protocol ? 'https:' : 'http:') + '//platform.stumbleupon.com/1/widgets.js';
-						    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(li, s);
-						  })();
-						</script>
-
-					<?php
-					}
-				}
-			}
-			?>
-
-		<?php
-		}
-
 		public function display_meta_box()
 		{
 			$this->printBoxInterface();
@@ -160,13 +114,7 @@ if (class_exists('pspSocialStats') != true) {
 		*/
 		private function printBaseInterface()
 		{
-			$socialServices = $this->the_plugin->get_theoption( $this->the_plugin->alias . '_social', true ); 
-			
-			if( isset($socialServices['services']) ) {
-				$socialServices = $socialServices['services'];
-			}
-
-			//if( count($socialServices) > 0 ) $this->socialstats_scripts($socialServices);
+			$socialServices = $this->the_plugin->social_get_allowed_providers();
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
 		
@@ -232,61 +180,13 @@ if (class_exists('pspSocialStats') != true) {
 													)
 												);
 												
-												if( count($socialServices) > 0 ){
-													foreach ($socialServices as $key => $value){
-														if( $value == 'facebook' ){
-															$columns['ss_facebook'] = array(
-																'th'	=> __('Facebook', 'psp'),
-																'td'	=> '%ss_facebook%',
-																'width' => '80'
-															);
-														}
-														
-														if( $value == 'twitter' ){
-															$columns['ss_twitter'] = array(
-																'th'	=> __('Twitter', 'psp'),
-																'td'	=> '%ss_twitter%',
-																'width' => '80'
-															);
-														}
-														
-														if( $value == 'google' ){
-															$columns['ss_google'] = array(
-																'th'	=> __('Google +1', 'psp'),
-																'td'	=> '%ss_google%',
-																'width' => '80'
-															);
-														}
-														
-														if( $value == 'pinterest' ){
-															$columns['ss_pinterest'] = array(
-																'th'	=> __('Pinterest', 'psp'),
-																'td'	=> '%ss_pinterest%',
-																'width' => '80'
-															);
-														}
-														
-														if( $value == 'stumbleupon' ){
-															$columns['ss_stumbleupon'] = array(
-																'th'	=> __('Stumbleupon', 'psp'),
-																'td'	=> '%ss_stumbleupon%',
-																'width' => '80'
-															);
-														}
-														
-														if( $value == 'digg' ){
-															$columns['ss_digg'] = array(
-																'th'	=> __('Digg', 'psp'),
-																'td'	=> '%ss_digg%',
-																'width' => '80'
-															);
-														}
-														
-														if( $value == 'linkedin' ){
-															$columns['ss_linkedin'] = array(
-																'th'	=> __('Linkedin', 'psp'),
-																'td'	=> '%ss_linkedin%',
-																'width' => '80'
+												if ( ! empty($socialServices) ) {
+													foreach ($socialServices as $ssKey => $ssVal) {
+														if (1) {
+															$columns["ss_{$ssKey}"] = array(
+																'th'	=> $ssVal['title'],
+																'td'	=> "%ss_{$ssKey}%",
+																'width' => '55'
 															);
 														}
 													}
@@ -301,8 +201,8 @@ if (class_exists('pspSocialStats') != true) {
 												pspAjaxListTable::getInstance( $this->the_plugin )
 													->setup(array(
 														'id' 				=> 'pspSocialStats',
-														'show_header' 		=> false,
-														'show_footer' 		=> false,
+														'show_header' 		=> true,
+														'show_header_buttons' => true,
 														'items_per_page' 	=> '10',
 														'post_statuses' 	=> 'all',
 														'columns'			=> $columns,
@@ -321,10 +221,52 @@ if (class_exists('pspSocialStats') != true) {
 				</section>
 			</div>
 		</div>
-
 <?php
 		}
-		
+
+		public function __socialstats_scripts( $socialServices=array() ) {
+			if ( count($socialServices) > 220 ) {
+				foreach ($socialServices as $key => $value){
+					if( $value == 'twitter' ){
+						echo '<script type="text/javascript" src="http://platform.twitter.com/widgets.js?' . ( time() ) . '"></script>';
+					}
+					elseif( $value == 'google' ){
+						echo '<script type="text/javascript" src="http://apis.google.com/js/plusone.js?' . ( time() ) . '"></script>';
+					}
+					elseif( $value == 'digg' ){
+					?>
+						<script type="text/javascript">
+							(function() {
+							  var s = document.createElement('SCRIPT'), s1 = document.getElementsByTagName('SCRIPT')[0];
+							  s.type = 'text/javascript';
+							  s.async = true;
+							  s.src = 'http://widgets.digg.com/buttons.js';
+							  s1.parentNode.insertBefore(s, s1);
+							})();
+						</script>
+					<?php
+					}
+					elseif( $value == 'linkedin' ){
+						echo '<script type="text/javascript" src="http://platform.linkedin.com/in.js?' . ( time() ) . '"></script>';
+					}
+
+					elseif( $value == 'stumbleupon' ){
+					?>
+						<script type="text/javascript">
+						  (function() {
+						    var li = document.createElement('script'); li.type = 'text/javascript'; li.async = true;
+						    li.src = ('https:' == document.location.protocol ? 'https:' : 'http:') + '//platform.stumbleupon.com/1/widgets.js';
+						    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(li, s);
+						  })();
+						</script>
+
+					<?php
+					}
+				}
+			}
+		}
+
+
 		/**
 	    * Singleton pattern
 	    *

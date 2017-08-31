@@ -3,6 +3,7 @@ Document   :  404 Monitor
 Author     :  Andrei Dinca, AA-Team http://codecanyon.net/user/AA-Team
 */
 
+
 // Initialization and events code for the app
 psp404Monitor = (function ($) {
     "use strict";
@@ -12,6 +13,8 @@ psp404Monitor = (function ($) {
     var maincontainer = null;
     var lightbox = null;
     var loaded_page = 0;
+    var current_row = null;
+
 
 	// init function, autoload
 	(function init() {
@@ -34,8 +37,9 @@ psp404Monitor = (function ($) {
 		lightbox.fadeIn('fast');
 		
 		lightbox.find("a.psp-close-btn").click(function(e){
-			e.preventDefault();
+			e.preventDefault()
 			lightbox.fadeOut('fast');
+			pspFreamwork.row_loading(current_row, 'hide');
 		});
 	}
 	
@@ -51,12 +55,14 @@ psp404Monitor = (function ($) {
 		lightbox.find("a.psp-close-btn").click(function(e){
 			e.preventDefault();
 			lightbox.fadeOut('fast');
+			pspFreamwork.row_loading(current_row, 'hide');
 		});
 	}
 
 	function getDetails( id, sub_action )
 	{
 		pspFreamwork.to_ajax_loader('Loading...');
+		pspFreamwork.row_loading(current_row, 'show');
 		
 		// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 		jQuery.post(ajaxurl, {
@@ -66,7 +72,7 @@ psp404Monitor = (function ($) {
 			'debug_level'	: debug_level
 		}, function(response) {
 			if( response.status == 'valid' ){
-				pspFreamwork.to_ajax_loader_close();
+				//pspFreamwork.to_ajax_loader_close();
 
 				lightbox.find("#psp-lightbox-seo-report-response").html( response.data );
 				showAddNewLink();
@@ -88,10 +94,12 @@ psp404Monitor = (function ($) {
 		});
 		ids = ids.join(',');
 		if (ids.length<=0) {
-			alert('You didn\'t select any rows!');
+			console.log('ceva' );
+			swal('You didn\'t select any rows!', '', 'error');
 			return false;
 		}
-		__urls = __urls.join('<br />');
+		//__urls = __urls.join('<br />');
+		__urls = '<ul><li>' + __urls.join('</li><li>') + '</li></ul>';
 
 		var $form = $('.psp-update-link-form'),
 		itemid = ids, url_redirect = $form.find('input#new_url_redirect2').val();
@@ -103,16 +111,17 @@ psp404Monitor = (function ($) {
 		showUpdateLink();
 	}
 
-	function updateToBuilder( itemid, subaction )
+	function updateToBuilder( itemid, sub_action )
 	{
-		subaction = subaction || '';
+		sub_action = sub_action || '';
 		
 		var $form = $('.psp-update-link-form'),
 		url_redirect = $form.find('input#new_url_redirect2').val();
 		
 		var data_save = $form.serializeArray();
     	data_save.push({ name: "action", value: "psp404MonitorToRedirect" });
-    	data_save.push({ name: "subaction", value: subaction });
+    	data_save.push({ name: "sub_action", value: sub_action });
+    	data_save.push({ name: "ajax_id", value: $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val() });
     	data_save.push({ name: "debug_level", value: debug_level });
     	data_save.push({ name: "itemid", value: itemid });
 			
@@ -120,50 +129,21 @@ psp404Monitor = (function ($) {
 		pspFreamwork.to_ajax_loader('Loading...');
 		
 		jQuery.post(ajaxurl, data_save, function(response) {
+
 			if( response.status == 'valid' ){
-				pspFreamwork.to_ajax_loader_close();
-				if( typeof response.msg != 'undefined' && response.msg != '' ) {
-					alert(response.msg);
-				}
-			}else{
-				if( typeof response.msg != 'undefined' && response.msg != '' ) {
-					alert(response.msg);
-				}
+				//pspFreamwork.to_ajax_loader_close();
+			}
+
+			if( typeof response.msg != 'undefined' && response.msg != '' ) {
+				swal(response.msg, '', 'error');
 			}
 			
 			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
-	
-	function delete_404_rows() {
-		var ids = [], __ck = $('.psp-form .psp-table input.psp-item-checkbox:checked');
-		__ck.each(function (k, v) {
-			ids[k] = $(this).attr('name').replace('psp-item-checkbox-', '');
-		});
-		ids = ids.join(',');
-		if (ids.length<=0) {
-			alert('You didn\'t select any rows!');
-			return false;
-		}
-		
-		pspFreamwork.to_ajax_loader('Loading...');
 
-		jQuery.post(ajaxurl, {
-			'action' 		: 'psp_do_bulk_delete_404_rows',
-			'id'			: ids,
-			'debug_level'	: debug_level
-		}, function(response) {
-			if( response.status == 'valid' ){
-				pspFreamwork.to_ajax_loader_close();				
-				//refresh page!
-				window.location.reload();
-				return false;
-			}
-			pspFreamwork.to_ajax_loader_close();
-			alert('Problems occured while trying to delete the selected rows!');
-		}, 'json');
-	}
+
 
 	function triggers()
 	{
@@ -171,8 +151,10 @@ psp404Monitor = (function ($) {
 			e.preventDefault();
 
 			var that 	= $(this),
+				row = that.parents('tr').eq(0),
 				itemID	= that.data('itemid');
 
+			current_row = row;
 			getDetails( itemID, that.attr('href').replace("#", '') );
 		});
 		
@@ -190,21 +172,13 @@ psp404Monitor = (function ($) {
 	
 			//maybe some validation!
 			if ($.trim(url_redirect)=='') {
-				alert('You didn\'t complete the necessary fields!');
+				swal('You didn\'t complete the necessary fields!', '', 'error');
+
 				return false;
 			}
 			updateToBuilder( itemid );
 		});
-		
-		maincontainer.on('click', '#psp-do_bulk_delete_404_rows', function(e){
-			e.preventDefault();
 
-			if (confirm('Are you sure you want to delete the selected rows?'))
-				delete_404_rows();
-		});
-		
-		//all checkboxes are checked by default!
-		$('.psp-form .psp-table input.psp-item-checkbox').attr('checked', 'checked');
 	}
 
 	// external usage

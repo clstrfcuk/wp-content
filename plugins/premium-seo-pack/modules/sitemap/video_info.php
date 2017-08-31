@@ -204,9 +204,12 @@ if (class_exists('pspVideoInfo') != true) {
 					$author_id = $post->post_author;
 					$author_name = get_the_author_meta( 'first_name', $author_id ) . ' ' . get_the_author_meta( 'last_name', $author_id );
 
-    				$categories = $this->format_items( get_the_category( $post_id ), 'categories', '', 'localhost' );
-    				if ( count($categories) > 0 )
+    				$categories = $this->format_items(
+    					get_the_category( $post_id ), 'categories', '', 'localhost'
+    				);
+    				if ( count($categories) > 0 && is_array( $categories ) ) {
     					$category = (string) array_shift($categories);
+    				}
 
     				$focus_kw = get_post_meta( $post_id, 'psp_kw', true );
     				if ( !empty($focus_kw) ) {

@@ -12,18 +12,18 @@
 
 if(class_exists('psp') != true) {
 	class psp {
-		
+
 		public $version = null; // see version method for details
 
 		const VERSION = 1.0;
-        
+
         // The time interval for the remote XML cache in the database (21600 seconds = 6 hours)
         const NOTIFIER_CACHE_INTERVAL = 21600;
 
 		public $alias = 'psp';
 		public $details = array();
 		public $localizationName = 'psp';
-		
+
 		public $dev = '';
 		public $debug = false;
 		public $is_admin = false;
@@ -34,7 +34,7 @@ if(class_exists('psp') != true) {
 		 * @var array
 		 */
 		public $cfg = array();
-		
+
 		/**
 		 * logic storage
 		 *
@@ -113,7 +113,7 @@ if(class_exists('psp') != true) {
 			'portfolio'         => 'http://codecanyon.net/user/aa-team/portfolio',
 		);
 		
-		public $plugin_tables = array('psp_link_builder', 'psp_link_redirect', 'psp_monitor_404', 'psp_web_directories', 'psp_serp_reporter', 'psp_serp_reporter2rank', 'psp_post_planner_cron');
+		public $plugin_tables = array('psp_link_builder', 'psp_link_redirect', 'psp_monitor_404', 'psp_web_directories', 'psp_serp_reporter', 'psp_serp_reporter2rank', 'psp_post_planner_cron', 'psp_alexa_rank');
 		
 		public $title_meta_format_default = array();
 
@@ -221,7 +221,8 @@ if(class_exists('psp') != true) {
 				'remote_support',
 				'frontend',
 				'server_status',
-				'misc'
+				'misc',
+				'cronjobs',
 			));
 
 			// list of freamwork css files
@@ -234,7 +235,8 @@ if(class_exists('psp') != true) {
 				'button' => 'css/button.css',
 				'table' => 'css/table.css',
 				'tipsy' => 'css/tooltip.css',
-				'additional' => 'css/additional.css'
+				'additional' => 'css/additional.css',
+				'sweetalert' => 'css/sweetalert.css'
 			));
 
 			// list of freamwork js files
@@ -243,12 +245,18 @@ if(class_exists('psp') != true) {
 				'hashchange' => 'js/hashchange.js',
 				'ajaxupload' => 'js/ajaxupload.js',
 				'tipsy'	=> 'js/tooltip.js',
+				'sweetalert'	=> 'js/sweetalert.min.js',
+				'google_analytics'	=> '../modules/Google_Analytics/app.class.js',
+				//'menu-tooltip'	=> 'js/menu-tooltip.js',
 				'percentageloader-0.1' => 'js/jquery.percentageloader-0.1.min.js',
 				'flot-2.0' => 'js/jquery.flot/jquery.flot.min.js',
 				'flot-tooltip' => 'js/jquery.flot/jquery.flot.tooltip.min.js',
 				'flot-stack' => 'js/jquery.flot/jquery.flot.stack.min.js',
 				'flot-pie' => 'js/jquery.flot/jquery.flot.pie.min.js',
 				'flot-time' => 'js/jquery.flot/jquery.flot.time.js',
+				'chart-bundle' => 'js/chart-bundle.js',
+				'utils' => 'js/utils.js',
+				'analyser' => 'js/analyser.js',
 				'flot-resize' => 'js/jquery.flot/jquery.flot.resize.min.js'
 			));
 
@@ -352,6 +360,11 @@ if(class_exists('psp') != true) {
 			// admin ajax action
 			require_once( $this->cfg['paths']['plugin_dir_path'] . 'aa-framework/utils/action_admin_ajax.php' );
 			new pspActionAdminAjax( $this );
+
+			// admin ajax action
+			require_once( $this->cfg['paths']['plugin_dir_path'] . 'modules/cronjobs/cronjobs.core.php' );
+			new pspCronjobs( $this );
+			//pspCronjobs::getInstance();
 			
             if ( $this->is_admin ) {
     			// import seo data
@@ -486,6 +499,7 @@ if(class_exists('psp') != true) {
 			
 			#$buffer = str_replace( "fonts/", $this->cfg['paths']['freamwork_dir_url'] . "fonts/", $buffer );
 			$buffer = str_replace( '#framework_url/', $this->cfg['paths']['freamwork_dir_url'], $buffer );
+			$buffer = str_replace( '#module_url/', $this->cfg['paths']['freamwork_dir_url'], $buffer );
 			$buffer = str_replace( '#plugin_url', $this->cfg['paths']['plugin_dir_url'], $buffer );
 			//$buffer = str_replace( "images/", $this->cfg['paths']['freamwork_dir_url'] . "images/", $buffer );
             
@@ -978,7 +992,7 @@ if(class_exists('psp') != true) {
 		}
 		
 		public function get_theoption( $option_name ) {
-			$opt = get_option( $option_name);
+			$opt = get_option( $option_name );
 			if ( $opt === false ) return false;
 			$opt = maybe_unserialize($opt);
 			return $opt;
@@ -1152,6 +1166,7 @@ if(class_exists('psp') != true) {
 					ob_start();
 	   
 					$opt_file_path = $tryed_module['folder_path'] . 'options.php';
+
 					if( is_file($opt_file_path) ) {
 						// I believe there is a bug which load a module multiple times - for title & meta format module I needed to load options.php file multiple times 
 						if ( 'title_meta_format' == $request['section'] ) {
@@ -1166,23 +1181,22 @@ if(class_exists('psp') != true) {
 				  
 				if(trim($options) != "") {
 					$options = json_decode($options, true);
-					 
-					// Derive the current path and load up aaInterfaceTemplates
+					// Derive the current path and load up psp_aaInterfaceTemplates
 					$plugin_path = dirname(__FILE__) . '/';
-					if(class_exists('aaInterfaceTemplates') != true) {
+					if(class_exists('psp_aaInterfaceTemplates') != true) {
 						require_once($plugin_path . 'settings-template.class.php');
 
-						// Initalize the your aaInterfaceTemplates
-						$aaInterfaceTemplates = new aaInterfaceTemplates($this->cfg);
+						// Initalize the your psp_aaInterfaceTemplates
+						$psp_aaInterfaceTemplates = new psp_aaInterfaceTemplates($this->cfg);
 
 						// then build the html, and return it as string
-						$html = $aaInterfaceTemplates->bildThePage($options, $this->alias, $tryed_module);
+						$html = $psp_aaInterfaceTemplates->bildThePage($options, $this->alias, $tryed_module);
 						 
 						// fix some URI
 						$html = str_replace('{plugin_folder_uri}', $tryed_module['folder_uri'], $html);
 
 						if(trim($html) != "") {
-							$headline = $tryed_module[$request['section']]['menu']['title'] . "<span class='psp-section-info'>" . ( $tryed_module[$request['section']]['description'] ) . "</span>";
+							$headline = $tryed_module[$request['section']]['menu']['title'] . "<span class='psp-section-info'> " . ( $tryed_module[$request['section']]['description'] ) . "</span>";
 							
 							$has_help = isset($tryed_module[$request['section']]['help']) ? true : false;
 							if( $has_help === true ){
@@ -1401,9 +1415,11 @@ if(class_exists('psp') != true) {
 				if( in_array( 'jquery-ui-resize', $javascript ) ) wp_enqueue_script( 'jquery-ui-resize' );
 				if( in_array( 'jquery-ui-dialog', $javascript ) ) wp_enqueue_script( 'jquery-ui-dialog' );
 				if( in_array( 'jquery-ui-button', $javascript ) ) wp_enqueue_script( 'jquery-ui-button' );
+				if( in_array( 'jquery-ui-button', $javascript ) ) wp_enqueue_script( 'jquery-ui-button' );
+				if( in_array( 'jquery-ui-accordion', $javascript ) ) wp_enqueue_script( 'jquery-ui-accordion' );
 				
 				if( in_array( 'thickbox', $javascript ) ) wp_enqueue_script( 'thickbox' );
-	
+
 				// date & time picker
 				if( !wp_script_is('jquery-timepicker') ) {
 					if( in_array( 'jquery-timepicker', $javascript ) ) wp_enqueue_script( 'jquery-timepicker' , $this->cfg['paths']['freamwork_dir_url'] . 'js/jquery.timepicker.v1.1.1.min.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-datepicker', 'jquery-ui-slider' ) );
@@ -1469,16 +1485,16 @@ if(class_exists('psp') != true) {
 
 		public function manage_options_template()
 		{
-			// Derive the current path and load up aaInterfaceTemplates
+			// Derive the current path and load up psp_aaInterfaceTemplates
 			$plugin_path = dirname(__FILE__) . '/';
-			if(class_exists('aaInterfaceTemplates') != true) {
+			if(class_exists('psp_aaInterfaceTemplates') != true) {
 				require_once($plugin_path . 'settings-template.class.php');
 
-				// Initalize the your aaInterfaceTemplates
-				$aaInterfaceTemplates = new aaInterfaceTemplates($this->cfg);
+				// Initalize the your psp_aaInterfaceTemplates
+				$psp_aaInterfaceTemplates = new psp_aaInterfaceTemplates($this->cfg);
 
 				// try to init the interface
-				$aaInterfaceTemplates->printBaseInterface();
+				$psp_aaInterfaceTemplates->printBaseInterface();
 			}
 		}
 
@@ -2467,6 +2483,15 @@ if(class_exists('psp') != true) {
 					$body = false;
 					$err = htmlspecialchars( implode(';', $resp->get_error_messages()) );
 				}
+				else if (
+					//Unauthorized
+					isset($resp['response'], $resp['response']['code'])
+					&& (401 == (int) $resp['response']['code'])
+				) {
+					$body = false;
+					//401 Unauthorized: the page you were trying to access cannot be loaded until you first log in with a valid user ID and password
+					$err = '401 Unauthorized: also verify if your website requires .htpasswd authorization.';
+				}
 				else {
 					$body = wp_remote_retrieve_body( $resp );
 				}
@@ -2520,12 +2545,14 @@ if(class_exists('psp') != true) {
                 $ret[] = $meta['psp_smushit']['msg'];
             }
 
-			if ( !$show_sizes )
-			return $ret;
+			if ( !$show_sizes ){
+				return $ret;
+			}
 
 			// no media sizes
-			if ( !isset($meta['sizes']) || empty($meta['sizes']) )
-			return $ret;
+			if ( !isset($meta['sizes']) || empty($meta['sizes']) ) {
+				return $ret;
+			}
 
 			foreach ( $meta['sizes'] as $key => $val ) {
                 // current size should be smushed
@@ -3154,7 +3181,7 @@ if(class_exists('psp') != true) {
             curl_setopt($curl, CURLOPT_HEADER, $header);
             if ( $cainfo!== false ) curl_setopt($curl, CURLOPT_CAINFO, $cainfo);
             if ( $useragent!== false ) curl_setopt($curl, CURLOPT_USERAGENT, $useragent);
-            if ( $timeout!== false ) curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
+            if ( isset($timeout) && $timeout!== false ) curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
             
             $data = curl_exec($curl);
             $http_code = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -3266,16 +3293,131 @@ if(class_exists('psp') != true) {
             return $ipaddress;
         }
 
-        public function get_current_page_url() {
-            $url = (!empty($_SERVER['HTTPS']))
-                ?
-                "https://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']
-                :
-                "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']
-            ;
-            return $url;
+        public function get_current_page_url( $pms=array() ) {
+			$pms = array_replace_recursive(array(
+				'exclude_request_uri'	=> false, // url will not include $_SERVER['REQUEST_URI']
+				'force_include_port'	=> false, // always include port, independent of 'include_port' value
+				'include_port'			=> true, // will include port but not if: (NOT SSL & 80) | (SSL & 443)
+			), $pms);
+			extract( $pms );
+
+        	$s 			= $_SERVER;
+			$ssl		= $this->is_ssl();
+			$port 		= $this->get_port();
+
+			$sp 		= isset($s['SERVER_PROTOCOL']) ? strtolower( $s['SERVER_PROTOCOL'] ) : '';
+			$protocol 	= substr( $sp, 0, strpos( $sp, '/' ) ) . ( $ssl ? 's' : '' );
+
+			// include port?
+			$inc_port = $force_include_port;
+			if ( ! $force_include_port && $include_port ) {
+				if ( ( ! $ssl && $port=='80' ) || ( $ssl && $port=='443' ) ) {
+					$inc_port = false;
+				}
+			}
+
+			// build url
+			$url = array();
+			$url[] = $protocol . '://';
+			$url[] = $this->get_host( $inc_port );
+			if ( isset($_SERVER['REQUEST_URI']) && ! $exclude_request_uri ) {
+				$url[] = $_SERVER['REQUEST_URI'];
+			}
+
+			$url = implode('', $url);
+			return $url;
         }
-        
+
+		// verbose translation from Symfony
+		public function get_host( $include_port=false ) {
+		    $possibleHostSources = array('HTTP_X_FORWARDED_HOST', 'HTTP_HOST', 'SERVER_NAME', 'SERVER_ADDR');
+		    $sourceTransformations = array(
+		    	// since PHP 4 >= 4.0.1, PHP 5, PHP 7
+		        "HTTP_X_FORWARDED_HOST" => create_function('$value', '$elements = explode(",", $value); return trim(end($elements));'),
+
+				// since PHP 5.3.0 (anonymous function)
+		        //"HTTP_X_FORWARDED_HOST" => function($value) {
+		        //    $elements = explode(',', $value);
+		        //    return trim(end($elements));
+		        //},
+		    );
+
+		    $host = '';
+		    foreach ($possibleHostSources as $source) {
+		        if (!empty($host)) break;
+		        if (!isset($_SERVER[$source]) || empty($_SERVER[$source])) continue;
+
+		        $host = $_SERVER[$source];
+		        if (array_key_exists($source, $sourceTransformations)) {
+		            $host = $sourceTransformations[$source]($host);
+		        } 
+		    } // end foreach
+
+        	$s 			= $_SERVER;
+			$ssl		= $this->is_ssl();
+			$port 		= $this->get_port();
+
+		    // Remove port number from host
+		    if ( !$include_port ) {
+		    	$host = preg_replace('/:\d+$/', '', $host);
+			}
+			// Include Port
+			else {
+				$found = preg_match('/:\d+$/', $host);
+				if ( empty($found) && !empty($port) ) {
+					$host .= ':'.$port;
+				}
+			}
+
+			$host = trim($host);
+			//$host = strtolower($host);
+		    return $host;
+		}
+
+		// get current port
+		public function get_port() {
+			// CHECK PROXY
+			if ( isset($_SERVER['HTTP_X_FORWARDED_PORT']) ) {
+				$port = (string) $_SERVER['HTTP_X_FORWARDED_PORT'];
+				return $port;
+			}
+
+			if ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ) {
+				$port = (string) $_SERVER['HTTP_X_FORWARDED_PROTO'];
+				if ( in_array(strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']), array('https')) ) {
+					$port = '443';
+					return $port;
+				}
+			}
+
+			// SERVER PORT
+			$port = isset($s['SERVER_PORT']) ? $s['SERVER_PORT'] : '';
+			return $port;
+		}
+
+		// Determine if SSL is used.
+		public function is_ssl() {
+			// CHECK PROXY: HTTP_X_FORWARDED_PROTO: a de facto standard for identifying the originating protocol of an HTTP request, since a reverse proxy (load balancer) may communicate with a web server using HTTP even if the request to the reverse proxy is HTTPS
+			if ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ) {
+				if ( in_array(strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']), array('on', '1', 'https', 'ssl')) )
+					return true;
+			}
+			if ( isset($_SERVER['HTTP_X_FORWARDED_SSL']) ) {
+				if ( in_array(strtolower($_SERVER['HTTP_X_FORWARDED_SSL']), array('on', '1', 'https', 'ssl')) )
+					return true;
+			}
+
+			if ( isset($_SERVER['HTTPS']) ) {
+				if ( in_array(strtolower($_SERVER['HTTPS']), array('on', '1', 'https', 'ssl')) )
+					return true;
+			}
+			else if ( isset($_SERVER['SERVER_PORT']) && ( '443' == $_SERVER['SERVER_PORT'] ) ) {
+				return true;
+			}
+
+			return false;
+		}
+
         public function get_client_country() {
             $get_user_location = wp_remote_get( 'http://api.hostip.info/get_json.php?ip=' . $this->get_client_ip() );
 
@@ -3546,21 +3688,148 @@ if(class_exists('psp') != true) {
 		
 		public function update_db( $force=false )  {
 			// current installed db version
-			//$current_db_version = get_option( 'psp_db_version' );
-			//$current_db_version = !empty($current_db_version) ? (string)$current_db_version : '1.0';
+			$current_db_version = get_option( 'psp_db_version' );
+			//$current_db_version = !empty($current_db_version) ? (string) $current_db_version : '1.0';
 
 			// default db structure - integrity verification is done in function
 			$this->check_if_table_exists( $force );
 
-			//$need_check_alter_tables = $this->plugin_integrity_need_verification('check_alter_tables');
+			$need_check_alter_tables = $this->plugin_integrity_need_verification('check_alter_tables');
 
 			// installed version less than 2.0.4 / ex. 2.0.3.8
 			//if ( version_compare( $current_db_version, '2.0.4', '<' ) ) {
 			if (1) {
-				//if ( $need_check_alter_tables['status'] || $force ) {
-				//}
+				// if need_check_alter_tables
+				if ( $need_check_alter_tables['status'] || $force
+					|| ( ! empty($current_db_version) && version_compare( $current_db_version, '2.1.1', '<' ) )
+				) {
+
+					// installed version less than 2.1.1 / ex. 2.0.4
+					$table_name = $this->db->prefix . "psp_link_builder";
+					if ( $this->db->get_var("show tables like '$table_name'") == $table_name ) {
+						$this->_update_db_tables(array(
+							'operation'		=> $table_name,
+							'table'			=> $table_name,
+							'queries'		=> array(
+								'attr_title'				=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s COLUMN `attr_title` TEXT NULL;",
+									'verify'		=> "SHOW COLUMNS FROM " . $table_name . " LIKE 'attr_title';",
+									'field_name'	=> 'attr_title',
+									'field_type'	=> 'text',
+								),
+							),
+						));
+					}
+
+					$table_name = $this->db->prefix . "psp_link_redirect";
+					if ( $this->db->get_var("show tables like '$table_name'") == $table_name ) {
+						$this->_update_db_tables(array(
+							'operation'		=> $table_name,
+							'table'			=> $table_name,
+							'queries'		=> array(
+								// columns
+								'redirect_type'				=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s COLUMN `redirect_type` VARCHAR(25) NULL DEFAULT '';",
+									'verify'		=> "SHOW COLUMNS FROM " . $table_name . " LIKE 'redirect_type';",
+									'field_name'	=> 'redirect_type',
+									'field_type'	=> 'varchar(25)',
+								),
+								'redirect_rule'				=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s COLUMN `redirect_rule` VARCHAR(25) NULL DEFAULT 'custom_url';",
+									'verify'		=> "SHOW COLUMNS FROM " . $table_name . " LIKE 'redirect_rule';",
+									'field_name'	=> 'redirect_rule',
+									'field_type'	=> 'varchar(25)',
+								),
+								'target_status_code'		=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s COLUMN `target_status_code` VARCHAR(25) NULL DEFAULT '';",
+									'verify'		=> "SHOW COLUMNS FROM " . $table_name . " LIKE 'target_status_code';",
+									'field_name'	=> 'target_status_code',
+									'field_type'	=> 'varchar(25)',
+								),
+								'target_status_details'		=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s COLUMN `target_status_details` TEXT NULL;",
+									'verify'		=> "SHOW COLUMNS FROM " . $table_name . " LIKE 'target_status_details';",
+									'field_name'	=> 'target_status_details',
+									'field_type'	=> 'text',
+								),
+								'group_id'		=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s COLUMN `group_id` INT(5) NULL DEFAULT '1';",
+									'verify'		=> "SHOW COLUMNS FROM " . $table_name . " LIKE 'group_id';",
+									'field_name'	=> 'group_id',
+									'field_type'	=> 'int(5)',
+								),
+								'post_id'		=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s COLUMN `post_id` INT(10) NULL DEFAULT '0';",
+									'verify'		=> "SHOW COLUMNS FROM " . $table_name . " LIKE 'post_id';",
+									'field_name'	=> 'post_id',
+									'field_type'	=> 'int(10)',
+								),
+								'publish'					=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s COLUMN `publish` CHAR(1) DEFAULT 'Y';",
+									'verify'		=> "SHOW COLUMNS FROM " . $table_name . " LIKE 'publish';",
+									'field_name'	=> 'publish',
+									'field_type'	=> 'char(1)',
+								),
+							),
+							// !!!must be after queries to be sure that all columns exists!
+							// index_name, index_type, index_cols: all are mandatory
+							'indexes'		=> array(
+								'url_redirect'			=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s (`url_redirect`);",
+									'verify'		=> "SHOW INDEX FROM " . $table_name . " WHERE 1=1 and Key_name LIKE 'url_redirect';",
+									'index_name'	=> 'url_redirect',
+									'index_type'	=> 'key',
+									'index_cols'	=> array('url_redirect'),
+								),
+								'redirect_type'			=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s (`redirect_type`);",
+									'verify'		=> "SHOW INDEX FROM " . $table_name . " WHERE 1=1 and Key_name LIKE 'redirect_type';",
+									'index_name'	=> 'redirect_type',
+									'index_type'	=> 'key',
+									'index_cols'	=> array('redirect_type'),
+								),
+								'redirect_rule'			=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s (`redirect_rule`);",
+									'verify'		=> "SHOW INDEX FROM " . $table_name . " WHERE 1=1 and Key_name LIKE 'redirect_rule';",
+									'index_name'	=> 'redirect_rule',
+									'index_type'	=> 'key',
+									'index_cols'	=> array('redirect_rule'),
+								),
+								'target_status_code'	=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s (`target_status_code`);",
+									'verify'		=> "SHOW INDEX FROM " . $table_name . " WHERE 1=1 and Key_name LIKE 'target_status_code';",
+									'index_name'	=> 'target_status_code',
+									'index_type'	=> 'key',
+									'index_cols'	=> array('target_status_code'),
+								),
+								'group_id'			=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s (`group_id`);",
+									'verify'		=> "SHOW INDEX FROM " . $table_name . " WHERE 1=1 and Key_name LIKE 'group_id';",
+									'index_name'	=> 'group_id',
+									'index_type'	=> 'key',
+									'index_cols'	=> array('group_id'),
+								),
+								'post_id'			=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s (`post_id`);",
+									'verify'		=> "SHOW INDEX FROM " . $table_name . " WHERE 1=1 and Key_name LIKE 'post_id';",
+									'index_name'	=> 'post_id',
+									'index_type'	=> 'key',
+									'index_cols'	=> array('post_id'),
+								),
+								'publish'			=> array(
+									'main' 			=> "ALTER TABLE " . $table_name . " %s (`publish`);",
+									'verify'		=> "SHOW INDEX FROM " . $table_name . " WHERE 1=1 and Key_name LIKE 'publish';",
+									'index_name'	=> 'publish',
+									'index_type'	=> 'key',
+									'index_cols'	=> array('publish'),
+								),
+							),
+						));
+					}
+
+				} // end if need_check_alter_tables
 				
-				$this->update_db_version('9.0');
+				$this->update_db_version('2.0.4');
 			}
 
 			// update installed version to latest
@@ -3575,6 +3844,7 @@ if(class_exists('psp') != true) {
 			extract( $pms );
 
 			global $wpdb;
+			// queries columns
 			foreach ( (array) $queries as $skey => $sql ) {
 				if ( ! isset($sql['main']) ) continue 1;
 
@@ -3585,7 +3855,7 @@ if(class_exists('psp') != true) {
 
 						//'image_sizes' == strtolower($status['Field'])
 						if ( isset($sql['field_type']) ) {
-							if ( $sql['field_type'] == strtolower( $status['Type'] ) )
+							if ( strtolower($sql['field_type']) == strtolower( $status['Type'] ) )
 								$do_main = false;
 							else
 								$do_main = 'modify';
@@ -3599,7 +3869,53 @@ if(class_exists('psp') != true) {
 					//var_dump('<pre>', $sql, $status, '</pre>');
 				}
 			} // end foreach
-			
+
+			// queries indexes
+			//ADD KEY newkeyname | DROP KEY oldkeyname, ADD KEY newkeyname
+			if ( isset($indexes) ) { foreach ( (array) $indexes as $skey => $sql ) {
+				if ( ! isset($sql['main']) ) continue 1;
+
+				$index_name = isset($sql['index_name']) ? $sql['index_name'] : $skey;
+				$index_type = isset($sql['index_type']) ? $sql['index_type'] : 'key';
+				$index_cols = isset($sql['index_cols']) ? $sql['index_cols'] : array();
+
+				$do_main = 'add';
+				if ( isset($sql['verify']) ) {
+					$status = $wpdb->get_results( $sql['verify'], ARRAY_A );
+
+					$cols = array();
+					if ( ! empty($status) ) {
+						foreach ($status as $idxKey => $idxVal) {
+							$cols[] = $idxVal['Column_name'];
+						}
+						$cols = array_unique( array_filter( $cols) );
+						$diff = array_diff($index_cols, $cols);
+
+						if ( ! empty($diff) )
+							$do_main = 'modify';
+						else
+							$do_main = false;
+					}
+				} // end if verify
+
+				if ( !empty($do_main) ) {
+					$do_main2 = array();
+					if ( 'modify' == $do_main ) {
+						$do_main2[] = 'DROP ' . strtoupper($index_type) . ' ' . $index_name;
+					}
+					$do_main2[] = 'ADD ' . strtoupper($index_type) . ' ' . $index_name;
+					$do_main = implode(', ', $do_main2);
+
+					$sql['main'] = sprintf( $sql['main'], $do_main );
+					$status = $wpdb->query( $sql['main'] );
+					//var_dump('<pre>', $sql, $status, '</pre>');
+				}
+			} } // end foreach & if
+
+			//if ( $this->db->prefix . "psp_link_redirect" == $operation ) {
+			//	echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+			//}
+
 			$this->plugin_integrity_update_time('check_alter_tables', array(
 				'timeout'	=> time(),
 				'status'		=> 'valid',
@@ -3810,15 +4126,67 @@ if(class_exists('psp') != true) {
 			return $rules_allowed;
 		}
 
+		public function build_score_html_container( $score=0, $pms=array() ) {
+			$pms = array_replace_recursive(array(
+				'show_score'		=> true,
+				'css_style'			=> '',
+			), $pms);
+			extract( $pms );
+
+			$_css_style = ( '' != $css_style ? ' ' . $css_style : '' );
+
+			$size_class = 'size_';
+			if ( $score >= 20 && $score < 40 ) {
+				$size_class .= '20_40';
+			}
+			else if ( $score >= 40 && $score < 60 ) {
+				$size_class .= '40_60';
+			}
+			else if ( $score >= 60 && $score < 80 ) {
+				$size_class .= '60_80';
+			}
+			else if ( $score >= 80 && $score <= 100 ) {
+				$size_class .= '80_100';
+			}
+			else {
+				$size_class .= '0_20';
+			}
+
+			$html = array();
+			$html[] = '<div class="psp-progress"' . $_css_style . '>';
+			$html[] = 		'<div class="psp-progress-bar ' . ( $size_class ) . '" style="width:' . ( $score ) . '%"></div>';
+			if ( $show_score ) {
+				$html[] =	'<div class="psp-progress-score">' . ( $score ) . '%</div>';
+			}
+			$html[] = '</div>';
+			return implode('', $html);
+		}
+
+		public function xml_entities($string, $encoding) {
+			//return htmlspecialchars($string, ENT_QUOTES | ENT_XML1, $encoding); // only >= PHP 5.4
+			return htmlspecialchars($string, ENT_QUOTES, $encoding);
+
+		    return strtr(
+		        $string, 
+		        array(
+		            "<" => "&lt;",
+		            ">" => "&gt;",
+		            '"' => "&quot;",
+		            "'" => "&apos;",
+		            "&" => "&amp;",
+		        )
+		    );
+		}
+
 
 		/**
 		 * FACEBOOK
 		 */
 		// Facebook: cronjob
-		public function facebook_wplanner_do_this_hourly() {
-			// Plugin cron class loading
-			require_once ( $this->cfg['paths']['plugin_dir_path'] . 'modules/facebook_planner/app.cron.class.php' );
-		}
+		//public function facebook_wplanner_do_this_hourly() {
+		//	// Plugin cron class loading
+		//	require_once ( $this->cfg['paths']['plugin_dir_path'] . 'modules/facebook_planner/app.cron.class.php' );
+		//}
 
 		// Facebook: save operation last status
 		public function facebook_planner_last_status( $pms=array() ) {
@@ -4515,6 +4883,666 @@ if(class_exists('psp') != true) {
 				}
 			}
 			return $str;
+		}
+
+
+		/**
+		 * Social Stats | Providers
+		 */
+		public function social_get_providers( $pms=array() ) {
+			$pms = array_replace_recursive(array(), $pms);
+			extract( $pms );
+
+			$prv = array(
+				// title, color, items_label : mandatory for all providers
+				'facebook'		=> array(
+					'title'			=> __('Facebook', 'psp'),
+					'color'			=> '#3c5b9b',
+					'items_label'	=> __('shares', 'psp'),
+					'counts'		=> array(
+						'share_count'		=> array(
+							'items_label'		=> __("shares", 'psp'),
+							'icon'				=> 'facebook-icon.png',
+						),
+						'like_count'		=> array(
+							'items_label'		=> __("likes", 'psp'),
+							'icon'				=> 'facebook-like-icon.png',
+						),
+						'comment_count'		=> array(
+							'items_label'		=> __("comments", 'psp'),
+							'icon'				=> 'facebook-comments-icon.png',
+						),
+						//'click_count'		=> array(
+						//	'items_label'		=> __("clicks", 'psp'),
+						//	'icon'				=> 'facebook-icon.png',
+						//),
+					),
+				),
+				'twitter'		=> array(
+					'title'			=> __('Twitter', 'psp'),
+					'color'			=> '#00aced',
+					'items_label'	=> __('retweets', 'psp'),
+				),
+				'google'		=> array(
+					'title'			=> __('Google +1', 'psp'),
+					'color'			=> '#d23e2b',
+					'items_label'	=> __('shares', 'psp'),
+				),
+				'pinterest'		=> array(
+					'title'			=> __('Pinterest', 'psp'),
+					'color'			=> '#ca4638',
+					'items_label'	=> __('pins', 'psp'),
+				),
+				'stumbleupon'		=> array(
+					'title'			=> __('Stumbleupon', 'psp'),
+					'color'			=> '#3fbd46',
+					'items_label'	=> __('views', 'psp'),
+				),
+				'linkedin'		=> array(
+					'title'			=> __('Linkedin', 'psp'),
+					'color'			=> '#007ab9',
+					'items_label'	=> __('backlinks', 'psp'),
+				),
+				'delicious'		=> array(
+					'title'			=> __('Delicious', 'psp'),
+					'color'			=> '#2c2c2c',
+					'items_label'	=> __('posts', 'psp'),
+				),
+				'buffer'		=> array(
+					'title'			=> __('Buffer', 'psp'),
+					'color'			=> '#2c2c2c',
+					'items_label'	=> __('posts', 'psp'),
+				),
+				'reddit'		=> array(
+					'title'			=> __('Reddit', 'psp'),
+					'color'			=> '#2c2c2c',
+					'items_label'	=> __('posts', 'psp'),
+				),
+				'flattr'		=> array(
+					'title'			=> __('Flattr', 'psp'),
+					'color'			=> '#2c2c2c',
+					'items_label'	=> __('posts', 'psp'),
+				),
+			);
+
+			return $prv;
+		}
+
+		public function social_get_allowed_providers( $pms=array() ) {
+			$pms = array_replace_recursive(array(), $pms);
+			extract( $pms );
+
+			//2017-june not working anymore: 'twitter', 'delicious', 'digg', 'flattr', 'reddit'
+			$def = array('facebook', 'google', 'pinterest', 'stumbleupon', 'linkedin', 'buffer');
+
+			$prv = $this->social_get_providers();
+			
+			$selected = $this->get_theoption( $this->alias . '_social', true );
+			$selected = is_array($selected) && isset($selected['services']) && is_array($selected['services'])
+				? $selected['services'] : $def;
+			$selected = array_unique( array_filter( $selected ) );
+
+			$final = array_intersect_key($prv, array_flip($selected));
+
+			foreach (array('twitter', 'delicious', 'digg', 'flattr', 'reddit') as $service) {
+				if ( isset($final["$service"]) ) {
+					unset( $final["$service"] );
+				}
+			}
+			return $final;
+		}
+
+		public function social_get_stats( $pms=array() ) {
+			$def = array_keys( $this->social_get_allowed_providers() );
+
+			$pms = array_replace_recursive(array(
+				'providers'				=> $def,
+				'from'					=> 'listing',
+				'cache_force_refresh'	=> false,
+				'cache_life_time'		=> 600, // in seconds
+				'website_url'			=> '',
+				'postid'				=> 0,
+			), $pms);
+			extract( $pms );
+
+			//:: DEBUG
+			/*
+			$__ = array(
+				'https://www.instagram.com/',
+				'http://facebook.com',
+				'http://mashable.com',
+				'http://themeforest.net',
+				'http://www.stackoverflow.com',
+			);
+			shuffle($__); $website_url = $__[0];
+			*/
+
+			$the_db_cache = array();
+			if ( 'dashboard' == $from ) {
+				$the_db_cache = $this->get_theoption( "psp_dashboard_social_statistics" );
+			}
+			else if ( 'listing' == $from ) {
+				$the_db_cache = get_post_meta( $postid, '_psp_social_stats', true );
+			}
+			else if ( 'toolbar' == $from ) {
+				$the_db_cache = get_post_meta( $postid, 'psp_socialsharing_count', true );
+			}
+
+			// check if cache NOT expires 
+			if (
+				isset($the_db_cache['_cache_date'])
+				&& ( time() <= ( $the_db_cache['_cache_date'] + $cache_life_time ) )
+				&& $cache_force_refresh == false
+			) {
+				if ( in_array($from, array('listing', 'toolbar')) ) {
+					if ( isset($the_db_cache['facebook']['share_count']) ) {
+						$the_db_cache['facebook'] = $the_db_cache['facebook']['share_count'];
+					}
+					if ( isset($the_db_cache['google']) ) {
+						$the_db_cache['plusone'] = $the_db_cache['google'];
+					}
+				}
+				return $the_db_cache;
+			}
+
+			$db_cache = array();
+			$db_cache['_cache_date'] = time();
+
+			//:: Alexa rank
+			if ( 'dashboard' == $from ) {
+				$apiQuery = 'http://data.alexa.com/data?cli=10&dat=snbamz&url='. $website_url;
+				$alexa_data = $this->social_get_remote( $apiQuery, false );
+				$xml = simplexml_load_string($alexa_data);
+				$json = json_encode($xml);
+				$array = json_decode($json,TRUE);
+
+				$db_cache['alexa'] = isset($array['SD'][1]['POPULARITY']["@attributes"]['TEXT'])
+					? $array['SD'][1]['POPULARITY']["@attributes"]['TEXT'] : 0;
+			}
+
+
+			//:: Facebook
+			if ( in_array('facebook', $providers) ) {
+				// deactivated
+				//$fql  = "SELECT url, normalized_url, share_count, like_count, comment_count, ";
+				//$fql .= "total_count, commentsbox_count, comments_fbid, click_count FROM ";
+				//$fql .= "link_stat WHERE url = '{$website_url}'";
+				//$apiQuery = "https://api.facebook.com/method/fql.query?format=json&query=" . urlencode($fql);
+				//$fb_data = $this->social_get_remote( $apiQuery );
+	 			//$fb_data = isset($fb_data[0]) ? $fb_data[0] : array();
+
+				// 2017-june new method
+				$apiQuery = "http://graph.facebook.com/?fields=id,share,og_object{engagement{count},likes.summary(true).limit(0),comments.limit(0).summary(true)}&id=" . urlencode($website_url);
+				$fb_data = $this->social_get_remote( $apiQuery );
+
+				$share_count = isset($fb_data['share'], $fb_data['share']['share_count'])
+						? (int) $fb_data['share']['share_count'] : 0;
+				$comment_count = isset($fb_data['share'], $fb_data['share']['comment_count'])
+						? (int) $fb_data['share']['comment_count'] : 0;
+				$like_count = 0;
+				if ( isset($fb_data['og_object']) ) {
+					if ( empty($share_count) ) {
+						$share_count = isset($fb_data['og_object']['engagement']['count'])
+							? (int) $fb_data['og_object']['engagement']['count'] : 0;
+					}
+					if ( empty($comment_count) ) {
+						$comment_count = isset($fb_data['og_object']['comments']['summary']['total_count'])
+							? (int) $fb_data['og_object']['comments']['summary']['total_count'] : 0;
+					}
+					if ( empty($like_count) ) {
+						$like_count = isset($fb_data['og_object']['likes']['summary']['total_count'])
+							? (int) $fb_data['og_object']['likes']['summary']['total_count'] : 0;
+					}
+				}
+
+				$share_count_ = (int) ( $share_count - $like_count - $comment_count );
+				$share_count_ = $share_count_ > 0 ? $share_count_ : 0;
+
+				$db_cache['facebook'] = array(
+					'share_count' 		=> $share_count_,
+					'comment_count' 	=> $comment_count,
+					'like_count' 		=> $like_count,
+					'click_count' 		=> 0
+				);
+			}
+
+
+			//:: Twitter - 2017-june not working anymore - needs an api key!
+			//if ( in_array('twitter', $providers) ) {
+			//	$apiQuery = "http://urls.api.twitter.com/1/urls/count.json?url=" . $website_url;
+			//	$apiQuery = "https://api.twitter.com/1.1/search/tweets.json?q=" . urlencode($website_url);
+			//	$tw_data = (array) $this->social_get_remote( $apiQuery );
+
+			//	$db_cache['twitter'] = isset($tw_data['count']) ? $tw_data['count'] : 0;
+			//}
+
+
+			//:: Google Plus
+			if ( in_array('google', $providers) ) {
+				$apiQuery = "https://plusone.google.com/_/+1/fastbutton?bsv&size=tall&hl=it&url=" . $website_url;
+				$go_data = $this->social_get_remote( $apiQuery, false );
+
+				require_once( $this->cfg['paths']['scripts_dir_path'] . '/php-query/php-query.php' );
+				if ( !empty($this->charset) ) {
+					$html = pspphpQuery::newDocumentHTML( $go_data, $this->charset );
+				}
+				else {
+					$html = pspphpQuery::newDocumentHTML( $go_data );
+				}
+				$go_data = $html->find("#aggregateCount")->text();
+
+				$db_cache['google'] = $go_data;
+			}
+
+
+			//:: Pinterest
+			if ( in_array('pinterest', $providers) ) {
+				$apiQuery = "http://api.pinterest.com/v1/urls/count.json?callback=receiveCount&url=" . $website_url;
+				$pn_data = (array) $this->social_get_remote( $apiQuery );
+
+				$db_cache['pinterest'] = isset($pn_data['count']) ? $pn_data['count'] : 0;
+			}
+
+
+			//:: StumbledUpon
+			if ( in_array('stumbleupon', $providers) ) {
+				$apiQuery = "http://www.stumbleupon.com/services/1.01/badge.getinfo?url=" . $website_url;
+				$st_data = (array) $this->social_get_remote( $apiQuery );
+
+				$db_cache['stumbleupon'] = isset($st_data['result']['views']) ? $st_data['result']['views'] : 0;
+			}
+
+
+			//:: LinkedIn
+			if ( in_array('linkedin', $providers) ) {
+				$apiQuery = "http://www.linkedin.com/countserv/count/share?format=json&url=" . $website_url;
+				$ln_data = (array) $this->social_get_remote( $apiQuery );
+
+				$db_cache['linkedin'] = isset($ln_data['count']) ? $ln_data['count'] : 0;
+			}
+
+
+			//:: Delicious - 2017-june not working anymore
+			//if ( in_array('delicious', $providers) ) {
+			//	$apiQuery = "http://feeds.delicious.com/v2/json/urlinfo/data?url=" . $website_url;
+			//	$de_data = $this->social_get_remote( $apiQuery );
+			//	$de_data = isset($de_data[0]) ? $de_data[0] : array();
+
+			//	$db_cache['delicious'] = isset($de_data['total_posts']) ? $de_data['total_posts'] : 0;
+			//}
+
+			// Tumblr
+			// api: http://www.tumblr.com/docs/en/api/v2#blog-likes
+			// @info: needs an api key!
+			
+			// Digg
+			// @info: no valid api found!
+			
+			// Xing
+			// api: https://dev.xing.com/docs
+			// @info: needs an api key! - can't find the number of likes/bookmarks!
+
+			// Buffer
+			if ( in_array('buffer', $providers) ) {
+				$apiQuery = "https://api.bufferapp.com/1/links/shares.json?url=" . $website_url;
+				$buffer_data = $this->social_get_remote( $apiQuery );
+
+				$db_cache['buffer'] = isset($buffer_data['shares']) ? $buffer_data['shares'] : 0;
+			}
+			
+			// Reddit - 2017-june not working anymore: seems to return invalid info!
+			//if ( in_array('reddit', $providers) ) {
+			//	$apiQuery = "http://www.reddit.com/api/info.json?url=" . $website_url;
+			//	$reddit_data = $this->social_get_remote( $apiQuery );
+			//	if ( isset($reddit_data['data']['children'][0]['data']) ) {
+			//		$reddit_data = $reddit_data['data']['children'][0]['data'];
+			//	}
+			//	else {
+			//		$reddit_data = array('score' => 0);
+			//	}
+
+			//	$db_cache['reddit'] = isset($reddit_data['score']) ? $reddit_data['score'] : 0;
+			//}
+			
+			// Flattr - 2017-june not working anymore
+			//if ( in_array('flattr', $providers) ) {
+			//	$apiQuery = "https://api.flattr.com/rest/v2/things/lookup/?url=" . $website_url;
+			//	$flattr_data = $this->social_get_remote( $apiQuery );
+
+			//	if ( isset($flattr_data['message']) && $flattr_data['message'] != 'found' ) {
+			//		$flattr_data['flattrs'] = 0;
+			//	}
+
+			//	$db_cache['flattr'] = isset($flattr_data['flattrs']) ? $flattr_data['flattrs'] : 0;
+			//}
+
+			//var_dump('<pre>', $db_cache , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
+			if ( !empty($db_cache) ) {
+				foreach ($db_cache as $k => $v) {
+					if ( $k == 'plusone' ) ;
+					else if ( $k == 'facebook') {
+						foreach ($v as $key => $value) {
+							$db_cache["$k"]["$key"] = (int) $value;							
+						}
+					}
+					else {
+						$db_cache["$k"] = (int) $v;
+					}
+				}
+			}
+
+			// create a DB cache of this
+			if ( 'dashboard' == $from ) {
+				$this->save_theoption( 'psp_dashboard_social_statistics', $db_cache );
+			}
+			else if ( 'listing' == $from ) {
+				update_post_meta( $postid, '_psp_social_stats', $db_cache );
+			}
+			else if ( 'toolbar' == $from ) {
+				update_post_meta( $postid, 'psp_socialsharing_count', $db_cache );
+			}
+
+			if ( in_array($from, array('listing', 'toolbar')) ) {
+				if ( isset($db_cache['facebook']['share_count']) ) {
+					$db_cache['facebook'] = $db_cache['facebook']['share_count'];
+				}
+				if ( isset($db_cache['google']) ) {
+					$db_cache['plusone'] = $db_cache['google'];
+				}
+			}
+			return $db_cache;  
+		}
+
+		public function social_get_remote( $the_url, $parse_as_json=true ) { 
+			$response = wp_remote_get($the_url, array(
+				'user-agent' 	=> "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0",
+				'timeout' 		=> 10
+			));
+
+            if ( is_wp_error( $response ) ) {
+            	return array(
+					'status' => 'invalid'
+				);
+            }
+        	$body = wp_remote_retrieve_body( $response );
+			
+			if ( $parse_as_json == true ) {
+				// trick for pinterest
+				if( preg_match('/receiveCount/i', $body)){
+					$body = str_replace("receiveCount(", "", $body);
+					$body = str_replace(")", "", $body);
+				}
+	        	return json_decode( $body, true );
+			}
+			return $body;
+		}
+
+		public function social_get_htmlbox( $pms=array() ) {
+			$pms = array_replace_recursive(array(
+				'from'			=> 'listing',
+				'img_src'		=> '',
+				'ssKey'			=> '',
+				'ssVal'			=> array(),
+				'socialData'	=> array(),
+				'postid'		=> 0,
+				'only_counts'	=> array(), //facebook
+			), $pms);
+			extract( $pms );
+
+			$ssValCounts = isset($ssVal['counts']) && is_array($ssVal['counts'])
+				? $ssVal['counts'] : array('_count_' => $ssVal);
+
+			if ( ! empty($only_counts) && is_array($only_counts) ) {
+				if ( in_array($ssKey, $only_counts) ) {
+					$ssValCounts = array('_count_' => $ssVal);
+				}
+			}
+
+			foreach ($ssValCounts as $ssKey2 => $ssVal2) {
+				$ssAlias = isset($ssVal['alias']) && ! empty($ssVal['alias']) ? $ssVal['alias'] : $ssKey;
+
+				$ssItems = isset($socialData["$ssAlias"]) ? $socialData["$ssAlias"] : 0;
+				$ssItems = isset($ssItems["$ssKey2"]) ? $ssItems["$ssKey2"] : $ssItems;
+				$ssItems = (int) $ssItems;
+				$ssItems = isset($socialData["$ssAlias"]) ? number_format($ssItems, 0) : '&ndash;';
+
+				$ssColor = $ssVal['color'];
+				$ssColor = isset($ssVal2["color"]) ? $ssVal2["color"] : $ssColor;
+
+				$ssLabel = $ssVal['items_label'];
+				$ssLabel = isset($ssVal2["items_label"]) ? $ssVal2["items_label"] : $ssLabel;
+
+				$ssIcon = $ssAlias . '-icon.png';
+				$ssIcon = isset($ssVal2["icon"]) ? $ssVal2["icon"] : $ssIcon;
+
+				if ( 'listing' == $from ) {
+					$html[] = '<div class="psp-social-status" style="color: ' . $ssColor . '">';
+					$html[] = 	'<img src="' . $img_src . $ssIcon . '" class="psp-lists-icon">';
+					$html[] = 	'<label>' . $ssLabel . '</label>';
+					$html[] = 	'<span>' . $ssItems . '</span>';
+					$html[] = '</div>';
+				}
+				else {
+					$html[] = '<li style="color: ' . $ssColor . '">';
+					$html[] = 	'<img src="' . $img_src . $ssIcon . '" class="psp-lists-icon">';
+					$html[] = 	'<span>' . $ssItems . '</span>';
+					$html[] = 	'<label>' . $ssLabel . '</label>';
+					$html[] = '</li>';
+				}
+			} // end foreach
+
+			return implode('', $html);
+		}
+
+
+		/**
+		 * Redirect Types
+		 */
+		public function escape_mysql_regexp( $str ) {
+			$str = preg_quote($str);
+			$str = str_replace('\\', '\\\\', $str);
+			//$str = str_replace('?', '\\?', $str);
+			//$str = str_replace('\:', ':', $str);
+			return $str;
+		}
+
+		public function get_redirect_types() {
+			$redirect_type = array(
+				301 => '301 Moved Permanently',
+				302 => '302 Found (was: Moved Temporarily)',
+				303 => '303 See Other',
+				307 => '307 Temporary Redirect',
+				//308 => 'Permanent Redirect',
+				403 => '403 Forbidden',
+				404 => '404 Page Not Found',
+				410	=> '410 Gone - Content Deleted',
+				451 => '451 Content Unavailable For Legal Reasons',
+			);
+			return $redirect_type;
+		}
+
+		public function get_redirect_status_codes() {
+			/*$redirect_status = array(
+				'is_ok'	=> 'status: Valid 200 OK http code',
+				'invalid_string' => 'status: url string is invalid',
+				'unable_to_resolve' => 'status: unable to resolve request',
+				'is_temporary' => 'status: temporary http code',
+				'is_error' => 'status: error http code',
+				'is_301' => 'status: 301 http code',
+				'is_not_ok' => 'status: not 200 OK http code',
+			);*/
+			$redirect_status = array(
+				'valid'		=> 'Valid Status',
+				'invalid' 	=> 'Invalid Status',
+			);
+			return $redirect_status;
+		}
+
+		public function get_redirect_groups() {
+			$redirect_groups = array(
+				'1'		=> 'Default',
+				'2'		=> 'Posts - Slug Modified',
+				'3'		=> 'Terms - Slug Modified',
+			);
+			return $redirect_groups;
+		}
+
+		public function get_redirect_type( $pms=array() ) {
+			$def = array();
+			if ( ! isset($pms['settings']) || empty($pms['settings']) || ! is_array($pms['settings']) ) {
+				$def = $this->get_theoption( $this->alias . '_Link_Redirect', true );
+			}
+			$pms = array_replace_recursive(array(
+				'settings'		=> $def,
+				'row'			=> array(),
+			), $pms);
+			extract( $pms );
+
+			$all = $this->get_redirect_types();
+
+			$is_specific = false;
+			$rd = isset($def['redirect_type']) && ! empty($def['redirect_type']) ? $def['redirect_type'] : '301';
+			if ( isset($row['redirect_type']) && ! empty($row['redirect_type']) ) {
+				$rd = $row['redirect_type'];
+				$is_specific = true;
+			}
+
+			$title = isset($all["$rd"]) ? $all["$rd"] : $rd;
+			if ( ! $is_specific ) {
+				$title = '* ' . $title;
+			}
+			return array(
+				'key'			=> $rd,
+				'title'			=> $title,
+				'is_specific'	=> $is_specific,
+			);
+		}
+
+		public function is_valid_url( $url ) {
+			//$url = filter_var($url, FILTER_SANITIZE_URL);
+
+			$url = trim( $url );
+			if ( '' == $url ) {
+				return false;
+			}
+
+			$is_valid = filter_var($url, FILTER_VALIDATE_URL) === false ? false : true;
+			return $is_valid;
+		}
+
+		public function get_clean_url( $url ) {
+			//$url = filter_var($url, FILTER_SANITIZE_URL);
+			//$url = preg_replace('/\+{2,}/imu', '+', $url);
+			$url = trim( $url );
+			if ( '' != $url ) {
+				$url = rawurldecode( $url );
+			}
+			return $url;
+		}
+
+		public function is_404_valid() {
+			if ( ! is_404() ) {
+				return false;
+			}
+
+			//:: we are in a 404 error page, but we must be sure it's valid
+
+			// Request URI
+			$visitor_request_uri = $this->get_current_page_url(array());
+
+			// escape if it's the cron!
+			$is_valid_404 = preg_match('/doing_wp_cron/i', $visitor_request_uri) == false;
+			if ( $is_valid_404 ) {
+				return true;
+			}
+			return false;
+		}
+
+		public function is_all_404_redirect( $pms=array() ) {
+			$def = array();
+			if ( ! isset($pms['settings']) || empty($pms['settings']) || ! is_array($pms['settings']) ) {
+				$def = $this->get_theoption( $this->alias . '_Link_Redirect', true );
+			}
+			$pms = array_replace_recursive(array(
+				'settings'		=> $def,
+			), $pms);
+			extract( $pms );
+
+			$selected = isset($settings['all_404_pages_to']) ? $settings['all_404_pages_to'] : '';
+			$is_valid = in_array($selected, array('homepage', 'custom_url')) ? true : false;
+			if ( $is_valid && ( 'custom_url' == $selected ) ) {
+				$custom_url = isset($settings['all_404_pages_to_custom']) ? $settings['all_404_pages_to_custom'] : '';
+				$custom_url = $this->get_clean_url( $custom_url );
+
+				if ( ! $this->is_valid_url( $custom_url ) ) {
+					$is_valid = false;
+				}
+			}
+
+			if ( ! $is_valid ) {
+				return false;
+			}
+
+			$redirect_to = false;
+			if ( 'homepage' == $selected ) {
+				$redirect_to = trailingslashit( get_home_url() );
+				$redirect_to = $this->get_clean_url( $redirect_to );
+			}
+			else if ( 'custom_url' == $selected ) {
+				$redirect_to = $custom_url;
+			}
+			return $redirect_to;
+		}
+
+		public function store_new_404_log() {
+			if ( $this->is_admin === true ) {
+				return false;
+			}
+
+			//module is inactive
+			if ( ! $this->verify_module_status( 'monitor_404' ) ) {
+				return false;
+			}
+
+			if ( ! $this->is_404_valid() ) {
+				return false;
+			}
+
+			global $wpdb;
+
+			//:: collect data for insert into DB
+
+			// Request URI
+			$visitor_request_uri = $this->get_current_page_url(array());
+
+			// Referer
+			$visitor_referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+
+			// user agent
+			$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+
+			if (1) {
+				$table_name = $wpdb->prefix . "psp_monitor_404";
+
+				// old ways of prepare: mysql_real_escape_string | $wpdb->_real_escape	
+				$query = $wpdb->prepare(
+					"INSERT IGNORE INTO $table_name (url, referrers, user_agents) VALUES (%s, %s, %s)",
+						$visitor_request_uri,
+						$visitor_referer,
+						$user_agent
+					);
+				if ( $wpdb->query($query) == 0 ) {
+					// record already exist, update hits
+					$query_update = "UPDATE $table_name SET
+						hits = hits+1,
+						referrers = CONCAT(referrers, '\n$visitor_referer'),
+						user_agents = CONCAT(user_agents, '\n$user_agent')
+						WHERE url = '$visitor_request_uri';";
+					$wpdb->query($query_update);
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 }

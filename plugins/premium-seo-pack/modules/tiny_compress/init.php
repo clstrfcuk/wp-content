@@ -88,7 +88,7 @@ if (class_exists('pspTinyCompress') != true) {
         	$do_upload = isset($this->settings['do_upload']) && $this->settings['do_upload']=='yes' ? true : false;
 			if ( $do_upload ) {
 				if ( $this->the_plugin->capabilities_user_has_module('tiny_compress') ) {
-					add_filter( 'wp_generate_attachment_metadata', array( &$this, 'generate_metadata_smushit' ), 10, 2 );
+					add_filter( 'wp_generate_attachment_metadata', array( $this, 'generate_metadata_smushit' ), 10, 2 );
 				}
 			}
 
@@ -99,8 +99,8 @@ if (class_exists('pspTinyCompress') != true) {
 
 
 		/**
-	    * Hooks
-	    */
+	     * Hooks
+	     */
 	    static public function adminMenu()
 	    {
 	       self::getInstance()
@@ -108,8 +108,8 @@ if (class_exists('pspTinyCompress') != true) {
 	    }
 
 	    /**
-	    * Register plug-in module admin pages and menus
-	    */
+	     * Register plug-in module admin pages and menus
+	     */
 		protected function _registerAdminPages()
     	{
     		if ( $this->the_plugin->capabilities_user_has_module('tiny_compress') ) {
@@ -193,9 +193,9 @@ if (class_exists('pspTinyCompress') != true) {
          * smushit
          * return: posible values: return | redirect
          */
-        public function generate_metadata_smushit( $meta, $attachment_id ) {
-        	
-        	return $this->meta_smushit_media_sizes( $attachment_id, $meta, true );
+		public function generate_metadata_smushit( $meta, $attachment_id ) {
+        	$ret = $this->meta_smushit_media_sizes( $attachment_id, $meta, true );
+        	return $ret;
         }
         
         public function smushit( $id=null, $force=false, $return='return' ) {
@@ -252,7 +252,7 @@ if (class_exists('pspTinyCompress') != true) {
         }
         
         private function meta_smushit_media_sizes( $id=null, $meta=array(), $force=false ) {
-        	
+
         	if ( is_null($id) ) return $meta;
         	
 			if ( wp_attachment_is_image( $id ) === false ) // media file is an image?
@@ -368,7 +368,7 @@ if (class_exists('pspTinyCompress') != true) {
         		&& $status_prev['status'] == $status['status'] && $status['status']!='invalid' )
         		return array_merge( $ret, array(
         			'status' 	=> true,
-        			'msg' 		=> $msghead . __('already smushed!', 'psp')
+        			'msg' 		=> $msghead . __('already compressed!', 'psp')
         		));
         	
         	return $ret;
@@ -376,7 +376,9 @@ if (class_exists('pspTinyCompress') != true) {
         
         private function execute_smushit( $filepath='', $fileurl='', $msghead='', $time='' ) {
 			$ret = array('status' => 'invalid', 'msg' => '', 'time' => $time);
-			
+
+			$same_domain = isset($this->settings['same_domain_url']) && $this->settings['same_domain_url'] == 'yes' ? true : false;
+
 			// empty file path!
 			if ( empty($filepath) ) {
                 $msg = $msghead . __('empty file path!', 'psp');
@@ -391,34 +393,35 @@ if (class_exists('pspTinyCompress') != true) {
 				return array_merge( $ret, array('msg' => $msg) );
             }
 
-			// verify if file exists and is readable
-			if ( !$this->the_plugin->verifyFileExists($filepath) ) {
-                $msg = $msghead . __('file not found or not readable!', 'psp');
-                $this->set_last_status( 'error', $msg );
-				return array_merge( $ret, array('msg' => $msg) );
-            }
-	
-			// verify if file is writable
-			clearstatcache();
-			if ( !is_writable( dirname( $filepath)) ) {
-                $msg = $msghead . __('file not writable!', 'psp');
-                $this->set_last_status( 'error', $msg );
-				return array_merge( $ret, array('msg' => $msg) );
-            }
-	
-			// verify if file size exceed limit!
-			$filesize = @filesize($filepath);
-			if ( $filesize > self::TC_IMG_MAXSIZE ) {
-                $msg = $msghead . __('file size exceed allowed image size limit!', 'psp');
-                $this->set_last_status( 'error', $msg );
-				return array_merge( $ret, array('msg' => $msg) );
-            }
+			if ( 1 ) {
+				// verify if file exists and is readable
+				if ( !$this->the_plugin->verifyFileExists($filepath) ) {
+	                $msg = $msghead . __('file not found or not readable!', 'psp');
+	                $this->set_last_status( 'error', $msg );
+					return array_merge( $ret, array('msg' => $msg) );
+	            }
+		
+				// verify if file is writable
+				clearstatcache();
+				if ( !is_writable( dirname( $filepath)) ) {
+	                $msg = $msghead . __('file not writable!', 'psp');
+	                $this->set_last_status( 'error', $msg );
+					return array_merge( $ret, array('msg' => $msg) );
+	            }
+		
+				// verify if file size exceed limit!
+				$filesize = @filesize($filepath);
+				if ( $filesize > self::TC_IMG_MAXSIZE ) {
+	                $msg = $msghead . __('file size exceed allowed image size limit!', 'psp');
+	                $this->set_last_status( 'error', $msg );
+					return array_merge( $ret, array('msg' => $msg) );
+	            }
+        	}
 			
 			// only http images work with api service
 			//$fileurl = str_replace('https://', 'http://', $fileurl);
 			
 			// verify same domain is activate & validity!
-			$same_domain = isset($this->settings['same_domain_url']) && $this->settings['same_domain_url'] == 'yes' ? true : false;
 			if ( $same_domain ) {
 				$home_url = str_replace('https://', 'http://', get_option('home'));
 	
@@ -485,7 +488,7 @@ if (class_exists('pspTinyCompress') != true) {
 				@unlink($file_tmp); // delete temporary file!
 				return array_merge( $ret, array('msg' => $msg) );
 			}
-			
+
 			// verify if file exists and is readable
 			if ( !$this->the_plugin->verifyFileExists($file_tmp) ) {
                 $msg = $msghead . __('output processed temporary file not found or not readable!', 'psp');
@@ -707,10 +710,10 @@ if (class_exists('pspTinyCompress') != true) {
 
 
 		/*
-		* ajax_request, method
-		* --------------------
-		*
-		*/
+		 * ajax_request, method
+		 * --------------------
+		 *
+		 */
 		public function ajax_request()
 		{
 			$req = array(
@@ -728,11 +731,11 @@ if (class_exists('pspTinyCompress') != true) {
 		
 		
 		/*
-		* printBaseInterface, method
-		* --------------------------
-		*
-		* this will add the base DOM code for you options interface
-		*/
+		 * printBaseInterface, method
+		 * --------------------------
+		 *
+		 * this will add the base DOM code for you options interface
+		 */
 		private function printBaseInterface()
 		{
 			
@@ -809,9 +812,9 @@ if (class_exists('pspTinyCompress') != true) {
 											$attrs = array(
 												'id' 				=> 'pspTinyCompress',
 												'show_header' 		=> true,
+												'show_header_buttons' => true,
 												'items_per_page' 	=> '10',
 												'post_statuses' 	=> 'all',
-												'show_header_buttons' => true,
 												'columns'			=> array(
 													'checkbox'	=> array(
 														'th'	=>  'checkbox',
@@ -839,7 +842,7 @@ if (class_exists('pspTinyCompress') != true) {
 													),
 
 													'smushit'		=> array(
-														'th'	=> __('TinyPNG Status', 'psp'),
+														'th'	=> __('Image Compression Status', 'psp'),
 														'td'	=> '%smushit_status%',
 														'align' => 'left'
 													),
@@ -854,7 +857,7 @@ if (class_exists('pspTinyCompress') != true) {
 														'th'	=> __('Action', 'psp'),
 														'td'	=> '%button%',
 														'option' => array(
-															'value' => __('Smushit', 'psp'),
+															'value' => __('Compress', 'psp'),
 															'action' => 'do_item_smushit',
 															'color' => 'danger'
 														),
@@ -863,7 +866,7 @@ if (class_exists('pspTinyCompress') != true) {
 												),
 												'mass_actions' 	=> array(
 														'speed_test_mass' => array(
-															'value' => __('Mass Smushit', 'psp'),
+															'value' => __('Mass Compress', 'psp'),
 															'action' => 'do_mass_smushit',
 															'color' => 'info'
 														)
@@ -979,6 +982,8 @@ if (class_exists('pspTinyCompress') != true) {
         public function get_connection_status() {
             $ret = array('status' => 'invalid', 'msg' => '', 'time' => time());
 
+			$msghead = '';
+
             // get api service response
             $_getdata = $this->remote_get( null );
  
@@ -1025,12 +1030,17 @@ if (class_exists('pspTinyCompress') != true) {
             
             // decode api service json response
             $_response = json_decode( $response['data'] );
-            
-            if ( isset($_response->error) && $_response->error == 'TooManyRequests' ) {
+            if ( isset($_response->error) || isset($_response->input) ) {
+
                 $current_limits = get_option('psp_tiny_compress_limits', array());
-                $current_limits['TooManyRequests'] = 'yes';
-                update_option('psp_tiny_compress_limits', $current_limits);
-            }
+                $current_limits['TooManyRequests'] = 'no';
+
+	            if ( isset($_response->error) && $_response->error == 'TooManyRequests' ) {
+                	$current_limits['TooManyRequests'] = 'yes';
+	            }
+
+				update_option('psp_tiny_compress_limits', $current_limits);
+        	}
         }
         
         public function get_compress_limits() {
@@ -1039,12 +1049,12 @@ if (class_exists('pspTinyCompress') != true) {
             $current_limits = get_option('psp_tiny_compress_limits', array());
             $current_count = isset($current_limits, $current_limits['current_count']) ? (int) $current_limits['current_count'] : 0;
             $TooManyRequests = isset($current_limits, $current_limits['TooManyRequests']) && $current_limits['TooManyRequests'] == 'yes' ? true : false; 
-            $limit_reached = $current_count == self::TC_MAX_ALLOWED || 1 ? true : false;
+            $limit_reached = ( $current_count >= self::TC_MAX_ALLOWED ? true : false );
 
             $msg = sprintf( __('You have made %s compressions this month.', 'psp'), $current_count );
-            if ( $current_count >= self::TC_MAX_ALLOWED || $TooManyRequests ) { // limit reached
+            if ( $limit_reached || $TooManyRequests ) { // limit reached
                 $link = '<a href="https://tinypng.com/developers" target="_blank">' . __('TinyPNG API subscription', 'psp') . '</a>';
-                $msg = sprintf( __('You have reached your limit of <strong>%s</strong> compressions this month.', 'psp'), $current_count );
+                $msg = sprintf( __('You have reached your limit of <strong>%s</strong> compressions this month.', 'psp'), self::TC_MAX_ALLOWED );
                 $msg .= '<br />';
                 $msg .= sprintf( __('If you need to compress more images you can change your %s.', 'psp'), $link );
             } else {

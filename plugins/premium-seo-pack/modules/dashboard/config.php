@@ -31,13 +31,9 @@ echo json_encode(array(
 			'admin',
 			'hashchange',
 			'tipsy',
+			'chart-bundle',
 			//'percentageloader-0.1',
-			'flot-2.0',
-			'flot-tooltip',
-			'flot-stack',
-			'flot-pie',
-			'flot-time',
-			'flot-resize'
+			
 		),
 		'css' => array(
 			'admin'

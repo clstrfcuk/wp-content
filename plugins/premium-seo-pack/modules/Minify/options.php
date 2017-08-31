@@ -116,7 +116,7 @@ function __pspMinifyOptions_remote( $action='default', $istab = '', $is_subtab='
 ?>
 <div class="psp-form-row psp-minify-cache <?php echo ($istab!='' ? ' '.$istab : ''); ?><?php echo ($is_subtab!='' ? ' '.$is_subtab : ''); ?>">
 
-    <label><?php _e('Download remote files ', 'psp'); ?></label>
+   
     <p style="margin-top:-5px; color:#7b7b7b;">  This feature is useful if you have your server under password protection </p>
     <div class="psp-form-item large">
     <span class="formNote">&nbsp;</span>

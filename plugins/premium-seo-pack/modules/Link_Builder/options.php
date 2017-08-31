@@ -7,6 +7,29 @@
  * @author		Andrei Dinca, AA-Team
  * @version		1.0
  */
+
+function psp_postTypes_get( $builtin=true ) {
+	global $psp;
+
+	$pms = array(
+		'public'   => true,
+	);
+	if ( $builtin === true || $builtin === false  ) {
+		$pms = array_merge($pms, array(
+			'_builtin' => $builtin, // exclude post, page, attachment
+		));
+	}
+	$post_types = get_post_types($pms, 'objects');
+	unset($post_types['attachment'], $post_types['revision'], $post_types['nav_menu_item']);
+
+	$ret = array();
+	foreach ( $post_types as $key => $post_type ) {
+		$value = $post_type->label;
+		$ret["$key"] = $value;
+	}
+	return $ret;
+}
+
 global $psp;
 echo json_encode(
 	array(
@@ -68,7 +91,64 @@ echo json_encode(
 							'yes' => 'YES',
 							'no' => 'NO'
 						)
-					)
+					),
+
+					'allow_future_linking' => array(
+						'type' 		=> 'select',
+						'std' 		=> 'no',
+						'size' 		=> 'large',
+						'force_width'=> '120',
+						'title' 	=> __('Allow future linking:', 'psp'),
+						'desc' 		=> __('If you choose YES, you are allowed to enter phrases which aren\'t found yet in any of your current posts content at the moment of adding phrase.<br/>The phrase will appear when some post content contains it.<br/>You can consider this like an automatically future linking.', 'psp'),
+						'options'	=> array(
+							'yes' => 'YES',
+							'no' => 'NO'
+						)
+						
+					),
+
+					'template_format' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> '<a href="{url}" title="{attr_title}" rel="{rel}" target="{target}">{title}</a>',
+						'size' 		=> 'large',
+						'force_width'=> '650',
+						'title' 	=> __('Link HTML Template:', 'psp'),
+						'desc' 		=> __('You can use the following format tags:<br/>
+							<ul>
+								<li><code>{phrase}</code> : the setted phrase</li>
+								<li><code>{url}</code> : the setted URL for the phrase</li>
+								<li><code>{title}</code> : the setted replacement text for the phrase (if empty then the {phrase} will be used)</li>
+								<li><code>{rel}</code> : the setted rel attribute for the URL</li>
+								<li><code>{target}</code> : the setted target attribute for the URL</li>
+								<li><code>{attr_title}</code> : the setted title attribute for the URL</li>
+							</ul>', 'psp')
+					),
+
+					'post_types' 	=> array(
+						'type' 		=> 'multiselect_left2right',
+						'std' 		=> array('post', 'page'),
+						'size' 		=> 'large',
+						'rows_visible'	=> 8,
+						'force_width'=> '300',
+						'title' 	=> __('Select Post Types:', $psp->localizationName),
+						'desc' 		=> __('Choose Post Types which you want to be searched and used for link building.', $psp->localizationName),
+						'info'		=> array(
+							'left' => __('All Post Types list', $psp->localizationName),
+							'right' => __('Your chosen Post Types from list', $psp->localizationName),
+						),
+						'options' 	=> psp_postTypes_get( 'both' )
+					),
+
+					'exclude_posts_ids' 	=> array(
+						'type' 		=> 'textarea',
+						'std' 		=> '',
+						'size' 		=> 'small',
+						//'force_width'=> '400',
+						'title' 	=> __('Exclude posts, pages, post types:', 'psp'),
+						'desc' 		=> __('Exclude posts, pages, post types from searches and link building ( <span style="color: red; font-weight: bold;">LIST OF <u>IDs</u>, SEPARATED BY COMMA</span> )', 'psp'),
+						'height'	=> '200px',
+						'width'		=> '100%'
+					),					
 				)
 			)
 		)

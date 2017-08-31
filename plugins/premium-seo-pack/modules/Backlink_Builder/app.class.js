@@ -16,6 +16,7 @@ pspBacklinkBuilder = (function ($) {
     var last_submit_id = 0;
     var loaded_page = 0;
 
+
 	// init function, autoload
 	(function init() {
 		// load the triggers
@@ -81,14 +82,13 @@ pspBacklinkBuilder = (function ($) {
 					//'height': parseInt( containerSize.height * 0.8 ) + "px",
 					'margin-left': "-" + ( parseInt( (containerSize.width * 0.8) / 2  )) + "px",
 				});
-				
+
 				lightbox.find(".psp-lightbox-headline").width( parseInt( containerSize.width * 0.8 ) - 2 );
-				
+
 				lightbox.find('#psp-lightbox-backlink-builder-response').html( response.html );
-				
-				
+
 				lightbox.fadeIn('fast');
-				
+
 				lightbox.find("a.psp-close-btn").click(function(e){
 					e.preventDefault();
 					lightbox.fadeOut('fast');
@@ -101,36 +101,6 @@ pspBacklinkBuilder = (function ($) {
 		}, 'json');
 	}
 	
-	
-	function delete_rows() {
-		var ids = [], __ck = $('.psp-form .psp-table input.psp-item-checkbox:checked');
-		__ck.each(function (k, v) {
-			ids[k] = $(this).attr('name').replace('psp-item-checkbox-', '');
-		});
-		ids = ids.join(',');
-		if (ids.length<=0) {
-			alert('You didn\'t select any rows!');
-			return false;
-		}
-		
-		mainloading.fadeIn('fast');
-
-		jQuery.post(ajaxurl, {
-			'action' 		: 'pspPageBuilderRequest',
-			'sub_action'	: 'removeDirectories',
-			'id'			: ids,
-			'debug'	: debug
-		}, function(response) {
-			if( response.status == 'valid' ){
-				mainloading.fadeOut('fast');				
-				//refresh page!
-				window.location.reload();
-				return false;
-			}
-			mainloading.fadeOut('fast');
-			alert('Problems occured while trying to delete the selected rows!');
-		}, 'json');
-	}
 	
 	function import_directory_rows() {
 		mainloading.fadeIn('fast');
@@ -150,7 +120,7 @@ pspBacklinkBuilder = (function ($) {
 				return true;
 			}
 			
-			alert( response.html );
+			swal( response.html );
 			return false;
 		}, 'json');
 	}
@@ -172,6 +142,16 @@ pspBacklinkBuilder = (function ($) {
 			changeSubmitStatus( last_submit_id, $(this).data('status') );
 		});
 		
+		// import directory rows
+		maincontainer.on('click', '#psp-import_directory_rows', function(e){
+			e.preventDefault();
+
+			//if (confirm('Are you sure you want to import directory rows?')) {
+				import_directory_rows();
+			//}
+		});
+
+		/*
 		// delete bulk rows
 		maincontainer.on('click', '#psp-do_bulk_delete_directory_rows', function(e){
 			e.preventDefault();
@@ -179,17 +159,10 @@ pspBacklinkBuilder = (function ($) {
 			if (confirm('Are you sure you want to delete the selected rows?'))
 				delete_rows();
 		});
-		
-		// import directory rows
-		maincontainer.on('click', '#psp-import_directory_rows', function(e){
-			e.preventDefault();
-
-			//if (confirm('Are you sure you want to import directory rows?'))
-				import_directory_rows();
-		});
+		*/
 		
 		// all checkboxes are checked by default!
-		$('.psp-form .psp-table input.psp-item-checkbox').attr('checked', 'checked');
+		//$('.psp-form .psp-table input.psp-item-checkbox').attr('checked', 'checked');
 	}
 
 	// external usage

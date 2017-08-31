@@ -128,11 +128,12 @@ function triggers()
 	tblPrev = tblSel;
 
 	get_options( tblSel );
-	
+
 	tblWrap.on('click', 'li.tab-item', function (e) {
 		e.preventDefault();
 
 		var $this = $(this), __sel = $this.find('input[type=checkbox]');
+		//console.log( $this  ); return false;
 		get_options( __sel );
 		tblPrev = __sel;
 	});

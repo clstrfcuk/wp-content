@@ -31,13 +31,14 @@ if (class_exists('pspSERP') != true) {
 		private $__initialDate = array();
 		private $__defaultClause = '';
 
+
         /*
         * Required __construct() function that initalizes the AA-Team Framework
         */
-        public function __construct()
+        public function __construct( $is_cron=false )
         {
         	global $psp;
-        	
+
         	$this->serp_sleep = rand(30,55); //in seconds: serp sleep between consecutive requests!
 
         	$this->the_plugin = $psp;
@@ -45,57 +46,59 @@ if (class_exists('pspSERP') != true) {
 			$this->module = $this->the_plugin->cfg['modules']['serp'];
 
 			$this->plugin_settings = $this->the_plugin->get_theoption( $this->the_plugin->alias . '_serp' );
+
 			$this->search_engine .= ('.' . $this->plugin_settings['google_country']);
 
-			if (is_admin()) {
-	            add_action('admin_menu', array( &$this, 'adminMenu' ));
-			}
-			
 			// ajax  helper
-			if ( $this->the_plugin->is_admin === true ) {
-				add_action('wp_ajax_pspGetFocusKW', array( &$this, '__getFocusKW' ));
-				add_action('wp_ajax_pspAddToReporter', array( &$this, 'addToReporter' ));
-				add_action('wp_ajax_pspRemoveFromReporter', array( &$this, 'removeFromReporter' ));
-				add_action('wp_ajax_pspUpdateToReporter', array( &$this, 'updateToReporter' ));
-				add_action('wp_ajax_pspGetSERPGraphData', array( &$this, 'getSERPGraphData' ));
-				add_action('wp_ajax_pspSetSearchEngine', array( &$this, 'setSearchEngine' ));
-				
-				add_action('wp_ajax_pspGetEngineAccessTime', array( &$this, '__getEngineAccessTime' ));
+			if ( $this->the_plugin->is_admin === true && !$is_cron ) {
+	            add_action('admin_menu', array( $this, 'adminMenu' ));
+
+				// ajax handler
+				add_action('wp_ajax_pspAddToReporter', array( $this, 'addToReporter' ));
+				add_action('wp_ajax_pspUpdateToReporter', array( $this, 'updateToReporter' ));
+				add_action('wp_ajax_pspRemoveFromReporter', array( $this, 'removeFromReporter' ));
+
+				add_action('wp_ajax_pspGetSERPGraphData', array( $this, 'getSERPGraphData' ));
+				add_action('wp_ajax_pspSetSearchEngine', array( $this, 'setSearchEngine' ));
+
+				add_action('wp_ajax_pspGetEngineAccessTime', array( $this, 'getEngineAccessTime' ));
+				add_action('wp_ajax_pspGetFocusKW', array( $this, 'getFocusKW' ));
 			}
 
+			//if ( $this->the_plugin->capabilities_user_has_module('serp') )
 			if ( !$this->the_plugin->verify_module_status( 'serp' ) ) ; //module is inactive
 			else {
-				// visits!
-				if ( $this->the_plugin->is_admin !== true )
-					add_action('wp_head',  array( &$this, 'save_visits' ));
+				if ( $this->the_plugin->is_admin !== true ) {
+					// visits!
+					add_action('wp_head',  array( $this, 'save_visits' ));
+				}
 			}
 			
 			// cron to check all serp rows!
 			// wp_schedule_event(time(), 'daily', 'psp_start_cron_serp_check'); //plugin activation daily|hourly
-			// add_action('psp_start_cron_serp_check', array( &$this, 'check_reporter' ));
+			// add_action('psp_start_cron_serp_check', array( $this, 'check_reporter' ));
 			// wp_clear_scheduled_hook('psp_start_cron_serp_check'); //plugin deactivation
-			// add_filter( 'cron_schedules', array( &$this, 'cron_add_custom' ));
+			// add_filter( 'cron_schedules', array( $this, 'cron_add_custom' ));
 			
-			if ( $this->the_plugin->is_admin === true ) {
-			
-			$this->__initialDate = $this->getInitialData(); //initial date!
-			if ( empty($this->__initialDate) )
-				$this->__initialDate = array( date( 'Y-m-d' ) => 1  );
-			$this->__initialDate = array(
-				'from' 	=> date( 'Y-m-d', strtotime( "-1 week", strtotime( key($this->__initialDate) ) ) ),
-				'to' 	=> date( 'Y-m-d', strtotime( key($this->__initialDate) ) )
-			);
-			$engine = '';
-			if (isset($_SESSION['psp_serp']['search_engine']) && !empty($_SESSION['psp_serp']['search_engine'])
-			&& $_SESSION['psp_serp']['search_engine']!='--all--')
-				$engine = $_SESSION['psp_serp']['search_engine'];
+			if ( $this->the_plugin->is_admin === true && !$is_cron ) {
 
-			$this->__defaultClause = $this->getDefaultClause(array(
-				'engine'	=> $engine,
-				'from_date'	=> $this->__initialDate['from'],
-				'to_date'	=> $this->__initialDate['to'],
-			));
-			
+				$this->__initialDate = $this->getInitialData(); //initial date!
+				if ( empty($this->__initialDate) )
+					$this->__initialDate = array( date( 'Y-m-d' ) => 1  );
+				$this->__initialDate = array(
+					'from' 	=> date( 'Y-m-d', strtotime( "-1 week", strtotime( key($this->__initialDate) ) ) ),
+					'to' 	=> date( 'Y-m-d', strtotime( key($this->__initialDate) ) )
+				);
+				$engine = '';
+				if (isset($_SESSION['psp_serp']['search_engine']) && !empty($_SESSION['psp_serp']['search_engine'])
+				&& $_SESSION['psp_serp']['search_engine']!='--all--')
+					$engine = $_SESSION['psp_serp']['search_engine'];
+
+				$this->__defaultClause = $this->getDefaultClause(array(
+					'engine'	=> $engine,
+					'from_date'	=> $this->__initialDate['from'],
+					'to_date'	=> $this->__initialDate['to'],
+				));
 			}
         }
         
@@ -155,10 +158,11 @@ if (class_exists('pspSERP') != true) {
 			//Due to late-2011 Google security changes, this is no longer possible when the search was performed by a signed-in Google user!
 			//referrer ex: http://www.google.fi/search?hl=en&q=http+header+referer&btnG=Google-search&meta=&aq=f&oq=
 
-			$referrer = $_SERVER['HTTP_REFERER'];
 			$searchEngines = $this->getSearchEngineUsed();
-			$currentPage = $_SERVER['REQUEST_URI'];
-			$search_engine = ''; $postId = 0;
+			$referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+			$currentPage = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : '';
+			$search_engine = '';
+			$postId = 0;
 			
 			//not from admin!
 			if (!is_user_logged_in() && count($searchEngines)>0) {
@@ -263,7 +267,7 @@ if (class_exists('pspSERP') != true) {
 		{
 ?>
 		<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>
-		<div class="<?php echo $this->the_plugin->alias; ?>">
+		<div class="<?php echo $this->the_plugin->alias; ?> psp-mod-serp">
 			
 			<div class="psp-serp <?php echo $this->the_plugin->alias; ?>-content"> 
 
@@ -496,22 +500,50 @@ if (class_exists('pspSERP') != true) {
 												->setup(array(
 													'id' 				=> 'pspSERPKeywords',
 													'custom_table'		=> "psp_serp_reporter",
+													//'deleted_field'		=> true,
+													//'force_publish_field' 	=> false,
 													'show_header' 		=> true,
+													'show_header_buttons' => true,
 													'items_per_page' 	=> '10',
-													'post_statuses' 	=> 'all',
+													//'post_statuses' 	=> 'all',
+													'filter_fields'		=> array(
+														'publish'  => array(
+															'title' 			=> __('Published', $this->the_plugin->localizationName),
+															'options_from_db' 	=> false,
+															'include_all'		=> true,
+															'options'			=> array(
+																'Y'			=> __('Published', $this->the_plugin->localizationName),
+																'N'			=> __('Unpublished', $this->the_plugin->localizationName),
+															),
+															'display'			=> 'links',
+														),
+													),
+													'search_box'		=> array(
+														'title' 	=> __('Search focus keyword | url', $this->the_plugin->localizationName),
+														'fields'	=> array('focus_keyword', 'url'),
+													),
+													'mass_actions'		=> false,
 													'columns'			=> array(
-													
+
+														'id'		=> array(
+															'th'	=> __('ID', 'psp'),
+															'td'	=> '%id%',
+															'width' => '20'
+														),
+
 														'serp_focus_keyword' => array(
 															'th'	=> __('Focus Keyword', 'psp'),
 															'td'	=> '%serp_focus_keyword%',
 															'align' => 'left',
-															'width' => '150'
+															'width' => '150',
+															'class'	=> 'psp-phrase',
 														),
 														
 														'serp_url'	=> array(
 															'th'	=> __('URL', 'psp'),
 															'td'	=> '%serp_url%',
-															'align' => 'left'
+															'align' => 'left',
+															'class'	=> 'psp-url-orig',
 														),
 														
 														'serp_location'	=> array(
@@ -539,33 +571,33 @@ if (class_exists('pspSERP') != true) {
 															'td'	=> '%serp_visits%',
 															'width' => '30'
 														),
-														
+
 														'publish_btn' => array(
 															'th'	=> __('Operations', 'psp'),
-															'td'	=> '%serp_operation%',
+															'td'	=> '%buttons_group%',
 															'option' => array(
 																array(
 																	'value' => __('Unpublish', 'psp'),
 																	'value_change' => __('Publish', 'psp'),
-																	'action' => 'do_item_publish',
+																	'action' => 'serp_do_item_publish',
 																	'color'	=> 'warning',
 																	'icon' => '<i class="fa fa-eye-slash"></i>',
 																	'icon_change' => '<i class="fa fa-eye"></i>'
 																),
 																array(
 																	'value' => __('Update', 'psp'),
-																	'action' => 'do_item_update',
+																	'action' => 'serp_do_item_update',
 																	'color'	=> 'info',
 																	'icon' => '<i class="fa fa-refresh"></i>',
 																),
 																array(
 																	'value' => __('Delete', 'psp'),
-																	'action' => 'do_item_delete',
+																	'action' => 'serp_do_item_delete',
 																	'color'	=> 'danger',
 																	'icon' => '<i class="fa fa-times"></i>',
 																)
 															),
-															'width' => '120',
+															'width' => '110',
 														),
 														/*
 														'publish_btn' => array(
@@ -600,7 +632,8 @@ if (class_exists('pspSERP') != true) {
 																'color'	=> 'danger',
 															),
 															'width' => '35'
-														),*/
+														),
+														*/
 													)
 												))
 												->print_html();
@@ -623,12 +656,7 @@ if (class_exists('pspSERP') != true) {
 <?php
 		}
 
-		/*
-		* getSERPGraphData, method
-		* ------------------------
-		*
-		* this will create request to psp_serp_reporter table
-		*/
+		//getSERPGraphData: this will create request to psp_serp_reporter table
 		public function getSERPGraphData()
 		{
 			global $wpdb;
@@ -785,43 +813,51 @@ if (class_exists('pspSERP') != true) {
 			return $ret;
 		}
 
-		/*
-		* addToReporter, method
-		* ---------------------
-		*
-		* this will create request to psp_serp_reporter table
-		*/
+		//addToReporter: this will create request to psp_serp_reporter table
 		public function addToReporter( $keyword='', $link='', $itemid=0 )
 		{
 			$request = array(
-				'action'	=> isset($_REQUEST['action']) ? trim($_REQUEST['action']) : 'pspAddToReporter',
-				'subaction' => isset($_REQUEST['subaction']) ? trim($_REQUEST['subaction']) : '',
-				'keyword' 	=> isset($_REQUEST['keyword']) ? trim($_REQUEST['keyword']) : $keyword,
-				'link' 		=> isset($_REQUEST['link']) ? trim($_REQUEST['link']) : $link,
-				'itemid' 	=> isset($_REQUEST['itemid']) ? trim($_REQUEST['itemid']) : $itemid,
-				'return'	=> isset($_REQUEST['return']) ? trim($_REQUEST['return']) : ''
-			); 
+				'itemid' 		=> isset($_REQUEST['itemid']) ? trim($_REQUEST['itemid']) : $itemid,
+				'return'		=> isset($_REQUEST['return']) ? trim($_REQUEST['return']) : '',
+				'action'		=> isset($_REQUEST['action']) ? trim($_REQUEST['action']) : 'pspAddToReporter',
+				'sub_action' 	=> isset($_REQUEST['sub_action']) ? trim($_REQUEST['sub_action']) : '',
+
+				'keyword' 		=> isset($_REQUEST['keyword']) ? trim($_REQUEST['keyword']) : $keyword,
+				'link' 			=> isset($_REQUEST['link']) ? trim($_REQUEST['link']) : $link,
+			);
+
+			$ret = array(
+				'status'		=> 'invalid',
+				'msg'			=> '',
+				'msg_wait'		=> '',
+				'html'			=> '',
+			);
 
 			$search_engine = $this->search_engine;
 			
 			// publish/unpublish
-			if ( $request['subaction']=='publish' ) {
+			if ( $request['sub_action']=='publish' ) {
 
 				//keep page number & items number per page
 				$_SESSION['pspListTable']['keepvar'] = array('paged'=>true,'posts_per_page'=>true);
 				
 				// add to DB or update if is from new day
-				$this->addToReportDB( array( 'keyword' => $request['keyword'], 'url' => $request['link'] ), 'default' );
-				
+				$addToDb = $this->addToReportDB( array( 'keyword' => $request['keyword'], 'url' => $request['link'] ), 'default' );
+
+				$list_table = $this->ajax_list_table_rows();
+				$waitStat = $this->getEngineAccessTime( 'return' );
+
 				// return for ajax
+				$ret = array_replace_recursive($ret, array(
+					'status'		=> 'valid',
+					'msg'			=> '<div class="psp-message psp-success">' . __('success/ keyword publish status changed.', 'psp') . '</div>',
+					'msg_wait'		=> $waitStat['html'],
+					'html'	 		=> $list_table['html'],
+				), $addToDb);
 				if ( $request['return'] == 'array' ) {
-					return array(
-						'status' => 'valid'
-					);
+					return $ret;
 				}
-				die(json_encode( array(
-					'status' => 'valid'
-				)));
+				die(json_encode($ret));
 			}
 
 			require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/serp/serp.api.class.php' );
@@ -847,15 +883,20 @@ if (class_exists('pspSERP') != true) {
 				
 				$_SESSION['psp_engine_access_status'] = 'invalid';
 
+				$list_table = $this->ajax_list_table_rows();
+				$waitStat = $this->getEngineAccessTime( 'return' );
+
 				// return for ajax
+				$ret = array_replace_recursive($ret, array(
+					'status'		=> 'invalid',
+					'msg'			=> '<div class="psp-message psp-error">' . __('error/ keyword - could not retrieve google score.', 'psp') . '</div>',
+					'msg_wait'		=> $waitStat['html'],
+					'html'	 		=> $list_table['html'],
+				));
 				if ( $request['return'] == 'array' ) {
-					return array(
-						'status' => 'invalid'
-					);
+					return $ret;
 				}
-				die(json_encode( array(
-					'status' => 'invalid'
-				)));
+				die(json_encode($ret));
 			}
 			
 			if ( $request['action'] == 'pspUpdateToReporter' ) {
@@ -864,167 +905,112 @@ if (class_exists('pspSERP') != true) {
 			}
 			
 			// add to DB or update if is from new day
-			$this->addToReportDB( $googleScoreInfo, 'default', $request['itemid'] );
+			$addToDb = $this->addToReportDB( $googleScoreInfo, 'default', $request['itemid'] );
 			
 			$_SESSION['psp_engine_access_status'] = 'valid';
-				
+
+			$list_table = $this->ajax_list_table_rows();
+			$waitStat = $this->getEngineAccessTime( 'return' );
+
 			// return for ajax
 			$retdata = $this->get_serp_scores( $request['keyword'], $request['link'], 'default' );
-			if ( $request['return'] == 'array' ) {
-				return array(
-					'status' => 'valid',
-					'data'	 => $retdata
-				);
-			}
-			die(json_encode( array(
-				'status' => 'valid',
-				'data' 	 => $retdata
-			)));
-		}
-		
-		/*
-		* get_serp_scores, method
-		* -----------------------
-		*
-		* this will create request to psp_serp_reporter table
-		*/
-		public function get_serp_scores( $kw='', $link='', $se='default' )
-		{
-			global $wpdb;
-			
-			if ($se=='default')
-				$se = $this->search_engine;
-			
-			$serpScoresSQL = $wpdb->prepare( "SELECT a.*, b.* FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a LEFT JOIN " . ( $wpdb->prefix ) . "psp_serp_reporter2rank as b ON a.id=report_id WHERE 1=1 AND a.focus_keyword=%s AND a.url=%s AND a.search_engine=%s;", $kw, $link, $se );
-			return $wpdb->get_results( $serpScoresSQL, ARRAY_A );
-		}
-		
-		/**
-		 * update google access error status!
-		 */
-		public function googleAccessStatus( $row_id=0, $status=array() ) {
-			global $wpdb;
-			
-			if ( $row_id == 0 ) return false;
 
-			// update report - previous, worst, best rank!
-			$wpdb->update(
-				$wpdb->prefix . "psp_serp_reporter",
-				array(
-					'last_check_data'	=> date("Y-m-d H:i:s"),
-					'last_check_status' => $status['status'],
-					'last_check_msg'	=> $status['msg']
-				),
-				array( 'id' => $row_id ),
-				array(
-					'%s',
-					'%s',
-					'%s'
-				),
-				array( '%d' )
-			);
+			$ret = array_replace_recursive($ret, array(
+				'status'		=> 'valid',
+				//'data'		=> $retdata,
+				'msg'			=> '<div class="psp-message psp-success">' . __('success/ keyword was updated.', 'psp') . '</div>',
+				'msg_wait'		=> $waitStat['html'],
+				'html'	 		=> $list_table['html'],
+			), $addToDb);
+			if ( $request['return'] == 'array' ) {
+				return $ret;
+			}
+			die(json_encode($ret));
 		}
-		
-		
-		/*
-		* updateToReporter, method
-		* --------------------------
-		*
-		* this will create request to psp_serp_reporter table
-		*/
+
+		//updateToReporter: this will create request to psp_serp_reporter table
 		public function updateToReporter()
 		{
 			global $wpdb;
-			
+
 			$request = array(
-				'itemid' 	=> isset($_REQUEST['itemid']) ? (int)$_REQUEST['itemid'] : 0
+				'itemid' 	=> isset($_REQUEST['itemid']) ? (int)$_REQUEST['itemid'] : 0,
+				'return'	=> isset($_REQUEST['return']) ? trim($_REQUEST['return']) : '',
+			);
+
+			$ret = array(
+				'status'		=> 'invalid',
+				'msg'			=> '',
+				'msg_wait'		=> '',
+				'html'			=> '',
 			);
 			
-			if( $request['itemid'] > 0 ){
+			if ( $request['itemid'] > 0 ) {
 				$row = $wpdb->get_row( "SELECT * FROM " . ( $wpdb->prefix ) . "psp_serp_reporter WHERE id = '" . ( $request['itemid'] ) . "'", ARRAY_A );
 				 
 				// this function will automaticaly detect if already have this item and just update the score
-				$this->addToReporter( $row['focus_keyword'], $row['url'] );
-				
-				die(json_encode(array(
-					'status' => 'valid'
-				)));
+				//$_REQUEST['return'] = 'array';
+				$addResult = $this->addToReporter( $row['focus_keyword'], $row['url'] );
+				$ret = array_replace_recursive($ret, $addResult);
+
+				if ( $request['return'] == 'array' ) {
+					return $ret;
+				}
+				die(json_encode($ret));
 			}
-			
-			die(json_encode(array(
-				'status' => 'invalid'
-			)));
+
+			$waitStat = $this->getEngineAccessTime( 'return' );
+
+			$ret = array_replace_recursive($ret, array(
+				'msg'			=> '<div class="psp-message psp-error">' . __('error/ itemid is empty.', 'psp') . '</div>',
+				'msg_wait'		=> $waitStat['html'],
+			));
+			if ( $request['return'] == 'array' ) {
+				return $ret;
+			}
+			die(json_encode($ret));
 		}
 		
-		
-		/*
-		* removeFromReporter, method
-		* --------------------------
-		*
-		* this will create request to psp_serp_reporter table
-		*/
-		public function removeFromReporter()
-		{
-			global $wpdb;
-			
-			$request = array(
-				'itemid' 	=> isset($_REQUEST['itemid']) ? (int)$_REQUEST['itemid'] : 0
-			);
-			
-			if( $request['itemid'] > 0 ){
-				$wpdb->delete( 
-					$wpdb->prefix . "psp_serp_reporter", 
-					array( 'id' => $request['itemid'] ) 
-				);
-				
-				$wpdb->delete( 
-					$wpdb->prefix . "psp_serp_reporter2rank", 
-					array( 'report_id' => $request['itemid'] ) 
-				); 
-				
-				//keep page number & items number per page
-				$_SESSION['pspListTable']['keepvar'] = array('posts_per_page'=>true);
-				
-				die(json_encode(array(
-					'status' => 'valid'
-				)));
-			}
-			
-			die(json_encode(array(
-				'status' => 'invalid'
-			)));
-		}
-		
-		/*
-		* addToReportDB, method
-		* ---------------------
-		*
-		* this will create request to psp_serp_reporter table
-		*/
+		//addToReportDB: this will create request to psp_serp_reporter table
 		public function addToReportDB( $scoreArray=array(), $search_engine='default', $itemid=0 )
 		{
 			global $wpdb;
-			
+			$wpdb->suppress_errors = false;
+			$wpdb->show_errors = true;
+
+			$ret = array(
+				'status'		=> 'invalid',
+				'msg'			=> '',
+			);
+
+			$fieldLimits = array(
+				'keyword'			=> 100,
+				'url'				=> 200,
+			);
+
 			// helper today date
 			$today = date("Y-m-d");
 			
-			if ($search_engine=='default')
+			if ($search_engine=='default') {
 				$search_engine = $this->search_engine;
+			}
 
 			// check if you already have this info into DB 
 			$checkSQL = $wpdb->prepare( "SELECT a.id as rowid, a.*, b.* FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a LEFT JOIN " . ( $wpdb->prefix ) . "psp_serp_reporter2rank as b ON a.id=b.report_id WHERE 1=1 AND a.focus_keyword=%s AND a.url=%s AND a.search_engine=%s order by b.report_day DESC LIMIT 1", $scoreArray['keyword'], $scoreArray['url'], $search_engine );
 
 			$row = $wpdb->get_row( $checkSQL, ARRAY_A );
-			$row_id = (int)$row['rowid'];
+			$row_id = (int) $row['rowid'];
   
+  			//:: FIRST - we don't return here
+  			// just try publish / unpublish existent keyword
 			if ( $row_id > 0 ) {
   
 					$request = array(
-						'subaction' => isset($_REQUEST['subaction']) ? trim($_REQUEST['subaction']) : ''
+						'sub_action' => isset($_REQUEST['sub_action']) ? trim($_REQUEST['sub_action']) : ''
 					);
 				
 					// publish/unpublish
-					if ( $request['subaction']=='publish' ) {
+					if ( $request['sub_action']=='publish' ) {
 						$wpdb->update( 
 							$wpdb->prefix . "psp_serp_reporter", 
 							array( 
@@ -1036,15 +1022,45 @@ if (class_exists('pspSERP') != true) {
 							), 
 							array( '%d' ) 
 						);
-						return true;
+
+						$ret = array_replace_recursive($ret, array(
+							'status'		=> 'valid',
+							'msg'			=> '<div class="psp-message psp-success">' . sprintf( __('success/db/ keyid %d : keyword publish or unpublish changed.', 'psp'), $row_id ) . '</div>',
+						));
+						return $ret;
+					}
+					else {
+						$ret = array_replace_recursive($ret, array(
+							'status'		=> 'invalid',
+							'msg'			=> '<div class="psp-message psp-error">' . sprintf( __('error/db/ keyid %d : but action is not publish.', 'psp'), $row_id ) . '</div>',
+						));
 					}
 			}
 
-			// if not found
+			//:: SECOND
+			// new keyword => insert it
 			if( $row_id == 0 ){
   
+				$isErr = false;
+   				if ( !$isErr && strlen($scoreArray['keyword']) > $fieldLimits['keyword'] ) {
+   					$isErr = true;
+					$msg = '<div class="psp-message psp-error">' . sprintf( __('error/db/ keyid %d : keyword is too long - more than allowed max %d chars.', 'psp'), $row_id, $fieldLimits['keyword'] ) . '</div>';
+  				}
+   				if ( !$isErr && strlen($scoreArray['url']) > $fieldLimits['url'] ) {
+   					$isErr = true;
+					$msg = '<div class="psp-message psp-error">' . sprintf( __('error/db/ keyid %d : url is too long - more than allowed max %d chars.', 'psp'), $row_id, $fieldLimits['url'] ) . '</div>';
+  				}
+
+  				if ( $isErr ) {
+					$ret = array_replace_recursive($ret, array(
+						'status'		=> 'invalid',
+						'msg'			=> $msg,
+					));
+					return $ret;
+  				}
+
 				// add new row into report table
-				$wpdb->insert( 
+				$insert_id = $wpdb->insert( 
 					$wpdb->prefix . "psp_serp_reporter", 
 					array( 
 						'focus_keyword' => $scoreArray['keyword'], 
@@ -1074,30 +1090,44 @@ if (class_exists('pspSERP') != true) {
 					) 
 				);
 				$insert_id = $wpdb->insert_id;
-				
-				// add row into rank table
-				$insert_id2 = $wpdb->insert( 
-					$wpdb->prefix . "psp_serp_reporter2rank", 
-					array( 
-						'report_id' 	=> $insert_id, 
-						'position' 		=> $scoreArray['pos'],
-						'top100' 		=> @serialize($scoreArray['top100']),
-						'report_day' 	=> date("Y-m-d")
-					), 
-					array( 
-						'%d',
-						'%d',
-						'%s',
-						'%s'
-					) 
-				);
+
+				// add keyword rank for today
+				if ( $insert_id ) {
+					$insert_id2 = $wpdb->insert( 
+						$wpdb->prefix . "psp_serp_reporter2rank", 
+						array( 
+							'report_id' 	=> $insert_id, 
+							'position' 		=> $scoreArray['pos'],
+							'top100' 		=> @serialize($scoreArray['top100']),
+							'report_day' 	=> date("Y-m-d")
+						), 
+						array( 
+							'%d',
+							'%d',
+							'%s',
+							'%s'
+						) 
+					);
+					$insert_id2 = $wpdb->insert_id;
+
+					$ret = array_replace_recursive($ret, array(
+						'status'		=> 'valid',
+						'msg'			=> '<div class="psp-message psp-success">' . sprintf( __('success/db/ keyid %d, rankid %d : add new keyword & its rank for today.', 'psp'), $insert_id, $insert_id2 ) . '</div>',
+					));
+				}
+				else {
+					$ret = array_replace_recursive($ret, array(
+						'status'		=> 'invalid',
+						'msg'			=> '<div class="psp-message psp-error">' . sprintf( __('error/db/ keyid %d : error add new keyword for today.', 'psp'), $row_id ) . '</div>',
+					));
+				}
 			}
 			
-			// new rank for the same report row!
+			// keyword exists, but add new rank for today
 			elseif( $row['report_day'] < $today ){
   
 				// add row into rank table
-				$insert_id = $wpdb->insert( 
+				$insert_id2 = $wpdb->insert( 
 					$wpdb->prefix . "psp_serp_reporter2rank", 
 					array( 
 						'report_id' 	=> $row_id, 
@@ -1112,11 +1142,12 @@ if (class_exists('pspSERP') != true) {
 						'%s',
 					) 
 				);
+				$insert_id2 = $wpdb->insert_id;
 				
 				// best & worst ranks!
 				$__ranks = $this->getCustomRanks($row_id);
 				
-				// update report - previous, worst, best rank!
+				// update keyword - previous, worst, best rank!
 				$wpdb->update( 
 					$wpdb->prefix . "psp_serp_reporter", 
 					array( 
@@ -1140,9 +1171,14 @@ if (class_exists('pspSERP') != true) {
 					), 
 					array( '%d' ) 
 				);
+
+				$ret = array_replace_recursive($ret, array(
+					'status'		=> 'valid',
+					'msg'			=> '<div class="psp-message psp-success">' . sprintf( __('success/db/ keyid %d, rankid %d : keyword exists, but add new rank for today.', 'psp'), $row_id, $insert_id2 ) . '</div>',
+				));
 			}
 			
-			// update rank for the same report row - same day!
+			// keyword exists and just update current existent rank for today
 			else{
   
 				$row2 = $wpdb->get_row( "SELECT * FROM " . ( $wpdb->prefix ) . "psp_serp_reporter2rank WHERE report_id = '" . ( $row_id ) . "' and report_day='" . ( $today ) . "'", ARRAY_A );
@@ -1189,13 +1225,112 @@ if (class_exists('pspSERP') != true) {
 					), 
 					array( '%d' ) 
 				);
+
+				$ret = array_replace_recursive($ret, array(
+					'status'		=> 'valid',
+					'msg'			=> '<div class="psp-message psp-success">' . sprintf( __('success/db/ keyid %d, rankid %d : keyword exists and just update current existent rank for today.', 'psp'), $row_id, $row2['id'] ) . '</div>',
+				));
 			}
   
 			$request['wait_time'] = isset($_REQUEST['wait_time']) ? (int) $_REQUEST['wait_time'] : 0;  //(int) value in seconds!
-			if ( $request['wait_time'] > 0 )
+			if ( $request['wait_time'] > 0 ) {
 				$_SESSION['psp_engine_access_time'] = $request['wait_time'];
+			}
 
-			return true;
+			return $ret;
+		}
+		
+		//removeFromReporter: this will create request to psp_serp_reporter table
+		public function removeFromReporter()
+		{
+			global $wpdb;
+			
+			$request = array(
+				'itemid' 	=> isset($_REQUEST['itemid']) ? (int)$_REQUEST['itemid'] : 0,
+				'return'	=> isset($_REQUEST['return']) ? trim($_REQUEST['return']) : '',
+			);
+
+			$ret = array(
+				'status'		=> 'invalid',
+				'msg'			=> '',
+				'msg_wait'		=> '',
+				'html'			=> '',
+			);
+			
+			if( $request['itemid'] > 0 ){
+				$wpdb->delete( 
+					$wpdb->prefix . "psp_serp_reporter", 
+					array( 'id' => $request['itemid'] ) 
+				);
+				
+				$wpdb->delete( 
+					$wpdb->prefix . "psp_serp_reporter2rank", 
+					array( 'report_id' => $request['itemid'] ) 
+				); 
+				
+				//keep page number & items number per page
+				$_SESSION['pspListTable']['keepvar'] = array('posts_per_page'=>true);
+
+				$list_table = $this->ajax_list_table_rows();
+				$waitStat = $this->getEngineAccessTime( 'return' );
+
+				// return for ajax
+				$ret = array_replace_recursive($ret, array(
+					'status' 		=> 'valid',
+					'msg'			=> '<div class="psp-message psp-success">' . __('success/ keyword was removed.', 'psp') . '</div>',
+					'msg_wait'		=> $waitStat['html'],
+					'html'	 		=> $list_table['html'],
+				));
+				if ( $request['return'] == 'array' ) {
+					return $ret;
+				}
+				die(json_encode($ret));
+			}
+			
+			$ret = array_replace_recursive($ret, array(
+				'msg'			=> '<div class="psp-message psp-error">' . __('error/ itemid is empty.', 'psp') . '</div>',
+				'msg_wait'		=> $waitStat['html'],
+			));
+			if ( $request['return'] == 'array' ) {
+				return $ret;
+			}
+			die(json_encode($ret));
+		}
+
+		//get_serp_scores: this will create request to psp_serp_reporter table
+		public function get_serp_scores( $kw='', $link='', $se='default' )
+		{
+			global $wpdb;
+			
+			if ($se=='default')
+				$se = $this->search_engine;
+			
+			$serpScoresSQL = $wpdb->prepare( "SELECT a.*, b.* FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a LEFT JOIN " . ( $wpdb->prefix ) . "psp_serp_reporter2rank as b ON a.id=report_id WHERE 1=1 AND a.focus_keyword=%s AND a.url=%s AND a.search_engine=%s;", $kw, $link, $se );
+			return $wpdb->get_results( $serpScoresSQL, ARRAY_A );
+		}
+		
+		//googleAccessStatus: update google access error status!
+		public function googleAccessStatus( $row_id=0, $status=array() ) {
+			global $wpdb;
+			
+			if ( $row_id == 0 ) return false;
+
+			// update report - previous, worst, best rank!
+			$wpdb->update(
+				$wpdb->prefix . "psp_serp_reporter",
+				array(
+					'last_check_data'	=> date("Y-m-d H:i:s"),
+					'last_check_status' => $status['status'],
+					'last_check_msg'	=> $status['msg']
+				),
+				array( 'id' => $row_id ),
+				array(
+					'%s',
+					'%s',
+					'%s'
+				),
+				array( '%d' )
+			);
 		}
 		
 		public function getCustomRanks($report_id) {
@@ -1227,7 +1362,7 @@ if (class_exists('pspSERP') != true) {
 			);
 		}
 		
-		public function __getEngineAccessTime()
+		public function getEngineAccessTime( $retType='die' )
 		{
 			$last_msg = '';
 			if ( isset($_SESSION['psp_engine_access_status']) ) {
@@ -1244,26 +1379,29 @@ if (class_exists('pspSERP') != true) {
 			
 			$settings = $this->the_plugin->getAllSettings( 'array', 'serp' );
 			$nbReqMax = $settings['nbreq_max_limit'];
-			
+
+			// here we only retrieve it
+			// the update_option is made in lib/scripts/serp/serp.api.class.php
 			$currentReqInfo = get_option('psp_serp_nbrequests');
 			$currentNbReq = (int) $currentReqInfo['nbreq'];
 			$currentData = $currentReqInfo['data'];
 
-			die( json_encode(array(
+			$nb_req_ = sprintf( __('<span class="engine-access-msg-info">' . 'The number of requests made is <strong>%s</strong> (of maximum %s per day).' . '</span></div>', 'psp'), $currentNbReq, $nbReqMax );
+
+			$ret = array(
 				'status' 	=> 'valid',
 				'data' 		=> isset($_SESSION['psp_engine_access_time']) && $_SESSION['psp_engine_access_time']>0 ? $_SESSION['psp_engine_access_time'] : 0,
 				'last_msg'	=> $last_msg,
-				'nb_req'	=> sprintf( __('<span class="engine-access-msg-info">' . 'The number of requests made is <strong>%s</strong> (of maximum %s per day).' . '</span></div>', 'psp'), $currentNbReq, $nbReqMax )
-			)) );
+				'nb_req'	=> $nb_req_,
+				'html'		=> $last_msg . ' ' . $nb_req_,
+			);
+
+			if ( $retType == 'return' ) { return $ret; }
+			else { die( json_encode( $ret ) ); }
 		}
 
-		/*
-		* __getFocusKW, method
-		* --------------------
-		*
-		* this will create requesto to 404 table
-		*/
-		public function __getFocusKW()
+		//getFocusKW: this will create requesto to 404 table
+		public function getFocusKW()
 		{
 			global $wpdb;
 			$html = array();
@@ -1305,17 +1443,102 @@ if (class_exists('pspSERP') != true) {
 				'html'	=> implode("\n", $html)
 			)) );
 		}
+
+
+		private function getSearchEngineUsed() {
+			global $wpdb;
+			
+			$serpScoresSQL = "SELECT a.search_engine FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a WHERE 1=1 GROUP BY a.search_engine;";
+			$ret = $wpdb->get_results( $serpScoresSQL, ARRAY_A );
+			$__ret = array();
+			if ($ret!==false && count($ret)>0) {
+				foreach ($ret as $__k=>$__v) {
+					$__ret[] = $__v['search_engine'];
+				}
+			}
+			return $__ret;
+		}
 		
-		/*
-		* check_reporter, method
-		* --------------------
-		*
-		* this will check search engine rank for all rows in psp_serp_reporter
-		*/
+		public function setSearchEngine() {
+			global $wpdb;
+			
+			$request = array(
+				'search_engine' 	=> isset($_REQUEST['search_engine']) ? trim($_REQUEST['search_engine']) : '',
+			);
+			if ($request['search_engine']!='') {
+				$_SESSION['psp_serp']['search_engine'] = $request['search_engine'];
+			}
+			
+			// return for ajax
+			die(json_encode( array(
+				'status' => 'valid'
+			)));
+		}
+		
+		private function getKeywordsList() {
+			global $wpdb;
+			
+			$serpScoresSQL = "SELECT a.id, a.focus_keyword as info FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a WHERE 1=1 ";
+
+			if (isset($_SESSION['psp_serp']['search_engine']) && !empty($_SESSION['psp_serp']['search_engine'])
+			&& $_SESSION['psp_serp']['search_engine']!='--all--') {
+				$serpScoresSQL = str_replace("1=1 ", " 1=1 and a.search_engine='".$_SESSION['psp_serp']['search_engine']."' ", $serpScoresSQL);
+			}
+			$serpScoresSQL .= " GROUP BY a.focus_keyword;";
+			$ret = $wpdb->get_results( $serpScoresSQL, ARRAY_A );
+			return $ret;
+		}
+		
+		private function getUrlsList() {
+			global $wpdb;
+			
+			$serpScoresSQL = "SELECT a.id, a.url as info FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a WHERE 1=1 ";
+
+			if (isset($_SESSION['psp_serp']['search_engine']) && !empty($_SESSION['psp_serp']['search_engine'])
+			&& $_SESSION['psp_serp']['search_engine']!='--all--') {
+				$serpScoresSQL = str_replace("1=1 ", " 1=1 and a.search_engine='".$_SESSION['psp_serp']['search_engine']."' ", $serpScoresSQL);
+			}
+			$serpScoresSQL .= " GROUP BY a.url;";
+			$ret = $wpdb->get_results( $serpScoresSQL, ARRAY_A );
+			return $ret;
+		}
+		
+		private function prepareForInList($v) {
+			return "'".$v."'";
+		}
+
+		public function cron_add_custom( $schedules ) {
+			// Adds to the existing schedules.
+			$schedules['daily'] = array(
+				'interval' => 86400, //that's how many seconds are in 1 day, for the unix timestamp
+				'display' => __('Once Daily', 'psp')
+			);
+			return $schedules;
+		}
+
+		private function ajax_list_table_rows() {
+			return pspAjaxListTable::getInstance( $this->the_plugin )->list_table_rows( 'return', array() );
+		}
+
+
+    	/**
+     	 * Cronjobs methods
+     	 */
+		//check_reporter: this will check search engine rank for all rows in psp_serp_reporter
 		public function check_reporter() {
 			@ini_set('max_execution_time', 0);
 			@set_time_limit(0); // infinte
-	
+
+			$this->do_check_reporter();
+
+			// return for ajax
+			die(json_encode( array(
+				'status' => 'valid',
+				'msg' => ''
+			)));
+		}
+
+		public function do_check_reporter() {
 			global $wpdb;
 
 			$__tasks = array();
@@ -1341,12 +1564,15 @@ if (class_exists('pspSERP') != true) {
 			require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/serp/serp.api.class.php' );
 			$serp = pspSERPCheck::getInstance();
 
+			//var_dump('<pre>', $__tasks , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
 			// loop tasks
 			foreach ($__tasks as $__k => $__v) {
 				foreach ($__v as $key => $value) {
 					if ($__k==0) { //use cache!
 
-						$sql_url = $wpdb->prepare( "SELECT a.id, a.focus_keyword, a.url, a.search_engine FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a WHERE 1=1 and a.publish='Y' and a.focus_keyword=%s and a.search_engine=%s ORDER BY a.id ASC;", $value['focus_keyword'], $value['search_engine'] );
+						$sql_url = "SELECT a.id, a.focus_keyword, a.url, a.search_engine FROM " . $wpdb->prefix . "psp_serp_reporter as a WHERE 1=1 and a.publish='Y' and a.focus_keyword=%s and a.search_engine=%s ORDER BY a.id ASC;";
+						$sql_url = $wpdb->prepare( $sql_url, $value['focus_keyword'], $value['search_engine'] );
+						//var_dump('<pre>',$sql_url ,'</pre>'); 
 						$res_url = $wpdb->get_results( $sql_url, ARRAY_A );
 
 						if(count($res_url) > 0){
@@ -1398,29 +1624,9 @@ if (class_exists('pspSERP') != true) {
 
 			//send email!
 			$this->cron_reporter_email();
-			
-			// return for ajax
-			die(json_encode( array(
-				'status' => 'valid',
-				'msg' => ''
-			)));
 		}
 		
-		public function cron_add_custom( $schedules ) {
-			// Adds to the existing schedules.
-			$schedules['daily'] = array(
-				'interval' => 86400, //that's how many seconds are in 1 day, for the unix timestamp
-				'display' => __('Once Daily', 'psp')
-			);
-			return $schedules;
-		}
-		
-		/*
-		* cron_reporter_email, method
-		* --------------------
-		*
-		* this will send and email with ranks!
-		*/
+		//cron_reporter_email: this will send and email with ranks!
 		public function cron_reporter_email() {
 			global $wpdb;
 			
@@ -1433,7 +1639,7 @@ if (class_exists('pspSERP') != true) {
 
 		    $query_res = $wpdb->get_results( $result_query, ARRAY_A);
 		    
-		    $items = array();
+		    $items = array(); $pages = array();
 		    foreach ($query_res as $key => $myrow){
 		    	//if( $opt["custom_table"] == 'psp_serp_reporter' ) {
 		    		$pages[$myrow['id']] = array(
@@ -1453,6 +1659,7 @@ if (class_exists('pspSERP') != true) {
 
 		    $items_nr = 0;
 		    $items_nr = $wpdb->get_var( str_replace("a.*", "count(a.id) as nbRow", $myQuery) );
+			//var_dump('<pre>', $items_nr , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
 
 		    if ($items_nr<=0) {
 		    	return false;
@@ -1586,67 +1793,18 @@ if (class_exists('pspSERP') != true) {
 		public function set_html_content_type() {
 			return 'text/html';
 		}
-		
-		private function getSearchEngineUsed() {
-			global $wpdb;
-			
-			$serpScoresSQL = "SELECT a.search_engine FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a WHERE 1=1 GROUP BY a.search_engine;";
-			$ret = $wpdb->get_results( $serpScoresSQL, ARRAY_A );
-			$__ret = array();
-			if ($ret!==false && count($ret)>0) {
-				foreach ($ret as $__k=>$__v) {
-					$__ret[] = $__v['search_engine'];
-				}
-			}
-			return $__ret;
-		}
-		
-		public function setSearchEngine() {
-			global $wpdb;
-			
-			$request = array(
-				'search_engine' 	=> isset($_REQUEST['search_engine']) ? trim($_REQUEST['search_engine']) : '',
-			);
-			if ($request['search_engine']!='') {
-				$_SESSION['psp_serp']['search_engine'] = $request['search_engine'];
-			}
-			
-			// return for ajax
-			die(json_encode( array(
-				'status' => 'valid'
-			)));
-		}
-		
-		private function getKeywordsList() {
-			global $wpdb;
-			
-			$serpScoresSQL = "SELECT a.id, a.focus_keyword as info FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a WHERE 1=1 ";
 
-			if (isset($_SESSION['psp_serp']['search_engine']) && !empty($_SESSION['psp_serp']['search_engine'])
-			&& $_SESSION['psp_serp']['search_engine']!='--all--') {
-				$serpScoresSQL = str_replace("1=1 ", " 1=1 and a.search_engine='".$_SESSION['psp_serp']['search_engine']."' ", $serpScoresSQL);
-			}
-			$serpScoresSQL .= " GROUP BY a.focus_keyword;";
-			$ret = $wpdb->get_results( $serpScoresSQL, ARRAY_A );
-			return $ret;
-		}
-		
-		private function getUrlsList() {
-			global $wpdb;
-			
-			$serpScoresSQL = "SELECT a.id, a.url as info FROM " . ( $wpdb->prefix ) . "psp_serp_reporter as a WHERE 1=1 ";
+		public function serp_cronjob_check_reporter( $pms, $return='die' ) {
+			$ret = array('status' => 'failed');
 
-			if (isset($_SESSION['psp_serp']['search_engine']) && !empty($_SESSION['psp_serp']['search_engine'])
-			&& $_SESSION['psp_serp']['search_engine']!='--all--') {
-				$serpScoresSQL = str_replace("1=1 ", " 1=1 and a.search_engine='".$_SESSION['psp_serp']['search_engine']."' ", $serpScoresSQL);
-			}
-			$serpScoresSQL .= " GROUP BY a.url;";
-			$ret = $wpdb->get_results( $serpScoresSQL, ARRAY_A );
-			return $ret;
-		}
-		
-		private function prepareForInList($v) {
-			return "'".$v."'";
+			//$current_cron_status = $pms['status']; //'new'; //
+
+			$this->do_check_reporter();
+
+            $ret = array_merge($ret, array(
+                'status'            => 'done',
+            ));
+            return $ret;
 		}
     }
 }

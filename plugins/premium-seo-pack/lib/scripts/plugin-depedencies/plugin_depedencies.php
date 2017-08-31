@@ -77,22 +77,22 @@ if (class_exists('aaTeamPluginDepedencies') != true) {
 		}
 		
 		public function depedencies_manage_options_template() {
-			// Derive the current path and load up aaInterfaceTemplates
+			// Derive the current path and load up psp_aaInterfaceTemplates
 			$plugin_path = $this->the_plugin->cfg['paths']['freamwork_dir_path'];
-			if(class_exists('aaInterfaceTemplates') != true) {
+			if(class_exists('psp_aaInterfaceTemplates') != true) {
 				require_once($plugin_path . 'settings-template.class.php');
 
-				// Initalize the your aaInterfaceTemplates
-				$aaInterfaceTemplates = new aaInterfaceTemplates($this->the_plugin->cfg);
+				// Initalize the your psp_aaInterfaceTemplates
+				$psp_aaInterfaceTemplates = new psp_aaInterfaceTemplates($this->the_plugin->cfg);
 
 				// try to init the interface
-				$aaInterfaceTemplates->printBaseInterface( 'depedencies' );
+				$psp_aaInterfaceTemplates->printBaseInterface( 'depedencies' );
 			}
 		}
 		
 		public function depedencies_plugin_redirect_valid() {
 			//delete_option('psp_depedencies_is_valid');
-			//$site_url = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}";
+			//$site_url = $this->the_plugin->get_current_page_url(array());
 			//header( "Location: $site_url" );
 			delete_option('psp_depedencies_is_valid');
 			wp_redirect( get_admin_url() . 'admin.php?page=psp' );

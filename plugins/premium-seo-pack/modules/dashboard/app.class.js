@@ -31,17 +31,188 @@ pspDashboard = (function ($) {
 
 			//fixed in 2016-12-05
 			//data not received!
+			if( typeof(response.checkProfile) == "undefined" || response.checkProfile.status == 'invalid' ){
+				//graph.parents('.psp-panel-widget').eq(0).remove();
+				graph.parents('.psp-dashboard-box-audience_overview').eq(0).remove(); //fixed in 2016-12-05
+				
+				return false;
+			}
+
 			if (response.__access.status == 'invalid') {
 				//$(".psp-panel, .psp-grid_1_3").css({'display': 'none'}); //hide info panels!
 				pspFreamwork.to_ajax_loader_close();
 				if ( response.__access.isalert == 'yes' )
-					alert(response.__access.msg);
+					swal(response.__access.msg);
 				return false;
 			}
 
 			//fixed in 2016-12-05
-			//getAudience
 			if( response.getAudience.status == 'valid' ){
+
+				var data = response.getAudience.data.rows;
+				var dataPageViewsDate = [];
+				for(var i = 0; i < data.pageviews.length; i++) {
+					var currentDate = new Date(data.pageviews[i][0]);
+					var currentDateFormated = currentDate.getDay() +'/'+ currentDate.getMonth() +'/'+ currentDate.getFullYear();
+					dataPageViewsDate.push(currentDateFormated);
+				};
+
+				var presets = window.chartColors; 
+				var utils = Samples.utils;
+				var inputs = {
+					min: -100,
+					max: 100,
+					count: 8,
+					decimals: 2,
+					continuity: 1
+				};
+
+				var options = {
+					maintainAspectRatio: false, 
+					spanGaps: false,
+					elements: {
+						line: {
+							tension: 0.000001
+						}
+					},
+					plugins: {
+						filler: {
+							propagate: false
+						}
+					},
+					scales: {
+						xAxes: [{
+							ticks: {
+								autoSkip: true,
+								maxRotation: 0
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								autoSkip: true
+							}
+						}]
+					}
+				};
+
+				var _dataSets = {};
+				
+				var dataPageViews = [];
+				for(var i = 0; i < data.pageviews.length; i++) {
+					dataPageViews.push(data.pageviews[i][1]);
+				};
+
+				_dataSets['pageViews'] = {
+					borderColor: '#ff9f40',
+					backgroundColor: '#ff6384',
+					pointBorderColor: '#ff6384',
+					pointBackgroundColor:  '#ff6384',
+					data: dataPageViews,
+					label: 'Page Views',
+					fill: false,
+					pointRadius: 5
+				};
+				
+				var dataNewVisits = [];
+				for(var i = 0; i < data.newVisits.length; i++) {
+					dataNewVisits.push(data.newVisits[i][1]);
+				};
+				_dataSets['newVisits'] = {
+					borderColor: '#47c2a5',
+					backgroundColor: '#489be8',
+					pointBorderColor: '#489be8',
+					pointBackgroundColor:  '#489be8',
+					data: dataNewVisits,
+					label: 'New Visits',
+					fill: false,
+					pointRadius: 5
+				};
+
+				var datauniquePageviews = [];
+				for(var i = 0; i < data.uniquePageviews.length; i++) {
+					datauniquePageviews.push(data.uniquePageviews[i][1]);
+				};
+				_dataSets['uniquePageviews'] = {
+					borderColor: '#ffcd56',
+					backgroundColor: '#ffcd56',
+					pointBorderColor: '#ff9f40',
+					pointBackgroundColor:  '#ff9f40',
+					data: datauniquePageviews,
+					label: 'Unique Page Views',
+					fill: false,
+					pointRadius: 5
+				};
+
+				var dataVisitBounceRate = [];
+				for(var i = 0; i < data.visitBounceRate.length; i++) {
+					dataVisitBounceRate.push(data.visitBounceRate[i][1]);
+				};
+				_dataSets['VisitBounceRate'] = {
+					borderColor: '#ff6384',
+					backgroundColor: '#753ce7',
+					pointBorderColor: '#753ce7',
+					pointBackgroundColor:  '#753ce7',
+					data: dataVisitBounceRate,
+					label: 'Visit Bounce Rate',
+					fill: false,
+					pointRadius: 5
+				};
+				
+				var html = [];
+				
+
+				var __dataSets = [];
+				$.each( _dataSets, function(key, value){
+					__dataSets.push( value );
+				} );
+
+				[false, 'origin', 'start', 'end'].forEach(function(boundary, index) {
+					new Chart('psp-audience-visits-graph', {
+						type: 'line',
+						data: {
+							labels: dataPageViewsDate,
+							datasets: __dataSets
+						},
+						options: utils.merge(options, {
+							title: {
+								text: 'fill: ' + boundary,
+								display: false
+							},
+							legend: {
+								position: "bottom",
+								labels: {
+									padding: 25,
+									boxWidth: 65,
+									padding: 25,
+									fontSize: 16,
+								}
+							},
+							tooltips: {
+				                enabled: true,
+				                mode: 'single',
+				                callbacks: {
+				                    label: function(tooltipItems, data) {
+				                    	if( 
+				                    		data.datasets[tooltipItems.datasetIndex].label == 'New Visits' ||
+				                    		data.datasets[tooltipItems.datasetIndex].label == 'Page Views' 
+				                    	){
+					                    	return data.datasets[tooltipItems.datasetIndex].label +': ' + tooltipItems.yLabel;
+				                    	}
+
+				                    	if( data.datasets[tooltipItems.datasetIndex].label == 'Unique Page Views' ){
+					                    	return data.datasets[tooltipItems.datasetIndex].label +': ' + tooltipItems.yLabel;
+				                    	}
+
+				                    	if( data.datasets[tooltipItems.datasetIndex].label == 'Visit Bounce Rate' ){
+					                    	return data.datasets[tooltipItems.datasetIndex].label +': ' + tooltipItems.yLabel.toFixed(2) + "%";
+				                    	}
+					                }
+				                }
+				            },
+						})
+					});
+				});
+				/*
 				var data = response.getAudience.data.rows; 
 				var opts = {
 					series: {
@@ -78,6 +249,7 @@ pspDashboard = (function ($) {
 				
 				// remove the loading
 				graph.css('background-image', 'none');
+				*/
 			}else{
 			    graph.html( response.getAudience.reason );
 

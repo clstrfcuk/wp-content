@@ -745,7 +745,7 @@ var psp_loadAjaxUpload = function() {
 			onSubmit: function(file, extension){
 				if (! (extension && /^(jpg|png|jpeg|gif|pdf|zip|mp4|mp3|wmv|waw|txt|doc|docs)$/i.test(extension))){
 					// extension is not allowed
-					alert('Error: invalid file extension');
+					swal('Error: invalid file extension', '', 'error');
 					// cancel upload
 					return false;
 				} 

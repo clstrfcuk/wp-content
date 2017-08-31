@@ -217,7 +217,7 @@ function fixToolbarPosition(toolbar, opt) {
 	} else if ( size == 'large' ) {
 		__itemW = itemW['large']; __itemH = itemH['large']; __itemPadding = itemPadding['large'];
 	}
-	
+
 	// fix height
 	if ( winH < tbH ) {
 		var newtbH = winH - (2 * __itemPadding), columnItems = Math.floor( newtbH / (__itemH + __itemPadding) ), totalColumns = Math.ceil( totalItems / columnItems ),
@@ -728,7 +728,8 @@ var socialButtons = {
 		var $a = el.find('a'), nw = pms.network,
 		__href = $a.attr('href'), __url = $a.data('url'), __title = $a.data('title');
 
-		popup( 'http://delicious.com/save?v=5&noui&jump=close&url=' + __url + '&title=' + __title, nw );
+		//popup( 'http://delicious.com/save?v=5&noui&jump=close&url=' + __url + '&title=' + __title, nw );
+		popup( 'https://del.icio.us/get_bookmarklet_save?url=' + __url + '&title=' + __title, nw );
 	}
 	,pinterest: function( el, pms ) {
 		var $a = el.find('a'), nw = pms.network,

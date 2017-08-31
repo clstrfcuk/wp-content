@@ -1,5 +1,28 @@
 .#{$alias} {
 		
+		&.#{$alias}-mod-link-builder {
+			input[type="text"] {
+				width: 100%;
+			}
+			input[type="text"]:disabled {
+				background-color: #dddddd;
+			}
+			##{$alias}-lightbox-seo-report-response-details,
+			##{$alias}-lightbox-seo-report-response,
+			##{$alias}-lightbox-seo-report-response2 {
+				width: 100%;
+			}
+
+			.#{$alias}-link-builder-phrase-title,
+			.#{$alias}-link-builder-phrase li:nth-child(2) {
+				color: #7f8c8d;
+    			background-color: #ecf0f1;
+    			display: inline-block;
+    			font-weight: normal;
+    			font-style: italic;
+			}
+		}
+
 		##{$alias}-lightbox-container {
 			.show {
 				display: table;
@@ -32,9 +55,6 @@
 			##{$alias}-builder-text-hits {
 				display: none;
 			}
-			#new_text {
-				width: px(300);
-			}
 		}
 		.#{$alias}-update-link-form {
 			label {
@@ -51,31 +71,27 @@
 			.#{$alias}-button {
 				margin: px(10) 0 px(8);
 			}
-			#new_text2 {
-				width: px(300);
-			}
 		}
 	
+		.#{$alias}-button {
+		  padding:5px;
+		  font-size:12px;
+		  font-family: $primary_font;
+		  cursor:pointer;
+		}	
+		.#{$alias}-button.green {
+		    background-color:#00cb8f;
+		    border: none ;
+		    color:#fff;
+		    padding:5px;
+		    font-weight:bold;
+		  } 
+		  .#{$alias}-button.blue {
+		    background-color:#74badb;
+		    color:#fff;
+		    border: none;
+		    padding:5px;
+		    font-weight:bold;
+		  } 
 
-
-.#{$alias}-button {
-  padding:5px;
-  font-size:12px;
-  font-family: 'Open Sans';
-  cursor:pointer;
-}	
-.#{$alias}-button.green {
-    background-color:#00cb8f;
-    border: none ;
-    color:#fff;
-    padding:5px;
-    font-weight:bold;
-  } 
-  .#{$alias}-button.blue {
-    background-color:#74badb;
-    color:#fff;
-    border: none;
-    padding:5px;
-    font-weight:bold;
-  } 
- }
+}

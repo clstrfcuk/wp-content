@@ -7,6 +7,52 @@
  * @author		Andrei Dinca, AA-Team
  * @version		1.0
  */
+
+function __pspGA_authorize_section() {
+    global $psp;
+    
+    $html = array();
+    
+    // get the module init file
+    require_once( $psp->cfg['paths']['plugin_dir_path'] . 'modules/Google_Analytics/init.php' );
+    // Initialize the pspTinyCompress class
+    $pspGA = new pspGoogleAnalytics();
+    
+    $connection_status = apply_filters('psp_google_analytics_get_profiles', '');
+    $connection_msg = '<span style="color: red; font-weight: bold; margin-right: 1rem;">'
+    	. __('NOT authorized.', 'psp')
+    	. '</span>';
+    if ( is_array($connection_status) && ! empty($connection_status) && ! isset($connection_status[0]) ) {
+		$connection_msg = '<p>' . sprintf(
+			'<span style="color: green; font-weight: bold; margin-right: 1rem;">'
+				. __('Successfull authorization.', 'psp')
+				. '</span>'
+				. __('You have the following profiles: %s', 'psp'),
+			'<ul><li>' . implode('</li><li>', $connection_status) . '</li></ul>'
+		) . '</p>';
+    }
+
+    ob_start();
+    ?>
+
+<div class="panel-body psp-panel-body psp-form-row " style="display: block;">
+	<label class="psp-form-label" for="auth">Authorization</label>
+	<div class="psp-form-item large">
+		<input type="" style="display: inline-block; width: 363px;" value="<?php _e('Re-Authenticate with your Google account', 'psp'); ?>" class="psp-form-button psp-form-button-warning  psp-google-authorize-app">
+
+		<input type="" style="display: inline-block; width: 170px;" value="<?php _e('Deauthenticate', 'psp'); ?>" class="psp-form-button psp-form-button-info  psp-google-de-authorize-app">
+		<?php //echo $connection_msg; ?>
+	</div>
+</div>
+
+    <?php
+    $content = ob_get_contents();
+    ob_end_clean();
+    $html[] = $content;
+    
+    return implode( "\n", $html );
+}
+
 global $psp;
 echo json_encode(
 	array(
@@ -32,48 +78,14 @@ echo json_encode(
 					array(
 						'type' 		=> 'html',
 						
-						'html' 		=> '<div class="panel-heading psp-panel-heading">' . __('<h2>Basic Setup</h2>', 'psp') . '</div>',
+						'html' 		=> '<div class="panel-heading psp-panel-heading">' . __('<h2>Easy Setup</h2>', 'psp') . '</div>',
 					),
 					
-					array(
-						'type' 		=> 'html',
-						
-						'html' 		=> '<div class="panel-body psp-panel-body"><div class="psp-callout psp-callout-primary">' . __('
-							<ol>
-								<li>Create a Project in the Google APIs Console: <a href="https://console.developers.google.com" target="_blank">https://console.developers.google.com</a></li>
-								<li>Enable the Analytics API from the <a href="https://console.developers.google.com/apis/library" target="_blank" > Library </a></li>
-								<li>After Enabling the API go to -> <a href="https://console.developers.google.com/apis/credentials" target="_blank"> Credentials </a> -> Create Credentials Button -> Create OAuth Client ID</li>
-								<li>On Application type, choose Web application </li>
-								<li>On Authorized redirect URIs make sure you add the link from the Premium Seo Google Settings</li>
-							</ol>', 'psp') . '</div></div>',
-					),
-						
-					'client_id' 	=> array(
-						'type' 		=> 'text',
-						'std' 		=> '',
-						'size' 		=> 'small',
-						'force_width'=> '520',
-						'title' 	=> __('Your client id:', 'psp'),
-						'desc' 		=> __('From the APIs console.', 'psp')
-					),
+					'_authorize_section' => array(
+                        'type' => 'html',
+                        'html' => __pspGA_authorize_section()
+                    ),
 					
-					'client_secret' 	=> array(
-						'type' 		=> 'text',
-						'std' 		=> '',
-						'size' 		=> 'small',
-						'force_width'=> '520',
-						'title' 	=> __('Your client secret:', 'psp'),
-						'desc' 		=> __('From the APIs console.', 'psp')
-					),
-					
-					'redirect_uri' 	=> array(
-						'type' 		=> 'text',
-						'std' 		=> home_url( '/psp_seo_oauth' ),
-						'size' 		=> 'normal',
-						'readonly'	=> true,
-						'title' 	=> __('Redirect URI:', 'psp'),
-						'desc' 		=> __('Url to your app, must match one in the APIs console.', 'psp')
-					),
 					
 					'profile_id' 	=> array(
 						'type' 		=> 'select',
@@ -84,18 +96,54 @@ echo json_encode(
 						'options'	=> apply_filters('psp_google_analytics_get_profiles', '')
 					),
 					
-					'authorize' => array(
-						'type' => 'buttons',
-						'options' => array(
-							'authorize_app' => array(
-								'value' => __('Authorize the app', 'psp'),
-								'color' => 'info',
-								'action'=> 'psp-google-authorize-app',
-								'width' => '145px'
-							)
-						)
+				
+
+                  	array(
+						'type' 		=> 'html',
+						
+						'html' 		=> '<div class="panel-heading psp-panel-heading">' . __('<h2>Manually Setup</h2>', 'psp') . '</div>',
+					),
+
+                    array(
+						'type' 		=> 'html',
+						
+						'html' 		=> '<div class="panel-body psp-panel-body"><div class="psp-callout psp-callout-primary">' . __('
+							<ol>
+								<li>Create a Project in the Google APIs Console: <a href="https://console.developers.google.com" target="_blank">https://console.developers.google.com</a></li>
+								<li>Enable the Analytics API from the <a href="https://console.developers.google.com/apis/library" target="_blank" > Library </a></li>
+								<li>After Enabling the API go to -> <a href="https://console.developers.google.com/apis/credentials" target="_blank"> Credentials </a> -> Create Credentials Button -> OAuth client ID</li>
+								<li>On Application type, choose Other, name it, and copy the client / secret keys.</li>
+							</ol>', 'psp') . '</div></div>',
+					),
+						
+					'client_id' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> 'psp-client-id',
+						'size' 		=> 'small',
+						'force_width'=> '520',
+						'title' 	=> __('Client id:', 'psp'),
+						'desc' 		=> __('Default, this module uses AA-Team Premium SEO Pack Application, with our client id / secret. There is a limit if you use our keys, that is 50000 montly requests. But you can create your own application by following the steps above.', 'psp')
 					),
 					
+					'client_secret' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> 'psp-client-secret',
+						'size' 		=> 'small',
+						'force_width'=> '520',
+						'title' 	=> __('Client secret:', 'psp'),
+						'desc' 		=> __('Default, this module uses AA-Team Premium SEO Pack Application, with our client id / secret. There is a limit if you use our keys, that is 50000 montly requests. But you can create your own application by following the steps above', 'psp')
+					),
+					
+					'redirect_uri' 	=> array(
+						'type' 		=> 'text',
+						'std' 		=> home_url( '/psp_seo_oauth' ),
+						'size' 		=> 'normal',
+						'readonly'	=> true,
+						'title' 	=> __('Redirect URI:', 'psp'),
+						'desc' 		=> __('Url to your app, must match one in the APIs console.', 'psp')
+					),
+
+
 					'last_status' 	=> array(
 						'type' 		=> 'textarea-array',
 						'std' 		=> '',

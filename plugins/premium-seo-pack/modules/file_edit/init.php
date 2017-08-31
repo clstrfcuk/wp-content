@@ -243,7 +243,7 @@ if (class_exists('pspFileEdit') != true) {
 																		}
 																	} 
 																?>
-																<span id="psp-fe-ht-wrap"><?php echo is_array($__msg['ht']) ? implode('<br />', $__msg['ht']) : ''; ?></span>
+																<span id="psp-fe-ht-wrap"><?php echo isset($__msg['ht']) && is_array($__msg['ht']) ? implode('<br />', $__msg['ht']) : ''; ?></span>
 															</td>
 														</tr>
 														<?php if ($showBtnSave) { ?>

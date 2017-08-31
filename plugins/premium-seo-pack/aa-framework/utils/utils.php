@@ -13,13 +13,12 @@ if (class_exists('psp_Utils') != true) {
         */
         const VERSION = '1.0';
 
+        static protected $_instance;
+
         /*
         * Store some helpers config
         */
         public $the_plugin = null;
-        //public $amzHelper = null;
-
-        static protected $_instance;
         
     
         /*
@@ -28,7 +27,6 @@ if (class_exists('psp_Utils') != true) {
         public function __construct( $parent )
         {
             $this->the_plugin = $parent;
-            //$this->amzHelper = $this->the_plugin->amzHelper;
         }
         
         /**
@@ -247,6 +245,13 @@ if (class_exists('psp_Utils') != true) {
             return $has_wrote;
         }
 
+        public function filesize($path) {
+            $size = filesize($path);
+            $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+            $power = $size > 0 ? floor(log($size, 1024)) : 0;
+            return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
+        }
+
 
 		// Replace last occurance of a String
 		public function str_replace_last( $search , $replace , $str ) {
@@ -271,18 +276,18 @@ if (class_exists('psp_Utils') != true) {
         public function interval( $since ) {
             // array of time period chunks
             $chunks = array(
-                array(60 * 60 * 24 * 365 , _n_noop('%s year', '%s years', 'wwcAmzAff')),
-                array(60 * 60 * 24 * 30 , _n_noop('%s month', '%s months', 'wwcAmzAff')),
-                array(60 * 60 * 24 * 7, _n_noop('%s week', '%s weeks', 'wwcAmzAff')),
-                array(60 * 60 * 24 , _n_noop('%s day', '%s days', 'wwcAmzAff')),
-                array(60 * 60 , _n_noop('%s hour', '%s hours', 'wwcAmzAff')),
-                array(60 , _n_noop('%s minute', '%s minutes', 'wwcAmzAff')),
-                array( 1 , _n_noop('%s second', '%s seconds', 'wwcAmzAff')),
+                array(60 * 60 * 24 * 365 , _n_noop('%s year', '%s years', $this->the_plugin->localizationName)),
+                array(60 * 60 * 24 * 30 , _n_noop('%s month', '%s months', $this->the_plugin->localizationName)),
+                array(60 * 60 * 24 * 7, _n_noop('%s week', '%s weeks', $this->the_plugin->localizationName)),
+                array(60 * 60 * 24 , _n_noop('%s day', '%s days', $this->the_plugin->localizationName)),
+                array(60 * 60 , _n_noop('%s hour', '%s hours', $this->the_plugin->localizationName)),
+                array(60 , _n_noop('%s minute', '%s minutes', $this->the_plugin->localizationName)),
+                array( 1 , _n_noop('%s second', '%s seconds', $this->the_plugin->localizationName)),
             );
     
     
             if( $since <= 0 ) {
-                return __('now', 'wwcAmzAff');
+                return __('now', $this->the_plugin->localizationName);
             }
     
             // we only want to output two chunks of time here, eg:
@@ -304,7 +309,7 @@ if (class_exists('psp_Utils') != true) {
                 }
     
             // set output var
-            $output = sprintf(_n($name[0], $name[1], $count, 'wwcAmzAff'), $count);
+            $output = sprintf(_n($name[0], $name[1], $count, $this->the_plugin->localizationName), $count);
     
             // step two: the second chunk
             if ($i + 1 < $j)
@@ -315,12 +320,13 @@ if (class_exists('psp_Utils') != true) {
                 if (($count2 = floor(($since - ($seconds * $count)) / $seconds2)) != 0)
                     {
                     // add to output var
-                    $output .= ' '.sprintf(_n($name2[0], $name2[1], $count2, 'wwcAmzAff'), $count2);
+                    $output .= ' '.sprintf(_n($name2[0], $name2[1], $count2, $this->the_plugin->localizationName), $count2);
                     }
                 }
     
             return $output;
         }
+
 
 
 		// convert relative URLs to absolute URLs

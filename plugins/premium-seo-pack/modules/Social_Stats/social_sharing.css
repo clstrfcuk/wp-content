@@ -21,6 +21,7 @@
 .psp-sshare-wrapper.box-panel {
 	padding-bottom: 0px;
 	padding-right: 0px;
+	display: inline-block;
 }
 
 /* toolbar type: floating */
@@ -38,7 +39,7 @@
 	width: 43px;
 }
 .psp-sshare-wrapper.box-floating.large, .psp-sshare-wrapper.box-panel-vertical.large {
-	width: 52wpx;
+	width: 74px;
 }
 .psp-sshare-wrapper.box-floating.viewcount, .psp-sshare-wrapper.box-panel-vertical.viewcount {
 	width: 90px;

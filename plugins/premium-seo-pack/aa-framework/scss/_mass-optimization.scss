@@ -35,10 +35,13 @@ td.#{$alias}_info {
 	}
 }
 .#{$alias}-info-column .#{$alias}-progress .#{$alias}-progress-score {
-		top: -5px;
-	}
+	top: -5px;
+}
 
 
+.#{$alias}-multikw-meta-box-container {
+	margin-top: 30px !important;
+}
 ##{$alias}-tab-div-id-page_meta {
 	.form-table td p {
 		margin-top: 0px;
@@ -53,9 +56,13 @@ td.#{$alias}_info {
   		border: none !important;
   		z-index: 9999;
   	}
+
+  
 	.#{$alias}-seo-status-container {
-		margin: px(60) px(10) 0px px(10);
+		margin: px(20) px(10) 0px px(10);
 		padding-bottom: px(10);
+		margin-bottom:20px;
+		padding: 0rem 1.1rem 2rem 1.1rem ;
 		color: $black;
 		font-family: $primary_font;
 		font-size: px(14);
@@ -71,7 +78,7 @@ td.#{$alias}_info {
 	  	}
 
 		.#{$alias}-seo-rule-row {
-		    border-bottom: 1px solid #dadada;
+		    border-bottom: none;
 		    padding: px(10) 0px px(10) 0px;
 		    float: left;
 		    margin: 0px 0px 0px px(30);
@@ -196,7 +203,14 @@ td.#{$alias}_info {
 		margin-right: px(10) !important;
 	}
 	##{$alias}-list-table-posts {
-		margin-top: px(21);
+		/*margin-top: px(21);*/
+
+		.#{$alias}-seo-report-btn {
+			min-height: 2.8rem !important;
+			height: auto !important;
+			width: 150px;
+		}
+
 		color: $black;
 		.form-inline-editpost {
 			.hwt-backdrop {
@@ -326,6 +340,9 @@ td.#{$alias}_info {
 				/*width: 100%;*/
 			}
 		}
+		.token {
+			font-weight: normal;
+		}
 
 		/* Progress Bar */
 		.#{$alias}-progress {
@@ -371,7 +388,7 @@ td.#{$alias}_info {
 		.#{$alias}-progress-score {
 	        width: px(38);
 		    height: px(30);
-		    background: #fff;
+		    background: transparent;
 		    text-align: center;
 		    cursor: default;
 		    position: absolute; 
@@ -416,8 +433,8 @@ td.#{$alias}_info {
 			    margin-left: px(2);
 			    padding: px(7) px(15) px(22) px(14);
 			    text-transform: none;
-			    font-weight: $bold;
-			    font-size: px(11);
+			    font-weight: $medium;
+			    font-size: px(13);
 			}
 			&:nth-child(3) {
 				&>a {

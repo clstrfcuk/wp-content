@@ -8,13 +8,17 @@
  * @author			AA-Team
  */
 
-// load wp load script
-$absolute_path = __FILE__;
-$path_to_file = explode( 'wp-content', $absolute_path );
-$path_to_wp = $path_to_file[0];
+$is_psp_cron = isset($is_psp_cron) && $is_psp_cron ? true : false;
 
-// Access WordPress
-require_once( $path_to_wp . '/wp-load.php' );
+if ( !$is_psp_cron ) {
+	// load wp load script
+	$absolute_path = __FILE__;
+	$path_to_file = explode( 'wp-content', $absolute_path );
+	$path_to_wp = $path_to_file[0];
+
+	// Access WordPress
+	require_once( $path_to_wp . '/wp-load.php' );
+}
 
 // Plugin facebook SDK load
 require_once ( 'app.fb-utils.class.php' );

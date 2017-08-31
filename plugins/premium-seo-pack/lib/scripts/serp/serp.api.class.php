@@ -28,8 +28,11 @@ class pspSERPCheck
 	
 	// cache folder & files
 	private static $__google_url = "https://www.googleapis.com/customsearch/v1?q={q}&cx={cx}&gl={gl}&key={key}&num={num}&start={start}";
-	private static $CACHE_FOLDER = null;
+
+	private static $alias;
+	public static $paths;
 	private static $CACHE_CONFIG_LIFE = 1440; // cache lifetime in minutes /1 day
+	private static $CACHE_FOLDER = null;
 	
 	// debug only, the html file have result of search "test" on google.com
 	private static $__isdebug = false;
@@ -55,7 +58,12 @@ class pspSERPCheck
 		self::$__debug_url = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'test-google.json';
 
 		// cache folder & files
-		self::$CACHE_FOLDER = $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'modules/serp/cache/';
+		//self::$CACHE_FOLDER = $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'modules/serp/cache/';
+		self::$alias = $this->the_plugin->alias . '-serp-';
+		if ( !$this->build_cache_folder() ) {
+			// todo: Error - could not create cache folder!
+			return;
+		}
 		
 		$this->config = array(
 			'key' => $this->settings['developer_key'],
@@ -141,7 +149,8 @@ class pspSERPCheck
         $topType_max = 88; // changed in 2015 - google returns only 8 items per request
 
 		$cachename = $engine . '||' . strip_tags($keyword) . '||' . strip_tags($link);
-		$filename = self::$CACHE_FOLDER . ( md5($cachename) ) . '.json';
+		//$filename = self::$CACHE_FOLDER . ( md5($cachename) ) . '.json';
+		$filename = self::$paths['cache_path'] . ( md5($cachename) ) . '.json';
 
 		// read from cache!
 		if ( $this->needNewCache($filename) !== true ) { // no need for new cache!
@@ -382,7 +391,8 @@ class pspSERPCheck
 		$cache_life = self::$CACHE_CONFIG_LIFE;
 
 		// cache folder!
-		$this->makedir(self::$CACHE_FOLDER);
+		//$this->makedir(self::$CACHE_FOLDER);
+		$this->makedir(self::$paths['cache_path']);
 
 		// cache file exists!
 		if ($this->verifyFileExists($filename)) {
@@ -419,7 +429,8 @@ class pspSERPCheck
 	
 	// delete cache
 	public function deleteCache($cache_file) {
-		$filename = self::$CACHE_FOLDER . $cache_file;
+		//$filename = self::$CACHE_FOLDER . $cache_file;
+		$filename = self::$paths['cache_path'] . $cache_file;
 
 		if ($this->verifyFileExists($filename)) {
 			return unlink($filename);
@@ -481,6 +492,29 @@ class pspSERPCheck
 	{
 		return $this->the_plugin->fakeUserAgent();
 	}
-	
+
+	private function build_cache_folder() {
+		self::$CACHE_FOLDER = substr(self::$alias, 0, strlen(self::$alias) - 1);
+
+		// make sure upload dirs exist and set file path and uri
+		$upload_dir = wp_upload_dir();
+		if ( !$this->verifyFileExists($upload_dir['basedir'], 'folder') ) {
+			wp_mkdir_p( $upload_dir['basedir'] );   
+		}
+
+		self::$paths = array(
+			'cache_path'         => $upload_dir['basedir'] . '/' . self::$CACHE_FOLDER . '/',
+			'cache_url'          => $upload_dir['baseurl'] . '/' . self::$CACHE_FOLDER . '/',
+		);
+
+		if ( !$this->verifyFileExists(self::$paths['cache_path'], 'folder') ) {
+			wp_mkdir_p( self::$paths['cache_path'] );
+		}
+		if ( $this->verifyFileExists(self::$paths['cache_path'], 'folder')
+			&& is_writable(self::$paths['cache_path']) ) {
+			return true;
+		}
+		return false;
+	}
 }
 new pspSERPCheck();

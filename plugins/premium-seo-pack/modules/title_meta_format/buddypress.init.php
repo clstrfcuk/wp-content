@@ -398,20 +398,11 @@ if (class_exists('pspBuddyPressTags') != true) {
 			return $url;
 		}
 		public function bp_get_page_url() {
-			$page_url = 'http';
-			 
-			if ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' )
-				$page_url .= 's';
-				$page_url .= '://';
-			 
-			if ($_SERVER['SERVER_PORT'] != '80')
-				$page_url .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI'];
-			else
-				$page_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-			 
+			$page_url = $this->the_plugin->get_current_page_url(array());
+
 			//find if the url has query variables
 			$query_pos = strpos( $page_url, '?' );
-			 
+
 			//let us exclude that section from url
 			if( $query_pos )
 				$page_url = substr( $page_url, 0, $query_pos );

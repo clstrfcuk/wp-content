@@ -99,7 +99,8 @@ if (class_exists('pspSocialSharingButtons') != true) {
 					break;
 					
 				case 'twitter':
-					$doUrlEncode = false;
+					//$doUrlEncode = false;
+					$title = rawurlencode( $title );
 
 					$user = $this->get_property( 'twitter_id', 'string' );
 					$netUrl = str_replace('{USER}', $user, $netUrl);
@@ -151,6 +152,8 @@ if (class_exists('pspSocialSharingButtons') != true) {
 					$netUrl = str_replace('{COUNT}', 'DiggCompact', $netUrl);
 					
 				case 'delicious':
+					$title = rawurlencode( $title );
+
 					$count = '';
 					if ( $this->btnViewCount != 'yes' ) { $count = 'display: none;'; }
 					$netUrl = str_replace('{COUNT}', $count, $netUrl);
@@ -221,11 +224,11 @@ if (class_exists('pspSocialSharingButtons') != true) {
 			if ( $this->btnSize == 'large' ) $cssExtra[] = 'large';
 
 			$isCount = true;
-			$__tmp = array('tumblr', 'digg', 'xing');
-			if ( in_array($network, $__tmp) ) $isCount = false;
+			//$__tmp = array('twitter', 'delicious', 'digg', 'flattr', 'reddit', 'tumblr', 'xing');
+			//if ( in_array($network, $__tmp) ) $isCount = false;
 			
 			return '<div class="social-btn ' . $network . ( !empty($cssExtra) ? ' ' . implode(' ', $cssExtra) : '' ) . '" data-network="' . $network . '">'
-			. ( $netUrl ) . ( $this->btnViewCount == 'yes' && $isCount ? '<span class="count">0</span>' : '' )
+			. ( $netUrl ) . ( $this->btnViewCount == 'yes' && $isCount ? '<span class="count">-</span>' : '' )
 			. '</div>';
 		}
 		
@@ -350,7 +353,8 @@ if (class_exists('pspSocialSharingButtons') != true) {
 		 */
 		public function delicious_btn() {
 			// $netUrl = '<a href="http://delicious.com/save" data-url="{URL}" data-title="{TITLE}"><span class="icon"></span><span class="psp-sshare-delicious-count" style="{COUNT}">0</span></a>';
-			$netUrl = '<a href="http://delicious.com/save?v=5&noui&jump=close&url={URL}&title={TITLE}" class="icon" target="_blank" data-url="{URL}" data-title="{TITLE}"></a>';
+			//$netUrl = '<a href="http://delicious.com/save?v=5&noui&jump=close&url={URL}&title={TITLE}" class="icon" target="_blank" data-url="{URL}" data-title="{TITLE}"></a>';
+			$netUrl = '<a href="https://del.icio.us/get_bookmarklet_save?url={URL}&title={TITLE}" class="icon" target="_blank" data-url="{URL}" data-title="{TITLE}"></a>';
 			$netUrl = $this->buildButtonUrl( $netUrl, 'delicious' );
 			return $netUrl;
 		}

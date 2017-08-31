@@ -97,7 +97,7 @@
 				left: px(45);
 				sup {
 					position: absolute;
-					top: -#{px(8)};
+					top: -0.2rem;
 					font-size: px(12);
 					font-weight: bold;
 				}
@@ -230,5 +230,19 @@
 		height: px(220);
 		overflow: hidden;
 		background-position: center center;
+	}
+}
+
+.#{$alias} {
+	.panel {
+		.#{$alias}-info {
+			padding: 1.9rem 3rem 1.9rem 3rem !important; 
+			font-size: 13px;
+    		line-height: 24px;
+			a {
+				color:#fff;
+				text-decoration: underline;
+			}
+		}
 	}
 }

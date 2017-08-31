@@ -122,7 +122,7 @@ pspSocialStats = (function ($) {
 			if( $.trim(title.val()) == "" ){
 
 				row_loading(row, 'hide');
-				alert('Your post don\'t have a title.'); return false;
+				swal('Your post doesn\'t have a title.'); return false;
 			}
 
 			verifyPage(itemID, row);

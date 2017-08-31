@@ -1,8 +1,37 @@
 body .#{$alias}-404 {
-	##{$alias}-lightbox-container {
-		.#{$alias}-lightbox-headline {
-			background-color: $info !important;
+
+	.#{$alias}-table {
+		border: 1px solid #f2f2f2;
+		border-radius: 5px;
+		tr {
+			th {
+				background: #fff; 
+
+				.#{$alias}-custom-checkbox {
+					margin: 10px 0 0 13px;
+				}
+			}	
+			td {
+				border-bottom: 1px solid #f2f2f2;
+				color: #4d4d4d;
+				font-size: 14px;
+				font-weight: $medium;
+				padding: 15px 14px;
+				&:nth-child(2) {
+					color: #828282;
+					font-weight: $normal;
+					padding: 15px 14px;
+				}
+			}
+			&:nth-child(even){
+				background: #fafafa;
+			}
 		}
+	}
+
+
+	.psp #psp-lightbox-overlay #psp-lightbox-container h1.psp-lightbox-headline span {
+		left: 40px !important;
 	}
 	##{$alias}-list-table-header {
 		.#{$alias}-box-show-per-pages {
@@ -12,7 +41,7 @@ body .#{$alias}-404 {
 		}
 	}
 	##{$alias}-list-table-posts {
-		margin-top: px(28) !important;
+		/*margin-top: px(28) !important;*/
 		border: none !important;
 		.#{$alias}-box-show-per-pages {
 			select {
@@ -82,9 +111,13 @@ body .#{$alias}-404 {
 		.hide {
 			display: none;
 		}
+		#old_url_list {
+			ul {
+				list-style-type: disc;
+			}
+		}
 	}
 	.#{$alias}-update-link-form {
-		margin-top: px(50);
 		label {
 			font-weight: bold;
 		}
@@ -99,30 +132,17 @@ body .#{$alias}-404 {
 		.#{$alias}-button {
 			margin: px(10) 0 px(8);
 		}
-		#new_url_redirect2 {
-			width: px(300);
-		}
 	}
 }
 
-.psp #psp-lightbox-overlay #psp-lightbox-container .psp-seo-status-container {
-  margin-bottom:20px;
-  padding: 3rem 4.1rem 2rem 4.1rem !important; 
- }
-.psp #psp-lightbox-overlay #psp-lightbox-container h1.psp-lightbox-headline a.psp-close-btn { 
-  width:auto !important;
-  height:auto !important;
-  padding:3px 10px 3px 10px !important;  
-  background-color:transparent;
-  font-size:16px;
-}
+
+ 
 .psp .psp-list-table-left-col {
   height:auto !important;
 }
 .psp .psp-details-text {
   font-size:14px;
-  text-transform:uppercase;
-  margin-left:-23px !important;
+  text-transform:uppercase; 
   display: block;
 }
 

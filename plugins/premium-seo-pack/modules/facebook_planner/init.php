@@ -34,7 +34,7 @@ if (class_exists('pspFacebook_Planner') != true) {
         /*
          * Required __construct() function that initalizes the AA-Team Framework
          */
-        public function __construct()
+        public function __construct( $is_cron=false )
         {
         	global $psp;
 
@@ -43,7 +43,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 			$this->module_folder_path = $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'modules/facebook_planner/';
 			$this->module = $this->the_plugin->cfg['modules']['facebook_planner'];
  
-			if (is_admin()) {
+			if (is_admin() && !$is_cron) {
 	            add_action('admin_menu', array( &$this, 'adminMenu' ));
 
 				//add_action( 'save_post', array( &$this, 'auto_optimize_on_save' ));
@@ -94,20 +94,20 @@ if (class_exists('pspFacebook_Planner') != true) {
 			// add_action('pspwplannerhourlyevent', array( $this, 'facebook_wplanner_do_this_hourly' ));
 
 			//delete bulk rows!
-			add_action('wp_ajax_psp_do_bulk_delete_rows', array( $this, 'delete_bulk_rows' ));
+			//add_action('wp_ajax_psp_do_bulk_delete_rows', array( $this, 'delete_bulk_rows' ));
 			
 			// Plugin cron class loading
 			//require_once ( 'app.cron.class.php' );
 			
 			// ajax handler
-			if ( 'fbv4' == $this->the_plugin->facebook_sdk_version ) {
-			}
-			else {
-				//add_action('wp_ajax_pspFacebookAuthorizeApp', array( &$this, 'facebookAuthorizeApp' ));
-				//if ( $this->the_plugin->capabilities_user_has_module('facebook_planner') ) {
-				//	add_action('init', array( &$this, 'check_auth_callback' ));
-				//}
-			}
+			//if ( 'fbv4' == $this->the_plugin->facebook_sdk_version ) {
+			//}
+			//else {
+			//	//add_action('wp_ajax_pspFacebookAuthorizeApp', array( &$this, 'facebookAuthorizeApp' ));
+			//	//if ( $this->the_plugin->capabilities_user_has_module('facebook_planner') ) {
+			//	//	add_action('init', array( &$this, 'check_auth_callback' ));
+			//	//}
+			//}
 
 			// ajax requests metabox
 			add_action('wp_ajax_psp_metabox_fb', array( $this, 'ajax_requests_metabox') );
@@ -1092,11 +1092,6 @@ if (class_exists('pspFacebook_Planner') != true) {
 			die(json_encode($publishToFBResponse));
 		}
 
-		public function facebook_wplanner_do_this_hourly() {
-			// Plugin cron class loading
-			require_once ( 'app.cron.class.php' );
-		}
-		
 		public function fb_getFeaturedImage() {
 			$wplannerfb_settings = $this->fb_details;
 
@@ -1344,11 +1339,13 @@ if (class_exists('pspFacebook_Planner') != true) {
 												->setup(array(
 													'id' 				=> 'pspFacebookPlanner',
 													'custom_table'		=> "psp_post_planner_cron",
-													'custom_table_force_action' => true,
 													//'deleted_field'		=> true,
+													//'force_publish_field' 	=> false,
 													'show_header' 		=> true,
+													'show_header_buttons' => true,
 													'items_per_page' 	=> '10',
-													'post_statuses' 	=> 'all',
+													//'post_statuses' 	=> 'all',
+													//'search_box'		=> false,
 													'columns'			=> array(
 														'checkbox'	=> array(
 															'th'	=>  'checkbox',
@@ -1369,7 +1366,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 
 														'post_name'		=> array(
 															'th'	=> __('Post Name', 'psp'),
-															'td'	=> '%post_name%',
+															'td'	=> '%post_name%', //'%title_and_actions%',
 															'align' => 'left'
 														),
 
@@ -1454,7 +1451,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 													'mass_actions' 	=> array(
 														'delete_facebook_planner_rows' => array(
 															'value' => __('Delete selected rows', 'psp'),
-															'action' => 'do_bulk_delete_facebook_planner_rows',
+															'action' => 'do_bulk_delete_rows',
 															'color' => 'info'
 														)
 													)
@@ -1475,10 +1472,8 @@ if (class_exists('pspFacebook_Planner') != true) {
 
 <?php
 		}
-		
-		/**
-		 * delete Bulk rows!
-		 */
+
+		/*		
 		public function delete_bulk_rows() {
 			global $wpdb; // this is how you get access to the database
 			
@@ -1505,10 +1500,10 @@ if (class_exists('pspFacebook_Planner') != true) {
 				$query_delete = "DELETE FROM " . ($table_name) . " where 1=1 and id in (" . ($request['id']) . ");";
 				$__stat = $wpdb->query($query_delete);
 				
-				/*$query_update = "UPDATE " . ($table_name) . " set
-						deleted=1
-						where id in (" . ($request['id']) . ");";
-				$__stat = $wpdb->query($query_update);*/
+				//$query_update = "UPDATE " . ($table_name) . " set
+				//		deleted=1
+				//		where id in (" . ($request['id']) . ");";
+				//$__stat = $wpdb->query($query_update);
 				
 				if ($__stat!== false) {
 					//keep page number & items number per page
@@ -1526,6 +1521,7 @@ if (class_exists('pspFacebook_Planner') != true) {
 				'msg'	 => ''
 			)) );
 		}
+		*/
 
 
 /*
@@ -1577,9 +1573,9 @@ if (class_exists('pspFacebook_Planner') != true) {
 		// oauth step 2: receiving the authorization code, the application can exchange the code for an access token and a refresh token
 		public function check_auth_callback()
 		{
-			// check in the server request uri if the keyword psp_seo_oauth exists!
-			//var_dump('<pre>', $_SERVER["REQUEST_URI"] , '</pre>'); echo __FILE__ . ":" . __LINE__;die . PHP_EOL;
-			if( preg_match("/psp_seo_fb_oauth/i", $_SERVER["REQUEST_URI"] ) ){
+			// check in the server request uri if the keyword psp_seo_fb_oauth exists!
+			$request_uri = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : '';
+			if( preg_match("/psp_seo_fb_oauth/i", $request_uri ) ){
 				$code = isset($_GET['state']) ? $_GET['state'] : '';
 				
 				$fb_details = $this->the_plugin->getAllSettings('array', 'facebook_planner');
@@ -1813,6 +1809,30 @@ if (class_exists('pspFacebook_Planner') != true) {
 				self::$_instance = new self;
 			}
 			return self::$_instance;
+		}
+
+
+    	/**
+     	 * Cronjobs methods
+     	 */
+		public function facebook_wplanner_do_this_hourly() {
+			// Plugin cron class loading
+			require_once ( 'app.cron.class.php' );
+		}
+
+		public function facebook_cronjob( $pms, $return='die' ) {
+			$ret = array('status' => 'failed');
+
+			//$current_cron_status = $pms['status']; //'new'; //
+
+			$is_psp_cron = true;
+			// Plugin cron class loading
+			require_once ( 'app.cron.class.php' );
+
+            $ret = array_merge($ret, array(
+                'status'            => 'done',
+            ));
+            return $ret;
 		}
 	}
 }

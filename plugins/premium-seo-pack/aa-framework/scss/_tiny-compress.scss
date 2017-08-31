@@ -1,6 +1,20 @@
 .#{$alias} {
 	.#{$alias}-tiny-compress {
 
+		.#{$alias}-form-row .#{$alias}-message {
+			padding:10px 20px;
+			background-image: none;
+			border-radius: 4px;
+
+			&.#{$alias}-error:before {
+				content: none !important;
+			}
+			a {
+				color: #fff;
+				text-decoration: underline;
+			}
+		}
+
 	##{$alias}-list-table-header {
 		margin-top: px(30);
 	}
@@ -84,7 +98,7 @@
 	}
 
 		##{$alias}-list-table-posts {
-		margin-top: px(21);
+		/*margin-top: px(21);*/
 		color: $black;
 		.form-inline-editpost {
 			##{$alias}-inline-btn-save {

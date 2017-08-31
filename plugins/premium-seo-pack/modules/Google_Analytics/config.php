@@ -41,12 +41,11 @@ global $psp;
 				'jquery-ui-core',
 				'jquery-ui-datepicker',
 				'percentageloader-0.1',
-				'flot-2.0',
-				'flot-tooltip',
-				'flot-stack',
-				'flot-pie',
-				'flot-time',
-				'flot-resize'
+				'chart-bundle',
+				'utils',
+				'analyser',
+				'sweetalert',
+				'google_analytics'
 			),
 			'css' => array(
 				'admin'

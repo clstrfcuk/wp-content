@@ -34,7 +34,7 @@
 	margin: 0 10px 0 0;
 	font-size: 16px;
 	line-height: 36px;
-	font-family: "Open Sans";
+	font-family: $primary_font;
 	font-weight: normal;
 	color: #000;
 	float: left;
@@ -69,7 +69,7 @@
  	border-color: transparent;
  	cursor: pointer;
  	text-transform: uppercase;
-	font-family: "Open Sans";
+	font-family: $primary_font;
 	font-weight: normal;
 	border-radius: 2px;
 }
@@ -87,7 +87,7 @@
 	    position: absolute;
 	    right: 13px;
 	    top: 13px;
-	    font-family: "Open Sans";
+	    font-family: $primary_font;
 	}
 		.aaFrm-message_activate a.aaFrm-dismiss:hover {
 			background: #fff;

@@ -149,7 +149,7 @@ echo json_encode(
 						'size' 		=> 'small',
 						'title' 	=> __('Max number of requests:', 'psp'),
 						'force_width'=> '100',
-						'desc' 		=> __('Max number of requests to Google API (please verify <a href="https://developers.google.com/custom-search/json-api/v1/overview?csw=1" target="_blank">Google price list</a>)', 'psp'),
+						'desc' 		=> __('Max number of requests to Google API (please verify <a href="https://developers.google.com/custom-search/json-api/v1/overview?csw=1#pricing" target="_blank">Google price list</a>)', 'psp'),
 					),
 					
 					'developer_key' 	=> array(

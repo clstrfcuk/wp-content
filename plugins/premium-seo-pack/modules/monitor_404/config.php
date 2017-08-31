@@ -37,7 +37,8 @@
 			'javascript' => array(
 				'admin',
 				'hashchange',
-				'tipsy'
+				'tipsy',
+				'sweetalert'
 			),
 			'css' => array(
 				'admin'

@@ -469,8 +469,8 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 			// load the settings template class
 			require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'settings-template.class.php' );
 			
-			// Initalize the your aaInterfaceTemplates
-			$aaInterfaceTemplates = new aaInterfaceTemplates($this->the_plugin->cfg);
+			// Initalize the your psp_aaInterfaceTemplates
+			$psp_aaInterfaceTemplates = new psp_aaInterfaceTemplates($this->the_plugin->cfg);
 
 			$options = array();
 			switch ($page) {
@@ -521,7 +521,7 @@ Audio: AAC, Low Complexity Profile (LC)', $this->localizationName)
 			}
 
 			// then build the html, and return it as string
-			$html_options = $aaInterfaceTemplates->bildThePage( $this->set_options( $options, $pms ) , $this->the_plugin->alias, array(), false);
+			$html_options = $psp_aaInterfaceTemplates->bildThePage( $this->set_options( $options, $pms ) , $this->the_plugin->alias, array(), false);
 			$html_options = str_replace('<div class="psp-message" id="psp-status-box" style="display:none;"></div>', '', $html_options);
 			return $html_options;
 		}

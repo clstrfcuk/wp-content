@@ -1,6 +1,32 @@
 /* Extra Large devices (extra large desktops, px(1700) and down) */
 @media (max-width: 1700px) {
+
+	.#{$alias}.#{$alias}-mod-link-redirect ##{$alias}-list-table-posts table tbody td,
+	.#{$alias}.#{$alias}-mod-link-builder ##{$alias}-list-table-posts table tbody td,
+	.#{$alias}.#{$alias}-404 ##{$alias}-list-table-posts table tbody td,
+	.#{$alias}.#{$alias}-mod-serp ##{$alias}-list-table-posts table tbody td {
+		&.#{$alias}-phrase,
+		&.#{$alias}-url-orig,
+		&.#{$alias}-url-redirect {
+			/*border: 1px solid blue;*/
+			max-width: 17rem !important;
+			overflow-wrap: break-word !important;
+		}
+	}
+
+	.#{$alias}.#{$alias}-mod-link-redirect ##{$alias}-list-table-posts table tbody td {
+		&.#{$alias}-url-orig a,
+		&.#{$alias}-url-redirect a {
+			font-weight: normal;
+			font-style: italic;
+		    width: 180px;
+		    overflow: hidden;
+		    display: block;
+		}
+	}
+
 	.#{$alias} {
+
 		.#{$alias}-remote-support {
 			.#{$alias}-boxid-login {
 				margin-top: px(30);
@@ -50,7 +76,7 @@
 		.#{$alias}-server-status {
 			.#{$alias}-table {
 				&.#{$alias}-logs {
-					display: none !important;
+					/*display: none !important;*/
 				}
 				tr {
 					td,
@@ -90,6 +116,9 @@
 	height:60px;
 }
 
+ .psp .psp-content .psp-sidebar .logo img {
+       width: 98%;
+    }
 }
 
 /* Large devices (large desktops, px(1200) and down) */
@@ -111,6 +140,9 @@
 	.tipsy {
 		display: none !important;
 	}
+	 .psp .psp-content .psp-sidebar .logo img {
+       width: 98%;
+    }
 	
 	.#{$alias} {
 		.#{$alias}-server-status {

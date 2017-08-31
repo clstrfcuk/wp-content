@@ -94,9 +94,7 @@ if (class_exists('pssBacklinkBuilder') != true) {
 			$this->printBaseInterface();
 		}
 
-		/**
-		 * delete Bulk rows!
-		 */
+		/*
 		public function delete_rows() {
 			global $wpdb; // this is how you get access to the database
 			
@@ -136,7 +134,8 @@ if (class_exists('pssBacklinkBuilder') != true) {
 				'msg'	 => ''
 			)) );
 		}
-		
+		*/
+
 
 		/*
 		* printBaseInterface, method
@@ -230,11 +229,16 @@ if (class_exists('pssBacklinkBuilder') != true) {
 											->setup(array(
 												'id' 				=> 'pspWebDirectories',
 												'custom_table'		=> "psp_web_directories",
-												'custom_table_force_action' => true,
 												//'deleted_field'		=> true,
+												//'force_publish_field' 	=> false,
 												'show_header' 		=> true,
+												'show_header_buttons' => true,
 												'items_per_page' 	=> '10',
-												'post_statuses' 	=> 'all',
+												//'post_statuses' 	=> 'all',
+												'search_box'		=> array(
+													'title' 	=> __('Search directory name', $this->the_plugin->localizationName),
+													'fields'	=> array('directory_name'),
+												),
 												'notices'			=> array(
 													'default_clause'	=> 'empty',
 													'default'			=> '<span class="psp-message psp-warning" style="display: block;">' . __('Click the Import directory rows button to get the directory index urls!', 'psp') . '</span>'
@@ -281,7 +285,6 @@ if (class_exists('pssBacklinkBuilder') != true) {
 													)
 												),
 												'mass_actions' 	=> array(
-													
 													'import' => array(
 														'value' => __('Import directory rows', 'psp'),
 														'action' => 'import_directory_rows',
@@ -289,7 +292,7 @@ if (class_exists('pssBacklinkBuilder') != true) {
 													),
 													'delete_directory' => array(
 														'value' => __('Delete selected rows', 'psp'),
-														'action' => 'do_bulk_delete_directory_rows',
+														'action' => 'do_bulk_delete_rows',
 														'color' => 'danger'
 													)
 												)

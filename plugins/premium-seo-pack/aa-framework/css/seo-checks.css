@@ -24,6 +24,67 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+.psp-checks-alexa:before {
+  content: "\e918";
+}
+.psp-checks-minus3:before {
+  content: "\e916";
+}
+.psp-checks-plus3:before {
+  content: "\e917";
+}
+.psp-checks-arrow-right5:before {
+  content: "\e915";
+}
+.psp-checks-arrows-h:before {
+  content: "\e912";
+}
+.psp-checks-arrow-down:before {
+  content: "\e913";
+}
+.psp-checks-arrow-up:before {
+  content: "\e914";
+}
+.psp-checks-cross2:before {
+  content: "\e908";
+}
+.psp-checks-mobile:before {
+  content: "\e909";
+}
+.psp-checks-display:before {
+  content: "\e90a";
+}
+.psp-checks-checkmark3:before {
+  content: "\e90b";
+}
+.psp-checks-arrow-right4:before {
+  content: "\e90c";
+}
+.psp-checks-arrow-down4:before {
+  content: "\e90d";
+}
+.psp-checks-arrow-left4:before {
+  content: "\e90e";
+}
+.psp-checks-arrow-down5:before {
+  content: "\e90f";
+}
+.psp-checks-arrow-up4:before {
+  content: "\e910";
+}
+.psp-checks-search3:before {
+  content: "\e911";
+}
+.psp-checks-cron:before {
+  content: "\e907";
+}
+.psp-checks-arrow-right:before {
+  content: "\e906";
+}
+.psp-checks-arrow-left:before {
+  content: "\e905";
+}
 .psp-checks-poor:before {
   content: "\e900";
 }

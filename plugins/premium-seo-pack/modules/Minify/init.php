@@ -47,14 +47,14 @@ if (class_exists('pspMinify') != true) {
         */
         public function __construct() {
         	global $psp;
-        	
+
         	$this->the_plugin = $psp;
 			$this->module_folder = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/Minify/';
             $this->module_folder_path = $this->the_plugin->cfg['paths']['plugin_dir_path'] . 'modules/Minify/';
 			$this->module = $this->the_plugin->cfg['modules']['Minify'];
-			
+
 			$this->settings = $this->the_plugin->getAllSettings( 'array', 'Minify' );
-            
+
             self::$alias = $this->the_plugin->alias . '-min-';
             if ( isset($this->settings['cache_expiration']) && !empty($this->settings['cache_expiration']) ) {
                 self::$CACHE_CONFIG_LIFE = (int) $this->settings['cache_expiration'];
@@ -63,11 +63,19 @@ if (class_exists('pspMinify') != true) {
                 // todo: Error - could not create cache folder!
                 return;
             }
-			
+
+            //module is inactive
+            if ( !$this->the_plugin->verify_module_status( 'Minify' ) ) return;
+
+
 			if ( $this->the_plugin->is_admin === true ) { // admin init!
+
+                // module not in capabilities
+                if ( !$this->the_plugin->capabilities_user_has_module('Minify') ) return;
+
 			    $this->initAdmin();
 			}
-			
+
 			if ( $this->the_plugin->is_admin !== true && !$this->is_login_page() ) { // frontend init!
 				$this->initFrontend();
 			}
@@ -77,9 +85,6 @@ if (class_exists('pspMinify') != true) {
         }
         
 		private function initFrontend() {
-			if ( !$this->the_plugin->verify_module_status( 'Minify' ) ) return; //module is inactive
-			if ( !$this->the_plugin->capabilities_user_has_module('Minify') ) return; // module not in capabilities
-			
             $minEnabled = array();
             if ( isset($this->settings['enable_minify']) && !empty($this->settings['enable_minify']) ) {
                 $minEnabled = (array) $this->settings['enable_minify'];
@@ -87,7 +92,7 @@ if (class_exists('pspMinify') != true) {
             if ( empty($minEnabled) ) return;
 
 			$this->build_excluded_assets();
-            
+
             // javascript files
             if ( in_array('js', $minEnabled) ) {
                 //add_filter( 'print_scripts_array', array( $this, 'watch_js' ) );
@@ -195,7 +200,8 @@ if (class_exists('pspMinify') != true) {
         
         private function process_enqueue_files( $scripts, $type, $pos='header' ) {
  
-            $first = array_shift(array_slice($scripts, 0, 1));
+            $first = array_slice($scripts, 0, 1);
+            $first = array_shift($first);
             $currentGroup = isset($first->extra, $first->extra['group']) && $first->extra['group'] == 1 ? 1 : 0;
 
             $taskObj = $this->get_task_obj($type, $pos);
@@ -480,7 +486,9 @@ if (class_exists('pspMinify') != true) {
             //}
 
             foreach( $taskObj->queue as $handle ) {
-                $wp_scripts->registered[ "$handle" ]->deps = array(); // null => generated warning!
+            	if ( isset($wp_scripts->registered[ "$handle" ]) && is_object($wp_scripts->registered[ "$handle" ]) ) {
+                	$wp_scripts->registered[ "$handle" ]->deps = array(); // null => generated warning!
+            	}
             }
         
             // set/register new scripts
@@ -861,6 +869,7 @@ if (class_exists('pspMinify') != true) {
                     && isset($this->settings['remote_password']) && !empty($this->settings['remote_password']) ) {
                     $htaccess = $this->settings['remote_username'] . ':' . $this->settings['remote_password'];
                 }
+
                 if ( $filename == 'http://fonts.googleapis.com/css?family=Open Sans' ) {
                     $filename = 'http://fonts.googleapis.com/css?family=Open+Sans';
                 }
@@ -870,8 +879,9 @@ if (class_exists('pspMinify') != true) {
                     'resp_is_json'                 => true,
                     'resp_add_http_code'           => true,
                 ), true );
+
                 if ( $content['status']=='valid' ) {
-                    $content = $content['msg'];
+                    $content = isset($content['msg']) ? $content['msg'] : '';
                 } else {
                     $content = '';
                 }

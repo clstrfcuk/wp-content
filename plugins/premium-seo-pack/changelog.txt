@@ -1,6 +1,83 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.4.1] - 16.08.2017
+-Fixed conflict with Iris Color Picker
+
+## [2.4] - 07.08.2017
+-Added Alexa Rank Module
+
+## [2.3] - 21.07.2017
+- Updated Google Analytics Module - Added Easy setup - it's no longer mandatory to create your own google console project, you can use AA-Team keys - with a limit of 50000 requests per day
+- Updated Page Speed Module - Added Easy Setup - now the module comes with a working key, with a limit of 25000 requests per day
+- Interface Improvements
+
+## [2.2] - 30.06.2017
+
+- New module "Plugin Cronjobs"
+	- here you can activate or de-activate the cronjobs associated with our plugin
+	- IMPORTANT: IF YOU USE SERP OF FACEBOOK MODULES CRONJOBS, YOU WILL HAVE TO CHANGE FROM USING SOMETHING LIKE 
+			wget -q -O - {YOUR PLUGIN URL}/do-cron.php >/dev/null 2>&1
+				OR
+			wget -q -O - {YOUR PLUGIN URL}/do-cron-fb.php >/dev/null 2>&1
+		TO
+			wget -q -O - {YOUR WEBSITE URL}/wp-cron.php?doing_wp_cron >/dev/null 2>&1
+
+- Social Stats module:
+	- some visual fixes for Social Stats of your pages
+	- removed the following providers from social stats: twitter, delicious, digg, flattr, reddit - we couldn't find a quick method to retrived the number of shares/views/posts
+	- removed "delicious" from social toolbars, added/reactivated to social toolbars: digg, xing, tumblr
+
+- Page speed module: fixed some css & javascript issues & also rules display for: minify css, minify javascript
+
+- Minify module: fixed issue with psp "capabilities" module, which propagate to "page speed" module too (when user was not logged in, the css/javascript files were not recognized as minified when making requests to google pagespeed api)
+
+- Google analytics module: added authorization status message in "settings" section
+
+- Link builder module:
+	- some html/css fixes & visual interface improvements
+	- you can set "title attribute" when you add/update (phrase, url) pair
+	- you can set max replacements per each (phrase, url) pair now to "all", which we'll replace all ocurrences found
+	- you can "verify the number of posts" where the phrase is found for each added phrase
+	- replacement text is no longer mandatory: if you don't set one, then the phrase is used as link text
+	- new option "Link HTML Template" in module settings: you can stylize how the found phrases look on your website pages
+	- new options "Select Post Types", "Exclude posts, pages, post types" in module settings: you can choose which post types you want to use for your phrases or which post ids you want to exclude
+	- new option "Allow future linking": you are allowed to enter phrases which aren't found yet in any of your current posts content at the moment of adding phrase. The phrase will appear when some post content contains it. You can consider this like an automatically future linking
+
+- Link redirect module:
+	- some html/css fixes & visual interface improvements
+	- new settings section: added options "Use Safe Redirect", "Default Redirect Type", "Redirect all 404 pages to"
+	- when you add/update new redirect url, you can choose the redirect type: 301 Permanent Moved Redirect,  302 Found (was: temporary redirect), 303 See Other, 307 Temporary Redirect, 403 Forbidden, 404 Page Not Found
+	- now you can use regexp when you add/update new redirection url
+	- all 404 error pages can be redirected to one redirection url
+	- redirect rows can be published / unpublished ( published = row is taken into consideration by the redirect module; unpublished = row is NOT taken into consideration by the redirect module, but you don't want to delete it because you may want to activate it at a later time)
+	- now you can verify your url redirect (target url) status; also when the verification is made when you add/upate a link
+	- we monitor if you modified your post | term slug and we make an auto redirect to the post | term, new slug/url
+
+- added new feature - collapsable menu	
+
+- dev update/ changed aaInterfaceTemplates class to psp_aaInterfaceTemplates to avoid conflicts with other plugins
+
+- dev update/ moved the "serp" module cache folder to the /wp-uploads/psp-serp/ ( now there are too posible cache folder created by psp in wp-uploads: /wp-uploads/psp-min/ & /wp-uploads/psp-serp/ )
+
+- fixed some css/js issue for the plugin menu
+
+- fixed css/js issues around all plugin modules, also some improvments made for some modules interface
+
+- fixed bug regarding "multi focus keywords" not working on mozilla firefox
+
+- fixed new seo check rule for "post/page title": now optimal number of characters is 5 to 70 characters
+
+- fixed some issues with "tiny compress" module; also option "TinyPNG.com on Upload" works now for both media image upload ways: wp-admin/upload.php | wp-admin/media-new.php
+
+- list posts sections show the "draft" filter: mass optimization, tiny compress, page speed
+
+- Tiny Compress module: some css fixes and adjustments for the posts listing interface
+
+- W3C Validator module: display the right message if your website requires 401 authorization (you're using a .htpasswd file)
+
+
+
 ## [2.1] - 04.06.2017
 - NEW FUNCTIONALITY : you can now enter multiple focus keywords in masss optimization module or in admin edit post details metabox
 - added Seo Score to post type admin edit page, in the publish/update wordpress top right box

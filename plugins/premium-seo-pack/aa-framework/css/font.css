@@ -254,4 +254,6 @@
 .psp-icon-backlink_builder:before {
   content: "\e927";
 }
-
+.psp-icon-cronjobs:before {
+  content: "\e901";
+}

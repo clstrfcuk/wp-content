@@ -135,12 +135,17 @@ if (class_exists('pspPageSpeedInsights') != true) {
 		<div class="<?php echo $this->the_plugin->alias; ?>">
 			
 			<div class="<?php echo $this->the_plugin->alias; ?>-content"> 
-			
+				
+				<!-- Page detail -->
+				<div id="psp-pagespeed-detail">
+					<div id="psp-pagespeed-ajaxresponse"></div>
+				</div>
+
 				<?php
 				// show the top menu
 				pspAdminMenu::getInstance()->make_active('monitoring|google_pagespeed')->show_menu();
 				?>
-				
+
 				<!-- Content -->
 				<section class="<?php echo $this->the_plugin->alias; ?>-main">
 					
@@ -155,7 +160,7 @@ if (class_exists('pspPageSpeedInsights') != true) {
 					<div class="panel panel-default <?php echo $this->the_plugin->alias; ?>-panel">
 			
 						<div class="panel-heading psp-panel-heading">
-							<h2><?php _e('Analyze your website with PageSpeed', 'psp');?></h2>
+							<h2><?php _e('Analyze your website with Pagespeed Insights', 'psp');?></h2>
 						</div>
 						
 						<div class="panel-body <?php echo $this->the_plugin->alias; ?>-panel-body">
@@ -165,11 +170,6 @@ if (class_exists('pspPageSpeedInsights') != true) {
 			
 								<!-- Main Content Wrapper -->
 								<div id="psp-content-wrap" class="<?php echo $this->the_plugin->alias; ?>-pagespeed clearfix">
-									
-									<!-- Page detail -->
-									<div id="psp-pagespeed-detail">
-										<div id="psp-pagespeed-ajaxresponse"></div>
-									</div>
 									
 									<?php 
 									// find if user makes the setup
@@ -186,6 +186,7 @@ if (class_exists('pspPageSpeedInsights') != true) {
 										$attrs = array(
 											'id' 				=> 'pspPageSpeed',
 											'show_header' 		=> true,
+											'show_header_buttons' => true,
 											'items_per_page' 	=> '10',
 											'post_statuses' 	=> 'all',
 											'columns'			=> array(
@@ -251,7 +252,7 @@ if (class_exists('pspPageSpeedInsights') != true) {
 													'th'	=> __('Action', 'psp'),
 													'td'	=> '%button%',
 													'option' => array(
-														'value' => __('Test PageSpeed', 'psp'),
+														'value' => __('Analyze', 'psp'),
 														'action' => 'do_item_pagespeed_test',
 														'color' => 'danger'
 													),
@@ -260,13 +261,13 @@ if (class_exists('pspPageSpeedInsights') != true) {
 											),
 											'mass_actions' 	=> array(
 													'speed_test_mass' => array(
-														'value' => __('Mass PageSpeed test', 'psp'),
+														'value' => __('Mass Analyze', 'psp'),
 														'action' => 'do_speed_test_mass',
 														'color' => 'info'
 													)
 												)
 										);
-										
+
 										// if report type not both 
 										if( isset($settings['report_type']) && $settings['report_type'] != "both" ){
 											$removeWhat = 'desktop';
@@ -275,7 +276,7 @@ if (class_exists('pspPageSpeedInsights') != true) {
 											}
 											unset($attrs['columns']['page_speed_' . ( $removeWhat ) . '_score']);
 										}
-											
+
 										pspAjaxListTable::getInstance( $this->the_plugin )
 											->setup( $attrs )
 											->print_html();

@@ -47,11 +47,158 @@
 	.#{$alias}-table-ajax-list select {
 		position: relative;
 	}
-	
-	##{$alias}-list-table-header {
-		margin: -#{px(10)} 0 0 0;
+
+	/* start psp-list-table-footer */
+	##{$alias}-list-table-footer {
+		border: 0px solid green;
 		float: left;
 		width: 100%;
+
+		.#{$alias}-list-table-left-col {
+			width: auto !important;
+			margin: 0rem !important;
+			margin-right: 1.5rem !important;
+			padding-top: 0rem !important;
+		}
+		.#{$alias}-list-table-right-col {
+			width: auto !important;
+		}
+		.#{$alias}-box-show-per-pages {
+			margin: 0rem !important;
+		}
+		.#{$alias}-list-table-pagination.tablenav {
+			margin: 0rem !important;
+		}
+	}
+	/* end psp-list-table-footer */
+	
+	/* start psp-list-table-header */
+	##{$alias}-list-table-header {
+		border: 0px solid blue;
+		margin: -#{px(10)} 0 0 0;
+		float: left;
+		padding: px(3);
+		width: 100%;
+
+		.#{$alias}-list-table-header-row-first,
+		.#{$alias}-list-table-header-row-second {
+			display: table;
+			height: auto;
+			width: 100%;
+			float: left;
+		}
+
+		 
+		.#{$alias}-list-table-header-row-second {
+			border: 0px solid yellow;
+			display: table !important;
+			margin-top: px(17) !important;
+
+		
+			.#{$alias}-list-table-left-col {
+				display: table-cell ;
+				width: auto !important;
+				margin: 0rem !important;
+				margin-right: 1.5rem !important;
+				padding-top: 0rem !important;
+			}
+			.#{$alias}-list-table-right-col {
+				display: table-cell ;
+				width: auto !important;
+				float: none !important;
+			}
+			.#{$alias}-box-show-per-pages {
+				margin: 0rem !important;
+			}
+			.#{$alias}-list-table-pagination.tablenav {
+				margin: 0rem !important;
+				padding-right: px(20);
+			}
+		}
+
+		
+		.#{$alias}-list-table-header-row-first {
+			border: 0px solid red;
+
+			.#{$alias}-list-table-left-col,
+			.#{$alias}-list-table-right-col {
+				display: table-cell ;
+				height: 100% !important;
+				width: auto;
+			}
+
+			.#{$alias}-list-table-left-col.psp_link_redirect{
+				display: block;
+				width: 100%;
+			}
+
+			.#{$alias}-list-table-left-col {
+				margin-right: 2rem !important;
+				margin-bottom: 0rem !important;
+			}
+			.#{$alias}-list-table-right-col {
+				 
+			}
+
+			.#{$alias}-list-table-search-box.#{$alias}-search-standard-design {
+				position: absolute;
+				top: 24px;
+    			left: 86%;
+
+				clear: left;
+				width: auto !important;
+				min-width: 18rem !important;
+				##{$alias}-search-btn {
+					background: none;
+					border: none;
+					padding-top: px(6);
+					vertical-align: top;
+
+					span {
+						color: #ffa800;
+						font-size: px(22);
+					}
+					&:hover span {
+						color: darken(#ffa800, 25%);
+					}
+				}
+				##{$alias}-search-text {
+					border: none;
+					border-bottom: 1px solid $border-gray;
+					-webkit-box-shadow: none;
+					box-shadow: none;
+					color: #c4c4c4;
+					font-size: px(14);
+					font-weight: $medium;
+					height: px(33);
+					padding: 0;
+					width: px(148);
+					& {
+						background-image: linear-gradient(#ffa800, #ffa800), linear-gradient(#D2D2D2, #D2D2D2);
+						background-size: 0 2px, 100% 1px;
+						background-repeat: no-repeat;
+						background-position: center bottom, center calc(100% - 1px);
+						background-color: transparent;
+						border: 0;
+						border-radius: 0;
+						box-shadow: none;
+						float: none;
+						font-weight: 400;
+						transition: background 0s ease-out;
+					}
+					&:focus {
+						background-image: linear-gradient(#ffa800, #ffa800), linear-gradient(#D2D2D2, #D2D2D2);
+						background-size: 100% 2px, 100% 1px;
+						box-shadow: none;
+						outline: none;
+						transition-duration: 0.3s;
+					}
+				}
+				input {
+					margin-top: 0 !important;
+				}
+			}
+		}
 
 		.#{$alias}-filter-post_type,
 		.#{$alias}-filter-post_parent {
@@ -78,7 +225,11 @@
 		.#{$alias}-filter-general_field.subsubsub {
 			max-width: inherit;
 		}
+		.#{$alias}-filter-general_field.subsubsub:nth-child(2n) {
+			background-color: #F2F1EF;
+		}
 	}
+	/* end psp-list-table-header */
 	
 		.#{$alias}-list-table-left-col {
 			float: left;
@@ -86,6 +237,7 @@
 			margin-right: 2%;
 		}
 
+		/*
 		.#{$alias}-list-table-left-col.amz_queue,
 		.#{$alias}-list-table-left-col.amz_search {
 			width: 64%;
@@ -121,6 +273,7 @@
 			width: 34%;
 			height: px(47);
 		}
+		*/
 		
 		.#{$alias}-list-table-right-col {
 			float: right;
@@ -131,36 +284,56 @@
 			width: px(300);
 			
 			input[type=text] {
-				float: left;
 				width: px(195);
 				margin: px(4) 0 0 0;
 			}
 			input[type=button] {
-				float: left;
 				margin: px(7) 0 0 px(5);
 			}
+			.#{$alias}-search-btn {
+				background: none;
+				border: none;
+				padding-top: px(6);
+				vertical-align: top;
+				span {
+					color: #ffa800;
+					font-size: px(22);
+				}
+				&:hover span {
+					color: darken(#ffa800, 25%);
+				}
+			}
 		}
-	
+
+		/* start psp-list-table-posts */
 		##{$alias}-list-table-posts {
-			overflow: hidden;
 			float: left;
-			width: 100%;
+			margin-bottom: px(14);
+			margin-top: px(21) !important;
+			overflow: hidden;
 			padding-bottom: px(5);
-			
+			width: 100%;
+
 			table {
 				border-collapse: collapse;
 			    border-spacing: 0;
 			    margin: 0 0 px(6) 0;
-		   	
+
 		   		tr th {
-		   			padding: px(8) px(10);
+					padding: px(8) px(10);
+		   		}
+		   		tr th:nth-child(4),
+		   		tr th:nth-child(5) {
+		   			padding-left: 10px;
 		   		}
 		   		td {
-		   			text-align: center;
-		   			padding: px(6) px(10);
-		   			vertical-align: middle;
+					padding: px(23) px(11) px(25) px(22);
 		   			position: relative;
-		   		
+		   			text-align: center;
+		   			vertical-align: middle;
+		   		td:first-child {
+		   			padding: px(6) px(22);
+		   		}
 					a {
 						font-weight: bold;
 						text-decoration: none;
@@ -181,10 +354,10 @@
 				}
 				.#{$alias}-row-loading {
 					background-color: #484848;
-					background-color: rgba(207, 222, 247, 0.8);
+					background-color: rgba(0, 0, 0, 0.1);
 					position: absolute;
 					top: 0;
-					z-index: 1000;
+					z-index: 1000000000;
 					left: 0;
 					width: 100%;
 					height: 100%;
@@ -212,4 +385,5 @@
 				}
 			}
 		}
+		/* end psp-list-table-posts */
 }

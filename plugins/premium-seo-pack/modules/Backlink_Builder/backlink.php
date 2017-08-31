@@ -6,7 +6,7 @@ $website_profile = get_option( 'psp_website_profile', true );
 $website_profile = maybe_unserialize( $website_profile );
  
 if($website_profile == false || count($website_profile) == 0 ){
-	die('alert("Create your website profile first");');
+	die('swal("Create your website profile first");');
 }
 header("Content-type: application/x-javascript");?>
 

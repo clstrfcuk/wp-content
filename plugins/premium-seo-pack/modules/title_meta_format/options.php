@@ -386,6 +386,11 @@ function psp_TwitterCardsImageFind( $istab = '', $is_subtab='', $what='' ) {
 	if ( isset($options["$uniqueKey"]) ) {
 		$val = $options["$uniqueKey"];
 	}
+
+	$val_cf = '';
+	if ( isset($options["$uniqueKey_cf"]) ) {
+		$val_cf = $options["$uniqueKey_cf"];
+	}
 ?>
 <div class="panel-body psp-panel-body psp-form-row<?php echo ($istab!='' ? ' '.$istab : ''); ?><?php echo ($is_subtab!='' ? ' '.$is_subtab : ''); ?>">
 	<label class="psp-form-label"><?php _e('How to choose Image:', 'psp'); ?></label>
@@ -407,7 +412,7 @@ function psp_TwitterCardsImageFind( $istab = '', $is_subtab='', $what='' ) {
 					'customfield'			=> __('Choose a custom field for image', 'psp')
 				);
 			}
-			foreach ($image_find as $k => $v){
+			foreach ($image_find as $k => $v) {
 				echo 	'<option value="' . ( $k ) . '" ' . ( $val == $k ? 'selected="true"' : '' ) . '>' . ( $v ) . '</option>';
 			}
 			?>
@@ -415,7 +420,7 @@ function psp_TwitterCardsImageFind( $istab = '', $is_subtab='', $what='' ) {
 	</div>
 	<div class="psp-form-item small" style="margin-top:5px;">
 		<span class=""><?php echo __('Choose custom field:', 'psp'); ?></span>&nbsp;
-		<input id="<?php echo $uniqueKey_cf; ?>" type="text" value="" name="<?php echo $uniqueKey_cf; ?>">
+		<input id="<?php echo $uniqueKey_cf; ?>" type="text" value="<?php echo $val_cf; ?>" name="<?php echo $uniqueKey_cf; ?>">
 	</div>
 </div>
 	<script>

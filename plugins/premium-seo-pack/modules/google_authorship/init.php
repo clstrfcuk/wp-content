@@ -475,14 +475,14 @@ if (class_exists('pspGoogleAuthorship') != true) {
 			// load the settings template class
 			require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'settings-template.class.php' );
 			
-			// Initalize the your aaInterfaceTemplates
-			$aaInterfaceTemplates = new aaInterfaceTemplates($this->the_plugin->cfg);
+			// Initalize the your psp_aaInterfaceTemplates
+			$psp_aaInterfaceTemplates = new psp_aaInterfaceTemplates($this->the_plugin->cfg);
 			
 			// retrieve the existing value(s) for this meta field. This returns an array
 			$user_meta = get_user_meta( $user_id, 'psp_google_authorship', true );
 			 
 			// then build the html, and return it as string
-			$html_information = $aaInterfaceTemplates->bildThePage( $this->information_options( $user_meta ) , $this->the_plugin->alias, array(), false);  
+			$html_information = $psp_aaInterfaceTemplates->bildThePage( $this->information_options( $user_meta ) , $this->the_plugin->alias, array(), false);  
 ?>
 			<!-- <link rel='stylesheet' href='<?php echo $this->module_folder;?>app.css' type='text/css' media='screen' /> -->
 			<script type="text/javascript" src="<?php echo $this->module_folder;?>app.class.js" ></script>

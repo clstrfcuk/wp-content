@@ -24,7 +24,7 @@
 			'module_init' => 'init.php',
       	  	'help' => array(
 				'type' => 'remote',
-				'url' => 'http://docs.aa-team.com/premium-seo-pack/documentation/sitemap/'
+				'url' => 'http://docs.aa-team.com/woocommerce-amazon-affiliates/documentation/cronjobs/'
 			),
 			'load_in' => array(
 				'backend' => array(

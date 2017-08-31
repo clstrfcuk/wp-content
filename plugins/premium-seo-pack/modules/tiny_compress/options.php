@@ -59,6 +59,7 @@ function __pspTC_get_image_sizes() {
         $_sizes["$key"] = $size['width'] && $size['height'] ?
             sprintf( '%s ( %d x %d )', $key, $size['width'], $size['height'] ) : sprintf( '%s', $key );
     }
+
     return $_sizes;
 }
 
@@ -74,7 +75,7 @@ function __pspTC_connection_status() {
     
     $connection_status = $pspTinyCompress->get_connection_status();
     $compress_limits = $pspTinyCompress->get_compress_limits();
-    
+
     ob_start();
     ?>
         <div class="psp-form-row">
@@ -144,11 +145,12 @@ echo json_encode(
 					),
 					'do_upload' => array(
 						'type' 		=> 'select',
-						'std' 		=> 'yes',
+						'std' 		=> 'no',
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('TinyPNG.com on Upload: ', 'psp'),
-						'desc' 		=> __('Choose whether to apply the TinyPNG compression automaticcally on upload, or not.', 'psp'),
+						'desc' 		=> __('Choose whether to apply the TinyPNG compression automatically on upload ( wp-admin/upload.php | wp-admin/media-new.php ).<span><br/>
+                            <span style="color: red;">ATTENTION: We recommand you to activate this only temporary when you upload a bulk of images, and deactivate it after, otherwise you can consume your monthly limit very fast without even notice it.</span>', 'psp'),
 						'options'	=> array(
 							'yes' 		=> __('YES', 'psp'),
 							'no' 		=> __('NO', 'psp')
@@ -156,7 +158,7 @@ echo json_encode(
 					),
 					'same_domain_url' => array(
 						'type' 		=> 'select',
-						'std' 		=> 'no',
+						'std' 		=> 'yes',
 						'size' 		=> 'large',
 						'force_width'=> '120',
 						'title' 	=> __('Image same domain: ', 'psp'),
@@ -177,7 +179,7 @@ echo json_encode(
                     ),
                     'image_sizes'  => array(
                         'type'      => 'multiselect_left2right',
-                        'std'       => array('__original'),
+                        'std'       => array('__original' => '__original'),
                         'size'      => 'large',
                         'rows_visible'  => 8,
                         'force_width'=> '300',

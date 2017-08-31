@@ -37,8 +37,9 @@ echo json_encode(
                         'type'      => 'message',
                         'status'    => 'info',
                         'html'      => __('
+                        	<span class="psp-message-icon psp-icon-miscellaneous"></span>
                             <h3 style="margin: 0px 0px 5px 0px;">Tools</h3>
-                            <p>Some useful tools</p>
+                            <p>Useful Validation Tools</p>
                         ', 'psp')
                     ),
 
@@ -48,7 +49,7 @@ echo json_encode(
 							'<div class="panel-body psp-panel-body psp-form-row __tab1">
 								<label class="psp-form-label" for="site-items">' . __('Validators', 'psp') . '</label>
 								<div class="psp-form-item large">
-									<a id="site-items" target="_blank" href="http://www.google.com/webmasters/tools/richsnippets" style="position: relative;bottom: -6px;">Google Rich Snippets Testing Tool</a>
+								 	<a id="site-items" target="_blank" href="http://www.google.com/webmasters/tools/richsnippets" style="position: relative;bottom: -6px;">Google Rich Snippets Testing Tool</a>
 								</div>
 								<div class="psp-form-item large">
 									<a id="site-items" target="_blank" href="http://linter.structured-data.org/" style="position: relative;bottom: -6px;">Structured Data Linter</a>

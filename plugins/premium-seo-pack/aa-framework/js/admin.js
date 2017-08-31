@@ -11,11 +11,18 @@ pspFreamwork = (function ($) {
 	var t 			= null,
 		ajaxBox 	= null,
 		loading 	= null,
-		section		= 'dashboard',
-		subsection	= '',
-		sub_istab   = '',
 		in_loading_section = null,
-		topMenu 	= null;
+
+		maincontainer 	= null,
+		mainloading 	= null,
+		lightbox 		= null,
+
+		section		= 'dashboard', // menu main section
+		subsection	= '', // menu sub-section
+		subistab   	= '', // menu section tab (not sub-section)
+		subsectgo	= '', // menu sub-section as for css class
+		topMenu		= null,
+		debug_level = 0;
 
 	var upload_popup_parent = null;
 
@@ -26,30 +33,95 @@ pspFreamwork = (function ($) {
 		$(document).ready(function(){
  
 			t 			= $("div.psp" ),
-			ajaxBox 	= t.find('#psp-ajax-response'),
+			ajaxBox 	= t.find('#psp-ajax-response');
 			topMenu 	= t.find('nav.psp-nav');
+
+			// menu already setted
+			if ( topMenu.find('>ul').length ) {
+				var currentnav = topMenu.find('>ul').data('currentnav') || '';
+
+				currentnav = $.trim(currentnav);
+				if ( '' != currentnav ) {
+					menuSetSection( currentnav );
+				}
+			}
  
 	        // plugin depedencies if default!
 	        if ( $("li#psp-nav-depedencies").length > 0 ) {
 	        	section = 'depedencies';
 	        }
+
+			maincontainer = $("div.psp-content");
+			mainloading = $("#psp-main-loading");
+			lightbox = $("#psp-lightbox-overlay");
 			
 			triggers();
 			fixLayoutHeight();
 		});
 	})();
-	
-	function responsiveMenu()
-	{
-		/*$( document ).ready(function() {*/
-			$('.psp-responsive-menu').toggle(function() {
-				$('.psp-nav').show();
-			}, function() {
-				$('.psp-nav').hide();
-			});
-		/*});*/
-	};
-	
+
+
+
+    
+	function setCookie(cname, cvalue, exdays) {
+	    var d = new Date();
+	    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	    var expires = "expires="+ d.toUTCString();
+	    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+	function getCookie(cname) {
+	    var name = cname + "=";
+	    var decodedCookie = decodeURIComponent(document.cookie);
+	    var ca = decodedCookie.split(';');
+	    for(var i = 0; i <ca.length; i++) {
+	        var c = ca[i];
+	        while (c.charAt(0) == ' ') {
+	            c = c.substring(1);
+	        }
+	        if (c.indexOf(name) == 0) {
+	            return c.substring(name.length, c.length);
+	        }
+	    }
+	    return "";
+	}
+
+	$(document).on('click', '.psp-section-collapse_menu', function(e){
+		e.preventDefault();
+
+		var psp_sidebar = $('.psp-sidebar');
+		
+		psp_sidebar.toggleClass('psp-sidebar-collapsed');
+
+		var that = $(this),
+			sidebar_collapsed = $('.psp-sidebar-collapsed');
+
+		if( psp_sidebar.hasClass('psp-sidebar-collapsed') ) {
+
+			if( getCookie('psp_sidebar_collapsed_active') != 'true' ) {
+				setCookie('psp_sidebar_collapsed_active', 'true', 30);
+				/*tooltip menu collapsed*/
+				$('a[data-toggle=tipsy]').attr('rel', 'tipsy_menu');
+				$('a[rel=tipsy_menu]').tipsy({fade: false, gravity: 'w', className: 'tipsy_menu'});
+			}
+
+			psp_sidebar.find('.logo').hide();
+			psp_sidebar.find('#psp-collapsed-logo').show();
+			that.find('i').addClass('psp-checks-arrow-right').removeClass('psp-checks-arrow-left');
+		}else{
+			if( getCookie('psp_sidebar_collapsed_active') == 'true' ) {
+				setCookie('psp_sidebar_collapsed_active', 'true', -30);
+				$('a[data-toggle=tipsy]').removeAttr('rel');
+			}
+			psp_sidebar.find('#psp-collapsed-logo').hide();
+			psp_sidebar.find('.logo').show();
+			that.find('i').addClass('psp-checks-arrow-left').removeClass('psp-checks-arrow-right');
+		}
+
+		psp_sidebar.find('li span.psp-sidebar-menu-item-title').toggle();
+	});
+
+	//:: LOADERS AJAX
 	function ajax_loading( label ) 
 	{
 		// append loading
@@ -70,72 +142,171 @@ pspFreamwork = (function ($) {
 
 	function take_over_ajax_loader_close()
 	{
+		$('.psp-sidebar').css('display','table-cell');
 		t.find(".psp-loader-holder-take-over").remove();
 	}
-	
+
+
+	//:: PLUGIN MENU
+	function menuSetSection( ss ) {
+		if ( typeof ss !== 'undefined' ) {
+			if ( $.trim(ss) != '' ) {
+				section = $.trim(ss);
+			}
+		}
+
+		var __tmp = section.indexOf('#');
+		if ( __tmp == -1 ) {
+		    subsection = '';
+		} else { // found subsection block!
+			subsection = section.substr( __tmp+1 );
+			section = section.slice( 0, __tmp );
+		}
+
+		if ( subsection != '' ) {
+			subistab = '';
+
+			var __re = /tab:([0-9a-zA-Z_-]*)/gi; //new RegExp("tab:([0-9a-zA-Z_-]*)", "gi");
+			if ( __re.test(subsection) ) {
+				var __match = subsection.match(__re); //__re.exec(subsection); //null;
+				subistab = typeof (__match[0]) != 'undefined' ? __match[0].replace('tab:', '') : '';
+			}
+		}
+
+		subsectgo = '';
+		if ( subsection != '' ) {
+			subsectgo = '--' + subsection;
+			if ( subistab != '' ) {
+				subsectgo = '--' + subistab;
+				switch (section) {
+				}
+			}
+		}
+
+		var ret = {
+			'section'		: section,
+			'subsection'	: subsection,
+			'subistab'		: subistab,
+			'subsectgo'		: subsectgo
+		}
+		//console.log( 'menuSetSection//', ret  );
+		//console.log( 'global//menuSetSection//', section, subsection, subistab, subsectgo );
+		return ret;
+	}
+
+	function menuTriggers()
+	{
+		if( getCookie('psp_sidebar_collapsed_active') == 'true' ) {
+			$('.psp-section-collapse_menu').click();
+		}
+
+		// responsive???
+		$('.psp-responsive-menu').toggle(function() {
+			$('nav.psp-nav').show();
+		}, function() {
+			$('nav.psp-nav').hide();
+		});
+
+		// click on menu links
+		topMenu.on("click", "a", function(e){
+			var that = $(this),
+				href = that.attr("href");
+
+			var current_open = topMenu.find("li.active");
+
+			if( !that.parent('li').eq(0).hasClass('active') ) {
+				$('.psp-sidebar').hasClass('psp-sidebar-collapsed') ? that.parent("li").eq(0).find(".psp-sub-menu").show() : that.parent("li").eq(0).find(".psp-sub-menu").slideDown(250);
+				that.parent("li").eq(0).addClass("active");
+			}
+
+			// is top menu item?
+			if ( href == "javascript: void(0)" ) {
+				// close previous open menu
+				$('.psp-sidebar').hasClass('psp-sidebar-collapsed') ? current_open.find(".psp-sub-menu").hide() : current_open.find(".psp-sub-menu").slideUp(350);
+				current_open.removeClass("active");
+			}
+		});
+
+		/*topMenu.find('li').hover(function(){
+			if( !$(this).hasClass('psp-section-collapse_menu') ) {
+				$(this).addClass('hover_active');
+				$(this).find('a').click();
+			}
+		}, function(){
+			if( !$(this).hasClass('psp-section-collapse_menu') ) {
+				if( !$(this).hasClass('hover_active') ) {
+					$(this).find('a').click();
+				}
+			}
+		});
+
+		topMenu.on('mouseout', 'li ul', function() {
+			$(this).parent('li').eq(0).removeClass('hover_active');//find('a').click();
+		});*/
+	}
+
+	function menuActiveSection( callback ) {
+		var callback = callback || false;
+
+		if( !$('.psp-sidebar').hasClass('psp-sidebar-collapsed') ) {
+			// find new current menu to become open
+			var new_open = topMenu.find( '.psp-section-' + section + subsectgo );
+			var in_submenu = new_open.parent('.psp-sub-menu');
+			var in_subsubmenu = new_open.parent('.psp-sub-sub-menu');
+
+			// check if is into a sub submenu
+			if ( in_subsubmenu.size() > 0 ) {
+				in_submenu = in_subsubmenu.parent('li').parent('.psp-sub-menu');
+			}
+			//console.log( 'menuActiveSection//', [new_open, in_submenu, in_subsubmenu] );
+
+			// close previous open menu
+			var current_open = topMenu.find("> li.active");
+			if ( current_open != in_submenu.parent('li') ) {
+				current_open.find(".psp-sub-menu").slideUp(250);
+				current_open.removeClass("active").find('.active').removeClass("active");
+			}
+
+			// open current menu
+			in_submenu.find('.active').removeClass('active');
+			new_open.addClass('active');
+
+			// check if is into a submenu
+			if ( in_submenu.size() > 0 ) {
+				if ( ! in_submenu.parent('li').hasClass('active') ) {
+					in_submenu.slideDown(100);
+				}
+				in_submenu.parent('li').addClass('active');
+			}
+
+			// is dashboard?
+			if ( section == 'dashboard' ) {
+				topMenu.find(".psp-sub-menu").slideUp(250);
+				topMenu.find('.active').removeClass('active');
+				topMenu.find('li#psp-nav-' + section).addClass('active');
+			}
+		}
+
+		// callback - subsection!
+		if ( $.isArray(callback) && $.isFunction( callback[0] ) ) {
+			if ( callback.length == 1 ) {
+				callback[0]();
+			}
+			else if ( callback.length == 2 ) {
+				callback[0]( callback[1] );
+			}
+		}
+	}
+
 	function makeRequest( callback )
 	{
-		function mark_section() {
-				var _subsection = '';
-				if ( subsection != '' ) {
-					_subsection = '--' + subsection;
-					if ( sub_istab != '' ) {
-						_subsection = '--' + sub_istab;
-						switch (section) {
-							case 'title_meta_format':
-								_subsection = '--__tab1';
-								break;
-						}
-					}
-				}
-				console.log( 'section: '+section, 'subsection: '+_subsection, 'sub_istab: '+sub_istab );
-
-				// find new open
-                //var new_open = topMenu.find('li#psp-sub-nav-' + section + (subsection != '' && sub_istab == '' ? '--' + subsection : ''));
-                //var new_open = topMenu.find( '.psp-section-' + section + (subsection != '' ? (sub_istab != '' ? '--' + sub_istab : '--' + subsection) : '') );
-				var new_open = topMenu.find( '.psp-section-' + section + _subsection );
-                var in_submenu = new_open.parent('.psp-sub-menu');
-
-                // close current open menu
-                var current_open = topMenu.find(">li.active");
-                if( current_open != in_submenu.parent('li') ){
-					current_open.find(".psp-sub-menu").slideUp(250);
-					current_open.removeClass("active");
-				}
-				
-				// open current menu
-				in_submenu.find('.active').removeClass('active');
-				new_open.addClass('active');
-				
-				// check if is into a submenu
-				if( in_submenu.size() > 0 ){
-					if( !in_submenu.parent('li').hasClass('active') ){
-						in_submenu.slideDown(100);
-					}
-					in_submenu.parent('li').addClass('active');
-				}
-				
-				if( section == 'dashboard' ){
-					topMenu.find(".psp-sub-menu").slideUp(250);
-					topMenu.find('.active').removeClass('active');
-					
-					topMenu.find('li#psp-nav-' + section).addClass('active');
-				}
-				
-				// callback - subsection!
-				if ( $.isArray(callback) && $.isFunction( callback[0] ) ) {
-					if ( callback.length == 1 ) {
-						callback[0]();
-					}
-					else if ( callback.length == 2 ) {
-						callback[0]( callback[1] );
-					}
-				}
-		};
- 
 		// fix for duble loading of js function
 		if( in_loading_section == section ){
-			mark_section()
+			$('.psp-sidebar').css('display','table-cell');
+
+			//if( !$('.psp-sidebar').hasClass('psp-sidebar-collapsed') ) {
+				menuActiveSection( callback );
+			//}
 			return false;
 		}
 		in_loading_section = section;
@@ -157,16 +328,17 @@ pspFreamwork = (function ($) {
 				ajaxBox.html(response.html);
 				
 				makeTabs();
-				makeActiveMenu();
-				
+				if( !$('.psp-sidebar').hasClass('psp-sidebar-collapsed') ) {
+					menuActiveSection( callback );
+				}
+
 				if( typeof pspDashboard != "undefined" ){
 					pspDashboard.init();
 				}
-				
-				mark_section();
 
 				multiselect_left2right();
 				init_custom_checkbox();
+				$('.psp-sidebar').css('display','table-cell');
 			}
 		}, 'json');
 	}
@@ -448,7 +620,7 @@ pspFreamwork = (function ($) {
 			'email'	: $('#yourEmail').val()
 		};
 		if(requestData.ipc == ""){
-			alert('Please type your Item Purchase Code!');
+			swal('Please type your Item Purchase Code!');
 			return false;
 		}
 		$that.replaceWith('Validating your IPC <em>( ' + ( requestData.ipc) + ' )</em>  and activating  Please be patient! (this action can take about <strong>10 seconds</strong>)');
@@ -467,7 +639,7 @@ pspFreamwork = (function ($) {
 				window.location.reload();
 			}
 			else{
-				alert(response.msg);
+				swal(response.msg);
 				return false;
 			}
 		}, 'json');
@@ -514,14 +686,6 @@ pspFreamwork = (function ($) {
 			} );
 		})
 
-		.on('click', 'a.psp-jump-page', function(e){
-			e.preventDefault();
-
-			make_request( 'paged', {
-				'paged' : $(this).attr('href').replace('#paged=', '')
-			} );
-		})
-		
 		.on('change', 'select[name=psp-filter-post_type]', function(e){
 			e.preventDefault();
 
@@ -530,6 +694,14 @@ pspFreamwork = (function ($) {
 			} );
 		})
 
+		.on('click', 'a.psp-jump-page', function(e){
+			e.preventDefault();
+
+			make_request( 'paged', {
+				'paged' : $(this).attr('href').replace('#paged=', '')
+			} );
+		})
+		
 		.on('click', '.psp-post_status-list a', function(e){
 			e.preventDefault();
 
@@ -537,50 +709,40 @@ pspFreamwork = (function ($) {
 				'post_status' : $(this).attr('href').replace('#post_status=', '')
 			} );
 		})
+
+		.on('change', 'select.psp-filter-general_field', function(e){
+			e.preventDefault();
+			
+			var $this       = $(this),
+				filter_name = $this.data('filter_field'),
+				filter_val  = $this.val();
+
+			make_request( 'general_field', {
+				'filter_name'    : filter_name,
+				'filter_val'     : filter_val
+			} );
+		})
 		
-		.on('click', 'input[name=psp-search-btn]', function(e){
+		.on('click', 'ul.psp-filter-general_field a', function(e){
+			e.preventDefault();
+ 
+			var $this       = $(this),
+				$parent_ul  = $this.parents('ul').first(),
+				filter_name = $parent_ul.data('filter_field'),
+				filter_val  = $this.data('filter_val');
+
+			make_request( 'general_field', {
+				'filter_name'    : filter_name,
+				'filter_val'     : filter_val
+			} );
+		})        
+		
+		.on('click', 'button[name=psp-search-btn]', function(e){
 			e.preventDefault();
 
 			make_request( 'search', {
 				'search_text' : $(this).parent().find('#psp-search-text').val()
 			} );
-		});
-	}
-	
-	function googleAuthorizeApp()
-	{
-		$('body').on('click', ".psp-google-authorize-app", function(e){
-			e.preventDefault();
-
-			var $this = $(this),
-				saveform = $this.data('saveform') || 'yes';
-  
-			var ajaxPms = {
-				'action' 		: 'pspGoogleAuthorizeApp',
-				'saveform'		: saveform
-			};
-
-			if ( typeof saveform != 'undefined' && saveform == 'yes' ) {
-			var form = $this.parents('form').eq(0),
-				client_id = form.find("#client_id").val(),
-				client_secret = form.find("#client_secret").val();
-
-			// Check if user has client ID and client secret key
-			if( client_id == '' || client_secret == '' ){
-				alert('Please add your Client ID / Secret for authorize your app.');
-				return false;
-			}
-
-			ajaxPms.params = form.serialize()		
-			}
-  
-			$.post(ajaxurl, ajaxPms, function(response) {
-				if( response.status == 'valid' )
-				{
-					var newwindow = window.open( response.auth_url ,'Google Authorize App','height=400,width=550' );
-				}
-			}, 'json');
-
 		});
 	}
 	
@@ -604,7 +766,7 @@ pspFreamwork = (function ($) {
 
 			// Check if user has client ID and client secret key
 			if( client_id == '' || client_secret == '' ){
-				alert('Please add your Client ID / Secret for authorize your app.');
+				swal('Please add your Client ID / Secret for authorize your app.');
 				return false;
 			}
 
@@ -757,24 +919,6 @@ pspFreamwork = (function ($) {
 		return ret;
 	}
 
-	function makeActiveMenu()
-	{
-		//console.log( section, subsection, sub_istab );
-		topMenu.find('.active').removeClass('active');
-
-		// try to find the first child menu of current section
-		var current_section = topMenu.find( '.psp-section-' + section + (subsection != '' ? (sub_istab != '' ? '--' + sub_istab : '--' + subsection) : ''));
-		//console.log( current_section ); 
- 
-		// is submenu item, loop parent
-		if( current_section.parent('ul').hasClass('psp-sub-menu') ){
-			current_section = current_section.parent('ul').parent('li');
-		}
-		if( current_section.size() > 0 ){
-			current_section.addClass('active');
-		}
-	}
-
 	function send_to_editor()
 	{
 		if( window.send_to_editor != undefined ) {
@@ -897,39 +1041,26 @@ pspFreamwork = (function ($) {
 		if ( location.href.indexOf("psp#") != -1 ) {
 			// Alerts every time the hash changes!
 			if(location.hash != "") {
-				section = location.hash.replace("#", '');
-				
-				var __tmp = section.indexOf('#');
-				if ( __tmp == -1 ) {
-				    subsection = '';
-				} else { // found subsection block!
-					subsection = section.substr( __tmp+1 );
-					section = section.slice( 0, __tmp );
+
+				menuSetSection( location.hash.replace("#", '') );
+
+				if ( subistab != '' ) {
+					makeRequest([
+						function (s) {
+							$('.psp-tabs-header').find('a[title="'+s+'"]').click();
+						},
+						subistab
+					]);
 				}
-
-    			if ( subsection != '' ) {
-    			    var __re = /tab:([0-9a-zA-Z_-]*)/gi; //new RegExp("tab:([0-9a-zA-Z_-]*)", "gi");
-    			    if ( __re.test(subsection) ) {
-                        var __match = subsection.match(__re); //__re.exec(subsection); //null;
-                        sub_istab = typeof (__match[0]) != 'undefined' ? __match[0].replace('tab:', '') : '';
-
-                        if ( sub_istab == '' ) return false;
- 
-                        makeRequest([
-                            function (s) {
-                                $('.psp-tabs-header').find('a[title="'+s+'"]').click();
-                            },
-                            sub_istab
-                        ]);
-    			    } else {
-        				makeRequest([
-        					function (s) { scrollToElement( s ) },
-        					'#'+subsection
-        				]);
-    				}
-    			} else { 
-    				makeRequest();
-    			}
+				else if ( subsection != '' ) {
+					makeRequest([
+						function (s) { scrollToElement( s ) },
+							'#'+subsection
+					]);
+				}
+				else {
+					makeRequest();
+				}
             }
 			return false;
 		}
@@ -975,8 +1106,7 @@ pspFreamwork = (function ($) {
 	
 	function triggers()
 	{
-		responsiveMenu();
-		googleAuthorizeApp();
+		menuTriggers();
 		facebookAuthorizeApp();
 		init_custom_checkbox();
 
@@ -1028,6 +1158,10 @@ pspFreamwork = (function ($) {
 			$('a.aa-tooltip').tipsy({
 				gravity: 'e'
 			});
+
+			$('.psp-tooltip-trigger').tipsy({
+				gravity: 'n'
+			});
 		}
 
 		$(window).resize(function() {
@@ -1040,6 +1174,10 @@ pspFreamwork = (function ($) {
 			var clientCoords = "( " + event.clientX + ", " + event.clientY + " )";
 			var parent = $(this).parent();
 			var parentPos = parent.position();
+
+			if( parent.hasClass('psp-step') == true ){
+				return true;
+			}
 			
 			event.pageY = event.pageY - 85;
 			if( typeof parent != 'undefined' && !parent.hasClass('psp') ) {
@@ -1111,7 +1249,270 @@ pspFreamwork = (function ($) {
         });
         
         multiselect_left2right();
+
+
+
+
+        /*
+		$('body').on('click', 'input#psp-item-check-all', function(){
+			var that = $(this),
+				checkboxes = $('#psp-list-table-posts input.psp-item-checkbox');
+
+			if( that.is(':checked') ){
+				checkboxes.prop('checked', true);
+			}
+			else{
+				checkboxes.prop('checked', false);
+			}
+		});
+		*/
+
+		$("body").on("click", "#psp-list-rows a", function(e){
+			e.preventDefault();
+			$(this).parent().find('table').toggle("slow");
+		});
+
+		// publish / unpublish row
+		$('body').on('click', ".psp-do_item_publish", function(e){
+			e.preventDefault();
+			var that = $(this),
+				row = that.parents('tr').eq(0),
+				id  = row.data('itemid');
+				
+			do_item_action( id, 'publish', row );
+		});
+
+		// delete row       
+		$('body').on('click', ".psp-do_item_delete", function(e){
+			e.preventDefault();
+			var that = $(this),
+				row = that.parents('tr').eq(0),
+				id  = row.data('itemid');
+
+			swal({
+				title: "Are you sure?",
+				text: 'Delete row with ID# '+id+' ? This action cannot be rollback !',
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#cb3c46",
+				confirmButtonText: "Yes, delete it!",
+				closeOnConfirm: false
+			},
+			function(){
+				swal("Deleted!", "The selected rows have been deleted.", "success");
+				do_item_action( id, 'delete', row );
+			});
+
+		});
+		
+		$('body').on('click', '#psp-do_bulk_delete_rows', function(e){
+			e.preventDefault();
+
+			swal({
+				title: "Are you sure?",
+				text: 'Are you sure you want to delete the selected rows ? This action cannot be rollback !',
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#cb3c46",
+				confirmButtonText: "Yes, delete it!",
+				closeOnConfirm: false
+			},
+			function(){
+				swal("Deleted!", "The selected rows have been deleted", "success");
+				do_bulk_delete_rows();
+			});
+				
+		});
+		
+		//all checkboxes are checked by default!
+		$('.psp-form .psp-table input.psp-item-checkbox').attr('checked', 'checked');
+				
+		// inline edit
+		inline_edit();
     }
+
+
+	function do_item_action( itemid, sub_action, row )
+	{
+		var sub_action = sub_action || '';
+
+		lightbox.fadeOut('fast');
+		//mainloading.fadeIn('fast');
+		take_over_ajax_loader( "Loading..." );
+		row_loading(row, 'show');
+		
+		jQuery.post(ajaxurl, {
+			'action'        : 'pspAjaxList_actions',
+			'itemid'        : itemid,
+			'sub_action'    : sub_action,
+			'ajax_id'       : $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val(),
+			'debug_level'   : debug_level
+		}, function(response) {
+
+			row_loading(row, 'hide');
+			if( response.status == 'valid' ){
+				//mainloading.fadeOut('fast');
+				take_over_ajax_loader_close();
+				//window.location.reload();
+				$("#psp-table-ajax-response").html( response.html );
+
+				init_custom_checkbox();
+				return false;
+			}
+			//mainloading.fadeOut('fast');
+			take_over_ajax_loader_close();
+			swal('Problems occured while trying to execute action: '+sub_action+'!' , '' , 'error');
+		}, 'json');
+	}
+
+	function do_bulk_delete_rows() {
+		var ids = [], __ck = $('.psp-form .psp-table input.psp-item-checkbox:checked');
+		__ck.each(function (k, v) {
+			ids[k] = $(this).attr('name').replace('psp-item-checkbox-', '');
+		});
+		ids = ids.join(',');
+		if (ids.length<=0) {
+			swal('You didn\'t select any rows!' , '', 'error');
+			return false;
+		}
+		
+		lightbox.fadeOut('fast');
+		//mainloading.fadeIn('fast');
+		take_over_ajax_loader( "Loading..." );
+
+		jQuery.post(ajaxurl, {
+			'action'        : 'pspAjaxList_actions',
+			'id'            : ids,
+			'sub_action'    : 'bulk_delete',
+			'ajax_id'       : $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val(),
+			'debug_level'   : debug_level
+		}, function(response) {
+			if( response.status == 'valid' ){
+				//mainloading.fadeOut('fast');
+				take_over_ajax_loader_close();
+				//window.location.reload();
+				$("#psp-table-ajax-response").html( response.html );
+
+				init_custom_checkbox();
+				return false;
+			}
+			//mainloading.fadeOut('fast');
+			take_over_ajax_loader_close();
+			swal('Problems occured while trying to execute action: '+'bulk_delete_rows'+'!', '', 'error');
+		}, 'json');
+	}
+
+	// inline edit fields
+	var inline_edit = function() {
+
+		function make_request( pms ) {
+			var pms         = pms || {},
+				replace     = misc.hasOwnProperty( pms, 'replace' ) ? pms.replace : null,
+				itemid      = misc.hasOwnProperty( pms, 'itemid' ) ? pms.itemid : 0,
+				table       = misc.hasOwnProperty( pms, 'table' ) ? pms.table : '',
+				field       = misc.hasOwnProperty( pms, 'field' ) ? pms.field : '',
+				new_val     = misc.hasOwnProperty( pms, 'new_val' ) ? pms.new_val : '',
+				el_type     = misc.hasOwnProperty( pms, 'el_type' ) ? pms.el_type : '',
+				new_text    = misc.hasOwnProperty( pms, 'new_text' ) ? pms.new_text : '';
+				
+			//console.log( row, itemid, field_name, field_value ); return false;             
+			loading( replace, 'show' );
+
+			jQuery.post(ajaxurl, {
+				'action'        : 'pspAjaxList_actions',
+				'itemid'        : itemid,
+				'sub_action'    : 'edit_inline',
+				'table'         : table,
+				'field_name'    : field,
+				'field_value'   : new_val,
+				'ajax_id'       : $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val(),
+				'debug_level'   : debug_level
+
+			}, function(response) {
+
+				loading( replace, 'close' );
+				var orig     = replace.prev('.psp-edit-inline'),
+					just_new = 'input' == el_type ? new_val : new_text;
+				orig.html( just_new );
+
+				// success
+				if( response.status == 'valid' ){
+					replace.hide();
+					orig.show();
+					return false;
+				}
+
+				// error
+				replace.hide();
+				orig.show();
+				//alert('Problems occured while trying to execute action: '+sub_action+'!');
+
+			}, 'json');
+		};
+		
+		function loading( row, status ) {
+			if ( 'close' == status ) {
+				row.find('i.psp-edit-inline-loading').remove();
+			}
+			else {
+				row.prepend( $('<i class="psp-edit-inline-loading psp-icon-content_spinner" />') );
+			}
+		};
+
+		$(document).on(
+			{
+				mouseenter: function(e) {
+					$(this).addClass('psp-edit-inline-hover');
+				},
+				mouseleave: function(e) {
+					$(this).removeClass('psp-edit-inline-hover');
+				}
+			},
+			'.psp-edit-inline'
+		);
+
+		$(document).on('click', '.psp-edit-inline', function(e) {
+			var that    = $(this),
+				replace = that.next('.psp-edit-inline-replace');
+				
+			that.hide();
+			replace.show().focus();
+			replace.find('input,select').focus();
+		});
+
+		function change_and_blur(e) {
+			var that = $(this);
+			clearTimeout(change_and_blur.timeout);
+			change_and_blur.timeout = null;
+			change_and_blur.timeout = setTimeout(function(){
+				__();
+			}, 200);
+ 
+			function __() {
+				//var that        = $(this);
+				var parent      = that.parent(),
+					row         = that.parents('tr').first(),
+					itemid      = row.data('itemid'),
+					table       = parent.data('table'),
+					field       = that.prop('name').replace('psp-edit-inline[', '').replace(']', ''),
+					new_val     = that.val(),
+					el_type     = e.target.tagName.toLowerCase(),
+					new_text    = 'select' == el_type ? that.find('option:selected').text() : '';
+	 
+				make_request({
+					'replace'       : parent,
+					'itemid'        : itemid,
+					'table'         : table,
+					'field'         : field,
+					'new_val'       : new_val,
+					'el_type'       : el_type,
+					'new_text'      : new_text 
+				});
+			}
+		}
+		// $(document).on('change', '.psp-edit-inline-replace input, .psp-edit-inline-replace select', change_and_blur);
+		$(document).on('blur', '.psp-edit-inline-replace input, .psp-edit-inline-replace select', change_and_blur);
+	};
     
 	/* Multi Keywords - sub tabs */
 	var multikw_tabs = (function() {
@@ -1268,6 +1669,26 @@ pspFreamwork = (function ($) {
     	return resultStr;
     }
 
+	function row_loading( row, status )
+	{
+		if( status == 'show' ){
+			if( row.size() > 0 ){
+				if( row.find('.psp-row-loading-marker').size() == 0 ){
+					var row_loading_box = $('<div class="psp-row-loading-marker"><div class="psp-row-loading"><div class="psp-meter psp-animate"><span style="width:100%"></span></div></div></div>')
+					row_loading_box.find('div.psp-row-loading').css({
+						'width': row.width(),
+						'height': row.height()
+					});
+
+					row.find('td').eq(0).append(row_loading_box);
+				}
+				row.find('.psp-row-loading-marker').fadeIn('fast');
+			}
+		}else{
+			row.find('.psp-row-loading-marker').fadeOut('fast');
+		}
+	}
+
     // external usage
 	return {
 		'scrollToElement'			: scrollToElement,
@@ -1277,10 +1698,25 @@ pspFreamwork = (function ($) {
 		'to_ajax_loader_close'  	: take_over_ajax_loader_close,
 		'init_custom_checkbox'		: init_custom_checkbox,
 		'multiselect_left2right'	: multiselect_left2right,
-		'multikw_tabs_load'			: multikw_tabs.load
+		'multikw_tabs_load'			: multikw_tabs.load,
+		'row_loading'				: row_loading
     }
     
 })(jQuery);
-function pspPopUpClosed() {
-    window.location.reload();
+
+
+function psp_humanFileSize(bytes, si) {
+    var thresh = si ? 1000 : 1024;
+    if(Math.abs(bytes) < thresh) {
+        return bytes + ' B';
+    }
+    var units = si
+        ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
+        : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+    var u = -1;
+    do {
+        bytes /= thresh;
+        ++u;
+    } while(Math.abs(bytes) >= thresh && u < units.length - 1);
+    return bytes.toFixed(1)+' '+units[u];
 }

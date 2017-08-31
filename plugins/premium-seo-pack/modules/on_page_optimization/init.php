@@ -1318,9 +1318,9 @@ if (class_exists('pspOnPageOptimization') != true) {
 						<div id="psp-lightbox-overlay">
 							<div id="psp-lightbox-container">
 								<h1 class="psp-lightbox-headline">	
-									<span><?php _e('PSP SEO Report for post ID:', 'psp');?> <i></i></span>
-									<a href="#" class="psp-close-btn" title="<?php _e('Close Lightbox', 'psp'); ?>">
-										<i class="psp-icon-close" ></i>
+									<span><?php _e('SEO Report for Post ID:', 'psp');?> <i></i></span>
+									<a href="#" class="psp-close-page-detail psp-close-btn">
+										<i class="psp-checks-cross2"></i>
 									</a>
 								</h1>
 			
@@ -1361,6 +1361,7 @@ if (class_exists('pspOnPageOptimization') != true) {
 												->setup(array(
 													'id' 				=> 'pspPageOptimization',
 													'show_header' 		=> true,
+													'show_header_buttons' => true,
 													'items_per_page' 	=> '10',
 													'post_statuses' 	=> 'all',
 													'columns'			=> array(

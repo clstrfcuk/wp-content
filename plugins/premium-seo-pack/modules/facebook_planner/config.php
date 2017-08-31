@@ -44,7 +44,8 @@
 				'jquery-ui-core',
 				'jquery-ui-datepicker',
 				'jquery-ui-slider',
-				'jquery-timepicker'
+				'jquery-timepicker',
+				'sweetalert'
 			),
 			'css' => array(
 				'admin'

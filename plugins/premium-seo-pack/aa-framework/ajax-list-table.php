@@ -13,34 +13,34 @@ if(class_exists('pspAjaxListTable') != true) {
 	class pspAjaxListTable {
 
 		/*
-        * Some required plugin information
-        */
+         * Some required plugin information
+         */
         const VERSION = '1.0';
 
 		/*
-        * Singleton pattern
-        */
+         * Singleton pattern
+         */
 		static protected $_instance;
 
 		/*
-        * Store some helpers
-        */
+         * Store some helpers
+         */
 		public $the_plugin = null;
 
 		/*
-        * Store some default options
-        */
+         * Store some default options
+         */
 		public $default_options = array(
 			'id' 					=> '', /* string, uniq list ID. Use for SESSION filtering / sorting actions */
 			'debug_query' 			=> false, /* default is false */
 			'show_header' 			=> true, /* boolean, true or flase */
 			'list_post_types' 		=> 'all', /* array('post', 'pages' ... etc) or 'all' */
-			'items_per_page' 		=> 10, /* number. How many items per page */
+			'items_per_page' 		=> 15, /* number. How many items per page */
 			'post_statuses' 		=> 'all',
 			'search_box' 			=> true, /* boolean, true or flase */
 			'show_statuses_filter' 	=> true, /* boolean, true or flase */
 			'show_pagination' 		=> true, /* boolean, true or flase */
-			'show_category_filter' 	=> false, /* boolean, true or flase */
+			'show_category_filter' 	=> true, /* boolean, true or flase */
 			'columns' 				=> array(),
 			'custom_table' 			=> '',
 			'requestFrom'			=> 'init', /* values: init | ajax */
@@ -48,28 +48,31 @@ if(class_exists('pspAjaxListTable') != true) {
 			'custom_table_force_action' 	=> false,
 			'deleted_field' 				=> false,
 			'force_publish_field' 			=> false,
-			'show_header_buttons' 			=> false
+			'show_header_buttons' 			=> false,
+			'params'						=> null,
 		);
 		private $items;
 		private $items_nr;
 		private $args;
 
 		public $opt = array();
-		
+
+
         /*
-        * Required __construct() function that initalizes the AA-Team Framework
-        */
+         * Required __construct() function that initalizes the AA-Team Framework
+         */
         public function __construct( $parent )
         {
         	$this->the_plugin = $parent;
 			add_action('wp_ajax_pspAjaxList', array( $this, 'request' ));
+			add_action('wp_ajax_pspAjaxList_actions', array( $this, 'ajax_request' ), 10, 2);
         }
 
 		/**
-	    * Singleton pattern
-	    *
-	    * @return class Singleton instance
-	    */
+	     * Singleton pattern
+	     *
+	     * @return class Singleton instance
+	     */
 	    static public function getInstance( $parent )
 	    {
 	        if (!self::$_instance) {
@@ -80,14 +83,22 @@ if(class_exists('pspAjaxListTable') != true) {
 	    }
 
 		/**
-	    * Setup
-	    *
-	    * @return class
-	    */
+	     * Setup
+	     *
+	     * @return class
+	     */
 		public function setup( $options=array() )
 		{
 			global $psp;
 			$this->opt = array_merge( $this->default_options, $options );
+
+			$this->opt["custom_table"] = trim($this->opt["custom_table"]);
+			if ( $this->opt["custom_table"] != "") {
+				$this->opt = array_merge( $this->opt, array(
+					'orderby'		=> 'id',
+					'order'			=> 'DESC',
+				));
+			}
 
 			//unset($_SESSION['pspListTable']); // debug
 
@@ -112,10 +123,10 @@ if(class_exists('pspAjaxListTable') != true) {
 		}
 
 		/**
-	    * Singleton pattern
-	    *
-	    * @return class Singleton instance
-	    */
+	     * Singleton pattern
+	     *
+	     * @return class Singleton instance
+	     */
 		public function request()
 		{
 			$request = array(
@@ -173,6 +184,19 @@ if(class_exists('pspAjaxListTable') != true) {
 				// reset the paged as well
 				$_SESSION['pspListTable'][$request['ajax_id']]['params']['paged'] = 1;
 			}
+
+			if( $request['sub_action'] == 'general_field' ){
+				$filter_name = isset($request['params']['filter_name']) ? $request['params']['filter_name'] : '';
+				$filter_val = isset($request['params']['filter_val']) ? $request['params']['filter_val'] : '';
+				//if( $filter_val == "all" ){
+				//	$filter_val = "";
+				//}
+
+				$_SESSION['pspListTable'][$request['ajax_id']]['params']["$filter_name"] = $filter_val;
+
+				// reset the paged as well
+				$_SESSION['pspListTable'][$request['ajax_id']]['params']['paged'] = 1;
+			}
 			
 			if( $request['sub_action'] == 'search' ){
 				$search_text = $request['params']['search_text'];
@@ -202,16 +226,16 @@ if(class_exists('pspAjaxListTable') != true) {
 		}
 
 		/**
-	    * Helper function
-	    *
-	    * @return object
-	    */
+	     * Helper function
+	     *
+	     * @return object
+	     */
 		public function get_items()
 		{
 			global $wpdb;
 
 			$ses = isset($_SESSION['pspListTable'][$this->opt['id']]['params']) ? $_SESSION['pspListTable'][$this->opt['id']]['params'] : array();
-			
+
 			$this->args = array(
 				'posts_per_page'  	=> ( isset($ses['posts_per_page']) ? $ses['posts_per_page'] : $this->opt['items_per_page'] ),
 				'paged'				=> ( isset($ses['paged']) ? $ses['paged'] : 1 ),
@@ -223,182 +247,196 @@ if(class_exists('pspAjaxListTable') != true) {
 				'suppress_filters' 	=> true
 			);
 
-			if ( in_array($_SESSION['pspListTable'][$this->opt['id']]['id'], array('pspSmushit', 'pspTinyCompress')) ) { // smushit
+			// MEDIA -  smushit
+			if ( in_array($_SESSION['pspListTable'][$this->opt['id']]['id'], array('pspSmushit', 'pspTinyCompress')) ) {
 				$this->args = array_merge($this->args, array(
 					'post_type'			=> 'attachment',
 					'post_status'		=> 'inherit',
 					'post_mime_type'	=> array('image/jpeg', 'image/jpg', 'image/png')
 				));
-				$this->args = array_merge( $this->args, $this->post_media_getQuery( isset($ses['post_status']) ? $ses['post_status'] : '' ) );
+				$this->args = array_merge(
+					$this->args,
+					$this->post_media_getQuery( isset($ses['post_status']) ? $ses['post_status'] : ''
+				));
 			}
 
 			// if custom table, make request in the custom table not in wp_posts
-			if( trim($this->opt["custom_table"]) != ""){
+			$this->opt["custom_table"] = trim($this->opt["custom_table"]);
+			if ( $this->opt["custom_table"] != "") {
 				$pages = array();
 
+				//---------------
+				// Query Start
 			    // select all pages and post from DB
-			    $myQuery = "SELECT * FROM " . $wpdb->prefix . ( $this->opt["custom_table"] ) . " WHERE 1=1 ";
+			    $myQuery = "SELECT SQL_CALC_FOUND_ROWS a.* FROM " . $wpdb->prefix . ( $this->opt["custom_table"] ) . " as a WHERE 2=2 ";
 
+				// search fields
+				$search_where = $this->search_posts_where();
+				//$search_where = str_replace('AND ', '', $search_where);
+				$myQuery .= $search_where;
+				
+				// dropdown filter fields
+				$filter_where = '';
+				$filter_fields = isset($this->opt["filter_fields"]) && !empty($this->opt["filter_fields"])
+					? $this->opt["filter_fields"] : array();
+				foreach ($filter_fields as $field => $vals) {
+					$this->filter_fields["$field"] = array();
+					$field_val = isset($ses["$field"]) ? (string) trim($ses["$field"]) : '';
+					//if ( $field_val != '' ) {
+					if ( isset($ses["$field"]) && ('--all--' != $ses["$field"]) ) {
+						//if ( ($this->opt["custom_table"] == 'psp_link_redirect') && ('--is-error--' == $field_val) ) {
+						//	$filter_where .= " AND $field NOT IN ('', 'is_ok') ";
+						//}
+						//else {
+							$filter_where .= " AND $field = '" . esc_sql($field_val) . "' ";
+						//}
+					}
+				}
+				$myQuery .= $filter_where;
+				
+				$myQuery .= ' AND 1=1 ';
+
+				// limit query
 			    $__limitClause = $this->args['posts_per_page']>0 ? " 1=1 limit " . (($this->args['paged'] - 1) * $this->args['posts_per_page']) . ", " . $this->args['posts_per_page'] : '1=1 ';
 				$result_query = str_replace("1=1 ", $__limitClause, $myQuery);
-				
-				if( $this->opt["custom_table"] == 'psp_serp_reporter' ) {
-					$result_query = str_replace('1=1 limit', " 1=1 ORDER BY focus_keyword desc limit ", $result_query);
-			    	if (isset($_SESSION['psp_serp']['search_engine']) && !empty($_SESSION['psp_serp']['search_engine']) && $_SESSION['psp_serp']['search_engine']!='--all--') {
-			    		$myQuery = str_replace("1=1 ", " 1=1 and search_engine='".$_SESSION['psp_serp']['search_engine']."' ", $myQuery);
-			    		$result_query = str_replace("1=1 ", " 1=1 and search_engine='".$_SESSION['psp_serp']['search_engine']."' ", $result_query);
-			    	}
+
+				// order by
+				$orderby = isset($this->opt["orderby"]) ? $this->opt["orderby"] : '';
+				$order = isset($this->opt["order"]) ? $this->opt["order"] : 'ASC';
+				if( !empty($orderby) ) {
+					if ( $this->args['posts_per_page']>0 ) {
+						$result_query = str_replace('1=1 limit', "1=1 ORDER BY a.$orderby $order limit", $result_query);
+					}
+					else {
+						$result_query = str_replace('1=1', "1=1 ORDER BY a.$orderby $order", $result_query);	
+					}
 				}
 
 				//publish field
-			    if ($this->opt["force_publish_field"]) {
-			    	$myQuery = str_replace("1=1 ", " 1=1 and publish='Y' ", $myQuery);
-			    	$result_query = str_replace("1=1 ", " 1=1 and publish='Y' ", $result_query);
+			    if (isset($this->opt["force_publish_field"]) && $this->opt["force_publish_field"]) {
+			    	$myQuery = str_replace("1=1 ", " 1=1 and a.publish='Y' ", $myQuery);
+			    	$result_query = str_replace("1=1 ", " 1=1 and a.publish='Y' ", $result_query);
 			    }
-			    
+
 			    //deleted field
-			    if ($this->opt["deleted_field"]) {
-			    	$myQuery = str_replace("1=1 ", " 1=1 and deleted=0 ", $myQuery);
-			    	$result_query = str_replace("1=1 ", " 1=1 and deleted=0 ", $result_query);
+			    if (isset($this->opt["deleted_field"]) && $this->opt["deleted_field"]) {
+			    	$myQuery = str_replace("1=1 ", " 1=1 and a.deleted=0 ", $myQuery);
+			    	$result_query = str_replace("1=1 ", " 1=1 and a.deleted=0 ", $result_query);
 			    }
 
+			    $myQuery .= ";"; $result_query .= ";";
+				
+				// dropdown filter fields
+				//		when option <display> = links
+				foreach ($filter_fields as $field => $vals) {
+					$display = isset($vals['display']) && ('links' == $vals['display']) ? 'links' : 'default';
+					$field_val = isset($ses["$field"]) ? (string) trim($ses["$field"]) : '';
 
-			    $myQuery .= ";"; $result_query .= ";"; //query end!
+					if ( 'links' == $display ) {
+						$sql_ff = $myQuery;
+
+						$sql_ff = str_replace(" AND $field = '" . esc_sql($field_val) . "' ", "", $sql_ff);
+						//if ( ($this->opt["custom_table"] == 'psp_link_redirect') && ('--is-error--' == $field_val) ) {
+						//	$sql_ff = str_replace(" AND $field NOT IN ('', 'is_ok') ", "", $sql_ff);
+						//}
+
+						$sql_ff = str_replace('SQL_CALC_FOUND_ROWS', '', $sql_ff);
+	                	$sql_ff = str_replace("a.*", "a.$field, count(a.id) as __nb", $sql_ff);
+						$sql_ff = str_replace(";", " GROUP BY a.$field ORDER BY a.$field ASC", $sql_ff);
+						$this->filter_fields["$field"]['count'] = $wpdb->get_results( $sql_ff, OBJECT_K );
+					}
+				}
+				//var_dump('<pre>', $this->filter_fields, '</pre>'); die('debug...'); 
+					
+			    // Query End
+			    //---------------
+
+				if ( $this->opt["custom_table"] == 'psp_serp_reporter' ) {
+
+			    	if ( isset($_SESSION['psp_serp']['search_engine'])
+			    		&& !empty($_SESSION['psp_serp']['search_engine'])
+			    		&& $_SESSION['psp_serp']['search_engine'] != '--all--'
+			    	) {
+			    		$myQuery = str_replace("1=1 ", " 1=1 and a.search_engine='".$_SESSION['psp_serp']['search_engine']."' ", $myQuery);
+
+			    		$result_query = str_replace("1=1 ", " 1=1 and a.search_engine='".$_SESSION['psp_serp']['search_engine']."' ", $result_query);
+			    	}
+				}
 
 			    $query = $wpdb->get_results( $result_query, ARRAY_A);
-			    foreach ($query as $key => $myrow){
-			    	if( $this->opt["custom_table"] == 'psp_monitor_404' ) {
-			    		$pages[$myrow['id']] = array(
-							'id' 			=> $myrow['id'],
-							'hits' 			=> $myrow['hits'],
-							'url'			=> $myrow['url'],
-							'referrers' 	=> $myrow['referrers'],
-							'user_agents' 	=> $myrow['user_agents'],
-							'data' 			=> $myrow['data'],
-						);
-			    	}
-					
-					else if( $this->opt["custom_table"] == 'psp_web_directories' ) {
-						$pages[$myrow['id']] = array(
-							'id' 					=> $myrow['id'],
-							'directory_name' 		=> $myrow['directory_name'],
-							'submit_url' 			=> $myrow['submit_url'],
-				    		'pagerank' 				=> $myrow['pagerank'],
-				    		'alexa'					=> $myrow['alexa'],
-				    		'status'				=> $myrow['status']
+
+			    foreach ($query as $key => $myrow) {
+			    	$pages[$myrow['id']] = $myrow;
+			    	$pages[$myrow['id']]['__tr_css'] = '';
+
+					if ( $this->opt["custom_table"] == 'psp_serp_reporter' ) {
+						$pages[$myrow['id']]['engine_location'] = substr(
+							$myrow['search_engine'],
+							strpos($myrow['search_engine'], '.')
 						);
 					}
-					
-					else if( $this->opt["custom_table"] == 'psp_link_builder' ) {
-						$pages[$myrow['id']] = array(
-							'id' 			=> $myrow['id'],
-							'url' 			=> $myrow['url'],
-				    		'phrase' 		=> $myrow['phrase'],
-				    		'rel'			=> $myrow['rel'],
-				    		'title'			=> $myrow['title'],
-				    		'target'		=> $myrow['target'],
-							'hits' 			=> $myrow['hits'],
-							'created' 		=> $myrow['created'],
-							'publish'		=> $myrow['publish']
-						);
-					}
-					
-					else if( $this->opt["custom_table"] == 'psp_proxy_lists' ) {
-						$pages[$myrow['id']] = array(
-							'id' 				=> $myrow['id'],
-							'ip' 				=> $myrow['ip'],
-				    		'port' 				=> $myrow['port'],
-				    		'speed'				=> $myrow['speed'],
-				    		'hits'				=> $myrow['hits'],
-							'created' 			=> $myrow['created'],
-							'publish'			=> $myrow['publish']
-						);
-					}
-					
-					else if( $this->opt["custom_table"] == 'psp_link_redirect' ) {
-						$pages[$myrow['id']] = array(
-							'id' 				=> $myrow['id'],
-							'url' 				=> $myrow['url'],
-				    		'url_redirect' 		=> $myrow['url_redirect'],
-							'hits' 				=> $myrow['hits'],
-							'created' 			=> $myrow['created']
-						);
-					}
-					
-					else if( $this->opt["custom_table"] == 'psp_serp_reporter' ) {
-						$pages[$myrow['id']] = array(
-							'id' 					=> $myrow['id'],
-							'focus_keyword' 		=> $myrow['focus_keyword'],
-							'url' 					=> $myrow['url'],
-				    		'position' 				=> $myrow['position'],
-				    		'position_prev'			=> $myrow['position_prev'],
-				    		'position_worst'		=> $myrow['position_worst'],
-				    		'position_best'			=> $myrow['position_best'],
-							'visits' 				=> $myrow['visits'],
-							'created' 				=> $myrow['created'],
-							'publish'				=> $myrow['publish'],
-							'engine_location'		=> substr($myrow['search_engine'], strpos($myrow['search_engine'], '.'))
-						);
-					}
-					
 			    	else if( $this->opt["custom_table"] == 'psp_post_planner_cron' ) {
-			    		$pages[$myrow['id']] = array(
-							'id' 					=> $myrow['id'],
-							'id_post' 				=> $myrow['id_post'],
-							'post_to'				=> $myrow['post_to'],
-							'post_to_group' 	=> $myrow['post_to-page_group'],
-							'post_privacy' 			=> $myrow['post_privacy'],
-							'email_at_post' 		=> $myrow['email_at_post'],
-							'status' 				=> $myrow['status'],
-							'response' 				=> $myrow['response'],
-							'started_at' 			=> $myrow['started_at'],
-							'ended_at' 				=> $myrow['ended_at'],
-							'run_date' 				=> $myrow['run_date'],
-							'repeat_status' 		=> $myrow['repeat_status'],
-							'repeat_interval' 		=> $myrow['repeat_interval'],
-							'attempts' 				=> $myrow['attempts']
-						);
+						$pages[$myrow['id']]['post_to_group'] = $myrow['post_to-page_group'];
 			    	}
-			    }
-				
-				if( $this->opt['debug_query'] == true ){
-					echo '<script>console.log("' . $result_query . '");</script>';
-				}
+			    	else if( $this->opt["custom_table"] == 'psp_link_redirect' ) {
+			    		if ( 'regexp' == $myrow['redirect_rule'] ) {
+			    			$pages[$myrow['id']]['__tr_css'] = 'psp-tr-verify-inactive';
+			    		}
+			    	}
+			    } // end foreach
+
+			    //var_dump('<pre>',$pages,'</pre>');
 
 				$this->items = $pages;
 
-				$this->items_nr = $wpdb->get_var( str_replace("*", "count(id) as nbRow", $myQuery) );
+				//$this->items_nr = $wpdb->get_var( str_replace("a.*", "count(a.id) as nbRow", $myQuery) );
+				$this->items_nr = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
-			}else{
+				$dbg_query = $result_query;
+			}
+			else {
 
 				// remove empty array
 				$this->args = array_filter($this->args);
 
 				//hook retrieve posts where clause
-				add_filter( 'posts_where' , array( &$this, 'search_posts_where' ) );
+				add_filter( 'posts_where' , array( $this, 'search_posts_where' ) );
 
 				$args = array_merge($this->args, array(
-					'suppress_filters' => false
+					'suppress_filters' 	=> false,
+					//'no_found_rows'		=> true,
 				));
 
-				$this->items = get_posts( $args );
+				//$this->items = get_posts( $args );
 
 				// get all post count
-				$nb_args = $args;
-				$nb_args['posts_per_page'] = '-1';
- 				$nb_args['fields'] = 'ids';
-				$this->items_nr = (int) count( get_posts( $nb_args ) );
-				
-				if( $this->opt['debug_query'] == true ){
-					$query = new WP_Query( $this->args );
-					echo '<script>console.log("' . $query->request . '");</script>';
+				//$nb_args = $args;
+				//$nb_args['posts_per_page'] = '-1';
+ 				//$nb_args['fields'] = 'ids';
+				//$this->items_nr = (int) count( get_posts( $nb_args ) );
+
+				$wpquery = new WP_Query( $args );
+				$this->items = $wpquery->posts;
+				$this->items_nr = (int) $wpquery->found_posts;
+
+				if ( $this->opt['debug_query'] == true ) {
+					//$query = new WP_Query( $args );
+					$dbg_query = $wpquery->request;
 				}
+			}
+
+			if ( $this->opt['debug_query'] == true ) {
+				$dbg_query = preg_replace('/[\n\r\t]*/imu', '', $dbg_query);
+				echo '<script>';
+				echo 	'console.log("query rows// ' . $this->items_nr . '");';
+				echo 	'console.log("query// ' . $dbg_query . '");';
+				echo '</script>';
 			}
 
 			return $this;
 		}
-		
-		public function search_posts_where( $where ) {
+
+		public function search_posts_where( $where='' ) {
 
 			if( is_admin() ) {
 				$ses = $_SESSION['pspListTable'][$this->opt['id']]['params'];
@@ -407,10 +445,29 @@ if(class_exists('pspAjaxListTable') != true) {
 				$search_text = isset($ses['search_text']) ? $ses['search_text'] : '';
 				$search_text = trim( $search_text );
 				$esc_search_text = esc_sql($search_text);
-					
+				$esc_search_text = $this->the_plugin->escape_mysql_regexp( $esc_search_text );
+
 				if ( isset( $search_text ) && $search_text!='' ) {
-					if ( $search_text!='' && $this->the_plugin->utf8->strlen($search_text)<200 )
-						$where .= " AND ( post_title regexp '" . $esc_search_text . "' OR post_content regexp '" . $esc_search_text . "' ) ";
+					if ( $search_text!='' && $this->the_plugin->utf8->strlen($search_text)<200 ) {
+					//if ( $search_text!='' && strlen($search_text)<200 ) {
+						if ( $this->opt["custom_table"] != '' ) {
+							$search_fields = $this->opt["search_box"]['fields'];
+							$__where = array();
+							foreach( $search_fields as $v) {
+								$__where[] = "a.$v regexp '" . $esc_search_text . "'";
+							}
+							$__where = implode(' OR ', $__where);
+							if (count($search_fields) > 1 ) {
+								$where .= " AND ( $__where ) ";
+							}
+							else {
+								$where .= " AND $__where ";
+							}
+						}
+						else {
+							$where .= " AND ( post_title regexp '" . $esc_search_text . "' OR post_content regexp '" . $esc_search_text . "' ) ";
+						}
+					}
 				}
 			}
 			return $where;
@@ -482,6 +539,7 @@ if(class_exists('pspAjaxListTable') != true) {
 				$postStatuses = array(
 				    'all'   	=> __('All', $this->the_plugin->localizationName),
 				    'publish'   => __('Published', $this->the_plugin->localizationName),
+				    'draft'   	=> __('Draft', $this->the_plugin->localizationName),
 				    'future'    => __('Scheduled', $this->the_plugin->localizationName),
 				    'private'   => __('Private', $this->the_plugin->localizationName),
 				    'pending'   => __('Pending Review', $this->the_plugin->localizationName)
@@ -525,13 +583,12 @@ if(class_exists('pspAjaxListTable') != true) {
 
 			return implode("\n", $html);
 		}
-		
-		
+
+
 		/**
 		 * Media files
 		 *
 		 */
-		
 		private function post_media_getQuery( $key='' ) {
 			
 				$nb_args = array();
@@ -636,7 +693,7 @@ if(class_exists('pspAjaxListTable') != true) {
 
 			$postStatuses = array(
 				'all'   			=> __('All', $this->the_plugin->localizationName),
-				'smushed'   		=> __('Smushed', $this->the_plugin->localizationName),
+				'smushed'   		=> __('Compressed', $this->the_plugin->localizationName),
 				'not_processed'   	=> __('Not processed', $this->the_plugin->localizationName),
 				'with_errors'   	=> __('With errors', $this->the_plugin->localizationName)
 			);
@@ -728,7 +785,7 @@ if(class_exists('pspAjaxListTable') != true) {
 				$html[] =				__('Show All', $this->the_plugin->localizationName);
 				$html[] = 				'</option>';
 				$html[] =			'</select>';
-				$html[] = 			'<label for="psp-post-per-page">' . __('per pages', $this->the_plugin->localizationName) . '</label>';
+				$html[] = 			'<label for="psp-post-per-page">' . __('per page', $this->the_plugin->localizationName) . '</label>';
 				$html[] = 		'</div>';
 
 				$html[] = 		'<div class="psp-list-table-pagination tablenav">';
@@ -754,63 +811,84 @@ if(class_exists('pspAjaxListTable') != true) {
 
 		public function print_header()
 		{
+			$nb_cols = 0;
 			$html = array();
 			$ses = isset($_SESSION['pspListTable'][$this->opt['id']]['params']) ? $_SESSION['pspListTable'][$this->opt['id']]['params'] : array();
 
 			$post_type = isset($ses['post_type']) && trim($ses['post_type']) != "" ? $ses['post_type'] : '';
 
+			// start psp-list-table-header
 			$html[] = '<div id="psp-list-table-header">';
+
+			// start psp-list-table-header-row-first
+			$html[] = 	'<div class="psp-list-table-header-row-first">';
 
 			if( trim($this->opt["custom_table"]) == ""){
 				$html[] = '<div class="psp-list-table-left-col">';
 
-                if ( !in_array($_SESSION['pspListTable'][$this->opt['id']]['id'], array('pspSmushit', 'pspTinyCompress')) ) { // if NOT smushit
+ 				// if NOT smushit
+                if ( !in_array(
+                	$_SESSION['pspListTable'][$this->opt['id']]['id'],
+                	array('pspSmushit', 'pspTinyCompress')
+                )) {
 
-				$html[] = 		'<select name="psp-filter-post_type" class="psp-filter-post_type">';
-				$html[] = 			'<option value="all" >';
-				$html[] =			__('Show All', $this->the_plugin->localizationName);
-				$html[] = 			'</option>';
+					$html[] = 		'<select name="psp-filter-post_type" class="psp-filter-post_type">';
+					$html[] = 			'<option value="all" >';
+					$html[] =			__('Show All', $this->the_plugin->localizationName);
+					$html[] = 			'</option>';
 
-				if ( in_array($_SESSION['pspListTable'][$this->opt['id']]['id'], array('pspSmushit', 'pspTinyCompress')) ) { // smushit
-					$filterArr = $this->post_media_filter('array');
-				} else {
-					$filterArr = $this->get_list_postTypes();
-				}
-				
-				foreach ( $filterArr as $name => $postType ){
+					if ( in_array($_SESSION['pspListTable'][$this->opt['id']]['id'], array('pspSmushit', 'pspTinyCompress')) ) { // smushit
+						$filterArr = $this->post_media_filter('array');
+					} else {
+						$filterArr = $this->get_list_postTypes();
+					}
+					
+					foreach ( $filterArr as $name => $postType ){
 
-					$html[] = 		'<option ' . ( $name == $post_type ? 'selected' : '' ) . ' value="' . ( $this->the_plugin->escape($name) ) . '">';
-					$html[] = 			( is_object($postType) ? ucfirst($this->the_plugin->escape($name)) : ucfirst($name) );
-					$html[] = 		'</option>';
-				}
-				$html[] = 		'</select>';
+						$html[] = 		'<option ' . ( $name == $post_type ? 'selected' : '' ) . ' value="' . ( $this->the_plugin->escape($name) ) . '">';
+						$html[] = 			( is_object($postType) ? ucfirst($this->the_plugin->escape($name)) : ucfirst($name) );
+						$html[] = 		'</option>';
+					}
+					$html[] = 		'</select>';
 
 				} // end if NOT smushit!
 
 
 				if( $this->opt['show_statuses_filter'] ){
-					
-                    if ( in_array($_SESSION['pspListTable'][$this->opt['id']]['id'], array('pspSmushit', 'pspTinyCompress')) ) { // smushit
+
+					// if is smushit
+                    if ( in_array(
+                    	$_SESSION['pspListTable'][$this->opt['id']]['id'],
+                    	array('pspSmushit', 'pspTinyCompress')
+                    )) {
+
 						$html[] = $this->post_media_filter();
-					} else {
+					}
+					// end if is smushit!
+					// if NOT smushit
+					else {
 						$html[] = $this->post_statuses_filter();
 					}
+					// end if NOT smushit
 				}
 				$html[] = 		'</div>';
+				$nb_cols++;
 
 				if( $this->opt['search_box'] ){
 
 					$search_text = isset($ses['search_text']) ? $ses['search_text'] : '';
 
 					$html[] = 	'<div class="psp-list-table-right-col" id="searchbox-admin">';
-					$html[] = 		'<div class="psp-list-table-search-box">';
-					$html[] = 			'<input type="text" name="psp-search-text" id="psp-search-text" value="'.($search_text).'" class="'.($search_text!='' ? 'search-highlight' : '').'" >';
-					$html[] = 			'<input type="button" name="psp-search-btn" id="psp-search-btn" class="button" value="' . __('Search Posts', $this->the_plugin->localizationName) . '">';
+					$html[] = 		'<div class="psp-list-table-search-box psp-search-standard-design">';
+					$html[] = 			'<input type="text" name="psp-search-text" id="psp-search-text" placeholder="' . __('Search', $this->the_plugin->localizationName) . '" class="'.($search_text!='' ? 'search-highlight' : '').'" >';
+					$html[] = 			'<button class="psp-search-btn" name="psp-search-btn"><span class="psp-checks-search3"></span></button>';
+					//$html[] = 			'<input type="button" name="psp-search-btn" id="psp-search-btn" class="button">';
 					$html[] = 		'</div>';
 					$html[] = 	'</div>';
+					$nb_cols++;
 				}
 
-				/*if( $this->opt['show_category_filter'] && 3==4 ){
+				if( $this->opt['show_category_filter'] && 3==4 ){
 					$html[] = '<div class="psp-list-table-left-col" >';
 					$html[] = 	'<select name="psp-filter-post_type" class="psp-filter-post_type">';
 					$html[] = 		'<option value="all" >';
@@ -818,30 +896,141 @@ if(class_exists('pspAjaxListTable') != true) {
 					$html[] = 		'</option>';
 					$html[] =	'</select>';
 					$html[] = '</div>';
-				}*/
+					$nb_cols++;
+				}
 			}else{
-				$show_notice = false;
-				/*if ( isset($this->opt['notices']['default']) ) {
-					if ( isset($this->opt['notices']['default_clause'])
-						&& $this->opt['notices']['default_clause']=='empty'
-						&& count($this->items) <= 0 ) {
-						$show_notice = true;
-						$html[] = '<div class="psp-list-table-left-col">' . $this->opt['notices']['default'] . '</div>';
-					}
-				}*/
-				
-				if ( !$show_notice )
-					$html[] = '<div class="psp-list-table-left-col">&nbsp;</div>';
+				if (1) {
+					// dropdown filter fields
+					$filter_fields = isset($this->opt["filter_fields"]) && !empty($this->opt["filter_fields"])
+						? $this->opt["filter_fields"] : array();
+
+					$html[] = '<div class="psp-list-table-left-col '. $this->opt["custom_table"] .'">';
+					foreach ($filter_fields as $field => $vals) {
+
+						$field_val = isset($ses["$field"]) ? (string) trim($ses["$field"]) : '--all--';
+						$include_all = isset($vals['include_all']) ? $vals['include_all'] : false;
+
+						// drowdown options list
+						$options = isset($vals['options']) ? $vals['options'] : array();
+						if ( isset($vals['options_from_db']) && $vals['options_from_db'] ) {
+							$_options = $this->get_filter_from_db( $field );
+							$options = array_merge($options, $_options);
+						}
+
+						if ( $include_all ) { // && count($options) > 1
+							// fixed: I've replace array_merge with array_replace, to maintain keys
+							$options = array_replace(array(), array(
+								'--all--' 		=> __('Show All', $this->the_plugin->localizationName),
+							), $options);
+						}
+
+						$display = isset($vals['display']) && ('links' == $vals['display']) ? 'links' : 'default';
+						if ( 'links' == $display ) {
+
+							$_options = array();
+
+							$html[] = 	'<ul class="subsubsub psp-filter-general_field" data-filter_field="'.$field.'">';
+
+							$totals = 0;
+							foreach ($options as $opt_key => $opt_text) {
+								$_options["$opt_key"] = array('text' => $opt_text, 'nb' => 0);
+
+								if ( '--all--' == $opt_key ) continue 1;
+
+								if ( isset($this->filter_fields["$field"], $this->filter_fields["$field"]["count"],
+									$this->filter_fields["$field"]["count"]["$opt_key"]) ) {
+									$_options["$opt_key"]['nb'] = (int) $this->filter_fields["$field"]["count"]["$opt_key"]->__nb;
+								}
+								$totals += $_options["$opt_key"]['nb'];
+							}
+							$_options["--all--"]['nb'] = (int) $totals;
+
+							$cc = 0;
+							foreach ($_options as $opt_key => $opt_vals) {
+								$cc++;
+								
+								if ( ('all' == $opt_key) && !$include_all ) continue 1;
+
+								$html[] = 	'<li class="ocs_post_status">';
+								// || ( 'all' == $opt_key && empty($field_val) )
+								$html[] = 		'<a href="#'.$field.'=' . ( $opt_key ) . '" class="' . ( ( (string) $opt_key === (string) $field_val ) ? 'current' : '' ) . '" data-filter_val="' . ( $opt_key ) . '">';
+								$html[] = 			$this->the_plugin->escape($opt_vals['text']) . ' <span class="count">(' . ( $opt_vals['nb'] ) . ')</span>';
+								$html[] = 		'</a>' . ( count($_options) > ($cc) ? ' |' : '');
+								$html[] = 	'</li>';
+							}
+
+							$html[] = 	'</ul>';
+
+						}
+						else {
+
+							// dropdown html
+							$html[] = 		'<select name="psp-filter-'.$field.'" class="psp-filter-general_field" data-filter_field="'.$field.'">';
+							if ( isset($vals['title']) ) {
+								$html[] =		'<option value="" disabled="disabled">';
+								$html[] =			$vals['title'];
+								$html[] = 		'</option>';
+							}
+							//if ( $include_all && count($options) > 1 ) {
+							//	$html[] = 		'<option value="all" >';
+							//	$html[] =			__('Show All', $this->the_plugin->localizationName);
+							//	$html[] = 		'</option>';
+							//}
+				            foreach ( $options as $opt_key => $opt_text ){
+								$html[] = 		'<option ' . ( (string) $opt_key === (string) $field_val ? 'selected' : '' ) . ' value="' . ( $this->the_plugin->escape($opt_key) ) . '">';
+								$html[] = 			$this->the_plugin->escape($opt_text);
+								$html[] = 		'</option>';
+				            }
+							$html[] = 		'</select>';
+
+						}
+					} // end foreach
+					$html[] = '</div>';
+					$nb_cols++;
+
+					//$html[] = '<div class="psp-list-table-left-col">'
+					//    . '<span>Number of rows: ' . $this->items_nr . '</span>'
+					//. '</div>';
+					
+					// search box
+					$search_box = isset($this->opt['search_box']) ? $this->opt['search_box'] : false;
+					$search_box = is_array($search_box) && isset($search_box['fields']) ? $search_box : false;
+
+					if( !empty($search_box) ){
+						$search_text = isset($ses['search_text']) ? $ses['search_text'] : '';
+
+						$search_title = isset($search_box['title'])
+							? $search_box['title'] : __('Search', $this->the_plugin->localizationName);
+							
+						$search_fields = isset($search_box['fields']) ? implode(',', $search_box['fields']) : '';
+
+						$html[] = 	'<div class="psp-list-table-right-col '. $this->opt["custom_table"] .'">';
+						$html[] = 		'<div class="psp-list-table-search-box psp-search-standard-design">';
+						$html[] = 			'<input type="text" name="psp-search-text" id="psp-search-text" placeholder="Search" value="'.($search_text).'" class="'.($search_text!='' ? 'search-highlight' : '').'" />';
+						$html[] = 			'<button class="psp-search-btn" name="psp-search-btn"><span class="psp-checks-search3"></span></button>';
+						// $html[] = 			'<input type="button" name="psp-search-btn" id="psp-search-btn" class="psp-form-button-small psp-form-button-primary" />';
+						$html[] = 		'</div>';
+						$html[] = 	'</div>';
+						$nb_cols++;
+					} // end search box
+				}
 			}
-			
+
+			$html[] = 	'</div>'; // end psp-list-table-header-row-first
+
+			// start psp-list-table-header-row-second
+			$html[] = 	'<div class="psp-list-table-header-row-second">';
+
 			// buttons
 			if ( $this->opt["show_header_buttons"] ) {
-			if( trim($this->opt["custom_table"]) == "" || $this->opt["custom_table_force_action"]){
-
 				if( isset($this->opt['mass_actions']) && ($this->opt['mass_actions'] === false) ){
-					$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;</div>';
-				}elseif( isset($this->opt['mass_actions']) && count($this->opt['mass_actions']) > 0 ){
-					$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;';
+					$html[] = '<div class="psp-list-table-left-col '. $this->opt["custom_table"] .'" style="padding-top: 5px;">';
+					$html[] = 	'<input type="button" value="' . __('Add Keyword', $this->the_plugin->localizationName) . '" class="psp-form-button-small psp-form-button-success" id="psp-submit-to-reporter">';
+					$html[] = 	'<input type="button" value="' . __('Delete', $this->the_plugin->localizationName) . '" class="psp-form-button-small psp-form-button-info" id="psp-submit-to-reporter">';
+					$html[] = 	'<input type="button" value="' . __('Add Competitor', $this->the_plugin->localizationName) . '" class="psp-form-button-small psp-form-button-warning" id="psp-submit-to-reporter">';
+					$html[] = '</div>';
+				}elseif( isset($this->opt['mass_actions']) && is_array($this->opt['mass_actions']) && ! empty($this->opt['mass_actions']) ){
+					$html[] = '<div class="psp-list-table-left-col '. $this->opt["custom_table"] .'" style="padding-top: 5px;">&nbsp;';
 
 					foreach ($this->opt['mass_actions'] as $key => $value){
 						$html[] = 	'<input type="button" value="' . ( $value['value'] ) . '" id="psp-' . ( $value['action'] ) . '" class="psp-form-button-small psp-form-button-' . ( $value['color'] ) . '">';
@@ -853,22 +1042,25 @@ if(class_exists('pspAjaxListTable') != true) {
 					$html[] = 	'<input type="button" value="' . __('Optimize All', $this->the_plugin->localizationName) . '" id="psp-all-optimize" class="psp-form-button-small psp-form-button-info">';
 					$html[] = '</div>';
 				}
-				
-				if( $this->opt['id'] == 'pspPageOptimization' ){
-					$html[] = '<div id="psp-inline-editpost-boxtpl" style="display: none;">';
-					$html[] = $this->the_plugin->edit_post_inline_boxtpl();
-					$html[] = '</div>';
-				}
+
+				$nb_cols++;
 			}
 			else{
-				$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;';
-				$html[] = '</div>';
-			}
+				$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;</div>';
+				$nb_cols++;
 			}
 
+			// show top pagination
+			if ( !($nb_cols%2) ) {
+				//$html[] = '<div style="padding-top: 5px;" class="psp-list-table-left-col">&nbsp;</div>';
+			}
 			$html[] = $this->get_pagination();
 
+			$html[] = 	'</div>';
+			// end psp-list-table-header-row-second
+
 			$html[] = '</div>';
+			// end psp-list-table-header
 
             echo implode("\n", $html);
 
@@ -879,11 +1071,12 @@ if(class_exists('pspAjaxListTable') != true) {
 		{
 			$html = array();
 
+			// start psp-list-table-posts
 			$html[] = '<div id="psp-list-table-posts">';
 			$html[] = 	'<table class="psp-table">';
 			$html[] = 		'<thead>';
 			$html[] = 			'<tr>';
-  
+
 			foreach ($this->opt['columns'] as $key => $value){
 				if( $value['th'] == 'checkbox' ){
 					$html[] = '<th class="checkbox-column" width="20"><input type="checkbox" id="psp-item-check-all" checked></th>';
@@ -897,7 +1090,7 @@ if(class_exists('pspAjaxListTable') != true) {
 			$html[] = 		'</thead>';
 
 			$html[] = 		'<tbody>';
-			
+
 			if( $this->opt['id'] == 'pspPageOptimization' ){
 				//use to generate meta keywords, and description for your requested item
 				require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/seo-check-class/seo.class.php' );
@@ -922,41 +1115,26 @@ if(class_exists('pspAjaxListTable') != true) {
 				}
 				//continue 1; //DEBUG
 
-				$html[] = 			'<tr data-itemid="' . ( ( isset($post->ID) ? $post->ID : $post['id'] ) ) . '">';
+				$html[] = '<tr';
+				$html[] = 	' data-itemid="' . ( isset($post->ID) ? $post->ID : $post['id'] ) . '"';
+				if ( is_array($post) && isset($post['__tr_css']) && ! empty($post['__tr_css']) ) {
+					$html[] = ' class="' . ( $post['__tr_css'] ) . '"';
+				}
+				$html[] = '>';
 				foreach ($this->opt['columns'] as $key => $value) { // columns foreach
 
 					$html[] = '<td style="'
-						. ( isset($value['align']) && $value['align'] != "" ? 'text-align:' . ( $value['align'] ) . ';' : '' ) . ''
-						. ( isset($value['css']) && count($value['css']) > 0 ? $this->print_css_as_style($value['css']) : '' ) . '"
-						class="' . ( isset($value['class']) ? $value['class'] : '' ) . '"
-						>';
+					. ( isset($value['align']) && $value['align'] != "" ? 'text-align:' . ( $value['align'] ) . ';' : '' ) . ''
+					. ( isset($value['css']) && count($value['css']) > 0 ? $this->print_css_as_style($value['css']) : '' ) . ''
+					. '" class="' . ( isset($value['class']) ? $value['class'] : '' ) . '">';
 
 					if( $value['td'] == 'checkbox' ){
 						$html[] = '<input type="checkbox" class="psp-item-checkbox" name="psp-item-checkbox-' . ( isset($post->ID) ? $post->ID : $post['id'] ) . '" checked>';
 					}
 					elseif( $value['td'] == '%score%' ){
-						$score = (float)$item_data['score'];
-						$size_class = 'size_';
-						if ( $score >= 20 && $score < 40 ){
-							$size_class .= '20_40';
-						}elseif ( $score >= 40 && $score < 60 ){
-							$size_class .= '40_60';
-						}
-						elseif ( $score >= 60 && $score < 80 ){
-							$size_class .= '60_80';
-						}elseif ( $score >= 80 && $score <= 100 ){
-							$size_class .= '80_100';
-						}else{
-							$size_class .= '0_20';
-						}
-
-						if( !isset($item_data['score']) || trim($item_data['score']) == "" ){
-							$item_data['score'] = 0;
-						}
-						$html[] = '<div class="psp-progress">';
-						$html[] = 	'<div class="psp-progress-bar ' . ( $size_class ) . '" style="width:' . ( $score ) . '%"></div>';
-						$html[] = 	'<div class="psp-progress-score">' . ( $item_data['score'] ) . '%</div>';
-						$html[] = '</div>';
+						$score = isset($item_data['score']) && ! empty($item_data['score'])
+							? (float) $item_data['score'] : 0;
+						$html[] = $this->the_plugin->build_score_html_container( $score );
 					}
 					elseif( $value['td'] == '%focus_keyword%' ){
 						$focus_kw = ''; //get_post_meta( $post->ID, 'psp_kw', true );
@@ -1023,19 +1201,30 @@ if(class_exists('pspAjaxListTable') != true) {
 					elseif( $value['td'] == '%custom_title%' ){
 						$html[] = '<i>' . ( $post['title'] ) . '</i>';
 					}
-					elseif( $value['td'] == '%serp_operation%' ){
+					elseif( $value['td'] == '%buttons_group%' ){
+
 						if( isset($value['option']) && is_array($value['option']) && count($value['option']) > 0 ){
-							foreach ($value['option'] as $operation => $operation_value ) {
-								$_icon = $operation_value['icon'];
-								$_value = $operation_value['value'];
-								if( isset($operation_value['value_change']) ){
-									$_value = $post['publish']=='Y' ? $operation_value['value'] : $operation_value['value_change'];
-									$_icon = $post['publish']=='Y' ? $_icon : $operation_value['icon_change'];
+							foreach ($value['option'] as $opk => $opv ) {
+
+								$_value = $opv['value'];
+								$_color = isset($opv['color']) ? $opv['color'] : 'gray';
+								$_icon = isset($opv['icon']) ? $opv['icon'] : '';
+
+								if ( isset($opv['value_change']) ) {
+									if ( isset($post['publish']) && ($post['publish'] != 'Y') ) {
+										$_value = $opv['value_change'];
+										$_icon = isset($opv['icon_change']) ? $opv['icon_change'] : '';
+									}
 								}
-								
-								$html[] =	'<a href="#" class="psp-form-serp-button psp-' . ( $operation_value['action'] ) . '" title="' . ( $_value ) . '">' . ( $_icon ) . '</a>';
-							}
-						} 
+
+								if ( ! empty($_icon) ) {
+									$html[] = '<a href="#" class="psp-form-button-group psp-' . ( $opv['action'] ) . '" title="' . ( $_value ) . '">' . ( $_icon ) . '</a>';
+								}
+								else {
+									$html[] = '<input type="button" value="' . ( $_value ) . '" class="psp-form-button-small psp-form-button-' . ( $_color ) . ' psp-' . ( $opv['action'] ) . '">';
+								}
+							} //end foreach
+						}
 					}
 					elseif( $value['td'] == '%button%' ){
 						$value['option']['color'] = isset($value['option']['color']) ? $value['option']['color'] : 'gray';
@@ -1063,7 +1252,7 @@ if(class_exists('pspAjaxListTable') != true) {
 						$html[] = '<i>' . ( $post['created'] ) . '</i>';
 					}
 					elseif( $value['td'] == '%hits%' ){
-						$html[] = '<i>' . ( $post['hits'] ) . '</i>';
+						$html[] = '<i class="psp-hits">' . ( $post['hits'] ) . '</i>';
 					}
 					elseif( $value['td'] == '%url%' ){
 						$html[] = '<i>' . ( $post['url'] ) . '</i>';
@@ -1083,7 +1272,8 @@ if(class_exists('pspAjaxListTable') != true) {
 					elseif( $value['td'] == '%last_date%' ){
 						$html[] = '<i>' . ( $post['data'] ) . '</i>';
 					}
-					
+
+					//:: pspSmushit | pspTinyCompress
                     if ( in_array($this->opt['id'], array('pspSmushit', 'pspTinyCompress')) ) {
 						
 						$id = intval( $post->ID );
@@ -1115,7 +1305,7 @@ if(class_exists('pspAjaxListTable') != true) {
 								if ( isset($meta_new['psp_smushit_errors']) && ( (int) $meta_new['psp_smushit_errors'] ) > 0 ) {
 									$status = 'invalid';
 									$msg_cssClass = 'psp-error';
-									$__msg = array( __('errors occured during smushit operation!', $this->the_plugin->localizationName) );
+									$__msg = array( __('errors occured on compress!', $this->the_plugin->localizationName) );
 								} else {
 									$status = 'valid';
 									$msg_cssClass = 'psp-success';
@@ -1131,119 +1321,56 @@ if(class_exists('pspAjaxListTable') != true) {
 				
 						}
 					}
-					
+
+					//:: pspPageSpeed
 					if( $this->opt['id'] == 'pspPageSpeed' ){
 						if( $value['td'] == '%mobile_score%' ){
 							$mobile = get_post_meta( $post->ID, 'psp_mobile_pagespeed', true ); 
 							
 							if( isset($mobile['score']) ){
-								 
-								$score = (int) $mobile['score'];
-								$size_class = 'size_';
-								if ( $score >= 20 && $score < 40 ){
-									$size_class .= '20_40';
-								}elseif ( $score >= 40 && $score < 60 ){
-									$size_class .= '40_60';
-								}
-								elseif ( $score >= 60 && $score < 80 ){
-									$size_class .= '60_80';
-								}elseif ( $score >= 80 && $score <= 100 ){
-									$size_class .= '80_100';
-								}else{
-									$size_class .= '0_20';
-								}
-		
-								$html[] = '<div class="psp-progress" style="margin-right:4px">';
-								$html[] = 	'<div class="psp-progress-bar ' . ( $size_class ) . '" style="width:' . ( $score ) . '%"></div>';
-								$html[] = '</div>';
+								$score = isset($mobile['score']) && ! empty($mobile['score'])
+									? (int) $mobile['score'] : 0;
+								$html[] = $this->the_plugin->build_score_html_container( $score, array(
+									'show_score' 	=> true,
+									'css_style'		=> 'style="margin-right:4px"',
+								));
 							}else{
 								$html[] = '<i>Never Checked</i>';
 							}
 						}
-						
 						if( $value['td'] == '%desktop_score%' ){
 							$desktop = get_post_meta( $post->ID, 'psp_desktop_pagespeed', true ); 
 							
 							if( isset($desktop['score']) ){
-								 
-								$score = (int) $desktop['score'];
-								$size_class = 'size_';
-								if ( $score >= 20 && $score < 40 ){
-									$size_class .= '20_40';
-								}elseif ( $score >= 40 && $score < 60 ){
-									$size_class .= '40_60';
-								}
-								elseif ( $score >= 60 && $score < 80 ){
-									$size_class .= '60_80';
-								}elseif ( $score >= 80 && $score <= 100 ){
-									$size_class .= '80_100';
-								}else{
-									$size_class .= '0_20';
-								}
-		
-								$html[] = '<div class="psp-progress" style="margin-right:4px">';
-								$html[] = 	'<div class="psp-progress-bar ' . ( $size_class ) . '" style="width:' . ( $score ) . '%"></div>';
-								$html[] = '</div>';
+								$score = isset($desktop['score']) && ! empty($desktop['score'])
+									? (int) $desktop['score'] : 0;
+								$html[] = $this->the_plugin->build_score_html_container( $score, array(
+									'show_score' 	=> true,
+									'css_style'		=> 'style="margin-right:4px"',
+								));
 							}else{
 								$html[] = '<i>Never Checked</i>';
 							}
 						}
 					}
-					
-					if( $this->opt['id'] == 'pspProxyLists' ){
-						if( $value['td'] == '%ip_address%' ){
-							$html[] = '<strong>' . ( $post['ip'] ) . '</strong>';
-						}
-						else if( $value['td'] == '%port%' ){
-							$html[] = '<strong>' . ( $post['port'] ) . '</strong>';
-						}
-						elseif( $value['td'] == '%speed%' ){
-							$score = (float)$post['speed'];
-							$size_class = 'size_';
-							if ( $score >= 20 && $score < 40 ){
-								$size_class .= '20_40';
-							}elseif ( $score >= 40 && $score < 60 ){
-								$size_class .= '40_60';
-							}
-							elseif ( $score >= 60 && $score < 80 ){
-								$size_class .= '60_80';
-							}elseif ( $score >= 80 && $score <= 100 ){
-								$size_class .= '80_100';
-							}else{
-								$size_class .= '0_20';
-							}
-	
-							$html[] = '<div class="psp-progress" style="margin-right:4px">';
-							$html[] = 	'<div class="psp-progress-bar ' . ( $size_class ) . '" style="width:' . ( $score ) . '%"></div>';
-							$html[] = '</div>';
-						}
-						/*elseif( $value['td'] == '%connection_time%' ){
-							$score = (float)$post['connection_time'];
-							$size_class = 'size_';
-							if ( $score >= 20 && $score < 40 ){
-								$size_class .= '20_40';
-							}elseif ( $score >= 40 && $score < 60 ){
-								$size_class .= '40_60';
-							}
-							elseif ( $score >= 60 && $score < 80 ){
-								$size_class .= '60_80';
-							}elseif ( $score >= 80 && $score <= 100 ){
-								$size_class .= '80_100';
-							}else{
-								$size_class .= '0_20';
-							}
-	
-							$html[] = '<div class="psp-progress" style="margin-right:4px">';
-							$html[] = 	'<div class="psp-progress-bar ' . ( $size_class ) . '" style="width:' . ( $score ) . '%"></div>';
-							$html[] = '</div>';
-						}*/
-					}
+
+					//:: pspLinkBuilder
 					if( $this->opt['id'] == 'pspLinkBuilder' ){
+
 						if( $value['td'] == '%builder_phrase%' ){
-							$html[] = '<input type="text" value="' . ( $post['phrase'] ) . '" readonly />';
+							//$html[] = '<input type="text" value="' . ( $post['phrase'] ) . '" readonly />';
+							$html[] = '<ul class="psp-link-builder-phrase">';
+							if ( ! empty($post['phrase']) ) {
+								$html[] = '<li>' . ( $post['phrase'] ) . '</li>';
+							}
+							if ( ! empty($post['title']) ) {
+								$html[] = '<li>' . ( $post['title'] ) . '</li>';	
+							}
+							$html[] = '</ul>';
 						}
 						else if( $value['td'] == '%builder_url%' ){
-							$html[] = '<input type="text" value="' . ( $post['url'] ) . '" readonly />';
+							//$html[] = '<input type="text" value="' . ( $post['url'] ) . '" readonly />';
+							$html[] = '<i>' . ( $post['url'] ) . '</i>';
 						}
 						else if( $value['td'] == '%builder_rel%' ){
 							$html[] = '<i>' . ( $post['rel'] ) . '</i>';
@@ -1254,93 +1381,145 @@ if(class_exists('pspAjaxListTable') != true) {
 						else if( $value['td'] == '%url_attributes%' ){
 							$html[] = (1==1 ? '<a href="#url_attributes" class="psp-button gray psp-btn-url-attributes-lightbox" data-itemid="' . ( $post['id'] ) . '">' . ( __('Show All', $this->the_plugin->localizationName) ) . '</a>' : '-');
 						}
+						else if( $value['td'] == '%max_rpl%' ){
+							//$html[] = '<input type="text" value="' . ( $post['url'] ) . '" readonly />';
+							$max_rpl = $post['max_replacements'];
+							if ( -1 == $max_rpl ) {
+								$max_rpl = 'all';
+							}
+							$html[] = '<i>' . ( $max_rpl ) . '</i>';
+						}
 					}
-					
+
+					//:: pspLinkRedirect
 					if( $this->opt['id'] == 'pspLinkRedirect' ){
 						if( $value['td'] == '%linkred_url%' ){
-							$html[] = '<input type="text" value="' . ( $post['url'] ) . '" readonly />';
+							//$html[] = '<input type="text" value="' . ( $post['url'] ) . '" readonly />';
+							if ( isset($post['redirect_rule']) && ('regexp' == $post['redirect_rule']) ) {
+								$html[] = '<i>' . ( $post['url'] ) . '</i>';
+							}
+							else {
+								$html[] = '<a href="' . $post['url'] . '" target="_blank">' . ( $post['url'] ) . '</a>';
+							}
 						}
 						else if( $value['td'] == '%linkred_url_redirect%' ){
-							$html[] = '<input type="text" value="' . ( $post['url_redirect'] ) . '" readonly />';
+							//$html[] = '<input type="text" value="' . ( $post['url_redirect'] ) . '" readonly />';
+							if ( isset($post['redirect_rule']) && ('regexp' == $post['redirect_rule']) ) {
+								$html[] = '<i>' . ( $post['url_redirect'] ) . '</i>';
+							}
+							else {
+								$html[] = '<a href="' . $post['url_redirect'] . '" target="_blank">' . ( $post['url_redirect'] ) . '</a>';
+							}
 						}
-					}
-					
-					if( $this->opt['id'] == 'pspSocialStats' ){
-						$page_permalink = get_permalink( $post->ID );
-						$social_data = $this->get_page_social_stats( $post->ID, $page_permalink );
-						
-						$dashboard_module_url = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/dashboard/';
-						
-						if( $value['td'] == '%ss_facebook%' ){
-							$html[] = '<div class="psp-social-status" style="color: #3c5b9b">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/facebook-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<span>' . ( isset($social_data['facebook']['share_count']) ? number_format($social_data['facebook']['share_count'], 0) : '&ndash;' ) . '</span>';
-							$html[] = 	'<label>' . ( __("shares", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = '</div>';
-							/*
-							$html[] = '<div class="psp-social-status" style="color: #3c5b9b">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/facebook-like-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<span>' . ( isset($social_data['facebook']['like_count']) ? number_format($social_data['facebook']['like_count'], 0) : '&ndash;' ) . '</span>';
-							$html[] = 	'<label>' . ( __("likes", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = '</div>';
-							
-							$html[] = '<div class="psp-social-status" style="color: #3c5b9b">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/facebook-comments-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<span>' . ( isset($social_data['facebook']['comment_count']) ? number_format($social_data['facebook']['comment_count'], 0) : '&ndash;' ) . '</span>';
-							$html[] = 	'<label>' . ( __("comments", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = '</div>';
-							
-							$html[] = '<div class="psp-social-status" style="color: #3c5b9b">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/facebook-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<span>' . ( isset($social_data['facebook']['click_count']) ? number_format($social_data['facebook']['click_count'], 0) : '&ndash;' ) . '</span>';
-							$html[] = 	'<label>' . ( __("clicks", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = '</div>';*/
-							
-						}
-						elseif( $value['td'] == '%ss_stumbleupon%' ){
-							$html[] = '<div class="psp-social-status" style="color: #3fbd46">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/stumbleupon-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<label>' . ( __("views", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = 	'<span>' . ( isset($social_data['stumbleupon']) ? number_format($social_data['stumbleupon'], 0) : '&ndash;' ) . '</span>';
+						else if( $value['td'] == '%redirect_type_and_rule%' ){
+							$redirect_rules = array(
+								'custom_url' => __('Custom URL', 'psp'),
+								'regexp' => __('Regexp', 'psp'),
+							);
+							$redirect_rule = isset($redirect_rules["{$post['redirect_rule']}"])
+								? $redirect_rules["{$post['redirect_rule']}"] : 'unknown';
+
+							$redirect_type = $this->the_plugin->get_redirect_type(array(
+								'settings'		=> array(),
+								'row'			=> $post,
+							));
+							$html[] = '<div>';
+							$html[] = 	'<div><i>' . $redirect_rule . '</i></div>';
+							$html[] = 	'<div><i>' . $redirect_type['title'] . '</i></div>';
 							$html[] = '</div>';
 						}
-						elseif( $value['td'] == '%ss_twitter%' ){
-							$html[] = '<div class="psp-social-status" style="color: #00aced">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/twitter-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<label>' . ( __("retweets", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = 	'<span>' . ( isset($social_data['twitter']) ? number_format($social_data['twitter'], 0) : '&ndash;' ) . '</span>';
-							$html[] = '</div>';
-						} 
-						elseif( $value['td'] == '%ss_google%' ){
-							$html[] = '<div class="psp-social-status" style="color: #d23e2b">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/google-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<label>' . ( __("share", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = 	'<span>' . ( isset($social_data['google']) ? number_format($social_data['google'], 0) : '&ndash;' ) . '</span>';
-							$html[] = '</div>';
-						}  
-						elseif( $value['td'] == '%ss_digg%' ){
-							$html[] = '<div class="psp-social-status" style="color: #2c2c2c">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/delicious-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<label>' . ( __("posts", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = 	'<span>' . ( isset($social_data['delicious']) ? number_format($social_data['delicious'], 0) : '&ndash;' ) . '</span>';
-							$html[] = '</div>';
-						} 
-						elseif( $value['td'] == '%ss_pinterest%' ){
-							$html[] = '<div class="psp-social-status" style="color: #ca4638">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/pinterest-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<label>' . ( __("pins", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = 	'<span>' . ( isset($social_data['pinterest']) ? number_format($social_data['pinterest'], 0) : '&ndash;' ) . '</span>';
-							$html[] = '</div>';
-						} 
-						elseif( $value['td'] == '%ss_linkedin%' ){
-							$html[] = '<div class="psp-social-status" style="color: #007ab9">';
-							$html[] = 	'<img src="' . ( $dashboard_module_url ) . 'assets/stats/linkedin-icon.png" class="psp-lists-icon">';
-							$html[] = 	'<label>' . ( __("backlinks", $this->the_plugin->localizationName) ) . '</label>';
-							$html[] = 	'<span>' . ( isset($social_data['linkedin']) ? number_format($social_data['linkedin'], 0) : '&ndash;' ) . '</span>';
+						else if( $value['td'] == '%redirect_type%' ){
+							$redirect_type = $this->the_plugin->get_redirect_type(array(
+								'settings'		=> array(),
+								'row'			=> $post,
+							));
+							$html[] = '<i>' . $redirect_type['title'] . '</i>';
+						}
+						else if( $value['td'] == '%redirect_rule%' ){
+							$redirect_rules = array(
+								'custom_url' => __('Custom URL', 'psp'),
+								'regexp' => __('Regexp', 'psp'),
+							);
+							$redirect_rule = isset($redirect_rules["{$post['redirect_rule']}"])
+								? $redirect_rules["{$post['redirect_rule']}"] : 'unknown';
+							$html[] = '<i>' . $redirect_rule . '</i>';
+						}
+						else if( $value['td'] == '%last_check_status%' ){
+							$target_details = isset($post['target_status_details'])
+								? $post['target_status_details'] : array();
+							$target_details = maybe_unserialize( $target_details );
+
+							$target_code = isset($post['target_status_code'])
+								? (string) $post['target_status_code'] : '';
+
+							$last_status = __('Never Checked', 'psp');
+							$last_css_class = 'psp-message psp-info';
+							if ( isset($post['redirect_rule']) && ('regexp' == $post['redirect_rule']) ) {
+								$last_status = __('**', 'psp');
+								$last_css_class = '';
+							}
+
+							if ( 'valid' == $target_code ) {
+								$last_status = __('Valid', 'psp');
+								$last_css_class = 'psp-message psp-success';
+							}
+							else if ( 'invalid' == $target_code ) {
+								$last_status = __('Invalid', 'psp');
+								$last_css_class = 'psp-message psp-error';
+							}
+
+							$last_status_details = $last_status;
+							if ( isset($target_details['resp_msg']) ) {
+								$last_status_details = $target_details['resp_msg'];
+							}
+
+							$last_status_check_at = '';
+							if ( isset($target_details['last_check_at']) ) {
+								$last_status_check_at = $target_details['last_check_at'];
+							}
+
+							$html[] = '<div class="psp-last-check-status">';
+							$html[] = 	'<div><span title="' . $last_status_details . '" class="' . $last_css_class . '">' . $last_status . '</span></div>';
+							$html[] = 	'<div><i>' . $last_status_check_at . '</i></div>';
 							$html[] = '</div>';
 						}
 					}
 
+					//:: pspSocialStats
+					if( $this->opt['id'] == 'pspSocialStats' ){
+						$page_permalink = get_permalink( $post->ID );
+
+						$socialServices = $this->the_plugin->social_get_allowed_providers();
+						$socialData = $this->the_plugin->social_get_stats(array(
+							'from'					=> 'listing',
+							'cache_life_time'		=> 1800, // in seconds
+							'website_url'			=> $page_permalink,
+							'postid'				=> $post->ID,
+						));
+
+						$dashboard_module_url = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/dashboard/';
+
+						$ssKey =  $value['td'];
+						$ssKey = str_replace('%ss_', '', $ssKey);
+						$ssKey = str_replace('%', '', $ssKey);
+						if ( isset($socialServices["$ssKey"]) ) {
+
+							$ssVal = $socialServices["$ssKey"];
+
+							$socialHtmlBox = $this->the_plugin->social_get_htmlbox(array(
+								'from'			=> 'listing',
+								'img_src'		=> $dashboard_module_url . 'assets/stats/',
+								'ssKey'			=> $ssKey,
+								'ssVal'			=> $ssVal,
+								'socialData'	=> $socialData,
+								'postid'		=> $post->ID,
+								'only_counts'	=> array('facebook'),
+							));
+							$html[] = $socialHtmlBox;
+						}
+					}
+
+					//:: pspWebDirectories
 					if( $this->opt['id'] == 'pspWebDirectories' ){
 						if( $value['td'] == '%directory_name%' ){
 							$html[] = '<a href="' . ( $post['submit_url'] ) . '" target="_blank">' . ( $post['directory_name'] ) . '</a>';
@@ -1368,57 +1547,84 @@ if(class_exists('pspAjaxListTable') != true) {
 							$html[] = $html_status;
 						}
 					}
-						
+
+					//:: pspPageHTMLValidation
 					if( $this->opt['id'] == 'pspPageHTMLValidation' ){
 
 						// get html verify data
 						$html_verify_details = get_post_meta( $post->ID, 'psp_w3c_validation', true );
+						
 						if( $value['td'] == '%nr_of_errors%' ){
-							$html[] = '<i class="' . ( $key ) . '">' . ( isset($html_verify_details['nr_of_errors']) ? $html_verify_details['nr_of_errors'] : $value['def'] ) . '</i>';
+							$nr_of_errors = isset($html_verify_details['nr_of_errors']) ? $html_verify_details['nr_of_errors'] : $value['def'];
+
+							$html[] = '<i class="' . ( $key ) . '">' . $nr_of_errors . '</i>';
 						}
 						elseif( $value['td'] == '%nr_of_warning%' ){
-							$html[] = '<i class="' . ( $key ) . '">' . ( isset($html_verify_details['nr_of_warning']) ? $html_verify_details['nr_of_warning'] : $value['def'] ) . '</i>';
+							$nr_of_warning = isset($html_verify_details['nr_of_warning']) ? $html_verify_details['nr_of_warning'] : $value['def'];
+
+							$html[] = '<i class="' . ( $key ) . '">' . $nr_of_warning . '</i>';
 						}
 						elseif( $value['td'] == '%status%' ){
-							$html[] = '<strong class="' . ( $key ) . '" style="' . ( isset($html_verify_details['status']) && $html_verify_details['status'] == 'Invalid' ? 'color: red;' : 'color: green' ) . '">' . ( isset($html_verify_details['status']) ? $html_verify_details['status'] : $value['def'] ) . '</strong>';
+							$current_status_css = isset($html_verify_details['status'])
+								&& $html_verify_details['status'] == 'invalid' ? 'color: red;' : 'color: green;';
+
+							$current_status = isset($html_verify_details['status'])
+								? $html_verify_details['status'] : $value['def'];
+							$current_status = isset($html_verify_details['msg']) && ! empty($html_verify_details['msg'])
+								? $html_verify_details['msg'] : $current_status;
+
+							// title="' . $current_status . '"
+							$html[] = '<strong class="' . ( $key ) . '" style="' . $current_status_css . '">' . $current_status . '</strong>';
 						}
 						elseif( $value['td'] == '%last_check_at%' ){
-							$html[] = '<i class="' . ( $key ) . '">' . ( isset($html_verify_details['last_check_at']) ? $html_verify_details['last_check_at'] : $value['def'] ) . '</i>';
+							$last_check_at = isset($html_verify_details['last_check_at']) ? $html_verify_details['last_check_at'] : $value['def'];
+
+							$html[] = '<i class="' . ( $key ) . '">' . $last_check_at . '</i>';
 						}
 						elseif( $value['td'] == '%view_full_report%' ){
 							$html[] = '<a target="_blank" href="' . ( 'http://validator.w3.org/check?uri=' . get_permalink( $post->ID ) ) . '" class="psp-button gray">' . ( __('View report', $this->the_plugin->localizationName) ) . '</a>';
 						}
 					}
-					
+
+					//:: pspSERPKeywords
 					if( $this->opt['id'] == 'pspSERPKeywords' ){
 						$rank_data = $post;
-						
+
 						if( $value['td'] == '%serp_focus_keyword%' ){
-							$html[] = '<input type="text" value="' . ( $post['focus_keyword'] ) . '" />';
+							//$html[] = '<input type="text" value="' . ( $post['focus_keyword'] ) . '" />';
+					 
+							$html[] = '<a href="#" class="psp-serp-keyword-details" data-keywordID="' . ( $post['id'] ) . '">';
+							$html[] =  	$post['focus_keyword'];
+							$html[] = '</a>';	      
 						}
+
 						else if( $value['td'] == '%serp_url%' ){
-							$html[] = '<input type="text" value="' . ( $post['url'] ) . '" />';
+							//$html[] = '<input type="text" value="' . ( $post['url'] ) . '" />';
+							$html[] = '<i>' . ( $post['url'] ) . '</i>';
 						}
 						elseif( $value['td'] == '%serp_location%' ){
 							$html[] = '<i>' . ( $post['engine_location'] ) . '</i>';
 						}
-						
+
 						else if( $value['td'] == '%serp_google%' ){
 
 							if( isset($rank_data) && is_array($rank_data) && count($rank_data) > 0 ){
-								// get best rank
+							/*	// get best rank
 								$best_pos = (int) $post['position_best'];
 								
 								// get worst
 								$worst_pos = (int) $post['position_worst'];
-								
+								*/
 								// current rank
 								$current_pos = (int) $rank_data['position'];
 								
-								// previous rank
-								$previous_pos = (int) $rank_data['position_prev'];
+							/*	// previous rank
+								$previous_pos = (int) $rank_data['position_prev'];*/
 
-								//direction icon!
+								/*ai pt stationar clasa de icon :psp-checks-arrows-h, pt arrow up - psp-checks-arrow-up si pt down psp-checks-arrow-down  */
+								$html[] = '<span class="the_pos">' . ( $current_pos ) . '<i class="psp-checks-arrow-up"></i></span>';
+
+							/*	//direction icon!
 								$icon = 'same';
 								if( $current_pos > $previous_pos ){
 									$icon = 'down';
@@ -1469,20 +1675,20 @@ if(class_exists('pspAjaxListTable') != true) {
 								$html[] = 			'</tr>';
 								$html[] = 		'</tbody>';
 								$html[] = 	'</table>';
-								$html[] = '</div>';
+								$html[] = '</div>';*/
 							}
 						}
-						
+
 						else if( $value['td'] == '%serp_start_date%' ){
 							$html[] = '<i>' . ( $post['created'] ) . '</i>';
 						}
-						
+
 						else if( $value['td'] == '%serp_visits%' ){
 							$html[] = '<i>' . ( $post['visits'] ) . '</i>';
 						}
-						
 					}
-					
+
+					//:: pspFacebookPlanner
 					if( $this->opt['id'] == 'pspFacebookPlanner' ){
 						
 						if( $value['td'] == '%post_id%' ){
@@ -1491,8 +1697,8 @@ if(class_exists('pspAjaxListTable') != true) {
 						elseif( $value['td'] == '%post_name%' ){
 							$__postInfo = get_post( $post['id_post'], OBJECT );
 							$html[] = '<input type="hidden" id="psp-item-title-' . ( $post['id'] ) . '" value="' . ( str_replace('"', "'", $__postInfo->post_title) ) . '" />';
-							$html[] = '<a href="' . ( sprintf( admin_url('post.php?post=%s&action=edit'), $__postInfo->ID)) . '">';
-							$html[] = 	( $__postInfo->post_title . ( $__postInfo->post_status != 'publish' ? ' <span class="item-state">- ' . ucfirst($__postInfo->post_status) : '</span>') );
+							$html[] = '<a href="' . ( sprintf( admin_url('post.php?post=%s&action=edit'), $__postInfo->ID)) . '" class="psp-post-name">';
+							$html[] = 	( $__postInfo->post_title . ( $__postInfo->post_status != 'publish' ? ' <span class="item-state">- ' . ucfirst($__postInfo->post_status) . '</span>' : '' ) );
 							$html[] = '</a>';
 							
 							$html[] = '
@@ -1600,21 +1806,30 @@ if(class_exists('pspAjaxListTable') != true) {
 					$html[] = '</td>';
 				} // end columns foreach
 
-				$html[] = 			'</tr>';
+				$html[] = '</tr>';
+				if( $this->opt['id'] == 'pspSERPKeywords' ){
+					$html[] = '<tr style="display: none">';
+					$html[] = 	'<td colspan="' . ( count($this->opt['columns']) ) . '" rel="">';
+					$html[] = 		'<span class="psp-serp-loading">loading ...</span>';
+					$html[] = 	'</td>';
+					$html[] = '</tr>';
+				}
 			} // end main foreach
 
 			$html[] = 		'</tbody>';
-
-			$html[] = 	'';
-
 			$html[] = 	'</table>';
 
+			$html[] = '</div>'; // end psp-list-table-posts
+
+			// start footer
+			$html[] = '<div id="psp-list-table-footer">';
+
 			// buttons
-			if( trim($this->opt["custom_table"]) == "" || $this->opt["custom_table_force_action"]){
+			if( trim($this->opt["custom_table"]) == ""){
 
 				if( isset($this->opt['mass_actions']) && ($this->opt['mass_actions'] === false) ){
 					$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;</div>';
-				}elseif( isset($this->opt['mass_actions']) && count($this->opt['mass_actions']) > 0 ){
+				}elseif( isset($this->opt['mass_actions']) && is_array($this->opt['mass_actions']) && ! empty($this->opt['mass_actions']) ){
 					$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;';
 
 					foreach ($this->opt['mass_actions'] as $key => $value){
@@ -1635,13 +1850,18 @@ if(class_exists('pspAjaxListTable') != true) {
 				}
 			}
 			else{
-				$html[] = '<div class="psp-list-table-left-col" style="padding-top: 5px;">&nbsp;';
+				$html[] = '<div class="psp-list-table-left-col '. $this->opt["custom_table"] .'" style="margin-bottom: 6px;">&nbsp;';
+				if( isset($this->opt['mass_actions']) && is_array($this->opt['mass_actions']) && ! empty($this->opt['mass_actions']) ){
+					foreach ($this->opt['mass_actions'] as $key => $value){
+						$html[] = 	'<input type="button" value="' . ( $value['value'] ) . '" id="psp-' . ( $value['action'] ) . '" class="psp-form-button-small psp-form-button-' . ( $value['color'] ) . '">';
+					}
+				}
 				$html[] = '</div>';
 			}
 
-			//$html[] = $this->get_pagination();
+			$html[] = $this->get_pagination();
 
-			$html[] = '</div>';
+			$html[] = '</div>'; // end footer
 
             echo implode("\n", $html);
 
@@ -1678,118 +1898,327 @@ if(class_exists('pspAjaxListTable') != true) {
 
 			return ( count($style_css) > 0 ? implode(";", $style_css) : '' );
 		}
+
+
+		/**
+		 * Update february 2016
+		 */
+		private function get_filter_from_db( $field='' ) {
+			if (empty($field)) return array();
+			
+			global $wpdb;
+			
+			$table = $wpdb->prefix  . $this->opt["custom_table"];
+			$sql = "SELECT a.$field as __field FROM " . $table . " as a WHERE 1=1 GROUP BY a.$field ORDER BY a.$field ASC;";
+		    $res = $wpdb->get_results( $sql, ARRAY_A);
+		    
+			$rows = array();
+		    foreach ($res as $key => $vals){
+		    	$id = $vals['__field'];
+				$rows["$id"] = ucfirst( $id );
+			}
+			return $rows;
+		}
 	
-		public function get_page_social_stats( $postID, $website_url='' )
-		{
-			/*
-			$__ = array(
-				'http://mashable.com',
-				'http://facebook.com',
-				'http://stiumuzica.ro',
-				'http://themeforest.net',
-				'http://codecanyon.net'
-			);
+		public function ajax_request( $retType='die', $pms=array() ) {
+            $request = array(
+                'action'             => isset($_REQUEST['sub_action']) ? $_REQUEST['sub_action'] : '',
+                'ajax_id'            => isset($_REQUEST['ajax_id']) ? $_REQUEST['ajax_id'] : '',
+            );
+            extract($request);
+			//var_dump('<pre>', $request, '</pre>'); die('debug...');
+
+            $ret = array(
+                'status'        => 'invalid',
+                'html'          => '',
+            );
 			
-			shuffle($__);
-			$website_url = $__[0];*/
-			
-			$cache_life_time = 240 * 10; // in seconds
-			
-			$the_db_cache = get_post_meta( $postID, '_psp_social_stats', true );
-			
-			// check if cache NOT expires 
-			if( isset($the_db_cache['_cache_date']) && ( time() <= ( $the_db_cache['_cache_date'] + $cache_life_time ) )  ) {
-				return $the_db_cache;
+			if ( in_array($action, array('publish', 'delete', 'bulk_delete')) ) {
+				// maintain box html
+				$_SESSION['pspListTable'][$request['ajax_id']]['requestFrom'] = 'ajax';
+				$this->setup( $_SESSION['pspListTable'][$request['ajax_id']] );
 			}
-			
-			$db_cache = array();
-			$db_cache['_cache_date'] = time();
-			
-			// Facebook
-			$fql  = "SELECT url, normalized_url, share_count, like_count, comment_count, ";
-			$fql .= "total_count, commentsbox_count, comments_fbid, click_count FROM ";
-			$fql .= "link_stat WHERE url = '{$website_url}'";
-			$apiQuery = "https://api.facebook.com/method/fql.query?format=json&query=" . urlencode($fql);
-			$fb_data = $this->getRemote( $apiQuery );
- 
-			$fb_data = isset($fb_data[0]) ? $fb_data[0] : array();
 
-			// Twitter
-			$apiQuery = "http://urls.api.twitter.com/1/urls/count.json?url=" . $website_url;
-			$tw_data = (array) $this->getRemote( $apiQuery );
-			
-			// LinkedIn
-			$apiQuery = "http://www.linkedin.com/countserv/count/share?format=json&url=" . $website_url;
-			$ln_data = (array) $this->getRemote( $apiQuery );
-			
-			// Pinterest
-			$apiQuery = "http://api.pinterest.com/v1/urls/count.json?callback=receiveCount&url=" . $website_url;
-			$pn_data = (array) $this->getRemote( $apiQuery );
-			
-			// StumbledUpon
-			$apiQuery = "http://www.stumbleupon.com/services/1.01/badge.getinfo?url=" . $website_url;
-			$st_data = (array) $this->getRemote( $apiQuery );
-			
-			// Delicious
-			$apiQuery = "http://feeds.delicious.com/v2/json/urlinfo/data?url=" . $website_url;
-			$de_data = $this->getRemote( $apiQuery ); 
-			$de_data = isset($de_data[0]) ? $de_data[0] : array();
-		
-			// Google Plus
-			$apiQuery = "https://plusone.google.com/_/+1/fastbutton?bsv&size=tall&hl=it&url=" . $website_url;			
-			$go_data = $this->getRemote( $apiQuery, false ); 
-			
-			require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/php-query/php-query.php' );
-			if ( !empty($this->the_plugin->charset) )
-				$html = pspphpQuery::newDocumentHTML( $go_data, $this->the_plugin->charset );
-			else
-				$html = pspphpQuery::newDocumentHTML( $go_data );
-
-			$go_data = $html->find("#aggregateCount")->text();
-			
-			$db_cache['facebook'] = array(
-				'share_count' => isset($fb_data['share_count']) ? $fb_data['share_count'] : 0,
-				'like_count' => isset($fb_data['like_count']) ? $fb_data['like_count'] : 0,
-				'comment_count' => isset($fb_data['comment_count']) ? $fb_data['comment_count'] : 0,
-				'click_count' => isset($fb_data['click_count']) ? $fb_data['click_count'] : 0
-			);
-			 
-			$db_cache['google'] = $go_data;
-			$db_cache['twitter'] = isset($tw_data['count']) ? $tw_data['count'] : 0;
-			$db_cache['linkedin'] = isset($ln_data['count']) ? $ln_data['count'] : 0;
-			$db_cache['pinterest'] = isset($pn_data['count']) ? $pn_data['count'] : 0;
-			$db_cache['stumbleupon'] = isset($st_data['result']['views']) ? $st_data['result']['views'] : 0;
-			$db_cache['delicious'] = isset($de_data['total_posts']) ? $de_data['total_posts'] : 0;
-			 
-			// create a DB cache of this
-			update_post_meta( $postID, '_psp_social_stats', $db_cache );
-			
-			return $db_cache;  
-		}
-
-		private function getRemote( $the_url, $parse_as_json=true )
-		{ 
-			$response = wp_remote_get( $the_url, array('user-agent' => "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0", 'timeout' => 10) ); 
-			// If there's error
-            if ( is_wp_error( $response ) ){
-            	return array(
-					'status' => 'invalid'
-				);
+			$opStatus = array();
+            if ( 'publish' == $action ) {
+            	$opStatus = $this->__action_publish();
             }
-        	$body = wp_remote_retrieve_body( $response );
+			else if ( 'delete' == $action ) {
+            	$opStatus = $this->__action_delete();
+            }
+			else if ( 'bulk_delete' == $action ) {
+            	$opStatus = $this->__action_bulk_delete();
+            }
+			else if ( 'edit_inline' == $action ) {
+            	$opStatus = $this->__action_edit_inline();
+            }
+			$ret = array_merge($ret, $opStatus);
 			
-			if( $parse_as_json == true ){
-				// trick for pinterest
-				if( preg_match('/receiveCount/i', $body)){
-					$body = str_replace("receiveCount(", "", $body);
-					$body = str_replace(")", "", $body);
-				}
+			if ( in_array($action, array('publish', 'delete', 'bulk_delete')) ) {
+				// create box return html
+				ob_start();
 				
-	        	return json_decode( $body, true );
+				$_SESSION['pspListTable'][$request['ajax_id']]['requestFrom'] = 'ajax';
+	
+				$this->setup( $_SESSION['pspListTable'][$request['ajax_id']] );
+				$this->print_html();
+				$html = ob_get_contents();
+				ob_clean();
+				
+				$ret['html'] = $html;
+				//$ret = array_map('utf8_encode', $ret);
+			}
+
+			if ( $retType == 'return' ) { return $ret; }
+			else { die( json_encode( $ret ) ); }
+		}
+
+		public function __action_publish()
+		{
+			global $wpdb;
+
+            $ret = array(
+                'status'        => 'invalid',
+                'msg'          => '',
+            );
+			
+			$request = array(
+				'itemid' 	=> isset($_REQUEST['itemid']) ? (int)$_REQUEST['itemid'] : 0,
+			);
+			
+			$status = 'invalid'; $status_msg = '';
+			if( $request['itemid'] > 0 ) {
+				$table = $wpdb->prefix  . $this->opt["custom_table"];
+
+				$row = $wpdb->get_row( "SELECT * FROM " . $table . " WHERE id = '" . ( $request['itemid'] ) . "'", ARRAY_A );
+				
+				$row_id = (int)$row['id'];
+
+				if ($row_id>0) {
+				
+					// publish/unpublish
+					if ( 1 ) {
+						$wpdb->update( 
+							$table, 
+							array( 
+								'publish'		=> 'Y' == $row['publish'] ? 'N' : 'Y'
+							), 
+							array( 'id' => $row_id ), 
+							array( 
+								'%s'
+							), 
+							array( '%d' ) 
+						);
+					}
+
+					//keep page number & items number per page
+					$_SESSION['pspListTable']['keepvar'] = array('paged' => true, 'posts_per_page' => true);
+					
+					$status = 'valid';
+					$status_msg = 'row published successfully.';
+				}
+				else {
+					$status_msg = 'error: ' . __FILE__ . ":" . __LINE__;
+				}
+			}
+			else {
+				$status_msg = 'error: ' . __FILE__ . ":" . __LINE__;
 			}
 			
-			return $body;
+			$ret = array_merge($ret, array(
+				'status' 	=> $status,
+				'msg'		=> $status_msg
+			));
+			return $ret;
 		}
 		
+		public function __action_delete()
+		{
+			global $wpdb;
+			
+            $ret = array(
+                'status'        => 'invalid',
+                'msg'          => '',
+            );
+			
+			$request = array(
+				'itemid' 	=> isset($_REQUEST['itemid']) ? (int)$_REQUEST['itemid'] : 0
+			);
+			
+			$status = 'invalid'; $status_msg = '';
+			if( $request['itemid'] > 0 ) {
+				$table = $wpdb->prefix  . $this->opt["custom_table"];
+
+				$wpdb->delete( 
+					$table, 
+					array( 'id' => $request['itemid'] )
+				);
+				
+				//keep page number & items number per page
+				$_SESSION['pspListTable']['keepvar'] = array('posts_per_page' => true);
+				
+				$status = 'valid';
+				$status_msg = 'row deleted successfully.';
+			}
+			else {
+				$status_msg = 'error: ' . __FILE__ . ":" . __LINE__;
+			}
+
+			$ret = array_merge($ret, array(
+				'status' 	=> $status,
+				'msg'		=> $status_msg
+			));
+			return $ret;
+		}
+		
+		public function __action_bulk_delete() {
+			global $wpdb;
+			
+            $ret = array(
+                'status'        => 'invalid',
+                'msg'          => '',
+            );
+			
+			$request = array(
+				'id' 			=> isset($_REQUEST['id']) && !empty($_REQUEST['id']) ? trim($_REQUEST['id']) : 0
+			);
+
+			if ($request['id']!=0) {
+				$__rq2 = array();
+				$__rq = explode(',', $request['id']);
+				if (is_array($__rq) && count($__rq)>0) {
+					foreach ($__rq as $k=>$v) {
+						$__rq2[] = (int) $v;
+					}
+				} else {
+					$__rq2[] = $__rq;
+				}
+				$request['id'] = implode(',', $__rq2);
+			}
+			
+			$status = 'invalid'; $status_msg = '';
+			if (!empty($request['id'])) {
+
+				$table = $wpdb->prefix  . $this->opt["custom_table"];
+
+				// delete record
+				$query = "DELETE FROM " . $table . " where 1=1 and id in (" . ($request['id']) . ");";
+				/*
+				$query = "UPDATE " . ($table) . " set
+						deleted = '1'
+						where id in (" . ($request['id']) . ");";
+				*/
+				$__stat = $wpdb->query($query);
+				
+				if ($__stat!== false) {
+					//keep page number & items number per page
+					$_SESSION['pspListTable']['keepvar'] = array('posts_per_page' => true);
+					
+					$status = 'valid';
+					$status_msg = 'bulk rows deleted successfully.';
+				}
+				else {
+					$status_msg = 'error: ' . __FILE__ . ":" . __LINE__;
+				}
+			}
+			else {
+				$status_msg = 'error: ' . __FILE__ . ":" . __LINE__;
+			}
+			
+			$ret = array_merge($ret, array(
+				'status' 	=> $status,
+				'msg'		=> $status_msg
+			));
+			return $ret;
+		}
+
+		public function __action_edit_inline()
+		{
+			global $wpdb;
+
+            $ret = array(
+                'status'        => 'invalid',
+                'msg'          => '',
+            );
+			
+			$request = array(
+				'table'			=> isset($_REQUEST['table']) ? trim((string)$_REQUEST['table']) : '',
+				'itemid' 		=> isset($_REQUEST['itemid']) ? (int)$_REQUEST['itemid'] : 0,
+				'field_name'	=> isset($_REQUEST['field_name']) ? trim((string)$_REQUEST['field_name']) : '',
+				'field_value'	=> isset($_REQUEST['field_value']) ? trim((string)$_REQUEST['field_value']) : '',
+			);
+			extract($request);
+			
+			$status = 'invalid'; $status_msg = '';
+			if( $request['itemid'] > 0 ) {
+				$table = $wpdb->prefix  . $table;
+
+				if ( 1 ) {
+				
+					// update field
+					if ( 1 ) {
+						$wpdb->update(
+							$table, 
+							array( 
+								$field_name		=> $field_value
+							), 
+							array( 'id' => $itemid ), 
+							array( 
+								'%s'
+							), 
+							array( '%d' ) 
+						);
+					}
+
+					//keep page number & items number per page
+					//$_SESSION['pspListTable']['keepvar'] = array('paged' => true, 'posts_per_page' => true);
+					
+					$status = 'valid';
+					$status_msg = 'row field updated successfully.';
+				}
+				else {
+					$status_msg = 'error: ' . __FILE__ . ":" . __LINE__;
+				}
+			}
+			else {
+				$status_msg = 'error: ' . __FILE__ . ":" . __LINE__;
+			}
+			
+			$ret = array_merge($ret, array(
+				'status' 	=> $status,
+				'msg'		=> $status_msg
+			));
+			return $ret;
+		}
+
+		public function list_table_rows( $retType='die', $pms=array() ) {
+			$request = array(
+				'action'             => isset($_REQUEST['sub_action']) ? $_REQUEST['sub_action'] : '',
+				'ajax_id'            => isset($_REQUEST['ajax_id']) ? $_REQUEST['ajax_id'] : '',
+			);
+			extract($request);
+			//var_dump('<pre>', $request, '</pre>'); die('debug...');
+
+			$ret = array(
+				'status'        => 'invalid',
+				'html'          => '',
+			);
+
+			// create box return html
+			ob_start();
+
+			$_SESSION['pspListTable'][$request['ajax_id']]['requestFrom'] = 'ajax';
+
+			$this->setup( $_SESSION['pspListTable'][$request['ajax_id']] );
+			$this->print_html();
+			$html = ob_get_contents();
+			ob_clean();
+
+			$ret['html'] = $html;
+			//$ret = array_map('utf8_encode', $ret);
+
+			if ( $retType == 'return' ) { return $ret; }
+			else { die( json_encode( $ret ) ); }
+		}
 	}
 }

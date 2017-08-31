@@ -53,6 +53,7 @@ You’re putting a lot of effort on marketing your website trough social media a
 				//'jquery-ui-resize',
 				//'jquery-ui-dialog',
 				//'jquery-ui-button'
+				'sweetalert'
 			),
 			'css' => array(
 				'admin'

@@ -153,6 +153,7 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 												->setup(array(
 													'id' 				=> 'pspPageHTMLValidation',
 													'show_header' 		=> true,
+													'show_header_buttons' => true,
 													'items_per_page' 	=> '10',
 													'post_statuses' 	=> 'all',
 													'columns'			=> array(
@@ -261,23 +262,32 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 		*/
 		public function validate_page( $id=0 )
 		{
+			$ret = array(
+				'status' 		=> 'invalid',
+				'msg'			=> '',
+			);
+
 			$html = array();
 			$summary = array();
 			$score = 0;
 			$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : (int)$id;
 
-			sleep(2);
-
 			$checkUrl = 'http://validator.w3.org/check?uri=' . get_permalink($id);
+
+			sleep(1);
 			$browserRequest = $this->the_plugin->remote_get( $checkUrl, 'default', array('timeout' => 10) );
+
+			$last_check_at = date('Y-m-d H:i:s');
+			$ret['last_check_at'] = $last_check_at;
+
 			if ( is_wp_error( $browserRequest ) ) { // If there's error
 				$body = false;
 				$err = htmlspecialchars( implode(';', $browserRequest->get_error_messages()) );
 
-				die(json_encode(array(
-					'status' => 'invalid',
-					'msg'	 => $err
-				)));
+				$ret['msg'] = $err;
+				update_post_meta($id, 'psp_w3c_validation', $ret);
+
+				die(json_encode($ret));
 			}
 			else {
 				$body = wp_remote_retrieve_body( $browserRequest );
@@ -290,42 +300,30 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 				'recursion' => isset($browserRequest['headers']["x-w3c-validator-recursion"]) ? $browserRequest['headers']["x-w3c-validator-recursion"] : ''
 			);*/
 			if ( trim($body) == '' ) {
-				die(json_encode(array(
-					'status' => 'invalid',
-					'msg'	 => 'empty content retrieved!',
-				)));
+				$ret['msg'] = isset($browserRequest['msg']) ? $browserRequest['msg'] : 'empty content retrieved!';
+				update_post_meta($id, 'psp_w3c_validation', $ret);
+
+				die(json_encode($ret));
 			}
 			$status = $this->parse_response( $body );
 
-			if( isset($status['status']) ){
-				$status['last_check_at'] = date('Y-m-d H:i:s');
-				update_post_meta($id, 'psp_w3c_validation', $status);
+			// valid response
+			if ( isset($status['status']) ) {
+				$ret = array_replace_recursive($ret, $status);
+				update_post_meta($id, 'psp_w3c_validation', $ret);
 
-				/*if ( $status['status'] == "" && $status['recursion'] == "" ){
-					die(json_encode(array(
-						'status' => 'invalid',
-						'msg'	 => $body
-					)));
-				}*/
-
-				die(json_encode(array(
-					'status' => 'valid',
-					'arr'	 => $status
-				)));
+				die(json_encode($ret));
 			}
 
-			die(json_encode(array(
-				'status' => 'invalid',
-				'msg'	 => 'unknown error occured!',
-				//'url'	 => $checkUrl
-			)));
+			$ret['msg'] = 'unknown error occured!';
+			die(json_encode($ret));
 		}
 
 		// 2015, october 10 - update
 		// API http://validator.w3.org/check? don't return necessary headers (regarding number of errors, warning ...) in response 
 		private function parse_response( $the_content ) {
 			$status = array(
-				'status' 		=> 'Invalid',
+				'status' 		=> 'invalid',
 				'nr_of_errors' 	=> 0,
 				'nr_of_warning' => 0,
 				'nr_of_info'	=> 0,
@@ -343,24 +341,31 @@ if (class_exists('pspW3C_HTMLValidator') != true) {
 			else
 				$doc = pspphpQuery::newDocument( $the_content );
 
-			foreach( pspPQ('#results li') as $li ) {
+			$items = array();
+			if ( pspPQ('#results li')->size() ) {
+				$items = pspPQ('#results li');
+			}
+			else if ( pspPQ('#result #error_loop li')->size() ) {
+				$items = pspPQ('#result #error_loop li');
+			}
+			foreach( $items as $li ) {
 				// cache the object
 				$li = pspPQ($li);
 				$css_class = $li->attr('class');
-				
-				if ( 'info' == $css_class ) {
+
+				if ( 'info' == $css_class || 'msg_info' == $css_class ) {
 					$status['nr_of_info']++;
 				}
-				else if ( 'info warning' == $css_class ) {
+				else if ( 'info warning' == $css_class || 'msg_warn' == $css_class ) {
 					$status['nr_of_warning']++;
 				}
-				else if ( 'error' == $css_class ) {
+				else if ( 'error' == $css_class || 'msg_err' == $css_class ) {
 					$status['nr_of_errors']++;
 				}
 			}
 			
 			if ( empty($status['nr_of_warning']) && empty($status['nr_of_errors']) ) {
-				$status['status'] = 'Valid';
+				$status['status'] = 'valid';
 			}
 			return $status;
 		}

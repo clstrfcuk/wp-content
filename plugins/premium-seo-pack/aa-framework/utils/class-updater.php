@@ -111,7 +111,7 @@ if (class_exists('PSP_AATeam_Product_Updater') != true) {
 				$ipc = get_option( $this->key_alias );
 			}
 			
-			$url = $this->download_url . '?product=' . $this->product_slug . '&ipc=' . $ipc . '&version=' . $this->current_version . '&site_url=' . urlencode( esc_url(home_url('/')) ) . ( isset($this->updater_dev) ? '&aa-team-dev=' . $this->updater_dev : '' );
+			$url = $this->download_url . '?product=' . $this->product_slug . '&ipc=' . $ipc . '&version=' . $this->current_version . '&site_url=' . urlencode( esc_url(home_url('/')) ) . ( isset($this->updater_dev) ? '&updater_dev=' . $this->updater_dev : '' );
 			
 			if( $this->product_slug == 'woozone' ) {
 				$product_count = $wpdb->get_col( $wpdb->prepare( "

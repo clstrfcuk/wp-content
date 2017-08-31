@@ -38,6 +38,9 @@ if (class_exists('pspActionAdminAjax') != true) {
 
 				// video sitemap - metas delete
 				add_action('wp_ajax_pspVideoMetas', array( $this, 'video_metas' ));
+
+            	// cronjobs panel
+            	add_action('wp_ajax_psp_cronjobs', array( $this, 'cronjobs_actions' ));
             }
 			add_action('wp_ajax_pspSocialSharing', array( $this, 'social_sharing' ));
             add_action('wp_ajax_pspTwitterCards', array( $this, 'twitter_cards' ));
@@ -275,7 +278,9 @@ if (class_exists('pspActionAdminAjax') != true) {
 				foreach ($urls as $key => $val) {
 					$countStat = $ssh->getSocialsData( $val['url'], $val['id'] );
 					foreach ($buttons as $key2 => $network) {
-						$results[$val['id']][$network] = $ssh->formatCount( $countStat["$network"] );
+						if ( isset($countStat["$network"]) ) {
+							$results[$val['id']][$network] = $ssh->formatCount( $countStat["$network"] );
+						}
 					}
 					$c++;
 				}  
@@ -561,6 +566,18 @@ if (class_exists('pspActionAdminAjax') != true) {
 			}
 			die(json_encode($ret));
 		}
+
+        /**
+         * Cronjobs Panel - ajax actions
+         *
+         */
+        public function cronjobs_actions( $retType = 'die' ) {    
+            // Initialize the cronjobs class
+            require_once( $this->the_plugin->cfg['paths']['plugin_dir_path'] . '/modules/cronjobs/cronjobs.panel.php' );
+            $cronObj = new pspCronjobsPanel($this->the_plugin, array());
+
+            $cronObj->ajax_request();
+        }
 	}
 }
 

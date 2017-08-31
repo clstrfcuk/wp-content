@@ -88,6 +88,7 @@ if (class_exists('aaModulesManger') != true) {
 			$cc     = 0;
 
 			$icon = array(
+				'Alexa_Rank'			=> 		'<i class="psp-checks-alexa"></i>',
 			    'Backlink_Builder'		=> 		'<i class="psp-icon-backlink_builder"></i>',
 			    'capabilities'			=> 		'<i class="psp-icon-capabilities"></i>',
 			    'Google_Analytics' 		=> 		'<i class="psp-icon-google_analytics"></i>',
@@ -116,7 +117,8 @@ if (class_exists('aaModulesManger') != true) {
 			    'sitemap'				=> 		'<i class="psp-icon-sitemap"></i>',
 			    'tiny_compress'			=> 		'<i class="psp-icon-tiny_compress"></i>',
 			    'title_meta_format'		=> 		'<span class="psp-icon-title_meta"><span class="path1"></span><span class="path2"></span></span>',
-			    'dashboard'				=> 		'<i class="psp-icon-dashboard"></i>'
+			    'dashboard'				=> 		'<i class="psp-icon-dashboard"></i>',
+			    'cronjobs'				=> 		'<i class="psp-checks-cron"></i>',
 			);
 
 			foreach ($this->cfg['modules'] as $key => $value) {

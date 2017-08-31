@@ -62,17 +62,18 @@ if (class_exists('pspLocalSEOSitemapShortcodes') != true) {
          * Sitemap
          */
         
-        private function detect_if_sitemap_page()
-        {
-        	$siteurl = get_option('siteurl');
+        private function detect_if_sitemap_page() {
+        	$siteurl = get_option('siteurl'); // siteurl | home
+
         	$parts = parse_url($siteurl);
         	$path = isset($parts['path']) ? $parts['path'] : '';
-
-        	$uri = $_SERVER['REQUEST_URI'];
         	$path_len = strlen($path);
-        	if(strlen($uri) > $path_len && substr($uri,0,$path_len) == $path)
+
+        	$request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+
+        	if(strlen($request_uri) > $path_len && substr($request_uri, 0, $path_len) == $path)
         	{
-        		$request = substr($uri,$path_len);
+        		$request = substr($request_uri, $path_len);
         		$parts = parse_url($request);
 
         		switch($parts['path'])

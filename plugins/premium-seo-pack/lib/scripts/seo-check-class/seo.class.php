@@ -78,11 +78,11 @@ class pspSeoCheck
 			'keyword_density_poor_max'		=> 6,
 
 			// page title chars length
-			'page_title_length_good_min'	=> 300,
-			'page_title_length_good_max'	=> 600,
+			'page_title_length_good_min'	=> 5,
+			'page_title_length_good_max'	=> 70,
 
-			'page_title_length_poor_min'	=> 5,
-			'page_title_length_poor_max'	=> 1000,
+			'page_title_length_poor_min'	=> 1,
+			'page_title_length_poor_max'	=> 150,
 		);
 
 		require_once( $this->the_plugin->cfg['paths']['scripts_dir_path'] . '/php-query/php-query.php' );

@@ -104,18 +104,7 @@ pspOnPageOptimization = (function ($) {
 			
 			row_actions.autoFocus( row, itemID );
 
-			/*row_loading(row, 'show');
-			if( $.trim(field.val()) == "" ){
-				if( $.trim(title.val()) == "" ){
-					row_loading(row, 'hide');
-					alert('Your post don\' have any title.'); return false;
-				}
-				field.val( title.val() );
-				row_loading(row, 'hide');
-			}
-			else{
-				row_loading(row, 'hide');
-			}*/
+		 
 		});
 
 		// autodetect - all
@@ -139,18 +128,6 @@ pspOnPageOptimization = (function ($) {
 				
 				rowLast = row;
 				
-				/*row_loading(row, 'show');
-				if( $.trim(field.val()) == "" ){
-					if( $.trim(title.val()) == "" ){
-						row_loading(row, 'hide');
-						alert('Your post don\' have any title.'); return false;
-					}
-					field.val( title.val() );
-					row_loading(row, 'hide');
-				}
-				else{
-					row_loading(row, 'hide');
-				}*/
 			});
 			
 			//special case: close last box

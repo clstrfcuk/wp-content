@@ -30,7 +30,7 @@
 			&.#{$alias}-logs {
 				display: none;
 				    border: 0.1rem solid #bcbfc4;
-				    width: 70.9rem !important;
+				    width: 100%; /*70.9rem !important;*/
 				    margin: 1rem 0px 1rem 0px;
 
 				textarea {
@@ -57,7 +57,7 @@
 		.#{$alias}-message {
 	    	font-size: px(12);
 		    border-bottom: px(1) solid #d2d2d2;
-		    padding: px(15) px(8) px(15) px(45);
+		    padding: px(15) px(8) px(15) px(25);
 		    position: relative;
 		    vertical-align: middle;
 		    cursor: default;
@@ -68,32 +68,21 @@
 		    &.#{$alias}-success {
 	    	    background-color: $success;
 			    color: $white;
+			    margin: 0;
 		    }
-		    &.#{$alias}-success::before {
-		    	font-family: FontAwesome;
-			    font-size: px(18);
-			    content: "\f14a"; /*"\f00c";*/
-			    margin-right: px(20);
-		        vertical-align: middle;
-		    }
+		  
 		    &.#{$alias}-error {
 	    	    background-color: $danger;
 			    border-color: #eb979b;
 			    color: $white;
 		    }
-		    &.#{$alias}-error::before {
-	    	    font-family: FontAwesome;
-			    font-size: px(18);
-			    content: "\f06a";
-			    margin-right: px(20);
-		        vertical-align: middle;
-		    }
+		   
 	    }
 		&>.#{$alias}-table {
 			th,
 			td {
 				text-align: left;
-				padding: px(20) px(20) 0 px(20) !important;
+				padding: px(20) px(20) px(20) px(20) !important;
 				vertical-align: middle;
 			}
 			th {
@@ -122,7 +111,7 @@
 		}
 
 		.#{$alias}-test-timeline {
-			width: px(700);
+			width: 100%; /*px(700);*/
 			background: none repeat scroll 0 0 #ecf0f1;
 			border: px(1) solid #d7d9df;
 			margin: px(4) px(50) px(4) 0;

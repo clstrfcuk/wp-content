@@ -68,10 +68,16 @@
       if (pos >= 0) _self._delimiters[index] = '\\' + character;
     });
 
+  //::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  // start bug fix
 	//http://stackoverflow.com/questions/754607/
+  //try { styleSheet[cssRules].length; } catch(err) { return; }
 	function css(a) {
 		var sheets = document.styleSheets, o = {};
 		for (var i in sheets) {
+
+      try { sheets[i][cssRules].length; } catch(err) { continue; }
+
 			var rules = sheets[i].rules || sheets[i].cssRules;
 			for (var r in rules) {
 				if (a.is(rules[r].selectorText)) {
@@ -100,8 +106,7 @@
 		}
 		return s;
 	}
-
-    // Store original input width
+  // Store original input width
 	/*
     var elRules = (window && typeof window.getMatchedCSSRules === 'function') ? window.getMatchedCSSRules( element ) : null
       , elStyleWidth = element.style.width
@@ -118,7 +123,9 @@
 	*/
 	var elStyleWidth = element.style.width,
 		elCSSWidth = css( $(element ) ).width,
-		elWidth = this.$element.width()
+		elWidth = this.$element.width();
+  // end bug fix
+  //::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     // Move original input out of the way
     var hidingPosition = $('body').css('direction') === 'rtl' ? 'right' : 'left',

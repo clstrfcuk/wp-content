@@ -14,7 +14,7 @@
 			'menu' => array(
 				'order' => 98,
 				'show_in_menu' => false,
-				'title' => __('301 Link Redirect', 'psp')
+				'title' => __('Link Redirect', 'psp')
 				,'icon' => '<i class="' . ( $psp->alias ) . '-icon-link_redirect"></i>'
 			),
 			'in_dashboard' => array(
@@ -32,7 +32,12 @@ The Link Redirect Module gives you an easy way of redirecting requests to other 
 	        'load_in' => array(
 				'backend' => array(
 					'admin.php?page=psp_Link_Redirect',
-					'admin-ajax.php'
+					'admin-ajax.php',
+					'edit.php',
+					'post.php',
+					'post-new.php',
+					'edit-tags.php',
+					'term.php'
 				),
 				'frontend' => true
 			),

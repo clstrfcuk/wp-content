@@ -1,14 +1,14 @@
 <?php
 /*
-* Define class aaInterfaceTemplates
+* Define class psp_aaInterfaceTemplates
 * Make sure you skip down to the end of this file, as there are a few
 * lines of code that are very important.
 */
 ! defined( 'ABSPATH' ) and exit;
 
-if(class_exists('aaInterfaceTemplates') != true) {
+if(class_exists('psp_aaInterfaceTemplates') != true) {
 
-	class aaInterfaceTemplates {
+	class psp_aaInterfaceTemplates {
 
 		/*
 		* Some required plugin information
@@ -45,7 +45,7 @@ if(class_exists('aaInterfaceTemplates') != true) {
 
 			// reset as array, this will stock all the html content, and at the end return it
 			$html = array();
-			 
+
 			if(count($options) == 0) {
 				return __('Please fill whit some options content first!', $psp->localizationName);
 			}
@@ -79,7 +79,6 @@ if(class_exists('aaInterfaceTemplates') != true) {
 						$box['panel_setup_verification'] = false;
 					
 					if ( $box['panel_setup_verification'] ) {
-
 						$tryLoadInterface = str_replace("{plugin_folder_path}", $module["folder_path"], $box['elements'][0]['path']);
 						
 						if(is_file($tryLoadInterface)) {
@@ -108,10 +107,13 @@ if(class_exists('aaInterfaceTemplates') != true) {
 						}
 
 						// container setup
-						$html[] = '<div class="panel panel-default ' . ( $alias ) . '-panel ' . ( $alias ) . '-setup">';
+						$html[] = '<div class="panel panel-default ' . ( $alias ) . '-panel ' . ( $alias ) . '-setup" data-url="' . ( $module['folder_uri'] ) . '">';
 						//$html[] = '<div class="' . ( $alias ) . '-' . ( $box['style'] ) . '">';
-								
-						//$html[] = '<div class="panel-body ' . ( $alias ) . '-panel-body">';
+
+						if ( 'psp_cronjobs' == $box_id ) {
+							$html[] = '<div class="panel-body ' . ( $alias ) . '-panel-body">';
+						}
+
 						if($showForm){
 							$html[] = '<form id="' . ( $box_id ) . '" class="psp-form" action="#save_with_ajax">';
 						}
@@ -648,11 +650,10 @@ if(class_exists('aaInterfaceTemplates') != true) {
 							$html[] = '</form>';
 						}
 
-						// close: box size div
-						//$html[] = '</div>';
-
 						// close: .psp-panel
-						//$html[] = '</div>';
+						if ( 'psp_cronjobs' == $box_id ) {
+							$html[] = '</div>';
+						}
 
 						// close: .psp-panel-content
 						$html[] = '</div>';

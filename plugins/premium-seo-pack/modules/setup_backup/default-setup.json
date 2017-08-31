@@ -83,6 +83,7 @@
         "parse_shortcodes": "no"
     },
     "psp_pagespeed": {
+        "developer_key": "AIzaSyCt1tsWk-2xsgivuZZUrGbYBSdL-ik5xs8",
         "google_language": "en",
         "report_type": "both"
     },
@@ -92,6 +93,10 @@
         "image_title": "{image_name} {image_name}",
         "keep_default_alt": "yes",
         "keep_default_title": "yes"
+    },
+    "psp_google_analytics": {
+        "client_id": "psp-client-id",
+        "client_secret": "psp-client-secret"
     },
     "psp_serp": {
         "nbreq_max_limit": "100",

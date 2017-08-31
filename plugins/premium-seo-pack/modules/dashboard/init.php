@@ -63,7 +63,7 @@ if (class_exists('pspDashboard') != true) {
 					'size' => 'grid_4'
 				) );
 				
-				$this->addBox( 'audience_overview', 'Audience Overview', $this->audience_overview(), array(
+				$this->addBox( 'audience_overview', 'Google Analytics Audience Overview', $this->audience_overview(), array(
 					'size' => 'grid_4'
 				) );
 				
@@ -211,7 +211,7 @@ if (class_exists('pspDashboard') != true) {
 		{
 			$html = array();
 			$html[] = '<div class="panel-body psp-panel-body">';
-			$html[] = '<div class="psp-audience-graph" id="psp-audience-visits-graph" data-fromdate="' . ( date('Y-m-d', strtotime("-1 week")) ) . '" data-todate="' . ( date('Y-m-d') ) . '"></div>';
+			$html[] = '<canvas class="psp-audience-graph" id="psp-audience-visits-graph" data-fromdate="' . ( date('Y-m-d', strtotime("-1 week")) ) . '" data-todate="' . ( date('Y-m-d') ) . '" style="height: 350px;"></canvas>';
 			$html[] = '</div>';
 
 			return  implode("\n", $html);

@@ -34,27 +34,26 @@ if (class_exists('psp404Monitor') != true) {
 			$this->module_folder = $this->the_plugin->cfg['paths']['plugin_dir_url'] . 'modules/monitor_404/';
 			$this->module = $this->the_plugin->cfg['modules']['monitor_404'];
 
-			if (is_admin()) {
-	            add_action('admin_menu', array( &$this, 'adminMenu' ));
+			if ( $this->the_plugin->is_admin === true ) {
+	            add_action('admin_menu', array( $this, 'adminMenu' ));
+
+				// ajax handler
+				add_action('wp_ajax_pspGet404MonitorRequest', array( $this, 'ajax_request' ));
+				add_action('wp_ajax_psp404MonitorToRedirect', array( $this, 'add404MonitorToRedirect' ));
+			
+				//delete bulk rows!
+				//add_action('wp_ajax_psp_do_bulk_delete_404_rows', array( $this, 'delete_404_rows' ));
 			}
 
 			if ( !$this->the_plugin->verify_module_status( 'monitor_404' ) ) ; //module is inactive
 			else {
-				if ( $this->the_plugin->is_admin !== true )
-					add_action("template_redirect", array( &$this, 'store_new_404_log' ));
-			}
-			
-			// ajax  helper
-			if ( $this->the_plugin->is_admin === true ) {
-				add_action('wp_ajax_pspGet404MonitorRequest', array( &$this, 'ajax_request' ));
-				add_action('wp_ajax_psp404MonitorToRedirect', array( &$this, 'add404MonitorToRedirect' ));
-			
-				//delete bulk rows!
-				add_action('wp_ajax_psp_do_bulk_delete_404_rows', array( &$this, 'delete_404_rows' ));
+				if ( $this->the_plugin->is_admin !== true ) {
+					add_action("template_redirect", array( $this, 'store_new_404_log' ));
+				}
 			}
 			
 			// init module!
-			$this->init();
+			//$this->init();
         }
         
 		private function init() {
@@ -137,125 +136,19 @@ if (class_exists('psp404Monitor') != true) {
 			}
 		}
 
-
-	    /**
-	    * Store new 404 error log
-	    */
+	    //Store new 404 error log
 		public function store_new_404_log()
 		{
-			if(is_404()) {
-				global $wpdb, $_path, $psp; // this is how you get access to the database
-
-				// collect data for insert into DB
-				# Request URI
-				$visitor_request_uri = isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on') ? 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] :  'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-                # Referer
-                $visitor_referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-                # user agent
-                $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-				
-				//doing_wp_cron
-				if( preg_match('/doing_wp_cron/i', $visitor_request_uri) == false ){
-					// escape mysql injections
-					// $visitor_request_uri = mysql_real_escape_string($visitor_request_uri);
-					// $visitor_referer = mysql_real_escape_string($visitor_referer);
-					// $user_agent = mysql_real_escape_string($user_agent);
-					
-					// mysql & mysqli comptabile: replaced mysql_real_escape_string with $wpdb->_real_escape
-                    // $visitor_request_uri = $wpdb->_real_escape($visitor_request_uri);
-                    // $visitor_referer = $wpdb->_real_escape($visitor_referer);
-                    // $user_agent = $wpdb->_real_escape($user_agent);
-					
-					$table_name = $wpdb->prefix . "psp_monitor_404";
-	
-					// create insert or update
-					/*$query = "INSERT IGNORE INTO " . ($table_name) . "
-					(
-						url,
-						referrers,
-						user_agents
-					)
-					VALUES (
-						'$visitor_request_uri',
-						'$visitor_referer',
-						'$user_agent'
-					)";*/
-                    $query = $wpdb->prepare(
-                        "INSERT IGNORE INTO " . ($table_name) . " (url, referrers, user_agents) VALUES (%s, %s, %s)",
-                        $visitor_request_uri,
-                        $visitor_referer,
-                        $user_agent
-                    );
-					if ($wpdb->query($query) == 0) {
-						// record already exist, update hits
-						$query_update = "UPDATE " . ($table_name) . " set
-							hits=hits+1,
-							referrers=CONCAT(referrers, '\n$visitor_referer'),
-							user_agents=CONCAT(user_agents, '\n$user_agent')
-							where url='$visitor_request_uri'";
-						$wpdb->query($query_update);
-					}
-				}
-			}
+			$this->the_plugin->store_new_404_log();
 		}
-		
-		/**
-		 * delete Bulk 404 rows!
-		 */
-		public function delete_404_rows() {
-			global $wpdb; // this is how you get access to the database
-			
-			$request = array(
-				'id' 			=> isset($_REQUEST['id']) && !empty($_REQUEST['id']) ? trim($_REQUEST['id']) : 0
-			);
-			if ($request['id']!=0) {
-				$__rq2 = array();
-				$__rq = explode(',', $request['id']);
-				if (is_array($__rq) && count($__rq)>0) {
-					foreach ($__rq as $k=>$v) {
-						$__rq2[] = (int) $v;
-					}
-				} else {
-					$__rq2[] = $__rq;
-				}
-				$request['id'] = implode(',', $__rq2);
-			}
-				
-			$table_name = $wpdb->prefix . "psp_monitor_404";
-			if ($wpdb->get_var("show tables like '$table_name'") == $table_name) {
 
-				// delete record
-				$query_delete = "DELETE FROM " . ($table_name) . " where 1=1 and id in (" . ($request['id']) . ");";
-				$__stat = $wpdb->query($query_delete);
-				
-				/*$query_update = "UPDATE " . ($table_name) . " set
-						deleted=1
-						where id in (" . ($request['id']) . ");";
-				$__stat = $wpdb->query($query_update);*/
-				
-				if ($__stat!== false) {
-					//keep page number & items number per page
-					$_SESSION['pspListTable']['keepvar'] = array('posts_per_page'=>true);
-
-					die( json_encode(array(
-						'status' => 'valid',
-						'msg'	 => ''
-					)) );
-				}
-			}
-			
-			die( json_encode(array(
-				'status' => 'invalid',
-				'msg'	 => ''
-			)) );
-		}
-		
+		//add404MonitorToRedirect: add new row into link redirect table
 		public function add404MonitorToRedirect() {
 			global $wpdb;
 			
 			$request = array(
 				'itemid' 		=> isset($_REQUEST['itemid']) && !empty($_REQUEST['itemid']) ? trim($_REQUEST['itemid']) : 0,
-				'subaction' 	=> isset($_REQUEST['subaction']) ? trim($_REQUEST['subaction']) : '',
+				'sub_action' 	=> isset($_REQUEST['sub_action']) ? trim($_REQUEST['sub_action']) : '',
 				'url_redirect'	=> isset($_REQUEST['new_url_redirect2']) ? trim($_REQUEST['new_url_redirect2']) : ''
 			);
 			
@@ -313,7 +206,57 @@ if (class_exists('psp404Monitor') != true) {
 				'msg'	 => isset($msg['err']) && count($msg['err']) > 0 ? implode("\n\n", $msg['err']) : ''
 			)) );
 		}
+		
+		/*
+		public function delete_404_rows() {
+			global $wpdb; // this is how you get access to the database
+			
+			$request = array(
+				'id' 			=> isset($_REQUEST['id']) && !empty($_REQUEST['id']) ? trim($_REQUEST['id']) : 0
+			);
+			if ($request['id']!=0) {
+				$__rq2 = array();
+				$__rq = explode(',', $request['id']);
+				if (is_array($__rq) && count($__rq)>0) {
+					foreach ($__rq as $k=>$v) {
+						$__rq2[] = (int) $v;
+					}
+				} else {
+					$__rq2[] = $__rq;
+				}
+				$request['id'] = implode(',', $__rq2);
+			}
+				
+			$table_name = $wpdb->prefix . "psp_monitor_404";
+			if ($wpdb->get_var("show tables like '$table_name'") == $table_name) {
 
+				// delete record
+				$query_delete = "DELETE FROM " . ($table_name) . " where 1=1 and id in (" . ($request['id']) . ");";
+				$__stat = $wpdb->query($query_delete);
+				
+				//$query_update = "UPDATE " . ($table_name) . " set
+				//		deleted=1
+				//		where id in (" . ($request['id']) . ");";
+				//$__stat = $wpdb->query($query_update);
+				
+				if ($__stat!== false) {
+					//keep page number & items number per page
+					$_SESSION['pspListTable']['keepvar'] = array('posts_per_page'=>true);
+
+					die( json_encode(array(
+						'status' => 'valid',
+						'msg'	 => ''
+					)) );
+				}
+			}
+			
+			die( json_encode(array(
+				'status' => 'invalid',
+				'msg'	 => ''
+			)) );
+		}
+		*/
+		
 
 		/*
 		* printBaseInterface, method
@@ -353,8 +296,8 @@ if (class_exists('psp404Monitor') != true) {
 							<div id="psp-lightbox-container">
 								<h1 class="psp-lightbox-headline">
 									<span class="psp-details-text"><?php _e('Details:', 'psp');?></span>
-									<a href="#" class="psp-close-btn psp-form-button-small psp-form-button-danger" title="<?php _e('Close Lightbox', 'psp'); ?>">
-										<i class="psp-icon-close"></i>
+									<a href="#" class="psp-close-page-detail psp-close-btn">
+										<i class="psp-checks-cross2"></i>
 									</a>
 								</h1>
 			
@@ -414,13 +357,19 @@ if (class_exists('psp404Monitor') != true) {
 											<?php
 											pspAjaxListTable::getInstance( $this->the_plugin )
 												->setup(array(
+													//'debug_query'		=> true,
 													'id' 				=> 'pspMonitor404',
 													'custom_table'		=> "psp_monitor_404",
-													'custom_table_force_action' => true,
 													//'deleted_field'		=> true,
+													//'force_publish_field' 	=> false,
 													'show_header' 		=> true,
+													'show_header_buttons' => true,
 													'items_per_page' 	=> '10',
-													'post_statuses' 	=> 'all',
+													//'post_statuses' 	=> 'all',
+													'search_box'		=> array(
+														'title' 	=> __('Search', $this->the_plugin->localizationName),
+														'fields'	=> array('url', 'referrers', 'user_agents'),
+													),
 													'columns'			=> array(
 														'checkbox'	=> array(
 															'th'	=>  'checkbox',
@@ -442,7 +391,8 @@ if (class_exists('psp404Monitor') != true) {
 														'bad_url'		=> array(
 															'th'	=> __('Bad URL', 'psp'),
 															'td'	=> '%bad_url%',
-															'align' => 'left'
+															'align' => 'left',
+															'class'	=> 'psp-url-orig',
 														),
 
 														'referrers'		=> array(
@@ -473,13 +423,18 @@ if (class_exists('psp404Monitor') != true) {
 														),
 														'delete_404_rows' => array(
 															'value' => __('Delete selected rows', 'psp'),
-															'action' => 'do_bulk_delete_404_rows',
+															'action' => 'do_bulk_delete_rows',
 															'color' => 'info'
 														)
 													)
 												))
 												->print_html();
 								            ?>
+								            </div>
+								            <div>
+								            	<ul>
+								            		<li><?php _e('<strong>search</strong> = search in url, referrers, user agents.', 'psp'); ?></li>
+								            	</ul>
 								            </div>
 							            </form>
 				            		</div>
@@ -490,7 +445,6 @@ if (class_exists('psp404Monitor') != true) {
 				</section>
 			</div>
 		</div>
-
 <?php
 		}
 
@@ -515,6 +469,10 @@ if (class_exists('psp404Monitor') != true) {
 				'data'	=> implode( '<br />', explode( PHP_EOL, $res ) )
 				//'data'	=> $wpdb->get_var( "SELECT " . ( $request['sub_action'] ) . " from " . $wpdb->prefix . "psp_monitor_404 WHERE 1=1 and deleted=0 and id=" . ( $request['id'] ) . ";" )
 			)) );
+		}
+
+		private function ajax_list_table_rows() {
+			return pspAjaxListTable::getInstance( $this->the_plugin )->list_table_rows( 'return', array() );
 		}
     }
 }

@@ -47,6 +47,7 @@ pspFacebookPage = (function ($) {
 
 	function triggers()
 	{
+		/*
 		// cron table page - delete rows
 		maincontainer_tasks.on('click', '#psp-do_bulk_delete_facebook_planner_rows', function(e){
 			e.preventDefault();
@@ -54,6 +55,7 @@ pspFacebookPage = (function ($) {
 			if (confirm('Are you sure you want to delete the selected rows?'))
 				delete_bulk_rows();
 		});
+		*/
 	}
 
 	/**
@@ -310,16 +312,6 @@ pspFacebookPage = (function ($) {
 
 				// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 				jQuery.post(ajaxurl, data, function(response) {
-					/*
-					if(jQuery.trim(response) == 'OK'){
-						postTOFbNow.hide();
-						alert( metabox.lang.publish_success );
-						postNowBtn.show();
-					}else{
-						alert( metabox.lang.publish_error );
-						postNowBtn.show();
-					}
-					*/
 					postTOFbNow.hide();
 					wrappLog.html( response.opMsg ).show();
 					postNowBtn.show();
@@ -389,39 +381,6 @@ pspFacebookPage = (function ($) {
 		};
 	}();
 
-	/**
-	 * cron table page - delete rows
-	 */
-	// cron table page - delete rows
-	function delete_bulk_rows() {
-		var ids = [], __ck = $('.psp-form .psp-table input.psp-item-checkbox:checked');
-		__ck.each(function (k, v) {
-			ids[k] = $(this).attr('name').replace('psp-item-checkbox-', '');
-		});
-		ids = ids.join(',');
-		if (ids.length<=0) {
-			alert('You didn\'t select any rows!');
-			return false;
-		}
-		
-		mainloading_tasks.fadeIn('fast');
-
-		jQuery.post(ajaxurl, {
-			'action' 		: 'psp_do_bulk_delete_rows',
-			'id'			: ids,
-			'debug_level'	: debug_level
-		}, function(response) {
-			if( response.status == 'valid' ){
-				mainloading_tasks.fadeOut('fast');
-				//refresh page!
-				window.location.reload();
-				return false;
-			}
-			mainloading_tasks.fadeOut('fast');
-			alert('Problems occured while trying to delete the selected rows!');
-		}, 'json');
-	}
-
 	// :: MISC
 	var misc = {
 
@@ -442,7 +401,7 @@ pspFacebookPage = (function ($) {
 	return {
 		//'setLangMsg'		: setLangMsg,
 		//'fb_planner_post'	: fb_planner_post,
-		//'fb_scheduler'		: fb_scheduler,
+		//'fb_scheduler'	: fb_scheduler,
 		//'fb_postnow'		: fb_postnow
 
     }

@@ -37,14 +37,14 @@ function psp_social_sharing_html() {
 		<?php echo implode('', $__enabledHtml); ?>
 	</ul>
 
-	<div class="psp-form-row" id="<?php echo 'psp-socialsharing-ajax'; ?>" style="position:relative;"></div>
+	<div class="psp-form-row" id="<?php echo 'psp-socialsharing-ajax'; ?>" style="position:relative; z-index:9999;"></div>
 	
 	<!-- color picker -->
 	<link rel='stylesheet' href='<?php echo $frm_folder; ?>js/colorpicker/colorpicker.css' type='text/css' media='all' />
 	<script type="text/javascript" src="<?php echo $frm_folder; ?>js/colorpicker/colorpicker.js"></script>
 
 	<!-- admin css/js -->
-	<script type="text/javascript" src="<?php echo $module_folder; ?>social_sharing.admin.js"></script>
+	<script type="text/javascript" src="<?php echo $module_folder; ?>social_sharing.admin.js?<?php //echo time(); ?>"></script>
 <?php
 	$output = ob_get_contents();
 	ob_end_clean();
@@ -93,31 +93,46 @@ echo json_encode(
 		$tryed_module['db_alias'] => array(
 			/* define the form_messages box */
 			'social' => array(
-				'title' 	=> __('Social Services', 'psp'),
+				'title' 	=> __('Social Stats', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
-				'header' 	=> false, // true|false
+				'header' 	=> true, // true|false
 				'toggler' 	=> false, // true|false
 				'buttons' 	=> true, // true|false
 				'style' 	=> 'panel', // panel|panel-widget
 
 				// create the box elements array
 				'elements'	=> array(
+
+					'__help_services' => array(
+						'type' 		=> 'message',
+						'status' 	=> 'info',
+						'html' 		=> __('
+							<a href="#" id="pspsocialstats" style="border:0px solid blue; display: block; position: absolute; top: -7.5rem;"></a>
+							<h3 style="margin: 0px 0px 5px 0px;">Social Stats</h3>
+							<p>Choose social services for which to view stats</p>
+						', 'psp')
+					),
+
 					'services' 	=> array(
 						'type' 		=> 'multiselect',
-						'std' 		=> array('facebook', 'twitter', 'google', 'stumbleupon', 'digg', 'linkedin'),
+						'std' 		=> array('facebook', 'google', 'pinterest', 'stumbleupon', 'linkedin', 'buffer'),
 						'size' 		=> 'small',
 						'force_width'=> '250',
-						'title' 	=> __('Check on:', 'psp'),
-						'desc' 		=> __('Show status on this social services.', 'psp'),
+						'title' 	=> __('Social Stats for:', 'psp'),
+						'desc' 		=> __('Choose social services for which you want to view stats.<br/>Stats are displayed in the plugin Dashboard and Social Stats of your pages.', 'psp'),
 						'options' 	=> array(
 							'facebook' 		=> 'Facebook',
-							'pinterest' 	=> 'Pinterest',
-							'twitter' 		=> 'Twitter',
+							//'twitter' 		=> 'Twitter',
 							'google' 		=> 'Google +1',
+							'pinterest' 	=> 'Pinterest',
 							'stumbleupon' 	=> 'Stumbleupon',
-							'digg' 			=> 'Digg',
-							'linkedin' 		=> 'LinkedIn'
+							'linkedin' 		=> 'LinkedIn',
+							//'delicious' 	=> 'Delicious',
+							//'digg' 		=> 'Digg',
+							'buffer'		=> 'Buffer',
+							//'reddit'		=> 'Reddit',
+							//'flattr'		=> 'Flattr',
 						)
 					)
 					
@@ -126,7 +141,7 @@ echo json_encode(
 			
 			/* define the form_messages box */
 			,'socialsharing' => array(
-				'title' 	=> __('Social Sharing', 'psp'),
+				'title' 	=> __('Social Toolbars Sharing', 'psp'),
 				'icon' 		=> '{plugin_folder_uri}assets/menu_icon.png',
 				'size' 		=> 'grid_4', // grid_1|grid_2|grid_3|grid_4
 				'header' 	=> false, // true|false
@@ -136,6 +151,17 @@ echo json_encode(
 
 				// create the box elements array
 				'elements'	=> array(
+
+					'__help_socialsharing' => array(
+						'type' 		=> 'message',
+						'status' 	=> 'info',
+						'html' 		=> __('
+							<a href="#" id="pspsocialsharing" style="border:0px solid blue; display: block; position: absolute; top: -7.5rem;"></a>
+							<h3 style="margin: 0px 0px 5px 0px;">Social Toolbars Sharing</h3>
+							<p>Enable our social toobars and your clients will be able to share your posts.</p>
+						', 'psp')
+					),
+
 					'text_email' 	=> array(
 						'type' 		=> 'text',
 						'std' 		=> __('Email', 'psp'),

@@ -12,6 +12,8 @@ pspSERP = (function ($) {
     var lightbox = null;
     var engine_access_time = null;
     var engine_wait = 5; //in seconds;
+    var current_row = null;
+
 
 	// init function, autoload
 	(function init() {
@@ -19,6 +21,7 @@ pspSERP = (function ($) {
 		$(document).ready(function(){
 			maincontainer = $(".psp-main");
 			lightbox = $("#psp-lightbox-overlay");
+
 			triggers();
 		});
 	})();
@@ -29,11 +32,10 @@ pspSERP = (function ($) {
 		}, function(response) {
 			if( response.status == 'valid' ){
 
-				var $boxMsg = $('.psp-list-table-left-col').eq(0);
-				if ( $.trim( response.last_msg ) != '' )
-					$boxMsg.html( response.last_msg + ' ' + response.nb_req );
+				wait_time_set_html( [response.html] );
 				
-				/*engine_access_time = parseInt( response.data );
+				/*
+				engine_access_time = parseInt( response.data );
 				if (engine_access_time<=0) return true;
 				
 				$('.psp-list-table-left-col').html( $boxMsg.html() + '<span id="engine-time-to-wait"></span>' );
@@ -59,13 +61,29 @@ pspSERP = (function ($) {
 						$wrapClock.fadeOut('slow');
 					}
 
-				}, 1000);*/
+				}, 1000);
+				*/
 				return true;
 			}
 			return false;
 		}, 'json');
 	}
-	
+	function wait_time_set_html( html_arr ) {
+		var html_arr = html_arr || [];
+
+		for (var ii = 0; ii < html_arr.length; ii++ ) {
+			var html = html_arr[ii];
+
+			if ( $.trim( html ) != '' ) {
+				var __gmsg 	= $.trim( html ),
+					$gmsg 	= $('<div/>').html( __gmsg );
+
+				$gmsg.insertBefore('#psp-list-table-header');
+			}
+		} // end for
+	}
+
+	/*
 	function engine_btn_status( status ) {
 		var $btn = $('#psp-submit-to-reporter, .psp-do_item_update');
 		
@@ -79,6 +97,7 @@ pspSERP = (function ($) {
 				break;
 		}
 	}
+	*/
 	
 	function refreshGraph()
 	{
@@ -211,7 +230,7 @@ pspSERP = (function ($) {
 			}
 		}, 'json');
 
-		lightbox.find("a.psp-close-btn").click(function(e){
+		lightbox.find("a.psp-close-btn").click(function(e) {
 			e.preventDefault();
 			lightbox.fadeOut('fast');
 		});
@@ -219,48 +238,60 @@ pspSERP = (function ($) {
 	
 	function addToReporter( keyword, link, itemid )
 	{
+		var itemid = itemid || 0;
+
 		lightbox.fadeOut('fast');
 		pspFreamwork.to_ajax_loader('Loading...');
 
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspAddToReporter',
+			'sub_action'	: '',
+			'ajax_id'		: $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val(),
+			'itemid'		: itemid,
 			'keyword'		: keyword,
 			'link'			: link,
-			'itemid'		: itemid,
 			'debug_level'	: debug_level,
 			'wait_time'		: new Date().getTime()
 		}, function(response) {
 
-			if( response.status == 'valid' ){
-				pspFreamwork.to_ajax_loader_close();
-				window.location.reload();
+			if( misc.hasOwnProperty( response, 'status' ) ){
+				//pspFreamwork.to_ajax_loader_close();
+				//window.location.reload();
+
+				refresh_table_rows( response );
 			}
 			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
 	
-	function updateToReporter( itemid, subaction )
+	function updateToReporter( itemid, sub_action )
 	{
-		subaction = subaction || '';
+		var sub_action = sub_action || '';
 		
 		lightbox.fadeOut('fast');
 		pspFreamwork.to_ajax_loader('Loading...');
+		pspFreamwork.row_loading(current_row, 'show');
 		
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspUpdateToReporter',
-			'subaction'		: subaction,
+			'sub_action'	: sub_action,
+			'ajax_id'		: $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val(),
 			'itemid'		: itemid,
 			'debug_level'	: debug_level,
 			'wait_time'		: new Date().getTime()
 		}, function(response) {
  
-			if( response.status == 'valid' ){
-				if ( subaction == 'publish' ) ;
-				else
-					pspFreamwork.to_ajax_loader_close();
+  			pspFreamwork.row_loading(current_row, 'hide');
 
-				window.location.reload();
+			if( misc.hasOwnProperty( response, 'status' ) ){
+				if ( sub_action == 'publish' ) ;
+				else {
+					//pspFreamwork.to_ajax_loader_close();
+				}
+
+				//window.location.reload();
+				refresh_table_rows( response );
 			}
 			pspFreamwork.to_ajax_loader_close();
 			return false;
@@ -271,51 +302,59 @@ pspSERP = (function ($) {
 	{
 		lightbox.fadeOut('fast');
 		pspFreamwork.to_ajax_loader('Loading...');
+		pspFreamwork.row_loading(current_row, 'show');
 		
 		jQuery.post(ajaxurl, {
 			'action' 		: 'pspRemoveFromReporter',
+			'sub_action'	: '',
+			'ajax_id'		: $(".psp-table-ajax-list").find('.psp-ajax-list-table-id').val(),
 			'itemid'		: itemid,
 			'debug_level'	: debug_level
 		}, function(response) {
-			if( response.status == 'valid' ){
-				pspFreamwork.to_ajax_loader_close();
-				window.location.reload();
+
+			pspFreamwork.row_loading(current_row, 'hide');
+
+			if( misc.hasOwnProperty( response, 'status' ) ){
+				//pspFreamwork.to_ajax_loader_close();
+				//window.location.reload();
+
+				refresh_table_rows( response );
 			}
 			pspFreamwork.to_ajax_loader_close();
 			return false;
 		}, 'json');
 	}
-	
-	function showAddNewProxy()
-	{
-		lightbox.fadeIn('fast');
-		
-		lightbox.find("a.psp-close-btn").click(function(e){
-			e.preventDefault();
-			lightbox.fadeOut('fast');
-		});
+
+	function refresh_table_rows( response ) {
+		$("#psp-table-ajax-response").html( response.html );
+		wait_time_set_html( [response.msg_wait, response.msg] );
 	}
 	
 	function triggers()
 	{
 		wait_time();
 		
+		//:: show focus keyword list
 		$('body').on('click', "input#psp-select-fw", function(e){
 			e.preventDefault();
 			showFocusKW();
 		});
 		
+		//:: add row
 		$('body').on('click', "input#psp-submit-to-reporter", function(e){
 			e.preventDefault();
 			
 			var keyword = $("#psp-new-keyword").val(),
 				link = $("#psp-new-keyword-link").val();
 			
-			if (!link.match("^https?:\/\/")) link = "http://" + link;
+			if (!link.match("^https?:\/\/")) {
+				link = "http://" + link;
+			}
     		 	
 			addToReporter( keyword, link );
 		});
 		
+		//:: add row from focus keywords list
 		$('body').on('click', "input.psp-this-select-fw", function(e){
 			e.preventDefault();
 			var that = $(this),
@@ -323,44 +362,48 @@ pspSERP = (function ($) {
 				link = that.data("permalink"),
 				itemid = that.data("itemid");
 				
-			if (!link.match("^https?:\/\/")) link = "http://" + link;
+			if (!link.match("^https?:\/\/")) {
+				link = "http://" + link;
+			}
 
 			addToReporter( keyword, link, itemid );
 		});
 		
-		$('body').on('click', ".psp-do_item_delete", function(e){
-			e.preventDefault();
-			var that = $(this),
-				row = that.parents('tr').eq(0),
-				id	= row.data('itemid'),
-				key = row.find('td').eq(0).find('input').val(),
-				url = row.find('td').eq(1).find('input').val();
-
-			//row.find('code').eq(0).text()
-			if(confirm('Delete (' + key + ', ' + url + ') pair from reporter? This action can\t be rollback!' )){
-				deleteFromReporter( id );
-			}
-		});
-		
-		$('body').on('click', ".psp-do_item_update", function(e){
+		//:: update row
+		$('body').on('click', ".psp-serp_do_item_update", function(e){
 			e.preventDefault();
 			var that = $(this),
 				row = that.parents('tr').eq(0),
 				id	= row.data('itemid');
-				
+
+			current_row = row;
 			updateToReporter( id );
 		});
 		
-		// publish / unpublish row
-		$('body').on('click', ".psp-do_item_publish", function(e){
+		//:: publish / unpublish row
+		$('body').on('click', ".psp-serp_do_item_publish", function(e){
 			e.preventDefault();
 			var that = $(this),
 				row = that.parents('tr').eq(0),
 				id	= row.data('itemid');
-				
+
+			current_row = row;
 			updateToReporter( id, 'publish' );
 		});
-		
+
+		//:: delete row
+		$('body').on('click', ".psp-serp_do_item_delete", function(e){
+			e.preventDefault();
+			var that = $(this),
+				row = that.parents('tr').eq(0),
+				id	= row.data('itemid');
+
+			current_row = row;
+			if(confirm('Delete row with ID# '+id+' ? This action cannot be rollback !' )){
+				deleteFromReporter( id );
+			}
+		});
+
 		/*$('body').on('click', '#psp-cron-ckeck', function(e) {
 			e.preventDefault();
 
@@ -378,7 +421,8 @@ pspSERP = (function ($) {
 				return false;
 			}, 'json');
 		});*/
-		
+
+		//:: set current search engine
 		$('body').on('change', '#select-engine', function(e) {
 			e.preventDefault();
 
@@ -396,7 +440,7 @@ pspSERP = (function ($) {
 			}, 'json');
 		});
 		
-		// filter by keywords, urls!
+		//:: filter by keywords, urls!
 		$('body').on('click', 'input#psp-item-check-all-key', function(){
 			var that = $(this),
 			checkboxes = $('.psp-serp-filter-keyurl-content input.psp-item-checkbox-key');
@@ -432,15 +476,24 @@ pspSERP = (function ($) {
 
 		SERPInterface();
 	}
-	
-	function in_array(needle, haystack) {
-		for(var key in haystack) {
-			if(needle === haystack[key]) {
-				return true;
-			}
+
+
+	// :: MISC
+	var misc = {
+
+		hasOwnProperty: function(obj, prop) {
+			var proto = obj.__proto__ || obj.constructor.prototype;
+			return (prop in obj) &&
+			(!(prop in proto) || proto[prop] !== obj[prop]);
+		},
+
+		isNormalInteger: function(str, positive) {
+			//return /^\+?(0|[1-9]\d*)$/.test(str);
+			return /^(0|[1-9]\d*)$/.test(str);
 		}
-		return false;
-	}
+
+	};
+
 
 	// external usage
 	return {

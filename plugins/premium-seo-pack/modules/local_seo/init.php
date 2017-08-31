@@ -218,20 +218,20 @@ if (class_exists('pspLocalSEO') != true) {
 			// load the settings template class
 			require_once( $this->the_plugin->cfg['paths']['freamwork_dir_path'] . 'settings-template.class.php' );
 			
-			// Initalize the your aaInterfaceTemplates
-			$aaInterfaceTemplates = new aaInterfaceTemplates($this->the_plugin->cfg);
+			// Initalize the your psp_aaInterfaceTemplates
+			$psp_aaInterfaceTemplates = new psp_aaInterfaceTemplates($this->the_plugin->cfg);
 			
 			// retrieve the existing value(s) for this meta field. This returns an array
 			$locations_meta = get_post_meta( $post_id, 'psp_locations_meta', true );
 			 
 			// then build the html, and return it as string
-			$html_business_information = $aaInterfaceTemplates->bildThePage( $this->business_information_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
+			$html_business_information = $psp_aaInterfaceTemplates->bildThePage( $this->business_information_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
 			
-			$html_business_contact = $aaInterfaceTemplates->bildThePage( $this->business_contact_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
+			$html_business_contact = $psp_aaInterfaceTemplates->bildThePage( $this->business_contact_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
 			
-			$html_opening_hours = $aaInterfaceTemplates->bildThePage( $this->opening_hours_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
+			$html_opening_hours = $psp_aaInterfaceTemplates->bildThePage( $this->opening_hours_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
 			
-			$html_other_details = $aaInterfaceTemplates->bildThePage( $this->other_details_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
+			$html_other_details = $psp_aaInterfaceTemplates->bildThePage( $this->other_details_options( $locations_meta ) , $this->the_plugin->alias, array(), false);
 
 			ob_start();
 		?>

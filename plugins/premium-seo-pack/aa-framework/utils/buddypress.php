@@ -614,8 +614,12 @@ if (class_exists('pspBuddyPress') != true) {
 				
 				foreach ( $fields as $field ) {
 
-					if ( !empty($title) && in_array($field, array('title', 'desc', 'kw')) )
+					if ( !empty($title) && in_array($field, array('title', 'desc', 'kw')) ) {
+						if ( ! isset($ret["$field"]) || ! is_array($ret["$field"]) ) {
+							$ret["$field"] = array();
+						}
 						$ret["$field"][] = $title;
+					}
 					
 					foreach ($tags_per_pages as $variable => $pageList) {
 						if ( in_array($grouped, $pageList) ) {

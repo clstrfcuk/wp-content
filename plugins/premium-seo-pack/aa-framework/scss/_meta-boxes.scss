@@ -21,7 +21,7 @@
 }
 .#{$alias}-progress-bar {
     position: relative;
-    height: 16px;
+    height: px(3);
     -webkit-transition: 0.4s linear;
     -moz-transition: 0.4s linear;
     -o-transition: 0.4s linear;
@@ -147,7 +147,9 @@
     ##{$alias}-twittercards-app-response {
     		background-color: #f2f2f2;
 				.#{$alias}-panel.#{$alias}-setup {
-					background-color: #f2f2f2;
+					background-color: #fff;
+                    border: 1px solid #f2f2f2 !important;
+                    padding-top: 20px;
 				}
 
         .#{$alias}-form-row {

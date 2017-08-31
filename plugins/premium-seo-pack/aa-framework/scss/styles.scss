@@ -17,6 +17,7 @@
 @import "title-meta-format";	// Title & Meta Format Module
 @import "local-seo";			// Local SEO Module
 @import "google-authorship";	// Google Authorship Module
+@import "alexa-rank";			// Alexa Rank Module
 @import "sitemap";				// Sitemap Module
 @import "capabilities";			// Capabilities Module
 @import "minify";				// Minify Module
@@ -27,6 +28,7 @@
 @import "dashboard";			// Dashboard Module
 @import "dependencies";			// Dependencies Module
 @import "google-analytics";		// Google Analytics Module
+@import "wizard";				// Google Code Wizard
 @import "serp";					// SERP Module
 @import "backlink-builder";		// BackLink Builder Module
 @import "social-stats";			// Social Stats Module
@@ -36,7 +38,6 @@
 @import "link-builder";			// Link Builder Module
 @import "link-redirect";		// Link Redirect Module
 @import "file-edit";			// File Edit Module
-@import "seo-friendly-img";				// Seo Friendly Images
+@import "seo-friendly-img";		// Seo Friendly Images
 @import "main";					// Global layout styling
 @import "responsive";			// Responsive
-
