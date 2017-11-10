@@ -8,7 +8,7 @@ class WPDBBackupEmail {
         $destination_Email=get_option('wp_db_backup_destination_Email');
         if (isset($destination_Email) && $destination_Email==1 && get_option('wp_db_backup_email_id')) {
             $to = get_option('wp_db_backup_email_id');
-            $subject = "Database Backup Created Successfully";
+            $subject = "Database Backup (".get_bloginfo('name').")";
             $filename = $args[0];
             $filesze = $args[3];
             $site_url = site_url();

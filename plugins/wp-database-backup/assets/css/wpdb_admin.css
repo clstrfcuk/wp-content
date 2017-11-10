@@ -13,3 +13,9 @@ body{
 #collapseDocumentation ul li{
     list-style-type: circle  !important;
 }
+.wpdb_log .arrow {
+    margin-left: 0px !important;
+}
+.bootstrap-wrapper .popover{
+max-width:100% !important;
+}

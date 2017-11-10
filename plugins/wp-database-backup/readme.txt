@@ -290,6 +290,27 @@ WP Database Backup plugin helps you to Restore Database Backup easily on single 
 * Added Setting : Remove local backup 
 * If Checked then it will remove local backup. 
 
+= 4.4.1 = 
+* 29-08-2017
+* If Class ZipArchive Not Present then create zip using PclZip
+
+= 4.4.2 = 
+* 20-09-2017
+* Fixed UI log popover display issue
+
+= 4.5 =
+* 27-09-2017
+* Migrated to Dropbox API V2
+* Dropbox API v1 shutdown - 28-09-2017
+
+= 4.5.1 =
+* 28-09-2017
+* Fixed issue : Update caused fatal error: Can’t return function value Dropbox_upload.php
+
+= 4.5.2 =
+* 26-10-2017
+* Changed : Email(Destination) subject for identify domains.
+
 == Frequently Asked Questions ==
 
  Q-How to  create database Backup?
@@ -335,9 +356,7 @@ Also Please make sure that you have write permission to Backup folder and also c
 * http://www.wpseeds.com/documentation/docs/wp-database-backup/faq/    
   
 == Upgrade Notice ==
-
-=4.4= 
-* Added Setting : Remove local backup 
+* Changed : Email(Destination) subject for identify domains.
 
 == Official Site ==
 * http://www.wpseeds.com/documentation/docs/wp-database-backup

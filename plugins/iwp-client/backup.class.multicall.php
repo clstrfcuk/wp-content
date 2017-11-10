@@ -212,7 +212,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 			}
 			if((empty($params['args']['file_loop_break_time']))||($params['args']['file_loop_break_time'] < 6))
 			{
-				$params['args']['file_loop_break_time'] = 17;
+				$params['args']['file_loop_break_time'] = 15;
 			}
 			if((empty($params['args']['db_loop_break_time']))||($params['args']['db_loop_break_time'] < 6))
 			{
@@ -235,8 +235,9 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 				$params['account_info']['actual_file_size'] = 0;
 				
 			}
-			$this->statusLog($historyID, array('stage' => 'verification', 'status' => 'processing', 'statusMsg' => 'verificationInitiated'),$params);
+			$historyID = '';
 			
+			$this->statusLog($historyID, array('stage' => 'verification', 'status' => 'processing', 'statusMsg' => 'verificationInitiated'),$params);
 			$historyID = $params['args']['parentHID'];
 			
 			$this->hisID = $historyID;
@@ -718,6 +719,10 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 				file_put_contents($file, $dump_data, FILE_APPEND);
 				//$left_out_count = '';
 			}
+			//Skip log tables 
+			if (strpos($table[0], 'wsal_metadata')) {
+					continue;
+			}
 			$count = $wpdb->get_var("SELECT count(*) FROM $table[0]");
 			$count_field = 1;
 			
@@ -1051,6 +1056,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 			trim(basename(WP_CONTENT_DIR)) . "/uploads/wp-security-audit-log",
 			trim(basename(WP_CONTENT_DIR)) . "/uploads/backwpup-12b462-backups",
 			trim(basename(WP_CONTENT_DIR)) . "/uploads/backwpup-12b462-logs",
+			trim(basename(WP_CONTENT_DIR)) . "/uploads/wpallimport",
 			trim(basename(WP_CONTENT_DIR)) . "/uploads/backwpup-12b462-temp",
 			trim(basename(WP_CONTENT_DIR)) . "/Dropbox_Backup",
 			trim(basename(WP_PLUGIN_DIR)) . "/cache",
@@ -1205,7 +1211,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		$file_loop_break_time = $requestParams['args']['file_loop_break_time'];
 		$task_name = $requestParams['args']['backup_name'];
 		$exclude_file_size = $requestParams['args']['exclude_file_size'];
-		$exclude_extensions = $requestParams['args']['exclude_extensions'];
+		$exclude_extensions = explode(",",$requestParams['args']['exclude_extensions']);
 		$zip_split_size = $requestParams['args']['zip_split_size'];
 		$v_offset = 0;
 		if(isset($backup_settings_values['dbFileHashValue']) && !empty($backup_settings_values['dbFileHashValue'][$historyID]))
@@ -1711,7 +1717,7 @@ class IWP_MMB_Backup_Multicall extends IWP_MMB_Core
 		$file_loop_break_time = $requestParams['args']['file_loop_break_time'];
 		$task_name = $requestParams['args']['backup_name'];
 		$exclude_file_size = $requestParams['args']['exclude_file_size'];
-		$exclude_extensions = $requestParams['args']['exclude_extensions'];
+		$exclude_extensions = explode(",",$requestParams['args']['exclude_extensions']);
 		$zip_split_size = $requestParams['args']['zip_split_size'];
 		
 		if($backup_settings_values['dbFileHashValue'][$historyID])

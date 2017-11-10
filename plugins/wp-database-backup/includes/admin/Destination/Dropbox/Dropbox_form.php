@@ -8,7 +8,8 @@
     </div>
     <div id="collapseIII" class="panel-collapse collapse in">
         <div class="panel-body">
-            <?php include plugin_dir_path(__FILE__) . 'dropboxupload.php'; ?>
+            <?php include plugin_dir_path(__FILE__) . 'dropboxupload.php';?>
+            
         </div>		
     </div>
 </div>

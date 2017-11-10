@@ -748,10 +748,13 @@ endif;
 	  static $info = array();
 	  
 	  static $this_result;
-	  
+	 $exclude_data = $v_options[IWP_PCLZIP_OPT_IWP_EXCLUDE];
 	  if(empty($this_result)){
 		  if( is_dir( $dir = rtrim( $dir, "/\\" ) ) ) {
 			foreach( scandir( $dir) as $item ) {
+        if ($this->excludeDirFromScan($dir, $exclude_data)) {
+          return;
+        }
 			  if(true){
 				  if( $item != "." && $item != ".." ) {
 					$absPath = $dir . DIRECTORY_SEPARATOR . $item;
@@ -806,7 +809,17 @@ endif;
 		return $this_result;
   }
   
-  
+  function excludeDirFromScan($exclude_dir, $exclude_data){
+    if (empty($exclude_data)) {
+      return false;
+    }
+    foreach ($exclude_data as $dir=>$name) {
+        if ($name != '/' && strrpos($exclude_dir, $name)) {
+            return true;
+        } 
+    }
+    return false;
+  }
   
   //---------------------------------------------------------------------------------
   // --------------------------------------------------------------------------------

@@ -78,7 +78,6 @@ $class      = "eacs-product-carousel eacs-product-grid" . " " . $add_border  . "
 		<?php echo do_shortcode("[recent_products per_page=\"$max_product_count\" category=\"$category\"]") ?>
     <div class="clearfix"></div>
 	</div>
-</div>
 
 <script type="text/javascript">
 
@@ -93,7 +92,7 @@ $class      = "eacs-product-carousel eacs-product-grid" . " " . $add_border  . "
 }(jQuery));
 
 </script>
-
+</div>
 
 
 <style type="text/css">

@@ -2,7 +2,7 @@
 Contributors: infinitewp
 Tags: admin, administration, amazon, api, authentication, automatic, dashboard, dropbox, events, integration, manage, multisite, multiple, notification, performance, s3, security, seo, stats, tracking, infinitewp, updates, backup, restore, iwp, infinite
 Requires at least: 3.1
-Tested up to: 4.8
+Tested up to: 4.8.1
 Stable tag: trunk
 
 Install this plugin on unlimited sites and manage them all from a central dashboard.
@@ -47,6 +47,23 @@ Credits: [Vladimir Prelovac](http://prelovac.com/vladimir) for his worker plugin
 5. One-click updates
 
 == Changelog ==
+= 1.6.6.3 - Sep 29th 2017 =
+* Fix: v1_retired error while backing up the site to Dropbox
+
+= 1.6.5.1 - Sep 9th 2017 =
+* Feature: WP Time Capsule support enabled.
+* Improvement: Copy Details in client plugin installation has been updated to clipboard.js from flash.
+* Improvement: WordPress updates will be fetched every 2 hours instead of 4 hours.
+* Improvement: Custom posts will be registered to avoid false alerts from other security plugins.
+* Improvement: Sucuri API is removed. IWP will use Sucuri Plugin to scan your sites for malware.
+* Improvement: Calling Next Function failed – Error while fetching table data has been fixed.
+* Improvement: Multicall backups would not exclude .zip files.
+* Improvement: Support for iThemes Security plugin New version.
+* Improvement: wp-content/uploads/wpallimport directory will be automatically excluded from backups.
+* Improvement: Default file zip split size decreased to 512 MB.
+* Fix: wp_iwp_backup_status table column type is changed from var_char to long text.
+* Fix: The backup process would generate multiple warnings.
+
 = 1.6.4.2 - Jul 10th 2017 =
 * Improvement: Dropbox API V2 has been integrated with InfiniteWP.
 * Fix: While uploading the backup to Dropbox some users get Dropbox verification failed: File may be corrupted error.

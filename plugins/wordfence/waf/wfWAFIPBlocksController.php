@@ -134,7 +134,7 @@ class wfWAFIPBlocksController
 			return false;
 		}
 		
-		$logHuman = $request->getQueryString('wordfence_logHuman');
+		$logHuman = $request->getQueryString('wordfence_lh');
 		if ($logHuman !== null) {
 			return false;
 		}

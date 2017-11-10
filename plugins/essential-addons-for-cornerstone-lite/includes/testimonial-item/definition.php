@@ -18,15 +18,5 @@ class EACS_Testimonial_Item {
     );
 	}
 
-	// public function update_build_shortcode_atts( $atts, $parent ) {
-
-	// 	if ( ! is_null( $parent ) ) {
-	// 		$atts['linked'] = $parent['linked'];
-	// 	}
-
-	// 	return $atts;
-
-	// }
-
 
 }

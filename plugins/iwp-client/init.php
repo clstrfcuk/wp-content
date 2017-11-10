@@ -4,7 +4,7 @@ Plugin Name: InfiniteWP - Client
 Plugin URI: http://infinitewp.com/
 Description: This is the client plugin of InfiniteWP that communicates with the InfiniteWP Admin panel.
 Author: Revmakx
-Version: 1.6.4.2
+Version: 1.6.6.3
 Author URI: http://www.revmakx.com
 */
 /************************************************************
@@ -28,7 +28,7 @@ if(basename($_SERVER['SCRIPT_FILENAME']) == "init.php"):
     exit;
 endif;
 if(!defined('IWP_MMB_CLIENT_VERSION'))
-	define('IWP_MMB_CLIENT_VERSION', '1.6.4.2');
+	define('IWP_MMB_CLIENT_VERSION', '1.6.6.3');
 	
 
 
@@ -66,7 +66,6 @@ require_once("$iwp_mmb_plugin_dir/addons/wp_optimize/optimize.class.php");
 require_once("$iwp_mmb_plugin_dir/api.php");
 require_once("$iwp_mmb_plugin_dir/plugins/search/search.php");
 require_once("$iwp_mmb_plugin_dir/plugins/cleanup/cleanup.php");
-
 
 
 if( !function_exists ( 'iwp_mmb_filter_params' )) {
@@ -110,12 +109,11 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 			$data = trim(base64_decode($request_raw_data));
 			$GLOBALS['IWP_JSON_COMMUNICATION'] = 1;
 		}else{
+			$data = false;
 			$request_raw_data = $HTTP_RAW_POST_DATA_LOCAL;
-			$data = trim(base64_decode($request_raw_data));
-			if (is_serialized($data)) {
+			$serialized_data = trim(base64_decode($request_raw_data));
+			if (is_serialized($serialized_data)) {
 					iwp_mmb_response(array('error' => 'Please update your IWP Admin Panel to latest version', 'error_code' => 'update_panel'), false, true);
-			}else{
-				return false;
 			}
 		}
 		
@@ -1263,28 +1261,72 @@ if( !function_exists('iwp_mmb_wordfence_load')){
  *WordFence Addon End 
  */
 
+/*
+ * Sucuri Addon Start
+ */
+
+if( !function_exists('iwp_mmb_sucuri_fetch_result')){
+	function iwp_mmb_sucuri_fetch_result($params){
+		global $iwp_mmb_core,$iwp_mmb_plugin_dir;
+                require_once("$iwp_mmb_plugin_dir/addons/malware_scanner_sucuri/malware_scanner_sucuri.class.php");
+		$iwp_mmb_core->get_sucuri_instance();
+		
+		$return = $iwp_mmb_core->sucuri_instance->getScannedCacheResult();
+		if (is_array($return) && array_key_exists('error', $return))
+			iwp_mmb_response($return, false);
+		else {
+			iwp_mmb_response($return, true);
+		}
+	}
+}
+
+if( !function_exists('iwp_mmb_sucuri_scan')){
+	function iwp_mmb_sucuri_scan($params){
+		global $iwp_mmb_core,$iwp_mmb_plugin_dir;
+                require_once("$iwp_mmb_plugin_dir/addons/malware_scanner_sucuri/malware_scanner_sucuri.class.php");
+		$iwp_mmb_core->get_sucuri_instance();
+		
+		$return = $iwp_mmb_core->sucuri_instance->runAndSaveScanResult();
+		if (is_array($return) && array_key_exists('error', $return))
+			iwp_mmb_response($return, false);
+		else {
+			iwp_mmb_response($return, true);
+		}
+	}
+}
+
+if( !function_exists('iwp_mmb_sucuri_change_alert')){
+	function iwp_mmb_sucuri_change_alert($params){
+		global $iwp_mmb_core,$iwp_mmb_plugin_dir;
+                require_once("$iwp_mmb_plugin_dir/addons/malware_scanner_sucuri/malware_scanner_sucuri.class.php");
+		$iwp_mmb_core->get_sucuri_instance();
+		
+		$return = $iwp_mmb_core->sucuri_instance->changeAlertEmail($params);
+		if (is_array($return) && array_key_exists('error', $return))
+			iwp_mmb_response($return, false);
+		else {
+			iwp_mmb_response($return, true);
+		}
+	}
+}
 
 /*
  * iTheams Security Addon Start here
  */
 
 if(!function_exists('iwp_mmb_ithemes_security_load')) {
-    function iwp_mmb_ithemes_security_load() {
-        if(iwp_mmb_ithemes_security_check()) {
-            include_once(ABSPATH . "wp-includes/pluggable.php"); 
-            //$ITSECdashboard = new ITSEC_Dashboard_Admin( new ITSEC_Core(WP_PLUGIN_DIR . '/better-wp-security/better-wp-security.php', __( 'iThemes Security', 'it-l10n-better-wp-security' )) );
-            //add_action( 'itsec_add_admin_meta_boxes', array( $ITSECdashboard, 'add_admin_meta_boxes' ) );
-            $statuses = array(
-			'safe-high'   => array(),
-			'high'        => array(),
-			'safe-medium' => array(),
-			'medium'      => array(),
-			'safe-low'    => array(),
-			'low'         => array(),
-		);
-
-		$statuses = apply_filters( 'itsec_add_dashboard_status', $statuses );
-                iwp_mmb_response($statuses, true);
+    function iwp_phx_ithemes_security_check() {
+        if (iwp_mmb_ithemes_security_check()) {
+            global $iwp_mmb_core;
+            $ithemessec_instance = $iwp_mmb_core->get_ithemessec_instance();
+            $return = $ithemessec_instance->securityCheck();
+            if (isset($return['security_check'])) {
+                iwp_mmb_response($return['security_check'], true);
+            } else {
+                iwp_mmb_response($return, false);
+            }
+        } else {
+            iwp_mmb_response(array('error' => 'iThemes Security plugin is not installed or deactivated.', 'error_code' => 'ithemes_missing_or_not_active'), false);
         }
     }
 }
@@ -1749,6 +1791,9 @@ if (!function_exists('iwp_mmb_backup_db_changes')) {
 		if(version_compare(iwp_mmb_get_site_option('iwp_backup_table_version'), '1.1.3', '<')){
 			iwp_mmb_add_lastUpdateTime_column_backup_status_table();
 		}
+		if(version_compare(iwp_mmb_get_site_option('iwp_backup_table_version'), '1.1.4', '<')){
+			iwp_mmb_change_stausMsg_column_type_backup_status_table();
+		}
 	}
 }
 
@@ -1781,7 +1826,7 @@ if(!function_exists('iwp_mmb_create_backup_status_table')){
 				  `stage` varchar(255) NOT NULL,
 				  `status` varchar(255) NOT NULL,
 				  `finalStatus` varchar(50) DEFAULT NULL,
-				  `statusMsg` varchar(255) NOT NULL,
+				  `statusMsg` longtext,
 				  `requestParams` text NOT NULL,
 				  `responseParams` longtext,
 				  `taskResults` text,
@@ -1796,7 +1841,7 @@ if(!function_exists('iwp_mmb_create_backup_status_table')){
 			dbDelta( $sql );
 
 			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
-				update_option( "iwp_backup_table_version", '1.1.3');
+				update_option( "iwp_backup_table_version", '1.1.4');
 			}
 		}
 	}
@@ -1884,6 +1929,17 @@ if(!function_exists('iwp_mmb_add_lastUpdateTime_column_backup_status_table')){
 	}
 }
 
+if (!function_exists('iwp_mmb_change_stausMsg_column_type_backup_status_table')) {
+	function iwp_mmb_change_stausMsg_column_type_backup_status_table(){
+		global $wpdb;
+		$table_name = $wpdb->base_prefix . "iwp_backup_status";
+		$sql = "alter table " . $table_name . " change statusMsg statusMsg LONGTEXT;";
+		$isDone = $wpdb->query($sql);
+		if ($isDone) {
+			update_option( "iwp_backup_table_version", '1.1.4');
+		}
+	}
+}
 //-------------------------------------------------------------------
 
 //-Function name - iwp_mmb_get_file_size()
@@ -1982,20 +2038,20 @@ if(	isset($_COOKIE[IWP_MMB_XFRAME_COOKIE]) ){
 //added for jQuery compatibility
 if(!function_exists('iwp_mmb_register_ext_scripts')){
 	function iwp_mmb_register_ext_scripts(){
-		wp_register_script( 'iwp-zero-clipboard', plugins_url( '/ZeroClipboard.js', __FILE__ ) );
+		wp_register_script( 'iwp-clipboard', plugins_url( 'clipboard.min.js', __FILE__ ) );
 	}
 }
 
 add_action( 'admin_init', 'iwp_mmb_register_ext_scripts' );
 
 
-if(!function_exists('iwp_mmb_add_zero_clipboard_scripts')){
-	function iwp_mmb_add_zero_clipboard_scripts(){	
-		if (!wp_script_is( 'iwp-zero-clipboard', 'enqueued' )) {
-			if(file_exists(WP_PLUGIN_DIR.'/iwp-client/ZeroClipboard.js') ){
+if(!function_exists('iwp_mmb_add_clipboard_scripts')){
+	function iwp_mmb_add_clipboard_scripts(){	
+		if (!wp_script_is( 'iwp-clipboard', 'enqueued' )) {
+			if(file_exists(WP_PLUGIN_DIR.'/iwp-client/clipboard.min.js') ){
 				wp_enqueue_script(
-					'iwp-zero-clipboard',
-					plugins_url( '/ZeroClipboard.js', __FILE__ ),
+					'iwp-clipboard',
+					plugins_url( 'clipboard.min.js', __FILE__ ),
 					array( 'jquery' )
 				);
 			}
@@ -2163,7 +2219,7 @@ if(!function_exists('iwp_mmb_get_site_option')) {
 }
 
 if ( !get_option('iwp_client_public_key')  && function_exists('add_action')){
-	add_action('admin_enqueue_scripts', 'iwp_mmb_add_zero_clipboard_scripts');
+	add_action('admin_enqueue_scripts', 'iwp_mmb_add_clipboard_scripts');
 }
 
 if (!function_exists('iwp_mmb_json_encode')) {

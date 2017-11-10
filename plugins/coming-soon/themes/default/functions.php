@@ -307,7 +307,20 @@ function seed_csp4_credit() {
 
 	if ( !empty( $footer_credit ) ) {
 		$output = '<div id="seed-csp4-credit">';
-		$output .= '<a target="_blank" href="http://www.seedprod.com/?utm_source=coming-soon-credit-link&utm_medium=banner&utm_campaign=coming-soon-plugin-credit-link"><img src="'.plugins_url('coming-soon',dirname('.')).'/themes/default/images/seedprod-credit.png"></a>';
+		if($status == 2){
+		$output .= '<a  style="font-size:11px;color:#f5f5f5" target="_blank" href="https://www.seedprod.com/">WordPress Maintenance Mode</a> <span style="font-size:11px;color:#f5f5f5">by</span><img style="vertical-align:top;padding-top:1px" src="'.plugins_url('coming-soon',dirname('.')).'/themes/default/images/seedprod-credit-new.png">';
+		}else{
+			$domain = wp_parse_url(home_url());
+			$domain = $domain['host'];
+			if($domain[0] > 'i' && $domain[0] <= 'p'){
+			$output .= '<a  style="font-size:11px;color:#f5f5f5" target="_blank" href="https://www.seedprod.com/">WordPress Coming Soon Page</a> <span style="font-size:11px;color:#f5f5f5">by</span><img style="vertical-align:top;padding-top:1px" src="'.plugins_url('coming-soon',dirname('.')).'/themes/default/images/seedprod-credit-new.png">';
+		}elseif($domain[0] > 'p'){
+				$output .= '<a  style="font-size:11px;color:#f5f5f5" target="_blank" href="https://www.seedprod.com/">Under Construction Page</a> <span style="font-size:11px;color:#f5f5f5">by</span><img style="vertical-align:top;padding-top:1px" src="'.plugins_url('coming-soon',dirname('.')).'/themes/default/images/seedprod-credit-new.png">';
+			}else{
+			$output .= '<a  style="font-size:11px;color:#f5f5f5" target="_blank" href="https://www.seedprod.com/">Coming Soon Page</a> <span style="font-size:11px;color:#f5f5f5">by</span><img style="vertical-align:top;padding-top:1px" src="'.plugins_url('coming-soon',dirname('.')).'/themes/default/images/seedprod-credit-new.png">';
+			}
+		}
+
 		$output .= '</div>';
 	}
 

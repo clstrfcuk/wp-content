@@ -96,41 +96,48 @@ switch ( $pagination_type ) {
   <div id="<?= $team_members_id ?>">
     <?php echo do_shortcode( $content ); ?>
   </div>
-</div>
-
 
 <script type="text/javascript">
 
   jQuery(document).ready(function($) {
-    $("<?= '#'.$team_members_id?>").slick({
-      autoplay: <?= $auto_play ?>,
-      infinite: <?= $loop ?>,
-      slidesToShow: <?= $max_visible_items ?>,
-      slidesToScroll: <?= $slide_to_scroll ?>,
-      arrows: <?= $nav ?>,
-      dots: <?= $dots ?>,
-      pauseOnHover: <?= $pause_hover ?>,
-      draggable: <?= $draggable ?>,
-      variableWidth: <?= $variable_width ?>,
-      responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: <?= $max_visible_items_tablet ?>,
-        slidesToScroll: 1
-      }
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: <?= $max_visible_items_mobile ?>,
-        slidesToScroll: 1
-      }
+
+    function createTeamCarousel() {
+      $("<?= '#'.$team_members_id?>").not('.slick-initialized').slick({
+        autoplay: <?= $auto_play ?>,
+        infinite: <?= $loop ?>,
+        slidesToShow: <?= $max_visible_items ?>,
+        slidesToScroll: <?= $slide_to_scroll ?>,
+        arrows: <?= $nav ?>,
+        dots: <?= $dots ?>,
+        pauseOnHover: <?= $pause_hover ?>,
+        draggable: <?= $draggable ?>,
+        variableWidth: <?= $variable_width ?>,
+        responsive: [
+            {
+              breakpoint: 1024,
+              settings: {
+                slidesToShow: <?= $max_visible_items_tablet ?>,
+                slidesToScroll: 1
+              }
+            },
+            {
+              breakpoint: 768,
+              settings: {
+                slidesToShow: <?= $max_visible_items_mobile ?>,
+                slidesToScroll: 1
+              }
+            }
+          ]
+      });
     }
-  ]
-    });
+
+  createTeamCarousel();
+
+  $(window).on( 'resize', createTeamCarousel );
+
   });
 </script> 
+</div>
 
 <style type="text/css">
 

@@ -174,7 +174,14 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                 'error' => 'Failed, please add FTP details', 'error_code' => 'failed_please_add_ftp_do_upgrade'
             );
         }
-
+        $WPTC_response = apply_filters('backup_and_update_wptc', $params);
+        if ($WPTC_response == 'WPTC_TAKES_CARE_OF_IT') {
+            return array('success' => 'The update will now be handled by WP Time Capsule. Check the WPTC page for its status.', 'success_code' => 'WPTC_TAKES_CARE_OF_IT');
+        }elseif (!empty($WPTC_response['error_code'])) {
+            return $WPTC_response;
+        }elseif (!empty($WPTC_response['success'])) {
+            return $WPTC_response;
+        }
         $params = isset($params['upgrades_all']) ? $params['upgrades_all'] : $params;
         
         $core_upgrade    = isset($params['wp_upgrade']) ? $params['wp_upgrade'] : array();

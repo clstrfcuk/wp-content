@@ -81,8 +81,10 @@ if (!empty($xml)) {
              } 
              else if ($_GET['notification'] == 'Invalid') {
                   _e('Invalid Access!!!!', 'wpdbbkp'); 
+             } else if ($_GET['notification'] == 'deleteauth') {
+                 _e('Dropbox account unlink Successfully', 'wpdbbkp');
              }
-              ?>   
+            ?>
         </div>        
     </div>
  </div>

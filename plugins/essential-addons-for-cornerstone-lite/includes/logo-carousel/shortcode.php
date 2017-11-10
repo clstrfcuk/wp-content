@@ -85,41 +85,49 @@ switch ( $pagination_type ) {
   <div id="<?= $logo_carousel_id ?>">
     <?php echo do_shortcode( $content ); ?>
   </div>
-</div>
-
-
+  
 <script type="text/javascript">
 
   jQuery(document).ready(function($) {
-    $("<?= '#'.$logo_carousel_id ?>").slick({
-      autoplay: <?= $auto_play ?>,
-      infinite: <?= $loop ?>,
-      slidesToShow: <?= $max_visible_items ?>,
-      slidesToScroll: <?= $slide_to_scroll ?>,
-      arrows: <?= $nav ?>,
-      dots: <?= $dots ?>,
-      pauseOnHover: <?= $pause_hover ?>,
-      draggable: <?= $draggable ?>,
-      variableWidth: <?= $variable_width ?>,
-      responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: <?= $max_visible_items_tablet ?>,
-        slidesToScroll: 1
-      }
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: <?= $max_visible_items_mobile ?>,
-        slidesToScroll: 1
-      }
+
+    function createLogoCarousel() {
+
+      $("<?= '#'.$logo_carousel_id ?>").not('.slick-initialized').slick({
+        autoplay: <?= $auto_play ?>,
+        infinite: <?= $loop ?>,
+        slidesToShow: <?= $max_visible_items ?>,
+        slidesToScroll: <?= $slide_to_scroll ?>,
+        arrows: <?= $nav ?>,
+        dots: <?= $dots ?>,
+        pauseOnHover: <?= $pause_hover ?>,
+        draggable: <?= $draggable ?>,
+        variableWidth: <?= $variable_width ?>,
+        responsive: [
+            {
+              breakpoint: 1024,
+              settings: {
+                slidesToShow: <?= $max_visible_items_tablet ?>,
+                slidesToScroll: 1
+              }
+            },
+            {
+              breakpoint: 768,
+              settings: {
+                slidesToShow: <?= $max_visible_items_mobile ?>,
+                slidesToScroll: 1
+              }
+            }
+          ]
+      });
     }
-  ]
-    });
+
+  createLogoCarousel();
+
+  $(window).on( 'resize', createLogoCarousel );
+
   });
 </script> 
+</div>
 
 <style type="text/css">
 

@@ -18,7 +18,7 @@ function seed_csp4_admin_footer( $text ) {
   return $text;
 }
 
-//add_action( 'admin_notices', 'seed_csp4_review' );
+add_action( 'admin_notices', 'seed_csp4_review' );
 function seed_csp4_review() {
 
 	// Verify that we can do a check for reviews.

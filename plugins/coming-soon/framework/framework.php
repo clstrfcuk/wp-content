@@ -42,6 +42,7 @@ class SEED_CSP4_ADMIN
             add_action( 'admin_init', array( &$this, 'reset_defaults' ) );
             add_action( 'admin_init', array( &$this, 'create_settings' ) );
             add_filter( 'plugin_action_links', array( &$this, 'plugin_action_links' ), 10, 2 );
+            add_filter( 'tmp_grunion_allow_editor_view', '__return_false' );
         }
     }
 
@@ -186,7 +187,7 @@ class SEED_CSP4_ADMIN
             }
             echo '<a class="nav-tab seed_csp4-preview thickbox-preview" target="_blank" href="'.home_url().'?cs_preview=true&TB_iframe=true&width=640&height=632" title="'.__('&larr; Close Window','coming-soon').'"><i class="fa fa-external-link"></i> '.__('Live Preview','coming-soon').'</a>';
             if(defined('SEED_CSP_API_KEY') === false){
-                echo '<a class="nav-tab seed_csp4-support" style="background-color: #444;color: #fff" href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin" target="_blank"><i class="fa fa-star"></i> '.__('Upgrade to Pro for More Features','coming-soon').'</a>';
+                echo '<a class="nav-tab seed_csp4-support" style="background-color: #444;color: #fff" href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin" target="_blank"><i class="fa fa-bolt"></i> '.__('Upgrade to Pro for More Features','coming-soon').'</a>';
                 //echo '<a class="nav-tab seed_csp4-support" style="background-color: #444;color: #fff" href="http://testdrive.seedprod.com?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-link-in-plugin" target="_blank"><i class="fa fa-bolt"></i> '.__('Try the Pro Version for Free','coming-soon').'</a>';
             }
             echo '</h2>';
@@ -303,7 +304,7 @@ class SEED_CSP4_ADMIN
                     <div id="postbox-container-1" class="postbox-container">
                         <div id="side-sortables" class="meta-box-sortables ui-sortable">
 
-                             <div class="postbox ">
+                         <!--     <div class="postbox ">
                                 <div class="handlediv" title="Click to toggle"><br /></div>
                                 <h3 class="hndle"><span><i class="fa fa-rocket"></i>&nbsp;&nbsp;<?php _e('Getting Started Video - 60 sec', 'coming-soon') ?></span></h3>
                                 <div class="inside">
@@ -311,25 +312,23 @@ class SEED_CSP4_ADMIN
                                         <iframe width="250" height="188" src="https://www.youtube.com/embed/hcY0M0IYcAE" frameborder="0" allowfullscreen></iframe>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             
-                            
+                            <a style="border:1px solid #ddd;display:inline-block;" href="https://www.seedprod.com/landing/coming-soon-page-getting-started-video/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank"><img src="<?php echo SEED_CSP4_PLUGIN_URL; ?>framework/getting-started-banner.png" /></a>
+                            <br><br>
 
                            
-                            <!-- <a href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank"><img src="<?php echo SEED_CSP4_PLUGIN_URL; ?>framework/coming-soon-pro-sidebar.png" /></a>
-                            <br><br> -->
+                            <a  style="border:1px solid #ddd;display:inline-block;" href="https://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=banner&utm_campaign=coming-soon-banner-in-plugin" target="_blank"><img src="<?php echo SEED_CSP4_PLUGIN_URL; ?>framework/coming-soon-pro-sidebar.png" /></a>
+                            <br><br>
 
 
-                            <div class="postbox " style="background-color:#FAE6A4;color:#333 !important; border-color:#333 !important">
+                 <!--            <div class="postbox " style="background-color:#FAE6A4;color:#333 !important; border-color:#333 !important">
                                 <div class="handlediv" title="Click to toggle"><br /></div>
                                 <h3 class="hndle" style="color:#fff !important;border-color:#333 !important; background-color:#333"><span><i class="fa fa-star"></i>&nbsp;&nbsp;<?php _e('Yo-Yo-Yo, Why Go Pro?', 'coming-soon') ?></span></h3>
                                 <div class="inside">
                                     <div class="support-widget">
-                                      <!--   <p>
-                                            <?php _e("I'd love for you to check out what's in the Pro Version with this video Walk Through.",'coming-soon') ?>
-                                        </p> -->
-                              <!--           <iframe  width="250" height="188" src="https://www.youtube.com/embed/aMSPV4iY6Tc?rel=0" frameborder="0" allowfullscreen=""></iframe> -->
+                                    
                                         <ul>
 
                                             <li><i class="fa fa-check"></i> <strong>Realtime Page Customizer</strong></li>
@@ -354,24 +353,38 @@ class SEED_CSP4_ADMIN
 
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="postbox ">
                                 <div class="handlediv" title="Click to toggle"><br /></div>
-                                <h3 class="hndle"><span><i class="fa fa-question-circle"></i>&nbsp;&nbsp;<?php _e('Plugin Support', 'coming-soon') ?></span></h3>
+                            
                                 <div class="inside">
                                     <div class="support-widget">
-                                        <p>
-                                            <?php _e('Got a Question, Idea, Problem or Praise?') ?>
+                                     
+                                 <p style="text-align: center;margin-bottom:0"><a href="https://wordpress.org/support/plugin/coming-soon" target="_blank"><?php _e('Got a Support Question', 'coming-soon') ?></a> <i class="fa fa-question-circle" aria-hidden="true"></i>
+                                          <!--   <li>&raquo; <a href="http://support.seedprod.com/article/83-how-to-clear-wp-super-caches-cache" target="_blank"><?php _e('Common Caching Issues Resolutions', 'coming-soon') ?></a></li> -->
                                         </p>
-                                        <ul>
-                                            <li>&raquo; <a href="https://wordpress.org/support/plugin/coming-soon" target="_blank"><?php _e('Support Request', 'coming-soon') ?></a></li>
-                                            <li>&raquo; <a href="http://support.seedprod.com/article/83-how-to-clear-wp-super-caches-cache" target="_blank"><?php _e('Common Caching Issues Resolutions', 'coming-soon') ?></a></li>
-                                        </ul>
+                                            <!--   <p style="text-align: center; margin-top:0">
+
+                                            <a style="display:inline-block" href="https://wordpress.org/support/plugin/coming-soon/reviews/?filter=5#new-post">Please Rate this Plugin to show your Support!</a> <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></p> -->
+                                            
+
+                                   
 
                                     </div>
                                 </div>
                             </div>
+
+                            <form id="seed-bg-form" style="display:none" action="https://www.getdrip.com/forms/39621858/submissions" method="post" data-drip-embedded-form="39621858" target="_blank">
+                                <div>
+                                    <label for="drip-email">Email Address</label><br />
+                                    <input type="email" id="drip-email" name="fields[email]" value="" />
+                                </div>
+                              <div>
+                                <input id="drip-submit" type="submit" name="submit" value="Sign Up" data-drip-attribute="sign-up-button" />
+                              </div>
+                            </form>
+
                            
                                <!-- <div class="postbox like-postbox">
                                     <div class="handlediv" title="Click to toggle"><br /></div>
@@ -391,7 +404,7 @@ class SEED_CSP4_ADMIN
                             
 
 
-                                <div class="postbox rss-postbox">
+                       <!--          <div class="postbox rss-postbox">
     											<div class="handlediv" title="Click to toggle"><br /></div>
     											<h3 class="hndle"><span><i class="fa fa-wordpress"></i>&nbsp;&nbsp;<?php _e('SeedProd Blog', 'ultimate-coming-soon-page') ?></span></h3>
     											<div class="inside">
@@ -412,7 +425,7 @@ class SEED_CSP4_ADMIN
     											</ul>
     										</div>
     									</div>
-    								</div>
+    								</div> -->
 
                         </div>
                     </div>
@@ -466,7 +479,7 @@ class SEED_CSP4_ADMIN
                     if ( empty( $v[ 'desc_callback' ] ) ) {
                         $v[ 'desc_callback' ] = array(
                              &$this,
-                            '__return_empty_string'
+                            'return_empty_string'
                         );
                     } else {
                         $v[ 'desc_callback' ] = $v[ 'desc_callback' ];
@@ -594,7 +607,7 @@ class SEED_CSP4_ADMIN
      * @since 0.1.0
      * @return string Empty
      */
-    function __return_empty_string( )
+    function return_empty_string( )
     {
         echo '';
     }

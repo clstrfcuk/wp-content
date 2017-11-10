@@ -35,10 +35,12 @@ class IWP_MMB_Core extends IWP_MMB_Helper
     var $user_instance;
     var $backup_instance;
 	var $wordfence_instance;
+	var $sucuri_instance;
     var $installer_instance;
     var $iwp_mmb_multisite;
     var $network_admin_install;
 	
+	var $ithemessec_instance;
 	var $backup_repository_instance;
 	var $optimize_instance;
 	
@@ -181,11 +183,14 @@ class IWP_MMB_Core extends IWP_MMB_Helper
             'put_redirect_url_again'=>  'iwp_mmb_gwmt_redirect_url_again',
 			'wordfence_scan' => 'iwp_mmb_wordfence_scan',
 			'wordfence_load' => 'iwp_mmb_wordfence_load',
+			'sucuri_fetch_result' => 'iwp_mmb_sucuri_fetch_result',
 			'backup_test_site' => 'iwp_mmb_backup_test_site',
-			'ithemes_security_load' => 'iwp_mmb_ithemes_security_load',
+			'ithemes_security_check' => 'iwp_phx_ithemes_security_check',
 			'get_seo_info' => 'iwp_mmb_yoast_get_seo_info',
 			'save_seo_info' => 'iwp_mmb_yoast_save_seo_info',
-			'fetch_activities_log' => 'iwp_mmb_fetch_activities_log'
+			'fetch_activities_log' => 'iwp_mmb_fetch_activities_log',
+			'sucuri_scan' => 'iwp_mmb_sucuri_scan',
+			'sucuri_change_alert' => 'iwp_mmb_sucuri_change_alert'
 		);
 		
 		add_action('rightnow_end', array( &$this, 'add_right_now_info' ));       
@@ -290,41 +295,35 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 			echo '<tr><td align="right">WP-ADMIN URL:</td><td align="left"><strong>'.$notice_display_URL.'</strong></td></tr>
 			<tr><td align="right">ADMIN USERNAME:</td><td align="left"><strong>'.$username.'</strong> (or any admin id)</td></tr>
             <tr><td align="right">ACTIVATION KEY:</td><td align="left"><strong>'.$iwp_client_activate_key.'</strong></td></tr>
+            <tr class="only_flash"><td></td><td align="left" style="position:relative;">
             <tr id="copy_at_once"><td align="right">To quick add, copy this</td><td align="left" style="position:relative;"><input type="text" style="width:295px;" class="read_creds" readonly value="'.$notice_display_URL.'|^|'.$username.'|^|'.$iwp_client_activate_key.'" /></td></tr>
-            <tr class="only_flash"><td></td><td align="left" style="position:relative;"><div id="copy_details" style="background:#008000;display: inline-block;padding: 4px 10px;border-radius: 5px;color:#fff;font-weight:600;cursor:pointer;">Copy details</div><span class="copy_message" style="display:none;margin-left:10px;color:#008000;">Copied :)</span></td></tr>
+            <tr class="only_flash"><td></td><td align="left" style="position:relative;"><div id="copy_details"  data-clipboard-text="'.$notice_display_URL.'|^|'.$username.'|^|'.$iwp_client_activate_key.'" style="background:#008000;display: inline-block;padding: 4px 10px;border-radius: 5px;color:#fff;font-weight:600;cursor:pointer;">Copy details</div><span class="copy_message" style="display:none;margin-left:10px;color:#008000;">Copied :)</span></td></tr>
 
             <script type="text/javascript">
-                var hasFlash = function() {
-                    return (typeof navigator.plugins == "undefined" || navigator.plugins.length == 0) ? !!(new ActiveXObject("ShockwaveFlash.ShockwaveFlash")) : navigator.plugins["Shockwave Flash"];
-                };
-                var onhoverMsg = "<span class=\"aftercopy_instruction\" style=\"position: absolute;top: 32px;left:20px;background:#fff;border:1px solid #000;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;padding:2px;margin:2px;text-align:center;\">Paste this in any field in the Add Website dialogue in the InfiniteWP admin panel.</span>";
-                if(typeof hasFlash() != "undefined"){
-                    var client = new ZeroClipboard( jQuery("#copy_details") );
-                    client.on( "ready", function(event) {
-                        // console.log( "movie is loaded" );
+                  (function(){
+                  	var onhoverMsg = "<span class=\"aftercopy_instruction\" style=\"position: absolute;top: 32px;left:20px;background:#fff;border:1px solid #000;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;padding:2px;margin:2px;text-align:center;\">Paste this in any field in the Add Website dialogue in the InfiniteWP admin panel.</span>";
+                      var clipboard = new Clipboard("#copy_details");
+                      if (clipboard != undefined) {
+	                      clipboard.on("success", function(e) {
+	                      	jQuery(".copy_message").show();
+	                      	setTimeout(\'jQuery(".copy_message").hide();\',1000);
 
-                        client.on( "copy", function(event) {
-                            event.clipboardData.setData("text/plain", jQuery(".read_creds").val());
-                        } );
+	                          e.clearSelection();
 
-                        client.on( "aftercopy", function(event) {
-                            // console.log("Copied text to clipboard: " + event.data["text/plain"]);
-                            jQuery(".copy_message").show();
-                            setTimeout(\'jQuery(".copy_message").hide();\',1000);
-                        } );
-                    } );
+	                      });
+	                      clipboard.on("error", function(e) {
+	                      	jQuery(".only_flash").remove();
+	                      	jQuery(".read_creds").click(function(){jQuery(this).select();});
+	                      });
+	                       jQuery("#copy_at_once").hide();
+	                       jQuery("#copy_details").mouseenter(function(){jQuery(onhoverMsg).appendTo(jQuery(this).parent());}).mouseleave(function(){jQuery(".aftercopy_instruction").remove();});
+                      }else{
+                      	jQuery(".only_flash").remove();
+                      	jQuery(".read_creds").click(function(){jQuery(this).select();});
+                      	jQuery(".read_creds").mouseenter(function(e){jQuery(onhoverMsg).appendTo(jQuery(this).parent());}).mouseleave(function(){jQuery(".aftercopy_instruction").remove();});
+                      }
+               	 })();
 
-                    client.on( "error", function(event) {
-                        ZeroClipboard.destroy();
-                    } );
-                    jQuery("#copy_at_once").hide();
-                    jQuery("#copy_details").mouseenter(function(){jQuery(onhoverMsg).appendTo(jQuery(this).parent());}).mouseleave(function(){jQuery(".aftercopy_instruction").remove();});
-
-                }else{
-                    jQuery(".only_flash").remove();
-                    jQuery(".read_creds").click(function(){jQuery(this).select();});
-                    jQuery(".read_creds").mouseenter(function(e){jQuery(onhoverMsg).appendTo(jQuery(this).parent());}).mouseleave(function(){jQuery(".aftercopy_instruction").remove();});
-                }
             </script>';
 		}
 		else{
@@ -579,6 +578,14 @@ class IWP_MMB_Core extends IWP_MMB_Helper
         return $this->backup_instance;
     }
 
+	 function get_ithemessec_instance() {
+	    require_once($GLOBALS['iwp_mmb_plugin_dir'] . "/addons/itheme_security/class-iwp-client-ithemes-security-class.php");
+	    if (!isset($this->ithemessec_instance)) {
+	        $this->ithemessec_instance = new IWP_MMB_IThemes_security();
+	    }
+	    return $this->ithemessec_instance;
+	}
+
 	function get_backup_repository_instance()
     {
         require_once($GLOBALS['iwp_mmb_plugin_dir']."/backup.class.singlecall.php");
@@ -621,7 +628,16 @@ class IWP_MMB_Core extends IWP_MMB_Helper
         }
         return $this->wordfence_instance;
 	 }
-	
+	/*
+	 * Get an instance of WordFence 
+	 */
+	 function get_sucuri_instance()
+	 {
+	 	if (!isset($this->sucuri_instance)) {
+            $this->sucuri_instance = new IWP_MMB_Sucuri();
+        }
+        return $this->sucuri_instance;
+	 }
 	
     /**
      * Plugin install callback function
@@ -818,6 +834,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		$where      = isset($_GET['iwp_goto']) ? $_GET['iwp_goto'] : false;
         $username   = isset($_GET['username']) ? $_GET['username'] : '';
         $auto_login = isset($_GET['auto_login']) ? $_GET['auto_login'] : 0;
+        $page       = isset($_GET['page']) ? '?page='.$_GET['page'] : '';
         $_SERVER['HTTP_REFERER']='';
 		if( !function_exists('is_user_logged_in') )
 			include_once( ABSPATH.'wp-includes/pluggable.php' );
@@ -847,7 +864,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 				
 				//if((isset($this->iwp_mmb_multisite) && $this->iwp_mmb_multisite ) || isset($_REQUEST['iwpredirect'])){//comment makes force redirect, which fix bug https dashboard
 					if(function_exists('wp_safe_redirect') && function_exists('admin_url')){
-						wp_safe_redirect(admin_url($where));
+						wp_safe_redirect(admin_url($where.$page));
 						exit();
 					}
 				//}
@@ -858,7 +875,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 			@iwp_mmb_client_header();
 			if(isset($_REQUEST['iwpredirect'])){
 				if(function_exists('wp_safe_redirect') && function_exists('admin_url')){
-					wp_safe_redirect(admin_url($where));
+					wp_safe_redirect(admin_url($where.$page));
 					exit();
 				}
 			}

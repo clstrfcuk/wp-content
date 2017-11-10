@@ -3,8 +3,8 @@ Contributors: seedprod
 Donate link: http://www.seedprod.com
 Tags: maintenance mode, coming soon page, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, under construction page, landing page
 Requires at least: 3.5.1
-Tested up to: 4.8.0
-Stable tag: 5.0.10
+Tested up to: 4.8.1
+Stable tag: 5.0.15
 Text Domain: coming-soon
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,7 +13,7 @@ The #1 Coming Soon Page, Under Construction & Maintenance Mode plugin for WordPr
 
 == Description ==
 
-Create a simple Coming Soon Page or Maintenance Mode Page. Work on your site in provite while visitors see a "Coming Soon" or "Maintenance Mode" page.
+Create a simple Coming Soon Page or Maintenance Mode Page. Work on your site in private while visitors see a "Coming Soon" or "Maintenance Mode" page.
 
 *   [Upgrade to the Coming Soon Pro Version Now! &raquo;](http://www.seedprod.com?utm_source=wordpress.org&utm_medium=link&utm_campaign=coming-soon-pro-from-wordpress.org "Coming Soon Page Pro Version")
 *   [View a Coming Soon Page Live Demo &raquo;](http://demo.seedprod.com/coming-soon-pro/ "Coming Soon Page Demo")
@@ -96,9 +96,12 @@ Create a simple Coming Soon Page or Maintenance Mode Page. Work on your site in 
 == Frequently Asked Questions ==
 = What's the difference between Coming Soon Page Mode and Maintenance Mode? =
 
-Coming Soon Page Mode return a http status 200 and allows your site to be indexed by Google and other searching engine. You should always using Coming Soon Page mode when your site is new. 
+Coming Soon Page Mode returns a http status 200 and allows your site to be indexed by Google and other searching engine while under construction. You should always using Coming Soon Page mode when your site is under construction. 
 
 Maintenance Mode returns a http status code 503 and should be used when you are doing short term maintenance on an existing site. This will let search engines know your site is under going maintenance and should return in 1 day when maintenance mode is finished.
+
+= Who can see the website while it's under construction? =
+Only logged in visitors can see the website while you website is under construction. Logged out visitors will see the coming soon page or maintenance mode page depending on which mode you have selected.
 
 = Disabled Coming Soon Plugin and it still shows =
 
@@ -113,6 +116,18 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 4. Design Page
 
 == Changelog ==
+= 5.0.15 =
+* Changed text on credit and added and tweaked inline optin for free bg images.
+
+= 5.0.14 =
+* Fixed a PHP 7 compatibility warning
+
+= 5.0.12 =
+* Added Review Request
+
+= 5.0.11 =
+* Removed blog feed from sidebar and change out images
+
 = 5.0.10 =
 * Added the ability to make the bg image stay contained within the browser window.
 
@@ -182,6 +197,18 @@ This is always a caching issue. Go to the caching plugin's setting page and clea
 * Initial Commit
 
 == Upgrade Notice ==
+= 5.0.15 =
+* Changed text on credit and added and tweaked inline optin for free bg images.
+
+= 5.0.14 =
+* Fixed a PHP 7 compatibility warning
+
+= 5.0.12 =
+* Added Review Request
+
+= 5.0.11 =
+* Removed blog feed from sidebar and change out images
+
 = 5.0.10 =
 * Added the ability to make the bg image stay contained within the browser window.
 

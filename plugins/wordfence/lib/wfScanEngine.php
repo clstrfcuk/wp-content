@@ -140,7 +140,7 @@ class wfScanEngine {
 			$jobs[] = 'knownFiles';
 			self::_enqueueJobs(array('knownFiles', 'checkReadableConfig'), $jobs);
 			$jobs[] = 'fileContents';
-			self::_enqueueJobs(array('suspectedFiles', 'posts', 'comments', 'passwds', 'dns', 'diskSpace', 'oldVersions', 'suspiciousAdminUsers'), $jobs);
+			self::_enqueueJobs(array('suspectedFiles', 'posts', 'comments', 'passwds', 'dns', 'diskSpace', 'oldVersions', 'suspiciousAdminUsers', 'suspiciousOptions'), $jobs);
 		}
 		else if ($scanMode == self::SCAN_MODE_QUICK) {
 			self::_enqueueJobs(array('oldVersions'), $jobs);
@@ -611,7 +611,7 @@ class wfScanEngine {
 		$status = wfIssues::statusStart("Check for publicly accessible configuration files, backup files and logs");
 
 		$backupFileTests = array(
-//			wfCommonBackupFileTest::createFromRootPath('.user.ini'),
+			wfCommonBackupFileTest::createFromRootPath('.user.ini'),
 //			wfCommonBackupFileTest::createFromRootPath('.htaccess'),
 			wfCommonBackupFileTest::createFromRootPath('wp-config.php.bak'),
 			wfCommonBackupFileTest::createFromRootPath('wp-config.php.swo'),
@@ -630,33 +630,33 @@ class wfScanEngine {
 			wfCommonBackupFileTest::createFromRootPath('wp-config.txt'),
 			wfCommonBackupFileTest::createFromRootPath('wp-config.original'),
 			wfCommonBackupFileTest::createFromRootPath('wp-config.orig'),
-			wfCommonBackupFileTest::createFromRootPath('searchreplacedb2.php'),
 			new wfCommonBackupFileTest(content_url('/debug.log'), WP_CONTENT_DIR . '/debug.log', array(
 				'headers' => array(
 					'Range' => 'bytes=0-700',
 				),
 			)),
 		);
-//		$userIniFilename = ini_get('user_ini.filename');
-//		if ($userIniFilename && $userIniFilename !== '.user.ini') {
-//			$backupFileTests[] = wfCommonBackupFileTest::createFromRootPath($userIniFilename);
-//		}
+		$backupFileTests = array_merge($backupFileTests, wfCommonBackupFileTest::createAllForFile('searchreplacedb2.php', wfCommonBackupFileTest::MATCH_REGEX, '/<title>Search and replace DB/i'));
+		
+		$userIniFilename = ini_get('user_ini.filename');
+		if ($userIniFilename && $userIniFilename !== '.user.ini') {
+		  $backupFileTests[] = wfCommonBackupFileTest::createFromRootPath('.user.ini');
+		}
 
 
 		/** @var wfCommonBackupFileTest $test */
 		foreach ($backupFileTests as $test) {
 			$pathFromRoot = (strpos($test->getPath(), ABSPATH) === 0) ? substr($test->getPath(), strlen(ABSPATH)) : $test->getPath();
+		  wordfence::status(4, 'info', "Testing {$pathFromRoot}");
 			if ($test->fileExists() && $test->isPubliclyAccessible()) {
 				$key = "configReadable" . bin2hex($test->getUrl());
 				$added = $this->addIssue(
 					'configReadable',
-					2,
+					1,
 					$key,
 					$key,
 					'Publicly accessible config, backup, or log file found: ' . esc_html($pathFromRoot),
-					'<a href="' . $test->getUrl() . '" target="_blank" rel="noopener noreferrer">' . $test->getUrl() . '</a> is publicly
-					accessible and may expose sensitive information about your site. Files such as this one are commonly
-					checked for by scanners such as WPScan and should be removed or made inaccessible.',
+					'<a href="' . $test->getUrl() . '" target="_blank" rel="noopener noreferrer">' . $test->getUrl() . '</a> is publicly accessible and may expose source code or sensitive information about your site. Files such as this one are commonly checked for by scanners and should be made inaccessible. Alternately, some can be removed if you are certain your site does not need them. Sites using the nginx web server may need manual configuration changes to protect such files. <a href="https://docs.wordfence.com/en/Understanding_scan_results#Publicly_accessible_config_backup_or_log_file_found" target="_blank" rel="noopener noreferrer">Learn more</a>',
 					array(
 						'url'       => $test->getUrl(),
 						'file'      => $pathFromRoot,
@@ -874,9 +874,7 @@ class wfScanEngine {
 						$key,
 						$key,
 						'Publicly accessible quarantined file found: ' . esc_html($file),
-						'<a href="' . $test->getUrl() . '" target="_blank" rel="noopener noreferrer">' . $test->getUrl() . '</a> is publicly
-					accessible and may expose source code or sensitive information about your site. Files such as this one are commonly
-					checked for by scanners and should be removed or made inaccessible.',
+						'<a href="' . $test->getUrl() . '" target="_blank" rel="noopener noreferrer">' . $test->getUrl() . '</a> is publicly accessible and may expose source code or sensitive information about your site. Files such as this one are commonly checked for by scanners and should be removed or made inaccessible.',
 						array(
 							'url'       => $test->getUrl(),
 							'file'      => $file,
@@ -1641,7 +1639,7 @@ class wfScanEngine {
 							}
 						}
 						
-						if (isset($allPlugins[$slug])) {
+						if (isset($allPlugins[$slug]) && isset($allPlugins[$slug]['wpURL'])) {
 							$statusArray['wpURL'] = $allPlugins[$slug]['wpURL'];
 						}
 						
@@ -1758,6 +1756,110 @@ class wfScanEngine {
 
 		wfIssues::statusEnd($this->statusIDX['suspiciousAdminUsers'], $haveIssues);
 	}
+	
+	public function scan_suspiciousOptions() {
+		$this->statusIDX['suspiciousOptions'] = wfIssues::statusStart("Scanning for suspicious site options");
+		$haveIssues = wfIssues::STATUS_SECURE;
+		
+		$blogsToScan = self::getBlogsToScan('options');
+		$wfdb = new wfDB();
+		
+		$this->hoover = new wordfenceURLHoover($this->apiKey, $this->wp_version);
+		foreach ($blogsToScan as $blog) {
+			$excludedHosts = array();
+			$homeURL = get_home_url($blog['blog_id']);
+			$host = parse_url($homeURL, PHP_URL_HOST);
+			if ($host) {
+				$excludedHosts[$host] = 1;
+			}
+			$siteURL = get_site_url($blog['blog_id']);
+			$host = parse_url($siteURL, PHP_URL_HOST);
+			if ($host) {
+				$excludedHosts[$host] = 1;
+			}
+			$excludedHosts = array_keys($excludedHosts);
+			
+			//Newspaper Theme
+			if (defined('TD_THEME_OPTIONS_NAME')) {
+				$q = $wfdb->querySelect("SELECT option_name, option_value FROM " . $blog['table'] . " WHERE option_name REGEXP '^td_[0-9]+$' OR option_name = '%s'", TD_THEME_OPTIONS_NAME);
+			}
+			else {
+				$q = $wfdb->querySelect("SELECT option_name, option_value FROM " . $blog['table'] . " WHERE option_name REGEXP '^td_[0-9]+$'");
+			}
+			foreach ($q as $row) {
+				$this->hoover->hoover($blog['blog_id'] . '-' . $row['option_name'], $row['option_value'], $excludedHosts);
+			}
+		}
+		
+		
+		$this->status(2, 'info', "Examining URLs found in the options we scanned for dangerous websites");
+		$hooverResults = $this->hoover->getBaddies();
+		$this->status(2, 'info', "Done examining URLs");
+		if ($this->hoover->errorMsg) {
+			wfIssues::statusEndErr();
+			throw new Exception($this->hoover->errorMsg);
+		}
+		$this->hoover->cleanup();
+		foreach ($hooverResults as $idString => $hresults) {
+			$arr = explode('-', $idString);
+			$blogID = $arr[0];
+			$optionKey = $arr[1];
+			$blog = null;
+			foreach ($hresults as $result) {
+				if ($result['badList'] != 'goog-malware-shavar' && $result['badList'] != 'googpub-phish-shavar' && $result['badList'] != 'wordfence-dbl') {
+					continue; //A list type that may be new and the plugin has not been upgraded yet.
+				}
+				
+				if ($blog === null) {
+					$blogs = self::getBlogsToScan('options', $blogID);
+					$blog = array_shift($blogs);
+				}
+				
+				if ($result['badList'] == 'goog-malware-shavar') {
+					$shortMsg = "Option contains a suspected malware URL: " . esc_html($optionKey);
+					$longMsg = "This option contains a suspected malware URL listed on Google's list of malware sites. It may indicate your site is infected with malware. The URL is: " . esc_html($result['URL']);
+				}
+				else if ($result['badList'] == 'googpub-phish-shavar') {
+					$shortMsg = "Option contains a suspected phishing site URL: " . esc_html($optionKey);
+					$longMsg = "This option contains a URL that is a suspected phishing site that is currently listed on Google's list of known phishing sites. It may indicate your site is infected with malware. The URL is: " . esc_html($result['URL']);
+				}
+				else if ($result['badList'] == 'wordfence-dbl') {
+					$shortMsg = "Option contains a suspected malware URL: " . esc_html($optionKey);
+					$longMsg = "This option contains a URL that is currently listed on Wordfence's domain blacklist. It may indicate your site is infected with malware. The URL is: " . esc_html($result['URL']);
+				}
+				else {
+					//A list type that may be new and the plugin has not been upgraded yet.
+					continue;
+				}
+				
+				$longMsg .= ' - <a href="https://docs.wordfence.com/en/Understanding_scan_results#Option_contains_suspected_malware_URL" target="_blank" rel="noopener noreferrer">Get more information.</a>';
+				
+				$this->status(2, 'info', "Adding issue: $shortMsg");
+				
+				if (is_multisite()) {
+					switch_to_blog($blogID);
+				}
+				
+				$ignoreP = $idString;
+				$ignoreC = $idString . md5(serialize(get_option($optionKey, '')));
+				$added = $this->addIssue('optionBadURL', 1, $ignoreP, $ignoreC, $shortMsg, $longMsg, array(
+					'optionKey' => $optionKey,
+					'badURL' => $result['URL'],
+					'isMultisite' => $blog['isMultisite'],
+					'domain' => $blog['domain'],
+					'path' => $blog['path'],
+					'blog_id' => $blogID
+				));
+				if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $haveIssues = wfIssues::STATUS_PROBLEM; }
+				else if ($haveIssues != wfIssues::STATUS_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $haveIssues = wfIssues::STATUS_IGNORED; }
+				if (is_multisite()) {
+					restore_current_blog();
+				}
+			}
+		}
+		
+		wfIssues::statusEnd($this->statusIDX['suspiciousOptions'], $haveIssues);
+	}
 
 	public function status($level, $type, $msg){
 		wordfence::status($level, $type, $msg);
@@ -1787,6 +1889,7 @@ class wfScanEngine {
 		}
 	}
 	public static function startScan($isFork = false, $scanMode = self::SCAN_MODE_FULL){
+		if (!defined('DONOTCACHEDB')) { define('DONOTCACHEDB', true); }
 		if(! $isFork){ //beginning of scan
 			wfConfig::inc('totalScansRun');	
 			wfConfig::set('wfKillRequested', 0, wfConfig::DONT_AUTOLOAD); 
@@ -1817,8 +1920,8 @@ class wfScanEngine {
 			$headers = array('Referer' => false/*, 'Cookie' => 'XDEBUG_SESSION=1'*/);
 			wordfence::status(4, 'info', "Starting cron with normal ajax at URL $cronURL");
 			wp_remote_get( $cronURL, array(
-				'timeout' => $timeout, //Must be less than max execution time or more than 2 HTTP children will be occupied by scan
-				'blocking' => true, //Non-blocking seems to block anyway, so we use blocking
+				'timeout' => 0.01,
+				'blocking' => false,
 				'sslverify' => false,
 				'headers' => $headers 
 				) );
@@ -1831,8 +1934,8 @@ class wfScanEngine {
 			wordfence::status(4, 'info', "Starting cron via proxy at URL $cronURL");
 
 			wp_remote_get( $cronURL, array(
-				'timeout' => $timeout, //Must be less than max execution time or more than 2 HTTP children will be occupied by scan
-				'blocking' => true, //Non-blocking seems to block anyway, so we use blocking
+				'timeout' => 0.01,
+				'blocking' => false,
 				'sslverify' => false,
 				'headers' => $headers 
 				) );
@@ -1846,13 +1949,13 @@ class wfScanEngine {
 	public static function getMaxExecutionTime($staySilent = false) {
 		$config = wfConfig::get('maxExecutionTime');
 		if (!$staySilent) { wordfence::status(4, 'info', "Got value from wf config maxExecutionTime: $config"); }
-		if(is_numeric($config) && $config >= 10){
+		if(is_numeric($config) && $config >= WORDFENCE_SCAN_MIN_EXECUTION_TIME){
 			if (!$staySilent) { wordfence::status(4, 'info', "getMaxExecutionTime() returning config value: $config"); }
 			return $config;
 		}
 		$ini = @ini_get('max_execution_time');
 		if (!$staySilent) { wordfence::status(4, 'info', "Got max_execution_time value from ini: $ini"); }
-		if(is_numeric($ini) && $ini >= 10){
+		if(is_numeric($ini) && $ini >= WORDFENCE_SCAN_MIN_EXECUTION_TIME){
 			$ini = floor($ini / 2);
 			if (!$staySilent) { wordfence::status(4, 'info', "getMaxExecutionTime() returning half ini value: $ini"); }
 			return $ini;
@@ -2135,13 +2238,37 @@ class wfScanKnownFilesException extends Exception {
 }
 
 class wfCommonBackupFileTest {
-
+	const MATCH_EXACT = 'exact';
+	const MATCH_REGEX = 'regex';
+	
 	/**
 	 * @param string $path
+	 * @param string $mode
+	 * @param bool|string $matcher If $mode is MATCH_REGEX, this will be the regex pattern.
 	 * @return wfCommonBackupFileTest
 	 */
-	public static function createFromRootPath($path) {
-		return new self(site_url($path), ABSPATH . $path); 
+	public static function createFromRootPath($path, $mode = self::MATCH_EXACT, $matcher = false) {
+		return new self(site_url($path), ABSPATH . $path, array(), $mode, $matcher); 
+	}
+	
+	/**
+	 * Identical to createFromRootPath except it returns an entry for each file in the index that matches $name
+	 * 
+	 * @param $name
+	 * @param string $mode
+	 * @param bool|string $matcher
+	 * @return array
+	 */
+	public static function createAllForFile($file, $mode = self::MATCH_EXACT, $matcher = false) {
+		global $wpdb;
+		$escapedFile = esc_sql(preg_quote($file));
+		$files = $wpdb->get_col("SELECT path FROM {$wpdb->base_prefix}wfKnownFileList WHERE path REGEXP '(^|/){$escapedFile}$'");
+		$tests = array();
+		foreach ($files as $f) {
+			$tests[] = new self(site_url($f), ABSPATH . $f, array(), $mode, $matcher);
+		}
+		
+		return $tests;
 	}
 
 	private $url;
@@ -2150,6 +2277,8 @@ class wfCommonBackupFileTest {
 	 * @var array
 	 */
 	private $requestArgs;
+	private $mode;
+	private $matcher;
 	private $response;
 
 
@@ -2158,9 +2287,11 @@ class wfCommonBackupFileTest {
 	 * @param string $path
 	 * @param array $requestArgs
 	 */
-	public function __construct($url, $path, $requestArgs = array()) {
+	public function __construct($url, $path, $requestArgs = array(), $mode = self::MATCH_EXACT, $matcher = false) {
 		$this->url = $url;
 		$this->path = $path;
+		$this->mode = $mode;
+		$this->matcher = $matcher;
 		$this->requestArgs = $requestArgs;
 	}
 
@@ -2182,6 +2313,10 @@ class wfCommonBackupFileTest {
 				$contents = fread($handle, 700);
 				fclose($handle);
 				$remoteContents = substr(wp_remote_retrieve_body($this->response), 0, 700);
+				if ($this->mode == self::MATCH_REGEX) {
+					return preg_match($this->matcher, $remoteContents);
+				}
+				//else MATCH_EXACT
 				return $contents === $remoteContents;
 			}
 		}

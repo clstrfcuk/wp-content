@@ -184,7 +184,17 @@ function seed_csp4_get_options(){
     $seed_csp4_options[ ] = array(
         "type" => "upload",
         "id" => "bg_image",
-        "desc" => "<a href='http://demo.seedprod.com/coming-soon-pro/?utm_source=coming-soon-plugin&utm_medium=link&utm_campaign=Free%20Backgrounds' target='_blank'>Looking for FREE backgrounds?</a> Make sure to select the full size image to prevent a blurry or pixelated image.",
+        "desc" => '
+        Looking for free background images? Confirm that\'s your email and click the button below.<br>
+        <div id="seed-bg-images-form"><input type="email" id="seed-bg-images-email"  value="'.get_option('admin_email').'" /><button id="seed-bg-images-btn" class="button-primary">Send Me FREE Background Images</button></div>
+        <script>
+        jQuery( "#seed-bg-images-btn" ).click(function(e) {
+            e.preventDefault();
+            jQuery("#drip-email").val(jQuery("#seed-bg-images-email").val());
+            jQuery("#drip-submit").click();
+        });
+        </script>
+        ',
         "label" => __( "Background Image", 'coming-soon' ),
     );
 

@@ -68,8 +68,12 @@ $w = new wfConfig();
 			'label'		=> 'Scan comments for known dangerous URLs and suspicious content <a href="http://docs.wordfence.com/en/Wordfence_options#Scan_comments_for_known_dangerous_URLs_and_suspicious_content" target="_blank" rel="noopener noreferrer" class="wfhelp"></a>',
 		),
 		array(
+			'id' 		=> 'scansEnabled_suspiciousOptions',
+			'label'		=> 'Scan WordPress core, plugin, and theme options for known dangerous URLs and suspicious content <a href="http://docs.wordfence.com/en/Wordfence_options#Scan_WordPress_core.2C_plugin.2C_and_theme_options_for_known_dangerous_URLs_and_suspicious_content" target="_blank" rel="noopener noreferrer" class="wfhelp"></a>',
+		),
+		array(
 			'id' 		=> 'scansEnabled_oldVersions',
-			'label'		=> 'Scan for out of date plugins, themes and WordPress versions <a href="http://docs.wordfence.com/en/Wordfence_options#Scan_for_out_of_date_plugins.2C_themes_and_WordPress_versions" target="_blank" rel="noopener noreferrer" class="wfhelp"></a>',
+			'label'		=> 'Scan for out of date, abandoned, and vulnerable plugins, themes, and WordPress versions <a href="http://docs.wordfence.com/en/Wordfence_options#Scan_for_out_of_date_plugins.2C_themes_and_WordPress_versions" target="_blank" rel="noopener noreferrer" class="wfhelp"></a>',
 		),
 		array(
 			'id' 		=> 'scansEnabled_suspiciousAdminUsers',

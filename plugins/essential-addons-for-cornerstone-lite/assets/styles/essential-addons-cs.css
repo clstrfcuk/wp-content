@@ -158,12 +158,32 @@
 }
 
 
+/* Responsive Styles / Common */
+
+@media only screen and (max-width: 400px) {
+.eacs-testimonial-slider .slick-prev,
+.eacs-team-slider .slick-prev,
+.eacs-logo-carousel .slick-prev,
+.eacs-post-carousel .slick-prev {
+  left: -35px;
+}
+
+.eacs-testimonial-slider .slick-next,
+.eacs-team-slider .slick-next,
+.eacs-logo-carousel .slick-next,
+.eacs-post-carousel .slick-next {
+  right: -35px;
+}
+
+}
+
+
 /* Testimonial Slider Styles */
 
 /* disabled avatar */
 
 .testimonial-avatar-disabled .eacs-testimonial-image {
-	display: none;
+  display: none;
 }
 
 .testimonial-avatar-disabled .eacs-testimonial-content {
@@ -849,22 +869,233 @@ body:not(.x-ethos):not(.x-integrity):not(.x-renew):not(.x-icon) .eacs-product-ca
 }
 }
 
-/* Responsive Styles / Common */
 
-@media only screen and (max-width: 400px) {
-.eacs-testimonial-slider .slick-prev,
-.eacs-team-slider .slick-prev,
-.eacs-logo-carousel .slick-prev,
-.eacs-post-carousel .slick-prev {
-  left: -35px;
+/* Post Grid Style */
+
+
+.eacs-grid-post {
+  float: left;
+  padding: 10px;
 }
 
-.eacs-testimonial-slider .slick-next,
-.eacs-team-slider .slick-next,
-.eacs-logo-carousel .slick-next,
-.eacs-post-carousel .slick-next {
-  right: -35px;
+.eacs-grid-post-holder {
+  border: 1px solid rgba(0,0,0,.1);
+  overflow: hidden;
 }
 
+.eacs-grid-post-holder-inner {
+  height: 100%;
 }
 
+.eacs-entry-media {
+  position: relative;
+}
+
+.eacs-entry-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  opacity: 0;
+  -webkit-transition: opacity .2s ease-in-out,-webkit-transform .25s cubic-bezier(.19,1,.22,1);
+  -moz-transition: opacity .2s ease-in-out,-moz-transform .25s cubic-bezier(.19,1,.22,1);
+  transition: opacity .2s ease-in-out,transform .25s cubic-bezier(.19,1,.22,1);
+}
+
+.eacs-entry-overlay:hover {
+  opacity: 1;
+}
+
+
+.eacs-entry-overlay > a {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+}
+
+.eacs-entry-title {
+  margin: 10px 0 5px;
+  font-size: 1.2em;
+}
+
+.eacs-entry-overlay i {
+  color: #fff;
+  width: 60px;
+  text-align: center;
+  line-height: 60px;
+  height: 60px;
+  position: absolute;
+  left: 50%;
+  margin-left: -30px;
+  font-size: 32px;
+  top: 50%;
+  margin-top: -30px;
+  -webkit-perspective: 1000;
+  -moz-perspective: 1000;
+  -ms-perspective: 1000;
+  perspective: 1000;
+  opacity: 0;
+  -webkit-transform: translatex(-20px);
+  -moz-transform: translatex(-20px);
+  -ms-transform: translatex(-20px);
+  transform: translatex(-20px);
+  -webkit-transition: opacity .2s ease-in-out,-webkit-transform .25s cubic-bezier(.19,1,.22,1);
+  -moz-transition: opacity .2s ease-in-out,-moz-transform .25s cubic-bezier(.19,1,.22,1);
+  transition: opacity .2s ease-in-out,transform .25s cubic-bezier(.19,1,.22,1);
+}
+
+.eacs-entry-media:hover .eacs-entry-overlay i {
+  -webkit-transform: translatex(0px);
+  -moz-transform: translatex(0px);
+  -ms-transform: translatex(0px);
+  transform: translatex(0px);
+  opacity: 1;
+}
+
+.eacs-entry-thumbnail img {
+  width: 100%;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.eacs-grid-post-excerpt {
+  padding-top: 5px;
+}
+
+.eacs-entry-footer {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.eacs-entry-footer .eacs-author-avatar {
+  flex: 0 0 auto;
+  width: 50px;
+}
+
+.eacs-entry-footer .eacs-author-avatar .avatar {
+  border-radius: 50%;
+}
+
+.eacs-post-grid .eacs-entry-footer  .eacs-entry-meta {
+  padding-left: 8px;
+}
+
+.eacs-entry-meta > div {
+  font-size: 12px;
+  line-height: 1.2;
+  padding-bottom: 5px;
+}
+
+.eacs-grid-post-excerpt p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.eacs-entry-meta .eacs-entry-footer  .eacs-posted-by {
+  display: block;
+}
+
+.eacs-grid-post .eacs-entry-wrapper, .eacs-grid-post .eacs-entry-footer {
+  padding: 15px;
+}
+
+.eacs-post-grid .eacs-entry-header .eacs-entry-meta span.eacs-posted-on {
+  padding-left: 5px;
+}
+
+.eacs-post-grid .eacs-entry-header .eacs-entry-meta span.eacs-posted-on::before {
+  content: '\f111';
+  font-family: FontAwesome;
+  color: inherit;
+  opacity: .4;
+  font-size: .8em;
+  padding-right: 7px;
+}
+
+.fa-long-arrow-right::before {
+  content: "\f178";
+  font-family: FontAwesome;
+}
+
+/* Post Grid Column */
+
+.eacs-col-1 .eacs-post-grid-column {
+  float: none;
+  width: 100%;
+}
+.eacs-col-2 .eacs-post-grid-column{
+  float: left;
+  width: 50%;
+}
+.eacs-col-3 .eacs-post-grid-column {
+  float: left;
+  width: 33.3333%;
+}
+.eacs-col-4 .eacs-post-grid-column {
+  float: left;
+  width: 25%;
+}
+.eacs-col-5 .eacs-post-grid-column {
+  float: left;
+  width: 20%;
+}
+.eacs-col-6 .eacs-post-grid-column {
+  float: left;
+  width: 16.6666%;
+}
+
+/* Responsive Styles for Post Grid */
+
+@media only screen and (max-width: 979px) {
+.eacs-col-1 .eacs-post-grid-column, .eacs-col-2 .eacs-post-grid-column, 
+.eacs-col-3 .eacs-post-grid-column, .eacs-col-4 .eacs-post-grid-column,
+.eacs-col-5 .eacs-post-grid-column, .eacs-col-6 .eacs-post-grid-column {
+  width: 33.3333%;
+}
+}
+
+@media only screen and (max-width: 767px) {
+.eacs-col-1 .eacs-post-grid-column, .eacs-col-2 .eacs-post-grid-column, 
+.eacs-col-3 .eacs-post-grid-column, .eacs-col-4 .eacs-post-grid-column,
+.eacs-col-5 .eacs-post-grid-column, .eacs-col-6 .eacs-post-grid-column {
+  width: 50%;
+}
+}
+
+@media only screen and (max-width: 480px) {
+.eacs-col-1 .eacs-post-grid-column, .eacs-col-2 .eacs-post-grid-column, 
+.eacs-col-3 .eacs-post-grid-column, .eacs-col-4 .eacs-post-grid-column,
+.eacs-col-5 .eacs-post-grid-column, .eacs-col-6 .eacs-post-grid-column {
+  float: none;
+  width: 100%;
+}
+}
+
+/* alignment */
+
+.eacs-post-align-left, .eacs-post-align-left .eacs-entry-header {
+  text-align: left;
+}
+.eacs-post-align-centered, .eacs-post-align-centered .eacs-entry-header {
+  text-align: center;
+}
+
+.eacs-post-align-right, .eacs-post-align-right .eacs-entry-header {
+  text-align: right;
+}
+
+.eacs-post-align-left .eacs-entry-footer {
+  justify-content: flex-start;
+}
+.eacs-post-align-centered .eacs-entry-footer {
+  justify-content: center;
+}
+.eacs-post-align-right .eacs-entry-footer {
+  justify-content: flex-end;
+}

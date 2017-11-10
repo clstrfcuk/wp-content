@@ -201,11 +201,26 @@ class WPDB_Admin
                             //Added for extract zip file V.3.3.0
                             $ext_path_info = $path_info['basedir'] . '/db-backup';
                             $database_zip_file = $options[$index]['dir'];
-                            $zip = new ZipArchive;
-                            if ($zip->open($database_zip_file) === TRUE) {
-                                $zip->extractTo($ext_path_info);
-                                $zip->close();
+
+                            if (class_exists('ZipArchive')) {
+                            error_log("Restore : Class ZipArchive");
+                               $zip = new ZipArchive;
+                                    if ($zip->open($database_zip_file) === TRUE) {
+                                        $zip->extractTo($ext_path_info);
+                                        $zip->close();
+                                    }
+                            } else {
+                                error_log("Restore : Class ZipArchive Not Present");
+                                require_once( 'class-pclzip.php' );  
+                                  
+                                  $archive = new PclZip( $database_zip_file );
+                                  $dir = $path_info['basedir'].'/db-backup/';   
+
+                                if ( ! $archive->extract( PCLZIP_OPT_PATH, $dir ) )
+                                    wp_die( 'Unable to extract zip file. Please check that zlib php extension is enabled.', 'ZIP Error' );
                             }
+
+                            
                             //End for extract zip file V.3.3.0
                             ini_set("max_execution_time", "5000");
                             ini_set("max_input_time", "5000");
@@ -358,7 +373,7 @@ class WPDB_Admin
                             echo '<tr ' . ((($count % 2) == 0) ? ' class="alternate"' : '') . '>';
                             echo '<td style="text-align: center;">' . $count . '</td>';
                             echo '<td>' . date('jS, F Y', $option['date']) . '<br />' . date('h:i:s A', $option['date']) . '</td>';
-                            echo '<td>';
+                            echo '<td class="wpdb_log">';
                             if (!empty($option['log'])) {
                                 echo '<button id="popoverid" type="button" class="popoverid btn" data-toggle="popover" title="Log" data-content="' . $option['log'] . '"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button>';
                             }
@@ -1691,14 +1706,25 @@ class WPDB_Admin
             'url' => ($path_info['baseurl'] . '/db-backup/' . $filename),
             'size' => 0
         );
+        $arcname=$path_info['basedir'] . '/db-backup/' . $WPDBFileName . ".zip";
         if (class_exists('ZipArchive')) {
+            error_log("Class ZipArchive");
             $zip = new ZipArchive;
-            $zip->open($path_info['basedir'] . '/db-backup/' . $WPDBFileName . ".zip", ZipArchive::CREATE);
+            $zip->open($arcname, ZipArchive::CREATE);
             $zip->addFile($path_info['basedir'] . '/db-backup/' . $SQLfilename, $SQLfilename);
             $zip->close();
             //    @unlink($path_info['basedir']."/db-backup/".$SQLfilename.".sql");
         } else {
             error_log("Class ZipArchive Not Present");
+            require_once( 'class-pclzip.php' );
+            $archive = new PclZip($arcname);
+             $v_dir = $path_info['basedir'] . '/db-backup/' . $SQLfilename;
+             $v_remove = $path_info['basedir'] . '/db-backup' ;
+                // Create the archive
+                $v_list = $archive->create($v_dir, PCLZIP_OPT_REMOVE_PATH, $v_remove);
+                if ($v_list == 0) {
+                    error_log("ERROR : '" . $archive->errorInfo(true) . "'");
+                }
         }
 
         $logMessage = "Database File Name :" . $filename;

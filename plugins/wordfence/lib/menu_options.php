@@ -447,6 +447,10 @@ $w = new wfConfig();
 								'label'		=> 'Scan comments for known dangerous URLs and suspicious content <a href="http://docs.wordfence.com/en/Wordfence_options#Scan_comments_for_known_dangerous_URLs_and_suspicious_content" target="_blank" rel="noopener noreferrer" class="wfhelp"></a>',
 							),
 							array(
+								'id' 		=> 'scansEnabled_suspiciousOptions',
+								'label'		=> 'Scan WordPress core, plugin, and theme options for known dangerous URLs and suspicious content <a href="http://docs.wordfence.com/en/Wordfence_options#Scan_WordPress_core.2C_plugin.2C_and_theme_options_for_known_dangerous_URLs_and_suspicious_content" target="_blank" rel="noopener noreferrer" class="wfhelp"></a>',
+							),
+							array(
 								'id' 		=> 'scansEnabled_oldVersions',
 								'label'		=> 'Scan for out of date, abandoned, and vulnerable plugins, themes, and WordPress versions <a href="http://docs.wordfence.com/en/Wordfence_options#Scan_for_out_of_date_plugins.2C_themes_and_WordPress_versions" target="_blank" rel="noopener noreferrer" class="wfhelp"></a>',
 							),
@@ -920,7 +924,7 @@ $w = new wfConfig();
 							<label for="maxExecutionTime" class="wf-col-sm-5 wf-control-label">Maximum execution time for each scan stage <a href="http://docs.wordfence.com/en/Wordfence_options#Maximum_execution_time_for_each_scan_stage" target="_blank" rel="noopener noreferrer" class="wfhelp"></a></label>
 							<div class="wf-col-sm-7">
 								<input type="text" class="wf-form-control" name="maxExecutionTime" id="maxExecutionTime" value="<?php $w->f( 'maxExecutionTime' ); ?>">
-								<span class="wf-help-block">Blank for default. Must be greater than 9.</span>
+								<span class="wf-help-block">Blank for default. Must be greater than <?php echo intval(WORDFENCE_SCAN_MIN_EXECUTION_TIME) - 1; ?> and 10-20 or higher is recommended for most servers.</span>
 							</div>
 						</div>
 						<div class="wf-form-group">

@@ -309,7 +309,7 @@ $sigUpdateTime = wfConfig::get('signatureUpdateTime');
 		<table border="0" class="wfIssue" cellspacing="0" cellpadding="0">
 		<tr><th><span class="wf-hidden-xs">Plugin </span>Name:</th><td>${data.Name}</td></tr>
 		{{if data.PluginURI}}<tr><th><span class="wf-hidden-xs">Plugin </span>Website:</th><td><a href="${data.PluginURI}" target="_blank" rel="noopener noreferrer"><span class="wf-hidden-xs wf-split-word">${data.PluginURI}</span><span class="wf-visible-xs">View</span></a></td></tr>{{/if}}
-		<tr><th>Changelog:</th><td><a href="${data.wpURL}/#developers" target="_blank" rel="noopener noreferrer"><span class="wf-hidden-xs wf-split-word">${data.wpURL}/#developers</span><span class="wf-visible-xs">View</span></a></td></tr>
+		{{if data.wpURL}}<tr><th>Changelog:</th><td><a href="${data.wpURL}/#developers" target="_blank" rel="noopener noreferrer"><span class="wf-hidden-xs wf-split-word">${data.wpURL}/#developers</span><span class="wf-visible-xs">View</span></a></td></tr>{{/if}}
 		<tr><th>Current <span class="wf-hidden-xs">Plugin </span>Version:</th><td>${data.Version}</td></tr>
 		<tr><th>New <span class="wf-hidden-xs">Plugin </span>Version:</th><td>${data.newVersion}</td></tr>
 		<tr><th>Severity:</th><td>{{if severity == '1'}}Critical{{else}}Warning{{/if}}</td></tr>
@@ -754,6 +754,49 @@ $sigUpdateTime = wfConfig::get('signatureUpdateTime');
 	</div>
 </div>
 </div>
+</script>
+
+<script type="text/x-jquery-template" id="issueTmpl_optionBadURL">
+	<div>
+		<div class="wfIssue">
+			<h2>${shortMsg}</h2>
+			<p>
+			<table border="0" class="wfIssue" cellspacing="0" cellpadding="0">
+				<tr><th>Option Name:</th><td><strong>${data.optionKey}</strong></td></tr>
+				<tr><th>Bad URL:</th><td><strong class="wfWarn wf-split-word">${data.badURL}</strong></td></tr>
+				{{if data.isMultisite}}
+				<tr><th>Multisite Blog ID:</th><td>${data.blog_id}</td></tr>
+				<tr><th>Multisite Blog Domain:</th><td>${data.domain}</td></tr>
+				<tr><th>Multisite Blog Path:</th><td>${data.path}</td></tr>
+				{{/if}}
+				<tr><th>Severity:</th><td>Critical</td></tr>
+				<tr><th>Status</th><td>
+						{{if status == 'new' }}New{{/if}}
+						{{if status == 'ignoreC' }}This bad URL will be ignored in this ${data.type}.{{/if}}
+						{{if status == 'ignoreP' }}This post won't be scanned for bad URL's.{{/if}}
+					</td></tr>
+			</table>
+			</p>
+			<p>
+				{{html longMsg}}
+			</p>
+			<div class="wfIssueOptions">
+				{{if status == 'new'}}
+				<ul>
+					<li><h3>Resolve:</h3></li>
+					<li><a href="#" onclick="WFAD.updateIssueStatus('${id}', 'delete'); return false;">I have fixed this issue</a></li>
+					<li><a href="#" onclick="WFAD.updateIssueStatus('${id}', 'ignoreC'); return false;">Ignore this bad URL in this option</a></li>
+					<li><a href="#" onclick="WFAD.updateIssueStatus('${id}', 'ignoreP'); return false;">Ignore all bad URLs in this option</a></li>
+				</ul>
+				{{/if}}
+				{{if status == 'ignoreC' || status == 'ignoreP'}}
+				<ul>
+					<li><a href="#" onclick="WFAD.updateIssueStatus('${id}', 'delete'); return false;">Stop ignoring this issue</a></li>
+				</ul>
+				{{/if}}
+			</div>
+		</div>
+	</div>
 </script>
 
 

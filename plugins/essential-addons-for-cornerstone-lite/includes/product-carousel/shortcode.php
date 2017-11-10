@@ -102,13 +102,13 @@ $class      = "eacs-product-carousel" . " " . $add_border  . " " . $preset_style
   <div id="<?= $product_carousel_id ?>">
     <?php echo do_shortcode("[recent_products per_page=\"$max_product_count\" category=\"$category\"]") ?>
   </div>
-</div>
-
 
 <script type="text/javascript">
 
   jQuery(document).ready(function($) {
-     $("<?= '#'.$product_carousel_id . ' ' . '.woocommerce .products' ?>").slick({
+
+    function createProductCarousel() {
+     $("<?= '#'.$product_carousel_id . ' ' . '.woocommerce .products' ?>").not('.slick-initialized').slick({
       autoplay: <?= $auto_play ?>,
       infinite: <?= $loop ?>,
       slidesToShow: <?= $max_visible_items ?>,
@@ -118,25 +118,31 @@ $class      = "eacs-product-carousel" . " " . $add_border  . " " . $preset_style
       pauseOnHover: <?= $pause_hover ?>,
       draggable: <?= $draggable ?>,
       responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: <?= $max_visible_items_tablet ?>,
-        slidesToScroll: 1
-      }
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: <?= $max_visible_items_mobile ?>,
-        slidesToScroll: 1
-      }
-    }
-  ]
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: <?= $max_visible_items_tablet ?>,
+              slidesToScroll: 1
+            }
+          },
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: <?= $max_visible_items_mobile ?>,
+              slidesToScroll: 1
+            }
+          }
+        ]
     });
+  }
+
+  createProductCarousel();
+
+  $(window).on( 'resize', createProductCarousel );
+
   });
 </script> 
-
+</div>
 
 <style type="text/css">
 
@@ -166,7 +172,7 @@ $class      = "eacs-product-carousel" . " " . $add_border  . " " . $preset_style
   color: <?php echo $slide_nav_bg_color; ?>;
 }
 
-.eacs-product-carousel <?php echo '#'.$product_carousel_id; ?> .slick-prev, <?php echo '#'.$product_carousel_id; ?> .eacs-product-carousel .slick-next {
+.eacs-product-carousel <?php echo '#'.$product_carousel_id; ?> .slick-prev, .eacs-product-carousel <?php echo '#'.$product_carousel_id; ?>  .slick-next {
   background-color: <?php echo $slide_nav_bg_color; ?>;
 }
 

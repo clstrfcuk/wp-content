@@ -43,6 +43,20 @@ return array(
 		)
 	),
 
+	// Excerpt length
+
+	'excerpt_length' => array(
+		'type'    => 'number',
+		'ui' => array(
+			'title'   => __( 'Excerpt Length', 'essential-addons-cs' ),
+			'tooltip' => __( 'Enter the number of words you want to show as excerpts', 'essential-addons-cs' ),
+		),
+		'condition' => array(
+      'show_excerpt' => true
+    ),
+    'suggest' => __( '20', 'essential-addons-cs' ),
+	),
+
 	// Hide Featured Image
 
 	'hide_featured_image' => array(
@@ -53,6 +67,35 @@ return array(
 		)
 	),
 
+
+	// Hide Meta
+
+	'hide_post_meta' => array(
+		'type'    => 'toggle',
+		'ui' => array(
+			'title'   => __( 'Hide Meta Info', 'essential-addons-cs' ),
+			'tooltip' => __( 'Hide or Show post meta information', 'essential-addons-cs' ),
+		)
+	),
+
+	// Meta Position
+
+	'meta_position' => array(
+		'type' => 'select',
+		'ui'   => array(
+			'title' => __( 'Meta Position', 'essential-addons-cs' ),
+      'tooltip' => __( 'Choose where to display meta info', 'essential-addons-cs' ),
+		),
+		'options' => array(
+			'choices' => array(
+        array( 'value' => 'entry-header',        'label' => __( 'Entry Header', 'essential-addons-cs' ) ),
+        array( 'value' => 'entry-footer',    'label' => __( 'Entry Footer', 'essential-addons-cs' ) )
+      ),
+		),
+		'condition' => array(
+      'hide_post_meta' => false
+    ),
+	),
 
 	// Offset
 
@@ -272,6 +315,107 @@ return array(
 
 	),
 
+
+	//
+	// Text Align
+	//
+
+	'post_alignment' => array(
+		'type' => 'choose',
+		'ui' => array(
+			'title' => __( 'Set Alignment', 'essential-addons-cs' ),
+			'tooltip' =>__( 'Set a alignment for the text and image',  'essential-addons-cs' ),
+		),
+		'options' => array(
+			'columns' => '4',
+			'offValue' => '',
+			'choices' => array(
+				array( 'value' => 'eacs-post-align-default', 'icon' => fa_entity( 'ban' ),    'tooltip' => __( 'Default', 'essential-addons-cs' ) ),
+				array( 'value' => 'eacs-post-align-left', 'icon' => fa_entity( 'align-left' ),    'tooltip' => __( 'Left', 'essential-addons-cs' ) ),
+				array( 'value' => 'eacs-post-align-centered', 'icon' => fa_entity( 'align-center' ),  'tooltip' => __( 'Center', 'essential-addons-cs' ) ),
+				array( 'value' => 'eacs-post-align-right', 'icon' => fa_entity( 'align-right' ),   'tooltip' => __( 'Right', 'essential-addons-cs' ) )
+			)
+		)
+	),
+
+	// Post Background Color
+
+
+	'post_background_color' => array(
+	    'type' => 'color',
+	    'ui' => array(
+	        'title'   => __( 'Post Background Color)', 'essential-addons-cs' ),
+	        'tooltip' => __( 'Set background color for post', 'essential-addons-cs' ),
+	    )
+	),
+
+	// Thumbnail Overlay color
+
+
+	'thumbnail_overlay_color' => array(
+	    'type' => 'color',
+	    'ui' => array(
+	        'title'   => __( 'Thumbnail Overlay Color', 'essential-addons-cs' ),
+	        'tooltip' => __( 'Set overlay color that will show on hover', 'essential-addons-cs' ),
+	    )
+	),
+
+	// Post Title Color
+
+
+	'post_title_color' => array(
+	    'type' => 'color',
+	    'ui' => array(
+	        'title'   => __( 'Post Title Color', 'essential-addons-cs' ),
+	        'tooltip' => __( 'Set Post Title Color', 'essential-addons-cs' ),
+	    )
+	),
+
+	// Post Title hover Color
+
+
+	'post_title_hover_color' => array(
+	    'type' => 'color',
+	    'ui' => array(
+	        'title'   => __( 'Post Title Hover Color', 'essential-addons-cs' ),
+	        'tooltip' => __( 'Set Post Title Hover Color', 'essential-addons-cs' ),
+	    )
+	),
+
+	// Post title font size
+
+	'post_title_font_size' => array(
+		'type'    => 'number',
+		'ui' => array(
+			'title'   => __( 'Post Title Font Size (px)', 'essential-addons-cs' ),
+			'tooltip' => __( 'Set the font-size for post title', 'essential-addons-cs' ),
+		),
+    'suggest' => __( '18', 'essential-addons-cs' ),
+	),
+
+
+	// Post Excerpt Color
+
+	'post_excerpt_color' => array(
+	    'type' => 'color',
+	    'ui' => array(
+	        'title'   => __( 'Post Excerpt Color', 'essential-addons-cs' ),
+	        'tooltip' => __( 'Set Post Excerpt Color', 'essential-addons-cs' ),
+	    )
+
+	),
+
+	// Post Meta Color
+
+	'post_meta_color' => array(
+	    'type' => 'color',
+	    'ui' => array(
+	        'title'   => __( 'Post Meta Color', 'essential-addons-cs' ),
+	        'tooltip' => __( 'Set Post Meta Color', 'essential-addons-cs' ),
+	    )
+
+	),
+
 	//
 	// Visibility
 	//
@@ -280,7 +424,7 @@ return array(
 		'type' => 'multi-choose',
 		'ui' => array(
 			'title' => __( 'Hide based on screen width', 'essential-addons-cs' ),
-			'toolip' => __( 'Hide this element at different screen widths. Keep in mind that the &ldquo;Extra Large&rdquo; toggle is 1200px+, so you may not see your element disappear if your preview window is not large enough.', 'cornerstone' )
+			'toolip' => __( 'Hide this element at different screen widths. Keep in mind that the &ldquo;Extra Large&rdquo; toggle is 1200px+, so you may not see your element disappear if your preview window is not large enough.', 'essential-addons-cs' )
 		),
 		'options' => array(
 			'columns' => '5',
