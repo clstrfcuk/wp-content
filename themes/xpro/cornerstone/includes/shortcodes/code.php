@@ -23,4 +23,4 @@ function x_shortcode_code( $atts, $content = null ) {
 }
 
 add_shortcode( 'x_code', 'x_shortcode_code' );
-CS_Shortcode_Preserver::preserve('x_code');
+Cornerstone_Shortcode_Preserver::preserve('x_code');

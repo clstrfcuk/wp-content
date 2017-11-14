@@ -25,7 +25,7 @@ function x_shortcode_column( $atts, $content = null ) {
   $fade_animation        = ( $fade_animation        != ''     ) ? $fade_animation : 'in';
   $fade_animation_offset = ( $fade_animation_offset != ''     ) ? $fade_animation_offset : '45px';
   $fade_duration         = ( $fade_duration         != ''     ) ? $fade_duration : '750';
-  $bg_color              = ( $bg_color              != ''     ) ? ' background-color:' . $bg_color . ';' : '';
+  $bg_color              = ( $bg_color              != ''     ) ? ' background-color:' . cornerstone_post_process_color( $bg_color ) . ';' : '';
 
   switch ( $type ) {
     case '1/1'   :

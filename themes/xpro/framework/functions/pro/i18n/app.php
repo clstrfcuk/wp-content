@@ -17,8 +17,12 @@ return array(
   // General Purpose
   'copy-of'    => __( 'Copy of {{title}}', '__x__' ),
   'copy-of-numeric'    => __( '{{title}} ({{index}})', '__x__' ),
-  'new-at-index' => __( '{{item}} {{index}}', '__x__'),
+  'indexed' => __( '{{label}} {{index}}', '__x__'),
   'search' => __( 'Search', '__x__' ),
+  'back-to' => __( 'Back to {{to}}', '__x__' ),
+  'add-item' => __( 'Add Item', '__x__' ),
+  'add-label' => __( 'Add {{label}}', '__x__' ),
+
 
   // Preview Sizer
   'preview-sizer-abbr-xl' => __( 'XL', '__x__' ),
@@ -37,25 +41,34 @@ return array(
   'options.title'   => __( 'Theme Options', '__x__' ),
   'headers.title'   => __( 'Headers', '__x__' ),
   'footers.title'   => __( 'Footers', '__x__' ),
-  'builder.title'   => __( 'Content', '__x__' ),
+  'content.title'   => __( 'Content', '__x__' ),
   'fonts.title'     => __( 'Fonts', '__x__' ),
   'templates.title' => __( 'Templates', '__x__' ),
   'layout.title'    => __( 'Layout', '__x__' ),
   'inspector.title' => __( 'Inspector', '__x__' ),
+  'elements.title'  => __( 'Elements', '__x__' ),
+  'settings.title'  => __( 'Settings', '__x__' ),
 
   // Inspector
   'inspector.na-title' => __( 'Nothing Selected', '__x__' ),
-  'inspector.search'   => __( 'Search Inspector.', '__x__' ),
-  'inspector.apply-preset-warning' => __( 'Applying a preset will change all element properties. Any changes you&apos;ve made will be overwritten. Would you like to proceed?', '__x__' ),
+  'inspector.search'   => __( 'search inspector...', '__x__' ),
+  'inspector.apply-preset-warning' => __( 'Applying a preset will change all element properties and reset to the preset&apos;s placeholder content. Any changes you&apos;ve made will be overwritten. Would you like to proceed?', '__x__' ),
 
   // Controls
-  'controls-previous-missing'   => __( 'Previous Value Unavailable', '__x__' ),
-  'controls-font-family-select' => __( '{{family}} ({{source}})', '__x__' ),
+  'controls-previous-missing'                 => __( 'Previous Value Unavailable', '__x__' ),
+  'controls-font-family-select'               => __( '{{family}} ({{source}})', '__x__' ),
+  'controls-text-editor-click-to-edit'        => __( 'Click to Edit', '__x__' ),
+  'controls-text-editor-html-mode-label'      => __( 'HTML', '__x__' ),
+  'controls-text-editor-rich-text-mode-label' => __( 'Rich Text', '__x__' ),
 
   // Notifications
   'notification-notice'  => __( 'Hey!', '__x__' ),
   'notification-success' => __( 'Awesome!', '__x__' ),
   'notification-error'   => __( 'Uh oh!', '__x__' ),
+
+  'notification-refreshing-preview'   => __( 'Refreshing preview.', '__x__' ),
+  'notification-refreshing-preview-save-reminder'   => __( 'Refreshing preview. Don\'t forget to save.', '__x__' ),
+
 
   // Assignments
   'assignments.global'               => __( 'Global', '__x__' ),
@@ -64,7 +77,11 @@ return array(
   'assignments.multiple-assignments' => __( 'Multiple Assignments', '__x__' ),
 
   // Elements
-  'elements-confirm-delete' => __( 'Are you sure you want to delete this element? This can not be undone.', '__x__' ),
+  'elements-confirm-delete' => __( 'Are you sure you want to delete this {{title}}? This can not be undone.', '__x__' ),
+  'elements-confirm-erase' => __( 'Are you sure you want to delete this element&apos;s contents? This can not be undone.', '__x__' ),
+  'elements-undefined-preview' => __( 'This element could not render because it&apos;s definition is missing. You might need to activate a plugin.', '__x__' ),
+  'elements-undefined-inspector-title' => __( 'Undefined Element', '__x__' ),
+  'elements-undefined-inspector-message' => __( 'The definition for this element could not be located. You may need to activate a plugin. The type declared for this element is: <strong>{{type}}</strong>', '__x__' ),
 
   // Confirm
   'confirm-yep'  => __( 'Yes, Proceed', '__x__' ),
@@ -114,7 +131,22 @@ return array(
   'choices.menu-named'    => __('Menu: %s', '__x__'),
   'choices.menu-location' => __('Location: %s', '__x__'),
 
+  // Actions
+  'duplicate'     => __( 'Duplicate', '__x__' ),
+	'delete'        => __( 'Delete', '__x__' ),
+	'really-delete' => __( 'Really Delete?', '__x__' ),
+
   // Errors
   'preview-error.missing-zone.x_masthead' => __('No suitable preview area found. This is most common when you are using a "No Header" page template. Try changing the page template, or assigning this header to a context where the template allows the header output.', '__x__'),
   'preview-error.missing-zone.x_colophon' => __('No suitable preview area found. This is most common when you are using a "No Footer" page template. Try changing the page template, or assigning this footer to a context where the template allows the footer output.', '__x__'),
+  'preview-error.missing-zone.content'    => __('No suitable preview area found. This could happen when a third party plugin is overrinding the content area.', '__x__'),
+
+  'preview-error.load.default'         => __('The preview could not load. This is most often related to a plugin conflict or aggressive page cacheing. Checking the developer console for errors could indicate what went wrong.', '__x__'),
+  'preview-error.load.https-mismatch'  => __('The preview could not load due to a http/https mismatch. Please check that HTTPS is properly configured on your site.', '__x__'),
+  'preview-error.load.cross-origin'    => __('The preview could not load due to misconfigured URLs. This could happen if you are using multiple environments and the site URL was not updated after migrating.', '__x__'),
+  'preview-error.load.incomplete'      => __('The preview could not load due to the iframe response being incomplete. This is most often related to a plugin conflict, or customizations introducing a PHP error.', '__x__'),
+  'preview-error.load.timeout'         => __('The preview was unresponsive after loading. This is most often related to a plugin conflict or aggressive page cacheing.', '__x__'),
+
+  'preview-error.loading.incomplete-html' => __('The preview HTML did not include a closing </html> tag. It may fail to load or work properly.', '__x__'),
+
 );

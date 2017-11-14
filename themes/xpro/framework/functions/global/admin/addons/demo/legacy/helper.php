@@ -22,7 +22,7 @@
 
 function x_demo_content_home_page() {
 
-  $page = x_get_page_by_title( 'Demo: Home' );
+  $page = get_page_by_title( 'Demo: Home', 'ARRAY_A', 'page' );
 
   if ( $page != NULL ) {
     return $page['ID'];
@@ -39,7 +39,7 @@ function x_demo_content_home_page() {
 
 function x_demo_content_blog_page() {
 
-  $page = x_get_page_by_title( 'Demo: Blog' );
+  $page = get_page_by_title( 'Demo: Blog', 'ARRAY_A', 'page' );
 
   if ( $page != NULL ) {
     return $page['ID'];
@@ -56,7 +56,7 @@ function x_demo_content_blog_page() {
 
 function x_demo_content_portfolio_page() {
 
-  $page = x_get_page_by_title( 'Demo: Portfolio' );
+  $page = get_page_by_title( 'Demo: Portfolio', 'ARRAY_A', 'page' );
 
   if ( $page != NULL ) {
     return $page['ID'];

@@ -42,7 +42,7 @@ jQuery(function($) {
 
   function showDropdowns(element) {
     element.addClass(mActiveClass).siblings(desktopTargets).removeClass(mActiveClass);
-    if ( Modernizr && Modernizr.touchevents ) {
+    if ( window.csModernizr && window.csModernizr.touchevents ) {
       element.siblings(desktopTargets).data(mActionData, 0);
       element.find('.' + mActiveClass).removeClass(mActiveClass).data(mActionData, 0);
     }
@@ -83,7 +83,7 @@ jQuery(function($) {
     hideDropdowns($desktopMenu);
   }
 
-  if ( Modernizr && Modernizr.touchevents ) {
+  if ( window.csModernizr && window.csModernizr.touchevents ) {
     $(desktopTargets).data(mActionData, 0);
     $desktopMenu.on('touchstart click', desktopTargets, touchIn);
     $desktopMenu.on('touchstart click', function(e) { e.stopPropagation(); });

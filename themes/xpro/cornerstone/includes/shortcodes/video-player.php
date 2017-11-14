@@ -136,7 +136,7 @@ function x_shortcode_video_player( $atts ) {
   if ( ! empty( $sources ) ) {
 
     $sources = implode( '', $sources );
-    $video = "<video class=\"x-mejs{$advanced_controls}\"{$poster_attr}{$preload}{$autoplay}{$loop}{$muted}>{$sources}</video>";
+    $video = "<video class=\"x-mejs has-stack-styles{$advanced_controls}\"{$poster_attr}{$preload}{$autoplay}{$loop}{$muted}>{$sources}</video>";
 
   } else {
     $video = '<span class="x-mejs-no-source">' . csi18n('shortcodes.video-missing-source') . '</span>';

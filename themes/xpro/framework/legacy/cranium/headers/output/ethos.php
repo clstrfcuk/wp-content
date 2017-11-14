@@ -93,39 +93,41 @@ $x_ethos_navbar_outer_border_width     = '2';
 $locations = get_nav_menu_locations();
 $items     = wp_get_nav_menu_items( $locations['primary'] );
 
-foreach ( $items as $item ) {
-  if ( $item->type == 'taxonomy' && $item->menu_item_parent == 0 ) {
+if ( is_array( $items ) ) {
+  foreach ( $items as $item ) {
+    if ( $item->type == 'taxonomy' && $item->menu_item_parent == 0 ) {
 
-    $t_id   = $item->object_id;
-    $accent = x_ethos_category_accent_color( $t_id, $x_site_link_color );
+      $t_id   = $item->object_id;
+      $accent = x_ethos_category_accent_color( $t_id, $x_site_link_color );
 
-    ?>
+      ?>
 
-    <?php if ( $x_navbar_positioning == 'static-top' || $x_navbar_positioning == 'fixed-top' ) : ?>
+      <?php if ( $x_navbar_positioning == 'static-top' || $x_navbar_positioning == 'fixed-top' ) : ?>
 
-      .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?> > a:hover,
-      .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?>.x-active > a {
-        box-shadow: 0 <?php echo $x_ethos_navbar_outer_border_width; ?>px 0 0 <?php echo $accent; ?>;
-      }
+        .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?> > a:hover,
+        .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?>.x-active > a {
+          box-shadow: 0 <?php echo $x_ethos_navbar_outer_border_width; ?>px 0 0 <?php echo $accent; ?>;
+        }
 
-    <?php elseif ( $x_navbar_positioning == 'fixed-left' ) : ?>
+      <?php elseif ( $x_navbar_positioning == 'fixed-left' ) : ?>
 
-      .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?> > a:hover,
-      .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?>.x-active > a {
-        box-shadow: <?php echo $x_ethos_navbar_outer_border_width; ?>px 0 0 0 <?php echo $accent; ?>;
-      }
+        .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?> > a:hover,
+        .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?>.x-active > a {
+          box-shadow: <?php echo $x_ethos_navbar_outer_border_width; ?>px 0 0 0 <?php echo $accent; ?>;
+        }
 
-    <?php elseif ( $x_navbar_positioning == 'fixed-right' ) : ?>
+      <?php elseif ( $x_navbar_positioning == 'fixed-right' ) : ?>
 
-      .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?> > a:hover,
-      .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?>.x-active > a {
-        box-shadow: -<?php echo $x_ethos_navbar_outer_border_width; ?>px 0 0 0 <?php echo $accent; ?>;
-      }
+        .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?> > a:hover,
+        .x-navbar .desktop .x-nav > li.tax-item-<?php echo $t_id; ?>.x-active > a {
+          box-shadow: -<?php echo $x_ethos_navbar_outer_border_width; ?>px 0 0 0 <?php echo $accent; ?>;
+        }
 
-    <?php endif; ?>
+      <?php endif; ?>
 
-    <?php
+      <?php
 
+    }
   }
 }
 

@@ -3,13 +3,12 @@
 // Theme Constants
 // =============================================================================
 
-define( 'X_VERSION', '1.1.0' );
+define( 'X_VERSION', '1.2.6' );
 define( 'X_SLUG', 'pro' );
 define( 'X_TITLE', 'Pro' );
 define( 'X_I18N_PATH', X_TEMPLATE_PATH . '/framework/functions/pro/i18n');
 
 
-add_filter('x_pre_boot_x', '__return_false' );
 add_theme_support( 'cornerstone_regions' );
 
 function pro_load_cornerstone() {

@@ -433,23 +433,25 @@ if ( ! function_exists( 'x_bbpress_filter_breadcrumbs' ) ) :
       $current_text = get_the_title();
     }
 
+    $is_ltr = ! is_rtl();
+
     $r = array(
       'before'          => '',
       'after'           => '',
-      'sep'             => x_get_breadcrumb_delimiter(),
+      'sep'             => function_exists( 'x_get_breadcrumb_delimiter' ) ? x_get_breadcrumb_delimiter() : ' <span class="delimiter"><i class="x-icon-angle-' . ( ( $is_ltr ) ? 'right' : 'left' ) . '" data-x-icon="&#x' . ( ( $is_ltr ) ? 'f105' : 'f104' ) . ';"></i></span> ',
       'pad_sep'         => 0,
       'sep_before'      => '',
       'sep_after'       => '',
       'crumb_before'    => '',
       'crumb_after'     => '',
       'include_home'    => false,
-      'home_text'       => x_get_breadcrumb_home_text(),
+      'home_text'       => function_exists( 'x_get_breadcrumb_home_text' ) ? x_get_breadcrumb_home_text() : '<span class="home"><i class="x-icon-home" data-x-icon="&#xf015;"></i></span>',
       'include_root'    => true,
       'root_text'       => bbp_get_forum_archive_title(),
       'include_current' => true,
       'current_text'    => $current_text,
-      'current_before'  => x_get_breadcrumb_current_before(),
-      'current_after'   => x_get_breadcrumb_current_after()
+      'current_before'  => '',
+      'current_after'   => '',
     );
 
     return $r;

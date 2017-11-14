@@ -63,7 +63,7 @@ if ( post_password_required() )
     'comment_notes_after'  => '',
     'id_submit'            => 'entry-comment-submit',
     'label_submit'         => __( 'Submit' , '__x__' ),
-    'title_reply'          => __( '<span>Leave a Comment</span>' , '__x__' ),
+    'title_reply'          => '<span>' . __( 'Leave a Comment</span>' , '__x__' ) . '</span>',
     'fields'               => array(
       'author' =>
         '<p class="comment-form-author">' .

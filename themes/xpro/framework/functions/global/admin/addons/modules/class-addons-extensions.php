@@ -31,13 +31,23 @@ class X_Addons_Extensions {
       wp_send_json_error( array( 'message' => 'No plugin specified' ) );
     }
 
-    if ( ! isset( $_POST['package'] ) || ! $_POST['package'] ) {
+    $package = isset( $_POST['package'] ) ? $_POST['package'] : null;
+
+    if ( ! $package && isset( $_POST['slug'] ) ) {
+      $request = wp_remote_get('https://api.wordpress.org/plugins/info/1.0/' . $_POST['slug'] . '.json');
+      $data = json_decode( wp_remote_retrieve_body( $request ), true );
+      if ( ! is_null( $data ) ) {
+        $package = $data['versions'][$data['version']];
+      }
+    }
+
+    if ( ! $package ) {
       wp_send_json_error( array( 'message' => 'No package provided' ) );
     }
 
     $install = $this->install_plugin( array(
       'plugin'   => $_POST['plugin'],
-      'package'  => $_POST['package'],
+      'package'  => $package,
     ) );
 
     if ( is_wp_error( $install ) ) {

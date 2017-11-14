@@ -26,6 +26,8 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 			$this->plugin->loadComponent( 'Prerelease' );
 		}
 
+    add_filter( 'cornerstone_save_post_content', array( $this, 'save_post_content' ) );
+
 	}
 
 	public function init() {
@@ -134,33 +136,36 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 	 * @param  string $post Accepts a post object, or post ID. Uses queried object if one isn't provided
 	 * @return string
 	 */
-	public function getEditURL( $post = '' ) {
+	public function get_edit_url( $post = '' ) {
 
 		$post = $this->locatePost( $post );
 
 		if ( !$post)
 			return null;
 
-		$args = apply_filters( 'cornerstone_edit_url_query_args', array( 'cornerstone' => 1 ) );
+    $url = $this->get_app_route_url( 'content', $post->ID, 'builder' );
 
-		$no_permalinks = apply_filters( 'cornerstone_no_permalinks', false );
+		// $args = apply_filters( 'cornerstone_edit_url_query_args', array( 'cornerstone' => 1 ) );
+    //
+		// $no_permalinks = apply_filters( 'cornerstone_no_permalinks', false );
+    //
+		// // if ( $no_permalinks ) {
+		// // 	add_filter( 'page_link', array( $this, 'direct_page_link'), 10, 3 );
+		// // 	add_filter( 'post_link', array( $this, 'direct_post_link'), 10, 3 );
+		// // 	add_filter( 'post_type_link', array( $this, 'direct_custom_post_type_link'), 10, 4 );
+		// // }
+    //
+		// $url = add_query_arg( $args, get_permalink( $post->ID ) );
+    //
+		// // if ( $no_permalinks ) {
+		// // 	remove_filter( 'page_link', array( $this, 'direct_page_link') );
+		// // 	remove_filter( 'post_link', array( $this, 'direct_post_link') );
+		// // 	remove_filter( 'post_type_link', array( $this, 'direct_custom_post_type_link') );
+		// // }
 
-		if ( $no_permalinks ) {
-			add_filter( 'page_link', array( $this, 'direct_page_link'), 10, 3 );
-			add_filter( 'post_link', array( $this, 'direct_post_link'), 10, 3 );
-			add_filter( 'post_type_link', array( $this, 'direct_custom_post_type_link'), 10, 4 );
-		}
-
-		$url = add_query_arg( $args, get_permalink( $post->ID ) );
-
-		if ( $no_permalinks ) {
-			remove_filter( 'page_link', array( $this, 'direct_page_link') );
-			remove_filter( 'post_link', array( $this, 'direct_post_link') );
-			remove_filter( 'post_type_link', array( $this, 'direct_custom_post_type_link') );
-		}
-
-		if ( force_ssl_admin() )
-			$url = preg_replace( '#^http://#', 'https://', $url );
+		if ( force_ssl_admin() ) {
+      $url = preg_replace( '#^http://#', 'https://', $url );
+    }
 
 		return $url;
 
@@ -261,9 +266,9 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 	 * @return boolean
 	 */
 	public function isDebug() {
-		$script_debug = ( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG );
+		$wp_debug = ( defined('WP_DEBUG') && WP_DEBUG );
 		$cs_debug = ( isset($_REQUEST['cs_debug']) && $_REQUEST['cs_debug'] == 1 );
-		return ( $script_debug || $cs_debug );
+		return ( $wp_debug || $cs_debug );
 	}
 
 	/**
@@ -332,6 +337,11 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 	public function get_post_capability( $post_id = false, $cap ) {
 
 		$post = $this->locatePost( $post_id );
+
+    if ( ! is_a( $post, 'WP_POST' ) ) {
+      return $cap;
+    }
+
 		$post_type_object = get_post_type_object( $post->post_type );
 		$caps = (array) $post_type_object->cap;
 		return $caps[ $cap ];
@@ -352,13 +362,41 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 
   }
 
+  public function get_app_url() {
+    return untrailingslashit( home_url( $this->plugin->common()->get_app_slug() ) );
+  }
+
 	public function get_launch_url() {
+    return $this->get_app_route_url();
+	}
+
+  public function get_app_route_url( $route = '', $model_id = '', $route_context = '') {
 
     if ( ! $this->plugin->component( 'Router' )->is_permalink_structure_valid() ) {
-      return add_query_arg( array('cs-launch' => 1), home_url() );
+      $args = array('cs-launch' => 1);
+      if ( $route ) {
+        $args['cs_route'] = esc_attr($route);
+        if ( $route_context ) {
+          $args['cs_route'] .= ".$route_context";
+        }
+        if ( $model_id ) {
+          $args['cs_route'] .= "/$model_id";
+        }
+      }
+      return add_query_arg( $args, home_url() );
     }
 
-    return trailingslashit( home_url( $this->plugin->common()->get_app_slug() ) );
+    $url = $this->get_app_url();
+
+    if ( $route ) {
+      $route = str_replace('.', '/', $route );
+      $url .= "/#/$route";
+      if ( $model_id ) {
+        $url .= "/$model_id";
+      }
+    }
+
+    return $url;
 
 	}
 
@@ -377,6 +415,20 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
     } else {
       return sanitize_text_field( $value );
     }
+
+	}
+
+	public function sanitize_value_deep( $value, $html = false ) {
+
+		if ( is_array( $value ) ) {
+			$cleaned = array();
+			foreach ($value as $key => $val) {
+				$cleaned[$key] = $this->sanitize_value_deep($val, $html);
+			}
+			return $cleaned;
+		}
+
+		return $this->sanitize_value( $value );
 
 	}
 
@@ -421,6 +473,24 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
       $retrieved[$name] = get_option( $name, $default );
     }
     return $retrieved;
+	}
+
+  public function save_post_content( $content ) {
+
+		// Move all <!--nextpage--> directives to outside their section.
+		$content = preg_replace( '#(?:<!--nextpage-->.*?)(\[\/cs_section\])#', '$0<!--nextpage-->', $content );
+
+		//Strip all <!--nextpage--> directives still within sections
+		$content = preg_replace( '#(?<!\[\/cs_section\])<!--nextpage-->#', '', $content );
+
+		$content = str_replace( '<!--more-->', '', $content );
+
+		return $content;
+
+  }
+
+	public function get_preview_zones() {
+		return apply_filters('cs_preview_zones', array( 'cs_content', 'x_after_masthead_begin', 'x_before_site_begin', 'x_before_site_end', 'x_masthead', 'x_colophon' ));
 	}
 
 }

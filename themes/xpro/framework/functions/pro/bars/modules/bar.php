@@ -1,9 +1,9 @@
 <?php
 
 // =============================================================================
-// FUNCTIONS/BARS/MODULES/BAR.PHP
+// CORNERSTONE/INCLUDES/ELEMENTS/DEFINITIONS/BAR.PHP
 // -----------------------------------------------------------------------------
-// Bar module definitions.
+// V2 element definitions.
 // =============================================================================
 
 // =============================================================================
@@ -48,4 +48,4 @@ function x_element_builder_setup_bar() {
 // Register Element
 // =============================================================================
 
-cornerstone_register_element( 'bar', x_bar_element_base( $data ) );
+cornerstone_register_element( 'bar', x_element_base( $data ) );

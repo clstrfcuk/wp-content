@@ -52,7 +52,11 @@ function x_get_first_portfolio_page_title() {
     'sort_column' => 'ID'
   ) );
 
-  return $results[0]->post_title;
+  if ( is_array($results) && isset( $results[0] ) ) {
+    return $results[0]->post_title;
+  }
+
+  return '';
 
 }
 

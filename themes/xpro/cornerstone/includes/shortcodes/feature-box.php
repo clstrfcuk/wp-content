@@ -16,6 +16,8 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
     'graphic_bg_color'         => '',
     'graphic_icon'             => '',
     'graphic_image'            => '',
+    'graphic_image'            => '',
+    'graphic_image_alt_text'   => '',
     'graphic_animation'        => '',
     'graphic_animation_offset' => '',
     'graphic_animation_delay'  => '',
@@ -60,6 +62,7 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
   $graphic_bg_color         = ( $graphic_bg_color         != ''      ) ? $graphic_bg_color : 'transparent';
   $graphic_icon             = ( $graphic_icon             != ''      ) ? $graphic_icon : '';
   $graphic_image            = ( $graphic_image            != ''      ) ? $graphic_image : '';
+  $graphic_image_alt_text   = ( $graphic_image_alt_text   != ''      ) ? $graphic_image_alt_text : '';
   $graphic_animation        = ( $graphic_animation        != ''      ) ? $graphic_animation : 'none';
   $graphic_animation_offset = ( $graphic_animation_offset != ''      ) ? $graphic_animation_offset : '50';
   $graphic_animation_delay  = ( $graphic_animation_delay  != ''      ) ? $graphic_animation_delay : '0';
@@ -111,10 +114,10 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
   //
 
   if ( $align_h != 'center' ) {
-    $side_align_style     = ' style="display: table-cell; vertical-align: ' . $align_v . ';"';
+    $side_align_v_class   = ( $align_v == 'middle' ) ? 'x-feature-box-align-v-middle' : '';
     $side_graphic_spacing = ( $align_h == 'left' ) ? ' margin-right: ' . $side_graphic_spacing . ';' : ' margin-left: ' . $side_graphic_spacing . ';';
   } else {
-    $side_align_style     = '';
+    $side_align_v_class   = '';
     $side_graphic_spacing = '';
   }
 
@@ -123,7 +126,7 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
   // Graphic - attributes.
   //
 
-  $graphic_container_class_style = ' class="x-feature-box-graphic ' . $graphic_shape . '"' . $side_align_style;
+  $graphic_container_class_style = ' class="x-feature-box-graphic ' . $graphic_shape . ' ' . $side_align_v_class . '"';
   $graphic_outer_class_style     = ' class="x-feature-box-graphic-outer ' . $graphic_shape . cs_animation_base_class( $graphic_animation ) . '" style="' . $side_graphic_spacing . '"';
   $graphic_inner_class_style     = ' class="x-feature-box-graphic-inner ' . $graphic_shape . '" style="' . $graphic_font_size . $graphic_pseudo_element_color . '"';
   $graphic_style                 = ' style="margin: 0 auto;' . $graphic_border . $graphic_colors . '"';
@@ -135,10 +138,11 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
 
   if ( $graphic == 'image' ) {
 
+    $graphic_image_alt = ( $graphic_image_alt_text ) ? ' alt="' . $graphic_image_alt_text . '"' : '';
     $graphic = '<div' . $graphic_container_class_style . '>'
                . '<div' . $graphic_outer_class_style . '>'
                  . '<div' . $graphic_inner_class_style . '>'
-                   . '<img class="' . $graphic_shape . '" src="' . $graphic_image . '"' . $graphic_style . '>'
+                   . '<img class="' . $graphic_shape . '" src="' . $graphic_image . '"' . $graphic_style . $graphic_image_alt . '>'
                  . '</div>'
                . '</div>'
              . '</div>';
@@ -176,13 +180,12 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
     $right           = ( $align_h == 'right'  ) ? ' right: 0;' : ' right: calc(100% - ' . $graphic_size . ');';
     $connector_class = cs_animation_base_class( $connector_animation );
     $connector_style = 'style="' . $graphic_font_size . $left . $right . ' border-left: ' . $connector_width . ' ' . $connector_style . ' ' . $connector_color . ';"';
-    $connector_text  = '<span class="visually-hidden">Connector.</span>';
 
     if ( $align_v == 'top' ) {
-      $connector = '<span class="x-feature-box-connector full' . $connector_class . '" ' . $connector_style . '>' . $connector_text . '</span>';
+      $connector = '<span class="x-feature-box-connector full' . $connector_class . '" ' . $connector_style . '></span>';
     } else {
-      $connector = '<span class="x-feature-box-connector upper' . $connector_class . '" ' . $connector_style . '>' . $connector_text . '</span>'
-                 . '<span class="x-feature-box-connector lower' . $connector_class . '" ' . $connector_style . '>' . $connector_text . '</span>';
+      $connector = '<span class="x-feature-box-connector upper' . $connector_class . '" ' . $connector_style . '></span>'
+                 . '<span class="x-feature-box-connector lower' . $connector_class . '" ' . $connector_style . '></span>';
     }
 
   } else {
@@ -198,7 +201,7 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
   $text_color  = ( $text_color  != '' ) ? ' style="color: ' . $text_color . ';"' : '';
   $link        = ( $link_text   != '' ) ? ' <a href="' . $href . '" title="' . $href_title . '"' . $href_target . $link_color . '>' . $link_text . '</a>' : '';
 
-  $output = '<div class="x-feature-box-content"' . $side_align_style . '>'
+  $output = '<div class="x-feature-box-content ' . $side_align_v_class . '">'
              . '<h4 class="x-feature-box-title"' . $title_color . '>' . $title . '</h4>'
              . '<p class="x-feature-box-text"' . $text_color . '>' . do_shortcode( $content ) . $link . '</p>'
            . '</div>';
