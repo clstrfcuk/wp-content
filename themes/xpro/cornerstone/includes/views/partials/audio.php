@@ -60,6 +60,9 @@ switch ( $audio_type ) {
 
     // Build Audio Element
     // -------------------
+    // 01. Check if current v4.9 is greater than current WordPress version and
+    //     include legacy class if so. Needed due to MEJS library update in
+    //     v4.9, which includes updated styling and APIs.
 
     if ( ! empty( $mejs_source_elements ) ) {
 
@@ -67,12 +70,18 @@ switch ( $audio_type ) {
 
       if ( $mejs_advanced_controls ) $mejs_classes[] = 'advanced-controls';
 
+      GLOBAL $wp_version;
+
+      if ( version_compare( '4.9', $wp_version, '>' ) ) {
+        $mejs_classes[] = 'x-mejs-legacy-compat'; // 01
+      }
+
       $mejs_element_atts = array(
         'class'   => x_attr_class( $mejs_classes ),
         'preload' => $mejs_preload,
       );
 
-      if ( $mejs_loop )     $mejs_element_atts['loop']     = '';
+      if ( $mejs_loop ) $mejs_element_atts['loop'] = '';
 
       $audio_content = '<audio ' . x_atts( $mejs_element_atts ) . '>'
                        . implode( '', $mejs_source_elements )
@@ -81,7 +90,6 @@ switch ( $audio_type ) {
     } else {
 
       $audio_content = '<span class="x-mejs-no-source">'
-                       // . csi18n( 'shortcodes.audio-missing-source' )
                        . '<img src="' . cornerstone_make_placeholder_image_uri( 30, 300, 'rgba(0, 0, 0, 0.35)' ) . '" width="300" height="30" alt="Placeholder">'
                      . '</span>';
 

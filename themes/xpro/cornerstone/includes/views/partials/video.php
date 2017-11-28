@@ -86,6 +86,9 @@ switch ( $video_type ) {
 
     // Build Video Element
     // -------------------
+    // 01. Check if current v4.9 is greater than current WordPress version and
+    //     include legacy class if so. Needed due to MEJS library update in
+    //     v4.9, which includes updated styling and APIs.
 
     if ( ! empty( $mejs_source_elements ) ) {
 
@@ -93,14 +96,20 @@ switch ( $video_type ) {
 
       if ( $mejs_advanced_controls ) $mejs_classes[] = 'advanced-controls';
 
+      GLOBAL $wp_version;
+
+      if ( version_compare( '4.9', $wp_version, '>' ) ) {
+        $mejs_classes[] = 'x-mejs-legacy-compat'; // 01
+      }
+
       $mejs_element_atts = array(
         'class'   => x_attr_class( $mejs_classes ),
         'poster'  => $mejs_poster,
         'preload' => $mejs_preload,
       );
 
-      if ( $mejs_loop )     $mejs_element_atts['loop']     = '';
-      if ( $mejs_muted )    $mejs_element_atts['muted']    = '';
+      if ( $mejs_loop )  $mejs_element_atts['loop']  = '';
+      if ( $mejs_muted ) $mejs_element_atts['muted'] = '';
 
       $video_content = $mejs_bg_start
                        . '<video ' . x_atts( $mejs_element_atts ) . '>'

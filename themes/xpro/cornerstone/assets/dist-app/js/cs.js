@@ -63807,7 +63807,7 @@ define('cornerstone/xfr/service', ['exports', 'ember'], function (exports, _embe
 /* jshint ignore:start */
 
 define('cornerstone/config/environment', ['ember'], function(Ember) {
-  var exports = {'default': {"modulePrefix":"cornerstone","environment":"development","baseURL":"/","EmberENV":{"FEATURES":{}},"i18n":{"defaultLocale":"en"},"APP":{"name":"cornerstone","version":"1.0.0+41fb96c8"},"browserify":{"transform":[["aliasify",{"global":true}]]},"exportApplicationGlobal":true}};Object.defineProperty(exports, '__esModule', {value: true});return exports;
+  var exports = {'default': {"modulePrefix":"cornerstone","environment":"development","baseURL":"/","EmberENV":{"FEATURES":{}},"i18n":{"defaultLocale":"en"},"APP":{"name":"cornerstone","version":"1.0.0+4cec3af4"},"browserify":{"transform":[["aliasify",{"global":true}]]},"exportApplicationGlobal":true}};Object.defineProperty(exports, '__esModule', {value: true});return exports;
 });
 
 /* jshint ignore:end */
@@ -63815,7 +63815,7 @@ define('cornerstone/config/environment', ['ember'], function(Ember) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("cornerstone/app")["default"].create({"name":"cornerstone","version":"1.0.0+41fb96c8"});
+  require("cornerstone/app")["default"].create({"name":"cornerstone","version":"1.0.0+4cec3af4"});
 }
 
 /* jshint ignore:end */

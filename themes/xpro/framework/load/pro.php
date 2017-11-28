@@ -3,7 +3,7 @@
 // Theme Constants
 // =============================================================================
 
-define( 'X_VERSION', '1.2.6' );
+define( 'X_VERSION', '1.2.7' );
 define( 'X_SLUG', 'pro' );
 define( 'X_TITLE', 'Pro' );
 define( 'X_I18N_PATH', X_TEMPLATE_PATH . '/framework/functions/pro/i18n');
@@ -62,3 +62,10 @@ function pro_add_boot_files( $files ) {
 }
 
 add_filter('x_boot_files', 'pro_add_boot_files' );
+
+function pro_scandir_exclusions( $exclusions ) {
+  $exclusions[] = 'cornerstone';
+  return $exclusions;
+}
+
+add_filter('theme_scandir_exclusions', 'pro_scandir_exclusions' );

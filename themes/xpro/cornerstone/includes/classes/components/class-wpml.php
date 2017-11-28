@@ -226,6 +226,9 @@ class Cornerstone_Wpml extends Cornerstone_Plugin_Component {
 
 
   public function get_languages() {
+    if ( ! $this->is_active() ) {
+      return array();
+    }
     return apply_filters('wpml_active_languages', array() );
   }
 
