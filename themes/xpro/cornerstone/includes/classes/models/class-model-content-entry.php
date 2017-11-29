@@ -10,8 +10,7 @@ class Cornerstone_Model_Content_Entry extends Cornerstone_Plugin_Component {
     $posts = get_posts( array(
       'post_type' => $this->plugin->common()->getAllowedPostTypes(),
       'orderby' => 'type',
-      'posts_per_page' => 2500,
-      'cs_all_wpml' => true
+      'posts_per_page' => 2500
     ) );
 
     $records = array();
@@ -26,8 +25,7 @@ class Cornerstone_Model_Content_Entry extends Cornerstone_Plugin_Component {
         'post-type' => $post->post_type,
         'post-type-label' => isset( $post_type_obj->labels ) ? $post_type_obj->labels->singular_name : $post->post_type,
         'modified' => date_i18n( get_option( 'date_format' ), strtotime( $post->post_modified ) ),
-        'permalink' => get_permalink( $post ),
-        'language' => $this->plugin->loadComponent('Wpml')->get_language_data( $post->ID, $post->post_type )
+        'permalink' => get_permalink( $post )
       );
 
     }

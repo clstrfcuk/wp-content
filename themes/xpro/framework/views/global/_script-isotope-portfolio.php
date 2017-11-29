@@ -17,7 +17,7 @@ $is_rtl = is_rtl();
 
     <?php if ( $is_rtl ) : ?>
 
-      $.xIsotope.prototype._positionAbs = function( x, y ) {
+      $.Isotope.prototype._positionAbs = function( x, y ) {
         return { right: x, top: y };
       };
 
@@ -29,8 +29,8 @@ $is_rtl = is_rtl();
 
     $container.before('<span id="x-isotope-loading"><span>');
 
-    $(window).on('load', function() {
-      $container.xIsotope({
+    $(window).load(function() {
+      $container.isotope({
         itemSelector   : '.x-iso-container > .hentry',
         resizable      : true,
         filter         : '*',
@@ -48,8 +48,8 @@ $is_rtl = is_rtl();
       });
     });
 
-    $(window).xsmartresize(function() {
-      $container.xIsotope({  });
+    $(window).smartresize(function() {
+      $container.isotope({  });
     });
 
     $optionLinks.click(function() {
@@ -71,7 +71,7 @@ $is_rtl = is_rtl();
       if ( key === 'layoutMode' && typeof changeLayoutMode === 'function' ) {
         changeLayoutMode( $this, options );
       } else {
-        $container.xIsotope( options );
+        $container.isotope( options );
       }
       return false;
     });

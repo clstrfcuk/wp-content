@@ -26,8 +26,8 @@ $is_rtl = is_rtl();
 
     $container.before('<span id="x-isotope-loading"><span>');
 
-    $(window).on('load', function() {
-      $container.xIsotope({
+    $(window).load(function() {
+      $container.isotope({
         itemSelector   : '.x-iso-container > .hentry',
         resizable      : true,
         filter         : '*',
@@ -45,8 +45,8 @@ $is_rtl = is_rtl();
       });
     });
 
-    $(window).xsmartresize(function() {
-      $container.xIsotope({  });
+    $(window).smartresize(function() {
+      $container.isotope({  });
     });
 
   });

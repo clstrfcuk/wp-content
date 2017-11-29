@@ -1,8 +1,6 @@
 <wpml-config>
   <custom-types>
     <custom-type translate="1">x-portfolio</custom-type>
-    <custom-type translate="1">cs_header</custom-type>
-    <custom-type translate="1">cs_footer</custom-type>
   </custom-types>
   <taxonomies>
     <taxonomy translate="1">portfolio-tag</taxonomy>

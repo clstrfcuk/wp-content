@@ -179,6 +179,77 @@ jQuery(document).ready(function($) {
   var bodyHeight           = $body.outerHeight();
   var adminbarHeight       = $('#wpadminbar').outerHeight();
   var navbarFixedTopHeight = $('.x-navbar-fixed-top-active .x-navbar').outerHeight();
+  var locHash              = null;
+  var dragging             = false;
+
+  var locHashIndex = location.href.indexOf('#');
+  if ( -1 !== locHashIndex ) {
+    locHash = location.href.substr(locHashIndex).split('/')[0];
+  }
+
+  $body.on('touchmove', function() {
+	  dragging = true;
+  } );
+
+  $body.on('touchstart', function() {
+	  dragging = false;
+  } );
+
+
+  //
+  // Calculate the offset height for various elements and remove it from
+  // the element's top offset so that fixed elements don't cover it up.
+  //
+
+  function animateOffset( element, ms, easing ) {
+
+    if ( ! element ) {
+      return;
+    }
+
+    var $el = $(element);
+
+    if ( ! $el || 0 == $el.length ) {
+      return;
+    }
+
+    $('html, body').animate({
+      scrollTop: $el.offset().top - adminbarHeight - navbarFixedTopHeight + 1
+    }, ms, easing);
+
+  }
+
+
+  //
+  // Page load offset (if necessary).
+  //
+
+  $(window).load(function() {
+    animateOffset(locHash, 1, 'linear');
+  });
+
+
+  //
+  // Scroll trigger.
+  //
+
+  $('a[href*="#"]').on('touchend click', function(e) {
+    href        = $(this).attr('href');
+    notComments = href.indexOf('#comments') === -1;
+    if ( href !== '#' && notComments ) {
+      var theId = href.split('#').pop();
+      var $el   = $('#' + theId);
+      if ( $el.length > 0 ) {
+        e.preventDefault();
+
+        if (dragging) {
+	        return;
+        }
+
+        animateOffset($el, 850, 'easeInOutExpo');
+      }
+    }
+  });
 
 
   //

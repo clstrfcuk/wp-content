@@ -72,7 +72,7 @@ class Cornerstone_Footer {
       'post_title'   => $this->get_title(),
       'post_type'    => 'cs_footer',
       'post_status'  => 'tco-data',
-      'post_content' => wp_slash( cs_json_encode( array(
+      'post_content' => wp_slash( json_encode( array(
         'regions' => $this->get_regions(),
         'settings' => $this->get_settings()
       ) ) )

@@ -9,16 +9,95 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Global Setup
-//   02. Shop
-//   03. Product
-//   04. Cart
-//   05. Related Products
-//   06. Upsells
-//   07. Navbar
-//   08. AJAX
-//   09. New Cranium Stuff (To Be Organized Later)
+//   01. Administration
+//   02. Global Setup
+//   03. Shop
+//   04. Product
+//   05. Cart
+//   06. Related Products
+//   07. Upsells
+//   08. Navbar
+//   09. AJAX
+//   10. New Cranium Stuff (To Be Organized Later)
 // =============================================================================
+
+// Administration
+// =============================================================================
+
+// Image Sizes
+// -----------
+// 01. Product category thumbs.
+// 02. Single product thumbs.
+// 03. Image gallery thumbs.
+
+function x_woocommerce_image_dimensions() {
+  $catalog = array(
+    'width'  => '250',
+    'height' => '275',
+    'crop'   => 1
+  );
+
+  $single = array(
+    'width'  => '400',
+    'height' => '400',
+    'crop'   => 1
+  );
+
+  $thumbnail = array(
+    'width'  => '100',
+    'height' => '100',
+    'crop'   => 1
+  );
+
+  update_option( 'shop_catalog_image_size', $catalog );     // 1
+  update_option( 'shop_single_image_size', $single );       // 2
+  update_option( 'shop_thumbnail_image_size', $thumbnail ); // 3
+}
+
+if ( isset( $_GET['activated'] ) ) {
+  add_action( 'admin_init', 'x_woocommerce_image_dimensions', 1 );
+}
+
+
+// Variation Images
+// ----------------
+// Modify variation images to use the X entry size like single simple products
+// to avoid display issues.
+
+function x_woocommerce_modify_variable_image_size( $child_id, $instance, $variation ) {
+  $attachment_id         = get_post_thumbnail_id( $variation->get_id() );
+  $attachment            = wp_get_attachment_image_src( $attachment_id, 'entry' );
+  $image_src             = $attachment ? current( $attachment) : '';
+  $child_id['image_src'] = $image_src;
+
+  return $child_id;
+}
+
+add_filter( 'woocommerce_available_variation', 'x_woocommerce_modify_variable_image_size', 10, 3);
+
+
+// Remove Plugin Settings
+// ----------------------
+
+function x_woocommerce_remove_plugin_settings( $settings ) {
+
+  foreach ( $settings as $key => $setting ) {
+
+    $id = $setting['id'];
+
+    if ( $id == 'shop_catalog_image_size' || $id == 'shop_single_image_size' ) {
+      unset( $settings[$key] );
+    }
+
+  }
+
+  return $settings;
+
+}
+
+add_filter( 'woocommerce_product_settings', 'x_woocommerce_remove_plugin_settings', 10 );
+
+
 
 // Global Setup
 // =============================================================================
@@ -93,7 +172,7 @@ function x_woocommerce_shop_product_thumbnails() {
   GLOBAL $product;
 
   $id     = get_the_ID();
-  $thumb  = 'shop_catalog';
+  $thumb  = 'entry';
   $rating = ( function_exists( 'wc_get_rating_html' ) ) ? wc_get_rating_html( $product->get_average_rating() ) : $product->get_rating_html();
 
   woocommerce_show_product_sale_flash();
@@ -152,6 +231,26 @@ remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_singl
 
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
+
+
+// Large Thumbnail Size
+// --------------------
+
+function x_woocommerce_single_product_large_thumbnail_size() {
+  return 'entry';
+}
+
+add_filter( 'single_product_large_thumbnail_size', 'x_woocommerce_single_product_large_thumbnail_size' );
+
+
+// Small Thumbnail Size
+// --------------------
+
+function x_woocommerce_single_product_small_thumbnail_size() {
+  return 'shop_single';
+}
+
+add_filter( 'single_product_small_thumbnail_size', 'x_woocommerce_single_product_small_thumbnail_size' );
 
 
 // Product Wrapper

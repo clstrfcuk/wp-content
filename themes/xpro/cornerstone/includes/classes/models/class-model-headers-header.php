@@ -18,7 +18,8 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
     $records = array();
 
     foreach ($posts as $post) {
-      $records[] = $this->make_record( $post );
+      $header = new Cornerstone_Header( $post );
+      $records[] = $header->serialize();
     }
 
     // Filter $records here?
@@ -41,7 +42,8 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
     if ( isset( $params['query']['id'] ) ) {
       try {
-        $queried[] = $this->to_resource( $this->make_record( (int) $params['query']['id'] ) );
+        $header = new Cornerstone_Header( (int) $params['query']['id'] );
+        $queried[] = $this->to_resource( $header->serialize() );
       } catch( Exception $e ) {
         return $this->make_error_response( 'Header not found' );
       }
@@ -57,17 +59,6 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
         array( 'status' => $status, 'title' => 'message' )
       )
     );
-  }
-
-  public function make_record( $post ) {
-    if ( is_int( $post ) ) {
-      $post = get_post( $post );
-    }
-    $header = new Cornerstone_Header( $post );
-    $record = $header->serialize();
-    $record['post-type'] = $post->post_type;
-    $record['language'] = $this->plugin->loadComponent('Wpml')->get_language_data_from_post( $post, true );
-    return $record;
   }
 
 

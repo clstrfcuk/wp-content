@@ -15,10 +15,9 @@ class Cornerstone_Model_Headers_Entry extends Cornerstone_Plugin_Component {
     foreach ($posts as $post) {
 
       $records[] = array(
-        'id' => (string) $post['ID'],
+        'id' => (string)$post['ID'],
         'title' => $post['post_title'],
-        'modified' => date_i18n( get_option( 'date_format' ), strtotime( $post['post_modified'] ) ),
-        'language' => $this->plugin->loadComponent('Wpml')->get_language_data( $post['ID'], 'cs_header' )
+        'modified' => date_i18n( get_option( 'date_format' ), strtotime( $post['post_modified'] ) )
       );
 
     }

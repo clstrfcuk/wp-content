@@ -56,9 +56,7 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 	public function preinitBefore() {
 
 		// Register class autoloader
-    $classes = glob( self::$instance->path( 'includes/classes' ) . '/*' );
-    $classic_classes = glob( self::$instance->path( 'includes/classes/classic' ) . '/*' );
-    $this->autoload_directories = array_merge( $classes, $classic_classes );
+		$this->autoload_directories = glob( self::$instance->path( 'includes/classes' ) . '/*' );
 		spl_autoload_register( array( __CLASS__, 'autoloader' ) );
 
 	}
@@ -69,6 +67,8 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 	}
 
 	public function update( $prior ) {
+
+		//delete_option( 'cs_legacy_ajax' );
 
 		/**
 		 * Run if coming from a version prior to Before 1.0.7

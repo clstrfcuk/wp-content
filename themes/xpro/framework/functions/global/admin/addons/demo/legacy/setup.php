@@ -114,9 +114,14 @@ if ( x_demo_content_stage_not_completed( 'process-data-files' ) ) {
   if ( ! empty( $entries ) ) {
     foreach ( $entries as $key => $entry ) {
 
-      if ( get_page_by_title( $entry['post_title'], 'ARRAY_A', $entry['post_type'] ) ) {
+      if ( $entry['post_type'] == 'page' && x_get_page_by_title( $entry['post_title'] ) ) {
+        continue;
+      } elseif ( $entry['post_type'] == 'post' && x_get_post_by_title( $entry['post_title'] ) ) {
+        continue;
+      } elseif ( $entry['post_type'] == 'x-portfolio' && x_get_portfolio_item_by_title( $entry['post_title'] ) ) {
         continue;
       }
+
 
       //
       // If 'x_meta' exists in array, store it in a variable for later use then

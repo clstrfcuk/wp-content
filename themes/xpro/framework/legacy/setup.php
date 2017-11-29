@@ -39,7 +39,7 @@ function x_legacy_modes() {
 
 }
 
-add_action( 'x_late_template_redirect', 'x_legacy_modes', 25 );
+add_action( 'template_redirect', 'x_legacy_modes', 25 );
 
 
 
@@ -85,6 +85,26 @@ if ( ! function_exists( 'x_legacy_widgets_init' ) ) :
   }
   add_action( 'widgets_init', 'x_legacy_widgets_init' );
 endif;
+
+//
+// function x_legacy_admin_body_class( $classes ) {
+//
+//   $screen = get_current_screen();
+//
+//   if ( $screen->base == 'widgets' ) {
+//     $classes .= ' x-header-widgets-' . x_get_option( 'x_header_widget_areas' );
+//   }
+//
+//   if ( $screen->base == 'widgets' ) {
+//     $classes .= ' x-footer-widgets-' . x_get_option( 'x_footer_widget_areas' );
+//   }
+//
+//
+//   return $classes;
+//
+// }
+// add_filter( 'admin_body_class', 'x_legacy_admin_body_class' );
+
 
 
 // Fonts

@@ -5,8 +5,7 @@ return array(
   // Generic
   'untitled'        => __( 'Untitled', '__x__' ),
   'untitled-entity' => __( 'Untitled %s', '__x__' ),
-  'ammended-title'  => __( '%s (%s)', '__x__' ),
-  'classic'         => __( 'Classic %s', '__x__' ),
+  'numbered'        => __( '%s (%d)', '__x__' ),
   'blank'           => __( 'Blank', '__x__' ),
 
   'title.launch'          => __( 'Launch', '__x__' ),
@@ -28,9 +27,6 @@ return array(
   'assignments-posts-page' => __( 'Posts Page', '__x__' ),
 
   'entity-header'   => __( 'Header', '__x__' ),
-  'entity-content'  => __( 'Content', '__x__' ),
   'entity-footer'   => __( 'Footer', '__x__' ),
-
-  'menu-fallback' => __( 'Create a Menu', '__x__' ),
 
 );

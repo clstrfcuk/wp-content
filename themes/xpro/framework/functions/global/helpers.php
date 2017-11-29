@@ -9,25 +9,110 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. X Is Validated
-//   02. Make Protocol Relative
-//   03. Get Featured Image URL
-//   04. Get Featured Image URL (With Social Fallback Image)
-//   05. Return an Array of Integer Values from String
-//   06. Get The ID
-//   07. Get Slider Shortcode
-//   08. Get Clean CSS
-//   09. Generate HTML Attribute
-//   10. Generate HTML Attributes
-//   11. Generate Class Attribute
-//   12. Generate Data Attribute JSON
-//   13. Generate Inline CSS
-//   14. Generate CSS Block
-//   15. Prepare Post CSS Value
-//   16. Get Current Admin Color Scheme
-//   17. i18n helper
-//   18. Deprecated
+//   01. Get / Set View
+//   02. Get / Set View Transient
+//   03. X Is Validated
+//   04. Make Protocol Relative
+//   05. Get Featured Image URL
+//   06. Get Featured Image URL (With Social Fallback Image)
+//   07. Return an Array of Integer Values from String
+//   08. Get The ID
+//   09. Get Post by Title
+//   10. Get Page by Title
+//   11. Get Portfolio Item by Title
+//   12. Get Slider Shortcode
+//   13. Get Clean CSS
+//   14. Generate HTML Attribute
+//   15. Generate HTML Attributes
+//   16. Generate Class Attribute
+//   17. Generate Data Attribute JSON
+//   18. Generate Inline CSS
+//   19. Generate CSS Block
+//   20. Prepare Post CSS Value
+//   21. Get Current Admin Color Scheme
+//   22. i18n helper
+//   23. Deprecated
 // =============================================================================
+
+// Get / Set View
+// =============================================================================
+
+function x_get_view( $directory, $file_base, $file_extension = '', $custom_data = array(), $echo = true ) {
+
+  $file_action = $directory . '_' . $file_base . ( empty( $file_extension ) ? '' : '-' . $file_extension );
+
+  $view = array(
+    'base'      => 'framework/views/' . $directory . '/' . $file_base,
+    'extension' => $file_extension
+  );
+
+  $view = apply_filters( 'x_get_view', $view, $directory, $file_base, $file_extension );
+
+  if ( '' === $view['base'] ) {
+    return;
+  }
+
+  $template = X_View_Router::locate( $view['base'], $view['extension'] );
+
+  if ( ! $template ) {
+    return;
+  }
+
+  do_action( 'x_before_view_' . $file_action );
+
+  $output = X_View_Router::render( $template, $custom_data, $echo );
+
+  do_action( 'x_after_view_' . $file_action );
+
+  return $output;
+
+}
+
+
+function x_set_view( $action, $directory, $file_base, $file_extension = '', $data = NULL, $priority = 10, $override = false ) {
+  X_View_Router::set( $action, $directory, $file_base, $file_extension, $data, $priority, $override );
+}
+
+
+
+// Get / Set View Transient
+// =============================================================================
+
+function x_get_view_transient( $key ) {
+
+  GLOBAL $x_view_transients;
+
+  if ( ! isset( $x_view_transients ) ) {
+    $x_view_transients = array();
+  }
+
+  return $x_view_transients[$key];
+
+}
+
+
+function x_set_view_transient( $key, $value ) {
+
+  GLOBAL $x_view_transients;
+
+  if ( ! isset( $x_view_transients ) ) {
+    $x_view_transients = array();
+  }
+
+  $x_view_transients[$key] = $value;
+
+}
+
+
+
+// Action Defer
+// =============================================================================
+
+function x_action_defer( $action, $function, $args = array(), $priority = 10, $array_args = false  ) {
+  X_Action_Defer::defer( $action, $function, $args, $priority, $array_args );
+}
+
+
 
 // X Is Validated
 // =============================================================================
@@ -108,13 +193,13 @@ endif;
 // by comma, and returns an array of integer values.
 //
 
-// function x_intval_explode( $string ) {
-//
-//   $output = array_map( 'intval', explode( ',', preg_replace( '/\s+/', '', $string ) ) );
-//
-//   return $output;
-//
-// }
+function x_intval_explode( $string ) {
+
+  $output = array_map( 'intval', explode( ',', preg_replace( '/\s+/', '', $string ) ) );
+
+  return $output;
+
+}
 
 
 
@@ -134,13 +219,46 @@ function x_get_the_ID() {
     $id = get_option( 'page_for_posts' );
   } elseif ( x_is_shop() ) {
     $id = ( function_exists( 'wc_get_page_id' ) ) ? wc_get_page_id( 'shop' ) : woocommerce_get_page_id( 'shop' );
-  } elseif ( is_a( $post, 'WP_Post') ) {
-    $id = $post->ID;
-  } else {
+  } elseif ( is_404() ) {
     $id = NULL;
+  } else {
+    $id = $post->ID;
   }
 
   return $id;
+
+}
+
+
+
+// Get Post by Title
+// =============================================================================
+
+function x_get_post_by_title( $title ) {
+
+  return get_page_by_title( $title, 'ARRAY_A', 'post' );
+
+}
+
+
+
+// Get Page by Title
+// =============================================================================
+
+function x_get_page_by_title( $title ) {
+
+  return get_page_by_title( $title, 'ARRAY_A', 'page' );
+
+}
+
+
+
+// Get Portfolio Item by Title
+// =============================================================================
+
+function x_get_portfolio_item_by_title( $title ) {
+
+  return get_page_by_title( $title, 'ARRAY_A', 'x-portfolio' );
 
 }
 
@@ -257,7 +375,7 @@ function x_atts( $atts, $echo = false ) {
   $result = '';
 
   foreach ( $atts as $attr => $value ) {
-    $result .= x_attr( $attr, $value, false );
+    $result .= x_attr( $attr, $value, false ) . ' ';
   }
 
   if ( $echo ) {
@@ -307,50 +425,50 @@ function x_attr_json( $params = array() ) {
 // Generate Inline CSS
 // =============================================================================
 
-// function x_inline_css( $styles = array() ) {
-//
-//   $result = '';
-//
-//   if ( ! empty( $styles ) ) {
-//
-//     foreach ( $styles as $property => $value ) :
-//       $result .= $property . ': ' . $value . '; ';
-//     endforeach;
-//
-//   }
-//
-//   return $result;
-//
-// }
-//
-//
-//
-// // Generate CSS Block
-// // =============================================================================
-//
-// function x_css_block( $css = array(), $breakpoint = false, $scoped = false, $id = null ) {
-//
-//   $scoped   = ( $scoped )     ? ' scoped' : '';
-//   $bp_open  = ( $breakpoint ) ? '@media ' . $breakpoint . ' {' : '';
-//   $bp_close = ( $breakpoint ) ? '}' : '';
-//
-//   echo '<style' . $scoped . '>';
-//     echo $bp_open;
-//       foreach ( $css as $selector => $styles ) {
-//
-//         if ( ! is_null( $id ) ) {
-//           $selector = str_replace( '$el', '.hm' . $id, $selector );
-//         }
-//
-//         echo $selector . '{';
-//           echo x_inline_css( $styles );
-//         echo '}';
-//
-//       }
-//     echo $bp_close;
-//   echo '</style>';
-//
-// }
+function x_inline_css( $styles = array() ) {
+
+  $result = '';
+
+  if ( ! empty( $styles ) ) {
+
+    foreach ( $styles as $property => $value ) :
+      $result .= $property . ': ' . $value . '; ';
+    endforeach;
+
+  }
+
+  return $result;
+
+}
+
+
+
+// Generate CSS Block
+// =============================================================================
+
+function x_css_block( $css = array(), $breakpoint = false, $scoped = false, $id = null ) {
+
+  $scoped   = ( $scoped )     ? ' scoped' : '';
+  $bp_open  = ( $breakpoint ) ? '@media ' . $breakpoint . ' {' : '';
+  $bp_close = ( $breakpoint ) ? '}' : '';
+
+  echo '<style' . $scoped . '>';
+    echo $bp_open;
+      foreach ( $css as $selector => $styles ) {
+
+        if ( ! is_null( $id ) ) {
+          $selector = str_replace( '$el', '.hm' . $id, $selector );
+        }
+
+        echo $selector . '{';
+          echo x_inline_css( $styles );
+        echo '}';
+
+      }
+    echo $bp_close;
+  echo '</style>';
+
+}
 
 
 
@@ -367,25 +485,21 @@ function x_post_process_color( $value ) {
 
 
 
+
 // Get Current Admin Color Scheme
 // =============================================================================
 
-// function x_get_current_admin_color_scheme( $type = 'colors' ) {
-//
-//   GLOBAL $_wp_admin_css_colors;
-//
-//   $current_color_scheme = get_user_option( 'admin_color' );
-//   $admin_colors         = $_wp_admin_css_colors;
-//   $user_colors          = (array) $admin_colors[$current_color_scheme];
-//
-//   return ( $type == 'icons' ) ? $user_colors['icon_colors'] : $user_colors['colors'];
-//
-// }
+function x_get_current_admin_color_scheme( $type = 'colors' ) {
 
+  GLOBAL $_wp_admin_css_colors;
 
+  $current_color_scheme = get_user_option( 'admin_color' );
+  $admin_colors         = $_wp_admin_css_colors;
+  $user_colors          = (array) $admin_colors[$current_color_scheme];
 
-// X i18n Lookup
-// =============================================================================
+  return ( $type == 'icons' ) ? $user_colors['icon_colors'] : $user_colors['colors'];
+
+}
 
 function x_i18n( $namespace, $key ) {
 
@@ -403,7 +517,6 @@ function x_i18n( $namespace, $key ) {
   return isset( $i18n[$namespace][$key] ) ? $i18n[$namespace][$key] : '';
 
 }
-
 
 
 // Deprecated

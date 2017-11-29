@@ -60,7 +60,7 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
   }
 
   public function config_save_transform( $data ) {
-    return wp_slash( cs_json_encode( $data ) );
+    return wp_slash( json_encode( $data ) );
   }
 
 
@@ -69,7 +69,7 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
   }
 
   public function items_save_transform( $data ) {
-    return wp_slash( cs_json_encode( $data ) );
+    return wp_slash( json_encode( $data ) );
   }
 
   public function get_fallback_font() {
@@ -198,8 +198,7 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
   }
 
   public function load_typekit_fonts( $fonts ) {
-    $action = apply_filters('cs_typekit_hook', 'wp_head');
-    add_action( did_action($action) ? 'wp_footer' : $action, array( $this, 'output_typekit_script'), 999 );
+    add_action( 'wp_head', array( $this, 'output_typekit_script') );
   }
 
   public function output_typekit_script() {
@@ -211,7 +210,7 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
     }
 
     ?>
-    <script id="cs-typekit-loader">(function(d){var config={kitId:'<?php echo $config['typekitKitID']; ?>',scriptTimeout:3000,async:true},h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)})(document);</script>
+    <script>(function(d){var config={kitId:'<?php echo $config['typekitKitID']; ?>',scriptTimeout:3000,async:true},h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)})(document);</script>
     <?php
 
   }

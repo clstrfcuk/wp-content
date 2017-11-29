@@ -16,6 +16,9 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
 
     $styles = '/* ';
 
+    // Use a custom error handler to wrap PHP errors in CSS comments
+    set_error_handler( array( $this, 'error_handler' ) );
+
     foreach ($this->styles as $key => $style) {
       $styles .= ++$this->count ." start: $key*/";
       $styles .= $this->post_process( $style, $this->minify[$key] );
@@ -23,20 +26,12 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
     }
 
     $styles .= '*/';
-    $this->after_post_process();
+    restore_error_handler();
 
+    $this->plugin->component( 'Font_Manager' )->load_queued_fonts();
     return $styles;
 
   }
-
-  public function get_generated_styles_clean() {
-    return $this->clean_css($this->get_generated_styles());
-  }
-
-  //
-  // Custom error handler enabled before post proccessing and disabled after
-  // Wraps PHP errors in CSS comments
-  //
 
   public function error_handler( $errno, $errstr, $errfile, $errline) {
 
@@ -59,19 +54,10 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
     return true;
   }
 
-  public function before_post_process() {
-    set_error_handler( array( $this, 'error_handler' ) );
-  }
-
-  public function after_post_process() {
-    $this->plugin->component( 'Font_Manager' )->load_queued_fonts();
-    restore_error_handler();
-  }
-
   public function external_post_process( $css, $minify = false) {
-    $this->before_post_process();
+    set_error_handler( array( $this, 'error_handler' ) );
     $buffer = $this->post_process( $css, $minify );
-    $this->after_post_process();
+    restore_error_handler();
     return $buffer;
   }
 

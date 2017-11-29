@@ -265,7 +265,7 @@ function x_add_page_meta_boxes() {
         'desc' => __( 'To select multiple nonconsecutive pages or posts, hold down "CTRL" (Windows) or "COMMAND" (Mac), and then click each item you want to select. To cancel the selection of individual items, hold down "CTRL" or "COMMAND", and then click the items that you don\'t want to include.', '__x__' ),
         'id'   => '_x_portfolio_category_filters',
         'type' => 'select-portfolio-category',
-        'std'  => array( 'All Categories' )
+        'std'  => 'All Categories'
       ),
       array(
         'name'    => __( 'Columns', '__x__' ),

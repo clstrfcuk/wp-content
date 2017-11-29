@@ -57,8 +57,7 @@ class Cornerstone_Settings_Handler extends Cornerstone_Plugin_Component {
 				'default'      => 'admin/forms/text',
 				'checkbox'     => 'admin/forms/checkbox',
 				'multi-select' => 'admin/forms/multi-select',
-        'select'       => 'admin/forms/select',
-        'text'         => 'admin/forms/text',
+				'text'         => 'admin/forms/text',
 			);
 
 		}

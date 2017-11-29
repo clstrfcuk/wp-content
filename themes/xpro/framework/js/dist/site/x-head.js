@@ -81,15 +81,14 @@ jQuery(document).ready(function($) {
   // pressed to ensure that elements are spaced out properly.
 
   $('body').on('click', '.x-iso-container .flex-direction-nav a', function() {
-    setTimeout(function() { $window.xsmartresize(); }, 750);
+    setTimeout(function() { $window.smartresize(); }, 750);
   });
 
   $('body.x-masonry-active').on('keyup', function(e) {
     if (e.which >= 37 && e.which <= 40) {
-      setTimeout(function() { $window.xsmartresize(); }, 750);
+      setTimeout(function() { $window.smartresize(); }, 750);
     }
   });
 
 });
-
 
