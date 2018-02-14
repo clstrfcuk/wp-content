@@ -568,7 +568,6 @@ class RevSliderFunctionsWP {
 		$objQuery = new WP_Query($query);
 
 		$arrPosts = $objQuery->posts;
-
 		
 		foreach($arrPosts as $key=>$post){
 			
@@ -813,6 +812,39 @@ class RevSliderFunctionsWP {
 		return($displayName);
 	}
 	
+	/**
+	 * 
+	 * get user avatar from user id
+	 */
+	public static function getUserAvatarUrl($userID){
+		
+		$avatar =  get_avatar_url($userID,array("size"=>"80"));
+		
+		return($avatar);
+	}
+
+	/**
+	 * 
+	 * get user posts page from user id
+	 */
+	public static function getUserPostsPage($userID){
+		
+		$link =  get_author_posts_url($userID);
+		
+		return($link);
+	}
+
+	/**
+	 * 
+	 * get user page from user id
+	 */
+	public static function getUserPage($userID){
+		
+		$curauth = get_user_by('ID', $userID);
+		$user_url = $curauth->user_url;
+		
+		return($user_url);
+	}
 	
 	/**
 	 * 

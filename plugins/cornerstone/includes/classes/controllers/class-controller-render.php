@@ -2,18 +2,19 @@
 
 class Cornerstone_Controller_Render extends Cornerstone_Plugin_Component {
 
-  public function bar_module( $data ) {
+  public function elements( $data ) {
 
     if ( ! isset( $data['batch'] ) ) {
       return array();
     }
 
-    do_action('cs_bar_preview_setup');
-    $renderer = $this->plugin->loadComponent( 'App_Renderer' );
-    $renderer->start();
+    $renderer = $this->plugin->loadComponent( 'Element_Renderer' );
+    $renderer->start( isset($data['context']) ? $data['context'] : array() );
 
     foreach ($data['batch'] as $key => $value) {
-      $data['batch'][$key]['response'] = $renderer->bar_module( $value['data'] );
+      $data['batch'][$key]['response'] = $renderer->render_element( $value['data'] );
+      $data['batch'][$key]['response']['hash'] = $value['data']['hash'];
+      $data['batch'][$key]['response']['timestamp'] = $value['data']['timestamp'];
     }
 
     $extractions = $renderer->get_extractions();

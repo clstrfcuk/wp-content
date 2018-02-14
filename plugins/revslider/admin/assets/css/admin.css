@@ -787,7 +787,8 @@ span.description 					{	font-size: 13px;font-style: italic;color: #999;font-weig
 	-	MINI TOOLBAR	-
 ********************************/
 
-#viewWrapper .rs-mini-toolbar						{	position:absolute;right:0px;top:0px; z-index:99999; padding:0px;margin:0px;}
+#viewWrapper .rs-mini-toolbar						{ position:absolute;right:0px;top:0px; z-index:99990; padding:0px;margin:0px;}
+#viewWrapper .rs-mini-toolbar.sticky 				{ z-index: 99999 }
 
 #viewWrapper .rs-mini-toolbar .rs-mini-toolbar-button {	display:inline-block; margin-left:-4px;}
 #viewWrapper .rs-mini-toolbar .button-primary		{	display:inline-block; height:55px !important; line-height:55px !important; margin:0;padding-left:19px !important;}

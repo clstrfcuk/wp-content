@@ -146,6 +146,11 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 								<span class="rs-source-label"><?php _e('Specific Posts', 'revslider');?></span>
 							</span>
 							<span class="rs-source-selector">
+								<span class="rs-source-image rssi-post"></span>
+								<input type="radio" id="source_type_10" value="current_post" name="source_type" <?php checked($source_type, 'current_post');?> />
+								<span class="rs-source-label"><?php _e('Current Post/Page', 'revslider');?></span>
+							</span>
+							<span class="rs-source-selector">
 								<span class="rs-source-image rssi-flickr"></span>
 								<input type="radio" id="source_type_3" value="flickr" name="source_type" <?php checked($source_type, 'flickr');?> />
 								<span class="rs-source-label"><?php _e('Flickr Stream', 'revslider');?></span>
@@ -730,13 +735,13 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 						<div class="slidertitlebox">
 
 							<span class="one-third-container">
-								<input placeholder='<?php _e("Enter your Slider Name here", 'revslider')?>' type="text" class='regular-text' id="title" name="title" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, 'title', '');?>"/>
+								<input placeholder='<?php _e("Enter your Slider Name here", 'revslider')?>' type="text" class='regular-text' id="title" name="title" value="<?php echo esc_attr(stripslashes(RevSliderFunctions::getVal($arrFieldsParams, 'title', ''))); ?>"/>
 								<i class="input-edit-icon"></i>
 								<span class="description"><?php _e("The title of the slider, example: Slider 1", 'revslider')?></span>
 							</span>
 
 							<span class="one-third-container">
-								<input placeholder='<?php _e("Enter your Slider Alias here", 'revslider')?>' type="text" class='regular-text' id="alias" name="alias" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, 'alias', '');?>"/>
+								<input placeholder='<?php _e("Enter your Slider Alias here", 'revslider')?>' type="text" class='regular-text' id="alias" name="alias" value="<?php echo esc_attr(stripslashes(RevSliderFunctions::getVal($arrFieldsParams, 'alias', ''))); ?>"/>
 								<i class="input-edit-icon"></i>
 								<span class="description"><?php _e("The alias for embedding your slider, example: slider1", 'revslider')?></span>
 							</span>
@@ -2506,14 +2511,21 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 										<div class="clear"></div>
 
 										<!-- Progress Bar Height -->
-										<span class="label" id="label_progress_height" origmedia="show" origtitle="<?php _e("The height of the progress bar", 'revslider');?>"><?php _e("Progress Bar Heigth", 'revslider');?> </span>
+										<span class="label" id="label_progress_height" origmedia="show" origtitle="<?php _e("The height of the progress bar", 'revslider');?>"><?php _e("Progress Bar Height", 'revslider');?> </span>
 										<input type="text" class="text-sidebar withlabel"  id="progress_height" name="progress_height" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, 'progress_height', '5');?>">
 										<span><?php _e("px", 'revslider');?></span>
 										<div class="clear"></div>
 
 										<!-- Progress Bar Color -->
-										<span class="label" id="label_progressbar_color" origmedia="show" origtitle="<?php _e("Color of the progress bar.", 'revslider');?>"><?php _e("Progress Bar Color", 'revslider');?> </span>
+										<span class="label" id="label_progressbar_color" origmedia="show" origtitle="<?php _e("Color of the progress bar.", 'revslider');?>"><?php _e("Progress Bar Color", 'revslider');?> </span>										
 										<input type="text" class="my-color-field rs-layer-input-field tipsy_enabled_top withlabel"  id="progressbar_color" data-editing="Progress Bar Color" name="progressbar_color" value="<?php echo TPColorpicker::convert(RevSliderFunctions::getVal($arrFieldsParams, 'progressbar_color', 'rgba(0,0,0,0.15)'), RevSliderFunctions::getVal($arrFieldsParams, 'progress_opa', 'false'));?>" />
+										<script>
+											jQuery(document).ready(function() {	
+												var v = jQuery('#progressbar_color').val();
+												if (v.indexOf("false")>=0 && v.indexOf("rgba")>=0)									
+													jQuery('#progressbar_color').val(window.RevColor.get(jQuery('#progressbar_color').val()));
+											});
+										</script>
 										<div class="clear"></div>
 									</div>
 								</div><!-- END OF GENERAL PROGRESSBAR -->
@@ -4073,7 +4085,7 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 										<div class="withsublabels">
 											<div class="hide_on_ddd_parallax">
 												<span id="label_parallax_type" class="label" origtitle="<?php _e("Defines on what event type the parallax should react to", 'revslider');?>"><?php _e("Event", 'revslider');?></span>
-												<select id="parallax_type" name="parallax_type"  class="withlabel">
+												<select id="parallax_type" name="parallax_type"  class="withlabel" style="width:140px">
 													<option value="mouse" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, "parallax_type", "mouse"), "mouse");?>><?php _e("Mouse Move", 'revslider');?></option>
 													<option value="scroll" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, "parallax_type", "mouse"), "scroll");?>><?php _e("Scroll Position", 'revslider');?></option>
 													<option value="mouse+scroll" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, "parallax_type", "mouse"), "mouse+scroll");?>><?php _e("Move and Scroll", 'revslider');?></option>
@@ -4081,17 +4093,31 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 												<div class="clear"></div>
 
 												<span id="label_parallax_origo" class="label" origtitle="<?php _e("Mouse Based parallax calculation Origo", 'revslider');?>"><?php _e("Parallax Origo", 'revslider');?></span>
-												<select id="parallax_origo" name="parallax_origo"  class="withlabel">
+												<select id="parallax_origo" name="parallax_origo"  class="withlabel" style="width:140px">
 													<option value="enterpoint" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, "parallax_origo", "enterpoint"), "enterpoint");?>><?php _e("Mouse Enter Point", 'revslider');?></option>
 													<option value="slidercenter" <?php selected(RevSliderFunctions::getVal($arrFieldsParams, "parallax_origo", "enterpoint"), "slidercenter");?>><?php _e("Slider Center", 'revslider');?></option>										
 												</select>
 												<div class="clear"></div>
 											</div>
 
-											<span class="label" id="label_parallax_speed" origtitle="<?php _e("Parallax Speed for Mouse movents.", 'revslider');?>"><?php _e("Animation Speed", 'revslider');?> </span>
-											<input type="text" class="text-sidebar withlabel" id="parallax_speed" name="parallax_speed" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, "parallax_speed", "400");?>">									
-											<span ><?php _e("ms", 'revslider');?></span>
-											<div class="clear"></div>		
+											<div id="px_m_b_speed" style="display:none">
+												<span class="label" id="label_parallax_speed" origtitle="<?php _e("Parallax Speed for Mouse movements.", 'revslider');?>"><?php _e("Mouse based Speed", 'revslider');?> </span>
+												<input type="text" class="text-sidebar withlabel" id="parallax_speed" name="parallax_speed" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, "parallax_speed", "400");?>">									
+												<span ><?php _e("ms", 'revslider');?></span>
+												<div class="clear"></div>	
+											</div>
+
+											<div id="px_s_b_speed" style="display:none">
+												<span class="label" id="label_parallax_bg_speed" origtitle="<?php _e("Parallax Speed for Background movements.", 'revslider');?>"><?php _e("Background Speed", 'revslider');?> </span>
+												<input type="text" class="text-sidebar withlabel" id="parallax_bg_speed" name="parallax_bg_speed" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, "parallax_bg_speed", "0");?>">									
+												<span ><?php _e("ms", 'revslider');?></span>
+												<div class="clear"></div>			
+
+												<span class="label" id="label_parallax_ls_speed" origtitle="<?php _e("Parallax Speed for Layer movements.", 'revslider');?>"><?php _e("Layers Speed", 'revslider');?> </span>
+												<input type="text" class="text-sidebar withlabel" id="parallax_ls_speed" name="parallax_ls_speed" value="<?php echo RevSliderFunctions::getVal($arrFieldsParams, "parallax_ls_speed", "0");?>">									
+												<span ><?php _e("ms", 'revslider');?></span>
+												<div class="clear"></div>			
+											</div>
 										</div>							
 
 										<h4 class="hide_on_ddd_parallax"><?php _e("Parallax Levels", 'revslider');?></h4>
@@ -4184,6 +4210,28 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 											jQuery('.show_on_ddd_parallax').hide();
 										}
 								});
+								
+								function showHidePXBaseds() {
+									var v = jQuery('#parallax_type').val();
+									switch(v) {
+									  case "scroll":
+										jQuery('#px_m_b_speed').hide();
+										jQuery('#px_s_b_speed').show();	
+									  break;
+									  case "mouse":									
+										jQuery('#px_m_b_speed').show();
+										jQuery('#px_s_b_speed').hide();	
+									  break;
+									  case "mouse+scroll":
+									  	jQuery('#px_m_b_speed').show();
+										jQuery('#px_s_b_speed').show();	
+									  break;
+									}						
+								}
+
+								jQuery('#parallax_type').on("change",showHidePXBaseds);		
+								showHidePXBaseds();							
+
 								jQuery('#ddd_parallax').on("change",function() {
 									drawToolBarPreview();
 									var sbi = jQuery(this);
@@ -4220,6 +4268,11 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 								<span class="label" id="label_fade_scrolleffect" origtitle="<?php _e("Endable / Disable Fade Effect on Scroll:", 'revslider');?>"><?php _e("Fade Effect", 'revslider');?> </span>
 								<input type="checkbox" class="tp-moderncheckbox withlabel" id="fade_scrolleffect" name="fade_scrolleffect" data-unchecked="off" <?php checked(RevSliderFunctions::getVal($arrFieldsParams, "fade_scrolleffect", "off"), "on");?>>
 								<div class="clear"></div>
+
+								<!-- SCALE EFFECT ON SCROLL -->
+								<?php /*<span class="label" id="label_scale_scrolleffect" origtitle="<?php _e("Endable / Disable scale Effect on Scroll:", 'revslider');?>"><?php _e("Scale Effect", 'revslider');?> </span>
+								<input type="checkbox" class="tp-moderncheckbox withlabel" id="scale_scrolleffect" name="scale_scrolleffect" data-unchecked="off" <?php checked(RevSliderFunctions::getVal($arrFieldsParams, "scale_scrolleffect", "off"), "on");?>>
+								<div class="clear"></div>*/ ?>
 
 								<!-- BLUR EFFECT ON SCROLL -->
 								<span class="label" id="label_blur_scrolleffect" origtitle="<?php _e("Endable / Disable Blur Effect on Scroll", 'revslider');?>"><?php _e("Blur Effect", 'revslider');?> </span>
@@ -4407,7 +4460,7 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 								</select>
 								<div class="clear"></div>
 								
-								<span id="label_allow_android_html5_autoplay" class="label" origtitle="<?php _e("Allow HTML5 autoplayback on android devices", 'revslider');?>"><?php _e("Allow Android HTML5 Autoplay", 'revslider');?> </span>
+								<span id="label_allow_android_html5_autoplay" class="label" origtitle="<?php _e("HTML5 autoplay on mobile devices", 'revslider');?>"><?php _e("HTML5 Autoplay on Mobiles", 'revslider');?> </span>
 								<input type="checkbox" class="tp-moderncheckbox withlabel" id="allow_android_html5_autoplay" name="allow_android_html5_autoplay" data-unchecked="off" <?php checked(RevSliderFunctions::getVal($arrFieldsParams, "allow_android_html5_autoplay", "on"), "on");?>>
 								<div class="clear"></div>
 								
@@ -4664,11 +4717,11 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 
 								<div id="import-replace" style="display:none">
 
-									<span class="label label-with-subsection" id="label_replace_url_from" origtitle="<?php _e("Replace all layer and backgorund image url's. example - replace from: http://localhost", 'revslider');?>"><?php _e("Replace From", 'revslider');?> </span>
+									<span class="label label-with-subsection" id="label_replace_url_from" origtitle="<?php _e("Replace all layer and background image url's. example - replace from: http://localhost", 'revslider');?>"><?php _e("Replace From", 'revslider');?> </span>
 									<input type="text" class="text-sidebar-link withlabel" id="replace_url_from">
 									<div class="tp-clearfix"></div>
 
-									<span class="label label-with-subsection" id="label_replace_url_to" origtitle="<?php _e("Replace all layer and backgorund image url's. example - replace to: http://yoursite.com", 'revslider');?>"><?php _e("Replace To", 'revslider');?> </span>
+									<span class="label label-with-subsection" id="label_replace_url_to" origtitle="<?php _e("Replace all layer and background image url's. example - replace to: http://yoursite.com", 'revslider');?>"><?php _e("Replace To", 'revslider');?> </span>
 									<input type="text" class="text-sidebar-link withlabel" id="replace_url_to">
 									<div class="tp-clearfix"></div>
 
@@ -4826,7 +4879,7 @@ if(!isset($linksEditSlides)) $linksEditSlides = '';
 	console.log("Slider After Swap");
 	//data.currentslide - <?php _e('Current Slide as jQuery Object', 'revslider');?>
 
-	//data.previousslide - <?php _e('Previous Slide as jQuery Object', 'revslider');?>
+	//data.prevslide - <?php _e('Previous Slide as jQuery Object', 'revslider');?>
 });</textarea>
 <h4 style="margin-top:15px"><?php _e("Last slide starts", 'revslider')?></h4>
 <textarea class="api_area" style=" height:80px;" readonly>

@@ -77,8 +77,9 @@ abstract class Cornerstone_Plugin_Base {
     $this->loadFiles( 'preinit' );
     $this->loadComponents( 'preinit' );
 
-    // Defer until the init action
+    // Defer actions
     add_action( 'init', array( $this, 'init' ), $this->init_priority );
+    add_action( 'after_theme_setup', array( $this, 'after_theme_setup' ) );
     add_action( 'admin_init', array( $this, 'adminInit' ), $this->admin_init_priority );
 
     $this->preinitAfter();
@@ -111,6 +112,18 @@ abstract class Cornerstone_Plugin_Base {
     $this->loadComponents( 'loggedin' );
 
     $this->loggedinAfter();
+
+  }
+
+  /**
+   * Perform boilerplate init actions
+   * @return none
+   */
+  public function after_theme_setup() {
+
+    // Load after_theme_setup files and components
+    $this->loadFiles( 'after_theme_setup' );
+    $this->loadComponents( 'after_theme_setup' );
 
   }
 
@@ -178,6 +191,23 @@ abstract class Cornerstone_Plugin_Base {
       $this->loadComponent( $component );
     }
 
+  }
+
+  public function get_registry() {
+    $args = func_get_args();
+    $registry = null;
+    $args = array_reverse($args);
+    $level = $this->registry;
+    while(count($args)) {
+      $key = array_pop( $args );
+      if ( isset( $level[$key] ) ) {
+        $level = $level[$key];
+      } else {
+        return null;
+      }
+    }
+
+    return $level;
   }
 
   public function loadComponent( $name ) {
@@ -765,7 +795,7 @@ abstract class Cornerstone_Plugin_Component {
     return $this->plugin->config_group( $group, $namespace, $path );
   }
 
-  public function config_item( $group, $key ) {
+  public function config_item( $group, $key = null ) {
     return $this->plugin->config( $group, $key );
   }
 

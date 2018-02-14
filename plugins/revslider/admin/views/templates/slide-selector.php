@@ -225,7 +225,7 @@ if($the_slidertype == 'hero'){
 					<div class="slide-link-content">		
 						<span class="slide-link">
 							<span class="slide-link-nr">#<?php echo $slidecounter; ?></span>
-							<input class="slidetitleinput" name="slidetitle" value="<?php echo stripslashes($title); ?>" />
+							<input class="slidetitleinput" name="slidetitle" value="<?php echo esc_attr(stripslashes($title)); ?>" />
 							<span class="slidelint-edit-button"></span>
 						</span>						
 						<div class="slide-link-toolbar">

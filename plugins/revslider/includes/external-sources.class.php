@@ -67,7 +67,8 @@ class RevSliderFacebook {
 	public function get_photo_sets($user_id,$item_count=10,$app_id,$app_secret){
 		//photoset params
 		$oauth = wp_remote_fopen("https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=".$app_id."&client_secret=".$app_secret);
-		$url = "https://graph.facebook.com/$user_id/albums?".$oauth;
+    $oauth = json_decode($oauth);
+		$url = "https://graph.facebook.com/$user_id/albums?access_token=".$oauth->access_token;
 		$photo_sets_list = json_decode(wp_remote_fopen($url));
 		//echo '<pre>';
 		//print_r($photo_sets_list);
@@ -87,7 +88,8 @@ class RevSliderFacebook {
 	 */
 	public function get_photo_set_photos($photo_set_id,$item_count=10,$app_id,$app_secret){
     $oauth = wp_remote_fopen("https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=".$app_id."&client_secret=".$app_secret);
-    $url = "https://graph.facebook.com/$photo_set_id/photos?fields=photos&".$oauth."&fields=id,from,message,picture,link,name,icon,privacy,type,status_type,object_id,application,created_time,updated_time,is_hidden,is_expired,comments.limit(1).summary(true),likes.limit(1).summary(true)";
+    $oauth = json_decode($oauth);
+    $url = "https://graph.facebook.com/$photo_set_id/photos?fields=photos&access_token=".$oauth->access_token."&fields=id,from,message,picture,link,name,icon,privacy,type,status_type,object_id,application,created_time,updated_time,is_hidden,is_expired,comments.limit(1).summary(true),likes.limit(1).summary(true)";
 
 		$transient_name = 'revslider_' . md5($url);
 
@@ -138,7 +140,8 @@ class RevSliderFacebook {
 	 */
 	public function get_photo_feed($user,$app_id,$app_secret,$item_count=10){
 		$oauth = wp_remote_fopen("https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=".$app_id."&client_secret=".$app_secret);
-		$url = "https://graph.facebook.com/$user/feed?".$oauth."&fields=id,from,message,picture,link,name,icon,privacy,type,status_type,object_id,application,created_time,updated_time,is_hidden,is_expired,comments.limit(1).summary(true),likes.limit(1).summary(true)";
+    $oauth = json_decode($oauth);
+    $url = "https://graph.facebook.com/$user/feed?access_token=".$oauth->access_token."&fields=id,from,message,picture,link,name,icon,privacy,type,status_type,object_id,application,created_time,updated_time,is_hidden,is_expired,comments.limit(1).summary(true),likes.limit(1).summary(true)";
 
 		$transient_name = 'revslider_' . md5($url);
 		if ($this->transient_sec > 0 && false !== ($data = get_transient( $transient_name)))

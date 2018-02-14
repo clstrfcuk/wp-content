@@ -9,7 +9,6 @@ if( !defined( 'ABSPATH' ) ) exit();
 
 class RevSliderTemplate {
 	
-	private $templates_url		= 'https://templates.themepunch.tools/';
 	private $templates_list		= 'revslider/get-list.php';
 	private $templates_download	= 'revslider/download.php';
 	
@@ -19,8 +18,7 @@ class RevSliderTemplate {
 	
 	private $curl_check	= null;
 	
-	const SHOP_VERSION				= '1.2.1';
-	
+	const SHOP_VERSION				= '1.2.2';
 	
 	
 	/**
@@ -28,27 +26,40 @@ class RevSliderTemplate {
 	 * @since: 5.0.5
 	 */
 	public function _download_template($uid){
-		global $wp_version;
+		global $wp_version, $rslb;
 		
-		$return = false;
-		$uid = esc_attr($uid);
-		
-		$code = (get_option('revslider-valid', 'false') == 'false') ? '' : get_option('revslider-code', '');
+		$return	= false;
+		$uid	= esc_attr($uid);
+		$code	= (get_option('revslider-valid', 'false') == 'false') ? '' : get_option('revslider-code', '');
 		
 		$upload_dir = wp_upload_dir(); // Set upload folder
 		// Check folder permission and define file location
 		if(wp_mkdir_p( $upload_dir['basedir'].$this->templates_path ) ) { //check here to not flood the server
-			$request = wp_remote_post($this->templates_url.$this->templates_download, array(
-				'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-				'body' => array(
-					'code' => urlencode($code),
-					'shop_version' => urlencode(self::SHOP_VERSION),
-					'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
-					'uid' => urlencode($uid),
-					'product' => urlencode('revslider')
-				),
-				'timeout' => 45 //DIRK 
-			));
+			$done	= false;
+			$count	= 0;
+			do{	
+				$url		= $rslb->get_url('templates');
+				$request	= wp_remote_post($url.'/'.$this->templates_download, array(
+					'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+					'body' => array(
+						'code' => urlencode($code),
+						'shop_version' => urlencode(self::SHOP_VERSION),
+						'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
+						'uid' => urlencode($uid),
+						'product' => urlencode(RS_PLUGIN_SLUG)
+					),
+					'timeout' => 45 //DIRK 
+				));
+				
+				$response_code = wp_remote_retrieve_response_code( $request );
+				if($response_code == 200){
+					$done = true;
+				}else{
+					$rslb->move_server_list();
+				}
+				
+				$count++;
+			}while($done == false && $count < 5);
 			
 			if(!is_wp_error($request)) {
 				if($response = $request['body']) {
@@ -104,9 +115,9 @@ class RevSliderTemplate {
 	 * @since: 5.0.5
 	 */
 	public function _get_template_list($force = false){
-		global $wp_version;
+		global $wp_version, $rslb;
 		
-		$last_check = get_option('revslider-templates-check');
+		$last_check	= get_option('revslider-templates-check');
 		
 		if($last_check == false){ //first time called
 			$last_check = 172801;
@@ -118,17 +129,29 @@ class RevSliderTemplate {
 			
 			update_option('revslider-templates-check',  time());
 			
-			$code = (get_option('revslider-valid', 'false') == 'false') ? '' : get_option('revslider-code', '');
-			
-			$request = wp_remote_post($this->templates_url.$this->templates_list, array(
-				'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-				'body' => array(
-					'code' => urlencode($code),
-					'shop_version' => urlencode(self::SHOP_VERSION),
-					'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
-					'product' => urlencode('revslider')
-				)
-			));
+			$code	= (get_option('revslider-valid', 'false') == 'false') ? '' : get_option('revslider-code', '');
+			$done	= false;
+			$count	= 0;
+			do{	
+				$url		= $rslb->get_url('templates');
+				$request	= wp_remote_post($url.'/'.$this->templates_list, array(
+					'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+					'body' => array(
+						'code' => urlencode($code),
+						'shop_version' => urlencode(self::SHOP_VERSION),
+						'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
+						'product' => urlencode(RS_PLUGIN_SLUG)
+					)
+				));
+				$response_code = wp_remote_retrieve_response_code( $request );
+				if($response_code == 200){
+					$done = true;
+				}else{
+					$rslb->move_server_list();
+				}
+				
+				$count++;
+			}while($done == false && $count < 5);
 			
 			if(!is_wp_error($request)) {
 				if($response = maybe_unserialize($request['body'])) {
@@ -240,15 +263,16 @@ class RevSliderTemplate {
 	 * @since: 5.0.5
 	 */
 	private function _update_images(){
-		$templates = get_option('rs-templates', array());
-		$chk = $this->check_curl_connection();
+		global $wp_version, $rslb;
 		
-		$curl = ($chk) ? new WP_Http_Curl() : false;
+		$templates	= get_option('rs-templates', array());
+		$chk		= $this->check_curl_connection();
+		$curl		= ($chk) ? new WP_Http_Curl() : false;
+		$url		= $rslb->get_url('templates');
 		
 		$connection = 0;
 		
 		$reload = array();
-		
 		if(!empty($templates) && is_array($templates)){
 			$upload_dir = wp_upload_dir(); // Set upload folder
 			if(!empty($templates['slider']) && is_array($templates['slider'])){
@@ -261,17 +285,44 @@ class RevSliderTemplate {
 						$file = $upload_dir['basedir'] . $this->templates_path . '/' . $temp['img'];
 						$file_plugin = RS_PLUGIN_PATH . $this->templates_path_plugin . '/' . $temp['img'];
 						
-						
 						if((!file_exists($file) && !file_exists($file_plugin)) || isset($temp['push_image'])){
 							if($curl !== false){
-								$image_data = @$curl->request($this->templates_url.$this->templates_server_path.$temp['img']); // Get image data
-								if(!is_wp_error($image_data) && isset($image_data['body']) && isset($image_data['response']) && isset($image_data['response']['code']) && $image_data['response']['code'] == '200'){
-									$image_data = $image_data['body'];
-								}else{
-									$image_data = false;
-								}
+								$done	= false;
+								$count	= 0;
+								$args	= array('user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url').' - '.$count);
+								
+								do{
+									$image_data = @$curl->request($url.'/'.$this->templates_server_path.$temp['img'], $args); // Get image data
+									if(!is_wp_error($image_data) && isset($image_data['body']) && isset($image_data['response']) && isset($image_data['response']['code']) && $image_data['response']['code'] == '200'){
+										$image_data = $image_data['body'];
+										$done = true;
+									}else{
+										$image_data = false;
+										$rslb->move_server_list();
+										$url = $rslb->get_url('templates');
+									}
+									$count++;
+								}while($done == false && $count < 5);
 							}else{
-								$image_data = @file_get_contents($this->templates_url.$this->templates_server_path.$temp['img']); // Get image data
+								$count = 0;
+								$options = array(
+									'http'=>array(
+										'method' => 'GET',
+										'header' => "Accept-language: en\r\n" .
+										"Cookie: foo=bar\r\n" .
+										'User-Agent: WordPress/'.$wp_version.'; '.get_bloginfo('url').' - fgc - '.$count."\r\n"
+									)
+								);
+								$context = stream_context_create($options);
+								do{
+									//$image_data = @file_get_contents($url.'/'.$this->templates_server_path.$temp['img']); // Get image data
+									$image_data = @file_get_contents($url.'/'.$this->templates_server_path.$temp['img'], false, $context); // Get image data
+									if($image_data == false){
+										$rslb->move_server_list();
+										$url = $rslb->get_url('templates');
+									}
+									$count++;
+								}while($image_data == false && $count < 5);
 							}
 							if($image_data !== false){
 								$reload[$temp['alias']] = true;
@@ -300,14 +351,31 @@ class RevSliderTemplate {
 							
 							if((!file_exists($file) && !file_exists($file_plugin)) || isset($reload[$key])){ //update, so load again
 								if($curl !== false){
-									$image_data = @$curl->request($this->templates_url.$this->templates_server_path.$tvalues['img']); // Get image data
-									if(!is_wp_error($image_data) && isset($image_data['body']) && isset($image_data['response']) && isset($image_data['response']['code']) && $image_data['response']['code'] == '200'){
-										$image_data = $image_data['body'];
-									}else{
-										$image_data = false;
-									}
+									//curl_setopt( $curl, CURLOPT_CAINFO, RS_PLUGIN_PATH.'cert.crt'); //'sslcertificates'
+									$done	= false;
+									$count	= 0;
+									do{
+										$image_data = @$curl->request($url.'/'.$this->templates_server_path.$tvalues['img']); // Get image data
+										if(!is_wp_error($image_data) && isset($image_data['body']) && isset($image_data['response']) && isset($image_data['response']['code']) && $image_data['response']['code'] == '200'){
+											$image_data = $image_data['body'];
+											$done = true;
+										}else{
+											$image_data = false;
+											$rslb->move_server_list();
+											$url = $rslb->get_url('templates');
+										}
+										$count++;
+									}while($done == false && $count < 5);
 								}else{
-									$image_data = @file_get_contents($this->templates_url.$this->templates_server_path.$tvalues['img']); // Get image data
+									$count = 0;
+									do{
+										$image_data = @file_get_contents($url.'/'.$this->templates_server_path.$tvalues['img']); // Get image data
+										if($image_data == false){
+											$rslb->move_server_list();
+											$url = $rslb->get_url('templates');
+										}
+										$count++;
+									}while($image_data == false && $count < 5);
 								}
 								if($image_data !== false){
 									@mkdir(dirname($file));

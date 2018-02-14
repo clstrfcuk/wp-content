@@ -47,7 +47,7 @@ class Cornerstone_Color_Manager extends Cornerstone_Plugin_Component {
   }
 
   public function items_save_transform( $data ) {
-    return wp_slash( json_encode( $data ) );
+    return wp_slash( cs_json_encode( $data ) );
   }
 
   public function get_fallback_color() {

@@ -213,6 +213,9 @@ class Cornerstone_Footer_Assignments extends Cornerstone_Plugin_Component {
       $match = $assignments['global'];
       $post = get_post();
 
+      // Allow integrations to detect assignments
+      $match = apply_filters( 'cs_locate_footer_assignment', $match, $assignments, $post );
+
       if ( is_front_page() && isset( $assignments['indexes']['front'] ) ) {
         $match = $assignments['indexes']['front'];
       } elseif ( is_home() && isset( $assignments['indexes']['home'] ) ) {
@@ -223,11 +226,18 @@ class Cornerstone_Footer_Assignments extends Cornerstone_Plugin_Component {
           $match = $assignments['post_types'][ $post->post_type ];
         }
 
-        if ( isset( $assignments['posts'][ 'post-' . $post->ID ] ) ) {
-          $match = $assignments['posts'][ 'post-' . $post->ID ];
+        $source_post_id = CS()->loadComponent('Wpml')->get_source_id_for_post($post->ID, $post->post_type);
+        if ( isset( $assignments['posts'][ 'post-' . $source_post_id ] ) ) {
+          $match = $assignments['posts'][ 'post-' . $source_post_id ];
         }
 
       }
+
+      // Allow integrations for force assigments. Unless you have a specific
+      // reason, it is better to use the `cs_locate_footer_assignment` filter above
+      // as that allows individual posts to take precedence.
+      $match = apply_filters( 'cs_match_footer_assignment', $match, $assignments, $post );
+
 
       // Fallback to the oldest footer
       if ( $fallback && null === $match ) {
@@ -245,7 +255,7 @@ class Cornerstone_Footer_Assignments extends Cornerstone_Plugin_Component {
       }
 
       if ( ! is_null( $match ) ) {
-        $match = (int) $match;
+        $match = (int) apply_filters( 'wpml_object_id', $match, 'cs_footer', true, apply_filters( 'wpml_current_language', null ) );
       }
 
       $this->located = $match;

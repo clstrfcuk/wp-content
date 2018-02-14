@@ -147,7 +147,6 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 		add_action( 'wp_ajax_install_plugin', array( $addon_admin, 'install_plugin'));
 		//add_action( 'wp_ajax_nopriv_install_plugin', array( $addon_admin, 'install_plugin') );
 		
-		
 		//add_filter('plugin_action_links', array('RevSliderAdmin', 'plugin_action_links' ), 10, 2);
 	}
 	
@@ -1958,10 +1957,10 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 					}
 				break;
 				case 'rs_get_store_information': 
-					global $wp_version;
+					global $wp_version, $rslb;
 					
-					$code = get_option('revslider-code', '');
-					$shop_version = RevSliderTemplate::SHOP_VERSION;
+					$code			= get_option('revslider-code', '');
+					$shop_version	= RevSliderTemplate::SHOP_VERSION;
 					
 					$validated = get_option('revslider-valid', 'false');
 					if($validated == 'false'){
@@ -1977,16 +1976,26 @@ class RevSliderAdmin extends RevSliderBaseAdmin{
 						'version' => urlencode(RevSliderGlobals::SLIDER_REVISION)
 					);
 					
-					$request = wp_remote_post('http://templates.themepunch.tools/revslider/store.php', array(
-						'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-						'body' => $rattr
-					));
-					
-					$response = '';
-					
-					if(!is_wp_error($request)) {
-						$response = json_decode(@$request['body'], true);
-					}
+					$done	= false;
+					$count	= 0;
+					do {
+						$url		= $rslb->get_url('templates');
+						$request	= wp_remote_post($url.'/revslider/store.php', array(
+							'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+							'body' => $rattr
+						));
+						
+						$response = '';
+						
+						if(!is_wp_error($request)) {
+							$response	= json_decode(@$request['body'], true);
+							$done		= true;
+						}else{
+							$rslb->move_server_list();
+						}
+						
+						$count++;
+					}while($done == false && $count < 5);
 					
 					self::ajaxResponseData(array("data"=>$response));
 				break;

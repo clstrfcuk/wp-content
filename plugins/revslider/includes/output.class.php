@@ -7,6 +7,8 @@
 
 if( !defined( 'ABSPATH') ) exit();
 
+$rs_double_jquery_script = false;
+
 class RevSliderOutput {
 
 	private static $sliderSerial = 0;
@@ -455,7 +457,7 @@ class RevSliderOutput {
 		
 		if(($oneSlideLoop == 'loop' || $oneSlideLoop == 'on') && $slider_type !== 'hero'){
 			if(count($slides) == 1 && $this->oneSlideMode == false){
-				$new_slide = clone(reset($slides));
+				$new_slide = clone reset($slides);
 				$new_slide->ignore_alt = true;
 				$new_slide->setID($new_slide->getID().'-1');
 
@@ -826,8 +828,7 @@ class RevSliderOutput {
 				case 'solid':
 					$urlSlideImage = $urlImageTransparent;
 					$slideBGColor = TPColorpicker::get($slide->getParam('slide_bg_color', '#d0d0d0'));										
-					$styleImage = "data-bgcolor='".$slideBGColor."'' style='background:".$slideBGColor."'";
-									
+					$styleImage = "data-bgcolor='".$slideBGColor."' style='background:".$slideBGColor."'";
 				break;
 				case 'streamvimeo':
 				case 'streamyoutube':
@@ -1316,6 +1317,10 @@ class RevSliderOutput {
 				
 				$add_data .= '			data-videopreload="auto"'." \n";
 				
+				if($mute_video == 'off'){
+					$add_data .= '			data-volume="'.intval($volume_video).'"'." \n";
+				}
+				
 				$video_added = true;
 			break;
 		}
@@ -1380,6 +1385,8 @@ class RevSliderOutput {
 	 */
 	public function putLayer($layer, $row_group_uid = false, $static_slide = false, $special_type = false){
 		$layer = apply_filters('revslider_putLayer_pre', $layer, $this, $row_group_uid, $static_slide, $special_type);
+		if(!isset($layer['deformation'])) $layer['deformation'] = array();
+		if(!isset($layer['deformation-hover'])) $layer['deformation-hover'] = array();
 		
 		$unique_id = RevSliderFunctions::getVal($layer, 'unique_id');
 		
@@ -1446,20 +1453,27 @@ class RevSliderOutput {
 		//$frame_start['to']
 		$blurfilter = RevSliderFunctions::getVal($layer['deformation'], 'blurfilter', 0);
 		$grayscalefilter = RevSliderFunctions::getVal($layer['deformation'], 'grayscalefilter', 0);
+		$brightnessfilter = RevSliderFunctions::getVal($layer['deformation'], 'brightnessfilter', 100);
 
+		$hover_blurfilter = 0;
+		$hover_grayscalefilter = 0;
+		$hover_brightnessfilter = 0;
 		//$frame_hover
 		if(isset($layer['deformation-hover'])){
 			$hover_blurfilter = RevSliderFunctions::getVal($layer['deformation-hover'], 'blurfilter', 0);
 			$hover_grayscalefilter = RevSliderFunctions::getVal($layer['deformation-hover'], 'grayscalefilter', 0);
+			$hover_brightnessfilter = RevSliderFunctions::getVal($layer['deformation-hover'], 'brightnessfilter', 100);
 		}
 		
 		//$frame_start['from']
 		$anim_blurfilter_start = RevSliderFunctions::getVal($layer, 'blurfilter_start', 0);
 		$anim_grayscalefilter_start = RevSliderFunctions::getVal($layer, 'grayscalefilter_start', 0);
+		$anim_brightnessfilter_start = RevSliderFunctions::getVal($layer, 'brightnessfilter_start', 100);
 
 		//$frame_end
 		$anim_blurfilter_end = RevSliderFunctions::getVal($layer, 'blurfilter_end', 0);
 		$anim_grayscalefilter_end = RevSliderFunctions::getVal($layer, 'grayscalefilter_end', 0);
+		$anim_brightnessfilter_end = RevSliderFunctions::getVal($layer, 'brightnessfilter_end', 100);
 
 		$blur_write_all = ($blurfilter != 0 && $blurfilter != '0px' ||
 							$hover_blurfilter != 0 && $hover_blurfilter != '0px' ||
@@ -1470,6 +1484,11 @@ class RevSliderOutput {
 							$hover_grayscalefilter != 0 && $hover_grayscalefilter != '0%' ||
 							$anim_grayscalefilter_start != 0 && $anim_grayscalefilter_start != '0%' ||
 							$anim_grayscalefilter_end != 0 && $anim_grayscalefilter_end != '0%') ? true : false;
+
+		$brightness_write_all = ($brightnessfilter != 100 && $brightnessfilter != '100%' ||
+							$hover_brightnessfilter != 100 && $hover_brightnessfilter != '100%' ||
+							$anim_brightnessfilter_start != 100 && $anim_brightnessfilter_start != '100%' ||
+							$anim_brightnessfilter_end != 100 && $anim_brightnessfilter_end != '100%') ? true : false;
 							
 		$isFullWidthVideo = false;
 		switch($type){
@@ -1606,6 +1625,9 @@ class RevSliderOutput {
 		if($anim_grayscalefilter_start != 0 && $anim_grayscalefilter_start != '0%' || $grayscale_write_all){
 			$tcin .= 'fg:'.$anim_grayscalefilter_start.';';
 		}
+		if($anim_brightnessfilter_start != 100 && $anim_brightnessfilter_start != '100%' || $brightness_write_all){
+			$tcin .= 'fbr:'.$anim_brightnessfilter_start.';';
+		}
 		
 		if($tcin !== ''){
 			$frame_start['from'] = $tcin;
@@ -1653,7 +1675,18 @@ class RevSliderOutput {
 		
 		$frame_start['speed'] = RevSliderFunctions::getVal($frame_start, 'speed', RevSliderFunctions::getVal($layer, 'speed', '300')); //fallback
 		$frame_start['easing'] = RevSliderFunctions::getVal($frame_start, 'easing', RevSliderFunctions::getVal($layer, 'easing', 'easeOutExpo')); //fallback
+				
+		if (RevSliderFunctions::getVal($frame_start, 'use_text_c')==1) 
+			$frame_start['color'] = TPColorpicker::get(RevSliderFunctions::getVal($frame_start, 'text_c', 'transparent'));
 
+		if (RevSliderFunctions::getVal($frame_start, 'use_bg_c')==1) 
+			$frame_start['bgcolor'] = TPColorpicker::get(RevSliderFunctions::getVal($frame_start, 'bg_c', 'transparent'));
+		
+		unset($frame_start['use_text_c']);
+		unset($frame_start['use_bg_c']);
+		unset($frame_start['text_c']);
+		unset($frame_start['bg_c']);
+		
 		$frame_start['sfx_effect'] = RevSliderFunctions::getVal($frame_start, 'sfx_effect', RevSliderFunctions::getVal($layer, 'sfx_effect', '')); //fallback
 		$frame_start['sfxcolor'] = TPColorpicker::get(RevSliderFunctions::getVal($frame_start, 'sfxcolor', RevSliderFunctions::getVal($layer, 'sfxcolor', '#ffffff'))); //fallback
 		
@@ -2398,6 +2431,11 @@ class RevSliderOutput {
 						$add_data .= ($v_controls) ? ' data-videocontrols="none"' : ' data-videocontrols="controls"';
 						$add_data .= ' data-videowidth="'.$videoWidth.'" data-videoheight="'.$videoHeight.'"';
 						
+						// JASON
+						$play_inline = RevSliderFunctions::getVal($videoData, 'video_play_inline', false);
+						$play_inline = RevSliderFunctions::strToBool($play_inline);
+						if($play_inline) $add_data .= ' data-videoinline="true"';
+						
 						if(is_ssl()){
 							$urlPoster = str_replace("http://", "https://", $urlPoster);
 						}
@@ -2419,11 +2457,17 @@ class RevSliderOutput {
 
 						if(!empty($videopreload)) $add_data .= ' data-videopreload="'.$videopreload.'"';
 						
+						if(!$mute){
+							$volume = RevSliderFunctions::getVal($videoData, "volume", '100');
+							$htmlMute = '			data-volume="'.intval($volume).'"';
+						}
+						
 						$large_controls = RevSliderFunctions::strToBool(RevSliderFunctions::getVal($videoData, "large_controls"));
 						if(!$large_controls){
 							//$add_data .= ' data-viodelargecontrols="off"';
 							$classes .= ' disabled_lc';
 						}
+						
 					break;
 					default:
 						RevSliderFunctions::throwError("wrong video type: $videoType");
@@ -2508,7 +2552,9 @@ class RevSliderOutput {
 				$size_raw = explode('/', RevSliderFunctions::getVal($layer, 'column_size'));
 				$size = (count($size_raw) !== 2) ? '100' : round(100 * ((int)$size_raw[0] / (int)$size_raw[1]), 2);
 				$inline_styles .= ' width: 100%;';
-				$add_data .= ' data-columnwidth="'.esc_attr($size).'%"'."\n";
+				$add_data .= ' data-columnwidth="'.esc_attr($size).'%"'."\n";				
+				$col_verticalalign = RevSliderFunctions::getVal($layer['deformation'], 'vertical-align','top');
+				$add_data .= ' data-verticalalign="'.$col_verticalalign.'"'."\n";
 			break;
 		}
 		
@@ -2590,6 +2636,7 @@ class RevSliderOutput {
 		switch($this->container_mode){
 			case 'column': // we are a layer inside of a container, so add the display: block/inline-block
 				$inline_styles.= (RevSliderFunctions::getVal($layer, 'displaymode')) ? ' display: block;' : ' display: inline-block;';
+				
 				//$classes .= ' rev_layer_in_column';
 			break;
 			case 'row':
@@ -2739,6 +2786,17 @@ class RevSliderOutput {
 		$es = RevSliderFunctions::getVal($frame_end, 'speed', RevSliderFunctions::getVal($layer, 'endspeed'));
 		$ee = trim(RevSliderFunctions::getVal($frame_end, 'easing', RevSliderFunctions::getVal($layer, 'endeasing')));
 		
+		if (RevSliderFunctions::getVal($frame_end, 'use_text_c')==1) 
+			$frame_end['color'] = TPColorpicker::get(RevSliderFunctions::getVal($frame_end, 'text_c', 'transparent'));
+
+		if (RevSliderFunctions::getVal($frame_end, 'use_bg_c')==1) 
+			$frame_end['bgcolor'] = TPColorpicker::get(RevSliderFunctions::getVal($frame_end, 'bg_c', 'transparent'));
+		
+		unset($frame_end['use_text_c']);
+		unset($frame_end['use_bg_c']);
+		unset($frame_end['text_c']);
+		unset($frame_end['bg_c']);
+
 		$frame_end['sfx_effect'] = RevSliderFunctions::getVal($frame_end, 'sfx_effect', RevSliderFunctions::getVal($layer, 'sfx_effect', '')); 
 		$frame_end['sfxcolor'] = TPColorpicker::get(RevSliderFunctions::getVal($frame_end, 'sfxcolor', RevSliderFunctions::getVal($layer, 'sfxcolor', '#ffffff'))); //fallback
 
@@ -2750,6 +2808,10 @@ class RevSliderOutput {
 		}
 		if($anim_grayscalefilter_end != 0 && $anim_grayscalefilter_end != '0%' || $grayscale_write_all){
 			$tcout .= 'fg:'.$anim_grayscalefilter_end.';';
+		}
+
+		if($anim_brightnessfilter_end != 100 && $anim_brightnessfilter_end != '100%' || $brightness_write_all){
+			$tcout .= 'fbr:'.$anim_brightnessfilter_end.';';
 		}
 		
 		if($tcout !== ''){
@@ -3155,7 +3217,7 @@ class RevSliderOutput {
 		$def['skY'] = array(RevSliderFunctions::getVal($def_val, 'skewy', '0'), '0');
 		$def['rX'] = array(RevSliderFunctions::getVal($def_val, 'xrotate', '0'), '0');
 		$def['rY'] = array(RevSliderFunctions::getVal($def_val, 'yrotate', '0'), '0');
-		$def['rZ'] = array(RevSliderFunctions::getVal($layer, '2d_rotation', '0'), '0');
+		$def['rZ'] = array(RevSliderFunctions::getVal($layer, '2d_rotation', '0'), '0');		
 		$orix = RevSliderFunctions::getVal($def_val, '2d_origin_x', '50%');
 		if(strpos($orix, '%') === false) $orix .= '%';
 		$oriy = RevSliderFunctions::getVal($def_val, '2d_origin_y', '50%');
@@ -3281,6 +3343,10 @@ class RevSliderOutput {
 		}
 		if($grayscalefilter != 0 && $grayscalefilter != '0%' || $grayscale_write_all){
 			$def_string .= 'fg:'.$grayscalefilter.';';
+		}
+
+		if($brightnessfilter != 100 && $brightnessfilter != '100%' || $brightness_write_all){
+			$def_string .= 'fbr:'.$brightnessfilter.';';
 		}
 		
 		//check if hover is active for the layer
@@ -3412,6 +3478,9 @@ class RevSliderOutput {
 			}
 			if($hover_grayscalefilter != 0 && $hover_grayscalefilter != '0%' || $grayscale_write_all){
 				$def_string_h .= 'fg:'.$hover_grayscalefilter.';';
+			}
+			if($hover_brightnessfilter != 100 && $hover_brightnessfilter != '100%' || $brightness_write_all){
+				$def_string_h .= 'fbr:'.$hover_brightnessfilter.';';
 			}
 			
 			
@@ -4120,7 +4189,6 @@ class RevSliderOutput {
 				unset($frame_end['sfx_effect']);
 				unset($frame_end['sfxcolor']);
 			}
-			
 			echo "			data-frames='[";
 			echo json_encode($frame_start);
 			echo ',';
@@ -4484,6 +4552,8 @@ class RevSliderOutput {
 			$parallax_type = $this->slider->getParam("parallax_type","mouse");
 			$parallax_origo = $this->slider->getParam("parallax_origo","enterpoint");
 			$parallax_speed = $this->slider->getParam("parallax_speed","400");
+			$parallax_bg_speed = $this->slider->getParam("parallax_bg_speed","0");
+			$parallax_ls_speed = $this->slider->getParam("parallax_ls_speed","0");
 
 			if ($parallax_ddd=="on") {
 				$parallax_type="3D";
@@ -4552,625 +4622,619 @@ class RevSliderOutput {
 		}
 		?>
 		<script type="text/javascript">
-			<?php if(!$markup_export){ //not needed for html markup export ?>
-			/******************************************
-				-	PREPARE PLACEHOLDER FOR SLIDER	-
-			******************************************/
-
-			var setREVStartSize=function(){
-				try{var e=new Object,i=jQuery(window).width(),t=9999,r=0,n=0,l=0,f=0,s=0,h=0;
-					e.c = jQuery('#<?php echo $this->sliderHtmlID;?>');
-<?php if(isset($csizes['level']) && !empty($csizes['level'])){ ?>
-					e.responsiveLevels = <?php echo '['. $csizes['level'] .']'; ?>;
-					e.gridwidth = <?php echo '['. $csizes['width'] .']'; ?>;
-					e.gridheight = <?php echo '['. $csizes['height'] .']'; ?>;
-<?php } else {?>
-					e.gridwidth = <?php echo '['. $csizes['width'] .']'; ?>;
-					e.gridheight = <?php echo '['. $csizes['height'] .']'; ?>;
-<?php } ?>							
-<?php if($optFullScreen == 'on'){
-						$sl_layout = 'fullscreen';
-					}elseif($optFullWidth == 'on'){
-						$sl_layout = 'fullwidth';
-					}else{
-						$sl_layout = 'auto';}?>
-					e.sliderLayout = "<?php echo $sl_layout; ?>";
-<?php if($this->slider->getParam("slider_type") == "fullscreen"){ ?>
-					e.fullScreenAutoWidth='<?php echo esc_attr($this->slider->getParam("autowidth_force","off")); ?>';
-					e.fullScreenAlignForce='<?php echo esc_attr($this->slider->getParam("full_screen_align_force","off")); ?>';
-					e.fullScreenOffsetContainer= '<?php echo esc_attr($this->slider->getParam("fullscreen_offset_container","")); ?>';
-					e.fullScreenOffset='<?php echo esc_attr($this->slider->getParam("fullscreen_offset_size","")); ?>';
-<?php } ?>
-<?php $minHeight = ($this->slider->getParam('slider_type') !== 'fullscreen') ? $this->slider->getParam('min_height', '0') : $this->slider->getParam('fullscreen_min_height', '0');
-					if($minHeight > 0){ ?>
-					e.minHeight = "<?php echo $minHeight; ?>";
-<?php } ?>
-					if(e.responsiveLevels&&(jQuery.each(e.responsiveLevels,function(e,f){f>i&&(t=r=f,l=e),i>f&&f>r&&(r=f,n=e)}),t>r&&(l=n)),f=e.gridheight[l]||e.gridheight[0]||e.gridheight,s=e.gridwidth[l]||e.gridwidth[0]||e.gridwidth,h=i/s,h=h>1?1:h,f=Math.round(h*f),"fullscreen"==e.sliderLayout){var u=(e.c.width(),jQuery(window).height());if(void 0!=e.fullScreenOffsetContainer){var c=e.fullScreenOffsetContainer.split(",");if (c) jQuery.each(c,function(e,i){u=jQuery(i).length>0?u-jQuery(i).outerHeight(!0):u}),e.fullScreenOffset.split("%").length>1&&void 0!=e.fullScreenOffset&&e.fullScreenOffset.length>0?u-=jQuery(window).height()*parseInt(e.fullScreenOffset,0)/100:void 0!=e.fullScreenOffset&&e.fullScreenOffset.length>0&&(u-=parseInt(e.fullScreenOffset,0))}f=u}else void 0!=e.minHeight&&f<e.minHeight&&(f=e.minHeight);e.c.closest(".rev_slider_wrapper").css({height:f})
-					
-				}catch(d){console.log("Failure at Presize of Slider:"+d)}
-			};
-			
-			setREVStartSize();
-			
-			<?php } ?>
-			var tpj=jQuery;
-			<?php if($noConflict == "on"){ ?>tpj.noConflict();<?php } ?>
-
-			var revapi<?php echo $sliderID; ?>;
-			<?php
-
-			echo 'tpj(document).ready(function() {'."\n";
-			echo '				if(tpj("#'.$this->sliderHtmlID.'").revolution == undefined){'."\n";
-			echo '					revslider_showDoubleJqueryError("#'.$this->sliderHtmlID.'");'."\n";
-			echo '				}else{'."\n";
-			echo '					revapi'. $sliderID.' = tpj("#'. $this->sliderHtmlID .'").show().revolution({'."\n";
-			if($do_delay > 0){
-				echo '						startDelay: '. esc_attr($do_delay) .','."\n";
-			} 
-			
-			echo '						sliderType:"'. esc_attr($slider_type) .'",'."\n";
-			
-			$stripped_http = explode('://', RS_PLUGIN_URL);
-			echo 'jsFileLocation:"//'. esc_attr( $stripped_http[1] .'public/assets/js/' ) .'",'."\n";
-
+<?php if(!$markup_export){ //not needed for html markup export ?>
+setREVStartSize(<?php 
+			echo "{c: jQuery('#". $this->sliderHtmlID ."'),";
+			if(isset($csizes['level']) && !empty($csizes['level'])){
+				echo " responsiveLevels: [". $csizes['level'] ."],";
+			}
+			echo " gridwidth: [". $csizes['width'] ."],";
+			echo " gridheight: [". $csizes['height'] ."],";
+			$sl_layout = 'auto';
 			if($optFullScreen == 'on'){
 				$sl_layout = 'fullscreen';
 			}elseif($optFullWidth == 'on'){
 				$sl_layout = 'fullwidth';
-			}else{
-				$sl_layout = 'auto';
 			}
-			echo '						sliderLayout:"'.$sl_layout.'",'."\n";
-			echo '						dottedOverlay:"'. esc_attr($this->slider->getParam("background_dotted_overlay","none")).'",'."\n";
-			echo '						delay:'.esc_attr($this->slider->getParam("delay","9000",RevSlider::FORCE_NUMERIC)) .','."\n";
+			echo " sliderLayout: '". $sl_layout ."'";
 			
-			do_action('revslider_fe_javascript_option_output', $this->slider);
-			
-			$enable_arrows = $this->slider->getParam('enable_arrows','off');
-			$enable_bullets = $this->slider->getParam('enable_bullets','off');
-			$enable_tabs = $this->slider->getParam('enable_tabs','off');
-			$enable_thumbnails = $this->slider->getParam('enable_thumbnails','off');
-			
-			$rs_nav = new RevSliderNavigation();
-			$all_navs = $rs_nav->get_all_navigations();
-			$touch_enabled = $this->slider->getParam('touchenabled', 'on');
-			$touch_enabled_desktop = $this->slider->getParam('touchenabled_desktop', 'off');
-			$keyboard_enabled = $this->slider->getParam('keyboard_navigation', 'off');
-			$keyboard_direction = $this->slider->getParam('keyboard_direction', 'horizontal');
-			$mousescroll_enabled = $this->slider->getParam('mousescroll_navigation', 'off');
-			$mousescroll_reverse = $this->slider->getParam('mousescroll_navigation_reverse', 'default');
-			
-			//no navigation if we are hero
-			if($slider_type !== 'hero' && ($enable_arrows == 'on' || $enable_bullets == 'on' || $enable_tabs == 'on' || $enable_thumbnails == 'on' || $touch_enabled == 'on' || $keyboard_enabled == 'on' || $mousescroll_enabled != 'off')){
-				echo '						navigation: {'."\n";
-				echo '							keyboardNavigation:"'. esc_attr($keyboard_enabled) .'",'."\n";
-				echo '							keyboard_direction: "'. esc_attr($keyboard_direction) .'",'."\n";
-				echo '							mouseScrollNavigation:"'. esc_attr($mousescroll_enabled) .'",'."\n";
-				echo ' 							mouseScrollReverse:"'. esc_attr($mousescroll_reverse) .'",'."\n";
-				
-				if($slider_type !== 'hero')
-					echo '							onHoverStop:"'. esc_attr($this->slider->getParam("stop_on_hover","on")).'",'."\n";
-				
-				$add_comma = false;
-				if($touch_enabled == 'on'){
-					$add_comma = true;
-					echo '							touch:{'."\n";
-					echo '								touchenabled:"'. esc_attr($touch_enabled).'",'."\n";
-					echo '								touchOnDesktop:"'. esc_attr($touch_enabled_desktop).'",'."\n";
-					echo '								swipe_threshold: '. esc_attr($swipe_velocity) .','."\n";
-					echo '								swipe_min_touches: '. esc_attr($swipe_min_touches) .','."\n";
-					echo '								swipe_direction: "'. esc_attr($swipe_direction) .'",'."\n";
-					echo '								drag_block_vertical: ';
-					echo ($drag_block_vertical == 'true') ? 'true' : 'false';
-					echo "\n";
-					echo '							}'."\n";
-				}
-				
-				if($enable_arrows == 'on'){
-					$navigation_arrow_style = $this->slider->getParam('navigation_arrow_style','round');
-					$arrows_always_on = ($this->slider->getParam('arrows_always_on','true') == 'true') ? 'true' : 'false';
-					$hide_arrows_on_mobile = ($this->slider->getParam('hide_arrows_on_mobile','off') == 'on') ? 'true' : 'false';
-					$hide_arrows_over = ($this->slider->getParam('hide_arrows_over','off') == 'on') ? 'true' : 'false';
-					$arr_tmp = '';
-					
-					$ff = false;
-					if(!empty($all_navs)){
-						foreach($all_navs as $cur_nav){
-							if($cur_nav['handle'] == $navigation_arrow_style){
-								if(isset($cur_nav['markup']['arrows'])) $arr_tmp = $cur_nav['markup']['arrows'];
-								if(isset($cur_nav['css']['arrows'])) $nav_css .= $rs_nav->add_placeholder_modifications($cur_nav['css']['arrows'], $cur_nav['handle'], 'arrows', $cur_nav['settings'], $this->slider, $this)."\n";
-								$ff = true;
-								break;
-							}
-						}
-					}
-					if($ff == false){
-						$navigation_arrow_style = '';
-					}
-					
-					$navigation_arrow_style = $rs_nav->translate_navigation($navigation_arrow_style);
-					if($add_comma) echo '							,'."\n";
-					$add_comma = true;
-					echo '							arrows: {'."\n";
-					echo '								style:"'. esc_attr($navigation_arrow_style).'",'."\n";
-					echo '								enable:';
-					echo ($this->slider->getParam('enable_arrows','off') == 'on') ? 'true' : 'false'; 
-					echo ','."\n";
-					echo ($this->slider->getParam('rtl_arrows','off') == 'on') ? '								rtl:true,'."\n" : '';
-					echo '								hide_onmobile:'.$hide_arrows_on_mobile.','."\n";	
-					
-					if($hide_arrows_on_mobile === 'true') {
-						echo '								hide_under:'. esc_attr($this->slider->getParam('arrows_under_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					if($hide_arrows_over === 'true') {
-						echo '								hide_over:'. esc_attr($this->slider->getParam('arrows_over_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					echo '								hide_onleave:'.$arrows_always_on.','."\n";
-					if($arrows_always_on === 'true'){
-						echo '								hide_delay:'. esc_attr($this->slider->getParam('hide_arrows','200',RevSlider::FORCE_NUMERIC)).','."\n";
-						echo '								hide_delay_mobile:'. esc_attr($this->slider->getParam('hide_arrows_mobile','1200',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					echo '								tmp:\'';
-					echo preg_replace( "/\r|\n/", "", $arr_tmp);
-					echo '\','."\n";
-					echo '								left: {'."\n";
-					echo (in_array($this->slider->getParam('leftarrow_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';
-					echo '									h_align:"'. esc_attr($this->slider->getParam('leftarrow_align_hor','left')) .'",'."\n";
-					echo '									v_align:"'. esc_attr($this->slider->getParam('leftarrow_align_vert','center')) .'",'."\n";
-					echo '									h_offset:'. esc_attr($this->slider->getParam('leftarrow_offset_hor','20',RevSlider::FORCE_NUMERIC)) .','."\n";
-					echo '									v_offset:'. esc_attr($this->slider->getParam('leftarrow_offset_vert','0',RevSlider::FORCE_NUMERIC))."\n";										
-					echo '								},'."\n";
-					echo '								right: {'."\n";
-					echo (in_array($this->slider->getParam('rightarrow_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';
-					echo '									h_align:"'. esc_attr($this->slider->getParam('rightarrow_align_hor','right')).'",'."\n";
-					echo '									v_align:"'. esc_attr($this->slider->getParam('rightarrow_align_vert','center')).'",'."\n";
-					echo '									h_offset:'. esc_attr($this->slider->getParam('rightarrow_offset_hor','20',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '									v_offset:'. esc_attr($this->slider->getParam('rightarrow_offset_vert','0',RevSlider::FORCE_NUMERIC))."\n";					
-					echo '								}'."\n";
-					echo '							}'."\n";
-				}
-				
-				if($enable_bullets == 'on'){
-					$navigation_bullets_style = $this->slider->getParam('navigation_bullets_style','round');
-					$bullets_always_on = ($this->slider->getParam('bullets_always_on','true') == 'true') ? 'true' : 'false';
-					$hide_bullets_on_mobile = ($this->slider->getParam('hide_bullets_on_mobile','off') == 'on') ? 'true' : 'false';
-					$hide_bullets_over = ($this->slider->getParam('hide_bullets_over','off') == 'on') ? 'true' : 'false';
-					$bul_tmp = '<span class="tp-bullet-image"></span><span class="tp-bullet-title"></span>';
-
-					if(!empty($all_navs)){
-						foreach($all_navs as $cur_nav){
-							if($cur_nav['handle'] == $navigation_bullets_style){
-								if(isset($cur_nav['markup']['bullets'])) $bul_tmp = $cur_nav['markup']['bullets'];
-								if(isset($cur_nav['css']['bullets'])) $nav_css .= $rs_nav->add_placeholder_modifications($cur_nav['css']['bullets'], $cur_nav['handle'], 'bullets', $cur_nav['settings'], $this->slider, $this)."\n";
-								break;
-							}
-						}
-					}
-					
-					$navigation_bullets_style = $rs_nav->translate_navigation($navigation_bullets_style);
-					
-					if($add_comma) echo '							,'."\n";
-					$add_comma = true;
-					echo '							bullets: {'."\n";
-					echo '								enable:';
-					echo ($this->slider->getParam('enable_bullets','off') == 'on') ? 'true' : 'false';
-					echo ','."\n";
-					echo ($this->slider->getParam('rtl_bullets','off') == 'on') ? '								rtl:true,'."\n" : '';
-					echo '								hide_onmobile:'.$hide_bullets_on_mobile.','."\n";
-					if($hide_bullets_on_mobile === 'true'){
-						echo '								hide_under:'. esc_attr($this->slider->getParam('bullets_under_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					if($hide_bullets_over === 'true'){
-						echo '								hide_over:'. esc_attr($this->slider->getParam('bullets_over_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					echo '								style:"'. esc_attr($navigation_bullets_style).'",'."\n";
-					echo '								hide_onleave:'.$bullets_always_on.','."\n";
-					if($bullets_always_on === 'true'){
-						echo '								hide_delay:'. esc_attr($this->slider->getParam('hide_bullets','200',RevSlider::FORCE_NUMERIC)).','."\n";
-						echo '								hide_delay_mobile:'. esc_attr($this->slider->getParam('hide_bullets_mobile','1200',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					echo '								direction:"'. esc_attr($this->slider->getParam('bullets_direction','horizontal')).'",'."\n";
-					echo (in_array($this->slider->getParam('bullets_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';
-					echo '								h_align:"'. esc_attr($this->slider->getParam('bullets_align_hor','right')).'",'."\n";
-					echo '								v_align:"'. esc_attr($this->slider->getParam('bullets_align_vert','center')).'",'."\n";
-					echo '								h_offset:'. esc_attr($this->slider->getParam('bullets_offset_hor','20',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								v_offset:'. esc_attr($this->slider->getParam('bullets_offset_vert','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								space:'. esc_attr($this->slider->getParam('bullets_space','5',RevSlider::FORCE_NUMERIC)).','."\n";					
-					echo '								tmp:\'';
-					echo preg_replace( "/\r|\n/", "", $bul_tmp);
-					echo '\''."\n";
-					echo '							}'."\n";
-				}
-				if($enable_thumbnails == 'on'){
-					$thumbnails_style = $this->slider->getParam('thumbnails_style','round');
-					$thumbs_always_on = ($this->slider->getParam('thumbs_always_on','true') == 'true') ? 'true' : 'false';
-					$hide_thumbs_on_mobile = ($this->slider->getParam('hide_thumbs_on_mobile','off') == 'on') ? 'true' : 'false';
-					$hide_thumbs_over = ($this->slider->getParam('hide_thumbs_over','off') == 'on') ? 'true' : 'false';
-					$thumbs_tmp = '<span class="tp-thumb-image"></span><span class="tp-thumb-title"></span>';
-					
-					if(!empty($all_navs)){
-						foreach($all_navs as $cur_nav){
-							if($cur_nav['handle'] == $thumbnails_style){
-								if(isset($cur_nav['markup']['thumbs'])) $thumbs_tmp = $cur_nav['markup']['thumbs'];
-								if(isset($cur_nav['css']['thumbs'])) $nav_css .= $rs_nav->add_placeholder_modifications($cur_nav['css']['thumbs'], $cur_nav['handle'], 'thumbs', $cur_nav['settings'], $this->slider, $this)."\n";
-								break;
-							}
-						}
-					}
-					
-					$thumbnails_style = $rs_nav->translate_navigation($thumbnails_style);
-					
-					if($add_comma) echo '							,'."\n";
-					$add_comma = true;
-					echo '							thumbnails: {'."\n";
-					echo '								style:"'. esc_attr($thumbnails_style).'",'."\n";
-					echo '								enable:';
-					echo ($this->slider->getParam('enable_thumbnails','off') == 'on') ? 'true' : 'false';
-					echo ','."\n";
-					echo ($this->slider->getParam('rtl_thumbnails','off') == 'on') ? '								rtl:true,'."\n" : '';
-					echo '								width:'. esc_attr($this->slider->getParam('thumb_width','100',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								height:'. esc_attr($this->slider->getParam('thumb_height','50',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								min_width:'. esc_attr($this->slider->getParam('thumb_width_min','100',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								wrapper_padding:'. esc_attr($this->slider->getParam('thumbnails_padding','5',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								wrapper_color:"'.TPColorpicker::convert(esc_attr($this->slider->getParam('thumbnails_wrapper_color','transparent')),$this->slider->getParam('thumbnails_wrapper_opacity',false)).'",'."\n";					
-					echo '								tmp:\'';
-					echo preg_replace( "/\r|\n/", "", $thumbs_tmp);
-					echo '\','."\n";
-					echo '								visibleAmount:'. esc_attr($this->slider->getParam('thumb_amount','5',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								hide_onmobile:'.$hide_thumbs_on_mobile.','."\n";
-					if($hide_thumbs_on_mobile === 'true'){
-						echo '								hide_under:'. esc_attr($this->slider->getParam('thumbs_under_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					if($hide_thumbs_over === 'true'){
-						echo '								hide_over:'. esc_attr($this->slider->getParam('thumbs_over_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					echo '								hide_onleave:'.$thumbs_always_on.','."\n";
-					if($thumbs_always_on === 'true'){
-						echo '								hide_delay:'. esc_attr($this->slider->getParam('hide_thumbs','200',RevSlider::FORCE_NUMERIC)).','."\n";
-						echo '								hide_delay_mobile:'. esc_attr($this->slider->getParam('hide_thumbs_mobile','1200',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					echo '								direction:"'. esc_attr($this->slider->getParam('thumbnail_direction','horizontal')).'",'."\n";
-					echo '								span:';
-					echo ($this->slider->getParam('span_thumbnails_wrapper','off') == 'on') ? 'true' : 'false';
-					echo ','."\n";
-					echo '								position:"'. esc_attr($this->slider->getParam('thumbnails_inner_outer','inner')).'",'."\n";
-					if($this->slider->getParam('thumbnails_inner_outer','inner') == 'inner'){
-						echo (in_array($this->slider->getParam('thumbnails_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';					
-					}
-					echo '								space:'. esc_attr($this->slider->getParam('thumbnails_space','5',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								h_align:"'. esc_attr($this->slider->getParam('thumbnails_align_hor','left')).'",'."\n";
-					echo '								v_align:"'. esc_attr($this->slider->getParam('thumbnails_align_vert','center')).'",'."\n";
-					echo '								h_offset:'. esc_attr($this->slider->getParam('thumbnails_offset_hor','20',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								v_offset:'. esc_attr($this->slider->getParam('thumbnails_offset_vert','0',RevSlider::FORCE_NUMERIC))."\n";					
-					echo '							}'."\n";
-				}
-				if($enable_tabs == 'on'){
-					$tabs_style = $this->slider->getParam('tabs_style','round');
-					$tabs_always_on = ($this->slider->getParam('tabs_always_on','true') == 'true') ? 'true' : 'false';
-					$hide_tabs_on_mobile = ($this->slider->getParam('hide_tabs_on_mobile','off') == 'on') ? 'true' : 'false';
-					$hide_tabs_over = ($this->slider->getParam('hide_tabs_over','off') == 'on') ? 'true' : 'false';
-					$tabs_tmp = '<span class="tp-thumb-image"></span>';
-					
-					if(!empty($all_navs)){
-						foreach($all_navs as $cur_nav){
-							if($cur_nav['handle'] == $tabs_style){
-								if(isset($cur_nav['markup']['tabs'])) $tabs_tmp = $cur_nav['markup']['tabs'];
-								if(isset($cur_nav['css']['tabs'])) $nav_css .= $rs_nav->add_placeholder_modifications($cur_nav['css']['tabs'], $cur_nav['handle'], 'tabs', $cur_nav['settings'], $this->slider, $this)."\n";
-								break;
-							}
-						}
-					}
-					
-					$tabs_style = $rs_nav->translate_navigation($tabs_style);
-					
-					if($add_comma) echo '							,'."\n";
-					$add_comma = true;
-					echo '							tabs: {'."\n";
-					echo '								style:"'. esc_attr($tabs_style).'",'."\n";
-					echo '								enable:';
-					echo ($this->slider->getParam('enable_tabs','off') == 'on') ? 'true' : 'false';
-					echo ','."\n";
-					echo ($this->slider->getParam('rtl_tabs','off') == 'on') ? '								rtl:true,'."\n" : '';
-					echo '								width:'. esc_attr($this->slider->getParam('tabs_width','100',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								height:'. esc_attr($this->slider->getParam('tabs_height','50',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								min_width:'. esc_attr($this->slider->getParam('tabs_width_min','100',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								wrapper_padding:'. esc_attr($this->slider->getParam('tabs_padding','5',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								wrapper_color:"'.TPColorpicker::convert(esc_attr($this->slider->getParam('tabs_wrapper_color','transparent')),$this->slider->getParam('tabs_wrapper_opacity',false)).'",'."\n";					
-					echo '								tmp:\'';
-					echo preg_replace( "/\r|\n/", "", $tabs_tmp);
-					echo '\','."\n";
-					echo '								visibleAmount: '. esc_attr($this->slider->getParam('tabs_amount','5',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								hide_onmobile: '.$hide_tabs_on_mobile.','."\n";
-					if($hide_tabs_on_mobile === 'true'){
-						echo '								hide_under:'. esc_attr($this->slider->getParam('tabs_under_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					if($hide_tabs_over === 'true'){
-						echo '								hide_over:'. esc_attr($this->slider->getParam('tabs_over_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					echo '								hide_onleave:'.$tabs_always_on.','."\n";
-					if($tabs_always_on === 'true'){
-						echo '								hide_delay:'. esc_attr($this->slider->getParam('hide_tabs','200',RevSlider::FORCE_NUMERIC)).','."\n";
-						echo '								hide_delay_mobile:'. esc_attr($this->slider->getParam('hide_tabs_mobile','1200',RevSlider::FORCE_NUMERIC)).','."\n";
-					}
-					echo '								hide_delay:'. esc_attr($this->slider->getParam('hide_tabs','200',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								direction:"'. esc_attr($this->slider->getParam('tabs_direction','horizontal')).'",'."\n";
-					echo '								span:';
-					echo ($this->slider->getParam('span_tabs_wrapper','off') == 'on') ? 'true' : 'false';
-					echo ','."\n";
-					echo '								position:"'. esc_attr($this->slider->getParam('tabs_inner_outer','inner')).'",'."\n";
-					if($this->slider->getParam('tabs_inner_outer','inner') == 'inner'){
-						echo (in_array($this->slider->getParam('tabs_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';					
-					}
-					echo '								space:'. esc_attr($this->slider->getParam('tabs_space','5',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								h_align:"'. esc_attr($this->slider->getParam('tabs_align_hor','left')).'",'."\n";
-					echo '								v_align:"'. esc_attr($this->slider->getParam('tabs_align_vert','center')).'",'."\n";
-					echo '								h_offset:'. esc_attr($this->slider->getParam('tabs_offset_hor','20',RevSlider::FORCE_NUMERIC)).','."\n";
-					echo '								v_offset:'. esc_attr($this->slider->getParam('tabs_offset_vert','0',RevSlider::FORCE_NUMERIC))."\n";											
-					echo '							}'."\n";
-				}
-				echo '						},'."\n";
-			}else{ //maybe write navigation stuff still here
-				echo '						navigation: {'."\n";
-				if($slider_type !== 'hero'){
-					echo '							onHoverStop:"'. esc_attr($this->slider->getParam("stop_on_hover","on")).'",'."\n";
-				}
-				echo '						},'."\n";
+			if($this->slider->getParam("slider_type") == "fullscreen"){
+				echo ",";
+				echo " fullScreenAutoWidth:'". esc_attr($this->slider->getParam("autowidth_force","off")) ."',";
+				echo " fullScreenAlignForce:'". esc_attr($this->slider->getParam("full_screen_align_force","off")) ."',";
+				echo " fullScreenOffsetContainer:'". esc_attr($this->slider->getParam("fullscreen_offset_container","")) ."',";
+				echo " fullScreenOffset:'". esc_attr($this->slider->getParam("fullscreen_offset_size","")) ."'";
 			}
-			
-			if($slider_type == 'carousel'){
-				$car_inf = $this->slider->getParam('carousel_infinity','off');
-				$car_space = $this->slider->getParam('carousel_space',0,RevSlider::FORCE_NUMERIC);
-				$car_stretch = $this->slider->getParam('carousel_stretch','off');
-				$car_all_layers = $this->slider->getParam('showalllayers_carousel','off');
-				$car_maxitems = $this->slider->getParam('carousel_maxitems',5,RevSlider::FORCE_NUMERIC);
-				$car_fadeout = $this->slider->getParam('carousel_fadeout','on');
-				$car_varyfade = $this->slider->getParam('carousel_varyfade','off');
-				
-				$car_easing = $this->slider->getParam('carousel_easing','Power3.easeInOut');
-				$car_speed = $this->slider->getParam('carousel_speed','800',RevSlider::FORCE_NUMERIC);
-				
-				$car_hpos = $this->slider->getParam('carousel_hposition','center');
-				$car_vpos = $this->slider->getParam('carousel_vposition','center');
-				
-				$carousel_rotation = $this->slider->getParam('carousel_rotation','off');
-				$car_maxrotation = $this->slider->getParam('carousel_maxrotation',90,RevSlider::FORCE_NUMERIC);
-				$car_varyrotate = $this->slider->getParam('carousel_varyrotate','off');
-				
-				$carousel_scale = $this->slider->getParam('carousel_scale','off');
-				$car_varyscale = $this->slider->getParam('carousel_varyscale','off');
-				$car_scaledown = $this->slider->getParam('carousel_scaledown',50,RevSlider::FORCE_NUMERIC);
-				if($car_scaledown > 100) $car_scaledown = 100;
-				
-				$car_borderr = $this->slider->getParam('carousel_borderr',0,RevSlider::FORCE_NUMERIC);
-				$car_borderr_unit = $this->slider->getParam('carousel_borderr_unit','px');
-				
-				$car_padding_top = $this->slider->getParam('carousel_padding_top',0,RevSlider::FORCE_NUMERIC);
-				$car_padding_bottom = $this->slider->getParam('carousel_padding_bottom',0,RevSlider::FORCE_NUMERIC);
-				
-				echo '						carousel: {'."\n";
-				if($car_borderr > 0){
-					echo '							border_radius: "'. esc_attr($car_borderr.$car_borderr_unit) .'",'."\n";
-				}
-				if($car_padding_top > 0){
-					echo '							padding_top: "'. esc_attr($car_padding_top) .'",'."\n";
-				}
-				if($car_padding_bottom > 0){
-					echo '							padding_bottom: "'. esc_attr($car_padding_bottom) .'",'."\n";
-				}
-				if($carousel_rotation == 'on'){
-					echo '							maxRotation: '. esc_attr($car_maxrotation).','."\n";
-					echo '							vary_rotation: "'. esc_attr($car_varyrotate).'",'."\n";
-				}
-				if($carousel_scale == 'on'){
-					echo '							minScale: '. esc_attr($car_scaledown).','."\n";
-					echo '							vary_scale: "'. esc_attr($car_varyscale).'",'."\n";
-				}
-				echo '							horizontal_align: "'. esc_attr($car_hpos).'",'."\n";
-				echo '							vertical_align: "'. esc_attr($car_vpos).'",'."\n";
-				echo '							fadeout: "'. esc_attr($car_fadeout).'",'."\n";
-				if($car_fadeout == 'on'){
-					echo '							vary_fade: "'. esc_attr($car_varyfade).'",'."\n";
-				}
-				echo '							maxVisibleItems: '. esc_attr($car_maxitems).','."\n";
-				echo '							infinity: "'. esc_attr($car_inf).'",'."\n";
-				echo '							space: '. esc_attr($car_space).','."\n";
-				echo '							stretch: "'. esc_attr($car_stretch).'",'."\n";
-				echo ' 							showLayersAllTime: "'.esc_attr($car_all_layers).'",'."\n";
-				echo ' 							easing: "'.esc_attr($car_easing).'",'."\n";
-				echo ' 							speed: "'.esc_attr($car_speed).'"'."\n";
-				
-				echo '						},'."\n";
-			}
-			
-			$label_viewport = $this->slider->getParam('label_viewport', 'off');
-			$label_presetheight = $this->slider->getParam('label_presetheight', 'off');
-			$viewport_start = $this->slider->getParam('viewport_start', 'wait');
-			$viewport_area = $this->slider->getParam('viewport_area', 80, RevSlider::FORCE_NUMERIC);
-			if($label_viewport === 'on'){
-				echo '						viewPort: {'."\n";
-				echo '							enable:true,'."\n";
-				echo '							outof:"'.esc_attr($viewport_start).'",'."\n";
-				echo '							visible_area:"'.esc_attr($viewport_area).'%",'."\n";
-				echo '							presize:';
-				echo ($label_presetheight == 'off') ? 'false' : 'true';
-				echo "\n";
-				echo '						},'."\n";
-			}
-			
-			if(isset($csizes['level']) && !empty($csizes['level'])){
-				echo '						responsiveLevels:['. $csizes['level'] .'],'."\n";
-				echo '						visibilityLevels:['. $csizes['level'] .'],'."\n";
-				echo '						gridwidth:['. $csizes['width'] .'],'."\n";
-				echo '						gridheight:['. $csizes['height'] .'],'."\n";
-			}else{
-				echo '						visibilityLevels:['. $csizes['visibilitylevel'] .'],'."\n";
-				echo '						gridwidth:'. $csizes['width'].','."\n";
-				echo '						gridheight:'. $csizes['height'].','."\n";
-			}
-			
-			$lazyLoad = $this->slider->getParam('lazy_load_type', false);
-			if($lazyLoad === false){ //do fallback checks to removed lazy_load value since version 5.0 and replaced with an enhanced version
-				$old_ll = $this->slider->getParam('lazy_load', 'off');
-				$lazyLoad = ($old_ll == 'on') ? 'all' : 'none';
-			}
-			echo '						lazyType:"'. esc_attr($lazyLoad).'",'."\n";
-			
 			$minHeight = ($this->slider->getParam('slider_type') !== 'fullscreen') ? $this->slider->getParam('min_height', '0') : $this->slider->getParam('fullscreen_min_height', '0');
 			if($minHeight > 0){
-				echo '						minHeight:"'. $minHeight.'",'."\n";
+				echo ",";
+				echo " minHeight:'". $minHeight ."'";
 			}
+			echo "}";
+			?>);
+			
+<?php } ?>
+var revapi<?php echo $sliderID; ?>,
+	tpj=jQuery;
+<?php if($noConflict == "on"){ ?>tpj.noConflict();<?php } ?>			
+<?php
+	echo 'tpj(document).ready(function() {'."\n";
+	echo '	if(tpj("#'.$this->sliderHtmlID.'").revolution == undefined){'."\n";
+	echo '		revslider_showDoubleJqueryError("#'.$this->sliderHtmlID.'");'."\n";
+	echo '	}else{'."\n";
+	echo '		revapi'. $sliderID.' = tpj("#'. $this->sliderHtmlID .'").show().revolution({'."\n";
+	if($do_delay > 0){
+		echo '			startDelay: '. esc_attr($do_delay) .','."\n";
+	} 
+	
+	echo '			sliderType:"'. esc_attr($slider_type) .'",'."\n";
+	
+	$stripped_http = explode('://', RS_PLUGIN_URL);
+	echo '			jsFileLocation:"//'. esc_attr( $stripped_http[1] .'public/assets/js/' ) .'",'."\n";
 
-			$use_scrolleffect = $this->slider->getParam('fade_scrolleffect','off') !== 'off' || $this->slider->getParam('blur_scrolleffect','off') !== 'off' || $this->slider->getParam('grayscale_scrolleffect','off') !== 'off' ? 'on' : 'off';
-
-			if($use_scrolleffect =='on') {
-				echo '						scrolleffect: {'."\n";
-				if($this->slider->getParam('fade_scrolleffect','off') !== 'off')
-					echo '							fade:"'. esc_attr($this->slider->getParam('fade_scrolleffect','off')) .'",'."\n";				
-
-				if($this->slider->getParam('blur_scrolleffect','off') !== 'off')
-					echo '							blur:"'. esc_attr($this->slider->getParam('blur_scrolleffect','off')) .'",'."\n";				
-
-				if($this->slider->getParam('grayscale_scrolleffect','off') !== 'off')
-					echo '							grayscale:"'. esc_attr($this->slider->getParam('grayscale_scrolleffect','off')) .'",'."\n";		
-
-				
-				if($this->slider->getParam('scrolleffect_maxblur','10') !== '10')
-				echo '							maxblur:"'. esc_attr($this->slider->getParam('scrolleffect_maxblur','10')) .'",'."\n";
-				
-				if($this->slider->getParam('scrolleffect_bg','off') !== 'off')
-					echo '							on_slidebg:"'. esc_attr($this->slider->getParam('scrolleffect_bg','off')) .'",'."\n";
-
-
-				if($this->slider->getParam('scrolleffect_layers','off') !== 'off')
-					echo '							on_layers:"'. esc_attr($this->slider->getParam('scrolleffect_layers','off')) .'",'."\n";
-
-				if($this->slider->getParam('scrolleffect_parallax_layers','off') !== 'off')
-					echo '							on_parallax_layers:"'. esc_attr($this->slider->getParam('scrolleffect_parallax_layers','off')) .'",'."\n";
-								
-				
-				if($this->slider->getParam('scrolleffect_static_layers','off') !== 'off')
-					echo '							on_static_layers:"'. esc_attr($this->slider->getParam('scrolleffect_static_layers','off')) .'",'."\n";
-				
-				if($this->slider->getParam('scrolleffect_static_parallax_layers','off') !== 'off')
-					echo '							on_parallax_static_layers:"'. esc_attr($this->slider->getParam('scrolleffect_static_parallax_layers','off')) .'",'."\n";
-				
-				if($this->slider->getParam('scrolleffect_direction','both') !== 'both')
-					echo '							direction:"'. esc_attr($this->slider->getParam('scrolleffect_direction','both')) .'",'."\n";
-				
-				if($this->slider->getParam('scrolleffect_multiplicator','1.3') !== '1.3')
-					echo '							multiplicator:"'. esc_attr($this->slider->getParam('scrolleffect_multiplicator','1.3')) .'",'."\n";
-				
-				if($this->slider->getParam('scrolleffect_multiplicator_layers','1.3') !== '1.3')
-					echo '							multiplicator_layers:"'. esc_attr($this->slider->getParam('scrolleffect_multiplicator_layers','1.3')) .'",'."\n";
-				
-				if($this->slider->getParam('scrolleffect_tilt','30') !== '30')
-					echo '							tilt:"'. esc_attr($this->slider->getParam('scrolleffect_tilt','30')) .'",'."\n";
-
-				if($this->slider->getParam('scrolleffect_off_mobile','on') !== 'on')
-					echo '							disable_on_mobile:"'. esc_attr($this->slider->getParam('scrolleffect_off_mobile','on')) .'",'."\n";
-				echo '						},'."\n";
-			}
-			
-			if($use_parallax == 'on'){
-				echo '						parallax: {'."\n";
-				echo '							type:"'. esc_attr($parallax_type) .'",'."\n";
-				echo '							origo:"'. esc_attr($parallax_origo) .'",'."\n";
-				echo '							speed:'. esc_attr($parallax_speed) .','."\n";
-				echo '							levels:['. esc_attr($parallax_level) .'],'."\n";
-				
-				if ($parallax_type == '3D') {
-					echo '							ddd_shadow:"'. esc_attr($parallax_ddd_shadow) .'",'."\n";
-					echo '							ddd_bgfreeze:"'. esc_attr($parallax_ddd_bgfreeze) .'",'."\n";
-					echo '							ddd_overflow:"'. esc_attr($parallax_ddd_overflow) .'",'."\n";
-					echo '							ddd_layer_overflow:"'. esc_attr($parallax_ddd_layer_overflow) .'",'."\n";
-					echo '							ddd_z_correction:'. esc_attr($parallax_ddd_zcorrection) .','."\n";
-					//echo '							ddd_path:"'. esc_attr($parallax_ddd_path) .'",'."\n";
-				}
-
-				if($disable_parallax_mobile == 'on'){
-					echo '							disable_onmobile:"on"'."\n";
-				}
-				echo '						},'."\n";
-			}
-			
-			if ($use_parallax != 'on' || ($use_parallax == 'on' && $parallax_type !='3D'))
-				echo '						shadow:'. esc_attr($this->slider->getParam("shadow_type","2")) .','."\n";
-			
-			if($use_spinner == '-1'){
-				echo '						spinner:"off",'."\n";
-			}else{
-				echo '						spinner:"spinner'. esc_attr($use_spinner).'",'."\n";
-			}
-			
-			if($slider_type !== 'hero'){
-				echo '						stopLoop:"'. esc_attr($stopSlider) .'",'."\n";
-				echo '						stopAfterLoops:'. esc_attr($stopAfterLoops) .','."\n";
-				echo '						stopAtSlide:'. esc_attr($stopAtSlide) .','."\n";
-				echo '						shuffle:"'. esc_attr($this->slider->getParam("shuffle","off")) .'",'."\n";
-			}
-
-			echo '						autoHeight:"'. esc_attr($this->slider->getParam("auto_height", 'off')). '",'."\n";
-			
-			if($this->slider->getParam("slider_type") == "fullscreen"){				
-				echo '						fullScreenAutoWidth:"'. esc_attr($this->slider->getParam("autowidth_force","off")) .'",'."\n";
-				echo '						fullScreenAlignForce:"'. esc_attr($this->slider->getParam("full_screen_align_force","off")) .'",'."\n";
-				echo '						fullScreenOffsetContainer: "'. esc_attr($this->slider->getParam("fullscreen_offset_container","")) .'",'."\n";
-				echo '						fullScreenOffset: "'. esc_attr($this->slider->getParam("fullscreen_offset_size","")) .'",'."\n";
-			}
-			if($enable_progressbar !== 'on' || $slider_type == 'hero'){
-				echo '						disableProgressBar:"on",'."\n";
-			}
-			echo '						hideThumbsOnMobile:"'. esc_attr($hideThumbsOnMobile) .'",'."\n";
-			echo '						hideSliderAtLimit:'. esc_attr($hideSliderAtLimit) .','."\n";
-			echo '						hideCaptionAtLimit:'. esc_attr($hideCaptionAtLimit) .','."\n";
-			echo '						hideAllCaptionAtLilmit:'. esc_attr($hideAllCaptionAtLimit) .','."\n";
-			
-			if($slider_type !== 'hero'){
-				$start_with_slide_enable = $this->slider->getParam('start_with_slide_enable', 'off');
-				if($start_with_slide_enable == 'on'){
-					echo '						startWithSlide:'. esc_attr($startWithSlide).','."\n";
-				}
-			}
-			
-			echo '						debugMode:'.$debugmode.','."\n";
-			if($this->slider->getParam('waitforinit', 'off') == 'on'){
-				echo '						waitForInit:true,'."\n";
-			}
-			echo '						fallbacks: {'."\n";
-			
-			if($this->slider->getParam('allow_android_html5_autoplay', 'on') !== 'on'){
-				echo '							allowHTML5AutoPlayOnAndroid: false,'."\n";
-			}
-			if($this->slider->getParam('ignore_height_changes', 'off') !== 'off'){
-				echo '							ignoreHeightChanges:"'. esc_attr($this->slider->getParam('ignore_height_changes', 'off')).'",'."\n";
-				echo '							ignoreHeightChangesSize:'. intval(esc_attr($this->slider->getParam('ignore_height_changes_px', '0'))).','."\n";
-			}
-			
-			echo '							simplifyAll:"'. esc_attr($this->slider->getParam('simplify_ie8_ios4', 'off')).'",'."\n";
-			
-			if($slider_type !== 'hero')
-				echo '							nextSlideOnWindowFocus:"'. esc_attr($this->slider->getParam('next_slide_on_window_focus', 'off')).'",'."\n";
-			
-			$dfl = ($this->slider->getParam('disable_focus_listener', 'off') == 'on') ? 'true' : 'false';
-			echo '							disableFocusListener:'.$dfl.','."\n";
-			
-			if($disableKenBurnOnMobile == 'on'){
-				echo '						panZoomDisableOnMobile:"on",'."\n";
-			}
-			echo '						}'."\n";
-			
-			echo '					});'."\n";
-
-			if($this->slider->getParam("custom_javascript", '') !== ''){
-				echo str_replace('var counter = {val:doctop};', 'var counter = {val:(window.pageYOffset || document.documentElement.scrollTop)  - (document.documentElement.clientTop || 0)};', stripslashes($this->slider->getParam("custom_javascript", '')));
-			}
+	if($optFullScreen == 'on'){
+		$sl_layout = 'fullscreen';
+	}elseif($optFullWidth == 'on'){
+		$sl_layout = 'fullwidth';
+	}else{
+		$sl_layout = 'auto';
+	}
+	echo '			sliderLayout:"'.$sl_layout.'",'."\n";
+	echo '			dottedOverlay:"'. esc_attr($this->slider->getParam("background_dotted_overlay","none")).'",'."\n";
+	echo '			delay:'.esc_attr($this->slider->getParam("delay","9000",RevSlider::FORCE_NUMERIC)) .','."\n";
+	
+	do_action('revslider_fe_javascript_option_output', $this->slider);
+	
+	$enable_arrows = $this->slider->getParam('enable_arrows','off');
+	$enable_bullets = $this->slider->getParam('enable_bullets','off');
+	$enable_tabs = $this->slider->getParam('enable_tabs','off');
+	$enable_thumbnails = $this->slider->getParam('enable_thumbnails','off');
+	
+	$rs_nav = new RevSliderNavigation();
+	$all_navs = $rs_nav->get_all_navigations();
+	$touch_enabled = $this->slider->getParam('touchenabled', 'on');
+	$touch_enabled_desktop = $this->slider->getParam('touchenabled_desktop', 'off');
+	$keyboard_enabled = $this->slider->getParam('keyboard_navigation', 'off');
+	$keyboard_direction = $this->slider->getParam('keyboard_direction', 'horizontal');
+	$mousescroll_enabled = $this->slider->getParam('mousescroll_navigation', 'off');
+	$mousescroll_reverse = $this->slider->getParam('mousescroll_navigation_reverse', 'default');
+	
+	//no navigation if we are hero
+	if($slider_type !== 'hero' && ($enable_arrows == 'on' || $enable_bullets == 'on' || $enable_tabs == 'on' || $enable_thumbnails == 'on' || $touch_enabled == 'on' || $keyboard_enabled == 'on' || $mousescroll_enabled != 'off')){
+		echo '			navigation: {'."\n";
+		echo '				keyboardNavigation:"'. esc_attr($keyboard_enabled) .'",'."\n";
+		echo '				keyboard_direction: "'. esc_attr($keyboard_direction) .'",'."\n";
+		echo '				mouseScrollNavigation:"'. esc_attr($mousescroll_enabled) .'",'."\n";
+		echo ' 							mouseScrollReverse:"'. esc_attr($mousescroll_reverse) .'",'."\n";
+		
+		if($slider_type !== 'hero')
+			echo '				onHoverStop:"'. esc_attr($this->slider->getParam("stop_on_hover","on")).'",'."\n";
+		
+		$add_comma = false;
+		if($touch_enabled == 'on'){
+			$add_comma = true;
+			echo '				touch:{'."\n";
+			echo '					touchenabled:"'. esc_attr($touch_enabled).'",'."\n";
+			echo '					touchOnDesktop:"'. esc_attr($touch_enabled_desktop).'",'."\n";
+			echo '					swipe_threshold: '. esc_attr($swipe_velocity) .','."\n";
+			echo '					swipe_min_touches: '. esc_attr($swipe_min_touches) .','."\n";
+			echo '					swipe_direction: "'. esc_attr($swipe_direction) .'",'."\n";
+			echo '					drag_block_vertical: ';
+			echo ($drag_block_vertical == 'true') ? 'true' : 'false';
+			echo "\n";
 			echo '				}'."\n";
+		}
+		
+		if($enable_arrows == 'on'){
+			$navigation_arrow_style = $this->slider->getParam('navigation_arrow_style','round');
+			$arrows_always_on = ($this->slider->getParam('arrows_always_on','true') == 'true') ? 'true' : 'false';
+			$hide_arrows_on_mobile = ($this->slider->getParam('hide_arrows_on_mobile','off') == 'on') ? 'true' : 'false';
+			$hide_arrows_over = ($this->slider->getParam('hide_arrows_over','off') == 'on') ? 'true' : 'false';
+			$arr_tmp = '';
 			
-			do_action('revslider_fe_javascript_output', $this->slider, $this->sliderHtmlID);
+			$ff = false;
+			if(!empty($all_navs)){
+				foreach($all_navs as $cur_nav){
+					if($cur_nav['handle'] == $navigation_arrow_style){
+						if(isset($cur_nav['markup']['arrows'])) $arr_tmp = $cur_nav['markup']['arrows'];
+						if(isset($cur_nav['css']['arrows'])) $nav_css .= $rs_nav->add_placeholder_modifications($cur_nav['css']['arrows'], $cur_nav['handle'], 'arrows', $cur_nav['settings'], $this->slider, $this)."\n";
+						$ff = true;
+						break;
+					}
+				}
+			}
+			if($ff == false){
+				$navigation_arrow_style = '';
+			}
 			
-			echo '			});	/*ready*/'."\n";
-			?>
-		</script>
+			$navigation_arrow_style = $rs_nav->translate_navigation($navigation_arrow_style);
+			if($add_comma) echo '				,'."\n";
+			$add_comma = true;
+			echo '				arrows: {'."\n";
+			echo '					style:"'. esc_attr($navigation_arrow_style).'",'."\n";
+			echo '					enable:';
+			echo ($this->slider->getParam('enable_arrows','off') == 'on') ? 'true' : 'false'; 
+			echo ','."\n";
+			echo ($this->slider->getParam('rtl_arrows','off') == 'on') ? '								rtl:true,'."\n" : '';
+			echo '					hide_onmobile:'.$hide_arrows_on_mobile.','."\n";	
+			
+			if($hide_arrows_on_mobile === 'true') {
+				echo '					hide_under:'. esc_attr($this->slider->getParam('arrows_under_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			if($hide_arrows_over === 'true') {
+				echo '					hide_over:'. esc_attr($this->slider->getParam('arrows_over_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			echo '					hide_onleave:'.$arrows_always_on.','."\n";
+			if($arrows_always_on === 'true'){
+				echo '					hide_delay:'. esc_attr($this->slider->getParam('hide_arrows','200',RevSlider::FORCE_NUMERIC)).','."\n";
+				echo '					hide_delay_mobile:'. esc_attr($this->slider->getParam('hide_arrows_mobile','1200',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			echo '					tmp:\'';
+			echo preg_replace( "/\r|\n/", "", $arr_tmp);
+			echo '\','."\n";
+			echo '					left: {'."\n";
+			echo (in_array($this->slider->getParam('leftarrow_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';
+			echo '						h_align:"'. esc_attr($this->slider->getParam('leftarrow_align_hor','left')) .'",'."\n";
+			echo '						v_align:"'. esc_attr($this->slider->getParam('leftarrow_align_vert','center')) .'",'."\n";
+			echo '						h_offset:'. esc_attr($this->slider->getParam('leftarrow_offset_hor','20',RevSlider::FORCE_NUMERIC)) .','."\n";
+			echo '						v_offset:'. esc_attr($this->slider->getParam('leftarrow_offset_vert','0',RevSlider::FORCE_NUMERIC))."\n";										
+			echo '					},'."\n";
+			echo '					right: {'."\n";
+			echo (in_array($this->slider->getParam('rightarrow_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';
+			echo '						h_align:"'. esc_attr($this->slider->getParam('rightarrow_align_hor','right')).'",'."\n";
+			echo '						v_align:"'. esc_attr($this->slider->getParam('rightarrow_align_vert','center')).'",'."\n";
+			echo '						h_offset:'. esc_attr($this->slider->getParam('rightarrow_offset_hor','20',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '						v_offset:'. esc_attr($this->slider->getParam('rightarrow_offset_vert','0',RevSlider::FORCE_NUMERIC))."\n";					
+			echo '					}'."\n";
+			echo '				}'."\n";
+		}
+		
+		if($enable_bullets == 'on'){
+			$navigation_bullets_style = $this->slider->getParam('navigation_bullets_style','round');
+			$bullets_always_on = ($this->slider->getParam('bullets_always_on','true') == 'true') ? 'true' : 'false';
+			$hide_bullets_on_mobile = ($this->slider->getParam('hide_bullets_on_mobile','off') == 'on') ? 'true' : 'false';
+			$hide_bullets_over = ($this->slider->getParam('hide_bullets_over','off') == 'on') ? 'true' : 'false';
+			$bul_tmp = '<span class="tp-bullet-image"></span><span class="tp-bullet-title"></span>';
+
+			if(!empty($all_navs)){
+				foreach($all_navs as $cur_nav){
+					if($cur_nav['handle'] == $navigation_bullets_style){
+						if(isset($cur_nav['markup']['bullets'])) $bul_tmp = $cur_nav['markup']['bullets'];
+						if(isset($cur_nav['css']['bullets'])) $nav_css .= $rs_nav->add_placeholder_modifications($cur_nav['css']['bullets'], $cur_nav['handle'], 'bullets', $cur_nav['settings'], $this->slider, $this)."\n";
+						break;
+					}
+				}
+			}
+			
+			$navigation_bullets_style = $rs_nav->translate_navigation($navigation_bullets_style);
+			
+			if($add_comma) echo '				,'."\n";
+			$add_comma = true;
+			echo '				bullets: {'."\n";
+			echo '					enable:';
+			echo ($this->slider->getParam('enable_bullets','off') == 'on') ? 'true' : 'false';
+			echo ','."\n";
+			echo ($this->slider->getParam('rtl_bullets','off') == 'on') ? '								rtl:true,'."\n" : '';
+			echo '					hide_onmobile:'.$hide_bullets_on_mobile.','."\n";
+			if($hide_bullets_on_mobile === 'true'){
+				echo '					hide_under:'. esc_attr($this->slider->getParam('bullets_under_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			if($hide_bullets_over === 'true'){
+				echo '					hide_over:'. esc_attr($this->slider->getParam('bullets_over_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			echo '					style:"'. esc_attr($navigation_bullets_style).'",'."\n";
+			echo '					hide_onleave:'.$bullets_always_on.','."\n";
+			if($bullets_always_on === 'true'){
+				echo '					hide_delay:'. esc_attr($this->slider->getParam('hide_bullets','200',RevSlider::FORCE_NUMERIC)).','."\n";
+				echo '					hide_delay_mobile:'. esc_attr($this->slider->getParam('hide_bullets_mobile','1200',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			echo '					direction:"'. esc_attr($this->slider->getParam('bullets_direction','horizontal')).'",'."\n";
+			echo (in_array($this->slider->getParam('bullets_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';
+			echo '					h_align:"'. esc_attr($this->slider->getParam('bullets_align_hor','right')).'",'."\n";
+			echo '					v_align:"'. esc_attr($this->slider->getParam('bullets_align_vert','center')).'",'."\n";
+			echo '					h_offset:'. esc_attr($this->slider->getParam('bullets_offset_hor','20',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					v_offset:'. esc_attr($this->slider->getParam('bullets_offset_vert','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					space:'. esc_attr($this->slider->getParam('bullets_space','5',RevSlider::FORCE_NUMERIC)).','."\n";					
+			echo '					tmp:\'';
+			echo preg_replace( "/\r|\n/", "", $bul_tmp);
+			echo '\''."\n";
+			echo '				}'."\n";
+		}
+		if($enable_thumbnails == 'on'){
+			$thumbnails_style = $this->slider->getParam('thumbnails_style','round');
+			$thumbs_always_on = ($this->slider->getParam('thumbs_always_on','true') == 'true') ? 'true' : 'false';
+			$hide_thumbs_on_mobile = ($this->slider->getParam('hide_thumbs_on_mobile','off') == 'on') ? 'true' : 'false';
+			$hide_thumbs_over = ($this->slider->getParam('hide_thumbs_over','off') == 'on') ? 'true' : 'false';
+			$thumbs_tmp = '<span class="tp-thumb-image"></span><span class="tp-thumb-title"></span>';
+			
+			if(!empty($all_navs)){
+				foreach($all_navs as $cur_nav){
+					if($cur_nav['handle'] == $thumbnails_style){
+						if(isset($cur_nav['markup']['thumbs'])) $thumbs_tmp = $cur_nav['markup']['thumbs'];
+						if(isset($cur_nav['css']['thumbs'])) $nav_css .= $rs_nav->add_placeholder_modifications($cur_nav['css']['thumbs'], $cur_nav['handle'], 'thumbs', $cur_nav['settings'], $this->slider, $this)."\n";
+						break;
+					}
+				}
+			}
+			
+			$thumbnails_style = $rs_nav->translate_navigation($thumbnails_style);
+			
+			if($add_comma) echo '				,'."\n";
+			$add_comma = true;
+			echo '				thumbnails: {'."\n";
+			echo '					style:"'. esc_attr($thumbnails_style).'",'."\n";
+			echo '					enable:';
+			echo ($this->slider->getParam('enable_thumbnails','off') == 'on') ? 'true' : 'false';
+			echo ','."\n";
+			echo ($this->slider->getParam('rtl_thumbnails','off') == 'on') ? '								rtl:true,'."\n" : '';
+			echo '					width:'. esc_attr($this->slider->getParam('thumb_width','100',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					height:'. esc_attr($this->slider->getParam('thumb_height','50',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					min_width:'. esc_attr($this->slider->getParam('thumb_width_min','100',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					wrapper_padding:'. esc_attr($this->slider->getParam('thumbnails_padding','5',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					wrapper_color:"'.TPColorpicker::convert(esc_attr($this->slider->getParam('thumbnails_wrapper_color','transparent')),$this->slider->getParam('thumbnails_wrapper_opacity',false)).'",'."\n";					
+			echo '					tmp:\'';
+			echo preg_replace( "/\r|\n/", "", $thumbs_tmp);
+			echo '\','."\n";
+			echo '					visibleAmount:'. esc_attr($this->slider->getParam('thumb_amount','5',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					hide_onmobile:'.$hide_thumbs_on_mobile.','."\n";
+			if($hide_thumbs_on_mobile === 'true'){
+				echo '					hide_under:'. esc_attr($this->slider->getParam('thumbs_under_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			if($hide_thumbs_over === 'true'){
+				echo '					hide_over:'. esc_attr($this->slider->getParam('thumbs_over_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			echo '					hide_onleave:'.$thumbs_always_on.','."\n";
+			if($thumbs_always_on === 'true'){
+				echo '					hide_delay:'. esc_attr($this->slider->getParam('hide_thumbs','200',RevSlider::FORCE_NUMERIC)).','."\n";
+				echo '					hide_delay_mobile:'. esc_attr($this->slider->getParam('hide_thumbs_mobile','1200',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			echo '					direction:"'. esc_attr($this->slider->getParam('thumbnail_direction','horizontal')).'",'."\n";
+			echo '					span:';
+			echo ($this->slider->getParam('span_thumbnails_wrapper','off') == 'on') ? 'true' : 'false';
+			echo ','."\n";
+			echo '					position:"'. esc_attr($this->slider->getParam('thumbnails_inner_outer','inner')).'",'."\n";
+			if($this->slider->getParam('thumbnails_inner_outer','inner') == 'inner'){
+				echo (in_array($this->slider->getParam('thumbnails_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';					
+			}
+			echo '					space:'. esc_attr($this->slider->getParam('thumbnails_space','5',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					h_align:"'. esc_attr($this->slider->getParam('thumbnails_align_hor','left')).'",'."\n";
+			echo '					v_align:"'. esc_attr($this->slider->getParam('thumbnails_align_vert','center')).'",'."\n";
+			echo '					h_offset:'. esc_attr($this->slider->getParam('thumbnails_offset_hor','20',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					v_offset:'. esc_attr($this->slider->getParam('thumbnails_offset_vert','0',RevSlider::FORCE_NUMERIC))."\n";					
+			echo '				}'."\n";
+		}
+		if($enable_tabs == 'on'){
+			$tabs_style = $this->slider->getParam('tabs_style','round');
+			$tabs_always_on = ($this->slider->getParam('tabs_always_on','true') == 'true') ? 'true' : 'false';
+			$hide_tabs_on_mobile = ($this->slider->getParam('hide_tabs_on_mobile','off') == 'on') ? 'true' : 'false';
+			$hide_tabs_over = ($this->slider->getParam('hide_tabs_over','off') == 'on') ? 'true' : 'false';
+			$tabs_tmp = '<span class="tp-thumb-image"></span>';
+			
+			if(!empty($all_navs)){
+				foreach($all_navs as $cur_nav){
+					if($cur_nav['handle'] == $tabs_style){
+						if(isset($cur_nav['markup']['tabs'])) $tabs_tmp = $cur_nav['markup']['tabs'];
+						if(isset($cur_nav['css']['tabs'])) $nav_css .= $rs_nav->add_placeholder_modifications($cur_nav['css']['tabs'], $cur_nav['handle'], 'tabs', $cur_nav['settings'], $this->slider, $this)."\n";
+						break;
+					}
+				}
+			}
+			
+			$tabs_style = $rs_nav->translate_navigation($tabs_style);
+			
+			if($add_comma) echo '				,'."\n";
+			$add_comma = true;
+			echo '				tabs: {'."\n";
+			echo '					style:"'. esc_attr($tabs_style).'",'."\n";
+			echo '					enable:';
+			echo ($this->slider->getParam('enable_tabs','off') == 'on') ? 'true' : 'false';
+			echo ','."\n";
+			echo ($this->slider->getParam('rtl_tabs','off') == 'on') ? '								rtl:true,'."\n" : '';
+			echo '					width:'. esc_attr($this->slider->getParam('tabs_width','100',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					height:'. esc_attr($this->slider->getParam('tabs_height','50',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					min_width:'. esc_attr($this->slider->getParam('tabs_width_min','100',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					wrapper_padding:'. esc_attr($this->slider->getParam('tabs_padding','5',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					wrapper_color:"'.TPColorpicker::convert(esc_attr($this->slider->getParam('tabs_wrapper_color','transparent')),$this->slider->getParam('tabs_wrapper_opacity',false)).'",'."\n";					
+			echo '					tmp:\'';
+			echo preg_replace( "/\r|\n/", "", $tabs_tmp);
+			echo '\','."\n";
+			echo '					visibleAmount: '. esc_attr($this->slider->getParam('tabs_amount','5',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					hide_onmobile: '.$hide_tabs_on_mobile.','."\n";
+			if($hide_tabs_on_mobile === 'true'){
+				echo '					hide_under:'. esc_attr($this->slider->getParam('tabs_under_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			if($hide_tabs_over === 'true'){
+				echo '					hide_over:'. esc_attr($this->slider->getParam('tabs_over_hidden','0',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			echo '					hide_onleave:'.$tabs_always_on.','."\n";
+			if($tabs_always_on === 'true'){
+				echo '					hide_delay:'. esc_attr($this->slider->getParam('hide_tabs','200',RevSlider::FORCE_NUMERIC)).','."\n";
+				echo '					hide_delay_mobile:'. esc_attr($this->slider->getParam('hide_tabs_mobile','1200',RevSlider::FORCE_NUMERIC)).','."\n";
+			}
+			echo '					hide_delay:'. esc_attr($this->slider->getParam('hide_tabs','200',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					direction:"'. esc_attr($this->slider->getParam('tabs_direction','horizontal')).'",'."\n";
+			echo '					span:';
+			echo ($this->slider->getParam('span_tabs_wrapper','off') == 'on') ? 'true' : 'false';
+			echo ','."\n";
+			echo '					position:"'. esc_attr($this->slider->getParam('tabs_inner_outer','inner')).'",'."\n";
+			if($this->slider->getParam('tabs_inner_outer','inner') == 'inner'){
+				echo (in_array($this->slider->getParam('tabs_position', 'slider'),array('layergrid','grid'))) ? '									container:"layergrid",'."\n" : '';					
+			}
+			echo '					space:'. esc_attr($this->slider->getParam('tabs_space','5',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					h_align:"'. esc_attr($this->slider->getParam('tabs_align_hor','left')).'",'."\n";
+			echo '					v_align:"'. esc_attr($this->slider->getParam('tabs_align_vert','center')).'",'."\n";
+			echo '					h_offset:'. esc_attr($this->slider->getParam('tabs_offset_hor','20',RevSlider::FORCE_NUMERIC)).','."\n";
+			echo '					v_offset:'. esc_attr($this->slider->getParam('tabs_offset_vert','0',RevSlider::FORCE_NUMERIC))."\n";											
+			echo '				}'."\n";
+		}
+		echo '			},'."\n";
+	}else{ //maybe write navigation stuff still here
+		if($slider_type !== 'hero'){
+			echo '			navigation: {'."\n";				
+			echo '				onHoverStop:"'. esc_attr($this->slider->getParam("stop_on_hover","on")).'",'."\n";				
+			echo '			},'."\n";
+		}
+	}
+	
+	if($slider_type == 'carousel'){
+		$car_inf = $this->slider->getParam('carousel_infinity','off');
+		$car_space = $this->slider->getParam('carousel_space',0,RevSlider::FORCE_NUMERIC);
+		$car_stretch = $this->slider->getParam('carousel_stretch','off');
+		$car_all_layers = $this->slider->getParam('showalllayers_carousel','off');
+		$car_maxitems = $this->slider->getParam('carousel_maxitems',5,RevSlider::FORCE_NUMERIC);
+		$car_fadeout = $this->slider->getParam('carousel_fadeout','on');
+		$car_varyfade = $this->slider->getParam('carousel_varyfade','off');
+		
+		$car_easing = $this->slider->getParam('carousel_easing','Power3.easeInOut');
+		$car_speed = $this->slider->getParam('carousel_speed','800',RevSlider::FORCE_NUMERIC);
+		
+		$car_hpos = $this->slider->getParam('carousel_hposition','center');
+		$car_vpos = $this->slider->getParam('carousel_vposition','center');
+		
+		$carousel_rotation = $this->slider->getParam('carousel_rotation','off');
+		$car_maxrotation = $this->slider->getParam('carousel_maxrotation',90,RevSlider::FORCE_NUMERIC);
+		$car_varyrotate = $this->slider->getParam('carousel_varyrotate','off');
+		
+		$carousel_scale = $this->slider->getParam('carousel_scale','off');
+		$car_varyscale = $this->slider->getParam('carousel_varyscale','off');
+		$car_scaledown = $this->slider->getParam('carousel_scaledown',50,RevSlider::FORCE_NUMERIC);
+		if($car_scaledown > 100) $car_scaledown = 100;
+		
+		$car_borderr = $this->slider->getParam('carousel_borderr',0,RevSlider::FORCE_NUMERIC);
+		$car_borderr_unit = $this->slider->getParam('carousel_borderr_unit','px');
+		
+		$car_padding_top = $this->slider->getParam('carousel_padding_top',0,RevSlider::FORCE_NUMERIC);
+		$car_padding_bottom = $this->slider->getParam('carousel_padding_bottom',0,RevSlider::FORCE_NUMERIC);
+		
+		echo '			carousel: {'."\n";
+		if($car_borderr > 0){
+			echo '				border_radius: "'. esc_attr($car_borderr.$car_borderr_unit) .'",'."\n";
+		}
+		if($car_padding_top > 0){
+			echo '				padding_top: "'. esc_attr($car_padding_top) .'",'."\n";
+		}
+		if($car_padding_bottom > 0){
+			echo '				padding_bottom: "'. esc_attr($car_padding_bottom) .'",'."\n";
+		}
+		if($carousel_rotation == 'on'){
+			echo '				maxRotation: '. esc_attr($car_maxrotation).','."\n";
+			echo '				vary_rotation: "'. esc_attr($car_varyrotate).'",'."\n";
+		}
+		if($carousel_scale == 'on'){
+			echo '				minScale: '. esc_attr($car_scaledown).','."\n";
+			echo '				vary_scale: "'. esc_attr($car_varyscale).'",'."\n";
+		}
+		echo '				horizontal_align: "'. esc_attr($car_hpos).'",'."\n";
+		echo '				vertical_align: "'. esc_attr($car_vpos).'",'."\n";
+		echo '				fadeout: "'. esc_attr($car_fadeout).'",'."\n";
+		if($car_fadeout == 'on'){
+			echo '				vary_fade: "'. esc_attr($car_varyfade).'",'."\n";
+		}
+		echo '				maxVisibleItems: '. esc_attr($car_maxitems).','."\n";
+		echo '				infinity: "'. esc_attr($car_inf).'",'."\n";
+		echo '				space: '. esc_attr($car_space).','."\n";
+		echo '				stretch: "'. esc_attr($car_stretch).'",'."\n";
+		echo ' 							showLayersAllTime: "'.esc_attr($car_all_layers).'",'."\n";
+		echo ' 							easing: "'.esc_attr($car_easing).'",'."\n";
+		echo ' 							speed: "'.esc_attr($car_speed).'"'."\n";
+		
+		echo '			},'."\n";
+	}
+	
+	$label_viewport = $this->slider->getParam('label_viewport', 'off');
+	$label_presetheight = $this->slider->getParam('label_presetheight', 'off');
+	$viewport_start = $this->slider->getParam('viewport_start', 'wait');
+	$viewport_area = $this->slider->getParam('viewport_area', 80, RevSlider::FORCE_NUMERIC);
+	if($label_viewport === 'on'){
+		echo '			viewPort: {'."\n";
+		echo '				enable:true,'."\n";
+		echo '				outof:"'.esc_attr($viewport_start).'",'."\n";
+		echo '				visible_area:"'.esc_attr($viewport_area).'%",'."\n";
+		echo '				presize:';
+		echo ($label_presetheight == 'off') ? 'false' : 'true';
+		echo "\n";
+		echo '			},'."\n";
+	}
+	
+	if(isset($csizes['level']) && !empty($csizes['level'])){
+		echo '			responsiveLevels:['. $csizes['level'] .'],'."\n";
+		echo '			visibilityLevels:['. $csizes['level'] .'],'."\n";
+		echo '			gridwidth:['. $csizes['width'] .'],'."\n";
+		echo '			gridheight:['. $csizes['height'] .'],'."\n";
+	}else{
+		echo '			visibilityLevels:['. $csizes['visibilitylevel'] .'],'."\n";
+		echo '			gridwidth:'. $csizes['width'].','."\n";
+		echo '			gridheight:'. $csizes['height'].','."\n";
+	}
+	
+	$lazyLoad = $this->slider->getParam('lazy_load_type', false);
+	if($lazyLoad === false){ //do fallback checks to removed lazy_load value since version 5.0 and replaced with an enhanced version
+		$old_ll = $this->slider->getParam('lazy_load', 'off');
+		$lazyLoad = ($old_ll == 'on') ? 'all' : 'none';
+	}
+	echo '			lazyType:"'. esc_attr($lazyLoad).'",'."\n";
+	
+	$minHeight = ($this->slider->getParam('slider_type') !== 'fullscreen') ? $this->slider->getParam('min_height', '0') : $this->slider->getParam('fullscreen_min_height', '0');
+	if($minHeight > 0){
+		echo '			minHeight:"'. $minHeight.'",'."\n";
+	}
+
+	$use_scrolleffect = $this->slider->getParam('fade_scrolleffect','off') !== 'off' || $this->slider->getParam('blur_scrolleffect','off') !== 'off' || $this->slider->getParam('grayscale_scrolleffect','off') !== 'off' ? 'on' : 'off'; //|| $this->slider->getParam('scale_scrolleffect','off') !== 'off' 
+
+	if($use_scrolleffect =='on') {
+		echo '			scrolleffect: {'."\n";
+		if($this->slider->getParam('fade_scrolleffect','off') !== 'off')
+			echo '				fade:"'. esc_attr($this->slider->getParam('fade_scrolleffect','off')) .'",'."\n";				
+
+		if($this->slider->getParam('blur_scrolleffect','off') !== 'off')
+			echo '				blur:"'. esc_attr($this->slider->getParam('blur_scrolleffect','off')) .'",'."\n";				
+
+		//if($this->slider->getParam('scale_scrolleffect','off') !== 'off')
+			//echo '				scale:"'. esc_attr($this->slider->getParam('scale_scrolleffect','off')) .'",'."\n";				
+
+		if($this->slider->getParam('grayscale_scrolleffect','off') !== 'off')
+			echo '				grayscale:"'. esc_attr($this->slider->getParam('grayscale_scrolleffect','off')) .'",'."\n";		
+
+		
+		if($this->slider->getParam('scrolleffect_maxblur','10') !== '10')
+		echo '				maxblur:"'. esc_attr($this->slider->getParam('scrolleffect_maxblur','10')) .'",'."\n";
+		
+		if($this->slider->getParam('scrolleffect_bg','off') !== 'off')
+			echo '				on_slidebg:"'. esc_attr($this->slider->getParam('scrolleffect_bg','off')) .'",'."\n";
+
+
+		if($this->slider->getParam('scrolleffect_layers','off') !== 'off')
+			echo '				on_layers:"'. esc_attr($this->slider->getParam('scrolleffect_layers','off')) .'",'."\n";
+
+		if($this->slider->getParam('scrolleffect_parallax_layers','off') !== 'off')
+			echo '				on_parallax_layers:"'. esc_attr($this->slider->getParam('scrolleffect_parallax_layers','off')) .'",'."\n";
+						
+		
+		if($this->slider->getParam('scrolleffect_static_layers','off') !== 'off')
+			echo '				on_static_layers:"'. esc_attr($this->slider->getParam('scrolleffect_static_layers','off')) .'",'."\n";
+		
+		if($this->slider->getParam('scrolleffect_static_parallax_layers','off') !== 'off')
+			echo '				on_parallax_static_layers:"'. esc_attr($this->slider->getParam('scrolleffect_static_parallax_layers','off')) .'",'."\n";
+		
+		if($this->slider->getParam('scrolleffect_direction','both') !== 'both')
+			echo '				direction:"'. esc_attr($this->slider->getParam('scrolleffect_direction','both')) .'",'."\n";
+		
+		if($this->slider->getParam('scrolleffect_multiplicator','1.3') !== '1.3')
+			echo '				multiplicator:"'. esc_attr($this->slider->getParam('scrolleffect_multiplicator','1.3')) .'",'."\n";
+		
+		if($this->slider->getParam('scrolleffect_multiplicator_layers','1.3') !== '1.3')
+			echo '				multiplicator_layers:"'. esc_attr($this->slider->getParam('scrolleffect_multiplicator_layers','1.3')) .'",'."\n";
+		
+		if($this->slider->getParam('scrolleffect_tilt','30') !== '30')
+			echo '				tilt:"'. esc_attr($this->slider->getParam('scrolleffect_tilt','30')) .'",'."\n";
+
+		if($this->slider->getParam('scrolleffect_off_mobile','on') !== 'on')
+			echo '				disable_on_mobile:"'. esc_attr($this->slider->getParam('scrolleffect_off_mobile','on')) .'",'."\n";
+		echo '			},'."\n";
+	}
+	
+	if($use_parallax == 'on'){
+		echo '			parallax: {'."\n";
+		echo '				type:"'. esc_attr($parallax_type) .'",'."\n";
+		echo '				origo:"'. esc_attr($parallax_origo) .'",'."\n";
+		echo '				speed:'. esc_attr($parallax_speed) .','."\n";
+		echo '				speedbg:'. esc_attr($parallax_bg_speed) .','."\n";
+		echo '				speedls:'. esc_attr($parallax_ls_speed) .','."\n";
+		echo '				levels:['. esc_attr($parallax_level) .'],'."\n";
+		
+		if ($parallax_type == '3D') {
+			echo '				ddd_shadow:"'. esc_attr($parallax_ddd_shadow) .'",'."\n";
+			echo '				ddd_bgfreeze:"'. esc_attr($parallax_ddd_bgfreeze) .'",'."\n";
+			echo '				ddd_overflow:"'. esc_attr($parallax_ddd_overflow) .'",'."\n";
+			echo '				ddd_layer_overflow:"'. esc_attr($parallax_ddd_layer_overflow) .'",'."\n";
+			echo '				ddd_z_correction:'. esc_attr($parallax_ddd_zcorrection) .','."\n";
+			//echo '				ddd_path:"'. esc_attr($parallax_ddd_path) .'",'."\n";
+		}
+
+		if($disable_parallax_mobile == 'on'){
+			echo '				disable_onmobile:"on"'."\n";
+		}
+		echo '			},'."\n";
+	}
+	
+	if ($use_parallax != 'on' || ($use_parallax == 'on' && $parallax_type !='3D'))
+		echo '			shadow:'. esc_attr($this->slider->getParam("shadow_type","2")) .','."\n";
+	
+	if($use_spinner == '-1'){
+		echo '			spinner:"off",'."\n";
+	}else{
+		echo '			spinner:"spinner'. esc_attr($use_spinner).'",'."\n";
+	}
+	
+	if($slider_type !== 'hero'){
+		echo '			stopLoop:"'. esc_attr($stopSlider) .'",'."\n";
+		echo '			stopAfterLoops:'. esc_attr($stopAfterLoops) .','."\n";
+		echo '			stopAtSlide:'. esc_attr($stopAtSlide) .','."\n";
+		echo '			shuffle:"'. esc_attr($this->slider->getParam("shuffle","off")) .'",'."\n";
+	}
+
+	echo '			autoHeight:"'. esc_attr($this->slider->getParam("auto_height", 'off')). '",'."\n";
+	
+	if($this->slider->getParam("slider_type") == "fullscreen"){				
+		echo '			fullScreenAutoWidth:"'. esc_attr($this->slider->getParam("autowidth_force","off")) .'",'."\n";
+		echo '			fullScreenAlignForce:"'. esc_attr($this->slider->getParam("full_screen_align_force","off")) .'",'."\n";
+		echo '			fullScreenOffsetContainer: "'. esc_attr($this->slider->getParam("fullscreen_offset_container","")) .'",'."\n";
+		echo '			fullScreenOffset: "'. esc_attr($this->slider->getParam("fullscreen_offset_size","")) .'",'."\n";
+	}
+	if($enable_progressbar !== 'on' || $slider_type == 'hero'){
+		echo '			disableProgressBar:"on",'."\n";
+	}
+	echo '			hideThumbsOnMobile:"'. esc_attr($hideThumbsOnMobile) .'",'."\n";
+	echo '			hideSliderAtLimit:'. esc_attr($hideSliderAtLimit) .','."\n";
+	echo '			hideCaptionAtLimit:'. esc_attr($hideCaptionAtLimit) .','."\n";
+	echo '			hideAllCaptionAtLilmit:'. esc_attr($hideAllCaptionAtLimit) .','."\n";
+	
+	if($slider_type !== 'hero'){
+		$start_with_slide_enable = $this->slider->getParam('start_with_slide_enable', 'off');
+		if($start_with_slide_enable == 'on'){
+			echo '			startWithSlide:'. esc_attr($startWithSlide).','."\n";
+		}
+	}
+	
+	echo '			debugMode:'.$debugmode.','."\n";
+	if($this->slider->getParam('waitforinit', 'off') == 'on'){
+		echo '			waitForInit:true,'."\n";
+	}
+	echo '			fallbacks: {'."\n";
+	
+	if($this->slider->getParam('allow_android_html5_autoplay', 'on') !== 'on'){
+		echo '				allowHTML5AutoPlayOnAndroid: false,'."\n";
+	}
+	if($this->slider->getParam('ignore_height_changes', 'off') !== 'off'){
+		echo '				ignoreHeightChanges:"'. esc_attr($this->slider->getParam('ignore_height_changes', 'off')).'",'."\n";
+		echo '				ignoreHeightChangesSize:'. intval(esc_attr($this->slider->getParam('ignore_height_changes_px', '0'))).','."\n";
+	}
+	
+	echo '				simplifyAll:"'. esc_attr($this->slider->getParam('simplify_ie8_ios4', 'off')).'",'."\n";
+	
+	if($slider_type !== 'hero')
+		echo '				nextSlideOnWindowFocus:"'. esc_attr($this->slider->getParam('next_slide_on_window_focus', 'off')).'",'."\n";
+	
+	$dfl = ($this->slider->getParam('disable_focus_listener', 'off') == 'on') ? 'true' : 'false';
+	echo '				disableFocusListener:'.$dfl.','."\n";
+	
+	if($disableKenBurnOnMobile == 'on'){
+		echo '			panZoomDisableOnMobile:"on",'."\n";
+	}
+	echo '			}'."\n";
+	
+	echo '		});'."\n";
+
+	if($this->slider->getParam("custom_javascript", '') !== ''){
+		echo str_replace('var counter = {val:doctop};', 'var counter = {val:(window.pageYOffset || document.documentElement.scrollTop)  - (document.documentElement.clientTop || 0)};', stripslashes($this->slider->getParam("custom_javascript", '')));
+	}
+	echo '	}'."\n";
+	echo '	';
+	do_action('revslider_fe_javascript_output', $this->slider, $this->sliderHtmlID);
+	echo ''."\n";
+	echo '});	/*ready*/'."\n";
+	?>
+</script>
 		<?php
 		if($js_to_footer && $this->previewMode == false && $markup_export == false){
 			$js_content = ob_get_contents();
@@ -5320,18 +5384,22 @@ class RevSliderOutput {
 	 * Output revslider_showDoubleJqueryError
 	 */
 	public function add_inline_double_jquery_error(){
-		?>
-		<script type="text/javascript">
-			function revslider_showDoubleJqueryError(sliderID) {
-				var errorMessage = "Revolution Slider Error: You have some jquery.js library include that comes after the revolution files js include.";
-				errorMessage += "<br> This includes make eliminates the revolution slider libraries, and make it not work.";
-				errorMessage += "<br><br> To fix it you can:<br>&nbsp;&nbsp;&nbsp; 1. In the Slider Settings -> Troubleshooting set option:  <strong><b>Put JS Includes To Body</b></strong> option to true.";
-				errorMessage += "<br>&nbsp;&nbsp;&nbsp; 2. Find the double jquery.js include and remove it.";
-				errorMessage = "<span style='font-size:16px;color:#BC0C06;'>" + errorMessage + "</span>";
-					jQuery(sliderID).show().html(errorMessage);
-			}
-		</script>
-		<?php
+		global $rs_double_jquery_script;
+		if($rs_double_jquery_script === false){
+			?>
+			<script type="text/javascript">
+				function revslider_showDoubleJqueryError(sliderID) {
+					var errorMessage = "Revolution Slider Error: You have some jquery.js library include that comes after the revolution files js include.";
+					errorMessage += "<br> This includes make eliminates the revolution slider libraries, and make it not work.";
+					errorMessage += "<br><br> To fix it you can:<br>&nbsp;&nbsp;&nbsp; 1. In the Slider Settings -> Troubleshooting set option:  <strong><b>Put JS Includes To Body</b></strong> option to true.";
+					errorMessage += "<br>&nbsp;&nbsp;&nbsp; 2. Find the double jquery.js include and remove it.";
+					errorMessage = "<span style='font-size:16px;color:#BC0C06;'>" + errorMessage + "</span>";
+						jQuery(sliderID).show().html(errorMessage);
+				}
+			</script>
+			<?php
+		}
+		$rs_double_jquery_script = true;
 	}
 
 
@@ -5438,6 +5506,8 @@ class RevSliderOutput {
 				$this->slider->initByMixed($sliderID);
 			}
 			
+			do_action('revslider_modify_core_settings', $this->slider);
+			
 			//modify settings if there are any special settings given through the shortcode
 			if(!empty($settings))
 				$this->modify_settings($settings);
@@ -5506,6 +5576,7 @@ class RevSliderOutput {
 			}
 			
 			$htmlBeforeSlider .= RevSliderOperations::printCleanFontImport();
+			
 			if($markup_export === true){
 				$htmlBeforeSlider .= '<!-- /FONT -->';
 			}

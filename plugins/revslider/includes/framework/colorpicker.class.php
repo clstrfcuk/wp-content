@@ -69,7 +69,8 @@ if(!class_exists('TPColorpicker')){
 					return TPColorpicker::processRgba(TPColorpicker::sanitizeHex($color), $opacity);
 				}
 				else {
-					return $color;
+					$color = TPColorpicker::process($color, true);
+					return $color[0];
 				}
 			}
 

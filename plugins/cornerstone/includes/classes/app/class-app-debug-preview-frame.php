@@ -1,5 +1,11 @@
 <?php
 
+// add_action('_cornerstone_preview_frame_debug',function() use ($state){
+//   echo '<pre>';
+//   var_dump( $state );
+//   echo '</pre>';
+// });
+
 class Cornerstone_App_Debug_Preview_Frame extends Cornerstone_Plugin_Component {
 
   public function setup() {

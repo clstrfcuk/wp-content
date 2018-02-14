@@ -18,9 +18,7 @@ class RevSliderWooCommerce{
 	
 	const META_REGULAR_PRICE = "_regular_price";
 	const META_SALE_PRICE = "_sale_price";
-	const META_STOCK_STATUS = "_stock_status";	//can be 'instock' or 'outofstock'
 	const META_SKU = "_sku";	//can be 'instock' or 'outofstock'
-	const META_FEATURED = "_featured";	//can be 'instock' or 'outofstock'
 	const META_STOCK = "_stock";	//can be 'instock' or 'outofstock'
 	
 	
@@ -41,6 +39,20 @@ class RevSliderWooCommerce{
 			return(true);
 		
 		return(false);
+	}
+	
+	
+	/**
+	 * compare wc current version to given version
+	 */
+	public static function version_check( $version = '1.0' ) {
+		if(self::isWooCommerceExists()){
+			global $woocommerce;
+			if(version_compare($woocommerce->version, $version, '>=')){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
@@ -93,6 +105,7 @@ class RevSliderWooCommerce{
 		$featuredOnly = RevSliderFunctions::getVal($args, self::ARG_FEATURED_ONLY);
 		
 		$arrQueries = array();
+		$tax_query = array();
 		
 		//get regular price array
 		if(!empty($regPriceFrom) || !empty($regPriceTo)){
@@ -105,22 +118,32 @@ class RevSliderWooCommerce{
 		}
 		
 		if($inStockOnly == "on"){
-			$query = array( 'key' => self::META_STOCK_STATUS,
-							'value' => "instock");
-			$arrQueries[] = $query;
+			$tax_query[] = array(
+				'taxonomy' => 'product_visibility',
+				'field'    => 'name',
+				'terms'    => 'outofstock',
+				'operator' => 'NOT IN',
+			);
 		}
 		
 		if($featuredOnly == "on"){
-			$query = array( 'key' => self::META_FEATURED,
-							'value' => "yes");
-			$arrQueries[] = $query;
+			$tax_query[] = array(
+				'taxonomy' => 'product_visibility',
+				'field'    => 'name',
+				'terms'    => 'featured',
+			);
 		}
 		
 		
 		$query = array();
-		if(!empty($arrQueries))
+		if(!empty($arrQueries)){
 			$query = array("meta_query"=>$arrQueries);
-			
+		}
+		
+		if(!empty($tax_query)){
+			$query['tax_query'] = $tax_query;
+		}
+		
 		return($query);			
 	}
 	

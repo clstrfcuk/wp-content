@@ -226,15 +226,16 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
           $match = $assignments['post_types'][ $post->post_type ];
         }
 
-        if ( isset( $assignments['posts'][ 'post-' . $post->ID ] ) ) {
-          $match = $assignments['posts'][ 'post-' . $post->ID ];
+        $source_post_id = CS()->loadComponent('Wpml')->get_source_id_for_post($post->ID, $post->post_type);
+        if ( isset( $assignments['posts'][ 'post-' . $source_post_id ] ) ) {
+          $match = $assignments['posts'][ 'post-' . $source_post_id ];
         }
 
       }
 
       // Allow integrations for force assigments. Unless you have a specific
-      // reason, it is better to use the `cs_locate_header_assignment` filter above.
-      // It allows individual posts to take precedence.
+      // reason, it is better to use the `cs_locate_header_assignment` filter above
+      // as that allows individual posts to take precedence.
       $match = apply_filters( 'cs_match_header_assignment', $match, $assignments, $post );
 
 
@@ -254,7 +255,7 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
       }
 
       if ( ! is_null( $match ) ) {
-        $match = (int) $match;
+        $match = (int) $match = (int) apply_filters( 'wpml_object_id', $match, 'cs_header', true, apply_filters( 'wpml_current_language', null ) );
       }
 
       $this->located = $match;

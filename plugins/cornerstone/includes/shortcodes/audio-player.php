@@ -70,13 +70,22 @@ function x_shortcode_audio_player( $atts ) {
 
 
   //
+  // Legacy.
+  //
+
+  GLOBAL $wp_version;
+
+  $legacy = ( version_compare( '4.9', $wp_version, '>' ) ) ? ' x-mejs-legacy-compat' : '';
+
+
+  //
   // Markup.
   //
 
   if ( ! empty( $sources ) ) {
 
     $sources = implode( '', $sources );
-    $audio = "<audio class=\"x-mejs{$advanced_controls}\"{$preload}{$autoplay}{$loop}>{$sources}</audio>";
+    $audio = "<audio class=\"x-mejs{$advanced_controls}{$legacy}\"{$preload}{$autoplay}{$loop}>{$sources}</audio>";
 
   } else {
     $audio = '<span class="x-mejs-no-source">' . csi18n('shortcodes.audio-missing-source') . '</span>';

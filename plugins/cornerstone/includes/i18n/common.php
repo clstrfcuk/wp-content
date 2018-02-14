@@ -5,7 +5,8 @@ return array(
   // Generic
   'untitled'        => __( 'Untitled', 'cornerstone' ),
   'untitled-entity' => __( 'Untitled %s', 'cornerstone' ),
-  'numbered'        => __( '%s (%d)', 'cornerstone' ),
+  'ammended-title'  => __( '%s (%s)', 'cornerstone' ),
+  'classic'         => __( 'Classic %s', 'cornerstone' ),
   'blank'           => __( 'Blank', 'cornerstone' ),
 
   'title.launch'          => __( 'Launch', 'cornerstone' ),
@@ -27,6 +28,9 @@ return array(
   'assignments-posts-page' => __( 'Posts Page', 'cornerstone' ),
 
   'entity-header'   => __( 'Header', 'cornerstone' ),
+  'entity-content'  => __( 'Content', 'cornerstone' ),
   'entity-footer'   => __( 'Footer', 'cornerstone' ),
+
+  'menu-fallback' => __( 'Create a Menu', 'cornerstone' ),
 
 );

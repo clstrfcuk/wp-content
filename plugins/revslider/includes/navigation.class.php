@@ -155,7 +155,7 @@ class RevSliderNavigation {
 		if($nav_id > 0){
 			$response = $wpdb->update($wpdb->prefix.RevSliderGlobals::TABLE_NAVIGATION_NAME,
 				array(
-					'name' => $data['name'],
+					'name' => esc_attr(stripslashes($data['name'])),
 					'handle' => sanitize_title($data['name']),
 					'markup' => json_encode($data['markup']),
 					'css' => json_encode($data['css']),
@@ -724,9 +724,9 @@ class RevSliderNavigation {
 								$overwrite = true;
 							}
 						}
-					}else{
+					}/*else{
 						$default_presets = array();
-					}
+					}*/
 					
 					if($overwrite === false){
 						$default_presets[$nav['id']][] = array(

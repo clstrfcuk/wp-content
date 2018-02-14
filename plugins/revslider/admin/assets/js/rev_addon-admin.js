@@ -1,1 +1,194 @@
-function showWaitAMinute(a){var b=jQuery("#waitaminute");if(void 0!=a.delay&&(punchgs.TweenLite.to(b,.3,{autoAlpha:1,ease:punchgs.Power3.easeInOut}),punchgs.TweenLite.set(b,{display:"block"}),setTimeout(function(){punchgs.TweenLite.to(b,.3,{autoAlpha:0,ease:punchgs.Power3.easeInOut,onComplete:function(){punchgs.TweenLite.set(b,{display:"block"})}})},a.delay)),void 0!=a.fadeIn&&(punchgs.TweenLite.to(b,a.fadeIn/1e3,{autoAlpha:1,ease:punchgs.Power3.easeInOut}),punchgs.TweenLite.set(b,{display:"block"})),void 0!=a.fadeOut&&punchgs.TweenLite.to(b,a.fadeOut/1e3,{autoAlpha:0,ease:punchgs.Power3.easeInOut,onComplete:function(){punchgs.TweenLite.set(b,{display:"block"})}}),void 0!=a.text)switch(a.text){case"progress1":break;default:b.html('<div class="waitaminute-message"><i class="eg-icon-emo-coffee"></i><br>'+a.text+"</div>")}}!function(a){"use strict";"function"==typeof define&&define.amd?define(["jquery"],a):a("object"==typeof exports?require("jquery"):jQuery)}(function(a){"use strict";function b(a){return"string"==typeof a?parseInt(a,10):~~a}var c={wheelSpeed:1,wheelPropagation:!1,minScrollbarLength:null,maxScrollbarLength:null,useBothWheelAxes:!1,useKeyboard:!0,suppressScrollX:!1,suppressScrollY:!1,scrollXMarginOffset:0,scrollYMarginOffset:0,includePadding:!1},d=0,e=function(){var a=d++;return function(b){var c=".perfect-scrollbar-"+a;return void 0===b?c:b+c}};a.fn.perfectScrollbar=function(d,f){return this.each(function(){function g(a,c){var d=a+c,e=A-H;I=0>d?0:d>e?e:d;var f=b(I*(C-A)/(A-H));x.scrollTop(f)}function h(a,c){var d=a+c,e=z-E;F=0>d?0:d>e?e:d;var f=b(F*(B-z)/(z-E));x.scrollLeft(f)}function i(a){return w.minScrollbarLength&&(a=Math.max(a,w.minScrollbarLength)),w.maxScrollbarLength&&(a=Math.min(a,w.maxScrollbarLength)),a}function j(){var a={width:z};a.left=J?x.scrollLeft()+z-B:x.scrollLeft(),P?a.bottom=O-x.scrollTop():a.top=Q+x.scrollTop(),M.css(a);var b={top:x.scrollTop(),height:A};V?b.right=J?B-x.scrollLeft()-U-T.outerWidth():U-x.scrollLeft():b.left=J?x.scrollLeft()+2*z-B-W-T.outerWidth():W+x.scrollLeft(),S.css(b),N.css({left:F,width:E-R}),T.css({top:I,height:H-X})}function k(){x.removeClass("ps-active-x"),x.removeClass("ps-active-y"),z=w.includePadding?x.innerWidth():x.width(),A=w.includePadding?x.innerHeight():x.height(),B=x.prop("scrollWidth"),C=x.prop("scrollHeight"),!w.suppressScrollX&&B>z+w.scrollXMarginOffset?(D=!0,E=i(b(z*z/B)),F=b(x.scrollLeft()*(z-E)/(B-z))):(D=!1,E=0,F=0,x.scrollLeft(0)),!w.suppressScrollY&&C>A+w.scrollYMarginOffset?(G=!0,H=i(b(A*A/C)),I=b(x.scrollTop()*(A-H)/(C-A))):(G=!1,H=0,I=0,x.scrollTop(0)),F>=z-E&&(F=z-E),I>=A-H&&(I=A-H),j(),D&&x.addClass("ps-active-x"),G&&x.addClass("ps-active-y")}function l(){var b,c,d=!1;N.bind(K("mousedown"),function(a){c=a.pageX,b=N.position().left,M.addClass("in-scrolling"),d=!0,a.stopPropagation(),a.preventDefault()}),a(L).bind(K("mousemove"),function(a){d&&(h(b,a.pageX-c),k(),a.stopPropagation(),a.preventDefault())}),a(L).bind(K("mouseup"),function(){d&&(d=!1,M.removeClass("in-scrolling"))}),b=c=null}function m(){var b,c,d=!1;T.bind(K("mousedown"),function(a){c=a.pageY,b=T.position().top,d=!0,S.addClass("in-scrolling"),a.stopPropagation(),a.preventDefault()}),a(L).bind(K("mousemove"),function(a){d&&(g(b,a.pageY-c),k(),a.stopPropagation(),a.preventDefault())}),a(L).bind(K("mouseup"),function(){d&&(d=!1,S.removeClass("in-scrolling"))}),b=c=null}function n(a,b){var c=x.scrollTop();if(0===a){if(!G)return!1;if(0===c&&b>0||c>=C-A&&0>b)return!w.wheelPropagation}var d=x.scrollLeft();if(0===b){if(!D)return!1;if(0===d&&0>a||d>=B-z&&a>0)return!w.wheelPropagation}return!0}function o(){function a(a){var b=a.originalEvent.deltaX,c=-1*a.originalEvent.deltaY;return(void 0===b||void 0===c)&&(b=-1*a.originalEvent.wheelDeltaX/6,c=a.originalEvent.wheelDeltaY/6),a.originalEvent.deltaMode&&1===a.originalEvent.deltaMode&&(b*=10,c*=10),b!==b&&c!==c&&(b=0,c=a.originalEvent.wheelDelta),[b,c]}function b(b){var d=a(b),e=d[0],f=d[1];c=!1,w.useBothWheelAxes?G&&!D?(f?x.scrollTop(x.scrollTop()-f*w.wheelSpeed):x.scrollTop(x.scrollTop()+e*w.wheelSpeed),c=!0):D&&!G&&(e?x.scrollLeft(x.scrollLeft()+e*w.wheelSpeed):x.scrollLeft(x.scrollLeft()-f*w.wheelSpeed),c=!0):(x.scrollTop(x.scrollTop()-f*w.wheelSpeed),x.scrollLeft(x.scrollLeft()+e*w.wheelSpeed)),k(),c=c||n(e,f),c&&(b.stopPropagation(),b.preventDefault())}var c=!1;void 0!==window.onwheel?x.bind(K("wheel"),b):void 0!==window.onmousewheel&&x.bind(K("mousewheel"),b)}function p(){var b=!1;x.bind(K("mouseenter"),function(){b=!0}),x.bind(K("mouseleave"),function(){b=!1});var c=!1;a(L).bind(K("keydown"),function(d){if((!d.isDefaultPrevented||!d.isDefaultPrevented())&&b){for(var e=document.activeElement?document.activeElement:L.activeElement;e.shadowRoot;)e=e.shadowRoot.activeElement;if(!a(e).is(":input,[contenteditable]")){var f=0,g=0;switch(d.which){case 37:f=-30;break;case 38:g=30;break;case 39:f=30;break;case 40:g=-30;break;case 33:g=90;break;case 32:case 34:g=-90;break;case 35:g=d.ctrlKey?-C:-A;break;case 36:g=d.ctrlKey?x.scrollTop():A;break;default:return}x.scrollTop(x.scrollTop()-g),x.scrollLeft(x.scrollLeft()+f),c=n(f,g),c&&d.preventDefault()}}})}function q(){function a(a){a.stopPropagation()}T.bind(K("click"),a),S.bind(K("click"),function(a){var c=b(H/2),d=a.pageY-S.offset().top-c,e=A-H,f=d/e;0>f?f=0:f>1&&(f=1),x.scrollTop((C-A)*f)}),N.bind(K("click"),a),M.bind(K("click"),function(a){var c=b(E/2),d=a.pageX-M.offset().left-c,e=z-E,f=d/e;0>f?f=0:f>1&&(f=1),x.scrollLeft((B-z)*f)})}function r(){function b(){var a=window.getSelection?window.getSelection():document.getSlection?document.getSlection():{rangeCount:0};return 0===a.rangeCount?null:a.getRangeAt(0).commonAncestorContainer}function c(){e||(e=setInterval(function(){return y()?(x.scrollTop(x.scrollTop()+f.top),x.scrollLeft(x.scrollLeft()+f.left),void k()):void clearInterval(e)},50))}function d(){e&&(clearInterval(e),e=null),M.removeClass("in-scrolling"),S.removeClass("in-scrolling")}var e=null,f={top:0,left:0},g=!1;a(L).bind(K("selectionchange"),function(){a.contains(x[0],b())?g=!0:(g=!1,d())}),a(window).bind(K("mouseup"),function(){g&&(g=!1,d())}),a(window).bind(K("mousemove"),function(a){if(g){var b={x:a.pageX,y:a.pageY},e=x.offset(),h={left:e.left,right:e.left+x.outerWidth(),top:e.top,bottom:e.top+x.outerHeight()};b.x<h.left+3?(f.left=-5,M.addClass("in-scrolling")):b.x>h.right-3?(f.left=5,M.addClass("in-scrolling")):f.left=0,b.y<h.top+3?(f.top=5>h.top+3-b.y?-5:-20,S.addClass("in-scrolling")):b.y>h.bottom-3?(f.top=5>b.y-h.bottom+3?5:20,S.addClass("in-scrolling")):f.top=0,0===f.top&&0===f.left?d():c()}})}function s(b,c){function d(a,b){x.scrollTop(x.scrollTop()-b),x.scrollLeft(x.scrollLeft()-a),k()}function e(){q=!0}function f(){q=!1}function g(a){return a.originalEvent.targetTouches?a.originalEvent.targetTouches[0]:a.originalEvent}function h(a){var b=a.originalEvent;return!(!b.targetTouches||1!==b.targetTouches.length)||!(!b.pointerType||"mouse"===b.pointerType||b.pointerType===b.MSPOINTER_TYPE_MOUSE)}function i(a){if(h(a)){r=!0;var b=g(a);m.pageX=b.pageX,m.pageY=b.pageY,n=(new Date).getTime(),null!==p&&clearInterval(p),a.stopPropagation()}}function j(a){if(!q&&r&&h(a)){var b=g(a),c={pageX:b.pageX,pageY:b.pageY},e=c.pageX-m.pageX,f=c.pageY-m.pageY;d(e,f),m=c;var i=(new Date).getTime(),j=i-n;j>0&&(o.x=e/j,o.y=f/j,n=i),a.stopPropagation(),a.preventDefault()}}function l(){!q&&r&&(r=!1,clearInterval(p),p=setInterval(function(){return y()?.01>Math.abs(o.x)&&.01>Math.abs(o.y)?void clearInterval(p):(d(30*o.x,30*o.y),o.x*=.8,void(o.y*=.8)):void clearInterval(p)},10))}var m={},n=0,o={},p=null,q=!1,r=!1;b&&(a(window).bind(K("touchstart"),e),a(window).bind(K("touchend"),f),x.bind(K("touchstart"),i),x.bind(K("touchmove"),j),x.bind(K("touchend"),l)),c&&(window.PointerEvent?(a(window).bind(K("pointerdown"),e),a(window).bind(K("pointerup"),f),x.bind(K("pointerdown"),i),x.bind(K("pointermove"),j),x.bind(K("pointerup"),l)):window.MSPointerEvent&&(a(window).bind(K("MSPointerDown"),e),a(window).bind(K("MSPointerUp"),f),x.bind(K("MSPointerDown"),i),x.bind(K("MSPointerMove"),j),x.bind(K("MSPointerUp"),l)))}function t(){x.bind(K("scroll"),function(){k()})}function u(){x.unbind(K()),a(window).unbind(K()),a(L).unbind(K()),x.data("perfect-scrollbar",null),x.data("perfect-scrollbar-update",null),x.data("perfect-scrollbar-destroy",null),N.remove(),T.remove(),M.remove(),S.remove(),x=M=S=N=T=D=G=z=A=B=C=E=F=O=P=Q=H=I=U=V=W=J=K=null}function v(){k(),t(),l(),m(),q(),r(),o(),(Y||Z)&&s(Y,Z),w.useKeyboard&&p(),x.data("perfect-scrollbar",x),x.data("perfect-scrollbar-update",k),x.data("perfect-scrollbar-destroy",u)}var w=a.extend(!0,{},c),x=a(this),y=function(){return!!x};if("object"==typeof d?a.extend(!0,w,d):f=d,"update"===f)return x.data("perfect-scrollbar-update")&&x.data("perfect-scrollbar-update")(),x;if("destroy"===f)return x.data("perfect-scrollbar-destroy")&&x.data("perfect-scrollbar-destroy")(),x;if(x.data("perfect-scrollbar"))return x.data("perfect-scrollbar");x.addClass("ps-container");var z,A,B,C,D,E,F,G,H,I,J="rtl"===x.css("direction"),K=e(),L=this.ownerDocument||document,M=a("<div class='ps-scrollbar-x-rail'>").appendTo(x),N=a("<div class='ps-scrollbar-x'>").appendTo(M),O=b(M.css("bottom")),P=O===O,Q=P?null:b(M.css("top")),R=b(M.css("borderLeftWidth"))+b(M.css("borderRightWidth")),S=a("<div class='ps-scrollbar-y-rail'>").appendTo(x),T=a("<div class='ps-scrollbar-y'>").appendTo(S),U=b(S.css("right")),V=U===U,W=V?null:b(S.css("left")),X=b(S.css("borderTopWidth"))+b(S.css("borderBottomWidth")),Y="ontouchstart"in window||window.DocumentTouch&&document instanceof window.DocumentTouch,Z=null!==window.navigator.msMaxTouchPoints;return v(),x})}}),function(a){a(document).ready(function(){a(".rs-addon-not-installed").click(function(){showWaitAMinute({fadeIn:300,text:rev_slider_addon.please_wait_a_moment}),$this=a(this),a.ajax({url:rev_slider_addon.ajax_url,type:"post",data:{action:"install_plugin",nonce:a("#ajax_rev_slider_addon_nonce").text(),plugin:$this.data("plugin")},success:function(a){switch(a){case"0":showWaitAMinute({fadeOut:300,text:rev_slider_addon.please_wait_a_moment}),UniteAdminRev.showErrorMessage("Something went wrong!");break;case"1":location.reload();break;case"-1":showWaitAMinute({fadeOut:300,text:rev_slider_addon.please_wait_a_moment}),UniteAdminRev.showErrorMessage("Nonce missing!")}},error:function(a){showWaitAMinute({fadeOut:300,text:rev_slider_addon.please_wait_a_moment}),UniteAdminRev.showErrorMessage("Something went wrong!")}})}),a(".rs-addon-not-activated").click(function(){showWaitAMinute({fadeIn:300,text:rev_slider_addon.please_wait_a_moment}),$this=a(this),a.ajax({url:rev_slider_addon.ajax_url,type:"post",data:{action:"activate_plugin",nonce:a("#ajax_rev_slider_addon_nonce").text(),plugin:$this.data("plugin")},success:function(a){switch(a){case"0":console.log("Something Went Wrong");break;case"1":console.log("Plugin activated"),location.reload();break;case"-1":console.log("Nonce missing")}},error:function(a){console.log("Ajax Error")}})}),a(".rs-dash-deactivate-addon").click(function(){showWaitAMinute({fadeIn:300,text:rev_slider_addon.please_wait_a_moment}),$this=a(this),a.ajax({url:rev_slider_addon.ajax_url,type:"post",data:{action:"deactivate_plugin",nonce:a("#ajax_rev_slider_addon_nonce").text(),plugin:$this.data("plugin")},success:function(a){switch(a){case"0":console.log("Something Went Wrong");break;case"1":console.log("Plugin deactivated"),location.reload();break;case"-1":console.log("Nonce missing")}},error:function(a){}})})})}(jQuery);
+/*! perfect-scrollbar - v0.5.7
+* http://noraesae.github.com/perfect-scrollbar/
+* Copyright (c) 2014 Hyunje Alex Jun; Licensed MIT */
+(function(e){"use strict";"function"==typeof define&&define.amd?define(["jquery"],e):"object"==typeof exports?e(require("jquery")):e(jQuery)})(function(e){"use strict";function t(e){return"string"==typeof e?parseInt(e,10):~~e}var o={wheelSpeed:1,wheelPropagation:!1,minScrollbarLength:null,maxScrollbarLength:null,useBothWheelAxes:!1,useKeyboard:!0,suppressScrollX:!1,suppressScrollY:!1,scrollXMarginOffset:0,scrollYMarginOffset:0,includePadding:!1},n=0,r=function(){var e=n++;return function(t){var o=".perfect-scrollbar-"+e;return t===void 0?o:t+o}};e.fn.perfectScrollbar=function(n,l){return this.each(function(){function i(e,o){var n=e+o,r=E-W;I=0>n?0:n>r?r:n;var l=t(I*(D-E)/(E-W));S.scrollTop(l)}function a(e,o){var n=e+o,r=x-Y;X=0>n?0:n>r?r:n;var l=t(X*(M-x)/(x-Y));S.scrollLeft(l)}function c(e){return L.minScrollbarLength&&(e=Math.max(e,L.minScrollbarLength)),L.maxScrollbarLength&&(e=Math.min(e,L.maxScrollbarLength)),e}function s(){var e={width:x};e.left=O?S.scrollLeft()+x-M:S.scrollLeft(),B?e.bottom=q-S.scrollTop():e.top=H+S.scrollTop(),A.css(e);var t={top:S.scrollTop(),height:E};z?t.right=O?M-S.scrollLeft()-Q-N.outerWidth():Q-S.scrollLeft():t.left=O?S.scrollLeft()+2*x-M-F-N.outerWidth():F+S.scrollLeft(),_.css(t),K.css({left:X,width:Y-U}),N.css({top:I,height:W-G})}function d(){S.removeClass("ps-active-x"),S.removeClass("ps-active-y"),x=L.includePadding?S.innerWidth():S.width(),E=L.includePadding?S.innerHeight():S.height(),M=S.prop("scrollWidth"),D=S.prop("scrollHeight"),!L.suppressScrollX&&M>x+L.scrollXMarginOffset?(C=!0,Y=c(t(x*x/M)),X=t(S.scrollLeft()*(x-Y)/(M-x))):(C=!1,Y=0,X=0,S.scrollLeft(0)),!L.suppressScrollY&&D>E+L.scrollYMarginOffset?(k=!0,W=c(t(E*E/D)),I=t(S.scrollTop()*(E-W)/(D-E))):(k=!1,W=0,I=0,S.scrollTop(0)),X>=x-Y&&(X=x-Y),I>=E-W&&(I=E-W),s(),C&&S.addClass("ps-active-x"),k&&S.addClass("ps-active-y")}function u(){var t,o,n=!1;K.bind(j("mousedown"),function(e){o=e.pageX,t=K.position().left,A.addClass("in-scrolling"),n=!0,e.stopPropagation(),e.preventDefault()}),e(R).bind(j("mousemove"),function(e){n&&(a(t,e.pageX-o),d(),e.stopPropagation(),e.preventDefault())}),e(R).bind(j("mouseup"),function(){n&&(n=!1,A.removeClass("in-scrolling"))}),t=o=null}function p(){var t,o,n=!1;N.bind(j("mousedown"),function(e){o=e.pageY,t=N.position().top,n=!0,_.addClass("in-scrolling"),e.stopPropagation(),e.preventDefault()}),e(R).bind(j("mousemove"),function(e){n&&(i(t,e.pageY-o),d(),e.stopPropagation(),e.preventDefault())}),e(R).bind(j("mouseup"),function(){n&&(n=!1,_.removeClass("in-scrolling"))}),t=o=null}function f(e,t){var o=S.scrollTop();if(0===e){if(!k)return!1;if(0===o&&t>0||o>=D-E&&0>t)return!L.wheelPropagation}var n=S.scrollLeft();if(0===t){if(!C)return!1;if(0===n&&0>e||n>=M-x&&e>0)return!L.wheelPropagation}return!0}function v(){function e(e){var t=e.originalEvent.deltaX,o=-1*e.originalEvent.deltaY;return(t===void 0||o===void 0)&&(t=-1*e.originalEvent.wheelDeltaX/6,o=e.originalEvent.wheelDeltaY/6),e.originalEvent.deltaMode&&1===e.originalEvent.deltaMode&&(t*=10,o*=10),t!==t&&o!==o&&(t=0,o=e.originalEvent.wheelDelta),[t,o]}function t(t){var n=e(t),r=n[0],l=n[1];o=!1,L.useBothWheelAxes?k&&!C?(l?S.scrollTop(S.scrollTop()-l*L.wheelSpeed):S.scrollTop(S.scrollTop()+r*L.wheelSpeed),o=!0):C&&!k&&(r?S.scrollLeft(S.scrollLeft()+r*L.wheelSpeed):S.scrollLeft(S.scrollLeft()-l*L.wheelSpeed),o=!0):(S.scrollTop(S.scrollTop()-l*L.wheelSpeed),S.scrollLeft(S.scrollLeft()+r*L.wheelSpeed)),d(),o=o||f(r,l),o&&(t.stopPropagation(),t.preventDefault())}var o=!1;window.onwheel!==void 0?S.bind(j("wheel"),t):window.onmousewheel!==void 0&&S.bind(j("mousewheel"),t)}function g(){var t=!1;S.bind(j("mouseenter"),function(){t=!0}),S.bind(j("mouseleave"),function(){t=!1});var o=!1;e(R).bind(j("keydown"),function(n){if((!n.isDefaultPrevented||!n.isDefaultPrevented())&&t){for(var r=document.activeElement?document.activeElement:R.activeElement;r.shadowRoot;)r=r.shadowRoot.activeElement;if(!e(r).is(":input,[contenteditable]")){var l=0,i=0;switch(n.which){case 37:l=-30;break;case 38:i=30;break;case 39:l=30;break;case 40:i=-30;break;case 33:i=90;break;case 32:case 34:i=-90;break;case 35:i=n.ctrlKey?-D:-E;break;case 36:i=n.ctrlKey?S.scrollTop():E;break;default:return}S.scrollTop(S.scrollTop()-i),S.scrollLeft(S.scrollLeft()+l),o=f(l,i),o&&n.preventDefault()}}})}function b(){function e(e){e.stopPropagation()}N.bind(j("click"),e),_.bind(j("click"),function(e){var o=t(W/2),n=e.pageY-_.offset().top-o,r=E-W,l=n/r;0>l?l=0:l>1&&(l=1),S.scrollTop((D-E)*l)}),K.bind(j("click"),e),A.bind(j("click"),function(e){var o=t(Y/2),n=e.pageX-A.offset().left-o,r=x-Y,l=n/r;0>l?l=0:l>1&&(l=1),S.scrollLeft((M-x)*l)})}function h(){function t(){var e=window.getSelection?window.getSelection():document.getSlection?document.getSlection():{rangeCount:0};return 0===e.rangeCount?null:e.getRangeAt(0).commonAncestorContainer}function o(){r||(r=setInterval(function(){return P()?(S.scrollTop(S.scrollTop()+l.top),S.scrollLeft(S.scrollLeft()+l.left),d(),void 0):(clearInterval(r),void 0)},50))}function n(){r&&(clearInterval(r),r=null),A.removeClass("in-scrolling"),_.removeClass("in-scrolling")}var r=null,l={top:0,left:0},i=!1;e(R).bind(j("selectionchange"),function(){e.contains(S[0],t())?i=!0:(i=!1,n())}),e(window).bind(j("mouseup"),function(){i&&(i=!1,n())}),e(window).bind(j("mousemove"),function(e){if(i){var t={x:e.pageX,y:e.pageY},r=S.offset(),a={left:r.left,right:r.left+S.outerWidth(),top:r.top,bottom:r.top+S.outerHeight()};t.x<a.left+3?(l.left=-5,A.addClass("in-scrolling")):t.x>a.right-3?(l.left=5,A.addClass("in-scrolling")):l.left=0,t.y<a.top+3?(l.top=5>a.top+3-t.y?-5:-20,_.addClass("in-scrolling")):t.y>a.bottom-3?(l.top=5>t.y-a.bottom+3?5:20,_.addClass("in-scrolling")):l.top=0,0===l.top&&0===l.left?n():o()}})}function w(t,o){function n(e,t){S.scrollTop(S.scrollTop()-t),S.scrollLeft(S.scrollLeft()-e),d()}function r(){b=!0}function l(){b=!1}function i(e){return e.originalEvent.targetTouches?e.originalEvent.targetTouches[0]:e.originalEvent}function a(e){var t=e.originalEvent;return t.targetTouches&&1===t.targetTouches.length?!0:t.pointerType&&"mouse"!==t.pointerType&&t.pointerType!==t.MSPOINTER_TYPE_MOUSE?!0:!1}function c(e){if(a(e)){h=!0;var t=i(e);p.pageX=t.pageX,p.pageY=t.pageY,f=(new Date).getTime(),null!==g&&clearInterval(g),e.stopPropagation()}}function s(e){if(!b&&h&&a(e)){var t=i(e),o={pageX:t.pageX,pageY:t.pageY},r=o.pageX-p.pageX,l=o.pageY-p.pageY;n(r,l),p=o;var c=(new Date).getTime(),s=c-f;s>0&&(v.x=r/s,v.y=l/s,f=c),e.stopPropagation(),e.preventDefault()}}function u(){!b&&h&&(h=!1,clearInterval(g),g=setInterval(function(){return P()?.01>Math.abs(v.x)&&.01>Math.abs(v.y)?(clearInterval(g),void 0):(n(30*v.x,30*v.y),v.x*=.8,v.y*=.8,void 0):(clearInterval(g),void 0)},10))}var p={},f=0,v={},g=null,b=!1,h=!1;t&&(e(window).bind(j("touchstart"),r),e(window).bind(j("touchend"),l),S.bind(j("touchstart"),c),S.bind(j("touchmove"),s),S.bind(j("touchend"),u)),o&&(window.PointerEvent?(e(window).bind(j("pointerdown"),r),e(window).bind(j("pointerup"),l),S.bind(j("pointerdown"),c),S.bind(j("pointermove"),s),S.bind(j("pointerup"),u)):window.MSPointerEvent&&(e(window).bind(j("MSPointerDown"),r),e(window).bind(j("MSPointerUp"),l),S.bind(j("MSPointerDown"),c),S.bind(j("MSPointerMove"),s),S.bind(j("MSPointerUp"),u)))}function m(){S.bind(j("scroll"),function(){d()})}function T(){S.unbind(j()),e(window).unbind(j()),e(R).unbind(j()),S.data("perfect-scrollbar",null),S.data("perfect-scrollbar-update",null),S.data("perfect-scrollbar-destroy",null),K.remove(),N.remove(),A.remove(),_.remove(),S=A=_=K=N=C=k=x=E=M=D=Y=X=q=B=H=W=I=Q=z=F=O=j=null}function y(){d(),m(),u(),p(),b(),h(),v(),(J||V)&&w(J,V),L.useKeyboard&&g(),S.data("perfect-scrollbar",S),S.data("perfect-scrollbar-update",d),S.data("perfect-scrollbar-destroy",T)}var L=e.extend(!0,{},o),S=e(this),P=function(){return!!S};if("object"==typeof n?e.extend(!0,L,n):l=n,"update"===l)return S.data("perfect-scrollbar-update")&&S.data("perfect-scrollbar-update")(),S;if("destroy"===l)return S.data("perfect-scrollbar-destroy")&&S.data("perfect-scrollbar-destroy")(),S;if(S.data("perfect-scrollbar"))return S.data("perfect-scrollbar");S.addClass("ps-container");var x,E,M,D,C,Y,X,k,W,I,O="rtl"===S.css("direction"),j=r(),R=this.ownerDocument||document,A=e("<div class='ps-scrollbar-x-rail'>").appendTo(S),K=e("<div class='ps-scrollbar-x'>").appendTo(A),q=t(A.css("bottom")),B=q===q,H=B?null:t(A.css("top")),U=t(A.css("borderLeftWidth"))+t(A.css("borderRightWidth")),_=e("<div class='ps-scrollbar-y-rail'>").appendTo(S),N=e("<div class='ps-scrollbar-y'>").appendTo(_),Q=t(_.css("right")),z=Q===Q,F=z?null:t(_.css("left")),G=t(_.css("borderTopWidth"))+t(_.css("borderBottomWidth")),J="ontouchstart"in window||window.DocumentTouch&&document instanceof window.DocumentTouch,V=null!==window.navigator.msMaxTouchPoints;return y(),S})}});
+
+(function( $ ) {
+	$(document).ready(function(){
+		//hover toggles buttons
+		
+			/*$(".rs-addon-activated").hover(function () {
+				$this = $(this);
+			    $this.data("original",$this.html());
+			    $this.removeClass('rs-status-green').addClass('rs-status-orange').html($this.data('alternative'));
+			}, function () {
+				$this = $(this);
+			    $this.removeClass('rs-status-orange').addClass('rs-status-green').html($this.data("original"));
+			});
+
+			$(".rs-addon-not-activated").hover(function () {
+				$this = $(this);
+			    $this.data("original",$this.html());
+			    $this.removeClass('rs-status-orange').addClass('rs-status-green').html($this.data('alternative'));
+			}, function () {
+				$this = $(this);
+			    $this.removeClass('rs-status-green').addClass('rs-status-orange').html($this.data("original"));
+			});
+
+			$(".rs-addon-not-installed").hover(function () {
+				$this = $(this);
+			    $this.data("original",$this.html());
+			    $this.removeClass('rs-status-red').addClass('rs-status-green').html($this.data('alternative'));
+			}, function () {
+				$this = $(this);
+			    $this.removeClass('rs-status-green').addClass('rs-status-red').html($this.data("original"));
+			});*/
+
+			$('.rs-reload-shop,#rev_check_version').click(function(){
+				showWaitAMinute({fadeIn:300,text:rev_slider_addon.please_wait_a_moment});
+			});
+		
+		//click event to install plugin
+			$(".rs-addon-not-installed").click(function(){
+				showWaitAMinute({fadeIn:300,text:rev_slider_addon.please_wait_a_moment});
+				$this = $(this);
+				//console.log("install process");
+				$.ajax({
+				url : rev_slider_addon.ajax_url,
+				type : 'post',
+				data : {
+					action : 'install_plugin',
+					nonce: 	$('#ajax_rev_slider_addon_nonce').text(),// The security nonce
+					plugin: $this.data("plugin")
+				},
+				success : function( response ) {
+					switch(response){
+						case "0":
+								showWaitAMinute({fadeOut:300,text:rev_slider_addon.please_wait_a_moment});
+								UniteAdminRev.showErrorMessage("Something went wrong!");
+								//console.log("Something Went Wrong");
+								break;
+						case "1":
+								//console.log("Plugin installed");
+								location.reload();
+								break;
+						case "-1":
+								showWaitAMinute({fadeOut:300,text:rev_slider_addon.please_wait_a_moment});
+								UniteAdminRev.showErrorMessage("Nonce missing!");
+								//console.log("Nonce missing");
+								break;
+					}
+				},
+				error : function ( response ){
+					//console.log('Ajax Error');
+					showWaitAMinute({fadeOut:300,text:rev_slider_addon.please_wait_a_moment});
+					UniteAdminRev.showErrorMessage("Something went wrong!");
+				}
+			}); // End Ajax
+		}); // End Click
+
+		//click event to activate plugin
+			$(".rs-addon-not-activated").click(function(){
+				showWaitAMinute({fadeIn:300,text:rev_slider_addon.please_wait_a_moment});
+				
+				$this = $(this);
+				$.ajax({
+				url : rev_slider_addon.ajax_url,
+				type : 'post',
+				data : {
+					action : 'activate_plugin',
+					nonce: 	$('#ajax_rev_slider_addon_nonce').text(),// The security nonce
+					plugin: $this.data("plugin")
+				},
+				success : function( response ) {
+					switch(response){
+						case "0":
+								console.log("Something Went Wrong");
+								break;
+						case "1":
+								console.log("Plugin activated");
+								 location.reload();
+								break;
+						case "-1":
+								console.log("Nonce missing");
+								break;
+					}
+				},
+				error : function ( response ){
+					console.log('Ajax Error');
+				}
+			}); // End Ajax
+		}); // End Click
+
+		//click event to deactivate plugin
+			$(".rs-dash-deactivate-addon").click(function(){
+				showWaitAMinute({fadeIn:300,text:rev_slider_addon.please_wait_a_moment});
+				$this = $(this);
+				//console.log("deactivate process");
+				$.ajax({
+				url : rev_slider_addon.ajax_url,
+				type : 'post',
+				data : {
+					action : 'deactivate_plugin',
+					nonce: 	$('#ajax_rev_slider_addon_nonce').text(),// The security nonce
+					plugin: $this.data("plugin")
+				},
+				success : function( response ) {
+					switch(response){
+						case "0":
+								console.log("Something Went Wrong");
+								break;
+						case "1":
+								console.log("Plugin deactivated");
+								location.reload();
+								break;
+						case "-1":
+								console.log("Nonce missing");
+								break;
+					}
+				},
+				error : function ( response ){
+					//console.log('Ajax Error');
+				}
+			}); // End Ajax
+		}); // End Click
+	});// End Document ready
+
+})( jQuery );
+
+
+if (showWaitAMinute===undefined)
+function showWaitAMinute(obj) {
+		var wm = jQuery('#waitaminute');		
+		
+		// SHOW AND HIDE WITH DELAY
+		if (obj.delay!=undefined) {
+
+			punchgs.TweenLite.to(wm,0.3,{autoAlpha:1,ease:punchgs.Power3.easeInOut});
+			punchgs.TweenLite.set(wm,{display:"block"});
+			
+			setTimeout(function() {
+				punchgs.TweenLite.to(wm,0.3,{autoAlpha:0,ease:punchgs.Power3.easeInOut,onComplete:function() {
+					punchgs.TweenLite.set(wm,{display:"block"});	
+				}});  			
+			},obj.delay)
+		}
+
+		// SHOW IT
+		if (obj.fadeIn != undefined) {
+			punchgs.TweenLite.to(wm,obj.fadeIn/1000,{autoAlpha:1,ease:punchgs.Power3.easeInOut});
+			punchgs.TweenLite.set(wm,{display:"block"});			
+		}
+
+		// HIDE IT
+		if (obj.fadeOut != undefined) {
+
+			punchgs.TweenLite.to(wm,obj.fadeOut/1000,{autoAlpha:0,ease:punchgs.Power3.easeInOut,onComplete:function() {
+					punchgs.TweenLite.set(wm,{display:"block"});	
+				}});  
+		}
+
+		// CHANGE TEXT
+		if (obj.text != undefined) {
+			switch (obj.text) {
+				case "progress1":
+
+				break;
+				default:					
+					wm.html('<div class="waitaminute-message"><i class="eg-icon-emo-coffee"></i><br>'+obj.text+'</div>');
+				break;	
+			}
+		}
+	 }
+
+

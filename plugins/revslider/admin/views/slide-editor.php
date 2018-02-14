@@ -482,7 +482,7 @@ if($slide->isStaticSlide() || $slider->isSlidesFromPosts()){ //insert sliderid f
 	<div class="rs_breadcrumbs">
 		<a class='breadcrumb-button' href='<?php echo self::getViewUrl("sliders");?>'><i class="eg-icon-th-large"></i><?php _e("All Sliders", 'revslider');?></a>
 		<a class='breadcrumb-button' href="<?php echo self::getViewUrl(RevSliderAdmin::VIEW_SLIDER,"id=$sliderID"); ?>"><i class="eg-icon-cog"></i><?php _e('Slider Settings', 'revslider');?></a>
-		<a class='breadcrumb-button selected' href="#"><i class="eg-icon-pencil-2"></i><?php _e('Slide Editor ', 'revslider');?>"<?php echo ' '.$slider->getParam("title",""); ?>"</a>
+		<a class='breadcrumb-button selected' href="#"><i class="eg-icon-pencil-2"></i><?php _e('Slide Editor ', 'revslider');?>"<?php echo ' '.esc_attr(stripslashes($slider->getParam("title",""))); ?>"</a>
 		<div class="tp-clearfix"></div>
 
 
@@ -601,6 +601,7 @@ if($slide->isStaticSlide() || $slider->isSlidesFromPosts()){ //insert sliderid f
 				switch($slider_type){
 					case 'posts':
 					case 'specific_posts':
+					case 'current_post':
 					case 'woocommerce':
 						?>
 						<li data-content="#slide-post-template-entry" class="selected"><i style="height:45px" class="rs-mini-layer-icon revicon-doc rs-toolbar-icon"></i><span><?php _e('Post', 'revslider'); ?></span></li>
@@ -668,6 +669,7 @@ if($slide->isStaticSlide() || $slider->isSlidesFromPosts()){ //insert sliderid f
 			switch($slider_type){
 				case 'posts':
 				case 'specific_posts':
+				case 'current_post':
 				case 'woocommerce':
 					?>
 					<table class="table_template_help" id="slide-post-template-entry" style="display: none;">
@@ -682,6 +684,9 @@ if($slide->isStaticSlide() || $slider->isSlidesFromPosts()){ //insert sliderid f
 						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('date')">{{date}}</a></td><td><?php _e("Date created",'revslider'); ?></td></tr>
 						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('date_modified')">{{date_modified}}</a></td><td><?php _e("Date modified",'revslider'); ?></td></tr>
 						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('author_name')">{{author_name}}</a></td><td><?php _e("Author name",'revslider'); ?></td></tr>
+						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('author_avatar:80px')">{{author_avatar:80px}}</a></td><td><?php _e("Author Avatar URL(size in px)",'revslider'); ?></td></tr>
+						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('author_website')">{{author_website}}</a></td><td><?php _e("Author Website",'revslider'); ?></td></tr>
+						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('author_posts')">{{author_posts}}</a></td><td><?php _e("Author Posts Page",'revslider'); ?></td></tr>
 						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('num_comments')">{{num_comments}}</a></td><td><?php _e("Number of comments",'revslider'); ?></td></tr>
 						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('catlist')">{{catlist}}</a></td><td><?php _e("List of categories with links",'revslider'); ?></td></tr>
 						<tr><td><a href="javascript:UniteLayersRev.insertTemplate('catlist_raw')">{{catlist_raw}}</a></td><td><?php _e("List of categories without links",'revslider'); ?></td></tr>

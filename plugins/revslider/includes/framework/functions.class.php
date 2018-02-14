@@ -573,14 +573,53 @@ class RevSliderFunctions{
 		
 		if($adv_resp_sizes == true){
 			$width = $slider->slider->getParam("width", 1240, RevSlider::FORCE_NUMERIC);
-			$width .= ','. $slider->slider->getParam("width_notebook", 1024, RevSlider::FORCE_NUMERIC);
-			$width .= ','. $slider->slider->getParam("width_tablet", 778, RevSlider::FORCE_NUMERIC);
-			$width .= ','. $slider->slider->getParam("width_mobile", 480, RevSlider::FORCE_NUMERIC);
-			$height = $slider->slider->getParam("height", 868, RevSlider::FORCE_NUMERIC);
-			$height .= ','. $slider->slider->getParam("height_notebook", 768, RevSlider::FORCE_NUMERIC);
-			$height .= ','. intval($slider->slider->getParam("height_tablet", 960, RevSlider::FORCE_NUMERIC));
-			$height .= ','. intval($slider->slider->getParam("height_mobile", 720, RevSlider::FORCE_NUMERIC));
-						
+			$def = $width;
+			$width .= ',';
+			if($enable_custom_size_notebook == 'on'){
+				$width.= $slider->slider->getParam("width_notebook", 1024, RevSlider::FORCE_NUMERIC);
+				$def = $slider->slider->getParam("width_notebook", 1024, RevSlider::FORCE_NUMERIC);
+			}else{
+				$width.= $def;
+			}
+			$width.= ',';
+			if($enable_custom_size_tablet == 'on'){
+				$width.= $slider->slider->getParam("width_tablet", 778, RevSlider::FORCE_NUMERIC);
+				$def = $slider->slider->getParam("width_tablet", 778, RevSlider::FORCE_NUMERIC);
+			}else{
+				$width.= $def;
+			}
+			$width.= ',';
+			if($enable_custom_size_iphone == 'on'){
+				$width.= $slider->slider->getParam("width_mobile", 480, RevSlider::FORCE_NUMERIC);
+				$def = $slider->slider->getParam("width_mobile", 480, RevSlider::FORCE_NUMERIC);
+			}else{
+				$width.= $def;
+			}
+			
+			$height = $slider->slider->getParam("height", 1240, RevSlider::FORCE_NUMERIC);
+			$def = $height;
+			$height .= ',';
+			if($enable_custom_size_notebook == 'on'){
+				$height.= $slider->slider->getParam("height_notebook", 1024, RevSlider::FORCE_NUMERIC);
+				$def = $slider->slider->getParam("height_notebook", 1024, RevSlider::FORCE_NUMERIC);
+			}else{
+				$height.= $def;
+			}
+			$height.= ',';
+			if($enable_custom_size_tablet == 'on'){
+				$height.= $slider->slider->getParam("height_tablet", 778, RevSlider::FORCE_NUMERIC);
+				$def = $slider->slider->getParam("height_tablet", 778, RevSlider::FORCE_NUMERIC);
+			}else{
+				$height.= $def;
+			}
+			$height.= ',';
+			if($enable_custom_size_iphone == 'on'){
+				$height.= $slider->slider->getParam("height_mobile", 480, RevSlider::FORCE_NUMERIC);
+				$def = $slider->slider->getParam("height_mobile", 480, RevSlider::FORCE_NUMERIC);
+			}else{
+				$height.= $def;
+			}
+			
 			$responsive = (isset($arrValues['width'])) ? $arrValues['width'] : '1240';
 			$def = (isset($arrValues['width'])) ? $arrValues['width'] : '1240';
 			

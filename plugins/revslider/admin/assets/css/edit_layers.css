@@ -1099,7 +1099,7 @@ margin-right:15px;}
 .layer-settings-toolbar-bottom span.setting_text_3	{ 	color:#fff!important;}
 #rs-layout-row-break span.setting_text_3 			 {	vertical-align: top}
 #hor-css-linear                                      { 	cursor:pointer;	z-index:888;	position:absolute;	width:100%;	height:20px;	top:10px;	left:0;	background:repeat-x;	background:url(../images/toolbar/newlinear-horizontal.png);	background-size:100px 20px;}
-#ver-css-linear                                      { 	cursor:pointer;	z-index:888;	position:absolute;	height:100%;	width:20px;	top:40px;	left:10px;	background:repeat-y;	background:url(../images/toolbar/newlinear-vertical.png);	background-size:20px 100px;}
+#ver-css-linear                                      { 	cursor:pointer;	z-index:888;	position:absolute;	height:100%;	width:20px;	top:-10px;	left:10px;	background:repeat-y;	background:url(../images/toolbar/newlinear-vertical.png);	background-size:20px 100px;}
 #horlinie                                            { 	cursor:pointer;	z-index:898;	width:40px;	position:absolute;	top:0;	left:0;	height:1px;	background:#4AFFFF;}
 #verlinie                                            { 	cursor:pointer;	z-index:898;	height:40px;	position:absolute;	top:0;	left:0;	width:1px;	background:#4AFFFF;}
 #hor-css-linear .linear-texts                        { 	margin:0;	padding:0;	height:20px;	width:3500px;	left:0;	top:6px;	position:absolute;}
@@ -1204,7 +1204,7 @@ li.selected .slidetitleinput,li:hover .slidetitleinput,
 
 
 
-.langs_float_wrapper		{	width:150px; border:1px solid #2B96C6; position:absolute; z-index:10; background-color:#ffffff; }
+.langs_float_wrapper		{	width:150px; border:1px solid #2B96C6; position:absolute; z-index:4991; background-color:#ffffff; }
 .slides_langs_float			{	margin:0px; padding:0px; list-style:none; }
 .slides_langs_float li		{	margin-top:5px; margin-bottom:5px; }
 .slides_langs_float li .float_menu_sap	{ border-top:1px dashed black; margin:2px; }

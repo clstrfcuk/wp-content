@@ -110,7 +110,16 @@ class RevSliderWidget extends WP_Widget {
 				
 		if(empty($sliderID))
 			return(false);
-			
+		
+		$slider = new RevSliderSlider();
+		$slider->initByID($sliderID);
+		$disable_on_mobile = $slider->getParam("disable_on_mobile","off");
+		if($disable_on_mobile == 'on'){
+			$mobile = (strstr($_SERVER['HTTP_USER_AGENT'],'Android') || strstr($_SERVER['HTTP_USER_AGENT'],'webOS') || strstr($_SERVER['HTTP_USER_AGENT'],'iPhone') ||strstr($_SERVER['HTTP_USER_AGENT'],'iPod') || strstr($_SERVER['HTTP_USER_AGENT'],'iPad') || strstr($_SERVER['HTTP_USER_AGENT'],'Windows Phone') || wp_is_mobile()) ? true : false;
+			if($mobile) return false;
+		}
+		
+		
 		//widget output
 		$beforeWidget = RevSliderFunctions::getVal($args, "before_widget");
 		$afterWidget = RevSliderFunctions::getVal($args, "after_widget");

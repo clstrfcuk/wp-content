@@ -106,7 +106,10 @@ class RevSliderExtension {
 		}
 		
 		$selected_slider = (isset($values['eg_sources_revslider'])) ? $values['eg_sources_revslider'] : '';
-		if($selected_slider == '') $selected_slider[0] = '';
+		if($selected_slider == ''){
+			$selected_slider = array();
+			$selected_slider[0] = '';
+		}
 		?>
 		<p>
 			<strong style="font-size:14px"><?php _e('Choose Revolution Slider', 'revslider'); ?></strong>

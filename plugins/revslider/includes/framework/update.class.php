@@ -10,9 +10,9 @@ if( !defined( 'ABSPATH') ) exit();
 class RevSliderUpdate {
 
 	private $plugin_url			= 'https://codecanyon.net/item/slider-revolution-responsive-wordpress-plugin/2751380';
-	private $remote_url			= 'https://updates.themepunch.tools/check_for_updates.php';
-	private $remote_url_info	= 'https://updates.themepunch.tools/revslider/revslider.php';
-	private $remote_temp_active	= 'https://updates.themepunch.tools/temp_activate.php';
+	private $remote_url			= 'check_for_updates.php';
+	private $remote_url_info	= 'revslider/revslider.php';
+	private $remote_temp_active	= 'temp_activate.php';
 	private $plugin_slug		= 'revslider';
 	private $plugin_path		= 'revslider/revslider.php';
 	private $version;
@@ -69,6 +69,7 @@ class RevSliderUpdate {
 
 
 	protected function _check_updates() {
+		
 		//reset saved options
 		//update_option($this->option, false);
 		
@@ -82,7 +83,6 @@ class RevSliderUpdate {
 			$data = $data ? $data : new stdClass;
 			
 			$this->data = is_object($data) ? $data : maybe_unserialize($data);
-			
 		}
 		
 		$last_check = get_option('revslider-update-check');
@@ -115,15 +115,14 @@ class RevSliderUpdate {
 
 
 	public function _retrieve_update_info() {
-
-		global $wp_version;
-		$data = new stdClass;
+		global $wp_version, $rslb;
+		
+		$data	= new stdClass;
 
 		// Build request
-		$code = get_option('revslider-code', '');
-		
-		$validated = get_option('revslider-valid', 'false');
-		$stable_version = get_option('revslider-stable-version', '4.2');
+		$code			= get_option('revslider-code', '');
+		$validated		= get_option('revslider-valid', 'false');
+		$stable_version	= get_option('revslider-stable-version', '4.2');
 		
 		$rattr = array(
 			'code' => urlencode($code),
@@ -134,11 +133,25 @@ class RevSliderUpdate {
 			$rattr['get_stable'] = 'true';
 		}
 		
-		$request = wp_remote_post($this->remote_url_info, array(
-			'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-			'body' => $rattr
-		));
-
+		$done	= false;
+		$count	= 0;
+		do{	
+			$url		= $rslb->get_url('updates');
+			$request	= wp_remote_post($url.'/'.$this->remote_url_info, array(
+				'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+				'body' => $rattr
+			));
+			
+			$response_code = wp_remote_retrieve_response_code( $request );
+			if($response_code == 200){
+				$done = true;
+			}else{
+				$rslb->move_server_list();
+			}
+			
+			$count++;
+		}while($done == false && $count < 5);
+		
 		if(!is_wp_error($request)) {
 			if($response = maybe_unserialize($request['body'])) {
 				if(is_object($response)) {
@@ -156,9 +169,10 @@ class RevSliderUpdate {
 	
 	
 	public function _retrieve_version_info($force_check = false) {
-		global $wp_version;
+		global $wp_version, $rslb;
 		
-		$last_check = get_option('revslider-update-check-short');
+		$last_check	= get_option('revslider-update-check-short');
+		
 		if($last_check == false){ //first time called
 			$last_check = time();
 			update_option('revslider-update-check-short', $last_check);
@@ -170,19 +184,33 @@ class RevSliderUpdate {
 			
 			update_option('revslider-update-check-short', time());
 			
-			$purchase = (get_option('revslider-valid', 'false') == 'true') ? get_option('revslider-code', '') : '';
+			$purchase	= (get_option('revslider-valid', 'false') == 'true') ? get_option('revslider-code', '') : '';
 			
-			$response = wp_remote_post($this->remote_url, array(
-				'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-				'body' => array(
-					'item' => urlencode('revslider'),
-					'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
-					'code' => urlencode($purchase)
-				)
-			));
-			
-			$response_code = wp_remote_retrieve_response_code( $response );
-			$version_info = wp_remote_retrieve_body( $response );
+			$done	= false;
+			$count	= 0;
+			do{
+				$url		= $rslb->get_url('updates');
+				$response = wp_remote_post($url.'/'.$this->remote_url, array(
+					'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+					'body' => array(
+						'item' => urlencode(RS_PLUGIN_SLUG),
+						'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
+						'code' => urlencode($purchase)
+					),
+					'timeout' => 45
+				));
+				
+				$response_code = wp_remote_retrieve_response_code( $response );
+				$version_info = wp_remote_retrieve_body( $response );
+				
+				if($response_code == 200){
+					$done = true;
+				}else{
+					$rslb->move_server_list();
+				}
+
+				$count++;
+			}while($done == false && $count < 5);
 			
 			if ( $response_code != 200 || is_wp_error( $version_info ) ) {
 				update_option('revslider-connection', false);
@@ -230,9 +258,10 @@ class RevSliderUpdate {
 	
 	
 	public function add_temp_active_check($force = false){
-		global $wp_version;
+		global $wp_version, $rslb;
 		
-		$last_check = get_option('revslider-activate-temp-short');
+		$last_check	= get_option('revslider-activate-temp-short');
+		
 		if($last_check == false){ //first time called
 			$last_check = time();
 			update_option('revslider-activate-temp-short', $last_check);
@@ -241,17 +270,31 @@ class RevSliderUpdate {
 		
 		// Check for updates
 		if(time() - $last_check > 3600 || $force == true){
-			$response = wp_remote_post($this->remote_temp_active, array(
-				'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-				'body' => array(
-					'item' => urlencode('revslider'),
-					'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
-					'code' => urlencode(get_option('revslider-code', ''))
-				)
-			));
+			$done	= false;
+			$count	= 0;
+			do{	
+				$url = $rslb->get_url('updates');
+				$response = wp_remote_post($url.'/'.$this->remote_temp_active, array(
+					'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+					'body' => array(
+						'item' => urlencode(RS_PLUGIN_SLUG),
+						'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
+						'code' => urlencode(get_option('revslider-code', ''))
+					),
+					'timeout' => 45
+				));
+				
+				$response_code = wp_remote_retrieve_response_code( $response );
+				$version_info = wp_remote_retrieve_body( $response );
+				if($response_code == 200){
+					$done = true;
+				}else{
+					$rslb->move_server_list();
+				}
+				
+				$count++;
+			}while($done == false && $count < 5);
 			
-			$response_code = wp_remote_retrieve_response_code( $response );
-			$version_info = wp_remote_retrieve_body( $response );
 			
 			if ( $response_code != 200 || is_wp_error( $version_info ) ) {
 				//wait, cant connect

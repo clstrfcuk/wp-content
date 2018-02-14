@@ -231,6 +231,17 @@ class RevSliderOperations extends RevSliderElementsBase{
 			"curtain-1"=>"Curtain from Left",
 			"curtain-2"=>"Curtain from Right",
 			"curtain-3"=>"Curtain from Middle",
+
+			"notselectable8"=>"FILTER TRANSITIONS",
+			"grayscale"=>"Grayscale Transition",
+			"grayscalecross"=>"Grayscale Cross Transition",
+			"brightness"=>"Brightness Transition",
+			"brightnesscross"=>"Brightness Cross Transition",
+			"blurlight"=>"Blur Light Transition",
+			"blurlightcross"=>"Blur Light Cross Transition",
+			"blurstrong"=>"Blur Strong Transition",
+			"blurstrongcross"=>"Blur Strong Cross Transition",
+			
 			
 			"notselectable7"=>"PREMIUM TRANSITIONS",
 			"3dcurtain-horizontal"=>"3D Curtain Horizontal",
@@ -1304,113 +1315,117 @@ class RevSliderOperations extends RevSliderElementsBase{
 		$setBase = (is_ssl()) ? "https://" : "http://";
 
 		?>
-			<html>
-				<head>
-					<link rel='stylesheet' href='<?php echo $urlPlugin; ?>css/settings.css?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>' type='text/css' media='all' />
-					<link rel='stylesheet' href='<?php echo $urlPlugin; ?>fonts/font-awesome/css/font-awesome.css?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>' type='text/css' media='all' />
-					<link rel='stylesheet' href='<?php echo $urlPlugin; ?>fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>' type='text/css' media='all' />
-					<?php
-					$db = new RevSliderDB();
+		<html>
+			<head>
+				<link rel='stylesheet' href='<?php echo $urlPlugin; ?>css/settings.css?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>' type='text/css' media='all' />
+				<link rel='stylesheet' href='<?php echo $urlPlugin; ?>fonts/font-awesome/css/font-awesome.css?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>' type='text/css' media='all' />
+				<link rel='stylesheet' href='<?php echo $urlPlugin; ?>fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>' type='text/css' media='all' />
+				<?php
+				$db = new RevSliderDB();
 
-					if(empty(self::$css)){
-						self::fillCSS();
-					}
-					
-					$styles = self::$css;
-					$styles = RevSliderCssParser::parseDbArrayToCss($styles, "\n");
-					$styles = RevSliderCssParser::compress_css($styles);
+				if(empty(self::$css)){
+					self::fillCSS();
+				}
+				
+				$styles = self::$css;
+				$styles = RevSliderCssParser::parseDbArrayToCss($styles, "\n");
+				$styles = RevSliderCssParser::compress_css($styles);
 
-					echo '<style type="text/css">'.$styles.'</style>'; //.$stylesinnerlayers
+				echo '<style type="text/css">'.$styles.'</style>'; //.$stylesinnerlayers
 
-					$http = (is_ssl()) ? 'https' : 'http';
-					
-					$operations = new RevSliderOperations();
-					$arrValues = $operations->getGeneralSettingsValues();
-					
-					$set_diff_font = RevSliderFunctions::getVal($arrValues, "change_font_loading",'');
-					if($set_diff_font !== ''){
-						$font_url = $set_diff_font;
-					}else{
-						$font_url = $http.'://fonts.googleapis.com/css?family=';
-					}
+				$http = (is_ssl()) ? 'https' : 'http';
+				
+				$operations = new RevSliderOperations();
+				$arrValues = $operations->getGeneralSettingsValues();
+				
+				$set_diff_font = RevSliderFunctions::getVal($arrValues, "change_font_loading",'');
+				if($set_diff_font !== ''){
+					$font_url = $set_diff_font;
+				}else{
+					$font_url = $http.'://fonts.googleapis.com/css?family=';
+				}
 
-					$custom_css = RevSliderOperations::getStaticCss();
-					echo '<style type="text/css">'.RevSliderCssParser::compress_css($custom_css).'</style>';
-					
-					$gfonts = '';
-					$googleFont = $slider->getParam("google_font");
-					if(is_array($googleFont)){
-						foreach($googleFont as $key => $font){
-							
-						}
-					}else{
-						RevSliderOperations::setCleanFontImport($googleFont);
-						//$gfonts .= RevSliderOperations::getCleanFontImport($googleFont);
-					}
-					//add all google fonts of layers
-					$gfsubsets = $slider->getParam("subsets",array());
-					$gf = $slider->getUsedFonts(false);
-					
-					foreach($gf as $gfk => $gfv){
-						$variants = array();
-						if(!empty($gfv['variants'])){
-							foreach($gfv['variants'] as $mgvk => $mgvv){
-								$variants[] = $mgvk;
-							}
-						}
+				$custom_css = RevSliderOperations::getStaticCss();
+				echo '<style type="text/css">'.RevSliderCssParser::compress_css($custom_css).'</style>';
+				
+				$gfonts = '';
+				$googleFont = $slider->getParam("google_font");
+				if(is_array($googleFont)){
+					foreach($googleFont as $key => $font){
 						
-						$subsets = array();
-						if(!empty($gfv['subsets'])){
-							foreach($gfv['subsets'] as $ssk => $ssv){
-								if(array_search(esc_attr($gfk.'+'.$ssv), $gfsubsets) !== false){
-									$subsets[] = $ssv;
-								}
+					}
+				}else{
+					RevSliderOperations::setCleanFontImport($googleFont);
+					//$gfonts .= RevSliderOperations::getCleanFontImport($googleFont);
+				}
+				//add all google fonts of layers
+				$gfsubsets = $slider->getParam("subsets",array());
+				$gf = $slider->getUsedFonts(false);
+				
+				foreach($gf as $gfk => $gfv){
+					$variants = array();
+					if(!empty($gfv['variants'])){
+						foreach($gfv['variants'] as $mgvk => $mgvv){
+							$variants[] = $mgvk;
+						}
+					}
+					
+					$subsets = array();
+					if(!empty($gfv['subsets'])){
+						foreach($gfv['subsets'] as $ssk => $ssv){
+							if(array_search(esc_attr($gfk.'+'.$ssv), $gfsubsets) !== false){
+								$subsets[] = $ssv;
 							}
 						}
-						RevSliderOperations::setCleanFontImport($gfk, '', '', $variants, $subsets);
-						//$gfonts .= RevSliderOperations::getCleanFontImport($gfk, '', '', $variants, $subsets);
 					}
-					
-					echo RevSliderOperations::printCleanFontImport();
-					//echo $gfonts;
+					RevSliderOperations::setCleanFontImport($gfk, '', '', $variants, $subsets);
+					//$gfonts .= RevSliderOperations::getCleanFontImport($gfk, '', '', $variants, $subsets);
+				}
+				
+				echo RevSliderOperations::printCleanFontImport();
+				//echo $gfonts;
+				?>
+
+				<script type='text/javascript' src='<?php echo $setBase; ?>code.jquery.com/jquery-latest.min.js'></script>
+
+				<script type='text/javascript' src='<?php echo $urlPlugin; ?>js/jquery.themepunch.tools.min.js?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>'></script>
+				<script type='text/javascript' src='<?php echo $urlPlugin; ?>js/jquery.themepunch.revolution.min.js?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>'></script>
+				<?php
+				$setRevStartSize = RevSliderFront::add_setREVStartSize();
+				echo $setRevStartSize;
+				?>
+				<?php
+				do_action('revslider_preview_slider_head');
+				?>
+			</head>
+			<body style="padding:0px;margin:0px;width:100%;height:100%;position:relative;">
+				<?php
+				if($wpmlActive == true){
 					?>
+					<div style="margin-bottom:10px;text-align:center;">
+					<?php _e("Choose language",'revslider'); ?>: <?php echo $selectLangChoose; ?>
+					</div>
 
-					<script type='text/javascript' src='<?php echo $setBase; ?>code.jquery.com/jquery-latest.min.js'></script>
-
-					<script type='text/javascript' src='<?php echo $urlPlugin; ?>js/jquery.themepunch.tools.min.js?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>'></script>
-					<script type='text/javascript' src='<?php echo $urlPlugin; ?>js/jquery.themepunch.revolution.min.js?rev=<?php echo RevSliderGlobals::SLIDER_REVISION; ?>'></script>
-					
+					<script type="text/javascript">
+						var g_previewPattern = '<?php echo $urlPreviewPattern; ?>';
+						jQuery("#select_langs").change(function(){
+							var lang = this.value;
+							var nonce = "<?php echo $nonce; ?>";
+							var pattern = g_previewPattern;
+							var urlPreview = pattern.replace("[lang]",lang).replace("[nonce]",nonce);
+							location.href = urlPreview;
+						});
+					</script>
 					<?php
-					do_action('revslider_preview_slider_head');
-					?>
-				</head>
-				<body style="padding:0px;margin:0px;width:100%;height:100%;position:relative;">
-					<?php
-					if($wpmlActive == true){
-						?>
-						<div style="margin-bottom:10px;text-align:center;">
-						<?php _e("Choose language",'revslider'); ?>: <?php echo $selectLangChoose; ?>
-						</div>
+				}
+				?>
 
-						<script type="text/javascript">
-							var g_previewPattern = '<?php echo $urlPreviewPattern; ?>';
-							jQuery("#select_langs").change(function(){
-								var lang = this.value;
-								var nonce = "<?php echo $nonce; ?>";
-								var pattern = g_previewPattern;
-								var urlPreview = pattern.replace("[lang]",lang).replace("[nonce]",nonce);
-								location.href = urlPreview;
-							});
-						</script>
-						<?php
-					}
-					?>
-
-					<?php
-						$output->putSliderBase($sliderID);
-					?>
-				</body>
-			</html>
+				<?php
+					$output->putSliderBase($sliderID);
+					do_action('revslider_preview_slider_footer', $slider, $output);
+				?>
+			</body>
+		</html>
 		<?php
 	}
 
@@ -1601,6 +1616,10 @@ class RevSliderOperations extends RevSliderElementsBase{
 		<script type="text/javascript" src="<?php echo $path_js; ?>extensions/revolution.extension.parallax.min.js"></script>
 		<script type="text/javascript" src="<?php echo $path_js; ?>extensions/revolution.extension.slideanims.min.js"></script>
 		<script type="text/javascript" src="<?php echo $path_js; ?>extensions/revolution.extension.video.min.js"></script>
+		<?php
+		$setRevStartSize = RevSliderFront::add_setREVStartSize();
+		echo $setRevStartSize;
+		?>
 	</head>
 	
 	<body>
@@ -2189,7 +2208,7 @@ ob_end_clean();
 				if($f_n !== ''){
 					if(isset($f_s['variants']) && !empty($f_s['variants']) || isset($f_s['subsets']) && !empty($f_s['subsets'])){
 						if(strpos($f_n, "href=") === false){
-							if($font_first == false) $tcf .= '|';
+							if($font_first == false) $tcf .= '%7C'; //'|';
 							$tcf .= urlencode($f_n).':';
 							
 							if(isset($f_s['variants']) && !empty($f_s['variants'])){
@@ -2329,21 +2348,34 @@ ob_end_clean();
 
 
 	public function checkPurchaseVerification($data){
-		global $wp_version;
+		global $wp_version, $rslb;
+		
+		$done	= false;
+		$count	= 0;
+		do{	
+			$url = $rslb->get_url('updates');
+			$response = wp_remote_post($url.'/activate.php', array(
+				'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+				'body' => array(
+					'code' => urlencode($data['code']),
+					//'email' => urlencode($data['email']),
+					'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
+					'product' => urlencode(RS_PLUGIN_SLUG)
+				)
+			));
 
-		$response = wp_remote_post('http://updates.themepunch.tools/activate.php', array(
-			'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-			'body' => array(
-				'code' => urlencode($data['code']),
-				//'email' => urlencode($data['email']),
-				'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
-				'product' => urlencode('revslider')
-			)
-		));
-
-		$response_code = wp_remote_retrieve_response_code( $response );
-		$version_info = wp_remote_retrieve_body( $response );
-
+			$response_code = wp_remote_retrieve_response_code( $response );
+			$version_info = wp_remote_retrieve_body( $response );
+		
+			if($response_code == 200){
+				$done = true;
+			}else{
+				$rslb->move_server_list();
+			}
+			
+			$count++;
+		}while($done == false && $count < 5);
+		
 		if ( $response_code != 200 || is_wp_error( $version_info ) ) {
 			return false;
 		}
@@ -2376,21 +2408,32 @@ ob_end_clean();
 	}
 
 	public function doPurchaseDeactivation($data){
-		global $wp_version;
+		global $wp_version, $rslb;
+		
+		$code	= get_option('revslider-code', '');
+		$done	= false;
+		$count	= 0;
+		do{	
+			$url 		= $rslb->get_url('updates');
+			$response	= wp_remote_post($url.'/deactivate.php', array(
+				'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+				'body' => array(
+					'code' => urlencode($code),
+					'product' => urlencode(RS_PLUGIN_SLUG)
+				)
+			));
 
-		$code = get_option('revslider-code', '');
-
-		$response = wp_remote_post('http://updates.themepunch.tools/deactivate.php', array(
-			'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-			'body' => array(
-				'code' => urlencode($code),
-				'product' => urlencode('revslider')
-			)
-		));
-
-		$response_code = wp_remote_retrieve_response_code( $response );
-		$version_info = wp_remote_retrieve_body( $response );
-
+			$response_code = wp_remote_retrieve_response_code( $response );
+			$version_info = wp_remote_retrieve_body( $response );
+			if($response_code == 200){
+				$done = true;
+			}else{
+				$rslb->move_server_list();
+			}
+			
+			$count++;
+		}while($done == false && $count < 5);
+		
 		if ( $response_code != 200 || is_wp_error( $version_info ) ) {
 			return false;
 		}

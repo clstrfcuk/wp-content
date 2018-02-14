@@ -195,21 +195,36 @@ class Rev_addon_Admin {
 	public function install_plugin() {
 		if( wp_verify_nonce( $_REQUEST['nonce'], 'ajax_rev_slider_addon_nonce' ) ) {
 			if(isset($_REQUEST['plugin'])){
-				global $wp_version;
-				$plugin_slug = basename($_REQUEST['plugin']);
-				$plugin_result = false;
-				$plugin_message = 'UNKNOWN';
+				global $wp_version, $rslb;
+				
+				$plugin_slug	= basename($_REQUEST['plugin']);
+				$plugin_result	= false;
+				$plugin_message	= 'UNKNOWN';
 
 				if(0 !== strpos($plugin_slug, 'revslider-')) die( '-1' );
+				
+				$done	= false;
+				$count	= 0;
+				do{	
+					$url = $rslb->get_url('updates');
+					$url .= '/addons/'.$plugin_slug.'/'.$plugin_slug.'.zip';
 
-				$url = 'http://updates.themepunch.tools/addons/'.$plugin_slug.'/'.$plugin_slug.'.zip';
-
-				$get = wp_remote_post($url, array(
-					'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-					'body' => '',
-					'timeout' => 45
-				));
-
+					$get = wp_remote_post($url, array(
+						'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+						'body' => '',
+						'timeout' => 45
+					));
+					
+					$response_code = wp_remote_retrieve_response_code( $get );
+					if($response_code == 200){
+						$done = true;
+					}else{
+						$rslb->move_server_list();
+					}
+					
+					$count++;
+				}while($done == false && $count < 5);
+				
 				if( !$get || $get["response"]["code"] != "200" ){
 				  $plugin_message = 'FAILED TO DOWNLOAD';
 				}else{

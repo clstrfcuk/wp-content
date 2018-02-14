@@ -129,7 +129,7 @@
 			
 			jQuery('body').on('change', '#revslider-existing-slider', function(){
 				var sel = jQuery('#revslider-existing-slider option:selected');
-				if(sel.data('slidertype') == 'gallery' || sel.data('slidertype') == 'specific_posts'){
+				if(sel.data('slidertype') == 'gallery' || sel.data('slidertype') == 'specific_posts' || sel.data('slidertype') == 'current_post'){
 					jQuery('#rs-modify-predefined-slider').removeClass('nonclickable');
 				}else{
 					jQuery('#rs-modify-predefined-slider').addClass('nonclickable');
@@ -149,7 +149,7 @@
 			jQuery('body').on('click', '#rs-modify-predefined-slider', function(){
 				var rs_raw_construct = wp.template( "rs-modify-slide-wrap" );
 				var sel = jQuery('#revslider-existing-slider option:selected');
-				if(sel.data('slidertype') == 'gallery' || sel.data('slidertype') == 'specific_posts'){
+				if(sel.data('slidertype') == 'gallery' || sel.data('slidertype') == 'specific_posts' || sel.data('slidertype') == 'current_post'){
 					
 					jQuery('.rs-mod-slides-wrapper').html(''); //reset HTML
 					

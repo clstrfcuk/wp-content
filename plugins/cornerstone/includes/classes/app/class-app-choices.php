@@ -31,7 +31,26 @@ class Cornerstone_App_Choices extends Cornerstone_Plugin_Component {
       );
     }
 
-    return apply_filters('cornerstone_menu_choices', $choices);
+    $samples = array(
+      array(
+        'value' => 'sample:default',
+        'label' => __( 'Sample', '__x__' ),
+      ),
+      array(
+        'value' => 'sample:default_no_dropdowns',
+        'label' => __( 'Sample (No Dropdowns)', 'cornerstone' ),
+      ),
+      array(
+        'value' => 'sample:default_split_1',
+        'label' => __( 'Sample (Split #1)', 'cornerstone' ),
+      ),
+      array(
+        'value' => 'sample:default_split_2',
+        'label' => __( 'Sample (Split #2)', 'cornerstone' ),
+      ),
+    );
+
+    return apply_filters('cornerstone_menu_choices', array_merge( $choices, $samples ) );
   }
 
   public function _sidebars() {

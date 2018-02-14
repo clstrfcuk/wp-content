@@ -10,7 +10,6 @@ if( !defined( 'ABSPATH') ) exit();
 
 class RevSliderObjectLibrary {
 	
-	private $library_url		= 'http://library.themepunch.tools/';
 	private $library_list		= 'library.php';
 	private $library_download	= 'download.php';
 	
@@ -27,9 +26,9 @@ class RevSliderObjectLibrary {
 	 * @since: 5.3.0
 	 */
 	public function _get_list($force = false){
-		global $wp_version;
+		global $wp_version, $rslb;
 		
-		$last_check = get_option('revslider-library-check');
+		$last_check	= get_option('revslider-library-check');
 		
 		if($last_check == false){ //first time called
 			$last_check = 1296001;
@@ -53,13 +52,26 @@ class RevSliderObjectLibrary {
 				'code' => urlencode($code),
 				'library_version' => urlencode($library_version),
 				'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
-				'product' => urlencode('revslider')
+				'product' => urlencode(RS_PLUGIN_SLUG)
 			);
-			$request = wp_remote_post($this->library_url.$this->library_list, array(
-				'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-				'body' => $rattr
-			));
 			
+			$done	= false;
+			$count	= 0;
+			do{	
+				$url		= $rslb->get_url('library');
+				$request	= wp_remote_post($url.'/'.$this->library_list, array(
+					'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+					'body' => $rattr
+				));
+				$response_code = wp_remote_retrieve_response_code( $request );
+				if($response_code == 200){
+					$done = true;
+				}else{
+					$rslb->move_server_list();
+				}
+				$count++;
+			}while($done == false && $count < 5);
+				
 			if(!is_wp_error($request)) {
 				if($response = maybe_unserialize($request['body'])) {
 					
@@ -175,23 +187,17 @@ class RevSliderObjectLibrary {
 	 * @since: 5.3.0
 	 */
 	public function _get_object_thumb($object_handle, $type){
-		global $wp_version;
+		global $wp_version, $rslb;
 		
-		$error = '';
-		
-		if($type == 'thumb'){
-			$path = $this->object_thumb_path;
-		}else{
-			$path = $this->object_orig_path;
-		}
-		$download = false;
-		
-		$upload_dir = wp_upload_dir(); // Set upload folder
-		$file = $upload_dir['basedir'] . $path . $object_handle;
-		$url_file = $upload_dir['baseurl'] . $path . $object_handle;
+		$error		= '';
+		$path		= ($type == 'thumb') ? $this->object_thumb_path : $path = $this->object_orig_path;
+		$download	= false;
+		$upload_dir	= wp_upload_dir(); // Set upload folder
+		$file		= $upload_dir['basedir'] . $path . $object_handle;
+		$url_file	= $upload_dir['baseurl'] . $path . $object_handle;
 	
 		//check if object thumb is already downloaded
-		$download = (!file_exists($file)) ? true : false;
+		$download	= (!file_exists($file)) ? true : false;
 		
 		//check if new version of object thumb is available
 		
@@ -212,18 +218,31 @@ class RevSliderObjectLibrary {
 					}else{
 						$code = ($validated == 'false') ? '' : get_option('revslider-code', '');
 						
-						$image_data = wp_remote_post($this->library_url.$this->library_download, array(
-							'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
-							'body' => array(
-								'code' => urlencode($code),
-								'library_version' => urlencode(self::LIBRARY_VERSION),
-								'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
-								'handle' => urlencode($object_handle),
-								'download' => urlencode($type),
-								'product' => urlencode('revslider')
-							),
-							'timeout' => 45 
-						));
+						$done	= false;
+						$count	= 0;
+						do{	
+							$url		= $rslb->get_url('library');
+							$image_data = wp_remote_post($url.'/'.$this->library_download, array(
+								'user-agent' => 'WordPress/'.$wp_version.'; '.get_bloginfo('url'),
+								'body' => array(
+									'code' => urlencode($code),
+									'library_version' => urlencode(self::LIBRARY_VERSION),
+									'version' => urlencode(RevSliderGlobals::SLIDER_REVISION),
+									'handle' => urlencode($object_handle),
+									'download' => urlencode($type),
+									'product' => urlencode(RS_PLUGIN_SLUG)
+								),
+								'timeout' => 45 
+							));
+							$response_code = wp_remote_retrieve_response_code( $image_data );
+							if($response_code == 200){
+								$done = true;
+							}else{
+								$rslb->move_server_list();
+							}
+							
+							$count++;
+						}while($done == false && $count < 5);
 						
 						if(!is_wp_error($image_data) && isset($image_data['body']) && isset($image_data['response']) && isset($image_data['response']['code']) && $image_data['response']['code'] == '200'){
 							$image_data = $image_data['body'];
@@ -833,7 +852,7 @@ class RevSliderObjectLibrary {
 												res++;
 												found = true;
 												return true;
-											}		
+											}
 										});
 									}
 								} else {
@@ -851,7 +870,7 @@ class RevSliderObjectLibrary {
 						});
 						
 						if (!found) jQuery('#'+item.idref).removeClass("showit");
-					});					
+					});
 				});
 
 				jQuery('.obj_library_cats').removeClass("selected");
@@ -1077,7 +1096,7 @@ class RevSliderObjectLibrary {
 		
 		if(isset($obj['online']) && isset($obj['online']['objects'])){
 			$online = $obj['online']['objects'];
-			if(!empty($online) && is_array($online)){					
+			if(!empty($online) && is_array($online)){
 				if(isset($obj['online']['tags'])){
 					foreach($obj['online']['tags'] as $t){
 						$data['html'][] = array('type' => 'tag', 'handle' => $t['handle'], 'name' => $t['name']);
@@ -1085,7 +1104,7 @@ class RevSliderObjectLibrary {
 				}
 				$data['html'][] = array('type' => 'inner');
 				
-				$data['list']['png'] = array();				
+				$data['list']['png'] = array();
 
 				foreach($online as $online_file){
 					$my_data = $this->_get_object_data($online_file['handle']);
@@ -1094,7 +1113,9 @@ class RevSliderObjectLibrary {
 					if ($online_file['type']==='2') $group="bgimage";
 					if(isset($online_file['tags']) && !empty($online_file['tags'])){
 						foreach($online_file['tags'] as $t){
-							$my_tags[] = $t['handle'];
+							if(is_array($t) && array_key_exists('handle', $t)){
+								$my_tags[] = $t['handle'];
+							}
 						}
 					}
 					$data['list']['png'][] = array(

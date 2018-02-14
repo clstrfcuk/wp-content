@@ -2,6 +2,7 @@
 class CS_Settings_Responsive_Text {
 
 	public $priority = 30;
+  public $shortcode_output = '';
 
 	public function ui() {
 		return array( 'title' => __( 'Responsive Text', 'cornerstone' ) );
@@ -35,9 +36,8 @@ class CS_Settings_Responsive_Text {
 			$settings = ( is_array( $settings ) ) ? $settings : array();
 		}
 
-		if ( 'elements' == $key && isset( $settings['responsive_text'] ) ) {
-			$controller = CS()->loadComponent( 'Data_Controller' );
-			return $controller->migrate($settings['responsive_text']);
+		if ( in_array( $key, array( 'elements', '_modules', '_elements'), true ) && isset( $settings['responsive_text'] ) ) {
+      return $settings['responsive_text'];
 		}
 
 		return null;
@@ -53,11 +53,24 @@ class CS_Settings_Responsive_Text {
 
     cs_update_serialized_post_meta( $post->ID, '_cornerstone_settings', $settings );
 
-    $save_handler = CS()->component( 'Save_Handler' );
-
+    //
+    $buffer = '';
+    $orchestrator = CS()->loadComponent( 'Element_Orchestrator' );
+    $definition = $orchestrator->get( 'responsive-text' );
     foreach ($settings['responsive_text'] as $element ) {
-    	$save_handler->append_element( $element );
+      $buffer .= $definition->build_shortcode( $definition->sanitize( $element ), '', null );
     }
+
+    $this->shortcode_output = $buffer;
+    add_filter('cornerstone_save_post_content', array( $this, 'append_shortcodes' ) );
+
 	}
+
+  public function append_shortcodes( $content ) {
+    $content .= $this->shortcode_output;
+    $this->shortcode_output = '';
+    remove_filter('cornerstone_save_post_content', array( $this, 'append_shortcodes' ) );
+    return $content;
+  }
 
 }

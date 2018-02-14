@@ -10,7 +10,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 <ul id="context-menu-first-ul" class="context-menu__items">
   <!-- CURRENT LAYER -->
   <li class="context-menu__item not_in_ctx_bg" id="ctx-m-activelayer">
-    <div class="ctx_item_inner"><i id="cx-selected-layer-icon" class="rs-icon-layerimage_n context-menu__link" data-action="nothing"></i><span id="cx-selected-layer-name">Black Canon DSLR</span>
+    <div class="ctx_item_inner"><i id="cx-selected-layer-icon" class="rs-icon-layerimage_n context-menu__link" data-action="nothing"></i><span id="cx-selected-layer-name"><?php _e('Black Canon DSLR', 'revslider'); ?></span>
     	<span data-uniqueid="4" id="ctx-list-of-layer-links" class="ctx-list-of-layer-links">			
     		<span id="ctx-layer-link-type-element-cs" class="ctx-layer-link-type-element ctx-layer-link-type-element-cs ctx-layer-link-type-3"></span>			
     		<span class="ctx-list-of-layer-links-inner">				
@@ -237,7 +237,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 						<span class="diblock bg-settings-block">
 							<!-- IMAGE FROM MEDIAGALLERY -->												
 							<?php
-							if($slider_type == 'posts' || $slider_type == 'specific_posts' || $slider_type == 'woocommerce'){
+							if($slider_type == 'posts' || $slider_type == 'specific_posts' || $slider_type == 'current_post' || $slider_type == 'woocommerce'){
 								?>
 								<label><?php _e("Featured Image",'revslider'); ?></label>
 								<input type="radio" name="background_type" value="image" class="bgsrcchanger" data-callid="tp-bgimagewpsrc" data-imgsettings="on" data-bgtype="image" id="radio_back_image" <?php checked($bgType, 'image'); ?>>
@@ -321,7 +321,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 							<div class="tp-clearfix"></div>
 
 							<!-- THE YOUTUBE SELECTOR -->
-							<label><?php _e("YouTube Video",'revslider'); ?></label>
+							<label id="label_radio_back_youtube"><?php _e("YouTube Video",'revslider'); ?></label>
 							<input type="radio" name="background_type" value="youtube"  data-callid="tp-bgyoutubesrc" class="bgsrcchanger" data-bgtype="youtube" id="radio_back_youtube" <?php checked($bgType, 'youtube'); ?>>
 							<div class="tp-clearfix"></div>
 							
@@ -337,7 +337,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 							<div class="tp-clearfix"></div>
 							
 							<!-- THE VIMEO SELECTOR -->
-							<label><?php _e("Vimeo Video",'revslider'); ?></label>
+							<label id="label_radio_back_vimeo"><?php _e("Vimeo Video",'revslider'); ?></label>
 							<input type="radio" name="background_type" value="vimeo"  data-callid="tp-bgvimeosrc" class="bgsrcchanger" data-bgtype="vimeo" id="radio_back_vimeo" <?php checked($bgType, 'vimeo'); ?>>
 							<div class="tp-clearfix"></div>
 
@@ -506,7 +506,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 							
 							<div class="vid-rev-vimeo-youtube video_volume_wrapper">
 								<label for="video_volume"><?php _e('Video Volume:', 'revslider'); ?></label>
-								<input type="text" id="video_volume" name="video_volume" <?php echo esc_attr($video_volume); ?>>
+								<input type="text" id="video_volume" name="video_volume" value="<?php echo esc_attr($video_volume); ?>">
 							</div>
 
 							<span id="vid-rev-youtube-options">
@@ -793,7 +793,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 					?>
 						<!-- SLIDE TITLE -->
 						<p style="display:none">
-							<?php $title = RevSliderFunctions::getVal($slideParams, 'title','Slide'); ?>
+							<?php $title = esc_attr(stripslashes(RevSliderFunctions::getVal($slideParams, 'title','Slide'))); ?>
 							<label><?php _e("Slide Title",'revslider'); ?></label>
 							<input type="text" class="medium" id="title" disabled="disabled" name="title" value="<?php echo $title; ?>">
 							<span class="description"><?php _e("The title of the slide, will be shown in the slides list.",'revslider'); ?></span>
@@ -1551,7 +1551,7 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 								$arrSlideNames = $slider->getArrSlideNames();
 							if(!empty($arrSlideNames) && is_array($arrSlideNames)){
 								foreach($arrSlideNames as $slideNameID=>$arr){
-									$slideName = $arr["title"];
+									$slideName = esc_attr(stripslashes($arr["title"]));
 									$arrSlideLink[$slideNameID] = $slideName;
 									$arrSlideLinkLayers[$slideNameID] = $slideName;
 								}

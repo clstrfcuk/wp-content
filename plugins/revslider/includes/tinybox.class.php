@@ -278,7 +278,7 @@ class RevSliderTinyBox {
 						
 						if($type == 'gallery'){
 							$slides = $slider->getSlides();
-						}elseif($type == 'specific_posts'){
+						}elseif($type == 'specific_posts' || $type == 'current_post'){
 							$slides = $slider->getSlidesFromPosts();
 						}
 						
@@ -366,6 +366,7 @@ class RevSliderTinyBox {
 					if(!empty($sl)){
 						foreach($sl as $type => $slider){
 							$mtype = ($type == 'specific_posts') ? 'Specific Posts' : $type;
+							$mtype = ($type == 'current_post') ? 'Current Post' : $type;
 							echo '<option disabled="disabled">--- '.ucfirst(esc_attr($mtype)).' ---</option>';
 							foreach($slider as $values){
 								if($values['alias'] != 'false'){
