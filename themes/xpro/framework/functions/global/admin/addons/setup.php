@@ -140,7 +140,7 @@ function x_addons_validation_notice() {
   if ( false === get_option( 'x_dismiss_validation_notice', false ) && ! x_is_validated() && ! in_array( get_current_screen()->parent_base, apply_filters( 'x_validation_notice_blocked_screens', array( 'x-addons-home' ) ) ) ) {
 
     x_tco()->admin_notice( array(
-      'message' => sprintf( __( 'This X license is ​<strong>not validated</strong>​. <a href="%s">Fix</a>', '__x__' ), x_addons_get_link_home() ),
+      'message' => sprintf( x_i18n('overview', 'validation-notice'), x_addons_get_link_home() ),
       'dismissible' => true,
       'ajax_dismiss' => 'x_dismiss_validation_notice'
     ) );

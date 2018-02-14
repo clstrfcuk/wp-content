@@ -225,19 +225,6 @@ class CS_Settings_General {
 			$settings['custom_js'] = $data['custom_js'];
 		}
 
-		// Minify JS
-		if ( isset( $settings['custom_js'] ) ) {
-			require( CS()->path( 'includes/utility/jsqueeze.php' ) );
-			$jz = new JSqueeze;
-			$minified = $jz->squeeze( $settings['custom_js'] );
-			if ( ';' === $minified ) {
-				$minified = '';
-			}
-
-			$settings['custom_js_mini'] = $minified;
-
-		}
-		//jsond( $settings);
 		if ( ! empty( $update ) ) {
 
 			$update['ID'] = $post->ID;

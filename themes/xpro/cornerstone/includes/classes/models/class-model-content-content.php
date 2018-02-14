@@ -16,25 +16,12 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
     ) );
 
     foreach ($posts as $post) {
-      $records[] = $this->post_to_record( $post );
+      $records[] = $this->make_record( $post );
     }
 
     foreach ($records as $record) {
       $this->resources[] = $this->to_resource( $record );
     }
-  }
-
-  public function post_to_record( $post ) {
-    $post_type_obj = get_post_type_object( $post->post_type );
-
-    return array(
-      'id' => "$post->ID",
-      'title' => $post->post_title,
-      'post-type' => $post->post_type,
-      'post-type-label' => isset( $post_type_obj->labels ) ? $post_type_obj->labels->singular_name : $post->post_type,
-      'modified' => date_i18n( get_option( 'date_format' ), strtotime( $post->post_modified ) ),
-      'permalink' => get_permalink( $post )
-    );
   }
 
   public function query( $params ) {
@@ -49,16 +36,34 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
     $this->included = array();
 
     if ( isset( $params['query']['id'] ) ) {
-      $post = get_post( (int) $params['query']['id'] );
-
-      if ( ! is_null( $post ) ) {
-        $queried[] = $this->to_resource( $this->post_to_record( $post ) );
+      try {
+        $queried[] = $this->to_resource( $this->make_record( (int) $params['query']['id'] ) );
+      } catch( Exception $e ) {
+        return $this->make_error_response( 'Content not found' );
       }
-
     }
 
     return $this->make_response( ( isset( $params['single'] ) && isset( $queried[0] ) ) ? $queried[0] : $queried );
 
+  }
+
+  public function make_error_response( $message, $status = 404 ) {
+    return array(
+      'errors' => array(
+        array( 'status' => $status, 'title' => 'message' )
+      )
+    );
+  }
+
+  public function make_record( $post ) {
+    if ( is_int( $post ) ) {
+      $post = get_post( $post );
+    }
+    $content = new Cornerstone_Content( $post );
+    $record = $content->serialize();
+    $record['post-type'] = $post->post_type;
+    $record['language'] = $this->plugin->loadComponent('Wpml')->get_language_data_from_post( $post, true );
+    return $record;
   }
 
 
@@ -83,6 +88,10 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
       'type' => $this->name
     );
 
+    if ( empty( $record['settings'] ) ) {
+      unset($record['settings']);
+    }
+
     unset( $record['id'] );
     $resource['attributes'] = $record;
 
@@ -90,16 +99,10 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
 
   }
 
-  public function create( $params ) {
-    $atts = $this->atts_from_request( $params );
-    $footer = new Cornerstone_Footer( $atts );
-    return $this->make_response( $this->to_resource( $footer->save() ) );
-  }
-
   protected function atts_from_request( $params ) {
 
     if ( ! isset( $params['model'] ) || ! isset( $params['model']['data'] ) || ! isset( $params['model']['data']['attributes'] ) ) {
-      throw new Exception( 'Request to Footer model missing attributes.' );
+      throw new Exception( 'Request to Content model missing attributes.' );
     }
 
     $atts = $params['model']['data']['attributes'];
@@ -111,38 +114,48 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
     return $atts;
   }
 
-  public function delete( $params ) {
-    $atts = $this->atts_from_request( $params );
+  // public function create( $params ) {
+  //   $atts = $this->atts_from_request( $params );
+  //   $content = new Cornerstone_Content( $atts );
+  //   return $this->make_response( $this->to_resource( $content->save() ) );
+  // }
 
-    if ( ! $atts['id'] ) {
-      throw new Exception( 'Attempting to delete Footer without specifying an ID.' );
-    }
-
-    $id = (int) $atts['id'];
-
-    $footer = new Cornerstone_Footer( $id );
-    $footer->delete();
-
-    return $this->make_response( array( 'id' => $id, 'type' => $this->name ) );
-  }
+  // public function delete( $params ) {
+  //   $atts = $this->atts_from_request( $params );
+  //
+  //   if ( ! $atts['id'] ) {
+  //     throw new Exception( 'Attempting to delete Content without specifying an ID.' );
+  //   }
+  //
+  //   $id = (int) $atts['id'];
+  //
+  //   $content = new Cornerstone_Content( $id );
+  //   $content->delete();
+  //
+  //   return $this->make_response( array( 'id' => $id, 'type' => $this->name ) );
+  // }
 
   public function update( $params ) {
 
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
-      throw new Exception( 'Attempting to update Footer without specifying an ID.' );
+      throw new Exception( 'Attempting to update Content without specifying an ID.' );
     }
 
     $id = (int) $atts['id'];
 
-    $footer = new Cornerstone_Footer( $id );
+    $content = new Cornerstone_Content( $id );
 
-    if ( isset( $atts['regions'] ) ) {
-      $footer->set_regions( $atts['regions'] );
+    if ( isset( $atts['elements'] ) ) {
+      $content->set_elements( $atts['elements'] );
     }
 
-    return $this->make_response( $this->to_resource( $footer->save() ) );
+    if ( isset( $atts['settings'] ) ) {
+      $content->set_settings( $atts['settings'] );
+    }
+
+    return $this->make_response( $this->to_resource( $content->save() ) );
   }
 
 }

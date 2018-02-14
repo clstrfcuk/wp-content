@@ -73,10 +73,6 @@ if ( ! function_exists( 'x_enqueue_post_meta_scripts' ) ) :
       wp_enqueue_script( 'x-addons-home-js' );
     }
 
-    if ( $hook == 'widgets.php' ) {
-      wp_enqueue_script( 'x-widgets-js', X_TEMPLATE_URL . "/framework/js/dist/admin/x-widgets{$ext}", array( 'jquery' ), X_ASSET_REV, true );
-    }
-
     if ( $hook == 'post.php' || $hook == 'post-new.php' || $hook == 'edit-tags.php' ) {
       wp_enqueue_script( 'x-meta-js', X_TEMPLATE_URL . "/framework/js/dist/admin/x-meta{$ext}", array( 'jquery', 'media-upload', 'thickbox' ), X_ASSET_REV, true );
     }

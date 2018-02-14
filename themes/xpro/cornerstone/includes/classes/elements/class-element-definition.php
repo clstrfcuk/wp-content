@@ -19,18 +19,20 @@ class Cornerstone_Element_Definition {
 
       'title'          => '',
       'values'         => array(),
-
+      'options'        => array(),
       'style'          => null,
 
       'builder'        => null,
       'controls'       => array(),
       'control_groups' => array(),
-      'conditions'     => array(),
-      'supports'       => array(),
+      // 'conditions'     => array(),
+      // 'supports'       => array(),
       'icon'           => null,
       'active'         => true,
 
       'render'         => null,
+
+      '_upgrade_data' => array()
     );
 
     $this->def = array_merge( $defaults, $this->def, array_intersect_key( $update, $defaults ) );
@@ -156,6 +158,10 @@ class Cornerstone_Element_Definition {
     return $this->def['title'];
   }
 
+  public function get_type() {
+    return $this->type;
+  }
+
   public function serialize() {
 
     $this->update_for_builder();
@@ -163,6 +169,7 @@ class Cornerstone_Element_Definition {
     $data = array(
       'id'             => $this->type,
       'title'          => $this->def['title'],
+      'options'        => $this->def['options'],
       'values'         => $this->def['values'],
       'style'          => $this->get_compiled_style(),
       'controls'       => $this->def['controls'],
@@ -192,20 +199,17 @@ class Cornerstone_Element_Definition {
     return true;
   }
 
-  public function render( $data ) {
-    return is_callable( $this->def['render'] ) ? call_user_func( $this->def['render'], $this->sanitize( $data ) ) : '';
-  }
-
   public function sanitize( $data ) {
 
     $sanitized = array();
     if ( ! isset( $this->html_safe_keys ) ) {
       $markup_keys = $this->get_designated_keys('markup', 'html' );
       $attr_keys = $this->get_designated_keys('attr', 'html' );
-      $this->html_safe_keys = array_merge( $markup_keys, $attr_keys );
+      $raw_keys = $this->get_designated_keys('markup', 'raw' );
+      $this->html_safe_keys = array_merge( $markup_keys, $attr_keys, $raw_keys );
     }
 
-    $internal_keys = array( '_id', '_type', '_region', '_modules' );
+    $internal_keys = array( '_id', '_type', '_region', '_modules', '_transient' );
 
     foreach ( $data as $key => $value ) {
 
@@ -226,4 +230,28 @@ class Cornerstone_Element_Definition {
 
     return $sanitized;
   }
+
+  public function save( $data, $content ) {
+
+    $tag = "cs_element_" . str_replace('-', '_', $data['_type'] );
+    $_id = $data['_id'];
+
+    $shortcode = "[$tag _id=\"$_id\"]";
+
+    if ( ! $content && isset( $this->def['options']['fallback_content'] ) ) {
+      $content = $this->def['options']['fallback_content'];
+    }
+
+    if ( $content ) {
+
+      $shortcode .= $content . "[/$tag]";
+    }
+
+    return $shortcode;
+  }
+
+  public function render( $data ) {
+    return is_callable( $this->def['render'] ) ? call_user_func( $this->def['render'], $this->sanitize( $data ) ) : '';
+  }
+
 }

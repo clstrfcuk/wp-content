@@ -5,12 +5,16 @@
 
 class Cornerstone_Revision_Manager extends Cornerstone_Plugin_Component {
 
-	// Target post_meta
-	public $post_meta = array(
+	public $json_post_meta = array(
 		'_cornerstone_data',
-		'_cornerstone_override',
 		'_cornerstone_settings',
 	);
+
+  public $standard_post_meta = array(
+    '_cornerstone_version'
+  );
+
+  public $post_meta_keys;
 
 	public function setup() {
 
@@ -20,46 +24,65 @@ class Cornerstone_Revision_Manager extends Cornerstone_Plugin_Component {
 		}
 
 		// Save cornerstone revision
-		add_action( 'save_post', array( $this, 'saveRevision' ) , 10, 2 );
+		add_action( 'save_post', array( $this, 'save_revision' ), 100 );
 
 		// Restore cornerstone revision
-		add_action( 'wp_restore_post_revision', array( $this, 'restoreRevision' ), 10, 2 );
+		add_action( 'wp_restore_post_revision', array( $this, 'restore_revision' ), 10, 2 );
 
 	}
 
-	// Save cornerstone revision
-	public function saveRevision( $post_id, $post ) {
+	public function save_revision( $revision_id ) {
 
-		$parent_id = wp_is_post_revision( $post_id );
+		$parent_id = wp_is_post_revision( $revision_id );
 
-		if ( $parent_id ) {
+		if ( ! $parent_id ) {
+      return;
+    }
 
-			$parent  = get_post( $parent_id );
+    $this->update_revision_meta_from_post( $revision_id, $parent_id );
 
-			foreach ( $this->post_meta as $name ) {
-				$meta = get_post_meta( $parent->ID, $name , true );
-				if ( false !== $meta ) {
-					add_metadata( 'post', $post_id, $name, $meta );
-				}
+	}
+
+  public function update_revision_meta_from_post( $revision_id, $post_id ) {
+
+    foreach ( $this->json_post_meta as $key ) {
+			$meta = cs_get_serialized_post_meta( $post_id, $key , true );
+			if ( false !== $meta ) {
+        cs_update_serialized_post_meta( $revision_id, $key, $meta, '', true );
+			}
+		}
+
+    foreach ( $this->standard_post_meta as $key ) {
+			$meta = get_post_meta( $post_id, $key , true );
+			if ( false !== $meta ) {
+        update_metadata('post', $revision_id, $key, $meta );
+			}
+		}
+
+  }
+
+	public function restore_revision( $post_id, $revision_id ) {
+
+    foreach ( $this->json_post_meta as $key ) {
+
+			$meta = cs_get_serialized_post_meta( $revision_id, $key , true );
+
+			if ( false !== $meta ) {
+				cs_update_serialized_post_meta( $post_id, $key, $meta );
+			} else {
+				delete_post_meta( $post_id, $key );
 			}
 
 		}
 
-	}
+		foreach ( $this->standard_post_meta as $key ) {
 
-	// Restore cornerstone revision
-	public function restoreRevision( $post_id, $revision_id ) {
-		$post     = get_post( $post_id );
-		$revision = get_post( $revision_id );
-
-		foreach ( $this->post_meta as $name ) {
-
-			$meta  = get_metadata( 'post', $revision->ID, $name, true );
+			$meta = get_post_meta( $revision_id, $key , true );
 
 			if ( false !== $meta ) {
-				update_post_meta( $post_id, $name, $meta );
+				update_post_meta( $post_id, $key, $meta );
 			} else {
-				delete_post_meta( $post_id, $name );
+				delete_post_meta( $post_id, $key );
 			}
 
 		}

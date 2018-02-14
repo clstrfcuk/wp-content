@@ -18,8 +18,7 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
     $records = array();
 
     foreach ($posts as $post) {
-      $footer = new Cornerstone_Footer( $post );
-      $records[] = $footer->serialize();
+      $records[] = $this->make_record( $post );
     }
 
     // Filter $records here?
@@ -42,8 +41,7 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
 
     if ( isset( $params['query']['id'] ) ) {
       try {
-        $header = new Cornerstone_Footer( (int) $params['query']['id'] );
-        $queried[] = $this->to_resource( $header->serialize() );
+        $queried[] = $this->to_resource( $this->make_record( (int) $params['query']['id'] ) );
       } catch( Exception $e ) {
 
       }
@@ -53,6 +51,16 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
 
   }
 
+  public function make_record( $post ) {
+    if ( is_int( $post ) ) {
+      $post = get_post( $post );
+    }
+    $footer = new Cornerstone_Footer( $post );
+    $record = $footer->serialize();
+    $record['post-type'] = $post->post_type;
+    $record['language'] = $this->plugin->loadComponent('Wpml')->get_language_data_from_post( $post, true );
+    return $record;
+  }
 
   public function make_response( $data ) {
 

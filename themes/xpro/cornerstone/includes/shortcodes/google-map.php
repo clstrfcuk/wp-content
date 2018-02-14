@@ -45,8 +45,8 @@ function x_shortcode_google_map( $atts, $content = null ) {
     $script_url = add_query_arg( array( 'key' => $api_key ), $script_url );
   }
 
-  wp_register_script( 'cs-google-maps', $script_url );
-  wp_enqueue_script( 'cs-google-maps' );
+  wp_register_script( 'x-google-map', $script_url );
+  wp_enqueue_script( 'x-google-map' );
 
   $output = "<div id=\"{$id}\" class=\"{$class}{$no_container}\" {$data} {$style}><div class=\"x-map-inner x-google-map-inner\" {$height}></div>" . do_shortcode( $content ) . "</div>";
 

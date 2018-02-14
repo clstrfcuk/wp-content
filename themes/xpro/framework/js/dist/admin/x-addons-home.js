@@ -862,6 +862,7 @@ tco.addModule( 'x-extension', function( $this, targets, data ) {
       action: 'x_extensions_installer',
       plugin: extension.plugin,
       package: extension.package,
+      slug: extension.slug,
       done: done,
       fail: fail,
     } );

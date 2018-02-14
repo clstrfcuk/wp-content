@@ -140,9 +140,13 @@ add_action( 'customize_controls_print_styles', 'x_enqueue_customizer_controls_st
 if ( ! function_exists( 'x_output_generated_styles' ) ) :
   function x_output_generated_styles() {
 
+    do_action('x_before_head_css');
+
     echo '<style id="x-generated-css" type="text/css">';
     do_action( 'x_head_css' );
     echo '</style>';
+
+    do_action('x_after_head_css');
 
   }
 endif;

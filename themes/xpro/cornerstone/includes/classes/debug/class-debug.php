@@ -24,11 +24,6 @@ class Cornerstone_Debug extends Cornerstone_Plugin_Component {
     $wp_styles = new WP_Styles();
     $wp_scripts = new WP_Scripts();
 
-    if ( !class_exists('WP_Admin_Bar') ) {
-      _wp_admin_bar_init();
-    }
-
-    $this->show_admin_bar = true;
     nocache_headers();
 
     $this->boilerplate();
@@ -68,10 +63,6 @@ class Cornerstone_Debug extends Cornerstone_Plugin_Component {
 
     if ( is_rtl() ) {
       $classes[] = 'rtl';
-    }
-
-    if ( $this->show_admin_bar ) {
-      $classes[] = 'admin-bar';
     }
 
     if ( empty( $classes ) ) {

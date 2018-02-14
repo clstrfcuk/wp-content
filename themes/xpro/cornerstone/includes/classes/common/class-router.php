@@ -28,9 +28,6 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
     add_rewrite_endpoint( $this->endpoint, EP_ALL );
     add_action( 'template_redirect', array( $this, 'endpoint' ), -99999 );
 
-    // Internal AJAX endpoint for failovers
-    add_action( 'wp_ajax_cs_legacy_ajax', array( $this, 'flag_legacy_ajax' ) );
-
     // Heartbeat
     add_filter( 'heartbeat_received', array( $this, 'heartbeat_received' ), 10, 2 );
     add_filter( 'wp_refresh_nonces', array( $this, 'refresh_nonces' ), 10,  3 );
@@ -334,26 +331,6 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
   }
 
   /**
-   * Flag this installation to use Legacy AJAX handling moving forwards. This is
-   * to allow for stability across many environments.
-   * @return none
-   */
-  public function flag_legacy_ajax() {
-
-    $this->begin_response();
-
-    // update_option( 'cs_legacy_ajax', true );
-
-    // Manual reset
-    if ( isset( $_REQUEST['state'] ) && ! $_REQUEST['state'] ) {
-      delete_option( 'cs_legacy_ajax' );
-    }
-
-    return cs_send_json_success();
-
-  }
-
-  /**
    * Get JSON input from the incoming request. We try to use php://input to grab
    * straight JSON, but it also supports base64encoded form data for less
    * permissive environments
@@ -422,11 +399,13 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
       ) );
     }
 
-    $request = $data['request'];
-    unset($data['request']);
+    if ( isset( $data['request'] ) ) {
+      $request = $data['request'];
+      unset($data['request']);
 
-    foreach ($request as $key => $value) {
-      $data[$key] = $value;
+      foreach ($request as $key => $value) {
+        $data[$key] = $value;
+      }
     }
 
     return $data;
@@ -445,6 +424,9 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
    * @return boolean Whether or not legacy mode should be in effect.
    */
   public function use_legacy_ajax() {
+    if ( is_multisite() || ! $this->is_permalink_structure_valid() ) {
+      return true;
+    }
     return defined( 'CS_LEGACY_AJAX' ) ? CS_LEGACY_AJAX : false;
   }
 
@@ -482,7 +464,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
    */
   public function endpoint_available() {
 
-    if ( is_multisite() || $this->use_legacy_ajax() || !$this->is_permalink_structure_valid() ) {
+    if ( $this->use_legacy_ajax() ) {
       return false;
     }
 

@@ -198,8 +198,10 @@ class X_Demo_Import_Processor {
 
     $download = download_url( $data['url'], 30 );
 
-    if ( is_wp_error( $download ) )
-      return $download;
+    if ( is_wp_error( $download ) ) {
+      return new WP_Error('__x__', $download->get_error_message() . '|' . $data['url'] );
+    }
+
     $file = array( 'name' => basename($data['url']), 'tmp_name' => $download );
     $results = wp_handle_sideload( $file, array( 'test_form' => false ) );
 

@@ -104,8 +104,8 @@ if ( ! function_exists( 'x_ethos_entry_meta' ) ) :
       $title  = apply_filters( 'x_entry_meta_comments_title', get_the_title() );
       $link   = apply_filters( 'x_entry_meta_comments_link', get_comments_link() );
       $number = apply_filters( 'x_entry_meta_comments_number', get_comments_number() );
-      
-      $text = ( 0 === $number ) ? 'Leave a Comment' : sprintf( _n( '%s Comment', '%s Comments', $number, '__x__' ), $number );
+
+      $text = ( 0 == $number ) ? __( 'Leave a Comment', '__x__' ) : sprintf( _n( '%s Comment', '%s Comments', $number, '__x__' ), $number );
 
       $comments = sprintf( '<span><a href="%1$s" title="%2$s" class="meta-comments">%3$s</a></span>',
         esc_url( $link ),
@@ -339,7 +339,7 @@ if ( ! function_exists( 'x_ethos_comment' ) ) :
         $rating = esc_attr( get_comment_meta( $GLOBALS['comment']->comment_ID, 'rating', true ) );
       endif;
     ?>
-    <li id="li-comment-<?php comment_ID(); ?>" itemprop="review" itemscope itemtype="http//schema.org/Review" <?php comment_class(); ?>>
+    <li id="li-comment-<?php comment_ID(); ?>" itemprop="review" itemscope itemtype="http://schema.org/Review" <?php comment_class(); ?>>
       <article id="comment-<?php comment_ID(); ?>" class="comment">
         <?php
         printf( '<div class="x-comment-img">%1$s %2$s</div>',

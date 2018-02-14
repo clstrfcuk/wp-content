@@ -183,22 +183,9 @@ function cornerstone_get_element( $name ) {
   return CS()->loadComponent('Element_Manager')->get_element( $name );
 }
 
-function cornerstone_preview_register_zones( $zones ) {
-  CS()->loadComponent( 'App_Renderer' )->register_zones( $zones );
-  return CS()->loadComponent( 'Preview_Frame_Loader' )->register_zones( $zones );
-}
 
 function cornerstone_preview_container_output() {
-  return CS()->loadComponent( 'Preview_Frame_Loader' )->container_output();
-}
-
-/**
- * Returns the styling generated for headers and footers
- * @return string
- */
-function cornerstone_get_generated_styles() {
-  $styling = CS()->loadComponent( 'Styling' );
-  return ( $styling ) ? $styling->get_generated_styles() : '';
+	echo '{{yield}}';
 }
 
 /**
@@ -237,7 +224,8 @@ function cornerstone_post_process_css( $css, $minify = false ) {
 }
 
 function cornerstone_post_process_color( $value ) {
-  return CS()->loadComponent('Color_Manager')->css_post_process_color( $value );
+  CS()->loadComponent('Color_Manager');
+	return apply_filters('cornerstone_css_post_process_color', $value);
 }
 
 function cornerstone_cleanup_generated_styles() {

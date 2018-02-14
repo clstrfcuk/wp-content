@@ -32,6 +32,7 @@ define( 'X_WPML_IS_ACTIVE', defined( 'ICL_SITEPRESS_VERSION' ) );
 define( 'X_UBERMENU_IS_ACTIVE', class_exists( 'UberMenu' ) );
 define( 'X_THE_GRID_IS_ACTIVE', class_exists( 'The_Grid_Plugin' ) );
 define( 'X_EP_PAYMENT_FORM_IS_ACTIVE', class_exists( 'LFB_Core' ) );
+define( 'X_MEC_IS_ACTIVE', class_exists( 'MEC' ) );
 
 
 
@@ -95,5 +96,9 @@ if ( X_THE_GRID_IS_ACTIVE && x_is_validated() ) {
 }
 
 if ( X_EP_PAYMENT_FORM_IS_ACTIVE ) {
-	require_once $plgn_path . '/estimation-form.php';
+	require_once( $plgn_path . '/estimation-form.php');
+}
+
+if ( X_MEC_IS_ACTIVE ) {
+  require_once( $plgn_path . '/modern-events-calendar.php');
 }

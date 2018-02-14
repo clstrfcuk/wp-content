@@ -55,7 +55,7 @@ if ( ! function_exists( 'x_social_global' ) ) :
       if ( $github )      : $output .= '<a href="' . $github      . '" class="github" title="GitHub" target="_blank"><i class="x-icon-github-square" data-x-icon="&#xf092;" aria-hidden="true"></i></a>'; endif;
       if ( $behance )     : $output .= '<a href="' . $behance     . '" class="behance" title="Behance" target="_blank"><i class="x-icon-behance-square" data-x-icon="&#xf1b5;" aria-hidden="true"></i></a>'; endif;
       if ( $tumblr )      : $output .= '<a href="' . $tumblr      . '" class="tumblr" title="Tumblr" target="_blank"><i class="x-icon-tumblr-square" data-x-icon="&#xf174;" aria-hidden="true"></i></a>'; endif;
-      if ( $whatsapp )    : $output .= '<a href="' . $whatsapp    . '" class="tumblr" title="Whatsapp" target="_blank"><i class="x-icon-whatsapp" data-x-icon="&#xf232;" aria-hidden="true"></i></a>'; endif;
+      if ( $whatsapp )    : $output .= '<a href="' . $whatsapp    . '" class="whatsapp" title="Whatsapp" target="_blank"><i class="x-icon-whatsapp" data-x-icon="&#xf232;" aria-hidden="true"></i></a>'; endif;
       if ( $soundcloud )  : $output .= '<a href="' . $soundcloud  . '" class="soundcloud" title="SoundCloud" target="_blank"><i class="x-icon-soundcloud" data-x-icon="&#xf1be;" aria-hidden="true"></i></a>'; endif;
       if ( $rss )         : $output .= '<a href="' . $rss         . '" class="rss" title="RSS" target="_blank"><i class="x-icon-rss-square" data-x-icon="&#xf143;" aria-hidden="true"></i></a>'; endif;
 
