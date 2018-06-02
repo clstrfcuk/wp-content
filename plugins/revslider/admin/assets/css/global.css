@@ -72,9 +72,9 @@ div[aria-describedby="revslider-tiny-mce-dialog"] .ui-button-icon-primary.ui-ico
  ShortCode Generator Fixes
  ***/
  
-.ui-dialog {
+/*.ui-dialog {
 	z-index: 1000102 !important;
-}
+}*/
 
 
 #rs-shortcode-select-wrapper,
@@ -176,3 +176,7 @@ div[aria-describedby="revslider-tiny-mce-dialog"] .ui-button-icon-primary.ui-ico
     opacity: 1;
 }
 
+/**
+* requested by the WPML guys, leave it in here
+**/
+.toolset_select2-container{z-index: 1000102;}

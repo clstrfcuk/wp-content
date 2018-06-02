@@ -712,7 +712,15 @@ if($slide->isStaticSlide()){
 									<i class="rs-mini-layer-icon eg-icon-resize-vertical rs-toolbar-icon tipsy_enabled_top" title="<?php _e("Z-Index",'revslider'); ?>" style="margin-right:10px"></i>
 									<input type="text" style="width:90px; padding-right:10px;" class="rs-staticcustomstylechange textbox-caption rs-layer-input-field tipsy_enabled_top" title="<?php _e("Hover Z-Index (Enter z-index level or enter auto for default value)",'revslider'); ?>" id="hover_zindex" name="hover_zindex" value="auto">
 									<span class="rs-layer-toolbar-space" style="margin-right: 10px"></span>
-
+									
+									<!-- POINTER EVENTS -->
+									<i class="rs-mini-layer-icon eg-icon-gamepad rs-toolbar-icon tipsy_enabled_top" title="<?php _e("Pointer Events",'revslider'); ?>" style="margin-right:10px"></i>
+									<select class="rs-staticcustomstylechange rs-layer-input-field tipsy_enabled_top" title="<?php _e("Pointer Events",'revslider'); ?>" style="width:100px cursor:pointer" id="pointer_events" name="pointer_events">
+										<option value="auto"><?php _e('auto', 'revslider'); ?></option>
+										<option value="none"><?php _e('none', 'revslider'); ?></option>
+									</select>
+									<span class="rs-layer-toolbar-space" style="margin-right: 10px"></span>
+									
 									<!--Force Straight Hover Rendering -->
 									<div style="display:none !important">
 										<span><?php _e("Force Animation",'revslider'); ?></span>
@@ -1969,10 +1977,7 @@ if($slide->isStaticSlide()){
 						</select>
 						<input type="text" style="display: none; width:105px;" class="textbox-caption rs-layer-input-field" id="layer_alt" name="layer_alt" value="">
 					</span>
-					
-					
-					
-					
+
 					<?php 
 					//ONLY FOR DEBUG!!
 					?>
@@ -2163,6 +2168,7 @@ if($slide->isStaticSlide()){
 						}
 						?>
 					</select>
+					
 				</span>
 			</div>
 		</form>

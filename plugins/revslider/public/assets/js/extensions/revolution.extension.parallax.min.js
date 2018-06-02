@@ -1,5 +1,5 @@
 /********************************************
- * REVOLUTION 5.4.5 EXTENSION - PARALLAX
+ * REVOLUTION 5.4.6.4 EXTENSION - PARALLAX
  * @version: 2.2.3 (17.05.2017)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch

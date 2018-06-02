@@ -4,7 +4,7 @@ Plugin Name: Slider Revolution
 Plugin URI: http://revolution.themepunch.com/
 Description: Slider Revolution - Premium responsive slider
 Author: ThemePunch
-Version: 5.4.6.2
+Version: 5.4.7.1
 Author URI: http://themepunch.com
 */
 
@@ -17,7 +17,7 @@ if(class_exists('RevSliderFront')) {
 	die('ERROR: It looks like you have more than one instance of Slider Revolution installed. Please remove additional instances for this plugin to work again.');
 }
 
-$revSliderVersion	= '5.4.6.2';
+$revSliderVersion	= '5.4.7.1';
 $revSliderAsTheme	= false;
 $revslider_screens	= array();
 $revslider_fonts	= array();

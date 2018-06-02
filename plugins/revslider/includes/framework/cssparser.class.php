@@ -167,7 +167,10 @@ class RevSliderCssParser{
 			if(is_array($styles) || is_array($styles_adv)){
 				if(is_array($styles)){
 					foreach($styles as $name => $style){
-						if(in_array($name, $deformations) && $name !== 'css_cursor') continue;
+						
+						if(in_array($name, $deformations)) {
+							if($name !== 'css_cursor' && $name !== 'pointer_events') continue;
+						}
 						
 						if(!is_array($name) && isset($transparency[$name])){ //the style can have transparency!
 							if(isset($styles[$transparency[$name]]) && $style !== 'transparent'){
@@ -181,17 +184,22 @@ class RevSliderCssParser{
 						
 						$ret = self::check_for_modifications($name, $style);
 						if($ret['name'] == 'cursor' && $ret['style'] == 'auto') continue;
+						if($ret['name'] == 'pointer-events' && $ret['style'] == 'auto') continue;
 						
 						$css.= $ret['name'].':'.$ret['style'].";".$nl;
 					}
 				}
 				if(is_array($styles_adv)){
 					foreach($styles_adv as $name => $style){
-						if(in_array($name, $deformations) && $name !== 'css_cursor') continue;
+						
+						if(in_array($name, $deformations)) {
+							if($name !== 'css_cursor' && $name !== 'pointer_events') continue;
+						}
 						
 						if(is_array($style) || is_object($style)) $style = implode(' ', $style);
 						$ret = self::check_for_modifications($name, $style);
 						if($ret['name'] == 'cursor' && $ret['style'] == 'auto') continue;
+						if($ret['name'] == 'pointer-events' && $ret['style'] == 'auto') continue;
 						$css.= $ret['name'].':'.$ret['style'].";".$nl;
 					}
 				}
@@ -210,7 +218,10 @@ class RevSliderCssParser{
 					$css.= " {".$nl;
 					if(is_array($hover)){
 						foreach($hover as $name => $style){
-							if(in_array($name, $deformations) && $name !== 'css_cursor') continue;
+							
+							if(in_array($name, $deformations)) {
+								if($name !== 'css_cursor' && $name !== 'pointer_events') continue;
+							}
 							
 							if(!is_array($name) && isset($transparency[$name])){ //the style can have transparency!
 								if(isset($hover[$transparency[$name]]) && $style !== 'transparent'){
@@ -224,6 +235,7 @@ class RevSliderCssParser{
 							
 							$ret = self::check_for_modifications($name, $style);
 							if($ret['name'] == 'cursor' && $ret['style'] == 'auto') continue;
+							if($ret['name'] == 'pointer-events' && $ret['style'] == 'auto') continue;
 								
 							$css.= $ret['name'].':'.$ret['style'].";".$nl;
 						}
@@ -231,7 +243,10 @@ class RevSliderCssParser{
 					if(is_array($hover_adv)){
 						foreach($hover_adv as $name => $style){
 							
-							if(in_array($name, $deformations) && $name !== 'css_cursor') continue;
+							if(in_array($name, $deformations)) {
+								if($name !== 'css_cursor' && $name !== 'pointer_events') continue;
+							}
+							
 							if(is_array($style)|| is_object($style)) $style = implode(' ', $style);
 							$ret = self::check_for_modifications($name, $style);
 							if($ret['name'] == 'cursor' && $ret['style'] == 'auto') continue;
@@ -255,6 +270,10 @@ class RevSliderCssParser{
 			if($style == 'zoom-in') $style = 'zoom-in; -webkit-zoom-in; cursor: -moz-zoom-in';
 			if($style == 'zoom-out') $style = 'zoom-out; -webkit-zoom-out; cursor: -moz-zoom-out';
 			$name = 'cursor';
+		}
+		
+		if($name == 'pointer_events'){
+			$name = 'pointer-events';
 		}
 		
 		return array('name' => $name, 'style' => $style);
@@ -287,7 +306,10 @@ class RevSliderCssParser{
 			
 			if(is_array($styles) && !empty($styles)){
 				foreach($styles as $name => $style){
-					if(in_array($name, $deformations) && $name !== 'css_cursor') continue;
+					
+					if(in_array($name, $deformations)) {
+						if($name !== 'css_cursor' && $name !== 'pointer_events') continue;
+					}
 					
 					if($name == 'background-color' && strpos($style, 'rgba') !== false){ //rgb && rgba
 						$rgb = explode(',', str_replace('rgba', 'rgb', $style));
@@ -550,6 +572,7 @@ class RevSliderCssParser{
 			'background-transparency' => 'background-transparency',
 			'border-transparency' => 'border-transparency',
 			'css_cursor' => 'css_cursor',
+			'pointer_events' => 'pointer_events',
 			'speed' => 'speed',
 			'easing' => 'easing',
 			'corner_left' => 'corner_left',

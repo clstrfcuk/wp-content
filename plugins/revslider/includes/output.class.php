@@ -1064,10 +1064,14 @@ class RevSliderOutput {
 				$staticoverflow = $this->static_slide->getParam('staticoverflow', '');
 				if (!empty($staticoverflow) && $staticoverflow=="hidden")
 					$htmlstaticoverflow = 'overflow:hidden;width:100%;height:100%;top:0px;left:0px;';
-
+				
+				// new static layers position option
+				$staticlayserposition = '';
+				$staticlayserpos = $this->static_slide->getParam('staticlayersposition', 'front');
+				if(!empty($staticlayserpos) && $staticlayserpos === 'back') $staticlayserposition = ' tp-static-layers-back';
 				
 				//check for static layers
-				echo '<div style="'.$htmlstaticoverflow.'" class="tp-static-layers">'."\n";
+				echo '<div style="'.$htmlstaticoverflow.'" class="tp-static-layers' . $staticlayserposition . '">'."\n";
 				$this->slide = $this->static_slide;
 				
 				$this->putCreativeLayer(true);
@@ -1271,7 +1275,7 @@ class RevSliderOutput {
 				if(empty($arguments))
 					$arguments = RevSliderGlobals::DEFAULT_VIMEO_ARGUMENTS;
 				
-				$arguments ='background=1&'.$arguments;
+				// $arguments ='background=1&'.$arguments;
 				if($mute_video == 'off'){
 					$add_data .= '			data-volume="'.intval($volume_video).'"'." \n";
 				}
@@ -1318,7 +1322,10 @@ class RevSliderOutput {
 				$add_data .= '			data-videopreload="auto"'." \n";
 				
 				if($mute_video == 'off'){
-					$add_data .= '			data-volume="'.intval($volume_video).'"'." \n";
+					/* JASON */
+					// no volume option for HTML5 video settings, setting to 100 as default when mute is off
+					// $add_data .= '			data-volume="'.intval($volume_video).'"'." \n";
+					$add_data .= '			data-volume="100"'." \n";
 				}
 				
 				$video_added = true;
@@ -1556,6 +1563,7 @@ class RevSliderOutput {
 		$dbw = '0px 0px 0px 0px';
 		$dbr = '0px 0px 0px 0px';
 		$dc = 'auto';
+		$pe = 'auto';
 		
 		$dfos = false;
 		$dlh = false;
@@ -1608,6 +1616,7 @@ class RevSliderOutput {
 				$dbr = (isset($this->in_class_usage[trim($class)]['params']->{'border-radius'})) ? $this->in_class_usage[trim($class)]['params']->{'border-radius'} : $dbr;
 				if(is_array($dbr)) $dbr = implode(' ', $dbr);
 				$dc = (isset($this->in_class_usage[trim($class)]['params']->{'css_cursor'})) ? $this->in_class_usage[trim($class)]['params']->{'css_cursor'} : $dc;
+				$pe = (isset($this->in_class_usage[trim($class)]['params']->{'pointer_events'})) ? $this->in_class_usage[trim($class)]['params']->{'pointer_events'} : $pe;
 				
 			}
 		}
@@ -1650,6 +1659,10 @@ class RevSliderOutput {
 		$layer_selectable = RevSliderFunctions::getVal($layer, 'layer-selectable', 'default');
 		
 		$outputClass = 'tp-caption '. trim($class);
+		
+		$d_hovers = (array) RevSliderFunctions::getVal($layer, 'deformation-hover', array());
+		$pointerevents = RevSliderFunctions::getVal($d_hovers, 'pointer_events', 'auto');
+		if($pointerevents == 'none') $outputClass .= ' tp-no-events';
 		
 		$outputClass = trim($outputClass) . ' ' . $internal_class . ' ';
 		if ($layer_selectable !== "default"){
@@ -2388,9 +2401,11 @@ class RevSliderOutput {
 						
 						if(empty($videoArgs))
 							$videoArgs = RevSliderGlobals::DEFAULT_VIMEO_ARGUMENTS;
-
+						
+						/*
 						if ($v_controls)
 							$videoArgs = 'background=1&'.$videoArgs;
+						*/
 
 						//check if full URL
 						if(strpos($videoID, 'http') !== false){
@@ -3330,6 +3345,13 @@ class RevSliderOutput {
 			if($css_cursor == 'zoom-in') $css_cursor = '-webkit-zoom-in; cursor: -moz-zoom-in';
 			if($css_cursor == 'zoom-out') $css_cursor = '-webkit-zoom-out; cursor: -moz-zoom-out';
 			$st_idle['cursor']  =  array($css_cursor, 'auto');
+		}
+		
+		//add the pointer_events to the idle styles
+		$pointer_events = RevSliderFunctions::getVal($def_val_h, 'pointer_events', 'auto');
+		
+		if(trim($pointer_events) !== '' && $pointer_events !== 'auto'){
+			$st_idle['pointer-events']  =  array($pointer_events, 'auto');
 		}
 		
 		$def_string = '';
@@ -4623,8 +4645,9 @@ class RevSliderOutput {
 		?>
 		<script type="text/javascript">
 <?php if(!$markup_export){ //not needed for html markup export ?>
-setREVStartSize(<?php 
-			echo "{c: jQuery('#". $this->sliderHtmlID ."'),";
+if (setREVStartSize!==undefined) setREVStartSize(
+	<?php 
+			echo "{c: '#". $this->sliderHtmlID ."',";
 			if(isset($csizes['level']) && !empty($csizes['level'])){
 				echo " responsiveLevels: [". $csizes['level'] ."],";
 			}
@@ -4655,10 +4678,19 @@ setREVStartSize(<?php
 			
 <?php } ?>
 var revapi<?php echo $sliderID; ?>,
-	tpj=jQuery;
-<?php if($noConflict == "on"){ ?>tpj.noConflict();<?php } ?>			
-<?php
-	echo 'tpj(document).ready(function() {'."\n";
+	tpj;	
+(function() {			
+	if (!/loaded|interactive|complete/.test(document.readyState)) document.addEventListener("DOMContentLoaded",onLoad)
+		else
+	onLoad();
+	
+	function onLoad() {				
+		if (tpj===undefined) {
+			tpj = jQuery;
+
+			if("<?php echo $noConflict; ?>" == "on") tpj.noConflict();		
+		}
+<?php		
 	echo '	if(tpj("#'.$this->sliderHtmlID.'").revolution == undefined){'."\n";
 	echo '		revslider_showDoubleJqueryError("#'.$this->sliderHtmlID.'");'."\n";
 	echo '	}else{'."\n";
@@ -5228,12 +5260,14 @@ var revapi<?php echo $sliderID; ?>,
 	if($this->slider->getParam("custom_javascript", '') !== ''){
 		echo str_replace('var counter = {val:doctop};', 'var counter = {val:(window.pageYOffset || document.documentElement.scrollTop)  - (document.documentElement.clientTop || 0)};', stripslashes($this->slider->getParam("custom_javascript", '')));
 	}
-	echo '	}'."\n";
+	echo '	}; /* END OF revapi call */'."\n";
 	echo '	';
 	do_action('revslider_fe_javascript_output', $this->slider, $this->sliderHtmlID);
 	echo ''."\n";
-	echo '});	/*ready*/'."\n";
+		
 	?>
+ }; /* END OF ON LOAD FUNCTION */
+}()); /* END OF WRAPPING FUNCTION */
 </script>
 		<?php
 		if($js_to_footer && $this->previewMode == false && $markup_export == false){

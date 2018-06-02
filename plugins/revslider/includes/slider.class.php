@@ -2441,7 +2441,7 @@ class RevSliderSlider extends RevSliderElementsBase{
 				$additions['twitter_user'] = $this->getParam('twitter-user-id');
 			break;
 			case "instagram":
-				$instagram = new RevSliderInstagram($this->getParam('instagram-access-token'),$this->getParam('instagram-transient','1200'));
+				$instagram = new RevSliderInstagram($this->getParam('instagram-transient','1200'));
 				if($this->getParam('instagram-type','user')!="hash"){
 					$search_user_id = $this->getParam('instagram-user-id');
 					$arrPosts = $instagram->get_public_photos($search_user_id,$this->getParam('instagram-count'));

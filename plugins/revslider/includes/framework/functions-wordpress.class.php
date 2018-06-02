@@ -255,7 +255,11 @@ class RevSliderFunctionsWP {
 	 * register widget (must be class)
 	 */
 	public static function registerWidget($widgetName){
-		add_action('widgets_init', create_function('', 'return register_widget("'.$widgetName.'");'));
+		add_action('widgets_init', array('RevSliderFunctionsWP', 'revSliderRegisterWidget'));
+	}
+	
+	public static function revSliderRegisterWidget(){
+	   register_widget( 'RevSliderWidget' );
 	}
 
 	/**

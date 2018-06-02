@@ -437,6 +437,11 @@ website:   	http://www.themepunch.com
 
 }
 
+/* new static layers position option */
+.tp-static-layers-back {	
+	z-index:0;
+}
+
 
 .tp-caption .frontcorner		{
 	width: 0;
