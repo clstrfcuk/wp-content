@@ -30,8 +30,6 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
 
   public function enqueue( ) {
 
-	$this->plugin->component( 'Core_Scripts' )->register_scripts();
-
     wp_enqueue_style( 'cs-generator-css' , CS()->css( 'admin/generator' ), array(), CS()->version() );
 
     wp_register_script( 'cs-generator', CS()->js( 'admin/generator' ), array( 'backbone', 'jquery-ui-core', 'jquery-ui-accordion' ), CS()->version(), true );

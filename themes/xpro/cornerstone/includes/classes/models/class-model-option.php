@@ -31,7 +31,7 @@ class Cornerstone_Model_Option extends Cornerstone_Plugin_Component {
     );
   }
 
-  protected function validate( $id, $operation ) {
+  protected function validate( $id, $operation = '' ) {
 
     $allowed = apply_filters( 'cornerstone_option_model_whitelist', array( '' ) );
 
@@ -39,8 +39,11 @@ class Cornerstone_Model_Option extends Cornerstone_Plugin_Component {
       throw new Exception( "Attempted to $operation option outside of whitelist: $id" );
     }
 
-  }
+    if ( ! apply_filters( "cornerstone_option_model_permissions_$id", 'access' === $operation, $operation ) ) {
+      throw new Exception( 'Unauthorized' );
+    }
 
+  }
 
   public function update( $params ) {
 

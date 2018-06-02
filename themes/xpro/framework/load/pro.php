@@ -3,10 +3,25 @@
 // Theme Constants
 // =============================================================================
 
-define( 'X_VERSION', '1.2.7' );
+define( 'X_VERSION', '2.1.3' );
 define( 'X_SLUG', 'pro' );
 define( 'X_TITLE', 'Pro' );
 define( 'X_I18N_PATH', X_TEMPLATE_PATH . '/framework/functions/pro/i18n');
+
+
+
+// App Environment Data
+// =============================================================================
+
+function pro_cornerstone_app_env( $env ) {
+  $env['product'] = 'pro';
+  $env['title'] = X_TITLE;
+  $env['version'] = X_VERSION;
+  $env['productKey'] = esc_attr( get_option( 'x_product_validation_key', '' ) );
+  return $env;
+}
+
+add_filter( '_cornerstone_app_env', 'pro_cornerstone_app_env' );
 
 
 add_theme_support( 'cornerstone_regions' );
@@ -53,15 +68,14 @@ if ( ! function_exists( 'x_body_class_version' ) ) :
 endif;
 
 
-function pro_add_boot_files( $files ) {
-
-  $files[] = X_TEMPLATE_PATH . '/framework/functions/pro/bars/setup.php';
-  $files[] = X_TEMPLATE_PATH . '/framework/functions/pro/menus/setup.php';
-  $files[] = X_TEMPLATE_PATH . '/framework/functions/pro/migration.php';
-  return $files;
+function pro_load_preinit() {
+  require_once X_TEMPLATE_PATH . '/framework/functions/pro/migration.php';
+  require_once X_TEMPLATE_PATH . '/framework/functions/pro/bars/setup.php';
 }
 
-add_filter('x_boot_files', 'pro_add_boot_files' );
+add_action('x_boot_preinit', 'pro_load_preinit' );
+
+
 
 function pro_scandir_exclusions( $exclusions ) {
   $exclusions[] = 'cornerstone';

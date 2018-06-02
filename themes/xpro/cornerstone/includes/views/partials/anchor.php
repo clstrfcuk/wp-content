@@ -10,13 +10,16 @@ $mod_id                = ( isset( $mod_id )                ) ? $mod_id          
 $atts                  = ( isset( $atts )                  ) ? $atts                  : array();
 $anchor_before_content = ( isset( $anchor_before_content ) ) ? $anchor_before_content : '';
 $anchor_after_content  = ( isset( $anchor_after_content )  ) ? $anchor_after_content  : '';
+$anchor_is_active      = ( isset( $anchor_is_active )      ) ? $anchor_is_active      : false;
 
 
 // Prepare Attr Values
 // -------------------
 
 if ( $anchor_type === 'menu-item' ) {
-  $class = '';
+  if ( ! $anchor_is_active ) {
+    $class = '';
+  }
 }
 
 $classes = array( $mod_id, 'x-anchor', 'x-anchor-' . $anchor_type, $class );
@@ -30,8 +33,10 @@ $atts = array_merge( array(
   'tabindex' => 0
 ), $atts );
 
-if ( $anchor_type !== 'menu-item' ) {
-  if ( isset( $id ) && ! empty( $id ) ) {
+if ( isset( $id ) && ! empty( $id ) ) {
+  if ( $anchor_type === 'button' ) {
+    $atts['id'] = $id;
+  } else if ( $anchor_type === 'toggle' ) {
     $atts['id'] = $id . '-anchor-' . $anchor_type;
   }
 }
@@ -51,7 +56,26 @@ if ( isset( $anchor_nofollow ) && $anchor_nofollow == true ) {
 if ( $anchor_type == 'toggle' ) {
   $atts['data-x-toggle']     = true;
   $atts['data-x-toggleable'] = $mod_id;
-  $atts['aria-label']        = __( 'Toggle', '__x__' );
+}
+
+if ( isset( $anchor_aria_controls ) ) {
+  $atts['aria-controls'] = $anchor_aria_controls;
+}
+
+if ( isset( $anchor_aria_expanded ) ) {
+  $atts['aria-expanded'] = $anchor_aria_expanded;
+}
+
+if ( isset( $anchor_aria_haspopup ) ) {
+  $atts['aria-haspopup'] = $anchor_aria_haspopup;
+}
+
+if ( isset( $anchor_aria_label ) ) {
+  $atts['aria-label'] = $anchor_aria_label;
+}
+
+if ( isset( $anchor_aria_selected ) ) {
+  $atts['aria-selected'] = $anchor_aria_selected;
 }
 
 
@@ -83,8 +107,13 @@ if ( isset( $anchor_text ) && $anchor_text == true ) {
 
 if ( isset( $anchor_graphic ) && $anchor_graphic == true ) {
 
-  $data_graphic           = x_get_partial_data( $_custom_data, array( 'add_in' => array( 'class' => '' ), 'find_data' => array( 'anchor_graphic' => 'graphic', 'toggle' => '' ) ) );
+  $graphic_is_active      = $anchor_is_active && isset( $anchor_graphic_always_active ) && $anchor_graphic_always_active === true;
+  $data_graphic           = x_get_partial_data( $_custom_data, array( 'add_in' => array( 'id' => '', 'class' => '', 'graphic_is_active' => $graphic_is_active ), 'find_data' => array( 'anchor_graphic' => 'graphic', 'toggle' => '' ) ) );
   $anchor_graphic_content = x_get_view( 'partials', 'graphic', '', $data_graphic, false );
+
+  if ( $anchor_type === 'menu-item' && isset( $anchor_graphic_menu_item_display ) && $anchor_graphic_menu_item_display === 'off' ) {
+    unset( $anchor_graphic_content );
+  }
 
 }
 
@@ -101,6 +130,10 @@ if ( $anchor_type == 'menu-item' && isset( $anchor_sub_indicator ) && $anchor_su
       'data-x-icon' => '&#x' . fa_unicode( $anchor_sub_indicator_icon ) . ';',
       'aria-hidden' => 'true',
     );
+
+    if ( isset( $anchor_sub_menu_trigger_location ) && $anchor_sub_menu_trigger_location === 'sub-indicator' ) {
+      $anchor_sub_indicator_atts['data-x-toggle-nested-trigger'] = true;
+    }
 
     $anchor_sub_indicator_content = '<i ' . x_atts( $anchor_sub_indicator_atts ) . '></i>';
 
@@ -120,12 +153,14 @@ if ( $has_primary_particle || $has_secondary_particle ) {
   $anchor_particle_content = '';
 
   if ( $has_primary_particle ) {
-    $data_particle_p          = x_get_partial_data( $_custom_data, array( 'add_in' => array( 'particle_class' => 'x-anchor-particle-primary' ), 'find_data' => array( 'anchor_primary_particle' => 'particle' ) ) );
+    $primary_particle_class   = ( $anchor_is_active && isset( $anchor_primary_particle_always_active ) && $anchor_primary_particle_always_active === true ) ? 'x-anchor-particle-primary x-always-active' : 'x-anchor-particle-primary';
+    $data_particle_p          = x_get_partial_data( $_custom_data, array( 'add_in' => array( 'particle_class' => $primary_particle_class ), 'find_data' => array( 'anchor_primary_particle' => 'particle' ) ) );
     $anchor_particle_content .= x_get_view( 'partials', 'particle', '', $data_particle_p, false );
   }
 
   if ( $has_secondary_particle ) {
-    $data_particle_s          = x_get_partial_data( $_custom_data, array( 'add_in' => array( 'particle_class' => 'x-anchor-particle-secondary' ), 'find_data' => array( 'anchor_secondary_particle' => 'particle' ) ) );
+    $secondary_particle_class = ( $anchor_is_active && isset( $anchor_secondary_particle_always_active ) && $anchor_secondary_particle_always_active === true ) ? 'x-anchor-particle-secondary x-always-active' : 'x-anchor-particle-secondary';
+    $data_particle_s          = x_get_partial_data( $_custom_data, array( 'add_in' => array( 'particle_class' => $secondary_particle_class ), 'find_data' => array( 'anchor_secondary_particle' => 'particle' ) ) );
     $anchor_particle_content .= x_get_view( 'partials', 'particle', '', $data_particle_s, false );
   }
 

@@ -108,7 +108,6 @@ if ( ! function_exists( 'x_get_navbar_positioning' ) ) :
     return $output;
 
   }
-  add_action( 'customize_save', 'x_get_navbar_positioning' );
 endif;
 
 
@@ -178,3 +177,4 @@ if ( ! function_exists( 'x_navbar_search_navigation_item' ) ) :
   }
   add_filter( 'wp_nav_menu_items', 'x_navbar_search_navigation_item', 9998, 2 );
 endif;
+

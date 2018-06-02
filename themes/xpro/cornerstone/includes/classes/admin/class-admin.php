@@ -31,21 +31,22 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
   public function setup() {
 
     add_action( 'admin_bar_menu', array( $this, 'addToolbarLinks' ), 999 );
+    add_action( 'admin_bar_init', array( $this, 'admin_bar_init' ) );
 
     if ( ! is_admin() ) {
       return;
     }
 
-    CS()->loadComponent( 'Regions' );
+    CS()->component( 'Regions' );
 
     Cornerstone_Huebert::init();
-    Cornerstone_Code_Editor::init();
 
     add_action( 'admin_menu',            array( $this, 'dashboard_menu' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
     add_filter( 'page_row_actions',      array( $this, 'addRowActions' ), 10, 2 );
     add_filter( 'post_row_actions',      array( $this, 'addRowActions' ), 10, 2 );
     add_action( 'admin_notices',         array( $this, 'notices' ), 20 );
+    add_action( 'admin_print_scripts',   array( $this, 'admin_print_scripts' ), 9999);
 
   }
 
@@ -97,7 +98,7 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
     wp_enqueue_style( 'cornerstone-admin-css', $this->plugin->css( 'admin/dashboard' ), array( cs_tco()->handle( 'admin-css' ) ), $this->plugin->version() );
 
-    $post = $this->plugin->common()->locatePost();
+    $post = $this->plugin->common()->locate_post();
     $post_id = ( $post ) ? $post->ID : 'new';
     $commonData = array(
       'homeURL'   => preg_replace('/\?lang=.*/' , '', home_url()),
@@ -117,15 +118,25 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
     if ( false !== strpos( $hook, csi18n('admin.dashboard-settings-path') ) ) {
 
+      $app_permissions = $this->plugin->component('App_Permissions');
+
+
       wp_register_script( 'cs-dashboard-setting-js', $this->plugin->js( 'admin/dashboard-settings' ) , array( cs_tco()->handle( 'admin-js' )  ), $this->plugin->version(), true );
       wp_localize_script( 'cs-dashboard-setting-js', 'csDashboardSettingsData', array_merge( $commonData, array(
         'modules' => array(
           'cs-settings' => array(
-            'update'   => csi18n('admin.dashboard-settings-update'),
-            'updating' => csi18n('admin.dashboard-settings-updating'),
-            'updated'  => csi18n('admin.dashboard-settings-updated'),
-            'error'    => csi18n('admin.dashboard-settings-error')
-          )
+            'update'   => csi18n('admin.dashboard-settings-save-update'),
+            'updating' => csi18n('admin.dashboard-settings-save-updating'),
+            'updated'  => csi18n('admin.dashboard-settings-save-updated'),
+            'error'    => csi18n('admin.dashboard-settings-save-error')
+          ),
+          'cs-clear-style-cache' => array(
+            'button'   => csi18n('admin.dashboard-settings-system-clear-style-cache-button'),
+            'clearing' => csi18n('admin.dashboard-settings-system-clear-style-cache-button-clearing'),
+            'cleared'  => csi18n('admin.dashboard-settings-system-clear-style-cache-button-cleared'),
+            'error'    => csi18n('admin.dashboard-settings-system-clear-style-cache-button-error'),
+          ),
+          'cs-role-manager' => $this->plugin->component('App_Permissions')->get_app_data()
         )
       ) ) );
       wp_enqueue_script( 'cs-dashboard-setting-js' );
@@ -134,14 +145,32 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
     if ( $this->isPostEditor( $hook ) ) {
 
-      wp_register_script( 'cs-dashboard-post-editor-js', $this->plugin->js( 'admin/dashboard-post-editor' ) , array( cs_tco()->handle( 'admin-js' )  ), $this->plugin->version(), true );
+      $enqueue_dashboard = true;
 
-      wp_localize_script( 'cs-dashboard-post-editor-js', 'csDashboardPostEditorData', array_merge( $commonData, array(
-        'usesCornerstone' => ( $this->plugin->common()->uses_cornerstone() ) ? 'true' : 'false',
-        'editorTabMarkup' => $this->view( 'admin/editor-tab', false ),
-      ) ) );
+      if ( $post ) {
+        $skip = array();
+        $skip[] = (int) get_option( 'page_for_posts' );
 
-      wp_enqueue_script( 'cs-dashboard-post-editor-js' );
+        if ( function_exists('wc_get_page_id') ) {
+          $skip[] = (int) wc_get_page_id( 'shop' );
+        }
+
+        $enqueue_dashboard = ! in_array( (int) $post->ID, $skip, true );
+
+      }
+
+      if ( $enqueue_dashboard ) {
+        wp_register_script( 'cs-dashboard-post-editor-js', $this->plugin->js( 'admin/dashboard-post-editor' ) , array( cs_tco()->handle( 'admin-js' )  ), $this->plugin->version(), true );
+
+        wp_localize_script( 'cs-dashboard-post-editor-js', 'csDashboardPostEditorData', array_merge( $commonData, array(
+          'usesCornerstone' => ( $this->plugin->common()->uses_cornerstone( $post ) ) ? 'true' : 'false',
+          'editorTabMarkup' => $this->view( 'admin/editor-tab', false ),
+        ) ) );
+
+        wp_enqueue_script( 'cs-dashboard-post-editor-js' );
+
+      }
+
 
     }
 
@@ -156,15 +185,15 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
   public function isPostEditor( $hook ) {
 
     if ( 'post.php' === $hook && isset( $_GET['action'] ) && 'edit' === $_GET['action'] ) {
-      return $this->plugin->common()->isPostTypeAllowed();
+      return $this->plugin->component('App_Permissions')->user_can_access_post_type();
     }
 
     if ( 'post-new.php' === $hook && isset( $_GET['post_type'] ) ) {
-      return in_array( $_GET['post_type'], $this->plugin->common()->getAllowedPostTypes(), true );
+      return in_array( $_GET['post_type'], $this->plugin->component('App_Permissions')->get_user_post_types(), true );
     }
 
     if ( 'post-new.php' === $hook && ! isset( $_GET['post_type'] ) ) {
-      return in_array( 'post', $this->plugin->common()->getAllowedPostTypes(), true );
+      return in_array( 'post', $this->plugin->component('App_Permissions')->get_user_post_types(), true );
     }
 
     return false;
@@ -175,6 +204,11 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
    */
   public function dashboard_menu() {
 
+    // Add "Theme Options" under Appearance
+    if ( apply_filters( 'cornerstone_options_theme_title', false ) ) {
+      $submenu['themes.php'][] = array( csi18n('common.title.options-theme'), 'manage_options', $this->plugin->common()->get_app_route_url('options') );
+    }
+
     $title = csi18n('admin.dashboard-title');
 
     $settings_location = apply_filters('cornerstone_menu_item_root', 'cornerstone-home' );
@@ -184,40 +218,123 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
       add_submenu_page( 'cornerstone-home', $title, csi18n('admin.dashboard-menu-title'), 'manage_options', 'cornerstone-home', array( $this, 'render_home_page' ) );
     }
 
-    global $submenu;
-    $custom_items = $this->get_dashboard_menu_custom_items();
-
-    foreach ($custom_items as $key => $value) {
-      $parent_menu = apply_filters('cornerstone_menu_item_root', 'cornerstone-home', $key );
-      $submenu[$parent_menu][] = array( $value['title'], $value['capability'], $value['url'] );
-    }
-
+    $custom_items = $this->get_custom_menu_items();
 
     $settings_path = csi18n('admin.dashboard-settings-path');
-    $settings_title = ( 'cornerstone-home' === $settings_location || 'cornerstone-settings' !== $settings_path ) ? csi18n('admin.dashboard-settings-title') : $title;
+    $settings_title = csi18n('admin.dashboard-settings-title');
+    $divider = ( count($custom_items) > 1 ) ? 'data-tco-admin-menu-divider' : '';
+    $settings_title = "<span $divider>$settings_title</span>";
 
     add_submenu_page( $settings_location, $title, $settings_title, 'manage_options', $settings_path, array( $this, 'render_settings_page' ) );
 
-    if ( apply_filters( 'cornerstone_options_theme_title', false ) ) {
-      $submenu['themes.php'][] = array( csi18n('common.title.options-theme'), 'manage_options', $this->plugin->common()->get_app_route_url('options') );
+    global $submenu;
+
+    $previous = null;
+    $prev_index;
+    $permitted_items = array();
+
+    foreach ($custom_items as $key => $value) {
+
+      $item = array(
+        'parent' => apply_filters('cornerstone_menu_item_root', 'cornerstone-home', $key ),
+        'divider' => '',
+        'class' => $key,
+        'title' => $value['title'],
+        'capability' => isset( $value['capability'] ) ? $value['capability'] : 'read',
+        'url' => $value['url'],
+      );
+
+      if ( ! is_null($previous) && $custom_items[$previous]['group'] !== $value['group'] ) {
+        $permitted_items[$prev_index]['divider'] = 'data-tco-admin-menu-divider';
+      }
+
+      $permitted_items[] = $item;
+
+      $previous = $key;
+      $prev_index = count($permitted_items) - 1;
+
+    }
+
+    $end = count($permitted_items) - 1;
+    if ( isset( $permitted_items[$end] ) ) {
+      $permitted_items[$end]['divider'] = 'data-tco-admin-menu-divider';
+    }
+
+    foreach ($permitted_items as $item) {
+      $title = '<span ' . $item['divider'] . ' class="' . $item['class'] .'">' . $item['title'] .'</span>';
+
+      $submenu[$item['parent']][] = array( $title, $item['capability'], $item['url'] );
     }
 
   }
 
-  public function get_dashboard_menu_custom_items() {
+  public function get_custom_menu_items() {
 
-    $base_url = $this->plugin->common()->get_launch_url();
+    $permissions = $this->plugin->component('App_Permissions');
+    $items = array();
 
-    // $options_url = $base_url . '#/options'
-    // $options_title = apply_filters( 'cornerstone_options_theme_title', false ) ? 'theme' : 'styling';
+    $is_pro = 'pro' === csi18n('app.integration-mode');
 
-    $items = array(
-      'cornerstone-launch' => array(
-        'title' => '<span class="tco-menu-launch">' . csi18n( "common.title.launch" ) . '</span>',
-        'capability' => 'manage_options',
-        'url' => $base_url
-      )
-    );
+    if ( $is_pro && $permissions->user_can('headers') ) {
+      $items['tco-headers'] = array(
+        'title' => csi18n( "common.title.headers" ),
+        'url' => $this->plugin->common()->get_app_route_url('headers'),
+        'group' => 'builders'
+      );
+    }
+
+    $user_post_types = $permissions->get_user_post_types();
+
+    if ( ! empty( $user_post_types ) ) {
+      $items['tco-content'] = array(
+        'title' => ( $is_pro ) ? csi18n( "common.title.content" ) : csi18n( "common.title.cornerstone" ),
+        'url' => $this->plugin->common()->get_app_route_url('content'),
+        'group' => 'builders'
+      );
+    }
+
+    if ( $is_pro && $permissions->user_can('footers') ) {
+      $items['tco-footers'] = array(
+        'title' => csi18n( "common.title.footers" ),
+        'url' => $this->plugin->common()->get_app_route_url('footers'),
+        'group' => 'builders'
+      );
+    }
+
+    if ( $permissions->user_can('templates') ) {
+      $items['tco-templates'] = array(
+        'title' => csi18n( "common.title.templates" ),
+        'url' => $this->plugin->common()->get_app_route_url('template-manager'),
+        'group' => 'manage'
+      );
+    }
+
+    if ( $permissions->user_can('content.cs_global_block') ) {
+      $items['tco-global-blocks'] = array(
+        'title' => csi18n( "common.title.global-blocks" ),
+        'url' => $this->plugin->common()->get_app_route_url('global-blocks'),
+        'group' => 'manage'
+      );
+    }
+
+    $options_title = apply_filters( 'cornerstone_options_theme_title', false ) ? 'theme' : 'styling';
+
+
+    $theme_options_url = $this->plugin->common()->get_app_route_url('options');
+
+    global $wp;
+
+    if( ! is_admin() && $wp->request) {
+      $theme_options_url .= '?url=' . esc_url( home_url( $wp->request ));
+    }
+
+    if ( $permissions->user_can('theme_options') ) {
+      $items['tco-options'] = array(
+        'title' => csi18n( "common.title.options-$options_title" ),
+        'url' => $theme_options_url,
+        'group' => 'theme-options'
+      );
+    }
 
     return $items;
   }
@@ -248,7 +365,7 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
    */
   public function render_settings_page() {
 
-    $this->settings_handler = $this->plugin->loadComponent( 'Settings_Handler' );
+    $this->settings_handler = $this->plugin->component( 'Settings_Handler' );
     $this->settings_handler->setup_controls();
     include( $this->plugin->locate_view( 'admin/settings' ) );
 
@@ -262,7 +379,14 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
    */
   public function addRowActions( $actions, $post ) {
 
-    if ( $this->plugin->common()->isPostTypeAllowed( $post ) ) {
+    $skip = array();
+    $skip[] = (int) get_option( 'page_for_posts' );
+
+    if ( function_exists('wc_get_page_id') ) {
+      $skip[] = (int) wc_get_page_id( 'shop' );
+    }
+
+    if ( ! in_array( (int) $post->ID, $skip, true ) && $this->plugin->component('App_Permissions')->user_can_access_post_type( $post ) ) {
       // $url = $this->plugin->common()->get_edit_url( $post );
       $url = preg_replace('/\?lang=.*\/\#/' , '#', $this->plugin->common()->get_edit_url( $post ));
       $label = csi18n('admin.edit-with-cornerstone');
@@ -276,43 +400,100 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
   public function addToolbarLinks() {
 
+    $permissions = $this->plugin->component('App_Permissions');
+
     global $wp_admin_bar;
 
-    $wp_admin_bar->add_menu( array(
-  		'id' => 'cs-main',
-  		'title' => apply_filters('_cornerstone_toolbar_menu_title', csi18n('common.toolbar-title') )
-  	) );
+    $permitted_items = array();
 
-  	$wp_admin_bar->add_menu( array(
-  		'id' => 'cs-launch',
-  		'parent' => 'cs-main',
-  		'title' => csi18n('common.toolbar-launch'),
-  		'href' => $this->plugin->common()->get_launch_url()
-  	) );
-
-    $wp_admin_bar->add_menu( array(
-  		'id' => 'cs-options',
-  		'parent' => 'cs-main',
-  		'title' => csi18n('common.title.options-' . ( apply_filters( 'cornerstone_options_theme_title', false ) ? 'theme' : 'styling' ) ),
-  		'href' => $this->plugin->common()->get_app_route_url('options')
-  	) );
+    $items = array();
 
     /**
      * Add "Edit with Cornerstone" button on the toolbar
      * This is only added on singlular views, and if the post type is supported
      */
-    if ( is_singular() && $this->plugin->common()->isPostTypeAllowed() && $this->plugin->common()->uses_cornerstone() ) {
+
+    if ( is_singular() && $permissions->user_can_access_post_type() && $this->plugin->common()->uses_cornerstone() ) {
 
       $post_type = get_post_type_object( get_post_type() );
 
-      $wp_admin_bar->add_menu( array(
-        'id' => 'cs-edit-link',
-        'parent' => 'cs-main',
+      $items['tco-edit-link'] = array(
         'title' => sprintf( csi18n('common.toolbar-edit-link'), $post_type->labels->singular_name ),
-        // 'href' => $this->plugin->common()->get_edit_url(),
-        'href' => preg_replace('/\?lang=.*\/\#/' , '#', $this->plugin->common()->get_edit_url()),
-        'meta' => array( 'class' => 'cs-edit-link' ),
-      ) );
+        'url' => preg_replace('/\?lang=.*\/\#/' , '#', $this->plugin->common()->get_edit_url()),
+        'group' => 'contextual'
+      );
+
+    }
+
+
+    $regions = CS()->component('Regions');
+
+    $header = $regions->get_last_active_header();
+    $footer = $regions->get_last_active_footer();
+
+    if ( ! is_null( $header ) && $permissions->user_can('headers') ) {
+      $items['tco-edit-header-link'] = array(
+        'title' => sprintf( csi18n('common.toolbar-edit-link'), __('Header', '__x__') ),
+        'url' => $this->plugin->common()->get_app_route_url( 'headers', $header->get_id(), 'header' ),
+        'group' => 'contextual'
+      );
+    }
+
+    if ( ! is_null( $footer ) && $permissions->user_can('footers')) {
+      $items['tco-edit-footer-link'] = array(
+        'title' => sprintf( csi18n('common.toolbar-edit-link'), __('Footer', '__x__') ),
+        'url' => $this->plugin->common()->get_app_route_url( 'footers', $footer->get_id(), 'footer' ),
+        'group' => 'contextual'
+      );
+    }
+
+
+    $custom_items = $this->get_custom_menu_items();
+    $items = array_merge($items, $custom_items);
+
+    $previous = null;
+
+    foreach ($items as $key => $value) {
+
+      if ( isset( $value['capability'] ) && ! current_user_can( $value['capability'] ) ) {
+        continue;
+      }
+
+      $item = array(
+        'id'     => $key,
+        'parent' => 'tco-main',
+        'title'  => $value['title'],
+        'href'   => $value['url'],
+      );
+
+      if ( ! is_null( $previous ) && $items[$previous]['group'] !== $value['group'] ) {
+        if ( ! isset( $permitted_items[$prev_index]['meta'] ) ) {
+          $permitted_items[$prev_index]['meta'] = array();
+        }
+        if ( ! isset( $permitted_items[$prev_index]['meta']['class'] ) ) {
+          $permitted_items[$prev_index]['meta']['class'] = '';
+        }
+        $permitted_items[$prev_index]['meta']['class'] .= 'tco-ab-item-divider';
+      }
+
+      $previous = $key;
+
+      $permitted_items[] = $item;
+      $prev_index = count($permitted_items) - 1;
+
+    }
+
+    if ( ! empty( $permitted_items ) ) {
+
+      $wp_admin_bar->add_menu( array(
+    		'id'    => 'tco-main',
+    		'title' => apply_filters('_cornerstone_toolbar_menu_title', csi18n('common.toolbar-title') ),
+        'href'  => $this->plugin->common()->get_app_route_url()
+    	) );
+
+      foreach ($permitted_items as $permitted_item) {
+        $wp_admin_bar->add_menu( $permitted_item );
+      }
 
     }
 
@@ -340,6 +521,52 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
   public function make_menu_icon() {
     return 'data:image/svg+xml;utf8,' . str_replace('"', "'", $this->view( 'svg/logo-dashboard-icon', false ) );
+  }
+
+  public function admin_bar_init() {
+    add_action( 'wp_head',    array( $this, 'admin_bar_css' ) );
+    add_action( 'admin_head', array( $this, 'admin_bar_css' ) );
+  }
+
+  public function admin_bar_css() { ?>
+    <style>
+      .tco-ab-item-divider:not(:last-child) {
+        margin-bottom: 5px !important;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        padding-bottom: 5px !important;
+        box-shadow: 0 1px 0 rgba(255,255,255,0.05)
+      }
+      #adminmenu li.menu-top > .wp-submenu > li.tco-menu-divider:not(:last-child) {
+        position: relative;
+        margin-bottom: 5px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 6px;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+    </style> <?php
+  }
+
+  public function admin_print_scripts() { ?>
+
+    <script>
+    jQuery(function($){
+
+      // Add menu dividers
+      $('span[data-tco-admin-menu-divider]').closest('li').addClass('tco-menu-divider');
+
+      // Fix WordPress "Theme Options" button
+      var themeOptionsUrl = '<?php echo $this->plugin->common()->get_app_route_url('options'); ?>';
+
+      $('body').on('click', '.button[href="themes.php?page=' + themeOptionsUrl + '"]', function( e ) {
+        e.preventDefault();
+        window.location.href = themeOptionsUrl;
+      });
+
+    });
+    </script>
+
+    <?php
+
   }
 
 }

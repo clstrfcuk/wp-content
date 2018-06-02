@@ -66,11 +66,9 @@
 
 .$_el .x-crumbs-list {
   @if $breadcrumbs_reverse === true {
-    -webkit-flex-direction: row-reverse;
-            flex-direction: row-reverse;
+    flex-direction: row-reverse;
   }
-  -webkit-justify-content: $breadcrumbs_flex_justify;
-          justify-content: $breadcrumbs_flex_justify;
+  justify-content: $breadcrumbs_flex_justify;
   @if $breadcrumbs_delimiter === true {
     @if $breadcrumbs_reverse === true {
       margin-right: -$breadcrumbs_delimiter_spacing !important;
@@ -107,6 +105,14 @@
 
 // Links
 // =============================================================================
+// Removed from bottom of styles. Creating overflow issue since `text-overflow`
+// is being used. Will need to look into a way to solve this.
+//
+// .$_el .x-crumbs-link span {
+//   @unless $breadcrumbs_links_letter_spacing?? {
+//     margin-right: calc($breadcrumbs_links_letter_spacing * -1);
+//   }
+// }
 
 ?>
 
@@ -189,12 +195,6 @@
     @if $breadcrumbs_links_box_shadow_color_alt !== 'transparent' {
       box-shadow: $breadcrumbs_links_box_shadow_dimensions $breadcrumbs_links_box_shadow_color_alt;
     }
-  }
-}
-
-.$_el .x-crumbs-link span {
-  @unless $breadcrumbs_links_letter_spacing?? {
-    margin-right: calc($breadcrumbs_links_letter_spacing * -1);
   }
 }
 

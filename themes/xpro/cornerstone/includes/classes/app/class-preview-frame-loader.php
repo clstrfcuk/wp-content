@@ -26,14 +26,16 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
 
     add_filter( 'show_admin_bar', '__return_false' );
     add_action( 'template_redirect', array( $this, 'load' ), 0 );
+    add_action( 'x_late_template_redirect', array( $this, 'load_late' ), 10000 );
     add_action( 'shutdown', array( $this, 'frame_signature' ), 1000 );
     add_filter( 'wp_die_handler', array( $this, 'remove_preview_signature' ) );
 
+    add_filter( 'body_class', array( $this, 'body_class' ) );
     add_filter( "get_post_metadata", array( $this, 'prefilter_meta_handler' ), 10, 4 );
 
     $route = ( isset( $this->state['route'] ) ) ? $this->state['route'] : 'app';
     $frame_component = cs_to_component_name( $route ) . '_Preview_Frame';
-    $this->frame = $this->plugin->loadComponent( $frame_component );
+    $this->frame = $this->plugin->component( $frame_component );
 
     if ( ! $this->frame ) {
       throw new Exception( "Requested frame handler '$frame_component' does not exist." );
@@ -46,7 +48,7 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
     add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
     add_action( 'wp_footer', array( $this, 'route_config' ) );
 
-    $this->zones = $this->plugin->loadComponent('Common')->get_preview_zones();
+    $this->zones = $this->plugin->component('Common')->get_preview_zones();
     foreach ( $this->zones as $zone ) {
       add_action( $zone, array( $this, 'zone_output' ) );
     }
@@ -55,6 +57,15 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
 
   public function load() {
     nocache_headers();
+    do_action( 'cs_preview_frame_load' );
+  }
+
+  public function load_late() {
+
+    add_filter( 'x_masthead_atts',      array( $this, 'nav_overlay_header' ) );
+    add_filter( 'x_colophon_atts',      array( $this, 'nav_overlay_footer' ) );
+    add_filter( 'cs_content_atts',      array( $this, 'nav_overlay_content' ), 10, 3 );
+    add_filter( 'cs_global_block_atts', array( $this, 'nav_overlay_global_block' ), 10, 2 );
   }
 
   public function zone_output() {
@@ -68,11 +79,15 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
   public function data() {
 
     if ( ! $this->state ) {
-      return array( 'timestamp' => $this->state);
+      return array(
+        'timestamp' => $this->state,
+        'collapsed' => false
+      );
     }
 
     return array(
-      'timestamp' => $this->state['timestamp']
+      'timestamp' => $this->state['timestamp'],
+      'collapsed' => $this->state['collapsed'],
     );
 
   }
@@ -87,7 +102,7 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
   }
 
   public function enqueue() {
-    $this->plugin->loadComponent( 'App' )->register_app_scripts( $this->plugin->settings(), true );
+    $this->plugin->component( 'App' )->register_app_scripts( $this->plugin->settings(), true );
     wp_enqueue_script( 'mediaelement' );
     wp_enqueue_script( 'cs-app' );
     wp_enqueue_style( 'cs-preview', $this->plugin->css( 'preview', true ), null, $this->plugin->version() );
@@ -144,6 +159,89 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
       }
     }
     return $value;
+  }
+
+  public function nav_overlay_header( $atts ) {
+
+    $header = $this->plugin->component('Regions')->get_last_active_header();
+
+    if ( $header && $this->component('App_Permissions')->user_can('headers') ) {
+      $atts['data-cs-observeable-nav'] = cs_prepare_json_att( array(
+        'action' => array(
+          'route'   => 'headers.header',
+          'id'      => $header->get_id(),
+          'context' => 'Header'
+        ),
+        'label' => 'Edit Header'
+      ) );
+    }
+
+    return $atts;
+  }
+
+  public function nav_overlay_footer( $atts ) {
+
+    $footer = $this->plugin->component('Regions')->get_last_active_footer();
+
+    if ( $footer && $this->component('App_Permissions')->user_can( 'footers' ) ) {
+      $atts['data-cs-observeable-nav'] = cs_prepare_json_att( array(
+        'action' => array(
+          'route'   => 'footers.footer',
+          'id'      => $footer->get_id(),
+          'context' => 'Footer'
+        ),
+        'label' => 'Edit Footer'
+      ) );
+    }
+
+    return $atts;
+
+  }
+
+  public function nav_overlay_content( $atts, $id, $post_type ) {
+
+    if ( $id && $post_type && $this->component('App_Permissions')->user_can( "content.$post_type" ) ) {
+
+      $post_type_obj = get_post_type_object( $post_type );
+
+      $atts['data-cs-observeable-nav'] = cs_prepare_json_att( array(
+        'action' => array(
+          'route'   => 'content.builder',
+          'id'      => $id,
+          'context' => $post_type_obj->labels->singular_name
+        ),
+        'label' => 'Edit ' . $post_type_obj->labels->singular_name
+      ) );
+    }
+
+    return $atts;
+
+  }
+
+  public function nav_overlay_global_block( $atts, $global_block_id ) {
+
+    if ( $global_block_id && $this->component('App_Permissions')->user_can('content.cs_global_block') ) {
+
+      $post_type = get_post_type_object( 'cs_global_block' );
+
+      $atts['data-cs-observeable-nav'] = cs_prepare_json_att( array(
+        'action' => array(
+          'route'   => 'global-blocks.builder',
+          'id'      => $global_block_id,
+          'context' => $post_type->labels->singular_name
+        ),
+        'label' => 'Edit ' . $post_type->labels->singular_name
+      ) );
+
+    }
+
+    return $atts;
+
+  }
+
+  public function body_class( $classes ) {
+    $classes[] = 'cs-preview';
+    return $classes;
   }
 
 }

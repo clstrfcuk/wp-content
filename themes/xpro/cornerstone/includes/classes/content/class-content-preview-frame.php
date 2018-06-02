@@ -20,8 +20,9 @@ class Cornerstone_Content_Preview_Frame extends Cornerstone_Plugin_Component {
 
     }
 
-    do_action('cs_content_preview_setup', $state );
+    do_action( 'cs_content_preview_setup', $state );
     add_action( 'template_redirect', array( $this, 'after_template_redirect' ), 9999999 );
+    add_filter( '_cornerstone_custom_css', '__return_false' );
 
   }
 
@@ -67,6 +68,7 @@ class Cornerstone_Content_Preview_Frame extends Cornerstone_Plugin_Component {
     return array(
       'mode' => $state['mode'],
       'post_id' => $state['post_id'],
+      'post_type' => $state['post_type'],
       'responsive_text' => $state['responsive_text'],
       'dynamic_css_selector' => apply_filters('cs_dynamic_css_hook', null )
     );

@@ -4,13 +4,15 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
 
   public function data() {
     return array(
-      'name'        => 'feature-list-item',
-      'title'       => __( 'Feature List Item', 'cornerstone' ),
-      'section'     => '_content',
-      'description' => __( 'Feature List Item description.', 'cornerstone' ),
-      'supports'    => array( 'id', 'class', 'style' ),
-      'render'      => false,
-      'delegate'    => true
+      'name'           => 'feature-list-item',
+      'title'          => __( 'Feature List Item', 'cornerstone' ),
+      'section'        => '_content',
+      'description'    => __( 'Feature List Item description.', 'cornerstone' ),
+      'supports'       => array( 'id', 'class', 'style' ),
+      'render'         => false,
+      'delegate'       => true,
+      'alt_breadcrumb' => __( 'Item', 'cornerstone' ),
+      'protected_keys' => array( 'title', 'content', 'graphic_icon', 'graphic_image', 'graphic_image_alt_text', 'link_text', 'href', 'href_title', 'href_target' )
     );
   }
 
@@ -75,6 +77,14 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
       'image',
       __( 'Image', 'cornerstone' ),
       __( 'Specify the image you would like to use for your Feature List Item.', 'cornerstone' ),
+      ''
+    );
+
+    $this->addControl(
+      'graphic_image_alt_text',
+      'text',
+      __( 'Graphic Alt Text', 'cornerstone' ),
+      NULL,
       ''//,
       // array(
       //   'condition' => array(

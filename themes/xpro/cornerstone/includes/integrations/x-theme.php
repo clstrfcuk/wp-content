@@ -20,7 +20,7 @@ class Cornerstone_Integration_X_Theme {
    */
   public function theme_setup( $theme ) {
 
-    add_action( 'init', array( $this, 'init' ) );
+    add_action( 'init', array( $this, 'init' ), 20 );
     add_action( 'admin_init', array( $this, 'admin_init' ) );
 
     add_action( 'cornerstone_load_preview', array( $this, 'load_preview' ) );
@@ -31,7 +31,7 @@ class Cornerstone_Integration_X_Theme {
     add_filter( 'cornerstone_customizer_output',  '__return_false' );
 
     // Set the app slug
-    add_filter( 'cornerstone_default_app_slug', array( $this, 'x_slug' ) );
+    add_filter( 'cornerstone_default_app_slug', array( $this, 'app_slug' ) );
 
     // Don't load the Customizer
     add_filter( 'cornerstone_options_use_native',  '__return_false' );
@@ -45,6 +45,9 @@ class Cornerstone_Integration_X_Theme {
     // Declare support for page builder features
     add_filter( 'cornerstone_looks_like_support', '__return_true' );
 
+    // No selector prefix for element styles
+    add_filter( 'cs_coalescence_selector_prefix', '__return_empty_string' );
+
     // Alias legacy shortcode names.
     add_action( 'cornerstone_shortcodes_loaded', array( $this, 'aliasShortcodes' ) );
 
@@ -52,14 +55,18 @@ class Cornerstone_Integration_X_Theme {
     add_filter( 'cs_recent_posts_post_types', array( $this, 'recentPostTypes' ) );
 
     add_filter( 'cornerstone_menu_item_root', array( $this, 'relocateDashboardMenuCustomItems') );
-    add_filter( 'cs_integration_mode', array( $this, 'set_integration_mode') );
 
+    add_filter( '_cs_validation_url', 'x_addons_get_link_home' );
+
+    add_filter( 'cs_app_preference_defaults', array( $this, 'app_preference_defaults') );
+
+    add_filter( 'cs_late_styling_hook', array( $this, 'styling_hook') );
   }
 
   public function init() {
 
     // Remove empty p and br HTML elements for legacy pages not using Cornerstone sections
-    add_filter( 'the_content', 'cs_noemptyp' );
+    add_filter( 'the_content', array( $this, 'legacy_the_content') );
 
     // Enqueue Legacy font classes
     $settings = CS()->settings();
@@ -69,10 +76,14 @@ class Cornerstone_Integration_X_Theme {
 
     add_filter( 'pre_option_cs_product_validation_key', array( $this, 'validation_passthru' ) );
 
+    $front_end = CS()->component('Front_End');
+    remove_action( 'cs_the_content_late', array( $front_end, 'shim_x_before_site_end') );
+
   }
 
-  public function x_slug() {
-    return 'x';
+  public function app_slug() {
+    $slug = csi18n('app.integration-mode');
+    return ( $slug ) ? $slug :'x';
   }
 
   public function admin_init() {
@@ -185,12 +196,27 @@ class Cornerstone_Integration_X_Theme {
 
   }
 
-  public function set_integration_mode( $mode ) {
-    if ( ! $mode ) {
-      $mode = 'x';
+  public function app_preference_defaults( $defaults ) {
+
+    $env = CS()->common()->get_env_data();
+
+    if ( 'pro' === $env['product'] ) {
+      $defaults['advanced_mode'] = true;
     }
 
-    return $mode;
+    return $defaults;
+
+  }
+
+  public function styling_hook() {
+    return 'x_head_css';
+  }
+
+  public function legacy_the_content( $the_content ) {
+    if ( $the_content && false !== strpos($the_content, '[content_band') && false !== strpos($the_content, '[x_content_band') ) {
+      $the_content = cs_noemptyp($the_content);
+    }
+    return $the_content;
   }
 
 }

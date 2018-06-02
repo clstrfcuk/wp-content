@@ -18,6 +18,7 @@
 // Setup
 // =============================================================================
 
+$graphic_no_base  = ( isset( $graphic_no_base ) && $graphic_no_base == true ) ? '' : ' .x-graphic';
 $graphic_selector = ( isset( $graphic_selector ) && $graphic_selector != '' ) ? $graphic_selector    : '';
 $graphic_k_pre    = ( isset( $graphic_k_pre    ) && $graphic_k_pre    != '' ) ? $graphic_k_pre . '_' : '';
 
@@ -28,7 +29,7 @@ $graphic_k_pre    = ( isset( $graphic_k_pre    ) && $graphic_k_pre    != '' ) ? 
 
 ?>
 
-.$_el<?php echo $graphic_selector; ?> .x-graphic {
+.$_el<?php echo $graphic_selector . $graphic_no_base; ?> {
   @unless $<?php echo $graphic_k_pre; ?>graphic_margin?? {
     margin: $<?php echo $graphic_k_pre; ?>graphic_margin;
   }
@@ -85,7 +86,7 @@ $graphic_k_pre    = ( isset( $graphic_k_pre    ) && $graphic_k_pre    != '' ) ? 
   }
 
   @if $<?php echo $graphic_k_pre; ?>graphic_has_alt === true {
-    .$_el<?php echo $graphic_selector; ?>[class*="active"] .x-graphic-icon {
+    .$_el<?php echo $graphic_selector; ?> .x-graphic-icon[class*="active"] {
       @unless $<?php echo $graphic_k_pre; ?>graphic_icon_text_shadow_dimensions?? {
         @if $<?php echo $graphic_k_pre; ?>graphic_icon_text_shadow_color_alt === 'transparent' {
           text-shadow: none;

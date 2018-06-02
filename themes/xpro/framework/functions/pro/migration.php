@@ -22,15 +22,24 @@ function pro_version_migration() {
   $prior = get_option( 'pro_version', false );
 
 
+  // Store the version on first install
+  // ----------------------------------
+
+  if ( false === $prior ) {
+    update_option( 'pro_version', X_VERSION, true );
+    update_option( 'x_dismiss_update_notice', true );
+    return;
+  }
+
   // Run migrations
   // --------------
 
-  pro_version_migration_5_1_0( $prior );
+  pro_version_migration_1_1_0( $prior );
 
 
   // Operations run for every update
   // -------------------------------
-  // 01. Update stored version number.
+  // 01. Update stored version number. Save as autoloading value.
   // 02. Enable validation reminder.
   // 03. Bust Google Font cache.
   // 04. Purge all generated CSS
@@ -39,13 +48,11 @@ function pro_version_migration() {
 
   if ( version_compare( $prior, X_VERSION, '<' ) ) {
 
-    update_option( 'pro_version', X_VERSION );      // 01
-    delete_option( 'x_dismiss_validation_notice' ); // 02
-    x_bust_google_fonts_cache();                    // 03
+    update_option( 'pro_version', X_VERSION, true ); // 01
+    delete_option( 'x_dismiss_validation_notice' );  // 02
+    x_bust_google_fonts_cache();                     // 03
 
-    if ( function_exists('cornerstone_cleanup_generated_styles') ) { //04
-      cornerstone_cleanup_generated_styles();
-    }
+    do_action( 'cornerstone_updated', 999 );
 
     if ( false === $prior ) {
       update_option( 'pro_dismiss_update_notice', true ); // 05
@@ -56,17 +63,17 @@ function pro_version_migration() {
 
 }
 
-add_action( 'admin_init', 'pro_version_migration' );
+add_action( 'init', 'pro_version_migration' );
 
 
 
 //
-// 5.1.0
+// 1.1.0
 //
 
-function pro_version_migration_5_1_0( $prior ) {
+function pro_version_migration_1_1_0( $prior ) {
 
-  if ( version_compare( $prior, '5.1.0', '<' ) ) {
+  if ( version_compare( $prior, '1.1.0', '<' ) ) {
 
     $body_font_size    = intval( get_option( 'x_body_font_size', '14' ) );
     $content_font_size     = intval( get_option( 'x_content_font_size', '14' ) );

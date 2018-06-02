@@ -93,7 +93,8 @@ if ( $is_headline ) {
 
 } else {
 
-  $the_text_content .= do_shortcode( $text_content );
+  global $wp_embed;
+  $the_text_content .= do_shortcode( $wp_embed->autoembed( $text_content ) );
 
 }
 

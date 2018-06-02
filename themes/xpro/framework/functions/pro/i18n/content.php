@@ -31,12 +31,14 @@ return array(
 	'layout-heading'                => __( 'Layout', '__x__' ),
 	'layout-return'                 => __( 'Back to Layout', '__x__' ),
 	'layout-add-row'                => __( 'Add Row', '__x__' ),
-	'layout-add-section'            => __( 'Add Section', '__x__' ),
+  'layout-add-section'            => __( 'Add Section', '__x__' ),
 	'layout-templates'              => __( 'Templates', '__x__' ),
+  'layout-load-template'          => __( 'Load Template', '__x__' ),
+	'layout-save-template'          => __( ' Save Template', '__x__' ),
 
 
-	'layout-section-delete-confirm' => __( 'Are you sure you want to delete this section along with all it&apos;s contents?', '__x__' ),
-	'layout-row-delete-confirm'     => __( 'Are you sure you want to delete this row along with all it&apos;s contents?', '__x__' ),
+	'layout-section-delete-confirm' => __( 'Are you sure you want to delete this section along with all its contents?', '__x__' ),
+	'layout-row-delete-confirm'     => __( 'Are you sure you want to delete this row along with all its contents?', '__x__' ),
 	'layout-row-subtext'            => __( 'Click a row to manage columns. Drag to reorder.', '__x__' ),
 	'layout-info-title'             => __( 'Just getting started?', '__x__' ),
 	'layout-info-description'       => __( 'Add a section then click on it to manage column layouts or drag it to reorder.', '__x__' ),
@@ -91,29 +93,8 @@ return array(
 	'templates-page-updated'      => __( 'Page updated.', '__x__' ),
 	'templates-block-inserted'      => __( 'Block inserted.', '__x__' ),
 
-
-	// Elements
-	'elements-heading' => __( 'Elements', '__x__' ),
-	'elements-search'  => __( 'Search Elements', '__x__' ),
-	'elements-return'  => __( 'Back to Elements', '__x__' ),
-
-	'no-elements-found'         => __( 'No Elements Found', '__x__' ),
-  'no-elements-found-message' => __( 'Try refining your search to locate your desired element.', '__x__' ),
-
 	// Inspector
-	'inspector-heading'            => __( 'Inspector', '__x__' ),
-	'inspector-return'             => __( 'Back to Inspector', '__x__' ),
-	'inspector-blank-title'        => __( 'No elements are selected!', '__x__' ),
-	'inspector-blank-pane-title'   => __( 'Nothing Selected', '__x__' ),
 	'inspector-blank-pane-message' => __( 'Click on an element in the site preview to begin inspecting it.', '__x__' ),
-	'inspector-blank-sub'          => __( 'Inspect an element by clicking on it in the preview pane.', '__x__' ),
-	'inspector-duplicate'          => __( 'Duplicate', '__x__' ),
-	'inspector-delete'             => __( 'Delete', '__x__' ),
-	'inspector-really-delete'      => __( 'Really Delete?', '__x__' ),
-	'inspector-delete-confirm'     => __( 'Are you sure you wish to delete this element?', '__x__' ),
-	'inspector-erase'              => __( 'Erase', '__x__' ),
-	'inspector-really-erase'       => __( 'Really Erase?', '__x__' ),
-	'inspector-manage-layout'      => __( 'Manage Layout', '__x__' ),
 
 	// Controls
 	'controls-on'           => __( 'On', '__x__' ),
@@ -132,12 +113,14 @@ return array(
 	'sortable-add'          => __( 'Add', '__x__' ),
 	'sortable-remove'       => __( 'Are you sure you wish to remove this item?', '__x__' ),
 	'sortable-at-floor'     => __( 'The last item can&apos;t be deleted, but would you like to reset it to defaults?', '__x__' ),
-	'sortable-at-cap'       => __( 'This element has reached it&apos;s capacity. You can&apos;t add any more.', '__x__' ),
+	'sortable-at-cap'       => __( 'This element has reached its capacity. You can&apos;t add any more.', '__x__' ),
 	'sortable-default'      => __( 'New Item %s', '__x__' ),
 	'sortable-duplicate'    => __( 'Copy of %s', '__x__' ),
 	'sortable-empty'        => __( 'No items!', '__x__' ),
 	'sortable-empty-sub'    => __( 'Add some to continue building.', '__x__' ),
 	'expand-control'        => __( 'Expand', '__x__' ),
+
+  'settings-format'        => __( '{{type}} Settings', '__x__' ),
 
 	// Settings
 	'settings-heading'       => __( 'Settings', '__x__' ),
@@ -211,11 +194,11 @@ return array(
 	'message-success' => __( 'Awesome!', '__x__' ),
 	'message-error'   => __( 'Uh oh!', '__x__' ),
 
-	'moment-months'         => __( 'January_February_March_April_May_June_July_August_September_October_November_December', '__x__' ),
-	'moment-months-short'   => __( 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec', '__x__' ),
-	'moment-weekdays'       => __( 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday', '__x__' ),
-	'moment-weekdays-short' => __( 'Sun_Mon_Tue_Wed_Thu_Fri_Sat', '__x__' ),
-	'moment-weekdays-min'   => __( 'Su_Mo_Tu_We_Th_Fr_Sa', '__x__' ),
+	// 'moment-months'         => __( 'January_February_March_April_May_June_July_August_September_October_November_December', '__x__' ),
+	// 'moment-months-short'   => __( 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec', '__x__' ),
+	// 'moment-weekdays'       => __( 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday', '__x__' ),
+	// 'moment-weekdays-short' => __( 'Sun_Mon_Tue_Wed_Thu_Fri_Sat', '__x__' ),
+	// 'moment-weekdays-min'   => __( 'Su_Mo_Tu_We_Th_Fr_Sa', '__x__' ),
 	'prev-month'            => __( 'Previous Month', '__x__' ),
 	'next-month'            => __( 'Next Month', '__x__' ),
 
@@ -232,6 +215,13 @@ return array(
 
 	// Skeleton Mode
 	'skeleton-main-title' => __( "Skeleton Mode", '__x__' ),
-	'skeleton-item-handle' => __("{{type}} - {{title}}", '__x__')
+	'skeleton-item-handle' => __("{{type}} - {{title}}", '__x__'),
 
+
+  // Global Blocks
+  'global-blocks.delete-confirm'           => __( 'Are you sure you want to delete this Global Block? This can not be undone.', '__x__' ),
+  'global-blocks.no-content'               => __( 'No Global Blocks', '__x__' ),
+  'global-blocks.no-content-message'       => __( 'Click "Add New" to create your first Global Block.', '__x__' ),
+  'global-blocks.no-content-found'         => __( 'No Global Blocks Found', '__x__' ),
+  'global-blocks.no-content-found-message' => __( 'Try refining your search to locate your desired Global Block.', '__x__' ),
 );

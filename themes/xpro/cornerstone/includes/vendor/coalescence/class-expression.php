@@ -168,12 +168,6 @@ class TCO_Coalescence_Expression {
 
     $content = ' ' . $content;
 
-    $constants = array(
-      'true'  => true,
-      'false' => false,
-      'null'  => null
-    );
-
     foreach ( array(
 
       // Empty operator
@@ -185,6 +179,12 @@ class TCO_Coalescence_Expression {
     ) as $regex => $replacement ) {
       $content = preg_replace( $regex, $replacement, $content );
     }
+
+    $constants = array(
+      'true'  => true,
+      'false' => false,
+      'null'  => null
+    );
 
     // Tokenize strings and numbers
     foreach ( array(
@@ -230,9 +230,9 @@ class TCO_Coalescence_Expression {
       // Existential operator
       '/(%%\$\w+%%)\?/' => ' ( $1 %%o:exists%% null ) ',
 
-      '/\s(true)/' => ' %%c:true%%',
-      '/\s(false)/' => '%%c:false%%',
-      '/\s(null)/' => '%%c:null%%',
+      '/\s(true)/'  => ' %%c:true%%',
+      '/\s(false)/' => ' %%c:false%%',
+      '/\s(null)/'  => ' %%c:null%%',
 
       // normalize whitespace around operators
       '/\s*%%(.+?)%%\s*/' => ' %%$1%% ',
@@ -259,7 +259,7 @@ class TCO_Coalescence_Expression {
   }
 
   /**
-   * Used by the evalate function to bring an operand to it's final value before
+   * Used by the evalate function to bring an operand to its final value before
    * running the operation. Recursively calls evaluate on child TCO_Coalescence_Expression
    * objects. Expands any detected variables using $data
    * @param  mixed $operand Content of the operand being processed

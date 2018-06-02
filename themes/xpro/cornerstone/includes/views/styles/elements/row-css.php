@@ -18,6 +18,14 @@
 ?>
 
 .$_el.x-container {
+  @if $row_inner_container === false {
+    @if $row_width !== 'auto' {
+      width: $row_width;
+    }
+    @unless $row_max_width?? {
+      max-width: $row_max_width;
+    }
+  }
   @unless $row_margin?? {
     margin: $row_margin;
   }
@@ -38,7 +46,9 @@
   @unless $row_text_align?? {
     text-align: $row_text_align;
   }
-  background-color: $row_bg_color;
+  @if $row_bg_color !== 'transparent' {
+    background-color: $row_bg_color;
+  }
   @unless $row_box_shadow_dimensions?? {
     @if $row_box_shadow_color === 'transparent' {
       box-shadow: none;

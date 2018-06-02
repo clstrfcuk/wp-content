@@ -9,7 +9,8 @@ class CS_Google_Map extends Cornerstone_Element_Base {
       'section'     => 'media',
       'description' => __( 'Google Map description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
-      'renderChild' => true
+      'renderChild' => true,
+      'protected_keys' => array( 'api_key', 'lat', 'lng' )
     );
   }
 
@@ -22,8 +23,9 @@ class CS_Google_Map extends Cornerstone_Element_Base {
       __( 'Optionally include markers to your map to specify certain locations.', 'cornerstone' ),
       NULL,
       array(
+        'add_label' => __( 'Marker', 'cornerstone' ),
       	'element'   => 'google-map-marker',
-        'newTitle' => __( 'Map Marker %s', 'cornerstone' )
+        'newTitle'  => __( 'Map Marker %s', 'cornerstone' )
       )
     );
 
