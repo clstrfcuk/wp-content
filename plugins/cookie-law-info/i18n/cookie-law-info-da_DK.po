@@ -1,0 +1,658 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2018-05-30 11:35+0530\n"
+"PO-Revision-Date: 2018-05-30 11:39+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.12\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin/cli-admin-page.php:26
+msgid "You do not have sufficient permission to perform this operation"
+msgstr "Du har ikke tilstrækkelig tilladelse til at udføre denne operation"
+
+#: admin/cli-admin-page.php:44 admin/cli-admin-page.php:846
+msgid "Settings Updated."
+msgstr "Indstillinger opdateret."
+
+#: admin/cli-admin-page.php:54 admin/cli-admin-page.php:77
+msgid "ERROR MIGRATING SETTINGS (ERROR: 2)"
+msgstr "OVERFLYTTER INDSTILLINGER FOR FEJL (FEJL: 2)"
+
+#: admin/cli-admin-page.php:65
+msgid "Cookie Law Settings"
+msgstr "Loven cookieindstillinger"
+
+#: admin/cli-admin-page.php:88
+msgid "Error processing migration request (ERROR: 4)"
+msgstr "Fejl ved behandling af migreringsanmodning (FEJL: 4)"
+
+#: admin/cli-admin-page.php:116
+msgid "Your Cookie Law Info bar is switched on"
+msgstr "Din Cookie lov Info bar er tændt"
+
+#: admin/cli-admin-page.php:120
+msgid "Your Cookie Law Info bar is switched off"
+msgstr "Din Cookie lov Info bar er slukket"
+
+#: admin/cli-admin-page.php:152
+msgid "Settings"
+msgstr "Indstillinger"
+
+#: admin/cli-admin-page.php:154
+msgid "The Cookie Bar"
+msgstr "Cookie Bar farve"
+
+#: admin/cli-admin-page.php:157
+msgid "Cookie Bar is currently:"
+msgstr "Cookie Bar er i øjeblikket:"
+
+#: admin/cli-admin-page.php:166
+msgid "Reject Button:"
+msgstr "Afvise knap"
+
+#: admin/cli-admin-page.php:174
+msgid "Cookie Bar will be show in:"
+msgstr "Cookie Bar vil blive vist i:"
+
+#: admin/cli-admin-page.php:180 admin/cli-admin-page.php:187
+msgid "Header"
+msgstr "hoved"
+
+#: admin/cli-admin-page.php:183 admin/cli-admin-page.php:190
+msgid "Footer"
+msgstr "Footer"
+
+#: admin/cli-admin-page.php:200
+msgid "Fix Cookie Bar to Header?"
+msgstr "Fix Cookie Bar til Header?"
+
+#: admin/cli-admin-page.php:204
+msgid ""
+"If you select \"Header\" then you can optionally stick the cookie bar to the "
+"header. Will not have any effect if you select \"Footer\"."
+msgstr ""
+"Hvis du vælger \"Header\" kan du eventuelt holde linjen cookie til "
+"sidehovedet. Vil ikke have nogen virkning, hvis du vælger \"Sidefod\"."
+
+#: admin/cli-admin-page.php:210
+msgid "On load"
+msgstr "På belastning"
+
+#: admin/cli-admin-page.php:216 admin/cli-admin-page.php:223
+msgid "Animate"
+msgstr "Animer"
+
+#: admin/cli-admin-page.php:219 admin/cli-admin-page.php:226
+msgid "Sticky"
+msgstr "Sticky"
+
+#: admin/cli-admin-page.php:234
+msgid "On hide"
+msgstr "På Skjul"
+
+#: admin/cli-admin-page.php:252
+msgid "Auto-hide cookie bar after delay?"
+msgstr "Bil-skjule cookie bar efter forsinkelse?"
+
+#: admin/cli-admin-page.php:259
+msgid "Milliseconds until hidden"
+msgstr "Millisekunder indtil skjult"
+
+#: admin/cli-admin-page.php:262
+msgid "Specify milliseconds (not seconds) e.g."
+msgstr "Angive millisekunder (ikke sekunder) f.eks."
+
+#: admin/cli-admin-page.php:268
+msgid "Auto-hide cookie bar if the user scrolls?"
+msgstr "Bil-skjule cookie bar hvis brugeren ruller?"
+
+#: admin/cli-admin-page.php:275
+msgid "Reload after \"scroll accept\" event?"
+msgstr "Genindlæse efter \"rulle acceptere\" begivenhed?"
+
+#: admin/cli-admin-page.php:289
+msgid "The Show Again Tab"
+msgstr "Brug Vis igen fane?"
+
+#: admin/cli-admin-page.php:292
+msgid "Use Show Again Tab?"
+msgstr "Brug Vis igen fane?"
+
+#: admin/cli-admin-page.php:299
+msgid "Tab Position"
+msgstr "EtiketpositionCurrency type for column"
+
+#: admin/cli-admin-page.php:305 admin/cli-admin-page.php:312
+msgid "Right"
+msgstr "Højre"
+
+#: admin/cli-admin-page.php:308 admin/cli-admin-page.php:315
+msgid "Left"
+msgstr "Venstre"
+
+#: admin/cli-admin-page.php:323
+msgid "From Left Margin"
+msgstr "Venstre margin"
+
+#: admin/cli-admin-page.php:330
+msgid "Show More Text"
+msgstr "Vis mere"
+
+#: admin/cli-admin-page.php:341
+msgid "Cookie Law Message Bar"
+msgstr "Cookie Law Message Bar"
+
+#: admin/cli-admin-page.php:345
+msgid "Message"
+msgstr "Meddelelse"
+
+#: admin/cli-admin-page.php:351
+msgid "Shortcodes allowed: see settngs section \"Using the Shortcodes\"."
+msgstr "Kortkoder tilladt: settngs i afsnittet \"Brug af the kortkoder\"."
+
+#: admin/cli-admin-page.php:351
+msgid "Examples: \"We use cookies on this website"
+msgstr "Eksempler: \"vi bruger cookies på dette websted"
+
+#: admin/cli-admin-page.php:351
+msgid "to find out how to delete cookies"
+msgstr "at finde ud af hvordan du sletter cookies"
+
+#: admin/cli-admin-page.php:355
+msgid "Cookie Bar Colour"
+msgstr "Cookie Bar farve"
+
+#: admin/cli-admin-page.php:365
+msgid "Text Colour"
+msgstr "Tekstfarve"
+
+#: admin/cli-admin-page.php:374
+msgid "Show Border?"
+msgstr "Vis rammer?"
+
+#: admin/cli-admin-page.php:382
+msgid "Border Colour"
+msgstr "Rammefarve"
+
+#: admin/cli-admin-page.php:390
+msgid "Font"
+msgstr "Skrift"
+
+#: admin/cli-admin-page.php:401
+msgid "Customise Buttons"
+msgstr "Tilpas knapper"
+
+#: admin/cli-admin-page.php:404
+msgid "Accept Button"
+msgstr "Acceptere knap"
+
+#: admin/cli-admin-page.php:406
+msgid "Main Button"
+msgstr "Vigtigste knap"
+
+#: admin/cli-admin-page.php:407
+msgid ""
+"This button/link can be customised to either simply close the cookie bar, or "
+"follow a link. You can also customise the colours and styles, and show it as "
+"a link or a button."
+msgstr ""
+"Denne knaplink kan tilpasses enten blot lukke linjen cookie, eller følg et "
+"link. Du kan også tilpasse farver og stilarter, og vise det som et hyperlink "
+"eller en knap."
+
+#: admin/cli-admin-page.php:410 admin/cli-admin-page.php:477
+#: admin/cli-admin-page.php:547
+msgid "Link Text"
+msgstr "Link tekst"
+
+#: admin/cli-admin-page.php:416 admin/cli-admin-page.php:483
+msgid "Action"
+msgstr "Handling"
+
+#: admin/cli-admin-page.php:424 admin/cli-admin-page.php:495
+#: admin/cli-admin-page.php:553
+msgid "Link URL"
+msgstr "Link URL"
+
+#: admin/cli-admin-page.php:427
+msgid "Button will only link to URL if"
+msgstr "Knappen vil kun link til URL hvis Action = Vis URL"
+
+#: admin/cli-admin-page.php:432 admin/cli-admin-page.php:503
+#: admin/cli-admin-page.php:569
+msgid "Open link in new window?"
+msgstr "Åben i et nyt vindue"
+
+#: admin/cli-admin-page.php:439 admin/cli-admin-page.php:510
+#: admin/cli-admin-page.php:559
+msgid "Link colour"
+msgstr "Link farve"
+
+#: admin/cli-admin-page.php:447 admin/cli-admin-page.php:518
+#: admin/cli-admin-page.php:576
+msgid "Show as button?"
+msgstr "Vis som knap"
+
+#: admin/cli-admin-page.php:454 admin/cli-admin-page.php:525
+#: admin/cli-admin-page.php:583
+msgid "Button colour"
+msgstr "Knapfarve"
+
+#: admin/cli-admin-page.php:462 admin/cli-admin-page.php:533
+#: admin/cli-admin-page.php:591
+msgid "Button Size"
+msgstr "Knap størrelse"
+
+#: admin/cli-admin-page.php:473
+msgid "Reject Button"
+msgstr "Afvise knap"
+
+#: admin/cli-admin-page.php:498
+msgid "Button will only link to URL if "
+msgstr "Knappen vil kun link til URL hvis Action = Vis URL"
+
+#: admin/cli-admin-page.php:543
+msgid "Read More Link"
+msgstr "Læs mere-link"
+
+#: admin/cli-admin-page.php:544
+msgid ""
+"This button/link can be used to provide a link out to your Privacy & Cookie "
+"Policy. You can customise it any way you like."
+msgstr ""
+"Denne knaplink kan bruges til at give et link ud til dit privatliv & Cookie "
+"politik. Du kan tilpasse det som du har lyst."
+
+#: admin/cli-admin-page.php:602
+msgid "Using the Shortcodes"
+msgstr "Brug af kortnumrene"
+
+#: admin/cli-admin-page.php:604
+msgid "Cookie bar shortcodes"
+msgstr "Cookie bar kortkoder"
+
+#: admin/cli-admin-page.php:605
+msgid "You can enter the shortcodes in the"
+msgstr "Du kan indtaste kortkoder i den"
+
+#: admin/cli-admin-page.php:605
+msgid ""
+"field of the Cookie Law Info bar. They add nicely formatted buttons and/or "
+"links into the cookie bar, without you having to add any HTML"
+msgstr ""
+"Du kan angive kortkoder i beskedfeltet \"\" af Cookie lov Info bar. De "
+"tilføjer pænt formateret knapper og/eller links til cookie bar, uden at du "
+"behøver at tilføje enhver HTML."
+
+#: admin/cli-admin-page.php:608
+msgid "If you just want a standard green"
+msgstr "Hvis du bare ønsker en standard grøn"
+
+#: admin/cli-admin-page.php:608
+msgid ""
+"button that closes the header and nothing more, use this shortcode. It is "
+"already styled, you don't need to customise it."
+msgstr ""
+"Hvis du bare ønsker en standard grøn \"Accepter\" knappen, der lukker i "
+"hovedet og intet mere, bruge denne ufuldkommenhed. Det er allerede stylet, "
+"du behøver at tilpasse den."
+
+#: admin/cli-admin-page.php:610
+msgid ""
+"Alternatively you can add a colour value. Choose from: red, blue, orange, "
+"yellow, green or pink."
+msgstr ""
+"Alternativt kan du tilføje en farve værdi. Vælge imellem: rød, blå, orange, "
+"gul, grøn eller pink."
+
+#: admin/cli-admin-page.php:610
+msgid "Careful to use the British spelling of "
+msgstr "Forsigtig med at bruge den britiske stavemåde af"
+
+#: admin/cli-admin-page.php:610
+msgid "for the attribute."
+msgstr "for attributten."
+
+#: admin/cli-admin-page.php:612 admin/cli-admin-page.php:614
+msgid "This is the"
+msgstr "Dette er den mest"
+
+#: admin/cli-admin-page.php:612
+msgid "you customise above."
+msgstr "Dette er linket \"læs mere\", du tilpasser ovenfor."
+
+#: admin/cli-admin-page.php:614
+msgid "link you customise above."
+msgstr "link du tilpasse ovenfor."
+
+#: admin/cli-admin-page.php:616
+msgid "Other shortcodes"
+msgstr "Andre kortkoder"
+
+#: admin/cli-admin-page.php:617
+msgid ""
+"These shortcodes can be used in pages and posts on your website. It is not "
+"recommended to use these inside the cookie bar itself."
+msgstr ""
+"Disse kortkoder kan bruges i sider og indlæg på din hjemmeside. Det "
+"anbefales ikke at bruge disse inde cookie bar selv."
+
+#: admin/cli-admin-page.php:619
+msgid ""
+"This prints out a nice table of cookies, in line with the guidance given by "
+"the ICO."
+msgstr ""
+"Denne funktion udskriver ud en dejlig tabel med cookies, i overensstemmelse "
+"med retningslinjerne fra ICO."
+
+#: admin/cli-admin-page.php:619
+msgid ""
+"You need to enter the cookies your website uses via the Cookie Law Info menu "
+"in your WordPress dashboard."
+msgstr ""
+"Du skal indtaste din hjemmeside bruger cookies via menuen Cookie lov Info i "
+"din WordPress dashboard."
+
+#: admin/cli-admin-page.php:621
+msgid ""
+"This shortcode will display a normal HTML link which when clicked, will "
+"delete the cookie set by Cookie Law Info (this cookie is used to remember "
+"that the cookie bar is closed)."
+msgstr ""
+"Denne ufuldkommenhed vil vise en normal HTML link som når klikket, vil "
+"slette cookien sæt af Cookie lov Info (denne cookie bruges til at huske på, "
+"at cookie bar er lukket)."
+
+#: admin/cli-admin-page.php:622
+msgid ""
+"Add any text you like- useful if you want e.g. another language to English."
+msgstr ""
+"Tilføje tekst du lignende-nyttigt, hvis du vil fx et andet sprog til engelsk."
+
+#: admin/cli-admin-page.php:628
+msgid "Advanced"
+msgstr "Avanceret"
+
+#: admin/cli-admin-page.php:630
+msgid ""
+"Sometimes themes apply settings that clash with plugins. If that happens, "
+"try adjusting these settings."
+msgstr ""
+"Undertiden anvende temaer indstillinger, der kolliderer med plugins. Hvis "
+"det sker, kan du prøve at justere disse indstillinger."
+
+#: admin/cli-admin-page.php:644
+msgid "Reset all values"
+msgstr "Nulstil alle værdier"
+
+#: admin/cli-admin-page.php:647
+msgid "Warning: this will actually delete your current settings."
+msgstr "Advarsel: Dette vil faktisk slette dine nuværende indstillinger."
+
+#: admin/cli-admin-page.php:689
+msgid "Where did my settings go?"
+msgstr "Hvor gik mine indstillinger?"
+
+#: admin/cli-admin-page.php:690
+msgid "Cookie Law Info version 0.9 has been updated and has new settings."
+msgstr ""
+"Cookie Law Info version 0.9 er blevet opdateret og har nye indstillinger."
+
+#: admin/cli-admin-page.php:690
+msgid "Your previous settings are safe."
+msgstr "Dine tidligere indstillinger er sikre."
+
+#: admin/cli-admin-page.php:691
+msgid ""
+"You can either copy over your old settings to this version, or use the new "
+"default values."
+msgstr ""
+"Du kan enten kopiere over dine gamle indstillinger til denne version, eller "
+"brug de nye standardværdier."
+
+#: admin/cli-admin-page.php:693
+msgid "Would you like to:"
+msgstr "Kunne du tænke dig"
+
+#: admin/cli-admin-page.php:695
+msgid "Use previous settings"
+msgstr "Brug tidligere indstillinger"
+
+#: admin/cli-admin-page.php:696
+msgid "Start afresh with the new version"
+msgstr "Start på ny med den nye version"
+
+#: admin/cli-admin-page.php:700
+msgid ""
+"If you want to go back to the previous version you can always download it "
+"again from"
+msgstr ""
+"Hvis du ønsker at gå tilbage til den tidligere version kan du altid hente "
+"det igen fra"
+
+#: admin/cli-admin-page.php:703
+msgid "GDPR Cookie Consent Pro"
+msgstr "GDPR Cookie samtykke Pro"
+
+#: admin/cli-admin-page.php:706
+msgid ""
+"*  Manage list of cookies ( Name, CookieID, Description, Duration, Type, "
+"Category, Header Script, Footer Script)"
+msgstr ""
+"* Administrere listen af cookies (navn, CookieID, beskrivelse, varighed, "
+"Type, kategori, overskrift Script, sidefod Script)"
+
+#: admin/cli-admin-page.php:707
+msgid "*  Manage Cookie Categories"
+msgstr "* Administrer Cookie kategorier"
+
+#: admin/cli-admin-page.php:708
+msgid ""
+"*  Allow to display Cookie Settings popup where site visitors can opt-in or "
+"give consent to Cookie Categories"
+msgstr ""
+"* Gør det muligt for at vise cookieindstillinger popup hvor besøgende kan "
+"opt-in eller give samtykke til Cookie kategorier"
+
+#: admin/cli-admin-page.php:709
+msgid ""
+"*  Fully customisable to look just like your own website's style: customise "
+"the colours, styles and fonts"
+msgstr ""
+"* Fuldt tilpasselig at bare ligne din egen hjemmeside stil: tilpasse farver, "
+"typografier og skrifttyper"
+
+#: admin/cli-admin-page.php:710
+msgid "*  Put the cookie bar in either the header or the footer"
+msgstr "* Sætte cookie bar i sidehovedet eller sidefoden"
+
+#: admin/cli-admin-page.php:711
+msgid "*  (Optional) accept cookie policy if the user scrolls"
+msgstr "* (Valgfrie) acceptere cookie politik, hvis brugeren ruller"
+
+#: admin/cli-admin-page.php:712
+msgid ""
+"*  (Optional) automatically close the cookie bar after a delay (delay is "
+"configurable)"
+msgstr ""
+"* (Valgfrie) lukker automatisk cookie bar efter en forsinkelse (delay er "
+"konfigurerbare)"
+
+#: admin/cli-admin-page.php:713
+msgid ""
+"*  (Optional) cookie bar can be permanently dismissed or accessible through "
+"a \"show again\" tab"
+msgstr ""
+"* (Valgfrie) cookie bar kan være permanent afskediget eller tilgængelig via "
+"et \"Vis igen\" fanen"
+
+#: admin/cli-admin-page.php:714
+msgid ""
+"*  \"Cookie Audit\" shortcode to construct a nicely-styled \"Privacy & "
+"Cookie Policy\""
+msgstr ""
+"* \"Cookie revision\" ufuldkommenhed til at konstruere et pænt stylet "
+"\"Privacy & Cookie politik\""
+
+#: admin/cli-admin-page.php:715
+msgid "*  qTranslate support"
+msgstr "* qTranslate støtte"
+
+#: admin/cli-admin-page.php:717
+msgid "Upgrade to GDPR Pro"
+msgstr "Opgrader til Pro"
+
+#: admin/cli-admin-page.php:744
+msgid "Like this plugin?"
+msgstr "Syns du godt om dette plugin?"
+
+#: admin/cli-admin-page.php:745
+msgid "If you find this plugin useful please show your support and rate it"
+msgstr ""
+"Hvis du finder dette plugin nyttige venligst vise din støtte og vurdere det."
+
+#: admin/cli-admin-page.php:745
+msgid " on"
+msgstr "tændt"
+
+#: admin/cli-admin-page.php:745
+msgid "  much appreciated!"
+msgstr "meget værdsat!"
+
+#: admin/cli-admin-page.php:748
+msgid "Help"
+msgstr "Hjælp"
+
+#: admin/cli-admin-page.php:750
+msgid "Help and Support"
+msgstr "Hjælp og Support!"
+
+#: admin/cli-admin-page.php:751
+msgid "Report a Bug"
+msgstr "Rapporter en fejl"
+
+#: admin/cli-admin-page.php:752
+msgid "Suggest a Feature"
+msgstr "Foreslå en funktion"
+
+#: admin/cli-admin-page.php:753
+msgid "About the law"
+msgstr "Om loven"
+
+#: admin/cli-admin-page.php:813
+msgid "Non-necessary Cookie Settings"
+msgstr "Ikke-nødvendige Cookie-indstillinger"
+
+#: admin/cli-admin-page.php:869
+msgid "Enable Non-necessary Cookie"
+msgstr "Aktivere ikke-nødvendige Cookie"
+
+#: admin/cli-admin-page.php:877
+msgid ""
+"This script will be added to the page HEAD section if the above settings is "
+"enabled and user has give consent."
+msgstr ""
+"Dette script vil tilføjet til side hoved sektion, hvis ovenstående "
+"indstillinger er aktiveret, og brugeren har give samtykke."
+
+#: admin/cli-admin-page.php:884
+msgid ""
+"Print scripts in the head tag on the front end if above cookie settings is "
+"enabled and user has given consent."
+msgstr ""
+"Udskrive scripts i hovedet tag på den forreste ende, hvis ovenfor cookie "
+"indstillinger er aktiveret, og brugeren har givet samtykke."
+
+#: admin/cli-admin-page.php:888
+msgid ""
+"This script will be added right after the BODY section if the above settings "
+"is enabled and user has given consent."
+msgstr ""
+"Dette script vil blive tilføjet ret efter BODY-afsnittet hvis ovenstående "
+"indstillinger er aktiveret, og brugeren har givet samtykke."
+
+#: admin/cli-admin-page.php:895
+msgid ""
+"Print scripts before the closing body tag on the front end if above cookie "
+"settings is enabled and user has given consent."
+msgstr ""
+"Print scripts før den afsluttende body-tag på den forreste ende hvis ovenfor "
+"cookie indstillinger er aktiveret, og brugeren har givet samtykke."
+
+#: admin/cli-admin-page.php:906
+msgid "Shortcodes allowed: see settings section \"Using the Shortcodes\"."
+msgstr ""
+"Kortkoder tilladt: indstillinger i afsnittet \"Brug af the kortkoder\"."
+
+#: php/custom-post-types.php:26
+msgid "Cookie List"
+msgstr "Cookie liste"
+
+#: php/custom-post-types.php:29
+msgid "Add New Cookie Type"
+msgstr "Tilføje nye Cookie Type"
+
+#: php/custom-post-types.php:30
+msgid "Edit Cookie Type"
+msgstr "Rediger cookie type"
+
+#: php/custom-post-types.php:31
+msgid "New Cookie Type"
+msgstr "Ny Cookie Type"
+
+#: php/custom-post-types.php:32
+msgid "View Cookie Type"
+msgstr "Se cookie type"
+
+#: php/custom-post-types.php:33
+msgid "Search Cookies"
+msgstr "Søg Cookies"
+
+#: php/custom-post-types.php:34
+msgid "Nothing found"
+msgstr "Intet fundet"
+
+#: php/custom-post-types.php:35
+msgid "Nothing found in Trash"
+msgstr "Intet fundet i papirkurven"
+
+#: php/custom-post-types.php:93
+msgid "Cookie Type: (persistent, session, third party )"
+msgstr "Cookie Type: (persistente, session, tredjepart)"
+
+#: php/custom-post-types.php:105
+msgid "Cookie Duration:"
+msgstr "Cookie varighed:"
+
+#: php/custom-post-types.php:116
+msgid "Cookie Sensitivity: ( necessary , non-necessary )"
+msgstr "Cookie følsomhed: (nødvendigt, ikke-nødvendige)"
+
+#: php/custom-post-types.php:127
+msgid "Cookie ID:"
+msgstr "Cookie-ID:"
+
+#: php/shortcodes.php:86
+msgid "Cookie"
+msgstr "Cookie"
+
+#: php/shortcodes.php:89
+msgid "Type"
+msgstr "Type"
+
+#: php/shortcodes.php:92
+msgid "Duration"
+msgstr "Bestillingsdato"
+
+#: php/shortcodes.php:95
+msgid "Description"
+msgstr "Beskrivelse"
