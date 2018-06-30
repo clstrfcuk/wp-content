@@ -494,7 +494,9 @@ add_filter( 'bbp_before_get_the_content_parse_args', 'x_bbpress_filter_get_the_c
 if ( ! function_exists( 'x_bbpress_style_loader_tag' ) ) :
   function x_bbpress_style_loader_tag( $tag, $handle ) {
 
-    if ( $handle == 'editor-buttons' && ! is_admin() && is_bbpress() && empty( x_get_option( 'x_bbpress_enable_quicktags' ) ) ) {
+    $enable_quicktags = x_get_option( 'x_bbpress_enable_quicktags' );
+
+    if ( $handle == 'editor-buttons' && ! is_admin() && is_bbpress() && empty( $enable_quicktags ) ) {
       $tag = '';
     }
 

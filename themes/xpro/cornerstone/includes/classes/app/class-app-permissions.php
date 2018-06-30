@@ -204,6 +204,8 @@ class Cornerstone_App_Permissions extends Cornerstone_Plugin_Component {
 
   public function get_user_roles( $user_id ) {
 
+    $roles = array();
+
     global $wpdb;
 
     $caps = get_user_meta( $user_id, $wpdb->get_blog_prefix() . 'capabilities', true );
@@ -214,7 +216,11 @@ class Cornerstone_App_Permissions extends Cornerstone_Plugin_Component {
       $roles = array_filter( array_keys( $caps ), array( $wp_roles, 'is_role' ) );
     }
 
-    return is_array( $roles ) ? $roles : array();
+    if ( is_super_admin() && ! in_array( 'administrator', $roles, true ) ) {
+      $roles[] = 'administrator';
+    }
+
+    return $roles;
 
   }
 

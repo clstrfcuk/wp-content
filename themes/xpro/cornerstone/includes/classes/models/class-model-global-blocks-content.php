@@ -16,7 +16,7 @@ class Cornerstone_Model_Global_Blocks_Content extends Cornerstone_Plugin_Compone
       'post_type' => $this->plugin->component('App_Permissions')->get_user_post_types(),
       'post_status' => 'tco-data',
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     foreach ($posts as $post) {

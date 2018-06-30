@@ -82,14 +82,14 @@ if ( $is_headline ) {
 
   }
 
-  $the_text_content .= '<span class="x-text-content">';
+  $the_text_content .= '<div class="x-text-content">';
     $the_text_content .= $text_graphic_content;
-    $the_text_content .= '<span class="x-text-content-text">';
+    $the_text_content .= '<div class="x-text-content-text">';
       $the_text_content .= ( $text_subheadline_reverse === true ) ? $text_subheadline_content : '';
       $the_text_content .= '<' . $text_tag . ' class="x-text-content-text-primary">' . $the_text_headline . '</' . $text_tag . '>';
       $the_text_content .= ( $text_subheadline_reverse === false ) ? $text_subheadline_content : '';
-    $the_text_content .= '</span>';
-  $the_text_content .= '</span>';
+    $the_text_content .= '</div>';
+  $the_text_content .= '</div>';
 
 } else {
 

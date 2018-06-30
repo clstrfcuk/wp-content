@@ -19,15 +19,17 @@
 
 function x_add_meta_box( $meta_box ) {
 
-  if ( ! is_array( $meta_box ) )
+  if ( ! is_array( $meta_box ) ) {
     return false;
+  }
 
-  $callback = create_function( '$post,$meta_box', 'x_create_meta_box( $post, $meta_box["args"] );' );
-
-  add_meta_box( $meta_box['id'], $meta_box['title'], $callback, $meta_box['page'], $meta_box['context'], $meta_box['priority'], $meta_box );
+  add_meta_box( $meta_box['id'], $meta_box['title'], 'x_add_meta_box_callback', $meta_box['page'], $meta_box['context'], $meta_box['priority'], $meta_box );
 
 }
 
+function x_add_meta_box_callback( $post, $meta_box ) {
+  return x_create_meta_box( $post, $meta_box["args"] );
+}
 
 
 // Create Entry Meta

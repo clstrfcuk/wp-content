@@ -163,7 +163,7 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
       'current_user'              => get_current_user_id(),
       'preferenceControls'        => $this->plugin->component( 'App_Preferences' )->get_preference_controls(),
       'preload'                   => $this->get_preload_models(),
-      'load_google_fonts'         => apply_filters('cs_load_google_fonts', '__return_true' )
+      'load_google_fonts'         => apply_filters('cs_load_google_fonts', true )
     ) ) );
 
   }

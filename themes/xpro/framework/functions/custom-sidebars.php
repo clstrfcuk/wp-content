@@ -235,7 +235,7 @@ function ups_sidebar_do_meta_box( $post, $metabox ) {
     'offset'                 => 0,
     'order'                  => 'ASC',
     'orderby'                => 'title',
-    'posts_per_page'         => -1,
+    'posts_per_page'         => apply_filters( 'cs_query_limit', 2500 ),
     'post_type'              => array( 'page', 'post' ),
     'suppress_filters'       => true,
     'update_post_term_cache' => false,

@@ -16,7 +16,7 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
       'post_type' => 'cs_footer',
       'post_status' => 'any',
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     $records = array();

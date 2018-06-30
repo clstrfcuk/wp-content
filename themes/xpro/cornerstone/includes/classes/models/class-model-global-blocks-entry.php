@@ -15,7 +15,7 @@ class Cornerstone_Model_Global_Blocks_Entry extends Cornerstone_Plugin_Component
       'post_type' => 'cs_global_block',
       'orderby' => 'type',
       'post_status' => 'tco-data',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
       'cs_all_wpml' => true
     ) );
 

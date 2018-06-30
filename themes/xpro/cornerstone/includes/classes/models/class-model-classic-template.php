@@ -170,7 +170,7 @@ class Cornerstone_Model_Classic_Template extends Cornerstone_Plugin_Component {
 			'post_type'  => 'cs_user_templates',
 			'meta_key'   => 'cs_template_slug',
 			'meta_value' => $atts['id'],
-			'posts_per_page' => 999,
+			'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
 			'post_status' => 'any'
 		) );
 

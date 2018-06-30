@@ -213,10 +213,29 @@ class Cornerstone_Integration_X_Theme {
   }
 
   public function legacy_the_content( $the_content ) {
-    if ( $the_content && false !== strpos($the_content, '[content_band') && false !== strpos($the_content, '[x_content_band') ) {
-      $the_content = cs_noemptyp($the_content);
+
+    if ( $the_content  ) {
+
+      global $cs_shortcode_aliases;
+      $legacy = false;
+
+      foreach ($cs_shortcode_aliases as $shortcode) {
+
+        if ( false == strpos($the_content, "[$shortcode" ) ) {
+          $legacy = true;
+          break;
+        }
+
+      }
+
+      if ( $legacy ) {
+        $the_content = cs_noemptyp($the_content);
+      }
+
     }
+
     return $the_content;
+
   }
 
 }

@@ -15,7 +15,7 @@ class Cornerstone_Model_Template_Manager_Stub extends Cornerstone_Plugin_Compone
       'post_type' => array( 'cs_template', 'cs_user_templates' ),
       'post_status' => array( 'tco-data', 'publish' ),
       'orderby' => 'type',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
     ) );
 
     foreach ($posts as $post) {

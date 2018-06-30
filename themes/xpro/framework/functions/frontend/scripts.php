@@ -46,14 +46,12 @@ function x_output_js() {
   }
 
   $x_design_bg_image_full = x_get_option( 'x_design_bg_image_full' );
-  $bg_images_output       = '';
-  $params                 = array();
+  $bg_images = array();
+  $params    = array();
 
   if ( $x_design_bg_image_full ) {
-
-    $bg_images_output = '"' . x_make_protocol_relative( $x_design_bg_image_full ) . '"';
+    $bg_images = array( x_make_protocol_relative( $x_design_bg_image_full ) );
     $params = array( 'fade' => x_get_option( 'x_design_bg_image_full_fade' ) );
-
   }
 
   if ( is_singular() ) {
@@ -65,31 +63,31 @@ function x_output_js() {
 
       $page_bg_images = explode( ',', $x_entry_bg_image_full );
 
-      foreach ( $page_bg_images as $page_bg_image ) {
-        $bg_images_output .= '"' . $page_bg_image . '", ';
-      }
+      $bg_images = array_values($page_bg_images);
 
-      $bg_images_output = trim( $bg_images_output, ', ' );
+      $fade = get_post_meta( $entry_id, '_x_entry_bg_image_full_fade', true );
+      $fade = ( $fade ) ? $fade : '750';
 
-      $params = array(
-        'fade'     => get_post_meta( $entry_id, '_x_entry_bg_image_full_fade', true ),
-        'duration' => get_post_meta( $entry_id, '_x_entry_bg_image_full_duration', true )
-      );
+      $duration = get_post_meta( $entry_id, '_x_entry_bg_image_full_duration', true );
+      $duration = ( $duration ) ? $duration : '7500';
+
+      $params = array( 'fade'     => $fade, 'duration' => $duration );
+
     }
 
   }
 
-  if ( $bg_images_output ) {
+  if ( ! empty( $bg_images ) ) {
 
-    $param_output = '';
+    $param_output = json_encode($params);
 
-    foreach ($params as $key => $value) {
-      $param_output .= "$key: $value, ";
+    if ( ! $param_output ) {
+      $param_output = '{}';
     }
 
-    $param_output = ',{' . trim( $param_output, ', ' ) . '}';
+    $bg_images_output = '["' . implode('","', $bg_images) . '"]';
 
-    ?><script>jQuery(function($){$.backstretch([<?php echo $bg_images_output; ?>] <?php echo $param_output; ?> ); });</script><?php
+    ?><script>jQuery(function($){$.backstretch(<?php echo $bg_images_output; ?>, <?php echo $param_output; ?> ); });</script><?php
 
   }
 

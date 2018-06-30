@@ -73,10 +73,12 @@ class Cornerstone_Element_Definition {
   }
 
   public function apply_defaults( $data ) {
+
     $defaults = $this->get_defaults();
+    $designations = $this->get_designations();
 
     foreach ($defaults as $key => $value) {
-      if ( ! isset( $data[$key] ) ) {
+      if ( ! isset( $data[$key] ) || (isset( $designations[$key] ) && 'all:readonly' === $designations[$key] ) ) {
         $data[$key] = $value;
       }
     }
@@ -177,6 +179,10 @@ class Cornerstone_Element_Definition {
     $post_process_keys = array();
     foreach ($style_keys as $data_key => $style_key) {
 
+      if ( 'all:readonly' === $style_key ) {
+        continue;
+      }
+
       $pos = strpos($style_key, ':' );
 
       if ( false === $pos ) {
@@ -187,14 +193,11 @@ class Cornerstone_Element_Definition {
 
     }
 
-    if ( empty( $post_process_keys ) ) {
-      return $data;
-    }
-
-    // function preProcess( data ) {
-    foreach ($data as $key => $value) {
-      if ( isset($post_process_keys[$key]) && $value ) {
-        $data[$key] = '%%post ' . $post_process_keys[$key] . '%%' . $value .'%%/post%%';
+    if ( ! empty( $post_process_keys ) ) {
+      foreach ($data as $key => $value) {
+        if ( isset($post_process_keys[$key]) && $value ) {
+          $data[$key] = '%%post ' . $post_process_keys[$key] . '%%' . $value .'%%/post%%';
+        }
       }
     }
 

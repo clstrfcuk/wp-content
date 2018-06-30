@@ -15,7 +15,7 @@ class Cornerstone_Model_Headers_Header_Template extends Cornerstone_Plugin_Compo
       'post_type' => array( 'cs_template' ),
       'post_status' => array( 'tco-data', 'publish' ),
       'orderby' => 'type',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
       'meta_key' => '_cs_template_type',
       'meta_value' => 'header',
     ) );

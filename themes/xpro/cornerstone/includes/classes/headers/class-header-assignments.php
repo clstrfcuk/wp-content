@@ -149,10 +149,12 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
 
     unset( $post_types['attachment'] );
 
+    $post_types = array_keys( $post_types );
+
     $posts = get_posts( array(
-      'post_type' => array_keys( $post_types ) ,
+      'post_type' => apply_filters('cs_header_assignment_post_types', $post_types ),
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     foreach ($posts as $post) {

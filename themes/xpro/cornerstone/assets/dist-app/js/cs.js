@@ -535,8 +535,8 @@ return new Ember.RSVP.Promise(function(t,n){if(e.get("tinyMCERendered")||void 0=
 var s=e.get("editorID")
 window.tinyMCEPreInit.mceInit[s].setup=e.get("setupTinyMCE")
 window.tinymce.init(Ember.assign({},window.tinyMCEPreInit.mceInit[s],{setup:function(n){e.set("editorInstance",n),n.on("init",function(){window.wpActiveEditor||(window.wpActiveEditor=s),e.set("tinyMCERendered",!0),t(n)}),n.addButton("cs_media",{icon:"image",onclick:function(){window.wp&&window.wp.media&&window.wp.media.editor&&window.wp.media.editor.open(e.get("editorID"),{frame:"post",state:"insert",title:window.wp.media.view.l10n.addMedia,multiple:!0})}})
-var i=function(){var t=e.get("editorInstance").getContent().replace(/<p/gi,"<p cs-preserve-p").replace(/<br\s*?\/>/gi,"%%cs-preserve-br%%")
-t=window.wp.editor.removep(t).replace(/<p cs-preserve-p/gi,"<p").replace(/%%cs-preserve-br%%/gi,"<br />\n").replace(/([^>\n]|\h)(<br \/>)/gi,"$1\n$2"),e.set("isUpdatingText",!0),e.set("value",t),e.set("isUpdatingText",!1)}
+var i=function(){var t=e.get("editorInstance").getContent().replace(/<p/gi,"<p cs-preserve-p").replace(/\n?<br\s*?\/>\n?/gi,"%%cs-preserve-br%%")
+t=window.wp.editor.removep(t).replace(/<p cs-preserve-p/gi,"<p").replace(/%%cs-preserve-br%%/gi,"<br />\n"),e.set("isUpdatingText",!0),e.set("value",t),e.set("isUpdatingText",!1)}
 n.on("keyup change NodeChange",function(){"text"===e.get("activeMode")&&Ember.run.debounce(i,150)})}}))})},availableModes:Ember.computed(function(){var e=this.get("allModes"),t=this.get("mode")
 return e.includes(t)?[t]:e}),modeClass:Ember.computed("activeMode",function(){return"cs-text-editor-mode-"+this.get("activeMode")}),pickerOpen:Ember.observer("picker.open",function(){}),onInit:Ember.on("init",function(){Ember.isNone(this.get("activeMode"))&&this.set("activeMode",this.get("availableModes.firstObject"))}),observeValue:Ember.observer("value",function(){var e=this.get("editorInstance")
 !e||this.isDestroyed||this.get("isUpdatingText")||(e.setContent(this.get("value"),{format:"raw"}),this.set("isUpdatingText",!1))}),didInsertElement:function(){var e=this
@@ -958,10 +958,9 @@ return e||this.getWithDefault("definition.title",this.get("atts._type"))},set:fu
 var e=this.get("title")
 return this.get("definition.isContentLayout")&&e===this.getWithDefault("definition.title",this.get("atts._type"))?e.replace("Classic ",""):e}),indexedTitle:Ember.computed("definition.title","atts.title","order",{get:function(){return this.get("atts.title")?this.get("atts.title"):this.get("i18n").t("app.indexed",{label:this.getWithDefault("definition.title",this.get("atts._type")),index:this.get("order")+1}).string},set:function(e,t){return t||(t=this.getWithDefault("definition.title",this.get("atts._type"))),this.set("title",t),t}}),hasChanged:function(e){var t=this.get("definition.designations."+e)
 if(!Ember.isNone(t)){var n=t.split(":")
-this.incrementProperty(Ember.String.camelize("update-"+n[0]))}},setDefaults:function(){var e=this.get("definition.defaults"),t=this.get("atts")
-for(var n in e)void 0===t[n]&&this.set("atts."+n,e[n])
-var s=this.get("definition.designations")
-for(var i in s)"attr"===s[i]&&Ember.defineProperty(this,Ember.String.camelize("attr_"+i),Ember.computed.alias("atts."+i))
+this.incrementProperty(Ember.String.camelize("update-"+n[0]))}},setDefaults:function(){var e=this.get("definition.defaults"),t=this.get("definition.designations"),n=this.get("atts")
+for(var s in e)void 0!==n[s]&&"all:readonly"!==t[s]||this.set("atts."+s,e[s])
+for(var i in t)"attr"===t[i]&&Ember.defineProperty(this,Ember.String.camelize("attr_"+i),Ember.computed.alias("atts."+i))
 return this},duplicate:function(e){var t=this
 if(this.get("parent.availableChildren")){var n=function(e){return t.get("parent.availableChildren").any(function(t){return e===t.get("title")})},s=this.serialize({includeChildren:!0})
 e&&Ember.merge(s.data.attributes.atts,e),s=JSON.parse(JSON.stringify(s.data))
@@ -2169,5 +2168,5 @@ var r=Ember.run.later(e,function(){t(s.ts),a({error:!0,message:"Xfr request made
 return e.set("xfrPendingRequests."+s.ts,function(e){Ember.run.cancel(r),i(e),t(s.ts)}),s})
 this.get("xfrRequestQueue").clear(),this.get("xfrMessagePort").postMessage({batch:n})},request:function(e,t){return this.xfrSendMessage("request",{action:e,data:t})},message:function(e,t){return this.xfrSendMessage("request",{action:e,data:t,noreply:!0})}})}),define("x-dev/xfr/service",["exports"],function(e){Object.defineProperty(e,"__esModule",{value:!0}),e.default=Ember.Service.extend(Ember.Evented,{request:function(){var e=this.get("agent"),t=arguments
 return e?e.request.apply(e,arguments):new Ember.RSVP.Promise(function(e){Ember.debug("XFR service does not have an agent"),Ember.debug(t.action),e(void 0)})},message:function(){var e=this.get("agent"),t=arguments
-return e?e.message.apply(e,arguments):new Ember.RSVP.Promise(function(e){Ember.debug("XFR service does not have an agent"),Ember.debug(t.action),e(void 0)})}})}),define("x-dev/config/environment",[],function(){var e={default:{modulePrefix:"x-dev",environment:"production",rootURL:"/",locationType:"auto",EmberENV:{FEATURES:{},EXTEND_PROTOTYPES:!1},APP:{name:"x-dev",version:"2.1.3+1af5f541"},browserify:{transform:[["aliasify",{global:!0}]]},i18n:{defaultLocale:"en"},exportApplicationGlobal:!1}}
-return Object.defineProperty(e,"__esModule",{value:!0}),e}),runningTests||require("x-dev/app").default.create({name:"x-dev",version:"2.1.3+1af5f541"})
+return e?e.message.apply(e,arguments):new Ember.RSVP.Promise(function(e){Ember.debug("XFR service does not have an agent"),Ember.debug(t.action),e(void 0)})}})}),define("x-dev/config/environment",[],function(){var e={default:{modulePrefix:"x-dev",environment:"production",rootURL:"/",locationType:"auto",EmberENV:{FEATURES:{},EXTEND_PROTOTYPES:!1},APP:{name:"x-dev",version:"2.1.6+533f6b3f"},browserify:{transform:[["aliasify",{global:!0}]]},i18n:{defaultLocale:"en"},exportApplicationGlobal:!1}}
+return Object.defineProperty(e,"__esModule",{value:!0}),e}),runningTests||require("x-dev/app").default.create({name:"x-dev",version:"2.1.6+533f6b3f"})

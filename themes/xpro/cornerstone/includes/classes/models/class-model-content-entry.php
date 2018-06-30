@@ -15,7 +15,7 @@ class Cornerstone_Model_Content_Entry extends Cornerstone_Plugin_Component {
       'post_type' => $this->plugin->component('App_Permissions')->get_user_post_types(),
       'orderby' => 'type',
       'post_status' => 'any',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
       'cs_all_wpml' => true
     ) );
 

@@ -187,7 +187,7 @@ function x_values_text( $settings = array() ) {
   // ------
 
   $values = array(
-    'text_type'                   => x_module_value( $type, 'markup' ),
+    'text_type'                   => x_module_value( $type, 'all:readonly' ),
     'text_content'                => x_module_value( $text_content, 'markup:html', true ),
     'text_width'                  => x_module_value( 'auto', 'style' ),
     'text_max_width'              => x_module_value( 'none', 'style' ),

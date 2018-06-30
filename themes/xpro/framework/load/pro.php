@@ -3,7 +3,7 @@
 // Theme Constants
 // =============================================================================
 
-define( 'X_VERSION', '2.1.3' );
+define( 'X_VERSION', '2.1.6' );
 define( 'X_SLUG', 'pro' );
 define( 'X_TITLE', 'Pro' );
 define( 'X_I18N_PATH', X_TEMPLATE_PATH . '/framework/functions/pro/i18n');

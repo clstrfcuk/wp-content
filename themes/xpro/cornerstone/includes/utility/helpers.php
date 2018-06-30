@@ -318,6 +318,12 @@ function cs_deep_array_merge ( array &$defaults, array $data, $max_depth = -1 ) 
 
 function cs_alias_shortcode( $new_tag, $existing_tag, $filter_atts = true ) {
 
+  global $cs_shortcode_aliases;
+
+  if ( ! $cs_shortcode_aliases ) {
+    $cs_shortcode_aliases = array();
+  }
+
 	if ( is_array( $new_tag ) ) {
 		foreach ($new_tag as $tag) {
 			cs_alias_shortcode( $tag, $existing_tag, $filter_atts );
@@ -331,6 +337,15 @@ function cs_alias_shortcode( $new_tag, $existing_tag, $filter_atts = true ) {
 
 	global $shortcode_tags;
 	add_shortcode( $new_tag, $shortcode_tags[ $existing_tag ] );
+
+  if ( ! in_array($new_tag, $cs_shortcode_aliases) ) {
+    $cs_shortcode_aliases[] = $new_tag;
+  }
+
+  if ( ! in_array($existing_tag, $cs_shortcode_aliases) ) {
+    $cs_shortcode_aliases[] = $existing_tag;
+  }
+
 
 	if ( ! $filter_atts || ! has_filter( $tag = "shortcode_atts_$existing_tag" ) ) {
 		return;
