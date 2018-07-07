@@ -23,14 +23,11 @@ return array(
       'tco/tco',
       'utility/helpers',
       'utility/api',
-    ),
-    'init' => array(
-      'menu-item-custom-fields/menu-item-custom-fields',
-      'menu-item-custom-fields/menu-item-custom-fields-map',
+      'utility/wp-shortcode-preserver',
     ),
     'loggedin' => array(
       'utility/wp-clean-slate',
-    ),
+    )
   ),
 
   'components' => array(
@@ -50,11 +47,7 @@ return array(
       'Front_End',
       'App_Boot',
       'Router',
-      'Revision_Manager',
-      'Wpml'
-    ),
-    'after_theme_setup' => array(
-      'Element_Manager',
+      'Style_Loader',
       'Regions:theme-support:cornerstone_regions'
     ),
     'loggedin' => array(
@@ -63,6 +56,7 @@ return array(
       'App',
       'Preview_Frame_Loader',
       'Validation',
+      'Revision_Manager',
       'Builder',
       'Layout_Manager'
     ),
@@ -73,108 +67,5 @@ return array(
       'Font_Manager',
       'Color_Manager'
     )
-  ),
-
-  'elements' => array(
-
-    'base' => array(
-      'shim',
-      'helpers',
-      'sample',
-      'decorators',
-      '_settings',
-    ),
-
-    'mixins' => array(
-      '_margin',
-      '_padding',
-      '_border',
-      '_border-radius',
-      '_box-shadow',
-      '_flex',
-      '_flex-layout-css',
-      '_flex-layout-attr',
-      '_image',
-      '_info',
-      '_link',
-      '_menu',
-      '_text-format',
-      '_text-shadow',
-      '_text-style',
-      'alert',
-      'anchor',
-      'audio',
-      'bg',
-      'breadcrumbs',
-      'cart',
-      'column',
-      'counter',
-      'dropdown',
-      'frame',
-      'graphic',
-      'image',
-      'line',
-      'gap',
-      'map',
-      'mejs',
-      'menu',
-      'modal',
-      'off-canvas',
-      'omega',
-      'particle',
-      'row',
-      'separator',
-      'search',
-      'section',
-      'text',
-      'toggle',
-      'video',
-    ),
-
-    'definitions' => array(
-      'button',
-      'column',
-      'content-area',
-      'content-area-dropdown',
-      'content-area-modal',
-      'content-area-off-canvas',
-      'image',
-      'nav-collapsed',
-      'nav-dropdown',
-      'nav-inline',
-      'nav-modal',
-      'row',
-      'search-inline',
-      'search-dropdown',
-      'search-modal',
-      'section',
-      'map',
-      'audio',
-      'video',
-      'social',
-      'text',
-      'headline',
-      'breadcrumbs',
-      'alert',
-      'counter',
-      'line',
-      'gap',
-      'widget-area',
-      // 'tp-bbp-dropdown',
-      // 'tp-bp-dropdown',
-      'tp-wc-cart-dropdown',
-      'tp-wc-cart-modal',
-      'tp-wc-cart-off-canvas',
-    )
-
-  ),
-
-
-
-
-  'classic-elements' => array(
-    'mk2' => array( 'alert', 'block-grid', 'block-grid-item', 'column', 'icon-list', 'icon-list-item', 'pricing-table', 'pricing-table-column', 'responsive-text', 'row', 'section', 'text', 'undefined', ),
-    'mk1' => array('accordion-item', 'accordion', 'author', 'blockquote', 'button', 'callout', 'card', 'clear', 'code', 'columnize', 'contact-form-7', 'counter', 'creative-cta', 'custom-headline', 'embedded-audio', 'embedded-video', 'envira-gallery', 'essential-grid', 'feature-box', 'feature-headline', 'feature-list-item', 'feature-list', 'gap', 'google-map-marker', 'google-map', 'gravity-forms', 'icon', 'image', 'layerslider', 'line', 'mailchimp', 'map-embed', 'promo', 'prompt', 'protect', 'raw-content', 'recent-posts', 'revolution-slider', 'search', 'self-hosted-audio', 'self-hosted-video', 'skill-bar', 'slide', 'slider', 'social-sharing', 'soliloquy', 'tab','tabs', 'text-type', 'toc-item', 'toc', 'visibility', 'widget-area' )
   )
-
 );

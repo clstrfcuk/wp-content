@@ -8,8 +8,6 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 
 		if ( ! is_admin() ) return;
 
-    add_filter( 'http_request_args', array( $this, 'http_request_args' ), 10, 2 );
-
 		add_filter( 'themeco_update_api', array( $this, 'register' ), -100 );
     add_filter( 'themeco_update_cache', array( $this, 'cache_updates' ), 10, 2 );
 
@@ -134,7 +132,7 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 		if ( version_compare( $remote['new_version'], $local['Version'], '>' ) ) {
 
 			if ( ! $remote['package'] ) {
-				$remote['upgrade_notice'] = sprintf( csi18n('admin.plugin-update-notice'), admin_url( 'admin.php?page=cornerstone-home' ) );
+				$remote['upgrade_notice'] = sprintf( csi18n('admin.plugin-update-notice'), $this->plugin->component( 'Admin' )->home_page_url() );
 			}
 
 			$data->response[ $this->plugin_file ] = (object) $remote;
@@ -178,62 +176,4 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 
   }
 
-	public function decode( $data ) {
-		return $this->api->is_serial ? (array) unserialize( $data ) : json_decode( $data, true );
-	}
-
-	public function encode( $data ) {
-		if ( $this->api->is_serial ) {
-			return serialize( $this->api->is_plugin ? (object) $data : $data );
-		}
-		return json_encode( $data );
-	}
-
-	public function http_request_args( $request_args, $url ) {
-		$this->api = $this->get_api( $url );
-		if ( empty( $this->api ) ) {
-			return $request_args;
-		}
-		$data = $this->decode( $request_args['body'][ $this->api->type ] );
-		if ( $this->api->is_plugin ) {
-			$data = $this->filter_plugins( $data );
-		} elseif ( $this->api->is_theme ) {
-			$data = $this->filter_themes( $data );
-		}
-		$request_args['body'][ $this->api->type ] = $this->encode( $data );
-		return $request_args;
-	}
-
-	public function get_api( $url ) {
-		static $regex = '#://api\.wordpress\.org/(?P<type>plugins|themes)/update-check/(?P<version>[0-9.]+)/#';
-		$match = preg_match( $regex, $url, $api );
-		if ( $match ) {
-			$api['is_serial'] = ( 1.0 == (float) $api['version'] );
-			$api['is_plugin'] = ( 'plugins' === $api['type'] );
-			$api['is_theme']  = ( 'themes' === $api['type'] );
-			return (object) $api;
-		}
-		return false;
-	}
-
-	public function filter_plugins( $data ) {
-		foreach ( $data['plugins'] as $file => $plugin ) {
-			$path = trailingslashit( WP_PLUGIN_DIR . '/' . dirname( $file ) ); // TODO files without dir?
-      if ( in_array( $file, array($this->plugin_file), true ) ) {
-				unset( $data['plugins'][ $file ] );
-				unset( $data['active'][ array_search( $file, $data['active'] ) ] );
-			}
-		}
-		return $data;
-	}
-
-	public function filter_themes( $data ) {
-		foreach ( $data['themes'] as $slug => $theme ) {
-			$path = trailingslashit( wp_get_theme( $slug )->get_stylesheet_directory() );
-      if ( in_array( $slug, array('x', 'pro'), true ) ) {
-				unset( $data['themes'][ $slug ] );
-			}
-		}
-		return $data;
-	}
 }

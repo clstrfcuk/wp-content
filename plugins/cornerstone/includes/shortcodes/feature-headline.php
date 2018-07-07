@@ -42,7 +42,7 @@ function x_shortcode_feature_headline( $atts, $content = null ) {
     }
 
     if ( $icon_bg_color !=  '' ) {
-      $icon_style .= "background-color: {$icon_bg_color}!important;";
+      $icon_style .= "background-color: {$icon_bg_color};";
     }
 
     if ( $icon_style != '' ) {

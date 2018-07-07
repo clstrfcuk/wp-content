@@ -51,7 +51,7 @@ class Cornerstone_App_Boot extends Cornerstone_Plugin_Component {
     // Allow an initial route to be passed if not using permalinks
     if ( isset( $_GET['cs_route'] ) ) {
 
-      $route = esc_attr( $_GET['cs_route'] );
+      $route = esc_attr( base64_decode( $_GET['cs_route'], true ) );
 
       if ( $route ) {
 
@@ -59,7 +59,7 @@ class Cornerstone_App_Boot extends Cornerstone_Plugin_Component {
         if ( $can_redirect ) {
 
           $redirect = add_query_arg( array(
-            'cs_route' => $route
+            'cs_route' => esc_attr( $_GET['cs_route'] )
           ), trailingslashit( home_url( $this->plugin->common()->get_app_slug() ) ) );
 
           wp_safe_redirect( $redirect );
@@ -81,15 +81,14 @@ class Cornerstone_App_Boot extends Cornerstone_Plugin_Component {
     }
 
     do_action( 'cornerstone_boot_app' );
-
-    // // Onwards
-    // add_action('template_redirect', array( $this, 'template_redirect'), 0 );
+    // Onwards
+    add_action('template_redirect', array( $this, 'template_redirect'), 0 );
 
   }
 
-  // public function template_redirect() {
-  //   do_action( 'cornerstone_boot_app' );
-  // }
+  public function template_redirect() {
+    do_action( 'cornerstone_boot_app' );
+  }
 
   public function get_initial_route() {
     return $this->initial_route;

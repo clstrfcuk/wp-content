@@ -154,7 +154,7 @@ class Cornerstone_Integration_X_Theme {
     cs_alias_shortcode( 'toc_item',             'x_toc_item', false );
     cs_alias_shortcode( 'visibility',           'x_visibility', false );
 
-    Cornerstone_Shortcode_Preserver::preserve( 'code' );
+    CS_Shortcode_Preserver::preserve( 'code' );
 
   }
 

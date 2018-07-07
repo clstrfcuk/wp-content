@@ -36,8 +36,6 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
       return;
     }
 
-    CS()->loadComponent( 'Regions' );
-
     Cornerstone_Huebert::init();
     Cornerstone_Code_Editor::init();
 
@@ -100,8 +98,8 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
     $post = $this->plugin->common()->locatePost();
     $post_id = ( $post ) ? $post->ID : 'new';
     $commonData = array(
-      'homeURL'   => preg_replace('/\?lang=.*/' , '', home_url()),
-      'editURL'   => preg_replace('/\?lang=.*\/\#/' , '#', $this->plugin->common()->get_edit_url()),
+      'homeURL'   => home_url(),
+      'editURL'   => $this->plugin->common()->getEditURL(),
       'post_id'   => $post_id,
       '_cs_nonce' => wp_create_nonce( 'cornerstone_nonce' ),
       'strings'   => $this->plugin->i18n_group( 'admin', false ),
@@ -198,10 +196,6 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
     add_submenu_page( $settings_location, $title, $settings_title, 'manage_options', $settings_path, array( $this, 'render_settings_page' ) );
 
-    if ( apply_filters( 'cornerstone_options_theme_title', false ) ) {
-      $submenu['themes.php'][] = array( csi18n('common.title.options-theme'), 'manage_options', $this->plugin->common()->get_app_route_url('options') );
-    }
-
   }
 
   public function get_dashboard_menu_custom_items() {
@@ -213,7 +207,7 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
     $items = array(
       'cornerstone-launch' => array(
-        'title' => '<span class="tco-menu-launch">' . csi18n( "common.title.launch" ) . '</span>',
+        'title' => csi18n( "common.title.launch" ),
         'capability' => 'manage_options',
         'url' => $base_url
       )
@@ -263,8 +257,7 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
   public function addRowActions( $actions, $post ) {
 
     if ( $this->plugin->common()->isPostTypeAllowed( $post ) ) {
-      // $url = $this->plugin->common()->get_edit_url( $post );
-      $url = preg_replace('/\?lang=.*\/\#/' , '#', $this->plugin->common()->get_edit_url( $post ));
+      $url = $this->plugin->common()->getEditURL( $post );
       $label = csi18n('admin.edit-with-cornerstone');
       $actions['edit_cornerstone'] = "<a href=\"$url\">$label</a>";
     }
@@ -290,13 +283,6 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
   		'href' => $this->plugin->common()->get_launch_url()
   	) );
 
-    $wp_admin_bar->add_menu( array(
-  		'id' => 'cs-options',
-  		'parent' => 'cs-main',
-  		'title' => csi18n('common.title.options-' . ( apply_filters( 'cornerstone_options_theme_title', false ) ? 'theme' : 'styling' ) ),
-  		'href' => $this->plugin->common()->get_app_route_url('options')
-  	) );
-
     /**
      * Add "Edit with Cornerstone" button on the toolbar
      * This is only added on singlular views, and if the post type is supported
@@ -309,8 +295,7 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
         'id' => 'cs-edit-link',
         'parent' => 'cs-main',
         'title' => sprintf( csi18n('common.toolbar-edit-link'), $post_type->labels->singular_name ),
-        // 'href' => $this->plugin->common()->get_edit_url(),
-        'href' => preg_replace('/\?lang=.*\/\#/' , '#', $this->plugin->common()->get_edit_url()),
+        'href' => $this->plugin->common()->getEditURL(),
         'meta' => array( 'class' => 'cs-edit-link' ),
       ) );
 
@@ -329,7 +314,7 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
     if ( $show_cornerstone_validation_notice && ! apply_filters( '_cornerstone_integration_remove_global_validation_notice', false ) ) {
 
       cs_tco()->admin_notice( array(
-        'message' => sprintf( csi18n('admin.validation-global-notice'), admin_url( 'admin.php?page=cornerstone-home' ) ),
+        'message' => sprintf( csi18n('admin.validation-global-notice'), $this->home_page_url() ),
         'dismissible' => true,
         'ajax_dismiss' => 'cs_dismiss_validation_notice'
       ) );
@@ -340,6 +325,10 @@ class Cornerstone_Admin extends Cornerstone_Plugin_Component {
 
   public function make_menu_icon() {
     return 'data:image/svg+xml;utf8,' . str_replace('"', "'", $this->view( 'svg/logo-dashboard-icon', false ) );
+  }
+
+  public function home_page_url() {
+    return admin_url( 'admin.php?page=cornerstone-home' );
   }
 
 }

@@ -127,56 +127,19 @@ function cs_trim_raw_excerpt( $text = '' ) {
 
 }
 
-
-
-// Get Unitless Milliseconds
-// =============================================================================
-// 01. If unit is "seconds", multiply by 1000 to get millisecond value.
-// 02. Fallback if we fail.
-
-function cs_get_unitless_ms( $duration = '500ms' ) {
-
-  $unit_matches = array();
-
-  if ( preg_match( '/(s|ms)/', $duration, $unit_matches ) ) {
-
-    $duration_unit = $unit_matches[0];
-    $duration_num  = floatval( preg_replace( '/' . $duration_unit . '/', '', $duration ) );
-
-    if ( $duration_unit === 's' ) {
-      $duration_num = $duration_num * 1000; // 01
-    }
-
-    $the_duration = $duration_num;
-
-  } else {
-
-    $the_duration = 500; // 02
-
-  }
-
-  return $the_duration;
-
-}
-
-
-
 // Data Attribute Generator
 // =============================================================================
 
 function cs_generate_data_attributes( $element, $params = array() ) {
-  return cs_atts( cs_element_js_atts( $element, $params ) );
-}
 
-function cs_element_js_atts( $element, $params = array() ) {
+	$data = 'data-x-element="' . $element . '"';
 
-  $atts = array( 'data-x-element' => esc_attr( $element ) );
+	if ( ! empty( $params ) ) {
+		$params_json = htmlspecialchars( wp_json_encode( $params ), ENT_QUOTES, 'UTF-8' );
+		$data .= ' data-x-params="' . $params_json . '"';
+	}
 
-  if ( ! empty( $params ) ) {
-    $atts['data-x-params'] = htmlspecialchars( wp_json_encode( $params ), ENT_QUOTES, 'UTF-8' );
-  }
-
-  return $atts;
+	return $data;
 
 }
 
@@ -224,6 +187,10 @@ function cs_bg_video( $video, $poster ) {
 function cs_build_shortcode( $name, $attributes, $extra = '', $content = '', $require_content = false ) {
 
 	$output = "[{$name}";
+
+	if ( isset( $attributes['class'] ) ) {
+		$attributes['class'] = cs_sanitize_html_classes( $attributes['class'] );
+	}
 
 	foreach ($attributes as $attribute => $value) {
 		$clean = cs_clean_shortcode_att( $value );
@@ -572,28 +539,13 @@ function cs_tco() {
 }
 
 
-function cs_update_serialized_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '', $allow_revision_updates = false ) {
+function cs_update_serialized_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' ) {
 
 	if ( is_array( $meta_value ) && apply_filters( 'cornerstone_store_as_json', true ) ) {
-		$meta_value = wp_slash( cs_json_encode( $meta_value ) );
+		$meta_value = wp_slash( json_encode( $meta_value ) );
 	}
 
-  if ( $allow_revision_updates ) {
-    return update_metadata('post', $post_id, $meta_key, $meta_value, $prev_value );
-  }
-
 	return update_post_meta( $post_id, $meta_key, $meta_value, $prev_value );
-
-}
-
-
-function cs_json_encode( $value ) {
-
-  if ( defined('JSON_UNESCAPED_SLASHES') && apply_filters( 'cornerstone_json_unescaped_slashes', false ) ) {
-    return wp_json_encode( $value, JSON_UNESCAPED_SLASHES );
-  }
-
-  return wp_json_encode( $value );
 
 }
 

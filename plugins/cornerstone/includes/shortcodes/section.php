@@ -27,7 +27,7 @@ function x_shortcode_section( $atts, $content = null ) {
   $id                           = ( $id                           != ''     ) ? $id : 'x-section-' . $count;
   $class                        = ( $class                        != ''     ) ? 'x-section ' . $class : 'x-section';
   $style                        = ( $style                        != ''     ) ? $style : '';
-  $bg_color                     = ( $bg_color                     != ''     ) ? cornerstone_post_process_color( $bg_color ) : 'transparent';
+  $bg_color                     = ( $bg_color                     != ''     ) ? $bg_color : 'transparent';
   $bg_pattern                   = ( $bg_pattern                   != ''     ) ? $bg_pattern : '';
   $bg_image                     = ( $bg_image                     != ''     ) ? $bg_image : '';
   $bg_video                     = ( $bg_video                     != ''     ) ? $bg_video : '';

@@ -3,7 +3,7 @@
 class Cornerstone_Regions extends Cornerstone_Plugin_Component {
 
   public $header_styles = '';
-  public $dependencies = array( 'Styling' );
+  public $dependencies = array( 'Header_Builder', 'Footer_Builder', 'Element_Manager', 'Styling' );
   public $modules = array();
   public $modules_registered = false;
   public $counters = array();
@@ -42,36 +42,10 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
     }
   }
 
-  public function get_content_elements( $id ) {
-    $this->plugin->loadComponent( 'Element_Manager' );
-    $elements = cs_get_serialized_post_meta( $id, '_cornerstone_data', true );
-
-    if ( ! $elements ) {
-      return null;
-    }
-
-    return $this->populate_modules( 'content', $elements, 'content');
-  }
-
-  public function get_content_styles( $id, $elements ) {
-
-    $generated = get_post_meta( $id, '_cs_generated_styles', true );
-
-    if ( ! $generated ) {
-      if ( ! $elements ) {
-        return '';
-      }
-      $generated = $this->plugin->loadComponent( 'Element_Manager' )->generate_styles( 'content', $elements );
-      update_post_meta( $id, '_cs_generated_styles', $generated );
-    }
-
-    return $generated;
-  }
-
 
   public function get_region_styles( $mode, $entity ) {
 
-    $element_manager = $this->plugin->loadComponent( 'Element_Manager' );
+    $element_manager = $this->plugin->component( 'Element_Manager' );
 
     if ( ! isset( $entity['id'] ) ) {
       return $element_manager->generate_styles( $mode, $entity['modules'] );
@@ -192,34 +166,6 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
     return $modules;
   }
 
-  public function flatten_elements( $elements ) {
-    $this->flatten_elements_buffer = array();
-    foreach ($elements as $element ) {
-
-      $this->flatten_element($element);
-    }
-
-    $buffer = $this->flatten_elements_buffer;
-    $this->flatten_elements_buffer = array();
-    return $buffer;
-
-  }
-
-  public function flatten_element( $element ) {
-
-    if ( isset( $element['_modules']) ) {
-      foreach ($element['_modules'] as $child ) {
-        $this->flatten_element($child);
-      }
-    }
-
-    if ( isset($element['_id']) ) {
-      unset($element['_modules']);
-      $this->flatten_elements_buffer['el' . $element['_id']] = $element;
-    }
-
-  }
-
   public function sanitize_regions( $regions ) {
 
     $element_manager = $this->plugin->loadComponent('Element_Manager');
@@ -234,11 +180,12 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
     return $sanitized;
   }
 
-  public function populate_modules( $mode, $modules, $region, $recursive = false ) {
+  public function populate_modules( $mode, $modules, $region ) {
 
-    if ( ! isset( $this->counters[ $mode ] ) ) { // || false === $recursive <--- y u no werk?
+    if ( ! isset( $this->counters[ $mode ] ) ) {
       $this->counters[ $mode ] = 0;
     }
+
 
     foreach ( $modules as $index => $module ) {
 
@@ -246,7 +193,7 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
       $modules[$index]['_region'] = $region;
 
       if ( isset( $module['_modules'] ) ) {
-        $modules[$index]['_modules'] = $this->populate_modules( $mode, $module['_modules'], $region, true );
+        $modules[$index]['_modules'] = $this->populate_modules( $mode, $module['_modules'], $region );
       }
 
     }

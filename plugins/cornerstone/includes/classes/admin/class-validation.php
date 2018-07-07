@@ -119,7 +119,7 @@ class Cornerstone_Validation extends Cornerstone_Plugin_Component {
       'code'        => $this->code,
       'product'     => 'cornerstone',
       'siteurl'     => cs_tco()->get_site_url(),
-      'return-url'  => esc_url( admin_url( 'admin.php?page=cornerstone-home' ) )
+      'return-url'  => esc_url( $this->plugin->component( 'Admin' )->home_page_url() )
     );
   }
 

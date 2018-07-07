@@ -87,63 +87,43 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
 
   public function register_app_scripts( $settings, $isPreview = false ) {
 
-    $v = $this->plugin->version();
-
-    wp_register_script( 'cs-app-vendor', $this->url( "assets/dist-app/js/cs-vendor.js" ), array( 'jquery' ), $v, false );
-    wp_register_script( 'cs-app', $this->url( "assets/dist-app/js/cs.js" ), array( 'cs-app-vendor' ), $v, false );
+    wp_register_script( 'cs-app-vendor', $this->url( "assets/dist-app/js/cs-vendor.js" ), array( 'jquery' ), $this->plugin->version(), false );
+    wp_register_script( 'cs-app', $this->url( "assets/dist-app/js/cs.js" ), array( 'cs-app-vendor' ), $this->plugin->version(), false );
 
     $icon_maps = wp_parse_args( array(
-      'elements' => add_query_arg( array( 'v' => $v ), $this->plugin->url('assets/dist-app/svg/elements.svg') ),
-      'interface' => add_query_arg( array( 'v' => $v ), $this->plugin->url('assets/dist-app/svg/interface.svg') ),
+      'elements' => add_query_arg( array( 'v' => $this->plugin->version() ), $this->plugin->url('assets/dist-app/svg/elements.svg') ),
+      'interface' => add_query_arg( array( 'v' => $this->plugin->version() ), $this->plugin->url('assets/dist-app/svg/interface.svg') ),
     ), apply_filters( 'cornerstone_icon_map', array() ) );
 
     $router = $this->plugin->component( 'Router' );
     $boot = $this->plugin->component( 'App_Boot' );
 
-    $settings = $this->plugin->settings();
-
-    $worker_queue_size = apply_filters('cs_worker_queue_size', 4 );
-
-    if ( ! is_int( $worker_queue_size ) || $worker_queue_size < 2 ) {
-      $worker_queue_size = 2;
-    }
-
-    $wpml = $this->plugin->loadComponent('Wpml');
-
     wp_localize_script( 'cs-app', 'csAppData', cs_booleanize( array(
-      'rootURL'                => '/' . trim( $this->plugin->common()->get_app_slug(), '/\\' ) . '/',
-      'validPermalinks'        => $router->is_permalink_structure_valid(),
-      'initialRoute'           => $boot->get_initial_route(),
-      'ajaxUrl'                => $router->get_ajax_url(),
-      'fallbackAjaxUrl'        => $router->get_fallback_ajax_url(),
-      'dashboardUrl'           => admin_url(),
-      'useLegacyAjax'          => $router->use_legacy_ajax(),
-      'debug'                  => ( $this->plugin->common()->isDebug() ),
-      'isRTL'                  => is_rtl(),
-      'canGzip'                => function_exists('gzdecode'),
-      'common_i18n'            => $this->plugin->i18n_group( 'common' ),
-      'app_i18n'               => $this->plugin->i18n_group( 'app' ),
-      '_cs_nonce'              => $router->create_nonce(),
-      'permissions'            => $this->permissions(),
-      'funMode'                => (bool) $settings['visual_enhancements'],
-      'fontAwesome'            => $this->plugin->common()->getFontIcons(),
-      'iconMaps'               => $icon_maps,
-      'isPreview'              => $isPreview,
-      'previewData'            => $this->plugin->component( 'Preview_Frame_Loader' )->data(),
-      'font_data'              => $this->font_data(),
-      'fallbackFont'           => $this->plugin->loadComponent( 'Font_Manager' )->get_fallback_font(),
-      'keybindings'            => apply_filters('cornerstone_keybindings', $this->plugin->config_group( 'builder/keybindings' ) ),
-      'home_url'               => home_url(),
-      'helpTextEnabled'        => (bool) $settings['help_text'],
-      'contentBuilerElements'  => $settings['content_builer_elements'],
-      'integration_mode'       => apply_filters('cs_integration_mode', csi18n('app.integration-mode') ),
-      'css_class_map'          => $this->plugin->config_group( 'common/class-map' ),
-      'devTools'               => defined('CS_APP_DEV_TOOLS') && CS_APP_DEV_TOOLS,
-      'workerURL'              => add_query_arg( array( 'v' => $v), $this->url( "assets/dist/js/admin/worker.js" ) ),
-      'workerQueueSize'        => $worker_queue_size,
-      'wpmlLanguages'          => $wpml->get_languages(),
-      'wpmlDefault'            => $wpml->get_default_language(),
-      'wpmlTranslateableTypes' => $wpml->get_translateable_post_types()
+      'rootURL'          => '/' . trim( $this->plugin->common()->get_app_slug(), '/\\' ) . '/',
+      'validPermalinks'  => $router->is_permalink_structure_valid(),
+      'initialRoute'     => $boot->get_initial_route(),
+      'ajaxUrl'          => $router->get_ajax_url(),
+      'fallbackAjaxUrl'  => $router->get_fallback_ajax_url(),
+      'dashboardUrl'     => admin_url(),
+      'useLegacyAjax'    => $router->use_legacy_ajax(),
+      'debug'            => ( $this->plugin->common()->isDebug() ),
+      'isRTL'            => is_rtl(),
+      'canGzip'          => function_exists('gzdecode'),
+      'common_i18n'      => $this->plugin->i18n_group( 'common' ),
+      'app_i18n'         => $this->plugin->i18n_group( 'app' ),
+      '_cs_nonce'        => $router->create_nonce(),
+      'permissions'      => $this->permissions(),
+      'funMode'          => (bool) $settings['visual_enhancements'],
+      'fontAwesome'      => $this->plugin->common()->getFontIcons(),
+      'iconMaps'         => $icon_maps,
+      'isPreview'        => $isPreview,
+      'previewData'      => $this->plugin->component( 'Preview_Frame_Loader' )->data(),
+      'font_data'        => $this->font_data(),
+      'fallbackFont'     => $this->plugin->loadComponent( 'Font_Manager' )->get_fallback_font(),
+      'keybindings'      => apply_filters('cornerstone_keybindings', $this->plugin->config_group( 'builder/keybindings' ) ),
+      'home_url'         => home_url(),
+      'integration_mode' => apply_filters('cs_integration_mode', csi18n('app.integration-mode') ),
+      'devTools'        => defined('CS_APP_DEV_TOOLS') && CS_APP_DEV_TOOLS
     ) ) );
 
   }

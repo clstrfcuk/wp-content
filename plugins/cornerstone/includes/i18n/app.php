@@ -16,11 +16,8 @@ return array(
   // General Purpose
   'copy-of'    => __( 'Copy of {{title}}', 'cornerstone' ),
   'copy-of-numeric'    => __( '{{title}} ({{index}})', 'cornerstone' ),
-  'indexed' => __( '{{label}} {{index}}', 'cornerstone'),
+  'new-at-index' => __( '{{item}} {{index}}', 'cornerstone'),
   'search' => __( 'Search', 'cornerstone' ),
-  'back-to' => __( 'Back to {{to}}', 'cornerstone' ),
-  'add-item' => __( 'Add Item', '__x__' ),
-  'add-label' => __( 'Add {{label}}', '__x__' ),
 
   // Preview Sizer
   'preview-sizer-abbr-xl' => __( 'XL', 'cornerstone' ),
@@ -39,34 +36,25 @@ return array(
   'options.title'   => __( 'Options', 'cornerstone' ),
   'headers.title'   => __( 'Headers', 'cornerstone' ),
   'footers.title'   => __( 'Footers', 'cornerstone' ),
-  'content.title'   => __( 'Content', 'cornerstone' ),
+  'builder.title'   => __( 'Content', 'cornerstone' ),
   'fonts.title'     => __( 'Fonts', 'cornerstone' ),
   'templates.title' => __( 'Templates', 'cornerstone' ),
   'layout.title'    => __( 'Layout', 'cornerstone' ),
   'inspector.title' => __( 'Inspector', 'cornerstone' ),
-  'settings.title'  => __( 'Settings', 'cornerstone' ),
-  'elements.title'  => __( 'Elements', 'cornerstone' ),
 
   // Inspector
   'inspector.na-title' => __( 'Nothing Selected', 'cornerstone' ),
-  'inspector.search'   => __( 'search inspector...', 'cornerstone' ),
-  'inspector.apply-preset-warning' => __( 'Applying a preset will change all element properties and reset to the preset&apos;s placeholder content. Any changes you&apos;ve made will be overwritten. Would you like to proceed?', 'cornerstone' ),
+  'inspector.search'   => __( 'Search Inspector.', 'cornerstone' ),
+  'inspector.apply-preset-warning' => __( 'Applying a preset will change all element properties. Any changes you&apos;ve made will be overwritten. Would you like to proceed?', 'cornerstone' ),
 
   // Controls
-  'controls-previous-missing'                 => __( 'Previous Value Unavailable', 'cornerstone' ),
-  'controls-font-family-select'               => __( '{{family}} ({{source}})', 'cornerstone' ),
-  'controls-text-editor-click-to-edit'        => __( 'Click to Edit', 'cornerstone' ),
-  'controls-text-editor-html-mode-label'      => __( 'HTML', 'cornerstone' ),
-  'controls-text-editor-rich-text-mode-label' => __( 'Rich Text', 'cornerstone' ),
+  'controls-previous-missing'   => __( 'Previous Value Unavailable', 'cornerstone' ),
+  'controls-font-family-select' => __( '{{family}} ({{source}})', 'cornerstone' ),
 
   // Notifications
   'notification-notice'  => __( 'Hey!', 'cornerstone' ),
   'notification-success' => __( 'Awesome!', 'cornerstone' ),
   'notification-error'   => __( 'Uh oh!', 'cornerstone' ),
-
-  'notification-refreshing-preview'   => __( 'Refreshing preview.', 'cornerstone' ),
-  'notification-refreshing-preview-save-reminder'   => __( 'Refreshing preview. Don\'t forget to save.', 'cornerstone' ),
-
 
   // Assignments
   'assignments.global'               => __( 'Global', 'cornerstone' ),
@@ -75,11 +63,7 @@ return array(
   'assignments.multiple-assignments' => __( 'Multiple Assignments', 'cornerstone' ),
 
   // Elements
-  'elements-confirm-delete' => __( 'Are you sure you want to delete this {{title}}? This can not be undone.', 'cornerstone' ),
-  'elements-confirm-erase' => __( 'Are you sure you want to delete this element&apos;s contents? This can not be undone.', 'cornerstone' ),
-  'elements-undefined-preview' => __( 'This element could not render because it&apos;s definition is missing. You might need to activate a plugin.', 'cornerstone' ),
-  'elements-undefined-inspector-title' => __( 'Undefined Element', 'cornerstone' ),
-  'elements-undefined-inspector-message' => __( 'The definition for this element could not be located. You may need to activate a plugin. The type declared for this element is: <strong>{{type}}</strong>', 'cornerstone' ),
+  'elements-confirm-delete' => __( 'Are you sure you want to delete this element? This can not be undone.', 'cornerstone' ),
 
   // Confirm
   'confirm-yep'  => __( 'Yes, Proceed', 'cornerstone' ),
@@ -128,21 +112,4 @@ return array(
   'choices.menu-named'    => __('Menu: %s', 'cornerstone'),
   'choices.menu-location' => __('Location: %s', 'cornerstone'),
 
-  // Actions
-  'duplicate'     => __( 'Duplicate', 'cornerstone' ),
-	'delete'        => __( 'Delete', 'cornerstone' ),
-	'really-delete' => __( 'Really Delete?', 'cornerstone' ),
-
-  // Errors
-  'preview-error.missing-zone.x_masthead' => __('No suitable preview area found. This is most common when you are using a "No Header" page template. Try changing the page template, or assigning this header to a context where the template allows the header output.', 'cornerstone'),
-  'preview-error.missing-zone.x_colophon' => __('No suitable preview area found. This is most common when you are using a "No Footer" page template. Try changing the page template, or assigning this footer to a context where the template allows the footer output.', 'cornerstone'),
-  'preview-error.missing-zone.content'    => __('No suitable preview area found. This could happen when a third party plugin is overrinding the content area.', 'cornerstone'),
-
-  'preview-error.load.default'        => __('The preview could not load. This is most often related to a plugin conflict or aggressive page cacheing. Checking the developer console for errors could indicate what went wrong.', 'cornerstone'),
-  'preview-error.load.https-mismatch' => __('The preview could not load due to a http/https mismatch. Please check that HTTPS is properly configured on your site.', 'cornerstone'),
-  'preview-error.load.cross-origin'   => __('The preview could not load due to misconfigured URLs. This could happen if you are using multiple environments and the site URL was not updated after migrating.', 'cornerstone'),
-  'preview-error.load.incomplete'      => __('The preview could not load due to the iframe response being incomplete. This is most often related to a plugin conflict, or customizations introducing a PHP error.', 'cornerstone'),
-  'preview-error.load.timeout'        => __('The preview was unresponsive after loading. This is most often related to a plugin conflict or aggressive page cacheing.', 'cornerstone'),
-
-  'preview-error.loading.incomplete-html' => __('The preview HTML did not include a closing </html>; tag. It may fail to load or work properly.', 'cornerstone'),
 );

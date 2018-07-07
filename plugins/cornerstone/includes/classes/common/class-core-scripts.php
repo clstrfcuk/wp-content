@@ -16,6 +16,8 @@ class Cornerstone_Core_Scripts extends Cornerstone_Plugin_Component {
 
 	public function register_scripts() {
 
+		//Cornerstone_Huebert::init();
+
 		$orchestrator = $this->plugin->component( 'Element_Orchestrator' );
 
 		// Register
