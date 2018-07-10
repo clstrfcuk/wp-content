@@ -1,0 +1,248 @@
+//Grab our fars
+@import "vars";
+
+/* ==========================================================================
+	 Base (Dark) Theme Styles
+	 ========================================================================== */
+.envirabox-theme-#{$theme_name}{
+	border-radius: 2px;
+	padding: 4px !important;
+	background: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	.envirabox-bg{
+		background: $background_color;		
+	}
+	&.envirabox-show-thumbs .envirabox-inner{
+		right: 0px; 
+	}
+	
+	/**
+	 * Actions
+	 */
+	.envirabox-toolbar{
+		position:fixed;
+		top:10px;
+		right:10px;
+		z-index: 988061;
+		height: 16px;
+		.envirabox-close {
+			background: none;
+			&:before { content: "\e900"; }
+
+		}
+		& > div {
+			display: inline-block;
+			margin-left: 9px;
+			width: 16px;
+			height: 16px;
+			text-indent: -9999px;
+			position:relative;
+
+			&:before {
+				font-size: 16px;
+				text-indent: 0;
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+
+			& a {
+				display:block;
+				width: 16px;
+				height: 16px;
+				position: relative;
+				z-index: 1;
+				background: none;
+			}
+
+		}
+
+		& a { outline: none; }
+		& .envira-download-button:before { content: "\e90d"; }
+		& .envira-printing-button:before { content: "\e90e"; }
+		& .envira-thumbs-button:before { content: "\e90e"; }
+		& .envira-fullscreen-button:before { content: "\e903"; }
+		& .envirabox-slideshow-button {
+
+			&:before { content: "\e908"; }
+			&.playing:before { content: "\e906"; }
+
+		}
+		& .envira-zoom-button {
+			
+			&:before { content: "\e90c"; }
+			& a:before { content: ''; }
+			&.zoom-on:before { content: "\e90b"; }
+
+		}
+
+	}	
+	&.envira-supersize .envirabox-outer{
+		background-color: rgba(0, 0, 0, 0.85);
+		background-image: none;
+		overflow:hidden;
+		overflow-y: hidden;	
+	}
+	
+	/** 
+	 * Navigation
+	 */
+	.envirabox-navigation{ 
+		a {
+			width: 35px;
+			height: 70px;	
+			background-color: rgba(0, 0, 0, 0.25);
+			&:hover {
+				background-color: rgba(0, 0, 0, 0.35);
+			}
+			span {
+				background-image: none;
+				visibility: visible;
+				width: 35px;
+				height: 70px;	
+				&:before {
+					font-size: 16px;
+				}
+			}
+		
+		}
+		/**
+		 * Previous Navigation
+		 */
+		.envirabox-arrow--left{
+			border-radius: 0 5px 5px 0;		
+			span {
+				left: 0px;
+				visibility: visible;
+				&:before {
+					content: "\e909";
+					text-align: left;
+					padding: 0px 7px;
+					line-height: 70px;
+				}
+				
+			}
+		}
+
+		/**
+		 * Next Navigation
+		 */
+		.envirabox-arrow--right{
+			border-radius: 5px 0 0 5px;
+			span {
+				right: 0px;
+				visibility: visible;
+				&:before {
+					content: "\e905";
+					text-align: right;
+					padding: 0px 7px;
+					line-height: 70px;
+				}
+
+
+			}
+		}
+		
+	}	
+	
+	.envirabox-thumbs {
+	  top: auto;
+	  width: auto;
+	  bottom: 10px;
+	  left: 0;
+	  right : 0;
+	  height: 80px;
+	  background: transparent;
+
+		ul li a { border: none; }
+		ul li {
+			margin: 16px 8px;
+			border: 3px solid transparent;
+		}
+		ul li.active {
+			border: 3px solid #fff;
+			opacity: 1;
+		}
+		&.bottom { bottom: 0; }
+		& ul.mobile li { margin: 10px 5px; }
+		
+	}
+	
+	.envirabox-thumbs > ul > li { border-color: transparent; }
+
+	.envirabox-container--thumbs .envirabox-caption-wrap, 
+	.envirabox-container--thumbs .envirabox-controls, 
+	.envirabox-container--thumbs .envirabox-slider-wrap {
+	  right: 0;
+	  bottom: 90px;
+	}
+
+
+}
+@media all and (max-width: 800px) {
+	.envirabox-theme-base_dark{
+		.envirabox-thumbs { display: none !important; }
+		.envirabox-container--thumbs .envirabox-controls,
+		.envirabox-container--thumbs .envirabox-slider-wrap,
+		.envirabox-container--thumbs .envirabox-caption-wrap { bottom: 0; }
+	}
+}
+
+@font-face {
+	font-family: 'envira-icons';
+	src:  url('../fonts/envira-icons.eot?gy81ju');
+	src:  url('../fonts/envira-icons.eot?gy81ju#iefix') format('embedded-opentype'),
+		url('../fonts/envira-icons.ttf?gy81ju') format('truetype'),
+		url('../fonts/envira-icons.woff?gy81ju') format('woff'),
+		url('../fonts/envira-icons.svg?gy81ju#envira-icons') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="envira-icons-"], 
+[class*=" envira-icons-"], 
+.envirabox-theme-base_dark .envirabox-close:before, 
+.envirabox-theme-base_dark .envirabox-thumbs:before, 
+.envirabox-theme-base_dark .envirabox-nav span:before, 
+.envirabox-theme-base_dark .envirabox-nav span:after, 
+.envirabox-theme-base_dark .envira-close-button:before, 
+.envirabox-theme-base_dark .envira-fullscreen-button:before, 
+.envirabox-theme-base_dark .envira-zoom-button:before, 
+.envirabox-theme-base_dark .envirabox-slideshow-button:before,
+.envirabox-theme-base_dark .envira-social-network a:after,
+.envirabox-theme-base_dark .envira-download-button:before,
+.envirabox-theme-base_dark .envira-printing-button:before {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'envira-icons' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	color: #fff;
+	display:block;
+}
+
+.envirabox-icon-close:before { content: "\e900"; }
+.envirabox-icon-email:before { content: "\e901"; }
+.envirabox-icon-facebook:before { content: "\e902"; }
+.envirabox-icon-fullscreen:before { content: "\e903"; }
+.envirabox-icon-google_plus:before { content: "\e904"; }
+.envirabox-icon-next:before { content: "\e905"; }
+.envirabox-icon-pause:before { content: "\e906"; }
+.envirabox-icon-pinterest:before { content: "\e907"; }
+.envirabox-icon-play:before { content: "\e908"; }
+.envirabox-icon-previous:before { content: "\e909"; }
+.envirabox-icon-twitter:before { content: "\e90a"; }
+.envirabox-icon-zoom_plus:before { content: "\e90b"; }
+.envirabox-icon-zoom:before { content: "\e90c"; }
+.envira-icons-download:before { content: "\e90d"; }
+.envira-icons-print:before { content: "\e90e"; }

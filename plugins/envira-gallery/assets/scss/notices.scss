@@ -1,0 +1,30 @@
+/* ==========================================================================
+   Imports
+   ========================================================================== */
+@import "vars";
+@import "mixins";
+
+/* ==========================================================================
+   Inline Notices
+   - These are Envira-specific notices with custom styling for e.g. Instagram oAuth,
+   upgrade / upsells.
+   ========================================================================== */
+.envira-notice {
+	position: relative;
+    &.is-dismissible {
+        p {
+            padding-right:  15px;
+        }        
+    }
+
+}
+body.post-new-php.post-type-envira {
+  .envira-notice {
+    margin-top:  25px;
+  }
+}
+body.edit-php {
+  .envira-notice {
+    margin-top:  0px;
+  }
+}

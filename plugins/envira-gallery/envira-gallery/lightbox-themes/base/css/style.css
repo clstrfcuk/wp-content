@@ -1,0 +1,276 @@
+/* ==========================================================================
+	 Legecy Theme Styles
+	 ========================================================================== */
+.envirabox-theme-base {
+  border-radius: 2px;
+  padding: 4px !important;
+  background: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  /**
+   * Actions
+   */
+  /**
+   * Navigation
+   */
+  /**
+   * Navigation
+   */ }
+  .envirabox-theme-base .envirabox-close, .envirabox-theme-base .envirabox-arrow--left span, .envirabox-theme-base .envirabox-arrow--right span {
+    background-image: url("images/envirabox_sprite.png"); }
+  .envirabox-theme-base .envirabox-toolbar {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 988061;
+    height: 16px; }
+    .envirabox-theme-base .envirabox-toolbar > div {
+      display: inline-block;
+      margin-left: 9px;
+      width: 16px;
+      height: 16px;
+      text-indent: -9999px;
+      position: relative; }
+      .envirabox-theme-base .envirabox-toolbar > div:before {
+        font-size: 16px;
+        text-indent: 0;
+        position: absolute;
+        top: 0;
+        right: 0; }
+      .envirabox-theme-base .envirabox-toolbar > div a {
+        display: block;
+        width: 16px;
+        height: 16px;
+        position: relative;
+        z-index: 1;
+        background: none; }
+    .envirabox-theme-base .envirabox-toolbar a {
+      outline: none; }
+    .envirabox-theme-base .envirabox-toolbar .envira-download-button:before {
+      content: "\e90d"; }
+    .envirabox-theme-base .envirabox-toolbar .envira-printing-button:before {
+      content: "\e90e"; }
+    .envirabox-theme-base .envirabox-toolbar .envira-thumbs-button:before {
+      content: "\e90e"; }
+    .envirabox-theme-base .envirabox-toolbar .envira-fullscreen-button:before {
+      content: "\e903"; }
+    .envirabox-theme-base .envirabox-toolbar .envirabox-slideshow-button:before {
+      content: "\e908"; }
+    .envirabox-theme-base .envirabox-toolbar .envirabox-slideshow-button.playing:before {
+      content: "\e906"; }
+    .envirabox-theme-base .envirabox-toolbar .envira-zoom-button:before {
+      content: "\e90c"; }
+    .envirabox-theme-base .envirabox-toolbar .envira-zoom-button a:before {
+      content: ''; }
+    .envirabox-theme-base .envirabox-toolbar .envira-zoom-button.zoom-on:before {
+      content: "\e90b"; }
+  .envirabox-theme-base.envira-supersize .envirabox-outer {
+    background-color: rgba(0, 0, 0, 0.85);
+    background-image: none;
+    overflow: hidden;
+    overflow-y: hidden; }
+  .envirabox-theme-base .envirabox-close {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    z-index: 999999; }
+  .envirabox-theme-base .envirabox-navigation {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    z-index: 99999;
+    /**
+     * Previous Navigation
+     */
+    /**
+     * Next Navigation
+     */ }
+    .envirabox-theme-base .envirabox-navigation a {
+      position: absolute;
+      width: 35px;
+      height: 35px; }
+      .envirabox-theme-base .envirabox-navigation a span {
+        visibility: visible;
+        width: 35px;
+        height: 35px;
+        display: block; }
+    .envirabox-theme-base .envirabox-navigation .envirabox-arrow--left {
+      left: 10px; }
+      .envirabox-theme-base .envirabox-navigation .envirabox-arrow--left span {
+        left: 10px;
+        background-position: 0 -36px;
+        visibility: visible; }
+    .envirabox-theme-base .envirabox-navigation .envirabox-arrow--right {
+      right: 10px; }
+      .envirabox-theme-base .envirabox-navigation .envirabox-arrow--right span {
+        background-position: 0 -72px;
+        right: 10px;
+        visibility: visible; }
+  .envirabox-theme-base .envirabox-navigation-inside {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    z-index: 99999;
+    /**
+     * Previous Navigation
+     */
+    /**
+     * Next Navigation
+     */ }
+    .envirabox-theme-base .envirabox-navigation-inside a {
+      position: absolute;
+      width: 35px;
+      height: 35px; }
+      .envirabox-theme-base .envirabox-navigation-inside a span {
+        visibility: visible;
+        width: 35px;
+        height: 35px;
+        display: block; }
+    .envirabox-theme-base .envirabox-navigation-inside .envirabox-arrow--left {
+      left: 10px; }
+      .envirabox-theme-base .envirabox-navigation-inside .envirabox-arrow--left span {
+        left: 10px;
+        background-position: 0 -36px;
+        visibility: visible; }
+    .envirabox-theme-base .envirabox-navigation-inside .envirabox-arrow--right {
+      right: 10px; }
+      .envirabox-theme-base .envirabox-navigation-inside .envirabox-arrow--right span {
+        background-position: 0 -72px;
+        right: 10px;
+        visibility: visible; }
+  .envirabox-theme-base .envirabox-position-overlay {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute; }
+  .envirabox-theme-base .envirabox-image-wrap {
+    border-radius: 3px;
+    border: 15px solid white;
+    /**
+    * Dynamic Positioning
+    */ }
+    .envirabox-theme-base .envirabox-image-wrap .envirabox-position-overlay {
+      opacity: 1;
+      visibility: visible;
+      box-sizing: border-box;
+      position: absolute;
+      overflow: visible;
+      z-index: 988041;
+      /* Beat the prev/next controls */
+      padding: 0;
+      /**
+      * Top Left
+      */
+      /**
+      * Top Right
+      */
+      /**
+      * Bottom Left
+      */
+      /**
+      * Bottom Right
+      */ }
+      .envirabox-theme-base .envirabox-image-wrap .envirabox-position-overlay.envira-gallery-top-left {
+        top: 0;
+        left: 0;
+        text-align: left; }
+      .envirabox-theme-base .envirabox-image-wrap .envirabox-position-overlay.envira-gallery-top-right {
+        top: 0;
+        right: 0;
+        text-align: right; }
+      .envirabox-theme-base .envirabox-image-wrap .envirabox-position-overlay.envira-gallery-bottom-left {
+        bottom: 0;
+        left: 0;
+        text-align: left; }
+      .envirabox-theme-base .envirabox-image-wrap .envirabox-position-overlay.envira-gallery-bottom-right {
+        bottom: 0;
+        right: 0;
+        text-align: right; }
+  .envirabox-theme-base .envirabox-thumbs > ul > li:before {
+    border: none; }
+  .envirabox-theme-base .envirabox-thumbs {
+    top: auto;
+    width: auto;
+    left: 0;
+    right: 0;
+    height: 80px;
+    overflow: hidden;
+    background: transparent; }
+    .envirabox-theme-base .envirabox-thumbs.envirabox-thumbs-bottom {
+      bottom: 10px; }
+    .envirabox-theme-base .envirabox-thumbs.envirabox-thumbs-top {
+      top: 10px; }
+    .envirabox-theme-base .envirabox-thumbs ul li a {
+      border: none; }
+    .envirabox-theme-base .envirabox-thumbs ul li {
+      margin: 0 10px;
+      border: 3px solid #fff;
+      opacity: 1; }
+    .envirabox-theme-base .envirabox-thumbs ul li.envirabox-thumbs-active {
+      opacity: 0.75; }
+    .envirabox-theme-base .envirabox-thumbs.bottom {
+      bottom: 0; }
+    .envirabox-theme-base .envirabox-thumbs ul.mobile li {
+      margin: 10px 5px; }
+  .envirabox-theme-base .envirabox-container--thumbs .envirabox-controls,
+  .envirabox-theme-base .envirabox-container--thumbs .envirabox-slider-wrap {
+    bottom: 90px; }
+  .envirabox-theme-base .envirabox-caption-wrap {
+    bottom: -85px;
+    width: 100%;
+    position: absolute;
+    z-index: 99;
+    pointer-events: none;
+    display: table;
+    text-align: center; }
+    .envirabox-theme-base .envirabox-caption-wrap .envirabox-caption {
+      padding-bottom: 220px;
+      padding: 30px 0;
+      font-size: 14px;
+      color: #fff;
+      line-height: 20px;
+      -webkit-text-size-adjust: none; }
+      .envirabox-theme-base .envirabox-caption-wrap .envirabox-caption a, .envirabox-theme-base .envirabox-caption-wrap .envirabox-caption button, .envirabox-theme-base .envirabox-caption-wrap .envirabox-caption select {
+        pointer-events: all;
+        position: relative; }
+      .envirabox-theme-base .envirabox-caption-wrap .envirabox-caption a {
+        color: #fff;
+        text-decoration: underline; }
+    .envirabox-theme-base .envirabox-caption-wrap.inside {
+      bottom: 0;
+      background: white; }
+      .envirabox-theme-base .envirabox-caption-wrap.inside .envirabox-caption {
+        padding: 10px 0 0 0;
+        text-align: left;
+        color: black; }
+    .envirabox-theme-base .envirabox-caption-wrap.outside {
+      bottom: -50px;
+      text-align: left; }
+      .envirabox-theme-base .envirabox-caption-wrap.outside .envirabox-caption {
+        text-align: left;
+        padding: 0; }
+    .envirabox-theme-base .envirabox-caption-wrap.over {
+      bottom: 0px;
+      background: rgba(0, 0, 0, 0.5);
+      text-align: left;
+      width: auto; }
+      .envirabox-theme-base .envirabox-caption-wrap.over .envirabox-caption {
+        color: white;
+        padding: 10px; }
+
+.envirabox-slide.envirabox-slide--video .envirabox-content {
+  padding: 0; }
+
+.admin-bar .envirabox-theme-base .envirabox-thumbs.envirabox-thumbs-top {
+  top: 42px; }
+
+@media all and (max-width: 800px) {
+  .envirabox-theme-base_dark .envirabox-thumbs {
+    display: none !important; }
+  .envirabox-theme-base_dark .envirabox-container--thumbs .envirabox-controls,
+  .envirabox-theme-base_dark .envirabox-container--thumbs .envirabox-slider-wrap,
+  .envirabox-theme-base_dark .envirabox-container--thumbs .envirabox-caption-wrap {
+    bottom: 0; } }
